@@ -1,0 +1,58 @@
+{
+  "name": "app-scratch",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^13.5.0",
+    "@turbowarp/types": "^0.0.12",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.108",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^16.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-intl": "^6.6.8",
+    "react-scripts": "5.0.1",
+    "redux": "^5.0.1",
+    "scratch-gui": "^4.0.28",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
+    "extract:i18n": "formatjs extract 'src/{components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
+    "compile:i18n": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
+    "i18n": "yarn extract:i18n && yarn compile:i18n"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "packageManager": "yarn@4.5.0"
+}
