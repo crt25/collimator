@@ -3,7 +3,7 @@ import Image from "next/image";
 import localFont from "next/font/local";
 import styles from "@/styles/Home.module.scss";
 import styled from "@emotion/styled";
-import { Button, Stack } from "react-bootstrap";
+import Test from "@/components/Test";
 
 const StyledLi = styled.li`
   color: red;
@@ -48,14 +48,7 @@ export default function Home() {
             <StyledLi>Save and see your changes instantly.</StyledLi>
           </ol>
 
-          <Stack direction="horizontal" gap={2}>
-            <Button as="a" variant="primary">
-              Button as link
-            </Button>
-            <Button as="a" variant="success">
-              Button as link
-            </Button>
-          </Stack>
+          <Test />
 
           <div className={styles.ctas}>
             <a
