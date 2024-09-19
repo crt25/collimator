@@ -1,6 +1,14 @@
 import "@/styles/globals.scss";
 import type { AppProps } from "next/app";
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const cache = createCache({ key: "next" });
+
+const App = ({ Component, pageProps }: AppProps) => (
+  <CacheProvider value={cache}>
+    <Component {...pageProps} />
+  </CacheProvider>
+);
+
+export default App;
