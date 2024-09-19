@@ -1,0 +1,66 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the default location of `.github/workflows`
+    # `directory: "/"` == `directory: "/.github/workflows"`
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    groups:
+      backend-production:
+        dependency-type: "production"
+      backend-development:
+        dependency-type: "development"
+    # Packages that need to be ignored (and why)
+    ignore:
+        # ESLint 9 configuration is unsupported by Next.JS, Webpack 5,
+        # create-react-app, etc. as of 2024-09-25. DO NOT update.
+        - dependency-name: "eslint"
+          versions: ["9.x"]
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    groups:
+      frontend-production:
+        dependency-type: "production"
+      frontend-development:
+        dependency-type: "development"
+    # Packages that need to be ignored (and why)
+    ignore:
+        # ESLint 9 configuration is unsupported by Next.JS, Webpack 5,
+        # create-react-app, etc. as of 2024-09-25. DO NOT update.
+        - dependency-name: "eslint"
+          versions: ["9.x"]
+
+  - package-ecosystem: "npm"
+    directory: "/apps/scratch"
+    schedule:
+      interval: "weekly"
+    groups:
+      app-scratch-production:
+        dependency-type: "production"
+      app-scratch-development:
+        dependency-type: "development"
+    # Packages that need to be ignored (and why)
+    ignore:
+        # ESLint 9 configuration is unsupported by Next.JS, Webpack 5,
+        # create-react-app, etc. as of 2024-09-25. DO NOT update.
+        - dependency-name: "eslint"
+          versions: ["9.x"]

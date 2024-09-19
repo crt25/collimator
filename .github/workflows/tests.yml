@@ -1,0 +1,111 @@
+name: Tests
+
+on: push
+
+jobs:
+    # Label of the runner job
+    tests:
+        # You must use a Linux environment when using service containers or container jobs
+        runs-on: ubuntu-latest
+
+        # Service containers to run with `runner-job`
+        services:
+            # Label used to access the service container
+            postgres:
+                # Docker Hub image
+                image: postgres
+                # Provide the password for postgres
+                env:
+                    POSTGRES_PASSWORD: postgres
+                # Set health checks to wait until postgres has started
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+                ports:
+                    # Maps TCP port 5433 on the host to Postgres
+                    - 5433:5432
+                    
+        env:
+            DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+
+        steps:
+            -   name: Enable Corepack
+                run: corepack enable
+
+            -   name: Check out repository code
+                uses: actions/checkout@v4
+                with:
+                    submodules: 'true'
+                    fetch-depth: 0
+
+            -   name: Install backend dependencies
+                working-directory: ./backend
+                run: yarn install
+
+            -   name: Install frontend dependencies
+                working-directory: ./frontend
+                run: yarn install
+
+            -   name: Install scratch app dependencies
+                working-directory: ./apps/scratch
+                run: yarn install
+
+            -   name: Lint backend
+                working-directory: ./backend
+                run: yarn lint
+
+            -   name: Lint frontend
+                working-directory: ./frontend
+                run: yarn lint
+
+            -   name: Lint scratch app
+                working-directory: ./apps/scratch
+                run: yarn lint
+
+            -   name: Build backend
+                working-directory: ./backend
+                run: yarn build
+
+            -   name: Build frontend
+                working-directory: ./frontend
+                run: yarn build
+
+            -   name: Prepare scratch app build
+                working-directory: ./apps/scratch
+                run: yarn prepublish
+
+            -   name: Build scratch app
+                working-directory: ./apps/scratch
+                run: yarn build
+
+            -   name: Prepare test database
+                working-directory: ./backend
+                run: yarn prisma migrate deploy
+
+            -   name: Test backend
+                working-directory: ./backend
+                run: yarn test:cov
+                continue-on-error: true
+
+            -   name: End-to-end Test backend
+                working-directory: ./backend
+                run: yarn test:e2e:cov
+                continue-on-error: true
+
+            -   name: Test frontend
+                working-directory: ./frontend
+                run: yarn test:cov
+                continue-on-error: true
+
+            -   name: Test scratch app
+                working-directory: ./apps/scratch
+                run: yarn test:cov
+                continue-on-error: true
+
+            -   name: SonarCloud Scan
+                uses: SonarSource/sonarcloud-github-action@master
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

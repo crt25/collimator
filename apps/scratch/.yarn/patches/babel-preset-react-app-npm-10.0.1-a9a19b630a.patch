@@ -1,0 +1,18 @@
+diff --git a/create.js b/create.js
+index 126de46ee5c7425e31144811575cd59fb9902e07..0cd8d3b6e216e34dfacec9f3349251e8b5997557 100644
+--- a/create.js
++++ b/create.js
+@@ -194,13 +194,6 @@ module.exports = function (api, opts, env) {
+           absoluteRuntime: absoluteRuntimePath,
+         },
+       ],
+-      isEnvProduction && [
+-        // Remove PropTypes from production build
+-        require('babel-plugin-transform-react-remove-prop-types').default,
+-        {
+-          removeImport: true,
+-        },
+-      ],
+       // Optional chaining and nullish coalescing are supported in @babel/preset-env,
+       // but not yet supported in webpack due to support missing from acorn.
+       // These can be removed once webpack has support.

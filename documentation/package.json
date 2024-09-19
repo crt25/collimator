@@ -1,0 +1,11 @@
+{
+  "name": "documentation",
+  "packageManager": "yarn@4.5.0",
+  "scripts": {
+    "docsify:init": "docsify init ./docs",
+    "serve": "docsify serve docs"
+  },
+  "devDependencies": {
+    "docsify-cli": "^4.4.4"
+  }
+}
