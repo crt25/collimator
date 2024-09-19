@@ -1,0 +1,60 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      // Tell TypeScript where to find the types for Scratch libraries.
+      "scratch-vm": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-render": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-svg-renderer": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-render-fonts": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-storage": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-audio": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-parser": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ],
+      "scratch-blocks": [
+        "./node_modules/@turbowarp/types/index.d.ts"
+      ]
+    },
+    "target": "es5",
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
