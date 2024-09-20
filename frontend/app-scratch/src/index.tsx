@@ -1,7 +1,11 @@
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import GUI, { AppStateHOC, setAppElement } from "scratch-gui";
+import {
+  default as GUI,
+  AppStateHOC,
+} from "@scratch-submodule/scratch-gui/src";
+import { setAppElement } from "react-modal";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 

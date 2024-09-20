@@ -1,5 +1,5 @@
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/index.js
-declare module "scratch-gui" {
+declare module "@scratch-submodule/scratch-gui/src" {
   import { FunctionComponent, ReactNode } from "react";
   import { IntlShape } from "react-intl";
   import { Reducer } from "redux";
@@ -98,8 +98,6 @@ declare module "scratch-gui" {
     WrappedComponent: FunctionComponent<T>,
     localesOnly?: boolean,
   ) => FunctionComponent<T>;
-
-  export const setAppElement: (element: HTMLElement) => void;
 
   // redux
   export const guiReducers: Reducer;

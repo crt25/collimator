@@ -16,6 +16,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
+      // alias
+      "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"],
       // Tell TypeScript where to find the types for Scratch libraries.
       "scratch-vm": ["./node_modules/@turbowarp/types/index.d.ts"],
       "scratch-render": ["./node_modules/@turbowarp/types/index.d.ts"],
@@ -27,5 +29,5 @@
       "scratch-blocks": ["./node_modules/@turbowarp/types/index.d.ts"]
     }
   },
-  "include": ["src", "scratch-gui.d.ts"]
+  "include": ["src", "types/**/*d.ts"]
 }
