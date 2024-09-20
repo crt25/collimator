@@ -29,5 +29,5 @@
       "scratch-blocks": ["./node_modules/@turbowarp/types/index.d.ts"]
     }
   },
-  "include": ["src", "types/**/*d.ts"]
+  "include": ["src", "types/**/*d.ts", "css.d.ts"]
 }

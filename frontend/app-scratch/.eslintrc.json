@@ -4,6 +4,6 @@
   "plugins": ["@typescript-eslint"],
   "root": true,
   "env": {
-      "browser": true
+    "browser": true
   }
 }
