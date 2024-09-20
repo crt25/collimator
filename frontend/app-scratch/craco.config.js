@@ -2,6 +2,7 @@
 /* craco.config.js */
 const path = require(`path`);
 const webpack = require(`webpack`);
+const { getLoaders, loaderByName } = require("@craco/craco");
 
 // craco plugins
 const cracoBabelLoader = require("craco-babel-loader");
@@ -51,19 +52,6 @@ module.exports = {
       ],
       remove: [],
     },
-    /*style: {
-      css: {
-        loaderOptions: {
-          modules: {
-            auto: true,
-            exportLocalsConvention: function (name) {
-              console.log("name", name);
-              return "test123";
-            },
-          },
-        },
-      },
-    },*/
     // https://craco.js.org/docs/configuration/getting-started/#object-literals-and-functions
     configure: (webpackConfig) => {
       // supress invalid source map warnings - some dependencies have invalid or inexistent source maps
@@ -80,9 +68,7 @@ module.exports = {
       };
 
       // kebab-case to camelCase for CSS class names in CSS modules - this is required by scratch
-
       // copied and adapted from https://stackoverflow.com/a/74149013/2897827
-
       webpackConfig.module.rules
         .find(({ oneOf }) => !!oneOf)
         .oneOf.filter(({ use }) => JSON.stringify(use)?.includes("css-loader"))
@@ -102,6 +88,24 @@ module.exports = {
             options.modules.auto = undefined;
           }
         });
+
+      // configure PostCSS required by scratch, see https://github.com/scratchfoundation/scratch-webpack-configuration/blob/06b35c21a82ff29a596bd7a4c233731a00d3d49e/src/index.cjs#L188
+      const { hasFoundAny: postCssHasFoundAny, matches: postcssMatches } =
+        getLoaders(webpackConfig, loaderByName("postcss-loader"));
+
+      if (!postCssHasFoundAny) {
+        throw new Error("PostCSS loader not found - scratch needs this");
+      }
+
+      postcssMatches
+        .filter((match) => match.loader?.options?.postcssOptions)
+        .forEach(
+          (match) =>
+            (match.loader.options.postcssOptions.config = path.join(
+              __dirname,
+              "./postcss.config.js",
+            )),
+        );
 
       return webpackConfig;
     },
