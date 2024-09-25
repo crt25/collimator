@@ -83,7 +83,9 @@ module.exports = {
       const oneOfRule = webpackConfig.module.rules.find(({ oneOf }) => !!oneOf);
 
       // one of these rules is a fallback rule and it is configured to serve those files as 'asset/resource'
-      const resourceRule = oneOfRule.oneOf.find((r) => r.type === "asset/resource");
+      const resourceRule = oneOfRule.oneOf.find(
+        (r) => r.type === "asset/resource",
+      );
 
       // kebab-case to camelCase for CSS class names in CSS modules - this is required by scratch
       // copied and adapted from https://stackoverflow.com/a/74149013/2897827
@@ -92,12 +94,12 @@ module.exports = {
         .filter(({ use }) => JSON.stringify(use)?.includes("css-loader"))
         // concat all of the rules' use
         .reduce((acc, { use }) => acc.concat(use), [])
-          // 
+        // select the CSS loader
         .filter(
           (use) =>
             typeof use === "object" &&
             use.loader &&
-            use.loader.includes("css-loader")
+            use.loader.includes("css-loader"),
         )
         .forEach(({ options }) => {
           if (options.modules) {
@@ -123,12 +125,12 @@ module.exports = {
           (match) =>
             (match.loader.options.postcssOptions.config = path.join(
               __dirname,
-              "./postcss.config.js"
-            ))
+              "./postcss.config.js",
+            )),
         );
 
       // exclude them from the fallback
-      resourceRule.exclude.push(/\.(vert|frag)$/);
+      resourceRule.exclude.push(/\.(vert|frag|wav)$/);
 
       return webpackConfig;
     },
