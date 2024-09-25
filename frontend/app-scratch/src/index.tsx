@@ -20,13 +20,15 @@ setAppElement(appRoot);
 // initialize vm s.t. we get a handle on it
 const vm = new VM();
 
+vm.runtime.targets[0].y;
+
 ReactDOM.render(
   <WrappedGui
     canSave={false}
     vm={vm}
     onClickLogo={() => console.log("clicked logo")}
   />,
-  appRoot
+  appRoot,
 );
 
 // If you want to start measuring performance in your app, pass a function
