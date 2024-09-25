@@ -40,17 +40,17 @@ module.exports = {
           patterns: [
             {
               from: "node_modules/scratch-blocks/media",
-              to: "src/scratch/scratch-gui/static/blocks-media/default",
+              to: "static/blocks-media/default",
             },
             {
               from: "node_modules/scratch-blocks/media",
-              to: "src/scratch/scratch-gui/static/blocks-media/high-contrast",
+              to: "static/blocks-media/high-contrast",
             },
             {
               // overwrite some of the default block media with high-contrast versions
               // this entry must come after copying scratch-blocks/media into the high-contrast directory
               from: "src/scratch/scratch-gui/src/lib/themes/high-contrast/blocks-media",
-              to: "src/scratch/scratch-gui/static/blocks-media/high-contrast",
+              to: "static/blocks-media/high-contrast",
               force: true,
             },
             {
