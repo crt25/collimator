@@ -14,6 +14,17 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const resolvePath = (relativePath) => path.resolve(__dirname, relativePath);
 
 module.exports = {
+  eslint: {
+    enable: true,
+    pluginOptions: {
+      files: [
+        // lint all files in the src/ folder
+        "./src/**/*",
+        // but ignore scratch submodules - not under our control
+        "!./src/scratch/**/*",
+      ],
+    },
+  },
   // see https://craco.js.org/docs/configuration/webpack/
   webpack: {
     alias: {
