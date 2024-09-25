@@ -5,25 +5,28 @@ import {
   default as GUI,
   AppStateHOC,
 } from "@scratch-submodule/scratch-gui/src";
+import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
+import VM from "scratch-vm";
 import { setAppElement } from "react-modal";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
-// note that redux's 'compose' function is just being used as a general utility to make
-// the hierarchy of HOC constructor calls clearer here; it has nothing to do with redux's
-// ability to compose reducers.
-const WrappedGui = AppStateHOC(GUI);
+const WrappedGui = AppStateHOC(HashParserHOC(GUI));
 
 const appRoot = document.getElementById("root") as HTMLElement;
 
 setAppElement(appRoot);
 
+// initialize vm s.t. we get a handle on it
+const vm = new VM();
+
 ReactDOM.render(
   <WrappedGui
     canSave={false}
+    vm={vm}
     onClickLogo={() => console.log("clicked logo")}
   />,
-  appRoot,
+  appRoot
 );
 
 // If you want to start measuring performance in your app, pass a function
