@@ -1,8 +1,8 @@
 diff --git a/package.json b/package.json
-index 2d0fc98a781c482a3f1df8e7148034d3959faa59..773537c45918bd208efc249591c912177ad42d6c 100644
+index 2d0fc98a781c482a3f1df8e7148034d3959faa59..c7cbcfc231fc54cc45934ab158de4acd3713a232 100644
 --- a/package.json
 +++ b/package.json
-@@ -13,10 +13,19 @@
+@@ -13,10 +13,21 @@
    "main": "./dist/node/scratch-vm.js",
    "browser": "./dist/web/scratch-vm.js",
    "exports": {
@@ -10,10 +10,12 @@ index 2d0fc98a781c482a3f1df8e7148034d3959faa59..773537c45918bd208efc249591c91217
 -    "browser": "./dist/web/scratch-vm.js",
 -    "node": "./dist/node/scratch-vm.js",
 -    "default": "./src/index.js"
-+    "./webpack": "./src/index.js",
-+    "./browser": "./dist/web/scratch-vm.js",
-+    "./node": "./dist/node/scratch-vm.js",
-+    ".": "./src/index.js",
++    ".": {
++      "webpack": "./src/index.js",
++      "browser": "./dist/web/scratch-vm.js",
++      "node": "./dist/node/scratch-vm.js",
++      "default": "./src/index.js"
++    },
 +    "./src/blocks/scratch3_control": "./src/blocks/scratch3_control.js",
 +    "./src/blocks/scratch3_event": "./src/blocks/scratch3_event.js",
 +    "./src/blocks/scratch3_looks": "./src/blocks/scratch3_looks.js",
