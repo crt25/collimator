@@ -7,7 +7,7 @@ import VM from "scratch-vm";
 import { setAppElement } from "react-modal";
 import Gui from "./containers/Gui";
 import { registerCustomBlocks } from "./blocks/blocks";
-import { STAGE_SIZE_MODES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
+import downloadBlob from "@scratch-submodule/scratch-gui/src/lib/download-blob";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -45,6 +45,13 @@ ReactDOM.render(
     onUpdateProjectId={() => console.log("update project id")}
     onVmInit={(vm: VM) => {
       console.log("vm initialized");
+
+      // @ts-ignore
+      window.download = () =>
+        vm.saveProjectSb3().then((blob: Blob) => {
+          console.log(vm.toJSON());
+          downloadBlob("export.sb3", blob);
+        });
 
       registerCustomBlocks(vm);
     }}
