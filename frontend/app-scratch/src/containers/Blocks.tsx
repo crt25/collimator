@@ -2,7 +2,6 @@ import bindAll from "lodash.bindall";
 import debounce from "lodash.debounce";
 import defaultsDeep from "lodash.defaultsdeep";
 import React from "react";
-import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import VM, {
   ExtensionInfoBlock,
   ExtensionInfoExtended,
@@ -53,6 +52,7 @@ import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
 import makeToolboxXML from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
+import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 
 const addFunctionListener = (
   object: unknown,
@@ -206,7 +206,7 @@ class Blocks extends React.Component<Props, State> {
   componentDidMount() {
     this.ScratchBlocks = VMScratchBlocks(
       this.props.vm,
-      this.props.useCatBlocks,
+      this.props.useCatBlocks || false,
     );
     this.ScratchBlocks.prompt = this.handlePromptStart;
     this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -484,8 +484,8 @@ class Blocks extends React.Component<Props, State> {
     this.withToolboxUpdates(() => {
       const block = this.getWorkspaceFlyout().getWorkspace().getBlockById(id);
       if (block) {
-        if (!("inputList" in block)) {
-          throw new Error("Cannot update dynamic block");
+        if (!block.inputList) {
+          throw new Error("Cannot update block without input list");
         }
 
         block.inputList[0].fieldRow[0].setValue(value);

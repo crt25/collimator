@@ -17,18 +17,19 @@ declare namespace ScratchBlocksExtended {
     fieldRow: BlockFieldRow[];
   }
 
-  interface StaticBlock extends ScratchBlocks.Block {
-    inputList: BlockInput[];
-    isMonitored: boolean;
+  interface BlockThis {
+    jsonInit: (json: Record<string, unknown>) => void;
   }
 
-  interface DynamicBlock extends ScratchBlocks.Block {
-    init: () => void;
-    mutationToDom: () => HTMLElement;
-    domToMutation: (element: HTMLElement) => void;
-  }
+  interface Block extends ScratchBlocks.Block {
+    init: (this: BlockThis) => void;
 
-  type Block = StaticBlock | DynamicBlock;
+    inputList?: BlockInput[];
+    isMonitored?: boolean;
+
+    mutationToDom?: () => HTMLElement;
+    domToMutation?: (element: HTMLElement) => void;
+  }
 
   class Flyout extends ScratchBlocks.Flyout {
     getWorkspace(): Workspace;
@@ -185,6 +186,21 @@ declare namespace ScratchBlocksExtended {
   ) => void;
 
   const refreshStatusButtons: (workspace: Workspace) => void;
+
+  const Categories = {
+    // https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/constants.js#L261
+    motion: "motion",
+    looks: "looks",
+    sound: "sounds",
+    pen: "pen",
+    data: "data",
+    dataLists: "data-lists",
+    event: "events",
+    control: "control",
+    sensing: "sensing",
+    operators: "operators",
+    more: "more",
+  };
 
   const Msg = {
     CONTROL_FOREVER: "forever",

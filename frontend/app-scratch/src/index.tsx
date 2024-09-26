@@ -6,6 +6,7 @@ import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-ho
 import VM from "scratch-vm";
 import { setAppElement } from "react-modal";
 import Gui from "./containers/Gui";
+import { registerCustomBlocks } from "./blocks/blocks";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -15,12 +16,8 @@ const appRoot = document.getElementById("root") as HTMLElement;
 
 setAppElement(appRoot);
 
-// initialize vm s.t. we get a handle on it
-const vm = new VM();
-
 ReactDOM.render(
   <WrappedGui
-    vm={vm}
     isScratchDesktop={false}
     isTotallyNormal={false}
     onStorageInit={(storageInstance: any) =>
@@ -31,7 +28,11 @@ ReactDOM.render(
     onClickLogo={() => console.log("clicked logo")}
     onProjectLoaded={() => console.log("project loaded")}
     onUpdateProjectId={() => console.log("update project id")}
-    onVmInit={() => console.log("vm initialized")}
+    onVmInit={(vm: VM) => {
+      console.log("vm initialized");
+
+      registerCustomBlocks(vm);
+    }}
   />,
   appRoot,
 );

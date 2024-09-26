@@ -35,6 +35,13 @@ const motion = function (
                 </shadow>
             </value>
         </block>
+        <block type="test_block">
+            <value name="STEPS">
+                <shadow type="math_number">
+                    <field name="NUM">10</field>
+                </shadow>
+            </value>
+        </block>
         <block type="motion_turnright">
             <value name="DEGREES">
                 <shadow type="math_number">

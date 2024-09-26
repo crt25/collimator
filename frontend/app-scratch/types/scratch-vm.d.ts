@@ -90,7 +90,7 @@ declare namespace VMExtended {
     fieldName?: string;
     extendedName?: string;
     argumentTypeInfo?: {
-      [key: string]: {type: string;fieldName: string;};
+      [key: string]: { type: string; fieldName: string };
     };
     scratchBlocksDefinition: {
       // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/engine/runtime.js#L1032
@@ -121,8 +121,14 @@ declare namespace VMExtended {
     };
   }
 
+  export interface MonitorBlockInfo {
+    isSpriteSpecific: boolean;
+    getId: (string) => string;
+  }
+
   export interface RuntimeExtended extends VM.Runtime {
     monitorBlocks: BlocksExtended;
+    monitorBlockInfo: MonitorBlockInfo;
 
     _blockInfo: ExtensionInfo[];
   }
@@ -135,20 +141,37 @@ declare namespace VMExtended {
     values(): Monitor[];
   }
 
-  export interface RenderedTargetEventMapExtended extends VM.RenderedTargetEventMap {
-    "SCRIPT_GLOW_ON": [{id: string}];
-    "SCRIPT_GLOW_OFF": [{id: string}];
-    "BLOCK_GLOW_ON": [{id: string}];
-    "BLOCK_GLOW_OFF": [{id: string}];
-    "VISUAL_REPORT": [{id: string; value: unknown;}];
-    "workspaceUpdate": [{xml: string;}];
-    "workspaceUpdate": [{xml: string;}];
-    "targetsUpdate": [];
-    "MONITORS_UPDATE": [Monitors];
-    "BLOCKSINFO_UPDATE": [ExtensionInfoExtended];
-    "EXTENSION_ADDED": [ExtensionInfoExtended];
-    "PERIPHERAL_CONNECTED": [];
-    "PERIPHERAL_DISCONNECTED": [];
+  export interface RenderedTargetEventMapExtended
+    extends VM.RenderedTargetEventMap {
+    SCRIPT_GLOW_ON: [{ id: string }];
+    SCRIPT_GLOW_OFF: [{ id: string }];
+    BLOCK_GLOW_ON: [{ id: string }];
+    BLOCK_GLOW_OFF: [{ id: string }];
+    VISUAL_REPORT: [{ id: string; value: unknown }];
+    workspaceUpdate: [{ xml: string }];
+    workspaceUpdate: [{ xml: string }];
+    targetsUpdate: [];
+    MONITORS_UPDATE: [Monitors];
+    BLOCKSINFO_UPDATE: [ExtensionInfoExtended];
+    EXTENSION_ADDED: [ExtensionInfoExtended];
+    PERIPHERAL_CONNECTED: [];
+    PERIPHERAL_DISCONNECTED: [];
+  }
+
+  export interface BlockPackageClass {
+    new (runtime: RuntimeExtended): BlockPackage;
+  }
+
+  export interface BlockPackage {
+    // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_event.js
+    getPrimitives: () => Record<
+      string,
+      (args: Record<string, unknown>, util: unknown) => void
+    >;
+    getHats?: () => Record<string, { restartExistingThreads: boolean }>;
+
+    // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_motion.js#L47
+    getMonitored?: () => Record<string, MonitorBlockInfo>;
   }
 }
 
@@ -172,4 +195,10 @@ declare class VMExtended extends VM {
 declare module "scratch-vm" {
   export = VMExtended;
   export default VMExtended;
+}
+
+declare module "scratch-vm/src/blocks/*" {
+  const blockPackage: VMExtended.StaticBlockPackage;
+
+  export default blockPackage;
 }
