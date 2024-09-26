@@ -107,7 +107,5 @@ export const registerCustomBlocks = (vm: VM) => {
     }
   }
 
-  console.log(vm.runtime._primitives);
-
   return vm;
 };

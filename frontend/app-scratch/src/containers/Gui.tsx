@@ -38,6 +38,7 @@ import cloudManagerHOC from "@scratch-submodule/scratch-gui/src/lib/cloud-manage
 import systemPreferencesHOC from "@scratch-submodule/scratch-gui/src/lib/system-preferences-hoc.jsx";
 
 import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isScratchDesktop.js";
+import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 
@@ -63,7 +64,7 @@ interface Props {
   isLoading?: boolean;
   isScratchDesktop: boolean;
   isShowingProject?: boolean;
-  isTotallyNormal?: boolean;
+  isTotallyNormal: boolean;
   loadingStateVisible?: boolean;
   onProjectLoaded: () => void;
   onSeeCommunity?: () => void;
@@ -76,7 +77,25 @@ interface Props {
   isRtl: boolean;
   isFullScreen: boolean;
   canUseCloud: boolean;
+  canSave: boolean;
   basePath: string;
+
+  backpackHost: string | null;
+  backpackVisible: boolean;
+  blocksId: string;
+  canChangeLanguage: boolean;
+  canChangeTheme: boolean;
+  canCreateNew: boolean;
+  canEditTitle: boolean;
+  canManageFiles: boolean;
+  canRemix: boolean;
+  canCreateCopy: boolean;
+  canShare: boolean;
+  enableCommunity: boolean;
+  isCreating: boolean;
+  isShared: boolean;
+  showComingSoon: boolean;
+  stageSizeMode: StageSizeMode;
 }
 
 interface ReduxState {
@@ -171,7 +190,7 @@ class GUI extends React.Component<Props> {
     } = this.props;
     return (
       <GUIComponent
-        loading={fetchingProject || isLoading || loadingStateVisible}
+        loading={fetchingProject || isLoading || loadingStateVisible || false}
         {...componentProps}
       >
         {children}

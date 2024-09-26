@@ -7,6 +7,7 @@ import VM from "scratch-vm";
 import { setAppElement } from "react-modal";
 import Gui from "./containers/Gui";
 import { registerCustomBlocks } from "./blocks/blocks";
+import { STAGE_SIZE_MODES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -20,10 +21,24 @@ ReactDOM.render(
   <WrappedGui
     isScratchDesktop={false}
     isTotallyNormal={false}
+    backpackHost={null}
+    backpackVisible={false}
+    canChangeLanguage={true}
+    canChangeTheme={true}
+    canCreateNew={false}
+    canEditTitle={false}
+    canManageFiles={true}
+    canRemix={false}
+    canCreateCopy={false}
+    canShare={false}
+    enableCommunity={false}
+    isCreating={false}
+    isShared={false}
+    showComingSoon={false}
+    canSave={true}
     onStorageInit={(storageInstance: any) =>
       storageInstance.addOfficialScratchWebStores()
     }
-    canSave={false}
     basePath=""
     onClickLogo={() => console.log("clicked logo")}
     onProjectLoaded={() => console.log("project loaded")}
