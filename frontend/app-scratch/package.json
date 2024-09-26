@@ -11,10 +11,6 @@
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
     "@turbowarp/types": "^0.0.12",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.108",
-    "@types/react": "^16.0.0",
-    "@types/react-dom": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^8.6.0",
     "@typescript-eslint/parser": "^8.6.0",
     "arraybuffer-loader": "^1.0.8",
@@ -83,7 +79,8 @@
     "xhr": "^2.6.0"
   },
   "resolutions": {
-    "@svgr/webpack": "6.5.1"
+    "@svgr/webpack": "6.5.1",
+    "@types/react": "16.14.61"
   },
   "scripts": {
     "dev": "craco start",
@@ -118,13 +115,24 @@
   "devDependencies": {
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
+    "@types/jest": "^27.5.2",
     "@types/keymirror": "^0",
+    "@types/lodash.bindall": "^4.4.9",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.defaultsdeep": "^4",
+    "@types/lodash.omit": "^4.5.9",
+    "@types/node": "^16.18.108",
     "@types/omggif": "^1",
     "@types/papaparse": "^5",
     "@types/prop-types": "^15",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^16.0.0",
+    "@types/react-intl": "^2.2.2",
     "@types/react-modal": "^3",
     "@types/react-popover": "^0",
+    "@types/react-redux": "^7.1.34",
+    "@types/react-responsive": "^8.0.8",
+    "@types/react-tabs": "^2.3.0",
     "@types/react-virtualized": "^9",
     "@types/wav-encoder": "^1"
   }

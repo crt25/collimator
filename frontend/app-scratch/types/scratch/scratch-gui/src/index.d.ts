@@ -94,10 +94,10 @@ declare module "@scratch-submodule/scratch-gui/src" {
 
   export default GUI;
 
-  export const AppStateHOC: <T>(
-    WrappedComponent: FunctionComponent<T>,
+  export const AppStateHOC: <P, S, SS>(
+    WrappedComponent: Component<P, S, SS>,
     localesOnly?: boolean,
-  ) => FunctionComponent<T>;
+  ) => Component<P, S, SS>;
 
   // redux
   export const guiReducers: Reducer;
