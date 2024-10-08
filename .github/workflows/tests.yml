@@ -45,6 +45,11 @@ jobs:
             -   name: Enable Corepack
                 run: corepack enable
 
+            -   name: Check out repository code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
             -   name: Install backend dependencies
                 working-directory: ./backend
                 run: yarn install
@@ -57,10 +62,29 @@ jobs:
                 working-directory: ./frontend/app-scratch
                 run: yarn install
 
-            -   name: Check out repository code
-                uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0
+            -   name: Lint backend
+                working-directory: ./backend
+                run: yarn lint
+
+            -   name: Lint frontend
+                working-directory: ./frontend/main
+                run: yarn lint
+
+            -   name: Lint scratch app
+                working-directory: ./frontend/app-scratch
+                run: yarn lint
+
+            -   name: Build backend
+                working-directory: ./backend
+                run: yarn build
+
+            -   name: Build frontend
+                working-directory: ./frontend/main
+                run: yarn build
+
+            -   name: Build scratch app
+                working-directory: ./frontend/app-scratch
+                run: yarn build
 
             -   name: Cache SonarCloud packages
                 uses: actions/cache@v4
