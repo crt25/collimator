@@ -1,0 +1,65 @@
+name: collimator
+
+networks:
+  net-nginx:
+    driver: bridge
+  net-database:
+    driver: bridge
+
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - net-database
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    container_name: nginx
+    restart: always
+    ports:
+      - "8080:80" # the frontend and backend
+      - "8081:81" # the scratch app
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - net-nginx
+
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      - PORT=3000
+      # we can use the docker service name "database" as the hostname
+      - DATABASE_URL=postgresql://postgres:postgres@database:5432/collimator?schema=public
+    ports:
+      - "3001:3000"
+    networks:
+      - net-nginx
+      - net-database
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./frontend/main/
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+    ports:
+      - "3000:3000"
+    networks:
+      - net-nginx
+    depends_on:
+      - backend

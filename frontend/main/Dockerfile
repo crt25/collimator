@@ -2,9 +2,6 @@
 FROM node:22-bookworm-slim
 WORKDIR /app
 
-# install dependencies
-RUN apt-get update -y && apt-get install -y openssl
-
 # copy over the data
 COPY . .
 
@@ -17,13 +14,13 @@ RUN chmod -R 777 /nonexistent/.cache/
 RUN chmod -R 777 /nonexistent/.yarn/
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nestjs
-RUN chown -R nestjs:nodejs .
+RUN adduser --system --uid 1001 nextjs
+RUN chown -R nextjs:nodejs .
 RUN chmod -R 700 .
 
-USER nestjs
+USER nextjs
 
 RUN yarn install
 RUN yarn build
 
-ENTRYPOINT ["docker/entrypoint.sh"]
+CMD [ "yarn", "start" ]

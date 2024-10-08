@@ -2,7 +2,7 @@
 /* craco.config.js */
 const path = require(`path`);
 const webpack = require(`webpack`);
-const { getLoaders, loaderByName } = require("@craco/craco");
+const { getLoader, getLoaders, loaderByName } = require("@craco/craco");
 
 // craco plugins
 const cracoBabelLoader = require("craco-babel-loader");

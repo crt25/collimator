@@ -1,0 +1,17 @@
+.git
+.gitignore
+.eslintrc.js
+.gitmodules
+
+docker
+docker-compose.yml
+nginx.Dockerfile
+
+documentation
+backend
+frontend/main
+
+frontend/app-scratch/Dockerfile
+frontend/app-scratch/.dockerignore
+frontend/app-scratch/node_modules
+frontend/app-scratch/build

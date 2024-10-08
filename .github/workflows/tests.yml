@@ -1,0 +1,112 @@
+name: Tests
+
+on: push
+
+jobs:
+    # Label of the runner job
+    tests:
+        # You must use a Linux environment when using service containers or container jobs
+        runs-on: ubuntu-latest
+
+        # Service containers to run with `runner-job`
+        services:
+            # Label used to access the service container
+            postgres:
+                # Docker Hub image
+                image: postgres
+                # Provide the password for postgres
+                env:
+                    POSTGRES_PASSWORD: postgres
+                # Set health checks to wait until postgres has started
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+                ports:
+                    # Maps TCP port 5433 on the host to Postgres
+                    - 5433:5432
+                    
+        env:
+            DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/collimator?schema=public"
+
+        steps:
+            -   name: Set up JDK 17 for SonarCloud
+                uses: actions/setup-java@v4
+                with:
+                    java-version: 17
+                    distribution: 'zulu' # Alternative distribution options are available.
+
+            -   name: Setup .NET
+                uses: actions/setup-dotnet@v4
+                with:
+                    dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            -   name: Enable Corepack
+                run: corepack enable
+
+            -   name: Install backend dependencies
+                working-directory: ./backend
+                run: yarn install
+
+            -   name: Install frontend dependencies
+                working-directory: ./frontend/main
+                run: yarn install
+
+            -   name: Install scratch app dependencies
+                working-directory: ./frontend/app-scratch
+                run: yarn install
+
+            -   name: Check out repository code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
+            -   name: Cache SonarCloud packages
+                uses: actions/cache@v4
+                with:
+                    path: /home/runner/.sonar/cache
+                    key: ${{ runner.os }}-sonar
+                    restore-keys: ${{ runner.os }}-sonar
+
+            -   name: Install SonarCloud scanner and dotnet coverage tool
+                if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+                run: |
+                    dotnet tool install --global dotnet-sonarscanner
+                    dotnet tool install --global dotnet-coverage
+
+            -   name: Start Sonar Analysis
+                id: sonarstart
+                if: ${{ github.actor != 'dependabot[bot]' }}
+                run: >-
+                    dotnet-sonarscanner begin
+                    /k:"Anansi-Solutions_hack-stalker"
+                    /o:"anansi-solutions"
+                    /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+                    /d:sonar.host.url="https://sonarcloud.io"
+                    /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+                    /d:sonar.coverage.exclusions="
+                    **/HackStalker.Frontend/**,
+                    **/HackStalker.DbMigrator/**,
+                    **/HackStalker.Models/Migrations/**,
+                    **/Program.cs,
+                    **/HackStalkerDatabaseContextFactory.cs
+                    "
+                    /d:sonar.exclusions="
+                    **/.github/actions/azure-postgresql-ef-core/**,
+                    **/HackStalker.Frontend/src/api/generated/**
+                    "
+                env:
+                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+            -   name: Prepare test database
+                run: dotnet run --no-build --configuration Release --project ./src/HackStalker.DbMigrator/HackStalker.DbMigrator.csproj
+
+            -   name: Test
+                run: dotnet-coverage collect "dotnet test --no-build --configuration Release --verbosity normal" -f xml -o "coverage.xml"
+
+            -   name: Finish SonarCloud Analysis
+                if: ${{ !cancelled() && steps.sonarstart.conclusion == 'success' && github.actor != 'dependabot[bot]' }}
+                run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+                env:
+                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
