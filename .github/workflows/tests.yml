@@ -89,6 +89,11 @@ jobs:
                 run: yarn test:cov
                 continue-on-error: true
 
+            -   name: End-to-end Test backend
+                working-directory: ./backend
+                run: yarn test:e2e:cov
+                continue-on-error: true
+
             -   name: Test frontend
                 working-directory: ./frontend/main
                 run: yarn test:cov
