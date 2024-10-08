@@ -87,6 +87,7 @@
     "dev": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "test:cov": "craco test --coverage --watchAll=false --testPathIgnorePatterns=src/scratch",
     "eject": "react-scripts eject",
     "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
     "extract:i18n": "formatjs extract 'src/{components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
@@ -110,6 +111,15 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.(t|j)s",
+      "!**/*.d.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/scratch"
     ]
   },
   "packageManager": "yarn@4.5.0",

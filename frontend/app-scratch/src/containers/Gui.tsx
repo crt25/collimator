@@ -168,7 +168,7 @@ class GUI extends React.Component<Props> {
       );
     }
     const {
-      /* eslint-disable no-unused-vars */
+      /* eslint-disable @typescript-eslint/no-unused-vars */
       assetHost,
       cloudHost,
       error,
@@ -181,7 +181,7 @@ class GUI extends React.Component<Props> {
       onVmInit,
       projectHost,
       projectId,
-      /* eslint-enable no-unused-vars */
+      /* eslint-enable @typescript-eslint/no-unused-vars */
       children,
       fetchingProject,
       isLoading,

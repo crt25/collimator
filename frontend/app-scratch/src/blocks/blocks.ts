@@ -1,28 +1,6 @@
 import Blockly from "scratch-blocks";
 import VM, { BlockPackage, BlockPackageClass } from "scratch-vm";
 
-import scratch3_control from "scratch-vm/src/blocks/scratch3_control";
-import scratch3_event from "scratch-vm/src/blocks/scratch3_event";
-import scratch3_looks from "scratch-vm/src/blocks/scratch3_looks";
-import scratch3_motion from "scratch-vm/src/blocks/scratch3_motion";
-import scratch3_operators from "scratch-vm/src/blocks/scratch3_operators";
-import scratch3_sound from "scratch-vm/src/blocks/scratch3_sound";
-import scratch3_sensing from "scratch-vm/src/blocks/scratch3_sensing";
-import scratch3_data from "scratch-vm/src/blocks/scratch3_data";
-import scratch3_procedures from "scratch-vm/src/blocks/scratch3_procedures";
-
-const defaultBlockPackages: Record<string, BlockPackageClass> = {
-  scratch3_control,
-  scratch3_event,
-  scratch3_looks,
-  scratch3_motion,
-  scratch3_operators,
-  scratch3_sound,
-  scratch3_sensing,
-  scratch3_data,
-  scratch3_procedures,
-};
-
 class TestBlockPackage implements BlockPackage {
   constructor(private runtime: VM.RuntimeExtended) {}
 

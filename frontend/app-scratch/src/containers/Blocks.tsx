@@ -882,7 +882,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   render() {
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
       anyModalVisible,
       canUseCloud,
@@ -906,7 +906,7 @@ class Blocks extends React.Component<Props, State> {
       workspaceMetrics,
       ...props
     } = this.props;
-    /* eslint-enable no-unused-vars */
+    /* eslint-enable @typescript-eslint/no-unused-vars */
 
     return (
       <React.Fragment>
