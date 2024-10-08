@@ -2,8 +2,8 @@
   "name": "documentation",
   "packageManager": "yarn@4.5.0",
   "scripts": {
-    "docsify:init": "docsify init ./docs",
-    "serve": "docsify serve docs"
+    "docsify:init": "docsify init .",
+    "serve": "docsify serve ."
   },
   "devDependencies": {
     "docsify-cli": "^4.4.4"
