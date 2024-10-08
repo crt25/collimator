@@ -725,9 +725,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/intl@npm:2.10.4":
-  version: 2.10.4
-  resolution: "@formatjs/intl@npm:2.10.4"
+"@formatjs/intl@npm:2.10.6":
+  version: 2.10.6
+  resolution: "@formatjs/intl@npm:2.10.6"
   dependencies:
     "@formatjs/ecma402-abstract": "npm:2.0.0"
     "@formatjs/fast-memoize": "npm:2.2.0"
@@ -741,7 +741,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/ca7877e962f73f1fe0e358f12d73bdc3ec4006c14ee801e06d9f7aef06bcdcc12355a8f53f32b0e890f829949ded35e825c914ca5f4709eb1e08c2a18c1368c2
+  checksum: 10c0/5b29e43a4e411786742645793a88ed28845cd2cee6bca76d2c2d7d46a95c31feeb2091f3322c27e2ed39c7f738d846ccd52fbd0d316857602f976f3036d59c3e
   languageName: node
   linkType: hard
 
@@ -1106,10 +1106,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/env@npm:14.2.12"
-  checksum: 10c0/fd9b3da4e530487bc12bb4e64bf910e7017763a447939f3c116b4208f111646452a9ded283ed7032d85217fa657aed71f98e9fc89409346d1fd51a59549a7a00
+"@next/env@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/env@npm:14.2.14"
+  checksum: 10c0/07060e631dfe795359a6bf509069f19e2fde1aa36a8e845d293ae6194bfdfcd7e0b1a628626083a2bb2b46a4702f8428bc2a21913f24b88ec53f773c50c14a9f
   languageName: node
   linkType: hard
 
@@ -1122,65 +1122,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-darwin-arm64@npm:14.2.12"
+"@next/swc-darwin-arm64@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-darwin-arm64@npm:14.2.14"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-darwin-x64@npm:14.2.12"
+"@next/swc-darwin-x64@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-darwin-x64@npm:14.2.14"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-arm64-gnu@npm:14.2.12"
+"@next/swc-linux-arm64-gnu@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-linux-arm64-gnu@npm:14.2.14"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-arm64-musl@npm:14.2.12"
+"@next/swc-linux-arm64-musl@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-linux-arm64-musl@npm:14.2.14"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-x64-gnu@npm:14.2.12"
+"@next/swc-linux-x64-gnu@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-linux-x64-gnu@npm:14.2.14"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-x64-musl@npm:14.2.12"
+"@next/swc-linux-x64-musl@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-linux-x64-musl@npm:14.2.14"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-arm64-msvc@npm:14.2.12"
+"@next/swc-win32-arm64-msvc@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-win32-arm64-msvc@npm:14.2.14"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-ia32-msvc@npm:14.2.12"
+"@next/swc-win32-ia32-msvc@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-win32-ia32-msvc@npm:14.2.14"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-x64-msvc@npm:14.2.12"
+"@next/swc-win32-x64-msvc@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/swc-win32-x64-msvc@npm:14.2.14"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2563,12 +2563,12 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.2.1"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
-    next: "npm:14.2.12"
+    next: "npm:14.2.14"
     prettier: "npm:^3.3.3"
     react: "npm:^18"
-    react-bootstrap: "npm:^2.10.4"
+    react-bootstrap: "npm:^2.10.5"
     react-dom: "npm:^18"
-    react-intl: "npm:^6.6.8"
+    react-intl: "npm:^6.7.1"
     sass: "npm:^1.79.1"
     swr: "npm:^2.2.5"
     ts-node: "npm:^10.9.2"
@@ -5655,20 +5655,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:14.2.12":
-  version: 14.2.12
-  resolution: "next@npm:14.2.12"
+"next@npm:14.2.14":
+  version: 14.2.14
+  resolution: "next@npm:14.2.14"
   dependencies:
-    "@next/env": "npm:14.2.12"
-    "@next/swc-darwin-arm64": "npm:14.2.12"
-    "@next/swc-darwin-x64": "npm:14.2.12"
-    "@next/swc-linux-arm64-gnu": "npm:14.2.12"
-    "@next/swc-linux-arm64-musl": "npm:14.2.12"
-    "@next/swc-linux-x64-gnu": "npm:14.2.12"
-    "@next/swc-linux-x64-musl": "npm:14.2.12"
-    "@next/swc-win32-arm64-msvc": "npm:14.2.12"
-    "@next/swc-win32-ia32-msvc": "npm:14.2.12"
-    "@next/swc-win32-x64-msvc": "npm:14.2.12"
+    "@next/env": "npm:14.2.14"
+    "@next/swc-darwin-arm64": "npm:14.2.14"
+    "@next/swc-darwin-x64": "npm:14.2.14"
+    "@next/swc-linux-arm64-gnu": "npm:14.2.14"
+    "@next/swc-linux-arm64-musl": "npm:14.2.14"
+    "@next/swc-linux-x64-gnu": "npm:14.2.14"
+    "@next/swc-linux-x64-musl": "npm:14.2.14"
+    "@next/swc-win32-arm64-msvc": "npm:14.2.14"
+    "@next/swc-win32-ia32-msvc": "npm:14.2.14"
+    "@next/swc-win32-x64-msvc": "npm:14.2.14"
     "@swc/helpers": "npm:0.5.5"
     busboy: "npm:1.6.0"
     caniuse-lite: "npm:^1.0.30001579"
@@ -5709,7 +5709,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/3ec6bb480c2f3ab41e6ea06f5d151961a841b7c8436d3a0142a294b644668df96a0b209b810d2954ec800e8fc33e8f8c7b77a92aea6e32b02e4935135b5201ec
+  checksum: 10c0/ed35c4a7e87de6da268ab19c195c498480ce758dad931b0789b81fc2a0e63020b379ce6f43daff922c123014ea5b3a33cc9eb09c785aa2d5bcd5eb0ef46b9f80
   languageName: node
   linkType: hard
 
@@ -6215,9 +6215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootstrap@npm:^2.10.4":
-  version: 2.10.4
-  resolution: "react-bootstrap@npm:2.10.4"
+"react-bootstrap@npm:^2.10.5":
+  version: 2.10.5
+  resolution: "react-bootstrap@npm:2.10.5"
   dependencies:
     "@babel/runtime": "npm:^7.24.7"
     "@restart/hooks": "npm:^0.4.9"
@@ -6238,7 +6238,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/83e62ee90aee99b81ec0d3c002bd5b757f1749c536e55f3ae801e3748d0df854c224e6a6b38d93a6044360531d92ace6acd1dee72503180b29775d2e5fb0d6c9
+  checksum: 10c0/7bc56941674adf49416b74a4ea0a34d787792f67e2d4b32a40f497a80dda86fcac4b7c1627796f5b54626de5eb7c8bbfca192dd885e638e78c54d1431d6fe97c
   languageName: node
   linkType: hard
 
@@ -6254,13 +6254,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-intl@npm:^6.6.8":
-  version: 6.6.8
-  resolution: "react-intl@npm:6.6.8"
+"react-intl@npm:^6.7.1":
+  version: 6.7.1
+  resolution: "react-intl@npm:6.7.1"
   dependencies:
     "@formatjs/ecma402-abstract": "npm:2.0.0"
     "@formatjs/icu-messageformat-parser": "npm:2.7.8"
-    "@formatjs/intl": "npm:2.10.4"
+    "@formatjs/intl": "npm:2.10.6"
     "@formatjs/intl-displaynames": "npm:6.6.8"
     "@formatjs/intl-listformat": "npm:7.5.7"
     "@types/hoist-non-react-statics": "npm:^3.3.1"
@@ -6274,7 +6274,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/7673507eb73ad4edd1593da7173cec68f316cf77037e0959900babd32d5984a39ba7fa10aaa0a23bcddb7b98daf7dd007cb73ddfc39127ede87c18ec780a519c
+  checksum: 10c0/866a0add426a0adf620a26c874f32793b9cdcc62048ef888e677bd623b39376e65514e8b6feb802196e6825482857d20c8bf70b8a5b6fe797706a08c97e6508e
   languageName: node
   linkType: hard
 
