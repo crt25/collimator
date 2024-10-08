@@ -45,11 +45,11 @@ jobs:
                 run: yarn install
 
             -   name: Install frontend dependencies
-                working-directory: ./frontend/main
+                working-directory: ./frontend
                 run: yarn install
 
             -   name: Install scratch app dependencies
-                working-directory: ./frontend/app-scratch
+                working-directory: ./apps/scratch
                 run: yarn install
 
             -   name: Lint backend
@@ -57,11 +57,11 @@ jobs:
                 run: yarn lint
 
             -   name: Lint frontend
-                working-directory: ./frontend/main
+                working-directory: ./frontend
                 run: yarn lint
 
             -   name: Lint scratch app
-                working-directory: ./frontend/app-scratch
+                working-directory: ./apps/scratch
                 run: yarn lint
 
             -   name: Build backend
@@ -69,15 +69,15 @@ jobs:
                 run: yarn build
 
             -   name: Build frontend
-                working-directory: ./frontend/main
+                working-directory: ./frontend
                 run: yarn build
 
             -   name: Prepare scratch app build
-                working-directory: ./frontend/app-scratch
+                working-directory: ./apps/scratch
                 run: yarn prepublish
 
             -   name: Build scratch app
-                working-directory: ./frontend/app-scratch
+                working-directory: ./apps/scratch
                 run: yarn build
 
             -   name: Prepare test database
@@ -95,12 +95,12 @@ jobs:
                 continue-on-error: true
 
             -   name: Test frontend
-                working-directory: ./frontend/main
+                working-directory: ./frontend
                 run: yarn test:cov
                 continue-on-error: true
 
             -   name: Test scratch app
-                working-directory: ./frontend/app-scratch
+                working-directory: ./apps/scratch
                 run: yarn test:cov
                 continue-on-error: true
 

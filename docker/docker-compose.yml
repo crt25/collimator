@@ -51,7 +51,7 @@ services:
 
   frontend:
     build:
-      context: ../frontend/main/
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: frontend
     environment:

@@ -9,9 +9,11 @@ nginx.Dockerfile
 
 documentation
 backend
-frontend/main
+frontend
 
-frontend/app-scratch/Dockerfile
-frontend/app-scratch/.dockerignore
-frontend/app-scratch/node_modules
-frontend/app-scratch/build
+apps/scratch/Dockerfile
+apps/scratch/.dockerignore
+apps/scratch/node_modules
+apps/scratch/build
+apps/scratch/.env
+apps/scratch/.env.*

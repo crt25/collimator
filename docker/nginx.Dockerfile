@@ -3,7 +3,7 @@
 # Stage 1 - Build the scratch app
 FROM node:22-bookworm-slim AS scratch-builder
 WORKDIR /app
-COPY ./frontend/app-scratch .
+COPY ./apps/scratch .
 RUN corepack enable
 RUN yarn install
 RUN yarn build

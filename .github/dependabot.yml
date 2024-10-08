@@ -34,7 +34,7 @@ updates:
           versions: ["9.x"]
 
   - package-ecosystem: "npm"
-    directory: "/frontend/main"
+    directory: "/frontend"
     schedule:
       interval: "weekly"
     groups:
@@ -50,7 +50,7 @@ updates:
           versions: ["9.x"]
 
   - package-ecosystem: "npm"
-    directory: "/frontend/app-scratch"
+    directory: "/apps/scratch"
     schedule:
       interval: "weekly"
     groups:

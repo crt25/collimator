@@ -6,3 +6,6 @@ README.md
 .next
 .swc
 .yarn
+
+.env
+.env.*
