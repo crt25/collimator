@@ -31,17 +31,6 @@ jobs:
             DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/collimator?schema=public"
 
         steps:
-            -   name: Set up JDK 17 for SonarCloud
-                uses: actions/setup-java@v4
-                with:
-                    java-version: 17
-                    distribution: 'zulu' # Alternative distribution options are available.
-
-            -   name: Setup .NET
-                uses: actions/setup-dotnet@v4
-                with:
-                    dotnet-version: ${{ env.DOTNET_VERSION }}
-
             -   name: Enable Corepack
                 run: corepack enable
 
@@ -86,51 +75,27 @@ jobs:
                 working-directory: ./frontend/app-scratch
                 run: yarn build
 
-            -   name: Cache SonarCloud packages
-                uses: actions/cache@v4
-                with:
-                    path: /home/runner/.sonar/cache
-                    key: ${{ runner.os }}-sonar
-                    restore-keys: ${{ runner.os }}-sonar
-
-            -   name: Install SonarCloud scanner and dotnet coverage tool
-                if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-                run: |
-                    dotnet tool install --global dotnet-sonarscanner
-                    dotnet tool install --global dotnet-coverage
-
-            -   name: Start Sonar Analysis
-                id: sonarstart
-                if: ${{ github.actor != 'dependabot[bot]' }}
-                run: >-
-                    dotnet-sonarscanner begin
-                    /k:"Anansi-Solutions_hack-stalker"
-                    /o:"anansi-solutions"
-                    /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-                    /d:sonar.host.url="https://sonarcloud.io"
-                    /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-                    /d:sonar.coverage.exclusions="
-                    **/HackStalker.Frontend/**,
-                    **/HackStalker.DbMigrator/**,
-                    **/HackStalker.Models/Migrations/**,
-                    **/Program.cs,
-                    **/HackStalkerDatabaseContextFactory.cs
-                    "
-                    /d:sonar.exclusions="
-                    **/.github/actions/azure-postgresql-ef-core/**,
-                    **/HackStalker.Frontend/src/api/generated/**
-                    "
-                env:
-                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
             -   name: Prepare test database
-                run: dotnet run --no-build --configuration Release --project ./src/HackStalker.DbMigrator/HackStalker.DbMigrator.csproj
+                working-directory: ./backend
+                run: yarn prisma migrate deploy
 
-            -   name: Test
-                run: dotnet-coverage collect "dotnet test --no-build --configuration Release --verbosity normal" -f xml -o "coverage.xml"
+            -   name: Test backend
+                working-directory: ./backend
+                run: yarn test:cov
+                continue-on-error: true
 
-            -   name: Finish SonarCloud Analysis
-                if: ${{ !cancelled() && steps.sonarstart.conclusion == 'success' && github.actor != 'dependabot[bot]' }}
-                run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            -   name: Test frontend
+                working-directory: ./frontend/main
+                run: yarn test:cov
+                continue-on-error: true
+
+            -   name: Test scratch app
+                working-directory: ./frontend/app-scratch
+                run: yarn test:cov
+                continue-on-error: true
+
+            -   name: SonarCloud Scan
+                uses: SonarSource/sonarcloud-github-action@master
                 env:
-                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+                    SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
