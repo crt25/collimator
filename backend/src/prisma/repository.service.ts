@@ -8,7 +8,10 @@ interface Repository<
   CreateInput,
   UpdateInput,
 > {
-  findUnique(parameters: { where: WhereUniqueInput }): Promise<T | null>;
+  findUnique(parameters: {
+    where: WhereUniqueInput;
+    include?: any; // TODO: fix this
+  }): Promise<T | null>;
 
   findMany(parameters: {
     skip?: number;
@@ -50,9 +53,16 @@ export abstract class RepositoryService<
     >,
   ) {}
 
-  async findUnique(postWhereUniqueInput: WhereUniqueInput): Promise<T | null> {
+  async findUnique({
+    where,
+    include,
+  }: {
+    where: WhereUniqueInput;
+    include?: any; // TODO: fix this
+  }): Promise<T | null> {
     return this.repository.findUnique({
-      where: postWhereUniqueInput,
+      where,
+      include,
     });
   }
 
@@ -62,12 +72,14 @@ export abstract class RepositoryService<
     cursor,
     where,
     orderBy,
+    include,
   }: {
     skip?: number;
     take?: number;
     cursor?: WhereUniqueInput;
     where?: WhereInput;
     orderBy?: OrderByWithRelationInput;
+    include?: any; // TODO: fix this
   }): Promise<T[]> {
     return this.repository.findMany({
       skip,
