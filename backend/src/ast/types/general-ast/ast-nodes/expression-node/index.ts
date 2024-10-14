@@ -1,5 +1,4 @@
-import { AssignmentNode } from "./assignment-node";
-import { DeclarationNode } from "./declaration-node";
+import { VariableAssignmentNode } from "../code-node/assignment-node";
 import { FunctionCallNode } from "./function-call-node";
 import { LiteralNode } from "./literal-node";
 import { OperatorNode } from "./operator-node";
@@ -9,15 +8,13 @@ export * from "./expression-node-type";
 
 export type ExpressionNode =
   | LiteralNode
-  | DeclarationNode
   | FunctionCallNode
   | VariableNode
-  | AssignmentNode
+  | VariableAssignmentNode
   | OperatorNode;
 
 export {
-  AssignmentNode,
-  DeclarationNode,
+  VariableAssignmentNode as AssignmentNode,
   FunctionCallNode,
   LiteralNode,
   OperatorNode,

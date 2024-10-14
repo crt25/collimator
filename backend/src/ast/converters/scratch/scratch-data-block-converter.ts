@@ -39,7 +39,7 @@ import {
   createFunctionCallBlock,
   createFunctionCallExpressionBlock,
 } from "./helpers";
-import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
 type DataCodeTreeNode = DataCodeBlock & TreeNode;
 type DataExpressionTreeNode = DataExpressionBlock & TreeNode;

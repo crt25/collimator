@@ -1,7 +1,7 @@
 import { AstNodeBase } from "../ast-node-base";
 import { AstNodeType } from "../ast-node-type";
 import { CodeSequenceNode } from "./code-node/code-sequence-node";
-import { ExpressionNode } from "./code-node/expression-node";
+import { ExpressionNode } from "./expression-node";
 
 /**
  * The condition when the event reaction is to be executed.

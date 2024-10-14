@@ -4,7 +4,7 @@ import {
   ExpressionNode,
   ExpressionNodeType,
   LiteralNode,
-} from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { Block } from "src/ast/types/input/scratch/generated/sb3";
 import {
   BlockInputValue,
@@ -70,8 +70,7 @@ import {
 
 export const createLiteralNode = (type: string, value: string): LiteralNode => {
   return {
-    nodeType: AstNodeType.code,
-    codeType: CodeNodeType.expression,
+    nodeType: AstNodeType.expression,
     expressionType: ExpressionNodeType.literal,
     type,
     value,
@@ -122,8 +121,7 @@ export const createFunctionCallBlock = <TKey extends string>(
   functionName?: string,
 ): CodeNode => ({
   nodeType: AstNodeType.code,
-  codeType: CodeNodeType.expression,
-  expressionType: ExpressionNodeType.functionCall,
+  codeType: CodeNodeType.functionCall,
   name: functionName ?? block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
 });
@@ -136,8 +134,7 @@ export const createFunctionCallExpressionBlock = <TKey extends string>(block: {
   };
   __children: NonHatBlockTree[];
 }): ExpressionNode => ({
-  nodeType: AstNodeType.code,
-  codeType: CodeNodeType.expression,
+  nodeType: AstNodeType.expression,
   expressionType: ExpressionNodeType.functionCall,
   name: block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
@@ -146,8 +143,7 @@ export const createFunctionCallExpressionBlock = <TKey extends string>(block: {
 export const createVariableExpressionBlock = (
   variableName: string,
 ): ExpressionNode => ({
-  nodeType: AstNodeType.code,
-  codeType: CodeNodeType.expression,
+  nodeType: AstNodeType.expression,
   expressionType: ExpressionNodeType.variable,
   name: variableName,
 });
@@ -160,8 +156,7 @@ export const createOperatorExpressionBlock = <TKey extends string>(block: {
   };
   __children: NonHatBlockTree[];
 }): ExpressionNode => ({
-  nodeType: AstNodeType.code,
-  codeType: CodeNodeType.expression,
+  nodeType: AstNodeType.expression,
   expressionType: ExpressionNodeType.operator,
   operator: block.opcode,
   operands: createArgumentsFromInputsAndFields(block),

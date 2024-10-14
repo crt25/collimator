@@ -11,7 +11,7 @@ import {
 import {
   ExpressionNode,
   ExpressionNodeType,
-} from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
 import {
   DeleteThisCloneBlock,
   isDeleteThisCloneBlock,
@@ -88,8 +88,7 @@ export const convertControlBlockTreeToCode = (
           nodeType: AstNodeType.code,
           codeType: CodeNodeType.loop,
           condition: {
-            nodeType: AstNodeType.code,
-            codeType: CodeNodeType.expression,
+            nodeType: AstNodeType.expression,
             expressionType: ExpressionNodeType.literal,
             type: "boolean",
             value: "true",
@@ -174,8 +173,7 @@ export const convertControlBlockTreeToCode = (
           nodeType: AstNodeType.code,
           codeType: CodeNodeType.loop,
           condition: {
-            nodeType: AstNodeType.code,
-            codeType: CodeNodeType.expression,
+            nodeType: AstNodeType.expression,
             expressionType: ExpressionNodeType.operator,
             operator: "operator_not",
             operands: [
@@ -205,8 +203,7 @@ export const convertControlBlockTreeToCode = (
         nodeType: AstNodeType.code,
         codeType: CodeNodeType.loop,
         condition: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.expression,
+          nodeType: AstNodeType.expression,
           expressionType: ExpressionNodeType.functionCall,
           name: "loop_count_smaller_than",
           arguments: [convertInputsToExpression(block, "TIMES")],

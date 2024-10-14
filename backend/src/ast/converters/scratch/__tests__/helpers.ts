@@ -7,7 +7,7 @@ import {
 import {
   ExpressionNode,
   ExpressionNodeType,
-} from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
 import ScratchInput from "src/ast/types/input/scratch";
 import { Block, Target } from "src/ast/types/input/scratch/generated/sb3";
 
@@ -147,15 +147,13 @@ export const createScratchCodeOutput = (codeNodes: CodeNode[]): GeneralAst => [
           event: "event_whengreaterthan",
           parameters: [
             {
-              nodeType: AstNodeType.code,
-              codeType: CodeNodeType.expression,
+              nodeType: AstNodeType.expression,
               expressionType: ExpressionNodeType.literal,
               type: "number",
               value: "10",
             },
             {
-              nodeType: AstNodeType.code,
-              codeType: CodeNodeType.expression,
+              nodeType: AstNodeType.expression,
               expressionType: ExpressionNodeType.literal,
               type: "string",
               value: "LOUDNESS",
@@ -238,15 +236,13 @@ export const createScratchExpressionOutput = (
           event: "event_whengreaterthan",
           parameters: [
             {
-              nodeType: AstNodeType.code,
-              codeType: CodeNodeType.expression,
+              nodeType: AstNodeType.expression,
               expressionType: ExpressionNodeType.literal,
               type: "number",
               value: "10",
             },
             {
-              nodeType: AstNodeType.code,
-              codeType: CodeNodeType.expression,
+              nodeType: AstNodeType.expression,
               expressionType: ExpressionNodeType.literal,
               type: "string",
               value: "LOUDNESS",
@@ -259,8 +255,7 @@ export const createScratchExpressionOutput = (
           statements: [
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.expression,
-              expressionType: ExpressionNodeType.functionCall,
+              codeType: CodeNodeType.functionCall,
               name: "motion_movesteps",
               arguments: [expressionNode],
             },

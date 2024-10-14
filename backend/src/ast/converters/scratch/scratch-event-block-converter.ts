@@ -10,7 +10,7 @@ import {
   isBroadcastBlock,
 } from "src/ast/types/input/scratch/blocks/event";
 import { createFunctionCallBlock, createLiteralNode } from "./helpers";
-import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import {
   BroadcastMenuBlock,
   isBroadcastMenuBlock,

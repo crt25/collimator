@@ -39,7 +39,7 @@ import {
   SubtractBlock,
 } from "src/ast/types/input/scratch/blocks/operator";
 import { match, P } from "ts-pattern";
-import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { createOperatorExpressionBlock } from "./helpers";
 
 type OperatorExpressionTreeNode = OperatorExpressionBlock & TreeNode;

@@ -1,4 +1,4 @@
-import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { ExpressionBlockTree, NonHatBlockTree } from "./types";
 import { match, P } from "ts-pattern";
 import {

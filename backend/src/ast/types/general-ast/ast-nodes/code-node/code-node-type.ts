@@ -1,7 +1,10 @@
 export enum CodeNodeType {
   sequence = "sequence",
-  expression = "expression",
+  statement = "statement",
   condition = "condition",
   loop = "loop",
   functionDeclaration = "functionDeclaration",
+  functionCall = "functionCall",
+  variableDeclaration = "variableDeclaration",
+  assignment = "assignment",
 }
