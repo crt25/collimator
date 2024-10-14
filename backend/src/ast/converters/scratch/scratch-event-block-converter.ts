@@ -48,6 +48,6 @@ export const convertEventBlockTreeToExpression = (
     .with(
       P.when(isBroadcastMenuBlock),
       (block: BroadcastMenuBlock & EventExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.BROADCAST_OPTION[0] || ""),
+        createLiteralNode("string", block.fields.BROADCAST_OPTION[0] ?? ""),
     )
     .exhaustive();

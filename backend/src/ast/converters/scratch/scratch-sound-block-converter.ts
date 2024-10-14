@@ -98,6 +98,6 @@ export const convertSoundBlockTreeToExpression = (
     .with(
       P.when(isSoundsMenuBlock),
       (block: SoundsMenuBlock & SoundExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.SOUND_MENU[0] || ""),
+        createLiteralNode("string", block.fields.SOUND_MENU[0] ?? ""),
     )
     .exhaustive();

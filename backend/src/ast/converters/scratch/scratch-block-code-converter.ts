@@ -23,10 +23,6 @@ import {
   convertMotionBlockTreeToCode,
   isMotionCodeBlock,
 } from "./scratch-motion-block-converter";
-import {
-  convertOperatorBlockTreeToCode,
-  isOperatorCodeBlock,
-} from "./scratch-operator-block-converter";
 import { ProcedureCodeBlock } from "src/ast/types/input/scratch/blocks/procedure";
 import {
   isProcedureCodeBlock,
@@ -45,7 +41,6 @@ import {
 import { CodeBlockTree, NonHatBlockTree } from "./types";
 import { CodeNode } from "src/ast/types/general-ast";
 import { match, P } from "ts-pattern";
-import { OperatorCodeBlock } from "src/ast/types/input/scratch/blocks/operator";
 
 const convertSingleBlockTreeToCode = (codeBlock: CodeBlockTree): CodeNode[] =>
   match(codeBlock)
@@ -68,11 +63,6 @@ const convertSingleBlockTreeToCode = (codeBlock: CodeBlockTree): CodeNode[] =>
       P.when(isMotionCodeBlock),
       (block: MotionCodeBlock & NonHatBlockTree) =>
         convertMotionBlockTreeToCode(block),
-    )
-    .with(
-      P.when(isOperatorCodeBlock),
-      (block: OperatorCodeBlock & NonHatBlockTree) =>
-        convertOperatorBlockTreeToCode(block),
     )
     .with(
       P.when(isProcedureCodeBlock),

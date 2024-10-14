@@ -159,21 +159,21 @@ export const convertSensingBlockTreeToExpression = (
     .with(
       P.when(isTouchingObjectMenuBlock),
       (block: TouchingObjectMenuBlock & SensingExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.TOUCHINGOBJECTMENU[0] || ""),
+        createLiteralNode("string", block.fields.TOUCHINGOBJECTMENU[0] ?? ""),
     )
     .with(
       P.when(isDistanceToMenuBlock),
       (block: DistanceToMenuBlock & SensingExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.DISTANCETOMENU[0] || ""),
+        createLiteralNode("string", block.fields.DISTANCETOMENU[0] ?? ""),
     )
     .with(
       P.when(isKeyOptionsBlock),
       (block: KeyOptionsBlock & SensingExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.KEY_OPTION[0] || ""),
+        createLiteralNode("string", block.fields.KEY_OPTION[0] ?? ""),
     )
     .with(
       P.when(isOfObjectMenuBlock),
       (block: OfObjectMenuBlock & SensingExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.OBJECT[0] || ""),
+        createLiteralNode("string", block.fields.OBJECT[0] ?? ""),
     )
     .exhaustive();

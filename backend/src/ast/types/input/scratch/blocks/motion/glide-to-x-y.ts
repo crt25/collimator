@@ -4,15 +4,14 @@ import { BlockReferenceInput } from "../block-reference-input";
 
 const opcode = "motion_glidesecstoxy";
 
+type NumberInput = NumPrimitive | VariablePrimitive | BlockReferenceInput;
+
 export interface GlideToXYBlock extends Block {
   opcode: typeof opcode;
   inputs: {
-    SECS: [
-      BlockInputType,
-      NumPrimitive | VariablePrimitive | BlockReferenceInput,
-    ];
-    X: [BlockInputType, NumPrimitive | VariablePrimitive | BlockReferenceInput];
-    Y: [BlockInputType, NumPrimitive | VariablePrimitive | BlockReferenceInput];
+    SECS: [BlockInputType, NumberInput];
+    X: [BlockInputType, NumberInput];
+    Y: [BlockInputType, NumberInput];
   };
 }
 

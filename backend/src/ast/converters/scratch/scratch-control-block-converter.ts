@@ -243,6 +243,6 @@ export const convertControlBlockTreeToExpression = (
     .with(
       P.when(isCreateCloneOfMenuBlock),
       (block: CreateCloneOfMenuBlock & ControlExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.CLONE_OPTION[0] || ""),
+        createLiteralNode("string", block.fields.CLONE_OPTION[0] ?? ""),
     )
     .exhaustive();

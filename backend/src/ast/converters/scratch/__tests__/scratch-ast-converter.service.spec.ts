@@ -6,7 +6,6 @@ import {
   createScratchCodeOutput,
   createScratchExpressionInput,
   createScratchExpressionOutput,
-  createScratchHatInput,
   createScratchHatOutput,
 } from "./helpers";
 import { ActorNode, CodeNodeType } from "src/ast/types/general-ast/ast-nodes";
@@ -18,7 +17,7 @@ describe("Scratch AST converter", () => {
   describe("Hat Blocks", () => {
     it("can convert 'event_whenflagclicked' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenflagclicked",
             next: null,
@@ -49,7 +48,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whenkeypressed' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenkeypressed",
             next: null,
@@ -90,7 +89,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whenthisspriteclicked' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenthisspriteclicked",
             next: null,
@@ -121,7 +120,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whenstageclicked' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenstageclicked",
             next: null,
@@ -152,7 +151,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whenbackdropswitchesto' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenbackdropswitchesto",
             next: null,
@@ -193,7 +192,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whengreaterthan' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whengreaterthan",
             next: null,
@@ -239,7 +238,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'event_whenbroadcastreceived' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "event_whenbroadcastreceived",
             next: null,
@@ -280,7 +279,7 @@ describe("Scratch AST converter", () => {
 
     it("can convert 'control_start_as_clone' blocks to general AST nodes", () => {
       const ast = converter.convertAst(
-        createScratchHatInput({
+        createScratchBlockInput({
           __start__: {
             opcode: "control_start_as_clone",
             next: null,

@@ -147,16 +147,16 @@ export const convertMotionBlockTreeToExpression = (
     .with(
       P.when(isGoToMenuBlock),
       (block: GoToMenuBlock & MotionExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.TO[0] || ""),
+        createLiteralNode("string", block.fields.TO[0] ?? ""),
     )
     .with(
       P.when(isGlideToMenuBlock),
       (block: GlideToMenuBlock & MotionExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.TO[0] || ""),
+        createLiteralNode("string", block.fields.TO[0] ?? ""),
     )
     .with(
       P.when(isPointTowardsMenuBlock),
       (block: PointTowardsMenuBlock & MotionExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.TOWARDS[0] || ""),
+        createLiteralNode("string", block.fields.TOWARDS[0] ?? ""),
     )
     .exhaustive();

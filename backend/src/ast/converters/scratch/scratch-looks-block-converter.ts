@@ -49,8 +49,8 @@ import {
   SwitchCostumeToBlock,
   ThinkBlock,
   ThinkForSecsBlock,
+  ChangeEffectByBlock,
 } from "src/ast/types/input/scratch/blocks/looks";
-import { ChangeEffectByBlock } from "src/ast/types/input/scratch/blocks/looks";
 import {
   createFunctionCallBlock,
   createFunctionCallExpressionBlock,
@@ -160,11 +160,11 @@ export const convertLooksBlockTreeToExpression = (
     .with(
       P.when(isCostumeBlock),
       (block: CostumeBlock & LooksExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.COSTUME[0] || ""),
+        createLiteralNode("string", block.fields.COSTUME[0] ?? ""),
     )
     .with(
       P.when(isBackdropsBlock),
       (block: BackdropsBlock & LooksExpressionTreeNode) =>
-        createLiteralNode("string", block.fields.BACKDROP[0] || ""),
+        createLiteralNode("string", block.fields.BACKDROP[0] ?? ""),
     )
     .exhaustive();

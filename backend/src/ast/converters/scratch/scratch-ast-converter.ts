@@ -15,8 +15,6 @@ import {
   BlockTree,
   BlockTreeWithEventHatRoot,
   BlockTreeWithProcedureDefinitionRoot,
-  SpriteTarget,
-  StageTarget,
 } from "./types";
 import {
   getEventParameters,
@@ -27,15 +25,7 @@ import {
 import { convertBlockTreeToCode } from "./scratch-block-code-converter";
 import { convertProcedureDefinitionTree } from "./scratch-procedure-block-converter";
 
-export const convertStageTarget = (stageTarget: StageTarget): ActorNode => {
-  return convertTarget(stageTarget);
-};
-
-export const convertSpriteTarget = (spriteTarget: SpriteTarget): ActorNode => {
-  return convertTarget(spriteTarget);
-};
-
-const convertTarget = (target: Target): ActorNode => {
+export const convertTarget = (target: Target): ActorNode => {
   const blockById = target.blocks;
   // scratch blocks are flat but we want to represent them as a tree
   // so first build a tree structure
@@ -55,11 +45,8 @@ const convertTarget = (target: Target): ActorNode => {
 
   // however, there may be code blocks lying around where the root is not an event block or a procedure definition
   // we want to ignore these
-  const {
-    eventHatRoots,
-    procedureDefinitionRoots,
-    otherRoots: _otherRoots,
-  } = partitionRootBlocks(treeRoots);
+  const { eventHatRoots, procedureDefinitionRoots } =
+    partitionRootBlocks(treeRoots);
 
   return {
     nodeType: AstNodeType.actor,
@@ -180,11 +167,9 @@ const partitionRootBlocks = (
 ): {
   eventHatRoots: BlockTreeWithEventHatRoot[];
   procedureDefinitionRoots: BlockTreeWithProcedureDefinitionRoot[];
-  otherRoots: BlockTree[];
 } => {
   const eventRoots: BlockTreeWithEventHatRoot[] = [];
   const procedureDefinitionRoots: BlockTreeWithProcedureDefinitionRoot[] = [];
-  const otherRoots: BlockTree[] = [];
 
   for (const block of blocks) {
     if (isHatBlock(block) && !isDefinitionBlock(block)) {
@@ -192,11 +177,11 @@ const partitionRootBlocks = (
     } else if (isDefinitionBlock(block)) {
       procedureDefinitionRoots.push(block);
     } else {
-      otherRoots.push(block);
+      throw new Error("Unexpected top-level block type");
     }
   }
 
-  return { eventHatRoots: eventRoots, procedureDefinitionRoots, otherRoots };
+  return { eventHatRoots: eventRoots, procedureDefinitionRoots };
 };
 
 const convertEventHatTree = (

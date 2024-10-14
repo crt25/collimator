@@ -3,10 +3,7 @@ import AstConverterService from "../converter.service";
 import ScratchInput from "src/ast/types/input/scratch";
 import { GeneralAst } from "src/ast/types/general-ast";
 import { SpriteTarget, StageTarget } from "./types";
-import {
-  convertSpriteTarget,
-  convertStageTarget,
-} from "./scratch-ast-converter";
+import { convertTarget } from "./scratch-ast-converter";
 
 @Injectable()
 export class ScratchAstConverterService extends AstConverterService<ScratchInput> {
@@ -21,8 +18,8 @@ export class ScratchAstConverterService extends AstConverterService<ScratchInput
     ];
 
     return [
-      convertStageTarget(stageTarget),
-      ...spriteTargets.map((spriteTarget) => convertSpriteTarget(spriteTarget)),
+      convertTarget(stageTarget),
+      ...spriteTargets.map((spriteTarget) => convertTarget(spriteTarget)),
     ];
   }
 }

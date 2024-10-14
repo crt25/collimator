@@ -1,4 +1,3 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
 import { NonHatBlock, TreeNode } from "./types";
 import {
   AddBlock,
@@ -33,7 +32,6 @@ import {
   ModBlock,
   MultiplyBlock,
   NotBlock,
-  OperatorCodeBlock,
   OperatorExpressionBlock,
   OrBlock,
   RandomBlock,
@@ -44,29 +42,7 @@ import { match, P } from "ts-pattern";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
 import { createOperatorExpressionBlock } from "./helpers";
 
-type OperatorCodeTreeNode = OperatorCodeBlock & TreeNode;
 type OperatorExpressionTreeNode = OperatorExpressionBlock & TreeNode;
-
-export const isOperatorCodeBlock = (
-  block: NonHatBlock,
-): block is OperatorCodeTreeNode =>
-  isAddBlock(block) ||
-  isAndBlock(block) ||
-  isContainsBlock(block) ||
-  isDivideBlock(block) ||
-  isEqualsBlock(block) ||
-  isGtBlock(block) ||
-  IsJoinBlock(block) ||
-  isLengthOfBlock(block) ||
-  isLetterOfBlock(block) ||
-  isLtBlock(block) ||
-  isModBlock(block) ||
-  isMultiplyBlock(block) ||
-  isNotBlock(block) ||
-  isOrBlock(block) ||
-  isRandomBlock(block) ||
-  isRoundBlock(block) ||
-  isSubtractBlock(block);
 
 export const isOperatorExpressionBlock = (
   block: NonHatBlock,
@@ -89,14 +65,6 @@ export const isOperatorExpressionBlock = (
   isRoundBlock(block) ||
   isSubtractBlock(block) ||
   isMathOpBlock(block);
-
-export const convertOperatorBlockTreeToCode = (
-  _operatorBlock: OperatorCodeTreeNode,
-): CodeNode[] => {
-  throw new Error(
-    "Operator blocks cannot be converted to code, only to expressions",
-  );
-};
 
 export const convertOperatorBlockTreeToExpression = (
   operatorBlock: OperatorExpressionTreeNode,

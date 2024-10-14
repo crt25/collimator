@@ -11,7 +11,7 @@ import {
 import ScratchInput from "src/ast/types/input/scratch";
 import { Block, Target } from "src/ast/types/input/scratch/generated/sb3";
 
-export const createScratchHatInput = (
+export const createScratchBlockInput = (
   blocks: Target["blocks"],
 ): ScratchInput => ({
   targets: [
@@ -62,48 +62,6 @@ export const createScratchHatOutput = (
     functionDeclarations: [],
   } as ActorNode,
 ];
-
-export const createScratchBlockInput = (
-  blocks: Target["blocks"],
-): ScratchInput => ({
-  targets: [
-    {
-      isStage: true,
-      name: "Stage",
-      variables: {},
-      lists: {},
-      broadcasts: {},
-      comments: {},
-      currentCostume: 0,
-      costumes: [
-        {
-          name: "backdrop1",
-          dataFormat: "svg",
-          assetId: "cd21514d0531fdffb22204e0ec5ed84a",
-          md5ext: "cd21514d0531fdffb22204e0ec5ed84a.svg",
-          rotationCenterX: 240,
-          rotationCenterY: 180,
-        },
-      ],
-      sounds: [],
-      volume: 100,
-      layerOrder: 0,
-      tempo: 60,
-      videoTransparency: 50,
-      videoState: "on",
-      textToSpeechLanguage: null,
-      blocks: blocks,
-    },
-  ],
-  monitors: [],
-  extensions: [],
-  meta: {
-    semver: "3.0.0",
-    vm: "4.5.471",
-    agent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0",
-  },
-});
 
 export const createScratchCodeInput = (
   blocks: { [P in keyof Block as Exclude<P, "next" | "parent">]: Block[P] }[],

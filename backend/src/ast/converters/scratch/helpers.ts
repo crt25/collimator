@@ -54,10 +54,7 @@ import {
   isMotionCodeBlock,
   isMotionExpressionBlock,
 } from "./scratch-motion-block-converter";
-import {
-  isOperatorCodeBlock,
-  isOperatorExpressionBlock,
-} from "./scratch-operator-block-converter";
+import { isOperatorExpressionBlock } from "./scratch-operator-block-converter";
 import {
   isProcedureCodeBlock,
   isProcedureExpressionBlock,
@@ -100,11 +97,11 @@ const createArgumentsFromInputsAndFields = <TKey extends string>(
   }
 
   const inputs = inputKeys
-    .sort((a, b) => a.localeCompare(b))
+    .toSorted((a, b) => a.localeCompare(b))
     .map((inputKey) => convertInputsToExpression(block, inputKey));
 
   const fields = getParametersFromFields(block.fields)
-    .sort((a, b) => a.parameterName.localeCompare(b.parameterName))
+    .toSorted((a, b) => a.parameterName.localeCompare(b.parameterName))
     .map((field) =>
       "value" in field
         ? createLiteralNode("string", field.value)
@@ -127,7 +124,7 @@ export const createFunctionCallBlock = <TKey extends string>(
 ): CodeNode => ({
   nodeType: AstNodeType.code,
   codeType: CodeNodeType.functionCall,
-  name: functionName || block.opcode,
+  name: functionName ?? block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
 });
 
@@ -302,7 +299,6 @@ export const isCodeBlock = (
     isEventCodeBlock(block) ||
     isLooksCodeBlock(block) ||
     isMotionCodeBlock(block) ||
-    isOperatorCodeBlock(block) ||
     isProcedureCodeBlock(block) ||
     isSensingCodeBlock(block) ||
     isSoundCodeBlock(block)
