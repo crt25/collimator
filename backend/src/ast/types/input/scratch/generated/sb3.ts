@@ -5,10 +5,17 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NumPrimitive = [] | [4 | 5 | 6 | 7 | 8] | [4 | 5 | 6 | 7 | 8, string | number];
+export type NumPrimitive =
+  | []
+  | [4 | 5 | 6 | 7 | 8]
+  | [4 | 5 | 6 | 7 | 8, string | number];
 export type ColorPrimitive = [] | [9] | [9, string];
 export type TextPrimitive = [] | [10] | [10, string | number];
-export type BroadcastPrimitive = [] | [11] | [11, string] | [11, string, string];
+export type BroadcastPrimitive =
+  | []
+  | [11]
+  | [11, string]
+  | [11, string, string];
 /**
  * @minItems 3
  * @maxItems 5
@@ -22,7 +29,10 @@ export type ListPrimitive = [13, string, string, ...number[]];
 /**
  * @maxItems 3
  */
-export type ScalarVariable = [] | [string] | [string, (string | number) | boolean, ...true[]];
+export type ScalarVariable =
+  | []
+  | [string]
+  | [string, (string | number) | boolean, ...true[]];
 export type List = [] | [string] | [string, ((string | number) | boolean)[]];
 
 /**
@@ -95,8 +105,15 @@ export interface Block {
           1 | 2 | 3,
           ...(
             | (string | null)
-            | (NumPrimitive | ColorPrimitive | TextPrimitive | BroadcastPrimitive | VariablePrimitive | ListPrimitive)
-          )[]
+            | (
+                | NumPrimitive
+                | ColorPrimitive
+                | TextPrimitive
+                | BroadcastPrimitive
+                | VariablePrimitive
+                | ListPrimitive
+              )
+          )[],
         ];
   };
   fields?: {
