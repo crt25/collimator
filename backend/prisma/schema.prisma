@@ -1,11 +1,10 @@
-// This is your Prisma schema file,
+// This is the Prisma schema file, used to define the data model.
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
+  // not yet supported by JetBrains IDEs
+  // previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -14,7 +13,89 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id      Int      @id @default(autoincrement())
+  name    String?
+  email   String   @unique
+  Teacher Teacher?
+  Student Student?
+}
+
+model Teacher {
+  id      Int     @id @default(autoincrement())
+  userId  Int     @unique
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classes Class[]
+}
+
+model Student {
+  id          Int               @id @default(autoincrement())
+  userId      Int               @unique
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classes     ClassEnrollment[]
+  submissions Submission[]
+}
+
+model Class {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+
+  students ClassEnrollment[]
+
+  assignments ClassAssignment[]
+  submissions Submission[]
+}
+
+model ClassEnrollment {
+  classId   Int
+  class     Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@id([classId, studentId])
+}
+
+model Assignment {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+
+  submissions Submission[]
+
+  classes ClassAssignment[]
+}
+
+model ClassAssignment {
+  classId Int
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  assignmentId Int
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+
+  submissions Submission[]
+
+  @@id([classId, assignmentId])
+}
+
+model Submission {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  rawContent  String  // The submission as-is
+  scratchData String? // The Scratch file extracted from the submission
+  gAstData    String? // the G-AST generated from the Scratch JSON
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  assignmentId Int
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+
+  classId Int
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  classAssignment ClassAssignment @relation(fields: [classId, assignmentId], references: [classId, assignmentId], onDelete: Restrict)
 }
