@@ -78,35 +78,34 @@ export const createLiteralNode = (type: string, value: string): LiteralNode => {
   };
 };
 
-const createArgumentsFromInputsAndFields = <TKey extends string>(
-  block: {
-    fields?: Block["fields"];
-    inputs?: {
-      [key in TKey]?: BlockInputValue | string;
-    };
-    __children: NonHatBlockTree[];
-  },
-  inputKeys: TKey[] | null = null,
-): ExpressionNode[] => {
-  if (!inputKeys) {
-    if (block.inputs) {
-      inputKeys = Object.keys(block.inputs) as TKey[];
-    } else {
-      inputKeys = [];
-    }
+/**
+ * Creates an array of expressions based on the block's inputs and fields.
+ * @param block The block to create the arguments from.
+ */
+const createArgumentsFromInputsAndFields = <TKey extends string>(block: {
+  fields?: Block["fields"];
+  inputs?: {
+    [key in TKey]?: BlockInputValue | string;
+  };
+  __children: NonHatBlockTree[];
+}): ExpressionNode[] => {
+  // create an array of all input keys
+  let inputKeys: TKey[];
+
+  if (block.inputs) {
+    inputKeys = Object.keys(block.inputs) as TKey[];
+  } else {
+    inputKeys = [];
   }
 
   const inputs = inputKeys
+    // sort the keys alphabetically to ensure a consistent order
+    // each time this function is called on the same block
     .toSorted((a, b) => a.localeCompare(b))
+    // then map each input to the corresponding expression
     .map((inputKey) => convertInputsToExpression(block, inputKey));
 
-  const fields = getParametersFromFields(block.fields)
-    .toSorted((a, b) => a.parameterName.localeCompare(b.parameterName))
-    .map((field) =>
-      "value" in field
-        ? createLiteralNode("string", field.value)
-        : createVariableExpressionBlock(field.variableName),
-    );
+  const fields = getParametersFromFields(block.fields);
 
   return [...inputs, ...fields];
 };
@@ -123,7 +122,8 @@ export const createFunctionCallBlock = <TKey extends string>(
   functionName?: string,
 ): CodeNode => ({
   nodeType: AstNodeType.code,
-  codeType: CodeNodeType.functionCall,
+  codeType: CodeNodeType.expression,
+  expressionType: ExpressionNodeType.functionCall,
   name: functionName ?? block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
 });
@@ -198,47 +198,37 @@ export const getEventParameters = (
     .exhaustive();
 };
 
-export const getParametersFromFields = (
-  fields: Block["fields"],
-): ({ parameterName: string } & (
-  | { value: string }
-  | { variableName: string }
-))[] => {
+const getParametersFromFields = (fields: Block["fields"]): ExpressionNode[] => {
   if (!fields) {
     return [];
   }
 
-  return Object.entries(fields).map(([parameterName, value]) => {
-    if (!Array.isArray(value)) {
-      throw new Error(
-        `Unexpected field value for name '${parameterName}': '${JSON.stringify(value)}'`,
-      );
-    }
+  return (
+    Object.entries(fields)
+      // sort the fields alphabetically to ensure a consistent order
+      .toSorted((a, b) => a[0].localeCompare(b[0]))
+      .map(([parameterName, value]) => {
+        // while I could not find any documentation on this, it seems that fields are always an array
+        // consisting of two elements where the first one is the value or variable name
+        // and the second one is either null of the value is a literal or a block id if the value is a variable
+        // however for variables the variable name is enough for us and we don't need the block id
+        // therefore we only take the first element
 
-    // while I could not find any documentation on this, it seems that fields are always an array
-    // consisting of two elements where the first one is the value or variable name
-    // and the second one is either null of the value is a literal or a block id if the value is a variable
-    // however for variables the variable name is enough for us and we don't need the block id
-    // therefore we only take the first element
-
-    if (value.length !== 2) {
-      throw new Error(
-        `Unexpected number of values for name '${parameterName}': '${JSON.stringify(value)}'`,
-      );
-    }
-
-    if (value[1] == null) {
-      return {
-        parameterName,
-        value: value[0],
-      };
-    } else {
-      return {
-        parameterName,
-        variableName: value[0],
-      };
-    }
-  });
+        return match(value)
+          .returnType<ExpressionNode>()
+          .with([P.string, null], (value) =>
+            createLiteralNode("string", value[0]),
+          )
+          .with([P.string, P.string], (value) =>
+            createVariableExpressionBlock(value[0]),
+          )
+          .otherwise(() => {
+            throw new Error(
+              `Unexpected values for name '${parameterName}': '${JSON.stringify(value)}'`,
+            );
+          });
+      })
+  );
 };
 
 export const convertChildWithReferenceId = <T extends TreeNode, ReturnType>(

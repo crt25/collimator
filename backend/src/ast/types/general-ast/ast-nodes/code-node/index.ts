@@ -1,5 +1,5 @@
 import { ConditionNode } from "./condition-node";
-import { FunctionCallNode } from "./function-call-node";
+import { ExpressionNode } from "./expression-node";
 import { FunctionDeclarationNode } from "./function-declaration-node";
 import { LoopNode } from "./loop-node";
 export * from "./code-node-base";
@@ -10,8 +10,8 @@ export * from "./code-node-type";
  */
 export type CodeNode =
   | ConditionNode
-  | FunctionCallNode
   | FunctionDeclarationNode
-  | LoopNode;
+  | LoopNode
+  | ExpressionNode;
 
-export { ConditionNode, FunctionCallNode, FunctionDeclarationNode, LoopNode };
+export { ConditionNode, FunctionDeclarationNode, LoopNode, ExpressionNode };

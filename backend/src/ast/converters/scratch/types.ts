@@ -50,3 +50,12 @@ export type BlockTreeWithProcedureDefinitionRoot = DefinitionBlock & TreeNode;
 export type BlockInputs = Exclude<Block["inputs"], undefined>;
 export type BlockInputsKey = keyof BlockInputs;
 export type BlockInputValue = BlockInputs[BlockInputsKey];
+
+export enum ScratchInputType {
+  number = 4, // 4-8 stand for number, https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L133
+  color = 9, // https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L144
+  text = 10, //https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L158
+  broadcast = 11, // https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L169
+  variable = 12, // https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L181
+  list = 13, // https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L197
+}

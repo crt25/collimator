@@ -11,6 +11,11 @@ import {
 import ScratchInput from "src/ast/types/input/scratch";
 import { Block, Target } from "src/ast/types/input/scratch/generated/sb3";
 
+/**
+ * Creates a Scratch input object with the given blocks.
+ * This allows us to generate a valid Scratch AST with arbitrary blocks, to support the AST conversion tests.
+ * @param blocks The blocks to be used in the Scratch input. They are put on the blocks object of the stage.
+ */
 export const createScratchBlockInput = (
   blocks: Target["blocks"],
 ): ScratchInput => ({
@@ -53,6 +58,9 @@ export const createScratchBlockInput = (
   },
 });
 
+/**
+ * Creates the expected output of the conversion of a single hat block.
+ */
 export const createScratchHatOutput = (
   eventListenerNode: EventListenerNode,
 ): GeneralAst => [
@@ -63,13 +71,22 @@ export const createScratchHatOutput = (
   } as ActorNode,
 ];
 
+/**
+ * Creates scratch input to test the AST conversions of code blocks.
+ * @param blocks An array of blocks without next and parent keys - they are automatically set to the respective array index by this function.
+ * @param extraBlocks An additional set of blocks that are children of the code blocks. These blocks must have the parent/next keys (to the index of the respective code blocks).
+ */
 export const createScratchCodeInput = (
+  // blocks is an array of blocks without the next and parent keys - Omit seems limited in this situation
+  // see https://stackoverflow.com/a/76616671/2897827
   blocks: { [P in keyof Block as Exclude<P, "next" | "parent">]: Block[P] }[],
   extraBlocks: (Block & { id: string })[] = [],
 ): ScratchInput =>
   createScratchBlockInput({
+    // add a hat block at the beginning
     __start__: {
       opcode: "event_whengreaterthan",
+      // reference the first block passed to this function via its index
       next: "0",
       parent: null,
       inputs: { VALUE: [1, [4, "10"]] },
@@ -79,8 +96,10 @@ export const createScratchCodeInput = (
       x: 213,
       y: -34,
     },
+    // and then the actual code blocks.
     ...blocks.reduce(
       (acc, block, index) => {
+        // automatically set the parent and next keys based on the index
         const properBlock: Block = {
           ...block,
           parent: "__start__",
@@ -102,6 +121,8 @@ export const createScratchCodeInput = (
       },
       {} as Target["blocks"],
     ),
+    // finally add the extra blocks (optional children of a code block)
+    // these blocks must have an id and its parent/next keys properly set
     ...extraBlocks.reduce(
       (acc, block) => {
         acc[block.id] = block;
@@ -112,6 +133,10 @@ export const createScratchCodeInput = (
     ),
   });
 
+/**
+ * Creates the expected output of the AST conversion of a sequence of code blocks.
+ * @param codeNodes The expected code nodes in the output AST.
+ */
 export const createScratchCodeOutput = (codeNodes: CodeNode[]): GeneralAst => [
   {
     nodeType: AstNodeType.actor,
@@ -148,11 +173,17 @@ export const createScratchCodeOutput = (codeNodes: CodeNode[]): GeneralAst => [
   } as ActorNode,
 ];
 
+/**
+ * Creates scratch input to test the AST conversions of exression blocks.
+ * The expression block will be assigned the id "expressionBlock".
+ * @param blocks A non-empty array starting with an expression block, followed by optional blocks that are children of the expression block.
+ */
 export const createScratchExpressionInput = ([firstBlock, ...remainingBlocks]: [
   { [P in keyof Block as Exclude<P, "next" | "parent">]: Block[P] },
   ...(Block & { id: string })[],
 ]): ScratchInput =>
   createScratchBlockInput({
+    // add a hat block at the beginning
     __start__: {
       opcode: "event_whengreaterthan",
       next: "functionCall",
@@ -164,6 +195,7 @@ export const createScratchExpressionInput = ([firstBlock, ...remainingBlocks]: [
       x: 213,
       y: -34,
     },
+    // as well as some block accepting an expression
     functionCall: {
       opcode: "motion_movesteps",
       next: null,
@@ -173,11 +205,13 @@ export const createScratchExpressionInput = ([firstBlock, ...remainingBlocks]: [
       shadow: false,
       topLevel: false,
     },
+    // then put the expression block as a child of the function call
     expressionBlock: {
       ...firstBlock,
       next: null,
       parent: "functionCall",
     },
+    // and the rest of the blocks (optional children of the expression block)
     ...remainingBlocks.reduce(
       (acc, block) => {
         acc[block.id] = block;
@@ -188,6 +222,10 @@ export const createScratchExpressionInput = ([firstBlock, ...remainingBlocks]: [
     ),
   });
 
+/**
+ * Creates the expected output of the AST conversion of an expression block.
+ * @param codeNodes The expected expression node in the output AST.
+ */
 export const createScratchExpressionOutput = (
   expressionNode: ExpressionNode,
 ): GeneralAst => [
@@ -221,7 +259,8 @@ export const createScratchExpressionOutput = (
           statements: [
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_movesteps",
               arguments: [expressionNode],
             },

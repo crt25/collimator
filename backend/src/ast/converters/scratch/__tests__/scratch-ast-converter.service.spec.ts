@@ -333,7 +333,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "control_stop",
               arguments: [
                 {
@@ -366,7 +367,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "control_delete_this_clone",
               arguments: [],
             },
@@ -395,7 +397,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_setvariableto",
               arguments: [
                 {
@@ -436,7 +439,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_changevariableby",
               arguments: [
                 {
@@ -477,7 +481,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_showvariable",
               arguments: [
                 {
@@ -511,7 +516,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_hidevariable",
               arguments: [
                 {
@@ -543,7 +549,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_addtolist",
               arguments: [
                 {
@@ -582,7 +589,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_deleteoflist",
               arguments: [
                 {
@@ -621,7 +629,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_deletealloflist",
               arguments: [
                 {
@@ -653,7 +662,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_insertatlist",
               arguments: [
                 {
@@ -699,7 +709,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_replaceitemoflist",
               arguments: [
                 {
@@ -745,7 +756,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_showlist",
               arguments: [
                 {
@@ -777,7 +789,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "data_hidelist",
               arguments: [
                 {
@@ -813,7 +826,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "event_broadcast",
               arguments: [
                 {
@@ -847,7 +861,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "event_broadcastandwait",
               arguments: [
                 {
@@ -881,7 +896,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_sayforsecs",
               arguments: [
                 {
@@ -921,7 +937,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_say",
               arguments: [
                 {
@@ -954,7 +971,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_thinkforsecs",
               arguments: [
                 {
@@ -994,7 +1012,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_think",
               arguments: [
                 {
@@ -1042,7 +1061,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_switchcostumeto",
               arguments: [
                 {
@@ -1075,7 +1095,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_nextcostume",
               arguments: [],
             },
@@ -1117,7 +1138,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_switchbackdropto",
               arguments: [
                 {
@@ -1150,7 +1172,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_nextbackdrop",
               arguments: [],
             },
@@ -1175,7 +1198,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_changesizeby",
               arguments: [
                 {
@@ -1208,7 +1232,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_setsizeto",
               arguments: [
                 {
@@ -1241,7 +1266,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_changeeffectby",
               arguments: [
                 {
@@ -1281,7 +1307,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_seteffectto",
               arguments: [
                 {
@@ -1321,7 +1348,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_cleargraphiceffects",
               arguments: [],
             },
@@ -1346,7 +1374,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_show",
               arguments: [],
             },
@@ -1371,7 +1400,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_hide",
               arguments: [],
             },
@@ -1396,7 +1426,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_gotofrontback",
               arguments: [
                 {
@@ -1429,7 +1460,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "looks_goforwardbackwardlayers",
               arguments: [
                 {
@@ -1471,7 +1503,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_movesteps",
               arguments: [
                 {
@@ -1504,7 +1537,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_turnright",
               arguments: [
                 {
@@ -1537,7 +1571,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_turnleft",
               arguments: [
                 {
@@ -1585,7 +1620,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_goto",
               arguments: [
                 {
@@ -1618,7 +1654,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_gotoxy",
               arguments: [
                 {
@@ -1676,7 +1713,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_glideto",
               arguments: [
                 {
@@ -1720,7 +1758,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_glidesecstoxy",
               arguments: [
                 {
@@ -1767,7 +1806,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_pointindirection",
               arguments: [
                 {
@@ -1815,7 +1855,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_pointtowards",
               arguments: [
                 {
@@ -1848,7 +1889,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_changexby",
               arguments: [
                 {
@@ -1881,7 +1923,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_changeyby",
               arguments: [
                 {
@@ -1914,7 +1957,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_setx",
               arguments: [
                 {
@@ -1947,7 +1991,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_sety",
               arguments: [
                 {
@@ -1980,7 +2025,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_ifonedgebounce",
               arguments: [],
             },
@@ -2005,7 +2051,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "motion_setrotationstyle",
               arguments: [
                 {
@@ -2042,7 +2089,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sensing_askandwait",
               arguments: [
                 {
@@ -2075,7 +2123,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sensing_setdragmode",
               arguments: [
                 {
@@ -2108,7 +2157,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sensing_resettimer",
               arguments: [],
             },
@@ -2150,7 +2200,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_playuntildone",
               arguments: [
                 {
@@ -2198,7 +2249,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_play",
               arguments: [
                 {
@@ -2231,7 +2283,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_stopallsounds",
               arguments: [],
             },
@@ -2256,7 +2309,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_changeeffectby",
               arguments: [
                 {
@@ -2296,7 +2350,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_seteffectto",
               arguments: [
                 {
@@ -2336,7 +2391,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_cleareffects",
               arguments: [],
             },
@@ -2361,7 +2417,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_changevolumeby",
               arguments: [
                 {
@@ -2394,7 +2451,8 @@ describe("Scratch AST converter", () => {
           createScratchCodeOutput([
             {
               nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              codeType: CodeNodeType.expression,
+              expressionType: ExpressionNodeType.functionCall,
               name: "sound_setvolumeto",
               arguments: [
                 {
@@ -4109,7 +4167,8 @@ describe("Scratch AST converter", () => {
         createScratchCodeOutput([
           {
             nodeType: AstNodeType.code,
-            codeType: CodeNodeType.functionCall,
+            codeType: CodeNodeType.expression,
+            expressionType: ExpressionNodeType.functionCall,
             name: "motion_movesteps",
             arguments: [
               {
@@ -4183,7 +4242,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_movesteps",
                   arguments: [
                     {
@@ -4250,7 +4310,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_movesteps",
                   arguments: [
                     {
@@ -4335,7 +4396,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_movesteps",
                   arguments: [
                     {
@@ -4412,7 +4474,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_movesteps",
                   arguments: [
                     {
@@ -4506,7 +4569,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_movesteps",
                   arguments: [
                     {
@@ -4526,7 +4590,8 @@ describe("Scratch AST converter", () => {
               statements: [
                 {
                   nodeType: AstNodeType.code,
-                  codeType: CodeNodeType.functionCall,
+                  codeType: CodeNodeType.expression,
+                  expressionType: ExpressionNodeType.functionCall,
                   name: "motion_turnright",
                   arguments: [
                     {
@@ -4813,7 +4878,9 @@ describe("Scratch AST converter", () => {
                                   statements: [
                                     {
                                       nodeType: AstNodeType.code,
-                                      codeType: CodeNodeType.functionCall,
+                                      codeType: CodeNodeType.expression,
+                                      expressionType:
+                                        ExpressionNodeType.functionCall,
                                       name: "motion_movesteps",
                                       arguments: [
                                         {
@@ -4860,7 +4927,9 @@ describe("Scratch AST converter", () => {
                                         statements: [
                                           {
                                             nodeType: AstNodeType.code,
-                                            codeType: CodeNodeType.functionCall,
+                                            codeType: CodeNodeType.expression,
+                                            expressionType:
+                                              ExpressionNodeType.functionCall,
                                             name: "motion_turnright",
                                             arguments: [
                                               {
@@ -4882,7 +4951,9 @@ describe("Scratch AST converter", () => {
                                         statements: [
                                           {
                                             nodeType: AstNodeType.code,
-                                            codeType: CodeNodeType.functionCall,
+                                            codeType: CodeNodeType.expression,
+                                            expressionType:
+                                              ExpressionNodeType.functionCall,
                                             name: "motion_turnleft",
                                             arguments: [
                                               {
@@ -4934,7 +5005,9 @@ describe("Scratch AST converter", () => {
                                         statements: [
                                           {
                                             nodeType: AstNodeType.code,
-                                            codeType: CodeNodeType.functionCall,
+                                            codeType: CodeNodeType.expression,
+                                            expressionType:
+                                              ExpressionNodeType.functionCall,
                                             name: "motion_changexby",
                                             arguments: [
                                               {
@@ -4966,7 +5039,9 @@ describe("Scratch AST converter", () => {
                                                 {
                                                   nodeType: AstNodeType.code,
                                                   codeType:
-                                                    CodeNodeType.functionCall,
+                                                    CodeNodeType.expression,
+                                                  expressionType:
+                                                    ExpressionNodeType.functionCall,
                                                   name: "motion_pointtowards",
                                                   arguments: [
                                                     {
@@ -4989,7 +5064,9 @@ describe("Scratch AST converter", () => {
                                     },
                                     {
                                       nodeType: AstNodeType.code,
-                                      codeType: CodeNodeType.functionCall,
+                                      codeType: CodeNodeType.expression,
+                                      expressionType:
+                                        ExpressionNodeType.functionCall,
                                       name: "motion_sety",
                                       arguments: [
                                         {
@@ -5012,7 +5089,8 @@ describe("Scratch AST converter", () => {
                               },
                               {
                                 nodeType: AstNodeType.code,
-                                codeType: CodeNodeType.functionCall,
+                                codeType: CodeNodeType.expression,
+                                expressionType: ExpressionNodeType.functionCall,
                                 name: "motion_sety",
                                 arguments: [
                                   {
@@ -5032,7 +5110,8 @@ describe("Scratch AST converter", () => {
                   },
                   {
                     nodeType: AstNodeType.code,
-                    codeType: CodeNodeType.functionCall,
+                    codeType: CodeNodeType.expression,
+                    expressionType: ExpressionNodeType.functionCall,
                     name: "motion_ifonedgebounce",
                     arguments: [],
                   },
@@ -5373,7 +5452,8 @@ describe("Scratch AST converter", () => {
                       statements: [
                         {
                           nodeType: AstNodeType.code,
-                          codeType: CodeNodeType.functionCall,
+                          codeType: CodeNodeType.expression,
+                          expressionType: ExpressionNodeType.functionCall,
                           name: "motion_movesteps",
                           arguments: [
                             {
@@ -5557,7 +5637,8 @@ describe("Scratch AST converter", () => {
                 statements: [
                   {
                     nodeType: AstNodeType.code,
-                    codeType: CodeNodeType.functionCall,
+                    codeType: CodeNodeType.expression,
+                    expressionType: ExpressionNodeType.functionCall,
                     name: "my block %s %b",
                     arguments: [
                       {
@@ -5620,7 +5701,8 @@ describe("Scratch AST converter", () => {
                       statements: [
                         {
                           nodeType: AstNodeType.code,
-                          codeType: CodeNodeType.functionCall,
+                          codeType: CodeNodeType.expression,
+                          expressionType: ExpressionNodeType.functionCall,
                           name: "motion_movesteps",
                           arguments: [
                             {

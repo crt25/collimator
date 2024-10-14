@@ -38,7 +38,6 @@ type SoundExpressionTreeNode = SoundExpressionBlock & TreeNode;
 export const isSoundCodeBlock = (
   block: NonHatBlock,
 ): block is SoundCodeBlock & NonHatBlock =>
-  isSoundsMenuBlock(block) ||
   isChangeEffectByBlock(block) ||
   isChangeVolumeByBlock(block) ||
   isClearEffectsBlock(block) ||

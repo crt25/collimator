@@ -3,6 +3,5 @@ export enum CodeNodeType {
   expression = "expression",
   condition = "condition",
   loop = "loop",
-  functionCall = "functionCall",
   functionDeclaration = "functionDeclaration",
 }

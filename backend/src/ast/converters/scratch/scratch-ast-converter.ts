@@ -15,6 +15,7 @@ import {
   BlockTree,
   BlockTreeWithEventHatRoot,
   BlockTreeWithProcedureDefinitionRoot,
+  ScratchInputType,
 } from "./types";
 import {
   getEventParameters,
@@ -80,12 +81,12 @@ const partitionTargetBlocks = (
     }
 
     const [type] = block;
-    if (type == 12) {
+    if (type == ScratchInputType.variable) {
       variablePrimitives[id] = block;
       continue;
     }
 
-    if (type == 13) {
+    if (type == ScratchInputType.list) {
       listPrimitives[id] = block;
       continue;
     }
