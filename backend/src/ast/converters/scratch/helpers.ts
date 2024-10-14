@@ -81,6 +81,39 @@ export const createLiteralNode = (type: string, value: string): LiteralNode => {
   };
 };
 
+const createArgumentsFromInputsAndFields = <TKey extends string>(
+  block: {
+    fields?: Block["fields"];
+    inputs?: {
+      [key in TKey]?: BlockInputValue | string;
+    };
+    __children: NonHatBlockTree[];
+  },
+  inputKeys: TKey[] | null = null,
+): ExpressionNode[] => {
+  if (!inputKeys) {
+    if (block.inputs) {
+      inputKeys = Object.keys(block.inputs) as TKey[];
+    } else {
+      inputKeys = [];
+    }
+  }
+
+  const inputs = inputKeys
+    .sort((a, b) => a.localeCompare(b))
+    .map((inputKey) => convertInputsToExpression(block, inputKey));
+
+  const fields = getParametersFromFields(block.fields)
+    .sort((a, b) => a.parameterName.localeCompare(b.parameterName))
+    .map((field) =>
+      "value" in field
+        ? createLiteralNode("string", field.value)
+        : createVariableExpressionBlock(field.variableName),
+    );
+
+  return [...inputs, ...fields];
+};
+
 export const createFunctionCallBlock = <TKey extends string>(
   block: {
     opcode: string;
@@ -90,76 +123,28 @@ export const createFunctionCallBlock = <TKey extends string>(
     };
     __children: NonHatBlockTree[];
   },
-  inputKeys: TKey[] | null = null,
   functionName?: string,
-): CodeNode => {
-  if (!inputKeys) {
-    if (block.inputs) {
-      inputKeys = Object.keys(block.inputs) as TKey[];
-    } else {
-      inputKeys = [];
-    }
-  }
+): CodeNode => ({
+  nodeType: AstNodeType.code,
+  codeType: CodeNodeType.functionCall,
+  name: functionName || block.opcode,
+  arguments: createArgumentsFromInputsAndFields(block),
+});
 
-  const inputs = inputKeys
-    .sort((a, b) => a.localeCompare(b))
-    .map((inputKey) => convertInputsToExpression(block, inputKey));
-
-  const fields = getParametersFromFields(block.fields)
-    .sort((a, b) => a.parameterName.localeCompare(b.parameterName))
-    .map((field) =>
-      "value" in field
-        ? createLiteralNode("string", field.value)
-        : createVariableExpressionBlock(field.variableName),
-    );
-
-  return {
-    nodeType: AstNodeType.code,
-    codeType: CodeNodeType.functionCall,
-    name: functionName || block.opcode,
-    arguments: [...inputs, ...fields],
+export const createFunctionCallExpressionBlock = <TKey extends string>(block: {
+  opcode: string;
+  fields?: Block["fields"];
+  inputs?: {
+    [key in TKey]?: BlockInputValue | string;
   };
-};
-
-export const createFunctionCallExpressionBlock = <TKey extends string>(
-  block: {
-    opcode: string;
-    fields?: Block["fields"];
-    inputs?: {
-      [key in TKey]?: BlockInputValue | string;
-    };
-    __children: NonHatBlockTree[];
-  },
-  inputKeys: TKey[] | null = null,
-): ExpressionNode => {
-  if (!inputKeys) {
-    if (block.inputs) {
-      inputKeys = Object.keys(block.inputs) as TKey[];
-    } else {
-      inputKeys = [];
-    }
-  }
-
-  const inputs = inputKeys
-    .sort((a, b) => a.localeCompare(b))
-    .map((inputKey) => convertInputsToExpression(block, inputKey));
-
-  const fields = getParametersFromFields(block.fields)
-    .sort((a, b) => a.parameterName.localeCompare(b.parameterName))
-    .map((field) =>
-      "value" in field
-        ? createLiteralNode("string", field.value)
-        : createVariableExpressionBlock(field.variableName),
-    );
-
-  return {
-    nodeType: AstNodeType.code,
-    codeType: CodeNodeType.expression,
-    expressionType: ExpressionNodeType.functionCall,
-    name: block.opcode,
-    arguments: [...inputs, ...fields],
-  };
-};
+  __children: NonHatBlockTree[];
+}): ExpressionNode => ({
+  nodeType: AstNodeType.code,
+  codeType: CodeNodeType.expression,
+  expressionType: ExpressionNodeType.functionCall,
+  name: block.opcode,
+  arguments: createArgumentsFromInputsAndFields(block),
+});
 
 export const createVariableExpressionBlock = (
   variableName: string,
@@ -170,45 +155,20 @@ export const createVariableExpressionBlock = (
   name: variableName,
 });
 
-export const createOperatorExpressionBlock = <TKey extends string>(
-  block: {
-    opcode: string;
-    fields?: Block["fields"];
-    inputs?: {
-      [key in TKey]?: BlockInputValue | string;
-    };
-    __children: NonHatBlockTree[];
-  },
-  operandKeys: TKey[] | null = null,
-): ExpressionNode => {
-  if (!operandKeys) {
-    if (block.inputs) {
-      operandKeys = Object.keys(block.inputs) as TKey[];
-    } else {
-      operandKeys = [];
-    }
-  }
-
-  const operands = operandKeys
-    .sort((a, b) => a.localeCompare(b))
-    .map((inputKey) => convertInputsToExpression(block, inputKey));
-
-  const fields = getParametersFromFields(block.fields)
-    .sort((a, b) => a.parameterName.localeCompare(b.parameterName))
-    .map((field) =>
-      "value" in field
-        ? createLiteralNode("string", field.value)
-        : createVariableExpressionBlock(field.variableName),
-    );
-
-  return {
-    nodeType: AstNodeType.code,
-    codeType: CodeNodeType.expression,
-    expressionType: ExpressionNodeType.operator,
-    operator: block.opcode,
-    operands: [...operands, ...fields],
+export const createOperatorExpressionBlock = <TKey extends string>(block: {
+  opcode: string;
+  fields?: Block["fields"];
+  inputs?: {
+    [key in TKey]?: BlockInputValue | string;
   };
-};
+  __children: NonHatBlockTree[];
+}): ExpressionNode => ({
+  nodeType: AstNodeType.code,
+  codeType: CodeNodeType.expression,
+  expressionType: ExpressionNodeType.operator,
+  operator: block.opcode,
+  operands: createArgumentsFromInputsAndFields(block),
+});
 
 export const getEventParameters = (
   block: BlockTreeWithEventHatRoot,

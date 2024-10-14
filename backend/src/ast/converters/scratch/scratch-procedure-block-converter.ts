@@ -53,7 +53,7 @@ export const convertProcedureBlockTreeToCode = (
       },
     )
     .with(P.when(isCallBlock), (block: CallBlock & ProcedureCodeTreeNode) => [
-      createFunctionCallBlock(block, undefined, block.mutation.proccode),
+      createFunctionCallBlock(block, block.mutation.proccode),
     ])
     .exhaustive();
 
