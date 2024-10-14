@@ -38,7 +38,7 @@ export class UsersController {
   async findOne(
     @Param("id", ParseIntPipe) id: number,
   ): Promise<UserEntity | null> {
-    const user = await this.usersService.findUnique({ id });
+    const user = await this.usersService.findUnique({ where: { id } });
     return user ? new UserEntity(user) : null;
   }
 

@@ -4,11 +4,15 @@ interface Repository<
   T,
   WhereInput,
   WhereUniqueInput,
+  Include,
   OrderByWithRelationInput,
   CreateInput,
   UpdateInput,
 > {
-  findUnique(parameters: { where: WhereUniqueInput }): Promise<T | null>;
+  findUnique(parameters: {
+    where: WhereUniqueInput;
+    include?: Include;
+  }): Promise<T | null>;
 
   findMany(parameters: {
     skip?: number;
@@ -16,6 +20,7 @@ interface Repository<
     cursor?: WhereUniqueInput;
     where?: WhereInput;
     orderBy?: OrderByWithRelationInput;
+    include?: Include;
   }): Promise<T[]>;
 
   create(parameters: { data: CreateInput }): Promise<T>;
@@ -35,6 +40,7 @@ export abstract class RepositoryService<
   UpdateT extends { toInput(): UpdateInput },
   WhereInput,
   WhereUniqueInput,
+  Include,
   OrderByWithRelationInput,
   CreateInput,
   UpdateInput,
@@ -44,15 +50,23 @@ export abstract class RepositoryService<
       T,
       WhereInput,
       WhereUniqueInput,
+      Include,
       OrderByWithRelationInput,
       CreateInput,
       UpdateInput
     >,
   ) {}
 
-  async findUnique(postWhereUniqueInput: WhereUniqueInput): Promise<T | null> {
+  async findUnique({
+    where,
+    include,
+  }: {
+    where: WhereUniqueInput;
+    include?: Include;
+  }): Promise<T | null> {
     return this.repository.findUnique({
-      where: postWhereUniqueInput,
+      where,
+      include,
     });
   }
 
@@ -62,12 +76,14 @@ export abstract class RepositoryService<
     cursor,
     where,
     orderBy,
+    include,
   }: {
     skip?: number;
     take?: number;
     cursor?: WhereUniqueInput;
     where?: WhereInput;
     orderBy?: OrderByWithRelationInput;
+    include?: Include;
   }): Promise<T[]> {
     return this.repository.findMany({
       skip,
@@ -75,6 +91,7 @@ export abstract class RepositoryService<
       cursor,
       where,
       orderBy,
+      include,
     });
   }
 

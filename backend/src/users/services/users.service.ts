@@ -12,6 +12,7 @@ export class UsersService extends RepositoryService<
   UpdateUserDto,
   Prisma.UserWhereInput,
   Prisma.UserWhereUniqueInput,
+  Prisma.UserInclude,
   Prisma.UserOrderByWithRelationInput,
   Prisma.UserCreateInput,
   Prisma.UserUpdateInput
