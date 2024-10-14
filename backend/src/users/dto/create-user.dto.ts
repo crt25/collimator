@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Prisma } from "@prisma/client";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { Prisma, UserType } from "@prisma/client";
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateUserDto {
   @IsString()
@@ -13,10 +13,14 @@ export class CreateUserDto {
   @ApiProperty()
   readonly email!: string;
 
+  @IsEnum(UserType)
+  readonly type!: UserType;
+
   toInput(): Prisma.UserCreateInput {
     return {
       name: this.name,
       email: this.email,
+      type: this.type,
     };
   }
 }
