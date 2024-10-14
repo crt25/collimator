@@ -1,0 +1,112 @@
+import {
+  CodeNode,
+  CodeNodeType,
+  FunctionDeclarationNode,
+} from "src/ast/types/general-ast/ast-nodes";
+import { match, P } from "ts-pattern";
+import { NonHatBlock, NonHatBlockTree, TreeNode } from "./types";
+import {
+  ArgumentBooleanBlock,
+  ArgumentStringNumberBlock,
+  CallBlock,
+  DefinitionBlock,
+  isArgumentBooleanBlock,
+  isArgumentStringNumberBlock,
+  isCallBlock,
+  isPrototypeBlock,
+  ProcedureCodeBlock,
+  ProcedureExpressionBlock,
+  PrototypeBlock,
+} from "src/ast/types/input/scratch/blocks/procedure";
+import {
+  convertChildWithReferenceId,
+  createFunctionCallBlock,
+  createVariableExpressionBlock,
+} from "./helpers";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/code-node/expression-node";
+import { AstNodeType } from "src/ast/types/general-ast";
+import { convertBlockTreeToCode } from "./scratch-block-code-converter";
+
+type ProcedureCodeTreeNode = ProcedureCodeBlock & TreeNode;
+type ProcedureExpressionTreeNode = ProcedureExpressionBlock & TreeNode;
+
+export const isProcedureCodeBlock = (
+  block: NonHatBlock,
+): block is ProcedureCodeBlock => isCallBlock(block) || isPrototypeBlock(block);
+
+export const isProcedureExpressionBlock = (
+  block: NonHatBlock,
+): block is ProcedureExpressionTreeNode =>
+  isArgumentBooleanBlock(block) || isArgumentStringNumberBlock(block);
+
+export const convertProcedureBlockTreeToCode = (
+  procedureBlock: ProcedureCodeTreeNode,
+): CodeNode[] =>
+  match(procedureBlock)
+    .returnType<CodeNode[]>()
+    .with(
+      P.when(isPrototypeBlock),
+      (_block: PrototypeBlock & ProcedureCodeTreeNode) => {
+        throw new Error(
+          "A procedure prototype should only ever show up as a child of a top-level hat definition block",
+        );
+      },
+    )
+    .with(P.when(isCallBlock), (block: CallBlock & ProcedureCodeTreeNode) => [
+      createFunctionCallBlock(block, undefined, block.mutation.proccode),
+    ])
+    .exhaustive();
+
+export const convertProcedureBlockTreeToExpression = (
+  procedureBlock: ProcedureExpressionTreeNode,
+): ExpressionNode =>
+  match(procedureBlock)
+    .returnType<ExpressionNode>()
+    .with(
+      P.when(isArgumentBooleanBlock),
+      P.when(isArgumentStringNumberBlock),
+      (
+        block: (ArgumentBooleanBlock | ArgumentStringNumberBlock) &
+          ProcedureExpressionTreeNode,
+      ) => createVariableExpressionBlock(block.fields.VALUE[0]),
+    )
+    .exhaustive();
+
+const convertProcedurePrototype = (
+  block: NonHatBlockTree,
+): {
+  name: string;
+  parameterNames: string[];
+} => {
+  if (!isPrototypeBlock(block)) {
+    throw new Error("Expected a definition block");
+  }
+
+  return {
+    name: block.mutation.proccode,
+    parameterNames: JSON.parse(block.mutation.argumentnames) as string[],
+  };
+};
+
+export const convertProcedureDefinitionTree = (
+  block: DefinitionBlock & TreeNode,
+): FunctionDeclarationNode => {
+  // find prototype
+  const { name, parameterNames } = convertChildWithReferenceId(
+    block,
+    (block) => block.inputs.custom_block,
+    convertProcedurePrototype,
+  );
+
+  return {
+    nodeType: AstNodeType.code,
+    codeType: CodeNodeType.functionDeclaration,
+    name,
+    parameterNames,
+    body: {
+      nodeType: AstNodeType.code,
+      codeType: CodeNodeType.sequence,
+      statements: block.__next ? convertBlockTreeToCode(block.__next) : [],
+    },
+  };
+};
