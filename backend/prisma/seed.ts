@@ -12,8 +12,6 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log(alfred);
-
   const teacher = await prisma.teacher.upsert({
     where: { userId: alfred.id },
     update: {},
@@ -22,7 +20,7 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log(teacher);
+  console.log(["teacher", alfred, teacher]);
 
   const klass = await prisma.class.upsert({
     where: { id: 1 },
@@ -33,7 +31,7 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log(klass);
+  console.log(["class", klass]);
 
   const assignment = await prisma.assignment.upsert({
     where: { id: 1 },
@@ -43,8 +41,6 @@ async function main(): Promise<void> {
       description: "Import a simple Scratch program!",
     },
   });
-
-  console.log(assignment);
 
   const classAssignment = await prisma.classAssignment.upsert({
     where: {
@@ -57,7 +53,8 @@ async function main(): Promise<void> {
     },
   });
 
-  console.log(classAssignment);
+
+  console.log(["assignment", assignment, classAssignment]);
 
   await Promise.all(
     ["bob", "charlie"]
@@ -69,7 +66,6 @@ async function main(): Promise<void> {
           create: { name, email },
         });
 
-        console.log(user);
         return user;
       })
       .map(async (u) => {
@@ -81,7 +77,7 @@ async function main(): Promise<void> {
           create: { userId: user.id },
         });
 
-        console.log(student);
+        console.log(["student", user, student]);
 
         const enrollment = await prisma.classEnrollment.upsert({
           where: {
@@ -94,7 +90,7 @@ async function main(): Promise<void> {
           },
         });
 
-        console.log(enrollment);
+        console.log(["enrollment", enrollment]);
 
         return student.id;
       })
@@ -115,7 +111,7 @@ async function main(): Promise<void> {
           },
         });
 
-        console.log(submission);
+        console.log(["submission", submission]);
       }),
   );
 }
