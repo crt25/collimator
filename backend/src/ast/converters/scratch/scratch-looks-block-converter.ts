@@ -34,7 +34,7 @@ import {
   isSwitchCostumeToBlock,
   isThinkBlock,
   isThinkForSecsBlock,
-  LooksCodeBlock,
+  LooksStatementBlock,
   LooksExpressionBlock,
   NextBackdropBlock,
   NextCostumeBlock,
@@ -59,10 +59,12 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
-type LooksCodeTreeNode = LooksCodeBlock & TreeNode;
+type LooksCodeTreeNode = LooksStatementBlock & TreeNode;
 type LooksExpressionTreeNode = LooksExpressionBlock & TreeNode;
 
-export const isLooksCodeBlock = (block: NonHatBlock): block is LooksCodeBlock =>
+export const isLooksStatementBlock = (
+  block: NonHatBlock,
+): block is LooksStatementBlock =>
   isChangeEffectByBlock(block) ||
   isChangeSizeByBlock(block) ||
   isClearGraphicsEffectsBlock(block) ||
@@ -91,7 +93,7 @@ export const isLooksExpressionBlock = (
   isBackdropNumberNameBlock(block) ||
   isSizeBlock(block);
 
-export const convertLooksBlockTreeToCode = (
+export const convertLooksBlockTreeToStatement = (
   looksBlock: LooksCodeTreeNode,
 ): StatementNode[] =>
   match(looksBlock)

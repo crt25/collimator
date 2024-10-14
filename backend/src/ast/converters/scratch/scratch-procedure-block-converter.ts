@@ -14,7 +14,7 @@ import {
   isArgumentStringNumberBlock,
   isCallBlock,
   isPrototypeBlock,
-  ProcedureCodeBlock,
+  ProcedureStatementBlock,
   ProcedureExpressionBlock,
   PrototypeBlock,
 } from "src/ast/types/input/scratch/blocks/procedure";
@@ -25,21 +25,22 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { AstNodeType } from "src/ast/types/general-ast";
-import { convertBlockTreeToCode } from "./scratch-block-code-converter";
+import { convertBlockTreeToStatement } from "./scratch-block-statement-converter";
 
-type ProcedureCodeTreeNode = ProcedureCodeBlock & TreeNode;
+type ProcedureCodeTreeNode = ProcedureStatementBlock & TreeNode;
 type ProcedureExpressionTreeNode = ProcedureExpressionBlock & TreeNode;
 
-export const isProcedureCodeBlock = (
+export const isProcedureStatementBlock = (
   block: NonHatBlock,
-): block is ProcedureCodeBlock => isCallBlock(block) || isPrototypeBlock(block);
+): block is ProcedureStatementBlock =>
+  isCallBlock(block) || isPrototypeBlock(block);
 
 export const isProcedureExpressionBlock = (
   block: NonHatBlock,
 ): block is ProcedureExpressionTreeNode =>
   isArgumentBooleanBlock(block) || isArgumentStringNumberBlock(block);
 
-export const convertProcedureBlockTreeToCode = (
+export const convertProcedureBlockTreeToStatement = (
   procedureBlock: ProcedureCodeTreeNode,
 ): StatementNode[] =>
   match(procedureBlock)
@@ -106,7 +107,7 @@ export const convertProcedureDefinitionTree = (
     body: {
       nodeType: AstNodeType.statement,
       codeType: StatementNodeType.sequence,
-      statements: block.__next ? convertBlockTreeToCode(block.__next) : [],
+      statements: block.__next ? convertBlockTreeToStatement(block.__next) : [],
     },
   };
 };

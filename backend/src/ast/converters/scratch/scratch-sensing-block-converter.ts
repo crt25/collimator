@@ -40,7 +40,7 @@ import {
   OfBlock,
   OfObjectMenuBlock,
   ResetTimerBlock,
-  SensingCodeBlock,
+  SensingStatementBlock,
   SensingExpressionBlock,
   SetDragModeBlock,
   TimerBlock,
@@ -57,12 +57,12 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
-type SensingCodeTreeNode = SensingCodeBlock & TreeNode;
+type SensingCodeTreeNode = SensingStatementBlock & TreeNode;
 type SensingExpressionTreeNode = SensingExpressionBlock & TreeNode;
 
-export const isSensingCodeBlock = (
+export const isSensingStatementBlock = (
   block: NonHatBlock,
-): block is SensingCodeBlock & NonHatBlock =>
+): block is SensingStatementBlock & NonHatBlock =>
   isAskAndWaitBlock(block) ||
   isResetTimerBlock(block) ||
   isSetDragModeBlock(block);
@@ -90,7 +90,7 @@ export const isSensingExpressionBlock = (
   isTouchingObjectBlock(block) ||
   isUsernameBlock(block);
 
-export const convertSensingBlockTreeToCode = (
+export const convertSensingBlockTreeToStatement = (
   sensingBlock: SensingCodeTreeNode,
 ): StatementNode[] =>
   match(sensingBlock)

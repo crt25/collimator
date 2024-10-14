@@ -20,10 +20,10 @@ import {
 import {
   getEventParameters,
   isNonHatBlock,
-  isCodeBlock,
+  isStatementBlock,
   isHatBlock,
 } from "./helpers";
-import { convertBlockTreeToCode } from "./scratch-block-code-converter";
+import { convertBlockTreeToStatement } from "./scratch-block-statement-converter";
 import { convertProcedureDefinitionTree } from "./scratch-procedure-block-converter";
 
 export const convertTarget = (target: Target): ActorNode => {
@@ -133,7 +133,7 @@ const buildBlockTrees = (blocks: { [id: string]: Block }): BlockTree[] => {
         );
       }
 
-      if (!isCodeBlock(nextBlock)) {
+      if (!isStatementBlock(nextBlock)) {
         throw new Error(
           `The non-code block '${nextBlock.opcode}' cannot be the next block of some other block`,
         );
@@ -197,7 +197,7 @@ const convertEventHatTree = (
     action: {
       nodeType: AstNodeType.statement,
       codeType: StatementNodeType.sequence,
-      statements: block.__next ? convertBlockTreeToCode(block.__next) : [],
+      statements: block.__next ? convertBlockTreeToStatement(block.__next) : [],
     },
   };
 };

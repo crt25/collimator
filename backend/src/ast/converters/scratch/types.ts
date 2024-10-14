@@ -1,5 +1,5 @@
 import {
-  KnownBuiltinScratchCodeBlock,
+  KnownBuiltinScratchStatementBlock,
   KnownBuiltinScratchExpressionBlock,
   KnownBuiltinScratchHatBlock,
 } from "src/ast/types/input/scratch/blocks";
@@ -15,7 +15,7 @@ export type StageTarget = Stage & Target;
 export type SpriteTarget = Sprite & Target;
 
 export type NonHatBlock =
-  | KnownBuiltinScratchCodeBlock
+  | KnownBuiltinScratchStatementBlock
   | KnownBuiltinScratchExpressionBlock;
 
 export type EventHatBlock = Exclude<
@@ -37,10 +37,10 @@ export type TreeNode = {
   /**
    * The next block in the sequence. This is null if there is no next block.
    */
-  __next: CodeBlockTree | null;
+  __next: StatementBlockTree | null;
 };
 export type BlockTree = Block & TreeNode;
-export type CodeBlockTree = KnownBuiltinScratchCodeBlock & TreeNode;
+export type StatementBlockTree = KnownBuiltinScratchStatementBlock & TreeNode;
 export type ExpressionBlockTree = KnownBuiltinScratchExpressionBlock & TreeNode;
 export type NonHatBlockTree = NonHatBlock & TreeNode;
 

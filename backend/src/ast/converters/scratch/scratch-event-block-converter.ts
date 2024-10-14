@@ -4,7 +4,7 @@ import { NonHatBlock, TreeNode } from "./types";
 import {
   BroadcastAndWaitBlock,
   BroadcastBlock,
-  EventCodeBlock,
+  EventStatementBlock,
   EventExpressionBlock,
   isBroadcastAndWaitBlock,
   isBroadcastBlock,
@@ -16,17 +16,19 @@ import {
   isBroadcastMenuBlock,
 } from "src/ast/types/input/scratch/blocks/event/broadcast-menu";
 
-type EventCodeTreeNode = EventCodeBlock & TreeNode;
+type EventCodeTreeNode = EventStatementBlock & TreeNode;
 type EventExpressionTreeNode = EventExpressionBlock & TreeNode;
 
-export const isEventCodeBlock = (block: NonHatBlock): block is EventCodeBlock =>
+export const isEventStatementBlock = (
+  block: NonHatBlock,
+): block is EventStatementBlock =>
   isBroadcastAndWaitBlock(block) || isBroadcastBlock(block);
 
 export const isEventExpressionBlock = (
   block: NonHatBlock,
 ): block is EventExpressionTreeNode => false;
 
-export const convertEventBlockTreeToCode = (
+export const convertEventBlockTreeToStatement = (
   eventBlock: EventCodeTreeNode,
 ): StatementNode[] =>
   match(eventBlock)

@@ -32,7 +32,7 @@ export * from "./show-variable";
 
 export type DataHatBlock = never;
 
-export type DataCodeBlock =
+export type DataStatementBlock =
   | AddToListBlock
   | ChangeVariableByBlock
   | DeleteAllOfListBlock

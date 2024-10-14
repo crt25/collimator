@@ -25,7 +25,7 @@ export * from "./wait-until";
 
 export type ControlHatBlock = StartAsCloneBlock;
 
-export type ControlCodeBlock =
+export type ControlStatementBlock =
   | CreateCloneOfBlock
   | DeleteThisCloneBlock
   | ForeverBlock

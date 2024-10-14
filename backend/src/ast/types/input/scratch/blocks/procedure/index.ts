@@ -12,7 +12,7 @@ export * from "./prototype";
 
 export type ProcedureHatBlock = DefinitionBlock;
 
-export type ProcedureCodeBlock = CallBlock | PrototypeBlock;
+export type ProcedureStatementBlock = CallBlock | PrototypeBlock;
 
 export type ProcedureExpressionBlock =
   | ArgumentBooleanBlock

@@ -35,7 +35,7 @@ import {
   WaitUntilBlock,
   isWaitBlock,
   WaitBlock,
-  ControlCodeBlock,
+  ControlStatementBlock,
   StopBlock,
   ControlExpressionBlock,
 } from "src/ast/types/input/scratch/blocks/control";
@@ -48,15 +48,15 @@ import {
   createLiteralNode,
 } from "./helpers";
 import { convertBlockTreeToExpression } from "./scratch-block-expression-converter";
-import { convertBlockTreeToCode } from "./scratch-block-code-converter";
+import { convertBlockTreeToStatement } from "./scratch-block-statement-converter";
 import { convertInputsToExpression } from "./scratch-block-input-converter";
 
-type ControlCodeTreeNode = ControlCodeBlock & TreeNode;
+type ControlCodeTreeNode = ControlStatementBlock & TreeNode;
 type ControlExpressionTreeNode = ControlExpressionBlock & TreeNode;
 
-export const isControlCodeBlock = (
+export const isControlStatementBlock = (
   block: NonHatBlock,
-): block is ControlCodeBlock =>
+): block is ControlStatementBlock =>
   isForeverBlock(block) ||
   isIfElseBlock(block) ||
   isIfBlock(block) ||
@@ -72,7 +72,7 @@ export const isControlExpressionBlock = (
   block: NonHatBlock,
 ): block is ControlExpressionBlock => isCreateCloneOfMenuBlock(block);
 
-export const convertControlBlockTreeToCode = (
+export const convertControlBlockTreeToStatement = (
   controlBlock: ControlCodeTreeNode,
 ): StatementNode[] =>
   match(controlBlock)
@@ -102,7 +102,7 @@ export const convertControlBlockTreeToCode = (
             statements: convertChildWithReferenceId(
               block,
               (block) => block.inputs.SUBSTACK,
-              convertBlockTreeToCode,
+              convertBlockTreeToStatement,
               [],
             ),
           },
@@ -125,7 +125,7 @@ export const convertControlBlockTreeToCode = (
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,
-            convertBlockTreeToCode,
+            convertBlockTreeToStatement,
             [],
           ),
         },
@@ -135,7 +135,7 @@ export const convertControlBlockTreeToCode = (
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK2,
-            convertBlockTreeToCode,
+            convertBlockTreeToStatement,
             [],
           ),
         },
@@ -157,7 +157,7 @@ export const convertControlBlockTreeToCode = (
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,
-            convertBlockTreeToCode,
+            convertBlockTreeToStatement,
             [],
           ),
         },
@@ -193,7 +193,7 @@ export const convertControlBlockTreeToCode = (
             statements: convertChildWithReferenceId(
               block,
               (block) => block.inputs.SUBSTACK,
-              convertBlockTreeToCode,
+              convertBlockTreeToStatement,
               [],
             ),
           },
@@ -217,7 +217,7 @@ export const convertControlBlockTreeToCode = (
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,
-            convertBlockTreeToCode,
+            convertBlockTreeToStatement,
             [],
           ),
         },

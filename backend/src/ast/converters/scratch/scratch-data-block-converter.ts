@@ -4,7 +4,7 @@ import { NonHatBlock, TreeNode } from "./types";
 import {
   AddToListBlock,
   ChangeVariableByBlock,
-  DataCodeBlock,
+  DataStatementBlock,
   DataExpressionBlock,
   DeleteAllOfListBlock,
   DeleteOfListBlock,
@@ -41,10 +41,12 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
-type DataCodeTreeNode = DataCodeBlock & TreeNode;
+type DataCodeTreeNode = DataStatementBlock & TreeNode;
 type DataExpressionTreeNode = DataExpressionBlock & TreeNode;
 
-export const isDataCodeBlock = (block: NonHatBlock): block is DataCodeBlock =>
+export const isDataStatementBlock = (
+  block: NonHatBlock,
+): block is DataStatementBlock =>
   isAddToListBlock(block) ||
   isChangeVariableByBlock(block) ||
   isDeleteAllOfListBlock(block) ||
@@ -65,7 +67,7 @@ export const isDataExpressionBlock = (
   isLengthOfListBlock(block) ||
   isListContainsItemBlock(block);
 
-export const convertDataBlockTreeToCode = (
+export const convertDataBlockTreeToStatement = (
   dataBlock: DataCodeTreeNode,
 ): StatementNode[] =>
   match(dataBlock)

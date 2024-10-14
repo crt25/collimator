@@ -28,6 +28,6 @@ export type EventHatBlock =
   | WhenStageIsClickedBlock
   | WhenThisSpriteIsClickedBlock;
 
-export type EventCodeBlock = BroadcastAndWaitBlock | BroadcastBlock;
+export type EventStatementBlock = BroadcastAndWaitBlock | BroadcastBlock;
 
 export type EventExpressionBlock = BroadcastMenuBlock;

@@ -1,32 +1,44 @@
 import {
-  ControlCodeBlock,
+  ControlStatementBlock,
   ControlExpressionBlock,
   ControlHatBlock,
 } from "./control";
-import { DataCodeBlock, DataExpressionBlock, DataHatBlock } from "./data";
-import { EventCodeBlock, EventExpressionBlock, EventHatBlock } from "./event";
-import { LooksCodeBlock, LooksExpressionBlock, LooksHatBlock } from "./looks";
+import { DataStatementBlock, DataExpressionBlock, DataHatBlock } from "./data";
 import {
-  MotionCodeBlock,
+  EventStatementBlock,
+  EventExpressionBlock,
+  EventHatBlock,
+} from "./event";
+import {
+  LooksStatementBlock,
+  LooksExpressionBlock,
+  LooksHatBlock,
+} from "./looks";
+import {
+  MotionStatementBlock,
   MotionExpressionBlock,
   MotionHatBlock,
 } from "./motion";
 import {
-  OperatorCodeBlock,
+  OperatorStatementBlock,
   OperatorExpressionBlock,
   OperatorHatBlock,
 } from "./operator";
 import {
-  ProcedureCodeBlock,
+  ProcedureStatementBlock,
   ProcedureExpressionBlock,
   ProcedureHatBlock,
 } from "./procedure";
 import {
-  SensingCodeBlock,
+  SensingStatementBlock,
   SensingExpressionBlock,
   SensingHatBlock,
 } from "./sensing";
-import { SoundCodeBlock, SoundExpressionBlock, SoundHatBlock } from "./sound";
+import {
+  SoundStatementBlock,
+  SoundExpressionBlock,
+  SoundHatBlock,
+} from "./sound";
 
 /**
  * A hat block is a starting block for a script.
@@ -43,16 +55,16 @@ export type KnownBuiltinScratchHatBlock =
   | SensingHatBlock
   | SoundHatBlock;
 
-export type KnownBuiltinScratchCodeBlock =
-  | ControlCodeBlock
-  | DataCodeBlock
-  | EventCodeBlock
-  | LooksCodeBlock
-  | MotionCodeBlock
-  | OperatorCodeBlock
-  | ProcedureCodeBlock
-  | SensingCodeBlock
-  | SoundCodeBlock;
+export type KnownBuiltinScratchStatementBlock =
+  | ControlStatementBlock
+  | DataStatementBlock
+  | EventStatementBlock
+  | LooksStatementBlock
+  | MotionStatementBlock
+  | OperatorStatementBlock
+  | ProcedureStatementBlock
+  | SensingStatementBlock
+  | SoundStatementBlock;
 
 export type KnownBuiltinScratchExpressionBlock =
   | ControlExpressionBlock

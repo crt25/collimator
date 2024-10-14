@@ -44,7 +44,7 @@ export * from "./y-position";
 
 export type MotionHatBlock = never;
 
-export type MotionCodeBlock =
+export type MotionStatementBlock =
   | ChangeXByBlock
   | ChangeYByBlock
   | GlideToBlock

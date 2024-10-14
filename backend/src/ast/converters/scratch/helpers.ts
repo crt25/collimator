@@ -33,41 +33,41 @@ import { BlockInputType } from "src/ast/types/input/scratch/block-input-type";
 import { isDefinitionBlock } from "src/ast/types/input/scratch/blocks/procedure/definition";
 import { convertInputsToExpression } from "./scratch-block-input-converter";
 import {
-  KnownBuiltinScratchCodeBlock,
+  KnownBuiltinScratchStatementBlock,
   KnownBuiltinScratchExpressionBlock,
   KnownBuiltinScratchHatBlock,
 } from "src/ast/types/input/scratch/blocks";
 import {
-  isControlCodeBlock,
+  isControlStatementBlock,
   isControlExpressionBlock,
 } from "./scratch-control-block-converter";
 import {
-  isDataCodeBlock,
+  isDataStatementBlock,
   isDataExpressionBlock,
 } from "./scratch-data-block-converter";
 import {
-  isEventCodeBlock,
+  isEventStatementBlock,
   isEventExpressionBlock,
 } from "./scratch-event-block-converter";
 import {
-  isLooksCodeBlock,
+  isLooksStatementBlock,
   isLooksExpressionBlock,
 } from "./scratch-looks-block-converter";
 import {
-  isMotionCodeBlock,
+  isMotionStatementBlock,
   isMotionExpressionBlock,
 } from "./scratch-motion-block-converter";
 import { isOperatorExpressionBlock } from "./scratch-operator-block-converter";
 import {
-  isProcedureCodeBlock,
+  isProcedureStatementBlock,
   isProcedureExpressionBlock,
 } from "./scratch-procedure-block-converter";
 import {
-  isSensingCodeBlock,
+  isSensingStatementBlock,
   isSensingExpressionBlock,
 } from "./scratch-sensing-block-converter";
 import {
-  isSoundCodeBlock,
+  isSoundStatementBlock,
   isSoundExpressionBlock,
 } from "./scratch-sound-block-converter";
 
@@ -278,18 +278,18 @@ export const isHatBlock = (
   );
 };
 
-export const isCodeBlock = (
+export const isStatementBlock = (
   block: NonHatBlock,
-): block is KnownBuiltinScratchCodeBlock => {
+): block is KnownBuiltinScratchStatementBlock => {
   return (
-    isControlCodeBlock(block) ||
-    isDataCodeBlock(block) ||
-    isEventCodeBlock(block) ||
-    isLooksCodeBlock(block) ||
-    isMotionCodeBlock(block) ||
-    isProcedureCodeBlock(block) ||
-    isSensingCodeBlock(block) ||
-    isSoundCodeBlock(block)
+    isControlStatementBlock(block) ||
+    isDataStatementBlock(block) ||
+    isEventStatementBlock(block) ||
+    isLooksStatementBlock(block) ||
+    isMotionStatementBlock(block) ||
+    isProcedureStatementBlock(block) ||
+    isSensingStatementBlock(block) ||
+    isSoundStatementBlock(block)
   );
 };
 

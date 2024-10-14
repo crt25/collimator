@@ -18,7 +18,7 @@ import {
   PlayUntilDoneBlock,
   SetEffectToBlock,
   SetVolumeToBlock,
-  SoundCodeBlock,
+  SoundStatementBlock,
   StopAllSoundsBlock,
   VolumeBlock,
   SoundExpressionBlock,
@@ -32,12 +32,12 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
-type SoundCodeTreeNode = SoundCodeBlock & TreeNode;
+type SoundCodeTreeNode = SoundStatementBlock & TreeNode;
 type SoundExpressionTreeNode = SoundExpressionBlock & TreeNode;
 
-export const isSoundCodeBlock = (
+export const isSoundStatementBlock = (
   block: NonHatBlock,
-): block is SoundCodeBlock & NonHatBlock =>
+): block is SoundStatementBlock & NonHatBlock =>
   isChangeEffectByBlock(block) ||
   isChangeVolumeByBlock(block) ||
   isClearEffectsBlock(block) ||
@@ -52,7 +52,7 @@ export const isSoundExpressionBlock = (
 ): block is SoundExpressionTreeNode =>
   isSoundsMenuBlock(block) || isVolumeBlock(block);
 
-export const convertSoundBlockTreeToCode = (
+export const convertSoundBlockTreeToStatement = (
   soundBlock: SoundCodeTreeNode,
 ): StatementNode[] =>
   match(soundBlock)

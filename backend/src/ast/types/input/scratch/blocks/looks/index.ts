@@ -48,7 +48,7 @@ export * from "./think-for-secs";
 
 export type LooksHatBlock = never;
 
-export type LooksCodeBlock =
+export type LooksStatementBlock =
   | ChangeEffectByBlock
   | ChangeSizeByBlock
   | ClearGraphicsEffectsBlock

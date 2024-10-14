@@ -22,7 +22,7 @@ export * from "./sounds-menu";
 
 export type SoundHatBlock = never;
 
-export type SoundCodeBlock =
+export type SoundStatementBlock =
   | ChangeEffectByBlock
   | ChangeVolumeByBlock
   | ClearEffectsBlock

@@ -47,7 +47,7 @@ export * from "./username";
 
 export type SensingHatBlock = never;
 
-export type SensingCodeBlock =
+export type SensingStatementBlock =
   | AskAndWaitBlock
   | SetDragModeBlock
   | ResetTimerBlock;

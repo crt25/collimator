@@ -33,7 +33,7 @@ import {
   isTurnRightBlock,
   isXPositionBlock,
   isYPositionBlock,
-  MotionCodeBlock,
+  MotionStatementBlock,
   MotionExpressionBlock,
   MoveStepsBlock,
   PointInDirectionBlock,
@@ -54,12 +54,12 @@ import {
 } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
-type MotionCodeTreeNode = MotionCodeBlock & TreeNode;
+type MotionCodeTreeNode = MotionStatementBlock & TreeNode;
 type MotionExpressionTreeNode = MotionExpressionBlock & TreeNode;
 
-export const isMotionCodeBlock = (
+export const isMotionStatementBlock = (
   block: NonHatBlock,
-): block is MotionCodeBlock & NonHatBlock =>
+): block is MotionStatementBlock & NonHatBlock =>
   isChangeXByBlock(block) ||
   isChangeYByBlock(block) ||
   isGlideToBlock(block) ||
@@ -86,7 +86,7 @@ export const isMotionExpressionBlock = (
   isYPositionBlock(block) ||
   isDirectionBlock(block);
 
-export const convertMotionBlockTreeToCode = (
+export const convertMotionBlockTreeToStatement = (
   motionBlock: MotionCodeTreeNode,
 ): StatementNode[] =>
   match(motionBlock)

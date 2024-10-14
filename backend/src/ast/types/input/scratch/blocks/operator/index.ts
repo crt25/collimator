@@ -38,7 +38,7 @@ export * from "./math-op";
 
 export type OperatorHatBlock = never;
 
-export type OperatorCodeBlock = never;
+export type OperatorStatementBlock = never;
 
 export type OperatorExpressionBlock =
   | AddBlock
