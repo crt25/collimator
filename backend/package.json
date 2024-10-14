@@ -87,8 +87,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "__tests__",
-      ".d.ts$",
-      ".spec.(t|j)s$"
+      "\\.d\\.ts$",
+      "\\.spec\\.(t|j)s$"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"

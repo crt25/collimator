@@ -7,7 +7,11 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "collectCoverageFrom": ["src/**/*.(t|j)s", "!src/main.ts"],
-  "coveragePathIgnorePatterns": ["__tests__", ".d.ts$", ".spec.(t|j)s$"],
+  "collectCoverageFrom": ["src/**/*.(t|j)s"],
+  "coveragePathIgnorePatterns": [
+    "__tests__",
+    "\\.d\\.ts$",
+    "\\.spec\\.(t|j)s$"
+  ],
   "coverageDirectory": "./coverage-e2e"
 }
