@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["es2023"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -18,5 +19,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": true,
+    "resolveJsonModule": true
   }
 }

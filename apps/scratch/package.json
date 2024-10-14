@@ -120,8 +120,8 @@
     "coveragePathIgnorePatterns": [
       "src/scratch",
       "__tests__",
-      ".d.ts$",
-      ".spec.(t|j)sx?$"
+      "\\.d\\.ts$",
+      "\\.spec\\.(t|j)sx?$"
     ]
   },
   "packageManager": "yarn@4.5.0",
