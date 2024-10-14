@@ -1,6 +1,6 @@
 import { AstNodeBase } from "../ast-node-base";
 import { AstNodeType } from "../ast-node-type";
-import { FunctionDeclarationNode } from "./code-node";
+import { FunctionDeclarationNode } from "./statement-node";
 import { EventListenerNode } from "./event-listener-node";
 
 /**

@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -67,9 +67,9 @@ export const isDataExpressionBlock = (
 
 export const convertDataBlockTreeToCode = (
   dataBlock: DataCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(dataBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isAddToListBlock),
       P.when(isChangeVariableByBlock),

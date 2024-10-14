@@ -10,7 +10,7 @@ import {
   VariablePrimitive,
 } from "src/ast/types/input/scratch/generated/sb3";
 import { isDefinitionBlock } from "src/ast/types/input/scratch/blocks/procedure/definition";
-import { CodeNodeType } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 import {
   BlockTree,
   BlockTreeWithEventHatRoot,
@@ -195,8 +195,8 @@ const convertEventHatTree = (
       parameters: getEventParameters(block),
     },
     action: {
-      nodeType: AstNodeType.code,
-      codeType: CodeNodeType.sequence,
+      nodeType: AstNodeType.statement,
+      codeType: StatementNodeType.sequence,
       statements: block.__next ? convertBlockTreeToCode(block.__next) : [],
     },
   };

@@ -1,4 +1,7 @@
-import { CodeNode, CodeNodeType } from "src/ast/types/general-ast/ast-nodes";
+import {
+  StatementNode,
+  StatementNodeType,
+} from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import {
   CreateCloneOfBlock,
@@ -71,9 +74,9 @@ export const isControlExpressionBlock = (
 
 export const convertControlBlockTreeToCode = (
   controlBlock: ControlCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(controlBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isCreateCloneOfBlock),
       (block: CreateCloneOfBlock & ControlCodeTreeNode) => [
@@ -85,8 +88,8 @@ export const convertControlBlockTreeToCode = (
       (block: ForeverBlock & ControlCodeTreeNode) => [
         // convert a forever block into a while(true) loop
         {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.loop,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.loop,
           condition: {
             nodeType: AstNodeType.expression,
             expressionType: ExpressionNodeType.literal,
@@ -94,8 +97,8 @@ export const convertControlBlockTreeToCode = (
             value: "true",
           },
           body: {
-            nodeType: AstNodeType.code,
-            codeType: CodeNodeType.sequence,
+            nodeType: AstNodeType.statement,
+            codeType: StatementNodeType.sequence,
             statements: convertChildWithReferenceId(
               block,
               (block) => block.inputs.SUBSTACK,
@@ -108,8 +111,8 @@ export const convertControlBlockTreeToCode = (
     )
     .with(P.when(isIfElseBlock), (block: IfElseBlock & ControlCodeTreeNode) => [
       {
-        nodeType: AstNodeType.code,
-        codeType: CodeNodeType.condition,
+        nodeType: AstNodeType.statement,
+        codeType: StatementNodeType.condition,
         condition: convertChildWithReferenceId(
           block,
           (block) => block.inputs.CONDITION,
@@ -117,8 +120,8 @@ export const convertControlBlockTreeToCode = (
           null,
         ),
         whenTrue: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,
@@ -127,8 +130,8 @@ export const convertControlBlockTreeToCode = (
           ),
         },
         whenFalse: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK2,
@@ -140,8 +143,8 @@ export const convertControlBlockTreeToCode = (
     ])
     .with(P.when(isIfBlock), (block: IfBlock & ControlCodeTreeNode) => [
       {
-        nodeType: AstNodeType.code,
-        codeType: CodeNodeType.condition,
+        nodeType: AstNodeType.statement,
+        codeType: StatementNodeType.condition,
         condition: convertChildWithReferenceId(
           block,
           (block) => block.inputs.CONDITION,
@@ -149,8 +152,8 @@ export const convertControlBlockTreeToCode = (
           null,
         ),
         whenTrue: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,
@@ -159,8 +162,8 @@ export const convertControlBlockTreeToCode = (
           ),
         },
         whenFalse: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: [],
         },
       },
@@ -170,8 +173,8 @@ export const convertControlBlockTreeToCode = (
       (block: RepeatUntilBlock & ControlCodeTreeNode) => [
         // a repeat until block is a  negated while loop, *not* a negated do-while loop as the name may suggest
         {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.loop,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.loop,
           condition: {
             nodeType: AstNodeType.expression,
             expressionType: ExpressionNodeType.operator,
@@ -185,8 +188,8 @@ export const convertControlBlockTreeToCode = (
             ],
           },
           body: {
-            nodeType: AstNodeType.code,
-            codeType: CodeNodeType.sequence,
+            nodeType: AstNodeType.statement,
+            codeType: StatementNodeType.sequence,
             statements: convertChildWithReferenceId(
               block,
               (block) => block.inputs.SUBSTACK,
@@ -200,8 +203,8 @@ export const convertControlBlockTreeToCode = (
     .with(P.when(isRepeatBlock), (block: RepeatBlock & ControlCodeTreeNode) => [
       // a repeat until block is a  negated while loop, *not* a negated do-while loop as the name may suggest
       {
-        nodeType: AstNodeType.code,
-        codeType: CodeNodeType.loop,
+        nodeType: AstNodeType.statement,
+        codeType: StatementNodeType.loop,
         condition: {
           nodeType: AstNodeType.expression,
           expressionType: ExpressionNodeType.functionCall,
@@ -209,8 +212,8 @@ export const convertControlBlockTreeToCode = (
           arguments: [convertInputsToExpression(block, "TIMES")],
         },
         body: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: convertChildWithReferenceId(
             block,
             (block) => block.inputs.SUBSTACK,

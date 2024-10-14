@@ -1,6 +1,6 @@
 import { AstNodeBase } from "../ast-node-base";
 import { AstNodeType } from "../ast-node-type";
-import { CodeSequenceNode } from "./code-node/code-sequence-node";
+import { StatementSequenceNode } from "./statement-node/statement-sequence-node";
 import { ExpressionNode } from "./expression-node";
 
 /**
@@ -30,5 +30,5 @@ export interface EventListenerNode extends AstNodeBase {
   nodeType: AstNodeType.eventListener;
 
   condition: EventCondition;
-  action: CodeSequenceNode;
+  action: StatementSequenceNode;
 }

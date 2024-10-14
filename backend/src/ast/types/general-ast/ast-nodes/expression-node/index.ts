@@ -1,4 +1,4 @@
-import { VariableAssignmentNode } from "../code-node/assignment-node";
+import { VariableAssignmentNode } from "../statement-node/assignment-node";
 import { FunctionCallNode } from "./function-call-node";
 import { LiteralNode } from "./literal-node";
 import { OperatorNode } from "./operator-node";

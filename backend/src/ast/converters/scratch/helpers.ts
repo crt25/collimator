@@ -1,5 +1,8 @@
 import { AstNodeType } from "src/ast/types/general-ast";
-import { CodeNode, CodeNodeType } from "src/ast/types/general-ast/ast-nodes";
+import {
+  StatementNode,
+  StatementNodeType,
+} from "src/ast/types/general-ast/ast-nodes";
 import {
   ExpressionNode,
   ExpressionNodeType,
@@ -119,9 +122,9 @@ export const createFunctionCallBlock = <TKey extends string>(
     __children: NonHatBlockTree[];
   },
   functionName?: string,
-): CodeNode => ({
-  nodeType: AstNodeType.code,
-  codeType: CodeNodeType.functionCall,
+): StatementNode => ({
+  nodeType: AstNodeType.statement,
+  codeType: StatementNodeType.functionCall,
   name: functionName ?? block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
 });

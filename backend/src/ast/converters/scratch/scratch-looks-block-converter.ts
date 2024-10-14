@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -93,9 +93,9 @@ export const isLooksExpressionBlock = (
 
 export const convertLooksBlockTreeToCode = (
   looksBlock: LooksCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(looksBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isChangeEffectByBlock),
       P.when(isChangeSizeByBlock),

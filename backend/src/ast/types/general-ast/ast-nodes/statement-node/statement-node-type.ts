@@ -1,4 +1,4 @@
-export enum CodeNodeType {
+export enum StatementNodeType {
   sequence = "sequence",
   statement = "statement",
   condition = "condition",

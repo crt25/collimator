@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -28,9 +28,9 @@ export const isEventExpressionBlock = (
 
 export const convertEventBlockTreeToCode = (
   eventBlock: EventCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(eventBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isBroadcastAndWaitBlock),
       P.when(isBroadcastBlock),

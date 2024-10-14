@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -54,9 +54,9 @@ export const isSoundExpressionBlock = (
 
 export const convertSoundBlockTreeToCode = (
   soundBlock: SoundCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(soundBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isChangeEffectByBlock),
       P.when(isChangeVolumeByBlock),

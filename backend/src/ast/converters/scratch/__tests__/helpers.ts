@@ -1,7 +1,7 @@
 import { ActorNode, AstNodeType, GeneralAst } from "src/ast/types/general-ast";
 import {
-  CodeNode,
-  CodeNodeType,
+  StatementNode,
+  StatementNodeType,
   EventListenerNode,
 } from "src/ast/types/general-ast/ast-nodes";
 import {
@@ -135,9 +135,11 @@ export const createScratchCodeInput = (
 
 /**
  * Creates the expected output of the AST conversion of a sequence of code blocks.
- * @param codeNodes The expected code nodes in the output AST.
+ * @param statementNodes The expected statement nodes in the output AST.
  */
-export const createScratchCodeOutput = (codeNodes: CodeNode[]): GeneralAst => [
+export const createScratchCodeOutput = (
+  statementNodes: StatementNode[],
+): GeneralAst => [
   {
     nodeType: AstNodeType.actor,
     eventListeners: [
@@ -161,9 +163,9 @@ export const createScratchCodeOutput = (codeNodes: CodeNode[]): GeneralAst => [
           ],
         },
         action: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
-          statements: codeNodes,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
+          statements: statementNodes,
         },
       },
     ],
@@ -222,7 +224,7 @@ export const createScratchExpressionInput = ([firstBlock, ...remainingBlocks]: [
 
 /**
  * Creates the expected output of the AST conversion of an expression block.
- * @param codeNodes The expected expression node in the output AST.
+ * @param expressionNode The expected expression node in the output AST.
  */
 export const createScratchExpressionOutput = (
   expressionNode: ExpressionNode,
@@ -250,12 +252,12 @@ export const createScratchExpressionOutput = (
           ],
         },
         action: {
-          nodeType: AstNodeType.code,
-          codeType: CodeNodeType.sequence,
+          nodeType: AstNodeType.statement,
+          codeType: StatementNodeType.sequence,
           statements: [
             {
-              nodeType: AstNodeType.code,
-              codeType: CodeNodeType.functionCall,
+              nodeType: AstNodeType.statement,
+              codeType: StatementNodeType.functionCall,
               name: "motion_movesteps",
               arguments: [expressionNode],
             },

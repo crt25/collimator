@@ -1,6 +1,6 @@
 import {
-  CodeNode,
-  CodeNodeType,
+  StatementNode,
+  StatementNodeType,
   FunctionDeclarationNode,
 } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
@@ -41,9 +41,9 @@ export const isProcedureExpressionBlock = (
 
 export const convertProcedureBlockTreeToCode = (
   procedureBlock: ProcedureCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(procedureBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isPrototypeBlock),
       (_block: PrototypeBlock & ProcedureCodeTreeNode) => {
@@ -99,13 +99,13 @@ export const convertProcedureDefinitionTree = (
   );
 
   return {
-    nodeType: AstNodeType.code,
-    codeType: CodeNodeType.functionDeclaration,
+    nodeType: AstNodeType.statement,
+    codeType: StatementNodeType.functionDeclaration,
     name,
     parameterNames,
     body: {
-      nodeType: AstNodeType.code,
-      codeType: CodeNodeType.sequence,
+      nodeType: AstNodeType.statement,
+      codeType: StatementNodeType.sequence,
       statements: block.__next ? convertBlockTreeToCode(block.__next) : [],
     },
   };

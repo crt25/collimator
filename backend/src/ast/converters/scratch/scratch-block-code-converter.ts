@@ -39,12 +39,14 @@ import {
   isSoundCodeBlock,
 } from "./scratch-sound-block-converter";
 import { CodeBlockTree, NonHatBlockTree } from "./types";
-import { CodeNode } from "src/ast/types/general-ast";
+import { StatementNode } from "src/ast/types/general-ast";
 import { match, P } from "ts-pattern";
 
-const convertSingleBlockTreeToCode = (codeBlock: CodeBlockTree): CodeNode[] =>
+const convertSingleBlockTreeToCode = (
+  codeBlock: CodeBlockTree,
+): StatementNode[] =>
   match(codeBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isControlCodeBlock),
       (block: ControlCodeBlock & NonHatBlockTree) =>
@@ -79,10 +81,12 @@ const convertSingleBlockTreeToCode = (codeBlock: CodeBlockTree): CodeNode[] =>
     )
     .exhaustive();
 
-export const convertBlockTreeToCode = (block: CodeBlockTree): CodeNode[] => {
+export const convertBlockTreeToCode = (
+  block: CodeBlockTree,
+): StatementNode[] => {
   // iterate linked list of blocks in order
   // and convert them to a sequence of statements
-  const statements: CodeNode[] = [];
+  const statements: StatementNode[] = [];
 
   let nextBlock: CodeBlockTree | null = block;
   while (nextBlock) {

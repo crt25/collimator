@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -92,9 +92,9 @@ export const isSensingExpressionBlock = (
 
 export const convertSensingBlockTreeToCode = (
   sensingBlock: SensingCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(sensingBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isAskAndWaitBlock),
       P.when(isResetTimerBlock),

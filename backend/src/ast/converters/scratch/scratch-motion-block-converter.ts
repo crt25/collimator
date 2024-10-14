@@ -1,4 +1,4 @@
-import { CodeNode } from "src/ast/types/general-ast/ast-nodes";
+import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
 import { NonHatBlock, TreeNode } from "./types";
 import {
@@ -88,9 +88,9 @@ export const isMotionExpressionBlock = (
 
 export const convertMotionBlockTreeToCode = (
   motionBlock: MotionCodeTreeNode,
-): CodeNode[] =>
+): StatementNode[] =>
   match(motionBlock)
-    .returnType<CodeNode[]>()
+    .returnType<StatementNode[]>()
     .with(
       P.when(isChangeXByBlock),
       P.when(isChangeYByBlock),
