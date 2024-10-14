@@ -4,11 +4,12 @@ import { VariableDeclarationNode } from "./declaration-node";
 import { FunctionCallNode } from "./function-call-node";
 import { FunctionDeclarationNode } from "./function-declaration-node";
 import { LoopNode } from "./loop-node";
+import { StatementSequenceNode } from "./statement-sequence-node";
 export * from "./statement-node-base";
 export * from "./statement-node-type";
 
 /**
- * A node representing a stement.
+ * A node representing a statement.
  */
 export type StatementNode =
   | ConditionNode
@@ -16,8 +17,8 @@ export type StatementNode =
   | LoopNode
   | VariableAssignmentNode
   | VariableDeclarationNode
-  | VariableAssignmentNode
-  | FunctionCallNode;
+  | FunctionCallNode
+  | StatementSequenceNode;
 
 export {
   ConditionNode,

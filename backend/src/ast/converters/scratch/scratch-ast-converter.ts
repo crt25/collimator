@@ -196,7 +196,7 @@ const convertEventHatTree = (
     },
     action: {
       nodeType: AstNodeType.statement,
-      codeType: StatementNodeType.sequence,
+      statementType: StatementNodeType.sequence,
       statements: block.__next ? convertBlockTreeToStatement(block.__next) : [],
     },
   };

@@ -8,7 +8,7 @@ import { ExpressionNode } from "../expression-node";
  * depending on whether a given condition evaluates to true or false.
  */
 export interface ConditionNode extends StatementNodeBase {
-  codeType: StatementNodeType.condition;
+  statementType: StatementNodeType.condition;
 
   condition: ExpressionNode | null;
 

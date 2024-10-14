@@ -6,7 +6,7 @@ import { StatementNodeType } from "./statement-node-type";
  * A node representing a function declaration.
  */
 export interface FunctionDeclarationNode extends StatementNodeBase {
-  codeType: StatementNodeType.functionDeclaration;
+  statementType: StatementNodeType.functionDeclaration;
 
   name: string;
 

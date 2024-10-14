@@ -8,8 +8,8 @@ import { ExpressionNode } from "../expression-node";
  * the condition evaluates to true.
  */
 export interface LoopNode extends StatementNodeBase {
-  codeType: StatementNodeType.loop;
+  statementType: StatementNodeType.loop;
 
-  condition: ExpressionNode;
+  condition: ExpressionNode | null;
   body: StatementSequenceNode;
 }

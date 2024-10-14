@@ -124,7 +124,7 @@ export const createFunctionCallBlock = <TKey extends string>(
   functionName?: string,
 ): StatementNode => ({
   nodeType: AstNodeType.statement,
-  codeType: StatementNodeType.functionCall,
+  statementType: StatementNodeType.functionCall,
   name: functionName ?? block.opcode,
   arguments: createArgumentsFromInputsAndFields(block),
 });

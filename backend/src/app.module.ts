@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { CoreModule } from "./core/core.module";
 import { UsersModule } from "./users/users.module";
 import { AstModule } from "./ast/ast.module";
+import { DataAnalyzerModule } from "./data-analyzer/data-analyzer.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AstModule } from "./ast/ast.module";
     CoreModule,
     UsersModule,
     AstModule,
+    DataAnalyzerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -101,12 +101,12 @@ export const convertProcedureDefinitionTree = (
 
   return {
     nodeType: AstNodeType.statement,
-    codeType: StatementNodeType.functionDeclaration,
+    statementType: StatementNodeType.functionDeclaration,
     name,
     parameterNames,
     body: {
       nodeType: AstNodeType.statement,
-      codeType: StatementNodeType.sequence,
+      statementType: StatementNodeType.sequence,
       statements: block.__next ? convertBlockTreeToStatement(block.__next) : [],
     },
   };
