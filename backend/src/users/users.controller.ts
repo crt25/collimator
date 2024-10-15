@@ -33,6 +33,26 @@ export class UsersController {
     return users.map((user) => new UserEntity(user));
   }
 
+  @Get("students")
+  @ApiOkResponse({ type: UserEntity, isArray: true })
+  async findAllStudents(): Promise<UserEntity[]> {
+    const students = await this.usersService.findMany({
+      where: { Student: { isNot: null } },
+    });
+
+    return students.map((s) => new UserEntity(s));
+  }
+
+  @Get("teachers")
+  @ApiOkResponse({ type: UserEntity, isArray: true })
+  async findAllTeachers(): Promise<UserEntity[]> {
+    const teachers = await this.usersService.findMany({
+      where: { Teacher: { isNot: null } },
+    });
+
+    return teachers.map((s) => new UserEntity(s));
+  }
+
   @Get(":id")
   @ApiOkResponse({ type: UserEntity })
   async findOne(
