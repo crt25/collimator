@@ -1,15 +1,27 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { ClassEntity } from "./entities/class.entity";
 import { CreateClassDto } from "./dto/create-class.dto";
 import { UpdateClassDto } from "./dto/update-class.dto";
-import { ClassesService } from "./classes.service";
-import { UserEntity } from "src/users/entities/user.entity";
+import { ClassesService } from "src/classes/services/classes.service";
+import { ClassAssignmentsService } from "src/classes/services/class-assignment.service";
 
 @Controller("classes")
 @ApiTags("classes")
 export class ClassesController {
-  constructor(private readonly classesService: ClassesService) {}
+  constructor(
+    private readonly classesService: ClassesService,
+    private readonly classAssignmentsService: ClassAssignmentsService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: ClassEntity })
@@ -43,10 +55,19 @@ export class ClassesController {
     @Param("id", ParseIntPipe) id: number,
     @Body() updateClassDto: UpdateClassDto,
   ): Promise<ClassEntity> {
-    return this.classesService.update({
-      where: { id: id },
+    const klass = await this.classesService.update({
+      where: { id },
       data: updateClassDto,
     });
+
+    if (updateClassDto.assignments !== undefined) {
+      await this.classAssignmentsService.replaceAssignments(
+        id,
+        updateClassDto.assignments,
+      );
+    }
+
+    return new ClassEntity(klass);
   }
 
   @Delete(":id")

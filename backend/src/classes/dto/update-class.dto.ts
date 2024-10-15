@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { CreateClassDto } from "src/classes/dto/create-class.dto";
 
 export class UpdateClassDto extends PartialType(
-  OmitType(CreateClassDto, ["assignments", "toInput"]),
+  OmitType(CreateClassDto, ["toInput"]),
 ) {
   toInput(): Prisma.ClassUpdateInput {
     return {
