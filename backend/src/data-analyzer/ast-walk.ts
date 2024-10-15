@@ -162,7 +162,7 @@ export const walkAst = (
     expressionCallback?: (node: ExpressionNode) => boolean;
   } = {},
   options = {
-    walkFunctionDeclarations: false,
+    walkFunctionDeclarations: true,
   },
 ): void => {
   for (const actor of ast) {

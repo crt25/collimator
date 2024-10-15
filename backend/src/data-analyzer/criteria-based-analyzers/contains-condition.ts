@@ -19,10 +19,10 @@ export const containsCondition = (
         containsCondition = true;
 
         // Stop walking the AST
-        return true;
+        return false;
       }
 
-      return false;
+      return true;
     },
   });
 

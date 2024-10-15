@@ -4627,7 +4627,8 @@ describe("Scratch AST converter", () => {
                                   statements: [
                                     {
                                       nodeType: AstNodeType.statement,
-                                      statementType: StatementNodeType.functionCall,
+                                      statementType:
+                                        StatementNodeType.functionCall,
                                       name: "motion_movesteps",
                                       arguments: [
                                         {
@@ -4641,7 +4642,8 @@ describe("Scratch AST converter", () => {
                                     },
                                     {
                                       nodeType: AstNodeType.statement,
-                                      statementType: StatementNodeType.condition,
+                                      statementType:
+                                        StatementNodeType.condition,
                                       condition: {
                                         nodeType: AstNodeType.expression,
                                         expressionType:
@@ -4666,7 +4668,8 @@ describe("Scratch AST converter", () => {
                                       },
                                       whenTrue: {
                                         nodeType: AstNodeType.statement,
-                                        statementType: StatementNodeType.sequence,
+                                        statementType:
+                                          StatementNodeType.sequence,
                                         statements: [
                                           {
                                             nodeType: AstNodeType.statement,
@@ -4688,7 +4691,8 @@ describe("Scratch AST converter", () => {
                                       },
                                       whenFalse: {
                                         nodeType: AstNodeType.statement,
-                                        statementType: StatementNodeType.sequence,
+                                        statementType:
+                                          StatementNodeType.sequence,
                                         statements: [
                                           {
                                             nodeType: AstNodeType.statement,
@@ -4737,7 +4741,8 @@ describe("Scratch AST converter", () => {
                                       },
                                       body: {
                                         nodeType: AstNodeType.statement,
-                                        statementType: StatementNodeType.sequence,
+                                        statementType:
+                                          StatementNodeType.sequence,
                                         statements: [
                                           {
                                             nodeType: AstNodeType.statement,
@@ -4757,7 +4762,8 @@ describe("Scratch AST converter", () => {
                                           },
                                           {
                                             nodeType: AstNodeType.statement,
-                                            statementType: StatementNodeType.loop,
+                                            statementType:
+                                              StatementNodeType.loop,
                                             condition: {
                                               nodeType: AstNodeType.expression,
                                               expressionType:
@@ -4795,7 +4801,8 @@ describe("Scratch AST converter", () => {
                                     },
                                     {
                                       nodeType: AstNodeType.statement,
-                                      statementType: StatementNodeType.functionCall,
+                                      statementType:
+                                        StatementNodeType.functionCall,
                                       name: "motion_sety",
                                       arguments: [
                                         {
