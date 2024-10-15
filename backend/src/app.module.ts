@@ -6,6 +6,7 @@ import { CoreModule } from "./core/core.module";
 import { UsersModule } from "./users/users.module";
 import { AstModule } from "./ast/ast.module";
 import { ClassesModule } from './classes/classes.module';
+import { AssignmentsModule } from './assignments/assignments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ClassesModule } from './classes/classes.module';
     UsersModule,
     AstModule,
     ClassesModule,
+    AssignmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
