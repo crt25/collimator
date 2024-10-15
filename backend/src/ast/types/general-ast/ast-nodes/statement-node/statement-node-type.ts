@@ -1,6 +1,5 @@
 export enum StatementNodeType {
   sequence = "sequence",
-  statement = "statement",
   condition = "condition",
   loop = "loop",
   functionDeclaration = "functionDeclaration",

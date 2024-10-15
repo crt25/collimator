@@ -164,7 +164,7 @@ export const createScratchCodeOutput = (
         },
         action: {
           nodeType: AstNodeType.statement,
-          codeType: StatementNodeType.sequence,
+          statementType: StatementNodeType.sequence,
           statements: statementNodes,
         },
       },
@@ -253,11 +253,11 @@ export const createScratchExpressionOutput = (
         },
         action: {
           nodeType: AstNodeType.statement,
-          codeType: StatementNodeType.sequence,
+          statementType: StatementNodeType.sequence,
           statements: [
             {
               nodeType: AstNodeType.statement,
-              codeType: StatementNodeType.functionCall,
+              statementType: StatementNodeType.functionCall,
               name: "motion_movesteps",
               arguments: [expressionNode],
             },

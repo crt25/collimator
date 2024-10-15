@@ -7,5 +7,5 @@ import { StatementNodeType } from "./statement-node-type";
  */
 export interface StatementNodeBase extends AstNodeBase {
   nodeType: AstNodeType.statement;
-  codeType: StatementNodeType;
+  statementType: StatementNodeType;
 }

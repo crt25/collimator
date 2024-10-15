@@ -6,7 +6,7 @@ import { StatementNodeType } from "./statement-node-type";
  * A node representing a variable declaration.
  */
 export interface VariableDeclarationNode extends StatementNodeBase {
-  codeType: StatementNodeType.variableDeclaration;
+  statementType: StatementNodeType.variableDeclaration;
 
   type?: string;
   name: string;

@@ -8,7 +8,7 @@ import { StatementNodeType } from "./statement-node-type";
  * represented by a function node with a special name.
  */
 export interface FunctionCallNode extends StatementNodeBase {
-  codeType: StatementNodeType.functionCall;
+  statementType: StatementNodeType.functionCall;
 
   name: string;
   arguments: ExpressionNode[];
