@@ -70,6 +70,14 @@ import {
   isSoundStatementBlock,
   isSoundExpressionBlock,
 } from "./scratch-sound-block-converter";
+import {
+  isExtensionExpressionBlock,
+  isExtensionStatementBlock,
+} from "./scratch-extension-block-converter";
+import {
+  ExtensionExpressionBlock,
+  ExtensionStatementBlock,
+} from "src/ast/types/input/scratch/blocks/extensions";
 
 export const createLiteralNode = (type: string, value: string): LiteralNode => {
   return {
@@ -280,7 +288,7 @@ export const isHatBlock = (
 
 export const isStatementBlock = (
   block: NonHatBlock,
-): block is KnownBuiltinScratchStatementBlock => {
+): block is KnownBuiltinScratchStatementBlock | ExtensionStatementBlock => {
   return (
     isControlStatementBlock(block) ||
     isDataStatementBlock(block) ||
@@ -289,13 +297,14 @@ export const isStatementBlock = (
     isMotionStatementBlock(block) ||
     isProcedureStatementBlock(block) ||
     isSensingStatementBlock(block) ||
-    isSoundStatementBlock(block)
+    isSoundStatementBlock(block) ||
+    isExtensionStatementBlock(block)
   );
 };
 
 export const isExpressionBlock = (
   block: NonHatBlock,
-): block is KnownBuiltinScratchExpressionBlock => {
+): block is KnownBuiltinScratchExpressionBlock | ExtensionExpressionBlock => {
   return (
     isControlExpressionBlock(block) ||
     isDataExpressionBlock(block) ||
@@ -305,6 +314,7 @@ export const isExpressionBlock = (
     isOperatorExpressionBlock(block) ||
     isProcedureExpressionBlock(block) ||
     isSensingExpressionBlock(block) ||
-    isSoundExpressionBlock(block)
+    isSoundExpressionBlock(block) ||
+    isExtensionExpressionBlock(block)
   );
 };

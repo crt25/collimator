@@ -4,7 +4,51 @@
 declare namespace VMExtended {
   export * from "../node_modules/@turbowarp/types/types/scratch-vm.d.ts";
 
-  export enum BlockType {
+  enum ArgumentType {
+    // https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extension-support/argument-type.js
+
+    /**
+     * Numeric value with angle picker
+     */
+    angle = "angle",
+
+    /**
+     * Boolean value with hexagonal placeholder
+     */
+    boolean = "Boolean",
+
+    /**
+     * Numeric value with color picker
+     */
+    color = "color",
+
+    /**
+     * Numeric value with text field
+     */
+    number = "number",
+
+    /**
+     * String value with text field
+     */
+    string = "string",
+
+    /**
+     * String value with matrix field
+     */
+    matrix = "matrix",
+
+    /**
+     * MIDI note number with note picker (piano) field
+     */
+    note = "note",
+
+    /**
+     * Inline image on block (as part of the label)
+     */
+    image = "image",
+  }
+
+  enum BlockType {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/extension-support/block-type.js
 
     /**
@@ -133,6 +177,18 @@ declare namespace VMExtended {
     _blockInfo: ExtensionInfo[];
   }
 
+  export interface ExtensionManagerExtended extends VM.ExtensionManager {
+    _registerInternalExtension: (extension: unknown) => string;
+    _loadedExtensions: Map<string, string>;
+  }
+
+  export interface Target extends VM.Target {}
+
+  export interface TargetWithCustomState<CustomState> extends VM.Target {
+    getCustomState(name: string): CustomState | undefined;
+    setCustomState(name: T, value: CustomState): void;
+  }
+
   export interface Monitor {
     get(name: string): unknown;
   }
@@ -178,6 +234,7 @@ declare namespace VMExtended {
 declare class VMExtended extends VM {
   // override
   runtime: VMExtended.RuntimeExtended;
+  extensionManager: VMExtended.ExtensionManagerExtended;
 
   // extend
   addListener: EventEmitter<VMExtended.RenderedTargetEventMapExtended>["on"];

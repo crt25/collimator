@@ -12,7 +12,6 @@ import VM, {
 import log from "@scratch-submodule/scratch-gui/src/lib/log.js";
 import Prompt from "@scratch-submodule/scratch-gui/src/containers/prompt.jsx";
 import BlocksComponent from "@scratch-submodule/scratch-gui/src/components/blocks/blocks.jsx";
-import ExtensionLibrary from "@scratch-submodule/scratch-gui/src/containers/extension-library.jsx";
 import extensionData from "@scratch-submodule/scratch-gui/src/lib/libraries/extensions/index.jsx";
 import CustomProcedures from "@scratch-submodule/scratch-gui/src/containers/custom-procedures.jsx";
 import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
@@ -53,6 +52,7 @@ import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
 import makeToolboxXML from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
+import ExtensionLibrary from "./ExtensionLibrary";
 
 const addFunctionListener = (
   object: unknown,
@@ -96,7 +96,7 @@ interface Props {
   stageSize: StageDisplaySize;
   locale: string;
   anyModalVisible?: boolean;
-  canUseCloud: boolean;
+  canUseCloud?: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
   isRtl?: boolean;
@@ -781,7 +781,9 @@ class Blocks extends React.Component<Props, State> {
 
     const showCloudOption =
       optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE &&
-      this.props.canUseCloud;
+      this.props.canUseCloud
+        ? true
+        : false;
 
     this.setState({
       prompt: {

@@ -6,6 +6,8 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@craco/craco": "^7.1.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@microbit/microbit-universal-hex": "^0.2.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.5",
@@ -52,6 +54,7 @@
     "react-popover": "^0.5.10",
     "react-redux": "^5.0.1",
     "react-responsive": "^5.0.0",
+    "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "react-style-proptype": "^3.2.2",
     "react-tabs": "^2.3.0",
@@ -84,7 +87,7 @@
     "babel-preset-react-app@npm:^10.0.1": "patch:babel-preset-react-app@npm%3A10.0.1#~/.yarn/patches/babel-preset-react-app-npm-10.0.1-a9a19b630a.patch"
   },
   "scripts": {
-    "dev": "craco start",
+    "dev": "PORT=3101 craco start",
     "build": "craco build",
     "test": "craco test",
     "test:cov": "craco test --coverage --watchAll=false --testPathIgnorePatterns=src/scratch",

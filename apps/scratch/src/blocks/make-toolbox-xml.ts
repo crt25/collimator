@@ -14,7 +14,7 @@ const motion = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   const stageSelected = ScratchBlocks.ScratchMsgs.translate(
     "MOTION_STAGE_SELECTED",
     "Stage selected: no motion blocks",
@@ -29,13 +29,6 @@ const motion = function (
         `
             : `
         <block type="motion_movesteps">
-            <value name="STEPS">
-                <shadow type="math_number">
-                    <field name="NUM">10</field>
-                </shadow>
-            </value>
-        </block>
-        <block type="test_block">
             <value name="STEPS">
                 <shadow type="math_number">
                     <field name="NUM">10</field>
@@ -160,7 +153,7 @@ const motion = function (
     `;
 };
 
-const xmlEscape = function (unsafe: string) {
+const xmlEscape = function (unsafe: string): string {
   return unsafe.replace(/[<>&'"]/g, (c: string) => {
     switch (c) {
       case "<":
@@ -186,7 +179,7 @@ const looks = function (
   costumeName: string,
   backdropName: string,
   colors: ColorSet,
-) {
+): string {
   const hello = ScratchBlocks.ScratchMsgs.translate("LOOKS_HELLO", "Hello!");
   const hmm = ScratchBlocks.ScratchMsgs.translate("LOOKS_HMM", "Hmm...");
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
@@ -346,7 +339,7 @@ const sound = function (
   targetId: string,
   soundName: string,
   colors: ColorSet,
-) {
+): string {
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
   return `
     <category name="%{BKY_CATEGORY_SOUND}" id="sound" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
@@ -407,7 +400,7 @@ const events = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
   return `
     <category name="%{BKY_CATEGORY_EVENTS}" id="events" colour="${colors.primary}" secondaryColour="${colors.tertiary}">
@@ -456,7 +449,7 @@ const control = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
   return `
     <category
@@ -517,7 +510,7 @@ const sensing = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   const name = ScratchBlocks.ScratchMsgs.translate(
     "SENSING_ASK_TEXT",
     "What's your name?",
@@ -617,7 +610,7 @@ const operators = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   const apple = ScratchBlocks.ScratchMsgs.translate(
     "OPERATORS_JOIN_APPLE",
     "apple",
@@ -827,7 +820,7 @@ const variables = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
   return `
     <category
@@ -845,7 +838,7 @@ const myBlocks = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-) {
+): string {
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
   return `
     <category

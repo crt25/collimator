@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import VM from "scratch-vm";
 import { InjectedIntl, injectIntl } from "react-intl";
 
-import GUIComponent from "../components/Gui";
+import GUIComponent from "../components/gui/Gui";
 import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
 import {
   getIsError,
@@ -34,11 +34,12 @@ import QueryParserHOC from "@scratch-submodule/scratch-gui/src/lib/query-parser-
 import storage from "@scratch-submodule/scratch-gui/src/lib/storage";
 import vmListenerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-listener-hoc.jsx";
 import vmManagerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-manager-hoc.jsx";
-import cloudManagerHOC from "@scratch-submodule/scratch-gui/src/lib/cloud-manager-hoc.jsx";
 import systemPreferencesHOC from "@scratch-submodule/scratch-gui/src/lib/system-preferences-hoc.jsx";
 
 import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isScratchDesktop.js";
 import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
+import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
+import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 
@@ -66,18 +67,16 @@ interface Props {
   isShowingProject?: boolean;
   isTotallyNormal: boolean;
   loadingStateVisible?: boolean;
-  onProjectLoaded: () => void;
+  onProjectLoaded?: () => void;
   onSeeCommunity?: () => void;
   onStorageInit: (storage: unknown) => void;
-  onUpdateProjectId: (projectId: string | number) => void;
+  onUpdateProjectId?: (projectId: string | number) => void;
   onVmInit: (vm: VM) => void;
   projectHost?: string;
   projectId: string | number;
   telemetryModalVisible?: boolean;
   isRtl: boolean;
   isFullScreen: boolean;
-  canUseCloud: boolean;
-  canSave: boolean;
   basePath: string;
 
   backpackHost: string | null;
@@ -87,14 +86,8 @@ interface Props {
   canChangeTheme: boolean;
   canCreateNew: boolean;
   canEditTitle: boolean;
-  canManageFiles: boolean;
-  canRemix: boolean;
   canCreateCopy: boolean;
-  canShare: boolean;
-  enableCommunity: boolean;
   isCreating: boolean;
-  isShared: boolean;
-  showComingSoon: boolean;
   stageSizeMode: StageSizeMode;
 }
 
@@ -149,12 +142,16 @@ class GUI extends React.Component<Props> {
 
   componentDidUpdate(prevProps: Props) {
     if (this.props.projectId !== prevProps.projectId) {
-      if (this.props.projectId !== null) {
+      if (this.props.projectId !== null && this.props.onUpdateProjectId) {
         this.props.onUpdateProjectId(this.props.projectId);
       }
       setProjectIdMetadata(this.props.projectId);
     }
-    if (this.props.isShowingProject && !prevProps.isShowingProject) {
+    if (
+      this.props.isShowingProject &&
+      !prevProps.isShowingProject &&
+      this.props.onProjectLoaded
+    ) {
       // this only notifies container when a project changes from not yet loaded to loaded
       // At this time the project view in www doesn't need to know when a project is unloaded
       this.props.onProjectLoaded();
@@ -260,8 +257,10 @@ const WrappedGui = compose(
   vmListenerHOC,
   vmManagerHOC,
   SBFileUploaderHOC,
-  cloudManagerHOC,
   systemPreferencesHOC,
 )(ConnectedGUI);
 
-export default WrappedGui;
+// Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
+const DoubleWrapedGui = AppStateHOC(HashParserHOC(WrappedGui));
+
+export default DoubleWrapedGui;
