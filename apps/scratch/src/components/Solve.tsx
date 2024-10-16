@@ -30,6 +30,7 @@ const respondToMessageEvent = (
 };
 
 export const Solve = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { sessionId, taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);

@@ -553,7 +553,9 @@ class Blocks extends React.Component<Props, State> {
     // Code inside intentionally ignores several error situations (no stage, etc.)
     // Because they would get caught by this try/catch
     try {
-      let { editingTarget: target, runtime } = this.props.vm;
+      let { editingTarget: target } = this.props.vm;
+      const { runtime } = this.props.vm;
+
       const stage = runtime.getTargetForStage();
       if (!stage) {
         throw new Error("Stage not found");
@@ -954,7 +956,16 @@ class Blocks extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: {
+  scratchGui: {
+    modals: Record<string, boolean>;
+    mode: { isFullScreen: boolean };
+    toolbox: { toolboxXML: string };
+    customProcedures: { active: boolean };
+    workspaceMetrics: { targets: Record<string, Metrics> };
+  };
+  locales: { isRtl: boolean; locale: string; messages: string };
+}) => ({
   anyModalVisible:
     Object.keys(state.scratchGui.modals).some(
       (key) => state.scratchGui.modals[key],
