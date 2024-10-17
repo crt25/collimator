@@ -2,6 +2,7 @@
 
 // extend type definition
 declare namespace VMExtended {
+  import { type ScratchCrtConfig } from "../src/vm/scratch-crt-config";
   export * from "../node_modules/@turbowarp/types/types/scratch-vm.d.ts";
 
   enum ArgumentType {
@@ -179,6 +180,8 @@ declare namespace VMExtended {
     monitorBlockInfo: MonitorBlockInfo;
 
     _blockInfo: ExtensionInfo[];
+
+    handleProjectLoaded: () => void;
   }
 
   export interface ExtensionManagerExtended extends VM.ExtensionManager {
@@ -261,6 +264,9 @@ declare class VMExtended extends VM {
   blockListener: Function;
   flyoutBlockListener: Function;
   monitorBlockListener: Function;
+
+  // add a custom config
+  crtConfig: ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {

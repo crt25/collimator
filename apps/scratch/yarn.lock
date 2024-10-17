@@ -4558,6 +4558,7 @@ __metadata:
     get-user-media-promise: "npm:1.1.4"
     immutable: "npm:^4.3.7"
     js-base64: "npm:^3.7.7"
+    jszip: "npm:^3.10.1"
     keymirror: "npm:^0.1.1"
     lodash.defaultsdeep: "npm:^4.6.1"
     omggif: "npm:^1.0.10"
@@ -11273,7 +11274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.1.5":
+"jszip@npm:^3.1.5, jszip@npm:^3.10.1":
   version: 3.10.1
   resolution: "jszip@npm:3.10.1"
   dependencies:
