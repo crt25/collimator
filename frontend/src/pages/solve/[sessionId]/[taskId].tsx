@@ -23,7 +23,7 @@ const SolveTask = () => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
   }, [sessionId, taskId]);
 
-  const embeddedApp = useRef<EmbeddedAppRef>();
+  const embeddedApp = useRef<EmbeddedAppRef | null>(null);
 
   return (
     <SolveContainer>
