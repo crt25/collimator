@@ -46,7 +46,7 @@ export const Solve = () => {
 
   // a callback function that listens for messages from the parent window
   const handleParentWindowMessage = useCallback(
-    (event: MessageEvent) => {
+    async (event: MessageEvent) => {
       if (event.source !== window.parent) {
         return;
       }
@@ -71,7 +71,30 @@ export const Solve = () => {
           if (vm) {
             respondToMessageEvent(event, {
               procedure: "getSubmission",
-              result: vm.toJSON(),
+              result: new Blob([vm.toJSON()], {
+                type: "application/json",
+              }),
+            });
+          }
+          break;
+        case "getTask":
+          if (vm) {
+            vm.saveProjectSb3().then((content) => {
+              respondToMessageEvent(event, {
+                procedure: "getTask",
+                result: content,
+              });
+            });
+          }
+          break;
+        case "loadTask":
+          if (vm) {
+            const sb3Project = await message.arguments.arrayBuffer();
+
+            vm.loadProject(sb3Project).then(() => {
+              respondToMessageEvent(event, {
+                procedure: "loadTask",
+              });
             });
           }
           break;

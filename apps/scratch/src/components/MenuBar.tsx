@@ -416,29 +416,31 @@ class MenuBar extends React.Component<Props> {
                     </MenuItem>
                   </MenuSection>
 
-                  <MenuSection>
-                    <MenuItem onClick={this.props.onStartSelectingFileUpload}>
-                      {this.props.intl.formatMessage(
-                        sharedMessages.loadFromComputerTitle,
-                      )}
-                    </MenuItem>
-                    <SB3Downloader>
-                      {(className, downloadProjectCallback) => (
-                        <MenuItem
-                          className={className}
-                          onClick={this.getSaveToComputerHandler(
-                            downloadProjectCallback,
-                          )}
-                        >
-                          <FormattedMessage
-                            defaultMessage="Save to your computer"
-                            description="Menu bar item for downloading a project to your computer" // eslint-disable-line max-len
-                            id="gui.menuBar.downloadToComputer"
-                          />
-                        </MenuItem>
-                      )}
-                    </SB3Downloader>
-                  </MenuSection>
+                  {false && (
+                    <MenuSection>
+                      <MenuItem onClick={this.props.onStartSelectingFileUpload}>
+                        {this.props.intl.formatMessage(
+                          sharedMessages.loadFromComputerTitle,
+                        )}
+                      </MenuItem>
+                      <SB3Downloader>
+                        {(className, downloadProjectCallback) => (
+                          <MenuItem
+                            className={className}
+                            onClick={this.getSaveToComputerHandler(
+                              downloadProjectCallback,
+                            )}
+                          >
+                            <FormattedMessage
+                              defaultMessage="Save to your computer"
+                              description="Menu bar item for downloading a project to your computer" // eslint-disable-line max-len
+                              id="gui.menuBar.downloadToComputer"
+                            />
+                          </MenuItem>
+                        )}
+                      </SB3Downloader>
+                    </MenuSection>
+                  )}
                 </MenuBarMenu>
               </div>
             )}

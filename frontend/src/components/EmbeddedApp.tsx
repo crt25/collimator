@@ -44,7 +44,7 @@ const postMessageToIFrame = (
 };
 
 export interface EmbeddedAppRef {
-  sendRequest<ProcedureName extends AppIFrameMessage["procedure"]>(
+  sendRequest<ProcedureName extends AppIFrameRequest["procedure"]>(
     request: Omit<AppIFrameRequest, "id" | "type"> & {
       procedure: ProcedureName;
     },

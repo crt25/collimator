@@ -9,6 +9,7 @@ export type GetHeightRequest = RemoteProcedureCallRequest<
   ProcedureName,
   undefined
 >;
+
 export type GetHeightReponse = RemoteProcedureCallResponse<
   ProcedureName,
   number
