@@ -69,6 +69,10 @@ export const buildEventXml = function (
     .map(([opCode]) => {
       const entry = eventXmlByOpCode[opCode as EventOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(isStage);
     })
     .join("");

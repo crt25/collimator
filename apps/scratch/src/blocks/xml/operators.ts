@@ -252,6 +252,10 @@ export const buildOperatorsXml = function (
     .map(([opCode]) => {
       const entry = operatorXmlByOpCode[opCode as OperatorsOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(isInitialSetup);
     })
     .join("");

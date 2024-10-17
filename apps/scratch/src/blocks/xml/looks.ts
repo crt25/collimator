@@ -230,6 +230,10 @@ export const buildLooksXml = function (
     .map(([opCode]) => {
       const entry = looksXmlByOpCode[opCode as LooksOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(isStage, targetId, costumeName, backdropName);
     })
     .join("");

@@ -176,6 +176,10 @@ export const buildMotionXml = function (
     .map(([opCode]) => {
       const entry = motionXmlByOpCode[opCode as MotionOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(targetId);
     })
     .join("");

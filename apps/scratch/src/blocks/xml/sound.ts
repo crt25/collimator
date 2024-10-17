@@ -86,6 +86,10 @@ export const buildSoundXml = function (
     .map(([opCode]) => {
       const entry = soundXmlByOpCode[opCode as SoundOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(targetId, soundName);
     })
     .join("");

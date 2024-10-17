@@ -133,6 +133,10 @@ export const buildSensingXml = function (
     .map(([opCode]) => {
       const entry = sensingXmlByOpCode[opCode as SensingOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(isStage, isInitialSetup);
     })
     .join("");

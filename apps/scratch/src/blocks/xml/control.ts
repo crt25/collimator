@@ -75,6 +75,10 @@ export const buildControlXml = function (
     .map(([opCode]) => {
       const entry = controlXmlByOpCode[opCode as ControlOpCode];
 
+      if (!entry) {
+        return "";
+      }
+
       return entry(isStage);
     })
     .join("");
