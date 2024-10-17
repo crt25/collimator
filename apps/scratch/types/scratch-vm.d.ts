@@ -2,7 +2,6 @@
 
 // extend type definition
 declare namespace VMExtended {
-  import { type ScratchCrtConfig } from "../src/vm/scratch-crt-config";
   export * from "../node_modules/@turbowarp/types/types/scratch-vm.d.ts";
 
   enum ArgumentType {
@@ -238,6 +237,11 @@ declare namespace VMExtended {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_motion.js#L47
     getMonitored?: () => Record<string, MonitorBlockInfo>;
   }
+
+  export interface ScratchCrtConfig {
+    allowedBlocks: ShowBlocks;
+  }
+  
 }
 
 declare class VMExtended extends VM {
@@ -266,7 +270,7 @@ declare class VMExtended extends VM {
   monitorBlockListener: Function;
 
   // add a custom config
-  crtConfig: ScratchCrtConfig;
+  crtConfig?: VMExtended.ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {

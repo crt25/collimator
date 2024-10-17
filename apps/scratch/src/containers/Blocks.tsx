@@ -53,6 +53,7 @@ import makeToolboxXML from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import ExtensionLibrary from "./ExtensionLibrary";
+import { addHideBlockButtons } from "../blocks/hide-block";
 
 const addFunctionListener = (
   object: unknown,
@@ -418,6 +419,14 @@ class Blocks extends React.Component<Props, State> {
     const queue = this.toolboxUpdateQueue;
     this.toolboxUpdateQueue = [];
     queue.forEach((fn) => fn());
+
+    if (this.blocks) {
+      addHideBlockButtons(
+        this.props.vm,
+        this.blocks,
+        this.requestToolboxUpdate.bind(this),
+      );
+    }
   }
 
   withToolboxUpdates(fn: () => void) {

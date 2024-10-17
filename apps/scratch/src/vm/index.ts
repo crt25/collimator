@@ -1,8 +1,11 @@
-import VM from "scratch-vm";
+import VM, { ScratchCrtConfig } from "scratch-vm";
 import JSZip from "jszip";
 import { ExtensionId } from "../extensions";
 import ExampleExtension from "../extensions/example";
-import { ScratchCrtConfig } from "./scratch-crt-config";
+
+const defaultCrtConfig: ScratchCrtConfig = {
+  allowedBlocks: {},
+};
 
 export const patchScratchVm = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
@@ -40,7 +43,9 @@ export const patchScratchVm = (vm: VM): void => {
     input: ArrayBufferView | ArrayBuffer | string | object,
   ): Promise<void> => {
     // overwrite any existing config
-    vm.crtConfig = {};
+    vm.crtConfig = {
+      ...defaultCrtConfig,
+    };
 
     if (input instanceof ArrayBuffer) {
       const zip = new JSZip();
