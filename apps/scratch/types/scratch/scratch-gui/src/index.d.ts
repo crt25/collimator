@@ -2,7 +2,7 @@
 declare module "@scratch-submodule/scratch-gui/src" {
   import { FunctionComponent, ReactNode } from "react";
   import { IntlShape } from "react-intl";
-  import { Reducer } from "redux";
+  import { Action, Reducer } from "redux";
   import VM from "scratch-vm";
 
   // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/containers/gui.jsx
@@ -110,6 +110,6 @@ declare module "@scratch-submodule/scratch-gui/src" {
   export const initLocale: unknown;
   export const localesInitialState: unknown;
   export const remixProject: unknown;
-  export const setFullScreen: unknown;
+  export const setFullScreen: (isFullScreen: boolean) => Action;
   export const setPlayer: unknown;
 }

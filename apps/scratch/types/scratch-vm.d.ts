@@ -111,8 +111,12 @@ declare namespace VMExtended {
     isDynamic: boolean;
   }
 
+  export type RotationStyle = VM.RotationStyle;
+
   export interface BlockExtended extends VM.Block {
     isMonitored: boolean;
+    x: number;
+    y: number;
   }
 
   export interface BlocksExtended extends VM.Blocks {
@@ -203,6 +207,8 @@ declare namespace VMExtended {
     SCRIPT_GLOW_OFF: [{ id: string }];
     BLOCK_GLOW_ON: [{ id: string }];
     BLOCK_GLOW_OFF: [{ id: string }];
+    BLOCK_DRAG_END: [VM.BlockExtended[]];
+    
     VISUAL_REPORT: [{ id: string; value: unknown }];
     workspaceUpdate: [{ xml: string }];
     workspaceUpdate: [{ xml: string }];
@@ -235,6 +241,14 @@ declare class VMExtended extends VM {
   // override
   runtime: VMExtended.RuntimeExtended;
   extensionManager: VMExtended.ExtensionManagerExtended;
+
+  /**
+   * Deletes the target with the given ID and any of its clones.
+   * @returns If a sprite was deleted, returns a function to undo the deletion.
+   */
+  deleteSprite(targetId: string): (() => Promise<void>) | null;
+
+  reorderTarget(oldIndex: number, newIndex: number): boolean;
 
   // extend
   addListener: EventEmitter<VMExtended.RenderedTargetEventMapExtended>["on"];

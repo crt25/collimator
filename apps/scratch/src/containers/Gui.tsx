@@ -60,7 +60,7 @@ interface Props {
   cloudHost?: string;
   error?: unknown | string;
   fetchingProject?: boolean;
-  intl?: InjectedIntl;
+  intl: InjectedIntl;
   isError?: boolean;
   isLoading?: boolean;
   isScratchDesktop: boolean;

@@ -2,13 +2,12 @@ import VM from "scratch-vm";
 import { ExtensionId } from "../extensions";
 import ExampleExtension from "../extensions/example";
 
-export const registerCustomBlocks = (vm: VM): void => {
+export const patchScratchVm = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
   vm.extensionManager.loadExtensionURL = async (
     id: string,
   ): Promise<number> => {
     // modified logic from https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extension-support/extension-manager.js#L142
-    console.log("loadExtensionURL", id);
 
     switch (id) {
       case ExtensionId.Example: {
@@ -26,4 +25,13 @@ export const registerCustomBlocks = (vm: VM): void => {
 
     return Promise.resolve(0);
   };
+
+  // add custom callback to when the greenFlag event is triggered
+  vm.runtime.on("PROJECT_START", () => {
+    console.log("Green flag clicked");
+  });
+
+  vm.runtime.on("PROJECT_RUN_STOP", () => {
+    console.log("stopped");
+  });
 };

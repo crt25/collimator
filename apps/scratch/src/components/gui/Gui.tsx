@@ -14,9 +14,7 @@ import Renderer from "scratch-render";
 import VM from "scratch-vm";
 
 import CostumeTab from "@scratch-submodule/scratch-gui/src/containers/costume-tab.jsx";
-import TargetPane from "@scratch-submodule/scratch-gui/src/containers/target-pane.jsx";
 import SoundTab from "@scratch-submodule/scratch-gui/src/containers/sound-tab.jsx";
-import StageWrapper from "@scratch-submodule/scratch-gui/src/containers/stage-wrapper.jsx";
 import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
 import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
 import CostumeLibrary from "@scratch-submodule/scratch-gui/src/containers/costume-library.jsx";
@@ -56,6 +54,8 @@ import { ReactNode } from "react";
 //import Blocks from "@scratch-submodule/scratch-gui/src/containers/blocks.jsx";
 import Blocks from "../../containers/Blocks";
 import MenuBar from "../MenuBar";
+import TargetPane from "../../containers/TargetPane";
+import StageWrapper from "../stage-wrapper/StageWrapper";
 
 const messages = defineMessages({
   addExtension: {
@@ -109,6 +109,13 @@ const GUIComponent = (props: {
   isFullScreen: boolean;
   isPlayerOnly?: boolean;
   isRtl: boolean;
+  isStageInteractive?: boolean;
+  isStageSelectorVisible?: boolean;
+  isAddNewSpriteButtonVisible?: boolean;
+  isSpriteInfoEnabled?: boolean;
+  isDeleteSpriteButtonVisible?: boolean;
+  isDuplicateSpriteButtonVisible?: boolean;
+  isExportSpriteButtonVisible?: boolean;
   loading: boolean;
   logo?: string;
   onActivateCostumesTab?: () => void;
@@ -158,6 +165,13 @@ const GUIComponent = (props: {
     isPlayerOnly,
     isRtl,
     isTelemetryEnabled,
+    isStageInteractive,
+    isStageSelectorVisible,
+    isAddNewSpriteButtonVisible,
+    isDeleteSpriteButtonVisible,
+    isDuplicateSpriteButtonVisible,
+    isExportSpriteButtonVisible,
+    isSpriteInfoEnabled,
     loading,
     logo,
     onActivateCostumesTab,
@@ -217,11 +231,7 @@ const GUIComponent = (props: {
             loading={loading}
             stageSize={STAGE_SIZE_MODES.large}
             vm={vm}
-          >
-            {alertsVisible ? (
-              <Alerts className={styles.alertsContainer} />
-            ) : null}
-          </StageWrapper>
+          />
         ) : (
           <Box
             className={styles.pageWrapper}
@@ -394,11 +404,23 @@ const GUIComponent = (props: {
                     isFullScreen={isFullScreen}
                     isRendererSupported={isRendererSupported || false}
                     isRtl={isRtl}
+                    isStageInteractive={isStageInteractive}
                     stageSize={stageSize}
                     vm={vm}
                   />
                   <Box className={styles.targetWrapper}>
-                    <TargetPane stageSize={stageSize} vm={vm} />
+                    <TargetPane
+                      isStageSelectorVisible={isStageSelectorVisible}
+                      isAddNewSpriteButtonVisible={isAddNewSpriteButtonVisible}
+                      isSpriteInfoEnabled={isSpriteInfoEnabled}
+                      isDeleteSpriteButtonVisible={isDeleteSpriteButtonVisible}
+                      isDuplicateSpriteButtonVisible={
+                        isDuplicateSpriteButtonVisible
+                      }
+                      isExportSpriteButtonVisible={isExportSpriteButtonVisible}
+                      stageSize={stageSize}
+                      vm={vm}
+                    />
                   </Box>
                 </Box>
               </Box>

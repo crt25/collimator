@@ -3,11 +3,10 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import VM from "scratch-vm";
 import Gui from "./containers/Gui";
-import { registerCustomBlocks } from "./blocks/blocks";
-import downloadBlob from "@scratch-submodule/scratch-gui/src/lib/download-blob";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Solve } from "./components/Solve";
-import { ErrorPage } from "./components/ErrorPage";
+import { Solve } from "./pages/Solve";
+import { ErrorPage } from "./pages/ErrorPage";
+import { patchScratchVm } from "./vm";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -45,14 +44,7 @@ const router = createBrowserRouter([
         onVmInit={(vm: VM) => {
           console.log("vm initialized");
 
-          // @ts-expect-error We set a property on the global window object
-          window.download = () =>
-            vm.saveProjectSb3().then((blob: Blob) => {
-              console.log(vm.toJSON());
-              downloadBlob("export.sb3", blob);
-            });
-
-          registerCustomBlocks(vm);
+          patchScratchVm(vm);
         }}
       />
     ),

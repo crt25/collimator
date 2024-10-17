@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import Gui from "../containers/Gui";
-import { registerCustomBlocks } from "../blocks/blocks";
 import VM from "scratch-vm";
 import { useCallback, useEffect, useState } from "react";
 import {
   AppIFrameMessage,
   AppIFrameResponse,
 } from "../../../../frontend/src/types/app-iframe-message";
+import { patchScratchVm } from "../vm";
 
 const respondToMessageEvent = (
   event: MessageEvent,
@@ -136,7 +136,7 @@ export const Solve = () => {
       basePath="/"
       onVmInit={(vm: VM) => {
         setVm(vm);
-        registerCustomBlocks(vm);
+        patchScratchVm(vm);
       }}
     />
   );
