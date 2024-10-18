@@ -35,6 +35,7 @@ const downloadMicrobitHex = async () => {
   );
   const relativeHexFile = path.join(relativeHexDir, hexFileName);
 
+  fs.mkdirSync(relativeHexDir, { recursive: true });
   copyFileSync(hexFile, relativeHexFile);
 
   // EDIT: Write to the git submodule
