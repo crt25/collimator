@@ -150,11 +150,11 @@ const motionXmlByOpCode: Record<MotionOpCode, (targetId: string) => string> = {
   [MotionOpCode.setrotationstyle]: () => `
     <block type="motion_setrotationstyle"/>`,
   [MotionOpCode.xposition]: (targetId) => `
-    <block id="${targetId}_xposition" type="motion_xposition"/>`,
+    <block id="${targetId}__motion_xposition" type="motion_xposition"/>`,
   [MotionOpCode.yposition]: (targetId) => `
-    <block id="${targetId}_yposition" type="motion_yposition"/>`,
+    <block id="${targetId}__motion_yposition" type="motion_yposition"/>`,
   [MotionOpCode.direction]: (targetId) => `
-    <block id="${targetId}_direction" type="motion_direction"/>`,
+    <block id="${targetId}__motion_direction" type="motion_direction"/>`,
 };
 
 /* eslint-disable no-unused-vars */
