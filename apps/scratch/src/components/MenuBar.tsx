@@ -5,8 +5,6 @@ import { FormattedMessage, InjectedIntl, injectIntl } from "react-intl";
 import bindAll from "lodash.bindall";
 import bowser from "bowser";
 
-import VM from "scratch-vm";
-
 import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
 import MenuBarMenu from "@scratch-submodule/scratch-gui/src/components/menu-bar/menu-bar-menu.jsx";
 import {
@@ -17,7 +15,6 @@ import MenuBarHOC from "@scratch-submodule/scratch-gui/src/containers/menu-bar-h
 import SettingsMenu from "@scratch-submodule/scratch-gui/src/components/menu-bar/settings-menu.jsx";
 
 import {
-  autoUpdateProject,
   getIsShowingProject,
   manualUpdateProject,
   requestNewProject,
@@ -27,7 +24,6 @@ import {
   openFileMenu,
   closeFileMenu,
   fileMenuOpen,
-  closeEditMenu,
   openLoginMenu,
   settingsMenuOpen,
   openSettingsMenu,
@@ -48,7 +44,6 @@ const MenuMarginRight = styled.div`
 `;
 
 interface Props {
-  autoUpdateProject: () => void;
   canChangeLanguage?: boolean;
   canChangeTheme?: boolean;
   canEditTask?: boolean;
@@ -57,59 +52,33 @@ interface Props {
   fileMenuOpen: boolean;
   intl: InjectedIntl;
   isRtl: boolean;
-  locale: string;
   onClickFile: () => void;
   onClickNew: (canCreateNew?: boolean) => void;
   onClickSave: () => void;
   onClickSaveAsCopy: () => void;
   onClickSettings: () => void;
-  onProjectTelemetryEvent?: (event: string, metaData: MetaData) => void;
-  onRequestCloseEdit: () => void;
   onRequestCloseFile: () => void;
   onRequestCloseSettings: () => void;
-  onStartSelectingFileUpload?: () => void;
-  projectTitle: string;
   settingsMenuOpen: boolean;
-  shouldSaveBeforeTransition: () => boolean;
-  vm: VM;
 }
 
-type ProvidedByHOC =
-  | "confirmReadyToReplaceProject"
-  | "shouldSaveBeforeTransition";
+type ProvidedByHOC = "confirmReadyToReplaceProject";
 
 type ProvidedByRedux =
   // state
   | "fileMenuOpen"
   | "isRtl"
   | "isShowingProject"
-  | "locale"
-  | "projectTitle"
   | "settingsMenuOpen"
-  | "vm"
   // dispatch
-  | "autoUpdateProject"
   | "onClickFile"
   | "onRequestCloseFile"
-  | "onRequestCloseEdit"
   | "onClickLogin"
   | "onClickSettings"
   | "onRequestCloseSettings"
   | "onClickNew"
   | "onClickSave"
   | "onClickSaveAsCopy";
-
-type MetaData = {
-  projectName: string;
-  language: string;
-  spriteCount: number;
-  blocksCount: number;
-  costumesCount: number;
-  listsCount: number;
-  scriptCount: number;
-  soundsCount: number;
-  variablesCount: number;
-};
 
 type LoadingState =
   | "NOT_LOADED"
@@ -131,14 +100,11 @@ type LoadingState =
 
 interface ReduxState {
   scratchGui: {
-    projectTitle: string;
     projectState: {
       loadingState: LoadingState;
     };
-    vm: VM;
   };
   locales: {
-    locale: string;
     isRtl: boolean;
   };
 }
@@ -271,17 +237,13 @@ const mapStateToProps = (state: ReduxState) => {
     fileMenuOpen: fileMenuOpen(state),
     isRtl: state.locales.isRtl,
     isShowingProject: getIsShowingProject(loadingState),
-    locale: state.locales.locale,
     settingsMenuOpen: settingsMenuOpen(state),
-    vm: state.scratchGui.vm,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<ReduxState>) => ({
-  autoUpdateProject: () => dispatch(autoUpdateProject()),
   onClickFile: () => dispatch(openFileMenu()),
   onRequestCloseFile: () => dispatch(closeFileMenu()),
-  onRequestCloseEdit: () => dispatch(closeEditMenu()),
   onClickLogin: () => dispatch(openLoginMenu()),
   onClickSettings: () => dispatch(openSettingsMenu()),
   onRequestCloseSettings: () => dispatch(closeSettingsMenu()),

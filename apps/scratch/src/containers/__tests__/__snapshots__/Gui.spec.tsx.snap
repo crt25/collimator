@@ -29,7 +29,7 @@ exports[`Scratch GUI Component renders the Scratch UI unchanged 1`] = `
         </div>
         <div>
           <div
-            style="transform: translate(0, -50px);"
+            style="transform: translate(0, -100px);"
           >
             <div>
               <span>
@@ -160,6 +160,16 @@ exports[`Scratch GUI Component renders the Scratch UI unchanged 1`] = `
       <div
         class=""
       />
+    </div>
+    <div
+      class=""
+    >
+      <div>
+        <div />
+        <div
+          class="css-kepzzb"
+        />
+      </div>
     </div>
     <div
       class=""
