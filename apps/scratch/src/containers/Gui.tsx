@@ -69,9 +69,9 @@ interface Props {
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
   onSeeCommunity?: () => void;
-  onStorageInit: (storage: unknown) => void;
+  onStorageInit?: (storage: unknown) => void;
   onUpdateProjectId?: (projectId: string | number) => void;
-  onVmInit: (vm: VM) => void;
+  onVmInit?: (vm: VM) => void;
   projectHost?: string;
   projectId: string | number;
   telemetryModalVisible?: boolean;
@@ -135,8 +135,13 @@ interface ReduxState {
 class GUI extends React.Component<Props> {
   componentDidMount() {
     setIsScratchDesktop(this.props.isScratchDesktop);
-    this.props.onStorageInit(storage);
-    this.props.onVmInit(this.props.vm);
+    if (this.props.onStorageInit) {
+      this.props.onStorageInit(storage);
+    }
+
+    if (this.props.onVmInit) {
+      this.props.onVmInit(this.props.vm);
+    }
     setProjectIdMetadata(this.props.projectId);
   }
 

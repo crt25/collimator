@@ -90,7 +90,7 @@
   "scripts": {
     "dev": "PORT=3101 craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "craco test --watchAll=false --testPathIgnorePatterns=src/scratch",
     "test:cov": "craco test --coverage --watchAll=false --testPathIgnorePatterns=src/scratch",
     "eject": "react-scripts eject",
     "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
@@ -126,7 +126,14 @@
       "__tests__",
       "\\.d\\.ts$",
       "\\.spec\\.(t|j)sx?$"
-    ]
+    ],
+    "moduleNameMapper": {
+      "@scratch-submodule/(.*)": "<rootDir>/src/scratch/$1",
+      "!ify-loader!(.*)": "<rootDir>/node_modules/$1",
+      "!arraybuffer-loader!(.*)": "<rootDir>/src/tests/binary.ts",
+      "!raw-loader!(.*)": "<rootDir>/src/tests/binary.ts",
+      "!base64-loader!(.*)": "<rootDir>/src/tests/binary.ts"
+    }
   },
   "packageManager": "yarn@4.5.0",
   "devDependencies": {
@@ -151,6 +158,8 @@
     "@types/react-responsive": "^8.0.8",
     "@types/react-tabs": "^2.3.0",
     "@types/react-virtualized": "^9",
-    "@types/wav-encoder": "^1"
+    "@types/wav-encoder": "^1",
+    "jest-canvas-mock": "^2.5.2",
+    "standardized-audio-context-mock": "^9.7.11"
   }
 }

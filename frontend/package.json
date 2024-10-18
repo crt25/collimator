@@ -46,7 +46,8 @@
     "prettier": "^3.3.3",
     "sass": "^1.79.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-for-expect": "^3.0.2"
   },
   "packageManager": "yarn@4.5.0"
 }

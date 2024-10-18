@@ -14,7 +14,7 @@ const SolveContainer = styled.div`
   flex-direction: column;
 `;
 
-const SolveTask = () => {
+const SolveTaskPage = () => {
   const router = useRouter();
   const { sessionId, taskId } = router.query as {
     sessionId: string;
@@ -75,8 +75,6 @@ const SolveTask = () => {
     if (result.type === "application/json") {
       const json = await result.text();
       console.log(json);
-    } else {
-      console.log("result", result);
     }
   }, []);
 
@@ -85,9 +83,18 @@ const SolveTask = () => {
       <Container>
         <Row>
           <Col xs={12}>
-            <div onClick={onLoadTask}>Load Task</div>
-            <div onClick={onSaveTask}>Save Task</div>
-            <div onClick={onSubmitSolution}>Submit Task</div>
+            <div onClick={onLoadTask} data-testid="load-task-button">
+              Load Task
+            </div>
+            <div onClick={onSaveTask} data-testid="save-task-button">
+              Save Task
+            </div>
+            <div
+              onClick={onSubmitSolution}
+              data-testid="submit-solution-button"
+            >
+              Submit Task
+            </div>
           </Col>
         </Row>
       </Container>
@@ -96,4 +103,4 @@ const SolveTask = () => {
   );
 };
 
-export default SolveTask;
+export default SolveTaskPage;

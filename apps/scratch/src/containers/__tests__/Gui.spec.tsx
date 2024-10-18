@@ -1,6 +1,9 @@
-describe("Test GUI Component", () => {
-  it("runs a simple test", () => {
-    expect(1).toEqual(1);
-    expect(true).toBeTruthy();
+import { render } from "@testing-library/react";
+import Gui from "../Gui";
+
+describe("Scratch GUI Component", () => {
+  it("renders the Scratch UI unchanged", () => {
+    const { container } = render(<Gui />);
+    expect(container).toMatchSnapshot();
   });
 });

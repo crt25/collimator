@@ -1697,7 +1697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.18.3":
+"@babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.25.6, @babel/runtime@npm:^7.25.7":
   version: 7.25.7
   resolution: "@babel/runtime@npm:7.25.7"
   dependencies:
@@ -2834,12 +2834,57 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinonjs/commons@npm:^3.0.0, @sinonjs/commons@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@sinonjs/commons@npm:3.0.1"
+  dependencies:
+    type-detect: "npm:4.0.8"
+  checksum: 10c0/1227a7b5bd6c6f9584274db996d7f8cee2c8c350534b9d0141fc662eaf1f292ea0ae3ed19e5e5271c8fd390d27e492ca2803acd31a1978be2cdc6be0da711403
+  languageName: node
+  linkType: hard
+
+"@sinonjs/fake-timers@npm:^10.3.0":
+  version: 10.3.0
+  resolution: "@sinonjs/fake-timers@npm:10.3.0"
+  dependencies:
+    "@sinonjs/commons": "npm:^3.0.0"
+  checksum: 10c0/2e2fb6cc57f227912814085b7b01fede050cd4746ea8d49a1e44d5a0e56a804663b0340ae2f11af7559ea9bf4d087a11f2f646197a660ea3cb04e19efc04aa63
+  languageName: node
+  linkType: hard
+
+"@sinonjs/fake-timers@npm:^11.2.2":
+  version: 11.3.1
+  resolution: "@sinonjs/fake-timers@npm:11.3.1"
+  dependencies:
+    "@sinonjs/commons": "npm:^3.0.1"
+  checksum: 10c0/c4f96ea7c3ab0e1a5fc1e2e1201e984a9302841a9fb10059120ce3b6789dae0f851c8827cf16b052a6f87db9a098cdd36f7067246e7a9b71da1d5a2c3d3a9f3d
+  languageName: node
+  linkType: hard
+
 "@sinonjs/fake-timers@npm:^8.0.1":
   version: 8.1.0
   resolution: "@sinonjs/fake-timers@npm:8.1.0"
   dependencies:
     "@sinonjs/commons": "npm:^1.7.0"
   checksum: 10c0/d6b795f9ddaf044daf184c151555ca557ccd23636f2ee3d2f76a9d128329f81fc1aac412f6f67239ab92cb9390aad9955b71df93cf4bd442c68b1f341e381ab6
+  languageName: node
+  linkType: hard
+
+"@sinonjs/samsam@npm:^8.0.0":
+  version: 8.0.2
+  resolution: "@sinonjs/samsam@npm:8.0.2"
+  dependencies:
+    "@sinonjs/commons": "npm:^3.0.1"
+    lodash.get: "npm:^4.4.2"
+    type-detect: "npm:^4.1.0"
+  checksum: 10c0/31d74c415040161f2963a202d7f866bedbb5a9b522a74b08a17086c15a75c3ef2893eecebb0c65a7b1603ef4ebdf83fa73cbe384b4cd679944918ed833200443
+  languageName: node
+  linkType: hard
+
+"@sinonjs/text-encoding@npm:^0.7.2":
+  version: 0.7.3
+  resolution: "@sinonjs/text-encoding@npm:0.7.3"
+  checksum: 10c0/b112d1e97af7f99fbdc63c7dbcd35d6a60764dfec85cfcfff532e55cce8ecd8453f9fa2139e70aea47142c940fd90cd201d19f370b9a0141700d8a6de3116815
   languageName: node
   linkType: hard
 
@@ -4557,6 +4602,7 @@ __metadata:
     get-float-time-domain-data: "npm:^0.1.0"
     get-user-media-promise: "npm:1.1.4"
     immutable: "npm:^4.3.7"
+    jest-canvas-mock: "npm:^2.5.2"
     js-base64: "npm:^3.7.7"
     jszip: "npm:^3.10.1"
     keymirror: "npm:^0.1.1"
@@ -4596,6 +4642,7 @@ __metadata:
     scratch-storage: "npm:^2.3.255"
     scratch-svg-renderer: "npm:^2.4.15"
     scratch-vm: "patch:scratch-vm@npm%3A4.6.29#~/.yarn/patches/scratch-vm-npm-4.6.29-f3a8bb62d5.patch"
+    standardized-audio-context-mock: "npm:^9.7.11"
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^4.0.0"
     to-style: "npm:^1.3.3"
@@ -4869,6 +4916,16 @@ __metadata:
     webpack:
       optional: true
   checksum: 10c0/3d1a55e5e1687490dd3d9a7293000af8102cc3e74fe7863ba78df042b7cf1748a8db1f50d59ff978f6d5b2637a37a6cd8c00319667b8e647156c558ea1f25d09
+  languageName: node
+  linkType: hard
+
+"automation-events@npm:^7.0.9, automation-events@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "automation-events@npm:7.1.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.25.7"
+    tslib: "npm:^2.8.0"
+  checksum: 10c0/1a69290604dde54ec74d3d4fefc0baf3d5ccb0f3aed7cdb904956447b9b6c1c7ab744a910368ce7bd59239e08f5266fafd08c246c3d6850f3872e49ab26ceff0
   languageName: node
   linkType: hard
 
@@ -5827,7 +5884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-name@npm:~1.1.4":
+"color-name@npm:^1.1.4, color-name@npm:~1.1.4":
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: 10c0/a1a3f914156960902f46f7f56bc62effc6c94e84b2cae157a526b1c1f74b677a47ec602bf68a61abfa2b42d15b7c5651c6dbe72a43af720bc588dff885b10f95
@@ -6347,6 +6404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cssfontparser@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "cssfontparser@npm:1.2.1"
+  checksum: 10c0/ceb9b2976d503dbff3ac2aff0229b263affb4fb221a6947b357682cd8a952f6995253646ca5f820020d2fe05b5e29b56dbdd2343388c32203e8dd0ed15bdc1ca
+  languageName: node
+  linkType: hard
+
 "cssnano-preset-default@npm:^5.2.14":
   version: 5.2.14
   resolution: "cssnano-preset-default@npm:5.2.14"
@@ -6848,6 +6912,13 @@ __metadata:
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
   checksum: 10c0/81b91f9d39c4eaca068eb0c1eb0e4afbdc5bb2941d197f513dd596b820b956fef43485876226d65d497bebc15666aa2aa82c679e84f65d5f2bfbf14ee46e32c1
+  languageName: node
+  linkType: hard
+
+"diff@npm:^5.1.0":
+  version: 5.2.0
+  resolution: "diff@npm:5.2.0"
+  checksum: 10c0/aed0941f206fe261ecb258dc8d0ceea8abbde3ace5827518ff8d302f0fc9cc81ce116c4d8f379151171336caf0516b79e01abdc1ed1201b6440d895a66689eb4
   languageName: node
   linkType: hard
 
@@ -10310,6 +10381,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-canvas-mock@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "jest-canvas-mock@npm:2.5.2"
+  dependencies:
+    cssfontparser: "npm:^1.2.1"
+    moo-color: "npm:^1.0.2"
+  checksum: 10c0/6a4190354b1e9aedcb3045273f13f6f1d2d1efb00cfe6458707fae538a8f91f6afdf72b9e201b653666863054edc783428bdc0c1a2c71d66d9ac364b4893f6d6
+  languageName: node
+  linkType: hard
+
 "jest-changed-files@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-changed-files@npm:27.5.1"
@@ -11286,6 +11367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"just-extend@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "just-extend@npm:6.2.0"
+  checksum: 10c0/d41cbdb6d85b986d4deaf2144d81d4f7266cd408fc95189d046d63f610c2dc486b141aeb6ef319c2d76fe904d45a6bb31f19b098ff0427c35688e0c383fc0511
+  languageName: node
+  linkType: hard
+
 "keymirror@npm:^0.1.1":
   version: 0.1.1
   resolution: "keymirror@npm:0.1.1"
@@ -11543,6 +11631,13 @@ __metadata:
   version: 4.6.1
   resolution: "lodash.defaultsdeep@npm:4.6.1"
   checksum: 10c0/0031ca3055d5482fc2e9b55d0ee174a3e956039996fac52dbe94ca67eb50bb72ffc75d0eb86bcc782fefc597ebbc1798df941f27382bec23138e53180427700b
+  languageName: node
+  linkType: hard
+
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: 10c0/48f40d471a1654397ed41685495acb31498d5ed696185ac8973daef424a749ca0c7871bf7b665d5c14f5cc479394479e0307e781f61d5573831769593411be6e
   languageName: node
   linkType: hard
 
@@ -12121,6 +12216,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moo-color@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "moo-color@npm:1.0.3"
+  dependencies:
+    color-name: "npm:^1.1.4"
+  checksum: 10c0/778c82f67f638c03a1d0fa78dcd6ea376a9f17b5e78e349c7e34a290b496dbdb43fd0b1c38070e2062d5e784bcf08e57f499015fcbcf52b3a1887d7825ebb80d
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -12201,6 +12305,19 @@ __metadata:
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: 10c0/c2f5a604a54a8ec5438a342e1f356dff4bc33ccccdb6dc668d94fe8e5eccfc9d2c2eea6064b0967a767ba63b33763f51ccf2cd2441b461a7322656c1f06b3f5d
+  languageName: node
+  linkType: hard
+
+"nise@npm:^5.1.4":
+  version: 5.1.9
+  resolution: "nise@npm:5.1.9"
+  dependencies:
+    "@sinonjs/commons": "npm:^3.0.0"
+    "@sinonjs/fake-timers": "npm:^11.2.2"
+    "@sinonjs/text-encoding": "npm:^0.7.2"
+    just-extend: "npm:^6.2.0"
+    path-to-regexp: "npm:^6.2.1"
+  checksum: 10c0/a44318e6de738b34a1f51b4b478f97f5b40a5a27175be4bf13f6e5b8e67aa70d0b3f51c77a966d6617fccdc3b436c675a89be57424833e6d8a290367faa66b28
   languageName: node
   linkType: hard
 
@@ -12835,6 +12952,13 @@ __metadata:
   version: 0.1.10
   resolution: "path-to-regexp@npm:0.1.10"
   checksum: 10c0/34196775b9113ca6df88e94c8d83ba82c0e1a2063dd33bfe2803a980da8d49b91db8104f49d5191b44ea780d46b8670ce2b7f4a5e349b0c48c6779b653f1afe4
+  languageName: node
+  linkType: hard
+
+"path-to-regexp@npm:^6.2.1":
+  version: 6.3.0
+  resolution: "path-to-regexp@npm:6.3.0"
+  checksum: 10c0/73b67f4638b41cde56254e6354e46ae3a2ebc08279583f6af3d96fe4664fc75788f74ed0d18ca44fa4a98491b69434f9eee73b97bb5314bd1b5adb700f5c18d6
   languageName: node
   linkType: hard
 
@@ -15665,6 +15789,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sinon@npm:^16.0.0":
+  version: 16.1.3
+  resolution: "sinon@npm:16.1.3"
+  dependencies:
+    "@sinonjs/commons": "npm:^3.0.0"
+    "@sinonjs/fake-timers": "npm:^10.3.0"
+    "@sinonjs/samsam": "npm:^8.0.0"
+    diff: "npm:^5.1.0"
+    nise: "npm:^5.1.4"
+    supports-color: "npm:^7.2.0"
+  checksum: 10c0/a30e80cb9293cc2954074a461349ac7df1fd0c1ed746c6828b65ea908711b8b4b6598182252c3971bf60bba134a492dc1c294b54919f073f3b29acced76de411
+  languageName: node
+  linkType: hard
+
 "sisteransi@npm:^1.0.5":
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
@@ -15981,6 +16119,31 @@ __metadata:
   version: 1.3.4
   resolution: "stackframe@npm:1.3.4"
   checksum: 10c0/18410f7a1e0c5d211a4effa83bdbf24adbe8faa8c34db52e1cd3e89837518c592be60b60d8b7270ac53eeeb8b807cd11b399a41667f6c9abb41059c3ccc8a989
+  languageName: node
+  linkType: hard
+
+"standardized-audio-context-mock@npm:^9.7.11":
+  version: 9.7.11
+  resolution: "standardized-audio-context-mock@npm:9.7.11"
+  dependencies:
+    "@babel/runtime": "npm:^7.25.7"
+    automation-events: "npm:^7.1.1"
+    sinon: "npm:^16.0.0"
+    standardized-audio-context: "npm:^25.3.77"
+    tslib: "npm:^2.8.0"
+    vehicles: "npm:^10.0.9"
+  checksum: 10c0/549c59ade907a9b67794ef5f6293de21069ef395249ef26c5d67bdcc23803d91cff4e47a1860796dd8d7a9c72aae8eaf91fcacc69a8dc56a96f702f3e8183006
+  languageName: node
+  linkType: hard
+
+"standardized-audio-context@npm:^25.3.77":
+  version: 25.3.77
+  resolution: "standardized-audio-context@npm:25.3.77"
+  dependencies:
+    "@babel/runtime": "npm:^7.25.6"
+    automation-events: "npm:^7.0.9"
+    tslib: "npm:^2.7.0"
+  checksum: 10c0/41d5e3a64b881691fecd709313045ab9bddb864ed79c6eb51490056cec080e808e9f5b3ef94d734567b9da88f9c95e68cc63a3a0343374b2f865b1a961fb46ef
   languageName: node
   linkType: hard
 
@@ -16376,7 +16539,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0":
+"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0, supports-color@npm:^7.2.0":
   version: 7.2.0
   resolution: "supports-color@npm:7.2.0"
   dependencies:
@@ -16907,6 +17070,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:^2.7.0, tslib@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "tslib@npm:2.8.0"
+  checksum: 10c0/31e4d14dc1355e9b89e4d3c893a18abb7f90b6886b089c2da91224d0a7752c79f3ddc41bc1aa0a588ac895bd97bb99c5bc2bfdb2f86de849f31caeb3ba79bbe5
+  languageName: node
+  linkType: hard
+
 "tsutils@npm:^3.21.0":
   version: 3.21.0
   resolution: "tsutils@npm:3.21.0"
@@ -16963,6 +17133,13 @@ __metadata:
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 10c0/8fb9a51d3f365a7de84ab7f73b653534b61b622aa6800aecdb0f1095a4a646d3f5eb295322127b6573db7982afcd40ab492d038cf825a42093a58b1e1353e0bd
+  languageName: node
+  linkType: hard
+
+"type-detect@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "type-detect@npm:4.1.0"
+  checksum: 10c0/df8157ca3f5d311edc22885abc134e18ff8ffbc93d6a9848af5b682730ca6a5a44499259750197250479c5331a8a75b5537529df5ec410622041650a7f293e2a
   languageName: node
   linkType: hard
 
@@ -17386,6 +17563,17 @@ __metadata:
   version: 1.1.2
   resolution: "vary@npm:1.1.2"
   checksum: 10c0/f15d588d79f3675135ba783c91a4083dcd290a2a5be9fcb6514220a1634e23df116847b1cc51f66bfb0644cf9353b2abb7815ae499bab06e46dd33c1a6bf1f4f
+  languageName: node
+  linkType: hard
+
+"vehicles@npm:^10.0.9":
+  version: 10.0.9
+  resolution: "vehicles@npm:10.0.9"
+  dependencies:
+    "@babel/runtime": "npm:^7.25.7"
+    decimal.js: "npm:^10.4.3"
+    tslib: "npm:^2.8.0"
+  checksum: 10c0/c71d6d7759d85045c995177d421e4a7a50777e22a8b52f209facf9ed3b591ca2be6f745a66cb3241c88aaf2a1943052ba1f1cbf81e888fc3a1cfdfeaac9c5443
   languageName: node
   linkType: hard
 

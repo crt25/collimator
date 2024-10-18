@@ -27,6 +27,13 @@ const config: Config = {
 
   // The test environment that will be used for testing
   testEnvironment: "jsdom",
+
+  // support custom module mappings
+  moduleNameMapper: {
+    "@/(.*)": "<rootDir>/src/$1",
+  },
+
+  setupFiles: ["<rootDir>/tests/polyfill.ts"],
 };
 
 export default createJestConfig(config);

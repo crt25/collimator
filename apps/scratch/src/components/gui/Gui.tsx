@@ -50,7 +50,6 @@ import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
 import { ReactNode } from "react";
 
-//import Blocks from "@scratch-submodule/scratch-gui/src/containers/blocks.jsx";
 import Blocks from "../../containers/Blocks";
 import MenuBar from "../MenuBar";
 import TargetPane from "../../containers/TargetPane";

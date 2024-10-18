@@ -2573,6 +2573,7 @@ __metadata:
     swr: "npm:^2.2.5"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5"
+    wait-for-expect: "npm:^3.0.2"
   languageName: unknown
   linkType: soft
 
@@ -7417,6 +7418,13 @@ __metadata:
   dependencies:
     xml-name-validator: "npm:^4.0.0"
   checksum: 10c0/02cc66d6efc590bd630086cd88252444120f5feec5c4043932b0d0f74f8b060512f79dc77eb093a7ad04b4f02f39da79ce4af47ceb600f2bf9eacdc83204b1a8
+  languageName: node
+  linkType: hard
+
+"wait-for-expect@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "wait-for-expect@npm:3.0.2"
+  checksum: 10c0/9616b82381f6571a0f3ed235a62ecdaf529816c9eef04f665ee1b8b515c3b7e1dc90d781111b6284bb777f45c4742f6c058d549a44d9d6e367ffd4d34f5f3b9e
   languageName: node
   linkType: hard
 

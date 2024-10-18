@@ -51,7 +51,7 @@ export interface EmbeddedAppRef {
   ): Promise<AppIFrameResponse & { procedure: ProcedureName }>;
 }
 
-interface Props {
+export interface Props {
   src: string;
 }
 
