@@ -20,7 +20,6 @@ import {
 import {
   closeCostumeLibrary,
   closeBackdropLibrary,
-  closeTelemetryModal,
   openExtensionLibrary,
 } from "@scratch-submodule/scratch-gui/src/reducers/modals";
 
@@ -74,7 +73,6 @@ interface Props {
   onVmInit: (vm: VM) => void;
   projectHost?: string;
   projectId: string | number;
-  telemetryModalVisible?: boolean;
   isRtl: boolean;
   isFullScreen: boolean;
   basePath: string;
@@ -116,7 +114,6 @@ interface ReduxState {
       connectionModal: boolean;
       costumeLibrary: boolean;
       loadingProject: boolean;
-      telemetryModal: boolean;
       tipsLibrary: boolean;
     };
     targets: {
@@ -223,7 +220,6 @@ const mapStateToProps = (state: ReduxState) => {
       state.scratchGui.targets.stage &&
       state.scratchGui.targets.stage.id ===
         state.scratchGui.targets.editingTarget,
-    telemetryModalVisible: state.scratchGui.modals.telemetryModal,
     tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
     vm: state.scratchGui.vm,
   };
@@ -236,7 +232,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
   onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
   onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
-  onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
 });
 
 const ConnectedGUI = injectIntl(

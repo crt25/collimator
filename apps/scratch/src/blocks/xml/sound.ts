@@ -18,7 +18,7 @@ const soundXmlByOpCode: Record<
   (targetId: string, soundName: string) => string
 > = {
   [SoundOpCode.playuntildone]: (targetId, soundName) => `
-        <block id="${targetId}_sound_playuntildone" type="sound_playuntildone">
+        <block id="${targetId}__sound_playuntildone" type="sound_playuntildone">
             <value name="SOUND_MENU">
                 <shadow type="sound_sounds_menu">
                     <field name="SOUND_MENU">${soundName}</field>
@@ -26,7 +26,7 @@ const soundXmlByOpCode: Record<
             </value>
         </block>`,
   [SoundOpCode.play]: (targetId, soundName) => `
-        <block id="${targetId}_sound_play" type="sound_play">
+        <block id="${targetId}__sound_play" type="sound_play">
             <value name="SOUND_MENU">
                 <shadow type="sound_sounds_menu">
                     <field name="SOUND_MENU">${soundName}</field>
@@ -70,7 +70,7 @@ const soundXmlByOpCode: Record<
             </value>
         </block>`,
   [SoundOpCode.volume]: (targetId) => `
-        <block id="${targetId}_volume" type="sound_volume"/>`,
+        <block id="${targetId}__sound_volume" type="sound_volume"/>`,
 };
 
 export const buildSoundXml = function (
