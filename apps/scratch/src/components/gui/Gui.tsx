@@ -14,12 +14,9 @@ import Renderer from "scratch-render";
 import VM from "scratch-vm";
 
 import CostumeTab from "@scratch-submodule/scratch-gui/src/containers/costume-tab.jsx";
-import TargetPane from "@scratch-submodule/scratch-gui/src/containers/target-pane.jsx";
 import SoundTab from "@scratch-submodule/scratch-gui/src/containers/sound-tab.jsx";
-import StageWrapper from "@scratch-submodule/scratch-gui/src/containers/stage-wrapper.jsx";
 import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
 import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
-import MenuBar from "@scratch-submodule/scratch-gui/src/components/menu-bar/menu-bar.jsx";
 import CostumeLibrary from "@scratch-submodule/scratch-gui/src/containers/costume-library.jsx";
 import BackdropLibrary from "@scratch-submodule/scratch-gui/src/containers/backdrop-library.jsx";
 import Watermark from "@scratch-submodule/scratch-gui/src/containers/watermark.jsx";
@@ -31,7 +28,6 @@ import Cards from "@scratch-submodule/scratch-gui/src/containers/cards.jsx";
 import Alerts from "@scratch-submodule/scratch-gui/src/containers/alerts.jsx";
 import DragLayer from "@scratch-submodule/scratch-gui/src/containers/drag-layer.jsx";
 import ConnectionModal from "@scratch-submodule/scratch-gui/src/containers/connection-modal.jsx";
-import TelemetryModal from "@scratch-submodule/scratch-gui/src/components/telemetry-modal/telemetry-modal.jsx";
 
 import layout, {
   BLOCKS_DEFAULT_SCALE,
@@ -46,15 +42,17 @@ import {
   themeMap,
 } from "@scratch-submodule/scratch-gui/src/lib/themes";
 
-import styles from "@scratch-submodule/scratch-gui/src/components/gui/gui.css";
+import styles from "./gui.css";
 import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--extensions.svg";
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
 import { ReactNode } from "react";
 
-//import Blocks from "@scratch-submodule/scratch-gui/src/containers/blocks.jsx";
-import Blocks from "../containers/Blocks";
+import Blocks from "../../containers/Blocks";
+import MenuBar from "../MenuBar";
+import TargetPane from "../../containers/TargetPane";
+import StageWrapper from "../stage-wrapper/StageWrapper";
 
 const messages = defineMessages({
   addExtension: {
@@ -79,12 +77,9 @@ const GUIComponent = (props: {
   cloudHost?: string;
   fetchingProject?: boolean;
   isLoading?: boolean;
-  isScratchDesktop?: boolean;
   isShowingProject?: boolean;
-  isTotallyNormal: boolean;
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
-  onSeeCommunity?: () => void;
   onStorageInit?: () => void;
   onUpdateProjectId?: () => void;
   onVmInit?: () => void;
@@ -92,78 +87,51 @@ const GUIComponent = (props: {
 
   alertsVisible?: boolean;
   connectionModalVisible?: boolean;
-  isTelemetryEnabled?: boolean;
-  accountNavOpen?: boolean;
   activeTabIndex?: number;
-  authorId?: string | boolean; // can be false
-  authorThumbnailUrl?: string;
-  authorUsername?: string | boolean; // can be false
   backdropLibraryVisible?: boolean;
-  backpackHost: string | null;
-  backpackVisible: boolean;
+  backpackHost?: string | null;
+  backpackVisible?: boolean;
   basePath: string;
   blocksTabVisible?: boolean;
   blocksId?: string;
-  canChangeLanguage: boolean;
-  canChangeTheme: boolean;
-  canCreateCopy: boolean;
-  canCreateNew: boolean;
-  canEditTitle: boolean;
-  canManageFiles: boolean;
-  canRemix: boolean;
-  canSave: boolean;
-  canShare: boolean;
-  canUseCloud: boolean;
+  canChangeLanguage?: boolean;
+  canChangeTheme?: boolean;
+  showMenuBar?: boolean;
+  canEditTask?: boolean;
   cardsVisible?: boolean;
   costumeLibraryVisible?: boolean;
   costumesTabVisible?: boolean;
-  enableCommunity: boolean;
   isCreating: boolean;
   isFullScreen: boolean;
   isPlayerOnly?: boolean;
   isRtl: boolean;
-  isShared: boolean;
+  isStageInteractive?: boolean;
+  isStageSelectorVisible?: boolean;
+  isAddNewSpriteButtonVisible?: boolean;
+  isSpriteInfoEnabled?: boolean;
+  isDeleteSpriteButtonVisible?: boolean;
+  isDuplicateSpriteButtonVisible?: boolean;
+  isExportSpriteButtonVisible?: boolean;
   loading: boolean;
   logo?: string;
   onActivateCostumesTab?: () => void;
   onActivateSoundsTab?: () => void;
   onActivateTab?: () => void;
-  onClickAccountNav?: () => void;
-  onClickLogo?: () => void;
-  onCloseAccountNav?: () => void;
   onExtensionButtonClick?: () => void;
-  onLogOut?: () => void;
-  onOpenRegistration?: () => void;
   onRequestCloseBackdropLibrary?: () => void;
   onRequestCloseCostumeLibrary?: () => void;
-  onRequestCloseTelemetryModal?: () => void;
-  onShare?: () => void;
   onShowPrivacyPolicy?: () => void;
-  onStartSelectingFileUpload?: () => void;
   onTabSelect?: () => void;
-  onTelemetryModalCancel?: () => void;
-  onTelemetryModalOptIn?: () => void;
-  onTelemetryModalOptOut?: () => void;
-  onToggleLoginOpen?: () => void;
-  renderLogin?: () => void;
-  onProjectTelemetryEvent?: () => void;
-  onClickAbout?: () => void;
-  showComingSoon: boolean;
   soundsTabVisible?: boolean;
   // see https://github.com/scratchfoundation/scratch-gui/blob/d678d609e182ccc5ab557d7d45a3cc3e6430b056/src/lib/layout-constants.js#L7
   stageSizeMode: StageSizeMode;
   targetIsStage?: boolean;
-  telemetryModalVisible?: boolean;
   theme: ColorTheme;
   tipsLibraryVisible?: boolean;
 }) => {
   const {
-    accountNavOpen,
     activeTabIndex,
     alertsVisible,
-    authorId,
-    authorThumbnailUrl,
-    authorUsername,
     basePath,
     backdropLibraryVisible,
     backpackHost,
@@ -173,57 +141,34 @@ const GUIComponent = (props: {
     cardsVisible,
     canChangeLanguage,
     canChangeTheme,
-    canCreateNew,
-    canEditTitle,
-    canManageFiles,
-    canRemix,
-    canSave,
-    canCreateCopy,
-    canShare,
-    canUseCloud,
+    showMenuBar,
+    canEditTask,
     children,
     connectionModalVisible,
     costumeLibraryVisible,
     costumesTabVisible,
-    enableCommunity,
     intl,
     isCreating,
     isFullScreen,
     isPlayerOnly,
     isRtl,
-    isShared,
-    isTelemetryEnabled,
-    isTotallyNormal,
+    isStageInteractive,
+    isStageSelectorVisible,
+    isAddNewSpriteButtonVisible,
+    isDeleteSpriteButtonVisible,
+    isDuplicateSpriteButtonVisible,
+    isExportSpriteButtonVisible,
+    isSpriteInfoEnabled,
     loading,
-    logo,
-    renderLogin,
-    onClickAbout,
-    onClickAccountNav,
-    onCloseAccountNav,
-    onLogOut,
-    onOpenRegistration,
-    onToggleLoginOpen,
     onActivateCostumesTab,
     onActivateSoundsTab,
     onActivateTab,
-    onClickLogo,
     onExtensionButtonClick,
-    onProjectTelemetryEvent,
     onRequestCloseBackdropLibrary,
     onRequestCloseCostumeLibrary,
-    onRequestCloseTelemetryModal,
-    onSeeCommunity,
-    onShare,
-    onShowPrivacyPolicy,
-    onStartSelectingFileUpload,
-    onTelemetryModalCancel,
-    onTelemetryModalOptIn,
-    onTelemetryModalOptOut,
-    showComingSoon,
     soundsTabVisible,
     stageSizeMode,
     targetIsStage,
-    telemetryModalVisible,
     theme,
     tipsLibraryVisible,
     vm,
@@ -263,28 +208,13 @@ const GUIComponent = (props: {
             loading={loading}
             stageSize={STAGE_SIZE_MODES.large}
             vm={vm}
-          >
-            {alertsVisible ? (
-              <Alerts className={styles.alertsContainer} />
-            ) : null}
-          </StageWrapper>
+          />
         ) : (
           <Box
             className={styles.pageWrapper}
             dir={isRtl ? "rtl" : "ltr"}
             {...componentProps}
           >
-            {telemetryModalVisible ? (
-              <TelemetryModal
-                isRtl={isRtl}
-                isTelemetryEnabled={isTelemetryEnabled}
-                onCancel={onTelemetryModalCancel}
-                onOptIn={onTelemetryModalOptIn}
-                onOptOut={onTelemetryModalOptOut}
-                onRequestClose={onRequestCloseTelemetryModal}
-                onShowPrivacyPolicy={onShowPrivacyPolicy}
-              />
-            ) : null}
             {loading ? <Loader /> : null}
             {isCreating ? <Loader messageId="gui.loader.creating" /> : null}
             {isRendererSupported ? null : <WebGlModal isRtl={isRtl} />}
@@ -306,40 +236,22 @@ const GUIComponent = (props: {
                 onRequestClose={onRequestCloseBackdropLibrary}
               />
             ) : null}
-            <MenuBar
-              accountNavOpen={accountNavOpen}
-              authorId={authorId}
-              authorThumbnailUrl={authorThumbnailUrl}
-              authorUsername={authorUsername}
-              canChangeLanguage={canChangeLanguage}
-              canChangeTheme={canChangeTheme}
-              canCreateCopy={canCreateCopy}
-              canCreateNew={canCreateNew}
-              canEditTitle={canEditTitle}
-              canManageFiles={canManageFiles}
-              canRemix={canRemix}
-              canSave={canSave}
-              canShare={canShare}
-              className={styles.menuBarPosition}
-              enableCommunity={enableCommunity}
-              isShared={isShared}
-              isTotallyNormal={isTotallyNormal}
-              logo={logo}
-              renderLogin={renderLogin}
-              showComingSoon={showComingSoon}
-              onClickAbout={onClickAbout}
-              onClickAccountNav={onClickAccountNav}
-              onClickLogo={onClickLogo}
-              onCloseAccountNav={onCloseAccountNav}
-              onLogOut={onLogOut}
-              onOpenRegistration={onOpenRegistration}
-              onProjectTelemetryEvent={onProjectTelemetryEvent}
-              onSeeCommunity={onSeeCommunity}
-              onShare={onShare}
-              onStartSelectingFileUpload={onStartSelectingFileUpload}
-              onToggleLoginOpen={onToggleLoginOpen}
-            />
-            <Box className={styles.bodyWrapper}>
+            {showMenuBar && (
+              <MenuBar
+                intl={intl}
+                canChangeLanguage={canChangeLanguage}
+                canChangeTheme={canChangeTheme}
+                canEditTask={canEditTask}
+                className={styles.menuBarPosition}
+              />
+            )}
+            <Box
+              className={
+                showMenuBar
+                  ? styles.bodyWrapper
+                  : styles.bodyWrapperWithoutMenuBar
+              }
+            >
               <Box className={styles.flexWrapper}>
                 <Box className={styles.editorWrapper}>
                   <Tabs
@@ -394,7 +306,6 @@ const GUIComponent = (props: {
                       <Box className={styles.blocksWrapper}>
                         <Blocks
                           key={`${blocksId}/${theme}`}
-                          canUseCloud={canUseCloud}
                           grow={1}
                           isVisible={blocksTabVisible}
                           options={{
@@ -455,11 +366,23 @@ const GUIComponent = (props: {
                     isFullScreen={isFullScreen}
                     isRendererSupported={isRendererSupported || false}
                     isRtl={isRtl}
+                    isStageInteractive={isStageInteractive}
                     stageSize={stageSize}
                     vm={vm}
                   />
                   <Box className={styles.targetWrapper}>
-                    <TargetPane stageSize={stageSize} vm={vm} />
+                    <TargetPane
+                      isStageSelectorVisible={isStageSelectorVisible}
+                      isAddNewSpriteButtonVisible={isAddNewSpriteButtonVisible}
+                      isSpriteInfoEnabled={isSpriteInfoEnabled}
+                      isDeleteSpriteButtonVisible={isDeleteSpriteButtonVisible}
+                      isDuplicateSpriteButtonVisible={
+                        isDuplicateSpriteButtonVisible
+                      }
+                      isExportSpriteButtonVisible={isExportSpriteButtonVisible}
+                      stageSize={stageSize}
+                      vm={vm}
+                    />
                   </Box>
                 </Box>
               </Box>

@@ -4,7 +4,51 @@
 declare namespace VMExtended {
   export * from "../node_modules/@turbowarp/types/types/scratch-vm.d.ts";
 
-  export enum BlockType {
+  enum ArgumentType {
+    // https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extension-support/argument-type.js
+
+    /**
+     * Numeric value with angle picker
+     */
+    angle = "angle",
+
+    /**
+     * Boolean value with hexagonal placeholder
+     */
+    boolean = "Boolean",
+
+    /**
+     * Numeric value with color picker
+     */
+    color = "color",
+
+    /**
+     * Numeric value with text field
+     */
+    number = "number",
+
+    /**
+     * String value with text field
+     */
+    string = "string",
+
+    /**
+     * String value with matrix field
+     */
+    matrix = "matrix",
+
+    /**
+     * MIDI note number with note picker (piano) field
+     */
+    note = "note",
+
+    /**
+     * Inline image on block (as part of the label)
+     */
+    image = "image",
+  }
+
+  enum BlockType {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/extension-support/block-type.js
 
     /**
@@ -67,8 +111,12 @@ declare namespace VMExtended {
     isDynamic: boolean;
   }
 
+  export type RotationStyle = VM.RotationStyle;
+
   export interface BlockExtended extends VM.Block {
     isMonitored: boolean;
+    x: number;
+    y: number;
   }
 
   export interface BlocksExtended extends VM.Blocks {
@@ -131,6 +179,20 @@ declare namespace VMExtended {
     monitorBlockInfo: MonitorBlockInfo;
 
     _blockInfo: ExtensionInfo[];
+
+    handleProjectLoaded: () => void;
+  }
+
+  export interface ExtensionManagerExtended extends VM.ExtensionManager {
+    _registerInternalExtension: (extension: unknown) => string;
+    _loadedExtensions: Map<string, string>;
+  }
+
+  export interface Target extends VM.Target {}
+
+  export interface TargetWithCustomState<CustomState> extends VM.Target {
+    getCustomState(name: string): CustomState | undefined;
+    setCustomState(name: T, value: CustomState): void;
   }
 
   export interface Monitor {
@@ -147,6 +209,8 @@ declare namespace VMExtended {
     SCRIPT_GLOW_OFF: [{ id: string }];
     BLOCK_GLOW_ON: [{ id: string }];
     BLOCK_GLOW_OFF: [{ id: string }];
+    BLOCK_DRAG_END: [VM.BlockExtended[]];
+    
     VISUAL_REPORT: [{ id: string; value: unknown }];
     workspaceUpdate: [{ xml: string }];
     workspaceUpdate: [{ xml: string }];
@@ -173,11 +237,25 @@ declare namespace VMExtended {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_motion.js#L47
     getMonitored?: () => Record<string, MonitorBlockInfo>;
   }
+
+  export interface ScratchCrtConfig {
+    allowedBlocks: ShowBlocks;
+  }
+  
 }
 
 declare class VMExtended extends VM {
   // override
   runtime: VMExtended.RuntimeExtended;
+  extensionManager: VMExtended.ExtensionManagerExtended;
+
+  /**
+   * Deletes the target with the given ID and any of its clones.
+   * @returns If a sprite was deleted, returns a function to undo the deletion.
+   */
+  deleteSprite(targetId: string): (() => Promise<void>) | null;
+
+  reorderTarget(oldIndex: number, newIndex: number): boolean;
 
   // extend
   addListener: EventEmitter<VMExtended.RenderedTargetEventMapExtended>["on"];
@@ -190,6 +268,9 @@ declare class VMExtended extends VM {
   blockListener: Function;
   flyoutBlockListener: Function;
   monitorBlockListener: Function;
+
+  // add a custom config
+  crtConfig?: VMExtended.ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {
