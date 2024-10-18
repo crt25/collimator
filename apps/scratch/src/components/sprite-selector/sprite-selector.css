@@ -93,9 +93,7 @@
 .raised:hover {
     background-color: $drop-highlight;
     transform: scale(1.05);
-}
 
-.raised:hover {
     animation-name: wiggle;
     animation-duration: 500ms;
     animation-iteration-count: 1;

@@ -15,7 +15,7 @@ import React from "react";
 const ThrottledSpriteSelectorItem = ThrottledPropertyHOC(
   "asset",
   500,
-  // @ts-expect-error - TODO: fix typings in throttled-property-hoc
+  // @ts-expect-error - inferred type is wrong but no need to fix it now - copy of the scratch codebase
 )(SpriteSelectorItem);
 
 type Props = {
@@ -113,7 +113,7 @@ const SpriteList = function (props: Props) {
             >
               {/* @ts-expect-error - Wrong typing in scratch */}
               <ThrottledSpriteSelectorItem
-                asset={sprite.costume && sprite.costume.asset}
+                asset={sprite?.costume?.asset}
                 className={classNames(styles.sprite, {
                   [styles.raised]: isRaised,
                   [styles.receivedBlocks]: receivedBlocks,

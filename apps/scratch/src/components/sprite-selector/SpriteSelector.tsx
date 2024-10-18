@@ -124,7 +124,7 @@ const SpriteSelectorComponent = function (props: Props) {
     stageSize,
     ...componentProps
   } = props;
-  const selectedSprite: Sprite | undefined = sprites[selectedId || ""];
+  const selectedSprite: Sprite | undefined = sprites[selectedId ?? ""];
   let spriteInfoDisabled = false;
   if (typeof selectedSprite === "undefined") {
     spriteInfoDisabled = true;
@@ -191,12 +191,12 @@ const SpriteSelectorComponent = function (props: Props) {
             {
               title: intl.formatMessage(messages.addSpriteFromSurprise),
               img: surpriseIcon,
-              onClick: onSurpriseSpriteClick, // TODO need real function for this
+              onClick: onSurpriseSpriteClick,
             },
             {
               title: intl.formatMessage(messages.addSpriteFromPaint),
               img: paintIcon,
-              onClick: onPaintSpriteClick, // TODO need real function for this
+              onClick: onPaintSpriteClick,
             },
             {
               title: intl.formatMessage(messages.addSpriteFromLibrary),

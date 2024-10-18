@@ -141,11 +141,7 @@ const TargetPane = ({
       />
     ) : (
       <MinimalStageSelector
-        url={
-          stage.costume &&
-          stage.costume.asset &&
-          stage.costume.asset.encodeDataURI()
-        }
+        url={stage.costume?.asset?.encodeDataURI()}
         backdropCount={stage.costumeCount || 0}
         selected={stageId === editingTarget}
         onClick={() => onSelectSprite(stageId)}

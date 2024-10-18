@@ -55,7 +55,7 @@ export const addHideBlockButtons = (
 
   // get scale factor
   const scale = /scale\((\d+\.?\d*)\)/.exec(
-    canvas.getAttribute("transform") || "",
+    canvas.getAttribute("transform") ?? "",
   );
   if (!scale) {
     return;

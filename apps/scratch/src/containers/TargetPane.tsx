@@ -301,7 +301,7 @@ class TargetPane extends React.Component<Props> {
       // Add one to both new and target index because we are not counting/moving the stage
       this.props.vm.reorderTarget(dragInfo.index + 1, dragInfo.newIndex + 1);
     } else if (dragInfo.dragType === DragConstants.BACKPACK_SPRITE) {
-      // TODO storage does not have a way of loading zips right now, and may never need it.
+      // storage does not have a way of loading zips right now, and may never need it.
       // So for now just grab the zip manually.
       fetchSprite(dragInfo.payload.bodyUrl).then((sprite3Zip) =>
         this.props.vm.addSprite(sprite3Zip),
@@ -315,7 +315,7 @@ class TargetPane extends React.Component<Props> {
       // it allows the user to share multiple things without switching back and forth.
       if (dragInfo.dragType === DragConstants.COSTUME) {
         this.props.vm.shareCostumeToTarget(dragInfo.index, targetId);
-      } else if (targetId && dragInfo.dragType === DragConstants.SOUND) {
+      } else if (dragInfo.dragType === DragConstants.SOUND) {
         this.props.vm.shareSoundToTarget(dragInfo.index, targetId);
       } else if (dragInfo.dragType === DragConstants.BACKPACK_COSTUME) {
         // In scratch 2, this only creates a new sprite from the costume.

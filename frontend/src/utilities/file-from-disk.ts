@@ -9,18 +9,18 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
     fileInput.type = "file";
     fileInput.addEventListener("change", () => {
       if (!fileInput.files) {
-        reject("No files found");
+        reject(new Error("No files found"));
         return;
       }
 
       if (fileInput.files.length > 1) {
-        reject("Only one file is allowed");
+        reject(new Error("Only one file is allowed"));
         return;
       }
 
       const file = fileInput.files[0];
       if (!file) {
-        reject("No file found");
+        reject(new Error("No file found"));
         return;
       }
 

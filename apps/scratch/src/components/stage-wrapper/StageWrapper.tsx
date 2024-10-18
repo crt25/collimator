@@ -9,7 +9,6 @@ import {
 import Stage from "@scratch-submodule/scratch-gui/src/containers/stage.jsx";
 import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
 import styles from "./stage-wrapper.css";
-import { useDispatch } from "react-redux";
 import { setStageSize } from "@scratch-submodule/scratch-gui/src/reducers/stage-size";
 import { setFullScreen } from "@scratch-submodule/scratch-gui/src";
 import Button from "@scratch-submodule/scratch-gui/src/components/button/button";
@@ -22,7 +21,7 @@ import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stag
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import Controls from "../../scratch/scratch-gui/src/containers/controls";
 import ToggleButtons from "../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const messages = defineMessages({
   largeStageSizeMessage: {

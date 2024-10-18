@@ -48,7 +48,6 @@ import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
-import scratchLogo from "@scratch-submodule/scratch-gui/src/components/menu-bar/scratch-logo.svg";
 import { ReactNode } from "react";
 
 //import Blocks from "@scratch-submodule/scratch-gui/src/containers/blocks.jsx";
@@ -121,7 +120,6 @@ const GUIComponent = (props: {
   onActivateCostumesTab?: () => void;
   onActivateSoundsTab?: () => void;
   onActivateTab?: () => void;
-  onClickLogo?: () => void;
   onExtensionButtonClick?: () => void;
   onRequestCloseBackdropLibrary?: () => void;
   onRequestCloseCostumeLibrary?: () => void;
@@ -173,11 +171,9 @@ const GUIComponent = (props: {
     isExportSpriteButtonVisible,
     isSpriteInfoEnabled,
     loading,
-    logo,
     onActivateCostumesTab,
     onActivateSoundsTab,
     onActivateTab,
-    onClickLogo,
     onExtensionButtonClick,
     onProjectTelemetryEvent,
     onRequestCloseBackdropLibrary,
@@ -277,8 +273,6 @@ const GUIComponent = (props: {
                 canChangeTheme={canChangeTheme}
                 canEditTask={canEditTask}
                 className={styles.menuBarPosition}
-                logo={logo || scratchLogo}
-                onClickLogo={onClickLogo}
                 onProjectTelemetryEvent={onProjectTelemetryEvent}
                 onStartSelectingFileUpload={onStartSelectingFileUpload}
               />

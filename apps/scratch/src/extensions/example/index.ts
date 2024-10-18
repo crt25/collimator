@@ -30,8 +30,8 @@ const EXTENSION_ID = ExtensionId.Example;
  * @constructor
  */
 class ExampleExtension {
-  static STATE_KEY = EXTENSION_ID;
-  static DEFAULT_STATE: CustomState = {
+  static readonly STATE_KEY = EXTENSION_ID;
+  static readonly DEFAULT_STATE: CustomState = {
     test: "value",
   };
 
@@ -39,7 +39,7 @@ class ExampleExtension {
    * The runtime instantiating this block package.
    * @type {Runtime}
    */
-  private runtime: VM.RuntimeExtended;
+  private readonly runtime: VM.RuntimeExtended;
 
   constructor(runtime: VM.RuntimeExtended) {
     this.runtime = runtime;
