@@ -3,7 +3,6 @@ import Image from "next/image";
 import localFont from "next/font/local";
 import styles from "@/styles/Home.module.scss";
 import styled from "@emotion/styled";
-import Test from "@/components/Test";
 import { FormattedMessage } from "react-intl";
 
 const StyledLi = styled.li`
@@ -53,8 +52,6 @@ export default function Home() {
             </li>
             <StyledLi>Save and see your changes instantly.</StyledLi>
           </ol>
-
-          <Test />
 
           <div className={styles.ctas}>
             <a

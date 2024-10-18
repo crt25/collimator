@@ -28,7 +28,6 @@ import Cards from "@scratch-submodule/scratch-gui/src/containers/cards.jsx";
 import Alerts from "@scratch-submodule/scratch-gui/src/containers/alerts.jsx";
 import DragLayer from "@scratch-submodule/scratch-gui/src/containers/drag-layer.jsx";
 import ConnectionModal from "@scratch-submodule/scratch-gui/src/containers/connection-modal.jsx";
-import TelemetryModal from "@scratch-submodule/scratch-gui/src/components/telemetry-modal/telemetry-modal.jsx";
 
 import layout, {
   BLOCKS_DEFAULT_SCALE,
@@ -90,7 +89,6 @@ const GUIComponent = (props: {
 
   alertsVisible?: boolean;
   connectionModalVisible?: boolean;
-  isTelemetryEnabled?: boolean;
   activeTabIndex?: number;
   backdropLibraryVisible?: boolean;
   backpackHost?: string | null;
@@ -109,13 +107,6 @@ const GUIComponent = (props: {
   isFullScreen: boolean;
   isPlayerOnly?: boolean;
   isRtl: boolean;
-  isStageInteractive?: boolean;
-  isStageSelectorVisible?: boolean;
-  isAddNewSpriteButtonVisible?: boolean;
-  isSpriteInfoEnabled?: boolean;
-  isDeleteSpriteButtonVisible?: boolean;
-  isDuplicateSpriteButtonVisible?: boolean;
-  isExportSpriteButtonVisible?: boolean;
   loading: boolean;
   logo?: string;
   onActivateCostumesTab?: () => void;
@@ -125,19 +116,13 @@ const GUIComponent = (props: {
   onExtensionButtonClick?: () => void;
   onRequestCloseBackdropLibrary?: () => void;
   onRequestCloseCostumeLibrary?: () => void;
-  onRequestCloseTelemetryModal?: () => void;
   onShowPrivacyPolicy?: () => void;
   onStartSelectingFileUpload?: () => void;
   onTabSelect?: () => void;
-  onTelemetryModalCancel?: () => void;
-  onTelemetryModalOptIn?: () => void;
-  onTelemetryModalOptOut?: () => void;
-  onProjectTelemetryEvent?: () => void;
   soundsTabVisible?: boolean;
   // see https://github.com/scratchfoundation/scratch-gui/blob/d678d609e182ccc5ab557d7d45a3cc3e6430b056/src/lib/layout-constants.js#L7
   stageSizeMode: StageSizeMode;
   targetIsStage?: boolean;
-  telemetryModalVisible?: boolean;
   theme: ColorTheme;
   tipsLibraryVisible?: boolean;
 }) => {
@@ -164,14 +149,6 @@ const GUIComponent = (props: {
     isFullScreen,
     isPlayerOnly,
     isRtl,
-    isTelemetryEnabled,
-    isStageInteractive,
-    isStageSelectorVisible,
-    isAddNewSpriteButtonVisible,
-    isDeleteSpriteButtonVisible,
-    isDuplicateSpriteButtonVisible,
-    isExportSpriteButtonVisible,
-    isSpriteInfoEnabled,
     loading,
     logo,
     onActivateCostumesTab,
@@ -179,19 +156,12 @@ const GUIComponent = (props: {
     onActivateTab,
     onClickLogo,
     onExtensionButtonClick,
-    onProjectTelemetryEvent,
     onRequestCloseBackdropLibrary,
     onRequestCloseCostumeLibrary,
-    onRequestCloseTelemetryModal,
-    onShowPrivacyPolicy,
     onStartSelectingFileUpload,
-    onTelemetryModalCancel,
-    onTelemetryModalOptIn,
-    onTelemetryModalOptOut,
     soundsTabVisible,
     stageSizeMode,
     targetIsStage,
-    telemetryModalVisible,
     theme,
     tipsLibraryVisible,
     vm,
@@ -238,17 +208,6 @@ const GUIComponent = (props: {
             dir={isRtl ? "rtl" : "ltr"}
             {...componentProps}
           >
-            {telemetryModalVisible ? (
-              <TelemetryModal
-                isRtl={isRtl}
-                isTelemetryEnabled={isTelemetryEnabled}
-                onCancel={onTelemetryModalCancel}
-                onOptIn={onTelemetryModalOptIn}
-                onOptOut={onTelemetryModalOptOut}
-                onRequestClose={onRequestCloseTelemetryModal}
-                onShowPrivacyPolicy={onShowPrivacyPolicy}
-              />
-            ) : null}
             {loading ? <Loader /> : null}
             {isCreating ? <Loader messageId="gui.loader.creating" /> : null}
             {isRendererSupported ? null : <WebGlModal isRtl={isRtl} />}
@@ -279,7 +238,6 @@ const GUIComponent = (props: {
                 className={styles.menuBarPosition}
                 logo={logo || scratchLogo}
                 onClickLogo={onClickLogo}
-                onProjectTelemetryEvent={onProjectTelemetryEvent}
                 onStartSelectingFileUpload={onStartSelectingFileUpload}
               />
             )}
@@ -343,6 +301,7 @@ const GUIComponent = (props: {
                     <TabPanel className={tabClassNames.tabPanel}>
                       <Box className={styles.blocksWrapper}>
                         <Blocks
+                          canEditTask={canEditTask}
                           key={`${blocksId}/${theme}`}
                           grow={1}
                           isVisible={blocksTabVisible}
@@ -404,20 +363,18 @@ const GUIComponent = (props: {
                     isFullScreen={isFullScreen}
                     isRendererSupported={isRendererSupported || false}
                     isRtl={isRtl}
-                    isStageInteractive={isStageInteractive}
+                    isStageInteractive={canEditTask}
                     stageSize={stageSize}
                     vm={vm}
                   />
                   <Box className={styles.targetWrapper}>
                     <TargetPane
-                      isStageSelectorVisible={isStageSelectorVisible}
-                      isAddNewSpriteButtonVisible={isAddNewSpriteButtonVisible}
-                      isSpriteInfoEnabled={isSpriteInfoEnabled}
-                      isDeleteSpriteButtonVisible={isDeleteSpriteButtonVisible}
-                      isDuplicateSpriteButtonVisible={
-                        isDuplicateSpriteButtonVisible
-                      }
-                      isExportSpriteButtonVisible={isExportSpriteButtonVisible}
+                      isStageSelectorVisible={canEditTask}
+                      isAddNewSpriteButtonVisible={canEditTask}
+                      isSpriteInfoEnabled={canEditTask}
+                      isDeleteSpriteButtonVisible={canEditTask}
+                      isDuplicateSpriteButtonVisible={canEditTask}
+                      isExportSpriteButtonVisible={canEditTask}
                       stageSize={stageSize}
                       vm={vm}
                     />

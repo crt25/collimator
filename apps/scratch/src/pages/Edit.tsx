@@ -29,7 +29,7 @@ const respondToMessageEvent = (
   );
 };
 
-const Solve = () => {
+const Edit = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { sessionId, taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -129,7 +129,7 @@ const Solve = () => {
   return (
     <Gui
       showMenuBar={false}
-      canEditTask={false}
+      canEditTask={true}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
@@ -142,4 +142,4 @@ const Solve = () => {
   );
 };
 
-export default Solve;
+export default Edit;

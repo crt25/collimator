@@ -97,6 +97,7 @@ interface Props {
   stageSize: StageDisplaySize;
   locale: string;
   anyModalVisible?: boolean;
+  canEditTask?: boolean;
   canUseCloud?: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
@@ -420,7 +421,7 @@ class Blocks extends React.Component<Props, State> {
     this.toolboxUpdateQueue = [];
     queue.forEach((fn) => fn());
 
-    if (this.blocks) {
+    if (this.blocks && this.props.canEditTask) {
       addHideBlockButtons(
         this.props.vm,
         this.blocks,

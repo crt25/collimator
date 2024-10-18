@@ -49,8 +49,6 @@ import {
   closeSettingsMenu,
 } from "@scratch-submodule/scratch-gui/src/reducers/menus";
 
-import collectMetadata from "@scratch-submodule/scratch-gui/src/lib/collect-metadata";
-
 import styles from "@scratch-submodule/scratch-gui/src/components/menu-bar/menu-bar.css";
 
 import dropdownCaret from "@scratch-submodule/scratch-gui/src/components/menu-bar/dropdown-caret.svg";
@@ -101,7 +99,6 @@ interface Props {
   onClickSaveAsCopy: () => void;
   onClickSettings: () => void;
   onOpenTipLibrary: () => void;
-  onProjectTelemetryEvent?: (event: string, metaData: MetaData) => void;
   onRequestCloseEdit: () => void;
   onRequestCloseFile: () => void;
   onRequestCloseSettings: () => void;
@@ -152,18 +149,6 @@ type ProvidedByRedux =
   | "onSetTimeTravelMode";
 
 type WaitForUpdate = (shouldWait: boolean) => void;
-
-type MetaData = {
-  projectName: string;
-  language: string;
-  spriteCount: number;
-  blocksCount: number;
-  costumesCount: number;
-  listsCount: number;
-  scriptCount: number;
-  soundsCount: number;
-  variablesCount: number;
-};
 
 type LoadingState =
   | "NOT_LOADED"
@@ -301,14 +286,6 @@ class MenuBar extends React.Component<Props> {
     return () => {
       this.props.onRequestCloseFile();
       downloadProjectCallback();
-      if (this.props.onProjectTelemetryEvent) {
-        const metadata = collectMetadata(
-          this.props.vm,
-          this.props.projectTitle,
-          this.props.locale,
-        );
-        this.props.onProjectTelemetryEvent("projectDidSave", metadata);
-      }
     };
   }
   restoreOptionMessage(deletedItem: string) {

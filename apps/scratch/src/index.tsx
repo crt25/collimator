@@ -4,9 +4,10 @@ import reportWebVitals from "./reportWebVitals";
 import VM from "scratch-vm";
 import Gui from "./containers/Gui";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Solve } from "./pages/Solve";
-import { ErrorPage } from "./pages/ErrorPage";
+import Solve from "./pages/Solve";
+import ErrorPage from "./pages/ErrorPage";
 import { patchScratchVm } from "./vm";
+import Edit from "./pages/Edit";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: "solve/:sessionId/:taskId",
     element: <Solve />,
+  },
+  {
+    path: "edit/:taskId",
+    element: <Edit />,
   },
 ]);
 
