@@ -130,6 +130,8 @@ const Solve = () => {
     <Gui
       showMenuBar={false}
       canEditTask={false}
+      isCostumesTabEnabled={false}
+      isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}

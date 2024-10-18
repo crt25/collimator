@@ -100,6 +100,8 @@ const GUIComponent = (props: {
   canChangeTheme?: boolean;
   showMenuBar?: boolean;
   canEditTask?: boolean;
+  isCostumesTabEnabled?: boolean;
+  isSoundsTabEnabled?: boolean;
   cardsVisible?: boolean;
   costumeLibraryVisible?: boolean;
   costumesTabVisible?: boolean;
@@ -140,6 +142,8 @@ const GUIComponent = (props: {
     canChangeTheme,
     showMenuBar,
     canEditTask,
+    isCostumesTabEnabled,
+    isSoundsTabEnabled,
     children,
     connectionModalVisible,
     costumeLibraryVisible,
@@ -267,36 +271,40 @@ const GUIComponent = (props: {
                           id="gui.gui.codeTab"
                         />
                       </Tab>
-                      <Tab
-                        className={tabClassNames.tab}
-                        onClick={onActivateCostumesTab}
-                      >
-                        <img draggable={false} src={costumesIcon} />
-                        {targetIsStage ? (
+                      {isCostumesTabEnabled && (
+                        <Tab
+                          className={tabClassNames.tab}
+                          onClick={onActivateCostumesTab}
+                        >
+                          <img draggable={false} src={costumesIcon} />
+                          {targetIsStage ? (
+                            <FormattedMessage
+                              defaultMessage="Backdrops"
+                              description="Button to get to the backdrops panel"
+                              id="gui.gui.backdropsTab"
+                            />
+                          ) : (
+                            <FormattedMessage
+                              defaultMessage="Costumes"
+                              description="Button to get to the costumes panel"
+                              id="gui.gui.costumesTab"
+                            />
+                          )}
+                        </Tab>
+                      )}
+                      {isSoundsTabEnabled && (
+                        <Tab
+                          className={tabClassNames.tab}
+                          onClick={onActivateSoundsTab}
+                        >
+                          <img draggable={false} src={soundsIcon} />
                           <FormattedMessage
-                            defaultMessage="Backdrops"
-                            description="Button to get to the backdrops panel"
-                            id="gui.gui.backdropsTab"
+                            defaultMessage="Sounds"
+                            description="Button to get to the sounds panel"
+                            id="gui.gui.soundsTab"
                           />
-                        ) : (
-                          <FormattedMessage
-                            defaultMessage="Costumes"
-                            description="Button to get to the costumes panel"
-                            id="gui.gui.costumesTab"
-                          />
-                        )}
-                      </Tab>
-                      <Tab
-                        className={tabClassNames.tab}
-                        onClick={onActivateSoundsTab}
-                      >
-                        <img draggable={false} src={soundsIcon} />
-                        <FormattedMessage
-                          defaultMessage="Sounds"
-                          description="Button to get to the sounds panel"
-                          id="gui.gui.soundsTab"
-                        />
-                      </Tab>
+                        </Tab>
+                      )}
                     </TabList>
                     <TabPanel className={tabClassNames.tabPanel}>
                       <Box className={styles.blocksWrapper}>
@@ -326,19 +334,21 @@ const GUIComponent = (props: {
                           vm={vm}
                         />
                       </Box>
-                      <Box className={styles.extensionButtonContainer}>
-                        <button
-                          className={styles.extensionButton}
-                          title={intl.formatMessage(messages.addExtension)}
-                          onClick={onExtensionButtonClick}
-                        >
-                          <img
-                            className={styles.extensionButtonIcon}
-                            draggable={false}
-                            src={addExtensionIcon}
-                          />
-                        </button>
-                      </Box>
+                      {canEditTask && (
+                        <Box className={styles.extensionButtonContainer}>
+                          <button
+                            className={styles.extensionButton}
+                            title={intl.formatMessage(messages.addExtension)}
+                            onClick={onExtensionButtonClick}
+                          >
+                            <img
+                              className={styles.extensionButtonIcon}
+                              draggable={false}
+                              src={addExtensionIcon}
+                            />
+                          </button>
+                        </Box>
+                      )}
                       <Box className={styles.watermark}>
                         <Watermark />
                       </Box>
