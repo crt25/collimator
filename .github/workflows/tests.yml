@@ -53,6 +53,10 @@ jobs:
                 working-directory: ./apps/scratch
                 run: yarn install
 
+            -   name: Install playwright dependencies
+                working-directory: ./apps/scratch
+                run: yarn playwright install
+
             -   name: Lint backend
                 working-directory: ./backend
                 run: yarn lint
