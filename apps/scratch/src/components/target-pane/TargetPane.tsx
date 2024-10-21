@@ -132,7 +132,7 @@ const TargetPane = ({
   if (stageId) {
     stageSelector = isStageSelectorVisible ? (
       <StageSelector
-        asset={stage.costume && stage.costume.asset}
+        asset={stage.costume?.asset}
         // @ts-expect-error The inferred type is wrong
         backdropCount={stage.costumeCount}
         id={stageId}
@@ -183,7 +183,9 @@ const TargetPane = ({
         onSurpriseSpriteClick={onSurpriseSpriteClick}
       />
       <div className={styles.stageSelectorWrapper}>
-        {stageSelector}
+        <div className="d-contents" data-testid="stage-selector">
+          {stageSelector}
+        </div>
         <div>
           {spriteLibraryVisible ? (
             <SpriteLibrary

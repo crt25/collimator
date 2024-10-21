@@ -108,6 +108,7 @@ const StageWrapper = function (props: Props) {
                 disabled={false}
                 iconSrc={undefined}
                 iconClassName={undefined}
+                data-testid="stage-unfullscreen-button"
               >
                 <img
                   alt={intl.formatMessage(messages.unFullStageSizeMessage)}
@@ -152,6 +153,7 @@ const StageWrapper = function (props: Props) {
                   disabled={false}
                   iconSrc={undefined}
                   iconClassName={undefined}
+                  data-testid="stage-fullscreen-button"
                 >
                   <img
                     alt={intl.formatMessage(messages.fullStageSizeMessage)}

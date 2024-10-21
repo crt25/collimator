@@ -120,15 +120,8 @@ export const Solve = () => {
     return null;
   }
 
-  /*if (!isInIframe) {
-    return (
-      <div>Tasks can only be solved in the context of the CRT application.</div>
-    );
-  }*/
-
   return (
     <Gui
-      showMenuBar={true}
       canEditTask={true}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;

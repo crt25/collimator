@@ -1,16 +1,16 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
-export default defineConfig({
+const config: PlaywrightTestConfig = {
   // ignore the scratch submodules
   testIgnore: "**src/scratch/**/*",
 
   projects: [
     {
-      name: "Desktop Chrome",
+      name: "Desktop",
       use: devices["Desktop Chrome"],
     },
     {
-      name: "Mobile Safari on iPad Mini landscape",
+      name: "iPad Mini landscape",
       use: {
         ...devices["iPad Mini landscape"],
         // override the browser, webkit does not seem to support audio in playwright
@@ -22,11 +22,16 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3101",
   },
+};
 
-  // Run your local dev server before starting the tests.
-  webServer: {
+// eslint-disable-next-line no-undef
+if (!process.env.DEVELOPMENT) {
+  config.webServer = {
+    // Run your local dev server before starting the tests.
     command: "yarn dev:coverage",
     url: "http://localhost:3101",
     timeout: 120 * 1000,
-  },
-});
+  };
+}
+
+export default defineConfig(config);

@@ -50,7 +50,6 @@ import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--
 import { ReactNode } from "react";
 
 import Blocks from "../../containers/Blocks";
-import MenuBar from "../MenuBar";
 import TargetPane from "../../containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
 
@@ -94,10 +93,6 @@ const GUIComponent = (props: {
   basePath: string;
   blocksTabVisible?: boolean;
   blocksId?: string;
-  canChangeLanguage?: boolean;
-  canChangeTheme?: boolean;
-  showMenuBar?: boolean;
-  canEditTask?: boolean;
   cardsVisible?: boolean;
   costumeLibraryVisible?: boolean;
   costumesTabVisible?: boolean;
@@ -139,10 +134,6 @@ const GUIComponent = (props: {
     blocksId,
     blocksTabVisible,
     cardsVisible,
-    canChangeLanguage,
-    canChangeTheme,
-    showMenuBar,
-    canEditTask,
     children,
     connectionModalVisible,
     costumeLibraryVisible,
@@ -236,22 +227,7 @@ const GUIComponent = (props: {
                 onRequestClose={onRequestCloseBackdropLibrary}
               />
             ) : null}
-            {showMenuBar && (
-              <MenuBar
-                intl={intl}
-                canChangeLanguage={canChangeLanguage}
-                canChangeTheme={canChangeTheme}
-                canEditTask={canEditTask}
-                className={styles.menuBarPosition}
-              />
-            )}
-            <Box
-              className={
-                showMenuBar
-                  ? styles.bodyWrapper
-                  : styles.bodyWrapperWithoutMenuBar
-              }
-            >
+            <Box className={styles.bodyWrapper}>
               <Box className={styles.flexWrapper}>
                 <Box className={styles.editorWrapper}>
                   <Tabs
@@ -334,6 +310,7 @@ const GUIComponent = (props: {
                           className={styles.extensionButton}
                           title={intl.formatMessage(messages.addExtension)}
                           onClick={onExtensionButtonClick}
+                          data-testid="add-extension-button"
                         >
                           <img
                             className={styles.extensionButtonIcon}

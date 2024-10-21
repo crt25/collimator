@@ -106,7 +106,7 @@ jobs:
 
             -   name: Test scratch app
                 working-directory: ./apps/scratch
-                run: yarn test:cov
+                run: yarn test
                 continue-on-error: true
 
             -   name: SonarCloud Scan

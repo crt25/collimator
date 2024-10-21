@@ -54,7 +54,7 @@ class ExampleExtension {
    * @return {array} - An array of objects with text and value properties.
    * @private
    */
-  _buildMenu(info: { name: string }[]): { text: string; value: string }[] {
+  buildMenu(info: { name: string }[]): { text: string; value: string }[] {
     return info.map((entry, index) => ({
       text: entry.name,
       value: String(index + 1),

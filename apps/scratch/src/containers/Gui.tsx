@@ -20,7 +20,6 @@ import {
 import {
   closeCostumeLibrary,
   closeBackdropLibrary,
-  closeTelemetryModal,
   openExtensionLibrary,
 } from "@scratch-submodule/scratch-gui/src/reducers/modals";
 
@@ -241,7 +240,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
   onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
   onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
-  onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
 });
 
 const ConnectedGUI = injectIntl(

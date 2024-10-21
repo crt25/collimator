@@ -66,10 +66,19 @@ export const addHideBlockButtons = (
     const blockId = block.getAttribute("data-id") as string;
     const isShown = config.allowedBlocks[blockId];
 
+    block
+      .querySelectorAll(".hide-block-button")
+      .forEach((button) => button.remove());
+
     const group = document.createElementNS(svgNamespace, "g");
 
     group.setAttribute(
       "class",
+      "hide-block-button " +
+        (isShown ? "shown-block-button" : "hidden-block-button"),
+    );
+    group.setAttribute(
+      "data-testid",
       isShown ? "shown-block-button" : "hidden-block-button",
     );
     group.setAttribute("transform", `translate(0, -10)`);
