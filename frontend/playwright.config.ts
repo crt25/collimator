@@ -1,8 +1,7 @@
 import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
-  // ignore the scratch submodules
-  testIgnore: "**src/scratch/**/*",
+  testMatch: "**/__tests__/playwright/**/*.spec.tsx",
 
   projects: [
     {
@@ -20,7 +19,7 @@ const config: PlaywrightTestConfig = {
   ],
 
   use: {
-    baseURL: "http://localhost:3101",
+    baseURL: "http://localhost:3000",
   },
 };
 
@@ -29,7 +28,7 @@ if (!process.env.SERVER_ALREADY_RUNS) {
   config.webServer = {
     // Run your local dev server before starting the tests.
     command: "yarn dev:coverage",
-    url: "http://localhost:3101",
+    url: "http://localhost:3000",
     timeout: 120 * 1000,
   };
 }

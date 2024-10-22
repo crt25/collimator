@@ -13,6 +13,10 @@ const createJestConfig = nextJest({
 });
 
 const config: Config = {
+  testMatch: [
+    "**/__tests__/jest/**/*.spec.ts",
+    "**/__tests__/jest/**/*.spec.tsx",
+  ],
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
 
@@ -33,7 +37,7 @@ const config: Config = {
     "@/(.*)": "<rootDir>/src/$1",
   },
 
-  setupFiles: ["<rootDir>/tests/polyfill.ts"],
+  setupFiles: ["<rootDir>/src/tests/polyfill.ts"],
 };
 
 export default createJestConfig(config);

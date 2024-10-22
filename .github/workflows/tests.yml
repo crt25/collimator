@@ -41,6 +41,10 @@ jobs:
                     lfs: 'true'
                     fetch-depth: 0
 
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 22
+
             -   name: Install backend dependencies
                 working-directory: ./backend
                 run: yarn install
@@ -55,7 +59,7 @@ jobs:
 
             -   name: Install playwright dependencies
                 working-directory: ./apps/scratch
-                run: yarn playwright install
+                run: yarn playwright install --with-deps
 
             -   name: Lint backend
                 working-directory: ./backend
@@ -92,22 +96,18 @@ jobs:
             -   name: Test backend
                 working-directory: ./backend
                 run: yarn test:cov
-                continue-on-error: true
 
             -   name: End-to-end Test backend
                 working-directory: ./backend
                 run: yarn test:e2e:cov
-                continue-on-error: true
 
             -   name: Test frontend
                 working-directory: ./frontend
                 run: yarn test:cov
-                continue-on-error: true
 
             -   name: Test scratch app
                 working-directory: ./apps/scratch
                 run: yarn test
-                continue-on-error: true
 
             -   name: SonarCloud Scan
                 uses: SonarSource/sonarcloud-github-action@master
