@@ -98,7 +98,6 @@ interface Props {
   locale: string;
   anyModalVisible?: boolean;
   canEditTask?: boolean;
-  canUseCloud?: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
   isRtl?: boolean;
@@ -794,12 +793,6 @@ class Blocks extends React.Component<Props, State> {
       title !== this.ScratchBlocks.Msg.RENAME_VARIABLE_MODAL_TITLE &&
       title !== this.ScratchBlocks.Msg.RENAME_LIST_MODAL_TITLE;
 
-    const showCloudOption =
-      optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE &&
-      this.props.canUseCloud
-        ? true
-        : false;
-
     this.setState({
       prompt: {
         callback,
@@ -808,7 +801,7 @@ class Blocks extends React.Component<Props, State> {
         title,
         varType,
         showVariableOptions,
-        showCloudOption,
+        showCloudOption: false,
       },
     });
   }
@@ -902,7 +895,6 @@ class Blocks extends React.Component<Props, State> {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
       anyModalVisible,
-      canUseCloud,
       customProceduresVisible,
       extensionLibraryVisible,
       options,

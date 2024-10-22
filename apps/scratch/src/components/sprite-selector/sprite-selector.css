@@ -93,14 +93,11 @@
 .raised:hover {
     background-color: $drop-highlight;
     transform: scale(1.05);
-}
 
-.raised:hover {
     animation-name: wiggle;
     animation-duration: 500ms;
     animation-iteration-count: 1;
     animation-timing-function: ease-in-out;
-    background-color: $drop-highlight;
 }
 
 @keyframes wiggle {

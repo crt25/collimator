@@ -2,6 +2,22 @@
   "name": "app-scratch",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "PORT=3101 craco start",
+    "dev:coverage": "PORT=3101 COVERAGE=true craco start",
+    "build": "craco build",
+    "pretest": "rimraf coverage/ .nyc_output/",
+    "test": "yarn pretest && playwright test && yarn posttest",
+    "test:local": "yarn pretest && SERVER_ALREADY_RUNS=true playwright test && yarn posttest",
+    "test:debug": "SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
+    "posttest": "nyc report",
+    "eject": "react-scripts eject",
+    "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
+    "extract:i18n": "formatjs extract 'src/{components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
+    "compile:i18n": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
+    "i18n": "yarn extract:i18n && yarn compile:i18n",
+    "prepublish": "node scripts/prepublish.mjs"
+  },
   "dependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
@@ -9,6 +25,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@microbit/microbit-universal-hex": "^0.2.2",
+    "@playwright/test": "^1.48.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
@@ -17,6 +34,7 @@
     "@typescript-eslint/parser": "^8.6.0",
     "arraybuffer-loader": "^1.0.8",
     "autoprefixer": "^9.0.1",
+    "babel-plugin-istanbul": "^7.0.0",
     "balance-text": "^3.3.1",
     "bowser": "^2.11.0",
     "buffer": "^6.0.3",
@@ -39,6 +57,8 @@
     "lodash.defaultsdeep": "^4.6.1",
     "omggif": "^1.0.10",
     "papaparse": "^5.4.1",
+    "playwright": "^1.48.1",
+    "playwright-test-coverage": "^1.2.12",
     "postcss": "^8.4.47",
     "postcss-import": "^12.0.0",
     "postcss-loader": "^4.3.0",
@@ -63,6 +83,7 @@
     "react-virtualized": "^9.22.5",
     "redux": "^3.0.0",
     "redux-throttle": "^0.1.1",
+    "rimraf": "^6.0.1",
     "scratch-audio": "^1.0.258",
     "scratch-blocks": "^1.1.206",
     "scratch-l10n": "^3.18.313",
@@ -86,18 +107,6 @@
     "@svgr/webpack": "6.5.1",
     "@types/react": "16.14.61",
     "babel-preset-react-app@npm:^10.0.1": "patch:babel-preset-react-app@npm%3A10.0.1#~/.yarn/patches/babel-preset-react-app-npm-10.0.1-a9a19b630a.patch"
-  },
-  "scripts": {
-    "dev": "PORT=3101 craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "test:cov": "craco test --coverage --watchAll=false --testPathIgnorePatterns=src/scratch",
-    "eject": "react-scripts eject",
-    "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
-    "extract:i18n": "formatjs extract 'src/{components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
-    "compile:i18n": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
-    "i18n": "yarn extract:i18n && yarn compile:i18n",
-    "prepublish": "node scripts/prepublish.mjs"
   },
   "eslintConfig": {
     "extends": [
@@ -126,6 +135,52 @@
       "__tests__",
       "\\.d\\.ts$",
       "\\.spec\\.(t|j)sx?$"
+    ],
+    "moduleNameMapper": {
+      "@scratch-submodule/(.*)": "<rootDir>/src/scratch/$1",
+      "!ify-loader!(.*)": "<rootDir>/node_modules/$1",
+      "!arraybuffer-loader!(.*)": "<rootDir>/src/tests/binary.ts",
+      "!raw-loader!(.*)": "<rootDir>/src/tests/binary.ts",
+      "!base64-loader!(.*)": "<rootDir>/src/tests/binary.ts"
+    }
+  },
+  "nyc": {
+    "all": true,
+    "parserPlugins": [
+      "typescript",
+      "jsx",
+      "asyncGenerators",
+      "bigInt",
+      "classProperties",
+      "classPrivateProperties",
+      "classPrivateMethods",
+      "dynamicImport",
+      "importMeta",
+      "numericSeparator",
+      "objectRestSpread",
+      "optionalCatchBinding",
+      "topLevelAwait"
+    ],
+    "extensions": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "exclude": [
+      "**/*.config.js",
+      "**/*.d.ts",
+      "**/node_modules/**/*",
+      "**/__mocks__/**/*",
+      "**/__tests__/**/*",
+      "src/scratch/**/*",
+      "src/setupTests.ts",
+      "src/tests/**/*"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
     ]
   },
   "packageManager": "yarn@4.5.0",
@@ -151,6 +206,7 @@
     "@types/react-responsive": "^8.0.8",
     "@types/react-tabs": "^2.3.0",
     "@types/react-virtualized": "^9",
-    "@types/wav-encoder": "^1"
+    "@types/wav-encoder": "^1",
+    "nyc": "^17.1.0"
   }
 }

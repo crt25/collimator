@@ -2,7 +2,9 @@
 /* craco.config.js */
 const path = require(`path`);
 const webpack = require(`webpack`);
-const { getLoader, getLoaders, loaderByName } = require("@craco/craco");
+const { getLoaders, loaderByName } = require("@craco/craco");
+
+require("react-scripts/config/env");
 
 // craco plugins
 const cracoBabelLoader = require("craco-babel-loader");
@@ -64,7 +66,7 @@ module.exports = {
       remove: [],
     },
     // https://craco.js.org/docs/configuration/getting-started/#object-literals-and-functions
-    configure: (webpackConfig) => {
+    configure: (webpackConfig, { env }) => {
       // supress invalid source map warnings - some dependencies have invalid or inexistent source maps
       // https://stackoverflow.com/a/70975849/2897827
       // https://github.com/facebook/create-react-app/pull/11752
@@ -132,9 +134,19 @@ module.exports = {
       // exclude them from the fallback
       resourceRule.exclude.push(/\.(vert|frag|wav)$/);
 
+      const babelRule = oneOfRule.oneOf.find((r) =>
+        r.loader?.includes("babel"),
+      );
+
+      // add a new rule for collecting coverage
+      if (env === "development" && process.env.COVERAGE === "true") {
+        babelRule.options.plugins.push("istanbul");
+      }
+
       return webpackConfig;
     },
   },
+
   // craco plugins
   plugins: [
     {

@@ -70,7 +70,7 @@ export const addHideBlockButtons = (
 
   // get scale factor
   const scale = /scale\((\d+\.?\d*)\)/.exec(
-    canvas.getAttribute("transform") || "",
+    canvas.getAttribute("transform") ?? "",
   );
   if (!scale) {
     return;
@@ -81,10 +81,19 @@ export const addHideBlockButtons = (
     const blockId = getBlockId(block.getAttribute("data-id") as string);
     const isShown = config.allowedBlocks[blockId];
 
+    block
+      .querySelectorAll(".hide-block-button")
+      .forEach((button) => button.remove());
+
     const group = document.createElementNS(svgNamespace, "g");
 
     group.setAttribute(
       "class",
+      "hide-block-button " +
+        (isShown ? "shown-block-button" : "hidden-block-button"),
+    );
+    group.setAttribute(
+      "data-testid",
       isShown ? "shown-block-button" : "hidden-block-button",
     );
     group.setAttribute("transform", `translate(0, -10)`);

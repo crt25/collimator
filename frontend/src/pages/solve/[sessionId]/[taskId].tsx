@@ -15,7 +15,7 @@ const SolveContainer = styled.div`
   flex-direction: column;
 `;
 
-const SolveTask = () => {
+const SolveTaskPage = () => {
   const router = useRouter();
   const { sessionId, taskId } = router.query as {
     sessionId: string;
@@ -45,8 +45,6 @@ const SolveTask = () => {
     if (result.type === "application/json") {
       const json = await result.text();
       console.log(json);
-    } else {
-      console.log("result", result);
     }
   }, []);
 
@@ -97,4 +95,4 @@ const SolveTask = () => {
   );
 };
 
-export default SolveTask;
+export default SolveTaskPage;

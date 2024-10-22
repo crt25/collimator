@@ -43,3 +43,7 @@ body,
 .hidden-block-button rect {
   fill: red;
 }
+
+.d-contents{
+  display: contents;
+}

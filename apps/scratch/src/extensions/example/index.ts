@@ -30,8 +30,8 @@ const EXTENSION_ID = ExtensionId.Example;
  * @constructor
  */
 class ExampleExtension {
-  static STATE_KEY = EXTENSION_ID;
-  static DEFAULT_STATE: CustomState = {
+  static readonly STATE_KEY = EXTENSION_ID;
+  static readonly DEFAULT_STATE: CustomState = {
     test: "value",
   };
 
@@ -39,7 +39,7 @@ class ExampleExtension {
    * The runtime instantiating this block package.
    * @type {Runtime}
    */
-  private runtime: VM.RuntimeExtended;
+  private readonly runtime: VM.RuntimeExtended;
 
   constructor(runtime: VM.RuntimeExtended) {
     this.runtime = runtime;
@@ -54,7 +54,7 @@ class ExampleExtension {
    * @return {array} - An array of objects with text and value properties.
    * @private
    */
-  _buildMenu(info: { name: string }[]): { text: string; value: string }[] {
+  buildMenu(info: { name: string }[]): { text: string; value: string }[] {
     return info.map((entry, index) => ({
       text: entry.name,
       value: String(index + 1),

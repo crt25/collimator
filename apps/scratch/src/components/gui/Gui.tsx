@@ -47,12 +47,9 @@ import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
-import scratchLogo from "@scratch-submodule/scratch-gui/src/components/menu-bar/scratch-logo.svg";
 import { ReactNode } from "react";
 
-//import Blocks from "@scratch-submodule/scratch-gui/src/containers/blocks.jsx";
 import Blocks from "../../containers/Blocks";
-import MenuBar from "../MenuBar";
 import TargetPane from "../../containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
 
@@ -96,9 +93,6 @@ const GUIComponent = (props: {
   basePath: string;
   blocksTabVisible?: boolean;
   blocksId?: string;
-  canChangeLanguage?: boolean;
-  canChangeTheme?: boolean;
-  showMenuBar?: boolean;
   canEditTask?: boolean;
   isCostumesTabEnabled?: boolean;
   isSoundsTabEnabled?: boolean;
@@ -114,12 +108,10 @@ const GUIComponent = (props: {
   onActivateCostumesTab?: () => void;
   onActivateSoundsTab?: () => void;
   onActivateTab?: () => void;
-  onClickLogo?: () => void;
   onExtensionButtonClick?: () => void;
   onRequestCloseBackdropLibrary?: () => void;
   onRequestCloseCostumeLibrary?: () => void;
   onShowPrivacyPolicy?: () => void;
-  onStartSelectingFileUpload?: () => void;
   onTabSelect?: () => void;
   soundsTabVisible?: boolean;
   // see https://github.com/scratchfoundation/scratch-gui/blob/d678d609e182ccc5ab557d7d45a3cc3e6430b056/src/lib/layout-constants.js#L7
@@ -138,9 +130,6 @@ const GUIComponent = (props: {
     blocksId,
     blocksTabVisible,
     cardsVisible,
-    canChangeLanguage,
-    canChangeTheme,
-    showMenuBar,
     canEditTask,
     isCostumesTabEnabled,
     isSoundsTabEnabled,
@@ -154,15 +143,12 @@ const GUIComponent = (props: {
     isPlayerOnly,
     isRtl,
     loading,
-    logo,
     onActivateCostumesTab,
     onActivateSoundsTab,
     onActivateTab,
-    onClickLogo,
     onExtensionButtonClick,
     onRequestCloseBackdropLibrary,
     onRequestCloseCostumeLibrary,
-    onStartSelectingFileUpload,
     soundsTabVisible,
     stageSizeMode,
     targetIsStage,
@@ -233,25 +219,7 @@ const GUIComponent = (props: {
                 onRequestClose={onRequestCloseBackdropLibrary}
               />
             ) : null}
-            {showMenuBar && (
-              <MenuBar
-                intl={intl}
-                canChangeLanguage={canChangeLanguage}
-                canChangeTheme={canChangeTheme}
-                canEditTask={canEditTask}
-                className={styles.menuBarPosition}
-                logo={logo || scratchLogo}
-                onClickLogo={onClickLogo}
-                onStartSelectingFileUpload={onStartSelectingFileUpload}
-              />
-            )}
-            <Box
-              className={
-                showMenuBar
-                  ? styles.bodyWrapper
-                  : styles.bodyWrapperWithoutMenuBar
-              }
-            >
+            <Box className={styles.bodyWrapper}>
               <Box className={styles.flexWrapper}>
                 <Box className={styles.editorWrapper}>
                   <Tabs
@@ -340,6 +308,7 @@ const GUIComponent = (props: {
                             className={styles.extensionButton}
                             title={intl.formatMessage(messages.addExtension)}
                             onClick={onExtensionButtonClick}
+                            data-testid="add-extension-button"
                           >
                             <img
                               className={styles.extensionButtonIcon}

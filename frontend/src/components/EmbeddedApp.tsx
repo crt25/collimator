@@ -51,7 +51,7 @@ export interface EmbeddedAppRef {
   ): Promise<AppIFrameResponse & { procedure: ProcedureName }>;
 }
 
-interface Props {
+export interface Props {
   src: string;
 }
 
@@ -102,7 +102,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         });
       }
 
-      return Promise.reject("No iFrame available");
+      return Promise.reject(new Error("No iFrame available"));
     },
     [iFrame],
   );
