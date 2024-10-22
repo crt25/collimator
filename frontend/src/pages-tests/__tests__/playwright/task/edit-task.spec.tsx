@@ -1,8 +1,8 @@
 import { test, expect } from "playwright-test-coverage";
 
-test.describe("/edit/taskId", () => {
+test.describe("/task/taskId/edit", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL!}/edit/some-task-id`);
+    await page.goto(`${baseURL!}/task/taskId/edit`);
 
     await page.waitForSelector("#__next");
   });

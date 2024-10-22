@@ -1,8 +1,8 @@
 import { test, expect } from "playwright-test-coverage";
 
-test.describe("/solve/sessionId/taskId", () => {
+test.describe("/session/sessionId/task/taskId/solve", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL!}/solve/some-session-id/some-task-id`);
+    await page.goto(`${baseURL!}/session/sessionId/task/taskId/solve`);
 
     await page.waitForSelector("#__next");
   });
