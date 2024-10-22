@@ -20,7 +20,7 @@
     "test:jest:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:pre": "rimraf coverage/ .nyc_output/",
     "test:pw": "yarn test:pre && COVERAGE=true playwright test && nyc report --report-dir coverage-pw",
-    "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && yarn test:post",
+    "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && nyc report --report-dir coverage-pw",
     "test:pw:debug": "COVERAGE=true SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
     "test:ct": "yarn test:pre && playwright test -c playwright-ct.config.ts && nyc report --report-dir coverage-ct",
     "test:playwright": "yarn test:pw && yarn test:ct"

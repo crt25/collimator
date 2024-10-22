@@ -63,10 +63,14 @@ const EditTask = () => {
     <SolveContainer>
       <Header>
         <li>
-          <Button onClick={onLoadTask}>Load Task</Button>
+          <Button onClick={onLoadTask} data-testid="load-task-button">
+            Load Task
+          </Button>
         </li>
         <li>
-          <Button onClick={onSaveTask}>Save Task</Button>
+          <Button onClick={onSaveTask} data-testid="save-task-button">
+            Save Task
+          </Button>
         </li>
       </Header>
       <EmbeddedApp src={iFrameSrc} ref={embeddedApp} />

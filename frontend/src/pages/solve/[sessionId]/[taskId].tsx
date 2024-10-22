@@ -75,10 +75,12 @@ const SolveTaskPage = () => {
           </Button>
         </li>
         <li>
-          <Button onClick={onSubmitSolution}>
+          <Button
+            onClick={onSubmitSolution}
+            data-testid="submit-solution-button"
+          >
             <FormattedMessage
               id="SolveTask.getStarted"
-              description="xyz"
               defaultMessage="Submit Solution"
             />
           </Button>
