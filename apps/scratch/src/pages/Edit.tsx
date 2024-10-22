@@ -29,7 +29,7 @@ const respondToMessageEvent = (
   );
 };
 
-const Solve = () => {
+const Edit = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { sessionId, taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -120,11 +120,16 @@ const Solve = () => {
     return null;
   }
 
+  /*if (!isInIframe) {
+    return (
+      <div>Tasks can only be solved in the context of the CRT application.</div>
+    );
+  }*/
+
   return (
     <Gui
+      showMenuBar={false}
       canEditTask={true}
-      isCostumesTabEnabled={false}
-      isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
@@ -137,4 +142,4 @@ const Solve = () => {
   );
 };
 
-export default Solve;
+export default Edit;

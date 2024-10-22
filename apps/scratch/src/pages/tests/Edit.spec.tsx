@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-test.describe("/solve/sessionId/taskId", () => {
+test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     page.on("framenavigated", async () =>
       page.evaluate(() => {
@@ -26,80 +26,9 @@ test.describe("/solve/sessionId/taskId", () => {
       }),
     );
 
-    await page.goto(`${baseURL!}/solve/some-session-id/some-task-id`);
+    await page.goto(`${baseURL!}/edit/some-task-id`);
 
     await page.waitForSelector("#root");
-  });
-
-  test("can select the stage", async ({ page }) => {
-    await page.getByTestId("stage-selector").click();
-
-    // motion blocks should not be visible
-    expect(page.locator("[data-id='motion_movesteps']")).toHaveCount(0);
-  });
-
-  test("can toggle fullscreen", async ({ page }) => {
-    const fullScreenButton = page.getByTestId("stage-fullscreen-button");
-    await fullScreenButton.click();
-
-    expect(fullScreenButton).toHaveCount(0);
-
-    const unFullScreenButton = page.getByTestId("stage-unfullscreen-button");
-
-    await unFullScreenButton.click();
-    expect(unFullScreenButton).toHaveCount(0);
-  });
-
-  test("can add extension", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
-
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
-
-    await firstExtension.click();
-
-    // ensure the custom block is added
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
-  });
-
-  test("can add extension twice", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
-
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
-
-    await firstExtension.click();
-
-    // add the extension again
-    await addExtensionButton.click();
-    await firstExtension.click();
-
-    // ensure the custom block is added just once
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
-  });
-
-  test("can toggle block visibility", async ({ page }) => {
-    const firstBlock = page.locator("[data-id='motion_movesteps']").first();
-
-    let button = firstBlock.getByTestId("hidden-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
-
-    // after clicking the button, the block should be shown and the test id different
-    expect(button).toHaveCount(0);
-
-    button = firstBlock.getByTestId("shown-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
-
-    // and after clicking again, the block should be hidden and the test id different again
-    expect(button).toHaveCount(0);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {
@@ -126,13 +55,13 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("can get submission via window.postMessage", async ({ page }) => {
+  test("can get task via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const event = new Event("message") as any;
 
       event.source = window.parent;
-      event.data = { id: 0, type: "request", procedure: "getSubmission" };
+      event.data = { id: 0, type: "request", procedure: "getTask" };
       window.dispatchEvent(event);
     });
 
@@ -145,7 +74,7 @@ test.describe("/solve/sessionId/taskId", () => {
     expect(messages[0].message).toEqual({
       id: 0,
       type: "response",
-      procedure: "getSubmission",
+      procedure: "getTask",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
       result: {},
     });
