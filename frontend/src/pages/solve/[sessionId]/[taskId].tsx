@@ -56,7 +56,10 @@ const SolveTaskPage = () => {
     <SolveContainer>
       <Header>
         <li>
-          <Button onClick={toggleSessionMenu}>
+          <Button
+            onClick={toggleSessionMenu}
+            data-testid="toggle-session-menu-button"
+          >
             {showSessionMenu ? (
               <span>
                 <FormattedMessage

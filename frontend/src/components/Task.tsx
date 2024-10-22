@@ -86,7 +86,7 @@ const Task = ({
         <SessionMenuWrapper>
           <CloseSessionMenuButton onClick={() => setShowTaskMenu(false)} />
           <SessionMenuInner>
-            <h1>{sessionName}</h1>
+            <h1 data-testid="session-name">{sessionName}</h1>
             <SessionMenuRow>
               <Col xs={4}>
                 <TaskList>
