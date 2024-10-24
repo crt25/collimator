@@ -34,11 +34,11 @@ export const callsFunction = (
           callsFunction = true;
 
           // Stop walking the AST
-          return true;
+          return false;
         }
       }
 
-      return false;
+      return true;
     },
   });
 
