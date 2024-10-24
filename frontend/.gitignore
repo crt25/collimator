@@ -10,5 +10,19 @@
 next-env.d.ts
 
 # testing & coverage
+
+# jest coverage
 /coverage
 
+# playwright coverage
+/coverage-pw
+
+# playwright component testing coverage
+/coverage-ct
+
+node_modules/
+/test-results/
+
+/playwright-report/
+/playwright/.cache
+/blob-report/

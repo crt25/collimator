@@ -13,6 +13,10 @@ const createJestConfig = nextJest({
 });
 
 const config: Config = {
+  testMatch: [
+    "**/__tests__/jest/**/*.spec.ts",
+    "**/__tests__/jest/**/*.spec.tsx",
+  ],
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
 
@@ -27,6 +31,13 @@ const config: Config = {
 
   // The test environment that will be used for testing
   testEnvironment: "jsdom",
+
+  // support custom module mappings
+  moduleNameMapper: {
+    "@/(.*)": "<rootDir>/src/$1",
+  },
+
+  setupFiles: ["<rootDir>/src/tests/polyfill.ts"],
 };
 
 export default createJestConfig(config);

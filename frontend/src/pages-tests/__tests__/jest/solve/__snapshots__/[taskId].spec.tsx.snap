@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Solve Task Page renders page unchanged 1`] = `
+<div>
+  <div
+    class="css-to24xl"
+  >
+    <div
+      class="container"
+    >
+      <div
+        class="row"
+      >
+        <div
+          class="col-12"
+        >
+          <div
+            data-testid="load-task-button"
+          >
+            Load Task
+          </div>
+          <div
+            data-testid="save-task-button"
+          >
+            Save Task
+          </div>
+          <div
+            data-testid="submit-solution-button"
+          >
+            Submit Task
+          </div>
+        </div>
+      </div>
+    </div>
+    <iframe
+      allow="fullscreen; camera; microphone"
+      class="css-15vps70"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      sandbox="allow-scripts allow-same-origin allow-downloads"
+      src="undefined/solve/sessionId/taskId"
+    />
+  </div>
+</div>
+`;

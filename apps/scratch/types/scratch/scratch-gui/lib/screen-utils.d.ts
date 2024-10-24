@@ -16,7 +16,7 @@ declare module "@scratch-submodule/scratch-gui/src/lib/screen-utils" {
   ) => StageDisplaySize;
 
   export const getStageDimensions: (
-    stageSize: StageDisplaySize,
+    stageSize: StageDisplaySize | null,
     isFullScreen: boolean,
   ) => StageDimension;
 

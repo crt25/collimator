@@ -41,6 +41,11 @@ import {
 import { StatementBlockTree, NonHatBlockTree } from "./types";
 import { StatementNode } from "src/ast/types/general-ast";
 import { match, P } from "ts-pattern";
+import { ExtensionStatementBlock } from "src/ast/types/input/scratch/blocks/extensions";
+import {
+  convertExtensionBlockTreeToStatement,
+  isExtensionStatementBlock,
+} from "./scratch-extension-block-converter";
 
 const convertSingleBlockTreeToStatement = (
   statementBlock: StatementBlockTree,
@@ -86,6 +91,11 @@ const convertSingleBlockTreeToStatement = (
       P.when(isSoundStatementBlock),
       (block: SoundStatementBlock & NonHatBlockTree) =>
         convertSoundBlockTreeToStatement(block),
+    )
+    .with(
+      P.when(isExtensionStatementBlock),
+      (block: ExtensionStatementBlock & NonHatBlockTree) =>
+        convertExtensionBlockTreeToStatement(block),
     )
     .exhaustive();
 

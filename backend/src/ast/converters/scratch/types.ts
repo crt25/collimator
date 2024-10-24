@@ -3,6 +3,7 @@ import {
   KnownBuiltinScratchExpressionBlock,
   KnownBuiltinScratchHatBlock,
 } from "src/ast/types/input/scratch/blocks";
+import { ExtensionStatementBlock } from "src/ast/types/input/scratch/blocks/extensions";
 import { DefinitionBlock } from "src/ast/types/input/scratch/blocks/procedure/definition";
 import {
   Block,
@@ -16,6 +17,7 @@ export type SpriteTarget = Sprite & Target;
 
 export type NonHatBlock =
   | KnownBuiltinScratchStatementBlock
+  | ExtensionStatementBlock
   | KnownBuiltinScratchExpressionBlock;
 
 export type EventHatBlock = Exclude<
@@ -39,8 +41,13 @@ export type TreeNode = {
    */
   __next: StatementBlockTree | null;
 };
+
 export type BlockTree = Block & TreeNode;
-export type StatementBlockTree = KnownBuiltinScratchStatementBlock & TreeNode;
+export type StatementBlockTree = (
+  | KnownBuiltinScratchStatementBlock
+  | ExtensionStatementBlock
+) &
+  TreeNode;
 export type ExpressionBlockTree = KnownBuiltinScratchExpressionBlock & TreeNode;
 export type NonHatBlockTree = NonHatBlock & TreeNode;
 

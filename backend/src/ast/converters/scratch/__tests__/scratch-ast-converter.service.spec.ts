@@ -5431,4 +5431,68 @@ describe("Scratch AST converter", () => {
       ] as GeneralAst);
     });
   });
+
+  describe("Extension Blocks", () => {
+    it("can convert arbitrary extension functionCall blocks to general AST nodes", () => {
+      const ast = converter.convertAst(
+        createScratchBlockInput({
+          "o+VBPu+C(?OjVM9re*i8": {
+            opcode: "event_whenflagclicked",
+            next: "N/T.RXB%SE9Op.]VNvne",
+            parent: null,
+            inputs: {},
+            fields: {},
+            shadow: false,
+            topLevel: true,
+            x: 362,
+            y: 71,
+          },
+          "N/T.RXB%SE9Op.]VNvne": {
+            opcode: "example_functionCall_setX",
+            next: null,
+            parent: "o+VBPu+C(?OjVM9re*i8",
+            inputs: { TEMPO: [1, [4, "60"]] },
+            fields: {},
+            shadow: false,
+            topLevel: false,
+          },
+        }),
+      );
+
+      expect(ast).toEqual([
+        {
+          nodeType: AstNodeType.actor,
+          eventListeners: [
+            {
+              nodeType: AstNodeType.eventListener,
+              condition: {
+                event: "event_whenflagclicked",
+                parameters: [],
+              },
+              action: {
+                nodeType: AstNodeType.statement,
+                statementType: StatementNodeType.sequence,
+                statements: [
+                  {
+                    nodeType: AstNodeType.statement,
+                    statementType: StatementNodeType.functionCall,
+                    name: "example_setX",
+                    arguments: [
+                      {
+                        nodeType: AstNodeType.expression,
+                        expressionType: ExpressionNodeType.literal,
+                        type: "number",
+                        value: "60",
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+          functionDeclarations: [],
+        },
+      ] as GeneralAst);
+    });
+  });
 });
