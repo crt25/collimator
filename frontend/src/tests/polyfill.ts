@@ -1,4 +1,4 @@
-import { Blob as BlobPolyfill } from "node:buffer";
+import { Blob } from "node:buffer";
+import { TextEncoder, TextDecoder } from "util";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-global.Blob = BlobPolyfill as any;
+Object.assign(global, { TextDecoder, TextEncoder, Blob });

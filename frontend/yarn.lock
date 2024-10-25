@@ -3248,6 +3248,7 @@ __metadata:
     jest-environment-jsdom: "npm:^29.7.0"
     next: "npm:14.2.12"
     nyc: "npm:^17.1.0"
+    openid-client: "npm:^6.1.3"
     playwright-test-coverage: "npm:^1.2.12"
     prettier: "npm:^3.3.3"
     react: "npm:^18"
@@ -6062,6 +6063,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^5.9.6":
+  version: 5.9.6
+  resolution: "jose@npm:5.9.6"
+  checksum: 10c0/d6bcd8c7d655b5cda8e182952a76f0c093347f5476d74795405bb91563f7ab676f61540310dd4b1531c60d685335ceb600571a409551d2cbd2ab3e9f9fbf1e4d
+  languageName: node
+  linkType: hard
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -6810,6 +6817,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"oauth4webapi@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "oauth4webapi@npm:3.1.1"
+  checksum: 10c0/a674de4a05e7a09e15af3145148d700a7452a75f6f68a9e467518c514c0f583bbf1045ea733a65139ae48125de7ebce2ff9950bf86c23ed7dc52885356046021
+  languageName: node
+  linkType: hard
+
 "object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -6913,6 +6927,16 @@ __metadata:
   dependencies:
     mimic-fn: "npm:^2.1.0"
   checksum: 10c0/ffcef6fbb2692c3c40749f31ea2e22677a876daea92959b8a80b521d95cca7a668c884d8b2045d1d8ee7d56796aa405c405462af112a1477594cc63531baeb8f
+  languageName: node
+  linkType: hard
+
+"openid-client@npm:^6.1.3":
+  version: 6.1.3
+  resolution: "openid-client@npm:6.1.3"
+  dependencies:
+    jose: "npm:^5.9.6"
+    oauth4webapi: "npm:^3.1.1"
+  checksum: 10c0/a4643a6b93416c225633b2f3901dfc8c7a9f4c45e60b21dec0b0921b0654b0aea4fce96f40c945c76155038024e812bfe338afd449de8d3597db7d1a61b2236b
   languageName: node
   linkType: hard
 

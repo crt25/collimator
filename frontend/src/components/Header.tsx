@@ -1,8 +1,11 @@
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
+import { useUserEmail } from "@/hooks/useUserEmail";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import React from "react";
-import { Container } from "react-bootstrap";
-import Button from "./Button";
+import { Container, Dropdown } from "react-bootstrap";
+import { FormattedMessage } from "react-intl";
+import DropdownLinkItem from "./dropdown/DropdownLinkItem";
 
 const StyledHeader = styled.header`
   padding: 0.5rem 0;
@@ -43,6 +46,9 @@ const Menu = styled.menu`
 `;
 
 const Header = ({ children }: { children?: React.ReactNode }) => {
+  const isAuthenticated = useIsAuthenticated();
+  const email = useUserEmail();
+
   return (
     <StyledHeader>
       <HeaderInner>
@@ -63,7 +69,24 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
             </React.Fragment>
           )}
           <li>
-            <Button>Sign out</Button>
+            {isAuthenticated ? (
+              <Dropdown>
+                <Dropdown.Toggle>{email}</Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <DropdownLinkItem href="/logout">
+                    <FormattedMessage
+                      id="Header.signOut"
+                      defaultMessage="Sign Out"
+                    />
+                  </DropdownLinkItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <Link href="/login">
+                <FormattedMessage id="Header.signIn" defaultMessage="Sign In" />
+              </Link>
+            )}
           </li>
         </Menu>
       </HeaderInner>
