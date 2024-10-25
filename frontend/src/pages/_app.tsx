@@ -85,6 +85,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <CacheProvider value={cache}>
       <IntlProvider locale={router.locale || "en"} messages={messages}>
+        <YupLocalization>
             <AuthenticationContext.Provider value={authenticationState}>
               <UpdateAuthenticationContext.Provider
                 value={updateAuthenticationState}
@@ -96,6 +97,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 </AuthenticationBarrier>
               </UpdateAuthenticationContext.Provider>
             </AuthenticationContext.Provider>
+        </YupLocalization>
       </IntlProvider>
     </CacheProvider>
   );
