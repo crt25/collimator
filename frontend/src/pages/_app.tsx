@@ -7,8 +7,6 @@ import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PrimeReactProvider } from "primereact/api";
-import YupLocalization from "@/components/form/YupLocalization";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -18,6 +16,8 @@ import {
 } from "@/contexts/AuthenticationContext";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import AuthenticationBarrier from "@/components/authentication/AuthenticationBarrier";
+import { PrimeReactProvider } from "primereact/api";
+import YupLocalization from "@/components/form/YupLocalization";
 
 const authenticationStateKey = "authenticationState";
 
