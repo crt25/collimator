@@ -26,18 +26,23 @@ const JoinSession = () => {
   const router = useRouter();
   const { sessionId: sessionIdString, key: teacherPublicKeyFingerprint } =
     router.query as {
-      sessionId: string;
+      sessionId?: string;
       key?: string;
     };
 
-  const sessionId = parseInt(sessionIdString, 10);
+  const sessionId =
+    sessionIdString !== undefined && parseInt(sessionIdString, 10);
 
   const authenticationContext = useContext(AuthenticationContext);
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
 
   // if the student is not locally authenticated (i.e. the id token was obtained), redirect to the login page
   useEffect(() => {
-    if (!isStudentLocallyAuthenticated(authenticationContext)) {
+    if (
+      !isStudentLocallyAuthenticated(authenticationContext) &&
+      // the session id should always be there
+      sessionId
+    ) {
       router.push(
         `/login/student?sessionId=${sessionId}&key=${teacherPublicKeyFingerprint}`,
       );
@@ -94,7 +99,7 @@ const JoinSession = () => {
     router.push(`/session/${sessionId}/task/1`);
   }, [sessionId, authenticationContext, updateAuthenticationContext, router]);
 
-  if (!isStudentLocallyAuthenticated(authenticationContext)) {
+  if (!isStudentLocallyAuthenticated(authenticationContext) || !sessionId) {
     // the user will be redirected to the login page if the state does not match
     return null;
   }

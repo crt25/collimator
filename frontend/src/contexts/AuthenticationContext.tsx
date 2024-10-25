@@ -117,6 +117,7 @@ export const serializeAuthenticationContext = async (
 };
 
 export const deserializeAuthenticationContext = async (
+  crypto: SubtleCrypto,
   serializedContext: SerializedAuthenticationContextType,
 ): Promise<AuthenticationContextType> => {
   if (!("keyPair" in serializedContext)) {
@@ -126,29 +127,19 @@ export const deserializeAuthenticationContext = async (
   const { keyPair, ...rest } = serializedContext;
 
   const importedCryptoKeyPair = await KeyPair.importUnprotected(
-    window.crypto.subtle,
+    crypto,
     keyPair,
   );
 
   if (rest.role === UserRole.teacher) {
-    const importedKeyPair = new TeacherLongTermKeyPair(
-      window.crypto.subtle,
-      importedCryptoKeyPair,
-    );
-
     return {
       ...rest,
-      keyPair: importedKeyPair,
+      keyPair: new TeacherLongTermKeyPair(crypto, importedCryptoKeyPair),
     };
   } else {
-    const importedKeyPair = new StudentKeyPair(
-      window.crypto.subtle,
-      importedCryptoKeyPair,
-    );
-
     return {
       ...rest,
-      keyPair: importedKeyPair,
+      keyPair: new StudentKeyPair(crypto, importedCryptoKeyPair),
     };
   }
 };

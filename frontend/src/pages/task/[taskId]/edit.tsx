@@ -11,7 +11,7 @@ import { useCallback, useMemo, useRef } from "react";
 const EditTask = () => {
   const router = useRouter();
   const { taskId } = router.query as {
-    taskId: string;
+    taskId?: string;
   };
 
   const iFrameSrc = useMemo(() => {

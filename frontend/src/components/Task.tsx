@@ -36,10 +36,6 @@ const SessionMenuWrapper = styled.div`
 `;
 
 const CloseSessionMenuButton = styled(CloseButton)`
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-
   padding: 1rem;
 `;
 

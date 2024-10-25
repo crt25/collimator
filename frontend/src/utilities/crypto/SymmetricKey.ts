@@ -42,20 +42,14 @@ export default abstract class SymmetricKey {
   /**
    * Encrypts the given data with the ephemeral key.
    * The IV is generated randomly and prepended to the ciphertext.
-   * The additional data is authenticated but not encrypted.
    * On top of being confidential, the returned ciphertext is also authenticated.
-   * The additional data is not part of the ciphertext but is authenticated and must be provided during decryption.
    */
-  async encrypt(
-    data: BufferSource,
-    additionalData?: BufferSource,
-  ): Promise<Uint8Array> {
+  async encrypt(data: BufferSource): Promise<Uint8Array> {
     const iv = crypto.getRandomValues(new Uint8Array(SymmetricKey.IVSize));
     const ciphertext = await this.crypto.encrypt(
       {
         name: SymmetricKey.SymmetricKeyAlgorithm,
         iv,
-        additionalData,
         tagLength: SymmetricKey.TagLength,
       },
       this.key,
@@ -74,24 +68,16 @@ export default abstract class SymmetricKey {
    * The IV is generated randomly and prepended to the ciphertext.
    * The additional data is authenticated but not encrypted.
    * On top of being confidential, the returned ciphertext is also authenticated.
-   * The additional data is not part of the ciphertext but is authenticated and must be provided during decryption.
    */
-  async encryptString(
-    data: string,
-    additionalData?: BufferSource,
-  ): Promise<Uint8Array> {
-    return this.encrypt(new TextEncoder().encode(data), additionalData);
+  async encryptString(data: string): Promise<Uint8Array> {
+    return this.encrypt(new TextEncoder().encode(data));
   }
 
   /**
    * Decrypts the given data with the ephemeral key.
    * The IV is expected to be prepended to the ciphertext.
-   * The additional data is also authenticated meaning if it does not match the one used during encryption, the decryption will fail.
    */
-  decrypt(
-    data: Uint8Array,
-    additionalData?: BufferSource,
-  ): Promise<ArrayBuffer> {
+  decrypt(data: Uint8Array): Promise<ArrayBuffer> {
     const iv = data.slice(0, SymmetricKey.IVSize);
     const ciphertext = data.slice(SymmetricKey.IVSize);
 
@@ -99,7 +85,6 @@ export default abstract class SymmetricKey {
       {
         name: SymmetricKey.SymmetricKeyAlgorithm,
         iv,
-        additionalData,
         tagLength: SymmetricKey.TagLength,
       },
       this.key,
@@ -112,10 +97,7 @@ export default abstract class SymmetricKey {
    * The IV is expected to be prepended to the ciphertext.
    * The additional data is also authenticated meaning if it does not match the one used during encryption, the decryption will fail.
    */
-  async decryptString(
-    data: Uint8Array,
-    additionalData?: BufferSource,
-  ): Promise<string> {
-    return new TextDecoder().decode(await this.decrypt(data, additionalData));
+  async decryptString(data: Uint8Array): Promise<string> {
+    return new TextDecoder().decode(await this.decrypt(data));
   }
 }

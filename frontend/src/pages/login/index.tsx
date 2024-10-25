@@ -38,7 +38,10 @@ const LoginPage = () => {
           <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
         </PageHeader>
         <p>{intl.formatMessage(WarningMessages.authenticationTracking)}</p>
-        <Button onClick={onAuthenticateWithMicrosoft}>
+        <Button
+          onClick={onAuthenticateWithMicrosoft}
+          data-testid="signin-button"
+        >
           <FormattedMessage
             id="LoginPage.authenticate.microsoft"
             defaultMessage="Authenticate using Microsoft"

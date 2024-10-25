@@ -105,6 +105,18 @@ jobs:
                 working-directory: ./frontend
                 run: yarn test:cov
 
+            -   name: Start storybook
+                working-directory: ./frontend
+                run: yarn storybook &
+
+            -   name: Run storybook tests
+                working-directory: ./frontend
+                run: yarn test-storybook
+
+            -   name: Stop storybook
+                working-directory: ./frontend
+                run: pkill node
+
             -   name: Test scratch app
                 working-directory: ./apps/scratch
                 run: yarn test

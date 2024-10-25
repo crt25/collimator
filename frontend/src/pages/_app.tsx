@@ -33,7 +33,10 @@ const getInitialState = async (): Promise<AuthenticationContextType> => {
   );
 
   return storedAuthenticationState
-    ? deserializeAuthenticationContext(JSON.parse(storedAuthenticationState))
+    ? deserializeAuthenticationContext(
+        window.crypto.subtle,
+        JSON.parse(storedAuthenticationState),
+      )
     : authenticationContextDefaultValue;
 };
 

@@ -11,12 +11,13 @@ import { FormattedMessage } from "react-intl";
 const SolveTaskPage = () => {
   const router = useRouter();
   const { sessionId: sessionIdString, taskId: taskIdString } = router.query as {
-    sessionId: string;
-    taskId: string;
+    sessionId?: string;
+    taskId?: string;
   };
 
-  const sessionId = parseInt(sessionIdString, 10);
-  const taskId = parseInt(taskIdString, 10);
+  const sessionId =
+    sessionIdString !== undefined && parseInt(sessionIdString, 10);
+  const taskId = taskIdString !== undefined && parseInt(taskIdString, 10);
 
   const iFrameSrc = useMemo(() => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
@@ -47,6 +48,10 @@ const SolveTaskPage = () => {
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
   }, []);
+
+  if (!sessionId || !taskId) {
+    return null;
+  }
 
   return (
     <MaxScreenHeight>
