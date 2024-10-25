@@ -109,6 +109,10 @@ jobs:
                 working-directory: ./frontend
                 run: yarn storybook &
 
+            -   name: Wait for storybook to be accessible
+                working-directory: ./frontend
+                run: until curl --output /dev/null --silent --head --fail http://localhost:6006; do printf '.'; sleep 3; done
+
             -   name: Run storybook tests
                 working-directory: ./frontend
                 run: yarn test-storybook

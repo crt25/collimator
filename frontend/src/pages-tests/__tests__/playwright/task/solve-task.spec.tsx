@@ -1,9 +1,9 @@
 import { test, expect } from "playwright-test-coverage";
+import { signInAndGotoPath } from "../authentication/authentication-helpers";
 
-test.describe("/session/sessionId/task/taskId/solve", () => {
+test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL!}/session/sessionId/task/taskId/solve`);
-
+    await signInAndGotoPath(page, baseURL!, `/session/3/task/5/solve`);
     await page.waitForSelector("#__next");
   });
 
