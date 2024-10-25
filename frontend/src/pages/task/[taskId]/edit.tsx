@@ -1,19 +1,12 @@
 import Button from "@/components/Button";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import Header from "@/components/Header";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import { scratchAppHostName } from "@/utilities/constants";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef } from "react";
-
-const SolveContainer = styled.div`
-  height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-`;
 
 const EditTask = () => {
   const router = useRouter();
@@ -60,7 +53,7 @@ const EditTask = () => {
   }, []);
 
   return (
-    <SolveContainer>
+    <MaxScreenHeight>
       <Header>
         <li>
           <Button onClick={onLoadTask} data-testid="load-task-button">
@@ -74,7 +67,7 @@ const EditTask = () => {
         </li>
       </Header>
       <EmbeddedApp src={iFrameSrc} ref={embeddedApp} />
-    </SolveContainer>
+    </MaxScreenHeight>
   );
 };
 

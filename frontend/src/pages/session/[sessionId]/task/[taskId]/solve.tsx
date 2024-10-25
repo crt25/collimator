@@ -1,26 +1,22 @@
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import Header from "@/components/Header";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import Task from "@/components/Task";
 import { scratchAppHostName } from "@/utilities/constants";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-const SolveContainer = styled.div`
-  height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-`;
-
 const SolveTaskPage = () => {
   const router = useRouter();
-  const { sessionId, taskId } = router.query as {
+  const { sessionId: sessionIdString, taskId: taskIdString } = router.query as {
     sessionId: string;
     taskId: string;
   };
+
+  const sessionId = parseInt(sessionIdString, 10);
+  const taskId = parseInt(taskIdString, 10);
 
   const iFrameSrc = useMemo(() => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
@@ -53,7 +49,7 @@ const SolveTaskPage = () => {
   }, []);
 
   return (
-    <SolveContainer>
+    <MaxScreenHeight>
       <Header>
         <li>
           <Button
@@ -90,13 +86,14 @@ const SolveTaskPage = () => {
         </li>
       </Header>
       <Task
+        sessionId={sessionId}
         sessionName="Session 1"
         showSessionMenu={showSessionMenu}
         setShowSessionMenu={setShowSessionMenu}
         embeddedApp={embeddedApp}
         iFrameSrc={iFrameSrc}
       />
-    </SolveContainer>
+    </MaxScreenHeight>
   );
 };
 

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 
 const TaskDescription = styled.div`
-  height: 100%;
+  flex-grow: 1;
   overflow-y: scroll;
 `;
 

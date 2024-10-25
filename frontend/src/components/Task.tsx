@@ -4,8 +4,9 @@ import styled from "@emotion/styled";
 import { MutableRefObject } from "react";
 import { CloseButton, Col, Container, Row } from "react-bootstrap";
 import TaskList from "./TaskList";
-import TaskListItem from "./TaskListItem";
-import { TaskStatus } from "@/types/task/task-status";
+import RemainingHeightContainer from "./layout/RemainingHeightContainer";
+import FullHeightRow from "./layout/FullHeightRow";
+import VerticalSpacing from "./layout/VerticalSpacing";
 
 const TaskWrapper = styled.div`
   flex-grow: 1;
@@ -34,24 +35,6 @@ const SessionMenuWrapper = styled.div`
   flex-direction: column;
 `;
 
-const SessionMenuInner = styled(Container)`
-  flex-grow: 1;
-
-  /* by default flex items cannot be smaller than their contents, override this, see https://stackoverflow.com/a/43809765/2897827 */
-  min-height: 0;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const SessionMenuRow = styled(Row)`
-  min-height: 0;
-
-  & > * {
-    height: 100%;
-  }
-`;
-
 const CloseSessionMenuButton = styled(CloseButton)`
   position: absolute;
   top: 1rem;
@@ -66,6 +49,7 @@ export interface TaskRef {
 }
 
 interface Props {
+  sessionId: number;
   sessionName: string;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
@@ -74,6 +58,7 @@ interface Props {
 }
 
 const Task = ({
+  sessionId,
   sessionName,
   showSessionMenu: showTaskMenu,
   setShowSessionMenu: setShowTaskMenu,
@@ -85,51 +70,11 @@ const Task = ({
       <SessionMenu>
         <SessionMenuWrapper>
           <CloseSessionMenuButton onClick={() => setShowTaskMenu(false)} />
-          <SessionMenuInner>
+          <RemainingHeightContainer>
             <h1 data-testid="session-name">{sessionName}</h1>
-            <SessionMenuRow>
+            <FullHeightRow>
               <Col xs={4}>
-                <TaskList>
-                  <TaskListItem status={TaskStatus.done}>Task 1</TaskListItem>
-                  <TaskListItem status={TaskStatus.partiallyDone}>
-                    Task 2
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.opened}>Task 3</TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 4
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.opened}>
-                    Task 6 with a very very very very very very very very very
-                    very very very very very very long title
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                  <TaskListItem status={TaskStatus.unOpened}>
-                    Task 5
-                  </TaskListItem>
-                </TaskList>
+                <TaskList sessionId={sessionId} />
               </Col>
               <Col xs={8}>
                 <TaskDescription>
@@ -183,8 +128,9 @@ const Task = ({
                   </p>
                 </TaskDescription>
               </Col>
-            </SessionMenuRow>
-          </SessionMenuInner>
+            </FullHeightRow>
+            <VerticalSpacing />
+          </RemainingHeightContainer>
         </SessionMenuWrapper>
       </SessionMenu>
     )}
