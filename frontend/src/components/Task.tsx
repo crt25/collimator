@@ -2,7 +2,7 @@ import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
 import styled from "@emotion/styled";
 import { MutableRefObject } from "react";
-import { CloseButton, Col, Container, Row } from "react-bootstrap";
+import { CloseButton, Col } from "react-bootstrap";
 import TaskList from "./TaskList";
 import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import FullHeightRow from "./layout/FullHeightRow";

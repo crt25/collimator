@@ -14,6 +14,7 @@ const TaskListWrapper = styled.menu`
   overflow-y: scroll;
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TaskList = ({ sessionId }: { sessionId: number }) => {
   return (
     <TaskListWrapper>

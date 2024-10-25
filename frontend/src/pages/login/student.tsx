@@ -1,7 +1,6 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
-import { UserRole } from "@/i18n/user-role-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import {
   openIdConnectMicrosoftClientId,
@@ -31,7 +30,7 @@ const StudentLoginPage = () => {
       openIdConnectMicrosoftServer,
       openIdConnectMicrosoftClientId,
       `/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
-      UserRole.student,
+      true,
     );
   }, [sessionId, teacherPublicKeyFingerprint]);
 

@@ -7,8 +7,6 @@ import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { PrimeReactProvider } from "primereact/api";
-import YupLocalization from "@/components/form/YupLocalization";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -85,17 +83,17 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <CacheProvider value={cache}>
       <IntlProvider locale={router.locale || "en"} messages={messages}>
-            <AuthenticationContext.Provider value={authenticationState}>
-              <UpdateAuthenticationContext.Provider
-                value={updateAuthenticationState}
-              >
-                <AuthenticationBarrier
-                  authenticationStateLoaded={authenticationStateLoaded}
-                >
-                  <Component {...pageProps} />
-                </AuthenticationBarrier>
-              </UpdateAuthenticationContext.Provider>
-            </AuthenticationContext.Provider>
+        <AuthenticationContext.Provider value={authenticationState}>
+          <UpdateAuthenticationContext.Provider
+            value={updateAuthenticationState}
+          >
+            <AuthenticationBarrier
+              authenticationStateLoaded={authenticationStateLoaded}
+            >
+              <Component {...pageProps} />
+            </AuthenticationBarrier>
+          </UpdateAuthenticationContext.Provider>
+        </AuthenticationContext.Provider>
       </IntlProvider>
     </CacheProvider>
   );
