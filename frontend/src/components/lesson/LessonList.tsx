@@ -137,7 +137,7 @@ const LessonList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (state: LazyTableState) => Promise.resolve(sessions);
+    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
 
     fetchData(lazyState).then((sessions) => {
       setTotalRecords(sessions.length);
@@ -205,7 +205,7 @@ const LessonList = () => {
         </Dropdown>
       </div>
     ),
-    [],
+    [router],
   );
 
   return (

@@ -154,7 +154,7 @@ const SessionList = ({ classId }: { classId: number }) => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (state: LazyTableState) => Promise.resolve(sessions);
+    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
 
     fetchData(lazyState).then((sessions) => {
       setTotalRecords(sessions.length);
@@ -215,7 +215,7 @@ const SessionList = ({ classId }: { classId: number }) => {
   );
 
   const actionsTemplate = useCallback(
-    (rowData: Session) => (
+    (_rowData: Session) => (
       <div>
         <Dropdown as={ButtonGroup}>
           <Button variant="secondary">

@@ -160,7 +160,7 @@ const ClassList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (state: LazyTableState) => Promise.resolve(sessions);
+    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
 
     fetchData(lazyState).then((sessions) => {
       setTotalRecords(sessions.length);
@@ -201,7 +201,7 @@ const ClassList = () => {
     (rowData: Class) => (
       <span>{intl.formatMessage(getClassStatusMessage(rowData.status))}</span>
     ),
-    [],
+    [intl],
   );
 
   const actionsTemplate = useCallback(
@@ -225,7 +225,7 @@ const ClassList = () => {
         </Dropdown>
       </div>
     ),
-    [],
+    [router],
   );
 
   return (

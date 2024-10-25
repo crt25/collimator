@@ -102,8 +102,8 @@ const sessions: UserProgress[] = [
   },
 ];
 
-const taskTemplate = (taskIndex: number) =>
-  function TaskTemplate(rowData: UserProgress) {
+const taskTemplate = (_taskIndex: number) =>
+  function TaskTemplate(_rowData: UserProgress) {
     return (
       <TaskState>
         <div>
@@ -144,7 +144,7 @@ const ProgressList = ({
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (state: LazyTableState) => Promise.resolve(sessions);
+    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
 
     fetchData(lazyState).then((sessions) => {
       setTotalRecords(sessions.length);
@@ -162,12 +162,12 @@ const ProgressList = ({
   };
 
   const timeOnTaskTemplate = useCallback(
-    (rowData: UserProgress) => <TimeOnTask>00:00</TimeOnTask>,
+    (_rowData: UserProgress) => <TimeOnTask>00:00</TimeOnTask>,
     [],
   );
 
   const helpTemplate = useCallback(
-    (rowData: UserProgress) => (
+    (_rowData: UserProgress) => (
       <span>
         <FontAwesomeIcon icon={faHand} />
       </span>

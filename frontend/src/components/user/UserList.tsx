@@ -123,7 +123,7 @@ const UserList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (state: LazyTableState) => Promise.resolve(sessions);
+    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
 
     fetchData(lazyState).then((sessions) => {
       setTotalRecords(sessions.length);
@@ -148,7 +148,7 @@ const UserList = () => {
     (rowData: User) => (
       <span>{intl.formatMessage(getUserRoleMessage(rowData.role))}</span>
     ),
-    [],
+    [intl],
   );
 
   const actionsTemplate = useCallback(
@@ -172,7 +172,7 @@ const UserList = () => {
         </Dropdown>
       </div>
     ),
-    [],
+    [router],
   );
 
   return (
