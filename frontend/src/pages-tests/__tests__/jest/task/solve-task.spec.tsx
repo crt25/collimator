@@ -4,10 +4,18 @@ import SolveTaskPage from "@/pages/session/[sessionId]/task/[taskId]/solve";
 import { render } from "@testing-library/react";
 import { IntlProvider } from "react-intl";
 import English from "../../../../../content/compiled-locales/en.json";
+import {
+  AuthenticationContext,
+  AuthenticationContextType,
+} from "@/contexts/AuthenticationContext";
+import { getFullyAuthenticatedStudentContext } from "@/contexts/__tests__/mock-contexts";
+import { subtle } from "crypto";
 
-const renderComponent = () => (
+const renderComponent = (context: AuthenticationContextType) => (
   <IntlProvider locale="en" messages={English}>
-    <SolveTaskPage />
+    <AuthenticationContext.Provider value={context}>
+      <SolveTaskPage />
+    </AuthenticationContext.Provider>
   </IntlProvider>
 );
 
@@ -35,7 +43,7 @@ const downloadBlob = jest.requireMock("@/utilities/download")
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(() => ({
-    query: { sessionId: "sessionId", taskId: "taskId" },
+    query: { sessionId: 10, taskId: 5 },
   })),
 }));
 
@@ -43,12 +51,14 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("Solve Task Page", () => {
-  it("renders page unchanged", () => {
-    //console.log("EmbeddedAppMockx", EmbeddedAppMock);
-    EmbeddedAppMock.mockImplementation(() => EmbeddedApp);
+const crypto = subtle as SubtleCrypto;
 
-    const { container } = render(renderComponent());
+describe("Solve Task Page", () => {
+  it("renders page unchanged", async () => {
+    EmbeddedAppMock.mockImplementation(() => EmbeddedApp);
+    const context = await getFullyAuthenticatedStudentContext(crypto);
+
+    const { container } = render(renderComponent(context));
     expect(container).toMatchSnapshot();
   });
 
@@ -67,7 +77,9 @@ describe("Solve Task Page", () => {
       createMockedEmbeddedApp(mockSendRequest),
     );
 
-    const { findByTestId } = render(renderComponent());
+    const context = await getFullyAuthenticatedStudentContext(crypto);
+
+    const { findByTestId } = render(renderComponent(context));
 
     const submitButton = await findByTestId("submit-solution-button");
     expect(submitButton).toBeTruthy();
@@ -86,7 +98,9 @@ describe("Solve Task Page", () => {
     it("clicking the submit button is a noop", async () => {
       EmbeddedAppMock.mockImplementation(() => NeverLoadingIFrame);
 
-      const { findByTestId } = render(renderComponent());
+      const context = await getFullyAuthenticatedStudentContext(crypto);
+
+      const { findByTestId } = render(renderComponent(context));
 
       const submitButton = await findByTestId("submit-solution-button");
       expect(submitButton).toBeTruthy();

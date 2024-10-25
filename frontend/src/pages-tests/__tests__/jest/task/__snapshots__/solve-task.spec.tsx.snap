@@ -41,11 +41,18 @@ exports[`Solve Task Page renders page unchanged 1`] = `
             </button>
           </li>
           <li>
-            <a
-              href="/login"
+            <div
+              class="dropdown"
             >
-              Sign In
-            </a>
+              <button
+                aria-expanded="false"
+                class="dropdown-toggle btn btn-primary"
+                id="react-aria-:r0:"
+                type="button"
+              >
+                john@doe.com
+              </button>
+            </div>
           </li>
         </menu>
       </div>
@@ -59,7 +66,7 @@ exports[`Solve Task Page renders page unchanged 1`] = `
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
         sandbox="allow-scripts allow-same-origin allow-downloads"
-        src="undefined/solve/NaN/NaN"
+        src="undefined/solve/10/5"
       />
     </div>
   </div>
