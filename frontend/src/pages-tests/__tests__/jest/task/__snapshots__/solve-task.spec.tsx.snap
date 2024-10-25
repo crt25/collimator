@@ -25,6 +25,7 @@ exports[`Solve Task Page renders page unchanged 1`] = `
           <li>
             <button
               class="css-1aktket"
+              data-testid="toggle-session-menu-button"
             >
               <span>
                 Show Session
@@ -40,11 +41,11 @@ exports[`Solve Task Page renders page unchanged 1`] = `
             </button>
           </li>
           <li>
-            <button
-              class="css-1aktket"
+            <a
+              href="/login"
             >
-              Sign out
-            </button>
+              Sign In
+            </a>
           </li>
         </menu>
       </div>
@@ -58,7 +59,7 @@ exports[`Solve Task Page renders page unchanged 1`] = `
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
         sandbox="allow-scripts allow-same-origin allow-downloads"
-        src="undefined/solve/sessionId/taskId"
+        src="undefined/solve/NaN/NaN"
       />
     </div>
   </div>
