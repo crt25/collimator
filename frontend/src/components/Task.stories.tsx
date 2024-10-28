@@ -25,7 +25,7 @@ export const Default = {
   args: {
     sessionId: 1,
     sessionName: "Introduction to React",
-    iFrameSrc: "https://example.com",
+    iframeSrc: "https://example.com",
   } as Args,
   render: (args: Args) => {
     const [showSessionMenu, setShowSessionMenu] = useState(false);
@@ -53,7 +53,7 @@ export const WithOpenSessionMenu = {
   args: {
     sessionId: 1,
     sessionName: "Introduction to React",
-    iFrameSrc: "https://example.com",
+    iframeSrc: "https://example.com",
   } as Args,
   render: (args: Args) => {
     const [showSessionMenu, setShowSessionMenu] = useState(true);
