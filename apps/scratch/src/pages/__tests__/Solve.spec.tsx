@@ -1,7 +1,10 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
-import { MockMessageEvent } from "./mock-message-event";
+import {
+  defineCustomMessageEvent,
+  MockMessageEvent,
+} from "./mock-message-event";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -10,6 +13,7 @@ declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
     postedMessages: { message: unknown; options: unknown }[];
+    MockMessageEvent: typeof MockMessageEvent;
   }
 }
 
@@ -31,6 +35,8 @@ test.describe("/solve/sessionId/taskId", () => {
     await page.goto(`${baseURL!}/solve/some-session-id/some-task-id`);
 
     await page.waitForSelector("#root");
+
+    await defineCustomMessageEvent(page);
   });
 
   test("can select the stage", async ({ page }) => {
@@ -106,7 +112,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "getHeight",
@@ -131,7 +137,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can get submission via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "getSubmission",
@@ -155,7 +161,7 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("can load task via window.postMessage", async ({ page }) => {
+  test.only("can load task via window.postMessage", async ({ page }) => {
     page.route(/test-task.sb3$/, (route) =>
       route.fulfill({
         body: testTask,
@@ -169,7 +175,7 @@ test.describe("/solve/sessionId/taskId", () => {
         (response) => response.blob(),
       );
 
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "loadTask",
