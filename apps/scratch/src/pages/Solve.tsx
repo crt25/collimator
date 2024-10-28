@@ -7,6 +7,8 @@ import {
   AppIFrameResponse,
 } from "../../../../frontend/src/types/app-iframe-message";
 import { patchScratchVm } from "../vm";
+import { saveCrtProject } from "../vm/save-crt-project";
+import { loadCrtProject } from "../vm/load-crt-project";
 
 const respondToMessageEvent = (
   event: MessageEvent,
@@ -79,7 +81,7 @@ export const Solve = () => {
           break;
         case "getTask":
           if (vm) {
-            vm.saveProjectSb3().then((content) => {
+            saveCrtProject(vm).then((content) => {
               respondToMessageEvent(event, {
                 procedure: "getTask",
                 result: content,
@@ -91,7 +93,7 @@ export const Solve = () => {
           if (vm) {
             const sb3Project = await message.arguments.arrayBuffer();
 
-            vm.loadProject(sb3Project).then(() => {
+            loadCrtProject(vm, sb3Project).then(() => {
               respondToMessageEvent(event, {
                 procedure: "loadTask",
               });
@@ -122,7 +124,6 @@ export const Solve = () => {
 
   return (
     <Gui
-      canEditTask={true}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
