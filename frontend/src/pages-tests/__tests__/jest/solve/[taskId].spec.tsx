@@ -45,7 +45,6 @@ beforeEach(() => {
 
 describe("Solve Task Page", () => {
   it("renders page unchanged", () => {
-    //console.log("EmbeddedAppMockx", EmbeddedAppMock);
     EmbeddedAppMock.mockImplementation(() => EmbeddedApp);
 
     const { container } = render(<SolveTaskPage />);

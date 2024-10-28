@@ -24,21 +24,21 @@ const MAX_COUNTER = 1000000;
 let counter = 0;
 
 const postMessageToIFrame = (
-  iFrame: HTMLIFrameElement,
+  iframe: HTMLIFrameElement,
   message: AppIFrameMessage,
 ) => {
-  if (!iFrame.contentWindow) {
+  if (!iframe.contentWindow) {
     console.error(
       "Cannot post message to iframe without content window:",
-      iFrame,
+      iframe,
     );
     return;
   }
 
   // get target origin from the iframe's src attribute
-  const targetOrigin = new URL(iFrame.src).origin;
+  const targetOrigin = new URL(iframe.src).origin;
 
-  iFrame.contentWindow.postMessage(message, {
+  iframe.contentWindow.postMessage(message, {
     targetOrigin,
   });
 };
@@ -59,7 +59,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   { src },
   ref,
 ) {
-  const [iFrame, setIFrame] = useState<HTMLIFrameElement | null>(null);
+  const [iframe, setIFrame] = useState<HTMLIFrameElement | null>(null);
   const isIFrameLoaded = useRef<boolean>(false);
 
   const pendingRequests = useRef<{
@@ -72,7 +72,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         procedure: ProcedureName;
       },
     ): Promise<AppIFrameResponse & { procedure: ProcedureName }> => {
-      if (iFrame && isIFrameLoaded.current) {
+      if (iframe && isIFrameLoaded.current) {
         return new Promise((resolve) => {
           // store the resolve function in the pendingRequests object
           pendingRequests.current[counter] = (response: AppIFrameResponse) => {
@@ -86,9 +86,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
             );
           };
 
-          // send the message to the iFrame
+          // send the message to the iframe
           postMessageToIFrame(
-            iFrame,
+            iframe,
             // add a unique id to the message
             {
               id: counter,
@@ -102,9 +102,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         });
       }
 
-      return Promise.reject(new Error("No iFrame available"));
+      return Promise.reject(new Error("No iframe available"));
     },
-    [iFrame],
+    [iframe],
   );
 
   useImperativeHandle(
@@ -115,10 +115,10 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     [sendRequest],
   );
 
-  // a callback function that listens for messages from the iFrame
+  // a callback function that listens for messages from the iframe
   const handleIFrameMessage = useCallback(
     (event: MessageEvent) => {
-      if (event.source !== iFrame?.contentWindow) {
+      if (event.source !== iframe?.contentWindow) {
         return;
       }
 
@@ -140,10 +140,10 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       // remove the resolve function from the pendingRequests object
       delete pendingRequests.current[message.id];
     },
-    [iFrame],
+    [iframe],
   );
 
-  // add an event listener to listen for messages from the iFrame
+  // add an event listener to listen for messages from the iframe
   useEffect(() => {
     window.addEventListener("message", handleIFrameMessage);
 
@@ -152,9 +152,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     };
   }, [handleIFrameMessage]);
 
-  // after the iFrame has been rendered, send a message to the iFrame
+  // after the iframe has been rendered, send a message to the iframe
   useEffect(() => {
-    if (iFrame) {
+    if (iframe) {
       const callback = async () => {
         isIFrameLoaded.current = true;
 
@@ -162,20 +162,20 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
           procedure: "getHeight",
         });
 
-        iFrame.style.height = `${response.result}px`;
+        iframe.style.height = `${response.result}px`;
       };
-      iFrame.addEventListener("load", callback);
+      iframe.addEventListener("load", callback);
 
       return () => {
-        if (iFrame) {
-          iFrame.removeEventListener("load", callback);
+        if (iframe) {
+          iframe.removeEventListener("load", callback);
         }
       };
     }
-  }, [iFrame, sendRequest]);
+  }, [iframe, sendRequest]);
 
-  // store the reference to the iFrame element in a state value
-  // this is only called once when the iFrame is mounted
+  // store the reference to the iframe element in a state value
+  // this is only called once when the iframe is mounted
   // and once when it is unmounted due to the empty dependency array
   const getIFramRef = useCallback((node: HTMLIFrameElement | null) => {
     if (node !== null) {

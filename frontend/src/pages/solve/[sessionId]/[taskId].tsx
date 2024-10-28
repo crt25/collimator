@@ -21,7 +21,7 @@ const SolveTaskPage = () => {
     taskId: string;
   };
 
-  const iFrameSrc = useMemo(() => {
+  const iframeSrc = useMemo(() => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
   }, [sessionId, taskId]);
 
@@ -39,7 +39,6 @@ const SolveTaskPage = () => {
 
     await embeddedApp.current.sendRequest({
       procedure: "loadTask",
-      // typescript does not seem to notice that "arguments" is required but without the Omit<> it does, a bug?
       arguments: task,
     });
   }, []);
@@ -98,7 +97,7 @@ const SolveTaskPage = () => {
           </Col>
         </Row>
       </Container>
-      <EmbeddedApp src={iFrameSrc} ref={embeddedApp} />
+      <EmbeddedApp src={iframeSrc} ref={embeddedApp} />
     </SolveContainer>
   );
 };
