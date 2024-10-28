@@ -57,46 +57,46 @@ const JoinSession = () => {
     }
 
     // when joining a session, we first generate an ephemeral asymmetric key pair
-    StudentKeyPair.generate(window.crypto.subtle).then(async (keyPair) => {
-      // next, fetch the public key of the teacher using the fingerprint
+    StudentKeyPair.generate(window.crypto.subtle)
+      .then(async (keyPair) => {
+        // next, fetch the public key of the teacher using the fingerprint
 
-      // then generate a shared secret using the teacher's public key and the student's private key (this also verifies the fingerprint)
-      // this shared secret is then used to encrypt messages sent to the teacher during this session
-      // note that by using the long term key directly for the derivation of the ephemeral key,
-      // the teacher does not get a guarantee for perfect forward secrecy with respect to the collimator server
-      // (this is different from e.g. TLS)
-      // however, the teacher does not use the shared key to encrypt data that is confidential
-      // the shared key is used to protect the students and, assuming they follow the protocol, get the guarantee for perfect forward secrecy
+        // then generate a shared secret using the teacher's public key and the student's private key (this also verifies the fingerprint)
+        // this shared secret is then used to encrypt messages sent to the teacher during this session
 
-      // finally send the public key to the teacher s.t. they can generate the shared secret first
-      // also send along the id token to authenticate the student but encrypt it with the newly derived shared secret
-      // if the id token is not authentic, the teacher can just ignore the message
-      // however if the id token is authentic, the teacher can decrypt it and verify the student's identity
-      // then the teacher determines a pseudonym for the student for this session and sends it back to the student
-      // this allows students to re-join sessions from different devices because we are not relying on
-      // the ephemeral public key generated when joining a session
-      // for simplicity, we will use the encryption of the student's name + email under the teacher's long term private key as the pseudonym
-      // this way, the teacher always has the ability to decrypt the pseudonym and learn the student's identity
-      // while towards others, the pseudonym is just a random string
-      // the email is included in the pseudonym to ensure the pseudonym is unique even if two students share the same name
+        /**
+         * finally send the public key to the teacher s.t. they can generate the shared secret first
+         * also send along the id token to authenticate the student but encrypt it with the newly derived shared secret
+         * if the id token is not authentic, the teacher can just ignore the message
+         * however if the id token is authentic, the teacher can decrypt it and verify the student's identity
+         * then the teacher determines a pseudonym for the student for this session and sends it back to the student
+         * this allows students to re-join sessions from different devices because we are not relying on
+         * the ephemeral public key generated when joining a session
+         * for simplicity, we will use the encryption of the student's name + email under the teacher's long term private key as the pseudonym
+         */
 
-      // wait for a confirmation from the teacher that we are allowed to join the session
-      // the teacher responds with a authentication token (encrypted with the shared secret)
-      // this token is then used to authenticate the student against the server
+        /**
+         * wait for a confirmation from the teacher that we are allowed to join the session
+         * the teacher responds with a authentication token (encrypted with the shared secret)
+         * this token is then used to authenticate the student against the server
+         */
 
-      // verify the shared secret by decrypting the confirmation message from the teacher
+        // verify the shared secret by decrypting the confirmation message from the teacher
 
-      // if the message can be decrypted, store the shared secret + the authentication token
-      const authenticationToken = "retrieve from teacher";
+        // if the message can be decrypted, store the shared secret + the authentication token
+        const authenticationToken = "retrieve from teacher";
 
-      // if the message cannot be decrypted, the student is not allowed to join the session as someone is trying to impersonate the teacher
-      updateAuthenticationContext({
-        ...authenticationContext,
-        keyPair,
-        authenticationToken,
-        sessionId,
+        // if the message cannot be decrypted, the student is not allowed to join the session as someone is trying to impersonate the teacher
+        updateAuthenticationContext({
+          ...authenticationContext,
+          keyPair,
+          authenticationToken,
+          sessionId,
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to generate student key pair", error);
       });
-    });
   }, [
     authenticationContext,
     router,
