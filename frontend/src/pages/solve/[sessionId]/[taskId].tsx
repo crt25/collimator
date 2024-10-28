@@ -22,7 +22,7 @@ const SolveTaskPage = () => {
     taskId: string;
   };
 
-  const iFrameSrc = useMemo(() => {
+  const iframeSrc = useMemo(() => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
   }, [sessionId, taskId]);
 
@@ -94,7 +94,7 @@ const SolveTaskPage = () => {
         showSessionMenu={showSessionMenu}
         setShowSessionMenu={setShowSessionMenu}
         embeddedApp={embeddedApp}
-        iFrameSrc={iFrameSrc}
+        iFrameSrc={iframeSrc}
       />
     </SolveContainer>
   );

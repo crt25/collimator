@@ -9,7 +9,7 @@ import VM from "scratch-vm";
 // @ts-expect-error - no type definitions
 import { isRtl } from "scratch-l10n";
 
-import styles from "./sprite-selector.css";
+import styles from "@scratch-submodule/scratch-gui/src/components/sprite-selector/sprite-selector.css";
 
 import fileUploadIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--file-upload.svg";
 import paintIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--paint.svg";

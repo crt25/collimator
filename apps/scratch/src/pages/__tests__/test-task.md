@@ -1,0 +1,1 @@
+The file `test-task.zip` is used in `Solve.spec.ts` to test whether we can load a task.

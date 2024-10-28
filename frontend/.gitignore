@@ -20,7 +20,6 @@ next-env.d.ts
 # playwright component testing coverage
 /coverage-ct
 
-node_modules/
 /test-results/
 
 /playwright-report/

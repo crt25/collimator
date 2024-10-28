@@ -8,7 +8,9 @@ import {
 } from "@scratch-submodule/scratch-gui/src/lib/layout-constants.js";
 import Stage from "@scratch-submodule/scratch-gui/src/containers/stage.jsx";
 import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
-import styles from "./stage-wrapper.css";
+import styles from "@scratch-submodule/scratch-gui/src/components/stage-wrapper/stage-wrapper.css";
+import headerStyles from "@scratch-submodule/scratch-gui/src/components/stage-header/stage-header.css";
+import crtStyles from "./stage-wrapper.css";
 import { setStageSize } from "@scratch-submodule/scratch-gui/src/reducers/stage-size";
 import { setFullScreen } from "@scratch-submodule/scratch-gui/src";
 import Button from "@scratch-submodule/scratch-gui/src/components/button/button";
@@ -95,15 +97,15 @@ const StageWrapper = function (props: Props) {
       dir={isRtl ? "rtl" : "ltr"}
     >
       {isFullScreen ? (
-        <Box className={styles.stageHeaderWrapperOverlay}>
+        <Box className={headerStyles.stageHeaderWrapperOverlay}>
           <Box
-            className={styles.stageMenuWrapper}
+            className={headerStyles.stageMenuWrapper}
             style={{ width: getStageDimensions(null, true).width }}
           >
             <Controls vm={vm} />
-            <div className={styles.unselectWrapper}>
+            <div className={headerStyles.unselectWrapper}>
               <Button
-                className={styles.stageButton}
+                className={headerStyles.stageButton}
                 onClick={onSetStageUnFull}
                 disabled={false}
                 iconSrc={undefined}
@@ -112,7 +114,7 @@ const StageWrapper = function (props: Props) {
               >
                 <img
                   alt={intl.formatMessage(messages.unFullStageSizeMessage)}
-                  className={styles.stageButtonIcon}
+                  className={headerStyles.stageButtonIcon}
                   draggable={false}
                   src={unFullScreenIcon}
                   title={intl.formatMessage(messages.fullscreenControl)}
@@ -122,24 +124,24 @@ const StageWrapper = function (props: Props) {
           </Box>
         </Box>
       ) : (
-        <Box className={styles.stageHeaderWrapper}>
-          <Box className={styles.stageMenuWrapper}>
+        <Box className={headerStyles.stageHeaderWrapper}>
+          <Box className={headerStyles.stageMenuWrapper}>
             <Controls vm={vm} />
-            <div className={styles.stageSizeRow}>
-              <div className={styles.stageSizeToggleGroup}>
+            <div className={headerStyles.stageSizeRow}>
+              <div className={headerStyles.stageSizeToggleGroup}>
                 <ToggleButtons
                   buttons={[
                     {
                       handleClick: onSetStageSmall,
                       icon: smallStageIcon,
-                      iconClassName: styles.stageButtonIcon,
+                      iconClassName: headerStyles.stageButtonIcon,
                       isSelected: stageSizeMode === STAGE_SIZE_MODES.small,
                       title: intl.formatMessage(messages.smallStageSizeMessage),
                     },
                     {
                       handleClick: onSetStageLarge,
                       icon: largeStageIcon,
-                      iconClassName: styles.stageButtonIcon,
+                      iconClassName: headerStyles.stageButtonIcon,
                       isSelected: stageSizeMode === STAGE_SIZE_MODES.large,
                       title: intl.formatMessage(messages.largeStageSizeMessage),
                     },
@@ -148,7 +150,7 @@ const StageWrapper = function (props: Props) {
               </div>
               <div>
                 <Button
-                  className={styles.stageButton}
+                  className={headerStyles.stageButton}
                   onClick={onSetStageFull}
                   disabled={false}
                   iconSrc={undefined}
@@ -157,7 +159,7 @@ const StageWrapper = function (props: Props) {
                 >
                   <img
                     alt={intl.formatMessage(messages.fullStageSizeMessage)}
-                    className={styles.stageButtonIcon}
+                    className={headerStyles.stageButtonIcon}
                     draggable={false}
                     src={fullScreenIcon}
                     title={intl.formatMessage(messages.fullscreenControl)}
@@ -172,7 +174,7 @@ const StageWrapper = function (props: Props) {
         className={
           isStageInteractive
             ? styles.stageCanvasWrapper
-            : classNames(styles.stageCanvasWrapper, styles.nonInteractive)
+            : classNames(styles.stageCanvasWrapper, crtStyles.nonInteractive)
         }
       >
         {isRendererSupported ? <Stage stageSize={stageSize} vm={vm} /> : null}
