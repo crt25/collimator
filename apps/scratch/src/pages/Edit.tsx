@@ -30,8 +30,7 @@ const respondToMessageEvent = (
 };
 
 const Edit = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { sessionId, taskId } = useParams();
+  const { _sessionId, _taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);
   const [vm, setVm] = useState<VM | null>(null);

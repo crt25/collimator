@@ -49,7 +49,7 @@ interface Props {
   sessionName: string;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
-  iFrameSrc: string;
+  iframeSrc: string;
   embeddedApp: MutableRefObject<EmbeddedAppRef | null>;
 }
 
@@ -58,7 +58,7 @@ const Task = ({
   sessionName,
   showSessionMenu: showTaskMenu,
   setShowSessionMenu: setShowTaskMenu,
-  iFrameSrc,
+  iframeSrc,
   embeddedApp,
 }: Props) => (
   <TaskWrapper>
@@ -130,7 +130,7 @@ const Task = ({
         </SessionMenuWrapper>
       </SessionMenu>
     )}
-    <EmbeddedApp src={iFrameSrc} ref={embeddedApp} />
+    <EmbeddedApp src={iframeSrc} ref={embeddedApp} />
   </TaskWrapper>
 );
 

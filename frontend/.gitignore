@@ -23,7 +23,6 @@ next-env.d.ts
 # storybook coverage
 /coverage-storybook
 
-node_modules/
 /test-results/
 
 /playwright-report/

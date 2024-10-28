@@ -42,7 +42,8 @@ import {
   themeMap,
 } from "@scratch-submodule/scratch-gui/src/lib/themes";
 
-import styles from "./gui.css";
+import styles from "@scratch-submodule/scratch-gui/src/components/gui/gui.css";
+import crtStyles from "./gui.css";
 import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--extensions.svg";
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
@@ -219,7 +220,7 @@ const GUIComponent = (props: {
                 onRequestClose={onRequestCloseBackdropLibrary}
               />
             ) : null}
-            <Box className={styles.bodyWrapper}>
+            <Box className={crtStyles.bodyWrapper}>
               <Box className={styles.flexWrapper}>
                 <Box className={styles.editorWrapper}>
                   <Tabs

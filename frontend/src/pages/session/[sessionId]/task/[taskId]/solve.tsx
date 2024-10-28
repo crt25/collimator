@@ -19,7 +19,7 @@ const SolveTaskPage = () => {
     sessionIdString !== undefined && parseInt(sessionIdString, 10);
   const taskId = taskIdString !== undefined && parseInt(taskIdString, 10);
 
-  const iFrameSrc = useMemo(() => {
+  const iframeSrc = useMemo(() => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
   }, [sessionId, taskId]);
 
@@ -96,7 +96,7 @@ const SolveTaskPage = () => {
         showSessionMenu={showSessionMenu}
         setShowSessionMenu={setShowSessionMenu}
         embeddedApp={embeddedApp}
-        iFrameSrc={iFrameSrc}
+        iframeSrc={iframeSrc}
       />
     </MaxScreenHeight>
   );

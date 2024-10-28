@@ -1,12 +1,14 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
+import { MockMessageEvent } from "./mock-message-event";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
 
 declare global {
   interface Window {
+    // we store posted messages on the window object instead of actually posting so we can assert on them
     postedMessages: { message: unknown; options: unknown }[];
   }
 }
@@ -104,11 +106,12 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
+      const event = new MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getHeight",
+      });
 
-      event.source = window.parent;
-      event.data = { id: 0, type: "request", procedure: "getHeight" };
       window.dispatchEvent(event);
     });
 
@@ -128,11 +131,12 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can get submission via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
+      const event = new MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getSubmission",
+      });
 
-      event.source = window.parent;
-      event.data = { id: 0, type: "request", procedure: "getSubmission" };
       window.dispatchEvent(event);
     });
 
@@ -161,20 +165,17 @@ test.describe("/solve/sessionId/taskId", () => {
     );
 
     await page.evaluate(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
-
       const task = await fetch("https://example.com/test-task.sb3").then(
         (response) => response.blob(),
       );
 
-      event.source = window.parent;
-      event.data = {
+      const event = new MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "loadTask",
         arguments: task,
-      };
+      });
+
       window.dispatchEvent(event);
     });
 
