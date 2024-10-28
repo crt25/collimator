@@ -2,12 +2,10 @@ import {
   DataTablePageEvent,
   DataTableSortEvent,
   DataTableFilterEvent,
-  DataTableFilterMeta,
-  SortOrder,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable from "@/components/DataTable";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -41,65 +39,19 @@ const messages = defineMessages({
   },
 });
 
-interface User {
+export interface User {
   id: number;
   name: string;
   role: UserRole;
 }
 
-interface LazyTableState {
-  first: number;
-  rows: number;
-  page: number;
-  sortField?: string;
-  sortOrder?: SortOrder;
-  filters: DataTableFilterMeta;
-}
-
-const sessions: User[] = [
-  {
-    id: 100,
-    name: "User 1",
-    role: UserRole.teacher,
-  },
-  {
-    id: 1,
-    name: "User 2",
-    role: UserRole.student,
-  },
-  {
-    id: 2,
-    name: "User 3",
-    role: UserRole.student,
-  },
-  {
-    id: 3,
-    name: "User 4",
-    role: UserRole.admin,
-  },
-  {
-    id: 4,
-    name: "User 5",
-    role: UserRole.student,
-  },
-  {
-    id: 5,
-    name: "User 6",
-    role: UserRole.teacher,
-  },
-  {
-    id: 6,
-    name: "User 7",
-    role: UserRole.student,
-  },
-  {
-    id: 7,
-    name: "User 8",
-    role: UserRole.admin,
-  },
-];
-
-const UserList = () => {
+const UserList = ({
+  fetchData,
+}: {
+  fetchData: (
+    state: LazyTableState,
+  ) => Promise<{ items: User[]; totalCount: number }>;
+}) => {
   const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -115,7 +67,10 @@ const UserList = () => {
       name: {
         value: "",
         matchMode: "contains",
-        constraints: [{ matchMode: "contains", value: null }],
+      },
+      role: {
+        value: "",
+        matchMode: "contains",
       },
     },
   });
@@ -123,14 +78,12 @@ const UserList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
-
-    fetchData(lazyState).then((sessions) => {
-      setTotalRecords(sessions.length);
-      setClasss(sessions);
+    fetchData(lazyState).then(({ items, totalCount }) => {
+      setTotalRecords(totalCount);
+      setClasss(items);
       setLoading(false);
     });
-  }, [lazyState]);
+  }, [lazyState, fetchData]);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
@@ -207,6 +160,7 @@ const UserList = () => {
           showFilterMenu={false}
         />
         <Column
+          field="role"
           header={intl.formatMessage(messages.roleColumn)}
           filter
           filterPlaceholder={intl.formatMessage(

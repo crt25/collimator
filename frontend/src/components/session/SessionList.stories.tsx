@@ -1,12 +1,10 @@
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ClassNavigation from "@/components/class/ClassNavigation";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
-import SessionList, { Session } from "@/components/session/SessionList";
-import CrtNavigation from "@/components/CrtNavigation";
-import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import SessionList, { Session } from "./SessionList";
+import { mockFilterSortDataTable } from "../__tests__/data-table";
+
+export default {
+  component: SessionList,
+  title: "SessionList",
+};
 
 const sessions: Session[] = [
   {
@@ -90,37 +88,25 @@ const sessions: Session[] = [
   },
 ];
 
-const ClassSessionList = () => {
-  const router = useRouter();
-  const { classId: classIdString } = router.query as {
-    classId: string;
-  };
+type Args = Parameters<typeof SessionList>[0];
 
-  const classId = parseInt(classIdString, 10);
-
-  return (
-    <>
-      <Header />
-      <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
-        </Breadcrumbs>
-        <ClassNavigation classId={classId} />
-        <PageHeader>
-          <FormattedMessage
-            id="ClassSessions.header"
-            defaultMessage="Class Sessions"
-          />
-        </PageHeader>
-        <SessionList
-          classId={classId}
-          fetchData={() =>
-            Promise.resolve({ items: sessions, totalCount: sessions.length })
-          }
-        />
-      </Container>
-    </>
-  );
+export const Default = {
+  args: {
+    fetchData: (state) =>
+      Promise.resolve(mockFilterSortDataTable(sessions, state)),
+  } as Args,
 };
 
-export default ClassSessionList;
+export const Empty = {
+  args: {
+    classId: 1,
+    fetchData: () => Promise.resolve({ items: [], totalCount: 0 }),
+  } as Args,
+};
+
+export const Loading = {
+  args: {
+    classId: 1,
+    fetchData: () => new Promise(() => {}),
+  } as Args,
+};

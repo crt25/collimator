@@ -2,12 +2,10 @@ import {
   DataTablePageEvent,
   DataTableSortEvent,
   DataTableFilterEvent,
-  DataTableFilterMeta,
-  SortOrder,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useRef, useState } from "react";
-import DataTable from "@/components/DataTable";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown, Modal } from "react-bootstrap";
 import Tag from "@/components/Tag";
 import Tags from "@/components/Tags";
@@ -55,7 +53,7 @@ const messages = defineMessages({
   },
 });
 
-interface Session {
+export interface Session {
   id: number;
   name: string;
   tags: string[];
@@ -63,70 +61,15 @@ interface Session {
   finishedAt?: Date;
 }
 
-interface LazyTableState {
-  first: number;
-  rows: number;
-  page: number;
-  sortField?: string;
-  sortOrder?: SortOrder;
-  filters: DataTableFilterMeta;
-}
-
-const sessions: Session[] = [
-  {
-    id: 100,
-    name: "Session 1",
-    tags: ["blue", "red", "green"],
-  },
-  {
-    id: 1,
-    name: "Session 2",
-    tags: ["blue", "red", "green"],
-    startedAt: new Date("2021-01-01"),
-    finishedAt: new Date("2021-01-02"),
-  },
-  {
-    id: 2,
-    name: "Session 3",
-    tags: ["blue", "red"],
-    startedAt: new Date("2021-01-15"),
-  },
-  {
-    id: 3,
-    name: "Session 4",
-    tags: ["blue"],
-    startedAt: new Date("2021-02-21"),
-  },
-  {
-    id: 4,
-    name: "Session 5",
-    tags: ["green"],
-    startedAt: new Date("2022-01-01"),
-    finishedAt: new Date("2022-01-02"),
-  },
-  {
-    id: 5,
-    name: "Session 6",
-    tags: ["blue", "red", "green"],
-    startedAt: new Date("2023-05-12"),
-    finishedAt: new Date("2023-05-13"),
-  },
-  {
-    id: 6,
-    name: "Session 7",
-    tags: ["red", "green"],
-    startedAt: new Date("2021-01-01"),
-  },
-  {
-    id: 7,
-    name: "Session 8",
-    tags: ["blue", "green"],
-    startedAt: new Date("2021-01-01"),
-    finishedAt: new Date("2021-01-02"),
-  },
-];
-
-const SessionList = ({ classId }: { classId: number }) => {
+const SessionList = ({
+  classId,
+  fetchData,
+}: {
+  classId: number;
+  fetchData: (
+    state: LazyTableState,
+  ) => Promise<{ items: Session[]; totalCount: number }>;
+}) => {
   const router = useRouter();
   const intl = useIntl();
 
@@ -146,7 +89,6 @@ const SessionList = ({ classId }: { classId: number }) => {
       name: {
         value: "",
         matchMode: "contains",
-        constraints: [{ matchMode: "contains", value: null }],
       },
     },
   });
@@ -154,14 +96,12 @@ const SessionList = ({ classId }: { classId: number }) => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
-
-    fetchData(lazyState).then((sessions) => {
-      setTotalRecords(sessions.length);
-      setLessons(sessions);
+    fetchData(lazyState).then(({ items, totalCount }) => {
+      setTotalRecords(totalCount);
+      setLessons(items);
       setLoading(false);
     });
-  }, [lazyState]);
+  }, [lazyState, fetchData]);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));

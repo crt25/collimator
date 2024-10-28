@@ -5,7 +5,7 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
-import UserNavigation from "@/components/user/LessonNavigation";
+import UserNavigation from "@/components/user/UserNavigation";
 
 const UserDetail = () => {
   const router = useRouter();

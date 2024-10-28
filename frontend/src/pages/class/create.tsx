@@ -24,7 +24,7 @@ const CreateClass = () => {
             defaultMessage="Create Class"
           />
         </PageHeader>
-        <ClassForm submitMessage={messages.submit} />
+        <ClassForm submitMessage={messages.submit} onSubmit={console.log} />
       </Container>
     </>
   );

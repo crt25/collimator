@@ -34,7 +34,7 @@ const EditClass = () => {
         <PageHeader>
           <FormattedMessage id="EditClass.header" defaultMessage="Edit Class" />
         </PageHeader>
-        <ClassForm submitMessage={messages.submit} />
+        <ClassForm submitMessage={messages.submit} onSubmit={console.log} />
       </Container>
     </>
   );

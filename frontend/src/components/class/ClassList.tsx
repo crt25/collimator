@@ -2,12 +2,10 @@ import {
   DataTablePageEvent,
   DataTableSortEvent,
   DataTableFilterEvent,
-  DataTableFilterMeta,
-  SortOrder,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable from "@/components/DataTable";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -58,85 +56,13 @@ export interface Class {
   status: ClassStatus;
 }
 
-interface LazyTableState {
-  first: number;
-  rows: number;
-  page: number;
-  sortField?: string;
-  sortOrder?: SortOrder;
-  filters: DataTableFilterMeta;
-}
-
-const sessions: Class[] = [
-  {
-    id: 100,
-    name: "Class 1",
-    lastSession: {
-      id: 1,
-      name: "Session 2",
-    },
-    status: ClassStatus.current,
-  },
-  {
-    id: 1,
-    name: "Class 2",
-    lastSession: {
-      id: 1,
-      name: "Session 1",
-    },
-    status: ClassStatus.current,
-  },
-  {
-    id: 2,
-    name: "Class 3",
-    lastSession: null,
-    status: ClassStatus.current,
-  },
-  {
-    id: 3,
-    name: "Class 4",
-    lastSession: {
-      id: 1,
-      name: "Session 5",
-    },
-    status: ClassStatus.past,
-  },
-  {
-    id: 4,
-    name: "Class 5",
-    lastSession: {
-      id: 1,
-      name: "Session 3",
-    },
-    status: ClassStatus.current,
-  },
-  {
-    id: 5,
-    name: "Class 6",
-    lastSession: {
-      id: 1,
-      name: "Session 2",
-    },
-    status: ClassStatus.past,
-  },
-  {
-    id: 6,
-    name: "Class 7",
-    lastSession: {
-      id: 1,
-      name: "Session 7",
-    },
-    status: ClassStatus.current,
-  },
-  {
-    id: 7,
-    name: "Class 8",
-    lastSession: null,
-    status: ClassStatus.past,
-  },
-];
-
-const ClassList = () => {
+const ClassList = ({
+  fetchData,
+}: {
+  fetchData: (
+    state: LazyTableState,
+  ) => Promise<{ items: Class[]; totalCount: number }>;
+}) => {
   const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -152,7 +78,6 @@ const ClassList = () => {
       name: {
         value: "",
         matchMode: "contains",
-        constraints: [{ matchMode: "contains", value: null }],
       },
     },
   });
@@ -160,14 +85,12 @@ const ClassList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
-
-    fetchData(lazyState).then((sessions) => {
-      setTotalRecords(sessions.length);
-      setClasss(sessions);
+    fetchData(lazyState).then(({ items, totalCount }) => {
+      setTotalRecords(totalCount);
+      setClasss(items);
       setLoading(false);
     });
-  }, [lazyState]);
+  }, [lazyState, fetchData]);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));

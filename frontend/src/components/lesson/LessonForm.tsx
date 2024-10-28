@@ -6,7 +6,6 @@ import { defineMessages, MessageDescriptor } from "react-intl";
 import SubmitFormButton from "../form/SubmitFormButton";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
-import { Lesson } from "./LessonList";
 
 const messages = defineMessages({
   name: {
@@ -15,12 +14,18 @@ const messages = defineMessages({
   },
 });
 
+type LessonFormProps = {
+  name: string;
+};
+
 const LessonForm = ({
   submitMessage,
   initialValues,
+  onSubmit,
 }: {
   submitMessage: MessageDescriptor;
-  initialValues?: Lesson;
+  initialValues?: LessonFormProps;
+  onSubmit: (data: LessonFormProps) => void;
 }) => {
   const schema = useYupSchema({
     name: yup.string().required(),
@@ -32,12 +37,10 @@ const LessonForm = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string }>({
+  } = useForm<LessonFormProps>({
     resolver,
     defaultValues: initialValues,
   });
-
-  const onSubmit = (data: unknown) => console.log(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

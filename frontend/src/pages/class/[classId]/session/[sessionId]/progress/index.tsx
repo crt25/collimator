@@ -7,7 +7,44 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
-import ProgressList from "@/components/dashboard/ProgressList";
+import ProgressList, {
+  UserProgress,
+} from "@/components/dashboard/ProgressList";
+
+const progressList: UserProgress[] = [
+  {
+    userId: 1,
+    name: "Student 1",
+  },
+  {
+    userId: 2,
+    name: "Student 2",
+  },
+  {
+    userId: 3,
+    name: "Student 3",
+  },
+  {
+    userId: 4,
+    name: "Student 4",
+  },
+  {
+    userId: 5,
+    name: "Student 5",
+  },
+  {
+    userId: 6,
+    name: "Student 6",
+  },
+  {
+    userId: 7,
+    name: "Student 7",
+  },
+  {
+    userId: 8,
+    name: "Student 8",
+  },
+];
 
 const SessionProgress = () => {
   const router = useRouter();
@@ -35,7 +72,16 @@ const SessionProgress = () => {
             defaultMessage="Session Progress"
           />
         </PageHeader>
-        <ProgressList classId={classId} sessionId={sessionId} />
+        <ProgressList
+          classId={classId}
+          sessionId={sessionId}
+          fetchData={() =>
+            Promise.resolve({
+              items: progressList,
+              totalCount: progressList.length,
+            })
+          }
+        />
       </Container>
     </>
   );

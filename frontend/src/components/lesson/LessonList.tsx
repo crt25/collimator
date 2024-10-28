@@ -2,12 +2,10 @@ import {
   DataTablePageEvent,
   DataTableSortEvent,
   DataTableFilterEvent,
-  DataTableFilterMeta,
-  SortOrder,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable from "@/components/DataTable";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import Tag from "@/components/Tag";
 import Tags from "@/components/Tags";
@@ -53,67 +51,13 @@ export interface Lesson {
   usedBy: string[];
 }
 
-interface LazyTableState {
-  first: number;
-  rows: number;
-  page: number;
-  sortField?: string;
-  sortOrder?: SortOrder;
-  filters: DataTableFilterMeta;
-}
-
-const sessions: Lesson[] = [
-  {
-    id: 100,
-    name: "Lesson 1",
-    tags: ["blue", "red", "green"],
-    usedBy: ["2017a", "2020c", "2022d"],
-  },
-  {
-    id: 1,
-    name: "Lesson 2",
-    tags: ["blue", "red", "green"],
-    usedBy: ["2017a", "2017b", "2017c"],
-  },
-  {
-    id: 2,
-    name: "Lesson 3",
-    tags: ["blue", "red"],
-    usedBy: ["2017a", "2020a", "2022a"],
-  },
-  {
-    id: 3,
-    name: "Lesson 4",
-    tags: ["blue"],
-    usedBy: ["2017a", "2016c", "2016d"],
-  },
-  {
-    id: 4,
-    name: "Lesson 5",
-    tags: ["green"],
-    usedBy: ["2017a", "2020c", "2022d"],
-  },
-  {
-    id: 5,
-    name: "Lesson 6",
-    tags: ["blue", "red", "green"],
-    usedBy: ["2019a", "2020f", "2022a"],
-  },
-  {
-    id: 6,
-    name: "Lesson 7",
-    tags: ["red", "green"],
-    usedBy: ["2018a", "2020c", "2023d"],
-  },
-  {
-    id: 7,
-    name: "Lesson 8",
-    tags: ["blue", "green"],
-    usedBy: ["2017a", "2022d"],
-  },
-];
-
-const LessonList = () => {
+const LessonList = ({
+  fetchData,
+}: {
+  fetchData: (
+    state: LazyTableState,
+  ) => Promise<{ items: Lesson[]; totalCount: number }>;
+}) => {
   const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -129,7 +73,10 @@ const LessonList = () => {
       name: {
         value: "",
         matchMode: "contains",
-        constraints: [{ matchMode: "contains", value: null }],
+      },
+      tags: {
+        value: "",
+        matchMode: "contains",
       },
     },
   });
@@ -137,14 +84,12 @@ const LessonList = () => {
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
-
-    fetchData(lazyState).then((sessions) => {
-      setTotalRecords(sessions.length);
-      setLessons(sessions);
+    fetchData(lazyState).then(({ items, totalCount }) => {
+      setTotalRecords(totalCount);
+      setLessons(items);
       setLoading(false);
     });
-  }, [lazyState]);
+  }, [lazyState, fetchData]);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
@@ -242,6 +187,7 @@ const LessonList = () => {
           showFilterMenu={false}
         />
         <Column
+          field="tags"
           header={intl.formatMessage(messages.tagsColumn)}
           filter
           filterPlaceholder={intl.formatMessage(

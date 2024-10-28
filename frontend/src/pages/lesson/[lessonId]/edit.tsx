@@ -24,7 +24,7 @@ const EditLesson = () => {
             defaultMessage="Edit Lesson"
           />
         </PageHeader>
-        <LessonForm submitMessage={messages.submit} />
+        <LessonForm submitMessage={messages.submit} onSubmit={console.log} />
       </Container>
     </>
   );

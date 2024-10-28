@@ -1,10 +1,10 @@
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/Header";
-import LessonList, { Lesson } from "@/components/lesson/LessonList";
-import PageHeader from "@/components/PageHeader";
-import CrtNavigation from "@/components/CrtNavigation";
-import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import LessonList, { Lesson } from "./LessonList";
+import { mockFilterSortDataTable } from "../__tests__/data-table";
+
+export default {
+  component: LessonList,
+  title: "LessonList",
+};
 
 const lessons: Lesson[] = [
   {
@@ -75,27 +75,28 @@ const lessons: Lesson[] = [
   },
 ];
 
-const ListLessons = () => {
-  return (
-    <>
-      <Header />
-      <Container>
-        <Breadcrumbs />
-        <CrtNavigation />
-        <PageHeader>
-          <FormattedMessage
-            id="ListLessons.header"
-            defaultMessage="Lesson Manager"
-          />
-        </PageHeader>
-        <LessonList
-          fetchData={() =>
-            Promise.resolve({ items: lessons, totalCount: lessons.length })
-          }
-        />
-      </Container>
-    </>
-  );
+type Args = Parameters<typeof LessonList>[0];
+
+export const Default = {
+  args: {
+    fetchData: (state) =>
+      Promise.resolve(
+        mockFilterSortDataTable(lessons, state, {
+          tags: (input, lesson) =>
+            lesson.tags.find((tag) => tag.includes(input)) !== undefined,
+        }),
+      ),
+  } as Args,
 };
 
-export default ListLessons;
+export const Empty = {
+  args: {
+    fetchData: () => Promise.resolve({ items: [], totalCount: 0 }),
+  } as Args,
+};
+
+export const Loading = {
+  args: {
+    fetchData: () => new Promise(() => {}),
+  } as Args,
+};

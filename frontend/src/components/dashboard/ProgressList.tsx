@@ -1,12 +1,11 @@
 import {
+  DataTableFilterEvent,
   DataTablePageEvent,
   DataTableSortEvent,
-  DataTableFilterMeta,
-  SortOrder,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable from "@/components/DataTable";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHand, faStar } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
@@ -53,54 +52,10 @@ const messages = defineMessages({
   },
 });
 
-interface UserProgress {
+export interface UserProgress {
   userId: number;
   name: string;
 }
-
-interface LazyTableState {
-  first: number;
-  rows: number;
-  page: number;
-  sortField?: string;
-  sortOrder?: SortOrder;
-  filters: DataTableFilterMeta;
-}
-
-const sessions: UserProgress[] = [
-  {
-    userId: 100,
-    name: "Student 1",
-  },
-  {
-    userId: 1,
-    name: "Student 2",
-  },
-  {
-    userId: 2,
-    name: "Student 3",
-  },
-  {
-    userId: 3,
-    name: "Student 4",
-  },
-  {
-    userId: 4,
-    name: "Student 5",
-  },
-  {
-    userId: 5,
-    name: "Student 6",
-  },
-  {
-    userId: 6,
-    name: "Student 7",
-  },
-  {
-    userId: 7,
-    name: "Student 8",
-  },
-];
 
 const taskTemplate = (_taskIndex: number) =>
   function TaskTemplate(_rowData: UserProgress) {
@@ -117,9 +72,13 @@ const taskTemplate = (_taskIndex: number) =>
 const ProgressList = ({
   classId,
   sessionId,
+  fetchData,
 }: {
   classId: number;
   sessionId: number;
+  fetchData: (
+    state: LazyTableState,
+  ) => Promise<{ items: UserProgress[]; totalCount: number }>;
 }) => {
   const intl = useIntl();
   const router = useRouter();
@@ -136,7 +95,6 @@ const ProgressList = ({
       name: {
         value: "",
         matchMode: "contains",
-        constraints: [{ matchMode: "contains", value: null }],
       },
     },
   });
@@ -144,20 +102,22 @@ const ProgressList = ({
   useEffect(() => {
     setLoading(true);
 
-    const fetchData = (_state: LazyTableState) => Promise.resolve(sessions);
-
-    fetchData(lazyState).then((sessions) => {
-      setTotalRecords(sessions.length);
-      setClasss(sessions);
+    fetchData(lazyState).then(({ items, totalCount }) => {
+      setTotalRecords(totalCount);
+      setClasss(items);
       setLoading(false);
     });
-  }, [lazyState]);
+  }, [lazyState, fetchData]);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
   };
 
   const onSort = (event: DataTableSortEvent) => {
+    setLazyState((state) => ({ ...state, ...event }));
+  };
+
+  const onFilter = (event: DataTableFilterEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
   };
 
@@ -190,6 +150,7 @@ const ProgressList = ({
         onSort={onSort}
         sortField={lazyState.sortField}
         sortOrder={lazyState.sortOrder}
+        onFilter={onFilter}
         filters={lazyState.filters}
         loading={loading}
         onRowClick={(e) =>

@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
-import { DataTable as PrimeDataTable } from "primereact/datatable";
+import {
+  DataTableFilterMeta,
+  DataTable as PrimeDataTable,
+  SortOrder,
+} from "primereact/datatable";
 
 const DataTable = styled(PrimeDataTable)`
   border: var(--foreground-color) 1px solid;
@@ -53,8 +57,21 @@ const DataTable = styled(PrimeDataTable)`
       :disabled {
         color: #bbb;
       }
+
+      &.p-highlight {
+        text-decoration: underline;
+      }
     }
   }
 `;
+
+export interface LazyTableState {
+  first: number;
+  rows: number;
+  page: number;
+  sortField?: string;
+  sortOrder?: SortOrder;
+  filters: DataTableFilterMeta;
+}
 
 export default DataTable;
