@@ -1,0 +1,7 @@
+@import "../../scratch/scratch-gui/src/css/units.css";
+@import "../../scratch/scratch-gui/src/css/colors.css";
+@import "../../scratch/scratch-gui/src/css/z-index.css";
+
+.non-interactive {
+    pointer-events: none;
+}

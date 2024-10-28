@@ -12,7 +12,6 @@ import VM, {
 import log from "@scratch-submodule/scratch-gui/src/lib/log.js";
 import Prompt from "@scratch-submodule/scratch-gui/src/containers/prompt.jsx";
 import BlocksComponent from "@scratch-submodule/scratch-gui/src/components/blocks/blocks.jsx";
-import ExtensionLibrary from "@scratch-submodule/scratch-gui/src/containers/extension-library.jsx";
 import extensionData from "@scratch-submodule/scratch-gui/src/lib/libraries/extensions/index.jsx";
 import CustomProcedures from "@scratch-submodule/scratch-gui/src/containers/custom-procedures.jsx";
 import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
@@ -53,6 +52,8 @@ import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
 import makeToolboxXML from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
+import ExtensionLibrary from "./ExtensionLibrary";
+import { addHideBlockButtons } from "../blocks/hide-block";
 
 const addFunctionListener = (
   object: unknown,
@@ -96,7 +97,6 @@ interface Props {
   stageSize: StageDisplaySize;
   locale: string;
   anyModalVisible?: boolean;
-  canUseCloud: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
   isRtl?: boolean;
@@ -418,6 +418,14 @@ class Blocks extends React.Component<Props, State> {
     const queue = this.toolboxUpdateQueue;
     this.toolboxUpdateQueue = [];
     queue.forEach((fn) => fn());
+
+    if (this.blocks) {
+      addHideBlockButtons(
+        this.props.vm,
+        this.blocks,
+        this.requestToolboxUpdate.bind(this),
+      );
+    }
   }
 
   withToolboxUpdates(fn: () => void) {
@@ -553,7 +561,9 @@ class Blocks extends React.Component<Props, State> {
     // Code inside intentionally ignores several error situations (no stage, etc.)
     // Because they would get caught by this try/catch
     try {
-      let { editingTarget: target, runtime } = this.props.vm;
+      let { editingTarget: target } = this.props.vm;
+      const { runtime } = this.props.vm;
+
       const stage = runtime.getTargetForStage();
       if (!stage) {
         throw new Error("Stage not found");
@@ -779,10 +789,6 @@ class Blocks extends React.Component<Props, State> {
       title !== this.ScratchBlocks.Msg.RENAME_VARIABLE_MODAL_TITLE &&
       title !== this.ScratchBlocks.Msg.RENAME_LIST_MODAL_TITLE;
 
-    const showCloudOption =
-      optVarType === this.ScratchBlocks.SCALAR_VARIABLE_TYPE &&
-      this.props.canUseCloud;
-
     this.setState({
       prompt: {
         callback,
@@ -791,7 +797,7 @@ class Blocks extends React.Component<Props, State> {
         title,
         varType,
         showVariableOptions,
-        showCloudOption,
+        showCloudOption: false,
       },
     });
   }
@@ -885,7 +891,6 @@ class Blocks extends React.Component<Props, State> {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
       anyModalVisible,
-      canUseCloud,
       customProceduresVisible,
       extensionLibraryVisible,
       options,
@@ -952,7 +957,16 @@ class Blocks extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: {
+  scratchGui: {
+    modals: Record<string, boolean>;
+    mode: { isFullScreen: boolean };
+    toolbox: { toolboxXML: string };
+    customProcedures: { active: boolean };
+    workspaceMetrics: { targets: Record<string, Metrics> };
+  };
+  locales: { isRtl: boolean; locale: string; messages: string };
+}) => ({
   anyModalVisible:
     Object.keys(state.scratchGui.modals).some(
       (key) => state.scratchGui.modals[key],

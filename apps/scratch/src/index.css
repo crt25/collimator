@@ -10,16 +10,41 @@ body {
 html,
 body,
 #root {
-    /* probably unecessary, transitional until layout is refactored */
-    width: 100%; 
-    height: 100%;
-    margin: 0;
+  /* this CSS block is copied over from the scratch codebase */
+  /* probably unecessary, transitional until layout is refactored */
+  width: 100%;
+  height: 100%;
+  margin: 0;
 
-    /* Setting min height/width makes the UI scroll below those sizes */
-    min-width: 1024px;
-    min-height: 640px; /* Min height to fit sprite/backdrop button */
+  /* Setting min height/width makes the UI scroll below those sizes */
+  min-width: 1024px;
+  min-height: 640px; /* Min height to fit sprite/backdrop button */
 }
 
 * {
   box-sizing: border-box;
+}
+
+.shown-block-button, .hidden-block-button {
+  cursor: pointer;
+
+  text {
+    fill: white;
+  }
+
+  rect{
+    fill: black;
+  }
+}
+
+.shown-block-button rect {
+  fill: green;
+}
+
+.hidden-block-button rect {
+  fill: red;
+}
+
+.d-contents{
+  display: contents;
 }

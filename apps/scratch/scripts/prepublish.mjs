@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 // File copied from https://github.com/scratchfoundation/scratch-gui/blob/e4105cf7d9c0fa77e1cf9d79252a03f2f053b862/scripts/prepublish.mjs
-// modifications are marked with '// EDIT''
+// It was modified to write the generated file to the git submodule instead of the project root.
+// Also the file is added to the git LFS instead of downloading it from the internet.
 
 // From the NPM docs:
 // "If you need to perform operations on your package before it is used, in a way that is not dependent on the
@@ -8,15 +9,10 @@
 // Once this step is complete, a developer should be able to work without an Internet connection.
 // See also: https://docs.npmjs.com/cli/using-npm/scripts
 
-import fs from "fs";
+import fs, { copyFileSync } from "fs";
 import path from "path";
 
-import crossFetch from "cross-fetch";
-import yauzl from "yauzl";
 import { fileURLToPath } from "url";
-
-/** @typedef {import('yauzl').Entry} ZipEntry */
-/** @typedef {import('yauzl').ZipFile} ZipFile */
 
 // these aren't set in ESM mode
 const __filename = fileURLToPath(import.meta.url);
@@ -25,88 +21,22 @@ const __dirname = path.dirname(__filename);
 // base/root path for the project
 const basePath = path.join(__dirname, "..");
 
-/**
- * Extract the first matching file from a zip buffer.
- * The path within the zip file is ignored: the destination path is `${destinationDirectory}/${basename(entry.name)}`.
- * Prints warnings if more than one matching file is found.
- * @param {function(ZipEntry): boolean} filter Returns true if the entry should be extracted.
- * @param {string} relativeDestDir The directory to extract to, relative to `basePath`.
- * @param {Buffer} zipBuffer A buffer containing the zip file.
- * @returns {Promise<string>} A Promise for the base name of the written file (without directory).
- */
-const extractFirstMatchingFile = (filter, relativeDestDir, zipBuffer) =>
-  new Promise((resolve, reject) => {
-    try {
-      let extractedFileName;
-      yauzl.fromBuffer(
-        zipBuffer,
-        { lazyEntries: true },
-        (zipError, zipfile) => {
-          if (zipError) {
-            throw zipError;
-          }
-          zipfile.readEntry();
-          zipfile.on("end", () => {
-            resolve(extractedFileName);
-          });
-          zipfile.on("entry", (entry) => {
-            if (!filter(entry)) {
-              // ignore non-matching file
-              return zipfile.readEntry();
-            }
-            if (extractedFileName) {
-              console.warn(
-                `Multiple matching files found. Ignoring: ${entry.fileName}`,
-              );
-              return zipfile.readEntry();
-            }
-            extractedFileName = entry.fileName;
-            console.info(`Found matching file: ${entry.fileName}`);
-            zipfile.openReadStream(entry, (fileError, readStream) => {
-              if (fileError) {
-                throw fileError;
-              }
-              const baseName = path.basename(entry.fileName);
-              const relativeDestFile = path.join(relativeDestDir, baseName);
-              console.info(`Extracting ${relativeDestFile}`);
-              const absoluteDestDir = path.join(basePath, relativeDestDir);
-              fs.mkdirSync(absoluteDestDir, { recursive: true });
-              const absoluteDestFile = path.join(basePath, relativeDestFile);
-              const outStream = fs.createWriteStream(absoluteDestFile);
-              readStream.on("end", () => {
-                outStream.close();
-                zipfile.readEntry();
-              });
-              readStream.pipe(outStream);
-            });
-          });
-        },
-      );
-    } catch (error) {
-      reject(error);
-    }
-  });
+const hexFileName = "scratch-microbit-1.2.0.hex";
 
 const downloadMicrobitHex = async () => {
-  const url =
-    "https://downloads.scratch.mit.edu/microbit/scratch-microbit.hex.zip";
-  console.info(`Downloading ${url}`);
-  const response = await crossFetch(url);
-  const zipBuffer = Buffer.from(await response.arrayBuffer());
-  // EDIT: Download the hex file to the git submodule
+  const hexFile = path.join(basePath, "assets", hexFileName);
   const relativeHexDir = path.join(
+    basePath,
     "src",
     "scratch",
     "scratch-gui",
     "static",
     "microbit",
   );
-  const hexFileName = await extractFirstMatchingFile(
-    (entry) => /\.hex$/.test(entry.fileName),
-    relativeHexDir,
-    zipBuffer,
-  );
   const relativeHexFile = path.join(relativeHexDir, hexFileName);
+
+  fs.mkdirSync(relativeHexDir, { recursive: true });
+  copyFileSync(hexFile, relativeHexFile);
 
   // EDIT: Write to the git submodule
   const relativeGeneratedDir = path.join(

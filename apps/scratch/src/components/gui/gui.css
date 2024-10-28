@@ -1,0 +1,7 @@
+.body-wrapper {
+    height: 100%;
+}
+
+.body-wrapper * {
+    box-sizing: border-box;
+}
