@@ -105,6 +105,22 @@ jobs:
                 working-directory: ./frontend
                 run: yarn test:cov
 
+            -   name: Start storybook
+                working-directory: ./frontend
+                run: yarn storybook & PID=$!; echo $PID > storybook.pid
+
+            -   name: Wait for storybook to be accessible
+                working-directory: ./frontend
+                run: yarn storybook:await
+
+            -   name: Run storybook tests
+                working-directory: ./frontend
+                run: yarn test:storybook
+
+            -   name: Stop storybook
+                working-directory: ./frontend
+                run: kill $(cat storybook.pid)
+
             -   name: Test scratch app
                 working-directory: ./apps/scratch
                 run: yarn test

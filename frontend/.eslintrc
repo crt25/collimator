@@ -3,6 +3,17 @@
     "../.eslintrc.js",
     "next/core-web-vitals",
     "next/typescript",
-    "plugin:prettier/recommended"
-  ]
+    "plugin:storybook/recommended",
+    "plugin:prettier/recommended",
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+      },
+    ],
+  },
 }

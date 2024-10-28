@@ -20,8 +20,13 @@ next-env.d.ts
 # playwright component testing coverage
 /coverage-ct
 
+# storybook coverage
+/coverage-storybook
+
 /test-results/
 
 /playwright-report/
 /playwright/.cache
 /blob-report/
+
+*storybook.log

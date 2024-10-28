@@ -1,6 +1,7 @@
 - Collimator
 
   - [Home](/)
+  - [Student Identity Management](identity-management/student.md)
 
 - Data Collector
 
