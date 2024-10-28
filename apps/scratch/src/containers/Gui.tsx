@@ -9,6 +9,7 @@ import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-bound
 import {
   getIsError,
   getIsShowingProject,
+  onFetchedProjectData,
 } from "@scratch-submodule/scratch-gui/src/reducers/project-state";
 import {
   activateTab,
@@ -25,11 +26,7 @@ import {
 
 import FontLoaderHOC from "@scratch-submodule/scratch-gui/src/lib/font-loader-hoc.jsx";
 import LocalizationHOC from "@scratch-submodule/scratch-gui/src/lib/localization-hoc.jsx";
-import SBFileUploaderHOC from "@scratch-submodule/scratch-gui/src/lib/sb-file-uploader-hoc.jsx";
-import ProjectFetcherHOC from "@scratch-submodule/scratch-gui/src/lib/project-fetcher-hoc.jsx";
 import TitledHOC from "@scratch-submodule/scratch-gui/src/lib/titled-hoc.jsx";
-import ProjectSaverHOC from "@scratch-submodule/scratch-gui/src/lib/project-saver-hoc.jsx";
-import QueryParserHOC from "@scratch-submodule/scratch-gui/src/lib/query-parser-hoc.jsx";
 import storage from "@scratch-submodule/scratch-gui/src/lib/storage";
 import vmListenerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-listener-hoc.jsx";
 import vmManagerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-manager-hoc.jsx";
@@ -39,6 +36,7 @@ import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isSc
 import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
 import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
+import { loadCrtProject } from "../vm/load-crt-project";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 
@@ -65,6 +63,7 @@ interface Props {
   isScratchDesktop: boolean;
   isShowingProject?: boolean;
   isTotallyNormal: boolean;
+  isCreatingNew: boolean;
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
   onSeeCommunity?: () => void;
@@ -76,6 +75,8 @@ interface Props {
   isRtl: boolean;
   isFullScreen: boolean;
   basePath: string;
+
+  onFetchedProjectData: (projectData: unknown, loadingState: unknown) => void;
 
   backpackHost: string | null;
   backpackVisible: boolean;
@@ -132,6 +133,7 @@ interface ReduxState {
 class GUI extends React.Component<Props> {
   componentDidMount() {
     setIsScratchDesktop(this.props.isScratchDesktop);
+
     if (this.props.onStorageInit) {
       this.props.onStorageInit(storage);
     }
@@ -139,7 +141,24 @@ class GUI extends React.Component<Props> {
     if (this.props.onVmInit) {
       this.props.onVmInit(this.props.vm);
     }
+
     setProjectIdMetadata(this.props.projectId);
+
+    storage
+      .load(storage.AssetType.Project, "0", storage.DataFormat.JSON)
+      .then((projectAsset) => {
+        if (projectAsset) {
+          loadCrtProject(
+            this.props.vm,
+            (projectAsset as unknown as { data: object }).data,
+          );
+        } else {
+          throw new Error("Could not load default project");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -180,6 +199,8 @@ class GUI extends React.Component<Props> {
       onVmInit,
       projectHost,
       projectId,
+      isCreatingNew,
+      onFetchedProjectData,
       /* eslint-enable @typescript-eslint/no-unused-vars */
       children,
       fetchingProject,
@@ -237,6 +258,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
   onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
   onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
+  onFetchedProjectData: (projectData: unknown, loadingState: unknown) =>
+    dispatch(onFetchedProjectData(projectData, loadingState) as Action),
 });
 
 const ConnectedGUI = injectIntl(
@@ -250,13 +273,9 @@ const WrappedGui = compose(
   LocalizationHOC,
   ErrorBoundaryHOC("Top Level App"),
   FontLoaderHOC,
-  QueryParserHOC,
-  ProjectFetcherHOC,
   TitledHOC,
-  ProjectSaverHOC,
   vmListenerHOC,
   vmManagerHOC,
-  SBFileUploaderHOC,
   systemPreferencesHOC,
 )(ConnectedGUI);
 
