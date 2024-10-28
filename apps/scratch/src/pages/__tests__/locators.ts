@@ -1,5 +1,8 @@
+export const getBlockSelector = (blockId: string): string =>
+  `[data-id='${blockId}']`;
+
 export const getBlockShownButtonSelector = (blockId: string): string =>
-  `[data-id='${blockId}'] [data-testid='shown-block-button']`;
+  `${getBlockSelector(blockId)} [data-testid='shown-block-button']`;
 
 export const getBlockHiddenButtonSelector = (blockId: string): string =>
-  `[data-id='${blockId}'] [data-testid='hidden-block-button']`;
+  `${getBlockSelector(blockId)} [data-testid='hidden-block-button']`;
