@@ -115,7 +115,6 @@ interface ReduxState {
       connectionModal: boolean;
       costumeLibrary: boolean;
       loadingProject: boolean;
-      telemetryModal: boolean;
       tipsLibrary: boolean;
     };
     targets: {
@@ -145,6 +144,8 @@ class GUI extends React.Component<Props> {
 
     setProjectIdMetadata(this.props.projectId);
 
+    storage.setAssetHost("https://assets.scratch.mit.edu");
+    storage.setTranslatorFunction(this.props.intl.formatMessage);
     storage
       .load(storage.AssetType.Project, "0", storage.DataFormat.JSON)
       .then((projectAsset) => {

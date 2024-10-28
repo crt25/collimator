@@ -124,7 +124,7 @@ const looksXmlByOpCode: Record<
   [LooksOpCode.nextbackdrop]: () => `
         <block type="looks_nextbackdrop"/>`,
   [LooksOpCode.switchcostumeto]: (_isStage, targetId, costumeName) => `
-        <block id="${targetId}_switchcostumeto" type="looks_switchcostumeto">
+        <block id="${targetId}__looks_switchcostumeto" type="looks_switchcostumeto">
             <value name="COSTUME">
                 <shadow type="looks_costume">
                     <field name="COSTUME">${costumeName}</field>
@@ -208,12 +208,12 @@ const looksXmlByOpCode: Record<
     isStage
       ? ""
       : `
-        <block id="${targetId}_costumenumbername" type="looks_costumenumbername"/>`,
+        <block id="${targetId}__looks_costumenumbername" type="looks_costumenumbername"/>`,
   [LooksOpCode.size]: (isStage, targetId) =>
     isStage
       ? ""
       : `
-        <block id="${targetId}_size" type="looks_size"/>`,
+        <block id="${targetId}__looks_size" type="looks_size"/>`,
 };
 
 export const buildLooksXml = function (

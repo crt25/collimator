@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Solve Task Page renders page unchanged 1`] = `
+exports[`Edit Task Page renders page unchanged 1`] = `
 <div>
   <div
     class="css-to24xl"
@@ -25,19 +25,17 @@ exports[`Solve Task Page renders page unchanged 1`] = `
           <li>
             <button
               class="css-1aktket"
-              data-testid="toggle-session-menu-button"
+              data-testid="load-task-button"
             >
-              <span>
-                Show Session
-              </span>
+              Load Task
             </button>
           </li>
           <li>
             <button
               class="css-1aktket"
-              data-testid="submit-solution-button"
+              data-testid="save-task-button"
             >
-              Submit Solution
+              Save Task
             </button>
           </li>
           <li>
@@ -50,18 +48,14 @@ exports[`Solve Task Page renders page unchanged 1`] = `
         </menu>
       </div>
     </header>
-    <div
-      class="css-qrtzlc"
-    >
-      <iframe
-        allow="fullscreen; camera; microphone"
-        class="css-15vps70"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        sandbox="allow-scripts allow-same-origin allow-downloads"
-        src="undefined/solve/sessionId/taskId"
-      />
-    </div>
+    <iframe
+      allow="fullscreen; camera; microphone"
+      class="css-15vps70"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      sandbox="allow-scripts allow-same-origin allow-downloads"
+      src="undefined/edit/taskId"
+    />
   </div>
 </div>
 `;

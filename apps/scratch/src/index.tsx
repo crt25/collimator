@@ -2,8 +2,9 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Solve } from "./pages/Solve";
-import { ErrorPage } from "./pages/ErrorPage";
+import Solve from "./pages/Solve";
+import ErrorPage from "./pages/ErrorPage";
+import Edit from "./pages/Edit";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "solve/:sessionId/:taskId",
     element: <Solve />,
+  },
+  {
+    path: "edit/:taskId",
+    element: <Edit />,
   },
 ]);
 

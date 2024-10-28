@@ -94,6 +94,9 @@ const GUIComponent = (props: {
   basePath: string;
   blocksTabVisible?: boolean;
   blocksId?: string;
+  canEditTask?: boolean;
+  isCostumesTabEnabled?: boolean;
+  isSoundsTabEnabled?: boolean;
   cardsVisible?: boolean;
   costumeLibraryVisible?: boolean;
   costumesTabVisible?: boolean;
@@ -101,13 +104,6 @@ const GUIComponent = (props: {
   isFullScreen: boolean;
   isPlayerOnly?: boolean;
   isRtl: boolean;
-  isStageInteractive?: boolean;
-  isStageSelectorVisible?: boolean;
-  isAddNewSpriteButtonVisible?: boolean;
-  isSpriteInfoEnabled?: boolean;
-  isDeleteSpriteButtonVisible?: boolean;
-  isDuplicateSpriteButtonVisible?: boolean;
-  isExportSpriteButtonVisible?: boolean;
   loading: boolean;
   logo?: string;
   onActivateCostumesTab?: () => void;
@@ -135,6 +131,9 @@ const GUIComponent = (props: {
     blocksId,
     blocksTabVisible,
     cardsVisible,
+    canEditTask,
+    isCostumesTabEnabled,
+    isSoundsTabEnabled,
     children,
     connectionModalVisible,
     costumeLibraryVisible,
@@ -144,13 +143,6 @@ const GUIComponent = (props: {
     isFullScreen,
     isPlayerOnly,
     isRtl,
-    isStageInteractive,
-    isStageSelectorVisible,
-    isAddNewSpriteButtonVisible,
-    isDeleteSpriteButtonVisible,
-    isDuplicateSpriteButtonVisible,
-    isExportSpriteButtonVisible,
-    isSpriteInfoEnabled,
     loading,
     onActivateCostumesTab,
     onActivateSoundsTab,
@@ -248,40 +240,45 @@ const GUIComponent = (props: {
                           id="gui.gui.codeTab"
                         />
                       </Tab>
-                      <Tab
-                        className={tabClassNames.tab}
-                        onClick={onActivateCostumesTab}
-                      >
-                        <img draggable={false} src={costumesIcon} />
-                        {targetIsStage ? (
+                      {isCostumesTabEnabled && (
+                        <Tab
+                          className={tabClassNames.tab}
+                          onClick={onActivateCostumesTab}
+                        >
+                          <img draggable={false} src={costumesIcon} />
+                          {targetIsStage ? (
+                            <FormattedMessage
+                              defaultMessage="Backdrops"
+                              description="Button to get to the backdrops panel"
+                              id="gui.gui.backdropsTab"
+                            />
+                          ) : (
+                            <FormattedMessage
+                              defaultMessage="Costumes"
+                              description="Button to get to the costumes panel"
+                              id="gui.gui.costumesTab"
+                            />
+                          )}
+                        </Tab>
+                      )}
+                      {isSoundsTabEnabled && (
+                        <Tab
+                          className={tabClassNames.tab}
+                          onClick={onActivateSoundsTab}
+                        >
+                          <img draggable={false} src={soundsIcon} />
                           <FormattedMessage
-                            defaultMessage="Backdrops"
-                            description="Button to get to the backdrops panel"
-                            id="gui.gui.backdropsTab"
+                            defaultMessage="Sounds"
+                            description="Button to get to the sounds panel"
+                            id="gui.gui.soundsTab"
                           />
-                        ) : (
-                          <FormattedMessage
-                            defaultMessage="Costumes"
-                            description="Button to get to the costumes panel"
-                            id="gui.gui.costumesTab"
-                          />
-                        )}
-                      </Tab>
-                      <Tab
-                        className={tabClassNames.tab}
-                        onClick={onActivateSoundsTab}
-                      >
-                        <img draggable={false} src={soundsIcon} />
-                        <FormattedMessage
-                          defaultMessage="Sounds"
-                          description="Button to get to the sounds panel"
-                          id="gui.gui.soundsTab"
-                        />
-                      </Tab>
+                        </Tab>
+                      )}
                     </TabList>
                     <TabPanel className={tabClassNames.tabPanel}>
                       <Box className={styles.blocksWrapper}>
                         <Blocks
+                          canEditTask={canEditTask}
                           key={`${blocksId}/${theme}`}
                           grow={1}
                           isVisible={blocksTabVisible}
@@ -306,30 +303,36 @@ const GUIComponent = (props: {
                           vm={vm}
                         />
                       </Box>
-                      <Box className={styles.extensionButtonContainer}>
-                        <button
-                          className={styles.extensionButton}
-                          title={intl.formatMessage(messages.addExtension)}
-                          onClick={onExtensionButtonClick}
-                          data-testid="add-extension-button"
-                        >
-                          <img
-                            className={styles.extensionButtonIcon}
-                            draggable={false}
-                            src={addExtensionIcon}
-                          />
-                        </button>
-                      </Box>
+                      {canEditTask && (
+                        <Box className={styles.extensionButtonContainer}>
+                          <button
+                            className={styles.extensionButton}
+                            title={intl.formatMessage(messages.addExtension)}
+                            onClick={onExtensionButtonClick}
+                            data-testid="add-extension-button"
+                          >
+                            <img
+                              className={styles.extensionButtonIcon}
+                              draggable={false}
+                              src={addExtensionIcon}
+                            />
+                          </button>
+                        </Box>
+                      )}
                       <Box className={styles.watermark}>
                         <Watermark />
                       </Box>
                     </TabPanel>
-                    <TabPanel className={tabClassNames.tabPanel}>
-                      {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
-                    </TabPanel>
-                    <TabPanel className={tabClassNames.tabPanel}>
-                      {soundsTabVisible ? <SoundTab vm={vm} /> : null}
-                    </TabPanel>
+                    {isCostumesTabEnabled && (
+                      <TabPanel className={tabClassNames.tabPanel}>
+                        {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
+                      </TabPanel>
+                    )}
+                    {isSoundsTabEnabled && (
+                      <TabPanel className={tabClassNames.tabPanel}>
+                        {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                      </TabPanel>
+                    )}
                   </Tabs>
                   {backpackVisible ? <Backpack host={backpackHost} /> : null}
                 </Box>
@@ -344,20 +347,18 @@ const GUIComponent = (props: {
                     isFullScreen={isFullScreen}
                     isRendererSupported={isRendererSupported || false}
                     isRtl={isRtl}
-                    isStageInteractive={isStageInteractive}
+                    isStageInteractive={canEditTask}
                     stageSize={stageSize}
                     vm={vm}
                   />
                   <Box className={styles.targetWrapper}>
                     <TargetPane
-                      isStageSelectorVisible={isStageSelectorVisible}
-                      isAddNewSpriteButtonVisible={isAddNewSpriteButtonVisible}
-                      isSpriteInfoEnabled={isSpriteInfoEnabled}
-                      isDeleteSpriteButtonVisible={isDeleteSpriteButtonVisible}
-                      isDuplicateSpriteButtonVisible={
-                        isDuplicateSpriteButtonVisible
-                      }
-                      isExportSpriteButtonVisible={isExportSpriteButtonVisible}
+                      isStageSelectorVisible={canEditTask}
+                      isAddNewSpriteButtonVisible={canEditTask}
+                      isSpriteInfoEnabled={canEditTask}
+                      isDeleteSpriteButtonVisible={canEditTask}
+                      isDuplicateSpriteButtonVisible={canEditTask}
+                      isExportSpriteButtonVisible={canEditTask}
                       stageSize={stageSize}
                       vm={vm}
                     />

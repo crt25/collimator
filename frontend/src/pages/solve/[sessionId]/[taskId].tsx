@@ -1,11 +1,12 @@
-import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
+import Button from "@/components/Button";
+import { EmbeddedAppRef } from "@/components/EmbeddedApp";
+import Header from "@/components/Header";
+import Task from "@/components/Task";
 import { scratchAppHostName } from "@/utilities/constants";
-import { downloadBlob } from "@/utilities/download";
-import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useRef } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { FormattedMessage } from "react-intl";
 
 const SolveContainer = styled.div`
   height: 100vh;
@@ -25,38 +26,8 @@ const SolveTaskPage = () => {
     return `${scratchAppHostName}/solve/${sessionId}/${taskId}`;
   }, [sessionId, taskId]);
 
+  const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
-
-  const onLoadTask = useCallback(async () => {
-    if (!embeddedApp.current) {
-      return;
-    }
-
-    // TODO: get the task from the API
-    // for now get it from the file system
-
-    const task = await readSingleFileFromDisk();
-
-    await embeddedApp.current.sendRequest({
-      procedure: "loadTask",
-      arguments: task,
-    });
-  }, []);
-
-  const onSaveTask = useCallback(async () => {
-    if (!embeddedApp.current) {
-      return;
-    }
-
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getTask",
-    });
-
-    // TODO: Save submission
-
-    // for now, just download the file
-    downloadBlob(response.result, "task.zip");
-  }, []);
 
   const onSubmitSolution = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -77,27 +48,54 @@ const SolveTaskPage = () => {
     }
   }, []);
 
+  const toggleSessionMenu = useCallback(() => {
+    setShowSessionMenu((show) => !show);
+  }, []);
+
   return (
     <SolveContainer>
-      <Container>
-        <Row>
-          <Col xs={12}>
-            <div onClick={onLoadTask} data-testid="load-task-button">
-              Load Task
-            </div>
-            <div onClick={onSaveTask} data-testid="save-task-button">
-              Save Task
-            </div>
-            <div
-              onClick={onSubmitSolution}
-              data-testid="submit-solution-button"
-            >
-              Submit Task
-            </div>
-          </Col>
-        </Row>
-      </Container>
-      <EmbeddedApp src={iframeSrc} ref={embeddedApp} />
+      <Header>
+        <li>
+          <Button
+            onClick={toggleSessionMenu}
+            data-testid="toggle-session-menu-button"
+          >
+            {showSessionMenu ? (
+              <span>
+                <FormattedMessage
+                  id="SolveTask.getStarted"
+                  defaultMessage="Hide Session"
+                />
+              </span>
+            ) : (
+              <span>
+                <FormattedMessage
+                  id="SolveTask.getStarted"
+                  defaultMessage="Show Session"
+                />
+              </span>
+            )}
+          </Button>
+        </li>
+        <li>
+          <Button
+            onClick={onSubmitSolution}
+            data-testid="submit-solution-button"
+          >
+            <FormattedMessage
+              id="SolveTask.getStarted"
+              defaultMessage="Submit Solution"
+            />
+          </Button>
+        </li>
+      </Header>
+      <Task
+        sessionName="Session 1"
+        showSessionMenu={showSessionMenu}
+        setShowSessionMenu={setShowSessionMenu}
+        embeddedApp={embeddedApp}
+        iframeSrc={iframeSrc}
+      />
     </SolveContainer>
   );
 };

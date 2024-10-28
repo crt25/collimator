@@ -7,8 +7,6 @@ import {
   AppIFrameResponse,
 } from "../../../../frontend/src/types/app-iframe-message";
 import { patchScratchVm } from "../vm";
-import { saveCrtProject } from "../vm/save-crt-project";
-import { loadCrtProject } from "../vm/load-crt-project";
 
 const respondToMessageEvent = (
   event: MessageEvent,
@@ -31,7 +29,7 @@ const respondToMessageEvent = (
   );
 };
 
-const Solve = () => {
+const Edit = () => {
   const { _sessionId, _taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);
@@ -80,7 +78,7 @@ const Solve = () => {
           break;
         case "getTask":
           if (vm) {
-            saveCrtProject(vm).then((content) => {
+            vm.saveProjectSb3().then((content) => {
               respondToMessageEvent(event, {
                 procedure: "getTask",
                 result: content,
@@ -92,7 +90,7 @@ const Solve = () => {
           if (vm) {
             const sb3Project = await message.arguments.arrayBuffer();
 
-            loadCrtProject(vm, sb3Project).then(() => {
+            vm.loadProject(sb3Project).then(() => {
               respondToMessageEvent(event, {
                 procedure: "loadTask",
               });
@@ -121,11 +119,16 @@ const Solve = () => {
     return null;
   }
 
+  /*if (!isInIframe) {
+    return (
+      <div>Tasks can only be solved in the context of the CRT application.</div>
+    );
+  }*/
+
   return (
     <Gui
+      showMenuBar={false}
       canEditTask={true}
-      isCostumesTabEnabled={false}
-      isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
@@ -138,4 +141,4 @@ const Solve = () => {
   );
 };
 
-export default Solve;
+export default Edit;

@@ -20,7 +20,7 @@
     "test:jest:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:pre": "shx rm -rf coverage/ .nyc_output/",
     "test:pw": "yarn test:pre && COVERAGE=true playwright test && nyc report --report-dir coverage-pw",
-    "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && yarn test:post",
+    "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && nyc report --report-dir coverage-pw",
     "test:pw:debug": "COVERAGE=true SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
     "test:ct": "yarn test:pre && playwright test -c playwright-ct.config.ts && nyc report --report-dir coverage-ct",
     "test:playwright": "yarn test:pw && yarn test:ct"
@@ -34,6 +34,10 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "bootstrap": "^5.3.3",
     "next": "14.2.12",
     "playwright-test-coverage": "^1.2.12",

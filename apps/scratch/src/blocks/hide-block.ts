@@ -9,6 +9,19 @@ const ignoreEvent = (event: MouseEvent): void => {
   event.preventDefault();
 };
 
+const getBlockId = (dataId: string): string => {
+  // some blocks prefix the block type with the target id followed by a double underscore
+  // e.g. "someId__motion_xposition"
+  // if so, remove this prefix
+
+  const colonIndex = dataId.indexOf("__");
+  if (colonIndex !== -1) {
+    return dataId.slice(colonIndex + 2);
+  }
+
+  return dataId;
+};
+
 export const addHideBlockButtons = (
   vm: VM,
   container: HTMLElement,
@@ -24,10 +37,10 @@ export const addHideBlockButtons = (
     ignoreEvent(event);
     if (event.currentTarget instanceof Element) {
       const parent = event.currentTarget.parentElement;
-      const blockId = parent?.getAttribute("data-id");
+      const dataId = parent?.getAttribute("data-id");
 
-      if (blockId) {
-        config.allowedBlocks[blockId] = false;
+      if (dataId) {
+        config.allowedBlocks[getBlockId(dataId)] = false;
       }
     }
 
@@ -38,17 +51,19 @@ export const addHideBlockButtons = (
     ignoreEvent(event);
     if (event.currentTarget instanceof Element) {
       const parent = event.currentTarget.parentElement;
-      const blockId = parent?.getAttribute("data-id");
+      const dataId = parent?.getAttribute("data-id");
 
-      if (blockId) {
-        config.allowedBlocks[blockId] = true;
+      if (dataId) {
+        config.allowedBlocks[getBlockId(dataId)] = true;
       }
     }
 
     requestToolboxUpdate();
   };
 
-  const canvas = container.querySelector(".blocklyBlockCanvas");
+  const canvas = container.querySelector(
+    "svg.blocklyFlyout .blocklyBlockCanvas",
+  );
   if (!canvas) {
     return;
   }
@@ -61,9 +76,9 @@ export const addHideBlockButtons = (
     return;
   }
 
-  const blocks = container.querySelectorAll(".blocklyDraggable[data-id]");
+  const blocks = canvas.querySelectorAll(".blocklyDraggable[data-id]");
   blocks.forEach((block) => {
-    const blockId = block.getAttribute("data-id") as string;
+    const blockId = getBlockId(block.getAttribute("data-id") as string);
     const isShown = config.allowedBlocks[blockId];
 
     block

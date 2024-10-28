@@ -49,7 +49,7 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML from "../blocks/make-toolbox-xml";
+import makeToolboxXML, { showAllBlocks } from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import ExtensionLibrary from "./ExtensionLibrary";
@@ -97,6 +97,7 @@ interface Props {
   stageSize: StageDisplaySize;
   locale: string;
   anyModalVisible?: boolean;
+  canEditTask?: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
   isRtl?: boolean;
@@ -419,7 +420,7 @@ class Blocks extends React.Component<Props, State> {
     this.toolboxUpdateQueue = [];
     queue.forEach((fn) => fn());
 
-    if (this.blocks) {
+    if (this.blocks && this.props.canEditTask) {
       addHideBlockButtons(
         this.props.vm,
         this.blocks,
@@ -593,6 +594,9 @@ class Blocks extends React.Component<Props, State> {
         targetSounds.length > 0
           ? targetSounds[targetSounds.length - 1].name
           : "",
+        this.props.canEditTask
+          ? showAllBlocks
+          : this.props.vm.crtConfig?.allowedBlocks,
       );
     } catch {
       return null;
@@ -890,6 +894,7 @@ class Blocks extends React.Component<Props, State> {
   render() {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
+      canEditTask,
       anyModalVisible,
       customProceduresVisible,
       extensionLibraryVisible,
