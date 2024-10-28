@@ -71,7 +71,9 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
           <li>
             {isAuthenticated ? (
               <Dropdown>
-                <Dropdown.Toggle>{email}</Dropdown.Toggle>
+                <Dropdown.Toggle data-testid="current-user">
+                  {email}
+                </Dropdown.Toggle>
 
                 <Dropdown.Menu>
                   <DropdownLinkItem href="/logout">
@@ -83,7 +85,7 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Link href="/login">
+              <Link href="/login" data-testid="sign-in-button">
                 <FormattedMessage id="Header.signIn" defaultMessage="Sign In" />
               </Link>
             )}

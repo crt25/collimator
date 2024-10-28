@@ -3,6 +3,7 @@
     "../.eslintrc.js",
     "next/core-web-vitals",
     "next/typescript",
+    "plugin:storybook/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {

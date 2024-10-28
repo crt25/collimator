@@ -58,7 +58,10 @@ const StudentLoginPage = () => {
             defaultMessage="Student Login"
           />
         </PageHeader>
-        <Button onClick={onAuthenticateWithMicrosoft}>
+        <Button
+          onClick={onAuthenticateWithMicrosoft}
+          data-testid="signin-student-button"
+        >
           <FormattedMessage
             id="StudentLoginPage.authenticate.microsoft"
             defaultMessage="Authenticate using Microsoft"

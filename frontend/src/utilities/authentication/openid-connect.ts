@@ -1,19 +1,19 @@
 import * as client from "openid-client";
-import {
-  getAssertedValueFromSessionStorageAndDelete,
-  getValueFromSessionStorageAndDelete,
-} from "../session-storage";
+import { AuthenticationError } from "@/errors/authentication";
+import { sessionStorage } from "..";
+
+interface OpenIdConnectTemporaryState {
+  codeVerifier: string;
+  state: string;
+  nonce?: string;
+  isStudent: boolean;
+  redirectPath: string;
+}
 
 const codeChallengeMethod = "S256";
 const scope = "openid email";
 
-const openIdConnectStateSessionStorageKey = "openIdConnect:state";
-const openIdConnectCodeVerifierSessionStorageKey =
-  "openIdConnect:code_verifier";
-const openIdConnectNonceSessionStorageKey = "openIdConnect:nonce";
-const openIdConnectIsStudentSessionStorageKey = "openIdConnect:isStudent";
-const openIdConnectRedirectAfterLoginSessionStorageKey =
-  "openIdConnect:redirect_after_login";
+const openIdConnectStateStorageKey = "openIdConnect";
 
 export const redirectToOpenIdConnectProvider = async (
   server: string,
@@ -48,26 +48,18 @@ export const redirectToOpenIdConnectProvider = async (
 
   const redirectTo = client.buildAuthorizationUrl(config, parameters);
 
-  // store the code verifier, state and nonce in the session storage
-  sessionStorage.setItem(openIdConnectStateSessionStorageKey, state);
-  sessionStorage.setItem(
-    openIdConnectCodeVerifierSessionStorageKey,
+  const openIdConnectState: OpenIdConnectTemporaryState = {
+    state,
     codeVerifier,
-  );
-  if (nonce) {
-    sessionStorage.setItem(openIdConnectNonceSessionStorageKey, nonce);
-  }
-
-  // set the user role in the session storage
-  sessionStorage.setItem(
-    openIdConnectIsStudentSessionStorageKey,
-    isStudent ? "true" : "false",
-  );
-
-  // and finally store an optional redirect url in the session storage
-  sessionStorage.setItem(
-    openIdConnectRedirectAfterLoginSessionStorageKey,
+    nonce,
+    isStudent,
     redirectPath,
+  };
+
+  // store the code verifier, state and nonce in the session storage
+  sessionStorage.setItem(
+    openIdConnectStateStorageKey,
+    JSON.stringify(openIdConnectState),
   );
 
   window.location.href = redirectTo.href;
@@ -85,20 +77,10 @@ export const authenticate = async (
 }> => {
   const config = await client.discovery(new URL(server), clientId, {});
 
-  // retrieve code verifier from session storage
-  const codeVerifier = getAssertedValueFromSessionStorageAndDelete(
-    openIdConnectCodeVerifierSessionStorageKey,
-  );
-
   // retrieve state from session storage
-  const state = getAssertedValueFromSessionStorageAndDelete(
-    openIdConnectStateSessionStorageKey,
-  );
-
-  const nonce = getValueFromSessionStorageAndDelete(
-    openIdConnectNonceSessionStorageKey,
-    undefined,
-  );
+  const { state, nonce, codeVerifier, isStudent, redirectPath } = JSON.parse(
+    sessionStorage.getAndDelete(openIdConnectStateStorageKey),
+  ) as OpenIdConnectTemporaryState;
 
   const currentUrl: URL = new URL(window.location.href);
   const tokens = await client.authorizationCodeGrant(config, currentUrl, {
@@ -111,14 +93,16 @@ export const authenticate = async (
   const idToken = tokens.id_token;
 
   if (!idToken) {
-    throw new Error("ID token was not returned by the authorization server");
+    throw new AuthenticationError(
+      "ID token was not returned by the authorization server",
+    );
   }
 
   const claims = tokens.claims();
 
   if (!claims) {
-    throw new Error(
-      "TokenEndpointResponse.expires_in expires_in was not returned by the authorization server",
+    throw new AuthenticationError(
+      "TokenEndpointResponse.expires_in was not returned by the authorization server",
     );
   }
 
@@ -126,15 +110,6 @@ export const authenticate = async (
     config,
     tokens.access_token,
     claims.sub,
-  );
-
-  const isStudent =
-    getAssertedValueFromSessionStorageAndDelete(
-      openIdConnectIsStudentSessionStorageKey,
-    ) === "true";
-
-  const redirectPath = getAssertedValueFromSessionStorageAndDelete(
-    openIdConnectRedirectAfterLoginSessionStorageKey,
   );
 
   return {

@@ -1,12 +1,15 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
+import { MockMessageEvent } from "./mock-message-event";
+import { getBlockShownButtonSelector } from "./locators";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
 
 declare global {
   interface Window {
+    // we store posted messages on the window object instead of actually posting so we can assert on them
     postedMessages: { message: unknown; options: unknown }[];
   }
 }
@@ -33,11 +36,11 @@ test.describe("/edit/taskId", () => {
 
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
-
-      event.source = window.parent;
-      event.data = { id: 0, type: "request", procedure: "getHeight" };
+      const event = new MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getHeight",
+      });
       window.dispatchEvent(event);
     });
 
@@ -57,11 +60,12 @@ test.describe("/edit/taskId", () => {
 
   test("can get task via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
+      const event = new MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getTask",
+      });
 
-      event.source = window.parent;
-      event.data = { id: 0, type: "request", procedure: "getTask" };
       window.dispatchEvent(event);
     });
 
@@ -90,20 +94,17 @@ test.describe("/edit/taskId", () => {
     );
 
     await page.evaluate(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const event = new Event("message") as any;
-
       const task = await fetch("https://example.com/test-task.sb3").then(
         (response) => response.blob(),
       );
 
-      event.source = window.parent;
-      event.data = {
+      const event = new MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "loadTask",
         arguments: task,
-      };
+      });
+
       window.dispatchEvent(event);
     });
 
@@ -122,21 +123,15 @@ test.describe("/edit/taskId", () => {
 
     // ensure the block visibility is correctly loaded
     expect(
-      page.locator(
-        "[data-id='motion_turnright'] [data-testid='shown-block-button']",
-      ),
+      page.locator(getBlockShownButtonSelector("motion_turnright")),
     ).toHaveCount(1);
 
     expect(
-      page.locator(
-        "[data-id='motion_turnleft'] [data-testid='shown-block-button']",
-      ),
+      page.locator(getBlockShownButtonSelector("motion_turnleft")),
     ).toHaveCount(1);
 
     expect(
-      page.locator(
-        "[data-id='motion_goto'] [data-testid='shown-block-button']",
-      ),
+      page.locator(getBlockShownButtonSelector("motion_goto")),
     ).toHaveCount(1);
   });
 });

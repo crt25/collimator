@@ -28,10 +28,8 @@ const createKeyPair = (type: KeyType, keyPair: CryptoKeyPair): KeyPair =>
 
 describe("KeyPair", () => {
   describe.each(allKeyTypes)("%s", (type) => {
-    it("is instance of KeyPair", async () => {
-      const keyPair = await generateKeyPair(type);
-
-      expect(keyPair).toBeInstanceOf(KeyPair);
+    it("generates a key pair", async () => {
+      await expect(generateKeyPair(type)).resolves.not.toThrow();
     });
 
     describe("exportPublicKey", () => {

@@ -39,11 +39,12 @@ exports[`Edit Task Page renders page unchanged 1`] = `
             </button>
           </li>
           <li>
-            <button
-              class="css-1aktket"
+            <a
+              data-testid="sign-in-button"
+              href="/login"
             >
-              Sign out
-            </button>
+              Sign In
+            </a>
           </li>
         </menu>
       </div>

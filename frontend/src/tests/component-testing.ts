@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
@@ -15,9 +16,7 @@ export const test = baseTest.extend({
   context: async ({ context }, use) => {
     await context.addInitScript(() =>
       window.addEventListener("beforeunload", () =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).collectIstanbulCoverage(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           JSON.stringify((window as any).__coverage__),
         ),
       ),
@@ -39,9 +38,7 @@ export const test = baseTest.extend({
     await use(context);
     for (const page of context.pages()) {
       await page.evaluate(() =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).collectIstanbulCoverage(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           JSON.stringify((window as any).__coverage__),
         ),
       );

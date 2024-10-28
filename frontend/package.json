@@ -18,12 +18,16 @@
     "test:jest:watch": "jest --watch",
     "test:jest:cov": "jest --coverage",
     "test:jest:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:pre": "rimraf coverage/ .nyc_output/",
+    "test:pre": "shx rm -rf coverage/ .nyc_output/",
     "test:pw": "yarn test:pre && COVERAGE=true playwright test && nyc report --report-dir coverage-pw",
     "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && nyc report --report-dir coverage-pw",
     "test:pw:debug": "COVERAGE=true SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
     "test:ct": "yarn test:pre && playwright test -c playwright-ct.config.ts && nyc report --report-dir coverage-ct",
-    "test:playwright": "yarn test:pw && yarn test:ct"
+    "test:playwright": "yarn test:pw && yarn test:ct",
+    "test:storybook": "test-storybook --coverage --coverageDirectory coverage-storybook",
+    "storybook": "storybook dev -p 6006",
+    "storybook:await": "until curl --output /dev/null --silent --head --fail http://localhost:6006; do printf '.'; sleep 3; done",
+    "storybook:build": "storybook build"
   },
   "nyc": {
     "reporter": [
@@ -49,13 +53,25 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
     "react-intl": "^6.6.8",
+    "shx": "^0.3.4",
     "swr": "^2.2.5",
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "1.9.0",
     "@formatjs/cli": "^6.2.12",
     "@playwright/experimental-ct-react": "^1.48.1",
     "@playwright/test": "^1.48.1",
+    "@storybook/addon-coverage": "^1.0.4",
+    "@storybook/addon-essentials": "8.3.6",
+    "@storybook/addon-interactions": "8.3.6",
+    "@storybook/addon-links": "8.3.6",
+    "@storybook/blocks": "8.3.6",
+    "@storybook/nextjs": "8.3.6",
+    "@storybook/preview-api": "^8.3.6",
+    "@storybook/react": "8.3.6",
+    "@storybook/test": "8.3.6",
+    "@storybook/test-runner": "^0.19.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
@@ -70,16 +86,23 @@
     "eslint-config-next": "14.2.12",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-storybook": "^0.10.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "nyc": "^17.1.0",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
     "sass": "^1.79.1",
+    "storybook": "8.3.6",
+    "storybook-react-intl": "^3.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "vite-plugin-istanbul": "^6.0.2",
     "wait-for-expect": "^3.0.2"
   },
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.5.0",
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
+  }
 }

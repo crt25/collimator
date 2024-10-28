@@ -10,8 +10,8 @@ const ignoreEvent = (event: MouseEvent): void => {
 };
 
 const getBlockId = (dataId: string): string => {
-  // some blocks prefix the block type with the target id followed by a colon
-  // e.g. "someId:motion_xposition"
+  // some blocks prefix the block type with the target id followed by a double underscore
+  // e.g. "someId__motion_xposition"
   // if so, remove this prefix
 
   const colonIndex = dataId.indexOf("__");

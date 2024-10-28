@@ -7,6 +7,8 @@ import {
   AppIFrameResponse,
 } from "../../../../frontend/src/types/app-iframe-message";
 import { patchScratchVm } from "../vm";
+import { saveCrtProject } from "../vm/save-crt-project";
+import { loadCrtProject } from "../vm/load-crt-project";
 
 const respondToMessageEvent = (
   event: MessageEvent,
@@ -30,8 +32,7 @@ const respondToMessageEvent = (
 };
 
 const Solve = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { sessionId, taskId } = useParams();
+  const { _sessionId, _taskId } = useParams();
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);
   const [vm, setVm] = useState<VM | null>(null);
@@ -79,7 +80,7 @@ const Solve = () => {
           break;
         case "getTask":
           if (vm) {
-            vm.saveProjectSb3().then((content) => {
+            saveCrtProject(vm).then((content) => {
               respondToMessageEvent(event, {
                 procedure: "getTask",
                 result: content,
@@ -91,7 +92,7 @@ const Solve = () => {
           if (vm) {
             const sb3Project = await message.arguments.arrayBuffer();
 
-            vm.loadProject(sb3Project).then(() => {
+            loadCrtProject(vm, sb3Project).then(() => {
               respondToMessageEvent(event, {
                 procedure: "loadTask",
               });

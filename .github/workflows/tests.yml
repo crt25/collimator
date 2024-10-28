@@ -105,6 +105,23 @@ jobs:
                 working-directory: ./frontend
                 run: yarn test:cov
 
+            -   name: Start storybook
+                working-directory: ./frontend
+                run: yarn storybook &
+
+            -   name: Wait for storybook to be accessible
+                working-directory: ./frontend
+                run: yarn storybook:await
+
+            -   name: Run storybook tests
+                working-directory: ./frontend
+                run: yarn test:storybook
+
+            -   name: Stop storybook
+                working-directory: ./frontend
+                # kill all bash background jobs
+                run: kill $(jobs -p)
+
             -   name: Test scratch app
                 working-directory: ./apps/scratch
                 run: yarn test

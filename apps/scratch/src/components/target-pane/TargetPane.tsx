@@ -5,7 +5,7 @@ import SpriteSelectorComponent from "../sprite-selector/SpriteSelector";
 import StageSelector from "@scratch-submodule/scratch-gui/src/containers/stage-selector.jsx";
 import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 
-import styles from "./target-pane.css";
+import styles from "@scratch-submodule/scratch-gui/src/components/target-pane/target-pane.css";
 import MinimalStageSelector from "../MinimalStageSelector";
 import React from "react";
 
