@@ -8,7 +8,7 @@ import SortableHOC from "@scratch-submodule/scratch-gui/src/lib/sortable-hoc.jsx
 import SortableAsset from "@scratch-submodule/scratch-gui/src/components/asset-panel/sortable-asset.jsx";
 import ThrottledPropertyHOC from "@scratch-submodule/scratch-gui/src/lib/throttled-property-hoc.jsx";
 
-import styles from "./sprite-selector.css";
+import styles from "@scratch-submodule/scratch-gui/src/components/sprite-selector/sprite-selector.css";
 import { Sprite } from "../target-pane/TargetPane";
 import React from "react";
 
