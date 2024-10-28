@@ -894,6 +894,7 @@ class Blocks extends React.Component<Props, State> {
   render() {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
+      canEditTask,
       anyModalVisible,
       customProceduresVisible,
       extensionLibraryVisible,

@@ -323,12 +323,16 @@ const GUIComponent = (props: {
                         <Watermark />
                       </Box>
                     </TabPanel>
-                    <TabPanel className={tabClassNames.tabPanel}>
-                      {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
-                    </TabPanel>
-                    <TabPanel className={tabClassNames.tabPanel}>
-                      {soundsTabVisible ? <SoundTab vm={vm} /> : null}
-                    </TabPanel>
+                    {isCostumesTabEnabled && (
+                      <TabPanel className={tabClassNames.tabPanel}>
+                        {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
+                      </TabPanel>
+                    )}
+                    {isSoundsTabEnabled && (
+                      <TabPanel className={tabClassNames.tabPanel}>
+                        {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                      </TabPanel>
+                    )}
                   </Tabs>
                   {backpackVisible ? <Backpack host={backpackHost} /> : null}
                 </Box>
