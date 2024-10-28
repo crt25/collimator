@@ -15,5 +15,13 @@
         "caughtErrorsIgnorePattern": "^_"
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unnecessary-type-constraint": "off"
+      }
+    }
+  ]
 }

@@ -31,7 +31,7 @@ const SessionManualGrouping = () => {
         <PageHeader>
           <FormattedMessage
             id="SessionManualGrouping.header"
-            defaultMessage="Session Manual Progress"
+            defaultMessage="Manual Grouping"
           />
         </PageHeader>
         {sessionId}

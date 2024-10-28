@@ -1,22 +1,22 @@
 import styled from "@emotion/styled";
 
+const colorCount = 8;
+
+/**
+ * Deterministically get a color for an id.
+ */
 const getColor = (id: string | number) => {
-  let sum = 0;
-
   if (typeof id === "number") {
-    sum = id;
-  } else {
-    // compute some deterministic number of the id
-
-    //iterate over the string and get the sum of the char codes
-
-    for (let i = 0; i < id.length; i++) {
-      sum += id.charCodeAt(i);
-    }
+    return id % colorCount;
   }
 
-  // now mod it by the number of colors
-  return sum % 8;
+  // compute some deterministic number from the string id
+  let sum = 0;
+  for (let i = 0; i < id.length; i++) {
+    sum += id.charCodeAt(i);
+  }
+
+  return sum % colorCount;
 };
 
 const TagWrapper = styled.span`

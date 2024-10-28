@@ -22,7 +22,9 @@ export interface NavigationTab<T = undefined> {
   title: (intl: IntlShape, args: T) => string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+// regex to remove both leading & trailing slashes
+const stripSlashRegex = /(^\/|\/$)/g;
+
 const TabNavigation = <T extends unknown = undefined>({
   tabs,
   tabTitleArguments,
@@ -42,15 +44,9 @@ const TabNavigation = <T extends unknown = undefined>({
   const navigationTabs = tabs.map((tab) => {
     const url = prefix ? `${prefix}${tab.url}` : tab.url;
 
-    const urlWithoutLeadingAndTrailingSlash = url.replace(/(^\/|\/$)/g, "");
-    const currentPathWithoutLeadingAndTrailingSlash = router.asPath.replace(
-      /(^\/|\/$)/g,
-      "",
-    );
-
-    const isActive = currentPathWithoutLeadingAndTrailingSlash.startsWith(
-      urlWithoutLeadingAndTrailingSlash,
-    );
+    const strippedUrl = url.replace(stripSlashRegex, "");
+    const strippedPath = router.asPath.replace(stripSlashRegex, "");
+    const isActive = strippedPath.startsWith(strippedUrl);
 
     return { ...tab, url, isActive };
   });
