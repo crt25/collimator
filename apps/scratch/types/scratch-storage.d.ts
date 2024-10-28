@@ -14,6 +14,9 @@ declare class GUIScratchStorageExtended extends GUIScratchStorage {
     setMetadata: (projectId: string, projectId2: string | number) => void;
     unsetMetadata: (projectId: string) => void;
   };
+
+  setAssetHost(assetHost: string): void;
+  setTranslatorFunction(translator: (message: ReactIntl.FormattedMessage.MessageDescriptor) => string): void;
 }
 
 declare module "scratch-storage" {
