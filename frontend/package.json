@@ -18,7 +18,7 @@
     "test:jest:watch": "jest --watch",
     "test:jest:cov": "jest --coverage",
     "test:jest:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:pre": "rimraf coverage/ .nyc_output/",
+    "test:pre": "shx rm -rf coverage/ .nyc_output/",
     "test:pw": "yarn test:pre && COVERAGE=true playwright test && nyc report --report-dir coverage-pw",
     "test:pw:local": "yarn test:pre && COVERAGE=true SERVER_ALREADY_RUNS=true playwright test && yarn test:post",
     "test:pw:debug": "COVERAGE=true SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
@@ -41,6 +41,7 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18",
     "react-intl": "^6.6.8",
+    "shx": "^0.3.4",
     "swr": "^2.2.5"
   },
   "devDependencies": {
@@ -65,7 +66,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "nyc": "^17.1.0",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
     "sass": "^1.79.1",
     "ts-node": "^10.9.2",
     "typescript": "^5",
