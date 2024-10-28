@@ -94,7 +94,7 @@ const SolveTaskPage = () => {
         showSessionMenu={showSessionMenu}
         setShowSessionMenu={setShowSessionMenu}
         embeddedApp={embeddedApp}
-        iFrameSrc={iframeSrc}
+        iframeSrc={iframeSrc}
       />
     </SolveContainer>
   );
