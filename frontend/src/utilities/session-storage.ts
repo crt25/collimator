@@ -1,4 +1,4 @@
-export const getValueFromSessionStorageAndDelete = <DefaultValueType>(
+export const tryGetAndDelete = <DefaultValueType>(
   key: string,
   defaultValue: DefaultValueType,
 ): string | DefaultValueType => {
@@ -13,10 +13,8 @@ export const getValueFromSessionStorageAndDelete = <DefaultValueType>(
   return value;
 };
 
-export const getAssertedValueFromSessionStorageAndDelete = (
-  key: string,
-): string => {
-  const value = getValueFromSessionStorageAndDelete(key, undefined);
+export const getAndDelete = (key: string): string => {
+  const value = tryGetAndDelete(key, undefined);
 
   if (!value) {
     throw new Error(`Value for key ${key} not found in session storage`);
@@ -24,3 +22,6 @@ export const getAssertedValueFromSessionStorageAndDelete = (
 
   return value;
 };
+
+export const setItem = (key: string, value: string): void =>
+  sessionStorage.setItem(key, value);

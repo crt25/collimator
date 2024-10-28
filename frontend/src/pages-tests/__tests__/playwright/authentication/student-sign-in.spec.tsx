@@ -1,5 +1,6 @@
-import { test } from "playwright-test-coverage";
-import { setupForAuthentication } from "./authentication-helpers";
+import { expect, test } from "playwright-test-coverage";
+import { setupForAuthentication, userEmail } from "./authentication-helpers";
+import { headerCurrentUserName } from "../selectors";
 
 test.describe("/login/student", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -13,5 +14,9 @@ test.describe("/login/student", () => {
     await page.getByTestId("signin-student-button").click();
 
     await page.waitForURL(/session\/3\/join/);
+
+    await expect(page.locator(headerCurrentUserName).innerText()).resolves.toBe(
+      userEmail,
+    );
   });
 });

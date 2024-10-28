@@ -19,10 +19,8 @@ import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 
 const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // if the email is not verified, return undefined
-  userInfo.email_verified === false
-    ? undefined
-    : // otherwise return the email (which may also be undefined)
-      userInfo.email;
+  // otherwise, return the email (which may also be undefined)
+  userInfo.email_verified === false ? undefined : userInfo.email;
 
 const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
   userInfo.preferred_username || userInfo.name;
@@ -142,6 +140,7 @@ const OpenIdConnectRedirect = () => {
         console.error("Authentication failed", e);
         setAuthenticationFailed(true);
       });
+    // we only want to run this once when the component is mounted
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

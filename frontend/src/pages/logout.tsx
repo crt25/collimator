@@ -1,16 +1,16 @@
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
-import { useDeAuthenticate } from "@/hooks/useDeAuthenticate";
+import { useLogout } from "@/hooks/useLogout";
 import { useEffect } from "react";
 import { Container, Spinner } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 
 const LogoutPage = () => {
-  const deAuthenticate = useDeAuthenticate();
+  const logout = useLogout();
 
   useEffect(() => {
-    deAuthenticate();
-  }, [deAuthenticate]);
+    logout();
+  }, [logout]);
 
   return (
     <>
@@ -18,7 +18,7 @@ const LogoutPage = () => {
       <Container>
         <PageHeader>
           <FormattedMessage
-            id="LogoutPage.deAuthenticating"
+            id="LogoutPage.loggingOut"
             defaultMessage="You are being logged out..."
           />
         </PageHeader>

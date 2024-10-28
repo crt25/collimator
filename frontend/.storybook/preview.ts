@@ -2,7 +2,7 @@ import type { Preview } from "@storybook/react";
 import { reactIntl } from "./reactIntl";
 import {
   getAuthenticatedTeacherContext,
-  getAuthenticatedNonStudentTeacherContext,
+  getAuthenticatedAdminContext,
   getFullyAuthenticatedStudentContext,
   getLocallyAuthenticatedStudentContext,
   getUnauthenticatedContext,
@@ -35,7 +35,7 @@ const preview: Preview = {
         window.crypto.subtle,
       ),
       authenticationContextAdmin:
-        await getAuthenticatedNonStudentTeacherContext(UserRole.admin)(),
+        await getAuthenticatedAdminContext(UserRole.admin)(),
       authenticationContextStudent: await getFullyAuthenticatedStudentContext(
         window.crypto.subtle,
       ),

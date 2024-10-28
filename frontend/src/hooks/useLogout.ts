@@ -3,7 +3,7 @@ import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationCont
 import { useRouter } from "next/router";
 import { useCallback, useContext } from "react";
 
-export const useDeAuthenticate = (): (() => void) => {
+export const useLogout = (): (() => void) => {
   const router = useRouter();
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
 

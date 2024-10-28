@@ -1,6 +1,7 @@
 import { Page } from "@playwright/test";
 import { subtle, webcrypto } from "crypto";
 
+export const userEmail = "janedoe@example.com";
 export const issuer = "http://localhost:3000/issuer";
 export const sub = "1234567890";
 
@@ -191,7 +192,7 @@ export const setupForAuthentication = async (
         given_name: "Jane",
         family_name: "Doe",
         preferred_username: "j.doe",
-        email: "janedoe@example.com",
+        email: userEmail,
         picture: "http://example.com/janedoe/me.jpg",
       }),
     });

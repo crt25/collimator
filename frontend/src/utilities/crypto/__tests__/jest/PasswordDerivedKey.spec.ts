@@ -61,7 +61,7 @@ describe("PasswordDerivedKey", () => {
       expect(decrypted).toEqual(plainText);
     });
 
-    it("can decrypt a message if the key is derived twice with the same password and salt", async () => {
+    it("can decrypt a message with a new key derived from the same password and salt", async () => {
       const encryptionKey = await PasswordDerivedKey.derive(
         crypto,
         password,
@@ -97,7 +97,7 @@ describe("PasswordDerivedKey", () => {
       await expect(decryptionKey.decrypt(cipherText)).rejects.toThrow();
     });
 
-    it("cannot decrypt a message if the decryption key is derived twice with a different password", async () => {
+    it("cannot decrypt a message if the decryption key is derived with a different password", async () => {
       const encryptionKey = await PasswordDerivedKey.derive(
         crypto,
         password,

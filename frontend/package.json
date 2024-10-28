@@ -24,9 +24,10 @@
     "test:pw:debug": "COVERAGE=true SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
     "test:ct": "yarn test:pre && playwright test -c playwright-ct.config.ts && nyc report --report-dir coverage-ct",
     "test:playwright": "yarn test:pw && yarn test:ct",
+    "test:storybook": "test-storybook --coverage --coverageDirectory coverage-storybook",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test-storybook": "test-storybook --coverage --coverageDirectory coverage-storybook"
+    "storybook:await": "until curl --output /dev/null --silent --head --fail http://localhost:6006; do printf '.'; sleep 3; done",
+    "storybook:build": "storybook build"
   },
   "nyc": {
     "reporter": [

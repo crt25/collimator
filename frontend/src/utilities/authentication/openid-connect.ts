@@ -1,8 +1,6 @@
 import * as client from "openid-client";
-import {
-  getAssertedValueFromSessionStorageAndDelete,
-  getValueFromSessionStorageAndDelete,
-} from "../session-storage";
+import { AuthenticationError } from "@/errors/authentication";
+import { sessionStorage } from "..";
 
 const codeChallengeMethod = "S256";
 const scope = "openid email";
@@ -59,7 +57,7 @@ export const redirectToOpenIdConnectProvider = async (
   }
 
   // set the user role in the session storage
-  sessionStorage.setItem(
+  window.sessionStorage.setItem(
     openIdConnectIsStudentSessionStorageKey,
     isStudent ? "true" : "false",
   );
@@ -86,16 +84,16 @@ export const authenticate = async (
   const config = await client.discovery(new URL(server), clientId, {});
 
   // retrieve code verifier from session storage
-  const codeVerifier = getAssertedValueFromSessionStorageAndDelete(
+  const codeVerifier = sessionStorage.getAndDelete(
     openIdConnectCodeVerifierSessionStorageKey,
   );
 
   // retrieve state from session storage
-  const state = getAssertedValueFromSessionStorageAndDelete(
+  const state = sessionStorage.getAndDelete(
     openIdConnectStateSessionStorageKey,
   );
 
-  const nonce = getValueFromSessionStorageAndDelete(
+  const nonce = sessionStorage.tryGetAndDelete(
     openIdConnectNonceSessionStorageKey,
     undefined,
   );
@@ -111,14 +109,16 @@ export const authenticate = async (
   const idToken = tokens.id_token;
 
   if (!idToken) {
-    throw new Error("ID token was not returned by the authorization server");
+    throw new AuthenticationError(
+      "ID token was not returned by the authorization server",
+    );
   }
 
   const claims = tokens.claims();
 
   if (!claims) {
-    throw new Error(
-      "TokenEndpointResponse.expires_in expires_in was not returned by the authorization server",
+    throw new AuthenticationError(
+      "TokenEndpointResponse.expires_in was not returned by the authorization server",
     );
   }
 
@@ -129,11 +129,10 @@ export const authenticate = async (
   );
 
   const isStudent =
-    getAssertedValueFromSessionStorageAndDelete(
-      openIdConnectIsStudentSessionStorageKey,
-    ) === "true";
+    sessionStorage.getAndDelete(openIdConnectIsStudentSessionStorageKey) ===
+    "true";
 
-  const redirectPath = getAssertedValueFromSessionStorageAndDelete(
+  const redirectPath = sessionStorage.getAndDelete(
     openIdConnectRedirectAfterLoginSessionStorageKey,
   );
 

@@ -36,7 +36,7 @@ type TeacherAuthenticated = AuthenticationVersion1 & {
   keyPair: TeacherLongTermKeyPair;
 };
 
-type NonStudentTeacherAuthenticated = AuthenticationVersion1 & {
+type AdminAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: string;
   name: string;
@@ -56,6 +56,8 @@ type StudentAuthenticated = Omit<
   StudentLocallyAuthenticated,
   "authenticationToken"
 > & {
+  // a student is always authenticated with respect to a session
+  sessionId: number;
   authenticationToken: string;
   keyPair: StudentKeyPair;
 };
@@ -63,14 +65,14 @@ type StudentAuthenticated = Omit<
 export type AuthenticationContextType =
   | Unauthenticated
   | TeacherAuthenticated
-  | NonStudentTeacherAuthenticated
+  | AdminAuthenticated
   | StudentLocallyAuthenticated
   | StudentAuthenticated;
 
 type SerializedAuthenticationContextTypeV1 =
   | Unauthenticated
   | SerializedKeyPair<TeacherAuthenticated>
-  | NonStudentTeacherAuthenticated
+  | AdminAuthenticated
   | StudentLocallyAuthenticated
   | SerializedKeyPair<StudentAuthenticated>;
 
@@ -88,6 +90,23 @@ export const isStudentLocallyAuthenticated = (
   authContext.idToken !== undefined &&
   authContext.authenticationToken === undefined;
 
+export const isStudentFullyAuthenticated = (
+  authContext: AuthenticationContextType,
+  sessionId: number,
+): authContext is StudentAuthenticated =>
+  authContext.version === latestAuthenticationContextVersion &&
+  authContext.role === UserRole.student &&
+  authContext.idToken !== undefined &&
+  authContext.authenticationToken !== undefined &&
+  authContext.sessionId === sessionId;
+
+export const isStudentAuthenticated = (
+  authContext: AuthenticationContextType,
+): authContext is StudentLocallyAuthenticated | StudentAuthenticated =>
+  authContext.version === latestAuthenticationContextVersion &&
+  authContext.role === UserRole.student &&
+  authContext.idToken !== undefined;
+
 export const authenticationContextDefaultValue: AuthenticationContextType = {
   version: latestAuthenticationContextVersion,
   idToken: undefined,
@@ -100,13 +119,13 @@ export const AuthenticationContext = createContext<AuthenticationContextType>(
 );
 
 export const serializeAuthenticationContext = async (
-  authentcationContext: AuthenticationContextType,
+  authContext: AuthenticationContextType,
 ): Promise<SerializedAuthenticationContextType> => {
-  if (!("keyPair" in authentcationContext)) {
-    return authentcationContext;
+  if (!("keyPair" in authContext)) {
+    return authContext;
   }
 
-  const { keyPair, ...rest } = authentcationContext;
+  const { keyPair, ...rest } = authContext;
 
   const serializedKeyPair = await keyPair.exportUnprotected();
 
@@ -131,15 +150,13 @@ export const deserializeAuthenticationContext = async (
     keyPair,
   );
 
-  if (rest.role === UserRole.teacher) {
-    return {
-      ...rest,
-      keyPair: new TeacherLongTermKeyPair(crypto, importedCryptoKeyPair),
-    };
-  } else {
-    return {
-      ...rest,
-      keyPair: new StudentKeyPair(crypto, importedCryptoKeyPair),
-    };
-  }
+  return rest.role === UserRole.teacher
+    ? {
+        ...rest,
+        keyPair: new TeacherLongTermKeyPair(crypto, importedCryptoKeyPair),
+      }
+    : {
+        ...rest,
+        keyPair: new StudentKeyPair(crypto, importedCryptoKeyPair),
+      };
 };

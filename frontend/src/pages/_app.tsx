@@ -22,13 +22,13 @@ const authenticationStateKey = "authenticationState";
 const cache = createCache({ key: "next" });
 
 const getInitialState = async (): Promise<AuthenticationContextType> => {
-  if (typeof localStorage === "undefined") {
+  if (typeof sessionStorage === "undefined") {
     // for SSR we return the default value
     return authenticationContextDefaultValue;
   }
 
-  // load the stored authentication state from localStorage
-  const storedAuthenticationState = localStorage.getItem(
+  // load the stored authentication state from sessionStorage
+  const storedAuthenticationState = sessionStorage.getItem(
     authenticationStateKey,
   );
 
@@ -52,25 +52,31 @@ const App = ({ Component, pageProps }: AppProps) => {
   const updateAuthenticationState = useCallback(
     (newState: AuthenticationContextType) =>
       setAuthenticationState(() => {
-        // store the new state in the session storage
-        serializeAuthenticationContext(newState).then((serializedNewState) => {
-          localStorage.setItem(
-            authenticationStateKey,
-            JSON.stringify(serializedNewState),
-          );
-        });
+        // store the new state in the session storage asynchronously
+        serializeAuthenticationContext(newState)
+          .then((serializedNewState) => {
+            sessionStorage.setItem(
+              authenticationStateKey,
+              JSON.stringify(serializedNewState),
+            );
+          })
+          .catch((e) => {
+            console.error("Failed to store serialized authentication state", e);
+          });
 
+        // synchronously return the new state
         return newState;
       }),
     [],
   );
 
   useEffect(() => {
-    // load the stored authentication state from localStorage
+    // load the stored authentication state from sessionStorage
     getInitialState().then((initialState) => {
       updateAuthenticationState(initialState);
       setAuthenticationStateLoaded(true);
     });
+    // we only want to run this effect once when mounting the component
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

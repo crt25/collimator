@@ -1,4 +1,4 @@
-import { useDeAuthenticate } from "@/hooks/useDeAuthenticate";
+import { useLogout } from "@/hooks/useLogout";
 import { useContext as useContextMock } from "react";
 import { useRouter as useRouterMock } from "next/router";
 import { authenticationContextDefaultValue } from "@/contexts/AuthenticationContext";
@@ -26,13 +26,13 @@ beforeEach(() => {
   useRouter.mockReturnValue({ push: routerPush });
 });
 
-describe("useDeAuthenticate", () => {
+describe("useLogout", () => {
   it("should reset the authenticationstate", () => {
-    const deAuthenticate = useDeAuthenticate();
+    const logout = useLogout();
 
     expect(updateAuthenticationContext).toHaveBeenCalledTimes(0);
 
-    deAuthenticate();
+    logout();
 
     expect(updateAuthenticationContext).toHaveBeenCalledTimes(1);
     expect(updateAuthenticationContext).toHaveBeenCalledWith(
@@ -41,11 +41,11 @@ describe("useDeAuthenticate", () => {
   });
 
   it("should redirect to the login page", () => {
-    const deAuthenticate = useDeAuthenticate();
+    const logout = useLogout();
 
     expect(routerPush).toHaveBeenCalledTimes(0);
 
-    deAuthenticate();
+    logout();
 
     expect(routerPush).toHaveBeenCalledTimes(1);
     expect(routerPush).toHaveBeenCalledWith("/login");

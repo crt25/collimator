@@ -47,6 +47,7 @@ exports[`Solve Task Page renders page unchanged 1`] = `
               <button
                 aria-expanded="false"
                 class="dropdown-toggle btn btn-primary"
+                data-testid="current-user"
                 id="react-aria-:r0:"
                 type="button"
               >

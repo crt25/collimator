@@ -12,10 +12,7 @@ const email = "john@doe.com";
 const authenticationToken = "authenticationToken";
 const idToken = "id token";
 
-type NonStudentTeacherRole = Exclude<
-  UserRole,
-  UserRole.teacher | UserRole.student
->;
+type AdminRole = Exclude<UserRole, UserRole.teacher | UserRole.student>;
 
 export const getUnauthenticatedContext =
   async (): Promise<AuthenticationContextType> =>
@@ -55,8 +52,8 @@ export const getAuthenticatedTeacherContext = async (
   keyPair: await TeacherLongTermKeyPair.generate(crypto),
 });
 
-export const getAuthenticatedNonStudentTeacherContext =
-  (role: NonStudentTeacherRole): (() => Promise<AuthenticationContextType>) =>
+export const getAuthenticatedAdminContext =
+  (role: AdminRole): (() => Promise<AuthenticationContextType>) =>
   async () => ({
     version: latestAuthenticationContextVersion,
     role,
