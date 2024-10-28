@@ -25,6 +25,7 @@ exports[`Solve Task Page renders page unchanged 1`] = `
           <li>
             <button
               class="css-1aktket"
+              data-testid="toggle-session-menu-button"
             >
               <span>
                 Show Session
