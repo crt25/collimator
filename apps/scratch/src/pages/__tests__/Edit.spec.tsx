@@ -1,7 +1,10 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
-import { MockMessageEvent } from "./mock-message-event";
+import {
+  defineCustomMessageEvent,
+  MockMessageEvent,
+} from "./mock-message-event";
 import { getBlockShownButtonSelector } from "./locators";
 
 // eslint-disable-next-line no-undef
@@ -11,6 +14,7 @@ declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
     postedMessages: { message: unknown; options: unknown }[];
+    MockMessageEvent: typeof MockMessageEvent;
   }
 }
 
@@ -32,11 +36,13 @@ test.describe("/edit/taskId", () => {
     await page.goto(`${baseURL!}/edit/some-task-id`);
 
     await page.waitForSelector("#root");
+
+    await defineCustomMessageEvent(page);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "getHeight",
@@ -60,7 +66,7 @@ test.describe("/edit/taskId", () => {
 
   test("can get task via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "getTask",
@@ -98,7 +104,7 @@ test.describe("/edit/taskId", () => {
         (response) => response.blob(),
       );
 
-      const event = new MockMessageEvent(window.parent, {
+      const event = new window.MockMessageEvent(window.parent, {
         id: 0,
         type: "request",
         procedure: "loadTask",
