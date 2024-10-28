@@ -6,7 +6,7 @@ import { StatementNodeType } from "./statement-node-type";
 /**
  * A node representing a value assignment to a variable.
  */
-export interface VariableAssignmentNode extends StatementNodeBase {
+export interface VariableTaskNode extends StatementNodeBase {
   codeType: StatementNodeType.assignment;
 
   variable: VariableNode;

@@ -1,4 +1,4 @@
-import { VariableAssignmentNode } from "../statement-node/assignment-node";
+import { VariableTaskNode } from "../statement-node/assignment-node";
 import { FunctionCallNode } from "./function-call-node";
 import { LiteralNode } from "./literal-node";
 import { OperatorNode } from "./operator-node";
@@ -10,11 +10,11 @@ export type ExpressionNode =
   | LiteralNode
   | FunctionCallNode
   | VariableNode
-  | VariableAssignmentNode
+  | VariableTaskNode
   | OperatorNode;
 
 export {
-  VariableAssignmentNode as AssignmentNode,
+  VariableTaskNode as TaskNode,
   FunctionCallNode,
   LiteralNode,
   OperatorNode,

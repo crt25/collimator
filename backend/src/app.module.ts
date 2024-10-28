@@ -5,8 +5,9 @@ import { ConfigModule } from "@nestjs/config";
 import { CoreModule } from "./core/core.module";
 import { UsersModule } from "./users/users.module";
 import { AstModule } from "./ast/ast.module";
-import { ClassesModule } from './classes/classes.module';
-import { AssignmentsModule } from './assignments/assignments.module';
+import { ClassesModule } from "./classes/classes.module";
+import { SessionsModule } from "./sessions/sessions.module";
+import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { AssignmentsModule } from './assignments/assignments.module';
     UsersModule,
     AstModule,
     ClassesModule,
-    AssignmentsModule,
+    SessionsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 
   console.log(["class", klass]);
 
-  const assignment = await prisma.assignment.upsert({
+  const task = await prisma.task.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -42,19 +42,18 @@ async function main(): Promise<void> {
     },
   });
 
-  const classAssignment = await prisma.classAssignment.upsert({
+  const sessionTask = await prisma.sessionTask.upsert({
     where: {
-      classId_assignmentId: { classId: klass.id, assignmentId: assignment.id },
+      classId_taskId: { classId: klass.id, taskId: task.id },
     },
     update: {},
     create: {
       classId: klass.id,
-      assignmentId: assignment.id,
+      taskId: task.id,
     },
   });
 
-
-  console.log(["assignment", assignment, classAssignment]);
+  console.log(["task", task, sessionTask]);
 
   await Promise.all(
     ["bob", "charlie"]
@@ -79,7 +78,7 @@ async function main(): Promise<void> {
 
         console.log(["student", user, student]);
 
-        const enrollment = await prisma.classEnrollment.upsert({
+        const enrollment = await prisma.sessionEnrollment.upsert({
           where: {
             classId_studentId: { studentId: student.id, classId: klass.id },
           },
@@ -105,7 +104,7 @@ async function main(): Promise<void> {
           update: {},
           create: {
             studentId,
-            assignmentId: assignment.id,
+            taskId: task.id,
             classId: klass.id,
             rawContent: `Some text file here from student ${studentId}!`,
           },

@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Assignment } from "@prisma/client";
+import { Task, TaskType } from "@prisma/client";
 
-export class AssignmentEntity implements Assignment {
+export type TaskWithoutData = Omit<Task, "rawData">;
+
+export class TaskInfoEntity implements TaskWithoutData {
   @ApiProperty()
   readonly id: number;
 
@@ -11,9 +13,13 @@ export class AssignmentEntity implements Assignment {
   @ApiProperty()
   readonly description: string;
 
-  constructor(entity: Assignment) {
+  @ApiProperty()
+  readonly type: TaskType;
+
+  constructor(entity: TaskWithoutData) {
     this.id = entity.id;
     this.title = entity.title;
     this.description = entity.description;
+    this.type = entity.type;
   }
 }

@@ -1,4 +1,4 @@
-import { VariableAssignmentNode } from "./assignment-node";
+import { VariableTaskNode } from "./assignment-node";
 import { ConditionNode } from "./condition-node";
 import { VariableDeclarationNode } from "./declaration-node";
 import { FunctionCallNode } from "./function-call-node";
@@ -14,16 +14,16 @@ export type StatementNode =
   | ConditionNode
   | FunctionDeclarationNode
   | LoopNode
-  | VariableAssignmentNode
+  | VariableTaskNode
   | VariableDeclarationNode
-  | VariableAssignmentNode
+  | VariableTaskNode
   | FunctionCallNode;
 
 export {
   ConditionNode,
   FunctionDeclarationNode,
   LoopNode,
-  VariableAssignmentNode,
+  VariableTaskNode,
   VariableDeclarationNode,
   FunctionCallNode,
 };

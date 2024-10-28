@@ -3,8 +3,8 @@
 
 generator client {
   provider = "prisma-client-js"
-  // not yet supported by JetBrains IDEs
-  // previewFeatures = ["prismaSchemaFolder"]
+  // "prismaSchemaFolder" is not yet supported by JetBrains IDEs
+  previewFeatures = ["omitApi"] // ,"prismaSchemaFolder"]
 }
 
 datasource db {
@@ -28,10 +28,17 @@ model Teacher {
 }
 
 model Student {
-  id          Int               @id @default(autoincrement())
-  userId      Int               @unique
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  classes     ClassEnrollment[]
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnonymousStudent {
+  id Int @id @default(autoincrement())
+
+  class   Class @relation(fields: [classId], references: [id])
+  classId Int
+
   submissions Submission[]
 }
 
@@ -42,60 +49,75 @@ model Class {
   teacherId Int
   teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Restrict)
 
-  students ClassEnrollment[]
+  students AnonymousStudent[]
 
-  assignments ClassAssignment[]
-  submissions Submission[]
+  sessions Session[]
 }
 
-model ClassEnrollment {
-  classId   Int
-  class     Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+model Session {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
 
-  studentId Int
-  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@id([classId, studentId])
-}
-
-model Assignment {
-  id          Int    @id @default(autoincrement())
-  title       String
-  description String
-
-  submissions Submission[]
-
-  classes ClassAssignment[]
-}
-
-model ClassAssignment {
   classId Int
   class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
 
-  assignmentId Int
-  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  tasks      SessionTask[]
+  Submission Submission[]
+}
+
+enum TaskType {
+  SCRATCH
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  type        TaskType
+
+  rawData Bytes
+  mimeType String
+
+  submissions Submission[]
+  sessions    SessionTask[]
+}
+
+model SessionTask {
+  sessionId Int
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Restrict)
 
   submissions Submission[]
 
-  @@id([classId, assignmentId])
+  @@id([sessionId, taskId])
 }
 
 model Submission {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 
-  rawContent  String  // The submission as-is
-  scratchData String? // The Scratch file extracted from the submission
-  gAstData    String? // the G-AST generated from the Scratch JSON
+  rawContent String // The submission as-is
+  analysis   SubmissionAnalysis? // the analysis results
 
   studentId Int
-  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student   AnonymousStudent @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  assignmentId Int
-  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Restrict)
 
-  classId Int
-  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  sessionId Int
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-  classAssignment ClassAssignment @relation(fields: [classId, assignmentId], references: [classId, assignmentId], onDelete: Restrict)
+  sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+}
+
+model SubmissionAnalysis {
+  id Int @id @default(autoincrement())
+
+  submissionId Int        @unique
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  gAstData String // the G-AST generated from the submission
 }

@@ -12,16 +12,12 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { ClassEntity } from "./entities/class.entity";
 import { CreateClassDto } from "./dto/create-class.dto";
 import { UpdateClassDto } from "./dto/update-class.dto";
-import { ClassesService } from "src/classes/services/classes.service";
-import { ClassAssignmentsService } from "src/classes/services/class-assignment.service";
+import { ClassesService } from "./services/classes.service";
 
 @Controller("classes")
 @ApiTags("classes")
 export class ClassesController {
-  constructor(
-    private readonly classesService: ClassesService,
-    private readonly classAssignmentsService: ClassAssignmentsService,
-  ) {}
+  constructor(private readonly classesService: ClassesService) {}
 
   @Post()
   @ApiCreatedResponse({ type: ClassEntity })
@@ -37,18 +33,6 @@ export class ClassesController {
     return classes.map((klass) => new ClassEntity(klass));
   }
 
-  @Get(":id")
-  @ApiOkResponse({ type: ClassEntity })
-  async findOne(
-    @Param("id", ParseIntPipe) id: number,
-  ): Promise<ClassEntity | null> {
-    const user = await this.classesService.findUnique({
-      where: { id },
-      include: { teacher: { include: { user: true } } },
-    });
-    return user ? new ClassEntity(user) : null;
-  }
-
   @Patch(":id")
   @ApiCreatedResponse({ type: ClassEntity })
   async update(
@@ -59,13 +43,6 @@ export class ClassesController {
       where: { id },
       data: updateClassDto,
     });
-
-    if (updateClassDto.assignments !== undefined) {
-      await this.classAssignmentsService.replaceAssignments(
-        id,
-        updateClassDto.assignments,
-      );
-    }
 
     return new ClassEntity(klass);
   }
