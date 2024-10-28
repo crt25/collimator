@@ -107,7 +107,7 @@ jobs:
 
             -   name: Start storybook
                 working-directory: ./frontend
-                run: yarn storybook &
+                run: yarn storybook & PID=$!; echo $PID > storybook.pid
 
             -   name: Wait for storybook to be accessible
                 working-directory: ./frontend
@@ -119,8 +119,7 @@ jobs:
 
             -   name: Stop storybook
                 working-directory: ./frontend
-                # kill all bash background jobs
-                run: kill $(jobs -p)
+                run: kill $(cat storybook.pid)
 
             -   name: Test scratch app
                 working-directory: ./apps/scratch
