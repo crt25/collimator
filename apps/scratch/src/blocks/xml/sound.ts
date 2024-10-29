@@ -1,5 +1,6 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum SoundOpCode {
   playuntildone = "sound_playuntildone",
@@ -79,10 +80,10 @@ export const buildSoundXml = function (
   targetId: string,
   soundName: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<SoundOpCode, boolean>> = {},
+  allowedBlocks: Partial<Record<SoundOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(allowedBlocks)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = soundXmlByOpCode[opCode as SoundOpCode];
 

@@ -191,7 +191,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       src={src}
       ref={getIFramRef}
       allow="fullscreen; camera; microphone"
-      sandbox="allow-scripts allow-same-origin allow-downloads"
+      sandbox="allow-scripts allow-same-origin allow-downloads allow-forms"
       referrerPolicy="no-referrer-when-downgrade"
       loading="lazy"
     />

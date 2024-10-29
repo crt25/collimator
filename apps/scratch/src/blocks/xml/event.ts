@@ -1,5 +1,6 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum EventOpCode {
   whenflagclicked = "event_whenflagclicked",
@@ -62,10 +63,10 @@ export const buildEventXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<EventOpCode, boolean>> = {},
+  allowedBlocks: Partial<Record<EventOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(allowedBlocks)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = eventXmlByOpCode[opCode as EventOpCode];
 

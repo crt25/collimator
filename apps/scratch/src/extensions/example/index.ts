@@ -45,7 +45,9 @@ class ExampleExtension {
     this.runtime = runtime;
 
     this.onTargetCreated = this.onTargetCreated.bind(this);
-    this.runtime.on("targetWasCreated", this.onTargetCreated);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.runtime.on("targetWasCreated", this.onTargetCreated as any);
   }
   /**
    * Create data for a menu in scratch-blocks format, consisting of an array of objects with text and
@@ -67,7 +69,7 @@ class ExampleExtension {
    * @returns the mutable custom state associated with that target. This will be created if necessary.
    * @private
    */
-  getCustomState(target: VM.Target): CustomState {
+  getCustomState(target: VM.TargetExtended): CustomState {
     let state = (
       target as VM.TargetWithCustomState<CustomState>
     ).getCustomState(ExampleExtension.STATE_KEY);
@@ -86,12 +88,15 @@ class ExampleExtension {
 
   /**
    * When a Target is cloned, clone the custom state.
-   * @param {Target} newTarget - the newly created target.
-   * @param {Target} [sourceTarget] - the target used as a source for the new clone, if any.
+   * @param newTarget - the newly created target.
+   * @param sourceTarget - the target used as a source for the new clone, if any.
    * @listens Runtime#event:targetWasCreated
    * @private
    */
-  onTargetCreated(newTarget: VM.Target, sourceTarget?: VM.Target): void {
+  onTargetCreated(
+    newTarget: VM.TargetExtended,
+    sourceTarget?: VM.TargetExtended,
+  ): void {
     if (sourceTarget) {
       const state = (
         sourceTarget as VM.TargetWithCustomState<CustomState>

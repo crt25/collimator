@@ -117,9 +117,14 @@ declare namespace VMExtended {
     isMonitored: boolean;
     x: number;
     y: number;
+
+    // a property added by the CRT to mark a block as a task block
+    isTaskBlock?: boolean;
   }
 
   export interface BlocksExtended extends VM.Blocks {
+    _blocks: Record<string, BlockExtended>;
+
     getBlock(id: string): BlockExtended | undefined;
   }
 
@@ -181,6 +186,8 @@ declare namespace VMExtended {
     _blockInfo: ExtensionInfo[];
 
     handleProjectLoaded: () => void;
+
+    targets: TargetExtended[];
   }
 
   export interface ExtensionManagerExtended extends VM.ExtensionManager {
@@ -188,9 +195,11 @@ declare namespace VMExtended {
     _loadedExtensions: Map<string, string>;
   }
 
-  export interface Target extends VM.Target {}
+  export interface TargetExtended extends VM.Target {
+    blocks: BlocksExtended;
+  }
 
-  export interface TargetWithCustomState<CustomState> extends VM.Target {
+  export interface TargetWithCustomState<CustomState> extends TargetExtended {
     getCustomState(name: string): CustomState | undefined;
     setCustomState(name: T, value: CustomState): void;
   }
@@ -210,7 +219,7 @@ declare namespace VMExtended {
     BLOCK_GLOW_ON: [{ id: string }];
     BLOCK_GLOW_OFF: [{ id: string }];
     BLOCK_DRAG_END: [VM.BlockExtended[]];
-    
+
     VISUAL_REPORT: [{ id: string; value: unknown }];
     workspaceUpdate: [{ xml: string }];
     workspaceUpdate: [{ xml: string }];
@@ -239,9 +248,8 @@ declare namespace VMExtended {
   }
 
   export interface ScratchCrtConfig {
-    allowedBlocks: ShowBlocks;
+    allowedBlocks: import("../src/blocks/make-toolbox-xml").AllowedBlocks;
   }
-  
 }
 
 declare class VMExtended extends VM {

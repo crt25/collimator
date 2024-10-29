@@ -5,7 +5,13 @@ import {
   defineCustomMessageEvent,
   MockMessageEvent,
 } from "./mock-message-event";
-import { getBlockHiddenButtonSelector, getBlockSelector } from "./locators";
+import {
+  getBlockConfigBlockLimitInputSelector,
+  getBlockConfigButtonSelector,
+  getBlockConfigCanBeUsedCheckboxSelector,
+  getBlockConfigFormSubmitButtonSelector,
+  getBlockConfigHasBlockLimitCheckboxSelector,
+} from "./locators";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -130,37 +136,102 @@ test.describe("/edit/taskId", () => {
     });
 
     // ensure the block visibility is correctly loaded
-    expect(
-      page.locator(getBlockHiddenButtonSelector("motion_turnright")),
-    ).toHaveCount(1);
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
 
-    expect(
-      page.locator(getBlockHiddenButtonSelector("motion_turnleft")),
-    ).toHaveCount(1);
+    const turnRight = page.locator(
+      getBlockConfigButtonSelector("motion_turnright"),
+    );
 
-    expect(
-      page.locator(getBlockHiddenButtonSelector("motion_goto")),
-    ).toHaveCount(1);
+    const goto = page.locator(getBlockConfigButtonSelector("motion_goto"));
+
+    const turnLeft = page.locator(
+      getBlockConfigButtonSelector("motion_turnleft"),
+    );
+
+    await expect(moveSteps).toHaveCount(1);
+    await expect(turnRight).toHaveCount(1);
+    await expect(goto).toHaveCount(1);
+
+    await expect(turnLeft).toHaveCount(1);
+
+    // then assert that the correct labels are shown
+    await expect(moveSteps).toHaveText("7");
+    await expect(turnRight).toHaveText("2");
+    await expect(goto).toHaveText("∞");
+
+    await expect(turnLeft).toHaveText("0");
   });
 
-  test("can toggle block visibility", async ({ page }) => {
-    const firstBlock = page
-      .locator(getBlockSelector("motion_movesteps"))
-      .first();
+  test("can update the block config to allow an arbitrary number of a given block", async ({
+    page,
+  }) => {
+    const configButton = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
 
-    let button = firstBlock.getByTestId("hidden-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
+    // open modal
+    await configButton.click();
 
-    // after clicking the button, the block should be shown and the test id different
-    expect(button).toHaveCount(0);
+    // check the checkbox that allows the block to be used
+    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
 
-    button = firstBlock.getByTestId("shown-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
+    // submit the form
+    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
 
-    // and after clicking again, the block should be hidden and the test id different again
-    expect(button).toHaveCount(0);
+    // ensure the block's label is updated
+    await expect(configButton).toHaveText("∞");
+
+    // open the modal again
+    await configButton.click();
+
+    // uncheck the checkbox that allows the block to be used
+    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+
+    // submit the form
+    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+
+    // ensure the block's label is updated
+    await expect(configButton).toHaveText("0");
+  });
+
+  test("can update the block config to allow an a fixed number of a given block", async ({
+    page,
+  }) => {
+    const configButton = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
+
+    // open modal
+    await configButton.click();
+
+    // check the checkbox that allows the block to be used
+    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+
+    // check the checkbox that allows the block to be used a limited number of times
+    await page.locator(getBlockConfigHasBlockLimitCheckboxSelector()).click();
+
+    // set the block limit to 5
+    await page.locator(getBlockConfigBlockLimitInputSelector()).fill("5");
+
+    // submit the form
+    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+
+    // ensure the block's label is updated
+    await expect(configButton).toHaveText("5");
+
+    // open the modal again
+    await configButton.click();
+
+    // uncheck the checkbox that allows the block to be used
+    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+
+    // submit the form
+    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+
+    // ensure the block's label is updated
+    await expect(configButton).toHaveText("0");
   });
 
   test("can add extension", async ({ page }) => {
@@ -173,9 +244,9 @@ test.describe("/edit/taskId", () => {
     await firstExtension.click();
 
     // ensure the custom block is added
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
+    await expect(
+      page.locator("[data-id='example_functionCall_setX']"),
+    ).toHaveCount(1);
   });
 
   test("can add extension twice", async ({ page }) => {
@@ -192,8 +263,8 @@ test.describe("/edit/taskId", () => {
     await firstExtension.click();
 
     // ensure the custom block is added just once
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
+    await expect(
+      page.locator("[data-id='example_functionCall_setX']"),
+    ).toHaveCount(1);
   });
 });

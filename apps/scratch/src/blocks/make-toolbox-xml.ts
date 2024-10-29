@@ -34,35 +34,45 @@ const xmlClose = "</xml>";
 
 const allBlocksAreDisabled = `<category name="All blocks are disabled" />`;
 
-export type ShowBlocks = Partial<Record<MotionOpCode, boolean>> &
-  Partial<Record<LooksOpCode, boolean>> &
-  Partial<Record<SoundOpCode, boolean>> &
-  Partial<Record<EventOpCode, boolean>> &
-  Partial<Record<ControlOpCode, boolean>> &
-  Partial<Record<SensingOpCode, boolean>> &
-  Partial<Record<OperatorsOpCode, boolean>> & {
+/**
+ * The number of blocks that are allowed to be used for a given task.
+ * For variables and custom blocks, it is just a boolean value as in
+ * whether they are allowed or not.
+ * If a block id is not present in the object, it is assumed to be 0.
+ * If an entry is 0, the block is not shown in the toolbox.
+ * If an entry is negative, the block can be used an unlimited number of times.
+ */
+export type AllowedBlocks = Partial<Record<MotionOpCode, number>> &
+  Partial<Record<LooksOpCode, number>> &
+  Partial<Record<SoundOpCode, number>> &
+  Partial<Record<EventOpCode, number>> &
+  Partial<Record<ControlOpCode, number>> &
+  Partial<Record<SensingOpCode, number>> &
+  Partial<Record<OperatorsOpCode, number>> & {
     variables?: boolean;
     customBlocks?: boolean;
+  } & {
+    [key: string]: number | boolean | undefined;
   };
 
-const createDictionaryWithAllValuesTrue = (
+const createDictionaryWithAllValuesInfinite = (
   object: Record<string, string>,
-): Record<string, boolean> =>
-  Object.values(object).reduce((acc, key) => ({ ...acc, [key]: true }), {});
+): Record<string, number> =>
+  Object.values(object).reduce((acc, key) => ({ ...acc, [key]: -1 }), {});
 
-export const showAllBlocks: ShowBlocks = {
-  ...createDictionaryWithAllValuesTrue(MotionOpCode),
-  ...createDictionaryWithAllValuesTrue(LooksOpCode),
-  ...createDictionaryWithAllValuesTrue(SoundOpCode),
-  ...createDictionaryWithAllValuesTrue(EventOpCode),
-  ...createDictionaryWithAllValuesTrue(ControlOpCode),
-  ...createDictionaryWithAllValuesTrue(SensingOpCode),
-  ...createDictionaryWithAllValuesTrue(OperatorsOpCode),
+export const allowAllBlocks: AllowedBlocks = {
+  ...createDictionaryWithAllValuesInfinite(MotionOpCode),
+  ...createDictionaryWithAllValuesInfinite(LooksOpCode),
+  ...createDictionaryWithAllValuesInfinite(SoundOpCode),
+  ...createDictionaryWithAllValuesInfinite(EventOpCode),
+  ...createDictionaryWithAllValuesInfinite(ControlOpCode),
+  ...createDictionaryWithAllValuesInfinite(SensingOpCode),
+  ...createDictionaryWithAllValuesInfinite(OperatorsOpCode),
   variables: true,
   customBlocks: true,
 };
 
-export const showNoBlocks: ShowBlocks = {};
+export const allowNoBlocks: AllowedBlocks = {};
 
 /**
  * @param isInitialSetup - Whether the toolbox is for initial setup. If the mode is "initial setup",
@@ -89,7 +99,7 @@ const makeToolboxXML = function (
   costumeName: string = "",
   backdropName: string = "",
   soundName: string = "",
-  showBlocks: ShowBlocks = showAllBlocks,
+  allowedBlocks: AllowedBlocks = allowAllBlocks,
 ): string {
   isStage = isInitialSetup || isStage;
   const gap = categorySeparator;
@@ -117,7 +127,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.motion,
-      showBlocks,
+      allowedBlocks,
     );
   const looksXML =
     moveCategory("looks") ||
@@ -128,7 +138,7 @@ const makeToolboxXML = function (
       costumeName,
       backdropName,
       colors.looks,
-      showBlocks,
+      allowedBlocks,
     );
   const soundXML =
     moveCategory("sound") ||
@@ -138,11 +148,17 @@ const makeToolboxXML = function (
       targetId,
       soundName,
       colors.sounds,
-      showBlocks,
+      allowedBlocks,
     );
   const eventsXML =
     moveCategory("event") ||
-    buildEventXml(isInitialSetup, isStage, targetId, colors.event, showBlocks);
+    buildEventXml(
+      isInitialSetup,
+      isStage,
+      targetId,
+      colors.event,
+      allowedBlocks,
+    );
   const controlXML =
     moveCategory("control") ||
     buildControlXml(
@@ -150,7 +166,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.control,
-      showBlocks,
+      allowedBlocks,
     );
   const sensingXML =
     moveCategory("sensing") ||
@@ -159,7 +175,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.sensing,
-      showBlocks,
+      allowedBlocks,
     );
   const operatorsXML =
     moveCategory("operators") ||
@@ -168,7 +184,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.operators,
-      showBlocks,
+      allowedBlocks,
     );
   const variablesXML =
     moveCategory("data") ||
@@ -193,9 +209,9 @@ const makeToolboxXML = function (
     gap,
     operatorsXML,
     gap,
-    showBlocks.variables ? variablesXML : "",
+    allowedBlocks.variables ? variablesXML : "",
     gap,
-    showBlocks.customBlocks ? myBlocksXML : "",
+    allowedBlocks.customBlocks ? myBlocksXML : "",
   ];
 
   if (!everything.find((xml) => xml.includes("<category"))) {

@@ -49,11 +49,38 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML, { showAllBlocks } from "../blocks/make-toolbox-xml";
+import makeToolboxXML, { allowAllBlocks } from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import ExtensionLibrary from "./ExtensionLibrary";
-import { addHideBlockButtons } from "../blocks/hide-block";
+import {
+  addBlockConfigButtons,
+  updateSingleBlockConfigButton,
+} from "../blocks/block-config";
+import BlockConfig from "../components/block-config/BlockConfig";
+import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
+import { filterNonNull } from "../utilities/filter-non-null";
+
+// reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
+interface WorkspaceChangeEvent {
+  type:
+    | "create"
+    | "change"
+    | "move"
+    | "dragOutside"
+    | "endDrag"
+    | "delete"
+    | "var_create"
+    | "var_rename"
+    | "var_delete"
+    | "comment_create"
+    | "comment_change"
+    | "comment_move"
+    | "comment_delete";
+
+  xml?: Element;
+  oldXml?: Element;
+}
 
 const addFunctionListener = (
   object: unknown,
@@ -192,6 +219,7 @@ class Blocks extends React.Component<Props, State> {
       "onWorkspaceMetricsChange",
       "setBlocks",
       "setLocale",
+      "onWorkspaceChange",
     ]);
     this.ScratchBlocks.prompt = this.handlePromptStart;
     this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -298,6 +326,12 @@ class Blocks extends React.Component<Props, State> {
     if (this.props.isVisible) {
       this.setLocale();
     }
+
+    // update the toolbox when an update is requested
+    window.addEventListener(
+      UpdateBlockToolboxEvent.eventName,
+      this.requestToolboxUpdate.bind(this),
+    );
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -420,12 +454,8 @@ class Blocks extends React.Component<Props, State> {
     this.toolboxUpdateQueue = [];
     queue.forEach((fn) => fn());
 
-    if (this.blocks && this.props.canEditTask) {
-      addHideBlockButtons(
-        this.props.vm,
-        this.blocks,
-        this.requestToolboxUpdate.bind(this),
-      );
+    if (this.blocks) {
+      addBlockConfigButtons(this.props.vm, this.blocks, this.props.canEditTask);
     }
   }
 
@@ -440,6 +470,7 @@ class Blocks extends React.Component<Props, State> {
 
   attachVM() {
     this.getWorkspace().addChangeListener(this.props.vm.blockListener);
+    this.getWorkspace().addChangeListener(this.onWorkspaceChange);
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
     flyoutWorkspace.addChangeListener(this.props.vm.flyoutBlockListener);
@@ -595,7 +626,7 @@ class Blocks extends React.Component<Props, State> {
           ? targetSounds[targetSounds.length - 1].name
           : "",
         this.props.canEditTask
-          ? showAllBlocks
+          ? allowAllBlocks
           : this.props.vm.crtConfig?.allowedBlocks,
       );
     } catch {
@@ -621,6 +652,7 @@ class Blocks extends React.Component<Props, State> {
 
     // Remove and reattach the workspace listener (but allow flyout events)
     workspace.removeChangeListener(this.props.vm.blockListener);
+    workspace.removeChangeListener(this.onWorkspaceChange);
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
       this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -645,6 +677,7 @@ class Blocks extends React.Component<Props, State> {
       log.error(error);
     }
     workspace.addChangeListener(this.props.vm.blockListener);
+    workspace.addChangeListener(this.onWorkspaceChange);
 
     if (
       this.props.vm.editingTarget &&
@@ -874,7 +907,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   getWorkspace(): Workspace {
-    if (!this.workspace) {
+    if (!this.workspace || !this.workspace.toolbox_) {
       throw new Error("No workspace was found");
     }
 
@@ -889,6 +922,47 @@ class Blocks extends React.Component<Props, State> {
     }
 
     return flyout;
+  }
+
+  onWorkspaceChange(event: WorkspaceChangeEvent) {
+    if (!this.blocks) {
+      // if the blocks are not yet mounted, ignore the event
+      return;
+    }
+
+    if (["create", "delete"].includes(event.type)) {
+      let xml: Element | undefined;
+
+      if (event.type === "create" && event.xml) {
+        xml = event.xml;
+      } else if (event.type === "delete" && event.oldXml) {
+        xml = event.oldXml;
+      }
+
+      if (!xml) {
+        console.error("Could not find xml in event", event);
+        return;
+      }
+
+      // create a new element to be able to use querySelectorAll on it, otherwise
+      // only the children are matched against the selector
+      const el = document.createElement("div");
+      el.appendChild(xml);
+
+      const opcodes = [...el.querySelectorAll("block[type]")]
+        .map((element) => element.getAttribute("type"))
+        .filter(filterNonNull);
+
+      // update the block config button for the blocks
+      for (const opcode of opcodes) {
+        updateSingleBlockConfigButton(
+          this.props.vm,
+          this.blocks,
+          opcode,
+          this.props.canEditTask,
+        );
+      }
+    }
   }
 
   render() {
@@ -919,12 +993,13 @@ class Blocks extends React.Component<Props, State> {
     /* eslint-enable @typescript-eslint/no-unused-vars */
 
     return (
-      <React.Fragment>
+      <>
         <DroppableBlocks
           componentRef={this.setBlocks}
           onDrop={this.handleDrop}
           {...props}
         />
+        <BlockConfig vm={this.props.vm} />
         {this.state.prompt ? (
           <Prompt
             defaultValue={this.state.prompt.defaultValue}
@@ -957,7 +1032,7 @@ class Blocks extends React.Component<Props, State> {
             onRequestClose={this.handleCustomProceduresClose}
           />
         ) : null}
-      </React.Fragment>
+      </>
     );
   }
 }

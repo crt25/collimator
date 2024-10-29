@@ -6,9 +6,11 @@ import {
   MockMessageEvent,
 } from "./mock-message-event";
 import {
-  getBlockHiddenButtonSelector,
+  getAllTargetBlocksSelector,
+  getBlockConfigButtonSelector,
+  getBlockConfigFormSelector,
   getBlockSelector,
-  getBlockShownButtonSelector,
+  getFlyoutCanvasSelector,
 } from "./locators";
 
 // eslint-disable-next-line no-undef
@@ -42,6 +44,42 @@ test.describe("/solve/sessionId/taskId", () => {
     await page.waitForSelector("#root");
 
     await defineCustomMessageEvent(page);
+
+    page.route(/test-task.sb3$/, (route) =>
+      route.fulfill({
+        body: testTask,
+        contentType: "application/zip",
+        status: 200,
+      }),
+    );
+
+    await page.evaluate(async () => {
+      const task = await fetch("https://example.com/test-task.sb3").then(
+        (response) => response.blob(),
+      );
+
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "loadTask",
+        arguments: task,
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    await page.waitForFunction(() => window.postedMessages.length > 0);
+
+    const messages = await page.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(1);
+
+    expect(messages[0].message).toEqual({
+      id: 0,
+      type: "response",
+      procedure: "loadTask",
+      result: undefined,
+    });
   });
 
   test("can select the stage", async ({ page }) => {
@@ -78,9 +116,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(1);
+    expect(messages).toHaveLength(2);
 
-    expect(messages[0].message).toEqual({
+    expect(messages[1].message).toEqual({
       id: 0,
       type: "response",
       procedure: "getHeight",
@@ -103,9 +141,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(1);
+    expect(messages).toHaveLength(2);
 
-    expect(messages[0].message).toEqual({
+    expect(messages[1].message).toEqual({
       id: 0,
       type: "response",
       procedure: "getSubmission",
@@ -114,59 +152,149 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("can load task via window.postMessage", async ({ page }) => {
-    page.route(/test-task.sb3$/, (route) =>
-      route.fulfill({
-        body: testTask,
-        contentType: "application/zip",
-        status: 200,
-      }),
+  test("loads the initial task blocks", async ({ page }) => {
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
+  });
+
+  test("loads the allowed blocks correctly", async ({ page }) => {
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
     );
 
-    await page.evaluate(async () => {
-      const task = await fetch("https://example.com/test-task.sb3").then(
-        (response) => response.blob(),
-      );
+    const turnRight = page.locator(
+      getBlockConfigButtonSelector("motion_turnright"),
+    );
 
-      const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
-        type: "request",
-        procedure: "loadTask",
-        arguments: task,
+    const goto = page.locator(getBlockConfigButtonSelector("motion_goto"));
+
+    const turnLeft = page.locator(
+      getBlockConfigButtonSelector("motion_turnleft"),
+    );
+
+    await expect(moveSteps).toHaveCount(1);
+    await expect(turnRight).toHaveCount(1);
+    await expect(goto).toHaveCount(1);
+
+    await expect(turnLeft).toHaveCount(0);
+
+    // then assert that the correct labels are shown
+    await expect(moveSteps).toHaveText("7");
+    await expect(turnRight).toHaveText("2");
+    await expect(goto).toHaveText("∞");
+
+    // the rest isn't
+    expect(
+      page.locator(getBlockConfigButtonSelector("motion_turnleft")),
+    ).toHaveCount(0);
+  });
+
+  test("cannot open block config menu", async ({ page }) => {
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
+
+    await moveSteps.click();
+
+    expect(page.locator(getBlockConfigFormSelector())).toHaveCount(0);
+  });
+
+  test("reduces number of allowed blocks", async ({ page }) => {
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
+
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
+    await expect(moveSteps).toHaveText("7");
+
+    await page
+      .locator(getBlockSelector("motion_movesteps"))
+      // drag it to some block that is already on the stage
+      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(3);
+    await expect(moveSteps).toHaveText("6");
+
+    for (let i = 0; i < 6; i++) {
+      await page
+        .locator(getBlockSelector("motion_movesteps"))
+        // drag it to some block that is already on the stage
+        .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+    }
+
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(9);
+    await expect(moveSteps).toHaveText("0");
+
+    // now it should not be possible to add another block
+
+    await page
+      .locator(getBlockSelector("motion_movesteps"))
+      // drag it to some block that is already on the stage
+      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"), {
+        // force the drag even if nothing happens
+        force: true,
       });
 
-      window.dispatchEvent(event);
-    });
+    await expect(moveSteps).toHaveText("0");
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(9);
+  });
 
-    await page.waitForFunction(() => window.postedMessages.length > 0);
+  test("removing initial blocks does not increase the limit", async ({
+    page,
+  }) => {
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
+    const turnRight = page.locator(
+      getBlockConfigButtonSelector("motion_turnright"),
+    );
 
-    const messages = await page.evaluate(() => window.postedMessages);
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
 
-    expect(messages).toHaveLength(1);
+    await page
+      .locator(getAllTargetBlocksSelector())
+      .first()
+      .dragTo(page.locator(getFlyoutCanvasSelector()));
 
-    expect(messages[0].message).toEqual({
-      id: 0,
-      type: "response",
-      procedure: "loadTask",
-      result: undefined,
-    });
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(1);
+    await expect(moveSteps).toHaveText("7");
+    await expect(turnRight).toHaveText("2");
+  });
 
-    // ensure the block visibility is correctly loaded
+  test("removing student-added blocks increases the limit", async ({
+    page,
+  }) => {
+    const moveSteps = page.locator(
+      getBlockConfigButtonSelector("motion_movesteps"),
+    );
 
-    // these blocks are allowed
-    expect(page.locator(getBlockSelector("motion_turnright"))).toHaveCount(1);
-    expect(page.locator(getBlockSelector("motion_turnleft"))).toHaveCount(1);
-    expect(page.locator(getBlockSelector("motion_goto"))).toHaveCount(1);
-    // the rest isn't
-    expect(page.locator(getBlockSelector("motion_gotoxy"))).toHaveCount(0);
+    const initialIds = await page
+      .locator(getAllTargetBlocksSelector())
+      .evaluateAll((elements) =>
+        elements.map((el) => el.getAttribute("data-id")),
+      );
 
-    // ensure the block visibility cannot be toggled
-    expect(
-      page.locator(getBlockShownButtonSelector("motion_turnright")),
-    ).toHaveCount(0);
+    expect(initialIds).toHaveLength(2);
 
-    expect(
-      page.locator(getBlockHiddenButtonSelector("motion_turnright")),
-    ).toHaveCount(0);
+    await page
+      .locator(getBlockSelector("motion_movesteps"))
+      // drag it to some block that is already on the stage
+      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(3);
+    await expect(moveSteps).toHaveText("6");
+
+    while ((await page.locator(getAllTargetBlocksSelector()).count()) > 0) {
+      await page
+        .locator(getAllTargetBlocksSelector())
+        .first()
+        .dragTo(page.locator(getFlyoutCanvasSelector()), {
+          force: true,
+        });
+
+      await page.waitForTimeout(1000);
+    }
+
+    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(0);
+    await expect(moveSteps).toHaveText("7");
   });
 });

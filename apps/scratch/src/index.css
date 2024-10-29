@@ -25,26 +25,51 @@ body,
   box-sizing: border-box;
 }
 
-.shown-block-button, .hidden-block-button {
+.enabled-block-button,
+.disabled-block-button {
   cursor: pointer;
 
   text {
     fill: white;
   }
 
-  rect{
+  rect {
     fill: black;
   }
 }
 
-.shown-block-button rect {
+.enabled-block-button rect {
   fill: green;
 }
 
-.hidden-block-button rect {
+.disabled-block-button rect {
   fill: red;
 }
 
-.d-contents{
+.d-contents {
   display: contents;
+}
+
+.non-interactive {
+  pointer-events: none;
+  user-select: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/*
+  disable pointer events on all rects. you can still grab the block via the svg group element.
+  however, without this rule, it is possible to drag the rect even though the corresponding block is disabled.
+*/
+.blocklyFlyout rect:not(.interactive) {
+  pointer-events: none;
 }
