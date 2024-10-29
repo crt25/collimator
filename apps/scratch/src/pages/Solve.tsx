@@ -123,7 +123,7 @@ const Solve = () => {
 
   return (
     <Gui
-      canEditTask={true}
+      canEditTask={false}
       isCostumesTabEnabled={false}
       isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {

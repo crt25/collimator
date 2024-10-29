@@ -4,7 +4,7 @@
     "next/core-web-vitals",
     "next/typescript",
     "plugin:storybook/recommended",
-    "plugin:prettier/recommended",
+    "plugin:prettier/recommended"
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
@@ -12,8 +12,16 @@
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_",
-      },
-    ],
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
   },
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unnecessary-type-constraint": "off"
+      }
+    }
+  ]
 }

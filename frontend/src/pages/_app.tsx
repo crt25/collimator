@@ -16,6 +16,8 @@ import {
 } from "@/contexts/AuthenticationContext";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import AuthenticationBarrier from "@/components/authentication/AuthenticationBarrier";
+import { PrimeReactProvider } from "primereact/api";
+import YupLocalization from "@/components/form/YupLocalization";
 
 const authenticationStateKey = "authenticationState";
 
@@ -92,17 +94,21 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <CacheProvider value={cache}>
       <IntlProvider locale={router.locale || "en"} messages={messages}>
-        <AuthenticationContext.Provider value={authenticationState}>
-          <UpdateAuthenticationContext.Provider
-            value={updateAuthenticationState}
-          >
-            <AuthenticationBarrier
-              authenticationStateLoaded={authenticationStateLoaded}
-            >
-              <Component {...pageProps} />
-            </AuthenticationBarrier>
-          </UpdateAuthenticationContext.Provider>
-        </AuthenticationContext.Provider>
+        <YupLocalization>
+          <PrimeReactProvider>
+            <AuthenticationContext.Provider value={authenticationState}>
+              <UpdateAuthenticationContext.Provider
+                value={updateAuthenticationState}
+              >
+                <AuthenticationBarrier
+                  authenticationStateLoaded={authenticationStateLoaded}
+                >
+                  <Component {...pageProps} />
+                </AuthenticationBarrier>
+              </UpdateAuthenticationContext.Provider>
+            </AuthenticationContext.Provider>
+          </PrimeReactProvider>
+        </YupLocalization>
       </IntlProvider>
     </CacheProvider>
   );

@@ -5,6 +5,11 @@ import {
   defineCustomMessageEvent,
   MockMessageEvent,
 } from "./mock-message-event";
+import {
+  getBlockHiddenButtonSelector,
+  getBlockSelector,
+  getBlockShownButtonSelector,
+} from "./locators";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -58,58 +63,6 @@ test.describe("/solve/sessionId/taskId", () => {
     expect(unFullScreenButton).toHaveCount(0);
   });
 
-  test("can add extension", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
-
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
-
-    await firstExtension.click();
-
-    // ensure the custom block is added
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
-  });
-
-  test("can add extension twice", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
-
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
-
-    await firstExtension.click();
-
-    // add the extension again
-    await addExtensionButton.click();
-    await firstExtension.click();
-
-    // ensure the custom block is added just once
-    expect(page.locator("[data-id='example_functionCall_setX']")).toHaveCount(
-      1,
-    );
-  });
-
-  test("can toggle block visibility", async ({ page }) => {
-    const firstBlock = page.locator("[data-id='motion_movesteps']").first();
-
-    let button = firstBlock.getByTestId("hidden-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
-
-    // after clicking the button, the block should be shown and the test id different
-    expect(button).toHaveCount(0);
-
-    button = firstBlock.getByTestId("shown-block-button");
-    expect(button).toHaveCount(1);
-    await button.click();
-
-    // and after clicking again, the block should be hidden and the test id different again
-    expect(button).toHaveCount(0);
-  });
-
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
@@ -161,7 +114,7 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test.only("can load task via window.postMessage", async ({ page }) => {
+  test("can load task via window.postMessage", async ({ page }) => {
     page.route(/test-task.sb3$/, (route) =>
       route.fulfill({
         body: testTask,
@@ -199,22 +152,21 @@ test.describe("/solve/sessionId/taskId", () => {
     });
 
     // ensure the block visibility is correctly loaded
+
+    // these blocks are allowed
+    expect(page.locator(getBlockSelector("motion_turnright"))).toHaveCount(1);
+    expect(page.locator(getBlockSelector("motion_turnleft"))).toHaveCount(1);
+    expect(page.locator(getBlockSelector("motion_goto"))).toHaveCount(1);
+    // the rest isn't
+    expect(page.locator(getBlockSelector("motion_gotoxy"))).toHaveCount(0);
+
+    // ensure the block visibility cannot be toggled
     expect(
-      page.locator(
-        "[data-id='motion_turnright'] [data-testid='shown-block-button']",
-      ),
-    ).toHaveCount(1);
+      page.locator(getBlockShownButtonSelector("motion_turnright")),
+    ).toHaveCount(0);
 
     expect(
-      page.locator(
-        "[data-id='motion_turnleft'] [data-testid='shown-block-button']",
-      ),
-    ).toHaveCount(1);
-
-    expect(
-      page.locator(
-        "[data-id='motion_goto'] [data-testid='shown-block-button']",
-      ),
-    ).toHaveCount(1);
+      page.locator(getBlockHiddenButtonSelector("motion_turnright")),
+    ).toHaveCount(0);
   });
 });

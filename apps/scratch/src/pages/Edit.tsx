@@ -127,8 +127,9 @@ const Edit = () => {
 
   return (
     <Gui
-      showMenuBar={false}
       canEditTask={true}
+      isCostumesTabEnabled={true}
+      isSoundsTabEnabled={true}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
