@@ -6,6 +6,9 @@ import {
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { match } from "ts-pattern";
 
+export const continueWalking = true;
+export const stopWalking = false;
+
 /**
  * Walks through all statements in the AST and calls the callback for each statement.
  * @param ast The AST to walk
