@@ -67,7 +67,7 @@ const ClassList = ({
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [Classs, setClasss] = useState<Class[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
     rows: 10,
@@ -87,7 +87,7 @@ const ClassList = ({
 
     fetchData(lazyState).then(({ items, totalCount }) => {
       setTotalRecords(totalCount);
-      setClasss(items);
+      setClasses(items);
       setLoading(false);
     });
   }, [lazyState, fetchData]);
@@ -154,7 +154,7 @@ const ClassList = ({
   return (
     <ClassListWrapper>
       <DataTable
-        value={Classs}
+        value={classes}
         lazy
         filterDisplay="row"
         dataKey="id"
