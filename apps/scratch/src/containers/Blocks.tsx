@@ -907,7 +907,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   getWorkspace(): Workspace {
-    if (!this.workspace || !this.workspace.toolbox_) {
+    if (!this.workspace?.toolbox_) {
       throw new Error("No workspace was found");
     }
 

@@ -36,7 +36,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
       setCanBeUsed(blockCanBeUsed);
       setHasBlockLimit(blockCanBeUsed && currentConfig !== infiniteUses);
 
-      const limit = currentConfig || 1;
+      const limit = currentConfig ?? 1;
 
       setBlockLimit(limit.toString());
       setBlockId(e.blockId);
