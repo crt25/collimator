@@ -248,7 +248,7 @@ declare namespace VMExtended {
   }
 
   export interface ScratchCrtConfig {
-    allowedBlocks: import("../src/blocks/make-toolbox-xml").AllowedBlocks;
+    allowedBlocks: import("../src/blocks/make-toolbox-xml").BlockLimits;
   }
 }
 

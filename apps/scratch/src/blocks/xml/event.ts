@@ -63,9 +63,9 @@ export const buildEventXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<EventOpCode, number>> = {},
+  blockLimits: Partial<Record<EventOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = eventXmlByOpCode[opCode as EventOpCode];

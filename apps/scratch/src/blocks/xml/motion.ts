@@ -164,14 +164,14 @@ export const buildMotionXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<MotionOpCode, number>> = {},
+  blockLimits: Partial<Record<MotionOpCode, number>> = {},
 ): string {
   const stageSelected = ScratchBlocks.ScratchMsgs.translate(
     "MOTION_STAGE_SELECTED",
     "Stage selected: no motion blocks",
   );
   // Note: the category's secondaryColour matches up with the blocks' tertiary color, both used for border color.
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = motionXmlByOpCode[opCode as MotionOpCode];

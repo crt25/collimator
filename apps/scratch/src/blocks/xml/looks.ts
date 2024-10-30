@@ -224,9 +224,9 @@ export const buildLooksXml = function (
   costumeName: string,
   backdropName: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<LooksOpCode, number>> = {},
+  blockLimits: Partial<Record<LooksOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = looksXmlByOpCode[opCode as LooksOpCode];
