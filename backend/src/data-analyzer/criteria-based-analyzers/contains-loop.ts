@@ -4,7 +4,7 @@ import {
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../criteria-based-analyzer.service";
-import { continueWalking, stopWalking, walkAst } from "../ast-walk";
+import { AstWalkSignal, walkAst } from "../ast-walk";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 
 export const containsLoop = (
@@ -19,10 +19,10 @@ export const containsLoop = (
         containsLoop = true;
 
         // Stop walking the AST
-        return stopWalking;
+        return AstWalkSignal.stopWalking;
       }
 
-      return continueWalking;
+      return AstWalkSignal.continueWalking;
     },
   });
 

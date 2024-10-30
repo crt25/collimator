@@ -4,7 +4,7 @@ import {
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../criteria-based-analyzer.service";
-import { continueWalking, stopWalking, walkAst } from "../ast-walk";
+import { AstWalkSignal, walkAst } from "../ast-walk";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
@@ -21,11 +21,11 @@ export const callsFunction = (
           callsFunction = true;
 
           // Stop walking the AST
-          return stopWalking;
+          return AstWalkSignal.stopWalking;
         }
       }
 
-      return continueWalking;
+      return AstWalkSignal.continueWalking;
     },
 
     expressionCallback: (node) => {
@@ -34,11 +34,11 @@ export const callsFunction = (
           callsFunction = true;
 
           // Stop walking the AST
-          return stopWalking;
+          return AstWalkSignal.stopWalking;
         }
       }
 
-      return continueWalking;
+      return AstWalkSignal.continueWalking;
     },
   });
 
