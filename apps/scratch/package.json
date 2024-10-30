@@ -84,7 +84,7 @@
     "redux": "^3.0.0",
     "redux-throttle": "^0.1.1",
     "scratch-audio": "^1.0.258",
-    "scratch-blocks": "^1.1.206",
+    "scratch-blocks": "patch:scratch-blocks@npm%3A1.1.206#~/.yarn/patches/scratch-blocks-npm-1.1.206-87dc9f1fd2.patch",
     "scratch-l10n": "^3.18.313",
     "scratch-paint": "^2.2.408",
     "scratch-render": "^1.1.39",

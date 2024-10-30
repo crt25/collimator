@@ -248,7 +248,17 @@ declare namespace VMExtended {
   }
 
   export interface ScratchCrtConfig {
+    /**
+     * A map from scratch opcode to a number that defines how many times
+     * a given block can be used.
+     */
     allowedBlocks: import("../src/blocks/make-toolbox-xml").AllowedBlocks;
+
+    /**
+     * Whether task blocks (i.e. initially loaded blocks included in a task definition)
+     * can be interacted with.
+     */
+    canEditTaskBlocks: boolean;
   }
 }
 

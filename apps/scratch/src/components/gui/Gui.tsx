@@ -192,6 +192,7 @@ const GUIComponent = (props: {
             loading={loading}
             stageSize={STAGE_SIZE_MODES.large}
             vm={vm}
+            canEditTask={canEditTask}
           />
         ) : (
           <Box
@@ -350,6 +351,7 @@ const GUIComponent = (props: {
                     isStageInteractive={canEditTask}
                     stageSize={stageSize}
                     vm={vm}
+                    canEditTask={canEditTask}
                   />
                   <Box className={styles.targetWrapper}>
                     <TargetPane
