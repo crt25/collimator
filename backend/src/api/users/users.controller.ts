@@ -63,7 +63,8 @@ export class UsersController {
     @Param("id", ParseIntPipe) id: UserId,
     @Body() userDto: UpdateUserDto,
   ): Promise<ExistingUserDto> {
-    return this.usersService.update(id, userDto);
+    const user = await this.usersService.update(id, userDto);
+    return plainToInstance(ExistingUserDto, user);
   }
 
   @Delete(":id")

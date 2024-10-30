@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
-import { APP_FILTER } from "@nestjs/core";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 import { UsersModule } from "./users/users.module";
-import * as filters from "./filters";
+import * as interceptors from "./interceptors";
 
 @Module({
   imports: [UsersModule],
   providers: [
     {
-      provide: APP_FILTER,
-      useClass: filters.PrismaNotFoundExceptionFilter,
+      provide: APP_INTERCEPTOR,
+      useClass: interceptors.PrismaNotFoundInterceptor,
     },
   ],
 })

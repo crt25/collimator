@@ -22,8 +22,8 @@ export class CreateUserDto {
   @IsEnum(UserType)
   @IsNotEmpty()
   @ApiProperty({
-    example: "TEACHER",
-    description: "The user's role, one of: TEACHER, ADMIN.",
+    example: UserType.TEACHER,
+    description: `The user's role, one of: ${Object.values(UserType).join(", ")}.`,
   })
   readonly type!: UserType;
 }

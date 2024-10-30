@@ -1,10 +1,11 @@
 import { ArgumentMetadata, ValidationPipe } from "@nestjs/common";
 import { UserType } from "@prisma/client";
 import { plainToInstance } from "class-transformer";
-import { CreateUserDto } from "./create-user.dto";
+import { ExistingUserDto } from "./existing-user.dto";
 
-describe("CreateUserDto", () => {
+describe("ExistingUserDto", () => {
   const user = {
+    id: 318,
     name: "Alice",
     email: "alice@example.com",
     type: UserType.TEACHER,
@@ -17,41 +18,48 @@ describe("CreateUserDto", () => {
 
   const metadata: ArgumentMetadata = {
     type: "body",
-    metatype: CreateUserDto,
+    metatype: ExistingUserDto,
     data: "",
   };
 
   it("can be constructed", () => {
-    const userDto = plainToInstance(CreateUserDto, user);
+    const userDto = plainToInstance(ExistingUserDto, user);
 
+    expect(userDto.id).toEqual(user.id);
     expect(userDto.name).toEqual(user.name);
     expect(userDto.email).toEqual(user.email);
     expect(userDto.type).toEqual(user.type);
   });
 
   it("validates valid DTO", async () => {
-    await target.transform(<CreateUserDto>user, metadata).catch((err) => {
-      console.log("Validation should succeed!");
-      expect(err).toBe(undefined);
-    });
+    await expect(
+      target.transform(<ExistingUserDto>user, metadata),
+    ).resolves.not.toThrow();
   });
 
   it.each([
+    [
+      "id",
+      [
+        "id should not be empty",
+        "id must be a number conforming to the specified constraints",
+      ],
+    ],
     ["name", ["name should not be empty", "name must be a string"]],
     ["email", ["email should not be empty", "email must be an email"]],
     [
       "type",
       [
         "type should not be empty",
-        "type must be one of the following values: TEACHER, ADMIN",
+        `type must be one of the following values: ${Object.values(UserType).join(", ")}`,
       ],
     ],
   ])("validate DTO missing field (%s)", async (field, errors) => {
     await target
-      .transform(<CreateUserDto>{ ...user, [field]: undefined }, metadata)
+      .transform(<ExistingUserDto>{ ...user, [field]: undefined }, metadata)
       .then(() => {
-        console.log("Validation should fail!");
-        expect(true).toBe(false);
+        console.error("Validation should fail!");
+        expect(false).toBe(true);
       })
       .catch((err) => {
         const messages = err.getResponse().message;
@@ -60,19 +68,24 @@ describe("CreateUserDto", () => {
   });
 
   it.each([
+    [
+      "id",
+      "not_a_number",
+      "id must be a number conforming to the specified constraints",
+    ],
     ["name", 123, "name must be a string"],
     ["email", "not_an_email", "email must be an email"],
     [
       "type",
       "tomato",
-      "type must be one of the following values: TEACHER, ADMIN",
+      `type must be one of the following values: ${Object.values(UserType).join(", ")}`,
     ],
   ])("validate DTO wrong field (%s)", async (field, value, error) => {
     await target
-      .transform(<CreateUserDto>{ ...user, [field]: value }, metadata)
+      .transform(<ExistingUserDto>{ ...user, [field]: value }, metadata)
       .then(() => {
-        console.log("Validation should fail!");
-        expect(true).toBe(false);
+        console.error("Validation should fail!");
+        expect(false).toBe(true);
       })
       .catch((err) => {
         const messages = err.getResponse().message;
