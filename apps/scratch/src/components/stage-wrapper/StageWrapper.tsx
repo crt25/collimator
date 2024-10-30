@@ -138,6 +138,7 @@ const StageWrapper = function (props: Props) {
                 <button
                   className={crtStyles.settingsButton}
                   onClick={() => setShowTaskConfig(true)}
+                  data-testid="open-taskconfig-button"
                 >
                   <img
                     className={headerStyles.stageButtonIcon}

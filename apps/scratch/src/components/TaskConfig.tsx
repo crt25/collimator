@@ -50,7 +50,7 @@ const TaskConfig = ({
             min="0"
             checked={canEditTaskBlocks}
             onChange={(e) => setCanEditTaskBlocks(e.target.checked)}
-            data-testid="freeze-task-blocks-checkbox"
+            data-testid="can-edit-task-blocks-checkbox"
           />
         </label>
 

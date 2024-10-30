@@ -241,4 +241,24 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(page.blocksOfCurrentTarget).toHaveCount(2);
     await expect(moveSteps).toHaveText("7");
   });
+
+  test("cannot remove frozen blocks", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+
+    await page.taskBlocks.catActor[0]
+      // drag it to some block that is already on the stage
+      .dragTo(page.toolbox, { force: true });
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+  });
+
+  test("cannot open task config", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    await expect(page.openTaskConfigButton).toHaveCount(0);
+
+    expect(page.taskConfigForm).toHaveCount(0);
+  });
 });

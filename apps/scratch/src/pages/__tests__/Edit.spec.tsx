@@ -248,4 +248,33 @@ test.describe("/edit/taskId", () => {
       page.getBlockInToolbox("example_functionCall_setX"),
     ).toHaveCount(1);
   });
+
+  test("can toggle the freezing of the initial task blocks", async ({
+    page: pwPage,
+  }) => {
+    const page = new EditTaskPage(pwPage);
+
+    await page.openTaskConfig();
+
+    await expect(
+      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
+    ).not.toBeChecked();
+
+    await page.taskConfigFormElements.canEditTaskBlocksCheckbox.click();
+
+    await expect(
+      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
+    ).toBeChecked();
+
+    await page.taskConfigFormElements.submit.click();
+
+    // form is no longer visible
+    await expect(page.taskConfigForm).toHaveCount(0);
+
+    await page.openTaskConfig();
+    // ensure checkbox is still checked
+    await expect(
+      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
+    ).toBeChecked();
+  });
 });

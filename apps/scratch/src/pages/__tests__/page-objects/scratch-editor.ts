@@ -42,6 +42,14 @@ export class ScratchEditorPage {
     return this.page.locator(getFlyoutCanvasSelector());
   }
 
+  get openTaskConfigButton() {
+    return this.page.getByTestId("open-taskconfig-button");
+  }
+
+  get taskConfigForm() {
+    return this.page.getByTestId("task-config-form");
+  }
+
   getBlockConfigButton(opcode: string) {
     return this.page.locator(getBlockConfigButtonSelector(opcode));
   }
@@ -68,6 +76,10 @@ export class ScratchEditorPage {
 
   selectStage() {
     return this.stage.click();
+  }
+
+  openTaskConfig() {
+    return this.openTaskConfigButton.click();
   }
 
   async removeAllNonFrozenBlocks() {
