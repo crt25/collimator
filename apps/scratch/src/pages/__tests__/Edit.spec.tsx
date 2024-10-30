@@ -5,13 +5,8 @@ import {
   defineCustomMessageEvent,
   MockMessageEvent,
 } from "./mock-message-event";
-import {
-  getBlockConfigBlockLimitInputSelector,
-  getBlockConfigButtonSelector,
-  getBlockConfigCanBeUsedCheckboxSelector,
-  getBlockConfigFormSubmitButtonSelector,
-  getBlockConfigHasBlockLimitCheckboxSelector,
-} from "./locators";
+import { TestTaskPage } from "./page-objects/test-task";
+import { EditTaskPage } from "./page-objects/edit-task";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -98,8 +93,8 @@ test.describe("/edit/taskId", () => {
     });
   });
 
-  test("can load task via window.postMessage", async ({ page }) => {
-    page.route(/test-task.sb3$/, (route) =>
+  test("can load task via window.postMessage", async ({ page: pwPage }) => {
+    pwPage.route(/test-task.sb3$/, (route) =>
       route.fulfill({
         body: testTask,
         contentType: "application/zip",
@@ -107,7 +102,7 @@ test.describe("/edit/taskId", () => {
       }),
     );
 
-    await page.evaluate(async () => {
+    await pwPage.evaluate(async () => {
       const task = await fetch("https://example.com/test-task.sb3").then(
         (response) => response.blob(),
       );
@@ -122,9 +117,9 @@ test.describe("/edit/taskId", () => {
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() => window.postedMessages.length > 0);
+    await pwPage.waitForFunction(() => window.postedMessages.length > 0);
 
-    const messages = await page.evaluate(() => window.postedMessages);
+    const messages = await pwPage.evaluate(() => window.postedMessages);
 
     expect(messages).toHaveLength(1);
 
@@ -136,19 +131,11 @@ test.describe("/edit/taskId", () => {
     });
 
     // ensure the block visibility is correctly loaded
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
 
-    const turnRight = page.locator(
-      getBlockConfigButtonSelector("motion_turnright"),
-    );
+    const page = new TestTaskPage(pwPage);
 
-    const goto = page.locator(getBlockConfigButtonSelector("motion_goto"));
-
-    const turnLeft = page.locator(
-      getBlockConfigButtonSelector("motion_turnleft"),
-    );
+    const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
+    const { turnLeft } = page.disabledBlockConfigButtons;
 
     await expect(moveSteps).toHaveCount(1);
     await expect(turnRight).toHaveCount(1);
@@ -165,20 +152,19 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can update the block config to allow an arbitrary number of a given block", async ({
-    page,
+    page: pwPage,
   }) => {
-    const configButton = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+    const page = new EditTaskPage(pwPage);
+    const configButton = page.getBlockConfigButton("motion_movesteps");
 
     // open modal
     await configButton.click();
 
     // check the checkbox that allows the block to be used
-    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
 
     // submit the form
-    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+    await page.blockConfigFormElements.submitButton.click();
 
     // ensure the block's label is updated
     await expect(configButton).toHaveText("∞");
@@ -187,36 +173,34 @@ test.describe("/edit/taskId", () => {
     await configButton.click();
 
     // uncheck the checkbox that allows the block to be used
-    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
 
-    // submit the form
-    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+    await page.blockConfigFormElements.submit();
 
     // ensure the block's label is updated
     await expect(configButton).toHaveText("0");
   });
 
   test("can update the block config to allow an a fixed number of a given block", async ({
-    page,
+    page: pwPage,
   }) => {
-    const configButton = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+    const page = new EditTaskPage(pwPage);
+    const configButton = page.getBlockConfigButton("motion_movesteps");
 
     // open modal
     await configButton.click();
 
     // check the checkbox that allows the block to be used
-    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
 
     // check the checkbox that allows the block to be used a limited number of times
-    await page.locator(getBlockConfigHasBlockLimitCheckboxSelector()).click();
+    await page.blockConfigFormElements.hasBlockLimitCheckbox.click();
 
     // set the block limit to 5
-    await page.locator(getBlockConfigBlockLimitInputSelector()).fill("5");
+    await page.blockConfigFormElements.blockLimitInput.fill("5");
 
     // submit the form
-    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+    await page.blockConfigFormElements.submitButton.click();
 
     // ensure the block's label is updated
     await expect(configButton).toHaveText("5");
@@ -225,46 +209,43 @@ test.describe("/edit/taskId", () => {
     await configButton.click();
 
     // uncheck the checkbox that allows the block to be used
-    await page.locator(getBlockConfigCanBeUsedCheckboxSelector()).click();
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
 
-    // submit the form
-    await page.locator(getBlockConfigFormSubmitButtonSelector()).click();
+    await page.blockConfigFormElements.submit();
 
     // ensure the block's label is updated
     await expect(configButton).toHaveText("0");
   });
 
-  test("can add extension", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
+  test("can add extension", async ({ page: pwPage }) => {
+    const page = new EditTaskPage(pwPage);
 
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
+    await page.addExtensionButton.click();
 
-    await firstExtension.click();
+    // load the first extension
+    await page.loadExtension(1);
 
     // ensure the custom block is added
     await expect(
-      page.locator("[data-id='example_functionCall_setX']"),
+      page.getBlockInToolbox("example_functionCall_setX"),
     ).toHaveCount(1);
   });
 
-  test("can add extension twice", async ({ page }) => {
-    const addExtensionButton = page.getByTestId("add-extension-button");
-    await addExtensionButton.click();
+  test("can add extension twice", async ({ page: pwPage }) => {
+    const page = new EditTaskPage(pwPage);
 
-    // click the first extension. the first image is the back-button
-    const firstExtension = page.locator(".ReactModalPortal img").nth(2);
+    await page.addExtensionButton.click();
 
-    await firstExtension.click();
+    // load the first extension
+    await page.loadExtension(1);
 
     // add the extension again
-    await addExtensionButton.click();
-    await firstExtension.click();
+    await page.addExtensionButton.click();
+    await page.loadExtension(1);
 
     // ensure the custom block is added just once
     await expect(
-      page.locator("[data-id='example_functionCall_setX']"),
+      page.getBlockInToolbox("example_functionCall_setX"),
     ).toHaveCount(1);
   });
 });

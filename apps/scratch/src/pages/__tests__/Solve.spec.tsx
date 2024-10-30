@@ -5,13 +5,8 @@ import {
   defineCustomMessageEvent,
   MockMessageEvent,
 } from "./mock-message-event";
-import {
-  getAllTargetBlocksSelector,
-  getBlockConfigButtonSelector,
-  getBlockConfigFormSelector,
-  getBlockSelector,
-  getFlyoutCanvasSelector,
-} from "./locators";
+import { SolveTaskPage } from "./page-objects/solve-task";
+import { TestTaskPage } from "./page-objects/test-task";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -82,23 +77,23 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("can select the stage", async ({ page }) => {
-    await page.getByTestId("stage-selector").click();
+  test("can select the stage", async ({ page: pwPage }) => {
+    const page = new SolveTaskPage(pwPage);
+
+    await page.selectStage();
 
     // motion blocks should not be visible
-    expect(page.locator("[data-id='motion_movesteps']")).toHaveCount(0);
+    expect(page.getBlockInToolbox("motion_movesteps")).toHaveCount(0);
   });
 
-  test("can toggle fullscreen", async ({ page }) => {
-    const fullScreenButton = page.getByTestId("stage-fullscreen-button");
-    await fullScreenButton.click();
+  test("can toggle fullscreen", async ({ page: pwPage }) => {
+    const page = new SolveTaskPage(pwPage);
+    await page.enableFullScreen();
 
-    expect(fullScreenButton).toHaveCount(0);
+    expect(page.fullscreenButton).toHaveCount(0);
 
-    const unFullScreenButton = page.getByTestId("stage-unfullscreen-button");
-
-    await unFullScreenButton.click();
-    expect(unFullScreenButton).toHaveCount(0);
+    await page.disableFullScreen();
+    expect(page.unFullscreenButton).toHaveCount(0);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {
@@ -152,24 +147,17 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("loads the initial task blocks", async ({ page }) => {
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
+  test("loads the initial task blocks", async ({ page: pwPage }) => {
+    const page = new SolveTaskPage(pwPage);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
   });
 
-  test("loads the allowed blocks correctly", async ({ page }) => {
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+  test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
 
-    const turnRight = page.locator(
-      getBlockConfigButtonSelector("motion_turnright"),
-    );
-
-    const goto = page.locator(getBlockConfigButtonSelector("motion_goto"));
-
-    const turnLeft = page.locator(
-      getBlockConfigButtonSelector("motion_turnleft"),
-    );
+    const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
+    const { turnLeft } = page.disabledBlockConfigButtons;
 
     await expect(moveSteps).toHaveCount(1);
     await expect(turnRight).toHaveCount(1);
@@ -181,120 +169,76 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(moveSteps).toHaveText("7");
     await expect(turnRight).toHaveText("2");
     await expect(goto).toHaveText("∞");
-
-    // the rest isn't
-    expect(
-      page.locator(getBlockConfigButtonSelector("motion_turnleft")),
-    ).toHaveCount(0);
   });
 
-  test("cannot open block config menu", async ({ page }) => {
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+  test("cannot open block config menu", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
 
-    await moveSteps.click();
+    await page.openBlockConfig("motion_movesteps", { force: true });
 
-    expect(page.locator(getBlockConfigFormSelector())).toHaveCount(0);
+    expect(page.blockConfigForm).toHaveCount(0);
   });
 
-  test("reduces number of allowed blocks", async ({ page }) => {
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+  test("reduces number of allowed blocks", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
 
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
+    const { moveSteps } = page.enabledBlockConfigButtons;
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
     await expect(moveSteps).toHaveText("7");
 
     await page
-      .locator(getBlockSelector("motion_movesteps"))
+      .getBlockInToolbox("motion_movesteps")
       // drag it to some block that is already on the stage
-      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+      .dragTo(page.taskBlocks.catActor[0], { force: true });
 
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(3);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
     await expect(moveSteps).toHaveText("6");
 
     for (let i = 0; i < 6; i++) {
       await page
-        .locator(getBlockSelector("motion_movesteps"))
+        .getBlockInToolbox("motion_movesteps")
         // drag it to some block that is already on the stage
-        .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+        .dragTo(page.taskBlocks.catActor[0], { force: true });
     }
 
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
     await expect(moveSteps).toHaveText("0");
 
     // now it should not be possible to add another block
 
     await page
-      .locator(getBlockSelector("motion_movesteps"))
+      .getBlockInToolbox("motion_movesteps")
       // drag it to some block that is already on the stage
-      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"), {
+      .dragTo(page.taskBlocks.catActor[0], {
         // force the drag even if nothing happens
         force: true,
       });
 
     await expect(moveSteps).toHaveText("0");
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(9);
-  });
-
-  test("removing initial blocks does not increase the limit", async ({
-    page,
-  }) => {
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
-    const turnRight = page.locator(
-      getBlockConfigButtonSelector("motion_turnright"),
-    );
-
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(2);
-
-    await page
-      .locator(getAllTargetBlocksSelector())
-      .first()
-      .dragTo(page.locator(getFlyoutCanvasSelector()));
-
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(1);
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
   });
 
   test("removing student-added blocks increases the limit", async ({
-    page,
+    page: pwPage,
   }) => {
-    const moveSteps = page.locator(
-      getBlockConfigButtonSelector("motion_movesteps"),
-    );
+    const page = new TestTaskPage(pwPage);
 
-    const initialIds = await page
-      .locator(getAllTargetBlocksSelector())
-      .evaluateAll((elements) =>
-        elements.map((el) => el.getAttribute("data-id")),
-      );
+    const { moveSteps } = page.enabledBlockConfigButtons;
 
-    expect(initialIds).toHaveLength(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
 
     await page
-      .locator(getBlockSelector("motion_movesteps"))
+      .getBlockInToolbox("motion_movesteps")
       // drag it to some block that is already on the stage
-      .dragTo(page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"));
+      .dragTo(page.taskBlocks.catActor[0], { force: true });
 
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(3);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
     await expect(moveSteps).toHaveText("6");
 
-    while ((await page.locator(getAllTargetBlocksSelector()).count()) > 0) {
-      await page
-        .locator(getAllTargetBlocksSelector())
-        .first()
-        .dragTo(page.locator(getFlyoutCanvasSelector()), {
-          force: true,
-        });
+    await page.removeAllNonFrozenBlocks();
 
-      await page.waitForTimeout(1000);
-    }
-
-    await expect(page.locator(getAllTargetBlocksSelector())).toHaveCount(0);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
     await expect(moveSteps).toHaveText("7");
   });
 });

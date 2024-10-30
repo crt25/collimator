@@ -5,3 +5,5 @@ All blocks but `motion_movesteps`, `motion_turnright` and `motion_goto` are disa
 - `motion_movesteps` can be used 7 times in total and is already used once by the task.
 - `motion_turnright` can be used once and is used once by the task.
 - `motion_goto` can be used an arbitrary amount and has not been used yet.
+
+The tasks blocks cannot be edited / are frozen. The same task where the initial blocks are not frozen is suffixed with `-editable`;
