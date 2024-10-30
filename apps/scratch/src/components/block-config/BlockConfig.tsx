@@ -78,12 +78,11 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
       const limitOrNaN = parseInt(blockLimit, 10);
       const limit = isNaN(limitOrNaN) ? 1 : limitOrNaN;
 
-      // -1 means infinite, 0 means not allowed
-      config.allowedBlocks[blockId] = canBeUsed
-        ? hasBlockLimit
-          ? limit
-          : infiniteUses
-        : cannotBeUsed;
+      if (canBeUsed) {
+        config.allowedBlocks[blockId] = hasBlockLimit ? limit : infiniteUses;
+      } else {
+        config.allowedBlocks[blockId] = cannotBeUsed;
+      }
 
       // update toolbox
       window.dispatchEvent(new UpdateBlockToolboxEvent());
