@@ -29,9 +29,8 @@ export class EditTaskPage extends ScratchEditorPage {
 
   get taskConfigFormElements() {
     return {
-      canEditTaskBlocksCheckbox: this.page.getByTestId(
-        "can-edit-task-blocks-checkbox",
-      ),
+      allowAllBlocksButton: this.page.getByTestId("allow-all-blocks-button"),
+      allowNoBlocksButton: this.page.getByTestId("allow-no-blocks-button"),
       submit: this.page.getByTestId("task-config-form-submit-button"),
     };
   }

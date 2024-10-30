@@ -43,7 +43,10 @@
     }
   }
 
-  input[type="submit"] {
+  button, input[type="submit"] {
+    display: block;
+    margin-bottom: 1rem;
+
     background: #fff;
     border: #000 1px solid;
     border-radius: 0.25rem;

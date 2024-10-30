@@ -249,32 +249,66 @@ test.describe("/edit/taskId", () => {
     ).toHaveCount(1);
   });
 
-  test("can toggle the freezing of the initial task blocks", async ({
+  test("can use button to allow the usage of all blocks", async ({
     page: pwPage,
   }) => {
     const page = new EditTaskPage(pwPage);
 
+    const moveSteps = page.getBlockConfigButton("motion_movesteps");
+    const glideTo = page.getBlockConfigButton("motion_glideto");
+
+    await expect(moveSteps).toHaveText("0");
+    await expect(glideTo).toHaveText("0");
+
     await page.openTaskConfig();
 
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).not.toBeChecked();
-
-    await page.taskConfigFormElements.canEditTaskBlocksCheckbox.click();
-
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).toBeChecked();
-
+    await page.taskConfigFormElements.allowAllBlocksButton.click();
     await page.taskConfigFormElements.submit.click();
 
     // form is no longer visible
     await expect(page.taskConfigForm).toHaveCount(0);
 
+    await expect(moveSteps).toHaveText("∞");
+    await expect(glideTo).toHaveText("∞");
+  });
+
+  test("can use button to allow the usage of no blocks", async ({
+    page: pwPage,
+  }) => {
+    const page = new EditTaskPage(pwPage);
+
+    const moveSteps = page.getBlockConfigButton("motion_movesteps");
+    const goto = page.getBlockConfigButton("motion_goto");
+
+    // open modal
+    await moveSteps.click();
+
+    // check the checkbox that allows the block to be used
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
+
+    // check the checkbox that allows the block to be used a limited number of times
+    await page.blockConfigFormElements.hasBlockLimitCheckbox.click();
+
+    // set the block limit to 5
+    await page.blockConfigFormElements.blockLimitInput.fill("5");
+
+    // submit the form
+    await page.blockConfigFormElements.submitButton.click();
+
+    // ensure the block's label is updated
+    await expect(moveSteps).toHaveText("5");
+
+    await expect(goto).toHaveText("0");
+
     await page.openTaskConfig();
-    // ensure checkbox is still checked
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).toBeChecked();
+
+    await page.taskConfigFormElements.allowNoBlocksButton.click();
+    await page.taskConfigFormElements.submit.click();
+
+    // form is no longer visible
+    await expect(page.taskConfigForm).toHaveCount(0);
+
+    await expect(moveSteps).toHaveText("0");
+    await expect(goto).toHaveText("0");
   });
 });
