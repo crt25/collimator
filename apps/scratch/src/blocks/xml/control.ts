@@ -69,9 +69,9 @@ export const buildControlXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<ControlOpCode, number>> = {},
+  blockLimits: Partial<Record<ControlOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = controlXmlByOpCode[opCode as ControlOpCode];

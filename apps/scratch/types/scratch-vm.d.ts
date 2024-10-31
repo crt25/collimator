@@ -252,7 +252,7 @@ declare namespace VMExtended {
      * A map from scratch opcode to a number that defines how many times
      * a given block can be used.
      */
-    allowedBlocks: import("../src/blocks/make-toolbox-xml").AllowedBlocks;
+    allowedBlocks: import("../src/blocks/make-toolbox-xml").BlockLimits;
 
     /**
      * Whether task blocks (i.e. initially loaded blocks included in a task definition)
