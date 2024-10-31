@@ -255,10 +255,9 @@ declare namespace VMExtended {
     allowedBlocks: import("../src/blocks/make-toolbox-xml").AllowedBlocks;
 
     /**
-     * Whether task blocks (i.e. initially loaded blocks included in a task definition)
-     * can be interacted with.
+     * The ids of the initial task blocks that can be edited.
      */
-    canEditTaskBlocks: boolean;
+    taskBlockIds: {[taskBlockId?: string]: import("../src/blocks/types").BlockFreezeStates | undefined };
   }
 }
 

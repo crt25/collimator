@@ -15763,13 +15763,13 @@ __metadata:
 
 "scratch-blocks@patch:scratch-blocks@npm%3A1.1.206#~/.yarn/patches/scratch-blocks-npm-1.1.206-87dc9f1fd2.patch":
   version: 1.1.206
-  resolution: "scratch-blocks@patch:scratch-blocks@npm%3A1.1.206#~/.yarn/patches/scratch-blocks-npm-1.1.206-87dc9f1fd2.patch::version=1.1.206&hash=da2085"
+  resolution: "scratch-blocks@patch:scratch-blocks@npm%3A1.1.206#~/.yarn/patches/scratch-blocks-npm-1.1.206-87dc9f1fd2.patch::version=1.1.206&hash=b16291"
   dependencies:
     exports-loader: "npm:^0.7.0"
     google-closure-library: "npm:^20190301.0.0"
     imports-loader: "npm:^0.8.0"
     scratch-l10n: "npm:^3.18.3"
-  checksum: 10c0/a4952084b0546ac36de2c7479de1606815a43d006da352ccd4dd02c15f9ef1f27a7e0883fae92e3f44539a6e178e14a2553df51edb94da83039cf7d83247f06e
+  checksum: 10c0/a9de23b7e3fbd7222558c12f8c4a105e0d97df5ec4e314d18c240d5627ea9ea30533fde5359d44279f465f2063fc97490d976e121f39285c54654db9310d1348
   languageName: node
   linkType: hard
 

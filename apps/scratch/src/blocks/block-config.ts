@@ -1,14 +1,9 @@
 import VM from "scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
+import { ignoreEvent, svgNamespace } from "./helpers";
 
-const svgNamespace = "http://www.w3.org/2000/svg";
 const buttonHeight = 20;
 const buttonWidth = 60;
-
-const ignoreEvent = (event: MouseEvent): void => {
-  event.stopImmediatePropagation();
-  event.preventDefault();
-};
 
 const getBlockId = (dataId: string): string => {
   // some blocks prefix the block type with the target id followed by a double underscore
@@ -103,7 +98,6 @@ const updateBlockConfigButton = (
     "block-config-button " +
       (isBlockEnabled ? "enabled-block-button" : "disabled-block-button"),
   );
-  group.setAttribute("data-testid", "block-config-button");
 
   if (isBlockEnabled || canEditTask) {
     block.classList.remove("non-interactive");
@@ -130,11 +124,12 @@ export const updateSingleBlockConfigButton = (
   const config = vm.crtConfig;
 
   const block = container.querySelector<SVGGElement>(
-    `g.blocklyDraggable[data-id$=${opcode}]`,
+    `g.blocklyDraggable[data-id$='${opcode}']`,
   );
 
   if (!block) {
-    console.error(`Block for opcode '${opcode}' not found`);
+    // this may happen if the block is part of the initial task
+    // but cannot be used by students
     return;
   }
 
@@ -210,6 +205,7 @@ export const addBlockConfigButtons = (
     const group = document.createElementNS(svgNamespace, "g");
 
     group.setAttribute("class", "block-config-button");
+    group.setAttribute("data-testid", "block-config-button");
     group.setAttribute("transform", `translate(0, -10)`);
     group.addEventListener("click", canEditTask ? onSetCount : ignoreEvent);
     group.addEventListener("mousedown", ignoreEvent);
