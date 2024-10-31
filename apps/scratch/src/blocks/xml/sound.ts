@@ -80,9 +80,9 @@ export const buildSoundXml = function (
   targetId: string,
   soundName: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<SoundOpCode, number>> = {},
+  blockLimits: Partial<Record<SoundOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = soundXmlByOpCode[opCode as SoundOpCode];

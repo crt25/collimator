@@ -246,9 +246,9 @@ export const buildOperatorsXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<OperatorsOpCode, number>> = {},
+  blockLimits: Partial<Record<OperatorsOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = operatorXmlByOpCode[opCode as OperatorsOpCode];

@@ -127,9 +127,9 @@ export const buildSensingXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  allowedBlocks: Partial<Record<SensingOpCode, number>> = {},
+  blockLimits: Partial<Record<SensingOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(allowedBlocks)
+  const xml = Object.entries(blockLimits)
     .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = sensingXmlByOpCode[opCode as SensingOpCode];

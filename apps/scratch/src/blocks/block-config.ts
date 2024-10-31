@@ -77,13 +77,13 @@ const updateBlockConfigButton = (
 
   const allowInfinite = typeof allowedCount === "number" && allowedCount < 0;
 
-  const allowedNumberOfBlocks = allowedCount || 0;
+  const allowedNumberOfBlocks = allowedCount ?? 0;
 
   // if the user edits the task, they can use as many blocks as they want
   // but we want the allow count to be displayed
   const remainingCount = canEditTask
     ? allowedNumberOfBlocks
-    : allowedNumberOfBlocks - (usedBlocks || 0);
+    : allowedNumberOfBlocks - (usedBlocks ?? 0);
 
   const isBlockEnabled = allowInfinite || remainingCount > 0;
 
