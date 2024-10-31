@@ -32,7 +32,15 @@ export const patchScratchVm = (vm: VM): void => {
   });
 
   vm.runtime.on("PROJECT_LOADED", () => {
-    console.log("loaded", vm.crtConfig);
+    // iterate over all the blocks in the runtime
+    // and mark them as initial blocks
+    for (const target of vm.runtime.targets) {
+      for (const block of Object.values(target.blocks._blocks)) {
+        block.isTaskBlock = true;
+      }
+    }
+
+    console.log("loaded", { ...vm.crtConfig });
   });
 
   vm.runtime.on("PROJECT_RUN_STOP", () => {

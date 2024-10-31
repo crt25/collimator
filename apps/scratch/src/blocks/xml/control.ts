@@ -1,5 +1,6 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum ControlOpCode {
   wait = "control_wait",
@@ -68,10 +69,10 @@ export const buildControlXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<ControlOpCode, boolean>> = {},
+  blockLimits: Partial<Record<ControlOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(blockLimits)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = controlXmlByOpCode[opCode as ControlOpCode];
 

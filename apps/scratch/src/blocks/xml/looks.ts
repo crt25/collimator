@@ -1,6 +1,7 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import ScratchBlocks from "scratch-blocks";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum LooksOpCode {
   sayforsecs = "looks_sayforsecs",
@@ -223,10 +224,10 @@ export const buildLooksXml = function (
   costumeName: string,
   backdropName: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<LooksOpCode, boolean>> = {},
+  blockLimits: Partial<Record<LooksOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(blockLimits)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = looksXmlByOpCode[opCode as LooksOpCode];
 

@@ -52,7 +52,7 @@ export interface ExtensionMetadata {
 }
 
 export interface ExtensionUtilType {
-  target: VM.Target;
+  target: VM.TargetExtended;
 }
 
 export default {
