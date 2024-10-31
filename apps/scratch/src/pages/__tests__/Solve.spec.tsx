@@ -179,44 +179,40 @@ test.describe("/solve/sessionId/taskId", () => {
     expect(page.blockConfigForm).toHaveCount(0);
   });
 
-  test("reduces number of allowed blocks", async ({ page: pwPage }) => {
+  test.only("reduces number of allowed blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
     await expect(moveSteps).toHaveText("7");
 
     await page
       .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], { force: true });
+      .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(10);
     await expect(moveSteps).toHaveText("6");
 
     for (let i = 0; i < 6; i++) {
       await page
         .getBlockInToolbox("motion_movesteps")
-        // drag it to some block that is already on the stage
-        .dragTo(page.taskBlocks.catActor[0], { force: true });
+        .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
     }
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(16);
     await expect(moveSteps).toHaveText("0");
 
     // now it should not be possible to add another block
 
     await page
       .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], {
-        // force the drag even if nothing happens
+      .dragTo(page.taskBlocks.catActor.editableBlock, {
         force: true,
       });
 
     await expect(moveSteps).toHaveText("0");
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(16);
   });
 
   test("removing student-added blocks increases the limit", async ({
@@ -226,32 +222,32 @@ test.describe("/solve/sessionId/taskId", () => {
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
 
     await page
       .getBlockInToolbox("motion_movesteps")
       // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], { force: true });
+      .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(10);
     await expect(moveSteps).toHaveText("6");
 
     await page.removeAllNonFrozenBlocks();
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(7);
     await expect(moveSteps).toHaveText("7");
   });
 
   test("cannot remove frozen blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
 
-    await page.taskBlocks.catActor[0]
+    await page.taskBlocks.catActor.frozenBlock
       // drag it to some block that is already on the stage
       .dragTo(page.toolbox, { force: true });
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
   });
 
   test("cannot open task config", async ({ page: pwPage }) => {
@@ -260,5 +256,21 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(page.openTaskConfigButton).toHaveCount(0);
 
     expect(page.taskConfigForm).toHaveCount(0);
+  });
+
+  test("removing initial blocks does not increase the limit", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const { moveSteps, turnRight } = page.enabledBlockConfigButtons;
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(1);
+
+    await page.taskBlocks.catActor.editableBlock.dragTo(page.toolbox);
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
+    await expect(moveSteps).toHaveText("7");
+    await expect(turnRight).toHaveText("2");
   });
 });

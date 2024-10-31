@@ -25,7 +25,17 @@ export class TestTaskPage extends ScratchEditorPage {
 
   get taskBlocks() {
     return {
-      catActor: [this.page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']")],
+      catActor: {
+        editableBlock: this.page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"),
+        frozenBlock: this.page.locator("[data-id='!cHbf-/Rw+|=pKw:^+M+']"),
+        topOfAppendableStack: this.page.locator(
+          "[data-id='iY}I[=PNCjG}GzJS1G/X']",
+        ),
+        bottomOfAppendableStack: this.page.locator(
+          "[data-id='6eyuS~n}^ivm:]/DnM$+']",
+        ),
+        insertableSlot: this.page.locator("[data-id='H{{dc|4tE3KZ#:7DEV7G']"),
+      },
     };
   }
 }
