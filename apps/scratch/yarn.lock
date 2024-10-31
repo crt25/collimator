@@ -3449,13 +3449,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^27.5.2":
-  version: 27.5.2
-  resolution: "@types/jest@npm:27.5.2"
+"@types/jest@npm:^29.5.14":
+  version: 29.5.14
+  resolution: "@types/jest@npm:29.5.14"
   dependencies:
-    jest-matcher-utils: "npm:^27.0.0"
-    pretty-format: "npm:^27.0.0"
-  checksum: 10c0/29ef3da9b94a15736a67fc13956f385ac2ba2c6297f50d550446842c278f2e0d9f343dcd8e31c321ada5d8a1bd67bc1d79c7b6ff1802d55508c692123b3d9794
+    expect: "npm:^29.0.0"
+    pretty-format: "npm:^29.0.0"
+  checksum: 10c0/18e0712d818890db8a8dab3d91e9ea9f7f19e3f83c2e50b312f557017dc81466207a71f3ed79cf4428e813ba939954fa26ffa0a9a7f153181ba174581b1c2aed
   languageName: node
   linkType: hard
 
@@ -3566,10 +3566,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.18.108":
-  version: 16.18.108
-  resolution: "@types/node@npm:16.18.108"
-  checksum: 10c0/4aa0d90124c45cc49d73657a76053a9e0f9e3a35aea4dd45d9da27e81111f1dec98ac92c0d07586cdca3bd682796ef5b4dc886afd9b78d95cd2adf0ad9331592
+"@types/node@npm:^22.8.6":
+  version: 22.8.6
+  resolution: "@types/node@npm:22.8.6"
+  dependencies:
+    undici-types: "npm:~6.19.8"
+  checksum: 10c0/d3a11f2549234a91a4c5d0ff35ab4bdcb7ba34db4d3f1d189be39b8bd41c19aac98d117150a95a9c5a9d45b1014135477ea240b2b8317c86ae3d3cf1c3b3f8f4
   languageName: node
   linkType: hard
 
@@ -3581,11 +3583,11 @@ __metadata:
   linkType: hard
 
 "@types/papaparse@npm:^5":
-  version: 5.3.14
-  resolution: "@types/papaparse@npm:5.3.14"
+  version: 5.3.15
+  resolution: "@types/papaparse@npm:5.3.15"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/feb4d215903b67442feaa9836a6a5771e78dc6a9da24781e399c6f891622fa82245cd783ab2613c5be43e4a2d6a94da52325538e4485af258166864576ecd0d8
+  checksum: 10c0/9333e980b9ed4102f80b1791b6dfefb23fb4d27252b2b6ee6084b2cd847cbe802cfb838d46b4f6b4cb035f9225e0323034c956ee21bbcbcb4cbdb663302d5eeb
   languageName: node
   linkType: hard
 
@@ -4613,13 +4615,13 @@ __metadata:
     "@turbowarp/types": "npm:^0.0.12"
     "@types/babel__core": "npm:^7"
     "@types/babel__preset-env": "npm:^7"
-    "@types/jest": "npm:^27.5.2"
+    "@types/jest": "npm:^29.5.14"
     "@types/keymirror": "npm:^0"
     "@types/lodash.bindall": "npm:^4.4.9"
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/lodash.defaultsdeep": "npm:^4"
     "@types/lodash.omit": "npm:^4.5.9"
-    "@types/node": "npm:^16.18.108"
+    "@types/node": "npm:^22.8.6"
     "@types/omggif": "npm:^1"
     "@types/papaparse": "npm:^5"
     "@types/prop-types": "npm:^15"
@@ -10860,7 +10862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-matcher-utils@npm:^27.0.0, jest-matcher-utils@npm:^27.5.1":
+"jest-matcher-utils@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-matcher-utils@npm:27.5.1"
   dependencies:
@@ -14304,7 +14306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.0.0, pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
+"pretty-format@npm:^27.0.2, pretty-format@npm:^27.5.1":
   version: 27.5.1
   resolution: "pretty-format@npm:27.5.1"
   dependencies:
@@ -17608,7 +17610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.19.2":
+"undici-types@npm:~6.19.2, undici-types@npm:~6.19.8":
   version: 6.19.8
   resolution: "undici-types@npm:6.19.8"
   checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
