@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Page } from "playwright/test";
+import { Locator, Page } from "playwright/test";
 import {
   getAllTargetBlocksSelector,
+  getBlockCanvasSelector,
   getBlockConfigButtonSelector,
   getBlockConfigFormSelector,
   getFlyoutCanvasSelector,
@@ -40,6 +41,10 @@ export class ScratchEditorPage {
 
   get toolbox() {
     return this.page.locator(getFlyoutCanvasSelector());
+  }
+
+  get blockCanvas() {
+    return this.page.locator(getBlockCanvasSelector());
   }
 
   get openTaskConfigButton() {
@@ -91,5 +96,57 @@ export class ScratchEditorPage {
       // wait for scratch to update
       await this.page.waitForTimeout(1000);
     }
+  }
+
+  async scrollBlockIntoView(visibleBlock: Locator, scrollToBlock: Locator) {
+    await visibleBlock.hover();
+
+    const toolboxRight = await this.toolbox.evaluate(
+      (toolbox) =>
+        toolbox.getBoundingClientRect().x +
+        toolbox.getBoundingClientRect().width,
+    );
+
+    const offsetX =
+      (await scrollToBlock.evaluate(
+        (canvas) => canvas.getBoundingClientRect().x,
+      )) - toolboxRight;
+
+    // scroll all the way to the right so that
+    await this.page.mouse.wheel(offsetX, 0);
+  }
+
+  async countBlocksInStack(stack: Locator) {
+    return stack.evaluate(
+      // querySelector only looks at the subtree but we also want to match the element itself
+      (el) =>
+        (el
+          ?.closest("g.blocklyDraggable")
+          ?.querySelectorAll(".blocklyDraggable").length || -1) +
+        // finally, we add 1 to account for the block matched by the closest call
+        // since querySelectorAll matches only the children
+        1,
+    );
+  }
+
+  async countBlocksInParent(stack: Locator) {
+    return stack.evaluate(
+      (el) =>
+        // we want to count the blocks in the parent stack, hence we look for the parent element
+        // because closest also looks at the element itself, we need to go back up one level first
+        (el?.parentElement
+          ?.closest("g.blocklyDraggable")
+          ?.querySelectorAll(".blocklyDraggable").length || -1) + 1,
+    );
+  }
+
+  async countBlocksInParentStack(stack: Locator) {
+    return stack.evaluate(
+      (el) =>
+        (el
+          ?.closest("g.blocklyDraggable:not(.blocklyDraggable g)")
+          // again, because querySelector only looks at the subtree, we need to go back up another level
+          ?.querySelectorAll(".blocklyDraggable").length || -1) + 1,
+    );
   }
 }

@@ -179,7 +179,7 @@ test.describe("/solve/sessionId/taskId", () => {
     expect(page.blockConfigForm).toHaveCount(0);
   });
 
-  test.only("reduces number of allowed blocks", async ({ page: pwPage }) => {
+  test("reduces number of allowed blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
     const { moveSteps } = page.enabledBlockConfigButtons;
@@ -226,7 +226,6 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await page
       .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
       .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(10);
@@ -243,11 +242,191 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
 
-    await page.taskBlocks.catActor.frozenBlock
-      // drag it to some block that is already on the stage
-      .dragTo(page.toolbox, { force: true });
+    await page.taskBlocks.catActor.frozenBlock.dragTo(page.toolbox, {
+      force: true,
+    });
 
     await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
+  });
+
+  test("cannot remove frozen but appendable blocks", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
+
+    await page.taskBlocks.catActor.topOfAppendableStack.dragTo(page.toolbox, {
+      force: true,
+    });
+
+    await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
+  });
+
+  test("can prepend to editable stack", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInParent(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page
+      .getBlockInToolbox("motion_goto")
+      .dragTo(page.taskBlocks.catActor.editableBlock, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 0,
+        },
+      });
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInParent(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to editable stack", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInParent(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page
+      .getBlockInToolbox("motion_goto")
+      .dragTo(page.taskBlocks.catActor.editableBlock, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 50,
+        },
+      });
+
+    //await pwPage.waitForTimeout(60 * 1000);
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInParent(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("cannot prepend to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInStack(
+      page.taskBlocks.catActor.topOfAppendableStack,
+    );
+
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.editableBlock,
+      page.taskBlocks.catActor.topOfAppendableStack,
+    );
+
+    await page
+      .getBlockInToolbox("motion_movesteps")
+      .dragTo(page.taskBlocks.catActor.topOfAppendableStack, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 0,
+        },
+      });
+
+    await expect(
+      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("cannot append to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInStack(
+      page.taskBlocks.catActor.topOfAppendableStack,
+    );
+
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.editableBlock,
+      page.taskBlocks.catActor.bottomOfAppendableStack,
+    );
+
+    await page
+      .getBlockInToolbox("motion_movesteps")
+      .dragTo(page.taskBlocks.catActor.topOfAppendableStack, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 50,
+        },
+      });
+
+    await pwPage.waitForTimeout(10 * 1000);
+
+    await expect(
+      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to bottom of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInStack(
+      page.taskBlocks.catActor.topOfAppendableStack,
+    );
+
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.editableBlock,
+      page.taskBlocks.catActor.bottomOfAppendableStack,
+    );
+
+    await page
+      .getBlockInToolbox("motion_movesteps")
+      .dragTo(page.taskBlocks.catActor.bottomOfAppendableStack, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 50,
+        },
+      });
+
+    await expect(
+      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("can append to empty slot in appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInStack(
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.editableBlock,
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await page
+      .getBlockInToolbox("motion_movesteps")
+      .dragTo(page.taskBlocks.catActor.insertableSlot, {
+        force: true,
+        targetPosition: {
+          x: 50,
+          y: 50,
+        },
+      });
+
+    await expect(
+      page.countBlocksInStack(page.taskBlocks.catActor.insertableSlot),
+    ).resolves.toBe(initialBlocksInStack + 1);
   });
 
   test("cannot open task config", async ({ page: pwPage }) => {
