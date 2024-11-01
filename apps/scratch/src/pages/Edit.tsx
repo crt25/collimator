@@ -140,6 +140,10 @@ const Edit = () => {
         setVm(vm);
         patchScratchVm(vm);
       }}
+      onTaskSolved={() => {
+        // TODO: interact with the parent window
+        console.log("Task solved!");
+      }}
     />
   );
 };

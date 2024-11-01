@@ -48,7 +48,7 @@ import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import Blocks from "../../containers/Blocks";
 import TargetPane from "../../containers/TargetPane";
@@ -114,6 +114,7 @@ const GUIComponent = (props: {
   onRequestCloseCostumeLibrary?: () => void;
   onShowPrivacyPolicy?: () => void;
   onTabSelect?: () => void;
+  onTaskSolved?: () => void;
   soundsTabVisible?: boolean;
   // see https://github.com/scratchfoundation/scratch-gui/blob/d678d609e182ccc5ab557d7d45a3cc3e6430b056/src/lib/layout-constants.js#L7
   stageSizeMode: StageSizeMode;
@@ -156,6 +157,7 @@ const GUIComponent = (props: {
     theme,
     tipsLibraryVisible,
     vm,
+    onTaskSolved,
     ...componentProps
   } = omit(props, "dispatch");
 
@@ -178,6 +180,44 @@ const GUIComponent = (props: {
   if (isRendererSupported === null) {
     isRendererSupported = Renderer.isSupported();
   }
+
+  useEffect(() => {
+    const enableAssertions = () => vm.runtime.emit("ENABLE_ASSERTIONS");
+    const assertionsChecked = (allAssertionsSatisfied: boolean) => {
+      if (allAssertionsSatisfied && onTaskSolved) {
+        onTaskSolved();
+      }
+    };
+
+    if (!canEditTask) {
+      // if we cannot edit the task, we always enable assertions
+      // if the extension is loaded
+
+      // enable assertions as soon as the extension is loaded
+      vm.runtime.on("ASSERTIONS_EXTENSION_LOADED", enableAssertions);
+      vm.runtime.on("ASSERTIONS_CHECKED", assertionsChecked);
+
+      // or if the extension is already loaded, enable them now
+      enableAssertions();
+
+      return () => {
+        // when effect is cleaned up, remove event listeners
+        vm.runtime.removeListener(
+          "ASSERTIONS_EXTENSION_LOADED",
+          enableAssertions,
+        );
+
+        vm.runtime.off("ASSERTIONS_CHECKED", assertionsChecked);
+
+        // and disable assertions that were enabled automatically
+        vm.runtime.emit("DISABLE_ASSERTIONS");
+      };
+    }
+
+    // otherwise we only enable assertions if the user has enabled them
+    // return no-op cleanup function
+    return () => {};
+  }, [vm.runtime, canEditTask]);
 
   return (
     <MediaQuery minWidth={layout.fullSizeMinWidth}>

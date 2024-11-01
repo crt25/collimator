@@ -1,0 +1,18 @@
+.state {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  background-color: #ff3355;
+
+  img {
+    height: 20px;
+    width: auto;
+  }
+}
+
+.success {
+  background-color: #0b8e69;
+}
+
+.no-success {
+  background-color: #ff3355;
+}

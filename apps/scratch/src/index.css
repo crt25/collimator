@@ -104,11 +104,13 @@ body,
 
 .frozen-block-frozen > .blocklyBlockBackground,
 .frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line,
 .frozen-block-appendable > .blocklyBlockBackground,
-.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line
 {
   fill: #666;
-  stroke: #666;
+  stroke: #000;
 }
 
 .frozen-block-frozen > [data-argument-type^="text"] > .blocklyBlockBackground,
@@ -124,4 +126,12 @@ body,
 */
 .blocklyFlyout rect:not(.interactive) {
   pointer-events: none;
+}
+
+/*
+  reduce the size of the custom image of extension blocks
+*/
+.blocklyDraggable > g > image {
+  transform: scale(0.9);
+  transform-origin: 20px 20px;
 }

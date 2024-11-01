@@ -1,9 +1,11 @@
-import React, { FormEvent, useCallback, useEffect } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
 import VM, { ScratchCrtConfig } from "scratch-vm";
 import Modal from "./modal/Modal";
 import { allowAllBlocks, allowNoBlocks } from "../blocks/make-toolbox-xml";
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
+import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
+import { ExtensionId } from "../extensions";
 
 const TaskConfig = ({
   vm,
@@ -14,6 +16,12 @@ const TaskConfig = ({
   isShown?: boolean;
   hideModal: () => void;
 }) => {
+  const assertionsEnabled = useAssertionsEnabled(vm);
+  const [isAssertionsExtensionEnabled, setIsAssertionsExtensionEnabled] =
+    useState(false);
+
+  const [enableAssertions, setEnableAssertions] = useState(false);
+
   const updateConfig = useCallback(
     (
       e: React.SyntheticEvent,
@@ -55,15 +63,33 @@ const TaskConfig = ({
       e.preventDefault();
       e.stopPropagation();
 
-      updateConfig(e, () => {});
+      updateConfig(e, () => {
+        // update assertions
+        if (isAssertionsExtensionEnabled) {
+          vm.runtime.emit(
+            enableAssertions ? "ENABLE_ASSERTIONS" : "DISABLE_ASSERTIONS",
+          );
+        }
+      });
 
       hideModal();
     },
-    [vm],
+    [
+      vm,
+      isAssertionsExtensionEnabled,
+      enableAssertions,
+      updateConfig,
+      hideModal,
+    ],
   );
 
   useEffect(() => {
     // every time the modal is opened, load the form values based on the config
+    setIsAssertionsExtensionEnabled(
+      vm.extensionManager.isExtensionLoaded(ExtensionId.Assertions),
+    );
+
+    setEnableAssertions(assertionsEnabled);
   }, [isShown]);
 
   return (
@@ -80,6 +106,21 @@ const TaskConfig = ({
         <button onClick={onAllowNoBlocks} data-testid="allow-no-blocks-button">
           Disallow any block to be used
         </button>
+
+        {isAssertionsExtensionEnabled && (
+          <label>
+            <span>
+              Enable assertions simulating a student solving the task.
+            </span>
+            <input
+              type="checkbox"
+              min="0"
+              checked={enableAssertions}
+              onChange={(e) => setEnableAssertions(e.target.checked)}
+              data-testid="enable-assertions-checkbox"
+            />
+          </label>
+        )}
 
         <input
           type="submit"

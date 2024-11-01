@@ -179,7 +179,75 @@ declare namespace VMExtended {
     getId: (string) => string;
   }
 
+  type EventEmitterArgs<Events, K extends keyof Events> = Events[K] extends Array<unknown> ? Events[K] : unknown[];
+  type EventEmitterCallback<Events, K extends keyof Events> = (...args: Events[K] extends Array<unknown> ? Events[K] : unknown[]) => void
+
+  export interface RuntimeEventMapExtended extends VM.RuntimeEventMap {
+    targetWasCreated: [
+      // The new target
+      TargetExtended,
+      // The original target, if any. This will be set for clones.
+      TargetExtended?
+    ];
+
+    /**
+     * Event emitted after the assertions extension has been loaded.
+     */
+    ASSERTIONS_EXTENSION_LOADED: [];
+
+    /**
+     * Event emitted to check if assertions are enabled.
+     */
+    ARE_ASSERTIONS_ENABLED_QUERY: [];
+
+    /**
+     * Event emitted as a response to the query for whether assertions are enabled.
+     */
+    ARE_ASSERTIONS_ENABLED_RESPONSE: [boolean];
+
+    /**
+     * Event emitted to enable assertions.
+     */
+    ENABLE_ASSERTIONS: [];
+
+    /**
+     * Event emitted when assertions are enabled.
+     */
+    ASSERTIONS_ENABLED: [];
+
+    /**
+     * Event emitted to disable assertions.
+     */
+    DISABLE_ASSERTIONS: [];
+
+    /**
+     * Event emitted when assertions are disabled.
+     */
+    ASSERTIONS_DISABLED: [];
+
+    /**
+     * Event emitted after the project's assertions have been evaluated.
+     * Note that there is no guarantee this event is ever emitted.
+     * It will only be emitted if the assertions extension is loaded.
+     * The first argument is a boolean indicating whether all assertions passed.
+     */
+    ASSERTIONS_CHECKED: [
+      // whether all assertions passed.
+      boolean
+    ];
+  }
+
   export interface RuntimeExtended extends VM.Runtime {
+
+    // override event emitter
+    on<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    once<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    off<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    removeListener<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    listeners<K extends keyof RuntimeEventMapExtended>(event: K): EventEmitterCallback<RuntimeEventMapExtended, K>[];
+    emit<K extends keyof RuntimeEventMapExtended>(event: K, ...args: EventEmitterArgs<RuntimeEventMapExtended, K>): void;
+    // end override event emitter
+
     monitorBlocks: BlocksExtended;
     monitorBlockInfo: MonitorBlockInfo;
 

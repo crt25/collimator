@@ -860,7 +860,7 @@ class Blocks extends React.Component<Props, State> {
             !node.classList.contains("blocklyInsertionMarker") &&
             // and filter out non-stack blocks (i.e. they must not be a child of another block)
             node.matches(
-              "g.blocklyDraggable[data-id][data-shapes='stack']:not(g.blocklyDraggable[data-id] g)",
+              "g.blocklyDraggable[data-id]:not(g.blocklyDraggable[data-id] g)",
             ),
         ),
     );
