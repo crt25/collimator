@@ -2,7 +2,10 @@ import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
 import VM, { ScratchCrtConfig } from "scratch-vm";
 import Modal from "./modal/Modal";
-import { allowAllBlocks, allowNoBlocks } from "../blocks/make-toolbox-xml";
+import {
+  allowAllStandardBlocks,
+  allowNoBlocks,
+} from "../blocks/make-toolbox-xml";
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
@@ -45,9 +48,12 @@ const TaskConfig = ({
     [vm],
   );
 
-  const onAllowAllBlocks = useCallback(
+  const onAllowAllStandardBlocks = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      updateConfig(e, (config) => (config.allowedBlocks = allowAllBlocks));
+      updateConfig(
+        e,
+        (config) => (config.allowedBlocks = allowAllStandardBlocks),
+      );
     },
     [updateConfig],
   );
@@ -98,10 +104,10 @@ const TaskConfig = ({
 
       <form onSubmit={onSubmit} data-testid="task-config-form">
         <button
-          onClick={onAllowAllBlocks}
-          data-testid="allow-all-blocks-button"
+          onClick={onAllowAllStandardBlocks}
+          data-testid="allow-all-standard-blocks-button"
         >
-          Allow all blocks to be used
+          Allow all standard blocks to be used
         </button>
         <button onClick={onAllowNoBlocks} data-testid="allow-no-blocks-button">
           Disallow any block to be used

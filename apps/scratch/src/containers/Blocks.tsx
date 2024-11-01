@@ -49,7 +49,7 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML, { allowAllBlocks } from "../blocks/make-toolbox-xml";
+import makeToolboxXML from "../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import ExtensionLibrary from "./ExtensionLibrary";
@@ -656,9 +656,7 @@ class Blocks extends React.Component<Props, State> {
         targetSounds.length > 0
           ? targetSounds[targetSounds.length - 1].name
           : "",
-        this.props.canEditTask
-          ? allowAllBlocks
-          : this.props.vm.crtConfig?.allowedBlocks,
+        this.props.canEditTask ? null : this.props.vm.crtConfig?.allowedBlocks,
       );
     } catch {
       return null;
