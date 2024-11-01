@@ -33,6 +33,11 @@ export interface ExtensionMetdataBlock {
     [key: string]: ExtensionMetdataBlockArgument;
   };
   hideFromPalette?: boolean;
+  restartExistingThreads?: boolean;
+  // If true, scratch will continously run the block and starts the stack if the return value changes from false to true
+  // see https://github.com/scratchfoundation/scratch-vm/blob/develop/docs/extensions.md
+  // Note however, that this causes some UI bugs such as https://github.com/scratchfoundation/scratch-vm/issues/1948
+  isEdgeActivated?: boolean;
 }
 
 export interface ExtensionMetadataMenu {

@@ -81,7 +81,8 @@ interface RememberedSpriteState extends RememberedTargetState {
 }
 
 /**
- * Class for an example Scratch 3.0 extension.
+ * Adds assertions to the Scratch VM.
+ * See https://github.com/scratchfoundation/scratch-vm/blob/develop/docs/extensions.md for a documentation of the Scratch VM extensions.
  * @param {Runtime} runtime - the runtime instantiating this block package.
  * @constructor
  */
@@ -106,6 +107,11 @@ class AssertionExtension {
    * Whether assertions are enabled.
    */
   private enabled: boolean = false;
+
+  /**
+   * Whether assertions are currently being run.
+   */
+  private runningAssertions: boolean = false;
 
   constructor(runtime: VM.RuntimeExtended) {
     this.runtime = runtime;
@@ -283,6 +289,24 @@ class AssertionExtension {
    * Callback for when the project stops running.
    */
   onProjectStop = (): void => {
+    if (!this.runningAssertions) {
+      // once the project has stopped running, check the assertions
+      this.runningAssertions = true;
+
+      // see https://github.com/scratchfoundation/scratch-vm/blob/3867903e65ed9ed03cfeeb80a785457df7c2f099/src/blocks/scratch3_event.js#L12
+      this.runtime.startHats(`${EXTENSION_ID}_noop_whenTaskFinishedRunning`);
+    } else {
+      // we just ran the assertions
+      this.runningAssertions = false;
+
+      this.onProjectAssertionsRun();
+    }
+  };
+
+  /**
+   * Callback for when the project assertions were run.
+   */
+  onProjectAssertionsRun = (): void => {
     const allAssertionsPassed = this.runtime.targets.reduce((acc, target) => {
       const state = getCustomState(target);
 
@@ -314,6 +338,16 @@ class AssertionExtension {
       blockIconURI,
       blocks: [
         {
+          opcode: "noop_whenTaskFinishedRunning",
+          text: formatMessage({
+            id: "crt.extensions.assertions.noop_whenTaskFinishedRunning",
+            default: "when task finished running",
+          }),
+          blockType: BlockType.hat,
+          isEdgeActivated: false,
+          arguments: {},
+        },
+        {
           // Note: In order to avoid hardcoding all extension opcodes into the collimator backend, we tell
           // collimator via a opcode prefix what the block should be translated to.
           opcode: "noop_assert",
@@ -331,6 +365,17 @@ class AssertionExtension {
       ],
       menus: {},
     };
+  }
+
+  /**
+   * A scratch hat block that is triggered when the task has finished running.
+   */
+  noop_whenTaskFinishedRunning(
+    _args: unknown,
+    _util: ExtensionUtilType,
+  ): boolean {
+    // always run the children when this block is triggered
+    return true;
   }
 
   /**
