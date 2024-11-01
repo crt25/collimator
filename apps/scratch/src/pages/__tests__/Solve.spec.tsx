@@ -150,7 +150,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("loads the initial task blocks", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
   });
 
   test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
@@ -187,29 +187,29 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(page.blocksOfCurrentTarget).toHaveCount(9);
     await expect(moveSteps).toHaveText("7");
 
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(10);
     await expect(moveSteps).toHaveText("6");
 
     for (let i = 0; i < 6; i++) {
-      await page
-        .getBlockInToolbox("motion_movesteps")
-        .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
+      await page.appendNewBlockTo(
+        "motion_movesteps",
+        page.taskBlocks.catActor.editableBlock,
+      );
     }
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(16);
     await expect(moveSteps).toHaveText("0");
 
     // now it should not be possible to add another block
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.editableBlock, {
-        force: true,
-      });
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     await expect(moveSteps).toHaveText("0");
     await expect(page.blocksOfCurrentTarget).toHaveCount(16);
@@ -224,9 +224,10 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(9);
 
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.editableBlock, { force: true });
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(10);
     await expect(moveSteps).toHaveText("6");
@@ -242,9 +243,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
 
-    await page.taskBlocks.catActor.frozenBlock.dragTo(page.toolbox, {
-      force: true,
-    });
+    await page.removeBlock(page.taskBlocks.catActor.frozenBlock);
 
     await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
   });
@@ -256,9 +255,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
 
-    await page.taskBlocks.catActor.topOfAppendableStack.dragTo(page.toolbox, {
-      force: true,
-    });
+    await page.removeBlock(page.taskBlocks.catActor.topOfAppendableStack);
 
     await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
   });
@@ -266,48 +263,36 @@ test.describe("/solve/sessionId/taskId", () => {
   test("can prepend to editable stack", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInParent(
+    const initialBlocksInStack = await page.countBlocksInStack(
       page.taskBlocks.catActor.editableBlock,
     );
 
-    await page
-      .getBlockInToolbox("motion_goto")
-      .dragTo(page.taskBlocks.catActor.editableBlock, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 0,
-        },
-      });
+    await page.prependNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     // nothing should be added to this stack
     await expect(
-      page.countBlocksInParent(page.taskBlocks.catActor.editableBlock),
+      page.countBlocksInStack(page.taskBlocks.catActor.editableBlock),
     ).resolves.toBe(initialBlocksInStack);
   });
 
   test("can append to editable stack", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInParent(
+    const initialBlocksInStack = await page.countBlocksInStack(
       page.taskBlocks.catActor.editableBlock,
     );
 
-    await page
-      .getBlockInToolbox("motion_goto")
-      .dragTo(page.taskBlocks.catActor.editableBlock, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 50,
-        },
-      });
-
-    //await pwPage.waitForTimeout(60 * 1000);
+    await page.appendNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     // nothing should be added to this stack
     await expect(
-      page.countBlocksInParent(page.taskBlocks.catActor.editableBlock),
+      page.countBlocksInStack(page.taskBlocks.catActor.editableBlock),
     ).resolves.toBe(initialBlocksInStack + 1);
   });
 
@@ -320,20 +305,10 @@ test.describe("/solve/sessionId/taskId", () => {
       page.taskBlocks.catActor.topOfAppendableStack,
     );
 
-    await page.scrollBlockIntoView(
-      page.taskBlocks.catActor.editableBlock,
+    await page.prependNewBlockTo(
+      "motion_movesteps",
       page.taskBlocks.catActor.topOfAppendableStack,
     );
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.topOfAppendableStack, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 0,
-        },
-      });
 
     await expect(
       page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
@@ -349,22 +324,10 @@ test.describe("/solve/sessionId/taskId", () => {
       page.taskBlocks.catActor.topOfAppendableStack,
     );
 
-    await page.scrollBlockIntoView(
-      page.taskBlocks.catActor.editableBlock,
-      page.taskBlocks.catActor.bottomOfAppendableStack,
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.topOfAppendableStack,
     );
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.topOfAppendableStack, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 50,
-        },
-      });
-
-    await pwPage.waitForTimeout(10 * 1000);
 
     await expect(
       page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
@@ -380,20 +343,10 @@ test.describe("/solve/sessionId/taskId", () => {
       page.taskBlocks.catActor.topOfAppendableStack,
     );
 
-    await page.scrollBlockIntoView(
-      page.taskBlocks.catActor.editableBlock,
+    await page.appendNewBlockTo(
+      "motion_movesteps",
       page.taskBlocks.catActor.bottomOfAppendableStack,
     );
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.bottomOfAppendableStack, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 50,
-        },
-      });
 
     await expect(
       page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
@@ -409,20 +362,10 @@ test.describe("/solve/sessionId/taskId", () => {
       page.taskBlocks.catActor.insertableSlot,
     );
 
-    await page.scrollBlockIntoView(
-      page.taskBlocks.catActor.editableBlock,
+    await page.appendNewBlockTo(
+      "motion_movesteps",
       page.taskBlocks.catActor.insertableSlot,
     );
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      .dragTo(page.taskBlocks.catActor.insertableSlot, {
-        force: true,
-        targetPosition: {
-          x: 50,
-          y: 50,
-        },
-      });
 
     await expect(
       page.countBlocksInStack(page.taskBlocks.catActor.insertableSlot),
@@ -446,7 +389,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(1);
 
-    await page.taskBlocks.catActor.editableBlock.dragTo(page.toolbox);
+    await page.removeBlock(page.taskBlocks.catActor.editableBlock);
 
     await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
     await expect(moveSteps).toHaveText("7");

@@ -24,5 +24,4 @@ export const getBlockCanvasSelector = (): string => "svg.blocklySvg";
 export const getAllTargetBlocksSelector = (includeFrozen: boolean): string =>
   `${getBlockCanvasSelector()} g.blocklyDraggable[data-id]${includeFrozen ? "" : ":not(.frozen-block-frozen,.frozen-block-appendable)"}`;
 
-export const getFlyoutCanvasSelector = (): string =>
-  "svg.blocklyFlyout .blocklyBlockCanvas";
+export const getFlyoutSelector = (): string => "svg.blocklyFlyout";

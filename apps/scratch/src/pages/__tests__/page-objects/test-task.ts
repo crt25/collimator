@@ -26,7 +26,11 @@ export class TestTaskPage extends ScratchEditorPage {
   get taskBlocks() {
     return {
       catActor: {
+        topOfEditableStack: this.page.locator(
+          "[data-id='DMA4vbfmH7Ag=.YTb639']",
+        ),
         editableBlock: this.page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"),
+        topOfFrozenStack: this.page.locator("[data-id='*t~VMcxLD[(lt8Ja;s#-']"),
         frozenBlock: this.page.locator("[data-id='!cHbf-/Rw+|=pKw:^+M+']"),
         topOfAppendableStack: this.page.locator(
           "[data-id='iY}I[=PNCjG}GzJS1G/X']",

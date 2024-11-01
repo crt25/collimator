@@ -5,7 +5,7 @@ import {
   getBlockCanvasSelector,
   getBlockConfigButtonSelector,
   getBlockConfigFormSelector,
-  getFlyoutCanvasSelector,
+  getFlyoutSelector,
 } from "../locators";
 
 export class ScratchEditorPage {
@@ -40,7 +40,7 @@ export class ScratchEditorPage {
   }
 
   get toolbox() {
-    return this.page.locator(getFlyoutCanvasSelector());
+    return this.page.locator(getFlyoutSelector());
   }
 
   get blockCanvas() {
@@ -65,10 +65,16 @@ export class ScratchEditorPage {
     return configButton.click(options);
   }
 
+  getBlockFreezeButton(block: Locator) {
+    return block.locator(".stack-freeze-button");
+  }
+
+  toggleBlockFreezeButton(block: Locator) {
+    return this.getBlockFreezeButton(block).click();
+  }
+
   getBlockInToolbox(opcode: string) {
-    return this.page.locator(
-      `${getFlyoutCanvasSelector()} [data-id='${opcode}']`,
-    );
+    return this.page.locator(`${getFlyoutSelector()} [data-id='${opcode}']`);
   }
 
   enableFullScreen() {
@@ -98,14 +104,20 @@ export class ScratchEditorPage {
     }
   }
 
-  async scrollBlockIntoView(visibleBlock: Locator, scrollToBlock: Locator) {
-    await visibleBlock.hover();
+  async scrollBlockIntoView(scrollToBlock: Locator) {
+    const toolboxMiddle = await this.toolbox.evaluate(
+      (toolbox) =>
+        toolbox.getBoundingClientRect().top +
+        toolbox.getBoundingClientRect().height / 2,
+    );
 
     const toolboxRight = await this.toolbox.evaluate(
       (toolbox) =>
         toolbox.getBoundingClientRect().x +
         toolbox.getBoundingClientRect().width,
     );
+
+    await this.page.mouse.move(toolboxRight + 100, toolboxMiddle);
 
     const offsetX =
       (await scrollToBlock.evaluate(
@@ -116,27 +128,44 @@ export class ScratchEditorPage {
     await this.page.mouse.wheel(offsetX, 0);
   }
 
-  async countBlocksInStack(stack: Locator) {
-    return stack.evaluate(
-      // querySelector only looks at the subtree but we also want to match the element itself
-      (el) =>
-        (el
-          ?.closest("g.blocklyDraggable")
-          ?.querySelectorAll(".blocklyDraggable").length || -1) +
-        // finally, we add 1 to account for the block matched by the closest call
-        // since querySelectorAll matches only the children
-        1,
-    );
+  removeBlock(block: Locator) {
+    return block.dragTo(this.toolbox, { force: true });
   }
 
-  async countBlocksInParent(stack: Locator) {
+  async appendNewBlockTo(opcode: string, block: Locator) {
+    await this.scrollBlockIntoView(block);
+
+    await this.getBlockInToolbox(opcode).dragTo(block, {
+      force: true,
+      targetPosition: {
+        x: 50,
+        y: 50,
+      },
+    });
+  }
+
+  async prependNewBlockTo(opcode: string, block: Locator) {
+    await this.scrollBlockIntoView(block);
+
+    await this.getBlockInToolbox(opcode).dragTo(block, {
+      force: true,
+      targetPosition: {
+        x: 50,
+        y: 0,
+      },
+    });
+  }
+
+  async countBlocksInStack(stack: Locator) {
     return stack.evaluate(
       (el) =>
-        // we want to count the blocks in the parent stack, hence we look for the parent element
-        // because closest also looks at the element itself, we need to go back up one level first
-        (el?.parentElement
+        (el
+          // querySelector only looks at the subtree but we also want to match the element itself
           ?.closest("g.blocklyDraggable")
-          ?.querySelectorAll(".blocklyDraggable").length || -1) + 1,
+          ?.querySelectorAll(".blocklyDraggable").length ?? -1) +
+        // therefore, we add 1 to account for the block matched by the closest call
+        // since querySelectorAll matches only the children
+        1,
     );
   }
 
@@ -146,7 +175,7 @@ export class ScratchEditorPage {
         (el
           ?.closest("g.blocklyDraggable:not(.blocklyDraggable g)")
           // again, because querySelector only looks at the subtree, we need to go back up another level
-          ?.querySelectorAll(".blocklyDraggable").length || -1) + 1,
+          ?.querySelectorAll(".blocklyDraggable").length ?? -1) + 1,
     );
   }
 }

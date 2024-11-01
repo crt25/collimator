@@ -129,7 +129,7 @@ const Edit = () => {
 
   return (
     <Gui
-      canEditTask={false}
+      canEditTask={true}
       isCostumesTabEnabled={true}
       isSoundsTabEnabled={true}
       onStorageInit={(storageInstance: {

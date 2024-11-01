@@ -7,6 +7,7 @@ import {
 } from "./mock-message-event";
 import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage } from "./page-objects/edit-task";
+import { Page } from "playwright/test";
 
 // eslint-disable-next-line no-undef
 const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
@@ -19,8 +20,46 @@ declare global {
   }
 }
 
+const loadTestTask = async (pwPage: Page) => {
+  await pwPage.evaluate(async () => {
+    const task = await fetch("https://example.com/test-task.sb3").then(
+      (response) => response.blob(),
+    );
+
+    const event = new window.MockMessageEvent(window.parent, {
+      id: 0,
+      type: "request",
+      procedure: "loadTask",
+      arguments: task,
+    });
+
+    window.dispatchEvent(event);
+  });
+
+  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
+
+  const messages = await pwPage.evaluate(() => window.postedMessages);
+
+  expect(messages).toHaveLength(1);
+
+  expect(messages[0].message).toEqual({
+    id: 0,
+    type: "response",
+    procedure: "loadTask",
+    result: undefined,
+  });
+};
+
 test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
+    page.route(/test-task.sb3$/, (route) =>
+      route.fulfill({
+        body: testTask,
+        contentType: "application/zip",
+        status: 200,
+      }),
+    );
+
     page.on(
       "framenavigated",
       async () =>
@@ -94,46 +133,11 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can load task via window.postMessage", async ({ page: pwPage }) => {
-    pwPage.route(/test-task.sb3$/, (route) =>
-      route.fulfill({
-        body: testTask,
-        contentType: "application/zip",
-        status: 200,
-      }),
-    );
-
-    await pwPage.evaluate(async () => {
-      const task = await fetch("https://example.com/test-task.sb3").then(
-        (response) => response.blob(),
-      );
-
-      const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
-        type: "request",
-        procedure: "loadTask",
-        arguments: task,
-      });
-
-      window.dispatchEvent(event);
-    });
-
-    await pwPage.waitForFunction(() => window.postedMessages.length > 0);
-
-    const messages = await pwPage.evaluate(() => window.postedMessages);
-
-    expect(messages).toHaveLength(1);
-
-    expect(messages[0].message).toEqual({
-      id: 0,
-      type: "response",
-      procedure: "loadTask",
-      result: undefined,
-    });
-
-    // ensure the block visibility is correctly loaded
+    await loadTestTask(pwPage);
 
     const page = new TestTaskPage(pwPage);
 
+    // check the block config buttons
     const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
     const { turnLeft } = page.disabledBlockConfigButtons;
 
@@ -149,6 +153,21 @@ test.describe("/edit/taskId", () => {
     await expect(goto).toHaveText("∞");
 
     await expect(turnLeft).toHaveText("0");
+
+    // check the freeze buttons
+    const editableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfEditableStack,
+    );
+    const frozenStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfFrozenStack,
+    );
+    const appendableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfAppendableStack,
+    );
+
+    await expect(editableStackButton).toHaveText("✎");
+    await expect(frozenStackButton).toHaveText("🛇");
+    await expect(appendableStackButton).toHaveText("+");
   });
 
   test("can update the block config to allow an arbitrary number of a given block", async ({
@@ -310,5 +329,41 @@ test.describe("/edit/taskId", () => {
 
     await expect(moveSteps).toHaveText("0");
     await expect(goto).toHaveText("0");
+  });
+
+  test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
+    await loadTestTask(pwPage);
+    const page = new TestTaskPage(pwPage);
+
+    const editableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfEditableStack,
+    );
+
+    await expect(editableStackButton).toHaveText("✎");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("🛇");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("+");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("✎");
+  });
+
+  test("can prepend blocks do all stacks", async ({ page: pwPage }) => {
+    await loadTestTask(pwPage);
+    const page = new TestTaskPage(pwPage);
+
+    const stacks = [
+      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.topOfFrozenStack,
+      page.taskBlocks.catActor.topOfAppendableStack,
+    ];
+
+    for (const stack of stacks) {
+      const blockCount = await page.countBlocksInStack(stack);
+
+      await page.prependNewBlockTo("motion_movesteps", stack);
+
+      expect(await page.countBlocksInParentStack(stack)).toBe(blockCount + 1);
+    }
   });
 });

@@ -4,7 +4,7 @@ import { BlockFreezeStates } from "./types";
 
 const svgNamespace = "http://www.w3.org/2000/svg";
 const buttonHeight = 20;
-const buttonWidth = 20;
+const buttonWidth = 30;
 
 const stateDisplayName: Record<BlockFreezeStates, string> = {
   [BlockFreezeStates.frozen]: "🛇",
