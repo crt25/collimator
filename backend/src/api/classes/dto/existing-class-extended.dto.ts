@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, Transform } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { ExistingClassTeacherDto } from "./existing-class-teacher.dto";
 
 type SessionList = { id: number }[];
