@@ -48,7 +48,7 @@ import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
@@ -73,7 +73,6 @@ const GUIComponent = (props: {
 
   // optional
   assetHost?: string;
-  children?: ReactNode;
   cloudHost?: string;
   fetchingProject?: boolean;
   isLoading?: boolean;
@@ -135,7 +134,6 @@ const GUIComponent = (props: {
     canEditTask,
     isCostumesTabEnabled,
     isSoundsTabEnabled,
-    children,
     connectionModalVisible,
     costumeLibraryVisible,
     costumesTabVisible,
