@@ -97,7 +97,7 @@ test.describe("/edit/taskId", () => {
     pwPage.route(/test-task.sb3$/, (route) =>
       route.fulfill({
         body: testTask,
-        contentType: "application/zip",
+        contentType: "application/x.scratch.sb3",
         status: 200,
       }),
     );
