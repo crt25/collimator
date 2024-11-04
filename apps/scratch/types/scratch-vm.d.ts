@@ -113,13 +113,12 @@ declare namespace VMExtended {
 
   export type RotationStyle = VM.RotationStyle;
 
-  export interface BlockExtended extends VM.Block {
+  type CrtBlock = import("./scratch-vm-custom").CrtBlock;
+
+  export interface BlockExtended extends VM.Block, CrtBlock {
     isMonitored: boolean;
     x: number;
     y: number;
-
-    // a property added by the CRT to mark a block as a task block
-    isTaskBlock?: boolean;
   }
 
   export interface BlocksExtended extends VM.Blocks {
@@ -182,61 +181,14 @@ declare namespace VMExtended {
   type EventEmitterArgs<Events, K extends keyof Events> = Events[K] extends Array<unknown> ? Events[K] : unknown[];
   type EventEmitterCallback<Events, K extends keyof Events> = (...args: Events[K] extends Array<unknown> ? Events[K] : unknown[]) => void
 
-  export interface RuntimeEventMapExtended extends VM.RuntimeEventMap {
+  type CrtEventMap = import("./scratch-vm-custom").CrtEventMap;
+
+  export interface RuntimeEventMapExtended extends VM.RuntimeEventMap, CrtEventMap {
     targetWasCreated: [
       // The new target
       TargetExtended,
       // The original target, if any. This will be set for clones.
       TargetExtended?
-    ];
-
-    /**
-     * Event emitted after the assertions extension has been loaded.
-     */
-    ASSERTIONS_EXTENSION_LOADED: [];
-
-    /**
-     * Event emitted to check if assertions are enabled.
-     */
-    ARE_ASSERTIONS_ENABLED_QUERY: [];
-
-    /**
-     * Event emitted as a response to the query for whether assertions are enabled.
-     */
-    ARE_ASSERTIONS_ENABLED_RESPONSE: [boolean];
-
-    /**
-     * Event emitted to enable assertions.
-     */
-    ENABLE_ASSERTIONS: [];
-
-    /**
-     * Event emitted when assertions are enabled.
-     */
-    ASSERTIONS_ENABLED: [];
-
-    /**
-     * Event emitted to disable assertions.
-     */
-    DISABLE_ASSERTIONS: [];
-
-    /**
-     * Event emitted when assertions are disabled.
-     */
-    ASSERTIONS_DISABLED: [];
-
-    /**
-     * Event emitted after the project's assertions have been evaluated.
-     * Note that there is no guarantee this event is ever emitted.
-     * It will only be emitted if the assertions extension is loaded.
-     * The first argument is a number indicating the total number of checked assertions
-     * and the checked assertions.
-     */
-    ASSERTIONS_CHECKED: [
-      // number of total assertions.
-      number,
-      // number of passed assertions.
-      number
     ];
   }
 
@@ -319,19 +271,6 @@ declare namespace VMExtended {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_motion.js#L47
     getMonitored?: () => Record<string, MonitorBlockInfo>;
   }
-
-  export interface ScratchCrtConfig {
-    /**
-     * A map from scratch opcode to a number that defines how many times
-     * a given block can be used.
-     */
-    allowedBlocks: import("../src/blocks/make-toolbox-xml").BlockLimits;
-
-    /**
-     * Whether initial task blocks can be edited.
-     */
-    freezeStateByBlockId: {[taskBlockId?: string]: import("../src/blocks/types").BlockFreezeStates | undefined };
-  }
 }
 
 declare class VMExtended extends VM {
@@ -360,7 +299,7 @@ declare class VMExtended extends VM {
   monitorBlockListener: Function;
 
   // add a custom config
-  crtConfig?: VMExtended.ScratchCrtConfig;
+  crtConfig?: import("./scratch-vm-custom").ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {

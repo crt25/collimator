@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
-import VM, { ScratchCrtConfig } from "scratch-vm";
+import VM from "scratch-vm";
 import Modal from "./modal/Modal";
 import {
   allowAllStandardBlocks,
@@ -9,6 +9,7 @@ import {
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
+import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 
 const TaskConfig = ({
   vm,

@@ -3,8 +3,8 @@ import { Buffer } from "buffer";
 import * as path from "path";
 import * as fs from "fs";
 import { zipDirectory } from "./helpers";
-import { ScratchCrtConfig } from "scratch-vm";
 import { BlockFreezeStates } from "../../../blocks/types";
+import { ScratchCrtConfig } from "../../../../types/scratch-vm-custom";
 
 type Task = {
   blocksOfMainTarget: number;
