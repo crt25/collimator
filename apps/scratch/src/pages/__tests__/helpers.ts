@@ -1,4 +1,4 @@
-import { ScratchCrtConfig } from "../../../types/scratch-vm-custom";
+import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 
 export const getExpectedBlockConfigButtonLabel = (
   crtConfig: ScratchCrtConfig,

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import VM from "scratch-vm";
 import { InjectedIntl, injectIntl } from "react-intl";
 
-import GUIComponent from "../components/gui/Gui";
+import GUIComponent from "../../components/customized-scratch-components/gui/Gui";
 import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
 import {
   getIsError,
@@ -36,7 +36,7 @@ import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isSc
 import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
 import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
-import { loadCrtProject } from "../vm/load-crt-project";
+import { loadCrtProject } from "../../vm/load-crt-project";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 

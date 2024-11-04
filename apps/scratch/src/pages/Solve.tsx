@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import Gui from "../containers/Gui";
+import Gui from "../containers/customized-scratch-containers/Gui";
 import VM from "scratch-vm";
 import { useCallback, useEffect, useState } from "react";
 import {

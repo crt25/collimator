@@ -22,12 +22,12 @@ import smallStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-
 import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
 import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar/icon--settings.svg";
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
-import Controls from "../../scratch/scratch-gui/src/containers/controls";
-import ToggleButtons from "../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
+import Controls from "../../../scratch/scratch-gui/src/containers/controls";
+import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import TaskConfig from "../TaskConfig";
-import AssertionsState from "../assertions-state/AssertionsState";
+import TaskConfig from "../../TaskConfig";
+import AssertionsState from "../../assertions-state/AssertionsState";
 
 const messages = defineMessages({
   largeStageSizeMessage: {

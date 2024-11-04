@@ -1,5 +1,5 @@
-import { BlockLimits } from "../src/blocks/make-toolbox-xml";
-import { BlockFreezeStates } from "../src/blocks/types";
+import { BlockLimits } from "../blocks/make-toolbox-xml";
+import { BlockFreezeStates } from "../blocks/types";
 
 export interface CrtBlock {
   isTaskBlock?: boolean;

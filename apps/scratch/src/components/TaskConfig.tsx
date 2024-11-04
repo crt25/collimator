@@ -9,7 +9,7 @@ import {
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
-import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 
 const TaskConfig = ({
   vm,

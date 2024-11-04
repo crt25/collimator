@@ -50,8 +50,8 @@ import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
 import { ReactNode, useEffect } from "react";
 
-import Blocks from "../../containers/Blocks";
-import TargetPane from "../../containers/TargetPane";
+import Blocks from "../../../containers/customized-scratch-containers/Blocks";
+import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
 
 const messages = defineMessages({

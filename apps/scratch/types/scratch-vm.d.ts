@@ -113,7 +113,7 @@ declare namespace VMExtended {
 
   export type RotationStyle = VM.RotationStyle;
 
-  type CrtBlock = import("./scratch-vm-custom").CrtBlock;
+  type CrtBlock = import("../src/types/scratch-vm-custom").CrtBlock;
 
   export interface BlockExtended extends VM.Block, CrtBlock {
     isMonitored: boolean;
@@ -181,7 +181,7 @@ declare namespace VMExtended {
   type EventEmitterArgs<Events, K extends keyof Events> = Events[K] extends Array<unknown> ? Events[K] : unknown[];
   type EventEmitterCallback<Events, K extends keyof Events> = (...args: Events[K] extends Array<unknown> ? Events[K] : unknown[]) => void
 
-  type CrtEventMap = import("./scratch-vm-custom").CrtEventMap;
+  type CrtEventMap = import("../src/types/scratch-vm-custom").CrtEventMap;
 
   export interface RuntimeEventMapExtended extends VM.RuntimeEventMap, CrtEventMap {
     targetWasCreated: [
@@ -299,7 +299,7 @@ declare class VMExtended extends VM {
   monitorBlockListener: Function;
 
   // add a custom config
-  crtConfig?: import("./scratch-vm-custom").ScratchCrtConfig;
+  crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {
