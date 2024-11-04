@@ -5,8 +5,6 @@ import {
 } from "./mock-message-event";
 import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage, Extension } from "./page-objects/edit-task";
-import { Page } from "playwright/test";
-import tasks from "./tasks";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
@@ -17,48 +15,8 @@ declare global {
   }
 }
 
-const task = tasks.testTask;
-
-const loadTestTask = async (pwPage: Page) => {
-  await pwPage.evaluate(async () => {
-    const task = await fetch("https://example.com/test-task.sb3").then(
-      (response) => response.blob(),
-    );
-
-    const event = new window.MockMessageEvent(window.parent, {
-      id: 0,
-      type: "request",
-      procedure: "loadTask",
-      arguments: task,
-    });
-
-    window.dispatchEvent(event);
-  });
-
-  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
-
-  const messages = await pwPage.evaluate(() => window.postedMessages);
-
-  expect(messages).toHaveLength(1);
-
-  expect(messages[0].message).toEqual({
-    id: 0,
-    type: "response",
-    procedure: "loadTask",
-    result: undefined,
-  });
-};
-
 test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.route(/test-task.sb3$/, async (route) =>
-      route.fulfill({
-        body: await task.file,
-        contentType: "application/x.scratch.sb3",
-        status: 200,
-      }),
-    );
-
     page.on(
       "framenavigated",
       async () =>
@@ -132,9 +90,7 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can load task via window.postMessage", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
 
     // check the block config buttons
     const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
@@ -342,8 +298,7 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const editableStackButton = page.getBlockFreezeButton(
       page.taskBlocks.catActor.topOfEditableStack,
@@ -359,8 +314,7 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can prepend blocks to all stacks", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const stacks = [
       page.taskBlocks.catActor.topOfEditableStack,

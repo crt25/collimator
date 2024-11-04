@@ -5,7 +5,6 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
-import tasks from "./tasks";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
@@ -15,8 +14,6 @@ declare global {
     MockMessageEvent: typeof MockMessageEvent;
   }
 }
-
-const task = tasks.testTask;
 
 test.describe("/solve/sessionId/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -38,42 +35,6 @@ test.describe("/solve/sessionId/taskId", () => {
     await page.waitForSelector("#root");
 
     await defineCustomMessageEvent(page);
-
-    page.route(/test-task.sb3$/, async (route) =>
-      route.fulfill({
-        body: await task.file,
-        contentType: "application/zip",
-        status: 200,
-      }),
-    );
-
-    await page.evaluate(async () => {
-      const task = await fetch("https://example.com/test-task.sb3").then(
-        (response) => response.blob(),
-      );
-
-      const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
-        type: "request",
-        procedure: "loadTask",
-        arguments: task,
-      });
-
-      window.dispatchEvent(event);
-    });
-
-    await page.waitForFunction(() => window.postedMessages.length > 0);
-
-    const messages = await page.evaluate(() => window.postedMessages);
-
-    expect(messages).toHaveLength(1);
-
-    expect(messages[0].message).toEqual({
-      id: 0,
-      type: "response",
-      procedure: "loadTask",
-      result: undefined,
-    });
   });
 
   test("can select the stage", async ({ page: pwPage }) => {
@@ -112,9 +73,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(2);
+    expect(messages).toHaveLength(1);
 
-    expect(messages[1].message).toEqual({
+    expect(messages[0].message).toEqual({
       id: 0,
       type: "response",
       procedure: "getHeight",
@@ -137,9 +98,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(2);
+    expect(messages).toHaveLength(1);
 
-    expect(messages[1].message).toEqual({
+    expect(messages[0].message).toEqual({
       id: 0,
       type: "response",
       procedure: "getSubmission",
@@ -149,7 +110,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("loads the initial task blocks", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(
       task.blocksOfMainTarget,
@@ -157,7 +118,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
 
     const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
     const { turnLeft } = page.disabledBlockConfigButtons;
@@ -181,7 +142,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("cannot open block config menu", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     await page.openBlockConfig("motion_movesteps", { force: true });
 
@@ -189,7 +150,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("reduces number of allowed blocks", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
     const moveStepsAllowedCount =
       task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
@@ -238,7 +199,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
     const moveStepsAllowedCount =
       task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
@@ -269,7 +230,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("cannot remove frozen blocks", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
 
@@ -281,7 +242,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("cannot remove frozen but appendable blocks", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     await expect(
       page.taskBlocks.catActor.visualTopOfAppendableStack,
@@ -295,7 +256,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("can prepend to editable stack", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.editableBlock,
@@ -313,7 +274,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("can append to editable stack", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.editableBlock,
@@ -333,7 +294,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("cannot prepend to top of frozen but appendable stack", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.visualTopOfAppendableStack,
@@ -354,7 +315,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("cannot append to top of frozen but appendable stack", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.visualTopOfAppendableStack,
@@ -375,7 +336,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("can append to bottom of frozen but appendable stack", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.visualTopOfAppendableStack,
@@ -396,7 +357,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("can append to empty slot in appendable stack", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.insertableSlot,
@@ -413,7 +374,7 @@ test.describe("/solve/sessionId/taskId", () => {
   });
 
   test("cannot open task config", async ({ page: pwPage }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     await expect(page.openTaskConfigButton).toHaveCount(0);
 
@@ -423,7 +384,7 @@ test.describe("/solve/sessionId/taskId", () => {
   test("removing initial blocks does not increase the limit", async ({
     page: pwPage,
   }) => {
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
 
     const { moveSteps, turnRight } = page.enabledBlockConfigButtons;
 

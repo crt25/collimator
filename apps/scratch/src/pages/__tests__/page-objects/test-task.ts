@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Page } from "playwright/test";
 import { getBlockConfigButtonSelector } from "../locators";
 import { ScratchEditorPage } from "./scratch-editor";
+import { loadTask } from "../helpers";
+import tasks, { TestTask } from "../tasks";
 
 export class TestTaskPage extends ScratchEditorPage {
+  private constructor(page: Page) {
+    super(page);
+  }
+
   get enabledBlockConfigButtons() {
     return {
       moveSteps: this.page.locator(
@@ -41,5 +48,13 @@ export class TestTaskPage extends ScratchEditorPage {
         insertableSlot: this.page.locator("[data-id='H{{dc|4tE3KZ#:7DEV7G']"),
       },
     };
+  }
+
+  static async load(
+    page: Page,
+  ): Promise<{ page: TestTaskPage; task: TestTask }> {
+    await loadTask(page, tasks.testTask);
+
+    return { page: new TestTaskPage(page), task: tasks.testTask };
   }
 }
