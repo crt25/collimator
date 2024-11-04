@@ -4,7 +4,7 @@ import VM from "scratch-vm";
 import { ArgumentType } from "../blocks/argument-type";
 import { BlockType } from "../blocks/block-type";
 
-import assertionsIconURL from "./assertions/music.png";
+import assertionsIconURL from "./assertions/assertions.svg";
 import assertionsInsetIconURL from "./assertions/test-icon-white.svg";
 
 export enum ExtensionId {
@@ -34,8 +34,9 @@ export interface ExtensionMetdataBlock {
   };
   hideFromPalette?: boolean;
   restartExistingThreads?: boolean;
-  // If true, scratch will continously run the block and starts the stack if the return value changes from false to true
-  // see https://github.com/scratchfoundation/scratch-vm/blob/develop/docs/extensions.md
+
+  // If true, scratch will continously run the block and starts the stack if the return value changes from false to true.
+  // If undefined it is assumed to be true.
   // Note however, that this causes some UI bugs such as https://github.com/scratchfoundation/scratch-vm/issues/1948
   isEdgeActivated?: boolean;
 }

@@ -19,7 +19,8 @@ const blockIconURI = testIconWhite;
 const menuIconURI = testIconBlack;
 
 type CustomState = {
-  allAssertionsTrue: boolean;
+  totalNumberOfAssertions: number;
+  numberOfPassedAssertions: number;
 };
 
 const EXTENSION_ID = ExtensionId.Assertions;
@@ -62,6 +63,7 @@ const setCustomState = (
 interface RememberedTargetState {
   currentCostume: number;
   volume: number;
+  customState: Partial<VM.CustomState>;
 }
 
 interface RememberedStageState extends RememberedTargetState {
@@ -89,7 +91,8 @@ interface RememberedSpriteState extends RememberedTargetState {
 class AssertionExtension {
   static readonly STATE_KEY = EXTENSION_ID;
   static readonly DEFAULT_STATE: CustomState = {
-    allAssertionsTrue: true,
+    numberOfPassedAssertions: 0,
+    totalNumberOfAssertions: 0,
   };
 
   /**
@@ -226,6 +229,7 @@ class AssertionExtension {
           volume: target.volume,
           tempo: target.tempo,
           videoTransparency: target.videoTransparency,
+          customState: target._customState,
         };
       } else if (target.isSprite()) {
         this.rememberedSpriteState[target.id] = {
@@ -239,6 +243,7 @@ class AssertionExtension {
           draggable: target.draggable,
           rotationStyle: target.rotationStyle,
           layerOrder: target.getLayerOrder(),
+          customState: target._customState,
         };
       }
     }
@@ -256,6 +261,8 @@ class AssertionExtension {
         target.volume = this.rememberedStageState.volume;
         target.tempo = this.rememberedStageState.tempo;
         target.videoTransparency = this.rememberedStageState.videoTransparency;
+
+        target._customState = this.rememberedStageState.customState;
       } else if (target.isSprite() && this.rememberedSpriteState[target.id]) {
         const state = this.rememberedSpriteState[target.id];
 
@@ -273,6 +280,8 @@ class AssertionExtension {
           state.layerOrder,
           "sprite",
         );
+
+        target._customState = state.customState;
       }
 
       // reset the assertions state for each target
@@ -280,7 +289,8 @@ class AssertionExtension {
 
       setCustomState(target, {
         ...state,
-        allAssertionsTrue: true,
+        numberOfPassedAssertions: 0,
+        totalNumberOfAssertions: 0,
       });
     });
   };
@@ -289,31 +299,56 @@ class AssertionExtension {
    * Callback for when the project stops running.
    */
   onProjectStop = (): void => {
-    if (!this.runningAssertions) {
-      // once the project has stopped running, check the assertions
+    const afterRunOpcode = `${EXTENSION_ID}_noop_whenTaskFinishedRunning`;
+
+    let projectHasAfterRunAssertions: boolean = false;
+    this.runtime.allScriptsByOpcodeDo(
+      afterRunOpcode,
+      () => (projectHasAfterRunAssertions = true),
+    );
+
+    if (projectHasAfterRunAssertions && !this.runningAssertions) {
+      // once the project has stopped running, check the after-run assertions
+      // note that after running them, we'll land in this method again
       this.runningAssertions = true;
 
       // see https://github.com/scratchfoundation/scratch-vm/blob/3867903e65ed9ed03cfeeb80a785457df7c2f099/src/blocks/scratch3_event.js#L12
-      this.runtime.startHats(`${EXTENSION_ID}_noop_whenTaskFinishedRunning`);
+      this.runtime.startHats(afterRunOpcode);
     } else {
-      // we just ran the assertions
+      // we just ran the after-run assertions
       this.runningAssertions = false;
 
-      this.onProjectAssertionsRun();
+      this.onProjectAssertionsRan();
     }
   };
 
   /**
    * Callback for when the project assertions were run.
    */
-  onProjectAssertionsRun = (): void => {
-    const allAssertionsPassed = this.runtime.targets.reduce((acc, target) => {
-      const state = getCustomState(target);
+  onProjectAssertionsRan = (): void => {
+    const { totalNumberOfAssertions, numberOfPassedAssertions } =
+      this.runtime.targets.reduce(
+        ({ totalNumberOfAssertions, numberOfPassedAssertions }, target) => {
+          const state = getCustomState(target);
 
-      return acc && state.allAssertionsTrue;
-    }, true);
+          return {
+            totalNumberOfAssertions:
+              totalNumberOfAssertions + state.totalNumberOfAssertions,
+            numberOfPassedAssertions:
+              numberOfPassedAssertions + state.numberOfPassedAssertions,
+          };
+        },
+        {
+          totalNumberOfAssertions: 0,
+          numberOfPassedAssertions: 0,
+        },
+      );
 
-    this.runtime.emit("ASSERTIONS_CHECKED", allAssertionsPassed);
+    this.runtime.emit(
+      "ASSERTIONS_CHECKED",
+      totalNumberOfAssertions,
+      numberOfPassedAssertions,
+    );
   };
 
   /**
@@ -342,6 +377,8 @@ class AssertionExtension {
           text: formatMessage({
             id: "crt.extensions.assertions.noop_whenTaskFinishedRunning",
             default: "when task finished running",
+            description:
+              "The name displayed on the scratch block that runs after the project has stopped running",
           }),
           blockType: BlockType.hat,
           isEdgeActivated: false,
@@ -389,7 +426,9 @@ class AssertionExtension {
 
     setCustomState(target, {
       ...state,
-      allAssertionsTrue: state.allAssertionsTrue && args.CONDITION,
+      totalNumberOfAssertions: state.totalNumberOfAssertions + 1,
+      numberOfPassedAssertions:
+        state.numberOfPassedAssertions + (args.CONDITION ? 1 : 0),
     });
   }
 }

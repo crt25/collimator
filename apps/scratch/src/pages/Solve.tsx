@@ -134,9 +134,9 @@ const Solve = () => {
         setVm(vm);
         patchScratchVm(vm);
       }}
-      onTaskSolved={() => {
+      onTaskProgress={(assertions: number, passedAssertions: number) => {
         // TODO: interact with the parent window
-        console.log("Task solved!");
+        console.log("Task solved!", assertions, passedAssertions);
       }}
     />
   );

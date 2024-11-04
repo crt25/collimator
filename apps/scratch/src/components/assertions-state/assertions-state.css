@@ -1,7 +1,14 @@
 .state {
   padding: 0.25rem;
   border-radius: 0.25rem;
-  background-color: #ff3355;
+  background-color: var(--assertions-default-color);
+  color: #fff;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  gap: 0.5rem;
 
   img {
     height: 20px;
@@ -10,9 +17,9 @@
 }
 
 .success {
-  background-color: #0b8e69;
+  background-color: var(--assertions-success-color);
 }
 
 .no-success {
-  background-color: #ff3355;
+  background-color: var(--assertions-default-color);
 }

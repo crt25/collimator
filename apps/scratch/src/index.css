@@ -13,6 +13,9 @@
   --input-border-color: #000;
   --input-background-color: #fff;
   --input-background-color-hover: #ddd;
+
+  --assertions-default-color: #ff3355;
+  --assertions-success-color: #0b8e69;
 }
 
 body {

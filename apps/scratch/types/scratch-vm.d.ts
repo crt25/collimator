@@ -229,11 +229,14 @@ declare namespace VMExtended {
      * Event emitted after the project's assertions have been evaluated.
      * Note that there is no guarantee this event is ever emitted.
      * It will only be emitted if the assertions extension is loaded.
-     * The first argument is a boolean indicating whether all assertions passed.
+     * The first argument is a number indicating the total number of checked assertions
+     * and the checked assertions.
      */
     ASSERTIONS_CHECKED: [
-      // whether all assertions passed.
-      boolean
+      // number of total assertions.
+      number,
+      // number of passed assertions.
+      number
     ];
   }
 
@@ -271,6 +274,8 @@ declare namespace VMExtended {
     getCustomState(name: string): CustomState | undefined;
     setCustomState(name: T, value: CustomState): void;
   }
+
+  export interface CustomState extends VM.CustomState {}
 
   export interface Monitor {
     get(name: string): unknown;
