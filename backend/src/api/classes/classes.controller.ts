@@ -14,6 +14,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
@@ -44,16 +45,18 @@ export class ClassesController {
   }
 
   @Get()
+  @ApiQuery({ name: "teacherId", required: false, type: Number })
   @ApiOkResponse({ type: ExistingClassTeacherDto, isArray: true })
   async findAll(
-    @Query("teacher", ParseIntPipe) teacher?: number,
+    @Query("teacherId", new ParseIntPipe({ optional: true }))
+    teacherId?: number,
   ): Promise<ExistingClassTeacherDto[]> {
     // TODO: add pagination support
 
     const classes = await this.classesService.listClassesWithTeacher({
       // TODO: Implement this properly when auth is available
       // TODO: Only allow teachers to see their own classes
-      where: !!teacher ? { teacherId: teacher } : undefined,
+      where: !!teacherId ? { teacherId } : undefined,
     });
 
     return classes.map((klass) =>
