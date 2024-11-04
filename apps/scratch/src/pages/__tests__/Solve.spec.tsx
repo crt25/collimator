@@ -447,6 +447,8 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const { page } = await AssertionTaskPage.load(pwPage);
 
+    await expect(page.assertionState.passed).toHaveCount(0);
+
     // solve task
     for (let i = 0; i < 5; i++) {
       await page.appendNewBlockToBottomOfStack(
@@ -465,7 +467,50 @@ test.describe("/solve/sessionId/taskId", () => {
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
-      id: 0,
+      id: expect.any(Number),
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        tests: 1,
+        passedTests: 1,
+      },
+    });
+  });
+
+  test("resets to the initial state when running", async ({ page: pwPage }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // run the project twice - by default scratch would not reset and the cat would
+    // be at position x = 100, violating the assertion
+    await page.pressGreenFlag();
+
+    // wait for results
+    await pwPage.waitForFunction(() => window.postedMessages.length === 2);
+
+    await page.pressGreenFlag();
+
+    // wait for results
+    await pwPage.waitForFunction(() => window.postedMessages.length === 3);
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(3);
+
+    expect(messages[2].message).toEqual({
+      id: expect.any(Number),
       type: "request",
       procedure: "reportProgress",
       arguments: {

@@ -6,6 +6,7 @@ import {
 import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage, Extension } from "./page-objects/edit-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import { AssertionTaskPage } from "./page-objects/assertion-task";
 
 declare global {
   interface Window {
@@ -329,5 +330,131 @@ test.describe("/edit/taskId", () => {
 
       expect(await page.countBlocksInParentStack(stack)).toBe(blockCount + 1);
     }
+  });
+
+  test("does not reset to the initial state when running", async ({
+    page: pwPage,
+  }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // run the project once with assertions disabled
+    await page.pressGreenFlag();
+
+    // then, enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project again. we expect the first run to persist and therefore
+    // the assertions to fail
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // no progress should be reported in edit mode
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+  });
+
+  test("resets to the initial state when running in assertion mode", async ({
+    page: pwPage,
+  }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 4; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project.
+    await page.pressGreenFlag();
+
+    // since we are missing one move steps, this should fail
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // however, after adding one more it should pass.
+    // note that without a reset, it will fail.
+    await page.appendNewBlockToBottomOfStack(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // no progress should be reported in edit mode
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // when disabling assertions, the state should disappear
+    await editPage.disableAssertions();
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+    await expect(page.assertionState.total).toHaveCount(0);
+  });
+
+  test.only("can disable assertion mode", async ({ page: pwPage }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    // enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project.
+    await page.pressGreenFlag();
+
+    // since we did not solve the task, this should fail
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // disable assertions should make the assertion state disappear
+    await editPage.disableAssertions();
+    await expect(page.assertionState.passed).toHaveCount(0);
+    await expect(page.assertionState.total).toHaveCount(0);
+
+    // when adding a block and running the project four times
+    // we should be in the asserted state after a firth and final run
+    await page.appendNewBlockToBottomOfStack(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
+    for (let i = 0; i < 4; i++) {
+      await page.pressGreenFlag();
+    }
+
+    // hence, if we enable assertions now and run the project,
+    // we should succeed
+    await editPage.enableAssertions();
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
   });
 });

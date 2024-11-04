@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { expect } from "playwright/test";
 import {
   getBlockConfigBlockLimitInputSelector,
   getBlockConfigCanBeUsedCheckboxSelector,
@@ -37,6 +38,9 @@ export class EditTaskPage extends ScratchEditorPage {
         "allow-all-standard-blocks-button",
       ),
       allowNoBlocksButton: this.page.getByTestId("allow-no-blocks-button"),
+      enableAssertionsCheckbox: this.page.getByTestId(
+        "enable-assertions-checkbox",
+      ),
       submit: this.page.getByTestId("task-config-form-submit-button"),
     };
   }
@@ -50,5 +54,34 @@ export class EditTaskPage extends ScratchEditorPage {
       .locator(".ReactModalPortal img")
       .nth(extension + 1 /* skip first image */)
       .click();
+  }
+
+  async enableAssertions() {
+    await this.openTaskConfig();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).not.toBeChecked();
+
+    await this.taskConfigFormElements.enableAssertionsCheckbox.click();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).toBeChecked();
+    await this.taskConfigFormElements.submit.click();
+  }
+
+  async disableAssertions() {
+    await this.openTaskConfig();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).toBeChecked();
+    await this.taskConfigFormElements.enableAssertionsCheckbox.click();
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).not.toBeChecked();
+
+    await this.taskConfigFormElements.submit.click();
   }
 }

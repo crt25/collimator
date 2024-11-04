@@ -161,10 +161,6 @@ const GUIComponent = (props: {
     ...componentProps
   } = omit(props, "dispatch");
 
-  if (children) {
-    return <Box {...componentProps}>{children}</Box>;
-  }
-
   const tabClassNames = {
     tabs: styles.tabs,
     tab: classNames(tabStyles.reactTabsTab, styles.tab),
