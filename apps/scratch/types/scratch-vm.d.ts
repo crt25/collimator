@@ -257,7 +257,7 @@ declare namespace VMExtended {
     /**
      * Whether initial task blocks can be edited.
      */
-    taskBlockIds: {[taskBlockId?: string]: import("../src/blocks/types").BlockFreezeStates | undefined };
+    freezeStateByBlockId: {[taskBlockId?: string]: import("../src/blocks/types").BlockFreezeStates | undefined };
   }
 }
 

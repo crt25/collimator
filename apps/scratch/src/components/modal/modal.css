@@ -17,11 +17,11 @@
 .modal {
   margin-top: 2rem;
   padding: 2rem;
-  border-radius: 0.25rem;
+  border-radius: --border-radius;
 
   min-width: 40vw;
 
-  background-color: #fff;
+  background-color: var(--modal-background-color);
 }
 
 .modal h1 {
@@ -40,22 +40,22 @@
 
 .modal label input {
   padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  border: #000 1px solid;
+  border-radius: var(--border-radius);
+  border: var(--input-border-color) 1px solid;
 }
 
 .modal button, .modal input[type="submit"] {
   display: block;
   margin-bottom: 1rem;
 
-  background: #fff;
-  border: #000 1px solid;
-  border-radius: 0.25rem;
+  background: var(--input-background-color);
+  border: var(--input-border-color) 1px solid;
+  border-radius: var(--border-radius);
   padding: 0.25rem 0.5rem;
 
   cursor: pointer;
 }
 
 .modal button:hover, .modal input[type="submit"]:hover {
-  background-color: #ddd;
+  background-color: var(--input-background-color-hover);
 }

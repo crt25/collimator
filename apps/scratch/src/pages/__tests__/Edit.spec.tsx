@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
 import {
   defineCustomMessageEvent,
@@ -8,9 +6,8 @@ import {
 import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage } from "./page-objects/edit-task";
 import { Page } from "playwright/test";
-
-// eslint-disable-next-line no-undef
-const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
+import tasks from "./tasks";
+import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
   interface Window {
@@ -19,6 +16,8 @@ declare global {
     MockMessageEvent: typeof MockMessageEvent;
   }
 }
+
+const task = tasks.testTask;
 
 const loadTestTask = async (pwPage: Page) => {
   await pwPage.evaluate(async () => {
@@ -52,9 +51,9 @@ const loadTestTask = async (pwPage: Page) => {
 
 test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.route(/test-task.sb3$/, (route) =>
+    page.route(/test-task.sb3$/, async (route) =>
       route.fulfill({
-        body: testTask,
+        body: await task.file,
         contentType: "application/x.scratch.sb3",
         status: 200,
       }),
@@ -148,11 +147,19 @@ test.describe("/edit/taskId", () => {
     await expect(turnLeft).toHaveCount(1);
 
     // then assert that the correct labels are shown
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
-    await expect(goto).toHaveText("∞");
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+    await expect(goto).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_goto"),
+    );
 
-    await expect(turnLeft).toHaveText("0");
+    await expect(turnLeft).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnleft"),
+    );
 
     // check the freeze buttons
     const editableStackButton = page.getBlockFreezeButton(
@@ -162,7 +169,7 @@ test.describe("/edit/taskId", () => {
       page.taskBlocks.catActor.topOfFrozenStack,
     );
     const appendableStackButton = page.getBlockFreezeButton(
-      page.taskBlocks.catActor.topOfAppendableStack,
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await expect(editableStackButton).toHaveText("✎");
@@ -317,6 +324,7 @@ test.describe("/edit/taskId", () => {
     // ensure the block's label is updated
     await expect(moveSteps).toHaveText("5");
 
+    // ensure other labels did not change
     await expect(goto).toHaveText("0");
 
     await page.openTaskConfig();
@@ -348,18 +356,18 @@ test.describe("/edit/taskId", () => {
     await expect(editableStackButton).toHaveText("✎");
   });
 
-  test("can prepend blocks do all stacks", async ({ page: pwPage }) => {
+  test("can prepend blocks to all stacks", async ({ page: pwPage }) => {
     await loadTestTask(pwPage);
     const page = new TestTaskPage(pwPage);
 
     const stacks = [
       page.taskBlocks.catActor.topOfEditableStack,
       page.taskBlocks.catActor.topOfFrozenStack,
-      page.taskBlocks.catActor.topOfAppendableStack,
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     ];
 
     for (const stack of stacks) {
-      const blockCount = await page.countBlocksInStack(stack);
+      const blockCount = await page.countBlocksInParentStack(stack);
 
       await page.prependNewBlockTo("motion_movesteps", stack);
 

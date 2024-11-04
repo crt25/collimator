@@ -65,6 +65,13 @@ import {
   freezeTaskBlocks,
   removeFreezeButtons,
 } from "../blocks/freeze-task-blocks";
+import {
+  isBlockBeingDragged,
+  isBlockInsertionMarker,
+  isBlocksCanvas,
+  isWithinStack,
+  isVisualTopOfStack,
+} from "../utilities/scratch-selectors";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
@@ -342,9 +349,7 @@ class Blocks extends React.Component<Props, State> {
     );
 
     // observe the block canvas for when a new block is added to the svg
-    const canvas = this.blocks.querySelector(
-      "svg.blocklySvg .blocklyBlockCanvas",
-    );
+    const canvas = this.blocks.querySelector(isBlocksCanvas);
 
     if (!canvas) {
       throw new Error("Could not find the block canvas");
@@ -356,7 +361,7 @@ class Blocks extends React.Component<Props, State> {
     // trigger onNewStacks for any existing stacks
     this.onNewStacks([
       ...this.blocks.querySelectorAll<SVGGElement>(
-        "svg.blocklySvg .blocklyBlockCanvas g.blocklyDraggable[data-id]:not(g.blocklyDraggable[data-id] g)",
+        `${isBlocksCanvas} ${isVisualTopOfStack}`,
       ),
     ]);
   }
@@ -842,7 +847,7 @@ class Blocks extends React.Component<Props, State> {
         change.type === "childList" &&
         // we only care about nodes added to the block canvas
         change.target instanceof Element &&
-        change.target.classList.contains("blocklyBlockCanvas"),
+        change.target.matches(isBlocksCanvas),
     );
 
     // handle new block stacks
@@ -855,17 +860,15 @@ class Blocks extends React.Component<Props, State> {
             // filter out non svg groups
             node instanceof SVGGElement &&
             // filter out blocks that are being dragged
-            !node.classList.contains("blocklyDraggingDelete") &&
+            !node.matches(isBlockBeingDragged) &&
             // and any insertion markers
-            !node.classList.contains("blocklyInsertionMarker") &&
+            !node.matches(isBlockInsertionMarker) &&
             // and filter out non-stack blocks (i.e. they must not be a child of another block)
-            node.matches(
-              "g.blocklyDraggable[data-id][data-shapes='stack']:not(g.blocklyDraggable[data-id] g)",
-            ),
+            node.matches(isVisualTopOfStack),
         ),
     );
 
-    // handle merged block stacks
+    // handle deleted block stacks
     blockChanges
       // we only care about removed nodes
       .flatMap((change) => [...change.removedNodes])
@@ -873,11 +876,11 @@ class Blocks extends React.Component<Props, State> {
         (node): node is SVGGElement =>
           node instanceof SVGGElement &&
           // filter out blocks that are being dragged
-          !node.classList.contains("blocklyDragging") &&
+          !node.matches(isBlockBeingDragged) &&
           // and any insertion markers
-          !node.classList.contains("blocklyInsertionMarker") &&
+          !node.matches(isBlockInsertionMarker) &&
           // only select blocks that are part of a stack (and not the top of the stack)
-          node.matches("g.blocklyDraggable g.blocklyDraggable"),
+          node.matches(isWithinStack),
       )
       .forEach((node) => removeFreezeButtons(this.props.vm, node));
   }
@@ -1048,7 +1051,7 @@ class Blocks extends React.Component<Props, State> {
 
       if (event.type === "delete" && event.blockId && this.props.canEditTask) {
         // remove the config for this task block
-        delete this.props.vm.crtConfig?.taskBlockIds[event.blockId];
+        delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
       }
     }
   }
