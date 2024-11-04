@@ -32,10 +32,10 @@ export class TestTaskPage extends ScratchEditorPage {
         editableBlock: this.page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"),
         topOfFrozenStack: this.page.locator("[data-id='*t~VMcxLD[(lt8Ja;s#-']"),
         frozenBlock: this.page.locator("[data-id='!cHbf-/Rw+|=pKw:^+M+']"),
-        topOfAppendableStack: this.page.locator(
+        visualTopOfAppendableStack: this.page.locator(
           "[data-id='iY}I[=PNCjG}GzJS1G/X']",
         ),
-        bottomOfAppendableStack: this.page.locator(
+        visualBottomOfAppendableStack: this.page.locator(
           "[data-id='6eyuS~n}^ivm:]/DnM$+']",
         ),
         insertableSlot: this.page.locator("[data-id='H{{dc|4tE3KZ#:7DEV7G']"),

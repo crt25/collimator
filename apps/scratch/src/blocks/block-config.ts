@@ -1,9 +1,16 @@
 import VM from "scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
 import { ignoreEvent, svgNamespace } from "./helpers";
+import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
 
 const buttonHeight = 20;
 const buttonWidth = 60;
+
+const blockConfigClass = "block-config-button";
+const blockConfigTestId = "block-config-button";
+
+const enabledButtonClass = "enabled-block-button";
+const disabledButtonClass = "disabled-block-button";
 
 const getBlockId = (dataId: string): string => {
   // some blocks prefix the block type with the target id followed by a double underscore
@@ -55,9 +62,7 @@ export const countUsedBlocks = (
   );
 
 const getBlockElements = (container: HTMLElement): SVGGElement[] => [
-  ...container.querySelectorAll<SVGGElement>(
-    "svg.blocklyFlyout .blocklyBlockCanvas g.blocklyDraggable[data-id]",
-  ),
+  ...container.querySelectorAll<SVGGElement>(isBlockInFlyoutCanvas),
 ];
 
 const updateBlockConfigButton = (
@@ -95,8 +100,9 @@ const updateBlockConfigButton = (
 
   group.setAttribute(
     "class",
-    "block-config-button " +
-      (isBlockEnabled ? "enabled-block-button" : "disabled-block-button"),
+    blockConfigClass +
+      " " +
+      (isBlockEnabled ? enabledButtonClass : disabledButtonClass),
   );
 
   if (isBlockEnabled || canEditTask) {
@@ -198,14 +204,14 @@ export const addBlockConfigButtons = (
     }
 
     // ensure the buttons are not already present
-    if (block.querySelector("g.block-config-button")) {
+    if (block.querySelector(`g.${blockConfigClass}`)) {
       return;
     }
 
     const group = document.createElementNS(svgNamespace, "g");
 
-    group.setAttribute("class", "block-config-button");
-    group.setAttribute("data-testid", "block-config-button");
+    group.setAttribute("class", blockConfigClass);
+    group.setAttribute("data-testid", blockConfigTestId);
     group.setAttribute("transform", `translate(0, -10)`);
     group.addEventListener("click", canEditTask ? onSetCount : ignoreEvent);
     group.addEventListener("mousedown", ignoreEvent);

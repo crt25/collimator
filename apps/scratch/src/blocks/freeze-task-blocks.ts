@@ -1,10 +1,16 @@
 import VM from "scratch-vm";
-import { ignoreEvent } from "./helpers";
+import { ignoreEvent, svgNamespace } from "./helpers";
 import { BlockFreezeStates } from "./types";
+import {
+  isScratchBlock,
+  isVisualTopOfStackWithId,
+} from "../utilities/scratch-selectors";
 
-const svgNamespace = "http://www.w3.org/2000/svg";
 const buttonHeight = 20;
 const buttonWidth = 30;
+const freezeBlockButtonClass = "stack-freeze-button";
+const freezeBlockButtonTestId = "stack-freeze-button";
+const isFreezeBlockButton = `g.${freezeBlockButtonClass}`;
 
 const stateDisplayName: Record<BlockFreezeStates, string> = {
   [BlockFreezeStates.frozen]: "🛇",
@@ -26,7 +32,7 @@ const updateStackFreezeButton = (
   state: BlockFreezeStates | undefined,
   canEditTask?: boolean,
 ): void => {
-  const group = stack.querySelector<SVGGElement>("g.stack-freeze-button");
+  const group = stack.querySelector<SVGGElement>(isFreezeBlockButton);
   const s = state ?? defaultState;
 
   const showButton =
@@ -40,7 +46,7 @@ const updateStackFreezeButton = (
 
   group.setAttribute(
     "class",
-    showButton ? "stack-freeze-button" : "stack-freeze-button d-none",
+    showButton ? freezeBlockButtonClass : `${freezeBlockButtonClass} d-none`,
   );
 
   const text = group.querySelector<SVGTextElement>("text");
@@ -55,7 +61,7 @@ export const addFreezeButtonsToStack = (
   canEditTask?: boolean,
 ): void => {
   // ensure the buttons are not already present
-  if (stack.querySelector("g.stack-freeze-button")) {
+  if (stack.querySelector(isFreezeBlockButton)) {
     return;
   }
 
@@ -72,13 +78,13 @@ export const addFreezeButtonsToStack = (
       const config = vm.crtConfig;
 
       if (config) {
-        config.taskBlockIds[blockId] = getNextState(
-          config.taskBlockIds[blockId],
+        config.freezeStateByBlockId[blockId] = getNextState(
+          config.freezeStateByBlockId[blockId],
         );
 
         updateStackFreezeButton(
           stack,
-          config.taskBlockIds[blockId],
+          config.freezeStateByBlockId[blockId],
           canEditTask,
         );
       }
@@ -87,8 +93,8 @@ export const addFreezeButtonsToStack = (
 
   const group = document.createElementNS(svgNamespace, "g");
 
-  group.setAttribute("class", "stack-freeze-button");
-  group.setAttribute("data-testid", "stack-freeze-button");
+  group.setAttribute("class", freezeBlockButtonClass);
+  group.setAttribute("data-testid", freezeBlockButtonTestId);
   group.setAttribute("transform", `translate(0, -10)`);
   group.addEventListener(
     "click",
@@ -118,7 +124,7 @@ export const addFreezeButtonsToStack = (
 
   updateStackFreezeButton(
     stack,
-    vm.crtConfig?.taskBlockIds[blockId],
+    vm.crtConfig?.freezeStateByBlockId[blockId],
     canEditTask,
   );
 };
@@ -130,25 +136,25 @@ export const removeFreezeButtons = (vm: VM, stack: SVGGElement): void => {
     return;
   }
 
-  delete config.taskBlockIds[blockId];
-  stack.querySelector("g.stack-freeze-button")?.remove();
+  delete config.freezeStateByBlockId[blockId];
+  stack.querySelector(isFreezeBlockButton)?.remove();
 };
 
 export const freezeTaskBlocks = (vm: VM, container: HTMLElement): void => {
-  // by default a stack is editable
-  const stateByBlockId = vm.crtConfig?.taskBlockIds ?? {};
+  const stateByBlockId = Object.entries(
+    // by default a stack is editable, i.e. does not have an entry
+    vm.crtConfig?.freezeStateByBlockId ?? {},
+  ).filter(([_, state]) => state !== BlockFreezeStates.editable);
 
-  for (const [taskBlockId, freezeState] of Object.entries(
-    stateByBlockId,
-  ).filter(([_, state]) => state !== BlockFreezeStates.editable)) {
+  for (const [taskBlockId, freezeState] of stateByBlockId) {
     const stack = container.querySelector<SVGGElement>(
-      `svg.blocklySvg .blocklyBlockCanvas g.blocklyDraggable[data-id='${taskBlockId}']:not(g.blocklyDraggable g)`,
+      isVisualTopOfStackWithId(taskBlockId),
     );
 
     // add the frozen class to all blocks in the stack
     stack?.classList.add(`frozen-block-${freezeState}`);
     stack
-      ?.querySelectorAll("g.blocklyDraggable")
+      ?.querySelectorAll(isScratchBlock)
       .forEach((block) => block.classList.add(`frozen-block-${freezeState}`));
   }
 };

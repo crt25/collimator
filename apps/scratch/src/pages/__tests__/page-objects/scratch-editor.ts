@@ -7,6 +7,11 @@ import {
   getBlockConfigFormSelector,
   getFlyoutSelector,
 } from "../locators";
+import {
+  isBlockWitOpCodeInFlyoutCanvas,
+  isScratchBlock,
+  isVisualTopOfStack,
+} from "../../../utilities/scratch-selectors";
 
 export class ScratchEditorPage {
   protected readonly page: Page;
@@ -74,7 +79,7 @@ export class ScratchEditorPage {
   }
 
   getBlockInToolbox(opcode: string) {
-    return this.page.locator(`${getFlyoutSelector()} [data-id='${opcode}']`);
+    return this.page.locator(isBlockWitOpCodeInFlyoutCanvas(opcode));
   }
 
   enableFullScreen() {
@@ -156,26 +161,26 @@ export class ScratchEditorPage {
     });
   }
 
-  async countBlocksInStack(stack: Locator) {
+  async countBlocksInSubStack(stack: Locator) {
     return stack.evaluate(
-      (el) =>
-        (el
-          // querySelector only looks at the subtree but we also want to match the element itself
-          ?.closest("g.blocklyDraggable")
-          ?.querySelectorAll(".blocklyDraggable").length ?? -1) +
-        // therefore, we add 1 to account for the block matched by the closest call
-        // since querySelectorAll matches only the children
-        1,
+      (el, isScratchBlock) => el.querySelectorAll(isScratchBlock).length,
+      isScratchBlock,
     );
   }
 
   async countBlocksInParentStack(stack: Locator) {
     return stack.evaluate(
-      (el) =>
-        (el
-          ?.closest("g.blocklyDraggable:not(.blocklyDraggable g)")
-          // again, because querySelector only looks at the subtree, we need to go back up another level
-          ?.querySelectorAll(".blocklyDraggable").length ?? -1) + 1,
+      (el, { isScratchBlock, isVisualTopOfStack }) =>
+        // find the closest parent block in the same block stack
+        // which itself is not a child of another block, i.e.
+        // the visual top of the stack.
+        // next, query all children and count the number of draggable blocks.
+        // note that we first do .parentElement because querySelectorAll
+        // does not consider the element it is executed on
+        el
+          .closest(isVisualTopOfStack)
+          ?.parentElement?.querySelectorAll(isScratchBlock).length ?? 0,
+      { isVisualTopOfStack, isScratchBlock },
     );
   }
 }

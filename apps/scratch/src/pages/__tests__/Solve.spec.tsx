@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
 import {
   defineCustomMessageEvent,
@@ -7,9 +5,8 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
-
-// eslint-disable-next-line no-undef
-const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
+import tasks from "./tasks";
+import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
   interface Window {
@@ -18,6 +15,8 @@ declare global {
     MockMessageEvent: typeof MockMessageEvent;
   }
 }
+
+const task = tasks.testTask;
 
 test.describe("/solve/sessionId/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -40,9 +39,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await defineCustomMessageEvent(page);
 
-    page.route(/test-task.sb3$/, (route) =>
+    page.route(/test-task.sb3$/, async (route) =>
       route.fulfill({
-        body: testTask,
+        body: await task.file,
         contentType: "application/zip",
         status: 200,
       }),
@@ -88,10 +87,12 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can toggle fullscreen", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
-    await page.enableFullScreen();
 
+    expect(page.fullscreenButton).toHaveCount(1);
+    await page.enableFullScreen();
     expect(page.fullscreenButton).toHaveCount(0);
 
+    expect(page.unFullscreenButton).toHaveCount(1);
     await page.disableFullScreen();
     expect(page.unFullscreenButton).toHaveCount(0);
   });
@@ -150,7 +151,9 @@ test.describe("/solve/sessionId/taskId", () => {
   test("loads the initial task blocks", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
   });
 
   test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
@@ -166,9 +169,15 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(turnLeft).toHaveCount(0);
 
     // then assert that the correct labels are shown
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
-    await expect(goto).toHaveText("∞");
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+    await expect(goto).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_goto"),
+    );
   });
 
   test("cannot open block config menu", async ({ page: pwPage }) => {
@@ -181,28 +190,37 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("reduces number of allowed blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
-    await expect(moveSteps).toHaveText("7");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    await expect(moveSteps).toHaveText(moveStepsAllowedCount.toString());
 
     await page.appendNewBlockTo(
       "motion_movesteps",
       page.taskBlocks.catActor.editableBlock,
     );
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(10);
-    await expect(moveSteps).toHaveText("6");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < moveStepsAllowedCount - 1; i++) {
       await page.appendNewBlockTo(
         "motion_movesteps",
         page.taskBlocks.catActor.editableBlock,
       );
     }
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(16);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
     await expect(moveSteps).toHaveText("0");
 
     // now it should not be possible to add another block
@@ -212,30 +230,42 @@ test.describe("/solve/sessionId/taskId", () => {
     );
 
     await expect(moveSteps).toHaveText("0");
-    await expect(page.blocksOfCurrentTarget).toHaveCount(16);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
   });
 
   test("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {
     const page = new TestTaskPage(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
 
     await page.appendNewBlockTo(
       "motion_movesteps",
       page.taskBlocks.catActor.editableBlock,
     );
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(10);
-    await expect(moveSteps).toHaveText("6");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
 
     await page.removeAllNonFrozenBlocks();
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(7);
-    await expect(moveSteps).toHaveText("7");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget - task.frozenBlocksOfMainTarget,
+    );
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
   });
 
   test("cannot remove frozen blocks", async ({ page: pwPage }) => {
@@ -253,17 +283,21 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const page = new TestTaskPage(pwPage);
 
-    await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
 
-    await page.removeBlock(page.taskBlocks.catActor.topOfAppendableStack);
+    await page.removeBlock(page.taskBlocks.catActor.visualTopOfAppendableStack);
 
-    await expect(page.taskBlocks.catActor.topOfAppendableStack).toHaveCount(1);
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
   });
 
   test("can prepend to editable stack", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
+    const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.editableBlock,
     );
 
@@ -274,14 +308,14 @@ test.describe("/solve/sessionId/taskId", () => {
 
     // nothing should be added to this stack
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.editableBlock),
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
     ).resolves.toBe(initialBlocksInStack);
   });
 
   test("can append to editable stack", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
+    const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.editableBlock,
     );
 
@@ -292,7 +326,7 @@ test.describe("/solve/sessionId/taskId", () => {
 
     // nothing should be added to this stack
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.editableBlock),
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
     ).resolves.toBe(initialBlocksInStack + 1);
   });
 
@@ -301,17 +335,19 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
-      page.taskBlocks.catActor.topOfAppendableStack,
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await page.prependNewBlockTo(
       "motion_movesteps",
-      page.taskBlocks.catActor.topOfAppendableStack,
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
     ).resolves.toBe(initialBlocksInStack);
   });
 
@@ -320,17 +356,19 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
-      page.taskBlocks.catActor.topOfAppendableStack,
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await page.appendNewBlockTo(
       "motion_movesteps",
-      page.taskBlocks.catActor.topOfAppendableStack,
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
     ).resolves.toBe(initialBlocksInStack);
   });
 
@@ -339,17 +377,19 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
-      page.taskBlocks.catActor.topOfAppendableStack,
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
     await page.appendNewBlockTo(
       "motion_movesteps",
-      page.taskBlocks.catActor.bottomOfAppendableStack,
+      page.taskBlocks.catActor.visualBottomOfAppendableStack,
     );
 
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.topOfAppendableStack),
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
     ).resolves.toBe(initialBlocksInStack + 1);
   });
 
@@ -358,7 +398,7 @@ test.describe("/solve/sessionId/taskId", () => {
   }) => {
     const page = new TestTaskPage(pwPage);
 
-    const initialBlocksInStack = await page.countBlocksInStack(
+    const initialBlocksInStack = await page.countBlocksInSubStack(
       page.taskBlocks.catActor.insertableSlot,
     );
 
@@ -368,7 +408,7 @@ test.describe("/solve/sessionId/taskId", () => {
     );
 
     await expect(
-      page.countBlocksInStack(page.taskBlocks.catActor.insertableSlot),
+      page.countBlocksInSubStack(page.taskBlocks.catActor.insertableSlot),
     ).resolves.toBe(initialBlocksInStack + 1);
   });
 
@@ -392,7 +432,11 @@ test.describe("/solve/sessionId/taskId", () => {
     await page.removeBlock(page.taskBlocks.catActor.editableBlock);
 
     await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
   });
 });
