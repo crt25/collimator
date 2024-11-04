@@ -10,6 +10,7 @@ import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { FormattedMessage } from "react-intl";
 
 const TaskConfig = ({
   vm,
@@ -101,23 +102,41 @@ const TaskConfig = ({
 
   return (
     <Modal isShown={isShown}>
-      <h1>Task Config</h1>
+      <h1>
+        <FormattedMessage
+          defaultMessage="Task Config"
+          description="Heading of the task config modal."
+          id="crt.taskConfig.heading"
+        />
+      </h1>
 
       <form onSubmit={onSubmit} data-testid="task-config-form">
         <button
           onClick={onAllowAllStandardBlocks}
           data-testid="allow-all-standard-blocks-button"
         >
-          Allow all standard blocks to be used
+          <FormattedMessage
+            defaultMessage="Allow all standard blocks to be used"
+            description="Label shown on the button that, when clicked, allows all standard blocks to be used by students."
+            id="crt.taskConfig.heading"
+          />
         </button>
         <button onClick={onAllowNoBlocks} data-testid="allow-no-blocks-button">
-          Disallow any block to be used
+          <FormattedMessage
+            defaultMessage="Disallow all blocks"
+            description="Label shown on the button that, when clicked, disallows all blocks from being used by students."
+            id="crt.taskConfig.heading"
+          />
         </button>
 
         {isAssertionsExtensionEnabled && (
           <label>
             <span>
-              Enable assertions simulating a student solving the task.
+              <FormattedMessage
+                defaultMessage="Enable assertions simulating a student solving the task."
+                description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
+                id="crt.taskConfig.heading"
+              />
             </span>
             <input
               type="checkbox"
