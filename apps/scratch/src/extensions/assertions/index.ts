@@ -299,7 +299,7 @@ class AssertionExtension {
    * Callback for when the project stops running.
    */
   onProjectStop = (): void => {
-    const afterRunOpcode = `${EXTENSION_ID}_noop_whenTaskFinishedRunning`;
+    const afterRunOpcode = `${EXTENSION_ID}_event_whenTaskFinishedRunning`;
 
     let projectHasAfterRunAssertions: boolean = false;
     this.runtime.allScriptsByOpcodeDo(
@@ -373,9 +373,9 @@ class AssertionExtension {
       blockIconURI,
       blocks: [
         {
-          opcode: "noop_whenTaskFinishedRunning",
+          opcode: "event_whenTaskFinishedRunning",
           text: formatMessage({
-            id: "crt.extensions.assertions.noop_whenTaskFinishedRunning",
+            id: "crt.extensions.assertions.event_whenTaskFinishedRunning",
             default: "when task finished running",
             description:
               "The name displayed on the scratch block that runs after the project has stopped running",
@@ -407,7 +407,7 @@ class AssertionExtension {
   /**
    * A scratch hat block that is triggered when the task has finished running.
    */
-  noop_whenTaskFinishedRunning(
+  event_whenTaskFinishedRunning(
     _args: unknown,
     _util: ExtensionUtilType,
   ): boolean {
