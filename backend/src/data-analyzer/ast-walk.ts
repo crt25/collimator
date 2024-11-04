@@ -4,7 +4,29 @@ import {
   ExpressionNode,
   ExpressionNodeType,
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
+import { isNonNull } from "src/utilities/is-non-null";
 import { match } from "ts-pattern";
+
+export enum AstWalkSignal {
+  continueWalking,
+  stopWalking,
+}
+
+/**
+ * Sequentially execute the passed (non-null) functions and
+ * stop as soon as one of them returns a stop signal.
+ */
+const performWalksUntilStop = (
+  walkFunctions: (null | (() => AstWalkSignal))[],
+): AstWalkSignal => {
+  for (const fn of walkFunctions.filter(isNonNull)) {
+    if (fn() === AstWalkSignal.stopWalking) {
+      return AstWalkSignal.stopWalking;
+    }
+  }
+
+  return AstWalkSignal.continueWalking;
+};
 
 /**
  * Walks through all statements in the AST and calls the callback for each statement.
@@ -14,35 +36,41 @@ import { match } from "ts-pattern";
  */
 const walkExpression = (
   node: ExpressionNode,
-  expressionCallback: (node: ExpressionNode) => boolean,
+  expressionCallback: (node: ExpressionNode) => AstWalkSignal,
   options: unknown,
-): boolean => {
-  if (!expressionCallback(node)) {
-    return false;
+): AstWalkSignal => {
+  if (expressionCallback(node) === AstWalkSignal.stopWalking) {
+    return AstWalkSignal.stopWalking;
   }
 
   return match(node)
-    .returnType<boolean>()
-    .with({ expressionType: ExpressionNodeType.functionCall }, (node) => {
-      for (const argument of node.arguments) {
-        if (!walkExpression(argument, expressionCallback, options)) {
-          return false;
-        }
-      }
-
-      return true;
-    })
-    .with({ expressionType: ExpressionNodeType.operator }, (node) => {
-      for (const operand of node.operands) {
-        if (!walkExpression(operand, expressionCallback, options)) {
-          return false;
-        }
-      }
-
-      return true;
-    })
-    .otherwise(() => true);
+    .returnType<AstWalkSignal>()
+    .with({ expressionType: ExpressionNodeType.functionCall }, (node) =>
+      performWalksUntilStop(
+        node.arguments.map((argument) =>
+          lazyWalkExpression(argument, expressionCallback, options),
+        ),
+      ),
+    )
+    .with({ expressionType: ExpressionNodeType.operator }, (node) =>
+      performWalksUntilStop(
+        node.operands.map((operand) =>
+          lazyWalkExpression(operand, expressionCallback, options),
+        ),
+      ),
+    )
+    .otherwise(() => AstWalkSignal.continueWalking);
 };
+
+const lazyWalkExpression = (
+  node: undefined | null | Parameters<typeof walkExpression>[0],
+  expressionCallback: undefined | null | Parameters<typeof walkExpression>[1],
+  options: Parameters<typeof walkExpression>[2],
+): null | (() => AstWalkSignal) =>
+  // if either the node or expressionCallback is not defined, return null
+  expressionCallback && node
+    ? (): AstWalkSignal => walkExpression(node, expressionCallback, options)
+    : null;
 
 /**
  * Walks through all statements in the AST and calls the callback for each statement.
@@ -53,100 +81,86 @@ const walkExpression = (
 const walkStatement = (
   node: StatementNode,
   callbacks: {
-    statementCallback?: (node: StatementNode) => boolean;
-    expressionCallback?: (node: ExpressionNode) => boolean;
+    statementCallback?: (node: StatementNode) => AstWalkSignal;
+    expressionCallback?: (node: ExpressionNode) => AstWalkSignal;
   },
   options: {
     walkFunctionDeclarations: boolean;
   },
-): boolean => {
-  if (callbacks.statementCallback && !callbacks.statementCallback(node)) {
-    return false;
+): AstWalkSignal => {
+  if (
+    callbacks.statementCallback &&
+    callbacks.statementCallback(node) === AstWalkSignal.stopWalking
+  ) {
+    return AstWalkSignal.stopWalking;
   }
 
   return match(node)
-    .returnType<boolean>()
-    .with({ statementType: StatementNodeType.condition }, (node) => {
-      if (node.condition && callbacks.expressionCallback) {
-        if (
-          !walkExpression(node.condition, callbacks.expressionCallback, options)
-        ) {
-          return false;
-        }
-      }
-
-      if (!walkStatement(node.whenTrue, callbacks, options)) {
-        return false;
-      }
-
-      return walkStatement(node.whenFalse, callbacks, options);
-    })
-    .with({ statementType: StatementNodeType.loop }, (node) => {
-      if (node.condition && callbacks.expressionCallback) {
-        if (
-          !walkExpression(node.condition, callbacks.expressionCallback, options)
-        ) {
-          return false;
-        }
-      }
-
-      return walkStatement(node.body, callbacks, options);
-    })
-    .with({ statementType: StatementNodeType.functionDeclaration }, (node) => {
-      if (options.walkFunctionDeclarations) {
-        return walkStatement(node.body, callbacks, options);
-      }
-
-      return true;
-    })
-    .with({ statementType: StatementNodeType.sequence }, (node) => {
-      for (const statement of node.statements) {
-        if (!walkStatement(statement, callbacks, options)) {
-          return false;
-        }
-      }
-
-      return true;
-    })
-    .with({ statementType: StatementNodeType.functionCall }, (node) => {
-      if (callbacks.expressionCallback) {
-        for (const argument of node.arguments) {
-          if (
-            !walkExpression(argument, callbacks.expressionCallback, options)
-          ) {
-            return false;
-          }
-        }
-
-        return true;
-      }
-
-      return true;
-    })
-    .with({ statementType: StatementNodeType.assignment }, (node) => {
-      if (callbacks.expressionCallback) {
-        return walkExpression(
-          node.value,
+    .returnType<AstWalkSignal>()
+    .with({ statementType: StatementNodeType.condition }, (node) =>
+      performWalksUntilStop([
+        lazyWalkExpression(
+          node.condition,
           callbacks.expressionCallback,
           options,
-        );
-      }
-
-      return true;
-    })
-    .with({ statementType: StatementNodeType.variableDeclaration }, (node) => {
-      if (node.value && callbacks.expressionCallback) {
-        return walkExpression(
-          node.value,
+        ),
+        lazyWalkStatement(node.whenTrue, callbacks, options),
+        lazyWalkStatement(node.whenFalse, callbacks, options),
+      ]),
+    )
+    .with({ statementType: StatementNodeType.loop }, (node) =>
+      performWalksUntilStop([
+        lazyWalkExpression(
+          node.condition,
           callbacks.expressionCallback,
           options,
-        );
-      }
+        ),
+        lazyWalkStatement(node.body, callbacks, options),
+      ]),
+    )
+    .with({ statementType: StatementNodeType.functionDeclaration }, (node) =>
+      performWalksUntilStop(
+        options.walkFunctionDeclarations
+          ? [lazyWalkStatement(node.body, callbacks, options)]
+          : [],
+      ),
+    )
 
-      return true;
-    })
-    .otherwise(() => true);
+    .with({ statementType: StatementNodeType.sequence }, (node) =>
+      performWalksUntilStop(
+        node.statements.map((statement) =>
+          lazyWalkStatement(statement, callbacks, options),
+        ),
+      ),
+    )
+    .with({ statementType: StatementNodeType.functionCall }, (node) =>
+      performWalksUntilStop(
+        node.arguments.map((argument) =>
+          lazyWalkExpression(argument, callbacks.expressionCallback, options),
+        ),
+      ),
+    )
+    .with({ statementType: StatementNodeType.assignment }, (node) =>
+      performWalksUntilStop([
+        lazyWalkExpression(node.value, callbacks.expressionCallback, options),
+      ]),
+    )
+    .with(
+      { statementType: StatementNodeType.variableDeclaration },
+      ({ value }) =>
+        performWalksUntilStop([
+          lazyWalkExpression(value, callbacks.expressionCallback, options),
+        ]),
+    )
+    .otherwise(() => AstWalkSignal.continueWalking);
 };
+
+const lazyWalkStatement =
+  (
+    ...args: Parameters<typeof walkStatement>
+  ): (() => ReturnType<typeof walkStatement>) =>
+  () =>
+    walkStatement(...args);
 
 /**
  * Walks through all statements in the AST and calls the callback for each statement.
@@ -158,8 +172,8 @@ const walkStatement = (
 export const walkAst = (
   ast: GeneralAst,
   callbacks: {
-    statementCallback?: (node: StatementNode) => boolean;
-    expressionCallback?: (node: ExpressionNode) => boolean;
+    statementCallback?: (node: StatementNode) => AstWalkSignal;
+    expressionCallback?: (node: ExpressionNode) => AstWalkSignal;
   } = {},
   options = {
     walkFunctionDeclarations: true,

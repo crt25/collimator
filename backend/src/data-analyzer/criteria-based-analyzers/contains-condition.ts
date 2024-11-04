@@ -5,7 +5,7 @@ import {
   CriteriaBasedAnalyzerOutput,
 } from "../criteria-based-analyzer.service";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
-import { walkAst } from "../ast-walk";
+import { AstWalkSignal, walkAst } from "../ast-walk";
 
 export const containsCondition = (
   ast: GeneralAst,
@@ -19,10 +19,10 @@ export const containsCondition = (
         containsCondition = true;
 
         // Stop walking the AST
-        return false;
+        return AstWalkSignal.stopWalking;
       }
 
-      return true;
+      return AstWalkSignal.continueWalking;
     },
   });
 
