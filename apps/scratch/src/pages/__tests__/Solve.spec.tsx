@@ -88,10 +88,12 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("can toggle fullscreen", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
-    await page.enableFullScreen();
 
+    expect(page.fullscreenButton).toHaveCount(1);
+    await page.enableFullScreen();
     expect(page.fullscreenButton).toHaveCount(0);
 
+    expect(page.unFullscreenButton).toHaveCount(1);
     await page.disableFullScreen();
     expect(page.unFullscreenButton).toHaveCount(0);
   });

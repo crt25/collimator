@@ -55,7 +55,7 @@ test.describe("/edit/taskId", () => {
     page.route(/test-task.sb3$/, (route) =>
       route.fulfill({
         body: testTask,
-        contentType: "application/zip",
+        contentType: "application/x.scratch.sb3",
         status: 200,
       }),
     );
