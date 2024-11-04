@@ -28,7 +28,8 @@ export const loadCrtProject = async (
         .async("text")
         .then((text) => JSON.parse(text));
 
-      vm.crtConfig = config;
+      // merge with default config s.t. all keys are always present
+      vm.crtConfig = { ...defaultCrtConfig, ...config };
     }
   }
 

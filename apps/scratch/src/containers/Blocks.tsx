@@ -60,6 +60,7 @@ import {
 import BlockConfig from "../components/block-config/BlockConfig";
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { filterNonNull } from "../utilities/filter-non-null";
+import { freezeTaskBlocks } from "../blocks/freeze-task-blocks";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
@@ -456,6 +457,7 @@ class Blocks extends React.Component<Props, State> {
 
     if (this.blocks) {
       addBlockConfigButtons(this.props.vm, this.blocks, this.props.canEditTask);
+      freezeTaskBlocks(this.props.vm, this.blocks);
     }
   }
 

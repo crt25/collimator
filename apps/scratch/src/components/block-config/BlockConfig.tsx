@@ -1,9 +1,9 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 
-import styles from "./block-config.css";
 import VM from "scratch-vm";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
+import Modal from "../modal/Modal";
 
 const cannotBeUsed = 0;
 const infiniteUses = -1;
@@ -93,65 +93,59 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
     [blockId, vm, canBeUsed, hasBlockLimit, blockLimit],
   );
 
-  if (!blockId) {
-    return null;
-  }
-
   return (
-    <div className={styles.backdrop}>
-      <div className={styles.modal}>
-        <h1>
-          Block Config <small>({blockId})</small>
-        </h1>
+    <Modal isShown={blockId !== null}>
+      <h1>
+        Block Config <small>({blockId})</small>
+      </h1>
 
-        <form onSubmit={onSubmit} data-testid="block-config-form">
-          <label className={styles.inputLabel}>
-            <span>Can this block be used?</span>
+      <form onSubmit={onSubmit} data-testid="block-config-form">
+        <label>
+          <span>Can this block be used?</span>
+          <input
+            type="checkbox"
+            min="0"
+            checked={canBeUsed}
+            onChange={(e) => setCanBeUsed(e.target.checked)}
+            data-testid="can-be-used-checkbox"
+          />
+        </label>
+
+        {canBeUsed && (
+          <label>
+            <span>
+              Is there a limit to how many times this block can be used?
+            </span>
             <input
               type="checkbox"
               min="0"
-              checked={canBeUsed}
-              onChange={(e) => setCanBeUsed(e.target.checked)}
-              data-testid="can-be-used-checkbox"
+              checked={hasBlockLimit}
+              onChange={(e) => setHasBlockLimit(e.target.checked)}
+              data-testid="has-block-limit-checkbox"
             />
           </label>
+        )}
 
-          {canBeUsed && (
-            <label className={styles.inputLabel}>
-              <span>
-                Is there a limit to how many times this block can be used?
-              </span>
-              <input
-                type="checkbox"
-                min="0"
-                checked={hasBlockLimit}
-                onChange={(e) => setHasBlockLimit(e.target.checked)}
-                data-testid="has-block-limit-checkbox"
-              />
-            </label>
-          )}
+        {hasBlockLimit && (
+          <label>
+            <span>How many times can this block be used?</span>
+            <input
+              type="number"
+              min="1"
+              value={blockLimit}
+              onChange={(e) => setBlockLimit(e.target.value)}
+              data-testid="block-limit-input"
+            />
+          </label>
+        )}
 
-          {hasBlockLimit && (
-            <label className={styles.inputLabel}>
-              <span>How many times can this block be used?</span>
-              <input
-                type="number"
-                min="1"
-                value={blockLimit}
-                onChange={(e) => setBlockLimit(e.target.value)}
-                data-testid="block-limit-input"
-              />
-            </label>
-          )}
-
-          <input
-            type="submit"
-            value="Save"
-            data-testid="block-config-form-submit-button"
-          />
-        </form>
-      </div>
-    </div>
+        <input
+          type="submit"
+          value="Save"
+          data-testid="block-config-form-submit-button"
+        />
+      </form>
+    </Modal>
   );
 };
 

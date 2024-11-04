@@ -21,8 +21,8 @@ export const getBlockConfigFormSubmitButtonSelector = (): string =>
 
 export const getBlockCanvasSelector = (): string => "svg.blocklySvg";
 
-export const getAllTargetBlocksSelector = (): string =>
-  `${getBlockCanvasSelector()} g.blocklyDraggable[data-id]`;
+export const getAllTargetBlocksSelector = (includeFrozen: boolean): string =>
+  `${getBlockCanvasSelector()} g.blocklyDraggable[data-id]${includeFrozen ? "" : ":not(.frozen-block)"}`;
 
 export const getFlyoutCanvasSelector = (): string =>
   "svg.blocklyFlyout .blocklyBlockCanvas";

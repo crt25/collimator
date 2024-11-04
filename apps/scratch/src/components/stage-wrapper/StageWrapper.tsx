@@ -20,10 +20,13 @@ import fullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-
 import largeStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--large-stage.svg";
 import smallStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--small-stage.svg";
 import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
+import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar/icon--settings.svg";
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import Controls from "../../scratch/scratch-gui/src/containers/controls";
 import ToggleButtons from "../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import TaskConfig from "../TaskConfig";
 
 const messages = defineMessages({
   largeStageSizeMessage: {
@@ -63,6 +66,7 @@ interface Props {
   vm: VM;
 
   isStageInteractive?: boolean;
+  canEditTask?: boolean;
 }
 
 const StageWrapper = function (props: Props) {
@@ -75,9 +79,11 @@ const StageWrapper = function (props: Props) {
     loading,
     stageSize,
     vm,
+    canEditTask,
   } = props;
 
   const dispatch = useDispatch();
+  const [showTaskConfig, setShowTaskConfig] = useState(false);
 
   const onSetStageLarge = () => dispatch(setStageSize(STAGE_SIZE_MODES.large));
   const onSetStageSmall = () => dispatch(setStageSize(STAGE_SIZE_MODES.small));
@@ -127,6 +133,21 @@ const StageWrapper = function (props: Props) {
         <Box className={headerStyles.stageHeaderWrapper}>
           <Box className={headerStyles.stageMenuWrapper}>
             <Controls vm={vm} />
+            <div>
+              {canEditTask && (
+                <button
+                  className={crtStyles.settingsButton}
+                  onClick={() => setShowTaskConfig(true)}
+                  data-testid="open-taskconfig-button"
+                >
+                  <img
+                    className={headerStyles.stageButtonIcon}
+                    draggable={false}
+                    src={settingsIcon}
+                  />
+                </button>
+              )}
+            </div>
             <div className={headerStyles.stageSizeRow}>
               <div className={headerStyles.stageSizeToggleGroup}>
                 <ToggleButtons
@@ -180,6 +201,11 @@ const StageWrapper = function (props: Props) {
         {isRendererSupported ? <Stage stageSize={stageSize} vm={vm} /> : null}
       </Box>
       {loading ? <Loader isFullScreen={isFullScreen} /> : null}
+      <TaskConfig
+        vm={vm}
+        isShown={showTaskConfig && canEditTask}
+        hideModal={() => setShowTaskConfig(false)}
+      />
     </Box>
   );
 };

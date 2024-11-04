@@ -5,3 +5,13 @@
 .non-interactive {
     pointer-events: none;
 }
+
+.settings-button {
+    background-color: #000;
+    border: #000 1px solid;
+
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+
+    cursor: pointer;
+}
