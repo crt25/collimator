@@ -122,6 +122,9 @@ const tasks = {
   get testTask(): TestTask {
     return getTask(path.resolve(__dirname, "test-task"));
   },
+  get assertionTask(): TestTask {
+    return getTask(path.resolve(__dirname, "assertion-task"));
+  },
 };
 
 export default tasks;

@@ -109,7 +109,9 @@ const StageWrapper = function (props: Props) {
             className={headerStyles.stageMenuWrapper}
             style={{ width: getStageDimensions(null, true).width }}
           >
-            <Controls vm={vm} />
+            <div className="d-contents" data-testid="stage-controls">
+              <Controls vm={vm} />
+            </div>
             <div className={headerStyles.unselectWrapper}>
               <Button
                 className={headerStyles.stageButton}
@@ -133,7 +135,9 @@ const StageWrapper = function (props: Props) {
       ) : (
         <Box className={headerStyles.stageHeaderWrapper}>
           <Box className={headerStyles.stageMenuWrapper}>
-            <Controls vm={vm} />
+            <div className="d-contents" data-testid="stage-controls">
+              <Controls vm={vm} />
+            </div>
             <div>
               <div className={crtStyles.buttons}>
                 <AssertionsState vm={vm} />

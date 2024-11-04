@@ -13,19 +13,23 @@ const AssertionsState = ({ vm }: { vm: VM }) => {
     return null;
   }
 
+  const isSuccessful =
+    assertionsState.total > 0 &&
+    assertionsState.passed >= assertionsState.total;
+
   return (
     <div
       className={classNames(
         styles.state,
-        assertionsState.total > 0 &&
-          assertionsState.passed >= assertionsState.total
-          ? styles.success
-          : styles.noSuccess,
+        isSuccessful ? styles.success : styles.noSuccess,
       )}
+      data-testid="assertion-state"
     >
       {assertionsState.total > 0 && (
         <span>
-          {assertionsState.passed} / {assertionsState.total}
+          <span data-testid="passed">{assertionsState.passed}</span>
+          {" / "}
+          <span data-testid="total">{assertionsState.total}</span>
         </span>
       )}
       <img src={icon} />

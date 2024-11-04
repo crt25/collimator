@@ -119,7 +119,7 @@ test.describe("/edit/taskId", () => {
 
     // check the freeze buttons
     const editableStackButton = page.getBlockFreezeButton(
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
     );
     const frozenStackButton = page.getBlockFreezeButton(
       page.taskBlocks.catActor.topOfFrozenStack,
@@ -301,7 +301,7 @@ test.describe("/edit/taskId", () => {
     const { page } = await TestTaskPage.load(pwPage);
 
     const editableStackButton = page.getBlockFreezeButton(
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
     );
 
     await expect(editableStackButton).toHaveText("✎");
@@ -317,7 +317,7 @@ test.describe("/edit/taskId", () => {
     const { page } = await TestTaskPage.load(pwPage);
 
     const stacks = [
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
       page.taskBlocks.catActor.topOfFrozenStack,
       page.taskBlocks.catActor.visualTopOfAppendableStack,
     ];

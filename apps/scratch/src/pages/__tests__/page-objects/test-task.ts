@@ -33,7 +33,7 @@ export class TestTaskPage extends ScratchEditorPage {
   get taskBlocks() {
     return {
       catActor: {
-        topOfEditableStack: this.page.locator(
+        visualTopOfEditableStack: this.page.locator(
           "[data-id='DMA4vbfmH7Ag=.YTb639']",
         ),
         editableBlock: this.page.locator("[data-id='@Z24?:3gFhIy;D;=NXM*']"),

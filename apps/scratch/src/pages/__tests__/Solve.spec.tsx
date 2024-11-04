@@ -6,6 +6,7 @@ import {
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import { AssertionTaskPage } from "./page-objects/assertion-task";
 
 declare global {
   interface Window {
@@ -399,5 +400,78 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(turnRight).toHaveText(
       getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
     );
+  });
+
+  test("loads assertions extension if task contains assertion blocks", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAssertionStack,
+    ).toHaveCount(1);
+
+    await expect(
+      page.disabledBlockConfigButtons.whenTaskFinishedRunning,
+    ).toHaveCount(0);
+    await expect(page.disabledBlockConfigButtons.assert).toHaveCount(0);
+  });
+
+  test("reports the correct numbers of assertions when failing", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(2);
+
+    expect(messages[1].message).toEqual({
+      id: 0,
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        tests: 1,
+        passedTests: 0,
+      },
+    });
+  });
+
+  test("reports the correct numbers of assertions when passing", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(2);
+
+    expect(messages[1].message).toEqual({
+      id: 0,
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        tests: 1,
+        passedTests: 1,
+      },
+    });
   });
 });

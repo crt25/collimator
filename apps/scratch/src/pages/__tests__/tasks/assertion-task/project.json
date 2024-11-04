@@ -1,0 +1,131 @@
+{
+  "targets": [
+    {
+      "isStage": true,
+      "name": "Stage",
+      "variables": { "`jEk@4|i[#Fk?(8x)AV.-my variable": ["my variable", 0] },
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {},
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "name": "backdrop1",
+          "dataFormat": "svg",
+          "assetId": "cd21514d0531fdffb22204e0ec5ed84a",
+          "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg",
+          "rotationCenterX": 240,
+          "rotationCenterY": 180
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 0,
+      "tempo": 60,
+      "videoTransparency": 50,
+      "videoState": "on",
+      "textToSpeechLanguage": null
+    },
+    {
+      "isStage": false,
+      "name": "Sprite1",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {
+        "HN(hP9y9,$[q0=u7VklJ": {
+          "opcode": "event_whenflagclicked",
+          "next": null,
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 202,
+          "y": 167
+        },
+        "=AZYDuVf2OMO^acD9JwZ": {
+          "opcode": "assertions_noop_assert",
+          "next": null,
+          "parent": "4_e9[GL:|#*oG]X]FdQm",
+          "inputs": { "CONDITION": [2, "f();?%T;l:K-w%Qo!`Dg"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "f();?%T;l:K-w%Qo!`Dg": {
+          "opcode": "operator_equals",
+          "next": null,
+          "parent": "=AZYDuVf2OMO^acD9JwZ",
+          "inputs": {
+            "OPERAND1": [3, "KMNp~3loiK%UvhdlsKNE", [10, "50"]],
+            "OPERAND2": [1, [10, "50"]]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "KMNp~3loiK%UvhdlsKNE": {
+          "opcode": "motion_xposition",
+          "next": null,
+          "parent": "f();?%T;l:K-w%Qo!`Dg",
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "4_e9[GL:|#*oG]X]FdQm": {
+          "opcode": "assertions_event_whenTaskFinishedRunning",
+          "next": "=AZYDuVf2OMO^acD9JwZ",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 572,
+          "y": 184
+        }
+      },
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "name": "costume1",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "bcf454acf82e4504149f7ffe07081dbc",
+          "md5ext": "bcf454acf82e4504149f7ffe07081dbc.svg",
+          "rotationCenterX": 48,
+          "rotationCenterY": 50
+        },
+        {
+          "name": "costume2",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "0fb9be3e8397c983338cb71dc84d0b25",
+          "md5ext": "0fb9be3e8397c983338cb71dc84d0b25.svg",
+          "rotationCenterX": 46,
+          "rotationCenterY": 53
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "size": 100,
+      "direction": 90,
+      "draggable": false,
+      "rotationStyle": "all around"
+    }
+  ],
+  "monitors": [],
+  "extensions": ["assertions"],
+  "meta": {
+    "semver": "3.0.0",
+    "vm": "4.6.29",
+    "agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0"
+  }
+}

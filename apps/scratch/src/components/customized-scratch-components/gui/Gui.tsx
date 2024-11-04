@@ -217,7 +217,7 @@ const GUIComponent = (props: {
     // otherwise we only enable assertions if the user has enabled them
     // return no-op cleanup function
     return () => {};
-  }, [vm.runtime, canEditTask]);
+  }, [vm.runtime, canEditTask, onTaskProgress]);
 
   return (
     <MediaQuery minWidth={layout.fullSizeMinWidth}>
