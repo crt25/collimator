@@ -4,7 +4,7 @@ import {
   MockMessageEvent,
 } from "./mock-message-event";
 import { TestTaskPage } from "./page-objects/test-task";
-import { EditTaskPage } from "./page-objects/edit-task";
+import { EditTaskPage, Extension } from "./page-objects/edit-task";
 import { Page } from "playwright/test";
 import tasks from "./tasks";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
@@ -243,35 +243,37 @@ test.describe("/edit/taskId", () => {
     await expect(configButton).toHaveText("0");
   });
 
-  test("can add extension", async ({ page: pwPage }) => {
+  test("can load assertions extension", async ({ page: pwPage }) => {
     const page = new EditTaskPage(pwPage);
 
     await page.addExtensionButton.click();
 
-    // load the first extension
-    await page.loadExtension(1);
+    await page.loadExtension(Extension.Assertions);
 
-    // ensure the custom block is added
+    // ensure the extension blocks are added
     await expect(
-      page.getBlockInToolbox("example_functionCall_setX"),
+      page.getBlockInToolbox("assertions_event_whenTaskFinishedRunning"),
     ).toHaveCount(1);
+
+    await expect(page.getBlockInToolbox("assertions_noop_assert")).toHaveCount(
+      1,
+    );
   });
 
-  test("can add extension twice", async ({ page: pwPage }) => {
+  test("can load assertion extension twice", async ({ page: pwPage }) => {
     const page = new EditTaskPage(pwPage);
 
     await page.addExtensionButton.click();
 
-    // load the first extension
-    await page.loadExtension(1);
+    await page.loadExtension(Extension.Assertions);
 
     // add the extension again
     await page.addExtensionButton.click();
     await page.loadExtension(1);
 
-    // ensure the custom block is added just once
+    // ensure the custom blocks are added just once
     await expect(
-      page.getBlockInToolbox("example_functionCall_setX"),
+      page.getBlockInToolbox("assertions_event_whenTaskFinishedRunning"),
     ).toHaveCount(1);
   });
 

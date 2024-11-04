@@ -7,6 +7,10 @@ import {
 } from "../locators";
 import { ScratchEditorPage } from "./scratch-editor";
 
+export enum Extension {
+  Assertions = 1,
+}
+
 export class EditTaskPage extends ScratchEditorPage {
   get blockConfigFormElements() {
     return {
@@ -41,10 +45,10 @@ export class EditTaskPage extends ScratchEditorPage {
     return this.page.getByTestId("add-extension-button");
   }
 
-  loadExtension(extensionIndex: number) {
+  loadExtension(extension: Extension) {
     return this.page
       .locator(".ReactModalPortal img")
-      .nth(extensionIndex + 1 /* skip first image */)
+      .nth(extension + 1 /* skip first image */)
       .click();
   }
 }
