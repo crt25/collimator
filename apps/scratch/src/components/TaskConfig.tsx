@@ -1,7 +1,9 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import React, { FormEvent, useCallback, useEffect } from "react";
 
-import VM from "scratch-vm";
+import VM, { ScratchCrtConfig } from "scratch-vm";
 import Modal from "./modal/Modal";
+import { allowAllBlocks, allowNoBlocks } from "../blocks/make-toolbox-xml";
+import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 
 const TaskConfig = ({
   vm,
@@ -12,10 +14,11 @@ const TaskConfig = ({
   isShown?: boolean;
   hideModal: () => void;
 }) => {
-  const [canEditTaskBlocks, setCanEditTaskBlocks] = useState<boolean>(false);
-
-  const onSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+  const updateConfig = useCallback(
+    (
+      e: React.SyntheticEvent,
+      updateFunction: (config: ScratchCrtConfig) => void,
+    ) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -26,16 +29,41 @@ const TaskConfig = ({
         return;
       }
 
-      config.canEditTaskBlocks = canEditTaskBlocks;
+      updateFunction(config);
+
+      // update toolbox
+      window.dispatchEvent(new UpdateBlockToolboxEvent());
+    },
+    [vm],
+  );
+
+  const onAllowAllBlocks = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      updateConfig(e, (config) => (config.allowedBlocks = allowAllBlocks));
+    },
+    [updateConfig],
+  );
+
+  const onAllowNoBlocks = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+      updateConfig(e, (config) => (config.allowedBlocks = allowNoBlocks)),
+    [updateConfig],
+  );
+
+  const onSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      updateConfig(e, () => {});
 
       hideModal();
     },
-    [vm, canEditTaskBlocks],
+    [vm],
   );
 
   useEffect(() => {
-    // every time the modal is opened, load the latest config values
-    setCanEditTaskBlocks(vm.crtConfig?.canEditTaskBlocks ?? true);
+    // every time the modal is opened, load the form values based on the config
   }, [isShown]);
 
   return (
@@ -43,16 +71,15 @@ const TaskConfig = ({
       <h1>Task Config</h1>
 
       <form onSubmit={onSubmit} data-testid="task-config-form">
-        <label>
-          <span>Can the blocks provided with the task be edited?</span>
-          <input
-            type="checkbox"
-            min="0"
-            checked={canEditTaskBlocks}
-            onChange={(e) => setCanEditTaskBlocks(e.target.checked)}
-            data-testid="can-edit-task-blocks-checkbox"
-          />
-        </label>
+        <button
+          onClick={onAllowAllBlocks}
+          data-testid="allow-all-blocks-button"
+        >
+          Allow all blocks to be used
+        </button>
+        <button onClick={onAllowNoBlocks} data-testid="allow-no-blocks-button">
+          Disallow any block to be used
+        </button>
 
         <input
           type="submit"

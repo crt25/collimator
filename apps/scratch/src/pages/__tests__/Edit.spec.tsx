@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
 import {
   defineCustomMessageEvent,
@@ -7,9 +5,9 @@ import {
 } from "./mock-message-event";
 import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage } from "./page-objects/edit-task";
-
-// eslint-disable-next-line no-undef
-const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
+import { Page } from "playwright/test";
+import tasks from "./tasks";
+import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
   interface Window {
@@ -19,8 +17,48 @@ declare global {
   }
 }
 
+const task = tasks.testTask;
+
+const loadTestTask = async (pwPage: Page) => {
+  await pwPage.evaluate(async () => {
+    const task = await fetch("https://example.com/test-task.sb3").then(
+      (response) => response.blob(),
+    );
+
+    const event = new window.MockMessageEvent(window.parent, {
+      id: 0,
+      type: "request",
+      procedure: "loadTask",
+      arguments: task,
+    });
+
+    window.dispatchEvent(event);
+  });
+
+  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
+
+  const messages = await pwPage.evaluate(() => window.postedMessages);
+
+  expect(messages).toHaveLength(1);
+
+  expect(messages[0].message).toEqual({
+    id: 0,
+    type: "response",
+    procedure: "loadTask",
+    result: undefined,
+  });
+};
+
 test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
+    page.route(/test-task.sb3$/, async (route) =>
+      route.fulfill({
+        body: await task.file,
+        contentType: "application/x.scratch.sb3",
+        status: 200,
+      }),
+    );
+
     page.on(
       "framenavigated",
       async () =>
@@ -94,46 +132,11 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can load task via window.postMessage", async ({ page: pwPage }) => {
-    pwPage.route(/test-task.sb3$/, (route) =>
-      route.fulfill({
-        body: testTask,
-        contentType: "application/x.scratch.sb3",
-        status: 200,
-      }),
-    );
-
-    await pwPage.evaluate(async () => {
-      const task = await fetch("https://example.com/test-task.sb3").then(
-        (response) => response.blob(),
-      );
-
-      const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
-        type: "request",
-        procedure: "loadTask",
-        arguments: task,
-      });
-
-      window.dispatchEvent(event);
-    });
-
-    await pwPage.waitForFunction(() => window.postedMessages.length > 0);
-
-    const messages = await pwPage.evaluate(() => window.postedMessages);
-
-    expect(messages).toHaveLength(1);
-
-    expect(messages[0].message).toEqual({
-      id: 0,
-      type: "response",
-      procedure: "loadTask",
-      result: undefined,
-    });
-
-    // ensure the block visibility is correctly loaded
+    await loadTestTask(pwPage);
 
     const page = new TestTaskPage(pwPage);
 
+    // check the block config buttons
     const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
     const { turnLeft } = page.disabledBlockConfigButtons;
 
@@ -144,11 +147,34 @@ test.describe("/edit/taskId", () => {
     await expect(turnLeft).toHaveCount(1);
 
     // then assert that the correct labels are shown
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
-    await expect(goto).toHaveText("∞");
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+    await expect(goto).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_goto"),
+    );
 
-    await expect(turnLeft).toHaveText("0");
+    await expect(turnLeft).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnleft"),
+    );
+
+    // check the freeze buttons
+    const editableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfEditableStack,
+    );
+    const frozenStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfFrozenStack,
+    );
+    const appendableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await expect(editableStackButton).toHaveText("✎");
+    await expect(frozenStackButton).toHaveText("🛇");
+    await expect(appendableStackButton).toHaveText("+");
   });
 
   test("can update the block config to allow an arbitrary number of a given block", async ({
@@ -249,32 +275,103 @@ test.describe("/edit/taskId", () => {
     ).toHaveCount(1);
   });
 
-  test("can toggle the freezing of the initial task blocks", async ({
+  test("can use button to allow the usage of all blocks", async ({
     page: pwPage,
   }) => {
     const page = new EditTaskPage(pwPage);
 
+    const moveSteps = page.getBlockConfigButton("motion_movesteps");
+    const glideTo = page.getBlockConfigButton("motion_glideto");
+
+    await expect(moveSteps).toHaveText("0");
+    await expect(glideTo).toHaveText("0");
+
     await page.openTaskConfig();
 
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).not.toBeChecked();
-
-    await page.taskConfigFormElements.canEditTaskBlocksCheckbox.click();
-
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).toBeChecked();
-
+    await page.taskConfigFormElements.allowAllBlocksButton.click();
     await page.taskConfigFormElements.submit.click();
 
     // form is no longer visible
     await expect(page.taskConfigForm).toHaveCount(0);
 
+    await expect(moveSteps).toHaveText("∞");
+    await expect(glideTo).toHaveText("∞");
+  });
+
+  test("can use button to allow the usage of no blocks", async ({
+    page: pwPage,
+  }) => {
+    const page = new EditTaskPage(pwPage);
+
+    const moveSteps = page.getBlockConfigButton("motion_movesteps");
+    const goto = page.getBlockConfigButton("motion_goto");
+
+    // open modal
+    await moveSteps.click();
+
+    // check the checkbox that allows the block to be used
+    await page.blockConfigFormElements.canBeUsedCheckbox.click();
+
+    // check the checkbox that allows the block to be used a limited number of times
+    await page.blockConfigFormElements.hasBlockLimitCheckbox.click();
+
+    // set the block limit to 5
+    await page.blockConfigFormElements.blockLimitInput.fill("5");
+
+    // submit the form
+    await page.blockConfigFormElements.submitButton.click();
+
+    // ensure the block's label is updated
+    await expect(moveSteps).toHaveText("5");
+
+    // ensure other labels did not change
+    await expect(goto).toHaveText("0");
+
     await page.openTaskConfig();
-    // ensure checkbox is still checked
-    await expect(
-      page.taskConfigFormElements.canEditTaskBlocksCheckbox,
-    ).toBeChecked();
+
+    await page.taskConfigFormElements.allowNoBlocksButton.click();
+    await page.taskConfigFormElements.submit.click();
+
+    // form is no longer visible
+    await expect(page.taskConfigForm).toHaveCount(0);
+
+    await expect(moveSteps).toHaveText("0");
+    await expect(goto).toHaveText("0");
+  });
+
+  test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
+    await loadTestTask(pwPage);
+    const page = new TestTaskPage(pwPage);
+
+    const editableStackButton = page.getBlockFreezeButton(
+      page.taskBlocks.catActor.topOfEditableStack,
+    );
+
+    await expect(editableStackButton).toHaveText("✎");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("🛇");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("+");
+    await editableStackButton.click();
+    await expect(editableStackButton).toHaveText("✎");
+  });
+
+  test("can prepend blocks to all stacks", async ({ page: pwPage }) => {
+    await loadTestTask(pwPage);
+    const page = new TestTaskPage(pwPage);
+
+    const stacks = [
+      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.topOfFrozenStack,
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ];
+
+    for (const stack of stacks) {
+      const blockCount = await page.countBlocksInParentStack(stack);
+
+      await page.prependNewBlockTo("motion_movesteps", stack);
+
+      expect(await page.countBlocksInParentStack(stack)).toBe(blockCount + 1);
+    }
   });
 });

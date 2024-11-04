@@ -17,42 +17,45 @@
 .modal {
   margin-top: 2rem;
   padding: 2rem;
-  border-radius: 0.25rem;
+  border-radius: --border-radius;
 
   min-width: 40vw;
 
-  background-color: #fff;
+  background-color: var(--modal-background-color);
+}
 
-  h1 {
-    margin-top: 0;
-  }
+.modal h1 {
+  margin-top: 0;
+}
 
-  label {
-    margin-bottom: 1rem;
-    display: block;
+.modal label {
+  margin-bottom: 1rem;
+  display: block;
+}
 
-    span {
-      display: block;
-      margin-bottom: 0.5rem;
-    }
+.modal label span {
+  display: block;
+  margin-bottom: 0.5rem;
+}
 
-    input {
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      border: #000 1px solid;
-    }
-  }
+.modal label input {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius);
+  border: var(--input-border-color) 1px solid;
+}
 
-  input[type="submit"] {
-    background: #fff;
-    border: #000 1px solid;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.5rem;
+.modal button, .modal input[type="submit"] {
+  display: block;
+  margin-bottom: 1rem;
 
-    cursor: pointer;
+  background: var(--input-background-color);
+  border: var(--input-border-color) 1px solid;
+  border-radius: var(--border-radius);
+  padding: 0.25rem 0.5rem;
 
-    &:hover{
-      background-color: #ddd;
-    }
-  }
+  cursor: pointer;
+}
+
+.modal button:hover, .modal input[type="submit"]:hover {
+  background-color: var(--input-background-color-hover);
 }

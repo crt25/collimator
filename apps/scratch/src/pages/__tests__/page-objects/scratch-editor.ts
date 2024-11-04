@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Page } from "playwright/test";
+import { Locator, Page } from "playwright/test";
 import {
   getAllTargetBlocksSelector,
+  getBlockCanvasSelector,
   getBlockConfigButtonSelector,
   getBlockConfigFormSelector,
-  getFlyoutCanvasSelector,
+  getFlyoutSelector,
 } from "../locators";
+import {
+  isBlockWitOpCodeInFlyoutCanvas,
+  isScratchBlock,
+  isVisualTopOfStack,
+} from "../../../utilities/scratch-selectors";
 
 export class ScratchEditorPage {
   protected readonly page: Page;
@@ -39,7 +45,11 @@ export class ScratchEditorPage {
   }
 
   get toolbox() {
-    return this.page.locator(getFlyoutCanvasSelector());
+    return this.page.locator(getFlyoutSelector());
+  }
+
+  get blockCanvas() {
+    return this.page.locator(getBlockCanvasSelector());
   }
 
   get openTaskConfigButton() {
@@ -60,10 +70,16 @@ export class ScratchEditorPage {
     return configButton.click(options);
   }
 
+  getBlockFreezeButton(block: Locator) {
+    return block.locator(".stack-freeze-button");
+  }
+
+  toggleBlockFreezeButton(block: Locator) {
+    return this.getBlockFreezeButton(block).click();
+  }
+
   getBlockInToolbox(opcode: string) {
-    return this.page.locator(
-      `${getFlyoutCanvasSelector()} [data-id='${opcode}']`,
-    );
+    return this.page.locator(isBlockWitOpCodeInFlyoutCanvas(opcode));
   }
 
   enableFullScreen() {
@@ -91,5 +107,80 @@ export class ScratchEditorPage {
       // wait for scratch to update
       await this.page.waitForTimeout(1000);
     }
+  }
+
+  async scrollBlockIntoView(scrollToBlock: Locator) {
+    const toolboxMiddle = await this.toolbox.evaluate(
+      (toolbox) =>
+        toolbox.getBoundingClientRect().top +
+        toolbox.getBoundingClientRect().height / 2,
+    );
+
+    const toolboxRight = await this.toolbox.evaluate(
+      (toolbox) =>
+        toolbox.getBoundingClientRect().x +
+        toolbox.getBoundingClientRect().width,
+    );
+
+    await this.page.mouse.move(toolboxRight + 100, toolboxMiddle);
+
+    const offsetX =
+      (await scrollToBlock.evaluate(
+        (canvas) => canvas.getBoundingClientRect().x,
+      )) - toolboxRight;
+
+    // scroll all the way to the right so that
+    await this.page.mouse.wheel(offsetX, 0);
+  }
+
+  removeBlock(block: Locator) {
+    return block.dragTo(this.toolbox, { force: true });
+  }
+
+  async appendNewBlockTo(opcode: string, block: Locator) {
+    await this.scrollBlockIntoView(block);
+
+    await this.getBlockInToolbox(opcode).dragTo(block, {
+      force: true,
+      targetPosition: {
+        x: 50,
+        y: 50,
+      },
+    });
+  }
+
+  async prependNewBlockTo(opcode: string, block: Locator) {
+    await this.scrollBlockIntoView(block);
+
+    await this.getBlockInToolbox(opcode).dragTo(block, {
+      force: true,
+      targetPosition: {
+        x: 50,
+        y: 0,
+      },
+    });
+  }
+
+  async countBlocksInSubStack(stack: Locator) {
+    return stack.evaluate(
+      (el, isScratchBlock) => el.querySelectorAll(isScratchBlock).length,
+      isScratchBlock,
+    );
+  }
+
+  async countBlocksInParentStack(stack: Locator) {
+    return stack.evaluate(
+      (el, { isScratchBlock, isVisualTopOfStack }) =>
+        // find the closest parent block in the same block stack
+        // which itself is not a child of another block, i.e.
+        // the visual top of the stack.
+        // next, query all children and count the number of draggable blocks.
+        // note that we first do .parentElement because querySelectorAll
+        // does not consider the element it is executed on
+        el
+          .closest(isVisualTopOfStack)
+          ?.parentElement?.querySelectorAll(isScratchBlock).length ?? 0,
+      { isVisualTopOfStack, isScratchBlock },
+    );
   }
 }

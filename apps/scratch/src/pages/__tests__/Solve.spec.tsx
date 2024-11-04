@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
 import {
   defineCustomMessageEvent,
@@ -7,9 +5,8 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
-
-// eslint-disable-next-line no-undef
-const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
+import tasks from "./tasks";
+import { getExpectedBlockConfigButtonLabel } from "./helpers";
 
 declare global {
   interface Window {
@@ -18,6 +15,8 @@ declare global {
     MockMessageEvent: typeof MockMessageEvent;
   }
 }
+
+const task = tasks.testTask;
 
 test.describe("/solve/sessionId/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -40,9 +39,9 @@ test.describe("/solve/sessionId/taskId", () => {
 
     await defineCustomMessageEvent(page);
 
-    page.route(/test-task.sb3$/, (route) =>
+    page.route(/test-task.sb3$/, async (route) =>
       route.fulfill({
-        body: testTask,
+        body: await task.file,
         contentType: "application/zip",
         status: 200,
       }),
@@ -152,7 +151,9 @@ test.describe("/solve/sessionId/taskId", () => {
   test("loads the initial task blocks", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
   });
 
   test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
@@ -168,9 +169,15 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(turnLeft).toHaveCount(0);
 
     // then assert that the correct labels are shown
-    await expect(moveSteps).toHaveText("7");
-    await expect(turnRight).toHaveText("2");
-    await expect(goto).toHaveText("∞");
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+    await expect(goto).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_goto"),
+    );
   });
 
   test("cannot open block config menu", async ({ page: pwPage }) => {
@@ -183,77 +190,226 @@ test.describe("/solve/sessionId/taskId", () => {
 
   test("reduces number of allowed blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
-    await expect(moveSteps).toHaveText("7");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
 
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], { force: true });
+    await expect(moveSteps).toHaveText(moveStepsAllowedCount.toString());
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
-    await expect(moveSteps).toHaveText("6");
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
-    for (let i = 0; i < 6; i++) {
-      await page
-        .getBlockInToolbox("motion_movesteps")
-        // drag it to some block that is already on the stage
-        .dragTo(page.taskBlocks.catActor[0], { force: true });
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
+
+    for (let i = 0; i < moveStepsAllowedCount - 1; i++) {
+      await page.appendNewBlockTo(
+        "motion_movesteps",
+        page.taskBlocks.catActor.editableBlock,
+      );
     }
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
     await expect(moveSteps).toHaveText("0");
 
     // now it should not be possible to add another block
-
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], {
-        // force the drag even if nothing happens
-        force: true,
-      });
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
     await expect(moveSteps).toHaveText("0");
-    await expect(page.blocksOfCurrentTarget).toHaveCount(9);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
   });
 
   test("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {
     const page = new TestTaskPage(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
     const { moveSteps } = page.enabledBlockConfigButtons;
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
 
-    await page
-      .getBlockInToolbox("motion_movesteps")
-      // drag it to some block that is already on the stage
-      .dragTo(page.taskBlocks.catActor[0], { force: true });
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(3);
-    await expect(moveSteps).toHaveText("6");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
 
     await page.removeAllNonFrozenBlocks();
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
-    await expect(moveSteps).toHaveText("7");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget - task.frozenBlocksOfMainTarget,
+    );
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
   });
 
   test("cannot remove frozen blocks", async ({ page: pwPage }) => {
     const page = new TestTaskPage(pwPage);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
 
-    await page.taskBlocks.catActor[0]
-      // drag it to some block that is already on the stage
-      .dragTo(page.toolbox, { force: true });
+    await page.removeBlock(page.taskBlocks.catActor.frozenBlock);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(2);
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
+  });
+
+  test("cannot remove frozen but appendable blocks", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
+
+    await page.removeBlock(page.taskBlocks.catActor.visualTopOfAppendableStack);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
+  });
+
+  test("can prepend to editable stack", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page.prependNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to editable stack", async ({ page: pwPage }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("cannot prepend to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.prependNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("cannot append to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to bottom of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualBottomOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("can append to empty slot in appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.insertableSlot),
+    ).resolves.toBe(initialBlocksInStack + 1);
   });
 
   test("cannot open task config", async ({ page: pwPage }) => {
@@ -262,5 +418,25 @@ test.describe("/solve/sessionId/taskId", () => {
     await expect(page.openTaskConfigButton).toHaveCount(0);
 
     expect(page.taskConfigForm).toHaveCount(0);
+  });
+
+  test("removing initial blocks does not increase the limit", async ({
+    page: pwPage,
+  }) => {
+    const page = new TestTaskPage(pwPage);
+
+    const { moveSteps, turnRight } = page.enabledBlockConfigButtons;
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(1);
+
+    await page.removeBlock(page.taskBlocks.catActor.editableBlock);
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
   });
 });

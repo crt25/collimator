@@ -60,7 +60,18 @@ import {
 import BlockConfig from "../components/block-config/BlockConfig";
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { filterNonNull } from "../utilities/filter-non-null";
-import { freezeTaskBlocks } from "../blocks/freeze-task-blocks";
+import {
+  addFreezeButtonsToStack,
+  freezeTaskBlocks,
+  removeFreezeButtons,
+} from "../blocks/freeze-task-blocks";
+import {
+  isBlockBeingDragged,
+  isBlockInsertionMarker,
+  isBlocksCanvas,
+  isWithinStack,
+  isVisualTopOfStack,
+} from "../utilities/scratch-selectors";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
@@ -79,6 +90,7 @@ interface WorkspaceChangeEvent {
     | "comment_move"
     | "comment_delete";
 
+  blockId?: string;
   xml?: Element;
   oldXml?: Element;
 }
@@ -220,7 +232,9 @@ class Blocks extends React.Component<Props, State> {
       "onWorkspaceMetricsChange",
       "setBlocks",
       "setLocale",
+      "requestToolboxUpdate",
       "onWorkspaceChange",
+      "onBlocksChange",
     ]);
     this.ScratchBlocks.prompt = this.handlePromptStart;
     this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -331,8 +345,25 @@ class Blocks extends React.Component<Props, State> {
     // update the toolbox when an update is requested
     window.addEventListener(
       UpdateBlockToolboxEvent.eventName,
-      this.requestToolboxUpdate.bind(this),
+      this.requestToolboxUpdate,
     );
+
+    // observe the block canvas for when a new block is added to the svg
+    const canvas = this.blocks.querySelector(isBlocksCanvas);
+
+    if (!canvas) {
+      throw new Error("Could not find the block canvas");
+    }
+
+    const observer = new MutationObserver(this.onBlocksChange);
+    observer.observe(canvas, { childList: true, subtree: true });
+
+    // trigger onNewStacks for any existing stacks
+    this.onNewStacks([
+      ...this.blocks.querySelectorAll<SVGGElement>(
+        `${isBlocksCanvas} ${isVisualTopOfStack}`,
+      ),
+    ]);
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -457,7 +488,10 @@ class Blocks extends React.Component<Props, State> {
 
     if (this.blocks) {
       addBlockConfigButtons(this.props.vm, this.blocks, this.props.canEditTask);
-      freezeTaskBlocks(this.props.vm, this.blocks);
+
+      if (!this.props.canEditTask) {
+        freezeTaskBlocks(this.props.vm, this.blocks);
+      }
     }
   }
 
@@ -807,6 +841,56 @@ class Blocks extends React.Component<Props, State> {
     this.blocks = blocks;
   }
 
+  onBlocksChange(changes: MutationRecord[]) {
+    const blockChanges = changes.filter(
+      (change) =>
+        change.type === "childList" &&
+        // we only care about nodes added to the block canvas
+        change.target instanceof Element &&
+        change.target.matches(isBlocksCanvas),
+    );
+
+    // handle new block stacks
+    this.onNewStacks(
+      blockChanges
+        // we only care about added nodes
+        .flatMap((change) => [...change.addedNodes])
+        .filter(
+          (node): node is SVGGElement =>
+            // filter out non svg groups
+            node instanceof SVGGElement &&
+            // filter out blocks that are being dragged
+            !node.matches(isBlockBeingDragged) &&
+            // and any insertion markers
+            !node.matches(isBlockInsertionMarker) &&
+            // and filter out non-stack blocks (i.e. they must not be a child of another block)
+            node.matches(isVisualTopOfStack),
+        ),
+    );
+
+    // handle deleted block stacks
+    blockChanges
+      // we only care about removed nodes
+      .flatMap((change) => [...change.removedNodes])
+      .filter(
+        (node): node is SVGGElement =>
+          node instanceof SVGGElement &&
+          // filter out blocks that are being dragged
+          !node.matches(isBlockBeingDragged) &&
+          // and any insertion markers
+          !node.matches(isBlockInsertionMarker) &&
+          // only select blocks that are part of a stack (and not the top of the stack)
+          node.matches(isWithinStack),
+      )
+      .forEach((node) => removeFreezeButtons(this.props.vm, node));
+  }
+
+  onNewStacks(newStacks: SVGGElement[]) {
+    newStacks.forEach((stack) => {
+      addFreezeButtonsToStack(this.props.vm, stack, this.props.canEditTask);
+    });
+  }
+
   handlePromptStart(
     message: string,
     defaultValue: string,
@@ -963,6 +1047,11 @@ class Blocks extends React.Component<Props, State> {
           opcode,
           this.props.canEditTask,
         );
+      }
+
+      if (event.type === "delete" && event.blockId && this.props.canEditTask) {
+        // remove the config for this task block
+        delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
       }
     }
   }

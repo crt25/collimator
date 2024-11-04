@@ -1,0 +1,11 @@
+{
+  "allowedBlocks": {
+    "motion_movesteps": 7,
+    "motion_turnright": 2,
+    "motion_goto": -1
+  },
+  "freezeStateByBlockId": {
+    "*t~VMcxLD[(lt8Ja;s#-": "frozen",
+    "iY}I[=PNCjG}GzJS1G/X": "appendable"
+  }
+}
