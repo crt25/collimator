@@ -13,13 +13,16 @@ const Prisma_NotFound_ErrorCode = "P2025";
 
 @Injectable()
 export class PrismaNotFoundInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+  intercept(
+    _context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<unknown> {
     return next
       .handle()
       .pipe(
         catchError((err) =>
           throwError(() =>
-            this.isPrismaNotFound(err) ? new NotFoundException(err) : err,
+            this.isPrismaNotFound(err) ? new NotFoundException() : err,
           ),
         ),
       );

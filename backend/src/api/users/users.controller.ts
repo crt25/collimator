@@ -59,6 +59,7 @@ export class UsersController {
   @Patch(":id")
   @ApiCreatedResponse({ type: ExistingUserDto })
   @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
   async update(
     @Param("id", ParseIntPipe) id: UserId,
     @Body() userDto: UpdateUserDto,
