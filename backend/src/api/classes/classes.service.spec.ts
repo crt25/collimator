@@ -1,11 +1,13 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { ClassesService } from "src/classes/services/classes.service";
+import { CoreModule } from "src/core/core.module";
+import { ClassesService } from "./classes.service";
 
 describe("ClassesService", () => {
   let service: ClassesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CoreModule],
       providers: [ClassesService],
     }).compile();
 

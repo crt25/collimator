@@ -7,7 +7,7 @@ export type ClassId = number;
 export class ExistingClassDto extends CreateClassDto implements Class {
   @ApiProperty({
     example: 318,
-    description: "The class unique identifier, a positive integer.",
+    description: "The class's unique identifier, a positive integer.",
   })
   readonly id!: ClassId;
 }

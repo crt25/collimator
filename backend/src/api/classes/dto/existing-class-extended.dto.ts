@@ -23,8 +23,8 @@ export class ExistingClassExtendedDto extends ExistingClassWithTeacherDto {
     type: Number,
     example: 25,
   })
-  @Expose({ name: "studentCount", toPlainOnly: true })
+  @Expose({ name: "_count", toClassOnly: true })
   // Receive _count { students: number }, turn it into studentCount: number
   @Transform(({ value }) => value?.students ?? 0, { toClassOnly: true })
-  readonly _count!: number;
+  readonly studentCount!: number;
 }
