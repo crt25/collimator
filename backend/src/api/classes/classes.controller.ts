@@ -24,7 +24,7 @@ import {
   UpdateClassDto,
   DeletedClassDto,
   ClassId,
-  ExistingClassTeacherDto,
+  ExistingClassWithTeacherDto,
   ExistingClassExtendedDto,
 } from "./dto";
 import { ClassesService } from "./classes.service";
@@ -46,11 +46,11 @@ export class ClassesController {
 
   @Get()
   @ApiQuery({ name: "teacherId", required: false, type: Number })
-  @ApiOkResponse({ type: ExistingClassTeacherDto, isArray: true })
+  @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
     @Query("teacherId", new ParseIntPipe({ optional: true }))
     teacherId?: number,
-  ): Promise<ExistingClassTeacherDto[]> {
+  ): Promise<ExistingClassWithTeacherDto[]> {
     // TODO: add pagination support
 
     const classes = await this.classesService.listClassesWithTeacher({
@@ -60,7 +60,7 @@ export class ClassesController {
     });
 
     return classes.map((klass) =>
-      plainToInstance(ExistingClassTeacherDto, klass),
+      plainToInstance(ExistingClassWithTeacherDto, klass),
     );
   }
 

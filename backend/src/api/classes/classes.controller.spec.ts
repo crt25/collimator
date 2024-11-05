@@ -12,7 +12,7 @@ import {
   ExistingClassDto,
   DeletedClassDto,
   ExistingClassExtendedDto,
-  ExistingClassTeacherDto,
+  ExistingClassWithTeacherDto,
 } from "./dto";
 
 describe("ClassesController", () => {
@@ -150,10 +150,10 @@ describe("ClassesController", () => {
     expect(prismaMock.class.findMany).toHaveBeenCalledTimes(1);
     expect(Array.isArray(result)).toBe(true);
     expect(
-      result.every((klass) => klass instanceof ExistingClassTeacherDto),
+      result.every((klass) => klass instanceof ExistingClassWithTeacherDto),
     ).toBe(true);
     expect(result).toEqual(
-      classes.map((klass) => plainToInstance(ExistingClassTeacherDto, klass)),
+      classes.map((klass) => plainToInstance(ExistingClassWithTeacherDto, klass)),
     );
   });
 
@@ -184,10 +184,10 @@ describe("ClassesController", () => {
     });
     expect(Array.isArray(result)).toBe(true);
     expect(
-      result.every((klass) => klass instanceof ExistingClassTeacherDto),
+      result.every((klass) => klass instanceof ExistingClassWithTeacherDto),
     ).toBe(true);
     expect(result).toEqual(
-      classes.map((klass) => plainToInstance(ExistingClassTeacherDto, klass)),
+      classes.map((klass) => plainToInstance(ExistingClassWithTeacherDto, klass)),
     );
   });
 });

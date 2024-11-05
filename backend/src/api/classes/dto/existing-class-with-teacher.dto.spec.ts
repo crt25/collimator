@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
-import { ExistingClassTeacherDto } from "./existing-class-teacher.dto";
+import { ExistingClassWithTeacherDto } from "./existing-class-with-teacher.dto";
 
-describe("ExistingClassTeacherDto", () => {
+describe("ExistingClassWithTeacherDto", () => {
   const klass = {
     id: 1,
     name: "Test Class",
@@ -10,7 +10,7 @@ describe("ExistingClassTeacherDto", () => {
   };
 
   it("can be constructed", () => {
-    const classDto = plainToInstance(ExistingClassTeacherDto, klass);
+    const classDto = plainToInstance(ExistingClassWithTeacherDto, klass);
 
     expect(classDto.id).toEqual(klass.id);
     expect(classDto.name).toEqual(klass.name);

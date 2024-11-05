@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
-import { ExistingClassTeacherDto } from "./existing-class-teacher.dto";
+import { ExistingClassWithTeacherDto } from "./existing-class-with-teacher.dto";
 
 type SessionList = { id: number }[];
 
-export class ExistingClassExtendedDto extends ExistingClassTeacherDto {
+export class ExistingClassExtendedDto extends ExistingClassWithTeacherDto {
   @ApiProperty({
     description: "The list of session IDs.",
     type: [Number],
