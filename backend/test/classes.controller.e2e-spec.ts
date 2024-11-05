@@ -78,6 +78,17 @@ describe("ClassesController (e2e)", () => {
     expect(response.body.message).toBe("Not Found");
   });
 
+  test("/classes (POST)", async () => {
+    const dto = { name: "New Class", teacherId: defaultTeacher.id };
+
+    const response = await request(app.getHttpServer())
+      .post("/classes")
+      .send(dto)
+      .expect(201);
+
+    expect(response.body).toEqual({ id: 1, ...dto });
+  });
+
   test("/classes/:id (PATCH)", async () => {
     const klass = classes[0];
     const dto = { name: "Updated Class", teacherId: defaultTeacher.id };
@@ -91,23 +102,11 @@ describe("ClassesController (e2e)", () => {
   });
 
   test("/classes/:id (DELETE)", async () => {
-    const klass = classes[1];
-
+    const klass = classes[0];
     const response = await request(app.getHttpServer())
       .delete(`/classes/${klass.id}`)
       .expect(200);
 
     expect(response.body).toEqual(klass);
-  });
-
-  test("/classes (POST)", async () => {
-    const dto = { name: "New Class", teacherId: defaultTeacher.id };
-
-    const response = await request(app.getHttpServer())
-      .post("/classes")
-      .send(dto)
-      .expect(201);
-
-    expect(response.body).toEqual({ id: 1, ...dto });
   });
 });
