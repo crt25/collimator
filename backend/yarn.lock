@@ -1233,6 +1233,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@quramy/jest-prisma-core@npm:^1.8.0":
+  version: 1.8.1
+  resolution: "@quramy/jest-prisma-core@npm:1.8.1"
+  dependencies:
+    chalk: "npm:^4.0.0"
+  peerDependencies:
+    jest: ^28.0.0 || ^29.0.0
+  checksum: 10c0/37b8c04366b0ee92f43eb72512f157e72abdd4e88871ebde6ea385751b3758b6b5a241055e6f14ee775cc0e865f0efc6152e1c076c6b3afc685a32475b1800ad
+  languageName: node
+  linkType: hard
+
+"@quramy/jest-prisma-node@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "@quramy/jest-prisma-node@npm:1.8.1"
+  dependencies:
+    "@quramy/jest-prisma-core": "npm:^1.8.0"
+  peerDependencies:
+    jest: ^28.0.0 || ^29.0.0
+    jest-environment-node: ^28.0.0 || ^29.0.0
+  checksum: 10c0/4b3dbe2c3120b5bb57e4b31cfecd929045e5b31a060cb000d158c310103a505ad31b7d018b7c0267b3743aa472ee675b8fccc8f086d2cafdc8af02758105ce44
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
@@ -2207,6 +2230,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "backend@workspace:."
   dependencies:
+    "@jest/globals": "npm:^29.7.0"
     "@nestjs/cli": "npm:^10.0.0"
     "@nestjs/common": "npm:^10.0.0"
     "@nestjs/config": "npm:^3.2.3"
@@ -2217,6 +2241,7 @@ __metadata:
     "@nestjs/swagger": "npm:^7.4.2"
     "@nestjs/testing": "npm:^10.0.0"
     "@prisma/client": "npm:^5.20.0"
+    "@quramy/jest-prisma-node": "npm:^1.8.1"
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^29.5.2"
     "@types/node": "npm:^20.3.1"
@@ -2230,6 +2255,7 @@ __metadata:
     eslint-config-prettier: "npm:^9.0.0"
     eslint-plugin-prettier: "npm:^5.0.0"
     jest: "npm:^29.5.0"
+    jest-environment-node: "npm:^29.7.0"
     jest-mock-extended: "npm:^4.0.0-beta1"
     json-schema-to-typescript: "npm:^15.0.2"
     mkdirp: "npm:^3.0.1"
