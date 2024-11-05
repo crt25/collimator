@@ -13,6 +13,16 @@ const config = defineConfig({
       client: "fetch",
       httpClient: "fetch",
       mock: true,
+
+      override: {
+        fetch: {
+          includeHttpStatusReturnType: false,
+        },
+        mutator: {
+          path: "./src/api/fetch.ts",
+          name: "fetchApi",
+        },
+      },
     },
     hooks: {
       afterAllFilesWrite: {

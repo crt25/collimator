@@ -14,11 +14,7 @@ import type {
   ExistingClassWithTeacherDto,
   UpdateClassDto,
 } from "../../models";
-
-export type classesControllerCreateResponse = {
-  data: ExistingClassDto;
-  status: number;
-};
+import { fetchApi } from "../../../../fetch";
 
 export const getClassesControllerCreateUrl = () => {
   return `/classes`;
@@ -27,21 +23,13 @@ export const getClassesControllerCreateUrl = () => {
 export const classesControllerCreate = async (
   createClassDto: CreateClassDto,
   options?: RequestInit,
-): Promise<classesControllerCreateResponse> => {
-  const res = await fetch(getClassesControllerCreateUrl(), {
+): Promise<ExistingClassDto> => {
+  return fetchApi<Promise<ExistingClassDto>>(getClassesControllerCreateUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(createClassDto),
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type classesControllerFindAllResponse = {
-  data: ExistingClassWithTeacherDto[];
-  status: number;
 };
 
 export const getClassesControllerFindAllUrl = (
@@ -63,19 +51,14 @@ export const getClassesControllerFindAllUrl = (
 export const classesControllerFindAll = async (
   params?: ClassesControllerFindAllParams,
   options?: RequestInit,
-): Promise<classesControllerFindAllResponse> => {
-  const res = await fetch(getClassesControllerFindAllUrl(params), {
-    ...options,
-    method: "GET",
-  });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type classesControllerFindOneResponse = {
-  data: ExistingClassExtendedDto;
-  status: number;
+): Promise<ExistingClassWithTeacherDto[]> => {
+  return fetchApi<Promise<ExistingClassWithTeacherDto[]>>(
+    getClassesControllerFindAllUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 export const getClassesControllerFindOneUrl = (id: number) => {
@@ -85,19 +68,14 @@ export const getClassesControllerFindOneUrl = (id: number) => {
 export const classesControllerFindOne = async (
   id: number,
   options?: RequestInit,
-): Promise<classesControllerFindOneResponse> => {
-  const res = await fetch(getClassesControllerFindOneUrl(id), {
-    ...options,
-    method: "GET",
-  });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type classesControllerUpdateResponse = {
-  data: ExistingClassDto;
-  status: number;
+): Promise<ExistingClassExtendedDto> => {
+  return fetchApi<Promise<ExistingClassExtendedDto>>(
+    getClassesControllerFindOneUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
 };
 
 export const getClassesControllerUpdateUrl = (id: number) => {
@@ -108,21 +86,16 @@ export const classesControllerUpdate = async (
   id: number,
   updateClassDto: UpdateClassDto,
   options?: RequestInit,
-): Promise<classesControllerUpdateResponse> => {
-  const res = await fetch(getClassesControllerUpdateUrl(id), {
-    ...options,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateClassDto),
-  });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type classesControllerRemoveResponse = {
-  data: DeletedClassDto;
-  status: number;
+): Promise<ExistingClassDto> => {
+  return fetchApi<Promise<ExistingClassDto>>(
+    getClassesControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(updateClassDto),
+    },
+  );
 };
 
 export const getClassesControllerRemoveUrl = (id: number) => {
@@ -132,12 +105,9 @@ export const getClassesControllerRemoveUrl = (id: number) => {
 export const classesControllerRemove = async (
   id: number,
   options?: RequestInit,
-): Promise<classesControllerRemoveResponse> => {
-  const res = await fetch(getClassesControllerRemoveUrl(id), {
+): Promise<DeletedClassDto> => {
+  return fetchApi<Promise<DeletedClassDto>>(getClassesControllerRemoveUrl(id), {
     ...options,
     method: "DELETE",
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
 };

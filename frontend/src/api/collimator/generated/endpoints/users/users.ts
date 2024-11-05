@@ -11,11 +11,7 @@ import type {
   ExistingUserDto,
   UpdateUserDto,
 } from "../../models";
-
-export type usersControllerCreateResponse = {
-  data: ExistingUserDto;
-  status: number;
-};
+import { fetchApi } from "../../../../fetch";
 
 export const getUsersControllerCreateUrl = () => {
   return `/users`;
@@ -24,21 +20,13 @@ export const getUsersControllerCreateUrl = () => {
 export const usersControllerCreate = async (
   createUserDto: CreateUserDto,
   options?: RequestInit,
-): Promise<usersControllerCreateResponse> => {
-  const res = await fetch(getUsersControllerCreateUrl(), {
+): Promise<ExistingUserDto> => {
+  return fetchApi<Promise<ExistingUserDto>>(getUsersControllerCreateUrl(), {
     ...options,
     method: "POST",
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(createUserDto),
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type usersControllerFindAllResponse = {
-  data: ExistingUserDto[];
-  status: number;
 };
 
 export const getUsersControllerFindAllUrl = () => {
@@ -47,19 +35,11 @@ export const getUsersControllerFindAllUrl = () => {
 
 export const usersControllerFindAll = async (
   options?: RequestInit,
-): Promise<usersControllerFindAllResponse> => {
-  const res = await fetch(getUsersControllerFindAllUrl(), {
+): Promise<ExistingUserDto[]> => {
+  return fetchApi<Promise<ExistingUserDto[]>>(getUsersControllerFindAllUrl(), {
     ...options,
     method: "GET",
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type usersControllerFindOneResponse = {
-  data: ExistingUserDto;
-  status: number;
 };
 
 export const getUsersControllerFindOneUrl = (id: number) => {
@@ -69,19 +49,11 @@ export const getUsersControllerFindOneUrl = (id: number) => {
 export const usersControllerFindOne = async (
   id: number,
   options?: RequestInit,
-): Promise<usersControllerFindOneResponse> => {
-  const res = await fetch(getUsersControllerFindOneUrl(id), {
+): Promise<ExistingUserDto> => {
+  return fetchApi<Promise<ExistingUserDto>>(getUsersControllerFindOneUrl(id), {
     ...options,
     method: "GET",
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type usersControllerUpdateResponse = {
-  data: ExistingUserDto;
-  status: number;
 };
 
 export const getUsersControllerUpdateUrl = (id: number) => {
@@ -92,21 +64,13 @@ export const usersControllerUpdate = async (
   id: number,
   updateUserDto: UpdateUserDto,
   options?: RequestInit,
-): Promise<usersControllerUpdateResponse> => {
-  const res = await fetch(getUsersControllerUpdateUrl(id), {
+): Promise<ExistingUserDto> => {
+  return fetchApi<Promise<ExistingUserDto>>(getUsersControllerUpdateUrl(id), {
     ...options,
     method: "PATCH",
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(updateUserDto),
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
-};
-
-export type usersControllerDeleteResponse = {
-  data: DeletedUserDto;
-  status: number;
 };
 
 export const getUsersControllerDeleteUrl = (id: number) => {
@@ -116,12 +80,9 @@ export const getUsersControllerDeleteUrl = (id: number) => {
 export const usersControllerDelete = async (
   id: number,
   options?: RequestInit,
-): Promise<usersControllerDeleteResponse> => {
-  const res = await fetch(getUsersControllerDeleteUrl(id), {
+): Promise<DeletedUserDto> => {
+  return fetchApi<Promise<DeletedUserDto>>(getUsersControllerDeleteUrl(id), {
     ...options,
     method: "DELETE",
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
 };

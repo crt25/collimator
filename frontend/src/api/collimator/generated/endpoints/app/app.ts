@@ -5,11 +5,7 @@
  * The Collimator API description
  * OpenAPI spec version: 0.1
  */
-
-export type appControllerGetHelloResponse = {
-  data: void;
-  status: number;
-};
+import { fetchApi } from "../../../../fetch";
 
 export const getAppControllerGetHelloUrl = () => {
   return `/`;
@@ -17,12 +13,9 @@ export const getAppControllerGetHelloUrl = () => {
 
 export const appControllerGetHello = async (
   options?: RequestInit,
-): Promise<appControllerGetHelloResponse> => {
-  const res = await fetch(getAppControllerGetHelloUrl(), {
+): Promise<void> => {
+  return fetchApi<Promise<void>>(getAppControllerGetHelloUrl(), {
     ...options,
     method: "GET",
   });
-  const data = await res.json();
-
-  return { status: res.status, data };
 };
