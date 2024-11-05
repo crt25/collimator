@@ -436,7 +436,7 @@ test.describe("/solve/sessionId/taskId", () => {
       type: "request",
       procedure: "reportProgress",
       arguments: {
-        tests: 1,
+        totalTests: 1,
         passedTests: 0,
       },
     });
@@ -471,7 +471,7 @@ test.describe("/solve/sessionId/taskId", () => {
       type: "request",
       procedure: "reportProgress",
       arguments: {
-        tests: 1,
+        totalTests: 1,
         passedTests: 1,
       },
     });
@@ -514,7 +514,7 @@ test.describe("/solve/sessionId/taskId", () => {
       type: "request",
       procedure: "reportProgress",
       arguments: {
-        tests: 1,
+        totalTests: 1,
         passedTests: 1,
       },
     });

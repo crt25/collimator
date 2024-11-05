@@ -183,9 +183,9 @@ const GUIComponent = (props: {
       // if the extension is loaded
 
       const onAssertionsChecked = (
-        assertions: number,
+        totalAssertions: number,
         passedAssertions: number,
-      ) => onTaskProgress && onTaskProgress(assertions, passedAssertions);
+      ) => onTaskProgress && onTaskProgress(totalAssertions, passedAssertions);
 
       // enable assertions as soon as the extension is loaded
       vm.runtime.on("ASSERTIONS_EXTENSION_LOADED", enableAssertions);

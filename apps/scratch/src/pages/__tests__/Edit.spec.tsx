@@ -417,7 +417,7 @@ test.describe("/edit/taskId", () => {
     await expect(page.assertionState.total).toHaveCount(0);
   });
 
-  test.only("can disable assertion mode", async ({ page: pwPage }) => {
+  test("can disable assertion mode", async ({ page: pwPage }) => {
     const editPage = new EditTaskPage(pwPage);
     const { page } = await AssertionTaskPage.load(pwPage);
 

@@ -7,7 +7,7 @@ type ProcedureName = "reportProgress";
 
 export type ReportProgressRequest = RemoteProcedureCallRequest<
   ProcedureName,
-  { tests: number; passedTests: number }
+  { totalTests: number; passedTests: number }
 >;
 
 export type ReportProgressReponse = RemoteProcedureCallResponse<
