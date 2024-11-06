@@ -3,10 +3,10 @@ import { Buffer } from "buffer";
 import * as path from "path";
 import * as fs from "fs";
 import { zipDirectory } from "./helpers";
-import { ScratchCrtConfig } from "scratch-vm";
 import { BlockFreezeStates } from "../../../blocks/types";
+import { ScratchCrtConfig } from "../../../types/scratch-vm-custom";
 
-type Task = {
+export type TestTask = {
   blocksOfMainTarget: number;
   frozenBlocksOfMainTarget: number;
 
@@ -98,7 +98,7 @@ const getBlocksOfTarget = (
     ),
   );
 
-const getTask = (taskPath: string): Task => {
+const getTask = (taskPath: string): TestTask => {
   const sb3 = JSON.parse(
     fs.readFileSync(path.resolve(taskPath, "project.json"), "utf-8"),
   );
@@ -119,8 +119,11 @@ const getTask = (taskPath: string): Task => {
 };
 
 const tasks = {
-  get testTask(): Task {
+  get testTask(): TestTask {
     return getTask(path.resolve(__dirname, "test-task"));
+  },
+  get assertionTask(): TestTask {
+    return getTask(path.resolve(__dirname, "assertion-task"));
   },
 };
 

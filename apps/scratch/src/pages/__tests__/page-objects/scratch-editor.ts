@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { randomBytes } from "crypto";
 import { Locator, Page } from "playwright/test";
 import {
   getAllTargetBlocksSelector,
@@ -98,6 +99,13 @@ export class ScratchEditorPage {
     return this.openTaskConfigButton.click();
   }
 
+  async pressGreenFlag() {
+    return this.page
+      .getByTestId("stage-controls")
+      .locator("img:first-child")
+      .click();
+  }
+
   async removeAllNonFrozenBlocks() {
     while ((await this.blocksOfCurrentTargetNonFrozen.count()) > 0) {
       await this.blocksOfCurrentTargetNonFrozen.first().dragTo(this.toolbox, {
@@ -135,6 +143,31 @@ export class ScratchEditorPage {
 
   removeBlock(block: Locator) {
     return block.dragTo(this.toolbox, { force: true });
+  }
+
+  async appendNewBlockToBottomOfStack(opcode: string, block: Locator) {
+    const randomClass = "bottom-of-stack-" + randomBytes(20).toString("hex");
+
+    await block.evaluate(
+      (el, { isScratchBlock, randomClass }) =>
+        // get first blocks that does not have any child blocks
+        [el, ...el.querySelectorAll(isScratchBlock)]
+          .find((el) => el.querySelector(isScratchBlock) === null)
+          ?.classList.add(randomClass),
+      { isScratchBlock, randomClass },
+    );
+
+    const lastBlock = this.page.locator(`.${randomClass}`);
+
+    await this.scrollBlockIntoView(lastBlock);
+
+    await this.getBlockInToolbox(opcode).dragTo(lastBlock, {
+      force: true,
+      targetPosition: {
+        x: 50,
+        y: 50,
+      },
+    });
   }
 
   async appendNewBlockTo(opcode: string, block: Locator) {

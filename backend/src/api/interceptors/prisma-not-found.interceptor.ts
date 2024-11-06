@@ -30,8 +30,17 @@ export class PrismaNotFoundInterceptor implements NestInterceptor {
 
   private isPrismaNotFound(error: unknown): boolean {
     return (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === Prisma_NotFound_ErrorCode
+      // normal Prisma error
+      (error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === Prisma_NotFound_ErrorCode) ||
+      // jestPrisma-thrown error, untyped
+      (!!error &&
+        typeof error == "object" &&
+        "name" in error &&
+        error.name === "NotFoundError" &&
+        "code" in error &&
+        error.code === Prisma_NotFound_ErrorCode &&
+        "clientVersion" in error)
     );
   }
 }

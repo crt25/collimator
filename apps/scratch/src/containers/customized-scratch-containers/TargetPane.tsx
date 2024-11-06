@@ -23,7 +23,7 @@ import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants
 import TargetPaneComponent, {
   Sprite,
   Props as TargetPaneProps,
-} from "../components/target-pane/TargetPane";
+} from "../../components/customized-scratch-components/target-pane/TargetPane";
 import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 import spriteLibraryContent from "@scratch-submodule/scratch-gui/src/lib/libraries/sprites.json";
 import {

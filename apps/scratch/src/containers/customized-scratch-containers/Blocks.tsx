@@ -49,29 +49,29 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML, { allowAllBlocks } from "../blocks/make-toolbox-xml";
+import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
 import ExtensionLibrary from "./ExtensionLibrary";
 import {
   addBlockConfigButtons,
   updateSingleBlockConfigButton,
-} from "../blocks/block-config";
-import BlockConfig from "../components/block-config/BlockConfig";
-import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
-import { filterNonNull } from "../utilities/filter-non-null";
+} from "../../blocks/block-config";
+import BlockConfig from "../../components/block-config/BlockConfig";
+import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
+import { filterNonNull } from "../../utilities/filter-non-null";
 import {
   addFreezeButtonsToStack,
   freezeTaskBlocks,
   removeFreezeButtons,
-} from "../blocks/freeze-task-blocks";
+} from "../../blocks/freeze-task-blocks";
 import {
   isBlockBeingDragged,
   isBlockInsertionMarker,
   isBlocksCanvas,
   isWithinStack,
   isVisualTopOfStack,
-} from "../utilities/scratch-selectors";
+} from "../../utilities/scratch-selectors";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
@@ -661,9 +661,7 @@ class Blocks extends React.Component<Props, State> {
         targetSounds.length > 0
           ? targetSounds[targetSounds.length - 1].name
           : "",
-        this.props.canEditTask
-          ? allowAllBlocks
-          : this.props.vm.crtConfig?.allowedBlocks,
+        this.props.canEditTask ? null : this.props.vm.crtConfig?.allowedBlocks,
       );
     } catch {
       return null;

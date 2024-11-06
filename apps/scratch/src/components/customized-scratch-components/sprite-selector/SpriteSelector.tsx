@@ -18,7 +18,7 @@ import surpriseIcon from "@scratch-submodule/scratch-gui/src/components/action-m
 import searchIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--search.svg";
 import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 import { Sprite } from "../target-pane/TargetPane";
-import { WithoutInteraction } from "../WithoutInteraction";
+import { WithoutInteraction } from "../../WithoutInteraction";
 
 const messages = defineMessages({
   addSpriteFromLibrary: {

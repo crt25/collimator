@@ -4,10 +4,9 @@ import {
   MockMessageEvent,
 } from "./mock-message-event";
 import { TestTaskPage } from "./page-objects/test-task";
-import { EditTaskPage } from "./page-objects/edit-task";
-import { Page } from "playwright/test";
-import tasks from "./tasks";
+import { EditTaskPage, Extension } from "./page-objects/edit-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import { AssertionTaskPage } from "./page-objects/assertion-task";
 
 declare global {
   interface Window {
@@ -17,48 +16,8 @@ declare global {
   }
 }
 
-const task = tasks.testTask;
-
-const loadTestTask = async (pwPage: Page) => {
-  await pwPage.evaluate(async () => {
-    const task = await fetch("https://example.com/test-task.sb3").then(
-      (response) => response.blob(),
-    );
-
-    const event = new window.MockMessageEvent(window.parent, {
-      id: 0,
-      type: "request",
-      procedure: "loadTask",
-      arguments: task,
-    });
-
-    window.dispatchEvent(event);
-  });
-
-  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
-
-  const messages = await pwPage.evaluate(() => window.postedMessages);
-
-  expect(messages).toHaveLength(1);
-
-  expect(messages[0].message).toEqual({
-    id: 0,
-    type: "response",
-    procedure: "loadTask",
-    result: undefined,
-  });
-};
-
 test.describe("/edit/taskId", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.route(/test-task.sb3$/, async (route) =>
-      route.fulfill({
-        body: await task.file,
-        contentType: "application/x.scratch.sb3",
-        status: 200,
-      }),
-    );
-
     page.on(
       "framenavigated",
       async () =>
@@ -132,9 +91,7 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can load task via window.postMessage", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-
-    const page = new TestTaskPage(pwPage);
+    const { page, task } = await TestTaskPage.load(pwPage);
 
     // check the block config buttons
     const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
@@ -163,7 +120,7 @@ test.describe("/edit/taskId", () => {
 
     // check the freeze buttons
     const editableStackButton = page.getBlockFreezeButton(
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
     );
     const frozenStackButton = page.getBlockFreezeButton(
       page.taskBlocks.catActor.topOfFrozenStack,
@@ -243,35 +200,37 @@ test.describe("/edit/taskId", () => {
     await expect(configButton).toHaveText("0");
   });
 
-  test("can add extension", async ({ page: pwPage }) => {
+  test("can load assertions extension", async ({ page: pwPage }) => {
     const page = new EditTaskPage(pwPage);
 
     await page.addExtensionButton.click();
 
-    // load the first extension
-    await page.loadExtension(1);
+    await page.loadExtension(Extension.Assertions);
 
-    // ensure the custom block is added
+    // ensure the extension blocks are added
     await expect(
-      page.getBlockInToolbox("example_functionCall_setX"),
+      page.getBlockInToolbox("assertions_event_whenTaskFinishedRunning"),
     ).toHaveCount(1);
+
+    await expect(page.getBlockInToolbox("assertions_noop_assert")).toHaveCount(
+      1,
+    );
   });
 
-  test("can add extension twice", async ({ page: pwPage }) => {
+  test("can load assertion extension twice", async ({ page: pwPage }) => {
     const page = new EditTaskPage(pwPage);
 
     await page.addExtensionButton.click();
 
-    // load the first extension
-    await page.loadExtension(1);
+    await page.loadExtension(Extension.Assertions);
 
     // add the extension again
     await page.addExtensionButton.click();
     await page.loadExtension(1);
 
-    // ensure the custom block is added just once
+    // ensure the custom blocks are added just once
     await expect(
-      page.getBlockInToolbox("example_functionCall_setX"),
+      page.getBlockInToolbox("assertions_event_whenTaskFinishedRunning"),
     ).toHaveCount(1);
   });
 
@@ -340,11 +299,10 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const editableStackButton = page.getBlockFreezeButton(
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
     );
 
     await expect(editableStackButton).toHaveText("✎");
@@ -357,11 +315,10 @@ test.describe("/edit/taskId", () => {
   });
 
   test("can prepend blocks to all stacks", async ({ page: pwPage }) => {
-    await loadTestTask(pwPage);
-    const page = new TestTaskPage(pwPage);
+    const { page } = await TestTaskPage.load(pwPage);
 
     const stacks = [
-      page.taskBlocks.catActor.topOfEditableStack,
+      page.taskBlocks.catActor.visualTopOfEditableStack,
       page.taskBlocks.catActor.topOfFrozenStack,
       page.taskBlocks.catActor.visualTopOfAppendableStack,
     ];
@@ -373,5 +330,131 @@ test.describe("/edit/taskId", () => {
 
       expect(await page.countBlocksInParentStack(stack)).toBe(blockCount + 1);
     }
+  });
+
+  test("does not reset to the initial state when running", async ({
+    page: pwPage,
+  }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // run the project once with assertions disabled
+    await page.pressGreenFlag();
+
+    // then, enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project again. we expect the first run to persist and therefore
+    // the assertions to fail
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // no progress should be reported in edit mode
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+  });
+
+  test("resets to the initial state when running in assertion mode", async ({
+    page: pwPage,
+  }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 4; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project.
+    await page.pressGreenFlag();
+
+    // since we are missing one move steps, this should fail
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // however, after adding one more it should pass.
+    // note that without a reset, it will fail.
+    await page.appendNewBlockToBottomOfStack(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // no progress should be reported in edit mode
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // when disabling assertions, the state should disappear
+    await editPage.disableAssertions();
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+    await expect(page.assertionState.total).toHaveCount(0);
+  });
+
+  test("can disable assertion mode", async ({ page: pwPage }) => {
+    const editPage = new EditTaskPage(pwPage);
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(page.assertionState.passed).toHaveCount(0);
+
+    // enable assertions
+    await editPage.enableAssertions();
+
+    // and run the project.
+    await page.pressGreenFlag();
+
+    // since we did not solve the task, this should fail
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    // disable assertions should make the assertion state disappear
+    await editPage.disableAssertions();
+    await expect(page.assertionState.passed).toHaveCount(0);
+    await expect(page.assertionState.total).toHaveCount(0);
+
+    // when adding a block and running the project four times
+    // we should be in the asserted state after a firth and final run
+    await page.appendNewBlockToBottomOfStack(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
+    for (let i = 0; i < 4; i++) {
+      await page.pressGreenFlag();
+    }
+
+    // hence, if we enable assertions now and run the project,
+    // we should succeed
+    await editPage.enableAssertions();
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
   });
 });

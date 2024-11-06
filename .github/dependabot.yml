@@ -64,3 +64,25 @@ updates:
         # create-react-app, etc. as of 2024-09-25. DO NOT update.
         - dependency-name: "eslint"
           versions: ["9.x"]
+
+        # the scratch GUI depends on react 16
+        - dependency-name: "react"
+        - dependency-name: "@types/react"
+        - dependency-name: "react-dom"
+        - dependency-name: "@types/react-dom"
+
+        # and some specific versions of some other packages
+        - dependency-name: "redux"
+        - dependency-name: "react-redux"
+        - dependency-name: "react-intl"
+        - dependency-name: "react-responsive"
+        - dependency-name: "react-tabs"
+        - dependency-name: "react-tooltip"
+
+        # scratch specific packages, upgrade these when the submodule version is updated
+        - dependency-name: "scratch-audio"
+        - dependency-name: "scratch-l10n"
+        - dependency-name: "scratch-paint"
+        - dependency-name: "scratch-render"
+        - dependency-name: "scratch-render-fonts"
+        - dependency-name: "scratch-svg-renderer"

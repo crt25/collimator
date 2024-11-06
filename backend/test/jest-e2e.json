@@ -2,7 +2,7 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": "..",
   "modulePaths": ["<rootDir>"],
-  "testEnvironment": "node",
+  "testEnvironment": "@quramy/jest-prisma-node/environment",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
@@ -13,5 +13,6 @@
     "\\.d\\.ts$",
     "\\.spec\\.(t|j)s$"
   ],
-  "coverageDirectory": "./coverage-e2e"
+  "coverageDirectory": "./coverage-e2e",
+  "setupFilesAfterEnv": ["<rootDir>/test/setup-prisma.ts"]
 }

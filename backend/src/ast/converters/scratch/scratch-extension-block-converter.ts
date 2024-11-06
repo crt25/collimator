@@ -11,6 +11,10 @@ import {
   ArbitraryFunctionCallBlock,
   isArbitraryStatementBlock,
 } from "src/ast/types/input/scratch/blocks/extensions/arbitrary-function-call-block";
+import {
+  ArbitraryNoOpBlock,
+  isArbitraryNoOpBlock,
+} from "src/ast/types/input/scratch/blocks/extensions/arbitrary-no-op-block";
 
 type ExtensionStatementTreeNode = ExtensionStatementBlock & TreeNode;
 type ExtensionExpressionTreeNode = ExtensionExpressionBlock & TreeNode;
@@ -18,7 +22,7 @@ type ExtensionExpressionTreeNode = ExtensionExpressionBlock & TreeNode;
 export const isExtensionStatementBlock = (
   block: NonHatBlock,
 ): block is ExtensionStatementBlock & NonHatBlock =>
-  isArbitraryStatementBlock(block);
+  isArbitraryStatementBlock(block) || isArbitraryNoOpBlock(block);
 
 export const isExtensionExpressionBlock = (
   block: NonHatBlock,
@@ -38,6 +42,10 @@ export const convertExtensionBlockTreeToStatement = (
           createFunctionCallBlock(block, `${splitOpCode[0]}_${splitOpCode[2]}`),
         ];
       },
+    )
+    .with(
+      P.when(isArbitraryNoOpBlock),
+      (_block: ArbitraryNoOpBlock & ExtensionStatementTreeNode) => [],
     )
     .exhaustive();
 

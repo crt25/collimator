@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { expect } from "playwright/test";
 import {
   getBlockConfigBlockLimitInputSelector,
   getBlockConfigCanBeUsedCheckboxSelector,
@@ -6,6 +7,10 @@ import {
   getBlockConfigHasBlockLimitCheckboxSelector,
 } from "../locators";
 import { ScratchEditorPage } from "./scratch-editor";
+
+export enum Extension {
+  Assertions = 1,
+}
 
 export class EditTaskPage extends ScratchEditorPage {
   get blockConfigFormElements() {
@@ -29,8 +34,13 @@ export class EditTaskPage extends ScratchEditorPage {
 
   get taskConfigFormElements() {
     return {
-      allowAllBlocksButton: this.page.getByTestId("allow-all-blocks-button"),
+      allowAllBlocksButton: this.page.getByTestId(
+        "allow-all-standard-blocks-button",
+      ),
       allowNoBlocksButton: this.page.getByTestId("allow-no-blocks-button"),
+      enableAssertionsCheckbox: this.page.getByTestId(
+        "enable-assertions-checkbox",
+      ),
       submit: this.page.getByTestId("task-config-form-submit-button"),
     };
   }
@@ -39,10 +49,39 @@ export class EditTaskPage extends ScratchEditorPage {
     return this.page.getByTestId("add-extension-button");
   }
 
-  loadExtension(extensionIndex: number) {
+  loadExtension(extension: Extension) {
     return this.page
       .locator(".ReactModalPortal img")
-      .nth(extensionIndex + 1 /* skip first image */)
+      .nth(extension + 1 /* skip first image */)
       .click();
+  }
+
+  async enableAssertions() {
+    await this.openTaskConfig();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).not.toBeChecked();
+
+    await this.taskConfigFormElements.enableAssertionsCheckbox.click();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).toBeChecked();
+    await this.taskConfigFormElements.submit.click();
+  }
+
+  async disableAssertions() {
+    await this.openTaskConfig();
+
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).toBeChecked();
+    await this.taskConfigFormElements.enableAssertionsCheckbox.click();
+    await expect(
+      this.taskConfigFormElements.enableAssertionsCheckbox,
+    ).not.toBeChecked();
+
+    await this.taskConfigFormElements.submit.click();
   }
 }

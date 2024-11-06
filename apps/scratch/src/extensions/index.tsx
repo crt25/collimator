@@ -1,14 +1,14 @@
 import { FormattedMessage } from "react-intl";
-
-import musicIconURL from "./example/music.png";
-import musicInsetIconURL from "./example/music-small.svg";
 import React from "react";
 import VM from "scratch-vm";
 import { ArgumentType } from "../blocks/argument-type";
 import { BlockType } from "../blocks/block-type";
 
+import assertionsIconURL from "./assertions/assertions.svg";
+import assertionsInsetIconURL from "./assertions/test-icon-white.svg";
+
 export enum ExtensionId {
-  Example = "example",
+  Assertions = "assertions",
 }
 
 export interface Extension {
@@ -22,7 +22,7 @@ export interface Extension {
 export interface ExtensionMetdataBlockArgument {
   type: ArgumentType;
   menu?: string;
-  defaultValue: number;
+  defaultValue?: unknown;
 }
 
 export interface ExtensionMetdataBlock {
@@ -33,6 +33,12 @@ export interface ExtensionMetdataBlock {
     [key: string]: ExtensionMetdataBlockArgument;
   };
   hideFromPalette?: boolean;
+  restartExistingThreads?: boolean;
+
+  // If true, scratch will continously run the block and starts the stack if the return value changes from false to true.
+  // If undefined it is assumed to be true.
+  // Note however, that this causes some UI bugs such as https://github.com/scratchfoundation/scratch-vm/issues/1948
+  isEdgeActivated?: boolean;
 }
 
 export interface ExtensionMetadataMenu {
@@ -56,21 +62,21 @@ export interface ExtensionUtilType {
 }
 
 export default {
-  [ExtensionId.Example]: {
+  [ExtensionId.Assertions]: {
     name: (
       <FormattedMessage
-        defaultMessage="Music"
-        description="Name for the 'Music' extension"
-        id="gui.extension.music.name"
+        defaultMessage="Assertions"
+        description="Name for the 'Assertions' extension"
+        id="crt.extension.assertions.name"
       />
     ),
-    iconURL: musicIconURL,
-    insetIconURL: musicInsetIconURL,
+    iconURL: assertionsIconURL,
+    insetIconURL: assertionsInsetIconURL,
     description: (
       <FormattedMessage
-        defaultMessage="Play instruments and drums."
-        description="Description for the 'Music' extension"
-        id="gui.extension.music.description"
+        defaultMessage="Assert conditions on students' code"
+        description="Description for the 'Assertions' extension"
+        id="crt.extension.assertions.description"
       />
     ),
     featured: true,
