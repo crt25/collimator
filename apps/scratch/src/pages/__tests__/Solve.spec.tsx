@@ -1,18 +1,12 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { test, expect } from "playwright-test-coverage";
 import {
   defineCustomMessageEvent,
   MockMessageEvent,
 } from "./mock-message-event";
-import {
-  getBlockHiddenButtonSelector,
-  getBlockSelector,
-  getBlockShownButtonSelector,
-} from "./locators";
-
-// eslint-disable-next-line no-undef
-const testTask = readFileSync(resolve(__dirname, "test-task.zip"));
+import { SolveTaskPage } from "./page-objects/solve-task";
+import { TestTaskPage } from "./page-objects/test-task";
+import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import { AssertionTaskPage } from "./page-objects/assertion-task";
 
 declare global {
   interface Window {
@@ -44,23 +38,25 @@ test.describe("/solve/sessionId/taskId", () => {
     await defineCustomMessageEvent(page);
   });
 
-  test("can select the stage", async ({ page }) => {
-    await page.getByTestId("stage-selector").click();
+  test("can select the stage", async ({ page: pwPage }) => {
+    const page = new SolveTaskPage(pwPage);
+
+    await page.selectStage();
 
     // motion blocks should not be visible
-    expect(page.locator("[data-id='motion_movesteps']")).toHaveCount(0);
+    expect(page.getBlockInToolbox("motion_movesteps")).toHaveCount(0);
   });
 
-  test("can toggle fullscreen", async ({ page }) => {
-    const fullScreenButton = page.getByTestId("stage-fullscreen-button");
-    await fullScreenButton.click();
+  test("can toggle fullscreen", async ({ page: pwPage }) => {
+    const page = new SolveTaskPage(pwPage);
 
-    expect(fullScreenButton).toHaveCount(0);
+    expect(page.fullscreenButton).toHaveCount(1);
+    await page.enableFullScreen();
+    expect(page.fullscreenButton).toHaveCount(0);
 
-    const unFullScreenButton = page.getByTestId("stage-unfullscreen-button");
-
-    await unFullScreenButton.click();
-    expect(unFullScreenButton).toHaveCount(0);
+    expect(page.unFullscreenButton).toHaveCount(1);
+    await page.disableFullScreen();
+    expect(page.unFullscreenButton).toHaveCount(0);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {
@@ -114,59 +110,413 @@ test.describe("/solve/sessionId/taskId", () => {
     });
   });
 
-  test("can load task via window.postMessage", async ({ page }) => {
-    page.route(/test-task.sb3$/, (route) =>
-      route.fulfill({
-        body: testTask,
-        contentType: "application/zip",
-        status: 200,
-      }),
+  test("loads the initial task blocks", async ({ page: pwPage }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+  });
+
+  test("loads the allowed blocks correctly", async ({ page: pwPage }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+
+    const { moveSteps, turnRight, goto } = page.enabledBlockConfigButtons;
+    const { turnLeft } = page.disabledBlockConfigButtons;
+
+    await expect(moveSteps).toHaveCount(1);
+    await expect(turnRight).toHaveCount(1);
+    await expect(goto).toHaveCount(1);
+
+    await expect(turnLeft).toHaveCount(0);
+
+    // then assert that the correct labels are shown
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+    await expect(goto).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_goto"),
+    );
+  });
+
+  test("cannot open block config menu", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    await page.openBlockConfig("motion_movesteps", { force: true });
+
+    expect(page.blockConfigForm).toHaveCount(0);
+  });
+
+  test("reduces number of allowed blocks", async ({ page: pwPage }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
+
+    const { moveSteps } = page.enabledBlockConfigButtons;
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
     );
 
-    await page.evaluate(async () => {
-      const task = await fetch("https://example.com/test-task.sb3").then(
-        (response) => response.blob(),
+    await expect(moveSteps).toHaveText(moveStepsAllowedCount.toString());
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
+
+    for (let i = 0; i < moveStepsAllowedCount - 1; i++) {
+      await page.appendNewBlockTo(
+        "motion_movesteps",
+        page.taskBlocks.catActor.editableBlock,
       );
+    }
 
-      const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
-        type: "request",
-        procedure: "loadTask",
-        arguments: task,
-      });
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
+    await expect(moveSteps).toHaveText("0");
 
-      window.dispatchEvent(event);
-    });
+    // now it should not be possible to add another block
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
 
-    await page.waitForFunction(() => window.postedMessages.length > 0);
+    await expect(moveSteps).toHaveText("0");
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + moveStepsAllowedCount,
+    );
+  });
 
-    const messages = await page.evaluate(() => window.postedMessages);
+  test("removing student-added blocks increases the limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
 
-    expect(messages).toHaveLength(1);
+    const { moveSteps } = page.enabledBlockConfigButtons;
 
-    expect(messages[0].message).toEqual({
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
+
+    await page.removeAllNonFrozenBlocks();
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget - task.frozenBlocksOfMainTarget,
+    );
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+  });
+
+  test("cannot remove frozen blocks", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
+
+    await page.removeBlock(page.taskBlocks.catActor.frozenBlock);
+
+    await expect(page.taskBlocks.catActor.frozenBlock).toHaveCount(1);
+  });
+
+  test("cannot remove frozen but appendable blocks", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
+
+    await page.removeBlock(page.taskBlocks.catActor.visualTopOfAppendableStack);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    ).toHaveCount(1);
+  });
+
+  test("can prepend to editable stack", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page.prependNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to editable stack", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_goto",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    // nothing should be added to this stack
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.editableBlock),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("cannot prepend to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.prependNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("cannot append to top of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack);
+  });
+
+  test("can append to bottom of frozen but appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.visualTopOfAppendableStack,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.visualBottomOfAppendableStack,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(
+        page.taskBlocks.catActor.visualTopOfAppendableStack,
+      ),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("can append to empty slot in appendable stack", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const initialBlocksInStack = await page.countBlocksInSubStack(
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.insertableSlot,
+    );
+
+    await expect(
+      page.countBlocksInSubStack(page.taskBlocks.catActor.insertableSlot),
+    ).resolves.toBe(initialBlocksInStack + 1);
+  });
+
+  test("cannot open task config", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    await expect(page.openTaskConfigButton).toHaveCount(0);
+
+    expect(page.taskConfigForm).toHaveCount(0);
+  });
+
+  test("removing initial blocks does not increase the limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+
+    const { moveSteps, turnRight } = page.enabledBlockConfigButtons;
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(1);
+
+    await page.removeBlock(page.taskBlocks.catActor.editableBlock);
+
+    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+    await expect(turnRight).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
+    );
+  });
+
+  test("loads assertions extension if task contains assertion blocks", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await expect(
+      page.taskBlocks.catActor.visualTopOfAssertionStack,
+    ).toHaveCount(1);
+
+    await expect(
+      page.disabledBlockConfigButtons.whenTaskFinishedRunning,
+    ).toHaveCount(0);
+    await expect(page.disabledBlockConfigButtons.assert).toHaveCount(0);
+  });
+
+  test("reports the correct numbers of assertions when failing", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("0");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(2);
+
+    expect(messages[1].message).toEqual({
       id: 0,
-      type: "response",
-      procedure: "loadTask",
-      result: undefined,
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        totalTests: 1,
+        passedTests: 0,
+      },
     });
+  });
 
-    // ensure the block visibility is correctly loaded
+  test("reports the correct numbers of assertions when passing", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
 
-    // these blocks are allowed
-    expect(page.locator(getBlockSelector("motion_turnright"))).toHaveCount(1);
-    expect(page.locator(getBlockSelector("motion_turnleft"))).toHaveCount(1);
-    expect(page.locator(getBlockSelector("motion_goto"))).toHaveCount(1);
-    // the rest isn't
-    expect(page.locator(getBlockSelector("motion_gotoxy"))).toHaveCount(0);
+    await expect(page.assertionState.passed).toHaveCount(0);
 
-    // ensure the block visibility cannot be toggled
-    expect(
-      page.locator(getBlockShownButtonSelector("motion_turnright")),
-    ).toHaveCount(0);
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
 
-    expect(
-      page.locator(getBlockHiddenButtonSelector("motion_turnright")),
-    ).toHaveCount(0);
+    await page.pressGreenFlag();
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(2);
+
+    expect(messages[1].message).toEqual({
+      id: expect.any(Number),
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        totalTests: 1,
+        passedTests: 1,
+      },
+    });
+  });
+
+  test("resets to the initial state when running", async ({ page: pwPage }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+
+    // solve task
+    for (let i = 0; i < 5; i++) {
+      await page.appendNewBlockToBottomOfStack(
+        "motion_movesteps",
+        page.taskBlocks.catActor.visualTopOfEditableStack,
+      );
+    }
+
+    // run the project twice - by default scratch would not reset and the cat would
+    // be at position x = 100, violating the assertion
+    await page.pressGreenFlag();
+
+    // wait for results
+    await pwPage.waitForFunction(() => window.postedMessages.length === 2);
+
+    await page.pressGreenFlag();
+
+    // wait for results
+    await pwPage.waitForFunction(() => window.postedMessages.length === 3);
+
+    await expect(page.assertionState.passed).toHaveText("1");
+    await expect(page.assertionState.total).toHaveText("1");
+
+    const messages = await pwPage.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(3);
+
+    expect(messages[2].message).toEqual({
+      id: expect.any(Number),
+      type: "request",
+      procedure: "reportProgress",
+      arguments: {
+        totalTests: 1,
+        passedTests: 1,
+      },
+    });
   });
 });

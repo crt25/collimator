@@ -1,3 +1,23 @@
+:root {
+  --enabled-block-button-background-color: green;
+  --disabled-block-button-background-color: red;
+  --freeze-block-stack-button-background-color: #3333ee;
+
+  --disabled-block-background-color: #666;
+  --disabled-block-foreground-color: #ddd;
+
+  --border-radius: 0.25rem;
+
+  --modal-background-color: #fff;
+
+  --input-border-color: #000;
+  --input-background-color: #fff;
+  --input-background-color-hover: #ddd;
+
+  --assertions-default-color: #ff3355;
+  --assertions-success-color: #0b8e69;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -25,26 +45,113 @@ body,
   box-sizing: border-box;
 }
 
-.shown-block-button, .hidden-block-button {
+.enabled-block-button,
+.disabled-block-button,
+.stack-freeze-button {
   cursor: pointer;
-
-  text {
-    fill: white;
-  }
-
-  rect{
-    fill: black;
-  }
 }
 
-.shown-block-button rect {
-  fill: green;
+.enabled-block-button text,
+.disabled-block-button text,
+.stack-freeze-button text {
+  fill: white;
 }
 
-.hidden-block-button rect {
-  fill: red;
+.enabled-block-button rect,
+.disabled-block-button rect,
+.stack-freeze-button rect {
+  fill: black;
 }
 
-.d-contents{
+.enabled-block-button:hover rect,
+.disabled-block-button:hover rect,
+.stack-freeze-button:hover rect {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.enabled-block-button rect {
+  fill: var(--enabled-block-button-background-color);
+}
+
+.disabled-block-button rect {
+  fill: var(--disabled-block-button-background-color);
+}
+
+.stack-freeze-button rect {
+  fill: var(--freeze-block-stack-button-background-color);
+}
+
+.d-contents {
   display: contents;
+}
+
+.d-none {
+  display: none;
+}
+
+.non-interactive {
+  pointer-events: none;
+  user-select: none;
+}
+
+.non-interactive::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/*
+  make the direct non-block descendants of frozen blocks non-interactive.
+  the stacks are nested meaning without '>' students could not touch
+  blocks they added themselves.
+*/
+.frozen-block-frozen > *:not(.blocklyDraggable),
+.frozen-block-appendable > *:not(.blocklyDraggable) {
+  pointer-events: none;
+  user-select: none;
+}
+
+/*
+  change the color of frozen blocks.
+  original colors: https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/colours.js#L29
+*/
+
+.frozen-block-frozen > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line,
+.frozen-block-appendable > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line
+{
+  fill: var(--disabled-block-background-color);
+  stroke: var(--disabled-block-background-color);
+}
+
+.frozen-block-frozen > [data-argument-type^="text"] > .blocklyBlockBackground,
+.frozen-block-appendable > [data-argument-type^="text"] > .blocklyBlockBackground
+{
+  stroke: var(--disabled-block-background-color);
+  fill: var(--disabled-block-foreground-color);
+}
+
+/*
+  disable pointer events on all rects. you can still grab the block via the svg group element.
+  however, without this rule, it is possible to drag the rect even though the corresponding block is disabled.
+*/
+.blocklyFlyout rect:not(.interactive) {
+  pointer-events: none;
+}
+
+/*
+  reduce the size of the custom image of extension blocks
+*/
+.blocklyDraggable > g > image {
+  transform: scale(0.9);
+  transform-origin: 20px 20px;
 }

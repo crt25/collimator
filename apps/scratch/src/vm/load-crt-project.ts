@@ -1,6 +1,7 @@
-import VM, { ScratchCrtConfig } from "scratch-vm";
+import VM from "scratch-vm";
 import { defaultCrtConfig } from "./default-crt-config";
 import JSZip from "jszip";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 
 /**
  * Load a Scratch project from a .sb, .sb2, .sb3 or json string.
@@ -28,7 +29,8 @@ export const loadCrtProject = async (
         .async("text")
         .then((text) => JSON.parse(text));
 
-      vm.crtConfig = config;
+      // merge with default config s.t. all keys are always present
+      vm.crtConfig = { ...defaultCrtConfig, ...config };
     }
   }
 

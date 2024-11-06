@@ -18,10 +18,7 @@ import {
 } from "./types";
 import { isWhenBackdropSwitchesToBlock } from "src/ast/types/input/scratch/blocks/event/when-backdrop-switches-to";
 import { isWhenBroadcastReceivedBlock } from "src/ast/types/input/scratch/blocks/event/when-broadcast-received";
-import {
-  isWhenGreaterThanBlock,
-  WhenGreaterThanBlock,
-} from "src/ast/types/input/scratch/blocks/event/when-greater-than";
+import { isWhenGreaterThanBlock } from "src/ast/types/input/scratch/blocks/event/when-greater-than";
 import { isWhenKeyPressedBlock } from "src/ast/types/input/scratch/blocks/event/when-key-pressed";
 import { isWhenFlagClickedBlock } from "src/ast/types/input/scratch/blocks/event/when-flag-clicked";
 import { isWhenStageIsClickedBlock } from "src/ast/types/input/scratch/blocks/event/when-stage-is-clicked";
@@ -78,6 +75,7 @@ import {
   ExtensionExpressionBlock,
   ExtensionStatementBlock,
 } from "src/ast/types/input/scratch/blocks/extensions";
+import { isArbitraryHatBlock } from "src/ast/types/input/scratch/blocks/extensions/arbitrary-hat-block";
 
 export const createLiteralNode = (type: string, value: string): LiteralNode => {
   return {
@@ -178,28 +176,18 @@ export const getEventParameters = (
 ): ExpressionNode[] => {
   return match(block)
     .returnType<ExpressionNode[]>()
-    .with(P.when(isWhenBackdropSwitchesToBlock), (block) => [
-      createLiteralNode("string", block.fields.BACKDROP[0]),
-    ])
-    .with(P.when(isWhenBroadcastReceivedBlock), (block) => [
-      createLiteralNode("string", block.fields.BROADCAST_OPTION[0]),
-    ])
     .with(
+      P.when(isWhenBackdropSwitchesToBlock),
+      P.when(isWhenBroadcastReceivedBlock),
       P.when(isWhenGreaterThanBlock),
-      (block: WhenGreaterThanBlock & BlockTreeWithEventHatRoot) => [
-        convertInputsToExpression(block, "VALUE"),
-        createLiteralNode("string", block.fields.WHENGREATERTHANMENU[0]),
-      ],
-    )
-    .with(P.when(isWhenKeyPressedBlock), (block) => [
-      createLiteralNode("string", block.fields.KEY_OPTION[0]),
-    ])
-    .with(
+      P.when(isWhenKeyPressedBlock),
       P.when(isWhenFlagClickedBlock),
       P.when(isWhenStageIsClickedBlock),
       P.when(iswhenThisSpriteIsClickedBlock),
       P.when(isStartAsCloneBlock),
-      () => [],
+      P.when(isArbitraryHatBlock),
+      (block: BlockTreeWithEventHatRoot) =>
+        createArgumentsFromInputsAndFields(block),
     )
     .exhaustive();
 };
@@ -282,7 +270,8 @@ export const isHatBlock = (
     isWhenStageIsClickedBlock(block) ||
     iswhenThisSpriteIsClickedBlock(block) ||
     isStartAsCloneBlock(block) ||
-    isDefinitionBlock(block)
+    isDefinitionBlock(block) ||
+    isArbitraryHatBlock(block)
   );
 };
 

@@ -3,6 +3,8 @@
 import { Page } from "playwright/test";
 
 export class MockMessageEvent extends Event {
+  readonly origin = "http://localhost:3101";
+
   source: Window;
   data: unknown;
 
@@ -23,6 +25,7 @@ export const defineCustomMessageEvent = (page: Page): Promise<void> =>
 
         (this as any).source = source;
         (this as any).data = data;
+        (this as any).origin = "http://localhost:3101";
       }
     };
   });

@@ -54,7 +54,7 @@ exports[`Edit Task Page renders page unchanged 1`] = `
       class="css-15vps70"
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
-      sandbox="allow-scripts allow-same-origin allow-downloads"
+      sandbox="allow-scripts allow-same-origin allow-downloads allow-forms"
       src="undefined/edit/taskId"
     />
   </div>

@@ -1,6 +1,7 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import ScratchBlocks from "scratch-blocks";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum SensingOpCode {
   touchingobject = "sensing_touchingobject",
@@ -126,10 +127,10 @@ export const buildSensingXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<SensingOpCode, boolean>> = {},
+  blockLimits: Partial<Record<SensingOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(blockLimits)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = sensingXmlByOpCode[opCode as SensingOpCode];
 

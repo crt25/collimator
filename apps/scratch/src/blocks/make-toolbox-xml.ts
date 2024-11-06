@@ -34,35 +34,66 @@ const xmlClose = "</xml>";
 
 const allBlocksAreDisabled = `<category name="All blocks are disabled" />`;
 
-export type ShowBlocks = Partial<Record<MotionOpCode, boolean>> &
-  Partial<Record<LooksOpCode, boolean>> &
-  Partial<Record<SoundOpCode, boolean>> &
-  Partial<Record<EventOpCode, boolean>> &
-  Partial<Record<ControlOpCode, boolean>> &
-  Partial<Record<SensingOpCode, boolean>> &
-  Partial<Record<OperatorsOpCode, boolean>> & {
+/**
+ * The number of blocks that are allowed to be used for a given task.
+ * For variables and custom blocks, it is just a boolean value as in
+ * whether they are allowed or not.
+ * If a block id is not present in the object, it is assumed to be 0.
+ * If an entry is 0, the block is not shown in the toolbox.
+ * If an entry is negative, the block can be used an unlimited number of times.
+ */
+export type BlockLimits = Partial<Record<MotionOpCode, number>> &
+  Partial<Record<LooksOpCode, number>> &
+  Partial<Record<SoundOpCode, number>> &
+  Partial<Record<EventOpCode, number>> &
+  Partial<Record<ControlOpCode, number>> &
+  Partial<Record<SensingOpCode, number>> &
+  Partial<Record<OperatorsOpCode, number>> & {
     variables?: boolean;
     customBlocks?: boolean;
+  } & {
+    [key: string]: number | boolean | undefined;
   };
 
-const createDictionaryWithAllValuesTrue = (
+const createDictionaryWithAllValuesInfinite = (
   object: Record<string, string>,
-): Record<string, boolean> =>
-  Object.values(object).reduce((acc, key) => ({ ...acc, [key]: true }), {});
+): Record<string, number> =>
+  Object.values(object).reduce((acc, key) => ({ ...acc, [key]: -1 }), {});
 
-export const showAllBlocks: ShowBlocks = {
-  ...createDictionaryWithAllValuesTrue(MotionOpCode),
-  ...createDictionaryWithAllValuesTrue(LooksOpCode),
-  ...createDictionaryWithAllValuesTrue(SoundOpCode),
-  ...createDictionaryWithAllValuesTrue(EventOpCode),
-  ...createDictionaryWithAllValuesTrue(ControlOpCode),
-  ...createDictionaryWithAllValuesTrue(SensingOpCode),
-  ...createDictionaryWithAllValuesTrue(OperatorsOpCode),
+const allowAllMotionBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(MotionOpCode);
+
+const allowAllLooksBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(LooksOpCode);
+
+const allowAllSoundBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(SoundOpCode);
+
+const allowAllEventBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(EventOpCode);
+
+const allowAllControlBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(ControlOpCode);
+
+const allowAllSensingBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(SensingOpCode);
+
+const allowAllOperatorsBlocks: BlockLimits =
+  createDictionaryWithAllValuesInfinite(OperatorsOpCode);
+
+export const allowAllStandardBlocks: BlockLimits = {
+  ...allowAllMotionBlocks,
+  ...allowAllLooksBlocks,
+  ...allowAllSoundBlocks,
+  ...allowAllEventBlocks,
+  ...allowAllControlBlocks,
+  ...allowAllSensingBlocks,
+  ...allowAllOperatorsBlocks,
   variables: true,
   customBlocks: true,
 };
 
-export const showNoBlocks: ShowBlocks = {};
+export const allowNoBlocks: BlockLimits = {};
 
 /**
  * @param isInitialSetup - Whether the toolbox is for initial setup. If the mode is "initial setup",
@@ -78,6 +109,7 @@ export const showNoBlocks: ShowBlocks = {};
  * @param costumeName - The name of the default selected costume dropdown.
  * @param backdropName - The name of the default selected backdrop dropdown.
  * @param soundName -  The name of the default selected sound dropdown.
+ * @param blockLimits - The number of blocks that are allowed to be used for a given task. Null means all blocks are allowed.
  * @returns- a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (
@@ -89,7 +121,7 @@ const makeToolboxXML = function (
   costumeName: string = "",
   backdropName: string = "",
   soundName: string = "",
-  showBlocks: ShowBlocks = showAllBlocks,
+  blockLimits: BlockLimits | null = null,
 ): string {
   isStage = isInitialSetup || isStage;
   const gap = categorySeparator;
@@ -117,7 +149,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.motion,
-      showBlocks,
+      blockLimits ?? allowAllMotionBlocks,
     );
   const looksXML =
     moveCategory("looks") ||
@@ -128,7 +160,7 @@ const makeToolboxXML = function (
       costumeName,
       backdropName,
       colors.looks,
-      showBlocks,
+      blockLimits ?? allowAllLooksBlocks,
     );
   const soundXML =
     moveCategory("sound") ||
@@ -138,11 +170,17 @@ const makeToolboxXML = function (
       targetId,
       soundName,
       colors.sounds,
-      showBlocks,
+      blockLimits ?? allowAllSoundBlocks,
     );
   const eventsXML =
     moveCategory("event") ||
-    buildEventXml(isInitialSetup, isStage, targetId, colors.event, showBlocks);
+    buildEventXml(
+      isInitialSetup,
+      isStage,
+      targetId,
+      colors.event,
+      blockLimits ?? allowAllEventBlocks,
+    );
   const controlXML =
     moveCategory("control") ||
     buildControlXml(
@@ -150,7 +188,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.control,
-      showBlocks,
+      blockLimits ?? allowAllControlBlocks,
     );
   const sensingXML =
     moveCategory("sensing") ||
@@ -159,7 +197,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.sensing,
-      showBlocks,
+      blockLimits ?? allowAllSensingBlocks,
     );
   const operatorsXML =
     moveCategory("operators") ||
@@ -168,7 +206,7 @@ const makeToolboxXML = function (
       isStage,
       targetId,
       colors.operators,
-      showBlocks,
+      blockLimits ?? allowAllOperatorsBlocks,
     );
   const variablesXML =
     moveCategory("data") ||
@@ -193,18 +231,44 @@ const makeToolboxXML = function (
     gap,
     operatorsXML,
     gap,
-    showBlocks.variables ? variablesXML : "",
+    blockLimits == null || blockLimits.variables ? variablesXML : "",
     gap,
-    showBlocks.customBlocks ? myBlocksXML : "",
+    blockLimits == null || blockLimits.customBlocks ? myBlocksXML : "",
   ];
+
+  for (const extensionCategory of categoriesXML) {
+    if (blockLimits !== null) {
+      // find all <block type="{opcode}"> elements and check them against blockLimits
+      extensionCategory.xml = extensionCategory.xml.replace(
+        /<block type="([^"]+)">.*?<\/block>/g,
+        (match, opcode) => {
+          // if the opcode is not in any of the blockLimits, return the match
+          if (opcode in blockLimits) {
+            const limit = blockLimits[opcode];
+            if (limit === 0) {
+              // if the limit is 0, don't show the block
+              return "";
+            }
+          } else {
+            // if the opcode is not in blockLimits, don't show the block
+            return "";
+          }
+
+          return match;
+        },
+      );
+    }
+
+    // check if the xml still contains some <block> elements
+    if (extensionCategory.xml.includes("<block")) {
+      // if so, add the category to the toolbox
+      everything.push(extensionCategory.xml);
+    }
+  }
 
   if (!everything.find((xml) => xml.includes("<category"))) {
     // if all blocks are disabled, show a message
     everything.push(allBlocksAreDisabled);
-  }
-
-  for (const extensionCategory of categoriesXML) {
-    everything.push(gap, extensionCategory.xml);
   }
 
   everything.push(xmlClose);

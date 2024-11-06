@@ -1,0 +1,25 @@
+.state {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  background-color: var(--assertions-default-color);
+  color: #fff;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  gap: 0.5rem;
+
+  img {
+    height: 20px;
+    width: auto;
+  }
+}
+
+.success {
+  background-color: var(--assertions-success-color);
+}
+
+.no-success {
+  background-color: var(--assertions-default-color);
+}

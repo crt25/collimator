@@ -1,6 +1,7 @@
 import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
 import ScratchBlocks from "scratch-blocks";
 import { categorySeparator } from "./constants";
+import { filterNotAllowedBlocks } from "./helpers";
 
 export enum OperatorsOpCode {
   add = "operator_add",
@@ -245,10 +246,10 @@ export const buildOperatorsXml = function (
   isStage: boolean,
   targetId: string,
   colors: ColorSet,
-  showBlocks: Partial<Record<OperatorsOpCode, boolean>> = {},
+  blockLimits: Partial<Record<OperatorsOpCode, number>> = {},
 ): string {
-  const xml = Object.entries(showBlocks)
-    .filter(([, show]) => show)
+  const xml = Object.entries(blockLimits)
+    .filter(filterNotAllowedBlocks)
     .map(([opCode]) => {
       const entry = operatorXmlByOpCode[opCode as OperatorsOpCode];
 
