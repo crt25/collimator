@@ -7,11 +7,13 @@ import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import SessionNavigation from "@/components/session/SessionNavigation";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import MultiSwrContent from "@/components/MultiSwrContent";
 
 const UserSessionProgress = () => {
   const router = useRouter();
   const {
-    classId: classIdString,
+    classId,
     sessionId: sessionIdString,
     userId: userIdString,
   } = router.query as {
@@ -20,7 +22,7 @@ const UserSessionProgress = () => {
     userId: string;
   };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading: isLoadingClass } = useClass(classId);
   const sessionId = parseInt(sessionIdString, 10);
   const userId = parseInt(userIdString, 10);
 
@@ -29,11 +31,15 @@ const UserSessionProgress = () => {
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
-          <ClassNavigation breadcrumb classId={classId} sessionId={sessionId} />
+          <CrtNavigation breadcrumb klass={klass} />
+          <ClassNavigation
+            breadcrumb
+            classId={klass?.id}
+            sessionId={sessionId}
+          />
           <SessionNavigation
             breadcrumb
-            classId={classId}
+            classId={klass?.id}
             sessionId={sessionId}
             userId={userId}
           />
@@ -44,6 +50,13 @@ const UserSessionProgress = () => {
             defaultMessage="User Progress"
           />
         </PageHeader>
+        <MultiSwrContent
+          errors={[error]}
+          isLoading={[isLoadingClass]}
+          data={[klass]}
+        >
+          {([_klass]) => sessionId}
+        </MultiSwrContent>
       </Container>
     </>
   );

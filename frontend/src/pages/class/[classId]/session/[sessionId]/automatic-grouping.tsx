@@ -7,16 +7,17 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import MultiSwrContent from "@/components/MultiSwrContent";
 
 const SessionAutomaticGrouping = () => {
   const router = useRouter();
-  const { classId: classIdString, sessionId: sessionIdString } =
-    router.query as {
-      classId: string;
-      sessionId: string;
-    };
+  const { classId, sessionId: sessionIdString } = router.query as {
+    classId: string;
+    sessionId: string;
+  };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading: isLoadingClass } = useClass(classId);
   const sessionId = parseInt(sessionIdString, 10);
 
   return (
@@ -24,17 +25,27 @@ const SessionAutomaticGrouping = () => {
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
-          <ClassNavigation classId={classId} breadcrumb sessionId={sessionId} />
+          <CrtNavigation breadcrumb klass={klass} />
+          <ClassNavigation
+            classId={klass?.id}
+            breadcrumb
+            sessionId={sessionId}
+          />
         </Breadcrumbs>
-        <SessionNavigation classId={classId} sessionId={sessionId} />
+        <SessionNavigation classId={klass?.id} sessionId={sessionId} />
         <PageHeader>
           <FormattedMessage
             id="SessionAutomaticGrouping.header"
             defaultMessage="Automatic Grouping"
           />
         </PageHeader>
-        {sessionId}
+        <MultiSwrContent
+          errors={[error]}
+          isLoading={[isLoadingClass]}
+          data={[klass]}
+        >
+          {([_klass]) => sessionId}
+        </MultiSwrContent>
       </Container>
     </>
   );

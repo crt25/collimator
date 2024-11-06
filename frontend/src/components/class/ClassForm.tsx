@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
 });
 
-type ClassFormValues = {
+export type ClassFormValues = {
   name: string;
 };
 

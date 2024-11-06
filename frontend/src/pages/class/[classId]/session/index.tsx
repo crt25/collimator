@@ -6,7 +6,8 @@ import SessionList, { Session } from "@/components/session/SessionList";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import SwrContent from "@/components/SwrContent";
 
 const sessions: Session[] = [
   {
@@ -92,32 +93,36 @@ const sessions: Session[] = [
 
 const ClassSessionList = () => {
   const router = useRouter();
-  const { classId: classIdString } = router.query as {
+  const { classId } = router.query as {
     classId: string;
   };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading } = useClass(classId);
 
   return (
     <>
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
+          <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={classId} />
-        <PageHeader>
-          <FormattedMessage
-            id="ClassSessions.header"
-            defaultMessage="Class Sessions"
-          />
-        </PageHeader>
-        <SessionList
-          classId={classId}
-          fetchData={() =>
-            Promise.resolve({ items: sessions, totalCount: sessions.length })
-          }
-        />
+        <ClassNavigation classId={klass?.id} />
+        <SwrContent error={error} isLoading={isLoading} data={klass}>
+          {(klass) => (
+            <>
+              <PageHeader>{klass.name}</PageHeader>
+              <SessionList
+                classId={klass.id}
+                fetchData={() =>
+                  Promise.resolve({
+                    items: sessions,
+                    totalCount: sessions.length,
+                  })
+                }
+              />
+            </>
+          )}
+        </SwrContent>
       </Container>
     </>
   );

@@ -6,7 +6,11 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
-import ClassForm from "@/components/class/ClassForm";
+import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
+import { useUpdateClass } from "@/api/collimator/hooks/classes/useUpdateClass";
+import { useCallback } from "react";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import SwrContent from "@/components/SwrContent";
 
 const messages = defineMessages({
   submit: {
@@ -17,24 +21,48 @@ const messages = defineMessages({
 
 const EditClass = () => {
   const router = useRouter();
-  const { classId: classIdString } = router.query as {
+  const { classId } = router.query as {
     classId: string;
   };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading } = useClass(classId);
+
+  const updateClass = useUpdateClass();
+
+  const onSubmit = useCallback(
+    async (formValues: ClassFormValues) => {
+      if (klass) {
+        await updateClass(klass.id, {
+          name: formValues.name,
+          teacherId: klass.teacherId,
+        });
+
+        router.back();
+      }
+    },
+    [klass, updateClass, router],
+  );
 
   return (
     <>
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
+          <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={classId} />
+        <ClassNavigation classId={klass?.id} />
         <PageHeader>
           <FormattedMessage id="EditClass.header" defaultMessage="Edit Class" />
         </PageHeader>
-        <ClassForm submitMessage={messages.submit} onSubmit={console.log} />
+        <SwrContent error={error} isLoading={isLoading} data={klass}>
+          {(klass) => (
+            <ClassForm
+              submitMessage={messages.submit}
+              initialValues={klass}
+              onSubmit={onSubmit}
+            />
+          )}
+        </SwrContent>
       </Container>
     </>
   );

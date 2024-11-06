@@ -38,7 +38,7 @@ const ClassNavigation = ({
   sessionId,
   breadcrumb,
 }: {
-  classId: number;
+  classId?: number;
   userId?: number;
   sessionId?: number;
   breadcrumb?: boolean;

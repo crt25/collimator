@@ -6,26 +6,54 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import SwrContent from "@/components/SwrContent";
 
 const ClassDetail = () => {
   const router = useRouter();
-  const { classId: classIdString } = router.query as {
+  const { classId } = router.query as {
     classId: string;
   };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading } = useClass(classId);
 
   return (
     <>
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
+          <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={classId} />
-        <PageHeader>
-          <FormattedMessage id="ClassDetail.header" defaultMessage="Class" />
-        </PageHeader>
+        <ClassNavigation classId={klass?.id} />
+        <SwrContent error={error} isLoading={isLoading} data={klass}>
+          {(klass) => (
+            <div>
+              <PageHeader>{klass.name}</PageHeader>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <FormattedMessage
+                        id="ClassDetail.table.teacher"
+                        defaultMessage="Teacher"
+                      />
+                    </td>
+                    <td>{klass.teacher.name}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <FormattedMessage
+                        id="ClassDetail.table.numberOfStudents"
+                        defaultMessage="Number of Students"
+                      />
+                    </td>
+                    <td>{klass.studentCount}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </SwrContent>
       </Container>
     </>
   );

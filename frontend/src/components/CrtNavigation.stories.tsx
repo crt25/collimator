@@ -1,5 +1,7 @@
+import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import Breadcrumbs from "./Breadcrumbs";
 import CrtNavigation from "./CrtNavigation";
+import { getClassesControllerFindOneResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 
 export default {
   component: CrtNavigation,
@@ -30,7 +32,7 @@ export const AsUserBreadcrumb = {
 
 export const AsClassBreadcrumb = {
   args: {
-    classId: 1,
+    klass: ExistingClass.fromDto(getClassesControllerFindOneResponseMock()),
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,
