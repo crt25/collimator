@@ -4,6 +4,7 @@ import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 import VM from "scratch-vm";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
 import Modal from "../modal/Modal";
+import { FormattedMessage } from "react-intl";
 
 const cannotBeUsed = 0;
 const infiniteUses = -1;
@@ -96,12 +97,23 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
   return (
     <Modal isShown={blockId !== null}>
       <h1>
-        Block Config <small>({blockId})</small>
+        <FormattedMessage
+          defaultMessage="Block Config"
+          description="Heading of the block config modal shown when configuring whether a given block can be used by students."
+          id="crt.blockConfig.heading"
+        />
+        <small>({blockId})</small>
       </h1>
 
       <form onSubmit={onSubmit} data-testid="block-config-form">
         <label>
-          <span>Can this block be used?</span>
+          <span>
+            <FormattedMessage
+              defaultMessage="Can this block be used by students?"
+              description="Label shown next to the checkbox for configuring whether a given block can be used by students."
+              id="crt.blockConfig.canBlockBeUsed"
+            />
+          </span>
           <input
             type="checkbox"
             min="0"
@@ -114,7 +126,11 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
         {canBeUsed && (
           <label>
             <span>
-              Is there a limit to how many times this block can be used?
+              <FormattedMessage
+                defaultMessage="Is there a limit to how many times this block can be used?"
+                description="Label shown next to the checkbox for configuring whether a there is a limit to how often a block can be used by students."
+                id="crt.blockConfig.hasBlockUsageLimit"
+              />
             </span>
             <input
               type="checkbox"
@@ -128,7 +144,13 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
 
         {hasBlockLimit && (
           <label>
-            <span>How many times can this block be used?</span>
+            <span>
+              <FormattedMessage
+                defaultMessage="How many times can this block be used?"
+                description="Label shown next to the input field for configuring how often a block can be used by students."
+                id="crt.blockConfig.hasBlockUsageLimit"
+              />
+            </span>
             <input
               type="number"
               min="1"

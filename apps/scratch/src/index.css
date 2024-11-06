@@ -13,6 +13,9 @@
   --input-border-color: #000;
   --input-background-color: #fff;
   --input-background-color-hover: #ddd;
+
+  --assertions-default-color: #ff3355;
+  --assertions-success-color: #0b8e69;
 }
 
 body {
@@ -121,8 +124,10 @@ body,
 
 .frozen-block-frozen > .blocklyBlockBackground,
 .frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line,
 .frozen-block-appendable > .blocklyBlockBackground,
-.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line
 {
   fill: var(--disabled-block-background-color);
   stroke: var(--disabled-block-background-color);
@@ -141,4 +146,12 @@ body,
 */
 .blocklyFlyout rect:not(.interactive) {
   pointer-events: none;
+}
+
+/*
+  reduce the size of the custom image of extension blocks
+*/
+.blocklyDraggable > g > image {
+  transform: scale(0.9);
+  transform-origin: 20px 20px;
 }

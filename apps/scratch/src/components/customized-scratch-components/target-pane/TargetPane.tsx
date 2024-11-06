@@ -6,7 +6,7 @@ import StageSelector from "@scratch-submodule/scratch-gui/src/containers/stage-s
 import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 
 import styles from "@scratch-submodule/scratch-gui/src/components/target-pane/target-pane.css";
-import MinimalStageSelector from "../MinimalStageSelector";
+import MinimalStageSelector from "../../MinimalStageSelector";
 import React from "react";
 
 export type Sprite = {

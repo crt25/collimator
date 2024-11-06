@@ -3,7 +3,10 @@ import {
   KnownBuiltinScratchExpressionBlock,
   KnownBuiltinScratchHatBlock,
 } from "src/ast/types/input/scratch/blocks";
-import { ExtensionStatementBlock } from "src/ast/types/input/scratch/blocks/extensions";
+import {
+  ExtensionHatBlock,
+  ExtensionStatementBlock,
+} from "src/ast/types/input/scratch/blocks/extensions";
 import { DefinitionBlock } from "src/ast/types/input/scratch/blocks/procedure/definition";
 import {
   Block,
@@ -20,10 +23,9 @@ export type NonHatBlock =
   | ExtensionStatementBlock
   | KnownBuiltinScratchExpressionBlock;
 
-export type EventHatBlock = Exclude<
-  KnownBuiltinScratchHatBlock,
-  DefinitionBlock
->;
+export type EventHatBlock =
+  | Exclude<KnownBuiltinScratchHatBlock, DefinitionBlock>
+  | ExtensionHatBlock;
 
 export type TreeNode = {
   /**

@@ -19,7 +19,7 @@ export const zipDirectory = (sourceDir: string): Promise<Buffer> => {
     stream.on("close", () => {
       const file = fs.readFileSync(tempFile);
 
-      fs.rmSync(tempFile, { recursive: true });
+      fs.rmSync(tempPath, { recursive: true, force: true });
 
       return resolve(file);
     });

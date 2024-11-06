@@ -113,13 +113,12 @@ declare namespace VMExtended {
 
   export type RotationStyle = VM.RotationStyle;
 
-  export interface BlockExtended extends VM.Block {
+  type CrtBlock = import("../src/types/scratch-vm-custom").CrtBlock;
+
+  export interface BlockExtended extends VM.Block, CrtBlock {
     isMonitored: boolean;
     x: number;
     y: number;
-
-    // a property added by the CRT to mark a block as a task block
-    isTaskBlock?: boolean;
   }
 
   export interface BlocksExtended extends VM.Blocks {
@@ -179,7 +178,31 @@ declare namespace VMExtended {
     getId: (string) => string;
   }
 
+  type EventEmitterArgs<Events, K extends keyof Events> = Events[K] extends Array<unknown> ? Events[K] : unknown[];
+  type EventEmitterCallback<Events, K extends keyof Events> = (...args: Events[K] extends Array<unknown> ? Events[K] : unknown[]) => void
+
+  type CrtEventMap = import("../src/types/scratch-vm-custom").CrtEventMap;
+
+  export interface RuntimeEventMapExtended extends VM.RuntimeEventMap, CrtEventMap {
+    targetWasCreated: [
+      // The new target
+      TargetExtended,
+      // The original target, if any. This will be set for clones.
+      TargetExtended?
+    ];
+  }
+
   export interface RuntimeExtended extends VM.Runtime {
+
+    // override event emitter
+    on<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    once<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    off<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    removeListener<K extends keyof RuntimeEventMapExtended>(event: K, callback: EventEmitterCallback<RuntimeEventMapExtended, K>): void;
+    listeners<K extends keyof RuntimeEventMapExtended>(event: K): EventEmitterCallback<RuntimeEventMapExtended, K>[];
+    emit<K extends keyof RuntimeEventMapExtended>(event: K, ...args: EventEmitterArgs<RuntimeEventMapExtended, K>): void;
+    // end override event emitter
+
     monitorBlocks: BlocksExtended;
     monitorBlockInfo: MonitorBlockInfo;
 
@@ -203,6 +226,8 @@ declare namespace VMExtended {
     getCustomState(name: string): CustomState | undefined;
     setCustomState(name: T, value: CustomState): void;
   }
+
+  export interface CustomState extends VM.CustomState {}
 
   export interface Monitor {
     get(name: string): unknown;
@@ -246,19 +271,6 @@ declare namespace VMExtended {
     // https://github.com/scratchfoundation/scratch-vm/blob/e15809697de82760a6f13e03c502251de5bdd8c7/src/blocks/scratch3_motion.js#L47
     getMonitored?: () => Record<string, MonitorBlockInfo>;
   }
-
-  export interface ScratchCrtConfig {
-    /**
-     * A map from scratch opcode to a number that defines how many times
-     * a given block can be used.
-     */
-    allowedBlocks: import("../src/blocks/make-toolbox-xml").BlockLimits;
-
-    /**
-     * Whether initial task blocks can be edited.
-     */
-    freezeStateByBlockId: {[taskBlockId?: string]: import("../src/blocks/types").BlockFreezeStates | undefined };
-  }
 }
 
 declare class VMExtended extends VM {
@@ -287,7 +299,7 @@ declare class VMExtended extends VM {
   monitorBlockListener: Function;
 
   // add a custom config
-  crtConfig?: VMExtended.ScratchCrtConfig;
+  crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }
 
 declare module "scratch-vm" {

@@ -22,11 +22,12 @@ import smallStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-
 import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
 import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar/icon--settings.svg";
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
-import Controls from "../../scratch/scratch-gui/src/containers/controls";
-import ToggleButtons from "../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
+import Controls from "../../../scratch/scratch-gui/src/containers/controls";
+import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import TaskConfig from "../TaskConfig";
+import TaskConfig from "../../TaskConfig";
+import AssertionsState from "../../assertions-state/AssertionsState";
 
 const messages = defineMessages({
   largeStageSizeMessage: {
@@ -108,7 +109,9 @@ const StageWrapper = function (props: Props) {
             className={headerStyles.stageMenuWrapper}
             style={{ width: getStageDimensions(null, true).width }}
           >
-            <Controls vm={vm} />
+            <div className="d-contents" data-testid="stage-controls">
+              <Controls vm={vm} />
+            </div>
             <div className={headerStyles.unselectWrapper}>
               <Button
                 className={headerStyles.stageButton}
@@ -132,21 +135,25 @@ const StageWrapper = function (props: Props) {
       ) : (
         <Box className={headerStyles.stageHeaderWrapper}>
           <Box className={headerStyles.stageMenuWrapper}>
-            <Controls vm={vm} />
+            <div className="d-contents" data-testid="stage-controls">
+              <Controls vm={vm} />
+            </div>
             <div>
-              {canEditTask && (
-                <button
-                  className={crtStyles.settingsButton}
-                  onClick={() => setShowTaskConfig(true)}
-                  data-testid="open-taskconfig-button"
-                >
-                  <img
-                    className={headerStyles.stageButtonIcon}
-                    draggable={false}
-                    src={settingsIcon}
-                  />
-                </button>
-              )}
+              <div className={crtStyles.buttons}>
+                <AssertionsState vm={vm} />
+                {canEditTask && (
+                  <button
+                    onClick={() => setShowTaskConfig(true)}
+                    data-testid="open-taskconfig-button"
+                  >
+                    <img
+                      className={headerStyles.stageButtonIcon}
+                      draggable={false}
+                      src={settingsIcon}
+                    />
+                  </button>
+                )}
+              </div>
             </div>
             <div className={headerStyles.stageSizeRow}>
               <div className={headerStyles.stageSizeToggleGroup}>
