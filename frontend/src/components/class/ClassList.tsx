@@ -129,7 +129,7 @@ const ClassList = ({
   );
 
   return (
-    <ClassListWrapper>
+    <ClassListWrapper data-testid="class-list">
       <DataTable
         value={classes}
         lazy

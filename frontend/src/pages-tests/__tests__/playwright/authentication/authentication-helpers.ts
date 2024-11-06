@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { subtle, webcrypto } from "crypto";
+import { jsonResponse } from "../helpers";
 
 export const userEmail = "janedoe@example.com";
 export const issuer = "http://localhost:3000/issuer";
@@ -73,8 +74,7 @@ export const generateJwt = async (
 };
 
 const response = {
-  status: 200,
-  contentType: "application/json",
+  ...jsonResponse,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "*",
