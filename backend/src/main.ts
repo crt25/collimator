@@ -1,23 +1,24 @@
 import { NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from "@nestjs/common";
+import * as swagger from "./swagger";
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const API_PREFIX = "api";
+  const API_VERSIONS = ["0"];
 
+  const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.setGlobalPrefix(API_PREFIX);
+  app.enableVersioning({
+    defaultVersion: API_VERSIONS[API_VERSIONS.length - 1],
+    type: VersioningType.URI,
+  });
 
-  const config = new DocumentBuilder()
-    .setTitle("Collimator")
-    .setDescription("The Collimator API description")
-    .setVersion("0.1")
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  swagger.setup(app, API_PREFIX, API_VERSIONS);
 
   await app.listen(3000);
 }
+
 bootstrap();
