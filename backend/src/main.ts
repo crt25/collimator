@@ -35,6 +35,8 @@ async function bootstrap(): Promise<void> {
     credentials: false,
   });
 
-  await app.listen(3000);
+  const port = app.get(ConfigService).get<number>("PORT") ?? 3000;
+
+  await app.listen(port);
 }
 bootstrap();
