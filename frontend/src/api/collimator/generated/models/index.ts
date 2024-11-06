@@ -18,3 +18,4 @@ export * from "./existingClassWithTeacherDto";
 export * from "./existingUserDto";
 export * from "./updateClassDto";
 export * from "./updateUserDto";
+export * from "./userType";

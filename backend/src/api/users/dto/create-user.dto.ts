@@ -25,7 +25,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({
     example: UserType.TEACHER,
-    description: `The user's role, one of: ${Object.values(UserType).join(", ")}.`,
+    description: `The user's role.`,
+    enumName: "UserType",
+    enum: Object.keys(UserType),
   })
   readonly type!: UserType;
 }

@@ -7,6 +7,7 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
+import { UserType } from "../../models";
 import type { DeletedUserDto, ExistingUserDto } from "../../models";
 
 export const getUsersControllerCreateResponseMock = (
@@ -15,7 +16,9 @@ export const getUsersControllerCreateResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
-  type: faker.word.sample(),
+  type: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(UserType)),
+  ]),
   ...overrideResponse,
 });
 
@@ -27,7 +30,9 @@ export const getUsersControllerFindAllResponseMock = (): ExistingUserDto[] =>
     email: faker.word.sample(),
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.helpers.arrayElement([faker.word.sample(), null]),
-    type: faker.word.sample(),
+    type: faker.helpers.arrayElement([
+      faker.helpers.arrayElement(Object.values(UserType)),
+    ]),
   }));
 
 export const getUsersControllerFindOneResponseMock = (
@@ -36,7 +41,9 @@ export const getUsersControllerFindOneResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
-  type: faker.word.sample(),
+  type: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(UserType)),
+  ]),
   ...overrideResponse,
 });
 
@@ -46,7 +53,9 @@ export const getUsersControllerUpdateResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
-  type: faker.word.sample(),
+  type: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(UserType)),
+  ]),
   ...overrideResponse,
 });
 
@@ -56,7 +65,9 @@ export const getUsersControllerDeleteResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
-  type: faker.word.sample(),
+  type: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(UserType)),
+  ]),
   ...overrideResponse,
 });
 

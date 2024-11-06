@@ -5,6 +5,7 @@
  * The Collimator API description
  * OpenAPI spec version: 0.1
  */
+import type { UserType } from "./userType";
 
 export interface DeletedUserDto {
   /** The user's email address. */
@@ -16,6 +17,6 @@ export interface DeletedUserDto {
    * @nullable
    */
   name: string | null;
-  /** The user's role, one of: TEACHER, ADMIN. */
-  type: string;
+  /** The user's role. */
+  type: UserType;
 }
