@@ -1,11 +1,12 @@
 # Scratch Modifications
 
-As part of this project, we modified scratch.
-This file lists and describes the changes.
+This document is intended for developers working on this project and who may need to update or maintain the Scratch integration.
+
+This project modified Scratch, the scope of the changes and their purpose are described below.
 
 ## Edit and Solve mode
 
-We extended the scratch GUI component to additionally accept a `canEditTask` property which, if disabled, deactivates the following built-in sratch features:
+This project extends the Scratch GUI component to additionally accept a `canEditTask` property which, if disabled, deactivates the following built-in Scratch features:
 - the button to load extensions is not shown
 - the buttons to add new sprites is not shown
 - the buttons to load stage sprites is not shown
@@ -14,7 +15,7 @@ We extended the scratch GUI component to additionally accept a `canEditTask` pro
 
 In the following we will use "Task editing mode" (or "Edit mode") to denote `canEditTask=true` and "Task solve mode" (or "Solve mode") to denote `canEditTask=false`.
 
-Moreover, we added the properties `isCostumesTabEnabled` and `isSoundsTabEnabled` which allow hiding the costume and sound tabs.
+Moreover, the new properties `isCostumesTabEnabled` and `isSoundsTabEnabled` allow hiding the costume and sound tabs.
 
 ## CRT Config
 
@@ -22,33 +23,31 @@ To store additional information with a scratch project, we add an additional `cr
 
 ## Block Config
 
-To restrict the available blocks, we introduced the block config button rendered at the top left of each button in the flyout toolbox to the left.
+To restrict the available blocks, we introduced the block config button rendered at the top left of each button in the [flyout toolbox](https://developers.google.com/blockly/guides/get-started/workspace-anatomy#flyout_toolbox) to the left.
 The button shows either a number or the infinity symbol, indicting the number of times this block can be used by a student.
 
 In the task editing mode, clicking this button opens a modal allowing the editor to configure whether the block can be used by students and if so, how many times.
-After clicking save in the modal, the updated number is shown on the block.
 
 Note that in editing mode, all blocks are shown in the flyout toolbox, even if they are completely disabled.
 Otherwise it would be impossible for editors to re-enable blocks.
-Moreover, the numbers do not change when blocks are added to targets.
+Moreover, the numbers do not change when blocks are added to the workspace.
 
 In solve mode, the label shown on the buttons is updated whenever a button is added to a target to keep track of the remaining blocks of that type.
-Moreover, when the counter reaches zero, the block is completely disabled using `pointer-events: none`.
+Moreover, when the counter reaches zero, the block is completely disabled.
 
 Blocks which the editor configures to be disallowed (a count of `0`), are never rendered in solve mode.
 However, blocks reaching a remaining count of zero are still shown.
 
 ### Implementation
 
-Because the blocks part of the scratch GUI is not rendered in react, we need to directly modify the DOM resulting in very non-react code.
+Because the blocks part of the Scratch GUI is not rendered in React, we need to directly modify the DOM, which leads to unorthodox code in a React project.
 Every time the toolbox is updated, we check its contents using CSS selectors and add the buttons whose text value is the number of remaining blocks.
-The current number of used blocks is counted by iterating over the VM's targets and the number of allowed blocks is retrieved from the CRT config.
+The current number of used blocks is counted by iterating over the Scratch VM's targets (sprites, stage) and the number of allowed blocks is retrieved from the CRT config.
 
-When pressing any block config button, we dispatch a `ModifyBlockConfigEvent` event on the window object containing the opcode of the block whose config we want to modify.
-The `BlockConfig` react component listens for this event and renders a model whenever that event is dispatched.
-This component renders a form for configuring how often the block can be used.
+When pressing any block config button (e.g., to change the maximum number of allowed blocks), we dispatch on the Window object a `ModifyBlockConfigEvent` event containing the opcode of the block whose config we want to modify.
+The `BlockConfig` React component listens for this event and, upon being triggered, renders a modal with a form to configure how often the block can be used.
 
-When submitting the form, it directly updates th VM's config and then dispatches a `UpdateBlockToolboxEvent` event on the window object which is listened for by the (modified) scratch component `Blocks`.
+When submitting the form, it directly updates th Scratch VM's config and then dispatches a `UpdateBlockToolboxEvent` event on the Window object. The (modified) Scratch component `Blocks` listens to this event.
 Whenever it sees this event, it re-renders the toolbox resulting in updated numbers.
 
 To reduce the number of available blocks of a given type, we add an event listener to listen for workspace changes in the modified `Blocks` component.
