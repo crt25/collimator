@@ -10,15 +10,6 @@ export type ApiResponse<TData, TError extends Error> = {
   isLoading: boolean;
 };
 
-export const fromDto = <
-  TDto,
-  TInstance,
-  TClass extends DtoClass<TDto, TInstance>,
->(
-  instanceConstructor: TClass,
-  dto: TDto,
-): TInstance => instanceConstructor.fromDto(dto);
-
 export const fromDtos = <
   TDto,
   TInstance,

@@ -40,6 +40,7 @@ const MultiSwrContent = <TData extends readonly (unknown | undefined)[] | []>({
   }, [children, data]);
 
   if (nonLoadingErrors.length > 0) {
+    console.error(nonLoadingErrors);
     return nonLoadingErrors
       .filter((e) => e !== undefined)
       .map((error, index) => <ErrorMessage key={index} error={error} />);

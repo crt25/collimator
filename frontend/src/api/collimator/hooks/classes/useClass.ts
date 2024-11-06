@@ -3,13 +3,11 @@ import {
   classesControllerFindOne,
   getClassesControllerFindOneUrl,
 } from "../../generated/endpoints/classes/classes";
-import { ApiResponse, fromDto } from "../helpers";
+import { ApiResponse } from "../helpers";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
 
 const fetchAndTransform = (id: number): Promise<ExistingClassExtended> =>
-  classesControllerFindOne(id).then((data) =>
-    fromDto(ExistingClassExtended, data),
-  );
+  classesControllerFindOne(id).then(ExistingClassExtended.fromDto);
 
 export const useClass = (
   id: number | string,
