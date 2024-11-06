@@ -56,7 +56,7 @@ export class ClassesController {
     const classes = await this.classesService.listClassesWithTeacher({
       // TODO: Implement this properly when auth is available
       // TODO: Only allow teachers to see their own classes
-      where: !!teacherId ? { teacherId } : undefined,
+      where: teacherId ? { teacherId } : undefined,
     });
 
     return classes.map((klass) =>
