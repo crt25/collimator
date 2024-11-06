@@ -56,8 +56,8 @@ const ClassForm = ({
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(users) => (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Input label={messages.name} {...register("name")}>
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="class-form">
+          <Input label={messages.name} {...register("name")} data-testid="name">
             <ValidationErrorMessage>
               {errors.name?.message}
             </ValidationErrorMessage>
@@ -70,6 +70,7 @@ const ClassForm = ({
               label: u.name ?? u.email,
             }))}
             {...register("teacherId")}
+            data-testid="teacherId"
           >
             <ValidationErrorMessage>
               {errors.teacherId?.message}

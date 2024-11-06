@@ -34,10 +34,10 @@ const EditClass = () => {
       if (klass) {
         await updateClass(klass.id, {
           name: formValues.name,
-          teacherId: klass.teacherId,
+          teacherId: formValues.teacherId,
         });
 
-        router.back();
+        router.push(`/class`);
       }
     },
     [klass, updateClass, router],
