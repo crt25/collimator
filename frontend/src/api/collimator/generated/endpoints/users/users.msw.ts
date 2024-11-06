@@ -14,7 +14,7 @@ export const getUsersControllerCreateResponseMock = (
 ): ExistingUserDto => ({
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
-  name: {},
+  name: faker.helpers.arrayElement([faker.word.sample(), null]),
   type: faker.word.sample(),
   ...overrideResponse,
 });
@@ -26,7 +26,7 @@ export const getUsersControllerFindAllResponseMock = (): ExistingUserDto[] =>
   ).map(() => ({
     email: faker.word.sample(),
     id: faker.number.int({ min: undefined, max: undefined }),
-    name: {},
+    name: faker.helpers.arrayElement([faker.word.sample(), null]),
     type: faker.word.sample(),
   }));
 
@@ -35,7 +35,7 @@ export const getUsersControllerFindOneResponseMock = (
 ): ExistingUserDto => ({
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
-  name: {},
+  name: faker.helpers.arrayElement([faker.word.sample(), null]),
   type: faker.word.sample(),
   ...overrideResponse,
 });
@@ -45,7 +45,7 @@ export const getUsersControllerUpdateResponseMock = (
 ): ExistingUserDto => ({
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
-  name: {},
+  name: faker.helpers.arrayElement([faker.word.sample(), null]),
   type: faker.word.sample(),
   ...overrideResponse,
 });
@@ -55,7 +55,7 @@ export const getUsersControllerDeleteResponseMock = (
 ): DeletedUserDto => ({
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
-  name: {},
+  name: faker.helpers.arrayElement([faker.word.sample(), null]),
   type: faker.word.sample(),
   ...overrideResponse,
 });

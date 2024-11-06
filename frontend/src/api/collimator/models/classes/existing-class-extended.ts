@@ -1,6 +1,6 @@
 import { ExistingClassExtendedDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
-import { ExistingClassExtendedTeacher } from "./existing-class-extended-teacher";
+import { ClassTeacher } from "./existing-class-extended-teacher";
 import { ExistingClassWithTeacher } from "./existing-class-with-teacher";
 
 export class ExistingClassExtended extends ExistingClassWithTeacher {
@@ -22,13 +22,15 @@ export class ExistingClassExtended extends ExistingClassWithTeacher {
   }
 
   static fromDto(dto: ExistingClassExtendedDto): ExistingClassExtended {
+    const teacher = ClassTeacher.fromDto(dto.teacher);
+
     return new ExistingClassExtended({
       id: dto.id,
       name: dto.name,
-      teacherId: dto.teacherId,
+      teacherId: teacher.id,
       sessions: dto.sessions,
       studentCount: dto.studentCount,
-      teacher: ExistingClassExtendedTeacher.fromDto(dto.teacher),
+      teacher,
     });
   }
 }

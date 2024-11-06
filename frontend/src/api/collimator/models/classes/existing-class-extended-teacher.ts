@@ -1,12 +1,19 @@
-import { ExistingClassExtendedDtoTeacher } from "../../generated/models";
+import { ClassTeacherDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
 
-export class ExistingClassExtendedTeacher {
-  protected constructor({}: ClassProperties<ExistingClassExtendedTeacher>) {}
+export class ClassTeacher {
+  readonly id: number;
+  readonly name: string | null;
 
-  static fromDto(
-    _dto: ExistingClassExtendedDtoTeacher,
-  ): ExistingClassExtendedTeacher {
-    return new ExistingClassExtendedTeacher({});
+  protected constructor({ id, name }: ClassProperties<ClassTeacher>) {
+    this.id = id;
+    this.name = name;
+  }
+
+  static fromDto(dto: ClassTeacherDto): ClassTeacher {
+    return new ClassTeacher({
+      id: dto.id,
+      name: dto.name,
+    });
   }
 }

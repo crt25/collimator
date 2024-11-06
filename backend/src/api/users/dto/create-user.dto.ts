@@ -8,6 +8,8 @@ export class CreateUserDto {
   @ApiProperty({
     example: "John Doe",
     description: "The user's full name (optional).",
+    nullable: true,
+    type: "string",
   })
   readonly name!: string | null;
 

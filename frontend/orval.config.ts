@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 const config = defineConfig({
   collimator: {
     input: {
-      target: "http://localhost:3000/api-json",
+      target: "http://localhost:3001/api-json",
       validation: false,
     },
     output: {

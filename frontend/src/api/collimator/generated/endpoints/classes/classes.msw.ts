@@ -31,7 +31,10 @@ export const getClassesControllerFindAllResponseMock =
     ).map(() => ({
       id: faker.number.int({ min: undefined, max: undefined }),
       name: faker.word.sample(),
-      teacher: {},
+      teacher: {
+        id: faker.number.int({ min: undefined, max: undefined }),
+        name: faker.helpers.arrayElement([faker.word.sample(), null]),
+      },
       teacherId: faker.number.int({ min: undefined, max: undefined }),
     }));
 
@@ -45,7 +48,10 @@ export const getClassesControllerFindOneResponseMock = (
     (_, i) => i + 1,
   ).map(() => faker.number.int({ min: undefined, max: undefined })),
   studentCount: faker.number.int({ min: undefined, max: undefined }),
-  teacher: {},
+  teacher: {
+    id: faker.number.int({ min: undefined, max: undefined }),
+    name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  },
   teacherId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });

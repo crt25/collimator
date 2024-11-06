@@ -6,14 +6,12 @@
  * OpenAPI spec version: 0.1
  */
 
-export interface CreateUserDto {
-  /** The user's email address. */
-  email: string;
+export interface ClassTeacherDto {
+  /** The id of a class's teacher. */
+  id: number;
   /**
-   * The user's full name (optional).
+   * The name of the class's teacher.
    * @nullable
    */
   name: string | null;
-  /** The user's role, one of: TEACHER, ADMIN. */
-  type: string;
 }

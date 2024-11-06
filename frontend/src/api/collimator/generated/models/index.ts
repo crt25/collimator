@@ -6,20 +6,15 @@
  * OpenAPI spec version: 0.1
  */
 
+export * from "./classTeacherDto";
 export * from "./classesControllerFindAllParams";
 export * from "./createClassDto";
 export * from "./createUserDto";
-export * from "./createUserDtoName";
 export * from "./deletedClassDto";
 export * from "./deletedUserDto";
-export * from "./deletedUserDtoName";
 export * from "./existingClassDto";
 export * from "./existingClassExtendedDto";
-export * from "./existingClassExtendedDtoTeacher";
 export * from "./existingClassWithTeacherDto";
-export * from "./existingClassWithTeacherDtoTeacher";
 export * from "./existingUserDto";
-export * from "./existingUserDtoName";
 export * from "./updateClassDto";
 export * from "./updateUserDto";
-export * from "./updateUserDtoName";

@@ -5,13 +5,13 @@
  * The Collimator API description
  * OpenAPI spec version: 0.1
  */
-import type { ExistingClassWithTeacherDtoTeacher } from "./existingClassWithTeacherDtoTeacher";
+import type { ClassTeacherDto } from "./classTeacherDto";
 
 export interface ExistingClassWithTeacherDto {
   /** The class's unique identifier, a positive integer. */
   id: number;
   name: string;
   /** The teacher of the class. */
-  teacher: ExistingClassWithTeacherDtoTeacher;
+  teacher: ClassTeacherDto;
   teacherId: number;
 }
