@@ -21,8 +21,7 @@ export class ExistingClassWithTeacher extends ExistingClass {
     const teacher = ClassTeacher.fromDto(dto.teacher);
 
     return new ExistingClassWithTeacher({
-      id: dto.id,
-      name: dto.name,
+      ...dto,
       teacherId: teacher.id,
       teacher,
     });

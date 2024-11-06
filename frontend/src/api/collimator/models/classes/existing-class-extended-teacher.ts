@@ -11,9 +11,6 @@ export class ClassTeacher {
   }
 
   static fromDto(dto: ClassTeacherDto): ClassTeacher {
-    return new ClassTeacher({
-      id: dto.id,
-      name: dto.name,
-    });
+    return new ClassTeacher(dto);
   }
 }

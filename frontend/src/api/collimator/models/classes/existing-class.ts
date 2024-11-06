@@ -17,10 +17,6 @@ export class ExistingClass {
   }
 
   static fromDto(dto: ExistingClassDto): ExistingClass {
-    return new ExistingClass({
-      id: dto.id,
-      name: dto.name,
-      teacherId: dto.teacherId,
-    });
+    return new ExistingClass(dto);
   }
 }
