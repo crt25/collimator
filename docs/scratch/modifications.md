@@ -32,10 +32,10 @@ Note that in editing mode, all blocks are shown in the flyout toolbox, even if t
 Otherwise it would be impossible for editors to re-enable blocks.
 Moreover, the numbers do not change when blocks are added to targets.
 
-In solve mode, the label shown on the buttons is updated whenever a button is added to a target to keep track of the remaining blocks of that type.
+In Solve mode, the label shown on the buttons is updated whenever a button is added to a target to keep track of the remaining blocks of that type.
 Moreover, when the counter reaches zero, the block is completely disabled using `pointer-events: none`.
 
-Blocks which the editor configures to be disallowed (a count of `0`), are never rendered in solve mode.
+Blocks which the editor configures to be disallowed (a count of `0`), are never rendered in Solve mode.
 However, blocks reaching a remaining count of zero are still shown.
 
 ### Implementation
@@ -60,27 +60,27 @@ In order for teachers to provide some initial task blocks that cannot be edited 
 There are three posible states: editable (default), appendable and frozen, each applying to an entire stack of blocks.
 
 Whenever a block stack is created in the workspace, we show a small button at the top left, analogous to the block config buttons in the toolbox.
-When clicking on the button in edit mode, it iterates through the different states showing a different symbol for each.
+When clicking on the button in Edit mode, it iterates through the different states showing a different symbol for each.
 At the same time, the CRT config is updated to store the new freeze state for the given stack (indexed by the id of the block at the top).
 
-In solve mode, initial blocks in an appendable or frozen stack are rendered in gray.
+In Solve mode, initial blocks in an appendable or frozen stack are rendered in gray.
 For appendable stacks, the respective symbol is shown at the top left of the stack.
 
-All these grayed out blocks cannot be interaced with (`pointer-events: none`).
+The user cannot interact with any of these grayed out blocks.
 In the case of frozen stacks, it is also impossible to prepend or append blocks.
 In the case of appendable stacks, blocks can be appended at the end of the stack or in between if there are control blocks with a body.
 
-### Implementation
+### Implementation (⚠️ patching npm dependency `scratch-block`)
 
 Because the workspace change updates we use for the block config are not in sync with the DOM elements, we instead rely on a DOM mutation observer for adding and removing the freeze buttons to the workspace stacks.
 
 In addition, we also have a small code snippet in the workspace update listener that removes entries from the CRT config whenever a block is deleted.
 
-When the blocks are frozen in edit mode, we need to change the behavior of the npm module `scatch-blocks` to either block prepends and appends or only prepends.
+When the blocks are frozen in Edit mode, we need to change the behavior of the npm module `scratch-blocks` to either prevent block prepends and appends ("frozen" state), or only block prepends ("appendable" state).
 To avoid forking the entire project, we instead use a tiny patch file modifying the installed dependency.
 
-In particular, we modify the `InsertionMarkerManager` responsible for the insertion markers.
-In fact, if we modify the check of whether to show an insertion marker, scratch will not allow insertions in this place at all.
+In particular, we modify the `InsertionMarkerManager` responsible for the insertion markers (i.e. the grayed out area showing where a block will be placed).
+Because of how Scratch is implemented, insertions are disabled entierly if we disable the insertion markers under some conditions.
 
 We modify [this](https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/insertion_marker_manager.js#L476) check and add the following additional checks using a logical and:
 
