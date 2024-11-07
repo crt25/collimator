@@ -1,7 +1,4 @@
-import {
-  LazyTableFetchFunction,
-  LazyTableResult,
-} from "@/components/DataTable";
+import { LazyTableResult } from "@/components/DataTable";
 import { DtoClass } from "../models/dto-class";
 
 export type ApiResponse<TData, TError extends Error> = {
