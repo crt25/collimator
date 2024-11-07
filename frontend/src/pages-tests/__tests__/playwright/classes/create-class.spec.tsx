@@ -2,7 +2,7 @@ import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { getClassesControllerCreateUrl } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, test } from "../helpers";
 import { getClassesControllerCreateResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { CreateClassForm } from "./create-class-form";
+import { ClassForm } from "./class-form";
 import { CreateClassDto } from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
@@ -38,7 +38,7 @@ test.describe("/class/create", () => {
   });
 
   test("can create a new class", async ({ page: pwPage, baseURL }) => {
-    const page = await CreateClassForm.create(pwPage);
+    const page = await ClassForm.create(pwPage);
 
     const teacherId = mockUsersResponse[0].id;
 

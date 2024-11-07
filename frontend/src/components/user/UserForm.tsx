@@ -74,7 +74,7 @@ const UserForm = ({
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="class-form">
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="user-form">
       <Input label={messages.name} {...register("name")} data-testid="name">
         <ValidationErrorMessage>{errors.name?.message}</ValidationErrorMessage>
       </Input>

@@ -1,11 +1,11 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { getClassesControllerFindOneUrl } from "@/api/collimator/generated/endpoints/classes/classes";
-import { expect, jsonResponse, test } from "../helpers";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
   getClassesControllerFindOneResponseMock,
   getClassesControllerUpdateResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { CreateClassForm } from "./create-class-form";
+import { ClassForm } from "./class-form";
 import {
   CreateClassDto,
   ExistingUserDto,
@@ -44,35 +44,23 @@ test.describe("/class/{id}/edit", () => {
       }),
     );
 
-    await page.route(
+    await mockUrlResponses(
+      page,
       `${apiURL}${getClassesControllerFindOneUrl(mockResponse.id)}`,
-      (route) => {
-        if (route.request().method() === "PATCH") {
-          updateRequest = route.request().postDataJSON();
-
-          // Mock the response for the classes controller update endpoint
-          return route.fulfill({
-            ...jsonResponse,
-            body: JSON.stringify(updatedClass),
-          });
-        }
-
-        // Mock the response for the classes controller get endpoint
-        return route.fulfill({
-          ...jsonResponse,
-          body: JSON.stringify(mockResponse),
-        });
+      {
+        get: mockResponse,
+        patch: updatedClass,
+      },
+      {
+        patch: (request) => (updateRequest = request.postDataJSON()),
       },
     );
 
     await signInAndGotoPath(page, baseURL!, `/class/${mockResponse.id}/edit`);
   });
 
-  test.only("can update an existing class", async ({
-    page: pwPage,
-    baseURL,
-  }) => {
-    const page = await CreateClassForm.create(pwPage);
+  test("can update an existing class", async ({ page: pwPage, baseURL }) => {
+    const page = await ClassForm.create(pwPage);
 
     // expect the form to be pre-filled
 

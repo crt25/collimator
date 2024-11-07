@@ -22,7 +22,11 @@ const ConfirmationModal = ({
   const intl = useIntl();
 
   return (
-    <Modal show={isShown} onHide={() => setisShown(false)}>
+    <Modal
+      show={isShown}
+      onHide={() => setisShown(false)}
+      data-testid="confirmation-modal"
+    >
       <Modal.Header closeButton>
         <Modal.Title>{intl.formatMessage(messages.title)}</Modal.Title>
       </Modal.Header>
@@ -30,7 +34,11 @@ const ConfirmationModal = ({
         <p>{intl.formatMessage(messages.body)}</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={() => setisShown(false)} variant="secondary">
+        <Button
+          onClick={() => setisShown(false)}
+          variant="secondary"
+          data-testid="cancel-button"
+        >
           {intl.formatMessage(ModalMessages.cancel)}
         </Button>
         <Button
@@ -39,6 +47,7 @@ const ConfirmationModal = ({
             setisShown(false);
           }}
           variant={isDangerous ? "danger" : "primary"}
+          data-testid="confirm-button"
         >
           {intl.formatMessage(messages.confirmButton)}
         </Button>

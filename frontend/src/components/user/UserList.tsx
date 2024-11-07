@@ -108,16 +108,23 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
 
   const actionsTemplate = useCallback(
     (rowData: ExistingUser) => (
-      <div>
+      <div data-testid={`user-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
-          <Button variant="secondary">
+          <Button
+            variant="secondary"
+            data-testid={`user-${rowData.id}-edit-button`}
+          >
             <FontAwesomeIcon
               icon={faEdit}
               onClick={() => router.push(`/user/${rowData.id}/edit`)}
             />
           </Button>
 
-          <Dropdown.Toggle variant="secondary" split />
+          <Dropdown.Toggle
+            variant="secondary"
+            split
+            data-testid={`user-${rowData.id}-actions-dropdown-button`}
+          />
 
           <Dropdown.Menu>
             <Dropdown.Item
@@ -125,6 +132,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
                 setOnDeleteConfirmation(() => () => deleteUser(rowData.id));
                 setShowDeleteConfirmationModal(true);
               }}
+              data-testid={`user-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </Dropdown.Item>
@@ -136,7 +144,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
   );
 
   return (
-    <UserListWrapper>
+    <UserListWrapper data-testid="user-list">
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
           <DataTable

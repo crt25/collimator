@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
 
-export class CreateClassForm {
+export class ClassForm {
   private static readonly classForm = '[data-testid="class-form"]';
 
   readonly page: Page;
@@ -11,7 +11,7 @@ export class CreateClassForm {
   }
 
   get form() {
-    return this.page.locator(CreateClassForm.classForm);
+    return this.page.locator(ClassForm.classForm);
   }
 
   get inputs() {
@@ -26,8 +26,8 @@ export class CreateClassForm {
   }
 
   static async create(page: Page) {
-    await page.waitForSelector(CreateClassForm.classForm);
+    await page.waitForSelector(ClassForm.classForm);
 
-    return new CreateClassForm(page);
+    return new ClassForm(page);
   }
 }

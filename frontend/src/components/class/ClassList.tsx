@@ -120,16 +120,21 @@ const ClassList = () => {
 
   const actionsTemplate = useCallback(
     (rowData: ExistingClassWithTeacher) => (
-      <div>
+      <div data-testid={`class-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
             onClick={() => router.push(`/class/${rowData.id}/edit`)}
+            data-testid={`class-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
           </Button>
 
-          <Dropdown.Toggle variant="secondary" split />
+          <Dropdown.Toggle
+            variant="secondary"
+            split
+            data-testid={`class-${rowData.id}-actions-dropdown-button`}
+          />
 
           <Dropdown.Menu>
             <Dropdown.Item
@@ -137,6 +142,7 @@ const ClassList = () => {
                 setOnDeleteConfirmation(() => () => deleteClass(rowData.id));
                 setShowDeleteConfirmationModal(true);
               }}
+              data-testid={`class-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </Dropdown.Item>
