@@ -71,6 +71,18 @@ export const getTasksControllerRemoveV0ResponseMock = (
   ...overrideResponse,
 });
 
+export const getTasksControllerUpdateFileV0ResponseMock = (
+  overrideResponse: Partial<ExistingTaskDto> = {},
+): ExistingTaskDto => ({
+  description: faker.word.sample(),
+  id: faker.number.int({ min: undefined, max: undefined }),
+  title: faker.word.sample(),
+  type: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(TaskType)),
+  ]),
+  ...overrideResponse,
+});
+
 export const getTasksControllerCreateV0MockHandler = (
   overrideResponse?:
     | ExistingTaskDto
@@ -201,6 +213,29 @@ export const getTasksControllerDownloadOneV0MockHandler = (
     return new HttpResponse(null, { status: 200 });
   });
 };
+
+export const getTasksControllerUpdateFileV0MockHandler = (
+  overrideResponse?:
+    | ExistingTaskDto
+    | ((
+        info: Parameters<Parameters<typeof http.patch>[1]>[0],
+      ) => Promise<ExistingTaskDto> | ExistingTaskDto),
+) => {
+  return http.patch("*/api/v0/tasks/:id/file", async (info) => {
+    await delay(1000);
+
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse !== undefined
+          ? typeof overrideResponse === "function"
+            ? await overrideResponse(info)
+            : overrideResponse
+          : getTasksControllerUpdateFileV0ResponseMock(),
+      ),
+      { status: 201, headers: { "Content-Type": "application/json" } },
+    );
+  });
+};
 export const getTasksMock = () => [
   getTasksControllerCreateV0MockHandler(),
   getTasksControllerFindAllV0MockHandler(),
@@ -208,4 +243,5 @@ export const getTasksMock = () => [
   getTasksControllerUpdateV0MockHandler(),
   getTasksControllerRemoveV0MockHandler(),
   getTasksControllerDownloadOneV0MockHandler(),
+  getTasksControllerUpdateFileV0MockHandler(),
 ];

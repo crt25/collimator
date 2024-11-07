@@ -106,3 +106,20 @@ export const tasksControllerDownloadOneV0 = async (
     method: "GET",
   });
 };
+
+export const getTasksControllerUpdateFileV0Url = (id: number) => {
+  return `/api/v0/tasks/${id}/file`;
+};
+
+export const tasksControllerUpdateFileV0 = async (
+  id: number,
+  options?: RequestInit,
+): Promise<ExistingTaskDto> => {
+  return fetchApi<Promise<ExistingTaskDto>>(
+    getTasksControllerUpdateFileV0Url(id),
+    {
+      ...options,
+      method: "PATCH",
+    },
+  );
+};

@@ -1,7 +1,10 @@
 import { useCallback } from "react";
 import { useSWRConfig } from "swr";
 import { DeletedTask } from "../../models/tasks/deleted-task";
-import { getTasksControllerFindAllV0Url, tasksControllerRemoveV0 } from "../../generated/endpoints/tasks/tasks";
+import {
+  getTasksControllerFindAllV0Url,
+  tasksControllerRemoveV0,
+} from "../../generated/endpoints/tasks/tasks";
 
 type Args = Parameters<typeof tasksControllerRemoveV0>;
 type DeleteUserType = (...args: Args) => Promise<DeletedTask>;

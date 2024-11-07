@@ -17,11 +17,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "solve/:sessionId/:taskId",
+    path: "solve",
     element: <Solve />,
   },
   {
-    path: "edit/:taskId",
+    path: "edit",
     element: <Edit />,
   },
 ]);

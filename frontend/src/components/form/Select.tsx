@@ -39,15 +39,17 @@ const Select = forwardRef(function Select(
   return (
     <InputWrapper isShown={options.length > 1 || alwaysShow}>
       <Label>{intl.formatMessage(label)}</Label>
-      <StyledSelect {...inputProps} ref={ref}>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {typeof option.label === "string"
-              ? option.label
-              : intl.formatMessage(option.label)}
-          </option>
-        ))}
-      </StyledSelect>
+      <div>
+        <StyledSelect {...inputProps} ref={ref}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {typeof option.label === "string"
+                ? option.label
+                : intl.formatMessage(option.label)}
+            </option>
+          ))}
+        </StyledSelect>
+      </div>
       {children}
     </InputWrapper>
   );

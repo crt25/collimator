@@ -101,6 +101,24 @@ export class TasksController {
     return ExistingTaskDto.fromQueryResult(task);
   }
 
+  @Patch(":id/file")
+  @ApiCreatedResponse({ type: ExistingTaskDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @UseInterceptors(FileInterceptor("file"))
+  async updateFile(
+    @Param("id", ParseIntPipe) id: TaskId,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ExistingTaskDto> {
+    const task = await this.tasksService.updateFile(
+      id,
+      file.mimetype,
+      file.buffer,
+    );
+
+    return ExistingTaskDto.fromQueryResult(task);
+  }
+
   @Delete(":id")
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()

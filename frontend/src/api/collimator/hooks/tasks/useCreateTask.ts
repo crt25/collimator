@@ -2,20 +2,41 @@ import { useCallback } from "react";
 import { useSWRConfig } from "swr";
 import { GetTaskReturnType } from "./useTask";
 import { ExistingTask } from "../../models/tasks/existing-task";
-import { getTasksControllerFindOneV0Url, tasksControllerCreateV0 } from "../../generated/endpoints/tasks/tasks";
+import {
+  getTasksControllerCreateV0Url,
+  getTasksControllerFindOneV0Url,
+} from "../../generated/endpoints/tasks/tasks";
+import { CreateTaskDto, ExistingTaskDto } from "../../generated/models";
+import { fetchApi } from "@/api/fetch";
 
-type Args = Parameters<typeof tasksControllerCreateV0>;
-type CreateTaskType = (...args: Args) => Promise<ExistingTask>;
+type CreateTaskType = (
+  taskMeta: CreateTaskDto,
+  task: Blob,
+) => Promise<ExistingTask>;
 
-const createAndTransform: CreateTaskType = (...args) =>
-  tasksControllerCreateV0(...args).then(ExistingTask.fromDto);
+const createTask = (
+  taskMeta: CreateTaskDto,
+  task: Blob,
+): Promise<ExistingTask> => {
+  const formData = new FormData();
+
+  formData.append("title", taskMeta.title);
+  formData.append("description", taskMeta.description);
+  formData.append("type", taskMeta.type);
+  formData.append("file", task);
+
+  return fetchApi<ExistingTaskDto>(getTasksControllerCreateV0Url(), {
+    method: "POST",
+    body: formData,
+  }).then(ExistingTask.fromDto);
+};
 
 export const useCreateTask = (): CreateTaskType => {
   const { mutate } = useSWRConfig();
 
-  return useCallback(
-    (...args: Args) =>
-      createAndTransform(...args).then((result) => {
+  return useCallback<CreateTaskType>(
+    (taskMeta, task) =>
+      createTask(taskMeta, task).then((result) => {
         // store the created task in the cache
         const getTasksControllerFindOneResponse: GetTaskReturnType = result;
 

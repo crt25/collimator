@@ -1,7 +1,10 @@
 import useSWR from "swr";
 import { ApiResponse, fromDtos, transformToLazyTableResult } from "../helpers";
 import { LazyTableResult, LazyTableState } from "@/components/DataTable";
-import { getTasksControllerFindAllV0Url, tasksControllerFindAllV0 } from "../../generated/endpoints/tasks/tasks";
+import {
+  getTasksControllerFindAllV0Url,
+  tasksControllerFindAllV0,
+} from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
 
 export type GetTasksReturnType = ExistingTask[];

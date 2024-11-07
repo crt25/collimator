@@ -53,10 +53,11 @@ export interface EmbeddedAppRef {
 
 export interface Props {
   src: string;
+  onAppAvailable?: () => void;
 }
 
 const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
-  { src },
+  { src, onAppAvailable },
   ref,
 ) {
   const [iframe, setIFrame] = useState<HTMLIFrameElement | null>(null);
@@ -163,6 +164,10 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         });
 
         iframe.style.height = `${response.result}px`;
+
+        if (onAppAvailable) {
+          onAppAvailable();
+        }
       };
       iframe.addEventListener("load", callback);
 
@@ -172,7 +177,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         }
       };
     }
-  }, [iframe, sendRequest]);
+  }, [iframe, sendRequest, onAppAvailable]);
 
   // store the reference to the iframe element in a state value
   // this is only called once when the iframe is mounted

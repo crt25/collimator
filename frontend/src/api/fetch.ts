@@ -9,3 +9,13 @@ export const fetchApi = async <T>(
 
   return response.json() as T;
 };
+
+export const fetchFile = async (
+  url: string,
+  options: RequestInit,
+): Promise<Blob> => {
+  const request = new Request(`${backendHostName}${url}`, options);
+  const response = await fetch(request);
+
+  return response.blob();
+};
