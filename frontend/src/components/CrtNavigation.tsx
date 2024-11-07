@@ -2,6 +2,7 @@ import { defineMessages } from "react-intl";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
+import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 
 const messages = defineMessages({
   usersTab: {
@@ -35,16 +36,15 @@ const tabs: NavigationTab[] = [
 
 const CrtNavigation = ({
   breadcrumb,
-  userId,
+  user,
   klass,
   lessonId,
 }: {
   breadcrumb?: boolean;
-  userId?: number;
+  user?: ExistingUser;
   klass?: ExistingClass;
   lessonId?: number;
 }) => {
-  const userName = "John";
   const lessonName = "Introduction to React";
 
   return (
@@ -52,8 +52,10 @@ const CrtNavigation = ({
       <TabNavigation tabs={tabs} breadcrumb={breadcrumb} />
       {breadcrumb && (
         <>
-          {userId && (
-            <BreadcrumbItem href={`/user/${userId}`}>{userName}</BreadcrumbItem>
+          {user && (
+            <BreadcrumbItem href={`/user/${user.id}`}>
+              {user.name}
+            </BreadcrumbItem>
           )}
           {klass && (
             <BreadcrumbItem href={`/class/${klass.id}/detail`}>

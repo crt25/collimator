@@ -12,15 +12,17 @@ import { useCallback } from "react";
 import { usersControllerFindAll } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 
-const fetchAndTransform = (): Promise<ExistingUser[]> =>
+export type GetUsersReturnType = ExistingUser[];
+
+const fetchAndTransform = (): Promise<GetUsersReturnType> =>
   usersControllerFindAll().then((data) => fromDtos(ExistingUser, data));
 
-export const useAllUsers = (): ApiResponse<ExistingUser[], Error> =>
+export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> =>
   useSWR(getClassesControllerFindAllUrl(), () => fetchAndTransform());
 
 export const useFetchAllUsers: LazyTableFetchFunctionWithParameters<
   ClassesControllerFindAllParams,
-  ExistingUser
+  GetUsersReturnType[0]
 > = () =>
   useCallback(
     (_state: LazyTableState) =>

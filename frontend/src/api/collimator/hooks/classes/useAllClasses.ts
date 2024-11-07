@@ -14,23 +14,25 @@ import { ExistingClassWithTeacher } from "../../models/classes/existing-class-wi
 import { LazyTableState } from "@/components/DataTable";
 import { useCallback } from "react";
 
+export type GetClassesReturnType = ExistingClassWithTeacher[];
+
 const fetchAndTransform = (
   params?: ClassesControllerFindAllParams,
-): Promise<ExistingClassWithTeacher[]> =>
+): Promise<GetClassesReturnType> =>
   classesControllerFindAll(params).then((data) =>
     fromDtos(ExistingClassWithTeacher, data),
   );
 
 export const useAllClasses = (
   params?: ClassesControllerFindAllParams,
-): ApiResponse<ExistingClassWithTeacher[], Error> =>
+): ApiResponse<GetClassesReturnType, Error> =>
   useSWR(getClassesControllerFindAllUrl(params), () =>
     fetchAndTransform(params),
   );
 
 export const useFetchAllClasses: LazyTableFetchFunctionWithParameters<
   ClassesControllerFindAllParams,
-  ExistingClassWithTeacher
+  GetClassesReturnType[0]
 > = (params) =>
   useCallback(
     (_state: LazyTableState) =>

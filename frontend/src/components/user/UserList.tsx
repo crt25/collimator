@@ -5,7 +5,10 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
+import DataTable, {
+  LazyTableFetchFunction,
+  LazyTableState,
+} from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -13,8 +16,9 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import { getUserRoleMessage, UserRole } from "@/i18n/user-role-messages";
+import { getUserTypeMessage } from "@/i18n/user-type-messages";
 import { TableMessages } from "@/i18n/table-messages";
+import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -39,24 +43,16 @@ const messages = defineMessages({
   },
 });
 
-export interface User {
-  id: number;
-  name: string;
-  role: UserRole;
-}
-
 const UserList = ({
   fetchData,
 }: {
-  fetchData: (
-    state: LazyTableState,
-  ) => Promise<{ items: User[]; totalCount: number }>;
+  fetchData: LazyTableFetchFunction<ExistingUser>;
 }) => {
   const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [Classs, setClasss] = useState<User[]>([]);
+  const [users, setUsers] = useState<ExistingUser[]>([]);
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
     rows: 10,
@@ -80,7 +76,7 @@ const UserList = ({
 
     fetchData(lazyState).then(({ items, totalCount }) => {
       setTotalRecords(totalCount);
-      setClasss(items);
+      setUsers(items);
       setLoading(false);
     });
   }, [lazyState, fetchData]);
@@ -98,14 +94,14 @@ const UserList = ({
   };
 
   const roleTemplate = useCallback(
-    (rowData: User) => (
-      <span>{intl.formatMessage(getUserRoleMessage(rowData.role))}</span>
+    (rowData: ExistingUser) => (
+      <span>{intl.formatMessage(getUserTypeMessage(rowData.type))}</span>
     ),
     [intl],
   );
 
   const actionsTemplate = useCallback(
-    (rowData: User) => (
+    (rowData: ExistingUser) => (
       <div>
         <Dropdown as={ButtonGroup}>
           <Button variant="secondary">
@@ -131,7 +127,7 @@ const UserList = ({
   return (
     <UserListWrapper>
       <DataTable
-        value={Classs}
+        value={users}
         lazy
         filterDisplay="row"
         dataKey="id"
@@ -146,7 +142,9 @@ const UserList = ({
         onFilter={onFilter}
         filters={lazyState.filters}
         loading={loading}
-        onRowClick={(e) => router.push(`/user/${(e.data as User).id}/detail`)}
+        onRowClick={(e) =>
+          router.push(`/user/${(e.data as ExistingUser).id}/detail`)
+        }
       >
         <Column
           field="name"
@@ -178,7 +176,7 @@ const UserList = ({
             <Dropdown as={ButtonGroup}>
               <Button
                 variant="secondary"
-                onClick={() => router.push("class/create")}
+                onClick={() => router.push("user/create")}
               >
                 <FontAwesomeIcon icon={faAdd} />
               </Button>

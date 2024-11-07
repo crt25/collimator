@@ -12,7 +12,7 @@ type Args = Parameters<typeof CrtNavigation>[0];
 
 export const Default = {
   args: {
-    userId: 1,
+    user: 1,
   } as Args,
 };
 
@@ -24,7 +24,7 @@ const renderWithinBreadcrumbs = (args: Args) => (
 
 export const AsUserBreadcrumb = {
   args: {
-    userId: 1,
+    user: 1,
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,
