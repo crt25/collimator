@@ -43,7 +43,7 @@ const CrtNavigation = ({
 }: {
   breadcrumb?: boolean;
   user?: ExistingUser;
-  klass?: ExistingClass| ExistingClassExtended;
+  klass?: ExistingClass | ExistingClassExtended;
   lessonId?: number;
 }) => {
   const lessonName = "Introduction to React";

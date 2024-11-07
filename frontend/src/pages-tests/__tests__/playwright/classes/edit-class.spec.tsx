@@ -52,11 +52,13 @@ test.describe("/class/{id}/edit", () => {
     updateRequest = null;
 
     // mock classes response for list
-    await page.route(`${apiURL}${getClassesControllerFindAllV0Url()}`, (route) =>
-      route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify(mockClasses),
-      }),
+    await page.route(
+      `${apiURL}${getClassesControllerFindAllV0Url()}`,
+      (route) =>
+        route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify(mockClasses),
+        }),
     );
 
     // mock users response for select

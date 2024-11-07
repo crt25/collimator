@@ -22,7 +22,10 @@ export const useAllClasses = (
 ): ApiResponse<GetClassesReturnType, Error> =>
   useSWR(
     // use the URL with the params as the first entry in the key for easier invalidation
-    [getClassesControllerFindAllV0Url(), getClassesControllerFindAllV0Url(params)],
+    [
+      getClassesControllerFindAllV0Url(),
+      getClassesControllerFindAllV0Url(params),
+    ],
     () => fetchAndTransform(params),
   );
 
