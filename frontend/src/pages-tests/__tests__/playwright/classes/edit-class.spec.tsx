@@ -68,10 +68,7 @@ test.describe("/class/{id}/edit", () => {
     await signInAndGotoPath(page, baseURL!, `/class/${mockResponse.id}/edit`);
   });
 
-  test.only("can update an existing class", async ({
-    page: pwPage,
-    baseURL,
-  }) => {
+  test("can update an existing class", async ({ page: pwPage, baseURL }) => {
     const page = await CreateClassForm.create(pwPage);
 
     // expect the form to be pre-filled
