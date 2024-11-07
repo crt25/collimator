@@ -210,7 +210,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
       </SwrContent>
       <ConfirmationModal
         isShown={showDeleteConfirmationModal}
-        setisShown={setShowDeleteConfirmationModal}
+        setIsShown={setShowDeleteConfirmationModal}
         onConfirm={onDeleteConfirmation}
         isDangerous
         messages={{

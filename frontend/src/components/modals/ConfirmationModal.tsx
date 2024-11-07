@@ -4,13 +4,13 @@ import { ModalMessages } from "@/i18n/modal-messages";
 
 const ConfirmationModal = ({
   isShown,
-  setisShown,
+  setIsShown,
   onConfirm,
   isDangerous,
   messages,
 }: {
   isShown: boolean;
-  setisShown: (isShown: boolean) => void;
+  setIsShown: (isShown: boolean) => void;
   onConfirm: () => void;
   isDangerous?: boolean;
   messages: {
@@ -24,7 +24,7 @@ const ConfirmationModal = ({
   return (
     <Modal
       show={isShown}
-      onHide={() => setisShown(false)}
+      onHide={() => setIsShown(false)}
       data-testid="confirmation-modal"
     >
       <Modal.Header closeButton>
@@ -35,7 +35,7 @@ const ConfirmationModal = ({
       </Modal.Body>
       <Modal.Footer>
         <Button
-          onClick={() => setisShown(false)}
+          onClick={() => setIsShown(false)}
           variant="secondary"
           data-testid="cancel-button"
         >
@@ -44,7 +44,7 @@ const ConfirmationModal = ({
         <Button
           onClick={() => {
             onConfirm();
-            setisShown(false);
+            setIsShown(false);
           }}
           variant={isDangerous ? "danger" : "primary"}
           data-testid="confirm-button"
