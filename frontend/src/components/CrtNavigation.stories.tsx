@@ -34,7 +34,7 @@ const klass = getClassesControllerFindOneV0ResponseMock();
 
 export const AsClassBreadcrumb = {
   args: {
-    klass: ExistingClass.fromDto({...klass, teacherId: klass.teacher.id}),
+    klass: ExistingClass.fromDto({ ...klass, teacherId: klass.teacher.id }),
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,
