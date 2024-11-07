@@ -1,33 +1,36 @@
 import UserList from "./UserList";
-import { mockFilterSortDataTable } from "../__tests__/data-table";
 import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { backendHostName } from "@/utilities/constants";
+import {
+  getUsersControllerDeleteUrl,
+  getUsersControllerFindAllUrl,
+} from "@/api/collimator/generated/endpoints/users/users";
+
+const users = getUsersControllerFindAllResponseMock();
 
 export default {
   component: UserList,
   title: "UserList",
+  parameters: {
+    mockData: [
+      {
+        url: `${backendHostName}${getUsersControllerFindAllUrl()}`,
+        method: "GET",
+        status: 200,
+        response: users,
+      },
+
+      ...users.map((user) => ({
+        url: `${backendHostName}${getUsersControllerDeleteUrl(user.id)}`,
+        method: "DELETE",
+        status: 200,
+        response: () => {
+          users.splice(users.indexOf(user), 1);
+          return user;
+        },
+      })),
+    ],
+  },
 };
 
-type Args = Parameters<typeof UserList>[0];
-
-export const Default = {
-  args: {
-    fetchData: (state) =>
-      Promise.resolve(
-        mockFilterSortDataTable(getUsersControllerFindAllResponseMock(), state),
-      ),
-  } as Args,
-};
-
-export const Empty = {
-  args: {
-    classId: 1,
-    fetchData: () => Promise.resolve({ items: [], totalCount: 0 }),
-  } as Args,
-};
-
-export const Loading = {
-  args: {
-    classId: 1,
-    fetchData: () => new Promise(() => {}),
-  } as Args,
-};
+export const Default = {};
