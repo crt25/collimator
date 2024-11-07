@@ -9,11 +9,13 @@ test.describe("/class", () => {
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     // Mock the response for the classes controller find all endpoint
-    await page.route(`${apiURL}${getClassesControllerFindAllV0Url()}`, (route) =>
-      route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify(mockResponse),
-      }),
+    await page.route(
+      `${apiURL}${getClassesControllerFindAllV0Url()}`,
+      (route) =>
+        route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify(mockResponse),
+        }),
     );
 
     await signInAndGotoPath(page, baseURL!, "/class");

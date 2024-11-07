@@ -25,14 +25,17 @@ test.describe("/class/create", () => {
     );
 
     // Mock the response for the classes controller create endpoint
-    await page.route(`${apiURL}${getClassesControllerCreateV0Url()}`, (route) => {
-      createRequest = route.request().postDataJSON();
+    await page.route(
+      `${apiURL}${getClassesControllerCreateV0Url()}`,
+      (route) => {
+        createRequest = route.request().postDataJSON();
 
-      return route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify(mockCreateResponse),
-      });
-    });
+        return route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify(mockCreateResponse),
+        });
+      },
+    );
 
     await signInAndGotoPath(page, baseURL!, "/class/create");
   });
