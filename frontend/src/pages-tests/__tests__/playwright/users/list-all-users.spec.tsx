@@ -3,10 +3,10 @@ import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { userList } from "../selectors";
 import {
-  getUsersControllerFindAllUrl,
-  getUsersControllerFindOneUrl,
+  getUsersControllerFindAllV0Url,
+  getUsersControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/users/users";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user", () => {
@@ -20,12 +20,12 @@ test.describe("/user", () => {
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     mockResponse = [
-      ...getUsersControllerFindAllResponseMock().slice(0, 9),
+      ...getUsersControllerFindAllV0ResponseMock().slice(0, 9),
       user,
     ];
 
     // Mock the response for the users controller find all endpoint
-    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockResponse),
@@ -47,7 +47,7 @@ test.describe("/user", () => {
 
     await mockUrlResponses(
       pwPage,
-      `${apiURL}${getUsersControllerFindOneUrl(user.id)}`,
+      `${apiURL}${getUsersControllerFindOneV0Url(user.id)}`,
       {
         get: user,
         delete: user,

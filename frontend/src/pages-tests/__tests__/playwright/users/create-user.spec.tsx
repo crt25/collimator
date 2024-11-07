@@ -2,15 +2,15 @@ import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
 import { CreateUserDto, UserType } from "@/api/collimator/generated/models";
-import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import {
-  getUsersControllerCreateResponseMock,
-  getUsersControllerFindAllResponseMock,
+  getUsersControllerCreateV0ResponseMock,
+  getUsersControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user/create", () => {
-  const mockCreateResponse = getUsersControllerCreateResponseMock();
+  const mockCreateResponse = getUsersControllerCreateV0ResponseMock();
 
   let createRequest: CreateUserDto | null = null;
 
@@ -19,9 +19,9 @@ test.describe("/user/create", () => {
 
     await mockUrlResponses(
       page,
-      `${apiURL}${getUsersControllerFindAllUrl()}`,
+      `${apiURL}${getUsersControllerFindAllV0Url()}`,
       {
-        get: getUsersControllerFindAllResponseMock(),
+        get: getUsersControllerFindAllV0ResponseMock(),
         post: mockCreateResponse,
       },
       {

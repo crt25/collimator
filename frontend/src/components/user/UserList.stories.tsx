@@ -1,12 +1,12 @@
 import UserList from "./UserList";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { backendHostName } from "@/utilities/constants";
 import {
-  getUsersControllerDeleteUrl,
-  getUsersControllerFindAllUrl,
+  getUsersControllerDeleteV0Url,
+  getUsersControllerFindAllV0Url,
 } from "@/api/collimator/generated/endpoints/users/users";
 
-const users = getUsersControllerFindAllResponseMock();
+const users = getUsersControllerFindAllV0ResponseMock();
 
 export default {
   component: UserList,
@@ -14,14 +14,14 @@ export default {
   parameters: {
     mockData: [
       {
-        url: `${backendHostName}${getUsersControllerFindAllUrl()}`,
+        url: `${backendHostName}${getUsersControllerFindAllV0Url()}`,
         method: "GET",
         status: 200,
         response: users,
       },
 
       ...users.map((user) => ({
-        url: `${backendHostName}${getUsersControllerDeleteUrl(user.id)}`,
+        url: `${backendHostName}${getUsersControllerDeleteV0Url(user.id)}`,
         method: "DELETE",
         status: 200,
         response: () => {
