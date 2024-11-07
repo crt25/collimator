@@ -58,7 +58,7 @@ const EditClass = () => {
           {(klass) => (
             <ClassForm
               submitMessage={messages.submit}
-              initialValues={klass}
+              initialValues={{ name: klass.name, teacherId: klass.teacher.id }}
               onSubmit={onSubmit}
             />
           )}

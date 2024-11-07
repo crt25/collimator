@@ -1,12 +1,12 @@
 import ClassList from "./ClassList";
-import { getClassesControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { backendHostName } from "@/utilities/constants";
 import {
-  getClassesControllerFindAllUrl,
-  getClassesControllerRemoveUrl,
+  getClassesControllerFindAllV0Url,
+  getClassesControllerRemoveV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
 
-const classes = getClassesControllerFindAllResponseMock();
+const classes = getClassesControllerFindAllV0ResponseMock();
 
 export default {
   component: ClassList,
@@ -14,14 +14,14 @@ export default {
   parameters: {
     mockData: [
       {
-        url: `${backendHostName}${getClassesControllerFindAllUrl()}`,
+        url: `${backendHostName}${getClassesControllerFindAllV0Url()}`,
         method: "GET",
         status: 200,
         response: classes,
       },
 
       ...classes.map((klass) => ({
-        url: `${backendHostName}${getClassesControllerRemoveUrl(klass.id)}`,
+        url: `${backendHostName}${getClassesControllerRemoveV0Url(klass.id)}`,
         method: "DELETE",
         status: 200,
         response: () => {

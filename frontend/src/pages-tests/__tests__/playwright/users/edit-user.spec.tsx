@@ -2,12 +2,12 @@ import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
 import {
-  getUsersControllerFindAllResponseMock,
-  getUsersControllerFindOneResponseMock,
+  getUsersControllerFindAllV0ResponseMock,
+  getUsersControllerFindOneV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/users/users.msw";
 import {
-  getUsersControllerFindAllUrl,
-  getUsersControllerFindOneUrl,
+  getUsersControllerFindAllV0Url,
+  getUsersControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/users/users";
 import {
   CreateUserDto,
@@ -17,20 +17,20 @@ import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user/{id}/edit", () => {
   const user: ExistingUserDto = {
-    ...getUsersControllerFindOneResponseMock(),
+    ...getUsersControllerFindOneV0ResponseMock(),
     // Override the name and email as they may be generated wrong. (name can be null and email can be an arbitrary string)
     name: "Jane",
     email: "jane@example.com",
   };
 
   const updatedUser: ExistingUserDto & { name: string } = {
-    ...getUsersControllerFindOneResponseMock(),
+    ...getUsersControllerFindOneV0ResponseMock(),
     name: "Jane Doe",
     email: "jane.doe@example.com",
   };
 
   const mockUsers: ExistingUserDto[] = [
-    ...getUsersControllerFindAllResponseMock().slice(0, 9),
+    ...getUsersControllerFindAllV0ResponseMock().slice(0, 9),
     user,
   ];
 
@@ -40,7 +40,7 @@ test.describe("/user/{id}/edit", () => {
     updateRequest = null;
 
     // Mock user list response
-    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockUsers),
@@ -49,7 +49,7 @@ test.describe("/user/{id}/edit", () => {
 
     await mockUrlResponses(
       page,
-      `${apiURL}${getUsersControllerFindOneUrl(user.id)}`,
+      `${apiURL}${getUsersControllerFindOneV0Url(user.id)}`,
       {
         get: user,
         patch: updatedUser,

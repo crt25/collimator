@@ -1,26 +1,26 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { getClassesControllerFindAllUrl } from "@/api/collimator/generated/endpoints/classes/classes";
+import { getClassesControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
-  getClassesControllerCreateResponseMock,
-  getClassesControllerFindAllResponseMock,
+  getClassesControllerCreateV0ResponseMock,
+  getClassesControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { ClassForm } from "./class-form";
 import { CreateClassDto } from "@/api/collimator/generated/models";
-import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { ClassListPageModel } from "./class-list-page-model";
 
 test.describe("/class/create", () => {
-  const mockCreateResponse = getClassesControllerCreateResponseMock();
-  const mockUsersResponse = getUsersControllerFindAllResponseMock();
+  const mockCreateResponse = getClassesControllerCreateV0ResponseMock();
+  const mockUsersResponse = getUsersControllerFindAllV0ResponseMock();
 
   let createRequest: CreateClassDto | null = null;
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     createRequest = null;
 
-    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockUsersResponse),
@@ -29,9 +29,9 @@ test.describe("/class/create", () => {
 
     await mockUrlResponses(
       page,
-      `${apiURL}${getClassesControllerFindAllUrl()}`,
+      `${apiURL}${getClassesControllerFindAllV0Url()}`,
       {
-        get: getClassesControllerFindAllResponseMock(),
+        get: getClassesControllerFindAllV0ResponseMock(),
         post: mockCreateResponse,
       },
       {

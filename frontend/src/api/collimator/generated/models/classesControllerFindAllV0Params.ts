@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CreateClassDto {
-  name: string;
-  teacherId: number;
-}
+export type ClassesControllerFindAllV0Params = {
+  teacherId?: number;
+};

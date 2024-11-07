@@ -1,19 +1,19 @@
 import { ExistingClassWithTeacherDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
-import { ExistingClass } from "./existing-class";
 import { ClassTeacher } from "./existing-class-extended-teacher";
 
-export class ExistingClassWithTeacher extends ExistingClass {
+export class ExistingClassWithTeacher {
+  readonly id: number;
+  readonly name: string;
   readonly teacher: ClassTeacher;
 
   protected constructor({
     id,
     name,
-    teacherId,
     teacher,
   }: ClassProperties<ExistingClassWithTeacher>) {
-    super({ id, name, teacherId });
-
+    this.id = id;
+    this.name = name;
     this.teacher = teacher;
   }
 
@@ -22,7 +22,6 @@ export class ExistingClassWithTeacher extends ExistingClass {
 
     return new ExistingClassWithTeacher({
       ...dto,
-      teacherId: teacher.id,
       teacher,
     });
   }

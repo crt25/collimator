@@ -1,17 +1,17 @@
 import { useCallback } from "react";
 import { ExistingUser } from "../../models/users/existing-user";
 import {
-  getUsersControllerFindOneUrl,
-  usersControllerCreate,
+  getUsersControllerFindOneV0Url,
+  usersControllerCreateV0,
 } from "../../generated/endpoints/users/users";
 import { useSWRConfig } from "swr";
 import { GetUserReturnType } from "./useUser";
 
-type Args = Parameters<typeof usersControllerCreate>;
+type Args = Parameters<typeof usersControllerCreateV0>;
 type CreateUserType = (...args: Args) => Promise<ExistingUser>;
 
 const createAndTransform: CreateUserType = (...args) =>
-  usersControllerCreate(...args).then(ExistingUser.fromDto);
+  usersControllerCreateV0(...args).then(ExistingUser.fromDto);
 
 export const useCreateUser = (): CreateUserType => {
   const { mutate } = useSWRConfig();
@@ -23,7 +23,7 @@ export const useCreateUser = (): CreateUserType => {
         const getUsersControllerFindResponse: GetUserReturnType = result;
 
         mutate(
-          getUsersControllerFindOneUrl(result.id),
+          getUsersControllerFindOneV0Url(result.id),
           getUsersControllerFindResponse,
         );
 
