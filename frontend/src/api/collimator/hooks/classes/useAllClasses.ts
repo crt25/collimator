@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import {
-  classesControllerFindAll,
-  getClassesControllerFindAllUrl,
+  classesControllerFindAllV0,
+  getClassesControllerFindAllV0Url,
 } from "../../generated/endpoints/classes/classes";
-import { ClassesControllerFindAllParams } from "../../generated/models";
+import { ClassesControllerFindAllV0Params } from "../../generated/models";
 import {
   ApiResponse,
   fromDtos,
@@ -15,21 +15,21 @@ import { LazyTableState } from "@/components/DataTable";
 import { useCallback } from "react";
 
 const fetchAndTransform = (
-  params?: ClassesControllerFindAllParams,
+  params?: ClassesControllerFindAllV0Params,
 ): Promise<ExistingClassWithTeacher[]> =>
-  classesControllerFindAll(params).then((data) =>
+  classesControllerFindAllV0(params).then((data) =>
     fromDtos(ExistingClassWithTeacher, data),
   );
 
 export const useAllClasses = (
-  params?: ClassesControllerFindAllParams,
+  params?: ClassesControllerFindAllV0Params,
 ): ApiResponse<ExistingClassWithTeacher[], Error> =>
-  useSWR(getClassesControllerFindAllUrl(params), () =>
+  useSWR(getClassesControllerFindAllV0Url(params), () =>
     fetchAndTransform(params),
   );
 
 export const useFetchAllClasses: LazyTableFetchFunctionWithParameters<
-  ClassesControllerFindAllParams,
+  ClassesControllerFindAllV0Params,
   ExistingClassWithTeacher
 > = (params) =>
   useCallback(

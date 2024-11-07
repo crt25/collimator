@@ -1,12 +1,12 @@
 import { fn } from "@storybook/test";
 import ClassForm from "./ClassForm";
-import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { backendHostName } from "@/utilities/constants";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 
 type Args = Parameters<typeof ClassForm>[0];
 
-const users = getUsersControllerFindAllResponseMock();
+const users = getUsersControllerFindAllV0ResponseMock();
 
 export default {
   component: ClassForm,
@@ -14,7 +14,7 @@ export default {
   parameters: {
     mockData: [
       {
-        url: `${backendHostName}${getUsersControllerFindAllUrl()}`,
+        url: `${backendHostName}${getUsersControllerFindAllV0Url()}`,
         method: "GET",
         status: 200,
         response: users,

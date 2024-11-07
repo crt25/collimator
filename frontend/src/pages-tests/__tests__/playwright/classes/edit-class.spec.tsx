@@ -1,22 +1,22 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { getClassesControllerFindOneUrl } from "@/api/collimator/generated/endpoints/classes/classes";
+import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, test } from "../helpers";
 import {
-  getClassesControllerFindOneResponseMock,
-  getClassesControllerUpdateResponseMock,
+  getClassesControllerFindOneV0ResponseMock,
+  getClassesControllerUpdateV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { CreateClassForm } from "./create-class-form";
 import {
   CreateClassDto,
   ExistingUserDto,
 } from "@/api/collimator/generated/models";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
-import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 
 test.describe("/class/{id}/edit", () => {
-  const mockResponse = getClassesControllerFindOneResponseMock();
+  const mockResponse = getClassesControllerFindOneV0ResponseMock();
   const mockUsersResponse = [
-    ...getUsersControllerFindAllResponseMock(),
+    ...getUsersControllerFindAllV0ResponseMock(),
     // include a user for the mock response
     {
       id: mockResponse.teacher.id,
@@ -26,7 +26,7 @@ test.describe("/class/{id}/edit", () => {
     } as ExistingUserDto,
   ];
   const updatedClass = {
-    ...getClassesControllerUpdateResponseMock(),
+    ...getClassesControllerUpdateV0ResponseMock(),
     id: mockResponse.id,
     teacherId: mockUsersResponse[0].id,
   };
@@ -37,7 +37,7 @@ test.describe("/class/{id}/edit", () => {
     updateRequest = null;
 
     // Mock the response for the users controller find all endpoint
-    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockUsersResponse),
@@ -45,7 +45,7 @@ test.describe("/class/{id}/edit", () => {
     );
 
     await page.route(
-      `${apiURL}${getClassesControllerFindOneUrl(mockResponse.id)}`,
+      `${apiURL}${getClassesControllerFindOneV0Url(mockResponse.id)}`,
       (route) => {
         if (route.request().method() === "PATCH") {
           updateRequest = route.request().postDataJSON();

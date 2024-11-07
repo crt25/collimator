@@ -1,15 +1,15 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { getClassesControllerFindAllUrl } from "@/api/collimator/generated/endpoints/classes/classes";
+import { getClassesControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, test } from "../helpers";
-import { getClassesControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { classList } from "../selectors";
 
 test.describe("/class", () => {
-  const mockResponse = getClassesControllerFindAllResponseMock().slice(0, 10);
+  const mockResponse = getClassesControllerFindAllV0ResponseMock().slice(0, 10);
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     // Mock the response for the classes controller find all endpoint
-    await page.route(`${apiURL}${getClassesControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getClassesControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockResponse),

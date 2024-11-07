@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { getClassesControllerFindAllUrl } from "../../generated/endpoints/classes/classes";
-import { ClassesControllerFindAllParams } from "../../generated/models";
+import { getClassesControllerFindAllV0Url } from "../../generated/endpoints/classes/classes";
+import { ClassesControllerFindAllV0Params } from "../../generated/models";
 import {
   ApiResponse,
   fromDtos,
@@ -9,17 +9,17 @@ import {
 } from "../helpers";
 import { LazyTableState } from "@/components/DataTable";
 import { useCallback } from "react";
-import { usersControllerFindAll } from "../../generated/endpoints/users/users";
+import { usersControllerFindAllV0 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 
 const fetchAndTransform = (): Promise<ExistingUser[]> =>
-  usersControllerFindAll().then((data) => fromDtos(ExistingUser, data));
+  usersControllerFindAllV0().then((data) => fromDtos(ExistingUser, data));
 
 export const useAllUsers = (): ApiResponse<ExistingUser[], Error> =>
-  useSWR(getClassesControllerFindAllUrl(), () => fetchAndTransform());
+  useSWR(getClassesControllerFindAllV0Url(), () => fetchAndTransform());
 
 export const useFetchAllUsers: LazyTableFetchFunctionWithParameters<
-  ClassesControllerFindAllParams,
+  ClassesControllerFindAllV0Params,
   ExistingUser
 > = () =>
   useCallback(

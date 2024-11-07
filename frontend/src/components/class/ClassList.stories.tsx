@@ -1,6 +1,6 @@
 import ClassList from "./ClassList";
 import { mockFilterSortDataTable } from "../__tests__/data-table";
-import { getClassesControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 
 export default {
   component: ClassList,
@@ -14,7 +14,7 @@ export const Default = {
     fetchData: (state) =>
       Promise.resolve(
         mockFilterSortDataTable(
-          getClassesControllerFindAllResponseMock(),
+          getClassesControllerFindAllV0ResponseMock(),
           state,
         ),
       ),

@@ -2,6 +2,7 @@ import { defineMessages } from "react-intl";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
+import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 
 const messages = defineMessages({
   usersTab: {
@@ -41,7 +42,7 @@ const CrtNavigation = ({
 }: {
   breadcrumb?: boolean;
   userId?: number;
-  klass?: ExistingClass;
+  klass?: ExistingClass | ExistingClassExtended;
   lessonId?: number;
 }) => {
   const userName = "John";
