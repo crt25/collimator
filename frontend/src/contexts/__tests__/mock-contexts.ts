@@ -5,7 +5,7 @@ import {
   latestAuthenticationContextVersion,
 } from "../AuthenticationContext";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
-import { UserRole } from "@/i18n/user-role-messages";
+import { UserRole } from "@/types/user/user-role";
 
 const name = "John";
 const email = "john@doe.com";
@@ -37,6 +37,7 @@ export const getFullyAuthenticatedStudentContext = async (
   authenticationToken,
   name,
   email,
+  sessionId: 1,
   keyPair: await StudentKeyPair.generate(crypto),
 });
 

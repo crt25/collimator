@@ -1,4 +1,4 @@
-import { UserRole } from "@/i18n/user-role-messages";
+import { UserRole } from "@/types/user/user-role";
 import KeyPair from "@/utilities/crypto/KeyPair";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";

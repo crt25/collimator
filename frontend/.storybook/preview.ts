@@ -7,7 +7,7 @@ import {
   getLocallyAuthenticatedStudentContext,
   getUnauthenticatedContext,
 } from "../src/contexts/__tests__/mock-contexts";
-import { UserRole } from "../src/i18n/user-role-messages";
+import { UserRole } from "../src/types/user/user-role";
 
 import "../src/styles/globals.scss";
 

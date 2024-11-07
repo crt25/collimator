@@ -1,13 +1,33 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { getClassesControllerFindAllUrl } from "@/api/collimator/generated/endpoints/classes/classes";
-import { expect, jsonResponse, test } from "../helpers";
+import {
+  getClassesControllerFindAllUrl,
+  getClassesControllerFindOneUrl,
+} from "@/api/collimator/generated/endpoints/classes/classes";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { getClassesControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { classList } from "../selectors";
+import { ClassListPageModel } from "./class-list-page-model";
+import { ExistingClassWithTeacherDto } from "@/api/collimator/generated/models";
 
 test.describe("/class", () => {
-  const mockResponse = getClassesControllerFindAllResponseMock().slice(0, 10);
+  const klass: ExistingClassWithTeacherDto = {
+    id: 1,
+    name: "Class 1",
+    teacher: {
+      id: 1,
+      name: "Teacher 1",
+    },
+    teacherId: 1,
+  };
+
+  let mockResponse: ExistingClassWithTeacherDto[] = [];
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
+    mockResponse = [
+      ...getClassesControllerFindAllResponseMock().slice(0, 9),
+      klass,
+    ];
+
     // Mock the response for the classes controller find all endpoint
     await page.route(`${apiURL}${getClassesControllerFindAllUrl()}`, (route) =>
       route.fulfill({
@@ -24,5 +44,28 @@ test.describe("/class", () => {
     expect(page.locator(classList).locator("tbody tr")).toHaveCount(
       mockResponse.length,
     );
+  });
+
+  test("can delete listed item", async ({ page: pwPage, apiURL }) => {
+    const page = await ClassListPageModel.create(pwPage);
+
+    await mockUrlResponses(
+      pwPage,
+      `${apiURL}${getClassesControllerFindOneUrl(klass.id)}`,
+      {
+        get: klass,
+        delete: klass,
+      },
+      {
+        delete: () => {
+          mockResponse = mockResponse.filter((u) => u.id !== klass.id);
+        },
+      },
+    );
+
+    await page.deleteItem(klass.id);
+
+    // Wait for the deletion to be reflected in the UI
+    await expect(page.getItemActions(klass.id)).toHaveCount(0);
   });
 });

@@ -19,7 +19,7 @@ const UserNavigation = ({
   userId,
   breadcrumb,
 }: {
-  userId: number;
+  userId?: number;
   breadcrumb?: boolean;
 }) => (
   <TabNavigation

@@ -2,15 +2,13 @@ import { useMemo } from "react";
 import ErrorMessage from "./ErrorMessage";
 import ProgressSpinner from "./ProgressSpinner";
 
-const areAllElementsDefined = <
-  TData extends readonly (unknown | undefined)[] | [],
->(
+const areAllElementsDefined = <TData extends readonly unknown[] | []>(
   data: TData,
 ): data is {
   -readonly [P in keyof TData]: Exclude<TData[P], undefined>;
 } => data.every((d) => d !== undefined);
 
-const MultiSwrContent = <TData extends readonly (unknown | undefined)[] | []>({
+const MultiSwrContent = <TData extends readonly unknown[] | []>({
   children,
   data,
   isLoading,
@@ -41,6 +39,7 @@ const MultiSwrContent = <TData extends readonly (unknown | undefined)[] | []>({
 
   if (nonLoadingErrors.length > 0) {
     console.error(nonLoadingErrors);
+
     return nonLoadingErrors
       .filter((e) => e !== undefined)
       .map((error, index) => <ErrorMessage key={index} error={error} />);

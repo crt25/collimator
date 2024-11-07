@@ -13,10 +13,10 @@ import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
-import { UserRole } from "@/i18n/user-role-messages";
 import { PasswordDerivedKey } from "@/utilities/crypto/PasswordDerivedKey";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import ProgressSpinner from "@/components/ProgressSpinner";
+import { UserRole } from "@/types/user/user-role";
 
 const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // if the email is not verified, return undefined
@@ -52,6 +52,12 @@ const OpenIdConnectRedirect = () => {
           );
         }
 
+        const redirect = () =>
+          // first go to the home page and then redirect to the desired page
+          // so that the user is not stuck on the login page if the redirect fails
+          // or lands on the authentication page if a router.back() is called
+          router.push("/").then(() => router.push(redirectPath));
+
         if (isStudent) {
           // the (remaining) authentication logic for students is handled on the join session page
           // we do not need to authenticate against the collimator backend
@@ -64,7 +70,7 @@ const OpenIdConnectRedirect = () => {
             name,
           });
 
-          router.push(redirectPath);
+          await redirect();
 
           return;
         }
@@ -93,7 +99,7 @@ const OpenIdConnectRedirect = () => {
             name,
           });
 
-          router.push(redirectPath);
+          await redirect();
           return;
         }
         // AND if the role is teacher
@@ -135,7 +141,7 @@ const OpenIdConnectRedirect = () => {
           keyPair: teacherKeyPair,
         });
 
-        router.push(redirectPath);
+        await redirect();
       })
       .catch((e) => {
         console.error("Authentication failed", e);

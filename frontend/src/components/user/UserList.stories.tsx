@@ -1,89 +1,36 @@
-import UserList, { User } from "./UserList";
-import { mockFilterSortDataTable } from "../__tests__/data-table";
-import { UserRole } from "@/i18n/user-role-messages";
+import UserList from "./UserList";
+import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { backendHostName } from "@/utilities/constants";
+import {
+  getUsersControllerDeleteUrl,
+  getUsersControllerFindAllUrl,
+} from "@/api/collimator/generated/endpoints/users/users";
+
+const users = getUsersControllerFindAllResponseMock();
 
 export default {
   component: UserList,
   title: "UserList",
+  parameters: {
+    mockData: [
+      {
+        url: `${backendHostName}${getUsersControllerFindAllUrl()}`,
+        method: "GET",
+        status: 200,
+        response: users,
+      },
+
+      ...users.map((user) => ({
+        url: `${backendHostName}${getUsersControllerDeleteUrl(user.id)}`,
+        method: "DELETE",
+        status: 200,
+        response: () => {
+          users.splice(users.indexOf(user), 1);
+          return user;
+        },
+      })),
+    ],
+  },
 };
 
-const users: User[] = [
-  {
-    id: 1,
-    name: "User 1",
-    role: UserRole.teacher,
-  },
-  {
-    id: 2,
-    name: "User 2",
-    role: UserRole.student,
-  },
-  {
-    id: 3,
-    name: "User 3",
-    role: UserRole.student,
-  },
-  {
-    id: 4,
-    name: "User 4",
-    role: UserRole.admin,
-  },
-  {
-    id: 5,
-    name: "User 5",
-    role: UserRole.student,
-  },
-  {
-    id: 6,
-    name: "User 6",
-    role: UserRole.teacher,
-  },
-  {
-    id: 7,
-    name: "User 7",
-    role: UserRole.student,
-  },
-  {
-    id: 8,
-    name: "User 8",
-    role: UserRole.admin,
-  },
-  {
-    id: 9,
-    name: "User 9",
-    role: UserRole.admin,
-  },
-  {
-    id: 10,
-    name: "User 10",
-    role: UserRole.admin,
-  },
-  {
-    id: 11,
-    name: "User 11",
-    role: UserRole.admin,
-  },
-];
-
-type Args = Parameters<typeof UserList>[0];
-
-export const Default = {
-  args: {
-    fetchData: (state) =>
-      Promise.resolve(mockFilterSortDataTable(users, state)),
-  } as Args,
-};
-
-export const Empty = {
-  args: {
-    classId: 1,
-    fetchData: () => Promise.resolve({ items: [], totalCount: 0 }),
-  } as Args,
-};
-
-export const Loading = {
-  args: {
-    classId: 1,
-    fetchData: () => new Promise(() => {}),
-  } as Args,
-};
+export const Default = {};

@@ -5,11 +5,8 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { useFetchAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 
 const ListClasses = () => {
-  const fetchData = useFetchAllClasses();
-
   return (
     <>
       <Header />
@@ -22,7 +19,7 @@ const ListClasses = () => {
             defaultMessage="Class Manager"
           />
         </PageHeader>
-        <ClassList fetchData={fetchData} />
+        <ClassList />
       </Container>
     </>
   );
