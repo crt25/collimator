@@ -17,6 +17,9 @@ export const useClass = (
   const numericId = typeof id === "string" ? parseInt(id, 10) : id;
 
   return useSWR(getClassesControllerFindOneUrl(numericId), () =>
-    isNaN(numericId) ? Promise.reject() : fetchAndTransform(numericId),
+    isNaN(numericId)
+      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+        new Promise<ExistingClassExtended>(() => {})
+      : fetchAndTransform(numericId),
   );
 };

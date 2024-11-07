@@ -29,7 +29,7 @@ const ClassDetail = () => {
           {(klass) => (
             <div>
               <PageHeader>{klass.name}</PageHeader>
-              <Table bordered>
+              <Table bordered role="presentation">
                 <tbody>
                   <tr>
                     <td>
