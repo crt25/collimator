@@ -1,20 +1,22 @@
-import { plainToInstance } from "class-transformer";
 import { ExistingClassWithTeacherDto } from "./existing-class-with-teacher.dto";
+import { ClassTeacherDto } from "./class-teacher.dto";
 
 describe("ExistingClassWithTeacherDto", () => {
+  const teacher = { id: 5, name: "Jerry Smith" };
   const klass = {
     id: 1,
     name: "Test Class",
     teacherId: 5,
-    teacher: { id: 5, name: "Jerry Smith" },
+    teacher: { ...teacher, spuriousField: 3 },
   };
 
   it("can be constructed", () => {
-    const classDto = plainToInstance(ExistingClassWithTeacherDto, klass);
+    const classDto = ExistingClassWithTeacherDto.fromQueryResult(klass);
 
     expect(classDto.id).toEqual(klass.id);
     expect(classDto.name).toEqual(klass.name);
-    expect(classDto.teacherId).toBeUndefined();
-    expect(classDto.teacher).toEqual(klass.teacher);
+    expect(classDto).not.toHaveProperty("teacherId");
+    expect(classDto.teacher).toBeInstanceOf(ClassTeacherDto);
+    expect(classDto.teacher).toEqual(teacher);
   });
 });

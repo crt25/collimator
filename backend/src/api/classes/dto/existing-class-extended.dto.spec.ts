@@ -1,5 +1,5 @@
-import { plainToInstance } from "class-transformer";
 import { ExistingClassExtendedDto } from "./existing-class-extended.dto";
+import { Class } from "@prisma/client";
 
 describe("ExistingClassExtendedDto", () => {
   const klass = {
@@ -12,48 +12,48 @@ describe("ExistingClassExtendedDto", () => {
   };
 
   it("can be constructed", () => {
-    const classDto = plainToInstance(ExistingClassExtendedDto, klass);
+    const classDto = ExistingClassExtendedDto.fromQueryResult(klass);
 
     expect(classDto.id).toEqual(klass.id);
     expect(classDto.name).toEqual(klass.name);
-    expect(classDto.teacherId).toBeUndefined();
+    expect(classDto).not.toHaveProperty("teacherId");
     expect(classDto.teacher).toEqual(klass.teacher);
     expect(classDto.sessions).toEqual([1, 2]);
     expect(classDto.studentCount).toBe(25);
   });
 
   it("handles empty sessions", () => {
-    const dto = plainToInstance(ExistingClassExtendedDto, {
+    const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
       sessions: [],
-    });
+    } as Class);
 
     expect(dto.sessions).toEqual([]);
   });
 
   it("handles zero student count", () => {
-    const dto = plainToInstance(ExistingClassExtendedDto, {
+    const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
       _count: { students: 0 },
-    });
+    } as Class);
 
     expect(dto.studentCount).toBe(0);
   });
 
   it("handles undefined sessions", () => {
-    const dto = plainToInstance(ExistingClassExtendedDto, {
+    const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
       sessions: undefined,
-    });
+    } as Class);
 
     expect(dto.sessions).toEqual([]);
   });
 
   it("handles undefined student count", () => {
-    const dto = plainToInstance(ExistingClassExtendedDto, {
+    const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
       _count: undefined,
-    });
+    } as Class);
 
     expect(dto.studentCount).toBe(0);
   });

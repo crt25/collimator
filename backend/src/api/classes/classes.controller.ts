@@ -28,6 +28,7 @@ import {
   ExistingClassExtendedDto,
 } from "./dto";
 import { ClassesService } from "./classes.service";
+import { fromQueryResults } from "../helpers";
 
 @Controller("classes")
 @ApiTags("classes")
@@ -59,9 +60,7 @@ export class ClassesController {
       where: teacherId ? { teacherId } : undefined,
     });
 
-    return classes.map((klass) =>
-      plainToInstance(ExistingClassWithTeacherDto, klass),
-    );
+    return fromQueryResults(ExistingClassWithTeacherDto, classes);
   }
 
   @Get(":id")
@@ -71,8 +70,8 @@ export class ClassesController {
   async findOne(
     @Param("id", ParseIntPipe) id: ClassId,
   ): Promise<ExistingClassExtendedDto> {
-    const user = await this.classesService.findByIdOrThrow(id);
-    return plainToInstance(ExistingClassExtendedDto, user);
+    const klass = await this.classesService.findByIdOrThrow(id);
+    return ExistingClassExtendedDto.fromQueryResult(klass);
   }
 
   @Patch(":id")
@@ -84,7 +83,7 @@ export class ClassesController {
     @Body() updateClassDto: UpdateClassDto,
   ): Promise<ExistingClassDto> {
     const klass = await this.classesService.update(id, updateClassDto);
-    return plainToInstance(ExistingClassDto, klass);
+    return ExistingClassDto.fromQueryResult(klass);
   }
 
   @Delete(":id")
@@ -95,6 +94,6 @@ export class ClassesController {
     @Param("id", ParseIntPipe) id: ClassId,
   ): Promise<DeletedClassDto> {
     const klass = await this.classesService.deleteById(id);
-    return plainToInstance(DeletedClassDto, klass);
+    return DeletedClassDto.fromQueryResult(klass);
   }
 }
