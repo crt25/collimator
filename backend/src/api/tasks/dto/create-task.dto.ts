@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, IsEnum } from "class-validator";
 import { Expose } from "class-transformer";
-import { Prisma, TaskType } from "@prisma/client";
+import { TaskType } from "@prisma/client";
 
 export class CreateTaskDto {
   @IsString()

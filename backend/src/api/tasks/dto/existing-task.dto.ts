@@ -1,13 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Task } from "@prisma/client";
-import { Exclude, Expose, plainToInstance } from "class-transformer";
+import { Expose, plainToInstance } from "class-transformer";
 import { CreateTaskDto } from "./create-task.dto";
 
 export type TaskId = number;
 
+export type ExistingTaskWithoutData = Omit<Task, "data" | "mimeType">;
+
 export class ExistingTaskDto
   extends CreateTaskDto
-  implements Omit<Task, "data">
+  implements ExistingTaskWithoutData
 {
   @ApiProperty({
     example: 318,
@@ -16,13 +18,7 @@ export class ExistingTaskDto
   @Expose()
   readonly id!: TaskId;
 
-  @Exclude()
-  readonly mimeType!: string;
-
-  @Exclude()
-  readonly data!: Buffer;
-
-  static fromQueryResult(data: Task): ExistingTaskDto {
+  static fromQueryResult(data: ExistingTaskWithoutData): ExistingTaskDto {
     return plainToInstance(ExistingTaskDto, data, {
       excludeExtraneousValues: true,
     });

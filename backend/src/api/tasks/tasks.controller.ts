@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query, StreamableFile,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
@@ -16,7 +16,6 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
