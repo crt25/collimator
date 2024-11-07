@@ -14,6 +14,7 @@ import {
   ExistingClassExtendedDto,
   ExistingClassWithTeacherDto,
 } from "./dto";
+import { fromQueryResults } from "../helpers";
 
 describe("ClassesController", () => {
   let controller: ClassesController;
@@ -101,7 +102,7 @@ describe("ClassesController", () => {
     const result = await controller.findOne(1);
 
     expect(result).toBeInstanceOf(ExistingClassExtendedDto);
-    expect(result).toEqual(plainToInstance(ExistingClassExtendedDto, klass));
+    expect(result).toEqual(ExistingClassExtendedDto.fromQueryResult(klass));
     expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
       include: {
         _count: {
@@ -153,7 +154,7 @@ describe("ClassesController", () => {
       result.every((klass) => klass instanceof ExistingClassWithTeacherDto),
     ).toBe(true);
     expect(result).toEqual(
-      classes.map((klass) => plainToInstance(ExistingClassWithTeacherDto, klass)),
+      fromQueryResults(ExistingClassWithTeacherDto, classes),
     );
   });
 
@@ -187,7 +188,7 @@ describe("ClassesController", () => {
       result.every((klass) => klass instanceof ExistingClassWithTeacherDto),
     ).toBe(true);
     expect(result).toEqual(
-      classes.map((klass) => plainToInstance(ExistingClassWithTeacherDto, klass)),
+      fromQueryResults(ExistingClassWithTeacherDto, classes),
     );
   });
 });
