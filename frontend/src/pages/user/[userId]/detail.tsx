@@ -29,7 +29,7 @@ const UserDetail = () => {
           {(user) => (
             <div>
               <PageHeader>{user.name}</PageHeader>
-              <Table bordered>
+              <Table bordered role="presentation">
                 <tbody>
                   <tr>
                     <td>

@@ -25,7 +25,7 @@ export const mockUrlResponses = (
   url: string,
   responses: {
     get: unknown;
-    post: unknown;
+    post?: unknown;
     patch?: unknown;
     delete?: unknown;
   },

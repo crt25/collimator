@@ -19,7 +19,7 @@ export const useClass = (
   return useSWR(getClassesControllerFindOneUrl(numericId), () =>
     isNaN(numericId)
       ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-        new Promise<ExistingClassExtended>(() => {})
+        new Promise<GetClassReturnType>(() => {})
       : fetchAndTransform(numericId),
   );
 };
