@@ -20,11 +20,11 @@ export const useCreateUser = (): CreateUserType => {
     (...args: Args) =>
       createAndTransform(...args).then((result) => {
         // store the created user in the cache
-        const getUsersControllerFindResponse: GetUserReturnType = result;
+        const getUsersControllerFindOneResponse: GetUserReturnType = result;
 
         mutate(
           getUsersControllerFindOneV0Url(result.id),
-          getUsersControllerFindResponse,
+          getUsersControllerFindOneResponse,
         );
 
         return result;

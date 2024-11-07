@@ -4,6 +4,7 @@ import BreadcrumbItem from "./BreadcrumbItem";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 
 const messages = defineMessages({
   usersTab: {
@@ -17,6 +18,10 @@ const messages = defineMessages({
   lessonsTab: {
     id: "CrtNavigation.lessonsTab",
     defaultMessage: "Lessons",
+  },
+  tasksTab: {
+    id: "CrtNavigation.tasksTab",
+    defaultMessage: "Tasks",
   },
 });
 
@@ -33,17 +38,23 @@ const tabs: NavigationTab[] = [
     url: "/lesson",
     title: (intl) => intl.formatMessage(messages.lessonsTab),
   },
+  {
+    url: "/task",
+    title: (intl) => intl.formatMessage(messages.tasksTab),
+  },
 ];
 
 const CrtNavigation = ({
   breadcrumb,
   user,
   klass,
+  task,
   lessonId,
 }: {
   breadcrumb?: boolean;
   user?: ExistingUser;
   klass?: ExistingClass | ExistingClassExtended;
+  task?: ExistingTask;
   lessonId?: number;
 }) => {
   const lessonName = "Introduction to React";
@@ -61,6 +72,11 @@ const CrtNavigation = ({
           {klass && (
             <BreadcrumbItem href={`/class/${klass.id}/detail`}>
               {klass.name}
+            </BreadcrumbItem>
+          )}
+          {task && (
+            <BreadcrumbItem href={`/task/${task.id}/detail`}>
+              {task.title}
             </BreadcrumbItem>
           )}
           {lessonId && (
