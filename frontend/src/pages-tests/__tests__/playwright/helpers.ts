@@ -25,16 +25,27 @@ export const mockUrlResponses = (
   url: string,
   responses: {
     get: unknown;
+    post: unknown;
     patch?: unknown;
     delete?: unknown;
   },
   onRequest: {
     get?: (request: Request) => void;
+    post?: (request: Request) => void;
     patch?: (request: Request) => void;
     delete?: (request: Request) => void;
   },
 ): Promise<void> =>
   page.route(url, (route) => {
+    if (responses.post && route.request().method() === "POST") {
+      onRequest.post?.(route.request());
+
+      return route.fulfill({
+        ...jsonResponse,
+        body: JSON.stringify(responses.post),
+      });
+    }
+
     if (responses.patch && route.request().method() === "PATCH") {
       onRequest.patch?.(route.request());
 

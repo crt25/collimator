@@ -198,6 +198,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
                   <Button
                     variant="secondary"
                     onClick={() => router.push("user/create")}
+                    data-testid="user-create-button"
                   >
                     <FontAwesomeIcon icon={faAdd} />
                   </Button>

@@ -27,7 +27,7 @@ const CreateUser = () => {
         type: formValues.type,
       });
 
-      router.push(`/user`);
+      router.back();
     },
     [createUser, router],
   );

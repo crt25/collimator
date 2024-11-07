@@ -1,9 +1,13 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { expect, jsonResponse, test } from "../helpers";
+import { expect, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
 import { CreateUserDto, UserType } from "@/api/collimator/generated/models";
-import { getUsersControllerCreateUrl } from "@/api/collimator/generated/endpoints/users/users";
-import { getUsersControllerCreateResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
+import {
+  getUsersControllerCreateResponseMock,
+  getUsersControllerFindAllResponseMock,
+} from "@/api/collimator/generated/endpoints/users/users.msw";
+import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user/create", () => {
   const mockCreateResponse = getUsersControllerCreateResponseMock();
@@ -13,17 +17,22 @@ test.describe("/user/create", () => {
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     createRequest = null;
 
-    // Mock the response for the users controller create endpoint
-    await page.route(`${apiURL}${getUsersControllerCreateUrl()}`, (route) => {
-      createRequest = route.request().postDataJSON();
+    await mockUrlResponses(
+      page,
+      `${apiURL}${getUsersControllerFindAllUrl()}`,
+      {
+        get: getUsersControllerFindAllResponseMock(),
+        post: mockCreateResponse,
+      },
+      {
+        post: (request) => (createRequest = request.postDataJSON()),
+      },
+    );
 
-      return route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify(mockCreateResponse),
-      });
-    });
+    await signInAndGotoPath(page, baseURL!, `/user`);
 
-    await signInAndGotoPath(page, baseURL!, "/user/create");
+    const list = await UserListPageModel.create(page);
+    await list.createItem();
   });
 
   test("can create a new teacher", async ({ page: pwPage, baseURL }) => {

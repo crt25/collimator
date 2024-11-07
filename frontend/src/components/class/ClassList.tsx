@@ -207,6 +207,7 @@ const ClassList = () => {
                   <Button
                     variant="secondary"
                     onClick={() => router.push("class/create")}
+                    data-testid="class-create-button"
                   >
                     <FontAwesomeIcon icon={faAdd} />
                   </Button>

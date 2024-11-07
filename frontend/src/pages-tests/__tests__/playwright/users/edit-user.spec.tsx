@@ -1,33 +1,57 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
-import { expect, mockUrlResponses, test } from "../helpers";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
-import { getUsersControllerFindOneResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
-import { getUsersControllerFindOneUrl } from "@/api/collimator/generated/endpoints/users/users";
-import { CreateUserDto } from "@/api/collimator/generated/models";
+import {
+  getUsersControllerFindAllResponseMock,
+  getUsersControllerFindOneResponseMock,
+} from "@/api/collimator/generated/endpoints/users/users.msw";
+import {
+  getUsersControllerFindAllUrl,
+  getUsersControllerFindOneUrl,
+} from "@/api/collimator/generated/endpoints/users/users";
+import {
+  CreateUserDto,
+  ExistingUserDto,
+} from "@/api/collimator/generated/models";
+import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user/{id}/edit", () => {
-  const mockResponse = {
+  const user: ExistingUserDto = {
     ...getUsersControllerFindOneResponseMock(),
     // Override the name and email as they may be generated wrong. (name can be null and email can be an arbitrary string)
     name: "Jane",
     email: "jane@example.com",
   };
-  const updatedUser = {
+
+  const updatedUser: ExistingUserDto & { name: string } = {
     ...getUsersControllerFindOneResponseMock(),
     name: "Jane Doe",
     email: "jane.doe@example.com",
   };
+
+  const mockUsers: ExistingUserDto[] = [
+    ...getUsersControllerFindAllResponseMock().slice(0, 9),
+    user,
+  ];
 
   let updateRequest: CreateUserDto | null = null;
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     updateRequest = null;
 
+    // Mock user list response
+    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+      route.fulfill({
+        ...jsonResponse,
+        body: JSON.stringify(mockUsers),
+      }),
+    );
+
     await mockUrlResponses(
       page,
-      `${apiURL}${getUsersControllerFindOneUrl(mockResponse.id)}`,
+      `${apiURL}${getUsersControllerFindOneUrl(user.id)}`,
       {
-        get: mockResponse,
+        get: user,
         patch: updatedUser,
       },
       {
@@ -35,7 +59,10 @@ test.describe("/user/{id}/edit", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/user/${mockResponse.id}/edit`);
+    await signInAndGotoPath(page, baseURL!, `/user`);
+
+    const list = await UserListPageModel.create(page);
+    await list.editItem(user.id);
   });
 
   test("can update an existing user", async ({ page: pwPage, baseURL }) => {
@@ -43,9 +70,9 @@ test.describe("/user/{id}/edit", () => {
 
     // expect the form to be pre-filled
 
-    expect(await page.inputs.name.inputValue()).toBe(mockResponse.name);
-    expect(await page.inputs.email.inputValue()).toBe(mockResponse.email);
-    expect(await page.inputs.type.inputValue()).toBe(mockResponse.type);
+    expect(await page.inputs.name.inputValue()).toBe(user.name);
+    expect(await page.inputs.email.inputValue()).toBe(user.email);
+    expect(await page.inputs.type.inputValue()).toBe(user.type);
 
     await page.inputs.name.fill(updatedUser.name);
     await page.inputs.email.fill(updatedUser.email);

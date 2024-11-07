@@ -26,7 +26,7 @@ const CreateClass = () => {
         teacherId: formValues.teacherId,
       });
 
-      router.push(`/class`);
+      router.back();
     },
     [createClass, router],
   );

@@ -28,6 +28,16 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-delete-button`);
   }
 
+  editItem(itemId: number | string): Promise<void> {
+    return this.page
+      .getByTestId(`${this.itemPrefix}-${itemId}-edit-button`)
+      .click();
+  }
+
+  createItem(): Promise<void> {
+    return this.page.getByTestId(`${this.itemPrefix}-create-button`).click();
+  }
+
   async deleteItem(itemId: number | string): Promise<void> {
     await this.getItemActionsDropdownButton(itemId).click();
     await this.getDeleteItemButton(itemId).click();

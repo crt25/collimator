@@ -42,7 +42,7 @@ test.describe("/user", () => {
     );
   });
 
-  test.only("can delete listed item", async ({ page: pwPage, apiURL }) => {
+  test("can delete listed item", async ({ page: pwPage, apiURL }) => {
     const page = await UserListPageModel.create(pwPage);
 
     await mockUrlResponses(

@@ -46,7 +46,7 @@ test.describe("/class", () => {
     );
   });
 
-  test.only("can delete listed item", async ({ page: pwPage, apiURL }) => {
+  test("can delete listed item", async ({ page: pwPage, apiURL }) => {
     const page = await ClassListPageModel.create(pwPage);
 
     await mockUrlResponses(

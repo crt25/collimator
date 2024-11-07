@@ -38,7 +38,7 @@ const EditUser = () => {
           type: formValues.type,
         });
 
-        router.push(`/user`);
+        router.back();
       }
     },
     [user, updateUser, router],
