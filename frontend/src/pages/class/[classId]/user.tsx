@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import SwrContent from "@/components/SwrContent";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import { useFetchAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
 
 const ClassUserList = () => {
   const router = useRouter();
@@ -17,8 +16,6 @@ const ClassUserList = () => {
   };
 
   const { data: klass, error, isLoading } = useClass(classId);
-
-  const fetchData = useFetchAllUsers();
 
   return (
     <>
@@ -32,7 +29,7 @@ const ClassUserList = () => {
           {(klass) => (
             <>
               <PageHeader>{klass.name}</PageHeader>
-              <UserList fetchData={fetchData} />
+              <UserList classId={klass.id} />
             </>
           )}
         </SwrContent>

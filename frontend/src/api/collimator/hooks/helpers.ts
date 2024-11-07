@@ -19,10 +19,6 @@ export const fromDtos = <
   dtos: TDto[],
 ): TInstance[] => dtos.map((dto) => instanceConstructor.fromDto(dto));
 
-export type LazyTableFetchFunctionWithParameters<TParams, TData> = (
-  params?: TParams,
-) => LazyTableFetchFunction<TData>;
-
 export const transformToLazyTableResult = <TData>(
   items: TData[],
 ): LazyTableResult<TData> => ({
