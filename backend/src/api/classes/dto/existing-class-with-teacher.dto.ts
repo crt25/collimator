@@ -1,33 +1,31 @@
-import { ExistingClassDto } from "./existing-class.dto";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
-import { IsString } from "class-validator";
+import { Class } from "@prisma/client";
+import { Expose, plainToInstance, Type } from "class-transformer";
+import { ClassId } from "./existing-class.dto";
+import { ClassTeacherDto } from "./class-teacher.dto";
 
-class ClassTeacherDto {
+export class ExistingClassWithTeacherDto implements Omit<Class, "teacherId"> {
   @ApiProperty({
-    example: 1,
-    description: "The id of a class's teacher.",
+    example: 318,
+    description: "The class's unique identifier, a positive integer.",
   })
-  readonly id!: number;
+  @Expose()
+  readonly id!: ClassId;
 
-  @IsString()
-  @ApiProperty({
-    example: "John Doe",
-    description: "The name of the class's teacher.",
-    nullable: true,
-    type: "string",
-  })
-  readonly name!: string | null;
-}
+  @ApiProperty()
+  @Expose()
+  readonly name!: string;
 
-export class ExistingClassWithTeacherDto extends ExistingClassDto {
   @ApiProperty({
     description: "The teacher of the class.",
   })
+  @Type(() => ClassTeacherDto)
+  @Expose()
   readonly teacher!: ClassTeacherDto;
 
-  // TODO: this does not work - swagger still shows teacherId
-  // and according to https://github.com/nestjs/swagger/issues/527 this won't be fixed
-  @Exclude()
-  override readonly teacherId!: number;
+  static fromQueryResult(data: Class): ExistingClassWithTeacherDto {
+    return plainToInstance(ExistingClassWithTeacherDto, data, {
+      excludeExtraneousValues: true,
+    });
+  }
 }

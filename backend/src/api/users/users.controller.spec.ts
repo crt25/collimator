@@ -45,7 +45,9 @@ describe("UsersController", () => {
     const createdUser = { ...user, id: 1 };
     prismaMock.user.create.mockResolvedValue(createdUser);
 
-    const result = await controller.create(plainToInstance(CreateUserDto, user));
+    const result = await controller.create(
+      plainToInstance(CreateUserDto, user),
+    );
 
     expect(result).toEqual(createdUser);
     expect(prismaMock.user.create).toHaveBeenCalledWith({ data: user });
