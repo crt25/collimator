@@ -1,10 +1,10 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import {
-  getClassesControllerFindAllUrl,
-  getClassesControllerFindOneUrl,
+  getClassesControllerFindAllV0Url,
+  getClassesControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
-import { getClassesControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { classList } from "../selectors";
 import { ClassListPageModel } from "./class-list-page-model";
 import { ExistingClassWithTeacherDto } from "@/api/collimator/generated/models";
@@ -17,19 +17,18 @@ test.describe("/class", () => {
       id: 1,
       name: "Teacher 1",
     },
-    teacherId: 1,
   };
 
   let mockResponse: ExistingClassWithTeacherDto[] = [];
 
   test.beforeEach(async ({ page, baseURL, apiURL }) => {
     mockResponse = [
-      ...getClassesControllerFindAllResponseMock().slice(0, 9),
+      ...getClassesControllerFindAllV0ResponseMock().slice(0, 9),
       klass,
     ];
 
     // Mock the response for the classes controller find all endpoint
-    await page.route(`${apiURL}${getClassesControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getClassesControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockResponse),
@@ -51,7 +50,7 @@ test.describe("/class", () => {
 
     await mockUrlResponses(
       pwPage,
-      `${apiURL}${getClassesControllerFindOneUrl(klass.id)}`,
+      `${apiURL}${getClassesControllerFindOneV0Url(klass.id)}`,
       {
         get: klass,
         delete: klass,

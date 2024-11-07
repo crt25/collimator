@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import {
-  classesControllerFindAll,
-  getClassesControllerFindAllUrl,
+  classesControllerFindAllV0,
+  getClassesControllerFindAllV0Url,
 } from "../../generated/endpoints/classes/classes";
-import { ClassesControllerFindAllParams } from "../../generated/models";
+import { ClassesControllerFindAllV0Params } from "../../generated/models";
 import { ApiResponse, fromDtos, transformToLazyTableResult } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
 import { LazyTableResult, LazyTableState } from "@/components/DataTable";
@@ -11,18 +11,18 @@ import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 export type GetClassesReturnType = ExistingClassWithTeacher[];
 
 const fetchAndTransform = (
-  params?: ClassesControllerFindAllParams,
+  params?: ClassesControllerFindAllV0Params,
 ): Promise<GetClassesReturnType> =>
-  classesControllerFindAll(params).then((data) =>
+  classesControllerFindAllV0(params).then((data) =>
     fromDtos(ExistingClassWithTeacher, data),
   );
 
 export const useAllClasses = (
-  params?: ClassesControllerFindAllParams,
+  params?: ClassesControllerFindAllV0Params,
 ): ApiResponse<GetClassesReturnType, Error> =>
   useSWR(
     // use the URL with the params as the first entry in the key for easier invalidation
-    [getClassesControllerFindAllUrl(), getClassesControllerFindAllUrl(params)],
+    [getClassesControllerFindAllV0Url(), getClassesControllerFindAllV0Url(params)],
     () => fetchAndTransform(params),
   );
 
@@ -30,6 +30,6 @@ export const useAllClassesLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> =>
   useSWR(
-    [getClassesControllerFindAllUrl(), getClassesControllerFindAllUrl()],
+    [getClassesControllerFindAllV0Url(), getClassesControllerFindAllV0Url()],
     () => fetchAndTransform().then(transformToLazyTableResult),
   );

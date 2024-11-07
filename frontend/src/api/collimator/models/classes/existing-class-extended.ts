@@ -10,12 +10,11 @@ export class ExistingClassExtended extends ExistingClassWithTeacher {
   protected constructor({
     id,
     name,
-    teacherId,
     sessions,
     studentCount,
     teacher,
   }: ClassProperties<ExistingClassExtended>) {
-    super({ id, name, teacherId, teacher });
+    super({ id, name, teacher });
 
     this.sessions = sessions;
     this.studentCount = studentCount;
@@ -26,7 +25,6 @@ export class ExistingClassExtended extends ExistingClassWithTeacher {
 
     return new ExistingClassExtended({
       ...dto,
-      teacherId: teacher.id,
       teacher,
     });
   }

@@ -1,6 +1,6 @@
 import {
-  classesControllerUpdate,
-  getClassesControllerFindOneUrl,
+  classesControllerUpdateV0,
+  getClassesControllerFindOneV0Url,
 } from "../../generated/endpoints/classes/classes";
 import { useCallback } from "react";
 import { ExistingClass } from "../../models/classes/existing-class";
@@ -8,11 +8,11 @@ import { useSWRConfig } from "swr";
 import { GetClassReturnType } from "./useClass";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
 
-type Args = Parameters<typeof classesControllerUpdate>;
+type Args = Parameters<typeof classesControllerUpdateV0>;
 type UpdateClassType = (...args: Args) => Promise<ExistingClass>;
 
 const fetchAndTransform: UpdateClassType = (...args) =>
-  classesControllerUpdate(...args).then(ExistingClass.fromDto);
+  classesControllerUpdateV0(...args).then(ExistingClass.fromDto);
 
 export const useUpdateClass = (): UpdateClassType => {
   const { mutate, cache } = useSWRConfig();
@@ -23,11 +23,11 @@ export const useUpdateClass = (): UpdateClassType => {
         // revalidate the updated class
 
         const cachedData: GetClassReturnType | undefined = cache.get(
-          getClassesControllerFindOneUrl(result.id),
+          getClassesControllerFindOneV0Url(result.id),
         )?.data;
 
         if (cachedData === undefined) {
-          mutate(getClassesControllerFindOneUrl(result.id));
+          mutate(getClassesControllerFindOneV0Url(result.id));
 
           return result;
         }
@@ -39,7 +39,7 @@ export const useUpdateClass = (): UpdateClassType => {
           ...result,
         });
 
-        mutate(getClassesControllerFindOneUrl(result.id), updatedData, {
+        mutate(getClassesControllerFindOneV0Url(result.id), updatedData, {
           revalidate: true,
         });
 

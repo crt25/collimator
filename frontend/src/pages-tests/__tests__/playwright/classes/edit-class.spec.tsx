@@ -1,13 +1,13 @@
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import {
-  getClassesControllerFindAllUrl,
-  getClassesControllerFindOneUrl,
+  getClassesControllerFindAllV0Url,
+  getClassesControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
-  getClassesControllerFindAllResponseMock,
-  getClassesControllerFindOneResponseMock,
-  getClassesControllerUpdateResponseMock,
+  getClassesControllerFindAllV0ResponseMock,
+  getClassesControllerFindOneV0ResponseMock,
+  getClassesControllerUpdateV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { ClassForm } from "./class-form";
 import {
@@ -16,16 +16,16 @@ import {
   ExistingClassWithTeacherDto,
   ExistingUserDto,
 } from "@/api/collimator/generated/models";
-import { getUsersControllerFindAllResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
-import { getUsersControllerFindAllUrl } from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { ClassListPageModel } from "./class-list-page-model";
 
 test.describe("/class/{id}/edit", () => {
   const klass: ExistingClassWithTeacherDto =
-    getClassesControllerFindOneResponseMock();
+    getClassesControllerFindOneV0ResponseMock();
 
   const mockUsersResponse = [
-    ...getUsersControllerFindAllResponseMock(),
+    ...getUsersControllerFindAllV0ResponseMock(),
     // include a user for the mock response
     {
       id: klass.teacher.id,
@@ -36,13 +36,13 @@ test.describe("/class/{id}/edit", () => {
   ];
 
   const updatedClass: ExistingClassDto = {
-    ...getClassesControllerUpdateResponseMock(),
+    ...getClassesControllerUpdateV0ResponseMock(),
     id: klass.id,
     teacherId: mockUsersResponse[0].id,
   };
 
   const mockClasses: ExistingClassWithTeacherDto[] = [
-    ...getClassesControllerFindAllResponseMock().slice(0, 9),
+    ...getClassesControllerFindAllV0ResponseMock().slice(0, 9),
     klass,
   ];
 
@@ -52,7 +52,7 @@ test.describe("/class/{id}/edit", () => {
     updateRequest = null;
 
     // mock classes response for list
-    await page.route(`${apiURL}${getClassesControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getClassesControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockClasses),
@@ -60,7 +60,7 @@ test.describe("/class/{id}/edit", () => {
     );
 
     // mock users response for select
-    await page.route(`${apiURL}${getUsersControllerFindAllUrl()}`, (route) =>
+    await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
       route.fulfill({
         ...jsonResponse,
         body: JSON.stringify(mockUsersResponse),
@@ -69,7 +69,7 @@ test.describe("/class/{id}/edit", () => {
 
     await mockUrlResponses(
       page,
-      `${apiURL}${getClassesControllerFindOneUrl(klass.id)}`,
+      `${apiURL}${getClassesControllerFindOneV0Url(klass.id)}`,
       {
         get: klass,
         patch: updatedClass,
