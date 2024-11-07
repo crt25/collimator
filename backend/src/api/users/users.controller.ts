@@ -15,7 +15,6 @@ import {
   ApiOkResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { plainToInstance } from "class-transformer";
 import { UsersService } from "./users.service";
 import {
   CreateUserDto,
@@ -24,6 +23,7 @@ import {
   DeletedUserDto,
   UserId,
 } from "./dto";
+import { fromQueryResults } from "../helpers";
 
 @Controller("users")
 @ApiTags("users")
@@ -35,7 +35,7 @@ export class UsersController {
   @ApiForbiddenResponse()
   async create(@Body() createUserDto: CreateUserDto): Promise<ExistingUserDto> {
     const user = await this.usersService.create(createUserDto);
-    return plainToInstance(ExistingUserDto, user);
+    return ExistingUserDto.fromQueryResult(user);
   }
 
   @Get()
@@ -43,7 +43,7 @@ export class UsersController {
   async findAll(): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
     const users = await this.usersService.findMany({});
-    return users.map((user) => plainToInstance(ExistingUserDto, user));
+    return fromQueryResults(ExistingUserDto, users);
   }
 
   @Get(":id")
@@ -53,7 +53,7 @@ export class UsersController {
     @Param("id", ParseIntPipe) id: UserId,
   ): Promise<ExistingUserDto> {
     const user = await this.usersService.findByIdOrThrow(id);
-    return plainToInstance(ExistingUserDto, user);
+    return ExistingUserDto.fromQueryResult(user);
   }
 
   @Patch(":id")
@@ -65,7 +65,7 @@ export class UsersController {
     @Body() userDto: UpdateUserDto,
   ): Promise<ExistingUserDto> {
     const user = await this.usersService.update(id, userDto);
-    return plainToInstance(ExistingUserDto, user);
+    return ExistingUserDto.fromQueryResult(user);
   }
 
   @Delete(":id")
@@ -74,6 +74,6 @@ export class UsersController {
   @ApiNotFoundResponse()
   async delete(@Param("id", ParseIntPipe) id: UserId): Promise<DeletedUserDto> {
     const deletedUser = await this.usersService.deleteById(id);
-    return plainToInstance(DeletedUserDto, deletedUser);
+    return DeletedUserDto.fromQueryResult(deletedUser);
   }
 }
