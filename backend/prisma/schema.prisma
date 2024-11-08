@@ -24,6 +24,8 @@ model User {
   type  UserType
 
   classes Class[]
+  lessons Lesson[]
+  tasks   Task[]
 }
 
 model Class {
@@ -45,14 +47,22 @@ model Student {
   // studentActivity StudentActivity[]
 }
 
+enum LessonVisibility {
+  PUBLIC
+  PRIVATE
+}
+
 model Lesson {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
+  id          Int              @id @default(autoincrement())
+  createdAt   DateTime         @default(now())
   title       String
   description String
+  visibility  LessonVisibility
+  creatorId   Int?
 
   tasks    LessonTask[]
   sessions Session[]
+  creator  User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 }
 
 model Session {
@@ -81,10 +91,12 @@ model Task {
   type        TaskType
   data        Bytes
   mimeType    String
+  creatorId   Int?
 
   solutions Solution[]
   sessions  SessionTask[]
   lessons   LessonTask[]
+  creator   User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   // studentActivity StudentActivity[]
 }
 
