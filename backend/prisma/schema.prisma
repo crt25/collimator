@@ -42,6 +42,7 @@ model Student {
 
   class     Class      @relation(fields: [classId], references: [id], onDelete: Restrict)
   solutions Solution[]
+  // studentActivity StudentActivity[]
 }
 
 model Lesson {
@@ -66,6 +67,7 @@ model Session {
   class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)
   tasks     SessionTask[]
   solutions Solution[]
+  // studentActivity StudentActivity[]
 }
 
 enum TaskType {
@@ -83,6 +85,7 @@ model Task {
   solutions Solution[]
   sessions  SessionTask[]
   lessons   LessonTask[]
+  // studentActivity StudentActivity[]
 }
 
 model LessonTask {
@@ -104,6 +107,7 @@ model SessionTask {
   session   Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   task      Task       @relation(fields: [taskId], references: [id], onDelete: Restrict)
   solutions Solution[]
+  // studentActivity StudentActivity[]
 
   @@id([sessionId, taskId])
 }
@@ -132,3 +136,40 @@ model SolutionAnalysis {
 
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
 }
+
+// Tables to keep intermediate student activity:
+//
+// enum StudentActivityType {
+//   TASK_STARTED
+//   TASK_RUN_SOLUTION
+//   TASK_TEST_RESULTS
+//   TASK_CLOSED
+//   TASK_APP_ACTIVITY
+// }
+//
+// model StudentActivity {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//
+//   type StudentActivityType
+//
+//   studentId String
+//   sessionId Int
+//   taskId    Int
+//
+//   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+//   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+//   task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+//   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+//
+//   appActivity StudentActivityApp?
+// }
+//
+// model StudentActivityApp {
+//   id Int @id
+//
+//   type String
+//   data String
+//
+//   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
+// }
