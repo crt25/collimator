@@ -120,7 +120,6 @@ const JoinSession = () => {
 
   if (!isStudentAuthenticated(authenticationContext) || !sessionId) {
     // the user will be redirected to the login page if the state does not match
-    console.log("not authenticated", authenticationContext);
     return null;
   }
 
