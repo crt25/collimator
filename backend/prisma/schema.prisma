@@ -44,11 +44,25 @@ model Student {
   solutions Solution[]
 }
 
-model Session {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  classId   Int
+model Lesson {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  title       String
+  description String
 
+  tasks    LessonTask[]
+  sessions Session[]
+}
+
+model Session {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  title           String
+  description     String
+  classId         Int
+  basedOnLessonId Int?
+
+  lesson    Lesson?       @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)
   tasks     SessionTask[]
   solutions Solution[]
@@ -68,11 +82,24 @@ model Task {
 
   solutions Solution[]
   sessions  SessionTask[]
+  lessons   LessonTask[]
+}
+
+model LessonTask {
+  lessonId Int
+  taskId   Int
+  index    Int
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Restrict)
+
+  @@id([lessonId, taskId])
 }
 
 model SessionTask {
   sessionId Int
   taskId    Int
+  index     Int
 
   session   Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   task      Task       @relation(fields: [taskId], references: [id], onDelete: Restrict)
