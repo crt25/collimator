@@ -1,5 +1,5 @@
-import { test, expect } from "playwright-test-coverage";
 import { signInAndGotoPath } from "../authentication/authentication-helpers";
+import { expect, test } from "../helpers";
 
 test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
   test.beforeEach(async ({ page, baseURL }) => {

@@ -11,11 +11,13 @@ export const jsonResponse = {
 
 export type CrtTestOptions = {
   apiURL: string;
+  scratchURL: string;
 };
 
 // This will allow you to set apiURL in playwright.config.ts
 export const test = testBase.extend<CrtTestOptions>({
   apiURL: ["", { option: true }],
+  scratchURL: ["", { option: true }],
 });
 
 export const expect = expectBase;

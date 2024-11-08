@@ -22,6 +22,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   use: {
     baseURL: "http://localhost:3000",
     apiURL: "http://localhost:3001",
+    scratchURL: "http://localhost:3101",
   },
 };
 

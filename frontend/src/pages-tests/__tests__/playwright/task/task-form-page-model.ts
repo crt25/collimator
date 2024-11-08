@@ -1,0 +1,56 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Page } from "@playwright/test";
+
+export class TaskFormPageModel {
+  private static readonly taskForm = '[data-testid="task-form"]';
+  private static readonly taskEditModal = '[data-testid="task-edit-modal"]';
+
+  readonly page: Page;
+
+  protected constructor(page: Page) {
+    this.page = page;
+  }
+
+  get form() {
+    return this.page.locator(TaskFormPageModel.taskForm);
+  }
+
+  get inputs() {
+    return {
+      title: this.form.locator('[data-testid="title"]'),
+      description: this.form.locator('[data-testid="description"]'),
+      type: this.form.locator('[data-testid="type"]'),
+    };
+  }
+
+  get submitButton() {
+    return this.form.locator('[data-testid="submit"]');
+  }
+
+  get taskEditModal() {
+    return this.page.locator(TaskFormPageModel.taskEditModal);
+  }
+
+  async openEditTaskModal() {
+    await this.form.getByTestId("edit-task-button").click();
+    await this.page.waitForSelector(TaskFormPageModel.taskEditModal);
+  }
+
+  async importTask() {
+    return this.taskEditModal.getByTestId("import-button").click();
+  }
+
+  async exportTask() {
+    return this.taskEditModal.getByTestId("export-button").click();
+  }
+
+  async saveTask() {
+    return this.taskEditModal.getByTestId("save-button").click();
+  }
+
+  static async create(page: Page) {
+    await page.waitForSelector(TaskFormPageModel.taskForm);
+
+    return new TaskFormPageModel(page);
+  }
+}
