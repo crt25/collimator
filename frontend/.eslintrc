@@ -22,6 +22,12 @@
       "rules": {
         "@typescript-eslint/no-unnecessary-type-constraint": "off"
       }
+    },
+    {
+      "files": ["src/api/**/generated/**/*"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
     }
   ]
 }

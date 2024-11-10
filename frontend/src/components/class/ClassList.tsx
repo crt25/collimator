@@ -5,7 +5,10 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
+import DataTable, {
+  LazyTableFetchFunction,
+  LazyTableState,
+} from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -13,11 +16,9 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import {
-  ClassStatus,
-  getClassStatusMessage,
-} from "@/i18n/class-status-messages";
+import { getClassStatusMessage } from "@/i18n/class-status-messages";
 import { TableMessages } from "@/i18n/table-messages";
+import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -46,28 +47,16 @@ const messages = defineMessages({
   },
 });
 
-export interface Class {
-  id: number;
-  name: string;
-  lastSession: {
-    id: number;
-    name: string;
-  } | null;
-  status: ClassStatus;
-}
-
 const ClassList = ({
   fetchData,
 }: {
-  fetchData: (
-    state: LazyTableState,
-  ) => Promise<{ items: Class[]; totalCount: number }>;
+  fetchData: LazyTableFetchFunction<ExistingClassWithTeacher>;
 }) => {
   const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [classes, setClasses] = useState<Class[]>([]);
+  const [classes, setClasses] = useState<ExistingClassWithTeacher[]>([]);
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
     rows: 10,
@@ -105,30 +94,26 @@ const ClassList = ({
   };
 
   const lastSessionTemplate = useCallback(
-    (rowData: Class) => (
+    (_rowData: ExistingClassWithTeacher) => (
       <span>
-        {rowData.lastSession ? (
-          rowData.lastSession.name
-        ) : (
-          <FormattedMessage
-            id="ClassList.column.lastSession.none"
-            defaultMessage="None"
-          />
-        )}
+        <FormattedMessage
+          id="ClassList.column.lastSession.none"
+          defaultMessage="None"
+        />
       </span>
     ),
     [],
   );
 
   const statusTemplate = useCallback(
-    (rowData: Class) => (
-      <span>{intl.formatMessage(getClassStatusMessage(rowData.status))}</span>
+    (_rowData: ExistingClassWithTeacher) => (
+      <span>{intl.formatMessage(getClassStatusMessage("current"))}</span>
     ),
     [intl],
   );
 
   const actionsTemplate = useCallback(
-    (rowData: Class) => (
+    (rowData: ExistingClassWithTeacher) => (
       <div>
         <Dropdown as={ButtonGroup}>
           <Button
@@ -137,14 +122,6 @@ const ClassList = ({
           >
             <FontAwesomeIcon icon={faEdit} />
           </Button>
-
-          <Dropdown.Toggle variant="secondary" split />
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-          </Dropdown.Menu>
         </Dropdown>
       </div>
     ),
@@ -152,7 +129,7 @@ const ClassList = ({
   );
 
   return (
-    <ClassListWrapper>
+    <ClassListWrapper data-testid="class-list">
       <DataTable
         value={classes}
         lazy
@@ -169,7 +146,11 @@ const ClassList = ({
         onFilter={onFilter}
         filters={lazyState.filters}
         loading={loading}
-        onRowClick={(e) => router.push(`/class/${(e.data as Class).id}/detail`)}
+        onRowClick={(e) =>
+          router.push(
+            `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
+          )
+        }
       >
         <Column
           field="name"
@@ -202,14 +183,6 @@ const ClassList = ({
               >
                 <FontAwesomeIcon icon={faAdd} />
               </Button>
-
-              <Dropdown.Toggle variant="secondary" split />
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
             </Dropdown>
           }
         />

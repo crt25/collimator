@@ -42,7 +42,7 @@ services:
       # we can use the docker service name "database" as the hostname
       - DATABASE_URL=postgresql://postgres:postgres@database:5432/collimator?schema=public
     ports:
-      - "3001:3000"
+      - "3001:3001"
     networks:
       - net-nginx
       - net-database

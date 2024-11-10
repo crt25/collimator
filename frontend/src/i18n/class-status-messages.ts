@@ -1,10 +1,5 @@
 import { defineMessages, MessageDescriptor } from "react-intl";
 
-export enum ClassStatus {
-  current = "current",
-  past = "past",
-}
-
 const ClassStatusMessages = defineMessages({
   current: {
     id: "ClassStatus.current",
@@ -16,5 +11,6 @@ const ClassStatusMessages = defineMessages({
   },
 });
 
-export const getClassStatusMessage = (status: ClassStatus): MessageDescriptor =>
-  ClassStatusMessages[status];
+export const getClassStatusMessage = (
+  status: keyof typeof ClassStatusMessages,
+): MessageDescriptor => ClassStatusMessages[status];

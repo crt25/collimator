@@ -1,3 +1,6 @@
+export const backendHostName = process.env
+  .NEXT_PUBLIC_BACKEND_HOSTNAME as unknown as string;
+
 export const scratchAppHostName = process.env
   .NEXT_PUBLIC_SCRATCH_APP_HOSTNAME as unknown as string;
 

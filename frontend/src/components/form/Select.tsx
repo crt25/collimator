@@ -10,9 +10,11 @@ const StyledSelect = styled.select`
   border-radius: var(--border-radius);
 `;
 
-const InputWrapper = styled.label`
+const InputWrapper = styled.label<{ isShown: boolean }>`
   display: block;
   margin-bottom: 1rem;
+
+  ${({ isShown }) => !isShown && "display: none;"}
 `;
 
 const Label = styled.span`
@@ -34,7 +36,7 @@ const Select = forwardRef(function Select(
   const { label, options, children, ...inputProps } = props;
 
   return (
-    <InputWrapper>
+    <InputWrapper isShown={options.length > 1}>
       <Label>{intl.formatMessage(label)}</Label>
       <StyledSelect {...inputProps} ref={ref}>
         {options.map((option) => (

@@ -1,6 +1,7 @@
+import { CrtTestOptions } from "@/pages-tests/__tests__/playwright/helpers";
 import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
-const config: PlaywrightTestConfig = {
+const config: PlaywrightTestConfig<CrtTestOptions> = {
   testMatch: "**/__tests__/playwright/**/*.spec.tsx",
 
   projects: [
@@ -20,6 +21,7 @@ const config: PlaywrightTestConfig = {
 
   use: {
     baseURL: "http://localhost:3000",
+    apiURL: "http://localhost:3001",
   },
 };
 
@@ -33,4 +35,4 @@ if (!process.env.SERVER_ALREADY_RUNS) {
   };
 }
 
-export default defineConfig(config);
+export default defineConfig<CrtTestOptions>(config);

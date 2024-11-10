@@ -6,8 +6,9 @@ import CrtNavigation from "@/components/CrtNavigation";
 import UserList, { User } from "@/components/user/UserList";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
 import { UserRole } from "@/i18n/user-role-messages";
+import SwrContent from "@/components/SwrContent";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
 
 const users: User[] = [
   {
@@ -69,31 +70,32 @@ const users: User[] = [
 
 const ClassUserList = () => {
   const router = useRouter();
-  const { classId: classIdString } = router.query as {
+  const { classId } = router.query as {
     classId: string;
   };
 
-  const classId = parseInt(classIdString, 10);
+  const { data: klass, error, isLoading } = useClass(classId);
 
   return (
     <>
       <Header />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb classId={classId} />
+          <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={classId} />
-        <PageHeader>
-          <FormattedMessage
-            id="ClassUserList.header"
-            defaultMessage="Class Users"
-          />
-        </PageHeader>
-        <UserList
-          fetchData={() =>
-            Promise.resolve({ items: users, totalCount: users.length })
-          }
-        />
+        <ClassNavigation classId={klass?.id} />
+        <SwrContent error={error} isLoading={isLoading} data={klass}>
+          {(klass) => (
+            <>
+              <PageHeader>{klass.name}</PageHeader>
+              <UserList
+                fetchData={() =>
+                  Promise.resolve({ items: users, totalCount: users.length })
+                }
+              />
+            </>
+          )}
+        </SwrContent>
       </Container>
     </>
   );

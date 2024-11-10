@@ -9,6 +9,7 @@ const config: StorybookConfig = {
     "@storybook/addon-interactions",
     "storybook-react-intl",
     "@storybook/addon-coverage",
+    "storybook-addon-mock"
   ],
   framework: {
     name: "@storybook/nextjs",

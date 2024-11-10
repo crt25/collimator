@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Transform } from "class-transformer";
+import { Class } from "@prisma/client";
+import { Expose, plainToInstance, Transform } from "class-transformer";
 import { ExistingClassWithTeacherDto } from "./existing-class-with-teacher.dto";
 
 type SessionList = { id: number }[];
@@ -15,16 +16,23 @@ export class ExistingClassExtendedDto extends ExistingClassWithTeacherDto {
       value?.map((s: { id: number }) => s.id) ?? [],
     { toClassOnly: true },
   )
+  @Expose()
   readonly sessions!: number[];
 
   @ApiProperty({
     name: "studentCount",
     description: "The number of students in the class.",
-    type: Number,
     example: 25,
   })
-  @Expose({ name: "_count", toClassOnly: true })
-  // Receive _count { students: number }, turn it into studentCount: number
-  @Transform(({ value }) => value?.students ?? 0, { toClassOnly: true })
+  @Transform(({ value, obj }) => value ?? obj._count?.students ?? 0, {
+    toClassOnly: true,
+  })
+  @Expose()
   readonly studentCount!: number;
+
+  static fromQueryResult(data: Class): ExistingClassExtendedDto {
+    return plainToInstance(ExistingClassExtendedDto, data, {
+      excludeExtraneousValues: true,
+    });
+  }
 }

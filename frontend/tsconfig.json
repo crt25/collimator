@@ -46,7 +46,7 @@
         "./node_modules/@turbowarp/types/index.d.ts"
       ]
     },
-    "target": "es5",
+    "target": "es6",
     "forceConsistentCasingInFileNames": true
   },
   "include": [

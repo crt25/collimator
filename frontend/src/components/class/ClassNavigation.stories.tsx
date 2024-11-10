@@ -32,7 +32,7 @@ export const AsBreadcrumb = {
 
 export const AsEmptyBreadcrumb = {
   args: {
-    classId: 1,
+    classId: undefined,
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,

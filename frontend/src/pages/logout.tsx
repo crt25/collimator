@@ -1,8 +1,9 @@
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
+import ProgressSpinner from "@/components/ProgressSpinner";
 import { useLogout } from "@/hooks/useLogout";
 import { useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 
 const LogoutPage = () => {
@@ -22,7 +23,7 @@ const LogoutPage = () => {
             defaultMessage="You are being logged out..."
           />
         </PageHeader>
-        <Spinner animation="border" role="status" />
+        <ProgressSpinner />
       </Container>
     </>
   );

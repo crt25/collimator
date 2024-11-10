@@ -31,6 +31,7 @@ const SubmitFormButton = (
   return (
     <InputWrapper>
       <StyledInput
+        data-testid="submit"
         {...inputProps}
         type="submit"
         value={intl.formatMessage(label)}

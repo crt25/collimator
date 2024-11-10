@@ -74,4 +74,13 @@ export interface LazyTableState {
   filters: DataTableFilterMeta;
 }
 
+export interface LazyTableResult<TData> {
+  items: TData[];
+  totalCount: number;
+}
+
+export type LazyTableFetchFunction<TData> = (
+  state: LazyTableState,
+) => Promise<LazyTableResult<TData>>;
+
 export default DataTable;

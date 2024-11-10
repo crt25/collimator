@@ -1,7 +1,12 @@
 import { NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { ClassSerializerInterceptor, ValidationPipe, VersioningType } from "@nestjs/common";
+import {
+  ClassSerializerInterceptor,
+  ValidationPipe,
+  VersioningType,
+} from "@nestjs/common";
 import * as swagger from "./swagger";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap(): Promise<void> {
   const API_PREFIX = "api";
@@ -18,7 +23,25 @@ async function bootstrap(): Promise<void> {
 
   swagger.setup(app, API_PREFIX, API_VERSIONS);
 
-  await app.listen(3000);
+  // enable CORS for the frontend
+  const frontendHostname = app
+    .get(ConfigService)
+    .get<string>("FRONTEND_HOSTNAME");
+
+  app.enableCors({
+    origin: frontendHostname,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: [],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    // ignore preflight requests
+    preflightContinue: false,
+    // we're not using cookies, so we don't need to send credentials
+    credentials: false,
+  });
+
+  const port = app.get(ConfigService).get<number>("PORT") ?? 3000;
+
+  await app.listen(port);
 }
 
 bootstrap();

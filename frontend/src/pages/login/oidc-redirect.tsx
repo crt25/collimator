@@ -9,13 +9,14 @@ import {
 } from "@/utilities/constants";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
 import { UserRole } from "@/i18n/user-role-messages";
 import { PasswordDerivedKey } from "@/utilities/crypto/PasswordDerivedKey";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
+import ProgressSpinner from "@/components/ProgressSpinner";
 
 const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // if the email is not verified, return undefined
@@ -171,7 +172,7 @@ const OpenIdConnectRedirect = () => {
                 defaultMessage="You are being authenticated..."
               />
             </PageHeader>
-            <Spinner animation="border" role="status" />
+            <ProgressSpinner />
           </>
         )}
       </Container>

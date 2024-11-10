@@ -1,17 +1,31 @@
-import { ExistingClassDto } from "./existing-class.dto";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
+import { Class } from "@prisma/client";
+import { Expose, plainToInstance, Type } from "class-transformer";
+import { ClassId } from "./existing-class.dto";
+import { ClassTeacherDto } from "./class-teacher.dto";
 
-export class ExistingClassWithTeacherDto extends ExistingClassDto {
+export class ExistingClassWithTeacherDto implements Omit<Class, "teacherId"> {
   @ApiProperty({
-    example: { id: 1, name: "John Doe" },
+    example: 318,
+    description: "The class's unique identifier, a positive integer.",
+  })
+  @Expose()
+  readonly id!: ClassId;
+
+  @ApiProperty()
+  @Expose()
+  readonly name!: string;
+
+  @ApiProperty({
     description: "The teacher of the class.",
   })
-  readonly teacher!: {
-    id: number;
-    name?: string | null;
-  };
+  @Type(() => ClassTeacherDto)
+  @Expose()
+  readonly teacher!: ClassTeacherDto;
 
-  @Exclude()
-  override readonly teacherId!: number;
+  static fromQueryResult(data: Class): ExistingClassWithTeacherDto {
+    return plainToInstance(ExistingClassWithTeacherDto, data, {
+      excludeExtraneousValues: true,
+    });
+  }
 }

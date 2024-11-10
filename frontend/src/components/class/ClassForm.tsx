@@ -6,16 +6,24 @@ import { defineMessages, MessageDescriptor } from "react-intl";
 import SubmitFormButton from "../form/SubmitFormButton";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
+import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
+import SwrContent from "../SwrContent";
+import Select from "../form/Select";
 
 const messages = defineMessages({
   name: {
     id: "CreateClassForm.name",
     defaultMessage: "Name",
   },
+  teacher: {
+    id: "CreateClassForm.teacher",
+    defaultMessage: "Teacher",
+  },
 });
 
-type ClassFormValues = {
+export type ClassFormValues = {
   name: string;
+  teacherId: number;
 };
 
 const ClassForm = ({
@@ -29,6 +37,7 @@ const ClassForm = ({
 }) => {
   const schema = useYupSchema({
     name: yup.string().required(),
+    teacherId: yup.number().required(),
   });
 
   const resolver = useYupResolver(schema);
@@ -42,14 +51,36 @@ const ClassForm = ({
     defaultValues: initialValues,
   });
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Input label={messages.name} {...register("name")}>
-        <ValidationErrorMessage>{errors.name?.message}</ValidationErrorMessage>
-      </Input>
+  const { isLoading, data, error } = useAllUsers();
 
-      <SubmitFormButton label={submitMessage} />
-    </form>
+  return (
+    <SwrContent isLoading={isLoading} error={error} data={data}>
+      {(users) => (
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="class-form">
+          <Input label={messages.name} {...register("name")} data-testid="name">
+            <ValidationErrorMessage>
+              {errors.name?.message}
+            </ValidationErrorMessage>
+          </Input>
+
+          <Select
+            label={messages.teacher}
+            options={users.map((u) => ({
+              value: u.id,
+              label: u.name ?? u.email,
+            }))}
+            {...register("teacherId")}
+            data-testid="teacherId"
+          >
+            <ValidationErrorMessage>
+              {errors.teacherId?.message}
+            </ValidationErrorMessage>
+          </Select>
+
+          <SubmitFormButton label={submitMessage} />
+        </form>
+      )}
+    </SwrContent>
   );
 };
 
