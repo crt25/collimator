@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { SessionId } from "./dto";
+import { SessionStatus } from ".prisma/client";
 
 const compactInclude = {
   tasks: {
@@ -82,7 +83,11 @@ export class SessionsService {
     taskIds: number[],
     classId?: number,
   ): Promise<Session> {
-    const [_, update] = await this.prisma.$transaction([
+    const [_find, _del, update] = await this.prisma.$transaction([
+      // ensure the session exists and hasn't started yet
+      this.prisma.session.findUniqueOrThrow({
+        where: { classId, id, status: "CREATED" },
+      }),
       // we could do `deleteMany` and `createMany` within the same update(),
       // however we need a transaction because of this open bug:
       // https://github.com/prisma/prisma/issues/16606
@@ -105,9 +110,38 @@ export class SessionsService {
     return update;
   }
 
+  changeStatusByIdAndClass(
+    id: SessionId,
+    status: SessionStatus,
+    classId?: number,
+  ): Promise<Session> {
+    let allowedStates: SessionStatus[] = [];
+    switch (status) {
+      case "ONGOING":
+        allowedStates = ["CREATED", "ONGOING", "PAUSED"];
+        break;
+      case "PAUSED":
+        allowedStates = ["ONGOING", "PAUSED"];
+        break;
+      case "FINISHED":
+        allowedStates = ["ONGOING", "PAUSED", "FINISHED"];
+        break;
+    }
+
+    return this.prisma.session.update({
+      data: { status: status },
+      where: {
+        id,
+        classId,
+        OR: allowedStates.map((s) => ({ status: s })),
+      },
+      include: compactInclude,
+    });
+  }
+
   deletedByIdAndClass(id: SessionId, classId?: number): Promise<Session> {
     return this.prisma.session.delete({
-      where: { classId, id },
+      where: { classId, id, status: "CREATED" },
       include: compactInclude,
     });
   }

@@ -16,6 +16,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
+import { SessionStatus } from "@prisma/client";
 import {
   CreateSessionDto,
   ExistingSessionDto,
@@ -73,6 +74,52 @@ export class SessionsController {
       classId,
     );
     return ExistingSessionExtendedDto.fromQueryResult(session);
+  }
+
+  @Post(":id/start")
+  @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async start(
+    @Param("classId", ParseIntPipe) classId: number,
+    @Param("id", ParseIntPipe) id: SessionId,
+  ): Promise<ExistingSessionDto> {
+    return this.changeStatus(classId, id, SessionStatus.ONGOING);
+  }
+
+  @Post(":id/pause")
+  @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async pause(
+    @Param("classId", ParseIntPipe) classId: number,
+    @Param("id", ParseIntPipe) id: SessionId,
+  ): Promise<ExistingSessionDto> {
+    return this.changeStatus(classId, id, SessionStatus.PAUSED);
+  }
+
+  @Post(":id/finish")
+  @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async finish(
+    @Param("classId", ParseIntPipe) classId: number,
+    @Param("id", ParseIntPipe) id: SessionId,
+  ): Promise<ExistingSessionDto> {
+    return this.changeStatus(classId, id, SessionStatus.FINISHED);
+  }
+
+  async changeStatus(
+    classId: number,
+    id: SessionId,
+    status: SessionStatus,
+  ): Promise<ExistingSessionDto> {
+    const session = await this.sessionsService.changeStatusByIdAndClass(
+      id,
+      status,
+      classId,
+    );
+    return ExistingSessionDto.fromQueryResult(session);
   }
 
   @Patch(":id")

@@ -65,6 +65,13 @@ model Lesson {
   creator  User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 }
 
+enum SessionStatus {
+  CREATED
+  ONGOING
+  PAUSED
+  FINISHED
+}
+
 model Session {
   id              Int      @id @default(autoincrement())
   createdAt       DateTime @default(now())
@@ -72,6 +79,7 @@ model Session {
   description     String
   classId         Int
   basedOnLessonId Int?
+  status          SessionStatus @default(CREATED)
 
   lesson    Lesson?       @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)

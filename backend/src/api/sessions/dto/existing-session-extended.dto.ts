@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Session } from "@prisma/client";
+import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { SessionClassDto } from "./session-class.dto";
 import { SessionLessonDto } from "./session-lesson.dto";
 import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
+import { IsEnum, IsNotEmpty } from "class-validator";
 
 type TaskList = { task: { id: number; name: string } }[];
 
@@ -30,6 +31,17 @@ export class ExistingSessionExtendedDto
   @ApiProperty()
   @Expose()
   readonly description!: string;
+
+  @IsEnum(SessionStatus)
+  @IsNotEmpty()
+  @ApiProperty({
+    example: SessionStatus.ONGOING,
+    description: `The session's status.`,
+    enumName: "SessionStatus",
+    enum: Object.keys(SessionStatus),
+  })
+  @Expose()
+  readonly status!: SessionStatus;
 
   @ApiProperty({
     description: "The corresponding lesson.",
