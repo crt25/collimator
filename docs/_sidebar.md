@@ -15,3 +15,4 @@
 - Scratch
 
   - [.sb3 Format](scratch/sb3.md)
+  - [Modifications](scratch/modifications.md)
