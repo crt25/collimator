@@ -13,6 +13,13 @@ export class ExistingTaskDto extends CreateTaskDto implements TaskWithoutData {
   @Expose()
   readonly id!: TaskId;
 
+  @ApiProperty({
+    example: 1,
+    description: "The user's unique identifier, a positive integer.",
+  })
+  @Expose()
+  readonly creatorId!: number;
+
   @Exclude()
   readonly mimeType!: string;
 

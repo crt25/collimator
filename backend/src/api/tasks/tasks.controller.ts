@@ -52,7 +52,11 @@ export class TasksController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ExistingTaskDto> {
     const task = await this.tasksService.create(
-      createTaskDto,
+      {
+        ...createTaskDto,
+        // TODO: add creatorId when authentication is implemented
+        // creatorId: 1,
+      },
       file.mimetype,
       file.buffer,
     );
