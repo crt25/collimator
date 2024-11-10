@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { TaskType } from "@prisma/client";
 import { IsNotEmpty, IsString, IsEnum } from "class-validator";
 import { Expose } from "class-transformer";
-import { TaskType } from "@prisma/client";
 
 export class CreateTaskDto {
   @IsString()
@@ -26,4 +26,12 @@ export class CreateTaskDto {
   })
   @Expose()
   readonly type!: TaskType;
+
+  // The following property is used for Swagger documentation purposes.
+  @ApiProperty({
+    description: "Task file",
+    format: "binary",
+    type: "string",
+  })
+  readonly file!: Express.Multer.File;
 }
