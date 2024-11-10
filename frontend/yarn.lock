@@ -2986,10 +2986,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/env@npm:14.2.12"
-  checksum: 10c0/fd9b3da4e530487bc12bb4e64bf910e7017763a447939f3c116b4208f111646452a9ded283ed7032d85217fa657aed71f98e9fc89409346d1fd51a59549a7a00
+"@next/env@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/env@npm:15.0.3"
+  checksum: 10c0/63582fed80d6a28fff102c935095da71fd57ddf6b5f5d564e85ebdefdeb93298f7f7cf7d813c75b460c6627106717ea959b4c232939e7abb97d73d8b8467d4cd
   languageName: node
   linkType: hard
 
@@ -3002,65 +3002,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-darwin-arm64@npm:14.2.12"
+"@next/swc-darwin-arm64@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-darwin-arm64@npm:15.0.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-darwin-x64@npm:14.2.12"
+"@next/swc-darwin-x64@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-darwin-x64@npm:15.0.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-arm64-gnu@npm:14.2.12"
+"@next/swc-linux-arm64-gnu@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-linux-arm64-gnu@npm:15.0.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-arm64-musl@npm:14.2.12"
+"@next/swc-linux-arm64-musl@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-linux-arm64-musl@npm:15.0.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-x64-gnu@npm:14.2.12"
+"@next/swc-linux-x64-gnu@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-linux-x64-gnu@npm:15.0.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-linux-x64-musl@npm:14.2.12"
+"@next/swc-linux-x64-musl@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-linux-x64-musl@npm:15.0.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-arm64-msvc@npm:14.2.12"
+"@next/swc-win32-arm64-msvc@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-win32-arm64-msvc@npm:15.0.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-ia32-msvc@npm:14.2.12"
-  conditions: os=win32 & cpu=ia32
-  languageName: node
-  linkType: hard
-
-"@next/swc-win32-x64-msvc@npm:14.2.12":
-  version: 14.2.12
-  resolution: "@next/swc-win32-x64-msvc@npm:14.2.12"
+"@next/swc-win32-x64-msvc@npm:15.0.3":
+  version: 15.0.3
+  resolution: "@next/swc-win32-x64-msvc@npm:15.0.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -4674,24 +4667,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/counter@npm:^0.1.3":
+"@swc/counter@npm:0.1.3, @swc/counter@npm:^0.1.3":
   version: 0.1.3
   resolution: "@swc/counter@npm:0.1.3"
   checksum: 10c0/8424f60f6bf8694cfd2a9bca45845bce29f26105cda8cf19cdb9fd3e78dc6338699e4db77a89ae449260bafa1cc6bec307e81e7fb96dbf7dcfce0eea55151356
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:0.5.5":
-  version: 0.5.5
-  resolution: "@swc/helpers@npm:0.5.5"
-  dependencies:
-    "@swc/counter": "npm:^0.1.3"
-    tslib: "npm:^2.4.0"
-  checksum: 10c0/21a9b9cfe7e00865f9c9f3eb4c1cc5b397143464f7abee76a2c5366e591e06b0155b5aac93fe8269ef8d548df253f6fd931e9ddfc0fd12efd405f90f45506e7d
-  languageName: node
-  linkType: hard
-
-"@swc/helpers@npm:^0.5.0":
+"@swc/helpers@npm:0.5.13, @swc/helpers@npm:^0.5.0":
   version: 0.5.13
   resolution: "@swc/helpers@npm:0.5.13"
   dependencies:
@@ -6889,7 +6872,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     msw: "npm:^2.6.0"
-    next: "npm:14.2.12"
+    next: "npm:15.0.3"
     nyc: "npm:^17.1.0"
     openid-client: "npm:^6.1.3"
     orval: "npm:^7.2.0"
@@ -6899,7 +6882,7 @@ __metadata:
     react: "npm:^18"
     react-bootstrap: "npm:^2.10.4"
     react-dom: "npm:^18"
-    react-hook-form: "npm:^7.53.1"
+    react-hook-form: "npm:^7.53.2"
     react-intl: "npm:^6.8.6"
     sass: "npm:^1.79.1"
     shx: "npm:^0.3.4"
@@ -11837,31 +11820,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:14.2.12":
-  version: 14.2.12
-  resolution: "next@npm:14.2.12"
+"next@npm:15.0.3":
+  version: 15.0.3
+  resolution: "next@npm:15.0.3"
   dependencies:
-    "@next/env": "npm:14.2.12"
-    "@next/swc-darwin-arm64": "npm:14.2.12"
-    "@next/swc-darwin-x64": "npm:14.2.12"
-    "@next/swc-linux-arm64-gnu": "npm:14.2.12"
-    "@next/swc-linux-arm64-musl": "npm:14.2.12"
-    "@next/swc-linux-x64-gnu": "npm:14.2.12"
-    "@next/swc-linux-x64-musl": "npm:14.2.12"
-    "@next/swc-win32-arm64-msvc": "npm:14.2.12"
-    "@next/swc-win32-ia32-msvc": "npm:14.2.12"
-    "@next/swc-win32-x64-msvc": "npm:14.2.12"
-    "@swc/helpers": "npm:0.5.5"
+    "@next/env": "npm:15.0.3"
+    "@next/swc-darwin-arm64": "npm:15.0.3"
+    "@next/swc-darwin-x64": "npm:15.0.3"
+    "@next/swc-linux-arm64-gnu": "npm:15.0.3"
+    "@next/swc-linux-arm64-musl": "npm:15.0.3"
+    "@next/swc-linux-x64-gnu": "npm:15.0.3"
+    "@next/swc-linux-x64-musl": "npm:15.0.3"
+    "@next/swc-win32-arm64-msvc": "npm:15.0.3"
+    "@next/swc-win32-x64-msvc": "npm:15.0.3"
+    "@swc/counter": "npm:0.1.3"
+    "@swc/helpers": "npm:0.5.13"
     busboy: "npm:1.6.0"
     caniuse-lite: "npm:^1.0.30001579"
-    graceful-fs: "npm:^4.2.11"
     postcss: "npm:8.4.31"
-    styled-jsx: "npm:5.1.1"
+    sharp: "npm:^0.33.5"
+    styled-jsx: "npm:5.1.6"
   peerDependencies:
     "@opentelemetry/api": ^1.1.0
     "@playwright/test": ^1.41.2
-    react: ^18.2.0
-    react-dom: ^18.2.0
+    babel-plugin-react-compiler: "*"
+    react: ^18.2.0 || 19.0.0-rc-66855b96-20241106
+    react-dom: ^18.2.0 || 19.0.0-rc-66855b96-20241106
     sass: ^1.3.0
   dependenciesMeta:
     "@next/swc-darwin-arm64":
@@ -11878,20 +11862,22 @@ __metadata:
       optional: true
     "@next/swc-win32-arm64-msvc":
       optional: true
-    "@next/swc-win32-ia32-msvc":
-      optional: true
     "@next/swc-win32-x64-msvc":
+      optional: true
+    sharp:
       optional: true
   peerDependenciesMeta:
     "@opentelemetry/api":
       optional: true
     "@playwright/test":
       optional: true
+    babel-plugin-react-compiler:
+      optional: true
     sass:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/3ec6bb480c2f3ab41e6ea06f5d151961a841b7c8436d3a0142a294b644668df96a0b209b810d2954ec800e8fc33e8f8c7b77a92aea6e32b02e4935135b5201ec
+  checksum: 10c0/c5f6a57acb5f29063abc82d4d4417a048d0c2d5216d6ded6aa3fe32d60bb4835ed57dd34e2ef8fdda15579e97205820dc25bf34556b1d942a01a33d9ae7f88db
   languageName: node
   linkType: hard
 
@@ -13265,12 +13251,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.53.1":
-  version: 7.53.1
-  resolution: "react-hook-form@npm:7.53.1"
+"react-hook-form@npm:^7.53.2":
+  version: 7.53.2
+  resolution: "react-hook-form@npm:7.53.2"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/dd2466359a633f873755b366d367d51ab17100566b687fb3b098f704232bc6ab1c79d29f879151e492880ca5eeac35e9425fbe5a309e2a55f7a4b5baf7826e8d
+  checksum: 10c0/18336d8e8798a70dcd0af703a0becca2d5dbf82a7b7a3ca334ae0e1f26410490bc3ef2ea51adcf790bb1e7006ed7a763fd00d664e398f71225b23529a7ccf0bf
   languageName: node
   linkType: hard
 
@@ -14063,7 +14049,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:^0.33.3":
+"sharp@npm:^0.33.3, sharp@npm:^0.33.5":
   version: 0.33.5
   resolution: "sharp@npm:0.33.5"
   dependencies:
@@ -14758,23 +14744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-jsx@npm:5.1.1":
-  version: 5.1.1
-  resolution: "styled-jsx@npm:5.1.1"
-  dependencies:
-    client-only: "npm:0.0.1"
-  peerDependencies:
-    react: ">= 16.8.0 || 17.x.x || ^18.0.0-0"
-  peerDependenciesMeta:
-    "@babel/core":
-      optional: true
-    babel-plugin-macros:
-      optional: true
-  checksum: 10c0/42655cdadfa5388f8a48bb282d6b450df7d7b8cf066ac37038bd0499d3c9f084815ebd9ff9dfa12a218fd4441338851db79603498d7557207009c1cf4d609835
-  languageName: node
-  linkType: hard
-
-"styled-jsx@npm:^5.1.6":
+"styled-jsx@npm:5.1.6, styled-jsx@npm:^5.1.6":
   version: 5.1.6
   resolution: "styled-jsx@npm:5.1.6"
   dependencies:
