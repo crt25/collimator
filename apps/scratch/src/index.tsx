@@ -10,21 +10,26 @@ import Edit from "./pages/Edit";
 
 const appRoot = document.getElementById("root") as HTMLElement;
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <ErrorPage />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "solve",
+      element: <Solve />,
+    },
+    {
+      path: "edit",
+      element: <Edit />,
+    },
+  ],
   {
-    path: "/",
-    element: <ErrorPage />,
-    errorElement: <ErrorPage />,
+    basename: "/scratch",
   },
-  {
-    path: "solve/:sessionId/:taskId",
-    element: <Solve />,
-  },
-  {
-    path: "edit/:taskId",
-    element: <Edit />,
-  },
-]);
+);
 
 ReactDOM.render(<RouterProvider router={router} />, appRoot);
 
