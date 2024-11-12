@@ -2,12 +2,9 @@
 
 const nextConfig = {
   output: "export",
-  reactStrictMode: true,
+  distDir: "build",
 
-  i18n: {
-    locales: ["en", "fr"],
-    defaultLocale: "en",
-  },
+  reactStrictMode: true,
 
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
