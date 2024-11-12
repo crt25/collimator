@@ -31,5 +31,6 @@ export * from "./taskType";
 export * from "./updateClassDto";
 export * from "./updateSessionDto";
 export * from "./updateTaskDto";
+export * from "./updateTaskFileDto";
 export * from "./updateUserDto";
 export * from "./userType";

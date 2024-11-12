@@ -10,6 +10,7 @@ import type {
   DeletedTaskDto,
   ExistingTaskDto,
   UpdateTaskDto,
+  UpdateTaskFileDto,
 } from "../../models";
 import { fetchApi } from "../../../../fetch";
 
@@ -118,13 +119,18 @@ export const getTasksControllerUpdateFileV0Url = (id: number) => {
 
 export const tasksControllerUpdateFileV0 = async (
   id: number,
+  updateTaskFileDto: UpdateTaskFileDto,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
+  const formData = new FormData();
+  formData.append("file", updateTaskFileDto.file);
+
   return fetchApi<Promise<ExistingTaskDto>>(
     getTasksControllerUpdateFileV0Url(id),
     {
       ...options,
       method: "PATCH",
+      body: formData,
     },
   );
 };
