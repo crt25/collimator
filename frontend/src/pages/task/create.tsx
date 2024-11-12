@@ -21,14 +21,12 @@ const CreateTask = () => {
 
   const onSubmit = useCallback(
     async (formValues: TaskFormValues) => {
-      await createTask(
-        {
-          title: formValues.title,
-          description: formValues.description,
-          type: formValues.type,
-        },
-        formValues.blob,
-      );
+      await createTask({
+        title: formValues.title,
+        description: formValues.description,
+        type: formValues.type,
+        file: formValues.blob,
+      });
 
       router.back();
     },
