@@ -21,11 +21,16 @@ export const tasksControllerCreateV0 = async (
   createTaskDto: CreateTaskDto,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
+  const formData = new FormData();
+  formData.append("title", createTaskDto.title);
+  formData.append("description", createTaskDto.description);
+  formData.append("type", createTaskDto.type);
+  formData.append("file", createTaskDto.file);
+
   return fetchApi<Promise<ExistingTaskDto>>(getTasksControllerCreateV0Url(), {
     ...options,
     method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(createTaskDto),
+    body: formData,
   });
 };
 

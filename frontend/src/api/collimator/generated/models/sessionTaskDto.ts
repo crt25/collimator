@@ -5,13 +5,10 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { TaskType } from "./taskType";
 
-export interface CreateTaskDto {
-  description: string;
-  /** Task file */
-  file: Blob;
+export interface SessionTaskDto {
+  /** The id of a task. */
+  id: number;
+  /** The title of the task. */
   title: string;
-  /** The task's type. */
-  type: TaskType;
 }
