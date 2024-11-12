@@ -70,7 +70,7 @@ test.describe("/task/[taskId]/edit", () => {
     await list.createItem();
   });
 
-  test.only("can create a task", async ({ page: pwPage, baseURL }) => {
+  test("can create a task", async ({ page: pwPage, baseURL }) => {
     const page = await TaskFormPageModel.create(pwPage);
 
     await page.inputs.title.fill(updatedTask.title);
