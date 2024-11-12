@@ -3,6 +3,7 @@ import TabNavigation, { NavigationTab } from "../TabNavigation";
 import BreadcrumbItem from "../BreadcrumbItem";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 
 const messages = defineMessages({
   classTab: {
@@ -36,26 +37,25 @@ const tabs: NavigationTab[] = [
 
 const ClassNavigation = ({
   classId,
-  userId,
+  user,
   session,
   breadcrumb,
 }: {
   classId?: number;
-  userId?: number;
+  user?: ExistingUser;
   session?: ExistingSession | ExistingSessionExtended;
   breadcrumb?: boolean;
 }) => {
   const prefix = `/class/${classId}/`;
-  const userName = "John";
 
   return (
     <>
       <TabNavigation tabs={tabs} prefix={prefix} breadcrumb={breadcrumb} />
       {breadcrumb && (
         <>
-          {userId && (
-            <BreadcrumbItem href={`${prefix}user/${userId}`}>
-              {userName}
+          {user && (
+            <BreadcrumbItem href={`${prefix}user/${user.id}`}>
+              {user.name ?? user.email}
             </BreadcrumbItem>
           )}
           {session && (
