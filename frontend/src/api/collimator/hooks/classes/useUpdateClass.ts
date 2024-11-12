@@ -7,6 +7,7 @@ import { ExistingClass } from "../../models/classes/existing-class";
 import { useSWRConfig } from "swr";
 import { GetClassReturnType } from "./useClass";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
+import { useRevalidateClassList } from "./useRevalidateClassList";
 
 type Args = Parameters<typeof classesControllerUpdateV0>;
 type UpdateClassType = (...args: Args) => Promise<ExistingClass>;
@@ -16,6 +17,7 @@ const fetchAndTransform: UpdateClassType = (...args) =>
 
 export const useUpdateClass = (): UpdateClassType => {
   const { mutate, cache } = useSWRConfig();
+  const revalidateClassList = useRevalidateClassList();
 
   return useCallback(
     (...args: Args) =>
@@ -43,8 +45,11 @@ export const useUpdateClass = (): UpdateClassType => {
           revalidate: true,
         });
 
+        // revalidate the class list
+        revalidateClassList();
+
         return result;
       }),
-    [mutate, cache],
+    [mutate, cache, revalidateClassList],
   );
 };

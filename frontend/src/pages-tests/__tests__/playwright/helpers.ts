@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Page, Request } from "@playwright/test";
 import {
   test as testBase,
@@ -11,11 +12,29 @@ export const jsonResponse = {
 
 export type CrtTestOptions = {
   apiURL: string;
+  scratchURL: string;
 };
 
-// This will allow you to set apiURL in playwright.config.ts
 export const test = testBase.extend<CrtTestOptions>({
   apiURL: ["", { option: true }],
+  scratchURL: ["", { option: true }],
+  page: async ({ page }, use) => {
+    // ensure we capture page errors
+    const errors: string[] = [];
+
+    page.on("pageerror", (exception) => {
+      errors.push(exception.message);
+    });
+
+    page.addListener("close", () => {
+      if (errors.length > 0) {
+        console.error("Page errors:");
+        console.error(errors);
+      }
+    });
+
+    await use(page);
+  },
 });
 
 export const expect = expectBase;

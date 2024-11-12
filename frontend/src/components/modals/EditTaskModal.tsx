@@ -2,11 +2,12 @@ import { Button, Modal } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import styled from "@emotion/styled";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const LargeModal = styled(Modal)`
   & > .modal-dialog {
@@ -14,18 +15,39 @@ const LargeModal = styled(Modal)`
   }
 `;
 
+const ModalBody = styled(Modal.Body)`
+  display: flex;
+
+  & > {
+    min-height: 0;
+  }
+`;
+
+const getEditUrl = (taskType: TaskType) => {
+  switch (taskType) {
+    case TaskType.SCRATCH:
+      return `${scratchAppHostName}/edit`;
+    default:
+      return null;
+  }
+};
+
 const EditTaskModal = ({
   isShown,
   setIsShown,
   onSave,
+  taskType,
   initialTask,
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
   onSave: (blob: Blob) => void;
+  taskType: TaskType;
   initialTask?: Blob | null;
 }) => {
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+
+  const url = useMemo(() => getEditUrl(taskType), [taskType]);
 
   const onImportTask = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -76,13 +98,20 @@ const EditTaskModal = ({
             />
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <EmbeddedApp
-            src={`${scratchAppHostName}/edit`}
-            ref={embeddedApp}
-            onAppAvailable={onAppAvailable}
-          />
-        </Modal.Body>
+        <ModalBody>
+          {url ? (
+            <EmbeddedApp
+              src={url}
+              ref={embeddedApp}
+              onAppAvailable={onAppAvailable}
+            />
+          ) : (
+            <FormattedMessage
+              id="EditTaskModal.unsupportedApp"
+              defaultMessage="An unsupported application type was selected. Please report this issue."
+            />
+          )}
+        </ModalBody>
         <Modal.Footer>
           <Button
             onClick={onImportTask}

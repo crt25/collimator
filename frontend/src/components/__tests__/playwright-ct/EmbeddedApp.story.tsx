@@ -18,8 +18,6 @@ const EmbeddedAppStory = ({ src }: { src: string }) => {
             return;
           }
 
-          console.log();
-
           ref.current
             .sendRequest(...args)
             .then(resolve)
