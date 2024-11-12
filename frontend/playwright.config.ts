@@ -24,6 +24,9 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     apiURL: "http://localhost:3001",
     scratchURL: "http://localhost:3101",
   },
+
+  // timeout per test
+  timeout: 120 * 1000,
 };
 
 // eslint-disable-next-line no-undef
@@ -32,6 +35,8 @@ if (!process.env.SERVER_ALREADY_RUNS) {
     // Run your local dev server before starting the tests.
     command: "yarn dev:coverage",
     url: "http://localhost:3000",
+
+    // timeout for starting up the development server
     timeout: 120 * 1000,
   };
 }

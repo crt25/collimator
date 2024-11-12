@@ -94,9 +94,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
-  const [onDeleteConfirmation, setOnDeleteConfirmation] = useState<() => void>(
-    () => {},
-  );
+  const [userIdToDelete, setUserIdToDelete] = useState<number | null>(null);
   const deleteUser = useDeleteUser();
 
   const roleTemplate = useCallback(
@@ -129,7 +127,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
           <Dropdown.Menu>
             <Dropdown.Item
               onClick={() => {
-                setOnDeleteConfirmation(() => () => deleteUser(rowData.id));
+                setUserIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
               data-testid={`user-${rowData.id}-delete-button`}
@@ -140,7 +138,7 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
         </Dropdown>
       </div>
     ),
-    [router, deleteUser, intl],
+    [router, intl],
   );
 
   return (
@@ -211,7 +209,9 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
       <ConfirmationModal
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={onDeleteConfirmation}
+        onConfirm={
+          userIdToDelete ? () => deleteUser(userIdToDelete) : undefined
+        }
         isDangerous
         messages={{
           title: messages.deleteConfirmationTitle,
