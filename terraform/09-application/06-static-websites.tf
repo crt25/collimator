@@ -77,3 +77,45 @@ resource "aws_s3_object" "scratchapp" {
   content_type = lookup(local.mime_types, reverse(split(".", basename(each.value)))[0], "application/octet-stream")
 }
 
+resource "aws_s3_bucket" "frontend" {
+  bucket = "${module.globals.name}-prod-apps-frontend"
+
+  # delete all objects in the bucket when destroying the bucket
+  force_destroy = true
+
+  tags = module.globals.tags
+}
+
+# Enable static website hosting for the S3 bucket
+resource "aws_s3_bucket_website_configuration" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "index.html"
+  }
+}
+
+# Disallow public access to the S3 bucket
+resource "aws_s3_bucket_public_access_block" "frontend" {
+  bucket                  = aws_s3_bucket.frontend.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# upload the frontend to the S3 bucket
+resource "aws_s3_object" "frontend" {
+  for_each = fileset("../../frontend/build", "**")
+  bucket   = aws_s3_bucket.frontend.id
+  key      = each.value
+  source   = "../../frontend/build/${each.value}"
+  etag     = filemd5("../../frontend/build/${each.value}")
+  # set the content type based on the file extension
+  content_type = lookup(local.mime_types, reverse(split(".", basename(each.value)))[0], "application/octet-stream")
+}
+

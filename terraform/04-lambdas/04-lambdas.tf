@@ -26,3 +26,29 @@ module "spa_lambda_function" {
   create_package         = false
   local_existing_package = data.archive_file.spa_lambda_function.output_path
 }
+
+
+data "archive_file" "next_lambda_function" {
+  type        = "zip"
+  source_file = "${var.lambdas_path}/src/next/index.js"
+  output_path = "${var.lambdas_path}/build/next.zip"
+}
+
+# create the lambda function based on the package
+module "next_lambda_function" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 7.0"
+
+
+  function_name = "${module.globals.name}-prod-apps-next-rewrite"
+  description   = "A lambda function to rewrite Next.js URLs for CloudFront"
+  handler       = "index.handler"
+
+  runtime = "nodejs20.x"
+
+  publish        = true
+  lambda_at_edge = true
+
+  create_package         = false
+  local_existing_package = data.archive_file.next_lambda_function.output_path
+}

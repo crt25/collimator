@@ -39,9 +39,8 @@ module "cloudfront" {
   # }
 
   origin = {
-    # with origin access control settings (recommended)
     frontend = {
-      domain_name           = aws_s3_bucket.scratchapp.bucket_regional_domain_name
+      domain_name           = aws_s3_bucket.frontend.bucket_regional_domain_name
       origin_access_control = "s3_oac" # key in `origin_access_control` map
     }
 
@@ -63,10 +62,10 @@ module "cloudfront" {
   }
 
   default_cache_behavior = {
-    target_origin_id       = "scratchapp" # key in `origin` map
+    target_origin_id       = "frontend" # key in `origin` map
     viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods         = ["GET", "HEAD"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
 
     use_forwarded_values = false
 
@@ -77,11 +76,11 @@ module "cloudfront" {
     response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
 
     lambda_function_association = {
-      # run the spa rewrite lambda function on the origin request
+      # run the Next.js rewrite lambda function on the origin request
       # see https://smarx.com/posts/2020/08/url-rewriting-with-lambda-at-edge/
       # for a discussion of up- and downsides of viewer-request vs. origin-request
       origin-request = {
-        lambda_arn = module.lambdas.spa_arn
+        lambda_arn = module.lambdas.next_arn
       }
     }
   }
@@ -101,6 +100,28 @@ module "cloudfront" {
 
       # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
       response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
+    },
+    {
+      path_pattern           = "/scratch/*"
+      target_origin_id       = "scratchapp"
+      viewer_protocol_policy = "redirect-to-https"
+      allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+      cached_methods         = ["GET", "HEAD"]
+
+      use_forwarded_values = false
+
+      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized-uncompressed
+      cache_policy_id = "b2884449-e4de-46a7-ac36-70bc7f1ddd6d"
+
+      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
+      response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
+
+      lambda_function_association = {
+        # run the spa rewrite lambda function on the origin request
+        origin-request = {
+          lambda_arn = module.lambdas.spa_arn
+        }
+      }
     }
   ]
 
