@@ -1,5 +1,4 @@
 import { ExistingUserDto } from "@/api/collimator/generated/models";
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { userList } from "../selectors";
 import {
@@ -8,6 +7,7 @@ import {
 } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { UserListPageModel } from "./user-list-page-model";
+import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/user", () => {
   const user: ExistingUserDto = {
@@ -18,7 +18,9 @@ test.describe("/user", () => {
   };
   let mockResponse: ExistingUserDto[] = [];
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
+
     mockResponse = [
       ...getUsersControllerFindAllV0ResponseMock().slice(0, 9),
       user,
@@ -32,7 +34,7 @@ test.describe("/user", () => {
       }),
     );
 
-    await signInAndGotoPath(page, baseURL!, "/user");
+    await page.goto(`${baseURL}/user`);
     await page.waitForSelector(userList);
   });
 

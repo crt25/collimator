@@ -1,14 +1,13 @@
 import { useCallback } from "react";
-import { useSWRConfig } from "swr";
-import { GetTaskReturnType } from "./useTask";
 import {
-  getTasksControllerFindOneV0Url,
   getTasksControllerUpdateFileV0Url,
   tasksControllerUpdateV0,
 } from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import { fetchApi } from "@/api/fetch";
 import { ExistingTaskDto } from "../../generated/models";
+import { useRevalidateTaskList } from "./useRevalidateTaskList";
+import { useRevalidateTask } from "./useRevalidateTask";
 
 type Args = Parameters<typeof tasksControllerUpdateV0>;
 type UpdateUserType = (...args: Args) => Promise<ExistingTask>;
@@ -17,22 +16,18 @@ const fetchAndTransform: UpdateUserType = (...args) =>
   tasksControllerUpdateV0(...args).then(ExistingTask.fromDto);
 
 export const useUpdateTask = (): UpdateUserType => {
-  const { mutate } = useSWRConfig();
+  const revalidateTask = useRevalidateTask();
+  const revalidateTaskList = useRevalidateTaskList();
 
   return useCallback(
     (...args: Args) =>
       fetchAndTransform(...args).then((result) => {
-        // store the created task in the cache
-        const getTasksControllerFindOneResponse: GetTaskReturnType = result;
-
-        mutate(
-          getTasksControllerFindOneV0Url(result.id),
-          getTasksControllerFindOneResponse,
-        );
+        revalidateTask(result.id, result);
+        revalidateTaskList();
 
         return result;
       }),
-    [mutate],
+    [revalidateTask, revalidateTaskList],
   );
 };
 

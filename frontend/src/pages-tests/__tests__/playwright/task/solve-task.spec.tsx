@@ -1,9 +1,11 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, test } from "../helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
-    await signInAndGotoPath(page, baseURL!, `/session/3/task/5/solve`);
+  test.beforeEach(async ({ context, page, baseURL }) => {
+    await useAdminUser(context);
+
+    await page.goto(`${baseURL}/session/3/task/5/solve`);
     await page.waitForSelector("#__next");
   });
 

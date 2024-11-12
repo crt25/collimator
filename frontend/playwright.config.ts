@@ -5,9 +5,12 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   testMatch: "**/__tests__/playwright/**/*.spec.tsx",
 
   projects: [
+    // Setup project
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
       name: "Desktop",
       use: devices["Desktop Chrome"],
+      dependencies: ["setup"],
     },
     {
       name: "iPad Mini landscape",
@@ -16,6 +19,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
         // override the browser, webkit does not seem to support audio in playwright
         browserName: "chromium",
       },
+      dependencies: ["setup"],
     },
   ],
 
@@ -26,7 +30,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   },
 
   // timeout per test
-  timeout: 120 * 1000,
+  timeout: 30 * 1000,
 };
 
 // eslint-disable-next-line no-undef

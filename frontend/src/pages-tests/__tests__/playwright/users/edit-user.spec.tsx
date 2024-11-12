@@ -1,4 +1,3 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
 import {
@@ -14,6 +13,7 @@ import {
   ExistingUserDto,
 } from "@/api/collimator/generated/models";
 import { UserListPageModel } from "./user-list-page-model";
+import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/user/{id}/edit", () => {
   const user: ExistingUserDto = {
@@ -36,7 +36,9 @@ test.describe("/user/{id}/edit", () => {
 
   let updateRequest: CreateUserDto | null = null;
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
+
     updateRequest = null;
 
     // Mock user list response
@@ -59,7 +61,7 @@ test.describe("/user/{id}/edit", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/user`);
+    await page.goto(`${baseURL}/user`);
 
     const list = await UserListPageModel.create(page);
     await list.editItem(user.id);
