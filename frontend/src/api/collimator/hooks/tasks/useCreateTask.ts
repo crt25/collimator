@@ -1,13 +1,10 @@
 import { useCallback } from "react";
-import { useSWRConfig } from "swr";
-import { GetTaskReturnType } from "./useTask";
 import { ExistingTask } from "../../models/tasks/existing-task";
-import {
-  getTasksControllerCreateV0Url,
-  getTasksControllerFindOneV0Url,
-} from "../../generated/endpoints/tasks/tasks";
+import { getTasksControllerCreateV0Url } from "../../generated/endpoints/tasks/tasks";
 import { CreateTaskDto, ExistingTaskDto } from "../../generated/models";
 import { fetchApi } from "@/api/fetch";
+import { useRevalidateTask } from "./useRevalidateTask";
+import { useRevalidateTaskList } from "./useRevalidateTaskList";
 
 type CreateTaskType = (
   taskMeta: CreateTaskDto,
@@ -32,21 +29,17 @@ const createTask = (
 };
 
 export const useCreateTask = (): CreateTaskType => {
-  const { mutate } = useSWRConfig();
+  const revalidateTask = useRevalidateTask();
+  const revalidateTaskList = useRevalidateTaskList();
 
   return useCallback<CreateTaskType>(
     (taskMeta, task) =>
       createTask(taskMeta, task).then((result) => {
-        // store the created task in the cache
-        const getTasksControllerFindOneResponse: GetTaskReturnType = result;
-
-        mutate(
-          getTasksControllerFindOneV0Url(result.id),
-          getTasksControllerFindOneResponse,
-        );
+        revalidateTask(result.id, result);
+        revalidateTaskList();
 
         return result;
       }),
-    [mutate],
+    [revalidateTask, revalidateTaskList],
   );
 };

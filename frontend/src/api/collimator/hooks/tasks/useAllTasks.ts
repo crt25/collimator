@@ -1,5 +1,10 @@
 import useSWR from "swr";
-import { ApiResponse, fromDtos, transformToLazyTableResult } from "../helpers";
+import {
+  ApiResponse,
+  fromDtos,
+  getSwrParamererizedKey,
+  transformToLazyTableResult,
+} from "../helpers";
 import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   getTasksControllerFindAllV0Url,
@@ -14,15 +19,13 @@ const fetchAndTransform = (): Promise<GetTasksReturnType> =>
 
 export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> =>
   // use the URL with the params as the first entry in the key for easier invalidation
-  useSWR(
-    [getTasksControllerFindAllV0Url(), getTasksControllerFindAllV0Url()],
-    () => fetchAndTransform(),
+  useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
+    fetchAndTransform(),
   );
 
 export const useAllTasksLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> =>
-  useSWR(
-    [getTasksControllerFindAllV0Url(), getTasksControllerFindAllV0Url()],
-    () => fetchAndTransform().then(transformToLazyTableResult),
+  useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
+    fetchAndTransform().then(transformToLazyTableResult),
   );
