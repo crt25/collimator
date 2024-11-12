@@ -136,7 +136,11 @@ const LessonList = ({
           <Button variant="secondary">
             <FontAwesomeIcon
               icon={faEdit}
-              onClick={() => router.push(`/lesson/${rowData.id}/edit`)}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                router.push(`/lesson/${rowData.id}/edit`);
+              }}
             />
           </Button>
 

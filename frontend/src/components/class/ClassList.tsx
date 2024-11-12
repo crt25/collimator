@@ -122,7 +122,10 @@ const ClassList = () => {
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
-            onClick={() => router.push(`/class/${rowData.id}/edit`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/class/${rowData.id}/edit`);
+            }}
             data-testid={`class-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -136,7 +139,9 @@ const ClassList = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+
                 setClassIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}

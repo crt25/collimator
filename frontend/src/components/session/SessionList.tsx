@@ -151,9 +151,11 @@ const SessionList = ({ classId }: { classId: number }) => {
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
-            onClick={() =>
-              router.push(`/class/${classId}/session/${rowData.id}/edit`)
-            }
+            onClick={(e) => {
+              e.stopPropagation();
+
+              router.push(`/class/${classId}/session/${rowData.id}/edit`);
+            }}
             data-testid={`session-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -167,7 +169,9 @@ const SessionList = ({ classId }: { classId: number }) => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+
                 setSessionIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}

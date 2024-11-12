@@ -94,7 +94,11 @@ const TaskTable = () => {
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
-            onClick={() => router.push(`/task/${rowData.id}/edit`)}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              router.push(`/task/${rowData.id}/edit`);
+            }}
             data-testid={`task-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -108,7 +112,9 @@ const TaskTable = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+
                 setTaskIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}

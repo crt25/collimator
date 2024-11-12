@@ -1,6 +1,8 @@
 import { defineMessages } from "react-intl";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
 import BreadcrumbItem from "../BreadcrumbItem";
+import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 
 const messages = defineMessages({
   classTab: {
@@ -35,17 +37,16 @@ const tabs: NavigationTab[] = [
 const ClassNavigation = ({
   classId,
   userId,
-  sessionId,
+  session,
   breadcrumb,
 }: {
   classId?: number;
   userId?: number;
-  sessionId?: number;
+  session?: ExistingSession | ExistingSessionExtended;
   breadcrumb?: boolean;
 }) => {
   const prefix = `/class/${classId}/`;
   const userName = "John";
-  const sessionName = "Introduction to React";
 
   return (
     <>
@@ -57,9 +58,9 @@ const ClassNavigation = ({
               {userName}
             </BreadcrumbItem>
           )}
-          {sessionId && (
-            <BreadcrumbItem href={`${prefix}session/${sessionId}/progress`}>
-              {sessionName}
+          {session && (
+            <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
+              {session.title}
             </BreadcrumbItem>
           )}
         </>

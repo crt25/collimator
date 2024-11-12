@@ -65,11 +65,7 @@ const EditSession = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation
-            breadcrumb
-            classId={klass?.id}
-            sessionId={session?.id}
-          />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
         <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>

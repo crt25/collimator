@@ -114,7 +114,11 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
           >
             <FontAwesomeIcon
               icon={faEdit}
-              onClick={() => router.push(`/user/${rowData.id}/edit`)}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                router.push(`/user/${rowData.id}/edit`);
+              }}
             />
           </Button>
 
@@ -126,7 +130,9 @@ const UserList = ({ classId: _classId }: { classId?: number }) => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+
                 setUserIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
