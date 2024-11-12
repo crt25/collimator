@@ -1,4 +1,4 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,
@@ -48,7 +48,9 @@ test.describe("/class/{id}/edit", () => {
 
   let updateRequest: CreateClassDto | null = null;
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
+
     updateRequest = null;
 
     // mock classes response for list
@@ -81,7 +83,7 @@ test.describe("/class/{id}/edit", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/class`);
+    await page.goto(`${baseURL}/class`);
 
     const list = await ClassListPageModel.create(page);
     await list.editItem(klass.id);

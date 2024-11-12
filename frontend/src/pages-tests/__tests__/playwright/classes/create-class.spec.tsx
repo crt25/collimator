@@ -1,4 +1,4 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
 import { getClassesControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
@@ -17,7 +17,9 @@ test.describe("/class/create", () => {
 
   let createRequest: CreateClassDto | null = null;
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ page, baseURL, apiURL, context }) => {
+    await useAdminUser(context);
+
     createRequest = null;
 
     await page.route(`${apiURL}${getUsersControllerFindAllV0Url()}`, (route) =>
@@ -39,7 +41,7 @@ test.describe("/class/create", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/class`);
+    await page.goto(`${baseURL}/class`);
 
     const list = await ClassListPageModel.create(page);
     await list.createItem();
