@@ -26,7 +26,7 @@ interface Props {
   label: MessageDescriptor;
   options: { value: string | number; label: string | MessageDescriptor }[];
   alwaysShow?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Select = forwardRef(function Select(

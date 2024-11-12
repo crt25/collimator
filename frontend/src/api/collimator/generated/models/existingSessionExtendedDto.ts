@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { SessionClassDto } from "./sessionClassDto";
-import type { SessionLessonDto } from "./sessionLessonDto";
+import type { ExistingSessionExtendedDtoLesson } from "./existingSessionExtendedDtoLesson";
 import type { SessionStatus } from "./sessionStatus";
 import type { SessionTaskDto } from "./sessionTaskDto";
 
@@ -17,8 +17,11 @@ export interface ExistingSessionExtendedDto {
   description: string;
   /** The session's unique identifier, a positive integer. */
   id: number;
-  /** The corresponding lesson. */
-  lesson: SessionLessonDto;
+  /**
+   * The corresponding lesson.
+   * @nullable
+   */
+  lesson: ExistingSessionExtendedDtoLesson;
   /** The session's status. */
   status: SessionStatus;
   /** The session's task. */

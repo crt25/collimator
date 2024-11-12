@@ -4,23 +4,23 @@ import {
   DataTableFilterEvent,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown, Modal } from "react-bootstrap";
+import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import Tag from "@/components/Tag";
 import Tags from "@/components/Tags";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { TableMessages } from "@/i18n/table-messages";
 import { useRouter } from "next/router";
-import { ModalMessages } from "@/i18n/modal-messages";
-import CreateSessionForm, {
-  CreateSessionFormValues,
-  SessionFormRef,
-} from "./CreateSessionForm";
+import { useAllClassSessionsLazyTable } from "@/api/collimator/hooks/sessions/useAllClassSessions";
+import SwrContent from "../SwrContent";
+import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
+import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
+import ConfirmationModal from "../modals/ConfirmationModal";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -31,9 +31,9 @@ const SessionListWrapper = styled.div`
 `;
 
 const messages = defineMessages({
-  nameColumn: {
-    id: "SessionList.columns.name",
-    defaultMessage: "Name",
+  titleColumn: {
+    id: "SessionList.columns.title",
+    defaultMessage: "Title",
   },
   tagsColumn: {
     id: "SessionList.columns.tags",
@@ -51,34 +51,24 @@ const messages = defineMessages({
     id: "SessionList.columns.actions",
     defaultMessage: "Actions",
   },
+  deleteConfirmationTitle: {
+    id: "SessionList.deleteConfirmation.title",
+    defaultMessage: "Delete Session",
+  },
+  deleteConfirmationBody: {
+    id: "SessionList.deleteConfirmation.body",
+    defaultMessage: "Are you sure you want to delete this session?",
+  },
+  deleteConfirmationConfirm: {
+    id: "SessionList.deleteConfirmation.confirm",
+    defaultMessage: "Delete Session",
+  },
 });
 
-export interface Session {
-  id: number;
-  name: string;
-  tags: string[];
-  startedAt?: Date;
-  finishedAt?: Date;
-}
-
-const SessionList = ({
-  classId,
-  fetchData,
-}: {
-  classId: number;
-  fetchData: (
-    state: LazyTableState,
-  ) => Promise<{ items: Session[]; totalCount: number }>;
-}) => {
+const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
 
-  const createSessionForm = useRef<SessionFormRef | null>(null);
-  const [showSessionModal, setShowAddSessionModal] = useState(false);
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [lessons, setLessons] = useState<Session[]>([]);
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
     rows: 10,
@@ -93,15 +83,10 @@ const SessionList = ({
     },
   });
 
-  useEffect(() => {
-    setLoading(true);
-
-    fetchData(lazyState).then(({ items, totalCount }) => {
-      setTotalRecords(totalCount);
-      setLessons(items);
-      setLoading(false);
-    });
-  }, [lazyState, fetchData]);
+  const { data, isLoading, error } = useAllClassSessionsLazyTable(
+    classId,
+    lazyState,
+  );
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
@@ -115,14 +100,11 @@ const SessionList = ({
     setLazyState((state) => ({ ...state, ...event }));
   };
 
-  const onCreateNewSession = useCallback((values: CreateSessionFormValues) => {
-    console.log(values);
-  }, []);
-
   const tagsTemplate = useCallback(
-    (rowData: Session) => (
+    (_rowData: ExistingSession) => (
+      // TODO: Use tags once they're available
       <Tags>
-        {rowData.tags.map((tag, index) => (
+        {[].map((tag, index) => (
           <Tag key={index} id={tag}>
             {tag}
           </Tag>
@@ -133,173 +115,168 @@ const SessionList = ({
   );
 
   const startedAtTemplate = useCallback(
-    (rowData: Session) =>
-      rowData.startedAt && (
+    (rowData: ExistingSession) =>
+      // TODO: Change to startedAt once it's available
+      rowData.createdAt && (
         <time>
-          {intl.formatDate(rowData.startedAt)}{" "}
-          {intl.formatTime(rowData.startedAt)}
+          {intl.formatDate(rowData.createdAt)}{" "}
+          {intl.formatTime(rowData.createdAt)}
         </time>
       ),
     [intl],
   );
 
   const finishedAtTemplate = useCallback(
-    (rowData: Session) =>
-      rowData.finishedAt && (
+    (rowData: ExistingSession) =>
+      // TODO: Change to finishedAt once it's available
+      rowData.createdAt && (
         <time>
-          {intl.formatDate(rowData.startedAt)}{" "}
-          {intl.formatTime(rowData.finishedAt)}
+          {intl.formatDate(rowData.createdAt)}{" "}
+          {intl.formatTime(rowData.createdAt)}
         </time>
       ),
     [intl],
   );
 
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
+  const [sessionIdToDelete, setSessionIdToDelete] = useState<number | null>(
+    null,
+  );
+  const deleteSession = useDeleteClassSession();
+
   const actionsTemplate = useCallback(
-    (_rowData: Session) => (
+    (rowData: ExistingSession) => (
       <div>
         <Dropdown as={ButtonGroup}>
-          <Button variant="secondary">
+          <Button
+            variant="secondary"
+            onClick={() =>
+              router.push(`/class/${classId}/session/${rowData.id}/edit`)
+            }
+            data-testid={`session-${rowData.id}-edit-button`}
+          >
             <FontAwesomeIcon icon={faEdit} />
           </Button>
 
-          <Dropdown.Toggle variant="secondary" split />
+          <Dropdown.Toggle
+            variant="secondary"
+            split
+            data-testid={`session-${rowData.id}-actions-dropdown-button`}
+          />
 
           <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                setSessionIdToDelete(rowData.id);
+                setShowDeleteConfirmationModal(true);
+              }}
+              data-testid={`task-${rowData.id}-delete-button`}
+            >
+              {intl.formatMessage(TableMessages.delete)}
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
     ),
-    [],
+    [classId, intl, router],
   );
 
   return (
-    <SessionListWrapper>
-      <Modal
-        show={showSessionModal}
-        onHide={() => setShowAddSessionModal(false)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <FormattedMessage
-              id="SessionList.createSessionModal.title"
-              defaultMessage="Create Session"
-            />
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            <FormattedMessage
-              id="SessionList.createSessionModal.description"
-              description="Description for the create session modal where a user can select from a list of lessons to create a new session for a given class"
-              defaultMessage="You can create a new session for this class by selecting a lesson from the list below."
-            />
-          </p>
-          <CreateSessionForm
-            ref={createSessionForm}
-            lessonOptions={[{ value: 1, label: "Lesson 1" }]}
-            onSubmit={onCreateNewSession}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowAddSessionModal(false)}
+    <SessionListWrapper data-testid="session-list">
+      <SwrContent data={data} isLoading={isLoading} error={error}>
+        {(data) => (
+          <DataTable
+            value={data.items}
+            lazy
+            filterDisplay="row"
+            dataKey="id"
+            paginator
+            first={lazyState.first}
+            rows={10}
+            totalRecords={data.totalCount}
+            onPage={onPage}
+            onSort={onSort}
+            sortField={lazyState.sortField}
+            sortOrder={lazyState.sortOrder}
+            onFilter={onFilter}
+            filters={lazyState.filters}
+            loading={isLoading}
+            onRowClick={(e) =>
+              router.push(
+                `/class/${classId}/session/${(e.data as ExistingSession).id}/progress`,
+              )
+            }
           >
-            {intl.formatMessage(ModalMessages.cancel)}
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => createSessionForm.current?.triggerSubmit()}
-          >
-            <FormattedMessage
-              id="SessionList.createSessionModal.submit"
-              defaultMessage="Create Session"
+            <Column
+              field="title"
+              header={intl.formatMessage(messages.titleColumn)}
+              sortable
+              filter
+              filterPlaceholder={intl.formatMessage(
+                TableMessages.searchFilterPlaceholder,
+              )}
+              filterMatchMode="contains"
+              showFilterMenu={false}
             />
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <DataTable
-        value={lessons}
-        lazy
-        filterDisplay="row"
-        dataKey="id"
-        paginator
-        first={lazyState.first}
-        rows={10}
-        totalRecords={totalRecords}
-        onPage={onPage}
-        onSort={onSort}
-        sortField={lazyState.sortField}
-        sortOrder={lazyState.sortOrder}
-        onFilter={onFilter}
-        filters={lazyState.filters}
-        loading={loading}
-        onRowClick={(e) =>
-          router.push(
-            `/class/${classId}/session/${(e.data as Session).id}/progress`,
-          )
+            <Column
+              header={intl.formatMessage(messages.tagsColumn)}
+              filter
+              filterPlaceholder={intl.formatMessage(
+                TableMessages.searchFilterPlaceholder,
+              )}
+              filterMatchMode="contains"
+              showFilterMenu={false}
+              body={tagsTemplate}
+            />
+            <Column
+              field="startedAt"
+              header={intl.formatMessage(messages.startedAtColumn)}
+              sortable
+              body={startedAtTemplate}
+            />
+            <Column
+              field="finishedAt"
+              header={intl.formatMessage(messages.finishedAtColumn)}
+              sortable
+              body={finishedAtTemplate}
+            />
+            <Column
+              header={intl.formatMessage(messages.actionsColumn)}
+              body={actionsTemplate}
+              filter
+              filterElement={
+                <Dropdown as={ButtonGroup}>
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      router.push(`/class/${classId}/session/create`)
+                    }
+                    data-testid="session-create-button"
+                  >
+                    <FontAwesomeIcon icon={faAdd} />
+                  </Button>
+                </Dropdown>
+              }
+            />
+          </DataTable>
+        )}
+      </SwrContent>
+      <ConfirmationModal
+        isShown={showDeleteConfirmationModal}
+        setIsShown={setShowDeleteConfirmationModal}
+        onConfirm={
+          sessionIdToDelete
+            ? () => deleteSession(classId, sessionIdToDelete)
+            : undefined
         }
-      >
-        <Column
-          field="name"
-          header={intl.formatMessage(messages.nameColumn)}
-          sortable
-          filter
-          filterPlaceholder={intl.formatMessage(
-            TableMessages.searchFilterPlaceholder,
-          )}
-          filterMatchMode="contains"
-          showFilterMenu={false}
-        />
-        <Column
-          header={intl.formatMessage(messages.tagsColumn)}
-          filter
-          filterPlaceholder={intl.formatMessage(
-            TableMessages.searchFilterPlaceholder,
-          )}
-          filterMatchMode="contains"
-          showFilterMenu={false}
-          body={tagsTemplate}
-        />
-        <Column
-          field="startedAt"
-          header={intl.formatMessage(messages.startedAtColumn)}
-          sortable
-          body={startedAtTemplate}
-        />
-        <Column
-          field="finishedAt"
-          header={intl.formatMessage(messages.finishedAtColumn)}
-          sortable
-          body={finishedAtTemplate}
-        />
-        <Column
-          header={intl.formatMessage(messages.actionsColumn)}
-          body={actionsTemplate}
-          filter
-          filterElement={
-            <Dropdown as={ButtonGroup}>
-              <Button
-                variant="secondary"
-                onClick={() => setShowAddSessionModal(true)}
-              >
-                <FontAwesomeIcon icon={faAdd} />
-              </Button>
-
-              <Dropdown.Toggle variant="secondary" split />
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          }
-        />
-      </DataTable>
+        isDangerous
+        messages={{
+          title: messages.deleteConfirmationTitle,
+          body: messages.deleteConfirmationBody,
+          confirmButton: messages.deleteConfirmationConfirm,
+        }}
+      />
     </SessionListWrapper>
   );
 };

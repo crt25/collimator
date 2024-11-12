@@ -17,10 +17,6 @@ import type {
 export const getSessionsControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionDto> = {},
 ): ExistingSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
@@ -45,10 +41,6 @@ export const getSessionsControllerFindAllV0ResponseMock =
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
     ).map(() => ({
-      class: {
-        id: faker.number.int({ min: undefined, max: undefined }),
-        name: faker.word.sample(),
-      },
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       description: faker.word.sample(),
       id: faker.number.int({ min: undefined, max: undefined }),
@@ -97,10 +89,6 @@ export const getSessionsControllerFindOneV0ResponseMock = (
 export const getSessionsControllerUpdateV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionDto> = {},
 ): ExistingSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
@@ -122,10 +110,6 @@ export const getSessionsControllerUpdateV0ResponseMock = (
 export const getSessionsControllerRemoveV0ResponseMock = (
   overrideResponse: Partial<DeletedSessionDto> = {},
 ): DeletedSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
@@ -147,10 +131,6 @@ export const getSessionsControllerRemoveV0ResponseMock = (
 export const getSessionsControllerStartV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionDto> = {},
 ): ExistingSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
@@ -172,10 +152,6 @@ export const getSessionsControllerStartV0ResponseMock = (
 export const getSessionsControllerPauseV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionDto> = {},
 ): ExistingSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
@@ -197,10 +173,6 @@ export const getSessionsControllerPauseV0ResponseMock = (
 export const getSessionsControllerFinishV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionDto> = {},
 ): ExistingSessionDto => ({
-  class: {
-    id: faker.number.int({ min: undefined, max: undefined }),
-    name: faker.word.sample(),
-  },
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),

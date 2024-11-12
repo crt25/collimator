@@ -39,7 +39,7 @@ const SessionNavigation = ({
   breadcrumb,
 }: {
   classId?: number;
-  sessionId: number;
+  sessionId?: number;
   userId?: number;
   breadcrumb?: boolean;
 }) => {

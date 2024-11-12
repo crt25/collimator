@@ -34,10 +34,10 @@ const tabs: NavigationTab[] = [
     url: "/class",
     title: (intl) => intl.formatMessage(messages.classesTab),
   },
-  {
-    url: "/lesson",
-    title: (intl) => intl.formatMessage(messages.lessonsTab),
-  },
+  // {
+  //   url: "/lesson",
+  //   title: (intl) => intl.formatMessage(messages.lessonsTab),
+  // },
   {
     url: "/task",
     title: (intl) => intl.formatMessage(messages.tasksTab),
