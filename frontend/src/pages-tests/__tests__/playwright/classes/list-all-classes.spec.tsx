@@ -49,6 +49,7 @@ test.describe("/class", () => {
 
   test("can delete listed item", async ({ page: pwPage, apiURL }) => {
     const page = await ClassListPageModel.create(pwPage);
+    let wasDeleted = false;
 
     await mockUrlResponses(
       pwPage,
@@ -59,6 +60,7 @@ test.describe("/class", () => {
       },
       {
         delete: () => {
+          wasDeleted = true;
           mockResponse = mockResponse.filter((u) => u.id !== klass.id);
         },
       },
@@ -68,5 +70,8 @@ test.describe("/class", () => {
 
     // Wait for the deletion to be reflected in the UI
     await expect(page.getItemActions(klass.id)).toHaveCount(0);
+
+    // check that our delete handler was called
+    expect(wasDeleted).toBe(true);
   });
 });

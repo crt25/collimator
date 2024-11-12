@@ -11,7 +11,7 @@ const ConfirmationModal = ({
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   isDangerous?: boolean;
   messages: {
     title: MessageDescriptor;
@@ -43,7 +43,10 @@ const ConfirmationModal = ({
         </Button>
         <Button
           onClick={() => {
-            onConfirm();
+            if (onConfirm) {
+              onConfirm();
+            }
+
             setIsShown(false);
           }}
           variant={isDangerous ? "danger" : "primary"}

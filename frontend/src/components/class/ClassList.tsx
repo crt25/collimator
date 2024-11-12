@@ -94,9 +94,7 @@ const ClassList = () => {
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
-  const [onDeleteConfirmation, setOnDeleteConfirmation] = useState<() => void>(
-    () => {},
-  );
+  const [classIdToDelete, setClassIdToDelete] = useState<number | null>(null);
   const deleteClass = useDeleteClass();
 
   const lastSessionTemplate = useCallback(
@@ -139,7 +137,7 @@ const ClassList = () => {
           <Dropdown.Menu>
             <Dropdown.Item
               onClick={() => {
-                setOnDeleteConfirmation(() => () => deleteClass(rowData.id));
+                setClassIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
               data-testid={`class-${rowData.id}-delete-button`}
@@ -150,7 +148,7 @@ const ClassList = () => {
         </Dropdown>
       </div>
     ),
-    [router, intl, deleteClass],
+    [router, intl],
   );
 
   return (
@@ -220,7 +218,9 @@ const ClassList = () => {
       <ConfirmationModal
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={onDeleteConfirmation}
+        onConfirm={
+          classIdToDelete ? () => deleteClass(classIdToDelete) : undefined
+        }
         isDangerous
         messages={{
           title: messages.deleteConfirmationTitle,
