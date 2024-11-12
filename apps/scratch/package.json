@@ -18,6 +18,7 @@
     "i18n": "yarn extract:i18n && yarn compile:i18n",
     "prepublish": "node scripts/prepublish.mjs"
   },
+  "homepage": "/scratch",
   "dependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
