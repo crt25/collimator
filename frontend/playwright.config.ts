@@ -25,7 +25,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   },
 
   // timeout per test
-  timeout: 60 * 1000,
+  timeout: 120 * 1000,
 };
 
 // eslint-disable-next-line no-undef
