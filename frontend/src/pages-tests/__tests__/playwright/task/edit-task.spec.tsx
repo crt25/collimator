@@ -3,7 +3,7 @@ import {
   TaskType,
   UpdateTaskDto,
 } from "@/api/collimator/generated/models";
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { TaskListPageModel } from "./task-list-page-model";
 import {
@@ -45,7 +45,9 @@ const existingTaskBinary = new Blob(['{"existing": "task"}'], {
 });
 
 test.describe("/task/[taskId]/edit", () => {
-  test.beforeEach(async ({ page, baseURL, apiURL, scratchURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL, scratchURL }) => {
+    await useAdminUser(context);
+
     updateMetaRequest = null;
     updateFileRequest = null;
     updateFileRequestHeaders = null;
@@ -97,7 +99,7 @@ test.describe("/task/[taskId]/edit", () => {
 
     await routeDummyApp(page, `${scratchURL}/edit`);
 
-    await signInAndGotoPath(page, baseURL!, `/task`);
+    await page.goto(`${baseURL}/task`);
 
     const list = await TaskListPageModel.create(page);
     await list.editItem(task.id);
