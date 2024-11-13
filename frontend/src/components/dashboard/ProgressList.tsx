@@ -38,6 +38,10 @@ const TaskState = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  * {
+    text-align: center;
+  }
 `;
 
 const TimeOnTask = styled.div``;
