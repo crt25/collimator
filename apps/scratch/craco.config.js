@@ -132,7 +132,7 @@ module.exports = {
         );
 
       // exclude them from the fallback
-      resourceRule.exclude.push(/\.(vert|frag|wav)$/);
+      resourceRule.exclude.push(/\.(vert|frag|wav|ttf|otf)$/);
 
       const babelRule = oneOfRule.oneOf.find((r) =>
         r.loader?.includes("babel"),
