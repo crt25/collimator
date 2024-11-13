@@ -59,3 +59,13 @@ a {
     color-scheme: dark;
   }
 }
+
+// prime react tooltips
+.p-tooltip {
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  border: var(--foreground-color) 1px solid;
+  border-radius: var(--border-radius);
+
+  padding: 1rem;
+}

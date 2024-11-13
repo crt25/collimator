@@ -1,6 +1,6 @@
 import { ExistingClassWithTeacherDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
-import { ClassTeacher } from "./existing-class-extended-teacher";
+import { ClassTeacher } from "./class-teacher";
 
 export class ExistingClassWithTeacher {
   readonly id: number;

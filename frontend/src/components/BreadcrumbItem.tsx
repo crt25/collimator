@@ -4,11 +4,11 @@ const BreadcrumbItem = ({
   href,
   children,
 }: {
-  href: string;
+  href?: string;
   children: React.ReactNode;
 }) => (
   <li className="breadcrumb-item">
-    <Link href={href}>{children}</Link>
+    {href ? <Link href={href}>{children}</Link> : children}
   </li>
 );
 

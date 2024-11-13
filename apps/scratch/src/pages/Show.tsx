@@ -1,12 +1,12 @@
 import Gui from "../containers/customized-scratch-containers/Gui";
 
-const Edit = () => {
+const Show = () => {
   return (
     <Gui
-      canEditTask={true}
-      isCodeTabEnabled={true}
-      isCostumesTabEnabled={true}
-      isSoundsTabEnabled={true}
+      canEditTask={false}
+      isStandaloneCodeEnabled={true}
+      isCostumesTabEnabled={false}
+      isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
@@ -15,4 +15,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default Show;

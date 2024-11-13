@@ -7,47 +7,10 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
-import ProgressList, {
-  UserProgress,
-} from "@/components/dashboard/ProgressList";
+import ProgressList from "@/components/dashboard/ProgressList";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-
-const progressList: UserProgress[] = [
-  {
-    userId: 1,
-    name: "Student 1",
-  },
-  {
-    userId: 2,
-    name: "Student 2",
-  },
-  {
-    userId: 3,
-    name: "Student 3",
-  },
-  {
-    userId: 4,
-    name: "Student 4",
-  },
-  {
-    userId: 5,
-    name: "Student 5",
-  },
-  {
-    userId: 6,
-    name: "Student 6",
-  },
-  {
-    userId: 7,
-    name: "Student 7",
-  },
-  {
-    userId: 8,
-    name: "Student 8",
-  },
-];
 
 const SessionProgress = () => {
   const router = useRouter();
@@ -89,16 +52,7 @@ const SessionProgress = () => {
           data={[klass, session]}
         >
           {([klass, session]) => (
-            <ProgressList
-              classId={klass.id}
-              sessionId={session.id}
-              fetchData={() =>
-                Promise.resolve({
-                  items: progressList,
-                  totalCount: progressList.length,
-                })
-              }
-            />
+            <ProgressList classId={klass.id} sessionId={session.id} />
           )}
         </MultiSwrContent>
       </Container>

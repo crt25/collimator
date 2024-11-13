@@ -1,5 +1,6 @@
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
@@ -47,6 +48,8 @@ const SolveTaskPage = () => {
     isLoading: isLoadingTaskFile,
   } = useTaskFile(taskId);
 
+  const createSolution = useCreateSolution();
+
   const iframeSrc = useMemo(
     () => (task ? getSolveUrl(task.type) : null),
     [task],
@@ -60,19 +63,18 @@ const SolveTaskPage = () => {
       return;
     }
 
+    if (!session || !task || !taskFile) {
+      return;
+    }
+
     const response = await embeddedApp.current.sendRequest({
       procedure: "getSubmission",
     });
 
-    // TODO: Save submission
-
-    // for now, just log the result
-    const result = response.result;
-    if (result.type === "application/json") {
-      const json = await result.text();
-      console.log(json);
-    }
-  }, []);
+    await createSolution(session.klass.id, session.id, task.id, {
+      file: response.result,
+    });
+  }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);

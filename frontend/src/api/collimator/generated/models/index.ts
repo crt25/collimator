@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from "./classStudentDto";
 export * from "./classTeacherDto";
 export * from "./classesControllerFindAllV0Params";
 export * from "./createClassDto";
