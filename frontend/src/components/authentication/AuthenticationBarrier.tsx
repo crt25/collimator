@@ -65,7 +65,7 @@ const AuthenticationBarrier = ({
   // but only do so once the authentication state has been loaded
   useEffect(() => {
     if (authenticationStateLoaded && !isAllowedToSeePage) {
-      router.push("/login?redirectUri=" + router.asPath);
+      router.replace("/login?redirectUri=" + router.asPath);
     }
   }, [authenticationStateLoaded, router, isAllowedToSeePage]);
 

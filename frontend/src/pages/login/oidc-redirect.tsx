@@ -52,7 +52,7 @@ const OpenIdConnectRedirect = () => {
           );
         }
 
-        const redirect = () => router.push(redirectPath);
+        const redirect = () => router.replace(redirectPath);
 
         if (isStudent) {
           // the (remaining) authentication logic for students is handled on the join session page

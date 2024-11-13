@@ -66,7 +66,7 @@ const JoinSession = () => {
     }
 
     if (!isStudentLocallyAuthenticated(authenticationContext)) {
-      router.push(
+      router.replace(
         `/login/student?classId=${session.klass.id}&sessionId=${session.id}&key=${teacherPublicKeyFingerprint}`,
       );
       return;
@@ -132,7 +132,7 @@ const JoinSession = () => {
     }
 
     // once this is done, the student is fully authenticated and can join the session
-    router.push(
+    router.replace(
       `/class/${klass.id}/session/${session.id}/task/${session.tasks[0].id}/solve`,
     );
   }, [klass, session, authenticationContext, router]);
