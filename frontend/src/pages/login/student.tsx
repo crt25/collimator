@@ -13,7 +13,12 @@ import { FormattedMessage } from "react-intl";
 
 const StudentLoginPage = () => {
   const router = useRouter();
-  const { sessionId, key: teacherPublicKeyFingerprint } = router.query as {
+  const {
+    classId,
+    sessionId,
+    key: teacherPublicKeyFingerprint,
+  } = router.query as {
+    classId?: string;
     sessionId?: string;
     key?: string;
   };
@@ -29,12 +34,12 @@ const StudentLoginPage = () => {
     redirectToOpenIdConnectProvider(
       openIdConnectMicrosoftServer,
       openIdConnectMicrosoftClientId,
-      `/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
+      `/class/${classId}/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
       true,
     );
-  }, [sessionId, teacherPublicKeyFingerprint]);
+  }, [classId, sessionId, teacherPublicKeyFingerprint]);
 
-  if (!sessionId || !teacherPublicKeyFingerprint) {
+  if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (
       <>
         <Header />

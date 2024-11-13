@@ -12,6 +12,31 @@ import {
   useRef,
   useState,
 } from "react";
+import ProgressSpinner from "./ProgressSpinner";
+
+const LoadingWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-color: #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const IFrameWrapper = styled.div`
+  width: 100%;
+
+  flex-grow: 1;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+`;
 
 const StyledIFrame = styled.iframe`
   width: 100%;
@@ -61,6 +86,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   ref,
 ) {
   const [iframe, setIFrame] = useState<HTMLIFrameElement | null>(null);
+  const [isAppAvailable, setIsAppAvailable] = useState<boolean>(false);
   const isIFrameLoaded = useRef<boolean>(false);
 
   const pendingRequests = useRef<{
@@ -165,10 +191,12 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
 
         iframe.style.height = `${response.result}px`;
 
+        setIsAppAvailable(true);
         if (onAppAvailable) {
           onAppAvailable();
         }
       };
+
       iframe.addEventListener("load", callback);
 
       return () => {
@@ -192,14 +220,21 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   }, []);
 
   return (
-    <StyledIFrame
-      src={src}
-      ref={getIFramRef}
-      allow="fullscreen; camera; microphone"
-      sandbox="allow-scripts allow-same-origin allow-downloads allow-forms"
-      referrerPolicy="no-referrer-when-downgrade"
-      loading="lazy"
-    />
+    <IFrameWrapper>
+      <StyledIFrame
+        src={src}
+        ref={getIFramRef}
+        allow="fullscreen; camera; microphone"
+        sandbox="allow-scripts allow-same-origin allow-downloads allow-forms"
+        referrerPolicy="no-referrer-when-downgrade"
+        loading="lazy"
+      />
+      {!isAppAvailable && (
+        <LoadingWrapper>
+          <ProgressSpinner />
+        </LoadingWrapper>
+      )}
+    </IFrameWrapper>
   );
 });
 

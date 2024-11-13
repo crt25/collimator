@@ -46,10 +46,11 @@ export class ExistingSessionExtendedDto
   @ApiProperty({
     description: "The corresponding lesson.",
     type: SessionLessonDto,
+    nullable: true,
   })
   @Type(() => SessionLessonDto)
   @Expose()
-  readonly lesson!: SessionLessonDto;
+  readonly lesson!: SessionLessonDto | null;
 
   @ApiProperty({
     description: "The session's class.",

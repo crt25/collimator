@@ -108,6 +108,7 @@ const TaskForm = ({
   });
 
   const blob = watch("blob") as Blob | undefined | null;
+  const taskType = watch("type");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="task-form">
@@ -162,11 +163,19 @@ const TaskForm = ({
         isShown={showEditTaskModal}
         setIsShown={setShowEditTaskModal}
         initialTask={blob}
+        taskType={taskType}
         onSave={(task) => {
-          setValue("blob", task, { shouldDirty: true });
-          setValue("blobChanged", true, { shouldDirty: true });
+          setValue("blob", task, { shouldDirty: true, shouldValidate: true });
+          setValue("blobChanged", true, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
         }}
       />
+      <ValidationErrorMessage>{errors.blob?.message}</ValidationErrorMessage>
+      <ValidationErrorMessage>
+        {errors.blobChanged?.message}
+      </ValidationErrorMessage>
 
       {blob && (
         <SubmitFormButton

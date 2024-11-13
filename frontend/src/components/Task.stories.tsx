@@ -3,6 +3,10 @@ import { EmbeddedAppRef } from "./EmbeddedApp";
 import Task from "./Task";
 import { useState, useRef } from "@storybook/preview-api";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
+import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 
 type Args = Omit<
   Parameters<typeof Task>[0],
@@ -21,10 +25,17 @@ const meta: MetaType<typeof Task> = {
 
 export default meta;
 
+const session = ExistingSessionExtended.fromDto(
+  getSessionsControllerFindOneV0ResponseMock(),
+);
+
+const task = ExistingTask.fromDto(getTasksControllerFindOneV0ResponseMock());
+
 export const Default = {
   args: {
-    sessionId: 1,
-    sessionName: "Introduction to React",
+    classId: 1,
+    session,
+    task,
     iframeSrc: "https://example.com",
   } as Args,
   render: (args: Args) => {
@@ -51,8 +62,9 @@ export const Default = {
 
 export const WithOpenSessionMenu = {
   args: {
-    sessionId: 1,
-    sessionName: "Introduction to React",
+    classId: 1,
+    session,
+    task,
     iframeSrc: "https://example.com",
   } as Args,
   render: (args: Args) => {

@@ -32,6 +32,7 @@ import {
 } from "./dto";
 import { TasksService } from "./tasks.service";
 import { fromQueryResults } from "../helpers";
+import { UpdateTaskFileDto } from "./dto/update-task-file.dto";
 
 @Controller("tasks")
 @ApiTags("tasks")
@@ -113,6 +114,11 @@ export class TasksController {
   }
 
   @Patch(":id/file")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    type: UpdateTaskFileDto,
+    description: "The new task file",
+  })
   @ApiCreatedResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()

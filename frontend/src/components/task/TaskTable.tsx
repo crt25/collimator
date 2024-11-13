@@ -85,9 +85,7 @@ const TaskTable = () => {
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
-  const [onDeleteConfirmation, setOnDeleteConfirmation] = useState<() => void>(
-    () => {},
-  );
+  const [taskIdToDelete, setTaskIdToDelete] = useState<number | null>(null);
   const deleteTask = useDeleteTask();
 
   const actionsTemplate = useCallback(
@@ -96,7 +94,11 @@ const TaskTable = () => {
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
-            onClick={() => router.push(`/task/${rowData.id}/edit`)}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              router.push(`/task/${rowData.id}/edit`);
+            }}
             data-testid={`task-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -110,8 +112,10 @@ const TaskTable = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item
-              onClick={() => {
-                setOnDeleteConfirmation(() => () => deleteTask(rowData.id));
+              onClick={(e) => {
+                e.stopPropagation();
+
+                setTaskIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
               data-testid={`task-${rowData.id}-delete-button`}
@@ -122,7 +126,7 @@ const TaskTable = () => {
         </Dropdown>
       </div>
     ),
-    [router, intl, deleteTask],
+    [router, intl],
   );
 
   return (
@@ -182,7 +186,9 @@ const TaskTable = () => {
       <ConfirmationModal
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={onDeleteConfirmation}
+        onConfirm={
+          taskIdToDelete ? () => deleteTask(taskIdToDelete) : undefined
+        }
         isDangerous
         messages={{
           title: messages.deleteConfirmationTitle,

@@ -1,4 +1,3 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,
@@ -8,6 +7,7 @@ import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/gene
 import { classList } from "../selectors";
 import { ClassListPageModel } from "./class-list-page-model";
 import { ExistingClassWithTeacherDto } from "@/api/collimator/generated/models";
+import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/class", () => {
   const klass: ExistingClassWithTeacherDto = {
@@ -21,7 +21,9 @@ test.describe("/class", () => {
 
   let mockResponse: ExistingClassWithTeacherDto[] = [];
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
+
     mockResponse = [
       ...getClassesControllerFindAllV0ResponseMock().slice(0, 9),
       klass,
@@ -37,7 +39,8 @@ test.describe("/class", () => {
         }),
     );
 
-    await signInAndGotoPath(page, baseURL!, "/class");
+    await page.goto(`${baseURL}/class`);
+
     await page.waitForSelector(classList);
   });
 
@@ -49,6 +52,7 @@ test.describe("/class", () => {
 
   test("can delete listed item", async ({ page: pwPage, apiURL }) => {
     const page = await ClassListPageModel.create(pwPage);
+    let wasDeleted = false;
 
     await mockUrlResponses(
       pwPage,
@@ -59,6 +63,7 @@ test.describe("/class", () => {
       },
       {
         delete: () => {
+          wasDeleted = true;
           mockResponse = mockResponse.filter((u) => u.id !== klass.id);
         },
       },
@@ -68,5 +73,8 @@ test.describe("/class", () => {
 
     // Wait for the deletion to be reflected in the UI
     await expect(page.getItemActions(klass.id)).toHaveCount(0);
+
+    // check that our delete handler was called
+    expect(wasDeleted).toBe(true);
   });
 });

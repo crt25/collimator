@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
-import { SessionClassDto } from "./session-class.dto";
 import { SessionLessonDto } from "./session-lesson.dto";
 import { IsEnum, IsNotEmpty } from "class-validator";
 
@@ -45,18 +44,11 @@ export class ExistingSessionDto
   @ApiProperty({
     description: "The lesson from which this session was created.",
     type: SessionLessonDto,
+    nullable: true,
   })
   @Type(() => SessionLessonDto)
   @Expose()
-  readonly lesson!: SessionLessonDto;
-
-  @ApiProperty({
-    description: "The session's class.",
-    type: SessionClassDto,
-  })
-  @Type(() => SessionClassDto)
-  @Expose()
-  readonly class?: SessionClassDto;
+  readonly lesson!: SessionLessonDto | null;
 
   @ApiProperty({
     description: "The list of task IDs.",

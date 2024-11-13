@@ -9,22 +9,34 @@ import { FormattedMessage } from "react-intl";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { useUser } from "@/api/collimator/hooks/users/useUser";
 
 const UserSessionProgress = () => {
   const router = useRouter();
-  const {
-    classId,
-    sessionId: sessionIdString,
-    userId: userIdString,
-  } = router.query as {
+  const { classId, sessionId, userId } = router.query as {
     classId: string;
     sessionId: string;
     userId: string;
   };
 
-  const { data: klass, error, isLoading: isLoadingClass } = useClass(classId);
-  const sessionId = parseInt(sessionIdString, 10);
-  const userId = parseInt(userIdString, 10);
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
+
+  const {
+    data: user,
+    error: userError,
+    isLoading: isLoadingUser,
+  } = useUser(userId);
 
   return (
     <>
@@ -32,16 +44,12 @@ const UserSessionProgress = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation
-            breadcrumb
-            classId={klass?.id}
-            sessionId={sessionId}
-          />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
           <SessionNavigation
             breadcrumb
             classId={klass?.id}
-            sessionId={sessionId}
-            userId={userId}
+            sessionId={session?.id}
+            user={user}
           />
         </Breadcrumbs>
         <PageHeader>
@@ -51,9 +59,9 @@ const UserSessionProgress = () => {
           />
         </PageHeader>
         <MultiSwrContent
-          errors={[error]}
-          isLoading={[isLoadingClass]}
-          data={[klass]}
+          errors={[klassError, sessionError, userError]}
+          isLoading={[isLoadingKlass, isLoadingSession, isLoadingUser]}
+          data={[klass, session, user]}
         >
           {([_klass]) => sessionId}
         </MultiSwrContent>

@@ -1,5 +1,4 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -51,7 +50,6 @@ const EditUser = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb user={user} />
         </Breadcrumbs>
-        <ClassNavigation classId={user?.id} />
         <PageHeader>
           <FormattedMessage id="EditUser.header" defaultMessage="Edit User" />
         </PageHeader>

@@ -1,4 +1,4 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,
@@ -9,7 +9,7 @@ import {
   getClassesControllerFindOneV0ResponseMock,
   getClassesControllerUpdateV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { ClassForm } from "./class-form";
+import { ClassFormPageModel } from "./class-form-page-model";
 import {
   CreateClassDto,
   ExistingClassDto,
@@ -20,35 +20,37 @@ import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/genera
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { ClassListPageModel } from "./class-list-page-model";
 
+const klass: ExistingClassWithTeacherDto =
+  getClassesControllerFindOneV0ResponseMock();
+
+const mockUsersResponse = [
+  ...getUsersControllerFindAllV0ResponseMock(),
+  // include a user for the mock response
+  {
+    id: klass.teacher.id,
+    name: "Teacher 1",
+    email: "x@y.z",
+    type: "TEACHER",
+  } as ExistingUserDto,
+];
+
+const updatedClass: ExistingClassDto = {
+  ...getClassesControllerUpdateV0ResponseMock(),
+  id: klass.id,
+  teacherId: mockUsersResponse[0].id,
+};
+
+const mockClasses: ExistingClassWithTeacherDto[] = [
+  ...getClassesControllerFindAllV0ResponseMock().slice(0, 9),
+  klass,
+];
+
+let updateRequest: CreateClassDto | null = null;
+
 test.describe("/class/{id}/edit", () => {
-  const klass: ExistingClassWithTeacherDto =
-    getClassesControllerFindOneV0ResponseMock();
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
 
-  const mockUsersResponse = [
-    ...getUsersControllerFindAllV0ResponseMock(),
-    // include a user for the mock response
-    {
-      id: klass.teacher.id,
-      name: "Teacher 1",
-      email: "x@y.z",
-      type: "TEACHER",
-    } as ExistingUserDto,
-  ];
-
-  const updatedClass: ExistingClassDto = {
-    ...getClassesControllerUpdateV0ResponseMock(),
-    id: klass.id,
-    teacherId: mockUsersResponse[0].id,
-  };
-
-  const mockClasses: ExistingClassWithTeacherDto[] = [
-    ...getClassesControllerFindAllV0ResponseMock().slice(0, 9),
-    klass,
-  ];
-
-  let updateRequest: CreateClassDto | null = null;
-
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
     updateRequest = null;
 
     // mock classes response for list
@@ -81,14 +83,14 @@ test.describe("/class/{id}/edit", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/class`);
+    await page.goto(`${baseURL}/class`);
 
     const list = await ClassListPageModel.create(page);
     await list.editItem(klass.id);
   });
 
   test("can update an existing class", async ({ page: pwPage, baseURL }) => {
-    const page = await ClassForm.create(pwPage);
+    const page = await ClassFormPageModel.create(pwPage);
 
     // expect the form to be pre-filled
 

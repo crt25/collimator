@@ -28,7 +28,7 @@ const UserDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <div>
-              <PageHeader>{user.name}</PageHeader>
+              <PageHeader>{user.name ?? user.email}</PageHeader>
               <Table bordered role="presentation">
                 <tbody>
                   <tr>

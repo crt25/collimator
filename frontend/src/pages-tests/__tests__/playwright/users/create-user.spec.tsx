@@ -1,4 +1,3 @@
-import { signInAndGotoPath } from "../authentication/authentication-helpers";
 import { expect, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
 import { CreateUserDto, UserType } from "@/api/collimator/generated/models";
@@ -8,13 +7,16 @@ import {
   getUsersControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { UserListPageModel } from "./user-list-page-model";
+import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/user/create", () => {
   const mockCreateResponse = getUsersControllerCreateV0ResponseMock();
 
   let createRequest: CreateUserDto | null = null;
 
-  test.beforeEach(async ({ page, baseURL, apiURL }) => {
+  test.beforeEach(async ({ context, page, baseURL, apiURL }) => {
+    await useAdminUser(context);
+
     createRequest = null;
 
     await mockUrlResponses(
@@ -29,7 +31,7 @@ test.describe("/user/create", () => {
       },
     );
 
-    await signInAndGotoPath(page, baseURL!, `/user`);
+    await page.goto(`${baseURL}/user`);
 
     const list = await UserListPageModel.create(page);
     await list.createItem();

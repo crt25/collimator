@@ -8,7 +8,11 @@
 import type { TaskType } from "./taskType";
 
 export interface DeletedTaskDto {
+  /** The user's unique identifier, a positive integer. */
+  creatorId: number;
   description: string;
+  /** Task file */
+  file: Blob;
   /** The task's unique identifier, a positive integer. */
   id: number;
   title: string;

@@ -7,7 +7,7 @@ import {
   FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome";
 
-const TaskListItemWrapper = styled.button`
+const TaskListItemWrapper = styled.button<{ active?: boolean }>`
   width: 100%;
   padding: 1rem 2rem;
 
@@ -23,6 +23,8 @@ const TaskListItemWrapper = styled.button`
   max-height: 4rem;
 
   background-color: var(--background-color);
+
+  text-decoration: ${({ active }) => (active ? "underline" : "none")};
 
   &:hover * {
     text-decoration: underline;
@@ -73,17 +75,19 @@ const iconByTaskStatus = (
 const TaskListItem = ({
   children,
   status,
+  active,
   onClick,
 }: {
   children: React.ReactNode;
   status: TaskStatus;
+  active?: boolean;
   onClick?: () => void;
 }) => {
   const icon = iconByTaskStatus(status);
 
   return (
     <li>
-      <TaskListItemWrapper onClick={onClick}>
+      <TaskListItemWrapper onClick={onClick} active={active}>
         <ChildWrapper>{children}</ChildWrapper>
         <IconWrapper>{icon && <FontAwesomeIcon icon={icon} />}</IconWrapper>
       </TaskListItemWrapper>

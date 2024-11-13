@@ -1,10 +1,14 @@
-import { Page } from "@playwright/test";
+import { BrowserContext, Page } from "@playwright/test";
 import { subtle, webcrypto } from "crypto";
 import { jsonResponse } from "../helpers";
+import * as fs from "fs";
 
 export const userEmail = "janedoe@example.com";
 export const issuer = "http://localhost:3000/issuer";
 export const sub = "1234567890";
+
+export const adminFile = "playwright/.auth/admin.json";
+export const studentFile = "playwright/.auth/student.json";
 
 export const generateKey = async (): Promise<
   [webcrypto.CryptoKeyPair, webcrypto.JsonWebKey]
@@ -216,4 +220,36 @@ export const signInAndGotoPath = async (
   await page.goto(url);
   await signIn(page);
   await page.waitForURL(url);
+};
+
+export const useAdminUser = async (context: BrowserContext): Promise<void> => {
+  // https://playwright.dev/docs/auth#session-storage
+  const sessionStorage = JSON.parse(fs.readFileSync(adminFile, "utf-8"));
+  await context.addInitScript((storage: Record<string, string>) => {
+    console.log(
+      "storage",
+      storage,
+      window.location.hostname,
+      window.sessionStorage,
+    );
+    if (window.location.hostname === "localhost") {
+      for (const [key, value] of Object.entries(storage)) {
+        window.sessionStorage.setItem(key, value);
+      }
+    }
+  }, sessionStorage);
+};
+
+export const useStudentUser = async (
+  context: BrowserContext,
+): Promise<void> => {
+  // https://playwright.dev/docs/auth#session-storage
+  const sessionStorage = JSON.parse(fs.readFileSync(studentFile, "utf-8"));
+  await context.addInitScript((storage: Record<string, string>) => {
+    if (window.location.hostname === "localhost") {
+      for (const [key, value] of Object.entries(storage)) {
+        window.sessionStorage.setItem(key, value);
+      }
+    }
+  }, sessionStorage);
 };

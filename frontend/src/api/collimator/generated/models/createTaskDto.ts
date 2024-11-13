@@ -9,6 +9,8 @@ import type { TaskType } from "./taskType";
 
 export interface CreateTaskDto {
   description: string;
+  /** Task file */
+  file: Blob;
   title: string;
   /** The task's type. */
   type: TaskType;

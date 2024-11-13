@@ -35,8 +35,7 @@ const EditTask = () => {
     async (formValues: TaskFormValues) => {
       if (task.data && taskFile.data) {
         if (formValues.blobChanged) {
-          console.log("blob changed", formValues.blob);
-          await updateTaskFile(task.data.id, formValues.blob);
+          await updateTaskFile(task.data.id, { file: formValues.blob });
         }
 
         await updateTask(task.data.id, {
