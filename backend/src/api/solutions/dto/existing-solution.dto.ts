@@ -1,5 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Solution } from "@prisma/client";
 import { Exclude, Expose, plainToInstance, Type } from "class-transformer";
 import { SolutionWithoutData } from "../solutions.service";
 
@@ -20,7 +19,7 @@ export class ExistingSolutionDto implements SolutionWithoutData {
 
   @ApiProperty()
   @Expose()
-  readonly studentId!: string;
+  readonly studentId!: number;
 
   @ApiProperty()
   @Expose()
