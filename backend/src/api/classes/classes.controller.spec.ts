@@ -95,7 +95,7 @@ describe("ClassesController", () => {
       sessions: [],
       teacherId: 33,
       teacher: { name: "Teacher" },
-      _count: { students: 0 },
+      students: [],
     };
     prismaMock.class.findUniqueOrThrow.mockResolvedValue(klass);
 
@@ -105,14 +105,14 @@ describe("ClassesController", () => {
     expect(result).toEqual(ExistingClassExtendedDto.fromQueryResult(klass));
     expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
       include: {
-        _count: {
-          select: { students: true },
-        },
         sessions: {
           select: { id: true },
         },
         teacher: {
           select: { id: true, name: true },
+        },
+        students: {
+          select: { id: true, pseudonym: true },
         },
       },
       where: { id: 1 },
