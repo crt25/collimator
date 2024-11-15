@@ -66,7 +66,7 @@ describe("ClassesController (e2e)", () => {
         name: defaultTeacher.name,
       },
       sessions: [],
-      studentCount: 0,
+      students: [],
     });
   });
 
