@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -24,13 +25,26 @@ import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
 import { SolutionsService } from "./solutions.service";
 import { fromQueryResults } from "../helpers";
 import { Express } from "express";
+import { AuthorizationService } from "../authorization/authorization.service";
+import {
+  NonUserRoles,
+  Roles,
+  StudentOnly,
+} from "../authentication/role.decorator";
+import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
+import { Student, User, UserType } from "@prisma/client";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
 export class SolutionsController {
-  constructor(private readonly solutionsService: SolutionsService) {}
+  constructor(
+    private readonly solutionsService: SolutionsService,
+    private authorizationService: AuthorizationService,
+  ) {}
 
   @Post()
+  @StudentOnly()
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     type: CreateSolutionDto,
@@ -40,6 +54,7 @@ export class SolutionsController {
   @ApiForbiddenResponse()
   @UseInterceptors(FileInterceptor("file"))
   async create(
+    @AuthenticatedStudent() student: Student,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
@@ -51,8 +66,7 @@ export class SolutionsController {
         ...createSolutionDto,
         sessionId,
         taskId,
-        // TODO: add studentId when authentication is implemented
-        studentId: 1,
+        studentId: student.id,
       },
       file.mimetype,
       file.buffer,
@@ -67,12 +81,21 @@ export class SolutionsController {
   @Get()
   @ApiOkResponse({ type: ExistingSolutionDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
   ): Promise<ExistingSolutionDto[]> {
+    const isAuthorized = await this.authorizationService.canListSolutions(
+      user,
+      sessionId,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     // TODO: add pagination support
-    // TODO: add authorization check
 
     const solutions = await this.solutionsService.findMany({
       where: { sessionId, taskId },
@@ -81,16 +104,28 @@ export class SolutionsController {
   }
 
   @Get(":id")
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("id", ParseIntPipe) id: SolutionId,
   ): Promise<ExistingSolutionDto> {
-    // TODO: add authorization check
+    const isAuthorized = await this.authorizationService.canViewSolution(
+      user,
+      student,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const solution = await this.solutionsService.findByIdOrThrow(
       sessionId,
       taskId,
@@ -100,16 +135,28 @@ export class SolutionsController {
   }
 
   @Get(":id/download")
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("id", ParseIntPipe) id: SolutionId,
   ): Promise<StreamableFile> {
-    // TODO: add authorization check
+    const isAuthorized = await this.authorizationService.canViewSolution(
+      user,
+      student,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const solution = await this.solutionsService.downloadByIdOrThrow(
       sessionId,
       taskId,

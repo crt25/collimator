@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { User, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
+import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,47 @@ export class UsersService {
     return this.prisma.user.update({
       data: user,
       where: { id },
+    });
+  }
+
+  async updateTeacherKey(
+    userId: UserId,
+    teacherKey: CreateKeyPairDto,
+  ): Promise<void> {
+    const publicKey = Buffer.from(teacherKey.publicKey, "utf-8");
+
+    const privateKeys = teacherKey.privateKeys.map((privateKey) => ({
+      encryptedPrivateKey: Buffer.from(
+        privateKey.encryptedPrivateKey,
+        "base64",
+      ),
+      salt: Buffer.from(privateKey.salt, "base64"),
+    }));
+
+    // Delete all private keys for this teacher
+    await this.prisma.encryptedPrivateKey.deleteMany({
+      where: { publicKey: { teacherId: userId } },
+    });
+
+    // Update the public key and add the new private keys
+
+    await this.prisma.keyPair.upsert({
+      create: {
+        publicKey,
+        publicKeyFingerprint: teacherKey.publicKeyFingerprint,
+        privateKeys: {
+          create: privateKeys,
+        },
+        teacherId: userId,
+      },
+      update: {
+        publicKey,
+        publicKeyFingerprint: teacherKey.publicKeyFingerprint,
+        privateKeys: {
+          create: privateKeys,
+        },
+      },
+      where: { teacherId: userId },
     });
   }
 
