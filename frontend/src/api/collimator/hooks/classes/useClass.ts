@@ -5,21 +5,26 @@ import {
 } from "../../generated/endpoints/classes/classes";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetClassReturnType = ExistingClassExtended;
 
-const fetchAndTransform = (id: number): Promise<GetClassReturnType> =>
-  classesControllerFindOneV0(id).then(ExistingClassExtended.fromDto);
+const fetchAndTransform = (
+  options: RequestInit,
+  id: number,
+): Promise<GetClassReturnType> =>
+  classesControllerFindOneV0(id, options).then(ExistingClassExtended.fromDto);
 
 export const useClass = (
   id?: number | string,
 ): ApiResponse<GetClassReturnType, Error> => {
   const numericId = getIdOrNaN(id);
+  const authOptions = useAuthenticationOptions();
 
   return useSWR(getClassesControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)
       ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
         new Promise<GetClassReturnType>(() => {})
-      : fetchAndTransform(numericId),
+      : fetchAndTransform(authOptions, numericId),
   );
 };

@@ -3,25 +3,47 @@ import { usersControllerUpdateV0 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 import { useRevalidateUserList } from "./useRevalidateUserList";
 import { useRevalidateUser } from "./useRevalidateUser";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { UpdateUserDto } from "../../generated/models";
 
-type Args = Parameters<typeof usersControllerUpdateV0>;
-type UpdateUserType = (...args: Args) => Promise<ExistingUser>;
+type UpdateUserType = (
+  id: number,
+  updateUserDto: UpdateUserDto,
+  authToken?: string,
+) => Promise<ExistingUser>;
 
-const fetchAndTransform: UpdateUserType = (...args) =>
-  usersControllerUpdateV0(...args).then(ExistingUser.fromDto);
+const fetchAndTransform = (
+  options: RequestInit,
+  id: number,
+  updateUserDto: UpdateUserDto,
+): ReturnType<UpdateUserType> =>
+  usersControllerUpdateV0(id, updateUserDto, options).then(
+    ExistingUser.fromDto,
+  );
 
 export const useUpdateUser = (): UpdateUserType => {
+  const authOptions = useAuthenticationOptions();
   const revalidateUser = useRevalidateUser();
   const revalidateUserList = useRevalidateUserList();
 
   return useCallback(
-    (...args: Args) =>
-      fetchAndTransform(...args).then((result) => {
+    (id, updateUserDto, authToken) =>
+      fetchAndTransform(
+        authToken
+          ? {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          : authOptions,
+        id,
+        updateUserDto,
+      ).then((result) => {
         revalidateUser(result.id, result);
         revalidateUserList();
 
         return result;
       }),
-    [revalidateUser, revalidateUserList],
+    [authOptions, revalidateUser, revalidateUserList],
   );
 };

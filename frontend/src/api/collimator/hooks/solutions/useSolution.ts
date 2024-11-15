@@ -7,6 +7,7 @@ import {
 } from "../../generated/endpoints/solutions/solutions";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
 import { fetchFile } from "@/api/fetch";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetSolutionReturnType = ExistingSolution;
 
@@ -65,6 +66,8 @@ export const useSolutionFile = (
   const numericTaskId = getIdOrNaN(taskId);
   const numericSolutionId = getIdOrNaN(id);
 
+  const authOptions = useAuthenticationOptions();
+
   return useSWR(
     getSolutionsControllerDownloadOneV0Url(
       numericClassId,
@@ -87,6 +90,7 @@ export const useSolutionFile = (
               numericSolutionId,
             ),
             {
+              ...authOptions,
               method: "GET",
             },
           ),

@@ -5,14 +5,16 @@ import {
   getSessionsControllerFindOneV0Url,
   sessionsControllerFindOneV0,
 } from "../../generated/endpoints/sessions/sessions";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetSessionReturnType = ExistingSessionExtended;
 
 const fetchByClassIdAndTransform = (
+  options: RequestInit,
   classId: number,
   sessionId: number,
 ): Promise<GetSessionReturnType> =>
-  sessionsControllerFindOneV0(classId, sessionId).then(
+  sessionsControllerFindOneV0(classId, sessionId, options).then(
     ExistingSessionExtended.fromDto,
   );
 
@@ -23,12 +25,18 @@ export const useClassSession = (
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(id);
 
+  const authOptions = useAuthenticationOptions();
+
   return useSWR(
     getSessionsControllerFindOneV0Url(numericClassId, numericSessionId),
     () =>
       isNaN(numericClassId) || isNaN(numericSessionId)
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
           new Promise<GetSessionReturnType>(() => {})
-        : fetchByClassIdAndTransform(numericClassId, numericSessionId),
+        : fetchByClassIdAndTransform(
+            authOptions,
+            numericClassId,
+            numericSessionId,
+          ),
   );
 };

@@ -6,26 +6,37 @@ import {
 import { ExistingTask } from "../../models/tasks/existing-task";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useRevalidateTask } from "./useRevalidateTask";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { UpdateTaskDto } from "../../generated/models";
 
-type Args = Parameters<typeof tasksControllerUpdateV0>;
-type UpdateTaskType = (...args: Args) => Promise<ExistingTask>;
+type UpdateTaskType = (
+  id: number,
+  updateTaskDto: UpdateTaskDto,
+) => Promise<ExistingTask>;
 
-const fetchAndTransform: UpdateTaskType = (...args) =>
-  tasksControllerUpdateV0(...args).then(ExistingTask.fromDto);
+const fetchAndTransform = (
+  options: RequestInit,
+  id: number,
+  updateTaskDto: UpdateTaskDto,
+): ReturnType<UpdateTaskType> =>
+  tasksControllerUpdateV0(id, updateTaskDto, options).then(
+    ExistingTask.fromDto,
+  );
 
 export const useUpdateTask = (): UpdateTaskType => {
+  const authOptions = useAuthenticationOptions();
   const revalidateTask = useRevalidateTask();
   const revalidateTaskList = useRevalidateTaskList();
 
   return useCallback(
-    (...args: Args) =>
-      fetchAndTransform(...args).then((result) => {
+    (id, updateTaskDto) =>
+      fetchAndTransform(authOptions, id, updateTaskDto).then((result) => {
         revalidateTask(result.id, result);
         revalidateTaskList();
 
         return result;
       }),
-    [revalidateTask, revalidateTaskList],
+    [authOptions, revalidateTask, revalidateTaskList],
   );
 };
 

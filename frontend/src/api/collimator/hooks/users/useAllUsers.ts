@@ -11,21 +11,30 @@ import {
   usersControllerFindAllV0,
 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetUsersReturnType = ExistingUser[];
 
-const fetchAndTransform = (): Promise<GetUsersReturnType> =>
-  usersControllerFindAllV0().then((data) => fromDtos(ExistingUser, data));
-
-export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> =>
-  // use the URL with the params as the first entry in the key for easier invalidation
-  useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
-    fetchAndTransform(),
+const fetchAndTransform = (options: RequestInit): Promise<GetUsersReturnType> =>
+  usersControllerFindAllV0(options).then((data) =>
+    fromDtos(ExistingUser, data),
   );
+
+export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  // use the URL with the params as the first entry in the key for easier invalidation
+  return useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions),
+  );
+};
 
 export const useAllUsersLazyTable = (
   _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> =>
-  useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
-    fetchAndTransform().then(transformToLazyTableResult),
+): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  return useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions).then(transformToLazyTableResult),
   );
+};
