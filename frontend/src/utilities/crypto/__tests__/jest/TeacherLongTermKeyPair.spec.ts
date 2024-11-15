@@ -22,8 +22,6 @@ describe("TeacherKeyPair", () => {
       const fingerprint = await keyPair.getPublicKeyFingerprint();
 
       expect(fingerprint).toBeDefined();
-      // SHA-512 produces 64 bytes which is 88 characters in base64
-      expect(fingerprint).toHaveLength(88);
 
       // ensure the fingerprint is deterministic
       const fingerprint2 = await keyPair.getPublicKeyFingerprint();

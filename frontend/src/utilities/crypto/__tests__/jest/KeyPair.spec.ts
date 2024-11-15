@@ -21,10 +21,13 @@ const generateKeyPair = (type: KeyType): Promise<KeyPair> =>
     ? generateStudentKeyPair()
     : generateTeacherKeyPair();
 
-const createKeyPair = (type: KeyType, keyPair: CryptoKeyPair): KeyPair =>
+const createKeyPair = (
+  type: KeyType,
+  keyPair: CryptoKeyPair,
+): Promise<KeyPair> =>
   type === "TeacherKeyPair"
-    ? new TeacherLongTermKeyPair(crypto, keyPair)
-    : new StudentKeyPair(crypto, keyPair);
+    ? TeacherLongTermKeyPair.create(crypto, keyPair)
+    : StudentKeyPair.create(crypto, keyPair);
 
 describe("KeyPair", () => {
   describe.each(allKeyTypes)("%s", (type) => {
@@ -55,7 +58,7 @@ describe("KeyPair", () => {
       it("exports and imports the key pair", async () => {
         const keyPair = await generateKeyPair(type);
         const serializedKeyPair = await keyPair.exportUnprotected();
-        const importedKeyPair = createKeyPair(
+        const importedKeyPair = await createKeyPair(
           type,
           await KeyPair.importUnprotected(crypto, serializedKeyPair),
         );
@@ -135,5 +138,49 @@ describe("KeyPair", () => {
         "attacker fingerprint",
       ),
     ).rejects.toThrow();
+  });
+
+  describe("encrypt and decrypt using private key", () => {
+    it("can encrypt and decrypt a binary message", async () => {
+      const key = await generateTeacherKeyPair();
+      const plainText = new Uint8Array([1, 2, 3, 4, 5]);
+      const cipherText1 = await key.encrypt(plainText);
+      const cipherText2 = await key.encrypt(plainText);
+
+      // dummy test to ensure the encryption is not a no-op
+      expect(cipherText1).not.toEqual(plainText);
+      expect(cipherText2).not.toEqual(plainText);
+
+      // encryption must be randomized to be secure under IND-CPA
+      expect(cipherText1).not.toEqual(cipherText2);
+
+      // decryption must return the original plaintext
+      const decrypted = new Uint8Array(await key.decrypt(cipherText1));
+      expect(decrypted).toEqual(plainText);
+    });
+
+    it("can encrypt and decrypt a string", async () => {
+      const key = await generateTeacherKeyPair();
+      const plainText = JSON.stringify({
+        some: "content",
+        that: {
+          has: [{ nested: "values" }],
+        },
+      });
+
+      const cipherText1 = await key.encryptString(plainText);
+      const cipherText2 = await key.encryptString(plainText);
+
+      // dummy test to ensure the encryption is not a no-op
+      expect(cipherText1).not.toEqual(plainText);
+      expect(cipherText2).not.toEqual(plainText);
+
+      // encryption must be randomized to be secure under IND-CPA
+      expect(cipherText1).not.toEqual(cipherText2);
+
+      // decryption must return the original plaintext
+      const decrypted = await key.decryptString(cipherText1);
+      expect(decrypted).toEqual(plainText);
+    });
   });
 });
