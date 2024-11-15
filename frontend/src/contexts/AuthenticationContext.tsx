@@ -27,21 +27,13 @@ type Unauthenticated = AuthenticationVersion1 & {
   role: undefined;
 };
 
-type TeacherAuthenticated = AuthenticationVersion1 & {
+type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: string;
   name: string;
   email: string;
-  role: UserRole.teacher;
+  role: UserRole.teacher | UserRole.admin;
   keyPair: TeacherLongTermKeyPair;
-};
-
-type AdminAuthenticated = AuthenticationVersion1 & {
-  idToken: string;
-  authenticationToken: string;
-  name: string;
-  email: string;
-  role: Exclude<UserRole, UserRole.student | UserRole.teacher>;
 };
 
 type StudentLocallyAuthenticated = AuthenticationVersion1 & {
@@ -64,15 +56,13 @@ type StudentAuthenticated = Omit<
 
 export type AuthenticationContextType =
   | Unauthenticated
-  | TeacherAuthenticated
-  | AdminAuthenticated
+  | AdminOrTeacherAuthenticated
   | StudentLocallyAuthenticated
   | StudentAuthenticated;
 
 type SerializedAuthenticationContextTypeV1 =
   | Unauthenticated
-  | SerializedKeyPair<TeacherAuthenticated>
-  | AdminAuthenticated
+  | SerializedKeyPair<AdminOrTeacherAuthenticated>
   | StudentLocallyAuthenticated
   | SerializedKeyPair<StudentAuthenticated>;
 
@@ -150,13 +140,15 @@ export const deserializeAuthenticationContext = async (
     keyPair,
   );
 
-  return rest.role === UserRole.teacher
-    ? {
-        ...rest,
-        keyPair: new TeacherLongTermKeyPair(crypto, importedCryptoKeyPair),
-      }
-    : {
-        ...rest,
-        keyPair: new StudentKeyPair(crypto, importedCryptoKeyPair),
-      };
+  if (rest.role === UserRole.student) {
+    return {
+      ...rest,
+      keyPair: await StudentKeyPair.create(crypto, importedCryptoKeyPair),
+    };
+  }
+
+  return {
+    ...rest,
+    keyPair: await TeacherLongTermKeyPair.create(crypto, importedCryptoKeyPair),
+  };
 };

@@ -8,15 +8,58 @@ import {
   openIdConnectMicrosoftServer,
 } from "@/utilities/constants";
 import Link from "next/link";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
 import { PasswordDerivedKey } from "@/utilities/crypto/PasswordDerivedKey";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { UserRole } from "@/types/user/user-role";
+import { useAuthenticateUser } from "@/api/collimator/hooks/authentication/useAuthenticateUser";
+import {
+  AuthenticationProvider,
+  AuthenticationResponseDto,
+  UserType,
+} from "@/api/collimator/generated/models";
+import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
+import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
+import UserSignInForm, {
+  UserSignInFormValues,
+} from "@/components/authentication/UserSignInForm";
+import { UseFormSetError } from "react-hook-form";
+
+class DecryptionError extends Error {
+  constructor() {
+    super("Decryption failed");
+  }
+}
+
+class NoBockupPasswordError extends Error {
+  constructor() {
+    super("No backup password provided");
+  }
+}
+
+const messages = defineMessages({
+  submit: {
+    id: "OpenIdConnectRedirect.signInForm.submit",
+    defaultMessage: "Sign In",
+  },
+  backupPasswordRequired: {
+    id: "OpenIdConnectRedirect.signInForm.backupPasswordRequired",
+    defaultMessage: "A backup password is required",
+  },
+  decryptionFailed: {
+    id: "OpenIdConnectRedirect.signInForm.decryptionFailed",
+    defaultMessage: "Decryption failed, try a different password.",
+  },
+  unknownError: {
+    id: "OpenIdConnectRedirect.signInForm.unknownError",
+    defaultMessage: "An unknown error occurred",
+  },
+});
 
 const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // if the email is not verified, return undefined
@@ -28,10 +71,19 @@ const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
 
 const OpenIdConnectRedirect = () => {
   const router = useRouter();
+  const intl = useIntl();
   const authenticationStarted = useRef(false);
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
+  const [userSignInState, setUserSignInState] = useState<{
+    idToken: string;
+    redirectPath: string;
+    authResponse: AuthenticationResponseDto;
+  } | null>(null);
 
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
+
+  const authenticateUser = useAuthenticateUser();
+  const updateUser = useUpdateUser();
 
   useEffect(() => {
     // prevent multiple authentication attempts. usually this should not happen but it seems
@@ -52,8 +104,6 @@ const OpenIdConnectRedirect = () => {
           );
         }
 
-        const redirect = () => router.replace(redirectPath);
-
         if (isStudent) {
           // the (remaining) authentication logic for students is handled on the join session page
           // we do not need to authenticate against the collimator backend
@@ -66,8 +116,7 @@ const OpenIdConnectRedirect = () => {
             name,
           });
 
-          await redirect();
-
+          await router.replace(redirectPath);
           return;
         }
         // this is the cause of slightly increased risk of the student's identity being tracked
@@ -77,67 +126,12 @@ const OpenIdConnectRedirect = () => {
 
         // we authenticate against the collimator backend using the id token
 
-        // from this we get
-        // 1) an authentication token
-        // 2) a role
-        const authenticationToken =
-          "implement authentication against the collimator backend";
-        const role = UserRole.teacher;
-
-        if (role !== UserRole.teacher) {
-          // if we are not a teacher, we simply store the auth token and role
-          updateAuthenticationContext({
-            version: latestAuthenticationContextVersion,
-            idToken: idToken,
-            authenticationToken,
-            role,
-            email,
-            name,
-          });
-
-          await redirect();
-          return;
-        }
-        // AND if the role is teacher
-        // 3) the user specific salt
-        // 4) the teacher's long term public key
-        // 5) the encrypted teacher long term private key
-
-        const salt = new Uint8Array(16);
-        const passwordKey = await PasswordDerivedKey.derive(
-          window.crypto.subtle,
-          "password",
-          salt,
-        );
-
-        // replace this once the backend is connected
-        const tempTeacherKeyPair = await TeacherLongTermKeyPair.generate(
-          window.crypto.subtle,
-        );
-
-        const [encryptedPrivateKey, publicKey] = await Promise.all([
-          tempTeacherKeyPair.exportPrivateKey(passwordKey),
-          tempTeacherKeyPair.exportPublicKey(),
-        ]);
-
-        const teacherKeyPair = await TeacherLongTermKeyPair.importKeyPair(
-          window.crypto.subtle,
-          encryptedPrivateKey,
-          publicKey,
-          passwordKey,
-        );
-
-        updateAuthenticationContext({
-          version: latestAuthenticationContextVersion,
+        const authResponse = await authenticateUser({
+          authenticationProvider: AuthenticationProvider.microsoft,
           idToken: idToken,
-          authenticationToken,
-          role,
-          email,
-          name,
-          keyPair: teacherKeyPair,
         });
 
-        await redirect();
+        setUserSignInState({ authResponse, idToken, redirectPath });
       })
       .catch((e) => {
         console.error("Authentication failed", e);
@@ -147,36 +141,261 @@ const OpenIdConnectRedirect = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const tryUserSignIn = useCallback(
+    async (
+      idToken: string,
+      redirectPath: string,
+      authResponse: AuthenticationResponseDto,
+      userProvidedPassword: string,
+      userProvidedBackupPassword?: string,
+    ) => {
+      const {
+        id: userId,
+        name: userName,
+        email: userEmail,
+        authenticationToken,
+        type,
+        keyPair,
+      } = authResponse;
+
+      if (
+        authResponse.type !== UserType.ADMIN &&
+        authResponse.type !== UserType.TEACHER
+      ) {
+        throw new Error(`Unsupported user type: ${authResponse.type}`);
+      }
+
+      const crypto = window.crypto.subtle;
+      let teacherKeyPair: TeacherLongTermKeyPair;
+
+      if (keyPair === null) {
+        if (!userProvidedBackupPassword) {
+          throw new NoBockupPasswordError();
+        }
+
+        // this is the first time the teacher is logging in, create a new key pair
+
+        teacherKeyPair = await TeacherLongTermKeyPair.generate(
+          window.crypto.subtle,
+        );
+
+        const salt1 = PasswordDerivedKey.generateSalt();
+        const pwKey1 = await PasswordDerivedKey.derive(
+          crypto,
+          userProvidedPassword,
+          salt1,
+        );
+
+        const salt2 = PasswordDerivedKey.generateSalt();
+        const pwKey2 = await PasswordDerivedKey.derive(
+          crypto,
+          userProvidedBackupPassword,
+          salt2,
+        );
+
+        const privateKey1 = await teacherKeyPair.exportPrivateKey(pwKey1);
+        const privateKey2 = await teacherKeyPair.exportPrivateKey(pwKey2);
+
+        const publicKey = await teacherKeyPair.exportPublicKey();
+        const fingerprint = await teacherKeyPair.getPublicKeyFingerprint();
+
+        await updateUser(
+          userId,
+          {
+            name: userName,
+            email: userEmail,
+            type,
+            key: {
+              publicKey: JSON.stringify(publicKey),
+              publicKeyFingerprint: fingerprint,
+              privateKeys: [
+                {
+                  salt: encodeBase64(salt1),
+                  encryptedPrivateKey: encodeBase64(privateKey1),
+                },
+                {
+                  salt: encodeBase64(salt2),
+                  encryptedPrivateKey: encodeBase64(privateKey2),
+                },
+              ],
+            },
+          },
+          // explicitly set the authentication token because in the local application state
+          // the user is not authenticated yet
+          authenticationToken,
+        );
+      } else {
+        // the teacher has logged in before, decrypt the private key
+        const { publicKey: publicKeyString, privateKeys } = keyPair;
+        const publicKey = JSON.parse(publicKeyString);
+
+        // try to decrypt all private keys with the password
+        const maybeDecryptedPrivateKeys = await Promise.all(
+          privateKeys.map(async ({ salt, encryptedPrivateKey }) => {
+            const passwordKey = await PasswordDerivedKey.derive(
+              crypto,
+              userProvidedPassword,
+              decodeBase64(salt),
+            );
+
+            try {
+              const key = await TeacherLongTermKeyPair.importKeyPair(
+                crypto,
+                decodeBase64(encryptedPrivateKey),
+                publicKey,
+                passwordKey,
+              );
+
+              return key;
+            } catch {
+              // decryption failed - most likely due to an incorrect password
+              return null;
+            }
+          }),
+        );
+
+        // find the first key that was successfully decrypted
+        const decryptedKeyPair = maybeDecryptedPrivateKeys.find(
+          (key) => key !== null,
+        );
+
+        if (!decryptedKeyPair) {
+          throw new DecryptionError();
+        }
+
+        teacherKeyPair = decryptedKeyPair;
+      }
+
+      updateAuthenticationContext({
+        version: latestAuthenticationContextVersion,
+        idToken: idToken,
+        authenticationToken,
+        role: UserRole.teacher,
+        email: userEmail,
+        name: userName || userEmail,
+        keyPair: teacherKeyPair,
+      });
+
+      await router.replace(redirectPath);
+    },
+    [router, updateAuthenticationContext, updateUser],
+  );
+
+  const onSubmitSignInForm = useCallback(
+    (
+      data: UserSignInFormValues,
+      setError: UseFormSetError<UserSignInFormValues>,
+    ) => {
+      if (!userSignInState) {
+        console.error(
+          "User sign in state not set when submitting the user sign-in form",
+        );
+
+        setError("password", {
+          type: "custom",
+          message: intl.formatMessage(messages.unknownError),
+        });
+
+        return;
+      }
+
+      tryUserSignIn(
+        userSignInState.idToken,
+        userSignInState.redirectPath,
+        userSignInState.authResponse,
+        data.password,
+        data.backupPassword,
+      ).catch((e) => {
+        if (e instanceof DecryptionError) {
+          setError("password", {
+            type: "custom",
+            message: intl.formatMessage(messages.decryptionFailed),
+          });
+        } else if (e instanceof NoBockupPasswordError) {
+          setError("backupPassword", {
+            type: "custom",
+            message: intl.formatMessage(messages.backupPasswordRequired),
+          });
+        } else {
+          console.error("Error during user sign in", e);
+
+          setError("password", {
+            type: "custom",
+            message: intl.formatMessage(messages.unknownError),
+          });
+        }
+      });
+    },
+    [intl, tryUserSignIn, userSignInState],
+  );
+
+  if (authenticationFailed) {
+    return (
+      <>
+        <Header />
+        <Container>
+          <PageHeader>
+            <FormattedMessage
+              id="OpenIdConnectRedirect.authenticationFailed"
+              defaultMessage="Authentication failed"
+            />
+          </PageHeader>
+          <Link href="/login">
+            <FormattedMessage
+              id="OpenIdConnectRedirect.retry"
+              defaultMessage="Retry"
+            />
+          </Link>
+        </Container>
+      </>
+    );
+  }
+
+  if (userSignInState !== null) {
+    return (
+      <>
+        <Header />
+        <Container>
+          <PageHeader>
+            <FormattedMessage
+              id="OpenIdConnectRedirect.userSignInHeading"
+              defaultMessage="User Sign In"
+            />
+          </PageHeader>
+          <p>
+            {userSignInState.authResponse.keyPair ? (
+              <FormattedMessage
+                id="OpenIdConnectRedirect.userFirstTimeSignInDescription"
+                defaultMessage="The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
+              />
+            ) : (
+              <FormattedMessage
+                id="OpenIdConnectRedirect.userSignInDescription"
+                defaultMessage="The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
+              />
+            )}
+          </p>
+          <UserSignInForm
+            submitMessage={messages.submit}
+            onSubmit={onSubmitSignInForm}
+            showBackupPassword={userSignInState.authResponse.keyPair === null}
+          />
+        </Container>
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
       <Container>
-        {authenticationFailed ? (
-          <>
-            <PageHeader>
-              <FormattedMessage
-                id="OpenIdConnectRedirect.authenticationFailed"
-                defaultMessage="Authentication failed"
-              />
-            </PageHeader>
-            <Link href="/login">
-              <FormattedMessage
-                id="OpenIdConnectRedirect.retry"
-                defaultMessage="Retry"
-              />
-            </Link>
-          </>
-        ) : (
-          <>
-            <PageHeader>
-              <FormattedMessage
-                id="OpenIdConnectRedirect.authenticating"
-                defaultMessage="You are being authenticated..."
-              />
-            </PageHeader>
-            <ProgressSpinner />
-          </>
-        )}
+        <PageHeader>
+          <FormattedMessage
+            id="OpenIdConnectRedirect.authenticating"
+            defaultMessage="You are being authenticated..."
+          />
+        </PageHeader>
+        <ProgressSpinner />
       </Container>
     </>
   );

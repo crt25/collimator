@@ -1,5 +1,5 @@
+import { StorybookDecorator } from "@/__tests__/typing";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import { StorybookDecorator } from "../typing";
 
 const buildDecorator = (key: string): StorybookDecorator =>
   function StoryWithAuthentication(Story, args) {
