@@ -1,8 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class StudentAuthenticationRequestDto {
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     description:
       "The teacher-assigned pseudonym for the student. This is a the student's real identity but encrypted and encoded in Base64.",

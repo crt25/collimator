@@ -9,7 +9,7 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 
 export type GetClassReturnType = ExistingClassExtended;
 
-const fetchAndTransform = (
+export const fetchSingleClassAndTransform = (
   options: RequestInit,
   id: number,
 ): Promise<GetClassReturnType> =>
@@ -25,6 +25,6 @@ export const useClass = (
     isNaN(numericId)
       ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
         new Promise<GetClassReturnType>(() => {})
-      : fetchAndTransform(authOptions, numericId),
+      : fetchSingleClassAndTransform(authOptions, numericId),
   );
 };

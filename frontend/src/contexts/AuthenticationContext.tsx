@@ -1,4 +1,5 @@
 import { UserRole } from "@/types/user/user-role";
+import EphemeralKey from "@/utilities/crypto/EphemeralKey";
 import KeyPair from "@/utilities/crypto/KeyPair";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
@@ -27,16 +28,18 @@ type Unauthenticated = AuthenticationVersion1 & {
   role: undefined;
 };
 
-type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
+export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: string;
+  userId: number;
   name: string;
   email: string;
   role: UserRole.teacher | UserRole.admin;
   keyPair: TeacherLongTermKeyPair;
+  keyPairId: number;
 };
 
-type StudentLocallyAuthenticated = AuthenticationVersion1 & {
+export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: undefined;
   name: string;
@@ -44,7 +47,7 @@ type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   role: UserRole.student;
 };
 
-type StudentAuthenticated = Omit<
+export type StudentAuthenticated = Omit<
   StudentLocallyAuthenticated,
   "authenticationToken"
 > & {
@@ -52,6 +55,7 @@ type StudentAuthenticated = Omit<
   sessionId: number;
   authenticationToken: string;
   keyPair: StudentKeyPair;
+  ephemeralKey: EphemeralKey;
 };
 
 export type AuthenticationContextType =
@@ -96,6 +100,13 @@ export const isStudentAuthenticated = (
   authContext.version === latestAuthenticationContextVersion &&
   authContext.role === UserRole.student &&
   authContext.idToken !== undefined;
+
+export const isFullyAuthenticated = (
+  authContext: AuthenticationContextType,
+): authContext is AdminOrTeacherAuthenticated | StudentAuthenticated =>
+  authContext.version === latestAuthenticationContextVersion &&
+  authContext.idToken !== undefined &&
+  authContext.authenticationToken !== undefined;
 
 export const authenticationContextDefaultValue: AuthenticationContextType = {
   version: latestAuthenticationContextVersion,

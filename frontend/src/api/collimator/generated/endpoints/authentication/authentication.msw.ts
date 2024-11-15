@@ -10,8 +10,20 @@ import { HttpResponse, delay, http } from "msw";
 import { UserType } from "../../models";
 import type {
   AuthenticationResponseDto,
+  AuthenticationTokenDto,
+  PublicKeyDto,
   StudentAuthenticationResponseDto,
 } from "../../models";
+
+export const getAuthenticationControllerFindPublicKeyV0ResponseMock = (
+  overrideResponse: Partial<PublicKeyDto> = {},
+): PublicKeyDto => ({
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  id: faker.number.int({ min: undefined, max: undefined }),
+  publicKey: faker.word.sample(),
+  teacherId: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
 
 export const getAuthenticationControllerLoginV0ResponseMock = (
   overrideResponse: Partial<AuthenticationResponseDto> = {},
@@ -47,8 +59,38 @@ export const getAuthenticationControllerLoginStudentV0ResponseMock = (
   ...overrideResponse,
 });
 
-export const getAuthenticationControllerWebsocketTokenV0ResponseMock =
-  (): string => faker.word.sample();
+export const getAuthenticationControllerWebsocketTokenV0ResponseMock = (
+  overrideResponse: Partial<AuthenticationTokenDto> = {},
+): AuthenticationTokenDto => ({
+  token: faker.word.sample(),
+  ...overrideResponse,
+});
+
+export const getAuthenticationControllerFindPublicKeyV0MockHandler = (
+  overrideResponse?:
+    | PublicKeyDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<PublicKeyDto> | PublicKeyDto),
+) => {
+  return http.get(
+    "*/api/v0/authentication/public-key/:fingerprint",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getAuthenticationControllerFindPublicKeyV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
 
 export const getAuthenticationControllerLoginV0MockHandler = (
   overrideResponse?:
@@ -100,10 +142,10 @@ export const getAuthenticationControllerLoginStudentV0MockHandler = (
 
 export const getAuthenticationControllerWebsocketTokenV0MockHandler = (
   overrideResponse?:
-    | string
+    | AuthenticationTokenDto
     | ((
         info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<string> | string),
+      ) => Promise<AuthenticationTokenDto> | AuthenticationTokenDto),
 ) => {
   return http.post("*/api/v0/authentication/websocket-token", async (info) => {
     await delay(1000);
@@ -121,6 +163,7 @@ export const getAuthenticationControllerWebsocketTokenV0MockHandler = (
   });
 };
 export const getAuthenticationMock = () => [
+  getAuthenticationControllerFindPublicKeyV0MockHandler(),
   getAuthenticationControllerLoginV0MockHandler(),
   getAuthenticationControllerLoginStudentV0MockHandler(),
   getAuthenticationControllerWebsocketTokenV0MockHandler(),

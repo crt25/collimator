@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { User, Prisma } from "@prisma/client";
+import { User, Prisma, KeyPair } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
@@ -30,7 +30,7 @@ export class UsersService {
   async updateTeacherKey(
     userId: UserId,
     teacherKey: CreateKeyPairDto,
-  ): Promise<void> {
+  ): Promise<KeyPair> {
     const publicKey = Buffer.from(teacherKey.publicKey, "utf-8");
 
     const privateKeys = teacherKey.privateKeys.map((privateKey) => ({
@@ -48,7 +48,7 @@ export class UsersService {
 
     // Update the public key and add the new private keys
 
-    await this.prisma.keyPair.upsert({
+    return await this.prisma.keyPair.upsert({
       create: {
         publicKey,
         publicKeyFingerprint: teacherKey.publicKeyFingerprint,

@@ -3,10 +3,6 @@ import PageHeader from "@/components/PageHeader";
 import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { authenticate } from "@/utilities/authentication/openid-connect";
-import {
-  openIdConnectMicrosoftClientId,
-  openIdConnectMicrosoftServer,
-} from "@/utilities/constants";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
@@ -23,12 +19,12 @@ import {
   AuthenticationResponseDto,
   UserType,
 } from "@/api/collimator/generated/models";
-import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import UserSignInForm, {
   UserSignInFormValues,
 } from "@/components/authentication/UserSignInForm";
 import { UseFormSetError } from "react-hook-form";
+import { useUpdateUserKey } from "@/api/collimator/hooks/users/useUpdateUserKey";
 
 class DecryptionError extends Error {
   constructor() {
@@ -83,7 +79,7 @@ const OpenIdConnectRedirect = () => {
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
 
   const authenticateUser = useAuthenticateUser();
-  const updateUser = useUpdateUser();
+  const updateUserKey = useUpdateUserKey();
 
   useEffect(() => {
     // prevent multiple authentication attempts. usually this should not happen but it seems
@@ -93,7 +89,7 @@ const OpenIdConnectRedirect = () => {
     }
 
     authenticationStarted.current = true;
-    authenticate(openIdConnectMicrosoftServer, openIdConnectMicrosoftClientId)
+    authenticate()
       .then(async ({ idToken, userInfo, isStudent, redirectPath }) => {
         const email = getEmailFromClaims(userInfo);
         const name = getNameFromUserInfo(userInfo);
@@ -125,7 +121,6 @@ const OpenIdConnectRedirect = () => {
         // students to the collimator backend
 
         // we authenticate against the collimator backend using the id token
-
         const authResponse = await authenticateUser({
           authenticationProvider: AuthenticationProvider.microsoft,
           idToken: idToken,
@@ -154,8 +149,8 @@ const OpenIdConnectRedirect = () => {
         name: userName,
         email: userEmail,
         authenticationToken,
-        type,
         keyPair,
+        type,
       } = authResponse;
 
       if (
@@ -167,6 +162,7 @@ const OpenIdConnectRedirect = () => {
 
       const crypto = window.crypto.subtle;
       let teacherKeyPair: TeacherLongTermKeyPair;
+      let keyPairId: number;
 
       if (keyPair === null) {
         if (!userProvidedBackupPassword) {
@@ -199,12 +195,9 @@ const OpenIdConnectRedirect = () => {
         const publicKey = await teacherKeyPair.exportPublicKey();
         const fingerprint = await teacherKeyPair.getPublicKeyFingerprint();
 
-        await updateUser(
+        keyPairId = await updateUserKey(
           userId,
           {
-            name: userName,
-            email: userEmail,
-            type,
             key: {
               publicKey: JSON.stringify(publicKey),
               publicKeyFingerprint: fingerprint,
@@ -264,21 +257,24 @@ const OpenIdConnectRedirect = () => {
         }
 
         teacherKeyPair = decryptedKeyPair;
+        keyPairId = keyPair.id;
       }
 
       updateAuthenticationContext({
         version: latestAuthenticationContextVersion,
         idToken: idToken,
         authenticationToken,
-        role: UserRole.teacher,
+        userId,
+        role: type === UserType.ADMIN ? UserRole.admin : UserRole.teacher,
         email: userEmail,
         name: userName || userEmail,
         keyPair: teacherKeyPair,
+        keyPairId,
       });
 
       await router.replace(redirectPath);
     },
-    [router, updateAuthenticationContext, updateUser],
+    [router, updateAuthenticationContext, updateUserKey],
   );
 
   const onSubmitSignInForm = useCallback(
@@ -365,13 +361,13 @@ const OpenIdConnectRedirect = () => {
           <p>
             {userSignInState.authResponse.keyPair ? (
               <FormattedMessage
-                id="OpenIdConnectRedirect.userFirstTimeSignInDescription"
-                defaultMessage="The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
+                id="OpenIdConnectRedirect.userSignInDescription"
+                defaultMessage="The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
               />
             ) : (
               <FormattedMessage
-                id="OpenIdConnectRedirect.userSignInDescription"
-                defaultMessage="The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
+                id="OpenIdConnectRedirect.userFirstTimeSignInDescription"
+                defaultMessage="The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
               />
             )}
           </p>

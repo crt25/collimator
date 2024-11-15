@@ -27,18 +27,8 @@ export const useUpdateUser = (): UpdateUserType => {
   const revalidateUserList = useRevalidateUserList();
 
   return useCallback(
-    (id, updateUserDto, authToken) =>
-      fetchAndTransform(
-        authToken
-          ? {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            }
-          : authOptions,
-        id,
-        updateUserDto,
-      ).then((result) => {
+    (id, updateUserDto) =>
+      fetchAndTransform(authOptions, id, updateUserDto).then((result) => {
         revalidateUser(result.id, result);
         revalidateUserList();
 

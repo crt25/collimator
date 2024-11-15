@@ -4,7 +4,7 @@ import {
   DataTableFilterEvent,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import Tag from "@/components/Tag";
@@ -17,10 +17,12 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { TableMessages } from "@/i18n/table-messages";
 import { useRouter } from "next/router";
 import { useAllClassSessionsLazyTable } from "@/api/collimator/hooks/sessions/useAllClassSessions";
-import SwrContent from "../SwrContent";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import ConfirmationModal from "../modals/ConfirmationModal";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import MultiSwrContent from "../MultiSwrContent";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -63,11 +65,16 @@ const messages = defineMessages({
     id: "SessionList.deleteConfirmation.confirm",
     defaultMessage: "Delete Session",
   },
+  copySessionLink: {
+    id: "SessionList.copySessionLink",
+    defaultMessage: "Copy Session Link",
+  },
 });
 
 const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
+  const authenticationContext = useContext(AuthenticationContext);
 
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
@@ -82,6 +89,12 @@ const SessionList = ({ classId }: { classId: number }) => {
       },
     },
   });
+
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
 
   const { data, isLoading, error } = useAllClassSessionsLazyTable(
     classId,
@@ -175,21 +188,44 @@ const SessionList = ({ classId }: { classId: number }) => {
                 setSessionIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
-              data-testid={`task-${rowData.id}-delete-button`}
+              data-testid={`session-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </Dropdown.Item>
+            {klass &&
+              "userId" in authenticationContext &&
+              klass.teacher.id === authenticationContext.userId && (
+                <Dropdown.Item
+                  onClick={async (e) => {
+                    e.stopPropagation();
+
+                    const fingerprint =
+                      await authenticationContext.keyPair.getPublicKeyFingerprint();
+
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
+                    );
+                  }}
+                  data-testid={`session-${rowData.id}-delete-button`}
+                >
+                  {intl.formatMessage(messages.copySessionLink)}
+                </Dropdown.Item>
+              )}
           </Dropdown.Menu>
         </Dropdown>
       </div>
     ),
-    [classId, intl, router],
+    [classId, intl, router, authenticationContext, klass],
   );
 
   return (
     <SessionListWrapper data-testid="session-list">
-      <SwrContent data={data} isLoading={isLoading} error={error}>
-        {(data) => (
+      <MultiSwrContent
+        data={[data, klass]}
+        isLoading={[isLoading, isLoadingKlass]}
+        errors={[error, klassError]}
+      >
+        {([data]) => (
           <DataTable
             value={data.items}
             lazy
@@ -265,7 +301,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             />
           </DataTable>
         )}
-      </SwrContent>
+      </MultiSwrContent>
       <ConfirmationModal
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}

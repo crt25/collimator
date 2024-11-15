@@ -8,8 +8,7 @@ import {
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { randomBytes } from "crypto";
-import jwt from "jsonwebtoken";
-import { JwksClient } from "jwks-rsa";
+import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
 import ms from "ms";
 
@@ -22,6 +21,13 @@ const webSocketSlidingTokenLifetime = ms("5m");
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
 const httpLastUsedAccuracy = ms("10m");
 const webSocketLastUsedAccuracy = ms("1m");
+
+export type PublicKey = {
+  id: number;
+  teacherId: number;
+  publicKey: Buffer;
+  createdAt: Date;
+};
 
 type WithKey = {
   keyPair: {
@@ -51,23 +57,24 @@ export type WithToken = {
 export type UserIdentityWithKey = UserIdentity & WithKey;
 export type UserIdentityWithKeyAndToken = UserIdentityWithKey & WithToken;
 
+type KeySet = ReturnType<typeof jose.createRemoteJWKSet>;
+type Jwt = jose.JWTVerifyResult<jose.JWTPayload> &
+  jose.ResolvedKey<jose.KeyLike>;
+
+/**
+ * Verify a JWT token using the public key from the server.
+ * Note that there is a copy of this function in the frontend in utils/authentication/jwt.ts.
+ * @param keySet The key set to verify the token against.
+ * @param jwtToken The JWT token to verify.
+ * @param audience The audience to verify the token against.
+ * @returns The payload of the verified token.
+ */
 const verifyJwtToken = async (
-  client: JwksClient,
+  keySet: KeySet,
   jwtToken: string,
   audience: string,
-): Promise<jwt.JwtPayload> => {
-  // retrieve the kid from the (unverified) token header
-  const unverifiedToken = jwt.decode(jwtToken, { complete: true, json: true });
-
-  if (!unverifiedToken || !unverifiedToken.header.kid) {
-    throw new Error("Invalid JWT token");
-  }
-
-  // then retrieve the public key from the (trusted) server
-  const key = await client.getSigningKey(unverifiedToken.header.kid);
-
-  // and verify the token against the public key
-  const jwtOrError = jwt.verify(jwtToken, key.getPublicKey(), {
+): Promise<Jwt> => {
+  return await jose.jwtVerify(jwtToken, keySet, {
     algorithms: [
       "RS256",
       "RS384",
@@ -79,17 +86,9 @@ const verifyJwtToken = async (
       "PS384",
       "PS512",
     ],
-    allowInvalidAsymmetricKeyTypes: false,
     audience,
-    clockTimestamp: Date.now() / 1000,
     clockTolerance: 0,
   });
-
-  if (typeof jwtOrError === "string") {
-    throw new Error(jwtOrError);
-  }
-
-  return jwtOrError;
 };
 
 // generate strong, cryptographically secure token
@@ -102,7 +101,7 @@ export enum AuthenticationProvider {
 
 @Injectable()
 export class AuthenticationService {
-  private readonly microsoftJwkClient: JwksClient;
+  private readonly microsoftKeySet: KeySet;
   private readonly microsoftClientId: string;
 
   constructor(
@@ -126,11 +125,20 @@ export class AuthenticationService {
     }
 
     this.microsoftClientId = microsoftClientId;
-    this.microsoftJwkClient = new JwksClient({
-      jwksUri: microsoftJwkEndpoint,
-      cache: true,
-      cacheMaxEntries: 5,
-      cacheMaxAge: ms("10h"),
+    this.microsoftKeySet = jose.createRemoteJWKSet(
+      new URL(microsoftJwkEndpoint),
+    );
+  }
+
+  async findPublicKeyByFingerprint(fingerprint: string): Promise<PublicKey> {
+    return await this.prisma.keyPair.findUniqueOrThrow({
+      select: {
+        id: true,
+        teacherId: true,
+        publicKey: true,
+        createdAt: true,
+      },
+      where: { publicKeyFingerprint: fingerprint },
     });
   }
 
@@ -156,20 +164,20 @@ export class AuthenticationService {
   protected verifyToken(
     jwt: string,
     provider: AuthenticationProvider,
-  ): Promise<jwt.JwtPayload> {
-    let client: JwksClient;
+  ): Promise<Jwt> {
+    let keySet: KeySet;
     let clientId: string;
 
     switch (provider) {
       case AuthenticationProvider.microsoft:
-        client = this.microsoftJwkClient;
+        keySet = this.microsoftKeySet;
         clientId = this.microsoftClientId;
         break;
       default:
         throw new Error(`Unknown authentication provider: ${provider}`);
     }
 
-    return verifyJwtToken(client, jwt, clientId);
+    return verifyJwtToken(keySet, jwt, clientId);
   }
 
   protected findUserByEmailOrThrow(
@@ -211,7 +219,7 @@ export class AuthenticationService {
   ): Promise<UserIdentityWithKeyAndToken> {
     const verifiedToken = await this.verifyToken(jwt, provider);
 
-    const email = verifiedToken["email"];
+    const email = verifiedToken.payload["email"] as string;
 
     if (!email) {
       throw new Error("Email not found in JWT token");

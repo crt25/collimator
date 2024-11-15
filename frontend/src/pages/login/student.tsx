@@ -2,10 +2,7 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import {
-  openIdConnectMicrosoftClientId,
-  openIdConnectMicrosoftServer,
-} from "@/utilities/constants";
+import {} from "@/utilities/constants";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
@@ -32,8 +29,6 @@ const StudentLoginPage = () => {
     // should the need arise
 
     redirectToOpenIdConnectProvider(
-      openIdConnectMicrosoftServer,
-      openIdConnectMicrosoftClientId,
       `/class/${classId}/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
       true,
     );

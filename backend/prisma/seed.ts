@@ -68,7 +68,6 @@ async function main(): Promise<void> {
         where: { id: index + 1 },
         update: {},
         create: {
-          id: index + 1,
           pseudonym: Buffer.from(name, "ascii"),
           classId: klass.id,
         },

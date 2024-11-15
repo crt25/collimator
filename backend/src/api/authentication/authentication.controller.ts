@@ -1,20 +1,25 @@
 import {
   Body,
   Controller,
+  Get,
   Ip,
+  Param,
   Post,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ApiForbiddenResponse, ApiOkResponse } from "@nestjs/swagger";
-import { AuthenticationService, AuthToken } from "./authentication.service";
+import { AuthenticationService } from "./authentication.service";
 import { AuthenticationRequestDto } from "./dto/authentication-request.dto";
 import { AuthenticationResponseDto } from "./dto/authentication-response.dto";
 import { NonUserRoles, Public, Roles } from "./role.decorator";
 import { StudentAuthenticationRequestDto } from "./dto/student-authentication-request.dto";
 import { StudentAuthenticationResponseDto } from "./dto/student-authentication-response.dto";
 import { AuthenticatedUser } from "./authenticated-user.decorator";
-import { User, UserType } from "@prisma/client";
+import { Student, User, UserType } from "@prisma/client";
 import { AuthorizationService } from "../authorization/authorization.service";
+import { PublicKeyDto } from "./dto/public-key.dto";
+import { AuthenticationTokenDto } from "./dto/authentication-token.dto";
+import { AuthenticatedStudent } from "./authenticated-student.decorator";
 
 @Controller("authentication")
 export class AuthenticationController {
@@ -22,6 +27,18 @@ export class AuthenticationController {
     private authenticationService: AuthenticationService,
     private authorizatoinService: AuthorizationService,
   ) {}
+
+  @Get("/public-key/:fingerprint")
+  @Public()
+  @ApiOkResponse({ type: PublicKeyDto })
+  async findPublicKey(
+    @Param("fingerprint") fingerprint: string,
+  ): Promise<PublicKeyDto> {
+    const key =
+      await this.authenticationService.findPublicKeyByFingerprint(fingerprint);
+
+    return PublicKeyDto.fromQueryResult(key);
+  }
 
   @Post("login")
   @Public()
@@ -67,18 +84,24 @@ export class AuthenticationController {
 
   @Post("websocket-token")
   @Roles([UserType.TEACHER, UserType.ADMIN, NonUserRoles.STUDENT])
-  @ApiOkResponse({ type: String })
+  @ApiOkResponse({ type: AuthenticationTokenDto })
   @ApiForbiddenResponse()
   async websocketToken(
-    @AuthenticatedUser() auhenticatedUser: User,
+    @AuthenticatedUser() auhenticatedUser: User | null,
+    @AuthenticatedStudent() authenticatedStudent: Student | null,
     @Ip() ip: string,
-  ): Promise<AuthToken> {
+  ): Promise<AuthenticationTokenDto> {
+    const user = auhenticatedUser ?? authenticatedStudent;
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
     const token =
       await this.authenticationService.issueWebsocketAuthenticationToken(
-        auhenticatedUser,
+        user,
         ip,
       );
 
-    return token.token;
+    return AuthenticationTokenDto.fromQueryResult(token);
   }
 }

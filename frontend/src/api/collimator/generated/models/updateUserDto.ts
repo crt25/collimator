@@ -5,17 +5,11 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { UpdateUserDtoKey } from "./updateUserDtoKey";
 import type { UserType } from "./userType";
 
 export interface UpdateUserDto {
   /** The user's email address. */
   email: string;
-  /**
-   * The public key associated with this user.
-   * @nullable
-   */
-  key: UpdateUserDtoKey;
   /**
    * The user's full name (optional).
    * @nullable

@@ -5,18 +5,13 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { PrivateKeyDto } from "./privateKeyDto";
 
-export interface KeyPairDto {
+export interface PublicKeyDto {
   createdAt: string;
   /** The id of the key pair. */
   id: number;
-  /** The encrypted private keys belonging to this public key. Each of these private keys is the same but encrypted with a different symmetric key. */
-  privateKeys: PrivateKeyDto[];
   /** The public key as a JSON Web Key (JWK) */
   publicKey: string;
-  /** The public key as a JSON Web Key (JWK) */
-  publicKeyFingerprint: string;
   /** The id of the teacher this key belongs to. */
   teacherId: number;
 }

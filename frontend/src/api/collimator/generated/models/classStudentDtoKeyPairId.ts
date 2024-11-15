@@ -5,10 +5,9 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { CreateKeyPairDto } from "./createKeyPairDto";
 
 /**
- * The public key associated with this user.
+ * The unique identifier of the key pair used to encrypt the student's pseudonym.
  * @nullable
  */
-export type UpdateUserDtoKey = CreateKeyPairDto | null;
+export type ClassStudentDtoKeyPairId = { [key: string]: unknown } | null;

@@ -1,6 +1,11 @@
 import * as client from "openid-client";
+import * as jose from "jose";
 import { AuthenticationError } from "@/errors/authentication";
 import { sessionStorage } from "..";
+import {
+  openIdConnectMicrosoftClientId,
+  openIdConnectMicrosoftServer,
+} from "../constants";
 
 interface OpenIdConnectTemporaryState {
   codeVerifier: string;
@@ -15,13 +20,56 @@ const scope = "openid email";
 
 const openIdConnectStateStorageKey = "openIdConnect";
 
+let config: client.Configuration | null = null;
+let jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
+
+/**
+ * Fetches the OpenID Connect configuration from the server and caches it.
+ * When the configuration is already cached, it will be returned immediately.
+ */
+export const getOpenIdConnectConfig =
+  async (): Promise<client.Configuration> => {
+    if (config !== null) {
+      return config;
+    }
+
+    const fetchedConfig = await client.discovery(
+      new URL(openIdConnectMicrosoftServer),
+      openIdConnectMicrosoftClientId,
+    );
+
+    config = fetchedConfig;
+
+    return fetchedConfig;
+  };
+
+export const getJwkSet = async (): Promise<
+  ReturnType<typeof jose.createRemoteJWKSet>
+> => {
+  if (jwks !== null) {
+    return jwks;
+  }
+
+  const config = await getOpenIdConnectConfig();
+
+  const jwksUri = config.serverMetadata().jwks_uri;
+
+  if (!jwksUri) {
+    throw new Error(
+      "The OpenID Connect server does not provide a JWKS URI, this should not happen.",
+    );
+  }
+
+  jwks = jose.createRemoteJWKSet(new URL(jwksUri));
+
+  return jwks;
+};
+
 export const redirectToOpenIdConnectProvider = async (
-  server: string,
-  clientId: string,
   redirectPath: string,
   isStudent: boolean,
 ): Promise<void> => {
-  const config = await client.discovery(new URL(server), clientId);
+  const config = await getOpenIdConnectConfig();
 
   const codeVerifier = client.randomPKCECodeVerifier();
   const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier);
@@ -65,17 +113,14 @@ export const redirectToOpenIdConnectProvider = async (
   window.location.href = redirectTo.href;
 };
 
-export const authenticate = async (
-  server: string,
-  clientId: string,
-): Promise<{
+export const authenticate = async (): Promise<{
   idToken: string;
   claims: client.IDToken;
   userInfo: client.UserInfoResponse;
   isStudent: boolean;
   redirectPath: string;
 }> => {
-  const config = await client.discovery(new URL(server), clientId, {});
+  const config = await getOpenIdConnectConfig();
 
   // retrieve state from session storage
   const { state, nonce, codeVerifier, isStudent, redirectPath } = JSON.parse(

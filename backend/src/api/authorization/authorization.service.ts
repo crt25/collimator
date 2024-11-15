@@ -151,10 +151,27 @@ export class AuthorizationService {
   }
 
   async canViewSession(
-    authenticatedUser: User,
+    authenticatedUser: User | null,
+    authenticatedStudent: Student | null,
     sessionId: number,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+    if (authenticatedUser) {
+      return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+    }
+
+    if (authenticatedStudent) {
+      const session = await this.prisma.session.findUnique({
+        where: {
+          id: sessionId,
+          class: { students: { some: { id: authenticatedStudent.id } } },
+        },
+        select: { id: true },
+      });
+
+      return session !== null;
+    }
+
+    return false;
   }
 
   async canUpdateSession(

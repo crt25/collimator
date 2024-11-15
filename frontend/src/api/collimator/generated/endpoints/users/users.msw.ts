@@ -76,6 +76,9 @@ export const getUsersControllerDeleteV0ResponseMock = (
   ...overrideResponse,
 });
 
+export const getUsersControllerUpdateKeyV0ResponseMock = (): number =>
+  faker.number.int();
+
 export const getUsersControllerCreateV0MockHandler = (
   overrideResponse?:
     | ExistingUserDto
@@ -190,10 +193,34 @@ export const getUsersControllerDeleteV0MockHandler = (
     );
   });
 };
+
+export const getUsersControllerUpdateKeyV0MockHandler = (
+  overrideResponse?:
+    | number
+    | ((
+        info: Parameters<Parameters<typeof http.patch>[1]>[0],
+      ) => Promise<number> | number),
+) => {
+  return http.patch("*/api/v0/users/:id/key", async (info) => {
+    await delay(1000);
+
+    return new HttpResponse(
+      JSON.stringify(
+        overrideResponse !== undefined
+          ? typeof overrideResponse === "function"
+            ? await overrideResponse(info)
+            : overrideResponse
+          : getUsersControllerUpdateKeyV0ResponseMock(),
+      ),
+      { status: 201, headers: { "Content-Type": "application/json" } },
+    );
+  });
+};
 export const getUsersMock = () => [
   getUsersControllerCreateV0MockHandler(),
   getUsersControllerFindAllV0MockHandler(),
   getUsersControllerFindOneV0MockHandler(),
   getUsersControllerUpdateV0MockHandler(),
   getUsersControllerDeleteV0MockHandler(),
+  getUsersControllerUpdateKeyV0MockHandler(),
 ];

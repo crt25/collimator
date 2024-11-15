@@ -34,7 +34,7 @@ export default {
                 pseudonym: encodeBase64(
                   await authContext.keyPair.encryptString(
                     JSON.stringify({
-                      longTermIdentity: student.pseudonym,
+                      longTermIdentifier: student.pseudonym,
                       name: student.pseudonym,
                     } as StudentIdentity),
                   ),

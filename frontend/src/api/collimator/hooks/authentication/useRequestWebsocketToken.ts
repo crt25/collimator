@@ -5,7 +5,9 @@ import { useAuthenticationOptions } from "./useAuthenticationOptions";
 type TReturn = Promise<string>;
 
 const fetchAndTransform = (options: RequestInit): TReturn =>
-  authenticationControllerWebsocketTokenV0(options);
+  authenticationControllerWebsocketTokenV0(options).then(
+    (response) => response.token,
+  );
 
 export const useRequestWebsocketToken = (): (() => TReturn) => {
   const authOptions = useAuthenticationOptions();

@@ -53,7 +53,6 @@ export class RoleGuard implements CanActivate {
           user,
         );
       } else {
-        console.log("allowedRoles", allowedRoles, user);
         if (!allowedRoles.includes(user.type)) {
           throw new ForbiddenException();
         }

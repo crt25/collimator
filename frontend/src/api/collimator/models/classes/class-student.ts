@@ -2,7 +2,7 @@ import { ClassStudentDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
 
 export type StudentIdentity = {
-  longTermIdentity: string;
+  longTermIdentifier: string;
   name: string;
 };
 

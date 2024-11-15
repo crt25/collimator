@@ -10,6 +10,7 @@ import type {
   DeletedUserDto,
   ExistingUserDto,
   UpdateUserDto,
+  UpdateUserKeyDto,
 } from "../../models";
 import { fetchApi } from "../../../../fetch";
 
@@ -90,5 +91,22 @@ export const usersControllerDeleteV0 = async (
   return fetchApi<Promise<DeletedUserDto>>(getUsersControllerDeleteV0Url(id), {
     ...options,
     method: "DELETE",
+  });
+};
+
+export const getUsersControllerUpdateKeyV0Url = (id: number) => {
+  return `/api/v0/users/${id}/key`;
+};
+
+export const usersControllerUpdateKeyV0 = async (
+  id: number,
+  updateUserKeyDto: UpdateUserKeyDto,
+  options?: RequestInit,
+): Promise<number> => {
+  return fetchApi<Promise<number>>(getUsersControllerUpdateKeyV0Url(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateUserKeyDto),
   });
 };

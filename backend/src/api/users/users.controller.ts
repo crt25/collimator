@@ -29,6 +29,7 @@ import { AdminOnly } from "../authentication/role.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { User } from "@prisma/client";
 import { AuthorizationService } from "../authorization/authorization.service";
+import { UpdateUserKeyDto } from "./dto/update-user-key.dto";
 
 @Controller("users")
 @ApiTags("users")
@@ -96,16 +97,37 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    const { key, ...rest } = userDto;
-
-    const user = await this.usersService.update(id, rest);
-
-    // if a new key is provided, update it
-    if (key) {
-      await this.usersService.updateTeacherKey(id, key);
-    }
+    const user = await this.usersService.update(id, userDto);
 
     return ExistingUserDto.fromQueryResult(user);
+  }
+
+  @Patch(":id/key")
+  @ApiCreatedResponse({ type: Number })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async updateKey(
+    @AuthenticatedUser() authenticatedUser: User,
+    @Param("id", ParseIntPipe) id: UserId,
+    @Body() userKeyDto: UpdateUserKeyDto,
+  ): Promise<number> {
+    const isAuthorized = await this.authorizationService.canUpdateUser(
+      authenticatedUser,
+      id,
+      // the type is not changed, so it's the same as the authenticated user
+      authenticatedUser.type,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    const keyPair = await this.usersService.updateTeacherKey(
+      id,
+      userKeyDto.key,
+    );
+
+    return keyPair.id;
   }
 
   @Delete(":id")

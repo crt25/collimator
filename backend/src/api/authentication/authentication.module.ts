@@ -4,6 +4,7 @@ import { AuthenticationService } from "./authentication.service";
 import { APP_GUARD } from "@nestjs/core";
 import { RoleGuard } from "./role.guard";
 import { AuthorizationModule } from "../authorization/authorization.module";
+import { AuthenticationGateway } from "./authentication.gateway";
 
 @Module({
   imports: [AuthorizationModule],
@@ -15,6 +16,7 @@ import { AuthorizationModule } from "../authorization/authorization.module";
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    AuthenticationGateway,
   ],
   exports: [AuthenticationService],
 })

@@ -5,10 +5,16 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { ClassStudentDtoKeyPairId } from "./classStudentDtoKeyPairId";
 
 export interface ClassStudentDto {
-  /** The id of a student in a class. */
+  /** The unique identifier of a student. */
   id: number;
+  /**
+   * The unique identifier of the key pair used to encrypt the student's pseudonym.
+   * @nullable
+   */
+  keyPairId: ClassStudentDtoKeyPairId;
   /** The pseudonym of the student */
   pseudonym: string;
 }

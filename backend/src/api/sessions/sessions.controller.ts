@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
-import { SessionStatus, User } from "@prisma/client";
+import { SessionStatus, Student, User, UserType } from "@prisma/client";
 import {
   CreateSessionDto,
   ExistingSessionDto,
@@ -30,6 +30,8 @@ import { SessionsService } from "./sessions.service";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { NonUserRoles, Roles } from "../authentication/role.decorator";
+import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 
 @Controller("classes/:classId/sessions")
 @ApiTags("sessions")
@@ -89,15 +91,18 @@ export class SessionsController {
 
   @Get(":id")
   @ApiOkResponse({ type: ExistingSessionExtendedDto })
+  @Roles([UserType.TEACHER, UserType.ADMIN, NonUserRoles.STUDENT])
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
-    @AuthenticatedUser() user: User,
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<ExistingSessionExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewSession(
       user,
+      student,
       id,
     );
 

@@ -51,6 +51,7 @@ export const getClassesControllerFindOneV0ResponseMock = (
     (_, i) => i + 1,
   ).map(() => ({
     id: faker.number.int({ min: undefined, max: undefined }),
+    keyPairId: {},
     pseudonym: faker.word.sample(),
   })),
   teacher: {
