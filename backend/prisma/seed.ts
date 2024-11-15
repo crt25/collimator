@@ -4,12 +4,12 @@ const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
   const teacher = await prisma.user.upsert({
-    where: { email: "alfred@example.com" },
+    where: { email: "nico@anansi-solutions.net" },
     update: {},
     create: {
-      email: "alfred@example.com",
-      name: "Alfred",
-      type: "TEACHER",
+      email: "nico@anansi-solutions.net",
+      name: "Nico",
+      type: "ADMIN",
     },
   });
 
@@ -67,7 +67,11 @@ async function main(): Promise<void> {
       const student = await prisma.student.upsert({
         where: { id: index + 1 },
         update: {},
-        create: { id: index + 1, pseudonym: name, classId: klass.id },
+        create: {
+          id: index + 1,
+          pseudonym: Buffer.from(name, "ascii"),
+          classId: klass.id,
+        },
       });
 
       console.log(["student", student]);
