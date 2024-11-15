@@ -16,6 +16,7 @@ export const getUsersControllerCreateV0ResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
   ]),
@@ -30,6 +31,7 @@ export const getUsersControllerFindAllV0ResponseMock = (): ExistingUserDto[] =>
     email: faker.word.sample(),
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.helpers.arrayElement([faker.word.sample(), null]),
+    publicKeyId: {},
     type: faker.helpers.arrayElement([
       faker.helpers.arrayElement(Object.values(UserType)),
     ]),
@@ -41,6 +43,7 @@ export const getUsersControllerFindOneV0ResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
   ]),
@@ -53,6 +56,7 @@ export const getUsersControllerUpdateV0ResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
   ]),
@@ -65,6 +69,7 @@ export const getUsersControllerDeleteV0ResponseMock = (
   email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
   ]),
