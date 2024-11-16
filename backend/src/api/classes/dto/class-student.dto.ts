@@ -14,6 +14,7 @@ export class ClassStudentDto {
     description:
       "The unique identifier of the key pair used to encrypt the student's pseudonym.",
     nullable: true,
+    type: "number",
   })
   @Expose()
   readonly keyPairId!: number | null;

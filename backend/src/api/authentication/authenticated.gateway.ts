@@ -1,7 +1,6 @@
 import { ConnectedSocket, OnGatewayInit } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { AuthenticationService } from "./authentication.service";
-import { AuthenticationTokenType } from "@prisma/client";
 
 export abstract class AuthenticatedGateway implements OnGatewayInit {
   constructor(protected authenticationService: AuthenticationService) {}
@@ -20,13 +19,9 @@ export abstract class AuthenticatedGateway implements OnGatewayInit {
         return next();
       }
 
-      const clientIp = socket.handshake.address;
-
       const user =
         await this.authenticationService.findByAuthenticationTokenOrThrow(
           token,
-          AuthenticationTokenType.WEBSOCKET,
-          clientIp,
         );
 
       // Set the user on the socket so that the role guard can use it

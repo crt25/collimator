@@ -9,16 +9,16 @@ export type StudentIdentity = {
 export class ClassStudent {
   readonly id: number;
   readonly pseudonym: string;
-  readonly publicKeyId?: number;
+  readonly keyPairId: number | null;
 
   protected constructor({
     id,
     pseudonym,
-    publicKeyId,
+    keyPairId,
   }: ClassProperties<ClassStudent>) {
     this.id = id;
     this.pseudonym = pseudonym;
-    this.publicKeyId = publicKeyId;
+    this.keyPairId = keyPairId;
   }
 
   static fromDto(dto: ClassStudentDto): ClassStudent {

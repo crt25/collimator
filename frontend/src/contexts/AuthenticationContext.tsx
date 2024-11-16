@@ -14,6 +14,7 @@ type SerializedKeyPair<
     privateKey: JsonWebKey;
     publicKey: JsonWebKey;
   };
+  saltPublicKey: JsonWebKey;
 };
 
 type AuthenticationContextVersion = "1";
@@ -128,11 +129,10 @@ export const serializeAuthenticationContext = async (
 
   const { keyPair, ...rest } = authContext;
 
-  const serializedKeyPair = await keyPair.exportUnprotected();
-
   return {
     ...rest,
-    keyPair: serializedKeyPair,
+    keyPair: await keyPair.exportUnprotected(),
+    saltPublicKey: await keyPair.exportSaltPublicKey(),
   };
 };
 
@@ -144,22 +144,38 @@ export const deserializeAuthenticationContext = async (
     return serializedContext;
   }
 
-  const { keyPair, ...rest } = serializedContext;
+  const { keyPair, saltPublicKey, ...rest } = serializedContext;
 
   const importedCryptoKeyPair = await KeyPair.importUnprotected(
     crypto,
     keyPair,
   );
 
+  const importedSaltPublicKey = await crypto.importKey(
+    "jwk",
+    saltPublicKey,
+    KeyPair.ImportAlgorithm,
+    true,
+    [],
+  );
+
   if (rest.role === UserRole.student) {
     return {
       ...rest,
-      keyPair: await StudentKeyPair.create(crypto, importedCryptoKeyPair),
+      keyPair: await StudentKeyPair.create(
+        crypto,
+        importedCryptoKeyPair,
+        importedSaltPublicKey,
+      ),
     };
   }
 
   return {
     ...rest,
-    keyPair: await TeacherLongTermKeyPair.create(crypto, importedCryptoKeyPair),
+    keyPair: await TeacherLongTermKeyPair.create(
+      crypto,
+      importedCryptoKeyPair,
+      importedSaltPublicKey,
+    ),
   };
 };

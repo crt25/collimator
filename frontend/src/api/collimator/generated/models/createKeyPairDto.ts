@@ -14,4 +14,6 @@ export interface CreateKeyPairDto {
   publicKey: string;
   /** The url-safe base64 encoded fingerprint of the public key. */
   publicKeyFingerprint: string;
+  /** Salt to derive a symmetric key encoded in base64. */
+  salt: string;
 }

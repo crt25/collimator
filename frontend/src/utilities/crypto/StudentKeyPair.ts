@@ -6,15 +6,21 @@ export default class StudentKeyPair extends KeyPair {
   static async create(
     crypto: SubtleCrypto,
     keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
   ): Promise<StudentKeyPair> {
     // derive a symmetric key from the key pair - basically ECDH with ourselves
     const derivedSymmetricKey = await KeyPair.deriveSymmetricKey(
       crypto,
       keyPair.privateKey,
-      keyPair.publicKey,
+      saltPublicKey,
     );
 
-    return new StudentKeyPair(crypto, keyPair, derivedSymmetricKey);
+    return new StudentKeyPair(
+      crypto,
+      keyPair,
+      saltPublicKey,
+      derivedSymmetricKey,
+    );
   }
 
   /**
@@ -66,6 +72,7 @@ export default class StudentKeyPair extends KeyPair {
         true,
         KeyPair.KeyUsages,
       ),
+      await KeyPair.generateRandomPublicKey(crypto),
     );
   }
 }

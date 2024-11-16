@@ -32,6 +32,7 @@ export class UsersService {
     teacherKey: CreateKeyPairDto,
   ): Promise<KeyPair> {
     const publicKey = Buffer.from(teacherKey.publicKey, "utf-8");
+    const salt = Buffer.from(teacherKey.salt, "base64");
 
     const privateKeys = teacherKey.privateKeys.map((privateKey) => ({
       encryptedPrivateKey: Buffer.from(
@@ -41,30 +42,23 @@ export class UsersService {
       salt: Buffer.from(privateKey.salt, "base64"),
     }));
 
-    // Delete all private keys for this teacher
-    await this.prisma.encryptedPrivateKey.deleteMany({
-      where: { publicKey: { teacherId: userId } },
+    // Delete the current key pair
+    // Note that this makes all non re-encrypted pseudonyms unreadabe (which may be intentional)
+    await this.prisma.keyPair.deleteMany({
+      where: { teacherId: userId },
     });
 
-    // Update the public key and add the new private keys
-
-    return await this.prisma.keyPair.upsert({
-      create: {
+    // Create a new public key and add the new private keys
+    return await this.prisma.keyPair.create({
+      data: {
         publicKey,
         publicKeyFingerprint: teacherKey.publicKeyFingerprint,
         privateKeys: {
           create: privateKeys,
         },
         teacherId: userId,
+        salt,
       },
-      update: {
-        publicKey,
-        publicKeyFingerprint: teacherKey.publicKeyFingerprint,
-        privateKeys: {
-          create: privateKeys,
-        },
-      },
-      where: { teacherId: userId },
     });
   }
 

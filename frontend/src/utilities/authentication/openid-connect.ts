@@ -16,7 +16,8 @@ interface OpenIdConnectTemporaryState {
 }
 
 const codeChallengeMethod = "S256";
-const scope = "openid email";
+// https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference
+const scope = "openid email profile";
 
 const openIdConnectStateStorageKey = "openIdConnect";
 
@@ -128,18 +129,24 @@ export const authenticate = async (): Promise<{
   ) as OpenIdConnectTemporaryState;
 
   const currentUrl: URL = new URL(window.location.href);
-  const tokens = await client.authorizationCodeGrant(config, currentUrl, {
-    pkceCodeVerifier: codeVerifier,
-    expectedNonce: nonce,
-    expectedState: state,
-    idTokenExpected: true,
-  });
+
+  const tokens = await client
+    .authorizationCodeGrant(config, currentUrl, {
+      pkceCodeVerifier: codeVerifier,
+      expectedNonce: nonce,
+      expectedState: state,
+      idTokenExpected: true,
+    })
+    .catch((e) => {
+      throw new AuthenticationError(e.message, redirectPath);
+    });
 
   const idToken = tokens.id_token;
 
   if (!idToken) {
     throw new AuthenticationError(
       "ID token was not returned by the authorization server",
+      redirectPath,
     );
   }
 
@@ -148,6 +155,7 @@ export const authenticate = async (): Promise<{
   if (!claims) {
     throw new AuthenticationError(
       "TokenEndpointResponse.expires_in was not returned by the authorization server",
+      redirectPath,
     );
   }
 

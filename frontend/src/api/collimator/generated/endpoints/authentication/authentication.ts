@@ -8,7 +8,6 @@
 import type {
   AuthenticationRequestDto,
   AuthenticationResponseDto,
-  AuthenticationTokenDto,
   PublicKeyDto,
   StudentAuthenticationRequestDto,
   StudentAuthenticationResponseDto,
@@ -68,22 +67,6 @@ export const authenticationControllerLoginStudentV0 = async (
       method: "POST",
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(studentAuthenticationRequestDto),
-    },
-  );
-};
-
-export const getAuthenticationControllerWebsocketTokenV0Url = () => {
-  return `/api/v0/authentication/websocket-token`;
-};
-
-export const authenticationControllerWebsocketTokenV0 = async (
-  options?: RequestInit,
-): Promise<AuthenticationTokenDto> => {
-  return fetchApi<Promise<AuthenticationTokenDto>>(
-    getAuthenticationControllerWebsocketTokenV0Url(),
-    {
-      ...options,
-      method: "POST",
     },
   );
 };

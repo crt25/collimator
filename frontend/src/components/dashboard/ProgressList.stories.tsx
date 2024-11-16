@@ -17,6 +17,7 @@ const sessionId = 1;
 const student: ClassStudentDto = {
   id: 937281,
   pseudonym: "Donald Duck",
+  keyPairId: 1,
 };
 const klass = getClassesControllerFindOneV0ResponseMock({ id: classId });
 klass.students.push(student);

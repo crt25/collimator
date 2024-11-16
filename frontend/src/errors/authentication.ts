@@ -1,5 +1,8 @@
 export class AuthenticationError extends Error {
-  constructor(message: string) {
+  readonly redirectPath: string;
+
+  constructor(message: string, redirectPath: string) {
     super(message);
+    this.redirectPath = redirectPath;
   }
 }

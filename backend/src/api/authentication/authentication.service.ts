@@ -1,11 +1,5 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
-import {
-  AuthenticationToken,
-  AuthenticationTokenType,
-  Student,
-  User,
-  UserType,
-} from "@prisma/client";
+import { Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { randomBytes } from "crypto";
 import * as jose from "jose";
@@ -15,12 +9,10 @@ import ms from "ms";
 export type AuthToken = string;
 
 // we use a sliding window for token expiration checked against the last used timestamp
-const httpSlidingTokenLifetime = ms("4h");
-const webSocketSlidingTokenLifetime = ms("5m");
+const slidingTokenLifetime = ms("4h");
 
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
-const httpLastUsedAccuracy = ms("10m");
-const webSocketLastUsedAccuracy = ms("1m");
+const lastUsedAccuracy = ms("10m");
 
 export type PublicKey = {
   id: number;
@@ -34,6 +26,7 @@ type WithKey = {
     id: number;
     publicKey: Buffer;
     publicKeyFingerprint: string;
+    salt: Buffer;
     createdAt: Date;
 
     privateKeys: {
@@ -145,18 +138,7 @@ export class AuthenticationService {
   async deleteExpiredTokens(): Promise<void> {
     await this.prisma.authenticationToken.deleteMany({
       where: {
-        OR: [
-          {
-            type: AuthenticationTokenType.HTTP,
-            lastUsed: { lt: new Date(Date.now() - httpSlidingTokenLifetime) },
-          },
-          {
-            type: AuthenticationTokenType.WEBSOCKET,
-            lastUsed: {
-              lt: new Date(Date.now() - webSocketSlidingTokenLifetime),
-            },
-          },
-        ],
+        lastUsed: { lt: new Date(Date.now() - slidingTokenLifetime) },
       },
     });
   }
@@ -194,6 +176,7 @@ export class AuthenticationService {
             id: true,
             publicKey: true,
             publicKeyFingerprint: true,
+            salt: true,
             createdAt: true,
             privateKeys: {
               select: {
@@ -241,7 +224,6 @@ export class AuthenticationService {
         token: randomToken,
         userId: user.id,
         lastUsed: new Date(),
-        type: AuthenticationTokenType.HTTP,
       },
     });
 
@@ -289,7 +271,6 @@ export class AuthenticationService {
         token: randomToken,
         studentId: student.id,
         lastUsed: new Date(),
-        type: AuthenticationTokenType.HTTP,
       },
     });
 
@@ -298,26 +279,12 @@ export class AuthenticationService {
 
   async findByAuthenticationTokenOrThrow(
     token: AuthToken,
-    tokenType: AuthenticationTokenType = AuthenticationTokenType.HTTP,
-    clientIp?: string,
   ): Promise<User | Student> {
-    const lifetime =
-      tokenType === AuthenticationTokenType.HTTP
-        ? httpSlidingTokenLifetime
-        : webSocketSlidingTokenLifetime;
-
-    const lastUsedAccuracy =
-      tokenType === AuthenticationTokenType.HTTP
-        ? httpLastUsedAccuracy
-        : webSocketLastUsedAccuracy;
-
     const authToken = await this.prisma.authenticationToken.findUniqueOrThrow({
       where: {
         token,
-        // and that it hasn't expired
-        lastUsed: { gte: new Date(Date.now() - lifetime) },
-        type: tokenType,
-        clientIp, // if the client IP is provided, it must match
+        // the token must not have expired
+        lastUsed: { gte: new Date(Date.now() - slidingTokenLifetime) },
       },
       include: {
         user: true,
@@ -342,40 +309,6 @@ export class AuthenticationService {
     }
 
     throw new Error("Token does not belong to a user or student");
-  }
-
-  async issueWebsocketAuthenticationToken(
-    user: User | Student,
-    clientIp: string,
-  ): Promise<AuthenticationToken> {
-    const randomToken = generateToken();
-
-    const wsToken = {
-      token: randomToken,
-      clientIp,
-      lastUsed: new Date(),
-      type: AuthenticationTokenType.WEBSOCKET,
-    };
-
-    let token: AuthenticationToken;
-
-    if (this.isStudent(user)) {
-      token = await this.prisma.authenticationToken.create({
-        data: {
-          ...wsToken,
-          studentId: user.id,
-        },
-      });
-    } else {
-      token = await this.prisma.authenticationToken.create({
-        data: {
-          ...wsToken,
-          userId: user.id,
-        },
-      });
-    }
-
-    return token;
   }
 
   isStudent(user: User | Student): user is Student {

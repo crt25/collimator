@@ -18,7 +18,6 @@ import {
   backendHostName,
   openIdConnectMicrosoftClientId,
 } from "@/utilities/constants";
-import { useRequestWebsocketToken } from "@/api/collimator/hooks/authentication/useRequestWebsocketToken";
 import {
   CollimatorSocket,
   StudentAuthenticationRequestContent,
@@ -43,7 +42,6 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     useState<WebSocketContextType | null>(null);
 
   const authContext = useContext(AuthenticationContext);
-  const requestWebSocketToken = useRequestWebsocketToken();
   const fetchClass = useFetchClass();
   const authenticateStudent = useAuthenticateStudent();
 
@@ -160,20 +158,9 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     let webSocket: CollimatorSocket | null = null;
-    let shouldConnect = true;
 
     const connectToWebSocket = async () => {
-      let token: string | undefined = undefined;
-      try {
-        token = await requestWebSocketToken();
-      } catch {
-        // we can try connecting without a token, this may fail but we can handle the error
-      }
-
-      // while fetching the token, the effect may have been cleaned up
-      if (!shouldConnect) {
-        return;
-      }
+      const token: string | undefined = authContext.authenticationToken;
 
       webSocket = io(backendHostName, {
         auth: { token },
@@ -184,19 +171,6 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
 
       webSocket.on("connect_error", async (error) => {
         console.error("WebSocket connection error", error);
-
-        // it may just be that the token has expired, if so try to get a new one
-        if (error.message.includes("unauthorized")) {
-          const newToken = await requestWebSocketToken();
-
-          if (webSocket) {
-            // and reconnect with the new token, see https://socket.io/docs/v3/client-initialization/#socket-options
-            webSocket.auth = { token: newToken };
-
-            console.log("err connecting");
-            webSocket.connect();
-          }
-        }
       });
 
       setWebSocketState({ socket: webSocket });
@@ -205,8 +179,6 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     connectToWebSocket();
 
     return () => {
-      shouldConnect = false;
-
       if (webSocket) {
         webSocket.disconnect();
       }

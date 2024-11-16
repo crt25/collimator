@@ -41,6 +41,8 @@ describe("TeacherKeyPair", () => {
       );
 
       const publicKey1 = await keyPair1.exportPublicKey();
+      const saltPublicKey1 = await keyPair1.exportSaltPublicKey();
+
       const publicKey2 = await keyPair2.exportPublicKey();
 
       const ephemeralKey1 = await keyPair1.deriveSharedEphemeralKey(publicKey2);
@@ -53,6 +55,7 @@ describe("TeacherKeyPair", () => {
         crypto,
         exportedPrivateKey1,
         publicKey1,
+        saltPublicKey1,
         passwordKey,
       );
 

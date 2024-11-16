@@ -37,6 +37,11 @@ model KeyPair {
   publicKeyFingerprint String   @unique // The SHA-512 fingerprint of the public key encoded in URL-safe base64. the unique is used to lookup the key by fingerprint.
   createdAt            DateTime @default(now())
 
+  // Salt used to derive a symmetric key based on this keypair.
+  // For now, it is equal to a random public key s.t. we can perform ECDH with it
+  // and derive a symmetric key using the web crypto API which has its limitations.
+  salt Bytes
+
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
   teacher     User                  @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   Student     Student[]
@@ -46,7 +51,7 @@ model EncryptedPrivateKey {
   id                  Int   @id @default(autoincrement())
   publicKeyId         Int // The public key this private key corresponds to
   encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
-  salt                Bytes // The salt used to derive the password key
+  salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
 
   publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
@@ -186,11 +191,6 @@ model SolutionAnalysis {
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
 }
 
-enum AuthenticationTokenType {
-  HTTP
-  WEBSOCKET
-}
-
 model AuthenticationToken {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -198,11 +198,6 @@ model AuthenticationToken {
   token     String   @unique
   userId    Int?
   studentId Int?
-
-  // The IP address of the client that requested the token. For websockets, this IP is used when verifying the token.
-  // See a discussion on this here: https://stackoverflow.com/a/4361358/2897827
-  clientIp String?
-  type     AuthenticationTokenType
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)

@@ -6,6 +6,7 @@ import { UserRole } from "@/types/user/user-role";
 
 const allowedRoutesForUnauthenticatedUsers = [
   "/_error",
+  "/logout",
   "/login",
   "/login/oidc-redirect",
   "/login/admin",

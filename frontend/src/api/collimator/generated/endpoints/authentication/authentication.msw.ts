@@ -10,7 +10,6 @@ import { HttpResponse, delay, http } from "msw";
 import { UserType } from "../../models";
 import type {
   AuthenticationResponseDto,
-  AuthenticationTokenDto,
   PublicKeyDto,
   StudentAuthenticationResponseDto,
 } from "../../models";
@@ -43,6 +42,7 @@ export const getAuthenticationControllerLoginV0ResponseMock = (
     })),
     publicKey: faker.word.sample(),
     publicKeyFingerprint: faker.word.sample(),
+    salt: faker.word.sample(),
     teacherId: faker.number.int({ min: undefined, max: undefined }),
   },
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
@@ -56,13 +56,6 @@ export const getAuthenticationControllerLoginStudentV0ResponseMock = (
   overrideResponse: Partial<StudentAuthenticationResponseDto> = {},
 ): StudentAuthenticationResponseDto => ({
   authenticationToken: faker.word.sample(),
-  ...overrideResponse,
-});
-
-export const getAuthenticationControllerWebsocketTokenV0ResponseMock = (
-  overrideResponse: Partial<AuthenticationTokenDto> = {},
-): AuthenticationTokenDto => ({
-  token: faker.word.sample(),
   ...overrideResponse,
 });
 
@@ -139,32 +132,8 @@ export const getAuthenticationControllerLoginStudentV0MockHandler = (
     );
   });
 };
-
-export const getAuthenticationControllerWebsocketTokenV0MockHandler = (
-  overrideResponse?:
-    | AuthenticationTokenDto
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<AuthenticationTokenDto> | AuthenticationTokenDto),
-) => {
-  return http.post("*/api/v0/authentication/websocket-token", async (info) => {
-    await delay(1000);
-
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getAuthenticationControllerWebsocketTokenV0ResponseMock(),
-      ),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    );
-  });
-};
 export const getAuthenticationMock = () => [
   getAuthenticationControllerFindPublicKeyV0MockHandler(),
   getAuthenticationControllerLoginV0MockHandler(),
   getAuthenticationControllerLoginStudentV0MockHandler(),
-  getAuthenticationControllerWebsocketTokenV0MockHandler(),
 ];

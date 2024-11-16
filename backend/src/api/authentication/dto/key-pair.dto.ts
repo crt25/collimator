@@ -35,6 +35,19 @@ export class KeyPairDto extends PublicKeyDto {
   @Expose()
   publicKeyFingerprint!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: `dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl`,
+    description: "Salt to derive a symmetric key encoded in base64.",
+  })
+  @Transform(
+    ({ value }: { value: KeyPair["salt"] }) => value.toString("base64"),
+    { toClassOnly: true },
+  )
+  @Expose()
+  salt!: string;
+
   @ValidateNested({ each: true })
   @ApiProperty({
     description:

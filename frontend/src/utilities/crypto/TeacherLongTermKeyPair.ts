@@ -6,15 +6,21 @@ export default class TeacherLongTermKeyPair extends KeyPair {
   static async create(
     crypto: SubtleCrypto,
     keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
   ): Promise<TeacherLongTermKeyPair> {
     // derive a symmetric key from the key pair - basically ECDH with ourselves
     const derivedSymmetricKey = await KeyPair.deriveSymmetricKey(
       crypto,
       keyPair.privateKey,
-      keyPair.publicKey,
+      saltPublicKey,
     );
 
-    return new TeacherLongTermKeyPair(crypto, keyPair, derivedSymmetricKey);
+    return new TeacherLongTermKeyPair(
+      crypto,
+      keyPair,
+      saltPublicKey,
+      derivedSymmetricKey,
+    );
   }
 
   /**
@@ -37,7 +43,8 @@ export default class TeacherLongTermKeyPair extends KeyPair {
   static async importKeyPair(
     crypto: SubtleCrypto,
     encryptedLongTermPrivateKey: ArrayBuffer,
-    plainTextpublicKey: JsonWebKey,
+    plainTextPublicKey: JsonWebKey,
+    plainSaltPublicKey: JsonWebKey,
     key: PasswordDerivedKey,
   ): Promise<TeacherLongTermKeyPair> {
     const longTermPrivateKey = JSON.parse(
@@ -55,7 +62,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
 
     const publicKey = await crypto.importKey(
       "jwk",
-      plainTextpublicKey,
+      plainTextPublicKey,
       KeyPair.ImportAlgorithm,
       // we want to be able to extract the key for local temporary storage in the session
       true,
@@ -63,10 +70,22 @@ export default class TeacherLongTermKeyPair extends KeyPair {
       [],
     );
 
-    return TeacherLongTermKeyPair.create(crypto, {
-      privateKey,
-      publicKey,
-    });
+    const saltPublicKey = await crypto.importKey(
+      "jwk",
+      plainSaltPublicKey,
+      KeyPair.ImportAlgorithm,
+      true,
+      [],
+    );
+
+    return TeacherLongTermKeyPair.create(
+      crypto,
+      {
+        privateKey,
+        publicKey,
+      },
+      saltPublicKey,
+    );
   }
 
   /**
@@ -125,6 +144,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
         true,
         KeyPair.KeyUsages,
       ),
+      await KeyPair.generateRandomPublicKey(crypto),
     );
   }
 }

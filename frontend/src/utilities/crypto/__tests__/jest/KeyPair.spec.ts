@@ -21,13 +21,15 @@ const generateKeyPair = (type: KeyType): Promise<KeyPair> =>
     ? generateStudentKeyPair()
     : generateTeacherKeyPair();
 
-const createKeyPair = (
+const saltPublicKey = KeyPair.generateRandomPublicKey(crypto);
+
+const createKeyPair = async (
   type: KeyType,
   keyPair: CryptoKeyPair,
 ): Promise<KeyPair> =>
   type === "TeacherKeyPair"
-    ? TeacherLongTermKeyPair.create(crypto, keyPair)
-    : StudentKeyPair.create(crypto, keyPair);
+    ? TeacherLongTermKeyPair.create(crypto, keyPair, await saltPublicKey)
+    : StudentKeyPair.create(crypto, keyPair, await saltPublicKey);
 
 describe("KeyPair", () => {
   describe.each(allKeyTypes)("%s", (type) => {

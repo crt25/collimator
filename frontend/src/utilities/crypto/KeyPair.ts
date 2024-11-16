@@ -24,16 +24,19 @@ export default abstract class KeyPair extends SymmetricKey {
 
   protected crypto: SubtleCrypto;
   protected keyPair: CryptoKeyPair;
+  protected saltPublicKey: CryptoKey;
 
   protected constructor(
     crypto: SubtleCrypto,
     keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
     derivedSymmetricKey: CryptoKey,
   ) {
     super(crypto, derivedSymmetricKey);
 
     this.crypto = crypto;
     this.keyPair = keyPair;
+    this.saltPublicKey = saltPublicKey;
   }
 
   /**
@@ -42,6 +45,13 @@ export default abstract class KeyPair extends SymmetricKey {
    */
   exportPublicKey(): Promise<JsonWebKey> {
     return this.crypto.exportKey("jwk", this.keyPair.publicKey);
+  }
+
+  /**
+   * Exports the salt public key of the key pair.
+   */
+  exportSaltPublicKey(): Promise<JsonWebKey> {
+    return this.crypto.exportKey("jwk", this.saltPublicKey);
   }
 
   /**
@@ -123,5 +133,22 @@ export default abstract class KeyPair extends SymmetricKey {
       false,
       SymmetricKey.KeyUsages,
     );
+  }
+
+  /**
+   * Generates a new, random public key.
+   * This is used like a salt to derive a random symmetric key for a user.
+   * This is necessary due to limitations in the WebCrypto API.
+   * Specifically, we cannot derive a symmetric key directly from a ECDH key pair nor
+   * can we directly use the private key to encrypt data.
+   */
+  static async generateRandomPublicKey(
+    crypto: SubtleCrypto,
+  ): Promise<CryptoKey> {
+    const keyPair = await crypto.generateKey(KeyPair.GenerateAlgorithm, true, [
+      "deriveKey",
+    ]);
+
+    return keyPair.publicKey;
   }
 }

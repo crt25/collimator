@@ -25,6 +25,7 @@ import UserSignInForm, {
 } from "@/components/authentication/UserSignInForm";
 import { UseFormSetError } from "react-hook-form";
 import { useUpdateUserKey } from "@/api/collimator/hooks/users/useUpdateUserKey";
+import { AuthenticationError } from "@/errors/authentication";
 
 class DecryptionError extends Error {
   constructor() {
@@ -75,6 +76,9 @@ const OpenIdConnectRedirect = () => {
     redirectPath: string;
     authResponse: AuthenticationResponseDto;
   } | null>(null);
+  const [errorRedirectPath, setErrorRedirectPath] = useState<string | null>(
+    null,
+  );
 
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
 
@@ -89,6 +93,7 @@ const OpenIdConnectRedirect = () => {
     }
 
     authenticationStarted.current = true;
+
     authenticate()
       .then(async ({ idToken, userInfo, isStudent, redirectPath }) => {
         const email = getEmailFromClaims(userInfo);
@@ -129,6 +134,10 @@ const OpenIdConnectRedirect = () => {
         setUserSignInState({ authResponse, idToken, redirectPath });
       })
       .catch((e) => {
+        if (e instanceof AuthenticationError) {
+          setErrorRedirectPath(e.redirectPath);
+        }
+
         console.error("Authentication failed", e);
         setAuthenticationFailed(true);
       });
@@ -193,6 +202,7 @@ const OpenIdConnectRedirect = () => {
         const privateKey2 = await teacherKeyPair.exportPrivateKey(pwKey2);
 
         const publicKey = await teacherKeyPair.exportPublicKey();
+        const saltPublicKey = await teacherKeyPair.exportSaltPublicKey();
         const fingerprint = await teacherKeyPair.getPublicKeyFingerprint();
 
         keyPairId = await updateUserKey(
@@ -201,6 +211,9 @@ const OpenIdConnectRedirect = () => {
             key: {
               publicKey: JSON.stringify(publicKey),
               publicKeyFingerprint: fingerprint,
+              salt: encodeBase64(
+                new TextEncoder().encode(JSON.stringify(saltPublicKey)),
+              ),
               privateKeys: [
                 {
                   salt: encodeBase64(salt1),
@@ -219,8 +232,11 @@ const OpenIdConnectRedirect = () => {
         );
       } else {
         // the teacher has logged in before, decrypt the private key
-        const { publicKey: publicKeyString, privateKeys } = keyPair;
+        const { publicKey: publicKeyString, salt, privateKeys } = keyPair;
         const publicKey = JSON.parse(publicKeyString);
+        const saltPublicKey = JSON.parse(
+          new TextDecoder().decode(decodeBase64(salt)),
+        );
 
         // try to decrypt all private keys with the password
         const maybeDecryptedPrivateKeys = await Promise.all(
@@ -236,6 +252,7 @@ const OpenIdConnectRedirect = () => {
                 crypto,
                 decodeBase64(encryptedPrivateKey),
                 publicKey,
+                saltPublicKey,
                 passwordKey,
               );
 
@@ -336,7 +353,7 @@ const OpenIdConnectRedirect = () => {
               defaultMessage="Authentication failed"
             />
           </PageHeader>
-          <Link href="/login">
+          <Link href={errorRedirectPath ?? "/login"}>
             <FormattedMessage
               id="OpenIdConnectRedirect.retry"
               defaultMessage="Retry"

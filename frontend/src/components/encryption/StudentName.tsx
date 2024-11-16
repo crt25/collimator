@@ -52,6 +52,8 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
         return;
       }
 
+      console.log("decryptedIdentity", decryptedIdentity);
+
       setDecryptedName(decryptedIdentity.name);
       setIsDecrypting(false);
     };
@@ -89,5 +91,5 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
     );
   }
 
-  return <NameWrapper>decryptedName</NameWrapper>;
+  return <NameWrapper>{decryptedName}</NameWrapper>;
 };

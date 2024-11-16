@@ -5,9 +5,6 @@
   - Changed the type of `pseudonym` on the `Student` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
 
 */
--- CreateEnum
-CREATE TYPE "AuthenticationTokenType" AS ENUM ('HTTP', 'WEBSOCKET');
-
 -- DropIndex
 DROP INDEX "Student_pseudonym_key";
 
@@ -23,6 +20,7 @@ CREATE TABLE "KeyPair" (
     "publicKey" BYTEA NOT NULL,
     "publicKeyFingerprint" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "salt" BYTEA NOT NULL,
 
     CONSTRAINT "KeyPair_pkey" PRIMARY KEY ("id")
 );
@@ -45,8 +43,6 @@ CREATE TABLE "AuthenticationToken" (
     "token" TEXT NOT NULL,
     "userId" INTEGER,
     "studentId" INTEGER,
-    "clientIp" TEXT,
-    "type" "AuthenticationTokenType" NOT NULL,
 
     CONSTRAINT "AuthenticationToken_pkey" PRIMARY KEY ("id")
 );

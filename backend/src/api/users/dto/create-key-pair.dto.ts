@@ -22,6 +22,15 @@ export class CreateKeyPairDto {
   @Expose()
   publicKeyFingerprint!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: `dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl`,
+    description: "Salt to derive a symmetric key encoded in base64.",
+  })
+  @Expose()
+  salt!: string;
+
   @ValidateNested({ each: true })
   @ApiProperty({
     description:
