@@ -34,12 +34,14 @@ import {
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { SolutionAnalysisService } from "./solution-analysis.service";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
 export class SolutionsController {
   constructor(
     private readonly solutionsService: SolutionsService,
+    private analysisService: SolutionAnalysisService,
     private authorizationService: AuthorizationService,
   ) {}
 
@@ -71,6 +73,10 @@ export class SolutionsController {
       file.mimetype,
       file.buffer,
     );
+
+    // perform the analysis but do *not* wait for the promise to resolve
+    // this will happen in the background
+    this.analysisService.performAnalysis(solution);
 
     return ExistingSolutionDto.fromQueryResult({
       ...solution,

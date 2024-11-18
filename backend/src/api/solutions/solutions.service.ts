@@ -14,6 +14,11 @@ export type SolutionUpdateInput = Omit<
 export type SolutionWithoutData = Omit<Solution, "data">;
 export type SolutionDataOnly = Pick<Solution, "data" | "mimeType">;
 
+export type SolutionAnalysisCreateInput = Omit<
+  Prisma.SolutionAnalysisUncheckedCreateInput,
+  "id"
+>;
+
 const omitData = { data: true };
 
 @Injectable()
@@ -53,7 +58,7 @@ export class SolutionsService {
     solution: SolutionCreateInput,
     mimeType: string,
     data: Buffer,
-  ): Promise<SolutionWithoutData> {
+  ): Promise<Solution> {
     const { studentId, sessionId, taskId, ...rest } = solution;
     const checkedSolution: Prisma.SolutionCreateInput = {
       ...rest,
@@ -64,9 +69,9 @@ export class SolutionsService {
       task: { connect: { id: taskId } },
       sessionTask: { connect: { sessionId_taskId: { sessionId, taskId } } },
     };
+
     return this.prisma.solution.create({
       data: checkedSolution,
-      omit: omitData,
     });
   }
 }

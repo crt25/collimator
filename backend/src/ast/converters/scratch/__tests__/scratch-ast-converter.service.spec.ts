@@ -1,5 +1,4 @@
 import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
-import { ScratchAstConverterService } from "../scratch-ast-converter.service";
 import {
   createScratchBlockInput,
   createScratchCodeInput,
@@ -13,13 +12,12 @@ import {
   StatementNodeType,
 } from "src/ast/types/general-ast/ast-nodes";
 import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-
-const converter = new ScratchAstConverterService();
+import { convertScratchToGeneralAst } from "../";
 
 describe("Scratch AST converter", () => {
   describe("Hat Blocks", () => {
     it("can convert 'event_whenflagclicked' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenflagclicked",
@@ -50,7 +48,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whenkeypressed' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenkeypressed",
@@ -90,7 +88,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whenthisspriteclicked' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenthisspriteclicked",
@@ -121,7 +119,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whenstageclicked' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenstageclicked",
@@ -152,7 +150,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whenbackdropswitchesto' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenbackdropswitchesto",
@@ -192,7 +190,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whengreaterthan' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whengreaterthan",
@@ -236,7 +234,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'event_whenbroadcastreceived' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "event_whenbroadcastreceived",
@@ -276,7 +274,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'control_start_as_clone' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           __start__: {
             opcode: "control_start_as_clone",
@@ -310,7 +308,7 @@ describe("Scratch AST converter", () => {
   describe("Code blocks", () => {
     describe("Control Blocks", () => {
       it("can convert 'control_stop' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "control_stop",
@@ -347,7 +345,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'control_delete_this_clone' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "control_delete_this_clone",
@@ -374,7 +372,7 @@ describe("Scratch AST converter", () => {
 
     describe("Data Blocks", () => {
       it("can convert 'data_setvariableto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_setvariableto",
@@ -413,7 +411,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_changevariableby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_changevariableby",
@@ -452,7 +450,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_showvariable' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_showvariable",
@@ -485,7 +483,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_hidevariable' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_hidevariable",
@@ -518,7 +516,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_addtolist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_addtolist",
@@ -555,7 +553,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_deleteoflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_deleteoflist",
@@ -592,7 +590,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_deletealloflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_deletealloflist",
@@ -623,7 +621,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_insertatlist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_insertatlist",
@@ -666,7 +664,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_replaceitemoflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_replaceitemoflist",
@@ -709,7 +707,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_showlist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_showlist",
@@ -740,7 +738,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_hidelist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "data_hidelist",
@@ -773,7 +771,7 @@ describe("Scratch AST converter", () => {
 
     describe("Event Blocks", () => {
       it("can convert 'event_broadcast' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "event_broadcast",
@@ -806,7 +804,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'event_broadcastandwait' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "event_broadcastandwait",
@@ -841,7 +839,7 @@ describe("Scratch AST converter", () => {
 
     describe("Looks Blocks", () => {
       it("can convert 'looks_sayforsecs' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_sayforsecs",
@@ -879,7 +877,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_say' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_say",
@@ -911,7 +909,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_thinkforsecs' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_thinkforsecs",
@@ -949,7 +947,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_think' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_think",
@@ -981,7 +979,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_switchcostumeto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -1028,7 +1026,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_nextcostume' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_nextcostume",
@@ -1053,7 +1051,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_switchbackdropto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -1102,7 +1100,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_nextbackdrop' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_nextbackdrop",
@@ -1127,7 +1125,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_changesizeby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_changesizeby",
@@ -1159,7 +1157,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_setsizeto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_setsizeto",
@@ -1191,7 +1189,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_changeeffectby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_changeeffectby",
@@ -1229,7 +1227,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_seteffectto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_seteffectto",
@@ -1267,7 +1265,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_cleargraphiceffects' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_cleargraphiceffects",
@@ -1292,7 +1290,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_show' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_show",
@@ -1317,7 +1315,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_hide' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_hide",
@@ -1342,7 +1340,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_gotofrontback' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_gotofrontback",
@@ -1374,7 +1372,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_goforwardbackwardlayers' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "looks_goforwardbackwardlayers",
@@ -1414,7 +1412,7 @@ describe("Scratch AST converter", () => {
 
     describe("Motion Blocks", () => {
       it("can convert 'motion_movesteps' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_movesteps",
@@ -1446,7 +1444,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_turnright' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_turnright",
@@ -1478,7 +1476,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_turnleft' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_turnleft",
@@ -1510,7 +1508,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_goto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -1557,7 +1555,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_gotoxy' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_gotoxy",
@@ -1595,7 +1593,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_glideto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -1651,7 +1649,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_glidesecstoxy' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_glidesecstoxy",
@@ -1699,7 +1697,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_pointindirection' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_pointindirection",
@@ -1731,7 +1729,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_pointtowards' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -1778,7 +1776,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_changexby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_changexby",
@@ -1810,7 +1808,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_changeyby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_changeyby",
@@ -1842,7 +1840,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_setx' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_setx",
@@ -1874,7 +1872,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_sety' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_sety",
@@ -1906,7 +1904,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_ifonedgebounce' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_ifonedgebounce",
@@ -1931,7 +1929,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_setrotationstyle' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "motion_setrotationstyle",
@@ -1965,7 +1963,7 @@ describe("Scratch AST converter", () => {
 
     describe("Sensing Blocks", () => {
       it("can convert 'sensing_askandwait' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sensing_askandwait",
@@ -1999,7 +1997,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_setdragmode' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sensing_setdragmode",
@@ -2031,7 +2029,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_resettimer' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sensing_resettimer",
@@ -2058,7 +2056,7 @@ describe("Scratch AST converter", () => {
 
     describe("Sound Blocks", () => {
       it("can convert 'sound_playuntildone' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -2105,7 +2103,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_play' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput(
             [
               {
@@ -2152,7 +2150,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_stopallsounds' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_stopallsounds",
@@ -2177,7 +2175,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_changeeffectby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_changeeffectby",
@@ -2215,7 +2213,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_seteffectto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_seteffectto",
@@ -2253,7 +2251,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_cleareffects' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_cleareffects",
@@ -2278,7 +2276,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_changevolumeby' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_changevolumeby",
@@ -2310,7 +2308,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sound_setvolumeto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchCodeInput([
             {
               opcode: "sound_setvolumeto",
@@ -2346,7 +2344,7 @@ describe("Scratch AST converter", () => {
   describe("Expression Blocks", () => {
     describe("Data Blocks", () => {
       it("can convert 'data_itemoflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "data_itemoflist",
@@ -2385,7 +2383,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_itemnumoflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "data_itemnumoflist",
@@ -2424,7 +2422,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_lengthoflist' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "data_lengthoflist",
@@ -2455,7 +2453,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'data_listcontainsitem' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "data_listcontainsitem",
@@ -2496,7 +2494,7 @@ describe("Scratch AST converter", () => {
 
     describe("Looks Blocks", () => {
       it("can convert 'looks_costumenumbername' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "looks_costumenumbername",
@@ -2526,7 +2524,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_backdropnumbername' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "looks_backdropnumbername",
@@ -2556,7 +2554,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'looks_size' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "looks_size",
@@ -2580,7 +2578,7 @@ describe("Scratch AST converter", () => {
 
     describe("Motion Blocks", () => {
       it("can convert 'motion_xposition' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "motion_xposition",
@@ -2602,7 +2600,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_yposition' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "motion_yposition",
@@ -2624,7 +2622,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'motion_direction' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "motion_direction",
@@ -2648,7 +2646,7 @@ describe("Scratch AST converter", () => {
 
     describe("Operator Blocks", () => {
       it("can convert 'operator_add' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_add",
@@ -2695,7 +2693,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_subtract' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_subtract",
@@ -2742,7 +2740,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_multiply' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_multiply",
@@ -2789,7 +2787,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_divide' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_divide",
@@ -2836,7 +2834,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_random' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_random",
@@ -2875,7 +2873,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_gt' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_gt",
@@ -2914,7 +2912,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_lt' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_lt",
@@ -2953,7 +2951,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_equals' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_equals",
@@ -2992,7 +2990,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_and' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_and",
@@ -3064,7 +3062,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_or' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_or",
@@ -3136,7 +3134,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_not' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_not",
@@ -3176,7 +3174,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_join' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_join",
@@ -3223,7 +3221,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_letter_of' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_letter_of",
@@ -3262,7 +3260,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_length' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_length",
@@ -3294,7 +3292,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_contains' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_contains",
@@ -3333,7 +3331,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_mod' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_mod",
@@ -3372,7 +3370,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_round' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_round",
@@ -3404,7 +3402,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'operator_mathop' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "operator_mathop",
@@ -3446,7 +3444,7 @@ describe("Scratch AST converter", () => {
 
     describe("Sensing Blocks", () => {
       it("can convert 'sensing_touchingobject' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_touchingobject",
@@ -3486,7 +3484,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_touchingcolor' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_touchingcolor",
@@ -3516,7 +3514,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_coloristouchingcolor' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_coloristouchingcolor",
@@ -3555,7 +3553,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_distanceto' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_distanceto",
@@ -3595,7 +3593,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_answer' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_answer",
@@ -3617,7 +3615,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_keypressed' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_keypressed",
@@ -3657,7 +3655,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_mousedown' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_mousedown",
@@ -3679,7 +3677,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_mousex' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_mousex",
@@ -3701,7 +3699,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_mousey' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_mousey",
@@ -3723,7 +3721,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_loudness' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_loudness",
@@ -3745,7 +3743,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_timer' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_timer",
@@ -3767,7 +3765,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_of' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_of",
@@ -3817,7 +3815,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_current' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_current",
@@ -3848,7 +3846,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_dayssince2000' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_dayssince2000",
@@ -3870,7 +3868,7 @@ describe("Scratch AST converter", () => {
       });
 
       it("can convert 'sensing_username' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sensing_username",
@@ -3894,7 +3892,7 @@ describe("Scratch AST converter", () => {
 
     describe("Sound Blocks", () => {
       it("can convert 'sound_volume' blocks to general AST nodes", () => {
-        const ast = converter.convertAst(
+        const ast = convertScratchToGeneralAst(
           createScratchExpressionInput([
             {
               opcode: "sound_volume",
@@ -3919,7 +3917,7 @@ describe("Scratch AST converter", () => {
 
   describe("Variables", () => {
     it("can convert code blocks with variables to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput([
           {
             opcode: "motion_movesteps",
@@ -3958,7 +3956,7 @@ describe("Scratch AST converter", () => {
 
   describe("Control Blocks", () => {
     it("can convert 'control_repeat' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
           [
             {
@@ -4031,7 +4029,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'control_forever' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
           [
             {
@@ -4096,7 +4094,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'control_repeat_until' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
           [
             {
@@ -4178,7 +4176,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'control_if' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
           [
             {
@@ -4258,7 +4256,7 @@ describe("Scratch AST converter", () => {
     });
 
     it("can convert 'control_if' blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
           [
             {
@@ -4366,7 +4364,7 @@ describe("Scratch AST converter", () => {
 
   describe("Nested Control Blocks", () => {
     it("can convert nested control blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           "-^}qdJwGuHqP^)iz;_fC": {
             opcode: "event_whenflagclicked",
@@ -4859,7 +4857,7 @@ describe("Scratch AST converter", () => {
 
   describe("Nested Expression Blocks", () => {
     it("can convert nested expression blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           "-^}qdJwGuHqP^)iz;_fC": {
             opcode: "event_whenflagclicked",
@@ -5195,7 +5193,7 @@ describe("Scratch AST converter", () => {
 
   describe("Procedure Blocks", () => {
     it("can convert custom block definitions to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           "-^}qdJwGuHqP^)iz;_fC": {
             opcode: "event_whenflagclicked",
@@ -5434,7 +5432,7 @@ describe("Scratch AST converter", () => {
 
   describe("Extension Blocks", () => {
     it("can convert arbitrary extension functionCall blocks to general AST nodes", () => {
-      const ast = converter.convertAst(
+      const ast = convertScratchToGeneralAst(
         createScratchBlockInput({
           "o+VBPu+C(?OjVM9re*i8": {
             opcode: "event_whenflagclicked",
