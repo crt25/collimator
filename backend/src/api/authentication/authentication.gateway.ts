@@ -5,12 +5,10 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
-import { AuthenticatedGateway } from "./authenticated.gateway";
 import { Server, Socket } from "socket.io";
 import { Student, User } from "@prisma/client";
 import { studentRequestKey, userRequestKey } from "./role.guard";
 import { Public } from "./role.decorator";
-import { AuthenticationService } from "./authentication.service";
 
 type Client = Socket & {
   data: {
@@ -26,20 +24,14 @@ type Client = Socket & {
   transports: ["websocket"],
 })
 export class AuthenticationGateway
-  extends AuthenticatedGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   readonly socketsByUserId = new Map<number, Client[]>();
-  readonly socketsByStudentId = new Map<number, Client[]>();
-
-  constructor(protected authenticationService: AuthenticationService) {
-    super(authenticationService);
-  }
 
   @WebSocketServer() io!: Server;
 
   handleConnection(client: Client): void {
-    const { user, student } = client.data;
+    const { user } = client.data;
 
     if (user) {
       const userId = user.id;
@@ -48,25 +40,25 @@ export class AuthenticationGateway
       }
 
       this.socketsByUserId.get(userId)!.push(client);
-    } else if (student) {
-      const studentId = student.id;
-      if (!this.socketsByStudentId.has(studentId)) {
-        this.socketsByStudentId.set(studentId, []);
-      }
-
-      this.socketsByStudentId.get(studentId)!.push(client);
     }
   }
 
   handleDisconnect(client: Client): void {
-    const { user, student } = client.data;
+    const { user } = client.data;
 
     if (user) {
-      this.socketsByUserId.delete(user.id);
-    }
+      const sockets = this.socketsByUserId.get(user.id);
+      if (!sockets) {
+        return;
+      }
 
-    if (student) {
-      this.socketsByStudentId.delete(student.id);
+      const newSockets = sockets.filter((s) => s.id !== client.id);
+
+      if (newSockets.length === 0) {
+        this.socketsByUserId.delete(user.id);
+      } else {
+        this.socketsByUserId.set(user.id, newSockets);
+      }
     }
   }
 
@@ -80,10 +72,12 @@ export class AuthenticationGateway
     const teacherSockets = this.socketsByUserId.get(teacherId);
 
     if (!teacherSockets) {
-      console.log(teacherId, this.socketsByUserId.keys(), payload);
       throw new Error("Teacher not online");
     }
 
+    // send the request to all teacher sockets
+    // the teacher will respond to the socket that made the request
+    // and the student will receive all responses but only look at the first one
     teacherSockets.forEach((socket) => {
       socket.emit("requestTeacherToSignInStudent", {
         ...rest,

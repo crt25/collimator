@@ -22,7 +22,7 @@ import { PublicKeyDto } from "./dto/public-key.dto";
 export class AuthenticationController {
   constructor(
     private authenticationService: AuthenticationService,
-    private authorizatoinService: AuthorizationService,
+    private authorizationService: AuthorizationService,
   ) {}
 
   @Get("/public-key/:fingerprint")
@@ -59,7 +59,7 @@ export class AuthenticationController {
     @Body() request: StudentAuthenticationRequestDto,
     @AuthenticatedUser() user: User,
   ): Promise<StudentAuthenticationResponseDto> {
-    const isAuthorized = await this.authorizatoinService.canSignInStudent(
+    const isAuthorized = await this.authorizationService.canSignInStudent(
       user,
       request.classId,
     );

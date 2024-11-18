@@ -2,6 +2,12 @@ import * as request from "supertest";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "src/app.module";
+import { adminUser, adminUserToken, ensureUserExists } from "./helper";
+
+jest.mock("src/api/authentication/helpers.ts", () => ({
+  ...jest.requireActual("src/api/authentication/helpers.ts"),
+  getTokenFromExecutionContext: jest.fn(() => adminUserToken),
+}));
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
@@ -13,6 +19,8 @@ describe("AppController (e2e)", () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    await ensureUserExists(app, adminUser, adminUserToken);
   });
 
   it("/ (GET)", () => {

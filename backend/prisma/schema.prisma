@@ -192,12 +192,12 @@ model SolutionAnalysis {
 }
 
 model AuthenticationToken {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  lastUsed  DateTime
-  token     String   @unique
-  userId    Int?
-  studentId Int?
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime
+  token      String   @unique
+  userId     Int?
+  studentId  Int?
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)

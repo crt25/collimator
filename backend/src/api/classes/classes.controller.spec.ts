@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { plainToInstance } from "class-transformer";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ClassesController } from "./classes.controller";
@@ -15,16 +15,24 @@ import {
   ExistingClassWithTeacherDto,
 } from "./dto";
 import { fromQueryResults } from "../helpers";
+import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
 describe("ClassesController", () => {
   let controller: ClassesController;
   let prismaMock: DeepMockProxy<PrismaClient>;
 
+  const adminUser: User = {
+    id: 1,
+    name: "Admin",
+    email: "root@collimator.com",
+    type: "ADMIN",
+  };
+
   beforeEach(async () => {
     prismaMock = mockDeep<PrismaClient>();
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CoreModule],
+      imports: [CoreModule, mockConfigModule],
       controllers: [ClassesController],
       providers: [
         ClassesService,
@@ -66,7 +74,7 @@ describe("ClassesController", () => {
     const updatedClass = { id, ...dto };
     prismaMock.class.update.mockResolvedValue(updatedClass);
 
-    const result = await controller.update(id, dto);
+    const result = await controller.update(adminUser, id, dto);
 
     expect(result).toEqual(plainToInstance(ExistingClassDto, updatedClass));
     expect(prismaMock.class.update).toHaveBeenCalledWith({
@@ -80,7 +88,7 @@ describe("ClassesController", () => {
     const deletedClass = { id, name: "Deleted Class", teacherId: 34 };
     prismaMock.class.delete.mockResolvedValue(deletedClass);
 
-    const result = await controller.remove(id);
+    const result = await controller.remove(adminUser, id);
 
     expect(result).toEqual(plainToInstance(DeletedClassDto, deletedClass));
     expect(prismaMock.class.delete).toHaveBeenCalledWith({
@@ -99,7 +107,7 @@ describe("ClassesController", () => {
     };
     prismaMock.class.findUniqueOrThrow.mockResolvedValue(klass);
 
-    const result = await controller.findOne(1);
+    const result = await controller.findOne(adminUser, 1);
 
     expect(result).toBeInstanceOf(ExistingClassExtendedDto);
     expect(result).toEqual(ExistingClassExtendedDto.fromQueryResult(klass));
@@ -112,7 +120,7 @@ describe("ClassesController", () => {
           select: { id: true, name: true },
         },
         students: {
-          select: { id: true, pseudonym: true },
+          select: { id: true, keyPairId: true, pseudonym: true },
         },
       },
       where: { id: 1 },
@@ -124,7 +132,7 @@ describe("ClassesController", () => {
       new Error("Not found"),
     );
 
-    const action = controller.findOne(999);
+    const action = controller.findOne(adminUser, 999);
     await expect(action).rejects.toThrow("Not found");
   });
 
@@ -146,7 +154,7 @@ describe("ClassesController", () => {
 
     prismaMock.class.findMany.mockResolvedValue(classes);
 
-    const result = await controller.findAll();
+    const result = await controller.findAll(adminUser);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledTimes(1);
     expect(Array.isArray(result)).toBe(true);
@@ -177,7 +185,7 @@ describe("ClassesController", () => {
 
     prismaMock.class.findMany.mockResolvedValue(classes);
 
-    const result = await controller.findAll(teacherId);
+    const result = await controller.findAll(adminUser, teacherId);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { teacherId: teacherId },

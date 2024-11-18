@@ -5,9 +5,11 @@ import { APP_GUARD } from "@nestjs/core";
 import { RoleGuard } from "./role.guard";
 import { AuthorizationModule } from "../authorization/authorization.module";
 import { AuthenticationGateway } from "./authentication.gateway";
+import { PrismaModule } from "src/prisma/prisma.module";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
-  imports: [AuthorizationModule],
+  imports: [PrismaModule, ConfigModule, AuthorizationModule],
   controllers: [AuthenticationController],
   providers: [
     AuthenticationService,

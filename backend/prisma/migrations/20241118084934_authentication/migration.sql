@@ -39,7 +39,7 @@ CREATE TABLE "EncryptedPrivateKey" (
 CREATE TABLE "AuthenticationToken" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "lastUsed" TIMESTAMP(3) NOT NULL,
+    "lastUsedAt" TIMESTAMP(3) NOT NULL,
     "token" TEXT NOT NULL,
     "userId" INTEGER,
     "studentId" INTEGER,

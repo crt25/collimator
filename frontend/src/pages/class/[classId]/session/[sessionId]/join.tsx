@@ -174,6 +174,8 @@ const JoinSession = () => {
          * for simplicity, we will use the encryption of the student's name + email under the teacher's long term private key as the pseudonym
          */
 
+        let intervalId: NodeJS.Timeout | null = null;
+
         /**
          * wait for a confirmation from the teacher that we are allowed to join the session
          * the teacher responds with a authentication token (encrypted with the shared secret)
@@ -182,6 +184,11 @@ const JoinSession = () => {
         websocketContext.socket.once(
           "studentAuthenticationToken",
           async (data) => {
+            // stop sending requests to the teacher
+            if (intervalId) {
+              clearInterval(intervalId);
+            }
+
             // verify the shared secret by decrypting the confirmation message from the teacher
             // if the message can be decrypted, store the shared secret + the authentication token
             const authenticationToken = await ephemeralKey.decryptString(
@@ -201,18 +208,26 @@ const JoinSession = () => {
           },
         );
 
-        websocketContext.socket.emit("requestTeacherToSignInStudent", {
-          teacherId,
-          studentPublicKey: JSON.stringify(await keyPair.exportPublicKey()),
-          encryptedAuthenticationRequest: encodeBase64(
-            await ephemeralKey.encryptString(
-              JSON.stringify({
-                classId,
-                idToken: authenticationContext.idToken,
-              } as StudentAuthenticationRequestContent),
+        const sendRequest = async () => {
+          websocketContext.socket.emit("requestTeacherToSignInStudent", {
+            teacherId,
+            studentPublicKey: JSON.stringify(await keyPair.exportPublicKey()),
+            encryptedAuthenticationRequest: encodeBase64(
+              await ephemeralKey.encryptString(
+                JSON.stringify({
+                  classId,
+                  idToken: authenticationContext.idToken,
+                } as StudentAuthenticationRequestContent),
+              ),
             ),
-          ),
-        });
+          });
+        };
+
+        // send the first request to the teacher
+        sendRequest();
+
+        // then repeatedly send the request to the teacher until we receive a response
+        intervalId = setInterval(sendRequest, 5 * 1000);
       })
       .catch((error) => {
         console.error("Failed to generate student key pair", error);
@@ -255,7 +270,14 @@ const JoinSession = () => {
         {isStudentFullyAuthenticated(authenticationContext, sessionId) ? (
           <JoinSessionContent classId={classId} sessionId={sessionId} />
         ) : (
-          <ProgressSpinner />
+          <>
+            <FormattedMessage
+              id="JoinSession.waitingForTeacher"
+              defaultMessage="Waiting for the teacher's machine to admit you to the session..."
+              description="Displayed when the student is waiting for the teacher's machine to admit them to the session"
+            />
+            <ProgressSpinner />
+          </>
         )}
       </RemainingHeightContainer>
       <VerticalSpacing />

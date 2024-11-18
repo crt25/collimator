@@ -5,11 +5,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { Request } from "express";
 import { AuthenticationService } from "./authentication.service";
 import { Student, User, UserType } from "@prisma/client";
 import { ALLOWED_ROLES, NonUserRoles, Role } from "./role.decorator";
 import { Reflector } from "@nestjs/core";
+import { getTokenFromExecutionContext } from "./helpers";
 
 export const userRequestKey = "user";
 export const studentRequestKey = "student";
@@ -40,7 +40,10 @@ export class RoleGuard implements CanActivate {
     }
 
     try {
-      const user = await this.getUserFromContext(context);
+      const user =
+        await this.authenticationService.findByAuthenticationTokenOrThrow(
+          getTokenFromExecutionContext(context),
+        );
 
       if (this.authenticationService.isStudent(user)) {
         if (!allowedRoles.includes(NonUserRoles.STUDENT)) {
@@ -67,38 +70,5 @@ export class RoleGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     return true;
-  }
-
-  private async getUserFromContext(
-    context: ExecutionContext,
-  ): Promise<User | Student> {
-    const type = context.getType();
-
-    if (type === "http") {
-      const request = context.switchToHttp().getRequest();
-      const token = this.extractTokenFromHeader(request);
-
-      if (!token) {
-        throw new UnauthorizedException();
-      }
-
-      return this.authenticationService.findByAuthenticationTokenOrThrow(token);
-    } else if (type === "ws") {
-      const data = context.switchToWs().getData<{ user: User | Student }>();
-
-      // This should never happen
-      if (!data?.user) {
-        throw new Error("Invariant voilation: Expected 'user' in context data");
-      }
-
-      return data.user;
-    }
-
-    throw new Error(`Unsupported context type '${type}'`);
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    return type === "Bearer" ? token : undefined;
   }
 }

@@ -138,7 +138,7 @@ export class AuthenticationService {
   async deleteExpiredTokens(): Promise<void> {
     await this.prisma.authenticationToken.deleteMany({
       where: {
-        lastUsed: { lt: new Date(Date.now() - slidingTokenLifetime) },
+        lastUsedAt: { lt: new Date(Date.now() - slidingTokenLifetime) },
       },
     });
   }
@@ -223,7 +223,7 @@ export class AuthenticationService {
       data: {
         token: randomToken,
         userId: user.id,
-        lastUsed: new Date(),
+        lastUsedAt: new Date(),
       },
     });
 
@@ -270,7 +270,7 @@ export class AuthenticationService {
       data: {
         token: randomToken,
         studentId: student.id,
-        lastUsed: new Date(),
+        lastUsedAt: new Date(),
       },
     });
 
@@ -284,7 +284,7 @@ export class AuthenticationService {
       where: {
         token,
         // the token must not have expired
-        lastUsed: { gte: new Date(Date.now() - slidingTokenLifetime) },
+        lastUsedAt: { gte: new Date(Date.now() - slidingTokenLifetime) },
       },
       include: {
         user: true,
@@ -293,10 +293,10 @@ export class AuthenticationService {
     });
 
     // update the last used timestamp if the last time the token was used is some time ago
-    if (authToken.lastUsed < new Date(Date.now() - lastUsedAccuracy)) {
+    if (authToken.lastUsedAt < new Date(Date.now() - lastUsedAccuracy)) {
       await this.prisma.authenticationToken.update({
         where: { token },
-        data: { lastUsed: new Date() },
+        data: { lastUsedAt: new Date() },
       });
     }
 
