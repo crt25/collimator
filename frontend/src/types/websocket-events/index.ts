@@ -7,14 +7,14 @@ export type StudentAuthenticationRequestContent = {
   idToken: string;
 };
 
-type StudentAuthenticationRequest = {
+export type StudentAuthenticationRequest = {
   // The public key of the student as a JWK
   studentPublicKey: string;
   // The encrypted authentication request encoded in base64.
   encryptedAuthenticationRequest: string;
 };
 
-type StudentAuthenticationResponse = {
+export type StudentAuthenticationResponse = {
   // the encrypted authentication token, encoded in base64
   authenticationToken: AuthenticationToken;
 };

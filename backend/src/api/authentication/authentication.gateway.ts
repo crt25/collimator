@@ -6,16 +6,10 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { Student, User } from "@prisma/client";
-import { studentRequestKey, userRequestKey } from "./role.guard";
 import { Public } from "./role.decorator";
+import { AuthenticationService } from "./authentication.service";
 
-type Client = Socket & {
-  data: {
-    [userRequestKey]: User | null;
-    [studentRequestKey]: Student | null;
-  };
-};
+type Client = Socket;
 
 @WebSocketGateway({
   // this cannot be configured using dependency injection
@@ -30,10 +24,19 @@ export class AuthenticationGateway
 
   @WebSocketServer() io!: Server;
 
-  handleConnection(client: Client): void {
-    const { user } = client.data;
+  constructor(private authenticationService: AuthenticationService) {}
 
-    if (user) {
+  async handleConnection(client: Client): Promise<void> {
+    const token = client.handshake.auth.token;
+
+    if (!token) {
+      return;
+    }
+
+    const user =
+      await this.authenticationService.findByAuthenticationTokenOrThrow(token);
+
+    if (user && !this.authenticationService.isStudent(user)) {
       const userId = user.id;
       if (!this.socketsByUserId.has(userId)) {
         this.socketsByUserId.set(userId, []);
