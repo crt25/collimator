@@ -21,7 +21,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "DATABASE_URL='postgresql://postgres:postgres@localhost:5432/collimator?schema=public' jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:e2e:cov": "jest --config ./test/jest-e2e.json --coverage",
     "scratch:download:types:definitions": "curl -o .temp/scratch/sb3_definitions.json https://raw.githubusercontent.com/scratchfoundation/scratch-parser/refs/heads/master/lib/sb3_definitions.json",
     "scratch:download:types:schema": "curl -o .temp/scratch/sb3_schema.json https://raw.githubusercontent.com/scratchfoundation/scratch-parser/refs/heads/master/lib/sb3_schema.json",
