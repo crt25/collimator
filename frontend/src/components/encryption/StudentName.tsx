@@ -52,8 +52,6 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
         return;
       }
 
-      console.log("decryptedIdentity", decryptedIdentity);
-
       setDecryptedName(decryptedIdentity.name);
       setIsDecrypting(false);
     };
