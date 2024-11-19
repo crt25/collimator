@@ -66,7 +66,7 @@ module "database" {
   vpc_security_group_ids = [module.security_group.security_group_id]
 
   # when AWS is allowed to perform maintenance
-  maintenance_window = "Mon:00:00-Mon:03:00"
+  maintenance_window = "Sat:00:00-Sat:05:00"
 
   # daily backup window
   backup_window           = "03:00-06:00"
