@@ -35,14 +35,43 @@ import { AuthenticatedStudent } from "../authentication/authenticated-student.de
 import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { SolutionAnalysisService } from "./solution-analysis.service";
+import { CriteriaBasedAnalyzerService } from "src/data-analyzer/criteria-based-analyzer.service";
+import { GeneralAst } from "src/ast/types/general-ast";
+import { AnalysisInputDto } from "./dto/analysis/analysis-input.dto";
+import {
+  AnalysisOutputDto,
+  AnyAnalysisCriterionOutputDto,
+} from "./dto/analysis/analysis-output.dto";
+import {
+  CallsFunctionCriterionInputDto,
+  CallsFunctionCriterionOutputDto,
+} from "./dto/analysis/criteria/calls-function-criterion.dto";
+import {
+  ContainsLoopDeclarationCriterionInputDto,
+  ContainsLoopDeclarationCriterionOutputDto,
+} from "./dto/analysis/criteria/contains-loop-criterion.dto";
+import {
+  ContainsFunctionDeclarationCriterionInputDto,
+  ContainsFunctionDeclarationCriterionOutputDto,
+} from "./dto/analysis/criteria/contains-function-declaration-criterion.dto";
+import {
+  ContainsConditionCriterionInputDto,
+  ContainsConditionCriterionOutputDto,
+} from "./dto/analysis/criteria/contains-condition-criterion.dto";
+import {
+  AnalysisInput,
+  Criterion,
+} from "src/data-analyzer/criteria-based-analysis-worker.piscina";
+import { match } from "ts-pattern";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
 export class SolutionsController {
   constructor(
     private readonly solutionsService: SolutionsService,
-    private analysisService: SolutionAnalysisService,
-    private authorizationService: AuthorizationService,
+    private readonly analysisService: SolutionAnalysisService,
+    private readonly criteriaBasedAnalyzerService: CriteriaBasedAnalyzerService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Post()
@@ -171,5 +200,80 @@ export class SolutionsController {
     return new StreamableFile(solution.data, {
       type: solution.mimeType,
     });
+  }
+
+  @Post("analysis")
+  @ApiOkResponse({ type: AnalysisOutputDto, isArray: true })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async analysis(
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+    @Body() input: AnalysisInputDto,
+  ): Promise<AnalysisOutputDto[]> {
+    const analyses = await this.solutionsService.findAllCurrentAnalyses(
+      sessionId,
+      taskId,
+    );
+
+    const criteriaAnalysisOutput =
+      await this.criteriaBasedAnalyzerService.analyze(
+        analyses.map(
+          (analysis) => JSON.parse(analysis.genericAst) as GeneralAst,
+        ),
+        input.criteria.map((c) =>
+          match(c)
+            .returnType<AnalysisInput>()
+            .with(
+              { criterion: Criterion.callsFunction },
+              CallsFunctionCriterionInputDto.toAnalysisInput,
+            )
+            .with(
+              { criterion: Criterion.containsCondition },
+              ContainsConditionCriterionInputDto.toAnalysisInput,
+            )
+            .with(
+              { criterion: Criterion.containsFunctionDeclaration },
+              ContainsFunctionDeclarationCriterionInputDto.toAnalysisInput,
+            )
+            .with(
+              { criterion: Criterion.containsLoop },
+              ContainsLoopDeclarationCriterionInputDto.toAnalysisInput,
+            )
+            .exhaustive(),
+        ),
+      );
+
+    return criteriaAnalysisOutput
+      .map((criteriaOutputs) =>
+        criteriaOutputs.map((result) =>
+          match(result)
+            .returnType<AnyAnalysisCriterionOutputDto>()
+            .with(
+              { criterion: Criterion.callsFunction },
+              CallsFunctionCriterionOutputDto.fromAnalysisOutput,
+            )
+            .with(
+              { criterion: Criterion.containsCondition },
+              ContainsConditionCriterionOutputDto.fromAnalysisOutput,
+            )
+            .with(
+              { criterion: Criterion.containsFunctionDeclaration },
+              ContainsFunctionDeclarationCriterionOutputDto.fromAnalysisOutput,
+            )
+            .with(
+              { criterion: Criterion.containsLoop },
+              ContainsLoopDeclarationCriterionOutputDto.fromAnalysisOutput,
+            )
+            .exhaustive(),
+        ),
+      )
+      .map((analyzedCriteriaOutputs, index) =>
+        AnalysisOutputDto.fromQueryResult({
+          solutionId: analyses[index].solutionId,
+          criteria: analyzedCriteriaOutputs,
+        }),
+      );
   }
 }

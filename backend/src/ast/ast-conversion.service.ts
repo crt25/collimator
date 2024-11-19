@@ -2,26 +2,24 @@ import { Injectable } from "@nestjs/common";
 import { Solution, TaskType } from "@prisma/client";
 import { Piscina } from "piscina";
 import { resolve } from "path";
-import ScratchAsConversionWorker from "./converters/scratch/scratch-ast-conversion-worker.piscina";
 import { GeneralAst } from "./types/general-ast";
 import { TaskWithoutData } from "src/api/tasks/tasks.service";
+import SolutionConversionWorker from "./converters/solution-conversion-worker.piscina";
 
-type ConvertScratch = typeof ScratchAsConversionWorker;
+type ConversionWorker = typeof SolutionConversionWorker;
 
 @Injectable()
 export class AstConversionService {
-  private scratchConverter = new Piscina<
-    Parameters<ConvertScratch>[0],
-    ReturnType<ConvertScratch>
+  private conversionWorker = new Piscina<
+    Parameters<ConversionWorker>[0],
+    ReturnType<ConversionWorker>
   >({
     filename: resolve(
       __dirname,
       // use the .js extension because NestJS compiles the typescript files
-      "./converters/scratch/scratch-ast-conversion-worker.piscina.js",
+      "./converters/solution-conversion-worker.piscina.js",
     ),
   });
-
-  constructor() {}
 
   /**
    * Convert submission ASTs to the generalized AST which
@@ -37,8 +35,9 @@ export class AstConversionService {
       task.type === TaskType.SCRATCH &&
       solution.mimeType === "application/json"
     ) {
-      ast = this.scratchConverter.run({
-        input: solution.data.toString("utf-8"),
+      ast = this.conversionWorker.run({
+        solution,
+        task,
       });
     } else {
       throw new Error(

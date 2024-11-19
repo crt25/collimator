@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { adminUser, adminUserToken, ensureUserExists, getApp } from "./helper";
+import { adminUserToken, ensureUserExists, getApp } from "./helper";
 import { classes, defaultAdmin, defaultTeacher, users } from "test/seed";
 
 const checkClassesInList = (expectedClasses, returnedClasses): void => {
@@ -31,7 +31,7 @@ describe("ClassesController (e2e)", () => {
   beforeEach(async () => {
     app = await getApp();
 
-    await ensureUserExists(app, adminUser, adminUserToken);
+    await ensureUserExists(app, defaultAdmin, adminUserToken);
   });
 
   test("/classes (GET)", async () => {

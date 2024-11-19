@@ -1,13 +1,13 @@
-import { Prisma, UserType } from "@prisma/client";
+import { UserType } from "@prisma/client";
 
-export const defaultAdmin: Prisma.UserUncheckedCreateInput = {
+export const defaultAdmin = {
   id: 101,
   name: "Admin User",
   email: "admin@example.com",
   type: UserType.ADMIN,
 };
 
-export const defaultTeacher: Prisma.UserUncheckedCreateInput = {
+export const defaultTeacher = {
   id: 102,
   name: "Teacher User",
   email: "teacher@example.com",
@@ -16,13 +16,13 @@ export const defaultTeacher: Prisma.UserUncheckedCreateInput = {
 
 export const users = [defaultAdmin, defaultTeacher];
 
-export const classOne: Prisma.ClassUncheckedCreateInput = {
+export const classOne = {
   id: 201,
   name: "Class One",
   teacherId: defaultTeacher.id!,
 };
 
-export const classTwo: Prisma.ClassUncheckedCreateInput = {
+export const classTwo = {
   id: 202,
   name: "Class Two",
   teacherId: defaultTeacher.id!,

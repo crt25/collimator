@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   // "prismaSchemaFolder" is not yet supported by JetBrains IDEs
-  previewFeatures = ["omitApi"] // ,"prismaSchemaFolder"]
+  previewFeatures = ["omitApi", "typedSql"] // ,"prismaSchemaFolder"]
 }
 
 datasource db {

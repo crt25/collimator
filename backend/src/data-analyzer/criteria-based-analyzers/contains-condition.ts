@@ -1,16 +1,16 @@
 import { GeneralAst } from "src/ast/types/general-ast";
-import {
-  Criteria,
-  CriteriaBasedAnalyzerInput,
-  CriteriaBasedAnalyzerOutput,
-} from "../criteria-based-analyzer.service";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 import { AstWalkSignal, walkAst } from "../ast-walk";
+import {
+  Criterion,
+  CriteriaBasedAnalyzerInput,
+  CriteriaBasedAnalyzerOutput,
+} from "../criteria-based-analysis-worker.piscina";
 
 export const containsCondition = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[Criteria.containsCondition],
-): CriteriaBasedAnalyzerOutput[Criteria.containsCondition] => {
+  _input: CriteriaBasedAnalyzerInput[Criterion.containsCondition],
+): CriteriaBasedAnalyzerOutput[Criterion.containsCondition] => {
   let containsCondition = false;
 
   walkAst(ast, {

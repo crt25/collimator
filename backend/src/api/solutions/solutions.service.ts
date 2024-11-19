@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { Solution, Prisma } from "@prisma/client";
+import { Solution, Prisma, SolutionAnalysis } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { getCurrentAnalyses } from "@prisma/client/sql";
+
 import { SolutionId } from "./dto";
 
 export type SolutionCreateInput = Omit<
@@ -33,6 +35,23 @@ export class SolutionsService {
     return this.prisma.solution.findUniqueOrThrow({
       omit: omitData,
       where: { id, sessionId, taskId },
+    });
+  }
+
+  findAllCurrentAnalyses(
+    sessionId: number,
+    taskId: number,
+  ): Promise<SolutionAnalysis[]> {
+    return this.prisma.$queryRawTyped(getCurrentAnalyses(sessionId, taskId));
+  }
+
+  findAnalysisByIdOrThrow(
+    sessionId: number,
+    taskId: number,
+    id: SolutionId,
+  ): Promise<SolutionAnalysis> {
+    return this.prisma.solutionAnalysis.findUniqueOrThrow({
+      where: { solution: { sessionId, taskId }, solutionId: id },
     });
   }
 

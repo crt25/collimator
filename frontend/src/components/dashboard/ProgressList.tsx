@@ -13,6 +13,8 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
 import MultiSwrContent from "../MultiSwrContent";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { StudentName } from "../encryption/StudentName";
+import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -75,9 +77,12 @@ type TaskSolutions = {
 };
 
 type StudentProgress = {
-  studentId: number;
-  name: string;
+  student: ClassStudent;
   taskSolutions: TaskSolutions[];
+};
+
+const nameTemplate = (progress: StudentProgress) => {
+  return <StudentName student={progress.student} />;
 };
 
 const taskTemplate = (taskId: number) =>
@@ -157,9 +162,7 @@ const ProgressList = ({
       });
 
       return {
-        studentId: student.id,
-        // TODO: decrypt student pseudonym
-        name: student.pseudonym,
+        student,
         taskSolutions: taskSolutions,
       };
     });
@@ -200,7 +203,7 @@ const ProgressList = ({
             loading={klass.students.length !== progress.length}
             onRowClick={(e) =>
               router.push(
-                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).studentId}`,
+                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.id}`,
               )
             }
           >
@@ -214,6 +217,7 @@ const ProgressList = ({
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={nameTemplate}
             />
             <Column
               header={intl.formatMessage(messages.helpColumn)}

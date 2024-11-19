@@ -1,16 +1,16 @@
 import { GeneralAst } from "src/ast/types/general-ast";
-import {
-  Criteria,
-  CriteriaBasedAnalyzerInput,
-  CriteriaBasedAnalyzerOutput,
-} from "../criteria-based-analyzer.service";
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
+import {
+  Criterion,
+  CriteriaBasedAnalyzerInput,
+  CriteriaBasedAnalyzerOutput,
+} from "../criteria-based-analysis-worker.piscina";
 
 export const containsLoop = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[Criteria.containsLoop],
-): CriteriaBasedAnalyzerOutput[Criteria.containsLoop] => {
+  _input: CriteriaBasedAnalyzerInput[Criterion.containsLoop],
+): CriteriaBasedAnalyzerOutput[Criterion.containsLoop] => {
   let containsLoop = false;
 
   walkAst(ast, {
