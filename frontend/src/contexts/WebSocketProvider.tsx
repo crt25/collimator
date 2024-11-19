@@ -119,16 +119,16 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
               (pseudonym) => pseudonym !== null,
             );
 
-            const pseudonym = matchingPseudonym
-              ? matchingPseudonym
-              : encodeBase64(
-                  await authContext.keyPair.encryptString(
-                    JSON.stringify({
-                      longTermIdentifier,
-                      name,
-                    } as StudentIdentity),
-                  ),
-                );
+            const pseudonym =
+              matchingPseudonym ??
+              encodeBase64(
+                await authContext.keyPair.encryptString(
+                  JSON.stringify({
+                    longTermIdentifier,
+                    name,
+                  } as StudentIdentity),
+                ),
+              );
 
             const response = await authenticateStudent({
               classId: klass.id,

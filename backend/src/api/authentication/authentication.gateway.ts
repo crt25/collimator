@@ -24,7 +24,7 @@ export class AuthenticationGateway
 
   @WebSocketServer() io!: Server;
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private readonly authenticationService: AuthenticationService) {}
 
   async handleConnection(client: Client): Promise<void> {
     const token = client.handshake.auth.token;

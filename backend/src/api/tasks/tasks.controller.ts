@@ -44,7 +44,7 @@ import { NonUserRoles, Roles } from "../authentication/role.decorator";
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
-    private authorizationService: AuthorizationService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Post()

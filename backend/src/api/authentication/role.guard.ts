@@ -17,8 +17,8 @@ export const studentRequestKey = "student";
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(
-    private authenticationService: AuthenticationService,
-    private reflector: Reflector,
+    private readonly authenticationService: AuthenticationService,
+    private readonly reflector: Reflector,
   ) {}
 
   // By default we allow only admins and teachers

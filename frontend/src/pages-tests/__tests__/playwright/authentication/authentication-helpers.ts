@@ -19,10 +19,9 @@ import {
   StudentAuthenticationResponse,
 } from "@/types/websocket-events";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
-import { webcrypto } from "crypto";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 
-const crypto = webcrypto.subtle as SubtleCrypto;
+const crypto = subtle as SubtleCrypto;
 
 export const userName = "Jane Doe";
 export const userEmail = "janedoe@example.com";
@@ -32,9 +31,7 @@ export const sub = "1234567890";
 export const adminFile = "playwright/.auth/admin.json";
 export const studentFile = "playwright/.auth/student.json";
 
-export const generateKey = async (): Promise<
-  [webcrypto.CryptoKeyPair, webcrypto.JsonWebKey]
-> => {
+export const generateKey = async (): Promise<[CryptoKeyPair, JsonWebKey]> => {
   const keyPair = await subtle.generateKey(
     {
       name: "ECDSA",
@@ -58,7 +55,7 @@ const typedEncode = encoder.encode.bind(encoder) as unknown as (
 const encode = (packet: Packet): string => "4" + typedEncode(packet)[0];
 
 export const generateJwt = async (
-  keyPair: webcrypto.CryptoKeyPair,
+  keyPair: CryptoKeyPair,
   clientId: string,
   nonce: string,
 ): Promise<string> => {

@@ -64,7 +64,7 @@ const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   userInfo.email_verified === false ? undefined : userInfo.email;
 
 const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
-  userInfo.preferred_username || userInfo.name;
+  userInfo.preferred_username ?? userInfo.name;
 
 const OpenIdConnectRedirect = () => {
   const router = useRouter();
@@ -284,7 +284,7 @@ const OpenIdConnectRedirect = () => {
         userId,
         role: type === UserType.ADMIN ? UserRole.admin : UserRole.teacher,
         email: userEmail,
-        name: userName || userEmail,
+        name: userName ?? userEmail,
         keyPair: teacherKeyPair,
         keyPairId,
       });

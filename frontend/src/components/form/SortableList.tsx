@@ -12,9 +12,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  useSortable,
 } from "@dnd-kit/sortable";
 import { ListGroup } from "react-bootstrap";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCallback } from "react";
 import styled from "@emotion/styled";
@@ -72,8 +72,6 @@ const SortableListInput = <TItem extends { id: number }>({
         const newIndex = items.findIndex((i) => i.id === over.id);
 
         updateItems(arrayMove([...items], oldIndex, newIndex));
-
-        return;
       }
     },
     [updateItems, items],
