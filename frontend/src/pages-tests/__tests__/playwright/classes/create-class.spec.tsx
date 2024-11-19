@@ -20,9 +20,15 @@ test.describe("/class/create", () => {
   const mockUsersResponse = [
     ...getUsersControllerFindAllV0ResponseMock(),
     {
-      id: 0,
+      id: -1,
       email: "jane@doe.com",
       name: "Jane Doe",
+      type: UserType.TEACHER,
+    } as ExistingUserDto,
+    {
+      id: -2,
+      email: "john@doe.com",
+      name: "John Doe",
       type: UserType.TEACHER,
     } as ExistingUserDto,
   ];
@@ -59,7 +65,7 @@ test.describe("/class/create", () => {
     await list.createItem();
   });
 
-  test.only("can create a new class", async ({ page: pwPage, baseURL }) => {
+  test("can create a new class", async ({ page: pwPage, baseURL }) => {
     const page = await ClassFormPageModel.create(pwPage);
 
     const teacherId = mockUsersResponse[0].id;
