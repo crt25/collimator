@@ -4,6 +4,7 @@ import { CoreModule } from "./core/core.module";
 import { AstModule } from "./ast/ast.module";
 import { DataAnalyzerModule } from "./data-analyzer/data-analyzer.module";
 import { ApiModule } from "src/api/api.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ApiModule } from "src/api/api.module";
     AstModule,
     DataAnalyzerModule,
     ApiModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {}

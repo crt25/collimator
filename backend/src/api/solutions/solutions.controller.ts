@@ -34,7 +34,6 @@ import {
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { SolutionAnalysisService } from "./solution-analysis.service";
 import { CriteriaBasedAnalyzerService } from "src/data-analyzer/criteria-based-analyzer.service";
 import { GeneralAst } from "src/ast/types/general-ast";
 import { AnalysisInputDto } from "./dto/analysis/analysis-input.dto";
@@ -69,7 +68,6 @@ import { match } from "ts-pattern";
 export class SolutionsController {
   constructor(
     private readonly solutionsService: SolutionsService,
-    private readonly analysisService: SolutionAnalysisService,
     private readonly criteriaBasedAnalyzerService: CriteriaBasedAnalyzerService,
     private readonly authorizationService: AuthorizationService,
   ) {}
@@ -102,10 +100,6 @@ export class SolutionsController {
       file.mimetype,
       file.buffer,
     );
-
-    // perform the analysis but do *not* wait for the promise to resolve
-    // this will happen in the background
-    this.analysisService.performAnalysis(solution);
 
     return ExistingSolutionDto.fromQueryResult({
       ...solution,

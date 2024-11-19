@@ -4,6 +4,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentAnalyses } from "@prisma/client/sql";
 
 import { SolutionId } from "./dto";
+import { Cron } from "@nestjs/schedule";
+import { SolutionAnalysisService } from "./solution-analysis.service";
 
 export type SolutionCreateInput = Omit<
   Prisma.SolutionUncheckedCreateInput,
@@ -21,11 +23,16 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
+const maximumNumberOfAnalysisRetries = 3;
+
 const omitData = { data: true };
 
 @Injectable()
 export class SolutionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly analysisService: SolutionAnalysisService,
+  ) {}
 
   findByIdOrThrow(
     sessionId: number,
@@ -73,12 +80,12 @@ export class SolutionsService {
     });
   }
 
-  create(
-    solution: SolutionCreateInput,
+  async create(
+    solutionInput: SolutionCreateInput,
     mimeType: string,
     data: Buffer,
   ): Promise<Solution> {
-    const { studentId, sessionId, taskId, ...rest } = solution;
+    const { studentId, sessionId, taskId, ...rest } = solutionInput;
     const checkedSolution: Prisma.SolutionCreateInput = {
       ...rest,
       mimeType,
@@ -89,8 +96,43 @@ export class SolutionsService {
       sessionTask: { connect: { sessionId_taskId: { sessionId, taskId } } },
     };
 
-    return this.prisma.solution.create({
+    const solution = await this.prisma.solution.create({
       data: checkedSolution,
     });
+
+    // perform the analysis but do *not* wait for the promise to resolve
+    // this will happen in the background
+    this.analysisService.performAnalysis(solution);
+
+    return solution;
+  }
+
+  // check every minute (with seconds = 0) whether there are analyses that were not performed
+  @Cron("0 * * * * *", { name: "runUnperformedAnalyes" })
+  async runUnperformedAnalyes(): Promise<void> {
+    const solutionsWithoutAnalysis = await this.prisma.solution.findMany({
+      where: {
+        AND: [
+          {
+            analysis: null,
+          },
+          {
+            failedAnalyses: {
+              lt: maximumNumberOfAnalysisRetries,
+            },
+          },
+        ],
+      },
+    });
+
+    // run all of them
+    await Promise.all(
+      solutionsWithoutAnalysis.map((solution) =>
+        this.analysisService
+          .performAnalysis(solution)
+          // ignore exceptions, we'll just re-try
+          .catch(),
+      ),
+    );
   }
 }
