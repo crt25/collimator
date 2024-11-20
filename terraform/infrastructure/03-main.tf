@@ -12,7 +12,7 @@
 module "frontend" {
   source = "./modules/02-static-website"
 
-  name   = "${var.name}-${var.environment}-frontend"
+  name   = "${var.name}-${var.environment}-static-frontend"
   region = var.region
 
   nodejs_lambda_function_path      = "./lambdas/src/next/index.js"
@@ -24,7 +24,7 @@ module "frontend" {
 module "scratchapp" {
   source = "./modules/02-static-website"
 
-  name   = "${var.name}-${var.environment}-apps-scratch"
+  name   = "${var.name}-${var.environment}-app-scratch"
   region = var.region
 
   nodejs_lambda_function_path      = "./lambdas/src/spa/index.js"
@@ -83,6 +83,15 @@ module "cdn" {
 
   backend_domain_name = module.backend.backend_dns_name
   certificate_arn     = module.network.certificte_arn
+
+  tags = var.tags
+}
+
+module "cd_backend" {
+  source = "./modules/06-cd-backend"
+
+  name   = "${var.name}-${var.environment}-cd-tf-state"
+  region = var.region
 
   tags = var.tags
 }

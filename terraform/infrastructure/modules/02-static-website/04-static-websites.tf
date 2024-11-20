@@ -10,19 +10,6 @@ resource "aws_s3_bucket" "this" {
   tags = var.tags
 }
 
-# Enable static website hosting for the S3 bucket
-resource "aws_s3_bucket_website_configuration" "this" {
-  bucket = aws_s3_bucket.this.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "index.html"
-  }
-}
-
 # Disallow public access to the S3 bucket
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket                  = aws_s3_bucket.this.id

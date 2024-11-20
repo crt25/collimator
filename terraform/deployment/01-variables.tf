@@ -4,7 +4,7 @@ variable "frontend_bucket_id" {
 
 variable "frontend_build_directory" {
   type    = string
-  default = "../../frontend/build"
+  default = "../../frontend/dist"
 }
 
 variable "scratchapp_bucket_id" {
@@ -19,4 +19,9 @@ variable "scratchapp_build_directory" {
 variable "region" {
   type    = string
   default = "eu-central-2"
+}
+
+variable "bucket" {
+  type    = string
+  default = "collimator-prod-cd-tf-state"
 }

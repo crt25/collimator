@@ -2,7 +2,7 @@
 
 const nextConfig = {
   output: "export",
-  distDir: "build",
+  distDir: "dist",
 
   reactStrictMode: true,
 

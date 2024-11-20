@@ -30,7 +30,7 @@ resource "random_password" "database" {
   special = true
   // postgres does not allow '@', '"', or '\' in passwords, see https://github.com/awsdocs/aws-cloudformation-user-guide/blob/c03a45977c5a506e09a22dbe05ff980bec79b805/doc_source/aws-properties-rds-database-instance.md#cfn-rds-dbinstance-masteruserpassword
   // also ':' seems to cause issues because prisma thinks the port follows
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "-._~!$&'()*+,;="
 }
 
 module "database" {

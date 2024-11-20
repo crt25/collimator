@@ -127,8 +127,9 @@ module "cloudfront" {
 
 
   viewer_certificate = {
-    acm_certificate_arn = var.certificate_arn
-    ssl_support_method  = "sni-only"
+    acm_certificate_arn      = var.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   geo_restriction = {
@@ -143,6 +144,7 @@ module "cloudfront" {
 data "aws_iam_policy_document" "s3_scratchapp_policy" {
   # Origin Access Controls
   statement {
+    sid       = "AllowCloudFrontServicePrincipalReadOnly"
     actions   = ["s3:GetObject"]
     resources = ["${var.scratchapp_bucket_arn}/*"]
 
@@ -167,6 +169,7 @@ resource "aws_s3_bucket_policy" "scratchapp_bucket_policy" {
 data "aws_iam_policy_document" "s3_frontend_policy" {
   # Origin Access Controls
   statement {
+    sid       = "AllowCloudFrontServicePrincipalReadOnly"
     actions   = ["s3:GetObject"]
     resources = ["${var.frontend_bucket_arn}/*"]
 
