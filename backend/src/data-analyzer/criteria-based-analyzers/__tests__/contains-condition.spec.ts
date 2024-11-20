@@ -61,7 +61,7 @@ describe("Criteria Based Analyzer", () => {
             functionDeclarations: [],
           },
         ] as GeneralAst,
-        true,
+        undefined,
       );
 
       expect(output).toBe(true);
@@ -102,7 +102,7 @@ describe("Criteria Based Analyzer", () => {
             functionDeclarations: [],
           },
         ] as GeneralAst,
-        true,
+        undefined,
       );
 
       expect(output).toBe(false);
