@@ -1,7 +1,7 @@
 ﻿module "network" {
   source = "./modules/01-network"
 
-  name        = "${var.name}-prod"
+  name        = "${var.name}-${var.environment}-network"
   region      = var.region
   vpc_cidr    = var.vpc_cidr
   domain_name = var.domain_name
@@ -12,7 +12,7 @@
 module "frontend" {
   source = "./modules/02-static-website"
 
-  name   = "${var.name}-prod-frontend"
+  name   = "${var.name}-${var.environment}-frontend"
   region = var.region
 
   nodejs_lambda_function_path      = "./lambdas/src/next/index.js"
@@ -24,7 +24,7 @@ module "frontend" {
 module "scratchapp" {
   source = "./modules/02-static-website"
 
-  name   = "${var.name}-prod-apps-scratch"
+  name   = "${var.name}-${var.environment}-apps-scratch"
   region = var.region
 
   nodejs_lambda_function_path      = "./lambdas/src/spa/index.js"
@@ -36,7 +36,7 @@ module "scratchapp" {
 module "database" {
   source = "./modules/03-database"
 
-  name   = "${var.name}-prod-database"
+  name   = "${var.name}-${var.environment}-database"
   region = var.region
 
   vpc_id                      = module.network.vpc_id
@@ -49,7 +49,7 @@ module "database" {
 module "backend" {
   source = "./modules/04-fargate"
 
-  name   = "${var.name}-prod-backend"
+  name   = "${var.name}-${var.environment}-backend"
   region = var.region
 
   vpc_id                 = module.network.vpc_id
@@ -67,7 +67,7 @@ module "backend" {
 module "cdn" {
   source = "./modules/05-cloudfront"
 
-  name        = "${var.name}-prod-cdn"
+  name        = "${var.name}-${var.environment}-cdn"
   region      = var.region
   domain_name = var.domain_name
 

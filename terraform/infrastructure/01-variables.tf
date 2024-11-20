@@ -4,6 +4,11 @@ variable "name" {
   default = "collimator"
 }
 
+variable "environment" {
+  type    = string
+  default = "prod"
+}
+
 variable "region" {
   type    = string
   default = "eu-central-2"
