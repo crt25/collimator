@@ -21,7 +21,6 @@ variable "region" {
   default = "eu-central-2"
 }
 
-variable "bucket" {
-  type    = string
-  default = "collimator-prod-cd-tf-state"
+variable "tfstate_bucket_name" {
+  type = string
 }
