@@ -5,7 +5,7 @@
 data "archive_file" "lambda_function" {
   type        = "zip"
   source_file = var.nodejs_lambda_function_path
-  output_path = "${var.lambda_function_output_directory}/lambda.zip"
+  output_path = var.lambda_function_output_zip
 }
 
 # create the lambda function based on the package

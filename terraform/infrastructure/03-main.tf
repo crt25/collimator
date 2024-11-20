@@ -15,8 +15,8 @@ module "frontend" {
   name   = "${var.name}-${var.environment}-static-frontend"
   region = var.region
 
-  nodejs_lambda_function_path      = "./lambdas/src/next/index.js"
-  lambda_function_output_directory = local.lambda_function_output_directory
+  nodejs_lambda_function_path = "./lambdas/src/next/index.js"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/next.zip"
 
   tags = var.tags
 }
@@ -27,8 +27,8 @@ module "scratchapp" {
   name   = "${var.name}-${var.environment}-app-scratch"
   region = var.region
 
-  nodejs_lambda_function_path      = "./lambdas/src/spa/index.js"
-  lambda_function_output_directory = local.lambda_function_output_directory
+  nodejs_lambda_function_path = "./lambdas/src/spa/index.js"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/spa.zip"
 
   tags = var.tags
 }

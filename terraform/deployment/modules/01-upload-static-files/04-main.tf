@@ -1,7 +1,7 @@
 resource "aws_s3_object" "this" {
   for_each = fileset(var.build_directory, "**")
   bucket   = var.bucket_id
-  key      = each.value
+  key      = "${var.bucket_path_prefix}${each.value}"
   source   = "${var.build_directory}/${each.value}"
   etag     = filemd5("${var.build_directory}/${each.value}")
 

@@ -11,3 +11,8 @@ variable "region" {
   type    = string
   default = "eu-central-2"
 }
+
+variable "bucket_path_prefix" {
+  type    = string
+  default = ""
+}

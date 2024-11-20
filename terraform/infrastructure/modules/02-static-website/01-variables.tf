@@ -14,6 +14,6 @@ variable "nodejs_lambda_function_path" {
   type = string
 }
 
-variable "lambda_function_output_directory" {
+variable "lambda_function_output_zip" {
   type = string
 }
