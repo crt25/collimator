@@ -1,0 +1,96 @@
+name: Development Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - feature/CRT-7_deployment # The initial branch the deployment was developed on - may be removed after the first deployment
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REGISTRY_URI: ${{ vars.ECR_REGISTRY_URI }}
+  ROLE_TO_ASSUME: ${{ vars.DEV_ROLE_TO_ASSUME }}
+  BACKEND_IMAGE_NAME: collimator-dev-backend
+  FRONTEND_BUCKET_ID: collimator-dev-static-frontend
+  SCRATCH_APP_BUCKET_ID: collimator-dev-app-scratch
+  TERRAFORM_STATE_BUCKET: collimator-dev-cd-tf-state
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Build application and prepare deployment
+
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          lfs: 'true'
+          fetch-depth: 0
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+            aws-region: ${{ env.AWS_REGION }}
+        
+        
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: yarn install
+
+      - name: Install scratch app dependencies
+        working-directory: ./apps/scratch
+        run: yarn install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: yarn build
+        env:
+          NEXT_PUBLIC_BACKEND_HOSTNAME: /
+          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: /scratch
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: d8336644-c349-4b7f-972c-829aebc41f1b
+
+      - name: Prepare scratch app build
+        working-directory: ./apps/scratch
+        run: yarn prepublish
+
+      - name: Build scratch app
+        working-directory: ./apps/scratch
+        run: yarn build
+
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Init terraform
+        run: tofu init -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
+        working-directory: ./terraform/deployment
+
+      - name: Build backend docker image
+        run: docker build -t ${{ env.BACKEND_IMAGE_NAME }} .
+        working-directory: ./backend
+
+      - name: Tag docker image
+        run: docker tag ${{ env.BACKEND_IMAGE_NAME }}:latest ${{ env.ECR_REGISTRY_URI }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        working-directory: ./backend
+
+      # Actual deployment
+
+      - name: Deploy to S3 buckets
+        run: tofu apply -auto-approve -var="frontend_bucket_id=${{ env.FRONTEND_BUCKET_ID }}" -var="scratchapp_bucket_id=${{ env.SCRATCH_APP_BUCKET_ID }}" -var="region=${{ env.AWS_REGION }}" -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
+        working-directory: ./terraform/deployment
+
+      - name: Authenticate to ECR
+        run: aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY_URI }}
+
+      - name: Upload docker image
+        run: docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        working-directory: ./backend

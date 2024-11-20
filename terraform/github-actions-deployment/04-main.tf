@@ -89,9 +89,12 @@ data "aws_iam_policy_document" "deploy" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:*Object"
+      "s3:*Object",
+      "s3:ListMultipartUploadParts",
+      "s3:GetObjectVersion",
+      "s3:GetObjectTagging",
     ]
-    resources = var.s3_bucket_arns
+    resources = [for arn in var.s3_bucket_arns : "${arn}/*"]
   }
 }
 
