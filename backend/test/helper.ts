@@ -72,6 +72,8 @@ export const getApp = async (): Promise<INestApplication> => {
 
   const app = moduleFixture.createNestApplication();
   await app.init();
+  app.enableShutdownHooks();
+
   return app;
 };
 

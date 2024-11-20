@@ -34,6 +34,10 @@ describe("ClassesController (e2e)", () => {
     await ensureUserExists(app, defaultAdmin, adminUserToken);
   });
 
+  afterEach(() => {
+    app.close();
+  });
+
   test("/classes (GET)", async () => {
     const response = await request(app.getHttpServer())
       .get("/classes")
