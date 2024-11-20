@@ -23,6 +23,7 @@ import {
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import WebSocketProvider from "@/contexts/WebSocketProvider";
 
 const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
@@ -116,7 +117,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                   <AuthenticationBarrier
                     authenticationStateLoaded={authenticationStateLoaded}
                   >
-                    <Component {...pageProps} />
+                    <WebSocketProvider>
+                      <Component {...pageProps} />
+                    </WebSocketProvider>
                   </AuthenticationBarrier>
                 </UpdateLocalizationContext.Provider>
               </UpdateAuthenticationContext.Provider>

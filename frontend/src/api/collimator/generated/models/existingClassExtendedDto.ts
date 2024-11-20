@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { ClassStudentDto } from "./classStudentDto";
 import type { ClassTeacherDto } from "./classTeacherDto";
 
 export interface ExistingClassExtendedDto {
@@ -13,8 +14,8 @@ export interface ExistingClassExtendedDto {
   name: string;
   /** The list of session IDs. */
   sessions: number[];
-  /** The number of students in the class. */
-  studentCount: number;
+  /** The students in the class. */
+  students: ClassStudentDto[];
   /** The teacher of the class. */
   teacher: ClassTeacherDto;
 }

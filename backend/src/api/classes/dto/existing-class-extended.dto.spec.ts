@@ -1,5 +1,5 @@
 import { ExistingClassExtendedDto } from "./existing-class-extended.dto";
-import { Class } from "@prisma/client";
+import { Class, Student } from "@prisma/client";
 
 describe("ExistingClassExtendedDto", () => {
   const klass = {
@@ -8,7 +8,13 @@ describe("ExistingClassExtendedDto", () => {
     teacherId: 5,
     teacher: { id: 5, name: "Jerry Smith" },
     sessions: [{ id: 1 }, { id: 2 }],
-    _count: { students: 25 },
+    students: new Array(25).fill(undefined).map(
+      (_, i) =>
+        ({
+          id: i + 1,
+          pseudonym: Buffer.from(`Student ${i + 1}`, "utf-8"),
+        }) as Student,
+    ),
   };
 
   it("can be constructed", () => {
@@ -19,7 +25,7 @@ describe("ExistingClassExtendedDto", () => {
     expect(classDto).not.toHaveProperty("teacherId");
     expect(classDto.teacher).toEqual(klass.teacher);
     expect(classDto.sessions).toEqual([1, 2]);
-    expect(classDto.studentCount).toBe(25);
+    expect(classDto.students.length).toBe(25);
   });
 
   it("handles empty sessions", () => {
@@ -34,10 +40,10 @@ describe("ExistingClassExtendedDto", () => {
   it("handles zero student count", () => {
     const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
-      _count: { students: 0 },
+      students: [],
     } as Class);
 
-    expect(dto.studentCount).toBe(0);
+    expect(dto.students.length).toBe(0);
   });
 
   it("handles undefined sessions", () => {
@@ -52,9 +58,9 @@ describe("ExistingClassExtendedDto", () => {
   it("handles undefined student count", () => {
     const dto = ExistingClassExtendedDto.fromQueryResult({
       ...klass,
-      _count: undefined,
+      students: undefined,
     } as Class);
 
-    expect(dto.studentCount).toBe(0);
+    expect(dto.students.length).toBe(0);
   });
 });

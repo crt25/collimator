@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Solve from "./pages/Solve";
 import ErrorPage from "./pages/ErrorPage";
 import Edit from "./pages/Edit";
+import Show from "./pages/Show";
+import { Toaster } from "react-hot-toast";
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
@@ -25,13 +27,23 @@ const router = createBrowserRouter(
       path: "edit",
       element: <Edit />,
     },
+    {
+      path: "show",
+      element: <Show />,
+    },
   ],
   {
     basename: "/scratch",
   },
 );
 
-ReactDOM.render(<RouterProvider router={router} />, appRoot);
+ReactDOM.render(
+  <>
+    <RouterProvider router={router} />
+    <Toaster />
+  </>,
+  appRoot,
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

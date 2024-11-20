@@ -4,12 +4,12 @@ const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
   const teacher = await prisma.user.upsert({
-    where: { email: "alfred@example.com" },
+    where: { email: "nico@anansi-solutions.net" },
     update: {},
     create: {
-      email: "alfred@example.com",
-      name: "Alfred",
-      type: "TEACHER",
+      email: "nico@anansi-solutions.net",
+      name: "Nico",
+      type: "ADMIN",
     },
   });
 
@@ -43,6 +43,8 @@ async function main(): Promise<void> {
     update: {},
     create: {
       classId: klass.id,
+      title: "First session",
+      description: "This is the first session",
     },
   });
 
@@ -54,6 +56,7 @@ async function main(): Promise<void> {
     create: {
       sessionId: session.id,
       taskId: task.id,
+      index: 0,
     },
   });
 
@@ -62,9 +65,12 @@ async function main(): Promise<void> {
   await Promise.all(
     ["bob", "charlie"].map(async (name, index) => {
       const student = await prisma.student.upsert({
-        where: { id: name },
+        where: { id: index + 1 },
         update: {},
-        create: { id: name, classId: klass.id },
+        create: {
+          pseudonym: Buffer.from(name, "ascii"),
+          classId: klass.id,
+        },
       });
 
       console.log(["student", student]);
@@ -77,7 +83,10 @@ async function main(): Promise<void> {
           studentId: student.id,
           taskId: task.id,
           sessionId: session.id,
-          data: `Some text file here from student ${student.id}!`,
+          data: Buffer.from(
+            `Some text file here from student ${student.id}!`,
+            "utf8",
+          ),
           mimeType: "text/plain",
         },
       });

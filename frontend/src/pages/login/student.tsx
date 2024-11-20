@@ -2,10 +2,7 @@ import Button from "@/components/Button";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import {
-  openIdConnectMicrosoftClientId,
-  openIdConnectMicrosoftServer,
-} from "@/utilities/constants";
+import {} from "@/utilities/constants";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
@@ -13,7 +10,12 @@ import { FormattedMessage } from "react-intl";
 
 const StudentLoginPage = () => {
   const router = useRouter();
-  const { sessionId, key: teacherPublicKeyFingerprint } = router.query as {
+  const {
+    classId,
+    sessionId,
+    key: teacherPublicKeyFingerprint,
+  } = router.query as {
+    classId?: string;
     sessionId?: string;
     key?: string;
   };
@@ -27,14 +29,12 @@ const StudentLoginPage = () => {
     // should the need arise
 
     redirectToOpenIdConnectProvider(
-      openIdConnectMicrosoftServer,
-      openIdConnectMicrosoftClientId,
-      `/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
+      `/class/${classId}/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
       true,
     );
-  }, [sessionId, teacherPublicKeyFingerprint]);
+  }, [classId, sessionId, teacherPublicKeyFingerprint]);
 
-  if (!sessionId || !teacherPublicKeyFingerprint) {
+  if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (
       <>
         <Header />

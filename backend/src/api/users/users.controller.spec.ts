@@ -1,22 +1,31 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { plainToInstance } from "class-transformer";
-import { PrismaClient, UserType } from "@prisma/client";
+import { PrismaClient, User, UserType } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { CreateUserDto, ExistingUserDto } from "./dto";
+import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
 describe("UsersController", () => {
   let controller: UsersController;
   let prismaMock: DeepMockProxy<PrismaClient>;
+  let module: TestingModule;
+
+  const adminUser: User = {
+    id: 1,
+    name: "Admin",
+    email: "root@collimator.com",
+    type: "ADMIN",
+  };
 
   beforeEach(async () => {
     prismaMock = mockDeep<PrismaClient>();
 
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [CoreModule],
+    module = await Test.createTestingModule({
+      imports: [CoreModule, mockConfigModule],
       controllers: [UsersController],
       providers: [
         UsersService,
@@ -30,6 +39,10 @@ describe("UsersController", () => {
     controller = module.get<UsersController>(UsersController);
 
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    module.close();
   });
 
   it("should be defined", () => {
@@ -63,6 +76,7 @@ describe("UsersController", () => {
     prismaMock.user.update.mockResolvedValue(updatedUser);
 
     const result = await controller.update(
+      adminUser,
       2,
       plainToInstance(CreateUserDto, user),
     );
@@ -100,7 +114,7 @@ describe("UsersController", () => {
     };
     prismaMock.user.findUniqueOrThrow.mockResolvedValue(user);
 
-    const result = await controller.findOne(user.id);
+    const result = await controller.findOne(adminUser, user.id);
 
     expect(result).toBeInstanceOf(ExistingUserDto);
     expect(result).toEqual(user);
@@ -118,7 +132,7 @@ describe("UsersController", () => {
     };
     prismaMock.user.findUniqueOrThrow.mockRejectedValue(new Error("Not found"));
 
-    const action = controller.findOne(user.id);
+    const action = controller.findOne(adminUser, user.id);
     await expect(action).rejects.toThrow("Not found");
   });
 

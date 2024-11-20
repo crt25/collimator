@@ -3,10 +3,6 @@ import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import { WarningMessages } from "@/i18n/warning-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import {
-  openIdConnectMicrosoftClientId,
-  openIdConnectMicrosoftServer,
-} from "@/utilities/constants";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
@@ -21,8 +17,6 @@ const LoginPage = () => {
 
   const onAuthenticateWithMicrosoft = useCallback(() => {
     redirectToOpenIdConnectProvider(
-      openIdConnectMicrosoftServer,
-      openIdConnectMicrosoftClientId,
       // only redirect to the specified URI if it starts with a `/`
       // this is to prevent open redirects
       redirectUri?.startsWith(`/`) ? redirectUri : `/`,

@@ -7,56 +7,29 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
-import ProgressList, {
-  UserProgress,
-} from "@/components/dashboard/ProgressList";
+import ProgressList from "@/components/dashboard/ProgressList";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
-
-const progressList: UserProgress[] = [
-  {
-    userId: 1,
-    name: "Student 1",
-  },
-  {
-    userId: 2,
-    name: "Student 2",
-  },
-  {
-    userId: 3,
-    name: "Student 3",
-  },
-  {
-    userId: 4,
-    name: "Student 4",
-  },
-  {
-    userId: 5,
-    name: "Student 5",
-  },
-  {
-    userId: 6,
-    name: "Student 6",
-  },
-  {
-    userId: 7,
-    name: "Student 7",
-  },
-  {
-    userId: 8,
-    name: "Student 8",
-  },
-];
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 
 const SessionProgress = () => {
   const router = useRouter();
-  const { classId, sessionId: sessionIdString } = router.query as {
+  const { classId, sessionId } = router.query as {
     classId: string;
     sessionId: string;
   };
 
-  const { data: klass, error, isLoading: isLoadingClass } = useClass(classId);
-  const sessionId = parseInt(sessionIdString, 10);
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
 
   return (
     <>
@@ -64,13 +37,9 @@ const SessionProgress = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation
-            classId={klass?.id}
-            breadcrumb
-            sessionId={sessionId}
-          />
+          <ClassNavigation classId={klass?.id} breadcrumb session={session} />
         </Breadcrumbs>
-        <SessionNavigation classId={klass?.id} sessionId={sessionId} />
+        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
             id="SessionProgress.header"
@@ -78,21 +47,12 @@ const SessionProgress = () => {
           />
         </PageHeader>
         <MultiSwrContent
-          errors={[error]}
-          isLoading={[isLoadingClass]}
-          data={[klass]}
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+          data={[klass, session]}
         >
-          {([klass]) => (
-            <ProgressList
-              classId={klass.id}
-              sessionId={sessionId}
-              fetchData={() =>
-                Promise.resolve({
-                  items: progressList,
-                  totalCount: progressList.length,
-                })
-              }
-            />
+          {([klass, session]) => (
+            <ProgressList classId={klass.id} sessionId={session.id} />
           )}
         </MultiSwrContent>
       </Container>

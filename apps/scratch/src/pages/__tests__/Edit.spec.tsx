@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-test.describe("/edit/taskId", () => {
+test.describe("/edit", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     page.on(
       "framenavigated",
@@ -33,7 +33,7 @@ test.describe("/edit/taskId", () => {
         }),
     );
 
-    await page.goto(`${baseURL!}/edit/some-task-id`);
+    await page.goto(`${baseURL!}/edit`);
 
     await page.waitForSelector("#root");
 

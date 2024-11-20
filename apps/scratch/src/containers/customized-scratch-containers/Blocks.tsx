@@ -137,6 +137,7 @@ interface Props {
   stageSize: StageDisplaySize;
   locale: string;
   anyModalVisible?: boolean;
+  showFlyout: boolean;
   canEditTask?: boolean;
   customProceduresVisible?: boolean;
   extensionLibraryVisible?: boolean;
@@ -340,6 +341,18 @@ class Blocks extends React.Component<Props, State> {
     // If locale changes while not visible it will get handled in didUpdate
     if (this.props.isVisible) {
       this.setLocale();
+    }
+
+    if (!this.props.showFlyout && this.blocks) {
+      const elementsToHide = [
+        this.blocks.querySelector<SVGSVGElement>("svg.blocklyFlyout"),
+        this.blocks.querySelector<HTMLDivElement>("div.blocklyToolboxDiv"),
+        this.blocks.querySelector<HTMLDivElement>("svg.blocklyFlyoutScrollbar"),
+      ];
+
+      for (const element of elementsToHide) {
+        element?.classList.add("d-none");
+      }
     }
 
     // update the toolbox when an update is requested
@@ -1059,6 +1072,7 @@ class Blocks extends React.Component<Props, State> {
     const {
       canEditTask,
       anyModalVisible,
+      showFlyout,
       customProceduresVisible,
       extensionLibraryVisible,
       options,

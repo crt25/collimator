@@ -10,6 +10,8 @@
   --button-background-color: #007bff;
   --button-foreground-color: #ffffff;
 
+  --button-disabled-background-color: #999999;
+
   --header-background-color: #ccc;
   --header-foreground-color: var(--foreground-color);
 
@@ -56,4 +58,14 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+// prime react tooltips
+.p-tooltip {
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  border: var(--foreground-color) 1px solid;
+  border-radius: var(--border-radius);
+
+  padding: 1rem;
 }

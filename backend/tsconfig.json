@@ -20,6 +20,7 @@
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": true,
     "resolveJsonModule": true,
+    "esModuleInterop": false,
     "types": ["@types/jest", "@quramy/jest-prisma-node"],
   }
 }

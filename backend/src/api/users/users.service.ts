@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { User, Prisma } from "@prisma/client";
+import { User, Prisma, KeyPair } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
+import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,41 @@ export class UsersService {
     return this.prisma.user.update({
       data: user,
       where: { id },
+    });
+  }
+
+  async updateTeacherKey(
+    userId: UserId,
+    teacherKey: CreateKeyPairDto,
+  ): Promise<KeyPair> {
+    const publicKey = Buffer.from(teacherKey.publicKey, "utf-8");
+    const salt = Buffer.from(teacherKey.salt, "base64");
+
+    const privateKeys = teacherKey.privateKeys.map((privateKey) => ({
+      encryptedPrivateKey: Buffer.from(
+        privateKey.encryptedPrivateKey,
+        "base64",
+      ),
+      salt: Buffer.from(privateKey.salt, "base64"),
+    }));
+
+    // Delete the current key pair
+    // Note that this makes all non re-encrypted pseudonyms unreadabe (which may be intentional)
+    await this.prisma.keyPair.deleteMany({
+      where: { teacherId: userId },
+    });
+
+    // Create a new public key and add the new private keys
+    return await this.prisma.keyPair.create({
+      data: {
+        publicKey,
+        publicKeyFingerprint: teacherKey.publicKeyFingerprint,
+        privateKeys: {
+          create: privateKeys,
+        },
+        teacherId: userId,
+        salt,
+      },
     });
   }
 

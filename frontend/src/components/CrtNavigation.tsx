@@ -2,7 +2,9 @@ import { defineMessages } from "react-intl";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 import BreadcrumbItem from "./BreadcrumbItem";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
+import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 
 const messages = defineMessages({
   usersTab: {
@@ -17,6 +19,10 @@ const messages = defineMessages({
     id: "CrtNavigation.lessonsTab",
     defaultMessage: "Lessons",
   },
+  tasksTab: {
+    id: "CrtNavigation.tasksTab",
+    defaultMessage: "Tasks",
+  },
 });
 
 const tabs: NavigationTab[] = [
@@ -28,24 +34,29 @@ const tabs: NavigationTab[] = [
     url: "/class",
     title: (intl) => intl.formatMessage(messages.classesTab),
   },
+  // {
+  //   url: "/lesson",
+  //   title: (intl) => intl.formatMessage(messages.lessonsTab),
+  // },
   {
-    url: "/lesson",
-    title: (intl) => intl.formatMessage(messages.lessonsTab),
+    url: "/task",
+    title: (intl) => intl.formatMessage(messages.tasksTab),
   },
 ];
 
 const CrtNavigation = ({
   breadcrumb,
-  userId,
+  user,
   klass,
+  task,
   lessonId,
 }: {
   breadcrumb?: boolean;
-  userId?: number;
+  user?: ExistingUser;
   klass?: ExistingClass | ExistingClassExtended;
+  task?: ExistingTask;
   lessonId?: number;
 }) => {
-  const userName = "John";
   const lessonName = "Introduction to React";
 
   return (
@@ -53,12 +64,19 @@ const CrtNavigation = ({
       <TabNavigation tabs={tabs} breadcrumb={breadcrumb} />
       {breadcrumb && (
         <>
-          {userId && (
-            <BreadcrumbItem href={`/user/${userId}`}>{userName}</BreadcrumbItem>
+          {user && (
+            <BreadcrumbItem href={`/user/${user.id}`}>
+              {user.name ?? user.email}
+            </BreadcrumbItem>
           )}
           {klass && (
             <BreadcrumbItem href={`/class/${klass.id}/detail`}>
               {klass.name}
+            </BreadcrumbItem>
+          )}
+          {task && (
+            <BreadcrumbItem href={`/task/${task.id}/detail`}>
+              {task.title}
             </BreadcrumbItem>
           )}
           {lessonId && (

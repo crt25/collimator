@@ -178,7 +178,7 @@ const partitionRootBlocks = (
     } else if (isDefinitionBlock(block)) {
       procedureDefinitionRoots.push(block);
     } else {
-      throw new Error("Unexpected top-level block type");
+      // ignore stacks starting with non-hat blocks
     }
   }
 

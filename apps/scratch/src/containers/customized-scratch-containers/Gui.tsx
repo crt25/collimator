@@ -37,6 +37,7 @@ import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-uti
 import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
 import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
 import { loadCrtProject } from "../../vm/load-crt-project";
+import CrtHoc from "../../components/CrtHoc";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 
@@ -282,6 +283,6 @@ const WrappedGui = compose(
 )(ConnectedGUI);
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
-const DoubleWrapedGui = AppStateHOC(HashParserHOC(WrappedGui));
+const DoubleWrapedGui = AppStateHOC(HashParserHOC(CrtHoc(WrappedGui)));
 
 export default DoubleWrapedGui;

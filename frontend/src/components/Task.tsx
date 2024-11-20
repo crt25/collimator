@@ -7,6 +7,8 @@ import TaskList from "./TaskList";
 import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import FullHeightRow from "./layout/FullHeightRow";
 import VerticalSpacing from "./layout/VerticalSpacing";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 
 const TaskWrapper = styled.div`
   flex-grow: 1;
@@ -27,6 +29,8 @@ const SessionMenu = styled.div`
   overflow: hidden;
 
   padding-top: 1rem;
+
+  z-index: 1000;
 `;
 
 const SessionMenuWrapper = styled.div`
@@ -45,83 +49,44 @@ export interface TaskRef {
 }
 
 interface Props {
-  sessionId: number;
-  sessionName: string;
+  session: ExistingSessionExtended;
+  classId: number;
+  task: ExistingTask;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
   iframeSrc: string;
   embeddedApp: MutableRefObject<EmbeddedAppRef | null>;
+  onAppAvailable?: () => void;
 }
 
 const Task = ({
-  sessionId,
-  sessionName,
-  showSessionMenu: showTaskMenu,
-  setShowSessionMenu: setShowTaskMenu,
+  classId,
+  session,
+  task,
+  showSessionMenu,
+  setShowSessionMenu,
   iframeSrc,
   embeddedApp,
+  onAppAvailable,
 }: Props) => (
   <TaskWrapper>
-    {showTaskMenu && (
+    {showSessionMenu && (
       <SessionMenu>
         <SessionMenuWrapper>
-          <CloseSessionMenuButton onClick={() => setShowTaskMenu(false)} />
+          <CloseSessionMenuButton onClick={() => setShowSessionMenu(false)} />
           <RemainingHeightContainer>
-            <h1 data-testid="session-name">{sessionName}</h1>
+            <h1 data-testid="session-name">{session.title}</h1>
             <FullHeightRow>
               <Col xs={4}>
-                <TaskList sessionId={sessionId} />
+                <TaskList
+                  classId={classId}
+                  session={session}
+                  currentTaskId={task.id}
+                />
               </Col>
               <Col xs={8}>
                 <TaskDescription>
-                  <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                    ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                    ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                    ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                    ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                    justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-                    sea takimata sanctus est Lorem ipsum dolor sit ametx.
-                  </p>
+                  <p>{task.description}</p>
                 </TaskDescription>
               </Col>
             </FullHeightRow>
@@ -130,7 +95,11 @@ const Task = ({
         </SessionMenuWrapper>
       </SessionMenu>
     )}
-    <EmbeddedApp src={iframeSrc} ref={embeddedApp} />
+    <EmbeddedApp
+      src={iframeSrc}
+      ref={embeddedApp}
+      onAppAvailable={onAppAvailable}
+    />
   </TaskWrapper>
 );
 

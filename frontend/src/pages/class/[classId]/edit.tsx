@@ -37,7 +37,7 @@ const EditClass = () => {
           teacherId: formValues.teacherId,
         });
 
-        router.push(`/class`);
+        router.back();
       }
     },
     [klass, updateClass, router],

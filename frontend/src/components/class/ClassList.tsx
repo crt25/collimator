@@ -4,11 +4,8 @@ import {
   DataTableFilterEvent,
 } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useCallback, useEffect, useState } from "react";
-import DataTable, {
-  LazyTableFetchFunction,
-  LazyTableState,
-} from "@/components/DataTable";
+import { useCallback, useState } from "react";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -19,6 +16,10 @@ import { useRouter } from "next/router";
 import { getClassStatusMessage } from "@/i18n/class-status-messages";
 import { TableMessages } from "@/i18n/table-messages";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
+import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
+import SwrContent from "../SwrContent";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -45,18 +46,24 @@ const messages = defineMessages({
     id: "ClassList.columns.actions",
     defaultMessage: "Actions",
   },
+  deleteConfirmationTitle: {
+    id: "ClassList.deleteConfirmation.title",
+    defaultMessage: "Delete Class",
+  },
+  deleteConfirmationBody: {
+    id: "ClassList.deleteConfirmation.body",
+    defaultMessage: "Are you sure you want to delete this class?",
+  },
+  deleteConfirmationConfirm: {
+    id: "ClassList.deleteConfirmation.confirm",
+    defaultMessage: "Delete Class",
+  },
 });
 
-const ClassList = ({
-  fetchData,
-}: {
-  fetchData: LazyTableFetchFunction<ExistingClassWithTeacher>;
-}) => {
+const ClassList = () => {
   const intl = useIntl();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [classes, setClasses] = useState<ExistingClassWithTeacher[]>([]);
+
   const [lazyState, setLazyState] = useState<LazyTableState>({
     first: 0,
     rows: 10,
@@ -71,15 +78,7 @@ const ClassList = ({
     },
   });
 
-  useEffect(() => {
-    setLoading(true);
-
-    fetchData(lazyState).then(({ items, totalCount }) => {
-      setTotalRecords(totalCount);
-      setClasses(items);
-      setLoading(false);
-    });
-  }, [lazyState, fetchData]);
+  const { data, isLoading, error } = useAllClassesLazyTable(lazyState);
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
@@ -92,6 +91,11 @@ const ClassList = ({
   const onFilter = (event: DataTableFilterEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
   };
+
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
+  const [classIdToDelete, setClassIdToDelete] = useState<number | null>(null);
+  const deleteClass = useDeleteClass();
 
   const lastSessionTemplate = useCallback(
     (_rowData: ExistingClassWithTeacher) => (
@@ -114,79 +118,121 @@ const ClassList = ({
 
   const actionsTemplate = useCallback(
     (rowData: ExistingClassWithTeacher) => (
-      <div>
+      <div data-testid={`class-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
             variant="secondary"
-            onClick={() => router.push(`/class/${rowData.id}/edit`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/class/${rowData.id}/edit`);
+            }}
+            data-testid={`class-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon icon={faEdit} />
           </Button>
+
+          <Dropdown.Toggle
+            variant="secondary"
+            split
+            data-testid={`class-${rowData.id}-actions-dropdown-button`}
+          />
+
+          <Dropdown.Menu>
+            <Dropdown.Item
+              onClick={(e) => {
+                e.stopPropagation();
+
+                setClassIdToDelete(rowData.id);
+                setShowDeleteConfirmationModal(true);
+              }}
+              data-testid={`class-${rowData.id}-delete-button`}
+            >
+              {intl.formatMessage(TableMessages.delete)}
+            </Dropdown.Item>
+          </Dropdown.Menu>
         </Dropdown>
       </div>
     ),
-    [router],
+    [router, intl],
   );
 
   return (
     <ClassListWrapper data-testid="class-list">
-      <DataTable
-        value={classes}
-        lazy
-        filterDisplay="row"
-        dataKey="id"
-        paginator
-        first={lazyState.first}
-        rows={10}
-        totalRecords={totalRecords}
-        onPage={onPage}
-        onSort={onSort}
-        sortField={lazyState.sortField}
-        sortOrder={lazyState.sortOrder}
-        onFilter={onFilter}
-        filters={lazyState.filters}
-        loading={loading}
-        onRowClick={(e) =>
-          router.push(
-            `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
-          )
+      <SwrContent data={data} isLoading={isLoading} error={error}>
+        {(data) => (
+          <DataTable
+            value={data.items}
+            lazy
+            filterDisplay="row"
+            dataKey="id"
+            paginator
+            first={lazyState.first}
+            rows={10}
+            totalRecords={data.totalCount}
+            onPage={onPage}
+            onSort={onSort}
+            sortField={lazyState.sortField}
+            sortOrder={lazyState.sortOrder}
+            onFilter={onFilter}
+            filters={lazyState.filters}
+            loading={isLoading}
+            onRowClick={(e) =>
+              router.push(
+                `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
+              )
+            }
+          >
+            <Column
+              field="name"
+              header={intl.formatMessage(messages.nameColumn)}
+              sortable
+              filter
+              filterPlaceholder={intl.formatMessage(
+                TableMessages.searchFilterPlaceholder,
+              )}
+              filterMatchMode="contains"
+              showFilterMenu={false}
+            />
+            <Column
+              header={intl.formatMessage(messages.lastSessionColumn)}
+              body={lastSessionTemplate}
+            />
+            <Column
+              header={intl.formatMessage(messages.statusColumn)}
+              body={statusTemplate}
+            />
+            <Column
+              header={intl.formatMessage(messages.actionsColumn)}
+              body={actionsTemplate}
+              filter
+              filterElement={
+                <Dropdown as={ButtonGroup}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => router.push("class/create")}
+                    data-testid="class-create-button"
+                  >
+                    <FontAwesomeIcon icon={faAdd} />
+                  </Button>
+                </Dropdown>
+              }
+            />
+          </DataTable>
+        )}
+      </SwrContent>
+      <ConfirmationModal
+        isShown={showDeleteConfirmationModal}
+        setIsShown={setShowDeleteConfirmationModal}
+        onConfirm={
+          classIdToDelete ? () => deleteClass(classIdToDelete) : undefined
         }
-      >
-        <Column
-          field="name"
-          header={intl.formatMessage(messages.nameColumn)}
-          sortable
-          filter
-          filterPlaceholder={intl.formatMessage(
-            TableMessages.searchFilterPlaceholder,
-          )}
-          filterMatchMode="contains"
-          showFilterMenu={false}
-        />
-        <Column
-          header={intl.formatMessage(messages.lastSessionColumn)}
-          body={lastSessionTemplate}
-        />
-        <Column
-          header={intl.formatMessage(messages.statusColumn)}
-          body={statusTemplate}
-        />
-        <Column
-          header={intl.formatMessage(messages.actionsColumn)}
-          body={actionsTemplate}
-          filter
-          filterElement={
-            <Dropdown as={ButtonGroup}>
-              <Button
-                variant="secondary"
-                onClick={() => router.push("class/create")}
-              >
-                <FontAwesomeIcon icon={faAdd} />
-              </Button>
-            </Dropdown>
-          }
-        />
-      </DataTable>
+        isDangerous
+        messages={{
+          title: messages.deleteConfirmationTitle,
+          body: messages.deleteConfirmationBody,
+          confirmButton: messages.deleteConfirmationConfirm,
+        }}
+      />
     </ClassListWrapper>
   );
 };

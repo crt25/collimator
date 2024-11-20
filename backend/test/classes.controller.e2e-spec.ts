@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { getApp } from "./helper";
+import { adminUserToken, ensureUserExists, getApp } from "./helper";
 import { classes, defaultAdmin, defaultTeacher, users } from "test/seed";
 
 const checkClassesInList = (expectedClasses, returnedClasses): void => {
@@ -20,11 +20,22 @@ const checkClassesInList = (expectedClasses, returnedClasses): void => {
   });
 };
 
+jest.mock("src/api/authentication/helpers.ts", () => ({
+  ...jest.requireActual("src/api/authentication/helpers.ts"),
+  getTokenFromExecutionContext: jest.fn(() => adminUserToken),
+}));
+
 describe("ClassesController (e2e)", () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     app = await getApp();
+
+    await ensureUserExists(app, defaultAdmin, adminUserToken);
+  });
+
+  afterEach(() => {
+    app.close();
   });
 
   test("/classes (GET)", async () => {
@@ -66,7 +77,7 @@ describe("ClassesController (e2e)", () => {
         name: defaultTeacher.name,
       },
       sessions: [],
-      studentCount: 0,
+      students: [],
     });
   });
 

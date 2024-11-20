@@ -1,6 +1,10 @@
 import { GetHeightRequest, GetHeightReponse } from "./get-height";
 import { GetSubmissionRequest, GetSubmissionResponse } from "./get-submission";
 import { GetTaskRequest, GetTaskResponse } from "./get-task";
+import {
+  LoadSubmissionRequest,
+  LoadSubmissionResponse,
+} from "./load-submission";
 import { LoadTaskRequest, LoadTaskResponse } from "./load-task";
 import {
   ReportProgressReponse,
@@ -12,6 +16,7 @@ export type AppIFrameRequest =
   | GetSubmissionRequest
   | GetTaskRequest
   | LoadTaskRequest
+  | LoadSubmissionRequest
   | ReportProgressRequest;
 
 export type AppIFrameResponse =
@@ -19,6 +24,7 @@ export type AppIFrameResponse =
   | GetSubmissionResponse
   | GetTaskResponse
   | LoadTaskResponse
+  | LoadSubmissionResponse
   | ReportProgressReponse;
 
 export type AppIFrameMessage = AppIFrameRequest | AppIFrameResponse;

@@ -2,6 +2,10 @@ import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import Breadcrumbs from "./Breadcrumbs";
 import CrtNavigation from "./CrtNavigation";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { ExistingUser } from "@/api/collimator/models/users/existing-user";
+import { getUsersControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
 
 export default {
   component: CrtNavigation,
@@ -11,9 +15,7 @@ export default {
 type Args = Parameters<typeof CrtNavigation>[0];
 
 export const Default = {
-  args: {
-    userId: 1,
-  } as Args,
+  args: {} as Args,
 };
 
 const renderWithinBreadcrumbs = (args: Args) => (
@@ -24,7 +26,7 @@ const renderWithinBreadcrumbs = (args: Args) => (
 
 export const AsUserBreadcrumb = {
   args: {
-    userId: 1,
+    user: ExistingUser.fromDto(getUsersControllerFindOneV0ResponseMock()),
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,
@@ -35,6 +37,14 @@ const klass = getClassesControllerFindOneV0ResponseMock();
 export const AsClassBreadcrumb = {
   args: {
     klass: ExistingClass.fromDto({ ...klass, teacherId: klass.teacher.id }),
+    breadcrumb: true,
+  } as Args,
+  render: renderWithinBreadcrumbs,
+};
+
+export const AsTaskBreadcrumb = {
+  args: {
+    task: ExistingTask.fromDto(getTasksControllerFindOneV0ResponseMock()),
     breadcrumb: true,
   } as Args,
   render: renderWithinBreadcrumbs,

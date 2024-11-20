@@ -1,4 +1,8 @@
 import TaskList from "./TaskList";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
+
+type Args = Parameters<typeof TaskList>[0];
 
 export default {
   component: TaskList,
@@ -15,8 +19,21 @@ export default {
   ),
 };
 
+const session = ExistingSessionExtended.fromDto(
+  getSessionsControllerFindOneV0ResponseMock(),
+);
+
 export const Default = {
   args: {
-    sessionId: 1,
-  },
+    classId: 1,
+    session,
+  } as Args,
+};
+
+export const WithActiveFirstItem = {
+  args: {
+    classId: 1,
+    session,
+    currentTaskId: session.tasks[0].id,
+  } as Args,
 };

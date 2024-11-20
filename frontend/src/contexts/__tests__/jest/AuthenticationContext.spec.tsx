@@ -4,7 +4,6 @@ import {
   isStudentLocallyAuthenticated,
   serializeAuthenticationContext,
 } from "@/contexts/AuthenticationContext";
-import { UserRole } from "@/i18n/user-role-messages";
 import KeyPair from "@/utilities/crypto/KeyPair";
 import { subtle } from "crypto";
 import {
@@ -14,6 +13,7 @@ import {
   getLocallyAuthenticatedStudentContext,
   getUnauthenticatedContext,
 } from "../mock-contexts";
+import { UserRole } from "@/types/user/user-role";
 
 const crypto = subtle as SubtleCrypto;
 

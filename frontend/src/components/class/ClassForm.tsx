@@ -12,11 +12,11 @@ import Select from "../form/Select";
 
 const messages = defineMessages({
   name: {
-    id: "CreateClassForm.name",
+    id: "ClassForm.name",
     defaultMessage: "Name",
   },
   teacher: {
-    id: "CreateClassForm.teacher",
+    id: "ClassForm.teacher",
     defaultMessage: "Teacher",
   },
 });

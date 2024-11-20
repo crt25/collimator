@@ -1,29 +1,40 @@
 import useSWR from "swr";
-import { getClassesControllerFindAllV0Url } from "../../generated/endpoints/classes/classes";
-import { ClassesControllerFindAllV0Params } from "../../generated/models";
 import {
   ApiResponse,
   fromDtos,
-  LazyTableFetchFunctionWithParameters,
+  getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { LazyTableState } from "@/components/DataTable";
-import { useCallback } from "react";
-import { usersControllerFindAllV0 } from "../../generated/endpoints/users/users";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
+import {
+  getUsersControllerFindAllV0Url,
+  usersControllerFindAllV0,
+} from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
-const fetchAndTransform = (): Promise<ExistingUser[]> =>
-  usersControllerFindAllV0().then((data) => fromDtos(ExistingUser, data));
+export type GetUsersReturnType = ExistingUser[];
 
-export const useAllUsers = (): ApiResponse<ExistingUser[], Error> =>
-  useSWR(getClassesControllerFindAllV0Url(), () => fetchAndTransform());
-
-export const useFetchAllUsers: LazyTableFetchFunctionWithParameters<
-  ClassesControllerFindAllV0Params,
-  ExistingUser
-> = () =>
-  useCallback(
-    (_state: LazyTableState) =>
-      fetchAndTransform().then(transformToLazyTableResult),
-    [],
+const fetchAndTransform = (options: RequestInit): Promise<GetUsersReturnType> =>
+  usersControllerFindAllV0(options).then((data) =>
+    fromDtos(ExistingUser, data),
   );
+
+export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  // use the URL with the params as the first entry in the key for easier invalidation
+  return useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions),
+  );
+};
+
+export const useAllUsersLazyTable = (
+  _state: LazyTableState,
+): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  return useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions).then(transformToLazyTableResult),
+  );
+};

@@ -24,6 +24,5 @@ RUN chmod -R 700 .
 USER nestjs
 
 RUN yarn install
-RUN yarn build
 
 ENTRYPOINT ["docker/entrypoint.sh"]

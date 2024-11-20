@@ -28,6 +28,8 @@ next-env.d.ts
 
 /playwright-report/
 /playwright/.cache
+/playwright/.auth/**/*
+!/playwright/.auth/.gitkeep
 /blob-report/
 
 *storybook.log

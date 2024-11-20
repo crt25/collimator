@@ -5,4 +5,8 @@ export const TableMessages = defineMessages({
     id: "List.filters.search.placeholder",
     defaultMessage: "Search...",
   },
+  delete: {
+    id: "List.delete",
+    defaultMessage: "Delete",
+  },
 });

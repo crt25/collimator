@@ -1,15 +1,17 @@
 import { defineMessages } from "react-intl";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
 import BreadcrumbItem from "../BreadcrumbItem";
+import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 
 const messages = defineMessages({
   classTab: {
     id: "ClassNavigation.classTab",
     defaultMessage: "Class Details",
   },
-  usersTab: {
-    id: "ClassNavigation.usersTab",
-    defaultMessage: "Users",
+  studentsTab: {
+    id: "ClassNavigation.studentsTab",
+    defaultMessage: "Students",
   },
   sesstionsTab: {
     id: "ClassNavigation.sessionsTab",
@@ -23,8 +25,8 @@ const tabs: NavigationTab[] = [
     title: (intl) => intl.formatMessage(messages.classTab),
   },
   {
-    url: "user",
-    title: (intl) => intl.formatMessage(messages.usersTab),
+    url: "students",
+    title: (intl) => intl.formatMessage(messages.studentsTab),
   },
   {
     url: "session",
@@ -34,32 +36,23 @@ const tabs: NavigationTab[] = [
 
 const ClassNavigation = ({
   classId,
-  userId,
-  sessionId,
+  session,
   breadcrumb,
 }: {
   classId?: number;
-  userId?: number;
-  sessionId?: number;
+  session?: ExistingSession | ExistingSessionExtended;
   breadcrumb?: boolean;
 }) => {
   const prefix = `/class/${classId}/`;
-  const userName = "John";
-  const sessionName = "Introduction to React";
 
   return (
     <>
       <TabNavigation tabs={tabs} prefix={prefix} breadcrumb={breadcrumb} />
       {breadcrumb && (
         <>
-          {userId && (
-            <BreadcrumbItem href={`${prefix}user/${userId}`}>
-              {userName}
-            </BreadcrumbItem>
-          )}
-          {sessionId && (
-            <BreadcrumbItem href={`${prefix}session/${sessionId}/progress`}>
-              {sessionName}
+          {session && (
+            <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
+              {session.title}
             </BreadcrumbItem>
           )}
         </>
