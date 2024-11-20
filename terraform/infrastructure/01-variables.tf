@@ -1,4 +1,3 @@
-
 variable "name" {
   type    = string
   default = "collimator"
@@ -6,7 +5,7 @@ variable "name" {
 
 variable "environment" {
   type    = string
-  default = "prod"
+  default = "dev"
 }
 
 variable "region" {
@@ -27,6 +26,7 @@ variable "vpc_cidr" {
 variable "tags" {
   type = map(string)
   default = {
-    Name = "collimator"
+    Name        = "collimator"
+    Environment = "dev"
   }
 }
