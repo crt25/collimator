@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleDestroy } from "@nestjs/common";
 import { GeneralAst } from "src/ast/types/general-ast";
 import CriteriaBasedAnalysisWorker, {
   AnalysisInput,
@@ -6,21 +6,28 @@ import CriteriaBasedAnalysisWorker, {
 } from "./criteria-based-analysis-worker.piscina";
 import { Piscina } from "piscina";
 import { resolve } from "path";
+import { getPiscinaPath } from "src/utilities/is-test";
 
 type AnalysisWorker = typeof CriteriaBasedAnalysisWorker;
 
 @Injectable()
-export class CriteriaBasedAnalyzerService {
+export class CriteriaBasedAnalyzerService implements OnModuleDestroy {
   private criteriaAnalysisWorker = new Piscina<
     Parameters<AnalysisWorker>[0],
     ReturnType<AnalysisWorker>
   >({
-    filename: resolve(
-      __dirname,
-      // use the .js extension because NestJS compiles the typescript files
-      "./criteria-based-analysis-worker.piscina.js",
+    filename: getPiscinaPath(
+      resolve(
+        __dirname,
+        // use the .js extension because NestJS compiles the typescript files
+        `./criteria-based-analysis-worker.piscina.js`,
+      ),
     ),
   });
+
+  onModuleDestroy(): void {
+    this.criteriaAnalysisWorker.destroy();
+  }
 
   analyze(
     asts: GeneralAst[],

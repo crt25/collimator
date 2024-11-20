@@ -1,25 +1,32 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleDestroy } from "@nestjs/common";
 import { Solution, TaskType } from "@prisma/client";
 import { Piscina } from "piscina";
 import { resolve } from "path";
 import { GeneralAst } from "./types/general-ast";
 import { TaskWithoutData } from "src/api/tasks/tasks.service";
 import SolutionConversionWorker from "./converters/solution-conversion-worker.piscina";
+import { getPiscinaPath } from "src/utilities/is-test";
 
 type ConversionWorker = typeof SolutionConversionWorker;
 
 @Injectable()
-export class AstConversionService {
+export class AstConversionService implements OnModuleDestroy {
   private conversionWorker = new Piscina<
     Parameters<ConversionWorker>[0],
     ReturnType<ConversionWorker>
   >({
-    filename: resolve(
-      __dirname,
-      // use the .js extension because NestJS compiles the typescript files
-      "./converters/solution-conversion-worker.piscina.js",
+    filename: getPiscinaPath(
+      resolve(
+        __dirname,
+        // use the .js extension because NestJS compiles the typescript files
+        "./converters/solution-conversion-worker.piscina.js",
+      ),
     ),
   });
+
+  onModuleDestroy(): void {
+    this.conversionWorker.destroy();
+  }
 
   /**
    * Convert submission ASTs to the generalized AST which
@@ -37,7 +44,7 @@ export class AstConversionService {
     ) {
       ast = this.conversionWorker.run({
         solution,
-        task,
+        taskType: task.type,
       });
     } else {
       throw new Error(

@@ -12,6 +12,7 @@ import { mockConfigModule } from "src/utilities/test/mock-config.service";
 describe("UsersController", () => {
   let controller: UsersController;
   let prismaMock: DeepMockProxy<PrismaClient>;
+  let module: TestingModule;
 
   const adminUser: User = {
     id: 1,
@@ -23,7 +24,7 @@ describe("UsersController", () => {
   beforeEach(async () => {
     prismaMock = mockDeep<PrismaClient>();
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [CoreModule, mockConfigModule],
       controllers: [UsersController],
       providers: [
@@ -38,6 +39,10 @@ describe("UsersController", () => {
     controller = module.get<UsersController>(UsersController);
 
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    module.close();
   });
 
   it("should be defined", () => {

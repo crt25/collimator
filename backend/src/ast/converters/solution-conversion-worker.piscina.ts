@@ -1,19 +1,18 @@
 import { Solution, TaskType } from "@prisma/client";
-import { TaskWithoutData } from "src/api/tasks/tasks.service";
 import { GeneralAst } from "../types/general-ast";
 import { convertScratchToGeneralAst } from "./scratch";
 
 const SolutionConversionWorker = ({
   solution,
-  task,
+  taskType,
 }: {
-  task: TaskWithoutData;
+  taskType: TaskType;
   solution: Solution;
 }): GeneralAst => {
   let ast: GeneralAst;
 
   if (
-    task.type === TaskType.SCRATCH &&
+    taskType === TaskType.SCRATCH &&
     solution.mimeType === "application/json"
   ) {
     ast = convertScratchToGeneralAst(
@@ -23,7 +22,7 @@ const SolutionConversionWorker = ({
     );
   } else {
     throw new Error(
-      `Unsupported (task, solution mime type) tuple '(${task.type}, ${solution.mimeType})'`,
+      `Unsupported (task, solution mime type) tuple '(${taskType}, ${solution.mimeType})'`,
     );
   }
 

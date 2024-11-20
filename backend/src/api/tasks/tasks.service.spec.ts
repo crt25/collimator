@@ -5,14 +5,19 @@ import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
 describe("TasksService", () => {
   let service: TasksService;
+  let module: TestingModule;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [CoreModule, mockConfigModule],
       providers: [TasksService],
     }).compile();
 
     service = module.get<TasksService>(TasksService);
+  });
+
+  afterEach(() => {
+    module.close();
   });
 
   it("should be defined", () => {
