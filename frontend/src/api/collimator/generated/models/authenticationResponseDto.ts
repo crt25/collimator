@@ -11,8 +11,6 @@ import type { UserType } from "./userType";
 export interface AuthenticationResponseDto {
   /** The id of a student in a class. */
   authenticationToken: string;
-  /** The email of the authenticated user. */
-  email: string;
   /** The user unique identifier, a positive integer. */
   id: number;
   /**

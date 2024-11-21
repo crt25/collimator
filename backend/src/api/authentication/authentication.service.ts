@@ -1,5 +1,10 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
-import { Student, User, UserType } from "@prisma/client";
+import {
+  AuthenticationProvider,
+  Student,
+  User,
+  UserType,
+} from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { randomBytes } from "crypto";
 import * as jose from "jose";
@@ -39,7 +44,8 @@ type WithKey = {
 export type UserIdentity = {
   id: number;
   name: string | null;
-  email: string;
+  oidcSub: string;
+  authenticationProvider: AuthenticationProvider;
   type: UserType;
 };
 
@@ -87,10 +93,6 @@ const verifyJwtToken = async (
 // generate strong, cryptographically secure token
 // 128 bits (16 bytes) should be plenty, let's use 256 for good measure
 const generateToken = (): AuthToken => randomBytes(32).toString("hex");
-
-export enum AuthenticationProvider {
-  microsoft = "microsoft",
-}
 
 @Injectable()
 export class AuthenticationService {
@@ -151,7 +153,7 @@ export class AuthenticationService {
     let clientId: string;
 
     switch (provider) {
-      case AuthenticationProvider.microsoft:
+      case AuthenticationProvider.MICROSOFT:
         keySet = this.microsoftKeySet;
         clientId = this.microsoftClientId;
         break;
@@ -162,14 +164,16 @@ export class AuthenticationService {
     return verifyJwtToken(keySet, jwt, clientId);
   }
 
-  protected findUserByEmailOrThrow(
-    email: string,
+  protected findUserByOidcIdOrThrow(
+    oidcSub: string,
+    authenticationProvider: AuthenticationProvider,
   ): Promise<UserIdentityWithKey> {
     return this.prisma.user.findUniqueOrThrow({
       select: {
         id: true,
         name: true,
-        email: true,
+        oidcSub: true,
+        authenticationProvider: true,
         type: true,
         keyPair: {
           select: {
@@ -187,7 +191,12 @@ export class AuthenticationService {
           },
         },
       },
-      where: { email },
+      where: {
+        uniqueOidcSubPerProvider: {
+          oidcSub,
+          authenticationProvider,
+        },
+      },
     });
   }
 
@@ -202,16 +211,45 @@ export class AuthenticationService {
   ): Promise<UserIdentityWithKeyAndToken> {
     const verifiedToken = await this.verifyToken(jwt, provider);
 
-    const email = verifiedToken.payload["email"] as string;
+    const sub = verifiedToken.payload["sub"];
 
-    if (!email) {
-      throw new Error("Email not found in JWT token");
+    if (!sub) {
+      throw new Error("Sub not found in JWT token");
     }
 
-    const user = await this.findUserByEmailOrThrow(email);
+    let originalError: Error | null = null;
 
-    if (!user) {
-      throw new Error("User not found");
+    let user: UserIdentityWithKey;
+
+    const oidcUser = await this.findUserByOidcIdOrThrow(sub, provider).catch(
+      // in case the user is not found, we may need to migrate the user from email to oidc sub
+      (e) => {
+        originalError = e;
+
+        return null;
+      },
+    );
+
+    if (oidcUser) {
+      user = oidcUser;
+    } else {
+      const email = verifiedToken.payload["email"] as string;
+
+      if (!email) {
+        throw originalError;
+      }
+      // migrate user from email to oidc sub.
+      // this is necessary because the user might have signed in with email before
+      // or the user was created by an admin and there is now way to determine the oidc sub
+      // for other email addresses
+      user = await this.findUserByOidcIdOrThrow(email, provider);
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          oidcSub: sub,
+        },
+      });
     }
 
     const randomToken = generateToken();

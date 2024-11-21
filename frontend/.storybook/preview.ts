@@ -35,7 +35,7 @@ const preview: Preview = {
         window.crypto.subtle,
       ),
       authenticationContextAdmin:
-        await getAuthenticatedAdminContext(UserRole.admin)(),
+        await getAuthenticatedAdminContext(UserRole.admin)(window.crypto.subtle),
       authenticationContextStudent: await getFullyAuthenticatedStudentContext(
         window.crypto.subtle,
       ),

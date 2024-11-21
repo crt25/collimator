@@ -28,17 +28,17 @@ const UserDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <div>
-              <PageHeader>{user.name ?? user.email}</PageHeader>
+              <PageHeader>{user.name ?? user.oidcSub}</PageHeader>
               <Table bordered role="presentation">
                 <tbody>
                   <tr>
                     <td>
                       <FormattedMessage
-                        id="UserDetail.table.email"
-                        defaultMessage="Email"
+                        id="UserDetail.table.oidcSub"
+                        defaultMessage="OpenId Connect Identifier"
                       />
                     </td>
-                    <td>{user.email}</td>
+                    <td>{user.oidcSub}</td>
                   </tr>
                   <tr>
                     <td>

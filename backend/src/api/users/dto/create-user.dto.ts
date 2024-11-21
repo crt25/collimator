@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserType } from "@prisma/client";
-import { IsEmail, IsNotEmpty, IsString, IsEnum } from "class-validator";
+import { AuthenticationProvider, UserType } from "@prisma/client";
+import { IsNotEmpty, IsString, IsEnum } from "class-validator";
 import { Expose } from "class-transformer";
 
 export class CreateUserDto {
@@ -15,14 +15,26 @@ export class CreateUserDto {
   @Expose()
   readonly name!: string | null;
 
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    example: "john.doe@example.com",
-    description: "The user's email address.",
+    example: "sfdhkj48732h3bj32hjk332424",
+    description:
+      "An identifier for the user which is unique for the authentication provider.",
   })
   @Expose()
-  readonly email!: string;
+  readonly oidcSub!: string;
+
+  @IsEnum(AuthenticationProvider)
+  @IsNotEmpty()
+  @ApiProperty({
+    example: AuthenticationProvider.MICROSOFT,
+    description: "The authentication provider used to sign in.",
+    enumName: "AuthenticationProvider",
+    enum: Object.keys(AuthenticationProvider),
+  })
+  @Expose()
+  readonly authenticationProvider!: AuthenticationProvider;
 
   @IsEnum(UserType)
   @IsNotEmpty()

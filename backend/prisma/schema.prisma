@@ -17,17 +17,24 @@ enum UserType {
   ADMIN // admins are also teachers
 }
 
+enum AuthenticationProvider {
+  MICROSOFT
+}
+
 model User {
-  id    Int      @id @default(autoincrement())
-  name  String?
-  email String   @unique
-  type  UserType
+  id                     Int                    @id @default(autoincrement())
+  name                   String?
+  oidcSub                String
+  authenticationProvider AuthenticationProvider
+  type                   UserType
 
   keyPair              KeyPair?
   authenticationTokens AuthenticationToken[]
   classes              Class[]
   lessons              Lesson[]
   tasks                Task[]
+
+  @@unique([oidcSub, authenticationProvider], name: "uniqueOidcSubPerProvider")
 }
 
 model KeyPair {

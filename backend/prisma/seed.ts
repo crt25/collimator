@@ -1,13 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import { AuthenticationProvider, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
   const teacher = await prisma.user.upsert({
-    where: { email: "nico@anansi-solutions.net" },
+    where: {
+      uniqueOidcSubPerProvider: {
+        oidcSub: "nico@anansi-solutions.net",
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
+      },
+    },
     update: {},
     create: {
-      email: "nico@anansi-solutions.net",
+      oidcSub: "nico@anansi-solutions.net",
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       name: "Nico",
       type: "ADMIN",
     },

@@ -5,7 +5,12 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { CreateSolutionDto, ExistingSolutionDto } from "../../models";
+import type {
+  AnalysisInputDto,
+  AnalysisOutputDto,
+  CreateSolutionDto,
+  ExistingSolutionDto,
+} from "../../models";
 import { fetchApi } from "../../../../fetch";
 
 export const getSolutionsControllerCreateV0Url = (
@@ -105,6 +110,32 @@ export const solutionsControllerDownloadOneV0 = async (
     {
       ...options,
       method: "GET",
+    },
+  );
+};
+
+export const getSolutionsControllerAnalysisV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/analysis`;
+};
+
+export const solutionsControllerAnalysisV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  analysisInputDto: AnalysisInputDto,
+  options?: RequestInit,
+): Promise<AnalysisOutputDto[]> => {
+  return fetchApi<Promise<AnalysisOutputDto[]>>(
+    getSolutionsControllerAnalysisV0Url(classId, sessionId, taskId),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(analysisInputDto),
     },
   );
 };

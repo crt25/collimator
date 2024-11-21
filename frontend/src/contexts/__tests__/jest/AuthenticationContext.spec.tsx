@@ -50,7 +50,7 @@ describe("AuthenticationContext", () => {
     ])(
       "can (de-)serialize an context in which the user is authenticated as %s",
       async (_, getContext) => {
-        const authContext = await getContext();
+        const authContext = await getContext(crypto);
         const serialized = JSON.stringify(
           await serializeAuthenticationContext(authContext),
         );

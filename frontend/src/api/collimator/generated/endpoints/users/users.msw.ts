@@ -7,15 +7,18 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import { UserType } from "../../models";
+import { AuthenticationProvider, UserType } from "../../models";
 import type { DeletedUserDto, ExistingUserDto } from "../../models";
 
 export const getUsersControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingUserDto> = {},
 ): ExistingUserDto => ({
-  email: faker.word.sample(),
+  authenticationProvider: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(AuthenticationProvider)),
+  ]),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  oidcSub: faker.word.sample(),
   publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
@@ -28,9 +31,12 @@ export const getUsersControllerFindAllV0ResponseMock = (): ExistingUserDto[] =>
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    email: faker.word.sample(),
+    authenticationProvider: faker.helpers.arrayElement([
+      faker.helpers.arrayElement(Object.values(AuthenticationProvider)),
+    ]),
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.helpers.arrayElement([faker.word.sample(), null]),
+    oidcSub: faker.word.sample(),
     publicKeyId: {},
     type: faker.helpers.arrayElement([
       faker.helpers.arrayElement(Object.values(UserType)),
@@ -40,9 +46,12 @@ export const getUsersControllerFindAllV0ResponseMock = (): ExistingUserDto[] =>
 export const getUsersControllerFindOneV0ResponseMock = (
   overrideResponse: Partial<ExistingUserDto> = {},
 ): ExistingUserDto => ({
-  email: faker.word.sample(),
+  authenticationProvider: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(AuthenticationProvider)),
+  ]),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  oidcSub: faker.word.sample(),
   publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
@@ -53,9 +62,12 @@ export const getUsersControllerFindOneV0ResponseMock = (
 export const getUsersControllerUpdateV0ResponseMock = (
   overrideResponse: Partial<ExistingUserDto> = {},
 ): ExistingUserDto => ({
-  email: faker.word.sample(),
+  authenticationProvider: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(AuthenticationProvider)),
+  ]),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  oidcSub: faker.word.sample(),
   publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),
@@ -66,9 +78,12 @@ export const getUsersControllerUpdateV0ResponseMock = (
 export const getUsersControllerDeleteV0ResponseMock = (
   overrideResponse: Partial<DeletedUserDto> = {},
 ): DeletedUserDto => ({
-  email: faker.word.sample(),
+  authenticationProvider: faker.helpers.arrayElement([
+    faker.helpers.arrayElement(Object.values(AuthenticationProvider)),
+  ]),
   id: faker.number.int({ min: undefined, max: undefined }),
   name: faker.helpers.arrayElement([faker.word.sample(), null]),
+  oidcSub: faker.word.sample(),
   publicKeyId: {},
   type: faker.helpers.arrayElement([
     faker.helpers.arrayElement(Object.values(UserType)),

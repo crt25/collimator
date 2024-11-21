@@ -17,9 +17,9 @@ const messages = defineMessages({
     id: "UserForm.name",
     defaultMessage: "Name",
   },
-  email: {
-    id: "UserForm.email",
-    defaultMessage: "Email",
+  openIdConnectSub: {
+    id: "UserForm.openIdConnectSub",
+    defaultMessage: "OpenId Connect identifier or email for new users",
   },
   type: {
     id: "UserForm.role",
@@ -29,7 +29,7 @@ const messages = defineMessages({
 
 export type UserFormValues = {
   name: string;
-  email: string;
+  openIdConnectSub: string;
   type: UserType;
 };
 
@@ -44,7 +44,7 @@ const UserForm = ({
 }) => {
   const schema = useYupSchema({
     name: yup.string().required(),
-    email: yup.string().email().required(),
+    openIdConnectSub: yup.string().required(),
     type: yup.string().oneOf(Object.values(UserType)).required(),
   });
 
@@ -79,8 +79,14 @@ const UserForm = ({
         <ValidationErrorMessage>{errors.name?.message}</ValidationErrorMessage>
       </Input>
 
-      <Input label={messages.email} {...register("email")} data-testid="email">
-        <ValidationErrorMessage>{errors.email?.message}</ValidationErrorMessage>
+      <Input
+        label={messages.openIdConnectSub}
+        {...register("openIdConnectSub")}
+        data-testid="openIdConnectSub"
+      >
+        <ValidationErrorMessage>
+          {errors.openIdConnectSub?.message}
+        </ValidationErrorMessage>
       </Input>
 
       <Select

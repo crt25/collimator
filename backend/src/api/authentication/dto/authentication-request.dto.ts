@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { AuthenticationProvider } from "@prisma/client";
 import { Expose } from "class-transformer";
-import { AuthenticationProvider } from "../authentication.service";
 import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export class AuthenticationRequestDto {
@@ -18,7 +18,7 @@ export class AuthenticationRequestDto {
   @IsEnum(AuthenticationProvider)
   @IsNotEmpty()
   @ApiProperty({
-    example: AuthenticationProvider.microsoft,
+    example: AuthenticationProvider.MICROSOFT,
     description: "The authentication provider used to sign in.",
     enumName: "AuthenticationProvider",
     enum: Object.keys(AuthenticationProvider),

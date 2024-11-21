@@ -28,7 +28,6 @@ export const getAuthenticationControllerLoginV0ResponseMock = (
   overrideResponse: Partial<AuthenticationResponseDto> = {},
 ): AuthenticationResponseDto => ({
   authenticationToken: faker.word.sample(),
-  email: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
   keyPair: {
     createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,

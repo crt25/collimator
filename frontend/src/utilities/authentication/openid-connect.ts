@@ -17,6 +17,7 @@ interface OpenIdConnectTemporaryState {
 
 const codeChallengeMethod = "S256";
 // https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference
+// we need the email address for new users and the profile for names
 const scope = "openid email profile";
 
 const openIdConnectStateStorageKey = "openIdConnect";

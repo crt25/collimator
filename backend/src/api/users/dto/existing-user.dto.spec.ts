@@ -1,5 +1,5 @@
 import { ArgumentMetadata, ValidationPipe } from "@nestjs/common";
-import { UserType } from "@prisma/client";
+import { AuthenticationProvider, UserType } from "@prisma/client";
 import { plainToInstance } from "class-transformer";
 import { ExistingUserDto } from "./existing-user.dto";
 
@@ -7,7 +7,8 @@ describe("ExistingUserDto", () => {
   const user = {
     id: 318,
     name: "Alice",
-    email: "alice@example.com",
+    oidcSub: "alice@example.com",
+    authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: UserType.TEACHER,
     publicKeyId: 123,
   };
@@ -28,7 +29,8 @@ describe("ExistingUserDto", () => {
 
     expect(userDto.id).toEqual(user.id);
     expect(userDto.name).toEqual(user.name);
-    expect(userDto.email).toEqual(user.email);
+    expect(userDto.oidcSub).toEqual(user.oidcSub);
+    expect(userDto.authenticationProvider).toEqual(user.authenticationProvider);
     expect(userDto.type).toEqual(user.type);
   });
 
@@ -47,7 +49,14 @@ describe("ExistingUserDto", () => {
       ],
     ],
     ["name", ["name should not be empty", "name must be a string"]],
-    ["email", ["email should not be empty", "email must be an email"]],
+    ["oidcSub", ["oidcSub should not be empty", "oidcSub must be a string"]],
+    [
+      "authenticationProvider",
+      [
+        "authenticationProvider should not be empty",
+        "authenticationProvider must be one of the following values: MICROSOFT",
+      ],
+    ],
     [
       "type",
       [
@@ -75,7 +84,12 @@ describe("ExistingUserDto", () => {
       "id must be a number conforming to the specified constraints",
     ],
     ["name", 123, "name must be a string"],
-    ["email", "not_an_email", "email must be an email"],
+    ["oidcSub", 123, "oidcSub must be a string"],
+    [
+      "authenticationProvider",
+      "xyz",
+      "authenticationProvider must be one of the following values: MICROSOFT",
+    ],
     [
       "type",
       "tomato",

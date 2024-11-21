@@ -7,7 +7,14 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { ExistingSolutionDto } from "../../models";
+import type {
+  AnalysisOutputDto,
+  CallsFunctionCriterionOutputDto,
+  ContainsConditionCriterionOutputDto,
+  ContainsFunctionDeclarationCriterionOutputDto,
+  ContainsLoopDeclarationCriterionOutputDto,
+  ExistingSolutionDto,
+} from "../../models";
 
 export const getSolutionsControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingSolutionDto> = {},
@@ -43,6 +50,66 @@ export const getSolutionsControllerFindOneV0ResponseMock = (
   taskId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
+
+export const getSolutionsControllerAnalysisV0ResponseCallsFunctionCriterionOutputDtoMock =
+  (
+    overrideResponse: Partial<CallsFunctionCriterionOutputDto> = {},
+  ): CallsFunctionCriterionOutputDto => ({
+    ...{ callsFunction: faker.datatype.boolean() },
+    ...overrideResponse,
+  });
+
+export const getSolutionsControllerAnalysisV0ResponseContainsConditionCriterionOutputDtoMock =
+  (
+    overrideResponse: Partial<ContainsConditionCriterionOutputDto> = {},
+  ): ContainsConditionCriterionOutputDto => ({
+    ...{ containsCondition: faker.datatype.boolean() },
+    ...overrideResponse,
+  });
+
+export const getSolutionsControllerAnalysisV0ResponseContainsFunctionDeclarationCriterionOutputDtoMock =
+  (
+    overrideResponse: Partial<ContainsFunctionDeclarationCriterionOutputDto> = {},
+  ): ContainsFunctionDeclarationCriterionOutputDto => ({
+    ...{ containsFunctionDeclaration: faker.datatype.boolean() },
+    ...overrideResponse,
+  });
+
+export const getSolutionsControllerAnalysisV0ResponseContainsLoopDeclarationCriterionOutputDtoMock =
+  (
+    overrideResponse: Partial<ContainsLoopDeclarationCriterionOutputDto> = {},
+  ): ContainsLoopDeclarationCriterionOutputDto => ({
+    ...{ containsLoop: faker.datatype.boolean() },
+    ...overrideResponse,
+  });
+
+export const getSolutionsControllerAnalysisV0ResponseMock =
+  (): AnalysisOutputDto[] =>
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      criteria: Array.from(
+        { length: faker.number.int({ min: 1, max: 10 }) },
+        (_, i) => i + 1,
+      ).map(() =>
+        faker.helpers.arrayElement([
+          {
+            ...getSolutionsControllerAnalysisV0ResponseCallsFunctionCriterionOutputDtoMock(),
+          },
+          {
+            ...getSolutionsControllerAnalysisV0ResponseContainsConditionCriterionOutputDtoMock(),
+          },
+          {
+            ...getSolutionsControllerAnalysisV0ResponseContainsFunctionDeclarationCriterionOutputDtoMock(),
+          },
+          {
+            ...getSolutionsControllerAnalysisV0ResponseContainsLoopDeclarationCriterionOutputDtoMock(),
+          },
+        ]),
+      ),
+      solutionId: faker.number.int({ min: undefined, max: undefined }),
+    }));
 
 export const getSolutionsControllerCreateV0MockHandler = (
   overrideResponse?:
@@ -140,9 +207,36 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
     },
   );
 };
+
+export const getSolutionsControllerAnalysisV0MockHandler = (
+  overrideResponse?:
+    | AnalysisOutputDto[]
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<AnalysisOutputDto[]> | AnalysisOutputDto[]),
+) => {
+  return http.post(
+    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/analysis",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSolutionsControllerAnalysisV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateV0MockHandler(),
   getSolutionsControllerFindAllV0MockHandler(),
   getSolutionsControllerFindOneV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
+  getSolutionsControllerAnalysisV0MockHandler(),
 ];

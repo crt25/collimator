@@ -63,8 +63,24 @@ const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // otherwise, return the email (which may also be undefined)
   userInfo.email_verified === false ? undefined : userInfo.email;
 
-const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
-  userInfo.preferred_username ?? userInfo.name;
+const getNameFromUserInfo = (
+  userInfo: UserInfoResponse,
+): string | undefined => {
+  let name = userInfo.name;
+
+  if (!name) {
+    const givenName = (userInfo.given_name ?? userInfo.givenname) as string;
+    const familyName = (userInfo.family_name ?? userInfo.familyname) as string;
+
+    if (givenName && familyName) {
+      return `${givenName} ${familyName}`;
+    }
+
+    name = givenName ?? familyName ?? undefined;
+  }
+
+  return name;
+};
 
 const OpenIdConnectRedirect = () => {
   const router = useRouter();
@@ -73,6 +89,7 @@ const OpenIdConnectRedirect = () => {
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
   const [userSignInState, setUserSignInState] = useState<{
     idToken: string;
+    email: string;
     redirectPath: string;
     authResponse: AuthenticationResponseDto;
   } | null>(null);
@@ -127,11 +144,11 @@ const OpenIdConnectRedirect = () => {
 
         // we authenticate against the collimator backend using the id token
         const authResponse = await authenticateUser({
-          authenticationProvider: AuthenticationProvider.microsoft,
+          authenticationProvider: AuthenticationProvider.MICROSOFT,
           idToken: idToken,
         });
 
-        setUserSignInState({ authResponse, idToken, redirectPath });
+        setUserSignInState({ authResponse, idToken, redirectPath, email });
       })
       .catch((e) => {
         if (e instanceof AuthenticationError) {
@@ -148,6 +165,7 @@ const OpenIdConnectRedirect = () => {
   const tryUserSignIn = useCallback(
     async (
       idToken: string,
+      email: string,
       redirectPath: string,
       authResponse: AuthenticationResponseDto,
       userProvidedPassword: string,
@@ -156,7 +174,6 @@ const OpenIdConnectRedirect = () => {
       const {
         id: userId,
         name: userName,
-        email: userEmail,
         authenticationToken,
         keyPair,
         type,
@@ -283,8 +300,8 @@ const OpenIdConnectRedirect = () => {
         authenticationToken,
         userId,
         role: type === UserType.ADMIN ? UserRole.admin : UserRole.teacher,
-        email: userEmail,
-        name: userName ?? userEmail,
+        email,
+        name: userName ?? email,
         keyPair: teacherKeyPair,
         keyPairId,
       });
@@ -314,6 +331,7 @@ const OpenIdConnectRedirect = () => {
 
       tryUserSignIn(
         userSignInState.idToken,
+        userSignInState.email,
         userSignInState.redirectPath,
         userSignInState.authResponse,
         data.password,

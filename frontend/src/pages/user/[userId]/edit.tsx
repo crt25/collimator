@@ -10,6 +10,7 @@ import SwrContent from "@/components/SwrContent";
 import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
+import { AuthenticationProvider } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
   submit: {
@@ -33,7 +34,8 @@ const EditUser = () => {
       if (user) {
         await updateUser(user.id, {
           name: formValues.name,
-          email: formValues.email,
+          oidcSub: formValues.openIdConnectSub,
+          authenticationProvider: AuthenticationProvider.MICROSOFT,
           type: formValues.type,
         });
 
