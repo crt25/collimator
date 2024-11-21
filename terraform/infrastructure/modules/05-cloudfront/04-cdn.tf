@@ -1,3 +1,28 @@
+resource "aws_cloudfront_origin_request_policy" "websocket" {
+  name    = "${var.name}-cloudfront-websockets"
+  comment = "Websocket Header Allow Policy"
+
+  cookies_config {
+    cookie_behavior = "none"
+  }
+
+  query_strings_config {
+    query_string_behavior = "all"
+  }
+
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = [
+        "Sec-WebSocket-Key",
+        "Sec-WebSocket-Version",
+        "Sec-WebSocket-Protocol",
+        "Sec-WebSocket-Accept"
+      ]
+    }
+  }
+}
+
 module "cloudfront" {
   source = "terraform-aws-modules/cloudfront/aws"
 
@@ -69,8 +94,8 @@ module "cloudfront" {
 
     use_forwarded_values = false
 
-    # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized-uncompressed
-    cache_policy_id = "b2884449-e4de-46a7-ac36-70bc7f1ddd6d"
+    # disable caching
+    cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
 
     # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
     response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
@@ -87,7 +112,7 @@ module "cloudfront" {
 
   ordered_cache_behavior = [
     {
-      path_pattern           = "/api/*"
+      path_pattern           = "/api*"
       target_origin_id       = "backend"
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -98,11 +123,33 @@ module "cloudfront" {
       # disable caching for the API
       cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
 
+      # pass all input to the backend, including Authorization headers
+      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html#managed-origin-request-policy-all-viewer
+      origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+
       # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
       response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
     },
     {
-      path_pattern           = "/scratch/*"
+      path_pattern           = "/socket.io*"
+      target_origin_id       = "backend"
+      viewer_protocol_policy = "redirect-to-https"
+      allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+
+      use_forwarded_values = false
+
+      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized-uncompressed
+      # disable caching for the API
+      cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+
+      # allow websocket connections
+      origin_request_policy_id = aws_cloudfront_origin_request_policy.websocket.id
+
+      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
+      response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"
+    },
+    {
+      path_pattern           = "/scratch*"
       target_origin_id       = "scratchapp"
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["GET", "HEAD", "OPTIONS"]
@@ -110,8 +157,8 @@ module "cloudfront" {
 
       use_forwarded_values = false
 
-      # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized-uncompressed
-      cache_policy_id = "b2884449-e4de-46a7-ac36-70bc7f1ddd6d"
+      # disable caching
+      cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
 
       # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
       response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03"

@@ -44,14 +44,14 @@ module "alb" {
 
       health_check = {
         enabled             = true
-        healthy_threshold   = 5
-        interval            = 30
+        healthy_threshold   = 3
+        unhealthy_threshold = 3
+        timeout             = 10
+        interval            = 60
         matcher             = "200-299"
         path                = "/api"
         port                = "traffic-port"
         protocol            = "HTTP"
-        timeout             = 5
-        unhealthy_threshold = 2
       }
 
       # There's nothing to attach here in this definition. Instead,

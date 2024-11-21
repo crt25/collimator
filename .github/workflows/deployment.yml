@@ -54,8 +54,8 @@ jobs:
         working-directory: ./frontend
         run: yarn build
         env:
-          NEXT_PUBLIC_BACKEND_HOSTNAME: /
-          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: /scratch
+          NEXT_PUBLIC_BACKEND_HOSTNAME: https://collimator.tyratox.ch
+          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: https://collimator.tyratox.ch/scratch
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: d8336644-c349-4b7f-972c-829aebc41f1b
 

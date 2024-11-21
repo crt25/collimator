@@ -33,6 +33,22 @@ module "ecs_service" {
         {
           name  = "DATABASE_URL",
           value = var.database_url
+        },
+        {
+          name  = "FRONTEND_HOSTNAME",
+          value = "https://${var.domain_name}"
+        },
+        {
+          name  = "OPEN_ID_CONNECT_JWK_ENDPOINT",
+          value = "https://login.microsoftonline.com/common/discovery/v2.0/keys"
+        },
+        {
+          name  = "OPEN_ID_CONNECT_USERINFO_ENDPOINT",
+          value = "https://graph.microsoft.com/oidc/userinfo"
+        },
+        {
+          name  = "OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID",
+          value = "d8336644-c349-4b7f-972c-829aebc41f1b"
         }
       ]
     }

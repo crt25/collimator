@@ -9,5 +9,8 @@ yarn prisma:generate
 # now we can build the application
 yarn build
 
+# and seed the database
+yarn prisma:seed
+
 # start the application
 yarn start

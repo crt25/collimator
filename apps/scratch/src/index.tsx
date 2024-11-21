@@ -8,6 +8,8 @@ import Edit from "./pages/Edit";
 import Show from "./pages/Show";
 import { Toaster } from "react-hot-toast";
 
+export const basePath = "/scratch";
+
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
 const appRoot = document.getElementById("root") as HTMLElement;
@@ -33,7 +35,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/scratch",
+    basename: basePath,
   },
 );
 

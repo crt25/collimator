@@ -3,6 +3,7 @@ import VM from "scratch-vm";
 import { patchScratchVm } from "../vm";
 import { useEmbeddedScratch } from "../hooks/useEmbeddedScratch";
 import { InjectedIntl, injectIntl } from "react-intl";
+import { basePath } from "..";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
@@ -37,6 +38,7 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
           patchScratchVm(vm);
         }}
         onTaskProgress={props.reportProgress && reportProgress}
+        basePath={`${basePath}/`}
       />
     );
   };

@@ -49,8 +49,9 @@ module "database" {
 module "backend" {
   source = "./modules/04-fargate"
 
-  name   = "${var.name}-${var.environment}-backend"
-  region = var.region
+  name        = "${var.name}-${var.environment}-backend"
+  domain_name = var.domain_name
+  region      = var.region
 
   vpc_id                 = module.network.vpc_id
   discovery_service_arn  = module.network.discovery_service_arn
