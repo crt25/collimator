@@ -29,6 +29,8 @@ export function setup(
       .setTitle("Collimator")
       .setDescription(`The Collimator API description (${v})`)
       .setVersion(version)
+      .addBearerAuth()
+      .addSecurityRequirements("bearer")
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
