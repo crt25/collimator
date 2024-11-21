@@ -7,7 +7,7 @@ import { ExistingTask } from "../../models/tasks/existing-task";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useRevalidateTask } from "./useRevalidateTask";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UpdateTaskDto } from "../../generated/models";
+import { UpdateTaskDto, UpdateTaskFileDto } from "../../generated/models";
 
 type UpdateTaskType = (
   id: number,
@@ -40,11 +40,26 @@ export const useUpdateTask = (): UpdateTaskType => {
   );
 };
 
-type FileArgs = Parameters<typeof tasksControllerUpdateFileV0>;
-type UpdateTaskFileType = (...args: FileArgs) => Promise<ExistingTask>;
+type UpdateTaskFileType = (
+  id: number,
+  updateTaskFileDto: UpdateTaskFileDto,
+) => Promise<ExistingTask>;
 
-const fetchAndTransformFile: UpdateTaskFileType = (...args) =>
-  tasksControllerUpdateFileV0(...args).then(ExistingTask.fromDto);
+const fetchAndTransformFile = (
+  options: RequestInit,
+  id: number,
+  updateTaskFileDto: UpdateTaskFileDto,
+): ReturnType<UpdateTaskFileType> =>
+  tasksControllerUpdateFileV0(id, updateTaskFileDto, options).then(
+    ExistingTask.fromDto,
+  );
 
-export const useUpdateTaskFile = (): UpdateTaskFileType =>
-  useCallback((...args: FileArgs) => fetchAndTransformFile(...args), []);
+export const useUpdateTaskFile = (): UpdateTaskFileType => {
+  const authOptions = useAuthenticationOptions();
+
+  return useCallback(
+    (id, updateTaskFileDto) =>
+      fetchAndTransformFile(authOptions, id, updateTaskFileDto),
+    [authOptions],
+  );
+};

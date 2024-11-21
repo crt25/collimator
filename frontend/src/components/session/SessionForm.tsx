@@ -204,7 +204,9 @@ const SessionForm = ({
                 value: addTaskEmptyId,
                 label: messages.selectTaskToAdd,
               },
-              ...tasks
+              // in theory tasks should never be undefined, but it seems to happen sometimes??
+              // TODO: investigate why this happens
+              ...(tasks ?? [])
                 // avoid duplicates
                 .filter((t) => !taskIds.includes(t.id))
                 .map((t) => ({
