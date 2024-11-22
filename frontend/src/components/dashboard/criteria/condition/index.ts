@@ -1,10 +1,10 @@
 import { defineMessages } from "react-intl";
 import { CriterionBase, CriterionDefinition } from "../criterion-base";
-import { CriteronType } from "../criterion-type";
 import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
 import ConditionCriterionGroupForm from "./ConditionCriterionGroupForm";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 
-type Criterion = CriteronType.condition;
+type Criterion = CriterionType.condition;
 
 const messages = defineMessages({
   name: {
@@ -26,7 +26,7 @@ export const conditionCriterionFilter: CriterionDefinition<
   Criterion,
   ConditionFilterCriterion
 > = {
-  criterion: CriteronType.condition,
+  criterion: CriterionType.condition,
   formComponent: ConditionCriterionFilterForm,
   messages,
 };
@@ -35,7 +35,7 @@ export const conditionCriterionGroup: CriterionDefinition<
   Criterion,
   ConditionGroupCriterion
 > = {
-  criterion: CriteronType.condition,
+  criterion: CriterionType.condition,
   formComponent: ConditionCriterionGroupForm,
   messages,
 };

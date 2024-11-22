@@ -2,50 +2,53 @@ import { match } from "ts-pattern";
 import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
 import { GeneralAst } from "@ast/index";
 
-export enum Criterion {
+export enum CriterionType {
+  none = "none",
   callsFunction = "callsFunction",
   containsLoop = "containsLoop",
-  containsCondition = "containsCondition",
+  condition = "containsCondition",
   containsFunctionDeclaration = "containsFunctionDeclaration",
 }
 
 export interface CriteriaBasedAnalyzerInput {
-  [Criterion.callsFunction]: {
+  [CriterionType.none]: void;
+  [CriterionType.callsFunction]: {
     functionName: string;
   };
-  [Criterion.containsLoop]: void;
-  [Criterion.containsCondition]: void;
-  [Criterion.containsFunctionDeclaration]: void;
+  [CriterionType.containsLoop]: void;
+  [CriterionType.condition]: void;
+  [CriterionType.containsFunctionDeclaration]: void;
 }
 
 export interface CriteriaBasedAnalyzerOutput {
-  [Criterion.callsFunction]: boolean;
-  [Criterion.containsLoop]: boolean;
-  [Criterion.containsCondition]: boolean;
-  [Criterion.containsFunctionDeclaration]: boolean;
+  [CriterionType.none]: void;
+  [CriterionType.callsFunction]: boolean;
+  [CriterionType.containsLoop]: boolean;
+  [CriterionType.condition]: boolean;
+  [CriterionType.containsFunctionDeclaration]: boolean;
 }
 
-export type CriteriaToAnalyzeInput<T extends Criterion> = {
+export type CriteriaToAnalyzeInput<T extends CriterionType> = {
   criterion: T;
   input: CriteriaBasedAnalyzerInput[T];
 };
 
 export type AnalysisInput =
-  | CriteriaToAnalyzeInput<Criterion.callsFunction>
-  | CriteriaToAnalyzeInput<Criterion.containsCondition>
-  | CriteriaToAnalyzeInput<Criterion.containsFunctionDeclaration>
-  | CriteriaToAnalyzeInput<Criterion.containsLoop>;
+  | CriteriaToAnalyzeInput<CriterionType.callsFunction>
+  | CriteriaToAnalyzeInput<CriterionType.condition>
+  | CriteriaToAnalyzeInput<CriterionType.containsFunctionDeclaration>
+  | CriteriaToAnalyzeInput<CriterionType.containsLoop>;
 
-export type CriteriaToAnalyzeOutput<T extends Criterion> = {
+export type CriteriaToAnalyzeOutput<T extends CriterionType> = {
   criterion: T;
   output: CriteriaBasedAnalyzerOutput[T];
 };
 
 export type AnalysisOutput =
-  | CriteriaToAnalyzeOutput<Criterion.callsFunction>
-  | CriteriaToAnalyzeOutput<Criterion.containsCondition>
-  | CriteriaToAnalyzeOutput<Criterion.containsFunctionDeclaration>
-  | CriteriaToAnalyzeOutput<Criterion.containsLoop>;
+  | CriteriaToAnalyzeOutput<CriterionType.callsFunction>
+  | CriteriaToAnalyzeOutput<CriterionType.condition>
+  | CriteriaToAnalyzeOutput<CriterionType.containsFunctionDeclaration>
+  | CriteriaToAnalyzeOutput<CriterionType.containsLoop>;
 
 export const analyzeAsts = ({
   asts,
@@ -59,28 +62,28 @@ export const analyzeAsts = ({
       match(input)
         .returnType<AnalysisOutput>()
         .with(
-          { criterion: Criterion.callsFunction },
+          { criterion: CriterionType.callsFunction },
           ({ criterion, input }) => ({
             criterion,
             output: CriteriaBasedAnalyzer.callsFunction(ast, input),
           }),
         )
         .with(
-          { criterion: Criterion.containsLoop },
+          { criterion: CriterionType.containsLoop },
           ({ criterion, input }) => ({
             criterion,
             output: CriteriaBasedAnalyzer.containsLoop(ast, input),
           }),
         )
         .with(
-          { criterion: Criterion.containsCondition },
+          { criterion: CriterionType.condition },
           ({ criterion, input }) => ({
             criterion,
             output: CriteriaBasedAnalyzer.containsCondition(ast, input),
           }),
         )
         .with(
-          { criterion: Criterion.containsFunctionDeclaration },
+          { criterion: CriterionType.containsFunctionDeclaration },
           ({ criterion, input }) => ({
             criterion,
             output: CriteriaBasedAnalyzer.containsFunctionDeclaration(

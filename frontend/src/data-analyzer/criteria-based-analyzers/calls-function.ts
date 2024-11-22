@@ -1,6 +1,6 @@
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import {
-  Criterion,
+  CriterionType,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
@@ -11,10 +11,10 @@ import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 export const callsFunction = (
   ast: GeneralAst,
   input: Exclude<
-    CriteriaBasedAnalyzerInput[Criterion.callsFunction],
+    CriteriaBasedAnalyzerInput[CriterionType.callsFunction],
     undefined
   >,
-): CriteriaBasedAnalyzerOutput[Criterion.callsFunction] => {
+): CriteriaBasedAnalyzerOutput[CriterionType.callsFunction] => {
   let callsFunction = false;
 
   walkAst(ast, {

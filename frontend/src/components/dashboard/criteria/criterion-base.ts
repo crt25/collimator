@@ -1,12 +1,12 @@
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 import { MessageDescriptor } from "react-intl";
-import { CriteronType } from "./criterion-type";
 
-export interface CriterionBase<Type extends CriteronType> {
+export interface CriterionBase<Type extends CriterionType> {
   criterion: Type;
 }
 
 export type CriterionFormProps<
-  Type extends CriteronType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > = {
   submitMessage: MessageDescriptor;
@@ -15,12 +15,12 @@ export type CriterionFormProps<
 };
 
 export type CriterionFormComponent<
-  Type extends CriteronType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > = React.FunctionComponent<CriterionFormProps<Type, Criterion>>;
 
 export interface CriterionDefinition<
-  Type extends CriteronType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > {
   criterion: Type;

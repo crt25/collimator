@@ -8,8 +8,8 @@ import { useCallback, useMemo } from "react";
 import ValidationErrorMessage from "@/components/form/ValidationErrorMessage";
 import { ConditionGroupCriterion } from ".";
 import { CriterionFormComponent } from "../criterion-base";
-import { CriteronType } from "../criterion-type";
 import Range from "@/components/form/Range";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 
 type FormValues = Omit<ConditionGroupCriterion, "criterion">;
 
@@ -21,7 +21,7 @@ const messages = defineMessages({
 });
 
 const ConditionCriterionGroupForm: CriterionFormComponent<
-  CriteronType.condition,
+  CriterionType.condition,
   ConditionGroupCriterion
 > = ({ submitMessage, onUpdate, initialValues }) => {
   const min = 1;
@@ -52,7 +52,7 @@ const ConditionCriterionGroupForm: CriterionFormComponent<
   const onSubmit = useCallback(
     (formValues: FormValues) => {
       onUpdate({
-        criterion: CriteronType.condition,
+        criterion: CriterionType.condition,
         ...formValues,
       });
     },

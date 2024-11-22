@@ -10,7 +10,7 @@ import {
 } from ".";
 import AnalyzerTags from "../AnalyzerTags";
 import CriterionFilterForm from "./CriterionFilterForm";
-import { CriteronType } from "../criteria/criterion-type";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 
 const Label = styled.label`
   display: block;
@@ -43,7 +43,7 @@ const AnalyzerFilterForm = ({
   setFilters: (filters: AstFilter[]) => void;
 }) => {
   const [filterToEdit, setFilterToEdit] = useState<FilterCriterionType>(
-    CriteronType.none,
+    CriterionType.none,
   );
 
   const [currentFilter, setCurrentFilter] = useState<AstFilter | undefined>(
@@ -70,7 +70,7 @@ const AnalyzerFilterForm = ({
           setFilters(filters.filter((f) => f !== filter));
 
           if (currentFilter === filter) {
-            setFilterToEdit(CriteronType.none);
+            setFilterToEdit(CriterionType.none);
             setCurrentFilter(undefined);
           }
         }}
@@ -105,7 +105,7 @@ const AnalyzerFilterForm = ({
               newFilter,
             ]);
             setCurrentFilter(undefined);
-            setFilterToEdit(CriteronType.none);
+            setFilterToEdit(CriterionType.none);
           },
         }}
       />

@@ -8,8 +8,8 @@ import { useCallback, useMemo } from "react";
 import ValidationErrorMessage from "@/components/form/ValidationErrorMessage";
 import { ConditionFilterCriterion } from ".";
 import { CriterionFormComponent } from "../criterion-base";
-import { CriteronType } from "../criterion-type";
 import MinMaxRange from "@/components/form/MinMaxRange";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 
 const messages = defineMessages({
   count: {
@@ -21,7 +21,7 @@ const messages = defineMessages({
 type FormValues = Omit<ConditionFilterCriterion, "criterion">;
 
 const ConditionCriterionFilterForm: CriterionFormComponent<
-  CriteronType.condition,
+  CriterionType.condition,
   ConditionFilterCriterion
 > = ({ submitMessage, onUpdate, initialValues }) => {
   const min = 0;
@@ -55,7 +55,7 @@ const ConditionCriterionFilterForm: CriterionFormComponent<
   const onSubmit = useCallback(
     (formValues: FormValues) => {
       onUpdate({
-        criterion: CriteronType.condition,
+        criterion: CriterionType.condition,
         ...formValues,
       });
     },
