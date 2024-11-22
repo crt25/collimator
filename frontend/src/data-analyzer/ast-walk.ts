@@ -1,10 +1,10 @@
-import { GeneralAst, StatementNode } from "src/ast/types/general-ast";
-import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
+import { isNonNull } from "@/utilities/is-non-null";
+import { StatementNode, StatementNodeType } from "@ast/ast-nodes";
 import {
   ExpressionNode,
   ExpressionNodeType,
-} from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { isNonNull } from "src/utilities/is-non-null";
+} from "@ast/ast-nodes/expression-node";
+import { GeneralAst } from "@ast/index";
 import { match } from "ts-pattern";
 
 export enum AstWalkSignal {

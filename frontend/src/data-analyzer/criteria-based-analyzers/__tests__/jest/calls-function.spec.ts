@@ -1,12 +1,13 @@
-import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
-import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
-import { containsCondition } from "../contains-condition";
+import { AstNodeType } from "@ast/ast-node-type";
+import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
+import { StatementNodeType } from "@ast/ast-nodes";
+import { GeneralAst } from "@ast/index";
+import { callsFunction } from "../../calls-function";
 
 describe("Criteria Based Analyzer", () => {
-  describe("containsCondition", () => {
-    it("returns true if the AST contains a condition", () => {
-      const output = containsCondition(
+  describe("callsFunction", () => {
+    it("returns true if the function is called in a statement", () => {
+      const output = callsFunction(
         [
           {
             nodeType: AstNodeType.actor,
@@ -36,23 +37,9 @@ describe("Criteria Based Analyzer", () => {
                   statements: [
                     {
                       nodeType: AstNodeType.statement,
-                      statementType: StatementNodeType.condition,
-                      condition: {
-                        nodeType: AstNodeType.expression,
-                        expressionType: ExpressionNodeType.literal,
-                        type: "boolean",
-                        value: "true",
-                      },
-                      whenTrue: {
-                        nodeType: AstNodeType.statement,
-                        statementType: StatementNodeType.sequence,
-                        statements: [],
-                      },
-                      whenFalse: {
-                        nodeType: AstNodeType.statement,
-                        statementType: StatementNodeType.sequence,
-                        statements: [],
-                      },
+                      statementType: StatementNodeType.functionCall,
+                      name: "motion_movesteps",
+                      arguments: [],
                     },
                   ],
                 },
@@ -61,14 +48,16 @@ describe("Criteria Based Analyzer", () => {
             functionDeclarations: [],
           },
         ] as GeneralAst,
-        undefined,
+        {
+          functionName: "motion_movesteps",
+        },
       );
 
       expect(output).toBe(true);
     });
 
-    it("returns false if the AST does not contain a condition", () => {
-      const output = containsCondition(
+    it("returns true if the function is called in an expression", () => {
+      const output = callsFunction(
         [
           {
             nodeType: AstNodeType.actor,
@@ -102,7 +91,59 @@ describe("Criteria Based Analyzer", () => {
             functionDeclarations: [],
           },
         ] as GeneralAst,
-        undefined,
+        {
+          functionName: "myFunction",
+        },
+      );
+
+      expect(output).toBe(true);
+    });
+
+    it("returns false if the function is not called", () => {
+      const output = callsFunction(
+        [
+          {
+            nodeType: AstNodeType.actor,
+            eventListeners: [
+              {
+                nodeType: AstNodeType.eventListener,
+                condition: {
+                  event: "event_whengreaterthan",
+                  parameters: [
+                    {
+                      nodeType: AstNodeType.expression,
+                      expressionType: ExpressionNodeType.literal,
+                      type: "number",
+                      value: "10",
+                    },
+                    {
+                      nodeType: AstNodeType.expression,
+                      expressionType: ExpressionNodeType.functionCall,
+                      name: "myFunction1",
+                      arguments: [],
+                    },
+                  ],
+                },
+                action: {
+                  nodeType: AstNodeType.statement,
+                  statementType: StatementNodeType.sequence,
+                  statements: [
+                    {
+                      nodeType: AstNodeType.statement,
+                      statementType: StatementNodeType.functionCall,
+                      name: "myFunction2",
+                      arguments: [],
+                    },
+                  ],
+                },
+              },
+            ],
+            functionDeclarations: [],
+          },
+        ] as GeneralAst,
+        {
+          functionName: "motion_movesteps",
+        },
       );
 
       expect(output).toBe(false);

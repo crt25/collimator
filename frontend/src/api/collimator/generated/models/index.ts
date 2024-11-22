@@ -6,29 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export * from "./analysisInputDto";
-export * from "./analysisInputDtoCriteriaItem";
-export * from "./analysisOutputDto";
-export * from "./analysisOutputDtoCriteriaItem";
 export * from "./authenticationProvider";
 export * from "./authenticationRequestDto";
 export * from "./authenticationResponseDto";
 export * from "./authenticationResponseDtoKeyPair";
-export * from "./callsFunctionCriterionInputDto";
-export * from "./callsFunctionCriterionInputDtoCriterion";
-export * from "./callsFunctionCriterionOutputDto";
 export * from "./classStudentDto";
 export * from "./classTeacherDto";
 export * from "./classesControllerFindAllV0Params";
-export * from "./containsConditionCriterionInputDto";
-export * from "./containsConditionCriterionInputDtoCriterion";
-export * from "./containsConditionCriterionOutputDto";
-export * from "./containsFunctionDeclarationCriterionInputDto";
-export * from "./containsFunctionDeclarationCriterionInputDtoCriterion";
-export * from "./containsFunctionDeclarationCriterionOutputDto";
-export * from "./containsLoopDeclarationCriterionInputDto";
-export * from "./containsLoopDeclarationCriterionInputDtoCriterion";
-export * from "./containsLoopDeclarationCriterionOutputDto";
 export * from "./createClassDto";
 export * from "./createKeyPairDto";
 export * from "./createPrivateKeyDto";

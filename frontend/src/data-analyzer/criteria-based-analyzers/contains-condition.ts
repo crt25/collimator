@@ -1,11 +1,11 @@
-import { GeneralAst } from "src/ast/types/general-ast";
-import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import {
   Criterion,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
-} from "../criteria-based-analysis-worker.piscina";
+} from "../analyze-asts";
+import { GeneralAst } from "@ast/index";
+import { StatementNodeType } from "@ast/ast-nodes";
 
 export const containsCondition = (
   ast: GeneralAst,

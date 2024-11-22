@@ -19,7 +19,7 @@ export interface ConditionFilterCriterion extends CriterionBase<Criterion> {
 }
 
 export interface ConditionGroupCriterion extends CriterionBase<Criterion> {
-  isPresent: boolean;
+  granularity: number;
 }
 
 export const conditionCriterionFilter: CriterionDefinition<

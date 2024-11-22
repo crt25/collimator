@@ -1,7 +1,8 @@
-import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
-import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
-import { containsLoop } from "../contains-loop";
+import { AstNodeType } from "@ast/ast-node-type";
+import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
+import { StatementNodeType } from "@ast/ast-nodes";
+import { GeneralAst } from "@ast/index";
+import { containsLoop } from "../../contains-loop";
 
 describe("Criteria Based Analyzer", () => {
   describe("containsLoop", () => {

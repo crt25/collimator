@@ -1,12 +1,13 @@
-import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
-import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
-import { containsFunctionDeclaration } from "../contains-function-declaration";
+import { AstNodeType } from "@ast/ast-node-type";
+import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
+import { StatementNodeType } from "@ast/ast-nodes";
+import { GeneralAst } from "@ast/index";
+import { containsCondition } from "../../contains-condition";
 
 describe("Criteria Based Analyzer", () => {
-  describe("containsFunctionDeclaration", () => {
-    it("returns true if the AST contains a function declaration", () => {
-      const output = containsFunctionDeclaration(
+  describe("containsCondition", () => {
+    it("returns true if the AST contains a condition", () => {
+      const output = containsCondition(
         [
           {
             nodeType: AstNodeType.actor,
@@ -58,19 +59,7 @@ describe("Criteria Based Analyzer", () => {
                 },
               },
             ],
-            functionDeclarations: [
-              {
-                nodeType: AstNodeType.statement,
-                statementType: StatementNodeType.functionDeclaration,
-                name: "myFunction",
-                parameterNames: [],
-                body: {
-                  nodeType: AstNodeType.statement,
-                  statementType: StatementNodeType.sequence,
-                  statements: [],
-                },
-              },
-            ],
+            functionDeclarations: [],
           },
         ] as GeneralAst,
         undefined,
@@ -79,8 +68,8 @@ describe("Criteria Based Analyzer", () => {
       expect(output).toBe(true);
     });
 
-    it("returns false if the AST does not contain a function declaration", () => {
-      const output = containsFunctionDeclaration(
+    it("returns false if the AST does not contain a condition", () => {
+      const output = containsCondition(
         [
           {
             nodeType: AstNodeType.actor,

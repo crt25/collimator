@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
 import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
-import { GeneralAst } from "src/ast/types/general-ast";
+import { GeneralAst } from "@ast/index";
 
 export enum Criterion {
   callsFunction = "callsFunction",
@@ -47,14 +47,14 @@ export type AnalysisOutput =
   | CriteriaToAnalyzeOutput<Criterion.containsFunctionDeclaration>
   | CriteriaToAnalyzeOutput<Criterion.containsLoop>;
 
-const CriteriaBasedAnalysisWorker = ({
+export const analyzeAsts = ({
   asts,
   input,
 }: {
   asts: GeneralAst[];
   input: AnalysisInput[];
-}): AnalysisOutput[][] => {
-  return asts.map((ast) =>
+}): AnalysisOutput[][] =>
+  asts.map((ast) =>
     input.map((input) =>
       match(input)
         .returnType<AnalysisOutput>()
@@ -92,6 +92,3 @@ const CriteriaBasedAnalysisWorker = ({
         .exhaustive(),
     ),
   );
-};
-
-export default CriteriaBasedAnalysisWorker;
