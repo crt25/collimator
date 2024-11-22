@@ -6,6 +6,8 @@ const nextConfig = {
 
   reactStrictMode: true,
 
+  transpilePackages: ["../backend"],
+
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
     ignoreDuringBuilds: true,
