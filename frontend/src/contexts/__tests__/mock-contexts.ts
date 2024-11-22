@@ -44,6 +44,7 @@ export const getFullyAuthenticatedStudentContext = async (
     email,
     sessionId: 1,
     keyPair,
+    teacherPublicKey: await teacherKeyPair.exportPublicKey(),
     ephemeralKey: await keyPair.deriveSharedEphemeralKey(
       await teacherKeyPair.exportPublicKey(),
       await teacherKeyPair.getPublicKeyFingerprint(),

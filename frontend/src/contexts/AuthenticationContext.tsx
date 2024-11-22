@@ -5,7 +5,7 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { createContext } from "react";
 
-type SerializedKeyPair<
+type SerializedTeacherKeyPair<
   T extends {
     keyPair: KeyPair;
   },
@@ -15,6 +15,22 @@ type SerializedKeyPair<
     publicKey: JsonWebKey;
   };
   saltPublicKey: JsonWebKey;
+};
+
+type SerializedStudentKeyPair<
+  T extends {
+    keyPair: KeyPair;
+  },
+> = Omit<T, "keyPair" | "teacherPublicKey" | "ephemeralKey"> & {
+  keyPair: {
+    privateKey: JsonWebKey;
+    publicKey: JsonWebKey;
+  };
+  saltPublicKey: JsonWebKey;
+  // the ephemeral key is not serialized
+  ephemeralKey: undefined;
+  // but the teacher public key is which allows deriving it again
+  teacherPublicKey: JsonWebKey;
 };
 
 type AuthenticationContextVersion = "1";
@@ -54,6 +70,7 @@ export type StudentAuthenticated = Omit<
 > & {
   // a student is always authenticated with respect to a session
   sessionId: number;
+  teacherPublicKey: JsonWebKey;
   authenticationToken: string;
   keyPair: StudentKeyPair;
   ephemeralKey: EphemeralKey;
@@ -67,9 +84,9 @@ export type AuthenticationContextType =
 
 type SerializedAuthenticationContextTypeV1 =
   | Unauthenticated
-  | SerializedKeyPair<AdminOrTeacherAuthenticated>
+  | SerializedTeacherKeyPair<AdminOrTeacherAuthenticated>
   | StudentLocallyAuthenticated
-  | SerializedKeyPair<StudentAuthenticated>;
+  | SerializedStudentKeyPair<StudentAuthenticated>;
 
 export type SerializedAuthenticationContextType =
   SerializedAuthenticationContextTypeV1;
@@ -121,6 +138,7 @@ export const AuthenticationContext = createContext<AuthenticationContextType>(
 );
 
 export const serializeAuthenticationContext = async (
+  crypto: SubtleCrypto,
   authContext: AuthenticationContextType,
 ): Promise<SerializedAuthenticationContextType> => {
   if (!("keyPair" in authContext)) {
@@ -129,11 +147,21 @@ export const serializeAuthenticationContext = async (
 
   const { keyPair, ...rest } = authContext;
 
-  return {
-    ...rest,
-    keyPair: await keyPair.exportUnprotected(),
-    saltPublicKey: await keyPair.exportSaltPublicKey(),
-  };
+  if (rest.role === UserRole.student) {
+    return {
+      ...rest,
+      ephemeralKey: undefined,
+      keyPair: await keyPair.exportUnprotected(),
+      saltPublicKey: await keyPair.exportSaltPublicKey(),
+      teacherPublicKey: rest.teacherPublicKey,
+    };
+  } else {
+    return {
+      ...rest,
+      keyPair: await keyPair.exportUnprotected(),
+      saltPublicKey: await keyPair.exportSaltPublicKey(),
+    };
+  }
 };
 
 export const deserializeAuthenticationContext = async (
@@ -159,14 +187,26 @@ export const deserializeAuthenticationContext = async (
     [],
   );
 
+  const importedKeyPair = await StudentKeyPair.create(
+    crypto,
+    importedCryptoKeyPair,
+    importedSaltPublicKey,
+  );
+
   if (rest.role === UserRole.student) {
+    console.log("rest.teacherPublicKey", rest.teacherPublicKey);
     return {
       ...rest,
-      keyPair: await StudentKeyPair.create(
-        crypto,
-        importedCryptoKeyPair,
-        importedSaltPublicKey,
+      ephemeralKey: await importedKeyPair.deriveSharedEphemeralKey(
+        rest.teacherPublicKey,
+        // we already authenticated the teacher's public key
+        await KeyPair.getJsonWebKeyKeyFingerprint(
+          crypto,
+          rest.teacherPublicKey,
+        ),
       ),
+      teacherPublicKey: rest.teacherPublicKey,
+      keyPair: importedKeyPair,
     };
   }
 
