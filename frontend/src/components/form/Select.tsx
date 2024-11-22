@@ -23,7 +23,7 @@ const Label = styled.span`
 `;
 
 interface Props {
-  label: MessageDescriptor;
+  label?: MessageDescriptor;
   options: { value: string | number; label: string | MessageDescriptor }[];
   alwaysShow?: boolean;
   children?: React.ReactNode;
@@ -38,7 +38,7 @@ const Select = forwardRef(function Select(
 
   return (
     <InputWrapper isShown={options.length > 1 || alwaysShow}>
-      <Label>{intl.formatMessage(label)}</Label>
+      {label && <Label>{intl.formatMessage(label)}</Label>}
       <div>
         <StyledSelect {...inputProps} ref={ref}>
           {options.map((option) => (

@@ -9,13 +9,9 @@ const messages = defineMessages({
     id: "SessionNavigation.progress",
     defaultMessage: "Progress",
   },
-  manualGroupingTab: {
-    id: "SessionNavigation.manualGroupingTab",
-    defaultMessage: "Manual Grouping",
-  },
-  automaticGroupingTab: {
-    id: "SessionNavigation.automaticGroupingTab",
-    defaultMessage: "Automatic Grouping",
+  groupingTab: {
+    id: "SessionNavigation.groupingTab",
+    defaultMessage: "Grouping",
   },
 });
 
@@ -25,12 +21,8 @@ const tabs: NavigationTab[] = [
     title: (intl) => intl.formatMessage(messages.progressTab),
   },
   {
-    url: "manual-grouping",
-    title: (intl) => intl.formatMessage(messages.manualGroupingTab),
-  },
-  {
-    url: "automatic-grouping",
-    title: (intl) => intl.formatMessage(messages.automaticGroupingTab),
+    url: "grouping",
+    title: (intl) => intl.formatMessage(messages.groupingTab),
   },
 ];
 

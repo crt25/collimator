@@ -10,8 +10,9 @@ import { FormattedMessage } from "react-intl";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import Analyzer from "@/components/dashboard/Analyzer";
 
-const SessionAutomaticGrouping = () => {
+const SessionGrouping = () => {
   const router = useRouter();
   const { classId, sessionId } = router.query as {
     classId: string;
@@ -36,13 +37,13 @@ const SessionAutomaticGrouping = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation classId={klass?.id} breadcrumb session={session} />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
         <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
-            id="SessionAutomaticGrouping.header"
-            defaultMessage="Automatic Grouping"
+            id="SessionGrouping.header"
+            defaultMessage="Grouping"
           />
         </PageHeader>
         <MultiSwrContent
@@ -50,11 +51,11 @@ const SessionAutomaticGrouping = () => {
           isLoading={[isLoadingKlass, isLoadingSession]}
           data={[klass, session]}
         >
-          {([_klass]) => sessionId}
+          {([_klass, session]) => <Analyzer tasks={session.tasks} />}
         </MultiSwrContent>
       </Container>
     </>
   );
 };
 
-export default SessionAutomaticGrouping;
+export default SessionGrouping;
