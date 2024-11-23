@@ -87,3 +87,7 @@ out
 # misc
 .DS_Store
 *.pem
+
+.terraform
+terraform.tfstate
+terraform.tfstate.backup

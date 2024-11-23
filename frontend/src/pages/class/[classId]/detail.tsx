@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
@@ -29,7 +29,7 @@ const ClassDetail = () => {
           {(klass) => (
             <div>
               <PageHeader>{klass.name}</PageHeader>
-              <table role="presentation">
+              <Table bordered role="presentation">
                 <tbody>
                   <tr>
                     <td>
@@ -50,7 +50,7 @@ const ClassDetail = () => {
                     <td>{klass.studentCount}</td>
                   </tr>
                 </tbody>
-              </table>
+              </Table>
             </div>
           )}
         </SwrContent>

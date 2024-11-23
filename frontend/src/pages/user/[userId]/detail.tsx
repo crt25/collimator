@@ -3,17 +3,19 @@ import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import UserNavigation from "@/components/user/UserNavigation";
+import { useUser } from "@/api/collimator/hooks/users/useUser";
+import SwrContent from "@/components/SwrContent";
 
 const UserDetail = () => {
   const router = useRouter();
-  const { userId: userIdString } = router.query as {
+  const { userId } = router.query as {
     userId: string;
   };
 
-  const userId = parseInt(userIdString, 10);
+  const { data: user, isLoading, error } = useUser(userId);
 
   return (
     <>
@@ -22,10 +24,36 @@ const UserDetail = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <UserNavigation userId={userId} />
-        <PageHeader>
-          <FormattedMessage id="UserDetail.header" defaultMessage="User" />
-        </PageHeader>
+        <UserNavigation userId={user?.id} />
+        <SwrContent error={error} isLoading={isLoading} data={user}>
+          {(user) => (
+            <div>
+              <PageHeader>{user.name}</PageHeader>
+              <Table bordered role="presentation">
+                <tbody>
+                  <tr>
+                    <td>
+                      <FormattedMessage
+                        id="UserDetail.table.email"
+                        defaultMessage="Email"
+                      />
+                    </td>
+                    <td>{user.email}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <FormattedMessage
+                        id="UserDetail.table.type"
+                        defaultMessage="Type"
+                      />
+                    </td>
+                    <td>{user.type}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
+          )}
+        </SwrContent>
       </Container>
     </>
   );

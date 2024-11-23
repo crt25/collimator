@@ -7,33 +7,33 @@ import { ClassesControllerFindAllV0Params } from "../../generated/models";
 import {
   ApiResponse,
   fromDtos,
-  LazyTableFetchFunctionWithParameters,
+  getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
-import { LazyTableState } from "@/components/DataTable";
-import { useCallback } from "react";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
+
+export type GetClassesReturnType = ExistingClassWithTeacher[];
 
 const fetchAndTransform = (
   params?: ClassesControllerFindAllV0Params,
-): Promise<ExistingClassWithTeacher[]> =>
+): Promise<GetClassesReturnType> =>
   classesControllerFindAllV0(params).then((data) =>
     fromDtos(ExistingClassWithTeacher, data),
   );
 
 export const useAllClasses = (
   params?: ClassesControllerFindAllV0Params,
-): ApiResponse<ExistingClassWithTeacher[], Error> =>
-  useSWR(getClassesControllerFindAllV0Url(params), () =>
-    fetchAndTransform(params),
+): ApiResponse<GetClassesReturnType, Error> =>
+  useSWR(
+    // use the URL with the params as the first entry in the key for easier invalidation
+    getSwrParamererizedKey(getClassesControllerFindAllV0Url, params),
+    () => fetchAndTransform(params),
   );
 
-export const useFetchAllClasses: LazyTableFetchFunctionWithParameters<
-  ClassesControllerFindAllV0Params,
-  ExistingClassWithTeacher
-> = (params) =>
-  useCallback(
-    (_state: LazyTableState) =>
-      fetchAndTransform(params).then(transformToLazyTableResult),
-    [params],
+export const useAllClassesLazyTable = (
+  _state: LazyTableState,
+): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> =>
+  useSWR(getSwrParamererizedKey(getClassesControllerFindAllV0Url), () =>
+    fetchAndTransform().then(transformToLazyTableResult),
   );

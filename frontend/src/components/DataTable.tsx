@@ -79,8 +79,4 @@ export interface LazyTableResult<TData> {
   totalCount: number;
 }
 
-export type LazyTableFetchFunction<TData> = (
-  state: LazyTableState,
-) => Promise<LazyTableResult<TData>>;
-
 export default DataTable;
