@@ -156,16 +156,22 @@ const Analysis = ({
           superGroup |= SuperGroup.matches;
         }
 
+        const assignedGroups =
+          groups.length > 0
+            ? groups.map((g) =>
+                getGroup(
+                  g,
+                  analyzeAst(solution.generalAst, groupToAnalysisInput(g)),
+                ),
+              )
+            : // if no groups are defined, all solutions are in a different group
+              solution.id.toString();
+
         const group = [
           // always include the super groups because those group the groups
           // and hence if solutions are not in the same super group they cannot be in the same group
           superGroup.toString(),
-          ...groups.map((g) =>
-            getGroup(
-              g,
-              analyzeAst(solution.generalAst, groupToAnalysisInput(g)),
-            ),
-          ),
+          ...assignedGroups,
         ].join("-");
 
         return {
