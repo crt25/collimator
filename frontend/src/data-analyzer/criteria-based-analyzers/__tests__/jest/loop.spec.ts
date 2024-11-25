@@ -2,12 +2,12 @@ import { AstNodeType } from "@ast/ast-node-type";
 import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { GeneralAst } from "@ast/index";
-import { containsFunctionDeclaration } from "../../contains-function-declaration";
+import { countLoops } from "../../loop";
 
 describe("Criteria Based Analyzer", () => {
-  describe("containsFunctionDeclaration", () => {
-    it("returns true if the AST contains a function declaration", () => {
-      const output = containsFunctionDeclaration(
+  describe("containsLoop", () => {
+    it("returns '1' if the AST contains a loop", () => {
+      const output = countLoops(
         [
           {
             nodeType: AstNodeType.actor,
@@ -37,19 +37,14 @@ describe("Criteria Based Analyzer", () => {
                   statements: [
                     {
                       nodeType: AstNodeType.statement,
-                      statementType: StatementNodeType.condition,
+                      statementType: StatementNodeType.loop,
                       condition: {
                         nodeType: AstNodeType.expression,
                         expressionType: ExpressionNodeType.literal,
                         type: "boolean",
                         value: "true",
                       },
-                      whenTrue: {
-                        nodeType: AstNodeType.statement,
-                        statementType: StatementNodeType.sequence,
-                        statements: [],
-                      },
-                      whenFalse: {
+                      body: {
                         nodeType: AstNodeType.statement,
                         statementType: StatementNodeType.sequence,
                         statements: [],
@@ -77,11 +72,11 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(true);
+      expect(output).toBe(1);
     });
 
-    it("returns false if the AST does not contain a function declaration", () => {
-      const output = containsFunctionDeclaration(
+    it("returns '0' if the AST does not contain a loop", () => {
+      const output = countLoops(
         [
           {
             nodeType: AstNodeType.actor,
@@ -118,7 +113,7 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(false);
+      expect(output).toBe(0);
     });
   });
 });

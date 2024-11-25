@@ -2,12 +2,12 @@ import { AstNodeType } from "@ast/ast-node-type";
 import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { GeneralAst } from "@ast/index";
-import { containsCondition } from "../../contains-condition";
+import { countFunctionDeclaration } from "../../contains-function-declaration";
 
 describe("Criteria Based Analyzer", () => {
-  describe("containsCondition", () => {
-    it("returns true if the AST contains a condition", () => {
-      const output = containsCondition(
+  describe("countFunctionDeclaration", () => {
+    it("returns '1' if the AST contains a function declaration", () => {
+      const output = countFunctionDeclaration(
         [
           {
             nodeType: AstNodeType.actor,
@@ -59,17 +59,29 @@ describe("Criteria Based Analyzer", () => {
                 },
               },
             ],
-            functionDeclarations: [],
+            functionDeclarations: [
+              {
+                nodeType: AstNodeType.statement,
+                statementType: StatementNodeType.functionDeclaration,
+                name: "myFunction",
+                parameterNames: [],
+                body: {
+                  nodeType: AstNodeType.statement,
+                  statementType: StatementNodeType.sequence,
+                  statements: [],
+                },
+              },
+            ],
           },
         ] as GeneralAst,
         undefined,
       );
 
-      expect(output).toBe(true);
+      expect(output).toBe(1);
     });
 
-    it("returns false if the AST does not contain a condition", () => {
-      const output = containsCondition(
+    it("returns '0' if the AST does not contain a function declaration", () => {
+      const output = countFunctionDeclaration(
         [
           {
             nodeType: AstNodeType.actor,
@@ -106,7 +118,7 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(false);
+      expect(output).toBe(0);
     });
   });
 });

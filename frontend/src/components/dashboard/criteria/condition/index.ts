@@ -1,8 +1,16 @@
 import { defineMessages } from "react-intl";
-import { CriterionBase, CriterionDefinition } from "../criterion-base";
+import {
+  CriterionAxisDefinition,
+  CriterionBase,
+  CriterionFilterDefinition,
+  CriterionGroupDefinition,
+} from "../criterion-base";
 import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
 import ConditionCriterionGroupForm from "./ConditionCriterionGroupForm";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import {
+  CriteriaToAnalyzeInput,
+  CriterionType,
+} from "@/data-analyzer/analyze-asts";
 
 type Criterion = CriterionType.condition;
 
@@ -22,20 +30,44 @@ export interface ConditionGroupCriterion extends CriterionBase<Criterion> {
   granularity: number;
 }
 
-export const conditionCriterionFilter: CriterionDefinition<
+const toAnalysisInput = (
+  _criterion: ConditionFilterCriterion | ConditionGroupCriterion,
+): CriteriaToAnalyzeInput<CriterionType.condition> => ({
+  criterion: CriterionType.condition,
+  input: undefined,
+});
+
+export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
+  criterion: CriterionType.condition,
+  messages: () => messages,
+  analysisInput: {
+    criterion: CriterionType.condition,
+    input: undefined,
+  },
+  getAxisValue: (numberOfConditions) => numberOfConditions,
+};
+
+export const ConditionCriterionFilter: CriterionFilterDefinition<
   Criterion,
   ConditionFilterCriterion
 > = {
   criterion: CriterionType.condition,
   formComponent: ConditionCriterionFilterForm,
-  messages,
+  messages: () => messages,
+  toAnalysisInput,
+  matchesFilter: (config, numberOfConditions) =>
+    config.minimumCount <= numberOfConditions &&
+    config.maximumCount >= numberOfConditions,
 };
 
-export const conditionCriterionGroup: CriterionDefinition<
+export const ConditionCriterionGroup: CriterionGroupDefinition<
   Criterion,
   ConditionGroupCriterion
 > = {
   criterion: CriterionType.condition,
   formComponent: ConditionCriterionGroupForm,
-  messages,
+  messages: () => messages,
+  toAnalysisInput,
+  getGroup: (config, numberOfConditions) =>
+    Math.round(numberOfConditions / config.granularity).toString(),
 };

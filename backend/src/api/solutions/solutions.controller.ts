@@ -34,6 +34,7 @@ import {
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { CurrentAnalysisDto } from "./dto/current-analysis.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
@@ -101,6 +102,31 @@ export class SolutionsController {
       where: { sessionId, taskId },
     });
     return fromQueryResults(ExistingSolutionDto, solutions);
+  }
+
+  @Get("current-analyses")
+  @ApiOkResponse({ type: CurrentAnalysisDto, isArray: true })
+  async findCurrentAnalysis(
+    @AuthenticatedUser() user: User,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+  ): Promise<CurrentAnalysisDto[]> {
+    const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
+      user,
+      sessionId,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    const solutions = await this.solutionsService.findCurrentAnalyses(
+      sessionId,
+      taskId,
+    );
+
+    return fromQueryResults(CurrentAnalysisDto, solutions);
   }
 
   @Get(":id")

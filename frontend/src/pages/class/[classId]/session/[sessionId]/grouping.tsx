@@ -51,7 +51,7 @@ const SessionGrouping = () => {
           isLoading={[isLoadingKlass, isLoadingSession]}
           data={[klass, session]}
         >
-          {([_klass, session]) => <Analyzer tasks={session.tasks} />}
+          {([_klass, session]) => <Analyzer session={session} />}
         </MultiSwrContent>
       </Container>
     </>

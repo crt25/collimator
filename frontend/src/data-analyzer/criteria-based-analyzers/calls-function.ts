@@ -8,23 +8,23 @@ import { GeneralAst } from "@ast/index";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 
-export const callsFunction = (
+export const countFunctionCalls = (
   ast: GeneralAst,
   input: Exclude<
-    CriteriaBasedAnalyzerInput[CriterionType.callsFunction],
+    CriteriaBasedAnalyzerInput[CriterionType.functionCall],
     undefined
   >,
-): CriteriaBasedAnalyzerOutput[CriterionType.callsFunction] => {
-  let callsFunction = false;
+): CriteriaBasedAnalyzerOutput[CriterionType.functionCall] => {
+  let numberOfCalls = 0;
 
   walkAst(ast, {
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.functionCall) {
-        if (node.name == input.functionName) {
-          callsFunction = true;
-
-          // Stop walking the AST
-          return AstWalkSignal.stopWalking;
+        if (
+          input.functionName === undefined ||
+          node.name === input.functionName
+        ) {
+          numberOfCalls++;
         }
       }
 
@@ -33,11 +33,11 @@ export const callsFunction = (
 
     expressionCallback: (node) => {
       if (node.expressionType == ExpressionNodeType.functionCall) {
-        if (node.name == input.functionName) {
-          callsFunction = true;
-
-          // Stop walking the AST
-          return AstWalkSignal.stopWalking;
+        if (
+          input.functionName === undefined ||
+          node.name === input.functionName
+        ) {
+          numberOfCalls++;
         }
       }
 
@@ -45,5 +45,5 @@ export const callsFunction = (
     },
   });
 
-  return callsFunction;
+  return numberOfCalls;
 };

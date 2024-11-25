@@ -20,6 +20,7 @@ export * from "./createSessionDto";
 export * from "./createSolutionDto";
 export * from "./createTaskDto";
 export * from "./createUserDto";
+export * from "./currentAnalysisDto";
 export * from "./deletedClassDto";
 export * from "./deletedSessionDto";
 export * from "./deletedSessionDtoLesson";

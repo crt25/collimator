@@ -39,13 +39,13 @@ const AnalyzerTags = <T extends unknown>({
   onEdit,
   onDelete,
   active,
-  RenderTag,
+  children,
 }: {
   tags: T[];
   onEdit: (criterion: T) => void;
   onDelete: (criterion: T) => void;
   active?: T;
-  RenderTag: React.FC<{ criterion: T }>;
+  children: (criterion: T) => React.ReactNode;
 }) => {
   if (tags.length === 0) {
     return null;
@@ -59,9 +59,7 @@ const AnalyzerTags = <T extends unknown>({
           active={active === criterion}
           onClick={() => onEdit(criterion)}
         >
-          <div>
-            <RenderTag criterion={criterion} />
-          </div>
+          <div>{children(criterion)}</div>
           <button
             onClick={(e) => {
               e.stopPropagation();

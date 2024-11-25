@@ -4,28 +4,34 @@ import { GeneralAst } from "@ast/index";
 
 export enum CriterionType {
   none = "none",
-  callsFunction = "callsFunction",
-  containsLoop = "containsLoop",
-  condition = "containsCondition",
-  containsFunctionDeclaration = "containsFunctionDeclaration",
+  statement = "statement",
+  expression = "expression",
+  functionCall = "functionCall",
+  loop = "loop",
+  condition = "condition",
+  functionDeclaration = "functionDeclaration",
 }
 
 export interface CriteriaBasedAnalyzerInput {
   [CriterionType.none]: void;
-  [CriterionType.callsFunction]: {
-    functionName: string;
+  [CriterionType.statement]: void;
+  [CriterionType.expression]: void;
+  [CriterionType.functionCall]: {
+    functionName?: string;
   };
-  [CriterionType.containsLoop]: void;
+  [CriterionType.loop]: void;
   [CriterionType.condition]: void;
-  [CriterionType.containsFunctionDeclaration]: void;
+  [CriterionType.functionDeclaration]: void;
 }
 
 export interface CriteriaBasedAnalyzerOutput {
   [CriterionType.none]: void;
-  [CriterionType.callsFunction]: boolean;
-  [CriterionType.containsLoop]: boolean;
-  [CriterionType.condition]: boolean;
-  [CriterionType.containsFunctionDeclaration]: boolean;
+  [CriterionType.statement]: number;
+  [CriterionType.expression]: number;
+  [CriterionType.functionCall]: number;
+  [CriterionType.loop]: number;
+  [CriterionType.condition]: number;
+  [CriterionType.functionDeclaration]: number;
 }
 
 export type CriteriaToAnalyzeInput<T extends CriterionType> = {
@@ -34,10 +40,12 @@ export type CriteriaToAnalyzeInput<T extends CriterionType> = {
 };
 
 export type AnalysisInput =
-  | CriteriaToAnalyzeInput<CriterionType.callsFunction>
+  | CriteriaToAnalyzeInput<CriterionType.statement>
+  | CriteriaToAnalyzeInput<CriterionType.expression>
+  | CriteriaToAnalyzeInput<CriterionType.functionCall>
   | CriteriaToAnalyzeInput<CriterionType.condition>
-  | CriteriaToAnalyzeInput<CriterionType.containsFunctionDeclaration>
-  | CriteriaToAnalyzeInput<CriterionType.containsLoop>;
+  | CriteriaToAnalyzeInput<CriterionType.functionDeclaration>
+  | CriteriaToAnalyzeInput<CriterionType.loop>;
 
 export type CriteriaToAnalyzeOutput<T extends CriterionType> = {
   criterion: T;
@@ -45,53 +53,47 @@ export type CriteriaToAnalyzeOutput<T extends CriterionType> = {
 };
 
 export type AnalysisOutput =
-  | CriteriaToAnalyzeOutput<CriterionType.callsFunction>
+  | CriteriaToAnalyzeOutput<CriterionType.statement>
+  | CriteriaToAnalyzeOutput<CriterionType.expression>
+  | CriteriaToAnalyzeOutput<CriterionType.functionCall>
   | CriteriaToAnalyzeOutput<CriterionType.condition>
-  | CriteriaToAnalyzeOutput<CriterionType.containsFunctionDeclaration>
-  | CriteriaToAnalyzeOutput<CriterionType.containsLoop>;
+  | CriteriaToAnalyzeOutput<CriterionType.functionDeclaration>
+  | CriteriaToAnalyzeOutput<CriterionType.loop>;
 
-export const analyzeAsts = ({
-  asts,
-  input,
-}: {
-  asts: GeneralAst[];
-  input: AnalysisInput[];
-}): AnalysisOutput[][] =>
-  asts.map((ast) =>
-    input.map((input) =>
-      match(input)
-        .returnType<AnalysisOutput>()
-        .with(
-          { criterion: CriterionType.callsFunction },
-          ({ criterion, input }) => ({
-            criterion,
-            output: CriteriaBasedAnalyzer.callsFunction(ast, input),
-          }),
-        )
-        .with(
-          { criterion: CriterionType.containsLoop },
-          ({ criterion, input }) => ({
-            criterion,
-            output: CriteriaBasedAnalyzer.containsLoop(ast, input),
-          }),
-        )
-        .with(
-          { criterion: CriterionType.condition },
-          ({ criterion, input }) => ({
-            criterion,
-            output: CriteriaBasedAnalyzer.containsCondition(ast, input),
-          }),
-        )
-        .with(
-          { criterion: CriterionType.containsFunctionDeclaration },
-          ({ criterion, input }) => ({
-            criterion,
-            output: CriteriaBasedAnalyzer.containsFunctionDeclaration(
-              ast,
-              input,
-            ),
-          }),
-        )
-        .exhaustive(),
-    ),
-  );
+export const analyzeAst = (
+  ast: GeneralAst,
+  input: AnalysisInput,
+): AnalysisOutput =>
+  match(input)
+    .returnType<AnalysisOutput>()
+    .with({ criterion: CriterionType.statement }, ({ criterion, input }) => ({
+      criterion,
+      output: CriteriaBasedAnalyzer.countStatements(ast, input),
+    }))
+    .with({ criterion: CriterionType.expression }, ({ criterion, input }) => ({
+      criterion,
+      output: CriteriaBasedAnalyzer.countExpressions(ast, input),
+    }))
+    .with(
+      { criterion: CriterionType.functionCall },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.countFunctionCalls(ast, input),
+      }),
+    )
+    .with({ criterion: CriterionType.loop }, ({ criterion, input }) => ({
+      criterion,
+      output: CriteriaBasedAnalyzer.countLoops(ast, input),
+    }))
+    .with({ criterion: CriterionType.condition }, ({ criterion, input }) => ({
+      criterion,
+      output: CriteriaBasedAnalyzer.countConditions(ast, input),
+    }))
+    .with(
+      { criterion: CriterionType.functionDeclaration },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.countFunctionDeclaration(ast, input),
+      }),
+    )
+    .exhaustive();

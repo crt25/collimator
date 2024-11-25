@@ -204,6 +204,22 @@ export class AuthorizationService {
     return session !== null;
   }
 
+  async canListCurrentAnalyses(
+    authenticatedUser: User,
+    sessionId: number,
+  ): Promise<boolean> {
+    if (authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    const session = await this.prisma.session.findUnique({
+      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      select: { id: true },
+    });
+
+    return session !== null;
+  }
+
   async canViewSolution(
     authenticatedUser: User | null,
     authenticatedStudent: Student | null,

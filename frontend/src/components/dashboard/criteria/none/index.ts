@@ -1,7 +1,14 @@
 import { defineMessages } from "react-intl";
-import { CriterionBase, CriterionDefinition } from "../criterion-base";
+import {
+  CriterionBase,
+  CriterionFilterDefinition,
+  CriterionGroupDefinition,
+} from "../criterion-base";
 import NoneCriterionForm from "./NoneCriterionForm";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import {
+  CriteriaToAnalyzeInput,
+  CriterionType,
+} from "@/data-analyzer/analyze-asts";
 
 type Criterion = CriterionType.none;
 
@@ -18,18 +25,33 @@ const messages = defineMessages({
 
 export type NoneCriterion = CriterionBase<Criterion>;
 
-export const noCriteriaFilter: CriterionDefinition<Criterion, NoneCriterion> = {
+const toAnalysisInput = (): CriteriaToAnalyzeInput<CriterionType.none> => ({
+  criterion: CriterionType.none,
+  input: undefined,
+});
+
+export const NoCriterionFilter: CriterionFilterDefinition<
+  Criterion,
+  NoneCriterion
+> = {
   criterion: CriterionType.none,
   formComponent: NoneCriterionForm,
-  messages: {
+  messages: () => ({
     name: messages.filterName,
-  },
+  }),
+  toAnalysisInput,
+  matchesFilter: () => false,
 };
 
-export const noCriteriaGroup: CriterionDefinition<Criterion, NoneCriterion> = {
+export const NoCriterionGroup: CriterionGroupDefinition<
+  Criterion,
+  NoneCriterion
+> = {
   criterion: CriterionType.none,
   formComponent: NoneCriterionForm,
-  messages: {
+  messages: () => ({
     name: messages.groupName,
-  },
+  }),
+  toAnalysisInput,
+  getGroup: () => "",
 };

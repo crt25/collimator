@@ -45,7 +45,7 @@ export class SolutionsService {
     });
   }
 
-  findAllCurrentAnalyses(
+  findCurrentAnalyses(
     sessionId: number,
     taskId: number,
   ): Promise<SolutionAnalysis[]> {

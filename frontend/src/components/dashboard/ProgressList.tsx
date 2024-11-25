@@ -77,6 +77,7 @@ type TaskSolutions = {
 };
 
 type StudentProgress = {
+  id: number;
   student: ClassStudent;
   taskSolutions: TaskSolutions[];
 };
@@ -162,6 +163,7 @@ const ProgressList = ({
       });
 
       return {
+        id: student.id,
         student,
         taskSolutions: taskSolutions,
       };

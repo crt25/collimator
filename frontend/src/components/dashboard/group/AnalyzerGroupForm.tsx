@@ -1,16 +1,17 @@
 import styled from "@emotion/styled";
 import Select from "../../form/Select";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { useCallback, useState } from "react";
-import AnalyzerTags from "../AnalyzerTags";
 import {
-  allGroups,
-  AstGroup,
-  GroupCriterionType,
-  groupNameByCriterion,
-} from ".";
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+  useIntl,
+} from "react-intl";
+import { useCallback, useMemo, useState } from "react";
+import AnalyzerTags from "../AnalyzerTags";
+import { AstGroup, GroupCriterionType, groupCriteria } from ".";
 import CriterionGroupForm from "./CriterionGroupForm";
 import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const Label = styled.label`
   display: block;
@@ -29,16 +30,38 @@ const messages = defineMessages({
   },
 });
 
-const GroupCriterion = ({ criterion }: { criterion: AstGroup }) => {
+export const groupNameByCriterion = groupCriteria.reduce(
+  (acc, criterion) => {
+    acc[criterion.criterion] = (taskType: TaskType): MessageDescriptor =>
+      criterion.messages(taskType).name;
+
+    return acc;
+  },
+  {} as {
+    [key in GroupCriterionType]: (taskType: TaskType) => MessageDescriptor;
+  },
+);
+
+const GroupCriterion = ({
+  taskType,
+  criterion,
+}: {
+  taskType: TaskType;
+  criterion: AstGroup;
+}) => {
   const intl = useIntl();
 
-  return intl.formatMessage(groupNameByCriterion[criterion.criterion]);
+  return intl.formatMessage(
+    groupNameByCriterion[criterion.criterion](taskType),
+  );
 };
 
 const AnalyzerGroupForm = ({
+  taskType,
   groups,
   setGroups,
 }: {
+  taskType: TaskType;
   groups: AstGroup[];
   setGroups: (groups: AstGroup[]) => void;
 }) => {
@@ -54,6 +77,15 @@ const AnalyzerGroupForm = ({
     setGroupToEdit(criterion.criterion);
     setCurrentGroup(criterion);
   }, []);
+
+  const groupOptions = useMemo(
+    () =>
+      groupCriteria.map((c) => ({
+        value: c.criterion,
+        label: c.messages(taskType).name,
+      })),
+    [taskType],
+  );
 
   return (
     <>
@@ -76,11 +108,14 @@ const AnalyzerGroupForm = ({
         }}
         active={currentGroup}
         onEdit={onEdit}
-        RenderTag={GroupCriterion}
-      />
+      >
+        {(criterion) => (
+          <GroupCriterion taskType={taskType} criterion={criterion} />
+        )}
+      </AnalyzerTags>
 
       <Select
-        options={allGroups}
+        options={groupOptions}
         data-testid="add-group"
         onChange={(e) => {
           const type = e.target.value as GroupCriterionType;

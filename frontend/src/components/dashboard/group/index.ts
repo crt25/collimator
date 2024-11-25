@@ -1,9 +1,21 @@
-import { MessageDescriptor } from "react-intl";
-import { noCriteriaGroup } from "../criteria/none";
-import { conditionCriterionGroup } from "../criteria/condition";
+import { NoCriterionGroup } from "../criteria/none";
+import { ConditionCriterionGroup } from "../criteria/condition";
 import { DefinitionCriterion } from "../criteria/criterion-base";
+import { FunctionCallCriterionGroup } from "../criteria/function-call";
+import { StatementCriterionGroup } from "../criteria/statement";
+import { ExpressionCriterionGroup } from "../criteria/expression";
+import { LoopCriterionGroup } from "../criteria/loop";
+import { FunctionDeclarationCriterionGroup } from "../criteria/function-declaration";
 
-const groupCriteria = [noCriteriaGroup, conditionCriterionGroup];
+export const groupCriteria = [
+  NoCriterionGroup,
+  StatementCriterionGroup,
+  ExpressionCriterionGroup,
+  ConditionCriterionGroup,
+  LoopCriterionGroup,
+  FunctionCallCriterionGroup,
+  FunctionDeclarationCriterionGroup,
+];
 
 type GroupCriterionDefinition = (typeof groupCriteria)[number];
 type GroupCriterion = DefinitionCriterion<GroupCriterionDefinition>;
@@ -12,38 +24,8 @@ export type GroupCriterionType = GroupCriterionDefinition["criterion"];
 
 export type AstGroup = GroupCriterion;
 
-export const groupNameByCriterion = groupCriteria.reduce(
-  (acc, criterion) => {
-    acc[criterion.criterion] = criterion.messages.name;
-    return acc;
-  },
-  {} as {
-    [key in GroupCriterionType]: MessageDescriptor;
-  },
-);
-
-type DefinitionByCriterion = {
+export type GroupDefinitionByCriterion = {
   [key in GroupCriterionType]: GroupCriterionDefinition & {
     criterion: key;
   };
 };
-
-export type GroupFormByCriterion = {
-  [key in GroupCriterionType]: DefinitionByCriterion[key]["formComponent"];
-};
-
-export const groupFormComponentByCriterion = groupCriteria.reduce(
-  (acc, definition) => {
-    // @ts-expect-error - Typescript cannot infer that this is a valid assignment
-    acc[definition.criterion] = definition.formComponent;
-    return acc;
-  },
-  {} as {
-    [key in GroupCriterionType]: DefinitionByCriterion[key]["formComponent"];
-  },
-);
-
-export const allGroups = groupCriteria.map((c) => ({
-  value: c.criterion,
-  label: c.messages.name,
-}));

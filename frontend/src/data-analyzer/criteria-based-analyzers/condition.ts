@@ -7,24 +7,21 @@ import {
 import { GeneralAst } from "@ast/index";
 import { StatementNodeType } from "@ast/ast-nodes";
 
-export const containsCondition = (
+export const countConditions = (
   ast: GeneralAst,
   _input: CriteriaBasedAnalyzerInput[CriterionType.condition],
 ): CriteriaBasedAnalyzerOutput[CriterionType.condition] => {
-  let containsCondition = false;
+  let conditions = 0;
 
   walkAst(ast, {
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.condition) {
-        containsCondition = true;
-
-        // Stop walking the AST
-        return AstWalkSignal.stopWalking;
+        conditions++;
       }
 
       return AstWalkSignal.continueWalking;
     },
   });
 
-  return containsCondition;
+  return conditions;
 };

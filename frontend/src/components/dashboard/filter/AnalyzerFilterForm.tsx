@@ -1,16 +1,17 @@
 import styled from "@emotion/styled";
 import Select from "../../form/Select";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { useCallback, useState } from "react";
 import {
-  allFilters,
-  AstFilter,
-  FilterCriterionType,
-  filterNameByCriterion,
-} from ".";
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+  useIntl,
+} from "react-intl";
+import { useCallback, useMemo, useState } from "react";
+import { AstFilter, FilterCriterionType, filterCriteria } from ".";
 import AnalyzerTags from "../AnalyzerTags";
 import CriterionFilterForm from "./CriterionFilterForm";
 import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const Label = styled.label`
   display: block;
@@ -29,16 +30,38 @@ const messages = defineMessages({
   },
 });
 
-const FilterCriterion = ({ criterion }: { criterion: AstFilter }) => {
+const filterNameByCriterion = filterCriteria.reduce(
+  (acc, criterion) => {
+    acc[criterion.criterion] = (taskType: TaskType): MessageDescriptor =>
+      criterion.messages(taskType).name;
+
+    return acc;
+  },
+  {} as {
+    [key in FilterCriterionType]: (taskType: TaskType) => MessageDescriptor;
+  },
+);
+
+const FilterCriterion = ({
+  taskType,
+  criterion,
+}: {
+  taskType: TaskType;
+  criterion: AstFilter;
+}) => {
   const intl = useIntl();
 
-  return intl.formatMessage(filterNameByCriterion[criterion.criterion]);
+  return intl.formatMessage(
+    filterNameByCriterion[criterion.criterion](taskType),
+  );
 };
 
 const AnalyzerFilterForm = ({
+  taskType,
   filters,
   setFilters,
 }: {
+  taskType: TaskType;
   filters: AstFilter[];
   setFilters: (filters: AstFilter[]) => void;
 }) => {
@@ -54,6 +77,15 @@ const AnalyzerFilterForm = ({
     setFilterToEdit(criterion.criterion);
     setCurrentFilter(criterion);
   }, []);
+
+  const filterOptions = useMemo(
+    () =>
+      filterCriteria.map((c) => ({
+        value: c.criterion,
+        label: c.messages(taskType).name,
+      })),
+    [taskType],
+  );
 
   return (
     <>
@@ -76,11 +108,14 @@ const AnalyzerFilterForm = ({
         }}
         active={currentFilter}
         onEdit={onEdit}
-        RenderTag={FilterCriterion}
-      />
+      >
+        {(criterion) => (
+          <FilterCriterion taskType={taskType} criterion={criterion} />
+        )}
+      </AnalyzerTags>
 
       <Select
-        options={allFilters}
+        options={filterOptions}
         data-testid="add-filter"
         onChange={(e) => {
           const type = e.target.value as FilterCriterionType;

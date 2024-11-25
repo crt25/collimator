@@ -7,24 +7,21 @@ import {
 import { GeneralAst } from "@ast/index";
 import { StatementNodeType } from "@ast/ast-nodes";
 
-export const containsFunctionDeclaration = (
+export const countFunctionDeclaration = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[CriterionType.containsFunctionDeclaration],
-): CriteriaBasedAnalyzerOutput[CriterionType.containsFunctionDeclaration] => {
-  let containsDeclaration = false;
+  _input: CriteriaBasedAnalyzerInput[CriterionType.functionDeclaration],
+): CriteriaBasedAnalyzerOutput[CriterionType.functionDeclaration] => {
+  let declarations = 0;
 
   walkAst(ast, {
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.functionDeclaration) {
-        containsDeclaration = true;
-
-        // Stop walking the AST
-        return AstWalkSignal.stopWalking;
+        declarations++;
       }
 
       return AstWalkSignal.continueWalking;
     },
   });
 
-  return containsDeclaration;
+  return declarations;
 };

@@ -1,11 +1,15 @@
-import { callsFunction } from "./calls-function";
-import { containsCondition } from "./contains-condition";
-import { containsFunctionDeclaration } from "./contains-function-declaration";
-import { containsLoop } from "./contains-loop";
+import { countFunctionCalls } from "./calls-function";
+import { countConditions } from "./condition";
+import { countFunctionDeclaration } from "./contains-function-declaration";
+import { countExpressions } from "./expression";
+import { countLoops } from "./loop";
+import { countStatements } from "./statement";
 
 export const CriteriaBasedAnalyzer = {
-  callsFunction,
-  containsCondition,
-  containsFunctionDeclaration,
-  containsLoop,
+  countStatements,
+  countExpressions,
+  countFunctionCalls,
+  countConditions,
+  countFunctionDeclaration,
+  countLoops,
 };

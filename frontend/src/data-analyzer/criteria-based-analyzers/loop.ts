@@ -7,24 +7,21 @@ import {
 import { GeneralAst } from "@ast/index";
 import { StatementNodeType } from "@ast/ast-nodes";
 
-export const containsLoop = (
+export const countLoops = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[CriterionType.containsLoop],
-): CriteriaBasedAnalyzerOutput[CriterionType.containsLoop] => {
-  let containsLoop = false;
+  _input: CriteriaBasedAnalyzerInput[CriterionType.loop],
+): CriteriaBasedAnalyzerOutput[CriterionType.loop] => {
+  let loopCount = 0;
 
   walkAst(ast, {
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.loop) {
-        containsLoop = true;
-
-        // Stop walking the AST
-        return AstWalkSignal.stopWalking;
+        loopCount++;
       }
 
       return AstWalkSignal.continueWalking;
     },
   });
 
-  return containsLoop;
+  return loopCount;
 };
