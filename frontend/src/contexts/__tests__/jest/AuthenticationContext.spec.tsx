@@ -52,7 +52,7 @@ describe("AuthenticationContext", () => {
       async (_, getContext) => {
         const authContext = await getContext(crypto);
         const serialized = JSON.stringify(
-          await serializeAuthenticationContext(crypto, authContext),
+          await serializeAuthenticationContext(authContext),
         );
 
         const deserialized = await deserializeAuthenticationContext(
@@ -77,7 +77,7 @@ describe("AuthenticationContext", () => {
         }
 
         const serialized = JSON.stringify(
-          await serializeAuthenticationContext(crypto, authContext),
+          await serializeAuthenticationContext(authContext),
         );
 
         const deserializedContext = await deserializeAuthenticationContext(

@@ -138,7 +138,6 @@ export const AuthenticationContext = createContext<AuthenticationContextType>(
 );
 
 export const serializeAuthenticationContext = async (
-  crypto: SubtleCrypto,
   authContext: AuthenticationContextType,
 ): Promise<SerializedAuthenticationContextType> => {
   if (!("keyPair" in authContext)) {
@@ -194,7 +193,6 @@ export const deserializeAuthenticationContext = async (
   );
 
   if (rest.role === UserRole.student) {
-    console.log("rest.teacherPublicKey", rest.teacherPublicKey);
     return {
       ...rest,
       ephemeralKey: await importedKeyPair.deriveSharedEphemeralKey(
