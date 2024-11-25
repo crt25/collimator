@@ -44,6 +44,10 @@ export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
     criterion: CriterionType.loop,
     input: undefined,
   },
+  config: {
+    type: "linear",
+    min: 0,
+  },
   getAxisValue: (numberOfLoops) => numberOfLoops,
 };
 

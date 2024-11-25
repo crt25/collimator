@@ -92,6 +92,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               <Analysis
                 session={session}
                 taskId={selectedTask}
+                taskType={task.type}
                 filters={filters}
                 groups={groups}
               />

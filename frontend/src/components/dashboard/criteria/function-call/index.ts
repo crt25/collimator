@@ -54,6 +54,10 @@ export const FunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> = {
       functionName: undefined,
     },
   },
+  config: {
+    type: "linear",
+    min: 0,
+  },
   getAxisValue: (numberOfFunctionCalls) => numberOfFunctionCalls,
 };
 

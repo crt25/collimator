@@ -44,6 +44,10 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
     criterion: CriterionType.condition,
     input: undefined,
   },
+  config: {
+    type: "linear",
+    min: 0,
+  },
   getAxisValue: (numberOfConditions) => numberOfConditions,
 };
 

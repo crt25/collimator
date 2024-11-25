@@ -6969,6 +6969,7 @@ __metadata:
     openid-client: "npm:^6.1.3"
     orval: "npm:^7.2.0"
     parse-multipart-data: "npm:^1.5.0"
+    patternomaly: "npm:^1.3.2"
     playwright-test-coverage: "npm:^1.2.12"
     prettier: "npm:^3.3.3"
     primereact: "npm:^10.8.4"
@@ -12802,6 +12803,13 @@ __metadata:
   version: 2.0.0
   resolution: "pathval@npm:2.0.0"
   checksum: 10c0/602e4ee347fba8a599115af2ccd8179836a63c925c23e04bd056d0674a64b39e3a081b643cc7bc0b84390517df2d800a46fcc5598d42c155fe4977095c2f77c5
+  languageName: node
+  linkType: hard
+
+"patternomaly@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "patternomaly@npm:1.3.2"
+  checksum: 10c0/b2f04c61cb3ac03cec5d072abb2d3532facb741b0061c634bf7beef4bc9a25279f46514f1e12d0e43d6a34ec2125159eb8915aa06f9d68c3dd8b938d989e5926
   languageName: node
   linkType: hard
 

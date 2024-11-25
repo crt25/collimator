@@ -49,6 +49,10 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
       criterion: CriterionType.functionDeclaration,
       input: undefined,
     },
+    config: {
+      type: "linear",
+      min: 0,
+    },
     getAxisValue: (numberOfFunctionDeclarations) =>
       numberOfFunctionDeclarations,
   };

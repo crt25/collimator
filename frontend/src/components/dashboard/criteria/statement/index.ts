@@ -44,6 +44,10 @@ export const StatementCriterionAxis: CriterionAxisDefinition<Criterion> = {
     criterion: CriterionType.statement,
     input: undefined,
   },
+  config: {
+    type: "linear",
+    min: 0,
+  },
   getAxisValue: (numberOfStatements) => numberOfStatements,
 };
 

@@ -44,6 +44,10 @@ export const ExpressionCriterionAxis: CriterionAxisDefinition<Criterion> = {
     criterion: CriterionType.expression,
     input: undefined,
   },
+  config: {
+    type: "linear",
+    min: 0,
+  },
   getAxisValue: (numberOfExpressions) => numberOfExpressions,
 };
 

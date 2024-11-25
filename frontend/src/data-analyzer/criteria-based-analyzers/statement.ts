@@ -20,7 +20,5 @@ export const countStatements = (
     },
   });
 
-  console.log("countStatements", count);
-
   return count;
 };

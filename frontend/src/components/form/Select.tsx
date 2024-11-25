@@ -10,9 +10,9 @@ const StyledSelect = styled.select`
   border-radius: var(--border-radius);
 `;
 
-const InputWrapper = styled.label<{ isShown?: boolean }>`
+const InputWrapper = styled.label<{ isShown?: boolean; noMargin?: boolean }>`
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: ${({ noMargin }) => (noMargin ? "0" : "1rem")};
 
   ${({ isShown }) => !isShown && "display: none;"}
 `;
@@ -27,6 +27,7 @@ interface Props {
   options: { value: string | number; label: string | MessageDescriptor }[];
   alwaysShow?: boolean;
   children?: React.ReactNode;
+  noMargin?: boolean;
 }
 
 const Select = forwardRef(function Select(
@@ -34,10 +35,14 @@ const Select = forwardRef(function Select(
   ref: React.Ref<HTMLSelectElement>,
 ) {
   const intl = useIntl();
-  const { label, options, children, alwaysShow, ...inputProps } = props;
+  const { label, options, children, alwaysShow, noMargin, ...inputProps } =
+    props;
 
   return (
-    <InputWrapper isShown={options.length > 1 || alwaysShow}>
+    <InputWrapper
+      isShown={options.length > 1 || alwaysShow}
+      noMargin={noMargin}
+    >
       {label && <Label>{intl.formatMessage(label)}</Label>}
       <div>
         <StyledSelect {...inputProps} ref={ref}>

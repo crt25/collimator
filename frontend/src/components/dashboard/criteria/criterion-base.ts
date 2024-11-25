@@ -4,6 +4,7 @@ import {
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
+import { ChartTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
 
 export interface CriterionBase<Type extends CriterionType> {
@@ -24,12 +25,17 @@ export type CriterionFormComponent<
   Criterion extends CriterionBase<Type>,
 > = React.FunctionComponent<CriterionFormProps<Type, Criterion>>;
 
+export type AxisConfig = Partial<
+  ScaleOptionsByType<ChartTypeRegistry["bubble"]["scales"]>
+>;
+
 export interface CriterionAxisDefinition<Type extends CriterionType> {
   criterion: Type;
   messages: (taskType: TaskType) => {
     name: MessageDescriptor;
   };
   analysisInput: CriteriaToAnalyzeInput<Type>;
+  config: AxisConfig;
   getAxisValue: (output: CriteriaBasedAnalyzerOutput[Type]) => number;
 }
 

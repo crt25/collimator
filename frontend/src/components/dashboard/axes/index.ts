@@ -4,7 +4,7 @@ import {
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
 import { ConditionCriterionAxis } from "../criteria/condition";
-import { DefinitionCriterion } from "../criteria/criterion-base";
+import { AxisConfig, DefinitionCriterion } from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
 import { FunctionCallCriterionAxis } from "../criteria/function-call";
 import { FunctionDeclarationCriterionAxis } from "../criteria/function-declaration";
@@ -89,3 +89,16 @@ export const getAxisAnalysisValue = (
     .otherwise(() => {
       throw new Error("AST axis does not match output");
     });
+
+export const getAxisConfig = (axisType: AxesCriterionType): AxisConfig =>
+  match(axisType)
+    .with(CriterionType.statement, () => StatementCriterionAxis.config)
+    .with(CriterionType.expression, () => ExpressionCriterionAxis.config)
+    .with(CriterionType.condition, () => ConditionCriterionAxis.config)
+    .with(CriterionType.loop, () => LoopCriterionAxis.config)
+    .with(CriterionType.functionCall, () => FunctionCallCriterionAxis.config)
+    .with(
+      CriterionType.functionDeclaration,
+      () => FunctionDeclarationCriterionAxis.config,
+    )
+    .exhaustive();
