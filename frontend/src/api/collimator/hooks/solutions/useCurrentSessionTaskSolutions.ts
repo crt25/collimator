@@ -13,34 +13,39 @@ export const fetchSolutionsAndTransform = (
   options: RequestInit,
   classId: number,
   sessionId: number,
-  taskId: number,
+  taskId?: number,
   _params?: undefined,
 ): Promise<GetCurrentAnalysisReturnType> =>
-  solutionsControllerFindCurrentAnalysisV0(
-    classId,
-    sessionId,
-    taskId,
-    options,
-  ).then((data) => fromDtos(CurrentAnalysis, data));
+  taskId
+    ? solutionsControllerFindCurrentAnalysisV0(
+        classId,
+        sessionId,
+        taskId,
+        options,
+      ).then((data) => fromDtos(CurrentAnalysis, data))
+    : Promise.resolve([]);
 
 export const useCurrentSessionTaskSolutions = (
   classId: number,
   sessionId: number,
-  taskId: number,
+  taskId?: number,
   params?: undefined,
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) =>
-        getSolutionsControllerFindCurrentAnalysisV0Url(
-          classId,
-          sessionId,
-          taskId,
-        ),
-      undefined,
-    ),
+    taskId
+      ? getSwrParamererizedKey(
+          (_params?: undefined) =>
+            getSolutionsControllerFindCurrentAnalysisV0Url(
+              classId,
+              sessionId,
+              taskId,
+            ),
+          undefined,
+        )
+      : // do not fetch if the taskId is undefined
+        null,
     () =>
       fetchSolutionsAndTransform(
         authOptions,

@@ -10,7 +10,12 @@ import { AstGroup } from "./group";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import Analysis from "./Analysis";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import SwrContent from "../SwrContent";
+import CodeComparison from "./CodeComparison";
+import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
+import MultiSwrContent from "../MultiSwrContent";
+import { useGrouping } from "./hooks/useGrouping";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AxesCriterionType } from "./axes";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -38,6 +43,11 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     session.tasks[0]?.id,
   );
 
+  const [xAxis, setXAxis] = useState<AxesCriterionType>(
+    CriterionType.statement,
+  );
+  const [yAxis, setYAxis] = useState<AxesCriterionType>(CriterionType.loop);
+
   const [filters, setFilters] = useState<AstFilter[]>([]);
   const [groups, setGroups] = useState<AstGroup[]>([]);
 
@@ -46,6 +56,18 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     isLoading: isLoadingTask,
     error: taskError,
   } = useTask(selectedTask);
+
+  const {
+    data: solutions,
+    isLoading: isLoadingSolutions,
+    error: solutionsError,
+  } = useCurrentSessionTaskSolutions(
+    session.klass.id,
+    session.id,
+    selectedTask,
+  );
+
+  const superGroups = useGrouping(solutions, filters, groups, xAxis, yAxis);
 
   if (!selectedTask) {
     return (
@@ -57,8 +79,12 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   }
 
   return (
-    <SwrContent data={task} isLoading={isLoadingTask} error={taskError}>
-      {(task) => (
+    <MultiSwrContent
+      data={[task, solutions]}
+      isLoading={[isLoadingTask, isLoadingSolutions]}
+      errors={[taskError, solutionsError]}
+    >
+      {([task]) => (
         <Row>
           <Col xs={3}>
             <Parameters>
@@ -90,17 +116,19 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
           <Col xs={9}>
             {selectedTask && (
               <Analysis
-                session={session}
-                taskId={selectedTask}
                 taskType={task.type}
-                filters={filters}
-                groups={groups}
+                xAxis={xAxis}
+                setXAxis={setXAxis}
+                yAxis={yAxis}
+                setYAxis={setYAxis}
+                superGroups={superGroups}
               />
             )}
           </Col>
+          <Col xs={12}></Col>
         </Row>
       )}
-    </SwrContent>
+    </MultiSwrContent>
   );
 };
 
