@@ -1,9 +1,6 @@
 import { TaskType } from "@/api/collimator/generated/models";
-import {
-  CriteriaBasedAnalyzerOutput,
-  CriteriaToAnalyzeInput,
-  CriterionType,
-} from "@/data-analyzer/analyze-asts";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 import { ChartTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
 
@@ -34,9 +31,8 @@ export interface CriterionAxisDefinition<Type extends CriterionType> {
   messages: (taskType: TaskType) => {
     name: MessageDescriptor;
   };
-  analysisInput: CriteriaToAnalyzeInput<Type>;
   config: AxisConfig;
-  getAxisValue: (output: CriteriaBasedAnalyzerOutput[Type]) => number;
+  getAxisValue: (analysis: CurrentAnalysis) => number;
 }
 
 interface CriterionDefinition<
@@ -48,7 +44,6 @@ interface CriterionDefinition<
   messages: (taskType: TaskType) => {
     name: MessageDescriptor;
   };
-  toAnalysisInput: (criterion: Criterion) => CriteriaToAnalyzeInput<Type>;
 }
 
 export interface AstGroup<Type extends CriterionType> {
@@ -59,20 +54,14 @@ export interface CriterionFilterDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > extends CriterionDefinition<Type, Criterion> {
-  matchesFilter: (
-    criterion: Criterion,
-    output: CriteriaBasedAnalyzerOutput[Type],
-  ) => boolean;
+  matchesFilter: (criterion: Criterion, analysis: CurrentAnalysis) => boolean;
 }
 
 export interface CriterionGroupDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > extends CriterionDefinition<Type, Criterion> {
-  getGroup: (
-    criterion: Criterion,
-    output: CriteriaBasedAnalyzerOutput[Type],
-  ) => string;
+  getGroup: (criterion: Criterion, analysis: CurrentAnalysis) => string;
 }
 
 export type DefinitionCriterion<T> =

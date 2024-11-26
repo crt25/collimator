@@ -6,6 +6,7 @@ import {
   CriterionGroupDefinition,
 } from "../criterion-base";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -31,7 +32,7 @@ export interface StatementGroupCriterion extends CriterionBase<Criterion> {
 }
 
 const toAnalysisInput = (
-  _criterion: StatementFilterCriterion | StatementGroupCriterion,
+  _config: StatementFilterCriterion | StatementGroupCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.statement> => ({
   criterion: CriterionType.statement,
   input: undefined,
@@ -40,15 +41,18 @@ const toAnalysisInput = (
 export const StatementCriterionAxis: CriterionAxisDefinition<Criterion> = {
   criterion: CriterionType.statement,
   messages: () => messages,
-  analysisInput: {
-    criterion: CriterionType.statement,
-    input: undefined,
-  },
   config: {
     type: "linear",
     min: 0,
   },
-  getAxisValue: (numberOfStatements) => numberOfStatements,
+  getAxisValue: (analysis) => {
+    const numberOfStatements = analyzeAst(analysis.generalAst, {
+      criterion: CriterionType.statement,
+      input: undefined,
+    }).output;
+
+    return numberOfStatements;
+  },
 };
 
 export const StatementCriterionFilter: CriterionFilterDefinition<
@@ -58,10 +62,17 @@ export const StatementCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.statement,
   formComponent: StatementCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfStatements) =>
-    config.minimumCount <= numberOfStatements &&
-    config.maximumCount >= numberOfStatements,
+  matchesFilter: (config, analysis) => {
+    const numberOfStatements = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfStatements &&
+      config.maximumCount >= numberOfStatements
+    );
+  },
 };
 
 export const StatementCriterionGroup: CriterionGroupDefinition<
@@ -71,7 +82,12 @@ export const StatementCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.statement,
   formComponent: StatementCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfStatements) =>
-    Math.round(numberOfStatements / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfStatements = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(numberOfStatements / config.granularity).toString();
+  },
 };

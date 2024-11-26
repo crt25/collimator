@@ -5,10 +5,7 @@ import {
   CriterionGroupDefinition,
 } from "../criterion-base";
 import NoneCriterionForm from "./NoneCriterionForm";
-import {
-  CriteriaToAnalyzeInput,
-  CriterionType,
-} from "@/data-analyzer/analyze-asts";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 
 type Criterion = CriterionType.none;
 
@@ -25,11 +22,6 @@ const messages = defineMessages({
 
 export type NoneCriterion = CriterionBase<Criterion>;
 
-const toAnalysisInput = (): CriteriaToAnalyzeInput<CriterionType.none> => ({
-  criterion: CriterionType.none,
-  input: undefined,
-});
-
 export const NoCriterionFilter: CriterionFilterDefinition<
   Criterion,
   NoneCriterion
@@ -39,7 +31,6 @@ export const NoCriterionFilter: CriterionFilterDefinition<
   messages: () => ({
     name: messages.filterName,
   }),
-  toAnalysisInput,
   matchesFilter: () => false,
 };
 
@@ -52,6 +43,5 @@ export const NoCriterionGroup: CriterionGroupDefinition<
   messages: () => ({
     name: messages.groupName,
   }),
-  toAnalysisInput,
   getGroup: () => "",
 };

@@ -1,14 +1,13 @@
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import MultiSwrContent from "../MultiSwrContent";
-import { AstFilter, filterToAnalysisInput, matchesFilter } from "./filter";
-import { AstGroup, getGroup, groupToAnalysisInput } from "./group";
+import { AstFilter, matchesFilter } from "./filter";
+import { AstGroup, getGroup } from "./group";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { analyzeAst, CriterionType } from "@/data-analyzer/analyze-asts";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 import {
   AxesCriterionType,
   axisCriteria,
-  getAxisAnalysisInput,
   getAxisAnalysisValue,
   getAxisConfig,
 } from "./axes";
@@ -124,23 +123,11 @@ const Analysis = ({
 
     const solutionsByGroup = solutions
       .map<AnalyzedSolution>((solution) => {
-        const xAxisValue = getAxisAnalysisValue(
-          xAxis,
-          analyzeAst(solution.generalAst, getAxisAnalysisInput(xAxis)),
-        );
-
-        const yAxisValue = getAxisAnalysisValue(
-          yAxis,
-          analyzeAst(solution.generalAst, getAxisAnalysisInput(yAxis)),
-        );
+        const xAxisValue = getAxisAnalysisValue(xAxis, solution);
+        const yAxisValue = getAxisAnalysisValue(yAxis, solution);
 
         const matchesAllFilters = filters
-          .map((f) =>
-            matchesFilter(
-              f,
-              analyzeAst(solution.generalAst, filterToAnalysisInput(f)),
-            ),
-          )
+          .map((f) => matchesFilter(f, solution))
           .reduce(
             (matchesAllFilters, matchesFilter) =>
               matchesAllFilters && matchesFilter,
@@ -158,12 +145,7 @@ const Analysis = ({
 
         const assignedGroups =
           groups.length > 0
-            ? groups.map((g) =>
-                getGroup(
-                  g,
-                  analyzeAst(solution.generalAst, groupToAnalysisInput(g)),
-                ),
-              )
+            ? groups.map((g) => getGroup(g, solution))
             : // if no groups are defined, all solutions are in a different group
               solution.id.toString();
 

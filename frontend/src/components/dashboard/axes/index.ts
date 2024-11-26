@@ -1,8 +1,4 @@
-import {
-  AnalysisInput,
-  AnalysisOutput,
-  CriterionType,
-} from "@/data-analyzer/analyze-asts";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 import { ConditionCriterionAxis } from "../criteria/condition";
 import { AxisConfig, DefinitionCriterion } from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
@@ -11,6 +7,7 @@ import { FunctionDeclarationCriterionAxis } from "../criteria/function-declarati
 import { LoopCriterionAxis } from "../criteria/loop";
 import { StatementCriterionAxis } from "../criteria/statement";
 import { match } from "ts-pattern";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 export const axisCriteria = [
   StatementCriterionAxis,
@@ -34,57 +31,27 @@ export type AxisDefinitionByCriterion = {
   };
 };
 
-export const getAxisAnalysisInput = (
-  axisType: AxesCriterionType,
-): AnalysisInput =>
-  match(axisType)
-    .returnType<AnalysisInput>()
-    .with(CriterionType.statement, () => StatementCriterionAxis.analysisInput)
-    .with(CriterionType.expression, () => ExpressionCriterionAxis.analysisInput)
-    .with(CriterionType.condition, () => ConditionCriterionAxis.analysisInput)
-    .with(CriterionType.loop, () => LoopCriterionAxis.analysisInput)
-    .with(
-      CriterionType.functionCall,
-      () => FunctionCallCriterionAxis.analysisInput,
-    )
-    .with(
-      CriterionType.functionDeclaration,
-      () => FunctionDeclarationCriterionAxis.analysisInput,
-    )
-    .exhaustive();
-
 export const getAxisAnalysisValue = (
   axisType: AxesCriterionType,
-  output: AnalysisOutput,
+  analysis: CurrentAnalysis,
 ): number =>
-  match([axisType, output])
+  match(axisType)
     .returnType<number>()
-    .with(
-      [CriterionType.statement, { criterion: CriterionType.statement }],
-      ([_, output]) => output.output,
+    .with(CriterionType.statement, () =>
+      StatementCriterionAxis.getAxisValue(analysis),
     )
-    .with(
-      [CriterionType.expression, { criterion: CriterionType.expression }],
-      ([_, output]) => output.output,
+    .with(CriterionType.expression, () =>
+      ExpressionCriterionAxis.getAxisValue(analysis),
     )
-    .with(
-      [CriterionType.condition, { criterion: CriterionType.condition }],
-      ([_, output]) => output.output,
+    .with(CriterionType.condition, () =>
+      ConditionCriterionAxis.getAxisValue(analysis),
     )
-    .with(
-      [CriterionType.loop, { criterion: CriterionType.loop }],
-      ([_, output]) => output.output,
+    .with(CriterionType.loop, () => LoopCriterionAxis.getAxisValue(analysis))
+    .with(CriterionType.functionCall, () =>
+      FunctionCallCriterionAxis.getAxisValue(analysis),
     )
-    .with(
-      [CriterionType.functionCall, { criterion: CriterionType.functionCall }],
-      ([_, output]) => output.output,
-    )
-    .with(
-      [
-        CriterionType.functionDeclaration,
-        { criterion: CriterionType.functionDeclaration },
-      ],
-      ([_, output]) => output.output,
+    .with(CriterionType.functionDeclaration, () =>
+      FunctionDeclarationCriterionAxis.getAxisValue(analysis),
     )
     .otherwise(() => {
       throw new Error("AST axis does not match output");

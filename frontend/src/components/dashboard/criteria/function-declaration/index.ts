@@ -6,6 +6,7 @@ import {
   CriterionGroupDefinition,
 } from "../criterion-base";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -45,16 +46,18 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
   {
     criterion: CriterionType.functionDeclaration,
     messages: () => messages,
-    analysisInput: {
-      criterion: CriterionType.functionDeclaration,
-      input: undefined,
-    },
     config: {
       type: "linear",
       min: 0,
     },
-    getAxisValue: (numberOfFunctionDeclarations) =>
-      numberOfFunctionDeclarations,
+    getAxisValue: (analysis) => {
+      const numberOfFunctionDeclarations = analyzeAst(analysis.generalAst, {
+        criterion: CriterionType.functionDeclaration,
+        input: undefined,
+      }).output;
+
+      return numberOfFunctionDeclarations;
+    },
   };
 
 export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
@@ -64,10 +67,17 @@ export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.functionDeclaration,
   formComponent: FunctionDeclarationCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfFunctionDeclarations) =>
-    config.minimumCount <= numberOfFunctionDeclarations &&
-    config.maximumCount >= numberOfFunctionDeclarations,
+  matchesFilter: (config, analysis) => {
+    const numberOfFunctionDeclarations = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfFunctionDeclarations &&
+      config.maximumCount >= numberOfFunctionDeclarations
+    );
+  },
 };
 
 export const FunctionDeclarationCriterionGroup: CriterionGroupDefinition<
@@ -77,7 +87,14 @@ export const FunctionDeclarationCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.functionDeclaration,
   formComponent: FunctionDeclarationCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfFunctionDeclarations) =>
-    Math.round(numberOfFunctionDeclarations / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfFunctionDeclarations = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(
+      numberOfFunctionDeclarations / config.granularity,
+    ).toString();
+  },
 };

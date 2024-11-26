@@ -8,6 +8,7 @@ import {
 import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
 import ConditionCriterionGroupForm from "./ConditionCriterionGroupForm";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -40,15 +41,18 @@ const toAnalysisInput = (
 export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
   criterion: CriterionType.condition,
   messages: () => messages,
-  analysisInput: {
-    criterion: CriterionType.condition,
-    input: undefined,
-  },
   config: {
     type: "linear",
     min: 0,
   },
-  getAxisValue: (numberOfConditions) => numberOfConditions,
+  getAxisValue: (analysis) => {
+    const numberOfConditions = analyzeAst(analysis.generalAst, {
+      criterion: CriterionType.condition,
+      input: undefined,
+    }).output;
+
+    return numberOfConditions;
+  },
 };
 
 export const ConditionCriterionFilter: CriterionFilterDefinition<
@@ -58,10 +62,17 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.condition,
   formComponent: ConditionCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfConditions) =>
-    config.minimumCount <= numberOfConditions &&
-    config.maximumCount >= numberOfConditions,
+  matchesFilter: (config, analysis) => {
+    const numberOfConditions = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfConditions &&
+      config.maximumCount >= numberOfConditions
+    );
+  },
 };
 
 export const ConditionCriterionGroup: CriterionGroupDefinition<
@@ -71,7 +82,12 @@ export const ConditionCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.condition,
   formComponent: ConditionCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfConditions) =>
-    Math.round(numberOfConditions / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfConditions = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(numberOfConditions / config.granularity).toString();
+  },
 };

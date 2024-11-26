@@ -39,33 +39,41 @@ export type CriteriaToAnalyzeInput<T extends CriterionType> = {
   input: CriteriaBasedAnalyzerInput[T];
 };
 
-export type AnalysisInput =
-  | CriteriaToAnalyzeInput<CriterionType.statement>
-  | CriteriaToAnalyzeInput<CriterionType.expression>
-  | CriteriaToAnalyzeInput<CriterionType.functionCall>
-  | CriteriaToAnalyzeInput<CriterionType.condition>
-  | CriteriaToAnalyzeInput<CriterionType.functionDeclaration>
-  | CriteriaToAnalyzeInput<CriterionType.loop>;
-
 export type CriteriaToAnalyzeOutput<T extends CriterionType> = {
   criterion: T;
   output: CriteriaBasedAnalyzerOutput[T];
 };
 
-export type AnalysisOutput =
-  | CriteriaToAnalyzeOutput<CriterionType.statement>
-  | CriteriaToAnalyzeOutput<CriterionType.expression>
-  | CriteriaToAnalyzeOutput<CriterionType.functionCall>
-  | CriteriaToAnalyzeOutput<CriterionType.condition>
-  | CriteriaToAnalyzeOutput<CriterionType.functionDeclaration>
-  | CriteriaToAnalyzeOutput<CriterionType.loop>;
+type AnalysisFunction = {
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.statement>,
+  ): CriteriaToAnalyzeOutput<CriterionType.statement>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.expression>,
+  ): CriteriaToAnalyzeOutput<CriterionType.expression>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.functionCall>,
+  ): CriteriaToAnalyzeOutput<CriterionType.functionCall>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.condition>,
+  ): CriteriaToAnalyzeOutput<CriterionType.condition>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.functionDeclaration>,
+  ): CriteriaToAnalyzeOutput<CriterionType.functionDeclaration>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<CriterionType.loop>,
+  ): CriteriaToAnalyzeOutput<CriterionType.loop>;
+};
 
-export const analyzeAst = (
-  ast: GeneralAst,
-  input: AnalysisInput,
-): AnalysisOutput =>
+// @ts-expect-error Not sure how to fix the typescript issue
+export const analyzeAst: AnalysisFunction = (ast, input) =>
   match(input)
-    .returnType<AnalysisOutput>()
     .with({ criterion: CriterionType.statement }, ({ criterion, input }) => ({
       criterion,
       output: CriteriaBasedAnalyzer.countStatements(ast, input),

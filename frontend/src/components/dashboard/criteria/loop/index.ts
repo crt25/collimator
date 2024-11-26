@@ -6,6 +6,7 @@ import {
   CriterionGroupDefinition,
 } from "../criterion-base";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -40,15 +41,18 @@ const toAnalysisInput = (
 export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
   criterion: CriterionType.loop,
   messages: () => messages,
-  analysisInput: {
-    criterion: CriterionType.loop,
-    input: undefined,
-  },
   config: {
     type: "linear",
     min: 0,
   },
-  getAxisValue: (numberOfLoops) => numberOfLoops,
+  getAxisValue: (analysis) => {
+    const numberOfLoops = analyzeAst(analysis.generalAst, {
+      criterion: CriterionType.loop,
+      input: undefined,
+    }).output;
+
+    return numberOfLoops;
+  },
 };
 
 export const LoopCriterionFilter: CriterionFilterDefinition<
@@ -58,10 +62,17 @@ export const LoopCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.loop,
   formComponent: LoopCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfLoops) =>
-    config.minimumCount <= numberOfLoops &&
-    config.maximumCount >= numberOfLoops,
+  matchesFilter: (config, analysis) => {
+    const numberOfLoops = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfLoops &&
+      config.maximumCount >= numberOfLoops
+    );
+  },
 };
 
 export const LoopCriterionGroup: CriterionGroupDefinition<
@@ -71,7 +82,12 @@ export const LoopCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.loop,
   formComponent: LoopCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfLoops) =>
-    Math.round(numberOfLoops / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfLoops = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(numberOfLoops / config.granularity).toString();
+  },
 };

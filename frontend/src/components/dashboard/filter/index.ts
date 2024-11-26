@@ -6,12 +6,9 @@ import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
-import {
-  AnalysisInput,
-  AnalysisOutput,
-  CriterionType,
-} from "@/data-analyzer/analyze-asts";
+import { CriterionType } from "@/data-analyzer/analyze-asts";
 import { match } from "ts-pattern";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 export const filterCriteria = [
   NoCriterionFilter,
@@ -36,91 +33,30 @@ export type FilterDefinitionByCriterion = {
   };
 };
 
-export const filterToAnalysisInput = (filter: AstFilter): AnalysisInput =>
-  match(filter)
-    .returnType<AnalysisInput>()
-    .with({ criterion: CriterionType.none }, () => {
-      throw new Error("Cannot convert 'no criterion' filter to analysis input");
-    })
-    .with(
-      { criterion: CriterionType.statement },
-      StatementCriterionFilter.toAnalysisInput,
-    )
-    .with(
-      { criterion: CriterionType.expression },
-      ExpressionCriterionFilter.toAnalysisInput,
-    )
-    .with(
-      { criterion: CriterionType.condition },
-      ConditionCriterionFilter.toAnalysisInput,
-    )
-    .with(
-      { criterion: CriterionType.loop },
-      LoopCriterionFilter.toAnalysisInput,
-    )
-    .with(
-      { criterion: CriterionType.functionCall },
-      FunctionCallCriterionFilter.toAnalysisInput,
-    )
-    .with(
-      { criterion: CriterionType.functionDeclaration },
-      FunctionDeclarationCriterionFilter.toAnalysisInput,
-    )
-    .exhaustive();
-
 export const matchesFilter = (
   criterion: AstFilter,
-  output: AnalysisOutput,
+  analysis: CurrentAnalysis,
 ): boolean =>
-  match([criterion, output])
-    .with(
-      [
-        { criterion: CriterionType.statement },
-        { criterion: CriterionType.statement },
-      ],
-      ([criterion, output]) =>
-        StatementCriterionFilter.matchesFilter(criterion, output.output),
+  match(criterion)
+    .with({ criterion: CriterionType.none }, (criterion) =>
+      NoCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with(
-      [
-        { criterion: CriterionType.expression },
-        { criterion: CriterionType.expression },
-      ],
-      ([criterion, output]) =>
-        ExpressionCriterionFilter.matchesFilter(criterion, output.output),
+    .with({ criterion: CriterionType.statement }, (criterion) =>
+      StatementCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with(
-      [
-        { criterion: CriterionType.condition },
-        { criterion: CriterionType.condition },
-      ],
-      ([criterion, output]) =>
-        ConditionCriterionFilter.matchesFilter(criterion, output.output),
+    .with({ criterion: CriterionType.expression }, (criterion) =>
+      ExpressionCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with(
-      [{ criterion: CriterionType.loop }, { criterion: CriterionType.loop }],
-      ([criterion, output]) =>
-        LoopCriterionFilter.matchesFilter(criterion, output.output),
+    .with({ criterion: CriterionType.condition }, (criterion) =>
+      ConditionCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with(
-      [
-        { criterion: CriterionType.functionCall },
-        { criterion: CriterionType.functionCall },
-      ],
-      ([criterion, output]) =>
-        FunctionCallCriterionFilter.matchesFilter(criterion, output.output),
+    .with({ criterion: CriterionType.loop }, (criterion) =>
+      LoopCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with(
-      [
-        { criterion: CriterionType.functionDeclaration },
-        { criterion: CriterionType.functionDeclaration },
-      ],
-      ([criterion, output]) =>
-        FunctionDeclarationCriterionFilter.matchesFilter(
-          criterion,
-          output.output,
-        ),
+    .with({ criterion: CriterionType.functionCall }, (criterion) =>
+      FunctionCallCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .otherwise(() => {
-      throw new Error("AST filter does not match output");
-    });
+    .with({ criterion: CriterionType.functionDeclaration }, (criterion) =>
+      FunctionDeclarationCriterionFilter.matchesFilter(criterion, analysis),
+    )
+    .exhaustive();

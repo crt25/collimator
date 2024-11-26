@@ -6,6 +6,7 @@ import {
   CriterionGroupDefinition,
 } from "../criterion-base";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -40,15 +41,18 @@ const toAnalysisInput = (
 export const ExpressionCriterionAxis: CriterionAxisDefinition<Criterion> = {
   criterion: CriterionType.expression,
   messages: () => messages,
-  analysisInput: {
-    criterion: CriterionType.expression,
-    input: undefined,
-  },
   config: {
     type: "linear",
     min: 0,
   },
-  getAxisValue: (numberOfExpressions) => numberOfExpressions,
+  getAxisValue: (analysis) => {
+    const numberOfExpressions = analyzeAst(analysis.generalAst, {
+      criterion: CriterionType.expression,
+      input: undefined,
+    }).output;
+
+    return numberOfExpressions;
+  },
 };
 
 export const ExpressionCriterionFilter: CriterionFilterDefinition<
@@ -58,10 +62,17 @@ export const ExpressionCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.expression,
   formComponent: ExpressionCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfExpressions) =>
-    config.minimumCount <= numberOfExpressions &&
-    config.maximumCount >= numberOfExpressions,
+  matchesFilter: (config, analysis) => {
+    const numberOfExpressions = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfExpressions &&
+      config.maximumCount >= numberOfExpressions
+    );
+  },
 };
 
 export const ExpressionCriterionGroup: CriterionGroupDefinition<
@@ -71,7 +82,12 @@ export const ExpressionCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.expression,
   formComponent: ExpressionCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfExpressions) =>
-    Math.round(numberOfExpressions / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfExpressions = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(numberOfExpressions / config.granularity).toString();
+  },
 };

@@ -8,6 +8,7 @@ import {
 import FunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
 import FunctionCallCriterionGroupForm from "./FunctionCallCriterionGroupForm";
 import {
+  analyzeAst,
   CriteriaToAnalyzeInput,
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
@@ -48,17 +49,20 @@ const toAnalysisInput = (
 export const FunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> = {
   criterion: CriterionType.functionCall,
   messages: () => messages,
-  analysisInput: {
-    criterion: CriterionType.functionCall,
-    input: {
-      functionName: undefined,
-    },
-  },
   config: {
     type: "linear",
     min: 0,
   },
-  getAxisValue: (numberOfFunctionCalls) => numberOfFunctionCalls,
+  getAxisValue: (analysis) => {
+    const numberOfFunctionCalls = analyzeAst(analysis.generalAst, {
+      criterion: CriterionType.functionCall,
+      input: {
+        functionName: undefined,
+      },
+    }).output;
+
+    return numberOfFunctionCalls;
+  },
 };
 
 export const FunctionCallCriterionFilter: CriterionFilterDefinition<
@@ -68,10 +72,17 @@ export const FunctionCallCriterionFilter: CriterionFilterDefinition<
   criterion: CriterionType.functionCall,
   formComponent: FunctionCallCriterionFilterForm,
   messages: () => messages,
-  toAnalysisInput,
-  matchesFilter: (config, numberOfFunctionCalls) =>
-    config.minimumCount <= numberOfFunctionCalls &&
-    config.maximumCount >= numberOfFunctionCalls,
+  matchesFilter: (config, analysis) => {
+    const numberOfFunctionCalls = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return (
+      config.minimumCount <= numberOfFunctionCalls &&
+      config.maximumCount >= numberOfFunctionCalls
+    );
+  },
 };
 
 export const FunctionCallCriterionGroup: CriterionGroupDefinition<
@@ -81,7 +92,12 @@ export const FunctionCallCriterionGroup: CriterionGroupDefinition<
   criterion: CriterionType.functionCall,
   formComponent: FunctionCallCriterionGroupForm,
   messages: () => messages,
-  toAnalysisInput,
-  getGroup: (config, numberOfFunctionCalls) =>
-    Math.round(numberOfFunctionCalls / config.granularity).toString(),
+  getGroup: (config, analysis) => {
+    const numberOfFunctionCalls = analyzeAst(
+      analysis.generalAst,
+      toAnalysisInput(config),
+    ).output;
+
+    return Math.round(numberOfFunctionCalls / config.granularity).toString();
+  },
 };
