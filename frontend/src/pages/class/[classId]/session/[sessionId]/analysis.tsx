@@ -12,7 +12,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import Analyzer from "@/components/dashboard/Analyzer";
 
-const SessionGrouping = () => {
+const SessionAnalysis = () => {
   const router = useRouter();
   const { classId, sessionId } = router.query as {
     classId: string;
@@ -43,7 +43,7 @@ const SessionGrouping = () => {
         <PageHeader>
           <FormattedMessage
             id="SessionGrouping.header"
-            defaultMessage="Grouping"
+            defaultMessage="Analysis"
           />
         </PageHeader>
         <MultiSwrContent
@@ -58,4 +58,4 @@ const SessionGrouping = () => {
   );
 };
 
-export default SessionGrouping;
+export default SessionAnalysis;
