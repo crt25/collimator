@@ -42,6 +42,7 @@ export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
       genericAst: faker.word.sample(),
       id: faker.number.int({ min: undefined, max: undefined }),
       solutionId: faker.number.int({ min: undefined, max: undefined }),
+      studentPseudonym: faker.word.sample(),
     }));
 
 export const getSolutionsControllerFindOneV0ResponseMock = (

@@ -125,7 +125,17 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               />
             )}
           </Col>
-          <Col xs={12}></Col>
+          <Col xs={12}>
+            {task && (
+              <CodeComparison
+                classId={session.klass.id}
+                sessionId={session.id}
+                taskId={task.id}
+                taskType={task.type}
+                superGroups={superGroups}
+              />
+            )}
+          </Col>
         </Row>
       )}
     </MultiSwrContent>

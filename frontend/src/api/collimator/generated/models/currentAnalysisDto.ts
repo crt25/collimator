@@ -7,10 +7,12 @@
  */
 
 export interface CurrentAnalysisDto {
-  /** The generic AST of the solution. */
+  /** The generalized AST of the solution. */
   genericAst: string;
   /** The analysis's unique identifier, a positive integer. */
   id: number;
   /** The analysis's unique identifier, a positive integer. */
   solutionId: number;
+  /** The pseudonym of the student */
+  studentPseudonym: string;
 }

@@ -22,7 +22,10 @@ import { AnalyzedSuperGroup } from "./hooks/useGrouping";
 
 type AdditionalChartData = {
   groupName: string;
-  solutionIds: number[];
+  solutions: {
+    id: number;
+    studentPseudonym: string;
+  }[];
 };
 
 const messages = defineMessages({
@@ -36,10 +39,7 @@ const messages = defineMessages({
   },
 });
 
-const AnalysisWrapper = styled.div`
-  /* make space tooltips */
-  padding-bottom: 5rem;
-`;
+const AnalysisWrapper = styled.div``;
 
 const ChartWrapper = styled.div`
   position: relative;
@@ -78,15 +78,15 @@ const Analysis = ({
 
   const chartData = useMemo<ChartData<"bubble">>(
     () => ({
-      datasets: superGroups.map((superGroup, superGroupIndex) => ({
+      datasets: superGroups.map((superGroup) => ({
         label: getSuperGroupName(intl, superGroup.superGroup),
-        data: superGroup.groups.map((group, groupIndex) => ({
+        data: superGroup.groups.map((group) => ({
           x: group.meanX,
           y: group.meanY,
-          r: group.solutionIds.length * 10,
+          r: group.solutions.length * 10,
           additionalData: {
-            groupName: `Group ${superGroupIndex}.${groupIndex}`,
-            solutionIds: group.solutionIds,
+            groupName: group.name,
+            solutions: group.solutions,
           } as AdditionalChartData,
         })),
 
@@ -200,7 +200,7 @@ const Analysis = ({
                   id="Analysis.groupContainsXSolutions"
                   defaultMessage="This group contains {solutionCount} solutions."
                   values={{
-                    solutionCount: data.additionalData.solutionIds.length,
+                    solutionCount: data.additionalData.solutions.length,
                   }}
                 />
               </p>

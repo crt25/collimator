@@ -5,6 +5,7 @@ const Solve = () => {
     <Gui
       canEditTask={false}
       isCodeTabEnabled={true}
+      isStageEnabled={true}
       isCostumesTabEnabled={false}
       isSoundsTabEnabled={false}
       onStorageInit={(storageInstance: {

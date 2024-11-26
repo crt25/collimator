@@ -5,6 +5,7 @@ const Edit = () => {
     <Gui
       canEditTask={true}
       isCodeTabEnabled={true}
+      isStageEnabled={true}
       isCostumesTabEnabled={true}
       isSoundsTabEnabled={true}
       onStorageInit={(storageInstance: {

@@ -8,6 +8,7 @@ import { mean } from "../statistics";
 
 export type AnalyzedSolution = {
   solutionId: number;
+  studentPseudonym: string;
   xAxisValue: number;
   yAxisValue: number;
   superGroup: SuperGroup;
@@ -15,9 +16,13 @@ export type AnalyzedSolution = {
 };
 
 export type AnalyzedGroup = {
+  name: string;
   meanX: number;
   meanY: number;
-  solutionIds: number[];
+  solutions: {
+    id: number;
+    studentPseudonym: string;
+  }[];
   superGroup: SuperGroup;
 };
 
@@ -75,6 +80,7 @@ export const useGrouping = (
 
         return {
           solutionId: solution.solutionId,
+          studentPseudonym: solution.studentPseudonym,
           xAxisValue,
           yAxisValue,
           superGroup,
@@ -94,8 +100,10 @@ export const useGrouping = (
         {} as { [key: string]: AnalyzedSolution[] },
       );
 
+    let idx = 0;
+
     const groupsBySuperGroup = Object.values(solutionsByGroup)
-      .map<AnalyzedGroup>((solutions) => {
+      .map<Omit<AnalyzedGroup, "name">>((solutions) => {
         const meanX = mean(solutions.map((s) => s.xAxisValue));
         const meanY = mean(solutions.map((s) => s.yAxisValue));
         const superGroup = solutions[0].superGroup;
@@ -109,7 +117,10 @@ export const useGrouping = (
         return {
           meanX,
           meanY,
-          solutionIds: solutions.map((s) => s.solutionId),
+          solutions: solutions.map((s) => ({
+            id: s.solutionId,
+            studentPseudonym: s.studentPseudonym,
+          })),
           superGroup,
         };
       })
@@ -117,17 +128,21 @@ export const useGrouping = (
         (superGroups, analyzedGroup) => {
           if (!superGroups[analyzedGroup.superGroup]) {
             superGroups[analyzedGroup.superGroup] = {
+              idx: idx++,
               superGroup: analyzedGroup.superGroup,
               groups: [],
             };
           }
 
-          superGroups[analyzedGroup.superGroup].groups.push(analyzedGroup);
+          superGroups[analyzedGroup.superGroup].groups.push({
+            ...analyzedGroup,
+            name: `Group ${superGroups[analyzedGroup.superGroup].idx}.${superGroups[analyzedGroup.superGroup].groups.length}`,
+          });
 
           return superGroups;
         },
-        {} as { [key: number]: AnalyzedSuperGroup },
+        {} as { [key: number]: AnalyzedSuperGroup & { idx: number } },
       );
 
-    return Object.values(groupsBySuperGroup);
+    return Object.values(groupsBySuperGroup).toSorted((a, b) => a.idx - b.idx);
   }, [solutions, xAxis, yAxis, filters, groups]);

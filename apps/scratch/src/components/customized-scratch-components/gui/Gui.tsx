@@ -96,6 +96,7 @@ const GUIComponent = (props: {
   canEditTask?: boolean;
   isStandaloneCodeEnabled?: boolean;
   isCodeTabEnabled?: boolean;
+  isStageEnabled?: boolean;
   isCostumesTabEnabled?: boolean;
   isSoundsTabEnabled?: boolean;
   cardsVisible?: boolean;
@@ -136,6 +137,7 @@ const GUIComponent = (props: {
     canEditTask,
     isStandaloneCodeEnabled,
     isCodeTabEnabled,
+    isStageEnabled,
     isCostumesTabEnabled,
     isSoundsTabEnabled,
     connectionModalVisible,
@@ -218,232 +220,244 @@ const GUIComponent = (props: {
   }, [vm.runtime, canEditTask, onTaskProgress]);
 
   return (
-    <MediaQuery minWidth={layout.fullSizeMinWidth}>
-      {(isFullSize) => {
-        const stageSize = resolveStageSize(stageSizeMode, isFullSize);
+    <div
+      className={
+        isStageEnabled
+          ? classNames(crtStyles.guiWrapper, crtStyles.minWidthWrapper)
+          : crtStyles.guiWrapper
+      }
+    >
+      <MediaQuery minWidth={layout.fullSizeMinWidth}>
+        {(isFullSize) => {
+          const stageSize = resolveStageSize(stageSizeMode, isFullSize);
 
-        return isPlayerOnly ? (
-          <StageWrapper
-            isFullScreen={isFullScreen}
-            isRendererSupported={isRendererSupported || false}
-            isRtl={isRtl}
-            loading={loading}
-            stageSize={STAGE_SIZE_MODES.large}
-            vm={vm}
-            canEditTask={canEditTask}
-          />
-        ) : (
-          <Box
-            className={styles.pageWrapper}
-            dir={isRtl ? "rtl" : "ltr"}
-            {...componentProps}
-          >
-            {loading ? <Loader /> : null}
-            {isCreating ? <Loader messageId="gui.loader.creating" /> : null}
-            {isRendererSupported ? null : <WebGlModal isRtl={isRtl} />}
-            {tipsLibraryVisible ? <TipsLibrary /> : null}
-            {cardsVisible ? <Cards /> : null}
-            {alertsVisible ? (
-              <Alerts className={styles.alertsContainer} />
-            ) : null}
-            {connectionModalVisible ? <ConnectionModal vm={vm} /> : null}
-            {costumeLibraryVisible ? (
-              <CostumeLibrary
-                vm={vm}
-                onRequestClose={onRequestCloseCostumeLibrary}
-              />
-            ) : null}
-            {backdropLibraryVisible ? (
-              <BackdropLibrary
-                vm={vm}
-                onRequestClose={onRequestCloseBackdropLibrary}
-              />
-            ) : null}
-            <Box className={crtStyles.bodyWrapper}>
-              <Box className={styles.flexWrapper}>
-                <Box className={styles.editorWrapper}>
-                  <Tabs
-                    forceRenderTabPanel
-                    className={tabClassNames.tabs}
-                    selectedIndex={activeTabIndex}
-                    selectedTabClassName={tabClassNames.tabSelected}
-                    selectedTabPanelClassName={tabClassNames.tabPanelSelected}
-                    onSelect={onActivateTab}
-                  >
-                    <TabList className={tabClassNames.tabList}>
+          return isPlayerOnly ? (
+            <StageWrapper
+              isFullScreen={isFullScreen}
+              isRendererSupported={isRendererSupported || false}
+              isRtl={isRtl}
+              loading={loading}
+              stageSize={STAGE_SIZE_MODES.large}
+              vm={vm}
+              canEditTask={canEditTask}
+            />
+          ) : (
+            <Box
+              className={styles.pageWrapper}
+              dir={isRtl ? "rtl" : "ltr"}
+              {...componentProps}
+            >
+              {loading ? <Loader /> : null}
+              {isCreating ? <Loader messageId="gui.loader.creating" /> : null}
+              {isRendererSupported ? null : <WebGlModal isRtl={isRtl} />}
+              {tipsLibraryVisible ? <TipsLibrary /> : null}
+              {cardsVisible ? <Cards /> : null}
+              {alertsVisible ? (
+                <Alerts className={styles.alertsContainer} />
+              ) : null}
+              {connectionModalVisible ? <ConnectionModal vm={vm} /> : null}
+              {costumeLibraryVisible ? (
+                <CostumeLibrary
+                  vm={vm}
+                  onRequestClose={onRequestCloseCostumeLibrary}
+                />
+              ) : null}
+              {backdropLibraryVisible ? (
+                <BackdropLibrary
+                  vm={vm}
+                  onRequestClose={onRequestCloseBackdropLibrary}
+                />
+              ) : null}
+              <Box className={crtStyles.bodyWrapper}>
+                <Box className={styles.flexWrapper}>
+                  <Box className={styles.editorWrapper}>
+                    <Tabs
+                      forceRenderTabPanel
+                      className={tabClassNames.tabs}
+                      selectedIndex={activeTabIndex}
+                      selectedTabClassName={tabClassNames.tabSelected}
+                      selectedTabPanelClassName={tabClassNames.tabPanelSelected}
+                      onSelect={onActivateTab}
+                    >
+                      <TabList className={tabClassNames.tabList}>
+                        {isCodeTabEnabled && (
+                          <Tab className={tabClassNames.tab}>
+                            <img draggable={false} src={codeIcon} />
+                            <FormattedMessage
+                              defaultMessage="Code"
+                              description="Button to get to the code panel"
+                              id="gui.gui.codeTab"
+                            />
+                          </Tab>
+                        )}
+                        {isCostumesTabEnabled && (
+                          <Tab
+                            className={tabClassNames.tab}
+                            onClick={onActivateCostumesTab}
+                          >
+                            <img draggable={false} src={costumesIcon} />
+                            {targetIsStage ? (
+                              <FormattedMessage
+                                defaultMessage="Backdrops"
+                                description="Button to get to the backdrops panel"
+                                id="gui.gui.backdropsTab"
+                              />
+                            ) : (
+                              <FormattedMessage
+                                defaultMessage="Costumes"
+                                description="Button to get to the costumes panel"
+                                id="gui.gui.costumesTab"
+                              />
+                            )}
+                          </Tab>
+                        )}
+                        {isSoundsTabEnabled && (
+                          <Tab
+                            className={tabClassNames.tab}
+                            onClick={onActivateSoundsTab}
+                          >
+                            <img draggable={false} src={soundsIcon} />
+                            <FormattedMessage
+                              defaultMessage="Sounds"
+                              description="Button to get to the sounds panel"
+                              id="gui.gui.soundsTab"
+                            />
+                          </Tab>
+                        )}
+                      </TabList>
                       {isCodeTabEnabled && (
-                        <Tab className={tabClassNames.tab}>
-                          <img draggable={false} src={codeIcon} />
-                          <FormattedMessage
-                            defaultMessage="Code"
-                            description="Button to get to the code panel"
-                            id="gui.gui.codeTab"
-                          />
-                        </Tab>
+                        <TabPanel className={tabClassNames.tabPanel}>
+                          <Box className={styles.blocksWrapper}>
+                            <Blocks
+                              showFlyout={true}
+                              canEditTask={canEditTask}
+                              key={`${blocksId}/${theme}`}
+                              grow={1}
+                              isVisible={blocksTabVisible}
+                              options={{
+                                media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
+                                zoom: {
+                                  controls: true,
+                                  wheel: true,
+                                  startScale: BLOCKS_DEFAULT_SCALE,
+                                },
+                                grid: {
+                                  spacing: 40,
+                                  length: 2,
+                                  colour: "#ddd",
+                                },
+                                comments: true,
+                                collapse: false,
+                                sounds: false,
+                              }}
+                              stageSize={stageSize}
+                              theme={theme}
+                              vm={vm}
+                            />
+                          </Box>
+                          {canEditTask && (
+                            <Box className={styles.extensionButtonContainer}>
+                              <button
+                                className={styles.extensionButton}
+                                title={intl.formatMessage(
+                                  messages.addExtension,
+                                )}
+                                onClick={onExtensionButtonClick}
+                                data-testid="add-extension-button"
+                              >
+                                <img
+                                  className={styles.extensionButtonIcon}
+                                  draggable={false}
+                                  src={addExtensionIcon}
+                                />
+                              </button>
+                            </Box>
+                          )}
+                          <Box className={styles.watermark}>
+                            <Watermark />
+                          </Box>
+                        </TabPanel>
+                      )}
+                      {isStandaloneCodeEnabled && (
+                        <Blocks
+                          showFlyout={false}
+                          canEditTask={canEditTask}
+                          key={`${blocksId}/${theme}`}
+                          grow={1}
+                          isVisible={true}
+                          options={{
+                            media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
+                            zoom: {
+                              controls: true,
+                              wheel: true,
+                              startScale: BLOCKS_DEFAULT_SCALE,
+                            },
+                            grid: {
+                              spacing: 40,
+                              length: 2,
+                              colour: "#ddd",
+                            },
+                            comments: false,
+                            collapse: false,
+                            sounds: false,
+                          }}
+                          stageSize={stageSize}
+                          theme={theme}
+                          vm={vm}
+                        />
                       )}
                       {isCostumesTabEnabled && (
-                        <Tab
-                          className={tabClassNames.tab}
-                          onClick={onActivateCostumesTab}
-                        >
-                          <img draggable={false} src={costumesIcon} />
-                          {targetIsStage ? (
-                            <FormattedMessage
-                              defaultMessage="Backdrops"
-                              description="Button to get to the backdrops panel"
-                              id="gui.gui.backdropsTab"
-                            />
-                          ) : (
-                            <FormattedMessage
-                              defaultMessage="Costumes"
-                              description="Button to get to the costumes panel"
-                              id="gui.gui.costumesTab"
-                            />
-                          )}
-                        </Tab>
+                        <TabPanel className={tabClassNames.tabPanel}>
+                          {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
+                        </TabPanel>
                       )}
                       {isSoundsTabEnabled && (
-                        <Tab
-                          className={tabClassNames.tab}
-                          onClick={onActivateSoundsTab}
-                        >
-                          <img draggable={false} src={soundsIcon} />
-                          <FormattedMessage
-                            defaultMessage="Sounds"
-                            description="Button to get to the sounds panel"
-                            id="gui.gui.soundsTab"
-                          />
-                        </Tab>
+                        <TabPanel className={tabClassNames.tabPanel}>
+                          {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                        </TabPanel>
                       )}
-                    </TabList>
-                    {isCodeTabEnabled && (
-                      <TabPanel className={tabClassNames.tabPanel}>
-                        <Box className={styles.blocksWrapper}>
-                          <Blocks
-                            showFlyout={true}
-                            canEditTask={canEditTask}
-                            key={`${blocksId}/${theme}`}
-                            grow={1}
-                            isVisible={blocksTabVisible}
-                            options={{
-                              media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
-                              zoom: {
-                                controls: true,
-                                wheel: true,
-                                startScale: BLOCKS_DEFAULT_SCALE,
-                              },
-                              grid: {
-                                spacing: 40,
-                                length: 2,
-                                colour: "#ddd",
-                              },
-                              comments: true,
-                              collapse: false,
-                              sounds: false,
-                            }}
-                            stageSize={stageSize}
-                            theme={theme}
-                            vm={vm}
-                          />
-                        </Box>
-                        {canEditTask && (
-                          <Box className={styles.extensionButtonContainer}>
-                            <button
-                              className={styles.extensionButton}
-                              title={intl.formatMessage(messages.addExtension)}
-                              onClick={onExtensionButtonClick}
-                              data-testid="add-extension-button"
-                            >
-                              <img
-                                className={styles.extensionButtonIcon}
-                                draggable={false}
-                                src={addExtensionIcon}
-                              />
-                            </button>
-                          </Box>
-                        )}
-                        <Box className={styles.watermark}>
-                          <Watermark />
-                        </Box>
-                      </TabPanel>
-                    )}
-                    {isStandaloneCodeEnabled && (
-                      <Blocks
-                        showFlyout={false}
-                        canEditTask={canEditTask}
-                        key={`${blocksId}/${theme}`}
-                        grow={1}
-                        isVisible={true}
-                        options={{
-                          media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
-                          zoom: {
-                            controls: true,
-                            wheel: true,
-                            startScale: BLOCKS_DEFAULT_SCALE,
-                          },
-                          grid: {
-                            spacing: 40,
-                            length: 2,
-                            colour: "#ddd",
-                          },
-                          comments: false,
-                          collapse: false,
-                          sounds: false,
-                        }}
-                        stageSize={stageSize}
-                        theme={theme}
-                        vm={vm}
-                      />
-                    )}
-                    {isCostumesTabEnabled && (
-                      <TabPanel className={tabClassNames.tabPanel}>
-                        {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
-                      </TabPanel>
-                    )}
-                    {isSoundsTabEnabled && (
-                      <TabPanel className={tabClassNames.tabPanel}>
-                        {soundsTabVisible ? <SoundTab vm={vm} /> : null}
-                      </TabPanel>
-                    )}
-                  </Tabs>
-                  {backpackVisible ? <Backpack host={backpackHost} /> : null}
-                </Box>
-
-                <Box
-                  className={classNames(
-                    styles.stageAndTargetWrapper,
-                    styles[stageSize],
-                  )}
-                >
-                  <StageWrapper
-                    isFullScreen={isFullScreen}
-                    isRendererSupported={isRendererSupported || false}
-                    isRtl={isRtl}
-                    isStageInteractive={canEditTask}
-                    stageSize={stageSize}
-                    vm={vm}
-                    canEditTask={canEditTask}
-                  />
-                  <Box className={styles.targetWrapper}>
-                    <TargetPane
-                      isStageSelectorVisible={canEditTask}
-                      isAddNewSpriteButtonVisible={canEditTask}
-                      isSpriteInfoEnabled={canEditTask}
-                      isDeleteSpriteButtonVisible={canEditTask}
-                      isDuplicateSpriteButtonVisible={canEditTask}
-                      isExportSpriteButtonVisible={canEditTask}
-                      stageSize={stageSize}
-                      vm={vm}
-                    />
+                    </Tabs>
+                    {backpackVisible ? <Backpack host={backpackHost} /> : null}
                   </Box>
+
+                  {isStageEnabled && (
+                    <Box
+                      className={classNames(
+                        styles.stageAndTargetWrapper,
+                        styles[stageSize],
+                      )}
+                    >
+                      <StageWrapper
+                        isFullScreen={isFullScreen}
+                        isRendererSupported={isRendererSupported || false}
+                        isRtl={isRtl}
+                        isStageInteractive={canEditTask}
+                        stageSize={stageSize}
+                        vm={vm}
+                        canEditTask={canEditTask}
+                      />
+                      <Box className={styles.targetWrapper}>
+                        <TargetPane
+                          isStageSelectorVisible={canEditTask}
+                          isAddNewSpriteButtonVisible={canEditTask}
+                          isSpriteInfoEnabled={canEditTask}
+                          isDeleteSpriteButtonVisible={canEditTask}
+                          isDuplicateSpriteButtonVisible={canEditTask}
+                          isExportSpriteButtonVisible={canEditTask}
+                          stageSize={stageSize}
+                          vm={vm}
+                        />
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
               </Box>
+              <DragLayer />
             </Box>
-            <DragLayer />
-          </Box>
-        );
-      }}
-    </MediaQuery>
+          );
+        }}
+      </MediaQuery>
+    </div>
   );
 };
 
