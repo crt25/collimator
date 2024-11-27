@@ -43,7 +43,6 @@
     "class-validator": "^0.14.1",
     "dotenv-cli": "^7.4.2",
     "jose": "^5.9.6",
-    "ms": "3.0.0-canary.1",
     "piscina": "^4.7.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",

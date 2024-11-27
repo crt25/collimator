@@ -9,17 +9,16 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { randomBytes } from "crypto";
 import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
-import ms from "ms";
 
 export type AuthToken = string;
 
 // we use a sliding window for token expiration checked against the last used timestamp
-const slidingTokenLifetime = ms("4h");
+const slidingTokenLifetime = 1000 * 60 * 60 * 4;
 
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
-const lastUsedAccuracy = ms("10m");
+const lastUsedAccuracy = 1000 * 60 * 10;
 
-const registrationTokenLifetime = ms("10m");
+const registrationTokenLifetime = 1000 * 60 * 10;
 
 export type PublicKey = {
   id: number;
