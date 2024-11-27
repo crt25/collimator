@@ -34,7 +34,7 @@ const EditUser = () => {
       if (user) {
         await updateUser(user.id, {
           name: formValues.name,
-          oidcSub: formValues.openIdConnectSub,
+          email: formValues.email,
           authenticationProvider: AuthenticationProvider.MICROSOFT,
           type: formValues.type,
         });

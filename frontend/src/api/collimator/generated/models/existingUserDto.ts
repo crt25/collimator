@@ -12,6 +12,8 @@ import type { UserType } from "./userType";
 export interface ExistingUserDto {
   /** The authentication provider used to sign in. */
   authenticationProvider: AuthenticationProvider;
+  /** The email address of a user. */
+  email: string;
   /** The user unique identifier, a positive integer. */
   id: number;
   /**
@@ -19,8 +21,11 @@ export interface ExistingUserDto {
    * @nullable
    */
   name: string | null;
-  /** An identifier for the user which is unique for the authentication provider. */
-  oidcSub: string;
+  /**
+   * An identifier for the user which is unique for the authentication provider.
+   * @nullable
+   */
+  oidcSub: string | null;
   /**
    * The unique identifier of the associated public key.
    * @nullable

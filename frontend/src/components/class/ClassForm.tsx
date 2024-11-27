@@ -67,7 +67,7 @@ const ClassForm = ({
             label={messages.teacher}
             options={users.map((u) => ({
               value: u.id,
-              label: u.name ?? u.oidcSub,
+              label: u.name ?? u.email,
             }))}
             {...register("teacherId")}
             data-testid="teacherId"

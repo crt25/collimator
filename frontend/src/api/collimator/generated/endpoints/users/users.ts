@@ -9,6 +9,7 @@ import type {
   CreateUserDto,
   DeletedUserDto,
   ExistingUserDto,
+  RegistrationTokenDto,
   UpdateUserDto,
   UpdateUserKeyDto,
 } from "../../models";
@@ -109,4 +110,21 @@ export const usersControllerUpdateKeyV0 = async (
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(updateUserKeyDto),
   });
+};
+
+export const getUsersControllerCreateRegistrationTokenV0Url = (id: number) => {
+  return `/api/v0/users/${id}/registration`;
+};
+
+export const usersControllerCreateRegistrationTokenV0 = async (
+  id: number,
+  options?: RequestInit,
+): Promise<RegistrationTokenDto> => {
+  return fetchApi<Promise<RegistrationTokenDto>>(
+    getUsersControllerCreateRegistrationTokenV0Url(id),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
 };

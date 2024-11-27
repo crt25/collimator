@@ -3,7 +3,8 @@ import { AuthenticationProvider, UserType } from "@prisma/client";
 export const defaultAdmin = {
   id: 101,
   name: "Admin User",
-  oidcSub: "admin@example.com",
+  email: "admin@example.com",
+  oidcSub: null,
   authenticationProvider: AuthenticationProvider.MICROSOFT,
   type: UserType.ADMIN,
 };
@@ -11,7 +12,8 @@ export const defaultAdmin = {
 export const defaultTeacher = {
   id: 102,
   name: "Teacher User",
-  oidcSub: "teacher@example.com",
+  email: "teacher@example.com",
+  oidcSub: null,
   authenticationProvider: AuthenticationProvider.MICROSOFT,
   type: UserType.TEACHER,
 };

@@ -20,6 +20,7 @@ import { useAllUsersLazyTable } from "@/api/collimator/hooks/users/useAllUsers";
 import SwrContent from "../SwrContent";
 import { useDeleteUser } from "@/api/collimator/hooks/users/useDeleteUser";
 import ConfirmationModal from "../modals/ConfirmationModal";
+import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGenerateRegistrationToken";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -54,6 +55,10 @@ const messages = defineMessages({
     id: "UserList.deleteConfirmation.confirm",
     defaultMessage: "Delete User",
   },
+  generateRegistrationToken: {
+    id: "UserList.generateRegistrationToken",
+    defaultMessage: "Get registration link",
+  },
 });
 
 const UserList = () => {
@@ -79,6 +84,7 @@ const UserList = () => {
   });
 
   const { data, isLoading, error } = useAllUsersLazyTable(lazyState);
+  const generateRegistrationToken = useGenerateRegistrationToken();
 
   const onPage = (event: DataTablePageEvent) => {
     setLazyState((state) => ({ ...state, ...event }));
@@ -140,11 +146,27 @@ const UserList = () => {
             >
               {intl.formatMessage(TableMessages.delete)}
             </Dropdown.Item>
+            {rowData.oidcSub === null && (
+              <Dropdown.Item
+                onClick={async (e) => {
+                  e.stopPropagation();
+
+                  const token = await generateRegistrationToken(rowData.id);
+
+                  navigator.clipboard.writeText(
+                    `${window.location.origin}/login?registrationToken=${token}`,
+                  );
+                }}
+                data-testid={`user-${rowData.id}-generate-registration-token-button`}
+              >
+                {intl.formatMessage(messages.generateRegistrationToken)}
+              </Dropdown.Item>
+            )}
           </Dropdown.Menu>
         </Dropdown>
       </div>
     ),
-    [router, intl],
+    [router, intl, generateRegistrationToken],
   );
 
   return (

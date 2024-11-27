@@ -22,7 +22,8 @@ describe("UsersController", () => {
   const adminUser: User = {
     id: 1,
     name: "Admin",
-    oidcSub: "root@collimator.com",
+    email: "root@collimator.com",
+    oidcSub: null,
     authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
   };
@@ -58,7 +59,8 @@ describe("UsersController", () => {
   it("can create a user", async () => {
     const user = {
       name: "Alice",
-      oidcSub: "alice@example.com",
+      email: "alice@example.com",
+      oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
@@ -76,7 +78,8 @@ describe("UsersController", () => {
   it("can update a user", async () => {
     const user = {
       name: "Alice",
-      oidcSub: "alice@example.com",
+      email: "alice@example.com",
+      oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
@@ -100,7 +103,8 @@ describe("UsersController", () => {
     const user = {
       id: 2,
       name: "Alice",
-      oidcSub: "alice@example.com",
+      email: "alice@example.com",
+      oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
@@ -118,7 +122,8 @@ describe("UsersController", () => {
     const user = {
       id: 1,
       name: "Alice",
-      oidcSub: "alice@example.com",
+      email: "alice@example.com",
+      oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
@@ -137,7 +142,8 @@ describe("UsersController", () => {
     const user = {
       id: 1,
       name: "Alice",
-      oidcSub: "alice@example.com",
+      email: "alice@example.com",
+      oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
@@ -152,14 +158,16 @@ describe("UsersController", () => {
       {
         id: 1,
         name: "Alice",
-        oidcSub: "alice@example.com",
+        email: "alice@example.com",
+        oidcSub: null,
         authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.TEACHER,
       },
       {
         id: 2,
         name: "Bob",
-        oidcSub: "bob@example.com",
+        email: "bob@example.com",
+        oidcSub: null,
         authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.ADMIN,
       },

@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { AuthenticationProvider } from "@prisma/client";
 import { Expose } from "class-transformer";
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class AuthenticationRequestDto {
   @IsString()
@@ -25,4 +25,16 @@ export class AuthenticationRequestDto {
   })
   @Expose()
   readonly authenticationProvider!: AuthenticationProvider;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+    description:
+      "An optional registration token, necessary the first time a user signs in.",
+    type: "string",
+    nullable: true,
+  })
+  @Expose()
+  readonly registrationToken!: string | null;
 }

@@ -11,8 +11,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 const LoginPage = () => {
   const router = useRouter();
   const intl = useIntl();
-  const { redirectUri } = router.query as {
+  const { redirectUri, registrationToken } = router.query as {
     redirectUri?: string;
+    registrationToken?: string;
   };
 
   const onAuthenticateWithMicrosoft = useCallback(() => {
@@ -20,9 +21,10 @@ const LoginPage = () => {
       // only redirect to the specified URI if it starts with a `/`
       // this is to prevent open redirects
       redirectUri?.startsWith(`/`) ? redirectUri : `/`,
+      registrationToken,
       false,
     );
-  }, [redirectUri]);
+  }, [redirectUri, registrationToken]);
 
   return (
     <>

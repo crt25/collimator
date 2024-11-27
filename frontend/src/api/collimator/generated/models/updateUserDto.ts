@@ -11,13 +11,13 @@ import type { UserType } from "./userType";
 export interface UpdateUserDto {
   /** The authentication provider used to sign in. */
   authenticationProvider: AuthenticationProvider;
+  /** The email address of a user. */
+  email: string;
   /**
    * The user's full name (optional).
    * @nullable
    */
   name: string | null;
-  /** An identifier for the user which is unique for the authentication provider. */
-  oidcSub: string;
   /** The user's role. */
   type: UserType;
 }

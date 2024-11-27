@@ -47,6 +47,7 @@ export class AuthenticationController {
     const userAndToken = await this.authenticationService.signInUser(
       authRequest.idToken,
       authRequest.authenticationProvider,
+      authRequest.registrationToken,
     );
 
     return AuthenticationResponseDto.fromQueryResult(userAndToken);

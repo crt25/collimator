@@ -28,6 +28,13 @@ export class AuthenticationResponseDto {
   @Expose()
   name!: string | null;
 
+  @ApiProperty({
+    example: "john@doe.com",
+    description: "The email address of the authenticated user.",
+  })
+  @Expose()
+  email!: string;
+
   @IsEnum(UserType)
   @IsNotEmpty()
   @ApiProperty({

@@ -30,6 +30,7 @@ import { AuthenticatedUser } from "../authentication/authenticated-user.decorato
 import { User } from "@prisma/client";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { UpdateUserKeyDto } from "./dto/update-user-key.dto";
+import { RegistrationTokenDto } from "./dto/registration-token.dto";
 
 @Controller("users")
 @ApiTags("users")
@@ -128,6 +129,19 @@ export class UsersController {
     );
 
     return keyPair.id;
+  }
+
+  @Post(":id/registration")
+  @AdminOnly()
+  @ApiCreatedResponse({ type: RegistrationTokenDto })
+  @ApiForbiddenResponse()
+  async createRegistrationToken(
+    @Param("id", ParseIntPipe) id: UserId,
+  ): Promise<RegistrationTokenDto> {
+    const registrationToken =
+      await this.usersService.createRegistrationTokenOrThrow(id);
+
+    return RegistrationTokenDto.fromQueryResult(registrationToken);
   }
 
   @Delete(":id")

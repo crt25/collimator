@@ -19,6 +19,8 @@ const slidingTokenLifetime = ms("4h");
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
 const lastUsedAccuracy = ms("10m");
 
+const registrationTokenLifetime = ms("10m");
+
 export type PublicKey = {
   id: number;
   teacherId: number;
@@ -44,7 +46,8 @@ type WithKey = {
 export type UserIdentity = {
   id: number;
   name: string | null;
-  oidcSub: string;
+  email: string;
+  oidcSub: string | null;
   authenticationProvider: AuthenticationProvider;
   type: UserType;
 };
@@ -55,6 +58,30 @@ export type WithToken = {
 
 export type UserIdentityWithKey = UserIdentity & WithKey;
 export type UserIdentityWithKeyAndToken = UserIdentityWithKey & WithToken;
+
+const selectUserIdentityWithKey = {
+  id: true,
+  name: true,
+  oidcSub: true,
+  email: true,
+  authenticationProvider: true,
+  type: true,
+  keyPair: {
+    select: {
+      id: true,
+      publicKey: true,
+      publicKeyFingerprint: true,
+      salt: true,
+      createdAt: true,
+      privateKeys: {
+        select: {
+          encryptedPrivateKey: true,
+          salt: true,
+        },
+      },
+    },
+  },
+};
 
 type KeySet = ReturnType<typeof jose.createRemoteJWKSet>;
 type Jwt = jose.JWTVerifyResult<jose.JWTPayload> &
@@ -143,6 +170,12 @@ export class AuthenticationService {
         lastUsedAt: { lt: new Date(Date.now() - slidingTokenLifetime) },
       },
     });
+
+    await this.prisma.registrationToken.deleteMany({
+      where: {
+        createdAt: { lt: new Date(Date.now() - registrationTokenLifetime) },
+      },
+    });
   }
 
   protected verifyToken(
@@ -164,33 +197,12 @@ export class AuthenticationService {
     return verifyJwtToken(keySet, jwt, clientId);
   }
 
-  protected findUserByOidcIdOrThrow(
+  protected findUserByOidcSubOrThrow(
     oidcSub: string,
     authenticationProvider: AuthenticationProvider,
   ): Promise<UserIdentityWithKey> {
     return this.prisma.user.findUniqueOrThrow({
-      select: {
-        id: true,
-        name: true,
-        oidcSub: true,
-        authenticationProvider: true,
-        type: true,
-        keyPair: {
-          select: {
-            id: true,
-            publicKey: true,
-            publicKeyFingerprint: true,
-            salt: true,
-            createdAt: true,
-            privateKeys: {
-              select: {
-                encryptedPrivateKey: true,
-                salt: true,
-              },
-            },
-          },
-        },
-      },
+      select: selectUserIdentityWithKey,
       where: {
         uniqueOidcSubPerProvider: {
           oidcSub,
@@ -200,14 +212,37 @@ export class AuthenticationService {
     });
   }
 
+  protected findUserToRegisterOrThrow(
+    email: string,
+    authenticationProvider: AuthenticationProvider,
+    registrationToken: string,
+  ): Promise<UserIdentityWithKey> {
+    return this.prisma.user.findUniqueOrThrow({
+      select: selectUserIdentityWithKey,
+      where: {
+        uniqueEmailPerProvider: {
+          email,
+          authenticationProvider,
+        },
+        registrationToken: {
+          token: registrationToken,
+          createdAt: { gte: new Date(Date.now() - registrationTokenLifetime) },
+        },
+      },
+    });
+  }
+
   /**
    * Tries to sign in a user with the given JWT token.
    * @param jwt The JWT token to sign in with.
+   * @param provider The authentication provider used for singing in.
+   * @param registrationToken An optional registration token required the first time a user signs in.
    * @returns A new authentication token.
    */
   async signInUser(
     jwt: string,
     provider: AuthenticationProvider,
+    registrationToken?: string | null,
   ): Promise<UserIdentityWithKeyAndToken> {
     const verifiedToken = await this.verifyToken(jwt, provider);
 
@@ -221,11 +256,10 @@ export class AuthenticationService {
 
     let user: UserIdentityWithKey;
 
-    const oidcUser = await this.findUserByOidcIdOrThrow(sub, provider).catch(
+    const oidcUser = await this.findUserByOidcSubOrThrow(sub, provider).catch(
       // in case the user is not found, we may need to migrate the user from email to oidc sub
       (e) => {
         originalError = e;
-
         return null;
       },
     );
@@ -233,21 +267,43 @@ export class AuthenticationService {
     if (oidcUser) {
       user = oidcUser;
     } else {
-      const email = verifiedToken.payload["email"] as string;
+      const email = verifiedToken.payload["email"] as string | undefined;
 
-      if (!email) {
+      if (!email || !registrationToken) {
         throw originalError;
       }
       // migrate user from email to oidc sub.
       // this is necessary because the user might have signed in with email before
       // or the user was created by an admin and there is now way to determine the oidc sub
       // for other email addresses
-      user = await this.findUserByOidcIdOrThrow(email, provider);
+      user = await this.findUserToRegisterOrThrow(
+        email,
+        provider,
+        registrationToken,
+      );
 
       await this.prisma.user.update({
         where: { id: user.id },
         data: {
           oidcSub: sub,
+        },
+      });
+
+      // delete registration token
+      await this.prisma.registrationToken.deleteMany({
+        where: {
+          userId: user.id,
+        },
+      });
+    }
+
+    const email = verifiedToken.payload["email"] as string | undefined;
+    if (email && user.email !== email) {
+      // update user email address
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          email,
         },
       });
     }

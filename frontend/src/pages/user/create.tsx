@@ -24,7 +24,7 @@ const CreateUser = () => {
     async (formValues: UserFormValues) => {
       await createUser({
         name: formValues.name,
-        oidcSub: formValues.openIdConnectSub,
+        email: formValues.email,
         authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: formValues.type,
       });

@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from "@prisma/client";
 import { CreateUserDto } from "./create-user.dto";
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Expose, plainToInstance } from "class-transformer";
 
 export type UserId = number;
@@ -19,6 +19,18 @@ export class ExistingUserDto extends CreateUserDto implements User {
   })
   @Expose()
   readonly id!: UserId;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    example: "sfdhkj48732h3bj32hjk332424",
+    description:
+      "An identifier for the user which is unique for the authentication provider.",
+    type: "string",
+    nullable: true,
+  })
+  @Expose()
+  readonly oidcSub!: string | null;
 
   @IsNumber({
     allowNaN: false,

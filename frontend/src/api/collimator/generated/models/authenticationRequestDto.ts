@@ -12,4 +12,9 @@ export interface AuthenticationRequestDto {
   authenticationProvider: AuthenticationProvider;
   /** The OpenIdConnect id token (JWT token). https://jwt.io may be helpful. */
   idToken: string;
+  /**
+   * An optional registration token, necessary the first time a user signs in.
+   * @nullable
+   */
+  registrationToken: string | null;
 }

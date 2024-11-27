@@ -89,7 +89,6 @@ const OpenIdConnectRedirect = () => {
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
   const [userSignInState, setUserSignInState] = useState<{
     idToken: string;
-    email: string;
     redirectPath: string;
     authResponse: AuthenticationResponseDto;
   } | null>(null);
@@ -112,44 +111,53 @@ const OpenIdConnectRedirect = () => {
     authenticationStarted.current = true;
 
     authenticate()
-      .then(async ({ idToken, userInfo, isStudent, redirectPath }) => {
-        const email = getEmailFromClaims(userInfo);
-        const name = getNameFromUserInfo(userInfo);
+      .then(
+        async ({
+          idToken,
+          userInfo,
+          isStudent,
+          redirectPath,
+          registrationToken,
+        }) => {
+          const email = getEmailFromClaims(userInfo);
+          const name = getNameFromUserInfo(userInfo);
 
-        if (!email || !name) {
-          throw new Error(
-            `Email or name not found in user info: ${JSON.stringify(userInfo)}`,
-          );
-        }
+          if (!email || !name) {
+            throw new Error(
+              `Email or name not found in user info: ${JSON.stringify(userInfo)}`,
+            );
+          }
 
-        if (isStudent) {
-          // the (remaining) authentication logic for students is handled on the join session page
-          // we do not need to authenticate against the collimator backend
-          updateAuthenticationContext({
-            version: latestAuthenticationContextVersion,
+          if (isStudent) {
+            // the (remaining) authentication logic for students is handled on the join session page
+            // we do not need to authenticate against the collimator backend
+            updateAuthenticationContext({
+              version: latestAuthenticationContextVersion,
+              idToken: idToken,
+              authenticationToken: undefined,
+              role: UserRole.student,
+              email,
+              name,
+            });
+
+            await router.replace(redirectPath);
+            return;
+          }
+          // this is the cause of slightly increased risk of the student's identity being tracked
+          // we connect to the collimator backend and authenticate directly
+          // note that this is not necessary for the student login flow because the teacher signs in
+          // students to the collimator backend
+
+          // we authenticate against the collimator backend using the id token
+          const authResponse = await authenticateUser({
+            authenticationProvider: AuthenticationProvider.MICROSOFT,
             idToken: idToken,
-            authenticationToken: undefined,
-            role: UserRole.student,
-            email,
-            name,
+            registrationToken,
           });
 
-          await router.replace(redirectPath);
-          return;
-        }
-        // this is the cause of slightly increased risk of the student's identity being tracked
-        // we connect to the collimator backend and authenticate directly
-        // note that this is not necessary for the student login flow because the teacher signs in
-        // students to the collimator backend
-
-        // we authenticate against the collimator backend using the id token
-        const authResponse = await authenticateUser({
-          authenticationProvider: AuthenticationProvider.MICROSOFT,
-          idToken: idToken,
-        });
-
-        setUserSignInState({ authResponse, idToken, redirectPath, email });
-      })
+          setUserSignInState({ authResponse, idToken, redirectPath });
+        },
+      )
       .catch((e) => {
         if (e instanceof AuthenticationError) {
           setErrorRedirectPath(e.redirectPath);
@@ -165,7 +173,6 @@ const OpenIdConnectRedirect = () => {
   const tryUserSignIn = useCallback(
     async (
       idToken: string,
-      email: string,
       redirectPath: string,
       authResponse: AuthenticationResponseDto,
       userProvidedPassword: string,
@@ -173,6 +180,7 @@ const OpenIdConnectRedirect = () => {
     ) => {
       const {
         id: userId,
+        email,
         name: userName,
         authenticationToken,
         keyPair,
@@ -331,7 +339,6 @@ const OpenIdConnectRedirect = () => {
 
       tryUserSignIn(
         userSignInState.idToken,
-        userSignInState.email,
         userSignInState.redirectPath,
         userSignInState.authResponse,
         data.password,

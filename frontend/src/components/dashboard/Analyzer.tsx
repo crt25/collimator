@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Col, Row } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Select from "../form/Select";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import { AstFilter } from "./filter";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";

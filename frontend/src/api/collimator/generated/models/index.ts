@@ -41,6 +41,7 @@ export * from "./existingUserDtoPublicKeyId";
 export * from "./keyPairDto";
 export * from "./privateKeyDto";
 export * from "./publicKeyDto";
+export * from "./registrationTokenDto";
 export * from "./sessionClassDto";
 export * from "./sessionLessonDto";
 export * from "./sessionStatus";

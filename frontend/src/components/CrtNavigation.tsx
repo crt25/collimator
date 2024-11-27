@@ -68,7 +68,7 @@ const CrtNavigation = ({
         <>
           {user && (
             <BreadcrumbItem href={`/user/${user.id}`}>
-              {user.name ?? user.oidcSub}
+              {user.name ?? user.email}
             </BreadcrumbItem>
           )}
           {klass && (

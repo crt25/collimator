@@ -13,6 +13,7 @@ interface OpenIdConnectTemporaryState {
   nonce?: string;
   isStudent: boolean;
   redirectPath: string;
+  registrationToken?: string;
 }
 
 const codeChallengeMethod = "S256";
@@ -69,6 +70,7 @@ export const getJwkSet = async (): Promise<
 
 export const redirectToOpenIdConnectProvider = async (
   redirectPath: string,
+  registrationToken: string | undefined,
   isStudent: boolean,
 ): Promise<void> => {
   const config = await getOpenIdConnectConfig();
@@ -104,6 +106,7 @@ export const redirectToOpenIdConnectProvider = async (
     nonce,
     isStudent,
     redirectPath,
+    registrationToken,
   };
 
   // store the code verifier, state and nonce in the session storage
@@ -121,11 +124,19 @@ export const authenticate = async (): Promise<{
   userInfo: client.UserInfoResponse;
   isStudent: boolean;
   redirectPath: string;
+  registrationToken: string | null;
 }> => {
   const config = await getOpenIdConnectConfig();
 
   // retrieve state from session storage
-  const { state, nonce, codeVerifier, isStudent, redirectPath } = JSON.parse(
+  const {
+    state,
+    nonce,
+    codeVerifier,
+    isStudent,
+    redirectPath,
+    registrationToken,
+  } = JSON.parse(
     sessionStorage.getAndDelete(openIdConnectStateStorageKey),
   ) as OpenIdConnectTemporaryState;
 
@@ -172,5 +183,6 @@ export const authenticate = async (): Promise<{
     userInfo,
     isStudent,
     redirectPath,
+    registrationToken: registrationToken ?? null,
   };
 };

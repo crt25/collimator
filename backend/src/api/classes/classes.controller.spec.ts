@@ -25,7 +25,8 @@ describe("ClassesController", () => {
   const adminUser: User = {
     id: 1,
     name: "Admin",
-    oidcSub: "root@collimator.com",
+    email: "root@collimator.com",
+    oidcSub: null,
     authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
   };
