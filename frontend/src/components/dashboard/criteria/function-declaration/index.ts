@@ -3,7 +3,6 @@ import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
-  CriterionGroupDefinition,
 } from "../criterion-base";
 import {
   analyzeAst,
@@ -11,7 +10,6 @@ import {
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
 import FunctionDeclarationCriterionFilterForm from "./FunctionDeclarationCriterionFilterForm";
-import FunctionDeclarationCriterionGroupForm from "./FunctionDeclarationCriterionGroupForm";
 
 type Criterion = CriterionType.functionDeclaration;
 
@@ -28,15 +26,8 @@ export interface FunctionDeclarationFilterCriterion
   maximumCount: number;
 }
 
-export interface FunctionDeclarationGroupCriterion
-  extends CriterionBase<Criterion> {
-  granularity: number;
-}
-
 const toAnalysisInput = (
-  _criterion:
-    | FunctionDeclarationFilterCriterion
-    | FunctionDeclarationGroupCriterion,
+  _criterion: FunctionDeclarationFilterCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.functionDeclaration> => ({
   criterion: CriterionType.functionDeclaration,
   input: undefined,
@@ -77,24 +68,5 @@ export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
       config.minimumCount <= numberOfFunctionDeclarations &&
       config.maximumCount >= numberOfFunctionDeclarations
     );
-  },
-};
-
-export const FunctionDeclarationCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  FunctionDeclarationGroupCriterion
-> = {
-  criterion: CriterionType.functionDeclaration,
-  formComponent: FunctionDeclarationCriterionGroupForm,
-  messages: () => messages,
-  getGroup: (config, analysis) => {
-    const numberOfFunctionDeclarations = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return Math.round(
-      numberOfFunctionDeclarations / config.granularity,
-    ).toString();
   },
 };

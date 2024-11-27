@@ -1,9 +1,5 @@
 import { defineMessages } from "react-intl";
-import {
-  CriterionBase,
-  CriterionFilterDefinition,
-  CriterionGroupDefinition,
-} from "../criterion-base";
+import { CriterionBase, CriterionFilterDefinition } from "../criterion-base";
 import NoneCriterionForm from "./NoneCriterionForm";
 import { CriterionType } from "@/data-analyzer/analyze-asts";
 
@@ -32,16 +28,4 @@ export const NoCriterionFilter: CriterionFilterDefinition<
     name: messages.filterName,
   }),
   matchesFilter: () => false,
-};
-
-export const NoCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  NoneCriterion
-> = {
-  criterion: CriterionType.none,
-  formComponent: NoneCriterionForm,
-  messages: () => ({
-    name: messages.groupName,
-  }),
-  getGroup: () => "",
 };

@@ -1,49 +1,120 @@
 import { useMemo } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { SuperGroup } from "../super-group";
-import { AstGroup, getGroup } from "../group";
+import { Category } from "../category";
 import { AstFilter, matchesFilter } from "../filter";
-import { mean } from "../statistics";
+import { ChartSplit, SplitType } from "../chartjs-plugins/select";
 
 export type AnalyzedSolution = {
   solutionId: number;
   studentPseudonym: string;
   xAxisValue: number;
   yAxisValue: number;
-  superGroup: SuperGroup;
-  group: string;
+  category: Category;
+  groupKey: string;
 };
 
-export type AnalyzedGroup = {
-  name: string;
-  meanX: number;
-  meanY: number;
-  solutions: {
-    id: number;
-    studentPseudonym: string;
-  }[];
-  superGroup: SuperGroup;
+export type CategoryWithGroups = {
+  category: Category;
+  solutions: AnalyzedSolution[];
 };
 
-export type AnalyzedSuperGroup = {
-  superGroup: SuperGroup;
-  groups: AnalyzedGroup[];
+export type Group = {
+  key: string;
+  label: string;
+
+  minX: number;
+  maxX: number;
+
+  minY: number;
+  maxY: number;
 };
+
+const charCodeOfCapitalA = 65;
+const numberOfCharacters = 26;
+
+const getGroupName = (idx: number): string => {
+  // converts the number to base 26 with 0 = A, 1 = B, ..., 25 = Z, 26 = BA,...
+  const name = [];
+
+  do {
+    name.push(
+      String.fromCharCode(charCodeOfCapitalA + (idx % numberOfCharacters)),
+    );
+
+    idx = Math.floor(idx / numberOfCharacters);
+  } while (idx > 0);
+
+  return name.reverse().join("");
+};
+
+const isWithinGroup = (
+  group: Omit<Group, "label">,
+  x: number,
+  y: number,
+): boolean =>
+  group.minX <= x && x < group.maxX && group.minY <= y && y < group.maxY;
 
 export const useGrouping = (
   solutions: CurrentAnalysis[] | undefined,
   filters: AstFilter[],
-  groups: AstGroup[],
+  splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
-): AnalyzedSuperGroup[] =>
+): {
+  categoriesWithGroups: CategoryWithGroups[];
+  groups: Group[];
+} =>
   useMemo(() => {
     if (!solutions) {
-      return [];
+      return {
+        categoriesWithGroups: [],
+        groups: [],
+      };
     }
 
-    const solutionsByGroup = solutions
+    const groups: (Omit<Group, "label"> & { label?: string })[] = [];
+
+    const verticalSplits = splits
+      .filter((s) => s.type === SplitType.vertical)
+      .sort((a, b) => a.x - b.x);
+    const horizontalSplits = splits
+      .filter((s) => s.type === SplitType.horizontal)
+      .sort((a, b) => a.y - b.y);
+
+    let lastX = Number.NEGATIVE_INFINITY;
+
+    for (const vSplit of [
+      ...verticalSplits,
+      // add an artificial split to include the groups after the last vertical split
+      { type: SplitType.vertical, x: Number.POSITIVE_INFINITY },
+    ]) {
+      let lastY = Number.NEGATIVE_INFINITY;
+      for (const hSplit of [
+        ...horizontalSplits,
+        // add an artificial split to include the groups after the last horizontal split
+        {
+          type: SplitType.horizontal,
+          y: Number.POSITIVE_INFINITY,
+        },
+      ]) {
+        groups.push({
+          key: groups.length.toString(),
+          minX: lastX,
+          maxX: vSplit.x,
+          minY: lastY,
+          maxY: hSplit.y,
+        });
+
+        lastY = hSplit.y;
+      }
+
+      lastX = vSplit.x;
+    }
+
+    let usedGroupIdx = 0;
+
+    const solutionsByCategory = solutions
       .map<AnalyzedSolution>((solution) => {
         const xAxisValue = getAxisAnalysisValue(xAxis, solution);
         const yAxisValue = getAxisAnalysisValue(yAxis, solution);
@@ -56,93 +127,57 @@ export const useGrouping = (
             true,
           );
 
-        // the differen groups are again grouped into super groups
+        // the differen groups are assigned a category
         // based on global criteria such as whether all filters match
         // or whether a solution passes all tests
-        let superGroup = SuperGroup.none;
+        let category = Category.none;
 
         if (matchesAllFilters) {
-          superGroup |= SuperGroup.matches;
+          category |= Category.matches;
         }
 
-        const assignedGroups =
-          groups.length > 0
-            ? groups.map((g) => getGroup(g, solution))
-            : // if no groups are defined, all solutions are in a different group
-              solution.id.toString();
+        const group = groups.find((g) =>
+          isWithinGroup(g, xAxisValue, yAxisValue),
+        );
 
-        const group = [
-          // always include the super groups because those group the groups
-          // and hence if solutions are not in the same super group they cannot be in the same group
-          superGroup.toString(),
-          ...assignedGroups,
-        ].join("-");
+        if (!group) {
+          throw new Error(
+            "All data points must be within a group - this error should never be thrown",
+          );
+        }
+
+        if (!group.label) {
+          group.label = getGroupName(usedGroupIdx++);
+        }
 
         return {
           solutionId: solution.solutionId,
           studentPseudonym: solution.studentPseudonym,
           xAxisValue,
           yAxisValue,
-          superGroup,
-          group,
+          category,
+          groupKey: group.key,
         };
       })
-      .reduce(
-        (groups, analyzedSolution) => {
-          if (!groups[analyzedSolution.group]) {
-            groups[analyzedSolution.group] = [];
-          }
-
-          groups[analyzedSolution.group].push(analyzedSolution);
-
-          return groups;
-        },
-        {} as { [key: string]: AnalyzedSolution[] },
-      );
-
-    let idx = 0;
-
-    const groupsBySuperGroup = Object.values(solutionsByGroup)
-      .map<Omit<AnalyzedGroup, "name">>((solutions) => {
-        const meanX = mean(solutions.map((s) => s.xAxisValue));
-        const meanY = mean(solutions.map((s) => s.yAxisValue));
-        const superGroup = solutions[0].superGroup;
-
-        if (solutions.some((s) => s.superGroup !== superGroup)) {
-          throw new Error(
-            "Solutions in the same group must have the same super group",
-          );
+      .reduce((categories, analyzedSolution) => {
+        let entry = categories.get(analyzedSolution.category);
+        if (!entry) {
+          entry = [];
         }
 
-        return {
-          meanX,
-          meanY,
-          solutions: solutions.map((s) => ({
-            id: s.solutionId,
-            studentPseudonym: s.studentPseudonym,
-          })),
-          superGroup,
-        };
-      })
-      .reduce(
-        (superGroups, analyzedGroup) => {
-          if (!superGroups[analyzedGroup.superGroup]) {
-            superGroups[analyzedGroup.superGroup] = {
-              idx: idx++,
-              superGroup: analyzedGroup.superGroup,
-              groups: [],
-            };
-          }
+        entry.push(analyzedSolution);
+        categories.set(analyzedSolution.category, entry);
 
-          superGroups[analyzedGroup.superGroup].groups.push({
-            ...analyzedGroup,
-            name: `Group ${superGroups[analyzedGroup.superGroup].idx}.${superGroups[analyzedGroup.superGroup].groups.length}`,
-          });
+        return categories;
+      }, new Map<Category, AnalyzedSolution[]>());
 
-          return superGroups;
-        },
-        {} as { [key: number]: AnalyzedSuperGroup & { idx: number } },
-      );
-
-    return Object.values(groupsBySuperGroup).toSorted((a, b) => a.idx - b.idx);
-  }, [solutions, xAxis, yAxis, filters, groups]);
+    return {
+      categoriesWithGroups: [
+        ...solutionsByCategory.entries().map(([category, solutions]) => ({
+          category: category,
+          solutions,
+        })),
+      ],
+      groups: groups.filter((g): g is Group => g.label !== undefined),
+    };
+  }, [solutions, xAxis, yAxis, filters, splits]);

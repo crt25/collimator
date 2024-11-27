@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import { Chart } from "primereact/chart";
 import {
@@ -7,6 +7,8 @@ import {
   TooltipModel,
   Chart as ChartJsChart,
   BubbleDataPoint,
+  Plugin,
+  ChartEvent,
 } from "chart.js";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
@@ -17,15 +19,24 @@ import YAxis from "./axes/YAxis";
 import XAxis from "./axes/XAxis";
 import YAxisSelector from "./axes/YAxisSelector";
 import Tooltip from "./Tooltip";
-import { getCanvasPattern, getSuperGroupName } from "./super-group";
-import { AnalyzedSuperGroup } from "./hooks/useGrouping";
+import { getCanvasPattern, getCategoryName } from "./category";
+import { CategoryWithGroups, Group } from "./hooks/useGrouping";
+import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
+import {
+  AnnotationOptions,
+  AnnotationPluginOptions,
+  EventContext,
+} from "chartjs-plugin-annotation";
+import { _DeepPartialObject } from "chart.js/dist/types/utils";
+import { StudentName } from "../encryption/StudentName";
 
 type AdditionalChartData = {
   groupName: string;
-  solutions: {
-    id: number;
-    studentPseudonym: string;
-  }[];
+  studentPseudonym: string;
+};
+
+type PointWithAdditionalData = BubbleDataPoint & {
+  additionalData: AdditionalChartData;
 };
 
 const messages = defineMessages({
@@ -49,51 +60,79 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
+const groupLabelColor = "rgba(0, 0, 0, 0.5)";
+const deleteLabelColor = "rgba(255, 99, 132, 0.5)";
+const deleteLabelColorHover = "rgba(255, 99, 132, 1)";
+
+const onEnterLabel = (context: EventContext) => {
+  (context.element.options as AnnotationOptions<"label">).color =
+    deleteLabelColorHover;
+
+  // rerender chart
+  return true;
+};
+
+const onLeaveLabel = (context: EventContext) => {
+  (context.element.options as AnnotationOptions<"label">).color =
+    deleteLabelColor;
+
+  // rerender chart
+  return true;
+};
+
 const Analysis = ({
   xAxis,
   setXAxis,
   yAxis,
   setYAxis,
   taskType,
-  superGroups,
+  categories,
+  groups,
+  splits,
+  setSplits,
 }: {
   xAxis: AxesCriterionType;
   setXAxis: (axis: AxesCriterionType) => void;
   yAxis: AxesCriterionType;
   setYAxis: (axis: AxesCriterionType) => void;
   taskType: TaskType;
-  superGroups: AnalyzedSuperGroup[];
+  categories: CategoryWithGroups[];
+  groups: Group[];
+  splits: ChartSplit[];
+  setSplits: (
+    updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
+  ) => void;
 }) => {
   const intl = useIntl();
 
   const [tooltipDataPoints, setTooltipDataPoints] = useState<
-    (BubbleDataPoint & {
-      additionalData: AdditionalChartData;
-    })[]
+    PointWithAdditionalData[]
   >([]);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const xAxisConfig = useMemo(() => getAxisConfig(xAxis), [xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(yAxis), [yAxis]);
 
+  const chartRef = useRef<ChartJsChart | null>(null);
+
   const chartData = useMemo<ChartData<"bubble">>(
     () => ({
-      datasets: superGroups.map((superGroup) => ({
-        label: getSuperGroupName(intl, superGroup.superGroup),
-        data: superGroup.groups.map((group) => ({
-          x: group.meanX,
-          y: group.meanY,
-          r: group.solutions.length * 10,
+      datasets: categories.map((category) => ({
+        label: getCategoryName(intl, category.category),
+        data: category.solutions.map((solution) => ({
+          x: solution.xAxisValue,
+          y: solution.yAxisValue,
+          r: 10,
           additionalData: {
-            groupName: group.name,
-            solutions: group.solutions,
+            groupName: solution.groupKey,
+            studentPseudonym: solution.studentPseudonym,
           } as AdditionalChartData,
         })),
 
-        backgroundColor: getCanvasPattern(superGroup.superGroup),
+        backgroundColor: getCanvasPattern(category.category),
       })),
     }),
-    [superGroups, intl],
+    [categories, intl],
   );
 
   const onTooltip = useCallback(
@@ -136,6 +175,111 @@ const Analysis = ({
     [],
   );
 
+  const annotations = useMemo<_DeepPartialObject<AnnotationPluginOptions>>(
+    () => ({
+      // allow annotations in axes
+      clip: false,
+
+      annotations: [
+        ...splits.flatMap<AnnotationOptions>((split) => {
+          const onClickLabel = (ctx: EventContext, evt: ChartEvent) => {
+            if (
+              (evt.native && "handled" in evt.native) ||
+              "blockDeletes" in ctx.chart
+            ) {
+              return;
+            }
+
+            // @ts-expect-error This is an annoying way working around the fact that stopImmediatePropagation doesn't work
+            evt.native["handled"] = true;
+
+            setSplits((splits) => splits.filter((s) => s !== split));
+          };
+
+          const labelProps = {
+            type: "label" as const,
+            content: "x",
+            color: deleteLabelColor,
+            backgroundColor: "rgb(255 255 255 / 1)",
+            padding: {
+              x: 13,
+              y: 2,
+            },
+            font: {
+              size: 25,
+            },
+            click: onClickLabel,
+            enter: onEnterLabel,
+            leave: onLeaveLabel,
+          };
+
+          return split.type === SplitType.horizontal
+            ? [
+                {
+                  type: "line",
+                  xMin: (ctx) => ctx.chart.scales.x.min,
+                  xMax: (ctx) => ctx.chart.scales.x.max,
+                  yMin: split.y,
+                  yMax: split.y,
+                  backgroundColor: "rgba(255, 99, 132, 0.25)",
+                },
+                {
+                  ...labelProps,
+                  xValue: (ctx) => ctx.chart.scales.x.min,
+                  yValue: split.y,
+                  position: {
+                    x: "end" as const,
+                    y: "center" as const,
+                  },
+                },
+              ]
+            : [
+                {
+                  type: "line",
+                  xMin: split.x,
+                  xMax: split.x,
+                  yMin: (ctx) => ctx.chart.scales.y.min,
+                  yMax: (ctx) => ctx.chart.scales.y.max,
+                },
+                {
+                  ...labelProps,
+                  xValue: split.x,
+                  yValue: (ctx) => ctx.chart.scales.y.min,
+                  position: {
+                    x: "center" as const,
+                    y: "start" as const,
+                  },
+                },
+              ];
+        }),
+        ...groups.flatMap<AnnotationOptions>((group) => [
+          {
+            type: "label" as const,
+            content: group.label,
+            color: groupLabelColor,
+            xValue: (ctx) => {
+              const min = Math.max(group.minX, ctx.chart.scales.x.min);
+              const max = Math.min(group.maxX, ctx.chart.scales.x.max);
+
+              return min + (max - min) / 2;
+            },
+            yValue: (ctx) => {
+              const min = Math.max(group.minY, ctx.chart.scales.y.min);
+              const max = Math.min(group.maxY, ctx.chart.scales.y.max);
+
+              return min + (max - min) / 2;
+            },
+            padding: 0,
+            font: {
+              size: 25,
+            },
+          },
+        ]),
+      ],
+    }),
+    [splits, setSplits, groups],
+  );
+
   const chartOptions = useMemo<ChartConfiguration<"bubble">["options"]>(
     () => ({
       plugins: {
@@ -145,21 +289,38 @@ const Analysis = ({
           align: "center",
         },
 
+        select: {
+          onAddSplit: (split) => {
+            setSplits((splits) => [...splits, split]);
+          },
+        },
+
         tooltip: {
           enabled: false,
           position: "nearest",
           external: onTooltip,
         },
+
+        annotation: annotations,
       },
       scales: {
         x: xAxisConfig,
         y: yAxisConfig,
       },
-      /* seems buggy, maybe in combination with react? */
+      /* seems buggy */
       animation: false,
     }),
-    [xAxisConfig, yAxisConfig, onTooltip],
+    [xAxisConfig, yAxisConfig, onTooltip, annotations, setSplits],
   );
+
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (chart) {
+      chart.config.data = chartData;
+      chart.config.options = chartOptions;
+      chart.update();
+    }
+  }, [chartData, chartOptions]);
 
   const axisOptions = useMemo(
     () =>
@@ -172,6 +333,26 @@ const Analysis = ({
 
   const selectedXAxis = axisOptions.find((o) => o.value === xAxis);
   const selectedYAxis = axisOptions.find((o) => o.value === yAxis);
+
+  const plugins = useMemo(
+    () => [
+      SelectPlugin,
+      {
+        id: "analysis",
+        afterInit: (chart) => {
+          chartRef.current = chart;
+
+          chart.config.data = chartData;
+          chart.config.options = chartOptions;
+          chart.update();
+        },
+      } as Plugin,
+    ],
+    // this should never be re-run - we only want to set the initial data and after
+    // that updates are handled by the useEffect above
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   return (
     <AnalysisWrapper>
@@ -187,32 +368,46 @@ const Analysis = ({
         />
       </YAxisSelector>
       <ChartWrapper>
-        <Chart type="bubble" data={chartData} options={chartOptions} />
+        <Chart type="bubble" plugins={plugins} />
         <XAxis />
         <YAxis />
         <Tooltip ref={tooltipRef} isShown={tooltipDataPoints.length > 0}>
           {tooltipDataPoints.map((data) => (
-            <div key={data.additionalData.groupName}>
-              <h5>{data.additionalData.groupName}</h5>
-
-              <p>
-                <FormattedMessage
-                  id="Analysis.groupContainsXSolutions"
-                  defaultMessage="This group contains {solutionCount} solutions."
-                  values={{
-                    solutionCount: data.additionalData.solutions.length,
-                  }}
-                />
-              </p>
-
-              <div>
+            <div key={data.additionalData.studentPseudonym}>
+              <div className="data">
                 <div>
-                  {intl.formatMessage(selectedXAxis?.label ?? messages.xAxis)}:{" "}
-                  {data.x}
+                  <span>
+                    <FormattedMessage
+                      id="Analysis.student"
+                      defaultMessage="Student"
+                    />
+                  </span>
+                  <span>
+                    <StudentName
+                      pseudonym={data.additionalData.studentPseudonym}
+                    />
+                  </span>
                 </div>
                 <div>
-                  {intl.formatMessage(selectedYAxis?.label ?? messages.yAxis)}:{" "}
-                  {data.y}
+                  <span>
+                    <FormattedMessage
+                      id="Analysis.group"
+                      defaultMessage="Group"
+                    />
+                  </span>
+                  <span>{data.additionalData.groupName}</span>
+                </div>
+                <div>
+                  <span>
+                    {intl.formatMessage(selectedXAxis?.label ?? messages.xAxis)}
+                  </span>
+                  <span>{data.x}</span>
+                </div>
+                <div>
+                  <span>
+                    {intl.formatMessage(selectedYAxis?.label ?? messages.yAxis)}
+                  </span>
+                  <span>{data.y}</span>
                 </div>
               </div>
             </div>

@@ -5,8 +5,6 @@ import Select from "../form/Select";
 import { useState } from "react";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import { AstFilter } from "./filter";
-import AnalyzerGroupForm from "./group/AnalyzerGroupForm";
-import { AstGroup } from "./group";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import Analysis from "./Analysis";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
@@ -16,6 +14,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import { useGrouping } from "./hooks/useGrouping";
 import { CriterionType } from "@/data-analyzer/analyze-asts";
 import { AxesCriterionType } from "./axes";
+import { ChartSplit } from "./chartjs-plugins/select";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -32,10 +31,6 @@ const messages = defineMessages({
     id: "Analyzer.parameters.taskSelection",
     defaultMessage: "Task Selection",
   },
-  addFilter: {
-    id: "Analyzer.parameters.addFilter",
-    defaultMessage: "Add Filter",
-  },
 });
 
 const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
@@ -49,7 +44,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const [yAxis, setYAxis] = useState<AxesCriterionType>(CriterionType.loop);
 
   const [filters, setFilters] = useState<AstFilter[]>([]);
-  const [groups, setGroups] = useState<AstGroup[]>([]);
+  const [splits, setSplits] = useState<ChartSplit[]>([]);
 
   const {
     data: task,
@@ -67,7 +62,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask,
   );
 
-  const superGroups = useGrouping(solutions, filters, groups, xAxis, yAxis);
+  const { categoriesWithGroups, groups } = useGrouping(
+    solutions,
+    filters,
+    splits,
+    xAxis,
+    yAxis,
+  );
 
   if (!selectedTask) {
     return (
@@ -105,12 +106,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 filters={filters}
                 setFilters={setFilters}
               />
-
-              <AnalyzerGroupForm
-                taskType={task.type}
-                groups={groups}
-                setGroups={setGroups}
-              />
             </Parameters>
           </Col>
           <Col xs={9}>
@@ -121,7 +116,10 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 setXAxis={setXAxis}
                 yAxis={yAxis}
                 setYAxis={setYAxis}
-                superGroups={superGroups}
+                categories={categoriesWithGroups}
+                groups={groups}
+                splits={splits}
+                setSplits={setSplits}
               />
             )}
           </Col>
@@ -132,7 +130,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 sessionId={session.id}
                 taskId={task.id}
                 taskType={task.type}
-                superGroups={superGroups}
+                categories={categoriesWithGroups}
+                groups={groups}
               />
             )}
           </Col>

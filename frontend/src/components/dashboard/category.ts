@@ -3,28 +3,28 @@ import pattern from "patternomaly";
 
 const messages = defineMessages({
   xAxis: {
-    id: "Analysis.xAxis",
+    id: "Category.xAxis",
     defaultMessage: "x-Axis",
   },
   yAxis: {
-    id: "Analysis.yAxis",
+    id: "Category.yAxis",
     defaultMessage: "y-Axis",
   },
   correct: {
-    id: "Analysis.correct",
+    id: "Category.correct",
     defaultMessage: "Correct",
   },
   inCorrect: {
-    id: "Analysis.inCorrect",
+    id: "Category.inCorrect",
     defaultMessage: "Incorrect",
   },
   filteredOut: {
-    id: "Analysis.filteredOut",
+    id: "Category.filteredOut",
     defaultMessage: "filtered out",
   },
 });
 
-export enum SuperGroup {
+export enum Category {
   none = 0,
   // whether all filters match
   matches = 1 << 0,
@@ -32,15 +32,15 @@ export enum SuperGroup {
   testsPass = 1 << 1,
 }
 
-const hasFlag = (superGroup: SuperGroup, flag: SuperGroup): boolean =>
-  (superGroup & flag) === flag;
+const hasFlag = (category: Category, flag: Category): boolean =>
+  (category & flag) === flag;
 
-export const getSuperGroupName = (
+export const getCategoryName = (
   intl: IntlShape,
-  superGroup: SuperGroup,
+  category: Category,
 ): string => {
-  const testsPass = hasFlag(superGroup, SuperGroup.testsPass);
-  const matchesFilter = hasFlag(superGroup, SuperGroup.matches);
+  const testsPass = hasFlag(category, Category.testsPass);
+  const matchesFilter = hasFlag(category, Category.matches);
 
   let name = intl.formatMessage(
     testsPass ? messages.correct : messages.inCorrect,
@@ -55,9 +55,9 @@ export const getSuperGroupName = (
 
 type PatternType = Parameters<typeof pattern.draw>[0];
 
-export const getCanvasPattern = (superGroup: SuperGroup): CanvasPattern => {
-  const testsPass = hasFlag(superGroup, SuperGroup.testsPass);
-  const matchesFilter = hasFlag(superGroup, SuperGroup.matches);
+export const getCanvasPattern = (category: Category): CanvasPattern => {
+  const testsPass = hasFlag(category, Category.testsPass);
+  const matchesFilter = hasFlag(category, Category.matches);
 
   const color: [number, number, number, number] = testsPass
     ? [46, 204, 113, 1]

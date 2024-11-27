@@ -1,7 +1,4 @@
-import {
-  ClassStudent,
-  StudentIdentity,
-} from "@/api/collimator/models/classes/class-student";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
@@ -21,7 +18,7 @@ const messages = defineMessages({
 
 const generateRandomNumber = () => Math.floor(Math.random() * 100);
 
-export const StudentName = ({ student }: { student: ClassStudent }) => {
+export const StudentName = ({ pseudonym }: { pseudonym: string }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
 
@@ -42,9 +39,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
 
     const decryptName = async () => {
       const decryptedIdentity: StudentIdentity = JSON.parse(
-        await authContext.keyPair.decryptString(
-          decodeBase64(student.pseudonym),
-        ),
+        await authContext.keyPair.decryptString(decodeBase64(pseudonym)),
       );
 
       if (latestId.current !== currentId) {
@@ -64,7 +59,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
 
       setIsDecrypting(false);
     });
-  }, [authContext, student]);
+  }, [authContext, pseudonym]);
 
   if (isDecrypting) {
     return (
@@ -80,7 +75,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
   if (decryptedName === null) {
     return (
       <NameWrapper>
-        {student.pseudonym}{" "}
+        {pseudonym}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}

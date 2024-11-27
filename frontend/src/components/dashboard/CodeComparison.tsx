@@ -1,7 +1,11 @@
 import { Button, Col, Row } from "react-bootstrap";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { AnalyzedGroup, AnalyzedSuperGroup } from "./hooks/useGrouping";
+import {
+  AnalyzedSolution,
+  CategoryWithGroups,
+  Group,
+} from "./hooks/useGrouping";
 import Select from "../form/Select";
 import styled from "@emotion/styled";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
@@ -12,7 +16,6 @@ import {
 import { decodeBase64 } from "@/utilities/crypto/base64";
 import CodeView from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
-import EditTaskModal from "../modals/EditTaskModal";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 
 const messages = defineMessages({
@@ -47,15 +50,11 @@ type Option = { label: string; value: number };
 
 const getOptions = async (
   authContext: AuthenticationContextType,
-  group?: AnalyzedGroup,
+  solutions: AnalyzedSolution[],
 ): Promise<Option[]> => {
-  if (!group) {
-    return [];
-  }
-
-  let options: Option[] = group.solutions.map((solution) => ({
+  let options: Option[] = solutions.map((solution) => ({
     label: solution.studentPseudonym,
-    value: solution.id,
+    value: solution.solutionId,
   }));
 
   if ("keyPair" in authContext) {
@@ -85,13 +84,15 @@ const CodeComparison = ({
   sessionId,
   taskId,
   taskType,
-  superGroups,
+  categories,
+  groups,
 }: {
   classId: number;
   sessionId: number;
   taskId: number;
   taskType: TaskType;
-  superGroups: AnalyzedSuperGroup[];
+  categories: CategoryWithGroups[];
+  groups: Group[];
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
@@ -110,9 +111,9 @@ const CodeComparison = ({
   const [selectedLeftSolution, setSelectedLeftSolution] =
     useState(defaultSolutionValue);
 
-  const groups = useMemo(
-    () => superGroups.flatMap((g) => g.groups),
-    [superGroups],
+  const solutionsWithGroup = useMemo(
+    () => categories.flatMap((g) => g.solutions),
+    [categories],
   );
 
   const groupOptions = useMemo(
@@ -122,8 +123,8 @@ const CodeComparison = ({
         value: defaultGroupValue,
       },
       ...groups.map((g) => ({
-        label: g.name,
-        value: g.name,
+        label: g.label,
+        value: g.key,
       })),
     ],
     [intl, groups],
@@ -131,24 +132,30 @@ const CodeComparison = ({
 
   const leftSolution = useMemo(
     () =>
-      groups
-        .find((g) => g.name === selectedLeftGroup)
-        ?.solutions.find((s) => s.id === selectedLeftSolution),
-    [groups, selectedLeftGroup, selectedLeftSolution],
+      solutionsWithGroup.find(
+        (s) =>
+          s.groupKey === selectedLeftGroup &&
+          s.solutionId === selectedLeftSolution,
+      ),
+    [solutionsWithGroup, selectedLeftGroup, selectedLeftSolution],
   );
 
   const rightSolution = useMemo(
     () =>
-      groups
-        .find((g) => g.name === selectedRightGroup)
-        ?.solutions.find((s) => s.id === selectedRightSolution),
-    [groups, selectedRightGroup, selectedRightSolution],
+      solutionsWithGroup.find(
+        (s) =>
+          s.groupKey === selectedRightGroup &&
+          s.solutionId === selectedRightSolution,
+      ),
+    [solutionsWithGroup, selectedRightGroup, selectedRightSolution],
   );
 
   useEffect(() => {
-    const group = groups.find((g) => g.name === selectedLeftGroup);
+    const solutions = solutionsWithGroup.filter(
+      (s) => s.groupKey === selectedLeftGroup,
+    );
 
-    getOptions(authContext, group).then((options) => {
+    getOptions(authContext, solutions).then((options) => {
       setLeftSolutionOptions([
         {
           label: intl.formatMessage(messages.defaultSolutionOption),
@@ -157,12 +164,14 @@ const CodeComparison = ({
         ...options,
       ]);
     });
-  }, [intl, selectedLeftGroup, groups, authContext]);
+  }, [intl, selectedLeftGroup, solutionsWithGroup, authContext]);
 
   useEffect(() => {
-    const group = groups.find((g) => g.name === selectedRightGroup);
+    const solutions = solutionsWithGroup.filter(
+      (s) => s.groupKey === selectedRightGroup,
+    );
 
-    getOptions(authContext, group).then((options) => {
+    getOptions(authContext, solutions).then((options) => {
       setRightSolutionOptions([
         {
           label: intl.formatMessage(messages.defaultSolutionOption),
@@ -171,7 +180,39 @@ const CodeComparison = ({
         ...options,
       ]);
     });
-  }, [intl, selectedRightGroup, groups, authContext]);
+  }, [intl, selectedRightGroup, solutionsWithGroup, authContext]);
+
+  useEffect(() => {
+    if (selectedLeftSolution) {
+      const leftSolution = solutionsWithGroup.find(
+        (s) => s.solutionId === selectedLeftSolution,
+      );
+
+      if (leftSolution) {
+        setSelectedLeftGroup(leftSolution.groupKey);
+        setSelectedLeftSolution(leftSolution.solutionId);
+      } else {
+        setSelectedLeftGroup(defaultGroupValue);
+        setSelectedLeftSolution(defaultSolutionValue);
+      }
+    }
+
+    if (selectedRightSolution) {
+      const rightSolution = solutionsWithGroup.find(
+        (s) => s.solutionId === selectedRightSolution,
+      );
+
+      if (rightSolution) {
+        setSelectedRightGroup(rightSolution.groupKey);
+        setSelectedRightSolution(rightSolution.solutionId);
+      } else {
+        setSelectedRightGroup(defaultGroupValue);
+        setSelectedRightSolution(defaultSolutionValue);
+      }
+    }
+    // this should only be triggerd if the groups change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groups, solutionsWithGroup]);
 
   return (
     <>
@@ -221,13 +262,13 @@ const CodeComparison = ({
                   onClick={(e) => {
                     e.stopPropagation();
 
-                    setModalSolutionId(leftSolution.id);
+                    setModalSolutionId(leftSolution.solutionId);
                   }}
-                  data-testid={`left-edit-button`}
+                  data-testid={`left-view-button`}
                 >
                   <FormattedMessage
-                    id="CodeComparison.edit"
-                    defaultMessage="Edit"
+                    id="CodeComparison.view"
+                    defaultMessage="View"
                   />
                 </Button>
               )}
@@ -238,7 +279,7 @@ const CodeComparison = ({
                 sessionId={sessionId}
                 taskId={taskId}
                 taskType={taskType}
-                solutionId={leftSolution.id}
+                solutionId={leftSolution.solutionId}
               />
             )}
           </Col>
@@ -266,13 +307,13 @@ const CodeComparison = ({
                   onClick={(e) => {
                     e.stopPropagation();
 
-                    setModalSolutionId(rightSolution.id);
+                    setModalSolutionId(rightSolution.solutionId);
                   }}
-                  data-testid={`right-edit-button`}
+                  data-testid={`right-view-button`}
                 >
                   <FormattedMessage
-                    id="CodeComparison.edit"
-                    defaultMessage="Edit"
+                    id="CodeComparison.view"
+                    defaultMessage="View"
                   />
                 </Button>
               )}
@@ -283,7 +324,7 @@ const CodeComparison = ({
                 sessionId={sessionId}
                 taskId={taskId}
                 taskType={taskType}
-                solutionId={rightSolution.id}
+                solutionId={rightSolution.solutionId}
               />
             )}
           </Col>

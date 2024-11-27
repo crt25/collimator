@@ -3,7 +3,6 @@ import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
-  CriterionGroupDefinition,
 } from "../criterion-base";
 import {
   analyzeAst,
@@ -11,7 +10,6 @@ import {
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
 import StatementCriterionFilterForm from "./StatementCriterionFilterForm";
-import StatementCriterionGroupForm from "./StatementCriterionGroupForm";
 
 type Criterion = CriterionType.statement;
 
@@ -27,12 +25,8 @@ export interface StatementFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface StatementGroupCriterion extends CriterionBase<Criterion> {
-  granularity: number;
-}
-
 const toAnalysisInput = (
-  _config: StatementFilterCriterion | StatementGroupCriterion,
+  _config: StatementFilterCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.statement> => ({
   criterion: CriterionType.statement,
   input: undefined,
@@ -72,22 +66,5 @@ export const StatementCriterionFilter: CriterionFilterDefinition<
       config.minimumCount <= numberOfStatements &&
       config.maximumCount >= numberOfStatements
     );
-  },
-};
-
-export const StatementCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  StatementGroupCriterion
-> = {
-  criterion: CriterionType.statement,
-  formComponent: StatementCriterionGroupForm,
-  messages: () => messages,
-  getGroup: (config, analysis) => {
-    const numberOfStatements = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return Math.round(numberOfStatements / config.granularity).toString();
   },
 };

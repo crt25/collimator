@@ -46,22 +46,11 @@ interface CriterionDefinition<
   };
 }
 
-export interface AstGroup<Type extends CriterionType> {
-  criterion: Type;
-}
-
 export interface CriterionFilterDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > extends CriterionDefinition<Type, Criterion> {
   matchesFilter: (criterion: Criterion, analysis: CurrentAnalysis) => boolean;
-}
-
-export interface CriterionGroupDefinition<
-  Type extends CriterionType,
-  Criterion extends CriterionBase<Type>,
-> extends CriterionDefinition<Type, Criterion> {
-  getGroup: (criterion: Criterion, analysis: CurrentAnalysis) => string;
 }
 
 export type DefinitionCriterion<T> =

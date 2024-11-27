@@ -83,7 +83,7 @@ type StudentProgress = {
 };
 
 const nameTemplate = (progress: StudentProgress) => {
-  return <StudentName student={progress.student} />;
+  return <StudentName pseudonym={progress.student.pseudonym} />;
 };
 
 const taskTemplate = (taskId: number) =>

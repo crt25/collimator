@@ -12,6 +12,16 @@ const Tooltip = styled.div<{ isShown: boolean }>`
   background-color: var(--background-color);
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
+
+  .data {
+    & > div > span:first-of-type {
+      padding-right: 0.25rem;
+
+      &::after {
+        content: ":";
+      }
+    }
+  }
 `;
 
 export default Tooltip;

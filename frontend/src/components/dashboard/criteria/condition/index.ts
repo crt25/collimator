@@ -3,10 +3,8 @@ import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
-  CriterionGroupDefinition,
 } from "../criterion-base";
 import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
-import ConditionCriterionGroupForm from "./ConditionCriterionGroupForm";
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
@@ -27,12 +25,8 @@ export interface ConditionFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface ConditionGroupCriterion extends CriterionBase<Criterion> {
-  granularity: number;
-}
-
 const toAnalysisInput = (
-  _criterion: ConditionFilterCriterion | ConditionGroupCriterion,
+  _criterion: ConditionFilterCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.condition> => ({
   criterion: CriterionType.condition,
   input: undefined,
@@ -72,22 +66,5 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
       config.minimumCount <= numberOfConditions &&
       config.maximumCount >= numberOfConditions
     );
-  },
-};
-
-export const ConditionCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  ConditionGroupCriterion
-> = {
-  criterion: CriterionType.condition,
-  formComponent: ConditionCriterionGroupForm,
-  messages: () => messages,
-  getGroup: (config, analysis) => {
-    const numberOfConditions = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return Math.round(numberOfConditions / config.granularity).toString();
   },
 };

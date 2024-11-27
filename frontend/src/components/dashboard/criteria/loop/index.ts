@@ -3,7 +3,6 @@ import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
-  CriterionGroupDefinition,
 } from "../criterion-base";
 import {
   analyzeAst,
@@ -11,7 +10,6 @@ import {
   CriterionType,
 } from "@/data-analyzer/analyze-asts";
 import LoopCriterionFilterForm from "./LoopCriterionFilterForm";
-import LoopCriterionGroupForm from "./LoopCriterionGroupForm";
 
 type Criterion = CriterionType.loop;
 
@@ -27,12 +25,8 @@ export interface LoopFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface LoopGroupCriterion extends CriterionBase<Criterion> {
-  granularity: number;
-}
-
 const toAnalysisInput = (
-  _criterion: LoopFilterCriterion | LoopGroupCriterion,
+  _criterion: LoopFilterCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.loop> => ({
   criterion: CriterionType.loop,
   input: undefined,
@@ -72,22 +66,5 @@ export const LoopCriterionFilter: CriterionFilterDefinition<
       config.minimumCount <= numberOfLoops &&
       config.maximumCount >= numberOfLoops
     );
-  },
-};
-
-export const LoopCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  LoopGroupCriterion
-> = {
-  criterion: CriterionType.loop,
-  formComponent: LoopCriterionGroupForm,
-  messages: () => messages,
-  getGroup: (config, analysis) => {
-    const numberOfLoops = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return Math.round(numberOfLoops / config.granularity).toString();
   },
 };

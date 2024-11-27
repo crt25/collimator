@@ -6751,6 +6751,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chartjs-plugin-annotation@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "chartjs-plugin-annotation@npm:3.1.0"
+  peerDependencies:
+    chart.js: ">=4.0.0"
+  checksum: 10c0/5494a008a013888b122ac6754c1314e100b6368f55110f08401e3cbdb5969b372ece9569ed3b166b8fbad8c2dc84f15795602079613e2f5f65f787a0931bd676
+  languageName: node
+  linkType: hard
+
 "check-error@npm:^2.1.1":
   version: 2.1.1
   resolution: "check-error@npm:2.1.1"
@@ -6956,6 +6965,7 @@ __metadata:
     babel-plugin-istanbul: "npm:^7.0.0"
     bootstrap: "npm:^5.3.3"
     chart.js: "npm:^4.4.6"
+    chartjs-plugin-annotation: "npm:^3.1.0"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.12"
     eslint-config-prettier: "npm:^9.1.0"

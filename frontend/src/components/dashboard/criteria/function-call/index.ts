@@ -3,10 +3,8 @@ import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
-  CriterionGroupDefinition,
 } from "../criterion-base";
 import FunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
-import FunctionCallCriterionGroupForm from "./FunctionCallCriterionGroupForm";
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
@@ -28,13 +26,8 @@ export interface FunctionCallFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface FunctionCallGroupCriterion extends CriterionBase<Criterion> {
-  functionName?: string;
-  granularity: number;
-}
-
 const toAnalysisInput = (
-  criterion: FunctionCallFilterCriterion | FunctionCallGroupCriterion,
+  criterion: FunctionCallFilterCriterion,
 ): CriteriaToAnalyzeInput<CriterionType.functionCall> => {
   const name = criterion.functionName?.trim();
 
@@ -82,22 +75,5 @@ export const FunctionCallCriterionFilter: CriterionFilterDefinition<
       config.minimumCount <= numberOfFunctionCalls &&
       config.maximumCount >= numberOfFunctionCalls
     );
-  },
-};
-
-export const FunctionCallCriterionGroup: CriterionGroupDefinition<
-  Criterion,
-  FunctionCallGroupCriterion
-> = {
-  criterion: CriterionType.functionCall,
-  formComponent: FunctionCallCriterionGroupForm,
-  messages: () => messages,
-  getGroup: (config, analysis) => {
-    const numberOfFunctionCalls = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return Math.round(numberOfFunctionCalls / config.granularity).toString();
   },
 };
