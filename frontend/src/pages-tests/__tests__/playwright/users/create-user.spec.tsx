@@ -1,6 +1,10 @@
 import { expect, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
-import { CreateUserDto, UserType } from "@/api/collimator/generated/models";
+import {
+  AuthenticationProvider,
+  CreateUserDto,
+  UserType,
+} from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import {
   getUsersControllerCreateV0ResponseMock,
@@ -51,6 +55,7 @@ test.describe("/user/create", () => {
       name: "Jane Doe",
       email: "jane@doe.com",
       type: UserType.TEACHER,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
   });
 
@@ -68,6 +73,7 @@ test.describe("/user/create", () => {
       name: "Jane Doe",
       email: "jane@doe.com",
       type: UserType.ADMIN,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
   });
 });

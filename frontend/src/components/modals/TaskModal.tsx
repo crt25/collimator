@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import styled from "@emotion/styled";
-import { ReactNode, useCallback, useRef } from "react";
+import { ReactNode, useCallback, useRef, useState } from "react";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
@@ -45,6 +45,7 @@ const TaskModal = ({
   showSaveButton?: boolean;
   onSave?: (blob: Blob) => void;
 }) => {
+  const [appLoaded, setAppLoaded] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
 
   const onImportTask = useCallback(async () => {
@@ -75,6 +76,8 @@ const TaskModal = ({
   const loadAppData = useCallback(() => {
     if (embeddedApp.current) {
       loadContent(embeddedApp.current);
+
+      setAppLoaded(true);
     }
   }, [loadContent]);
 
@@ -100,6 +103,7 @@ const TaskModal = ({
         <Modal.Footer>
           {showResetButton && (
             <Button
+              disabled={!appLoaded}
               onClick={loadAppData}
               variant="secondary"
               data-testid="reset-button"
@@ -109,6 +113,7 @@ const TaskModal = ({
           )}
           {showImportButton && (
             <Button
+              disabled={!appLoaded}
               onClick={onImportTask}
               variant="secondary"
               data-testid="import-button"
@@ -121,6 +126,7 @@ const TaskModal = ({
           )}
           {showExportButton && (
             <Button
+              disabled={!appLoaded}
               onClick={onExportTask}
               variant="secondary"
               data-testid="export-button"
@@ -133,6 +139,7 @@ const TaskModal = ({
           )}
           {showSaveButton && (
             <Button
+              disabled={!appLoaded}
               onClick={async () => {
                 if (embeddedApp.current && onSave) {
                   const task = await embeddedApp.current.sendRequest({

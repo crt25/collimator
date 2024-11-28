@@ -3,7 +3,7 @@ import { Page } from "@playwright/test";
 
 export class TaskFormPageModel {
   private static readonly taskForm = '[data-testid="task-form"]';
-  private static readonly taskEditModal = '[data-testid="task-edit-modal"]';
+  private static readonly taskModal = '[data-testid="task-modal"]';
 
   readonly page: Page;
 
@@ -28,12 +28,12 @@ export class TaskFormPageModel {
   }
 
   get taskEditModal() {
-    return this.page.locator(TaskFormPageModel.taskEditModal);
+    return this.page.locator(TaskFormPageModel.taskModal);
   }
 
   async openEditTaskModal() {
     await this.form.getByTestId("edit-task-button").click();
-    await this.page.waitForSelector(TaskFormPageModel.taskEditModal);
+    await this.page.waitForSelector(TaskFormPageModel.taskModal);
   }
 
   async importTask() {

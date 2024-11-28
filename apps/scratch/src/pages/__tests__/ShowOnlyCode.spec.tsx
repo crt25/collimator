@@ -29,32 +29,17 @@ test.describe("/show", () => {
       }),
     );
 
-    await page.goto(`${baseURL!}/show?showStage`);
+    await page.goto(`${baseURL!}/show`);
 
     await page.waitForSelector("#root");
 
     await defineCustomMessageEvent(page);
   });
 
-  test("can select the stage", async ({ page: pwPage }) => {
+  test("does not show stage", async ({ page: pwPage }) => {
     const page = new SolveTaskPage(pwPage);
 
-    await page.selectStage();
-
-    // motion blocks should not be visible
-    expect(page.getBlockInToolbox("motion_movesteps")).toHaveCount(0);
-  });
-
-  test("can toggle fullscreen", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
-
-    expect(page.fullscreenButton).toHaveCount(1);
-    await page.enableFullScreen();
-    expect(page.fullscreenButton).toHaveCount(0);
-
-    expect(page.unFullscreenButton).toHaveCount(1);
-    await page.disableFullScreen();
-    expect(page.unFullscreenButton).toHaveCount(0);
+    expect(page.stage).toHaveCount(0);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {

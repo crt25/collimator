@@ -14,6 +14,7 @@ const checkClassesInList = (expectedClasses, returnedClasses): void => {
     const {
       type: _ignore_type,
       oidcSub: _ignore_oidcSub,
+      email: _ignore_email,
       authenticationProvider: _ignore_authenticationProvider,
       ...referenceTeacher
     } = users.find((u) => u.id === teacherId)!;

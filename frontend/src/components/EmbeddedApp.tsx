@@ -48,6 +48,12 @@ const StyledIFrame = styled.iframe`
 const MAX_COUNTER = 1000000;
 let counter = 0;
 
+export class IFrameUnavailableError extends Error {
+  constructor() {
+    super("Iframe is not available");
+  }
+}
+
 const postMessageToIFrame = (
   iframe: HTMLIFrameElement,
   message: AppIFrameMessage,
@@ -129,7 +135,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         });
       }
 
-      return Promise.reject(new Error("No iframe available"));
+      return Promise.reject(new IFrameUnavailableError());
     },
     [iframe],
   );
