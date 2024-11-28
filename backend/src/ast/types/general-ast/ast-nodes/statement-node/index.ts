@@ -20,7 +20,7 @@ export type StatementNode =
   | FunctionCallNode
   | StatementSequenceNode;
 
-export {
+export type {
   ConditionNode,
   FunctionDeclarationNode,
   LoopNode,
