@@ -1,6 +1,10 @@
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { ConditionCriterionAxis } from "../criteria/condition";
-import { AxisConfig, DefinitionCriterion } from "../criteria/criterion-base";
+import {
+  AxisConfig,
+  CriterionAxisDefinition,
+  DefinitionCriterion,
+} from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
 import { FunctionCallCriterionAxis } from "../criteria/function-call";
 import { FunctionDeclarationCriterionAxis } from "../criteria/function-declaration";
@@ -8,6 +12,9 @@ import { LoopCriterionAxis } from "../criteria/loop";
 import { StatementCriterionAxis } from "../criteria/statement";
 import { match } from "ts-pattern";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { TestCriterionAxis } from "../criteria/test";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
+import { CriterionType } from "../criteria/criterion-type";
 
 export const axisCriteria = [
   StatementCriterionAxis,
@@ -16,6 +23,7 @@ export const axisCriteria = [
   LoopCriterionAxis,
   FunctionCallCriterionAxis,
   FunctionDeclarationCriterionAxis,
+  TestCriterionAxis,
 ];
 
 type AxesCriterionDefinition = (typeof axisCriteria)[number];
@@ -31,41 +39,27 @@ export type AxisDefinitionByCriterion = {
   };
 };
 
+const getAxisDefinition = (
+  axisType: AxesCriterionType,
+): CriterionAxisDefinition<CriterionType> =>
+  match(axisType)
+    .returnType<CriterionAxisDefinition<CriterionType>>()
+    .with(AstCriterionType.statement, () => StatementCriterionAxis)
+    .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
+    .with(AstCriterionType.condition, () => ConditionCriterionAxis)
+    .with(AstCriterionType.loop, () => LoopCriterionAxis)
+    .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis)
+    .with(
+      AstCriterionType.functionDeclaration,
+      () => FunctionDeclarationCriterionAxis,
+    )
+    .with(MetaCriterionType.test, () => TestCriterionAxis)
+    .exhaustive();
+
 export const getAxisAnalysisValue = (
   axisType: AxesCriterionType,
   analysis: CurrentAnalysis,
-): number =>
-  match(axisType)
-    .returnType<number>()
-    .with(AstCriterionType.statement, () =>
-      StatementCriterionAxis.getAxisValue(analysis),
-    )
-    .with(AstCriterionType.expression, () =>
-      ExpressionCriterionAxis.getAxisValue(analysis),
-    )
-    .with(AstCriterionType.condition, () =>
-      ConditionCriterionAxis.getAxisValue(analysis),
-    )
-    .with(AstCriterionType.loop, () => LoopCriterionAxis.getAxisValue(analysis))
-    .with(AstCriterionType.functionCall, () =>
-      FunctionCallCriterionAxis.getAxisValue(analysis),
-    )
-    .with(AstCriterionType.functionDeclaration, () =>
-      FunctionDeclarationCriterionAxis.getAxisValue(analysis),
-    )
-    .otherwise(() => {
-      throw new Error("AST axis does not match output");
-    });
+): number => getAxisDefinition(axisType).getAxisValue(analysis);
 
 export const getAxisConfig = (axisType: AxesCriterionType): AxisConfig =>
-  match(axisType)
-    .with(AstCriterionType.statement, () => StatementCriterionAxis.config)
-    .with(AstCriterionType.expression, () => ExpressionCriterionAxis.config)
-    .with(AstCriterionType.condition, () => ConditionCriterionAxis.config)
-    .with(AstCriterionType.loop, () => LoopCriterionAxis.config)
-    .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis.config)
-    .with(
-      AstCriterionType.functionDeclaration,
-      () => FunctionDeclarationCriterionAxis.config,
-    )
-    .exhaustive();
+  getAxisDefinition(axisType).config;

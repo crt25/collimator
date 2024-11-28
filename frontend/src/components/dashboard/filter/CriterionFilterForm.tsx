@@ -1,4 +1,8 @@
-import { AstFilter, FilterCriterionType, FilterDefinitionByCriterion } from ".";
+import {
+  FilterCriterion,
+  FilterCriterionType,
+  FilterDefinitionByCriterion,
+} from ".";
 import React from "react";
 import { match } from "ts-pattern";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
@@ -9,12 +13,14 @@ import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
+import { TestCriterionFilter } from "../criteria/test";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
 
 type FilterFormByCriterion = {
   [key in FilterCriterionType]: FilterDefinitionByCriterion[key]["formComponent"];
 };
 
-type Props<Type extends AstFilter["criterion"]> = {
+type Props<Type extends FilterCriterion["criterion"]> = {
   criterion: Type;
   props: React.ComponentPropsWithoutRef<FilterFormByCriterion[Type]>;
 };
@@ -22,8 +28,8 @@ type Props<Type extends AstFilter["criterion"]> = {
 const CriterionFilterForm = (props: Props<FilterCriterionType>) =>
   match(props)
     .with(
-      { criterion: AstCriterionType.none },
-      ({ props }: Props<AstCriterionType.none>) => (
+      { criterion: MetaCriterionType.none },
+      ({ props }: Props<MetaCriterionType.none>) => (
         <NoCriterionFilter.formComponent {...props} />
       ),
     )
@@ -61,6 +67,12 @@ const CriterionFilterForm = (props: Props<FilterCriterionType>) =>
       { criterion: AstCriterionType.functionDeclaration },
       ({ props }: Props<AstCriterionType.functionDeclaration>) => (
         <FunctionDeclarationCriterionFilter.formComponent {...props} />
+      ),
+    )
+    .with(
+      { criterion: MetaCriterionType.test },
+      ({ props }: Props<MetaCriterionType.test>) => (
+        <TestCriterionFilter.formComponent {...props} />
       ),
     )
     .exhaustive();

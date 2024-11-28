@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from "react-intl";
 import Select from "../form/Select";
 import { useCallback, useState } from "react";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
-import { AstFilter } from "./filter";
+import { FilterCriterion } from "./filter";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import Analysis from "./Analysis";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
@@ -15,6 +15,7 @@ import { useGrouping } from "./hooks/useGrouping";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { AxesCriterionType } from "./axes";
 import { ChartSplit } from "./chartjs-plugins/select";
+import { MetaCriterionType } from "./criteria/meta-criterion-type";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -41,9 +42,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const [xAxis, setXAxis] = useState<AxesCriterionType>(
     AstCriterionType.statement,
   );
-  const [yAxis, setYAxis] = useState<AxesCriterionType>(AstCriterionType.loop);
+  const [yAxis, setYAxis] = useState<AxesCriterionType>(MetaCriterionType.test);
 
-  const [filters, setFilters] = useState<AstFilter[]>([]);
+  const [filters, setFilters] = useState<FilterCriterion[]>([]);
   const [splits, setSplits] = useState<ChartSplit[]>([]);
 
   const {

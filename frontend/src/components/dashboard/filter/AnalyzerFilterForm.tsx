@@ -7,11 +7,11 @@ import {
   useIntl,
 } from "react-intl";
 import { useCallback, useMemo, useState } from "react";
-import { AstFilter, FilterCriterionType, filterCriteria } from ".";
+import { FilterCriterion, FilterCriterionType, filterCriteria } from ".";
 import AnalyzerTags from "../AnalyzerTags";
 import CriterionFilterForm from "./CriterionFilterForm";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { TaskType } from "@/api/collimator/generated/models";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
 
 const Label = styled.label`
   display: block;
@@ -42,12 +42,12 @@ const filterNameByCriterion = filterCriteria.reduce(
   },
 );
 
-const FilterCriterion = ({
+const FilterCriterionEntry = ({
   taskType,
   criterion,
 }: {
   taskType: TaskType;
-  criterion: AstFilter;
+  criterion: FilterCriterion;
 }) => {
   const intl = useIntl();
 
@@ -62,18 +62,18 @@ const AnalyzerFilterForm = ({
   setFilters,
 }: {
   taskType: TaskType;
-  filters: AstFilter[];
-  setFilters: (filters: AstFilter[]) => void;
+  filters: FilterCriterion[];
+  setFilters: (filters: FilterCriterion[]) => void;
 }) => {
   const [filterToEdit, setFilterToEdit] = useState<FilterCriterionType>(
-    AstCriterionType.none,
+    MetaCriterionType.none,
   );
 
-  const [currentFilter, setCurrentFilter] = useState<AstFilter | undefined>(
-    undefined,
-  );
+  const [currentFilter, setCurrentFilter] = useState<
+    FilterCriterion | undefined
+  >(undefined);
 
-  const onEdit = useCallback((criterion: AstFilter) => {
+  const onEdit = useCallback((criterion: FilterCriterion) => {
     setFilterToEdit(criterion.criterion);
     setCurrentFilter(criterion);
   }, []);
@@ -102,7 +102,7 @@ const AnalyzerFilterForm = ({
           setFilters(filters.filter((f) => f !== filter));
 
           if (currentFilter === filter) {
-            setFilterToEdit(AstCriterionType.none);
+            setFilterToEdit(MetaCriterionType.none);
             setCurrentFilter(undefined);
           }
         }}
@@ -110,7 +110,7 @@ const AnalyzerFilterForm = ({
         onEdit={onEdit}
       >
         {(criterion) => (
-          <FilterCriterion taskType={taskType} criterion={criterion} />
+          <FilterCriterionEntry taskType={taskType} criterion={criterion} />
         )}
       </AnalyzerTags>
 
@@ -134,13 +134,13 @@ const AnalyzerFilterForm = ({
             ? messages.updateFilter
             : messages.addFilter,
           initialValues: currentFilter ? currentFilter : {},
-          onUpdate: (newFilter: AstFilter) => {
+          onUpdate: (newFilter: FilterCriterion) => {
             setFilters([
               ...filters.filter((f) => f !== currentFilter),
               newFilter,
             ]);
             setCurrentFilter(undefined);
-            setFilterToEdit(AstCriterionType.none);
+            setFilterToEdit(MetaCriterionType.none);
           },
         }}
       />

@@ -3,7 +3,6 @@ import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
 import { GeneralAst } from "@ast/index";
 
 export enum AstCriterionType {
-  none = "none",
   statement = "statement",
   expression = "expression",
   functionCall = "functionCall",
@@ -13,7 +12,6 @@ export enum AstCriterionType {
 }
 
 export interface CriteriaBasedAnalyzerInput {
-  [AstCriterionType.none]: void;
   [AstCriterionType.statement]: void;
   [AstCriterionType.expression]: void;
   [AstCriterionType.functionCall]: {
@@ -25,7 +23,6 @@ export interface CriteriaBasedAnalyzerInput {
 }
 
 export interface CriteriaBasedAnalyzerOutput {
-  [AstCriterionType.none]: void;
   [AstCriterionType.statement]: number;
   [AstCriterionType.expression]: number;
   [AstCriterionType.functionCall]: number;

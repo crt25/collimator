@@ -9,6 +9,8 @@ import { FunctionDeclarationCriterionFilter } from "../criteria/function-declara
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { match } from "ts-pattern";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { TestCriterionFilter } from "../criteria/test";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
 
 export const filterCriteria = [
   NoCriterionFilter,
@@ -18,14 +20,13 @@ export const filterCriteria = [
   LoopCriterionFilter,
   FunctionCallCriterionFilter,
   FunctionDeclarationCriterionFilter,
+  TestCriterionFilter,
 ];
 
 type FilterCriterionDefinition = (typeof filterCriteria)[number];
-type FilterCriterion = DefinitionCriterion<FilterCriterionDefinition>;
+export type FilterCriterion = DefinitionCriterion<FilterCriterionDefinition>;
 
 export type FilterCriterionType = FilterCriterionDefinition["criterion"];
-
-export type AstFilter = FilterCriterion;
 
 export type FilterDefinitionByCriterion = {
   [key in FilterCriterionType]: FilterCriterionDefinition & {
@@ -34,11 +35,11 @@ export type FilterDefinitionByCriterion = {
 };
 
 export const matchesFilter = (
-  criterion: AstFilter,
+  criterion: FilterCriterion,
   analysis: CurrentAnalysis,
 ): boolean =>
   match(criterion)
-    .with({ criterion: AstCriterionType.none }, (criterion) =>
+    .with({ criterion: MetaCriterionType.none }, (criterion) =>
       NoCriterionFilter.matchesFilter(criterion, analysis),
     )
     .with({ criterion: AstCriterionType.statement }, (criterion) =>
@@ -58,5 +59,8 @@ export const matchesFilter = (
     )
     .with({ criterion: AstCriterionType.functionDeclaration }, (criterion) =>
       FunctionDeclarationCriterionFilter.matchesFilter(criterion, analysis),
+    )
+    .with({ criterion: MetaCriterionType.test }, (criterion) =>
+      TestCriterionFilter.matchesFilter(criterion, analysis),
     )
     .exhaustive();

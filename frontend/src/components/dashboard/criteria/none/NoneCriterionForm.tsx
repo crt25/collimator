@@ -1,9 +1,9 @@
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { NoneCriterion } from ".";
 import { CriterionFormComponent } from "../criterion-base";
+import { MetaCriterionType } from "../meta-criterion-type";
 
 const NoneCriterionForm: CriterionFormComponent<
-  AstCriterionType.none,
+  MetaCriterionType.none,
   NoneCriterion
 > = () => null;
 

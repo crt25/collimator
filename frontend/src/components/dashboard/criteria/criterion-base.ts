@@ -1,15 +1,15 @@
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { ChartTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
+import { CriterionType } from "./criterion-type";
 
-export interface CriterionBase<Type extends AstCriterionType> {
+export interface CriterionBase<Type extends CriterionType> {
   criterion: Type;
 }
 
 export type CriterionFormProps<
-  Type extends AstCriterionType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > = {
   submitMessage: MessageDescriptor;
@@ -18,7 +18,7 @@ export type CriterionFormProps<
 };
 
 export type CriterionFormComponent<
-  Type extends AstCriterionType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > = React.FunctionComponent<CriterionFormProps<Type, Criterion>>;
 
@@ -26,7 +26,7 @@ export type AxisConfig = Partial<
   ScaleOptionsByType<ChartTypeRegistry["bubble"]["scales"]>
 >;
 
-export interface CriterionAxisDefinition<Type extends AstCriterionType> {
+export interface CriterionAxisDefinition<Type extends CriterionType> {
   criterion: Type;
   messages: (taskType: TaskType) => {
     name: MessageDescriptor;
@@ -36,7 +36,7 @@ export interface CriterionAxisDefinition<Type extends AstCriterionType> {
 }
 
 interface CriterionDefinition<
-  Type extends AstCriterionType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > {
   criterion: Type;
@@ -47,7 +47,7 @@ interface CriterionDefinition<
 }
 
 export interface CriterionFilterDefinition<
-  Type extends AstCriterionType,
+  Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > extends CriterionDefinition<Type, Criterion> {
   matchesFilter: (criterion: Criterion, analysis: CurrentAnalysis) => boolean;

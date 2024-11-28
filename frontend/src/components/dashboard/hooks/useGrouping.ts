@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
-import { AstFilter, matchesFilter } from "../filter";
+import { FilterCriterion, matchesFilter } from "../filter";
 import { ChartSplit, SplitType } from "../chartjs-plugins/select";
 
 export type AnalyzedSolution = {
@@ -57,7 +57,7 @@ const isWithinGroup = (
 
 export const useGrouping = (
   solutions: CurrentAnalysis[] | undefined,
-  filters: AstFilter[],
+  filters: FilterCriterion[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
