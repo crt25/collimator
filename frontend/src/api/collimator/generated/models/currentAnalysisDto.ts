@@ -11,8 +11,12 @@ export interface CurrentAnalysisDto {
   genericAst: string;
   /** The analysis's unique identifier, a positive integer. */
   id: number;
+  /** The number of passed tests. */
+  passedTests: number;
   /** The analysis's unique identifier, a positive integer. */
   solutionId: number;
   /** The pseudonym of the student */
   studentPseudonym: string;
+  /** The total number of tests. */
+  totalTests: number;
 }

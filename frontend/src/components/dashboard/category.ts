@@ -27,9 +27,9 @@ const messages = defineMessages({
 export enum Category {
   none = 0,
   // whether all filters match
-  matches = 1 << 0,
+  matchesFilters = 1 << 0,
   // whether all tests pass
-  testsPass = 1 << 1,
+  passesTests = 1 << 1,
 }
 
 const hasFlag = (category: Category, flag: Category): boolean =>
@@ -39,11 +39,11 @@ export const getCategoryName = (
   intl: IntlShape,
   category: Category,
 ): string => {
-  const testsPass = hasFlag(category, Category.testsPass);
-  const matchesFilter = hasFlag(category, Category.matches);
+  const passesTests = hasFlag(category, Category.passesTests);
+  const matchesFilter = hasFlag(category, Category.matchesFilters);
 
   let name = intl.formatMessage(
-    testsPass ? messages.correct : messages.inCorrect,
+    passesTests ? messages.correct : messages.inCorrect,
   );
 
   if (!matchesFilter) {
@@ -56,11 +56,11 @@ export const getCategoryName = (
 type PatternType = Parameters<typeof pattern.draw>[0];
 
 export const getCanvasPattern = (category: Category): CanvasPattern => {
-  const testsPass = hasFlag(category, Category.testsPass);
-  const matchesFilter = hasFlag(category, Category.matches);
+  const testsPass = hasFlag(category, Category.passesTests);
+  const matchesFilter = hasFlag(category, Category.matchesFilters);
 
   const color: [number, number, number, number] = testsPass
-    ? [46, 204, 113, 1]
+    ? [39, 174, 96, 1]
     : [231, 76, 60, 1];
 
   const patternName: PatternType = testsPass ? "disc" : "diagonal";

@@ -186,6 +186,9 @@ model Solution {
   sessionId      Int
   failedAnalyses Int      @default(0)
 
+  totalTests  Int
+  passedTests Int
+
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)

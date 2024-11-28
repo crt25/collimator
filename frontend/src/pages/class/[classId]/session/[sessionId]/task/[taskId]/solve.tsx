@@ -72,7 +72,9 @@ const SolveTaskPage = () => {
     });
 
     await createSolution(session.klass.id, session.id, task.id, {
-      file: response.result,
+      file: response.result.file,
+      totalTests: response.result.totalTests,
+      passedTests: response.result.passedTests,
     });
   }, [session, task, taskFile, createSolution]);
 

@@ -9,4 +9,8 @@
 export interface CreateSolutionDto {
   /** Solution file */
   file: Blob;
+  /** The number of the tests that passed. Must be a positive integer and smaller than or equal to totalTests. */
+  passedTests: number;
+  /** The total number of tests. Must be a positive integer. */
+  totalTests: number;
 }

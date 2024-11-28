@@ -10,7 +10,11 @@ export interface ExistingSolutionDto {
   createdAt: string;
   /** The solution's unique identifier, a positive integer. */
   id: number;
+  /** The number of passed tests. */
+  passedTests: number;
   sessionId: number;
   studentId: number;
   taskId: number;
+  /** The total number of tests. */
+  totalTests: number;
 }

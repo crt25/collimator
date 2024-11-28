@@ -33,12 +33,78 @@ export const useEmbeddedScratch = (
           break;
         case "getSubmission":
           if (vm) {
-            respondToMessageEvent({
-              procedure: "getSubmission",
-              result: new Blob([vm.toJSON()], {
-                type: "application/json",
-              }),
-            });
+            let assertionsEnabled = false;
+            const setAssertionsEnabled = (enabled: boolean): void => {
+              assertionsEnabled = enabled;
+            };
+
+            vm.runtime.once(
+              "ARE_ASSERTIONS_ENABLED_RESPONSE",
+              setAssertionsEnabled,
+            );
+
+            // check if assertions are enabled
+            vm.runtime.emit("ARE_ASSERTIONS_ENABLED_QUERY");
+
+            if (!assertionsEnabled) {
+              respondToMessageEvent({
+                procedure: "getSubmission",
+                result: {
+                  file: new Blob([vm.toJSON()], {
+                    type: "application/json",
+                  }),
+                  totalTests: 0,
+                  passedTests: 0,
+                },
+              });
+
+              return;
+            }
+            // if assertions are enabled, we need to run the tests before submitting
+
+            // first stop the project and reset the state
+            vm.runtime.stopAll();
+
+            // then backup project state
+            Promise.all([
+              saveCrtProject(vm).then((blob) => blob.arrayBuffer()),
+              vm.toJSON(),
+            ])
+              .then(([zip, json]) =>
+                new Promise<{
+                  totalTests: number;
+                  passedTests: number;
+                  zip: ArrayBuffer;
+                  json: string;
+                }>((resolve) => {
+                  vm.runtime.once(
+                    "ASSERTIONS_CHECKED",
+                    (totalTests, passedTests) =>
+                      resolve({ totalTests, passedTests, zip, json }),
+                  );
+
+                  // once the project is backed up, run the project
+                  vm.greenFlag();
+                }).then(({ totalTests, passedTests, zip, json }) => {
+                  // wait for project run to finish
+                  respondToMessageEvent({
+                    procedure: "getSubmission",
+                    result: {
+                      file: new Blob([json], {
+                        type: "application/json",
+                      }),
+                      totalTests,
+                      passedTests,
+                    },
+                  });
+
+                  return loadCrtProject(vm, zip);
+                }),
+              )
+              .catch((e) => {
+                console.error(e);
+                toast.error(intl.formatMessage(messages.cannotSaveProject));
+              });
           }
           break;
         case "getTask":

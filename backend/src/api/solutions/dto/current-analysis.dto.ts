@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform } from "class-transformer";
+import { CurrentAnalysis } from "../solutions.service";
 
 export class CurrentAnalysisDto {
   @ApiProperty({
@@ -15,6 +16,20 @@ export class CurrentAnalysisDto {
   })
   @Expose()
   readonly solutionId!: number;
+
+  @ApiProperty({
+    example: 12,
+    description: "The total number of tests.",
+  })
+  @Expose()
+  readonly totalTests!: number;
+
+  @ApiProperty({
+    example: 10,
+    description: "The number of passed tests.",
+  })
+  @Expose()
+  readonly passedTests!: number;
 
   @ApiProperty({
     example: "John Doe",
@@ -33,7 +48,7 @@ export class CurrentAnalysisDto {
   @Expose()
   readonly genericAst!: string;
 
-  static fromQueryResult(data: CurrentAnalysisDto): CurrentAnalysisDto {
+  static fromQueryResult(data: CurrentAnalysis): CurrentAnalysisDto {
     return plainToInstance(CurrentAnalysisDto, data, {
       excludeExtraneousValues: true,
     });

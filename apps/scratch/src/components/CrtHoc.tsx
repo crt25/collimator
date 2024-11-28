@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import VM from "scratch-vm";
 import { patchScratchVm } from "../vm";
 import { useEmbeddedScratch } from "../hooks/useEmbeddedScratch";
@@ -14,19 +14,7 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
   ) {
     const [vm, setVm] = useState<VM | null>(null);
 
-    const { hasLoaded, sendRequest } = useEmbeddedScratch(vm, props.intl);
-
-    const reportProgress = useCallback(
-      (totalAssertions: number, passedAssertions: number) =>
-        sendRequest({
-          procedure: "reportProgress",
-          arguments: {
-            totalTests: totalAssertions,
-            passedTests: passedAssertions,
-          },
-        }),
-      [sendRequest],
-    );
+    const { hasLoaded } = useEmbeddedScratch(vm, props.intl);
 
     if (!hasLoaded) {
       return null;
@@ -39,7 +27,6 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
           setVm(vm);
           patchScratchVm(vm);
         }}
-        onTaskProgress={props.reportProgress && reportProgress}
         basePath={`${basePath}/`}
       />
     );

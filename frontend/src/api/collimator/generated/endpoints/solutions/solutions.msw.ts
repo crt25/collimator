@@ -14,9 +14,11 @@ export const getSolutionsControllerCreateV0ResponseMock = (
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
+  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
+  totalTests: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 
@@ -28,9 +30,11 @@ export const getSolutionsControllerFindAllV0ResponseMock =
     ).map(() => ({
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       id: faker.number.int({ min: undefined, max: undefined }),
+      passedTests: faker.number.int({ min: undefined, max: undefined }),
       sessionId: faker.number.int({ min: undefined, max: undefined }),
       studentId: faker.number.int({ min: undefined, max: undefined }),
       taskId: faker.number.int({ min: undefined, max: undefined }),
+      totalTests: faker.number.int({ min: undefined, max: undefined }),
     }));
 
 export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
@@ -41,8 +45,10 @@ export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
     ).map(() => ({
       genericAst: faker.word.sample(),
       id: faker.number.int({ min: undefined, max: undefined }),
+      passedTests: faker.number.int({ min: undefined, max: undefined }),
       solutionId: faker.number.int({ min: undefined, max: undefined }),
       studentPseudonym: faker.word.sample(),
+      totalTests: faker.number.int({ min: undefined, max: undefined }),
     }));
 
 export const getSolutionsControllerFindOneV0ResponseMock = (
@@ -50,9 +56,11 @@ export const getSolutionsControllerFindOneV0ResponseMock = (
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
+  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
+  totalTests: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 

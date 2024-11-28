@@ -116,7 +116,6 @@ const GUIComponent = (props: {
   onRequestCloseCostumeLibrary?: () => void;
   onShowPrivacyPolicy?: () => void;
   onTabSelect?: () => void;
-  onTaskProgress?: (totalAssertions: number, passedAssertions: number) => void;
   soundsTabVisible?: boolean;
   // see https://github.com/scratchfoundation/scratch-gui/blob/d678d609e182ccc5ab557d7d45a3cc3e6430b056/src/lib/layout-constants.js#L7
   stageSizeMode: StageSizeMode;
@@ -161,7 +160,6 @@ const GUIComponent = (props: {
     theme,
     tipsLibraryVisible,
     vm,
-    onTaskProgress,
     ...componentProps
   } = omit(props, "dispatch");
 
@@ -186,16 +184,10 @@ const GUIComponent = (props: {
 
     if (!canEditTask) {
       // if we cannot edit the task, we always enable assertions
-      // if the extension is loaded
-
-      const onAssertionsChecked = (
-        totalAssertions: number,
-        passedAssertions: number,
-      ) => onTaskProgress && onTaskProgress(totalAssertions, passedAssertions);
+      // (assuming the extension is loaded)
 
       // enable assertions as soon as the extension is loaded
       vm.runtime.on("ASSERTIONS_EXTENSION_LOADED", enableAssertions);
-      vm.runtime.on("ASSERTIONS_CHECKED", onAssertionsChecked);
 
       // or if the extension is already loaded, enable them now
       enableAssertions();
@@ -207,8 +199,6 @@ const GUIComponent = (props: {
           enableAssertions,
         );
 
-        vm.runtime.off("ASSERTIONS_CHECKED", onAssertionsChecked);
-
         // and disable assertions that were enabled automatically
         vm.runtime.emit("DISABLE_ASSERTIONS");
       };
@@ -217,7 +207,7 @@ const GUIComponent = (props: {
     // otherwise we only enable assertions if the user has enabled them
     // return no-op cleanup function
     return () => {};
-  }, [vm.runtime, canEditTask, onTaskProgress]);
+  }, [vm.runtime, canEditTask]);
 
   return (
     <div

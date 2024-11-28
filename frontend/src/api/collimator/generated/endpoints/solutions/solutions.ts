@@ -28,6 +28,8 @@ export const solutionsControllerCreateV0 = async (
   options?: RequestInit,
 ): Promise<ExistingSolutionDto> => {
   const formData = new FormData();
+  formData.append("totalTests", createSolutionDto.totalTests.toString());
+  formData.append("passedTests", createSolutionDto.passedTests.toString());
   formData.append("file", createSolutionDto.file);
 
   return fetchApi<Promise<ExistingSolutionDto>>(

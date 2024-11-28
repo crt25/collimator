@@ -23,6 +23,8 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
+export type CurrentAnalysis = getCurrentAnalyses.Result;
+
 const maximumNumberOfAnalysisRetries = 3;
 
 const omitData = { data: true };
@@ -48,7 +50,7 @@ export class SolutionsService {
   findCurrentAnalyses(
     sessionId: number,
     taskId: number,
-  ): Promise<SolutionAnalysis[]> {
+  ): Promise<CurrentAnalysis[]> {
     return this.prisma.$queryRawTyped(getCurrentAnalyses(sessionId, taskId));
   }
 

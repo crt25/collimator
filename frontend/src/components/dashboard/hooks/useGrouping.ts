@@ -133,7 +133,16 @@ export const useGrouping = (
         let category = Category.none;
 
         if (matchesAllFilters) {
-          category |= Category.matches;
+          category |= Category.matchesFilters;
+        }
+
+        if (solution.passedTests >= solution.totalTests) {
+          console.log(
+            "solution.passedTests",
+            solution.passedTests,
+            solution.totalTests,
+          );
+          category |= Category.passesTests;
         }
 
         const group = groups.find((g) =>

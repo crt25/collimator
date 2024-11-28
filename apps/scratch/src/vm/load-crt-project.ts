@@ -10,7 +10,7 @@ import { ScratchCrtConfig } from "../types/scratch-vm-custom";
  */
 export const loadCrtProject = async (
   vm: VM,
-  input: ArrayBufferView | ArrayBuffer | string | object,
+  input: ArrayBuffer,
 ): Promise<void> => {
   // overwrite any existing config
   vm.crtConfig = {
