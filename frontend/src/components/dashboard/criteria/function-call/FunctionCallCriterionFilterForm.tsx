@@ -9,7 +9,7 @@ import ValidationErrorMessage from "@/components/form/ValidationErrorMessage";
 import { FunctionCallFilterCriterion } from ".";
 import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import Input from "@/components/form/Input";
 
 const messages = defineMessages({
@@ -26,7 +26,7 @@ const messages = defineMessages({
 type FormValues = Omit<FunctionCallFilterCriterion, "criterion">;
 
 const FunctionCallCriterionFilterForm: CriterionFormComponent<
-  CriterionType.functionCall,
+  AstCriterionType.functionCall,
   FunctionCallFilterCriterion
 > = ({ submitMessage, onUpdate, initialValues }) => {
   const min = 0;
@@ -63,7 +63,7 @@ const FunctionCallCriterionFilterForm: CriterionFormComponent<
   const onSubmit = useCallback(
     (formValues: FormValues) => {
       onUpdate({
-        criterion: CriterionType.functionCall,
+        criterion: AstCriterionType.functionCall,
         ...formValues,
       });
     },

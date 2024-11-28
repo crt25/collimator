@@ -8,10 +8,10 @@ import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
-  CriterionType,
+  AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 
-type Criterion = CriterionType.condition;
+type Criterion = AstCriterionType.condition;
 
 const messages = defineMessages({
   name: {
@@ -27,13 +27,13 @@ export interface ConditionFilterCriterion extends CriterionBase<Criterion> {
 
 const toAnalysisInput = (
   _criterion: ConditionFilterCriterion,
-): CriteriaToAnalyzeInput<CriterionType.condition> => ({
-  criterion: CriterionType.condition,
+): CriteriaToAnalyzeInput<AstCriterionType.condition> => ({
+  criterion: AstCriterionType.condition,
   input: undefined,
 });
 
 export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: CriterionType.condition,
+  criterion: AstCriterionType.condition,
   messages: () => messages,
   config: {
     type: "linear",
@@ -41,7 +41,7 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) => {
     const numberOfConditions = analyzeAst(analysis.generalAst, {
-      criterion: CriterionType.condition,
+      criterion: AstCriterionType.condition,
       input: undefined,
     }).output;
 
@@ -53,7 +53,7 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
   Criterion,
   ConditionFilterCriterion
 > = {
-  criterion: CriterionType.condition,
+  criterion: AstCriterionType.condition,
   formComponent: ConditionCriterionFilterForm,
   messages: () => messages,
   matchesFilter: (config, analysis) => {

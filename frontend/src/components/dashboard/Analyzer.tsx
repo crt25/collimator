@@ -12,7 +12,7 @@ import CodeComparison from "./CodeComparison";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import MultiSwrContent from "../MultiSwrContent";
 import { useGrouping } from "./hooks/useGrouping";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { AxesCriterionType } from "./axes";
 import { ChartSplit } from "./chartjs-plugins/select";
 
@@ -39,9 +39,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   );
 
   const [xAxis, setXAxis] = useState<AxesCriterionType>(
-    CriterionType.statement,
+    AstCriterionType.statement,
   );
-  const [yAxis, setYAxis] = useState<AxesCriterionType>(CriterionType.loop);
+  const [yAxis, setYAxis] = useState<AxesCriterionType>(AstCriterionType.loop);
 
   const [filters, setFilters] = useState<AstFilter[]>([]);
   const [splits, setSplits] = useState<ChartSplit[]>([]);

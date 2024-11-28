@@ -10,7 +10,7 @@ import { useCallback, useMemo, useState } from "react";
 import { AstFilter, FilterCriterionType, filterCriteria } from ".";
 import AnalyzerTags from "../AnalyzerTags";
 import CriterionFilterForm from "./CriterionFilterForm";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { TaskType } from "@/api/collimator/generated/models";
 
 const Label = styled.label`
@@ -66,7 +66,7 @@ const AnalyzerFilterForm = ({
   setFilters: (filters: AstFilter[]) => void;
 }) => {
   const [filterToEdit, setFilterToEdit] = useState<FilterCriterionType>(
-    CriterionType.none,
+    AstCriterionType.none,
   );
 
   const [currentFilter, setCurrentFilter] = useState<AstFilter | undefined>(
@@ -102,7 +102,7 @@ const AnalyzerFilterForm = ({
           setFilters(filters.filter((f) => f !== filter));
 
           if (currentFilter === filter) {
-            setFilterToEdit(CriterionType.none);
+            setFilterToEdit(AstCriterionType.none);
             setCurrentFilter(undefined);
           }
         }}
@@ -140,7 +140,7 @@ const AnalyzerFilterForm = ({
               newFilter,
             ]);
             setCurrentFilter(undefined);
-            setFilterToEdit(CriterionType.none);
+            setFilterToEdit(AstCriterionType.none);
           },
         }}
       />

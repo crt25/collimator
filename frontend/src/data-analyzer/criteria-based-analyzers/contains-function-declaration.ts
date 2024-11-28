@@ -1,6 +1,6 @@
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import {
-  CriterionType,
+  AstCriterionType,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
@@ -9,8 +9,8 @@ import { StatementNodeType } from "@ast/ast-nodes";
 
 export const countFunctionDeclaration = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[CriterionType.functionDeclaration],
-): CriteriaBasedAnalyzerOutput[CriterionType.functionDeclaration] => {
+  _input: CriteriaBasedAnalyzerInput[AstCriterionType.functionDeclaration],
+): CriteriaBasedAnalyzerOutput[AstCriterionType.functionDeclaration] => {
   let declarations = 0;
 
   walkAst(ast, {

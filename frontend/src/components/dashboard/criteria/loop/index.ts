@@ -7,11 +7,11 @@ import {
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
-  CriterionType,
+  AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 import LoopCriterionFilterForm from "./LoopCriterionFilterForm";
 
-type Criterion = CriterionType.loop;
+type Criterion = AstCriterionType.loop;
 
 const messages = defineMessages({
   name: {
@@ -27,13 +27,13 @@ export interface LoopFilterCriterion extends CriterionBase<Criterion> {
 
 const toAnalysisInput = (
   _criterion: LoopFilterCriterion,
-): CriteriaToAnalyzeInput<CriterionType.loop> => ({
-  criterion: CriterionType.loop,
+): CriteriaToAnalyzeInput<AstCriterionType.loop> => ({
+  criterion: AstCriterionType.loop,
   input: undefined,
 });
 
 export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: CriterionType.loop,
+  criterion: AstCriterionType.loop,
   messages: () => messages,
   config: {
     type: "linear",
@@ -41,7 +41,7 @@ export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) => {
     const numberOfLoops = analyzeAst(analysis.generalAst, {
-      criterion: CriterionType.loop,
+      criterion: AstCriterionType.loop,
       input: undefined,
     }).output;
 
@@ -53,7 +53,7 @@ export const LoopCriterionFilter: CriterionFilterDefinition<
   Criterion,
   LoopFilterCriterion
 > = {
-  criterion: CriterionType.loop,
+  criterion: AstCriterionType.loop,
   formComponent: LoopCriterionFilterForm,
   messages: () => messages,
   matchesFilter: (config, analysis) => {

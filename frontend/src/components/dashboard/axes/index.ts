@@ -1,4 +1,4 @@
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { ConditionCriterionAxis } from "../criteria/condition";
 import { AxisConfig, DefinitionCriterion } from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
@@ -37,20 +37,20 @@ export const getAxisAnalysisValue = (
 ): number =>
   match(axisType)
     .returnType<number>()
-    .with(CriterionType.statement, () =>
+    .with(AstCriterionType.statement, () =>
       StatementCriterionAxis.getAxisValue(analysis),
     )
-    .with(CriterionType.expression, () =>
+    .with(AstCriterionType.expression, () =>
       ExpressionCriterionAxis.getAxisValue(analysis),
     )
-    .with(CriterionType.condition, () =>
+    .with(AstCriterionType.condition, () =>
       ConditionCriterionAxis.getAxisValue(analysis),
     )
-    .with(CriterionType.loop, () => LoopCriterionAxis.getAxisValue(analysis))
-    .with(CriterionType.functionCall, () =>
+    .with(AstCriterionType.loop, () => LoopCriterionAxis.getAxisValue(analysis))
+    .with(AstCriterionType.functionCall, () =>
       FunctionCallCriterionAxis.getAxisValue(analysis),
     )
-    .with(CriterionType.functionDeclaration, () =>
+    .with(AstCriterionType.functionDeclaration, () =>
       FunctionDeclarationCriterionAxis.getAxisValue(analysis),
     )
     .otherwise(() => {
@@ -59,13 +59,13 @@ export const getAxisAnalysisValue = (
 
 export const getAxisConfig = (axisType: AxesCriterionType): AxisConfig =>
   match(axisType)
-    .with(CriterionType.statement, () => StatementCriterionAxis.config)
-    .with(CriterionType.expression, () => ExpressionCriterionAxis.config)
-    .with(CriterionType.condition, () => ConditionCriterionAxis.config)
-    .with(CriterionType.loop, () => LoopCriterionAxis.config)
-    .with(CriterionType.functionCall, () => FunctionCallCriterionAxis.config)
+    .with(AstCriterionType.statement, () => StatementCriterionAxis.config)
+    .with(AstCriterionType.expression, () => ExpressionCriterionAxis.config)
+    .with(AstCriterionType.condition, () => ConditionCriterionAxis.config)
+    .with(AstCriterionType.loop, () => LoopCriterionAxis.config)
+    .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis.config)
     .with(
-      CriterionType.functionDeclaration,
+      AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionAxis.config,
     )
     .exhaustive();

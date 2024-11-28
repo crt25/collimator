@@ -7,11 +7,11 @@ import {
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
-  CriterionType,
+  AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 import FunctionDeclarationCriterionFilterForm from "./FunctionDeclarationCriterionFilterForm";
 
-type Criterion = CriterionType.functionDeclaration;
+type Criterion = AstCriterionType.functionDeclaration;
 
 const messages = defineMessages({
   name: {
@@ -28,14 +28,14 @@ export interface FunctionDeclarationFilterCriterion
 
 const toAnalysisInput = (
   _criterion: FunctionDeclarationFilterCriterion,
-): CriteriaToAnalyzeInput<CriterionType.functionDeclaration> => ({
-  criterion: CriterionType.functionDeclaration,
+): CriteriaToAnalyzeInput<AstCriterionType.functionDeclaration> => ({
+  criterion: AstCriterionType.functionDeclaration,
   input: undefined,
 });
 
 export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion> =
   {
-    criterion: CriterionType.functionDeclaration,
+    criterion: AstCriterionType.functionDeclaration,
     messages: () => messages,
     config: {
       type: "linear",
@@ -43,7 +43,7 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
     },
     getAxisValue: (analysis) => {
       const numberOfFunctionDeclarations = analyzeAst(analysis.generalAst, {
-        criterion: CriterionType.functionDeclaration,
+        criterion: AstCriterionType.functionDeclaration,
         input: undefined,
       }).output;
 
@@ -55,7 +55,7 @@ export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
   Criterion,
   FunctionDeclarationFilterCriterion
 > = {
-  criterion: CriterionType.functionDeclaration,
+  criterion: AstCriterionType.functionDeclaration,
   formComponent: FunctionDeclarationCriterionFilterForm,
   messages: () => messages,
   matchesFilter: (config, analysis) => {

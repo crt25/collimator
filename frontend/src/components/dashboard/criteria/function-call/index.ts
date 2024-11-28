@@ -8,10 +8,10 @@ import FunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
-  CriterionType,
+  AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 
-type Criterion = CriterionType.functionCall;
+type Criterion = AstCriterionType.functionCall;
 
 const messages = defineMessages({
   name: {
@@ -28,11 +28,11 @@ export interface FunctionCallFilterCriterion extends CriterionBase<Criterion> {
 
 const toAnalysisInput = (
   criterion: FunctionCallFilterCriterion,
-): CriteriaToAnalyzeInput<CriterionType.functionCall> => {
+): CriteriaToAnalyzeInput<AstCriterionType.functionCall> => {
   const name = criterion.functionName?.trim();
 
   return {
-    criterion: CriterionType.functionCall,
+    criterion: AstCriterionType.functionCall,
     input: {
       functionName: name !== undefined && name.length > 0 ? name : undefined,
     },
@@ -40,7 +40,7 @@ const toAnalysisInput = (
 };
 
 export const FunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: CriterionType.functionCall,
+  criterion: AstCriterionType.functionCall,
   messages: () => messages,
   config: {
     type: "linear",
@@ -48,7 +48,7 @@ export const FunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) => {
     const numberOfFunctionCalls = analyzeAst(analysis.generalAst, {
-      criterion: CriterionType.functionCall,
+      criterion: AstCriterionType.functionCall,
       input: {
         functionName: undefined,
       },
@@ -62,7 +62,7 @@ export const FunctionCallCriterionFilter: CriterionFilterDefinition<
   Criterion,
   FunctionCallFilterCriterion
 > = {
-  criterion: CriterionType.functionCall,
+  criterion: AstCriterionType.functionCall,
   formComponent: FunctionCallCriterionFilterForm,
   messages: () => messages,
   matchesFilter: (config, analysis) => {

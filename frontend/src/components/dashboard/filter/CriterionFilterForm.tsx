@@ -1,7 +1,7 @@
 import { AstFilter, FilterCriterionType, FilterDefinitionByCriterion } from ".";
 import React from "react";
 import { match } from "ts-pattern";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { NoCriterionFilter } from "../criteria/none";
 import { ConditionCriterionFilter } from "../criteria/condition";
 import { FunctionCallCriterionFilter } from "../criteria/function-call";
@@ -22,44 +22,44 @@ type Props<Type extends AstFilter["criterion"]> = {
 const CriterionFilterForm = (props: Props<FilterCriterionType>) =>
   match(props)
     .with(
-      { criterion: CriterionType.none },
-      ({ props }: Props<CriterionType.none>) => (
+      { criterion: AstCriterionType.none },
+      ({ props }: Props<AstCriterionType.none>) => (
         <NoCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.statement },
-      ({ props }: Props<CriterionType.statement>) => (
+      { criterion: AstCriterionType.statement },
+      ({ props }: Props<AstCriterionType.statement>) => (
         <StatementCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.expression },
-      ({ props }: Props<CriterionType.expression>) => (
+      { criterion: AstCriterionType.expression },
+      ({ props }: Props<AstCriterionType.expression>) => (
         <ExpressionCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.condition },
-      ({ props }: Props<CriterionType.condition>) => (
+      { criterion: AstCriterionType.condition },
+      ({ props }: Props<AstCriterionType.condition>) => (
         <ConditionCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.loop },
-      ({ props }: Props<CriterionType.loop>) => (
+      { criterion: AstCriterionType.loop },
+      ({ props }: Props<AstCriterionType.loop>) => (
         <LoopCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.functionCall },
-      ({ props }: Props<CriterionType.functionCall>) => (
+      { criterion: AstCriterionType.functionCall },
+      ({ props }: Props<AstCriterionType.functionCall>) => (
         <FunctionCallCriterionFilter.formComponent {...props} />
       ),
     )
     .with(
-      { criterion: CriterionType.functionDeclaration },
-      ({ props }: Props<CriterionType.functionDeclaration>) => (
+      { criterion: AstCriterionType.functionDeclaration },
+      ({ props }: Props<AstCriterionType.functionDeclaration>) => (
         <FunctionDeclarationCriterionFilter.formComponent {...props} />
       ),
     )

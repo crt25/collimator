@@ -6,7 +6,7 @@ import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { match } from "ts-pattern";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
@@ -38,25 +38,25 @@ export const matchesFilter = (
   analysis: CurrentAnalysis,
 ): boolean =>
   match(criterion)
-    .with({ criterion: CriterionType.none }, (criterion) =>
+    .with({ criterion: AstCriterionType.none }, (criterion) =>
       NoCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.statement }, (criterion) =>
+    .with({ criterion: AstCriterionType.statement }, (criterion) =>
       StatementCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.expression }, (criterion) =>
+    .with({ criterion: AstCriterionType.expression }, (criterion) =>
       ExpressionCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.condition }, (criterion) =>
+    .with({ criterion: AstCriterionType.condition }, (criterion) =>
       ConditionCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.loop }, (criterion) =>
+    .with({ criterion: AstCriterionType.loop }, (criterion) =>
       LoopCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.functionCall }, (criterion) =>
+    .with({ criterion: AstCriterionType.functionCall }, (criterion) =>
       FunctionCallCriterionFilter.matchesFilter(criterion, analysis),
     )
-    .with({ criterion: CriterionType.functionDeclaration }, (criterion) =>
+    .with({ criterion: AstCriterionType.functionDeclaration }, (criterion) =>
       FunctionDeclarationCriterionFilter.matchesFilter(criterion, analysis),
     )
     .exhaustive();

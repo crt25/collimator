@@ -1,9 +1,9 @@
 import { defineMessages } from "react-intl";
 import { CriterionBase, CriterionFilterDefinition } from "../criterion-base";
 import NoneCriterionForm from "./NoneCriterionForm";
-import { CriterionType } from "@/data-analyzer/analyze-asts";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 
-type Criterion = CriterionType.none;
+type Criterion = AstCriterionType.none;
 
 const messages = defineMessages({
   filterName: {
@@ -22,7 +22,7 @@ export const NoCriterionFilter: CriterionFilterDefinition<
   Criterion,
   NoneCriterion
 > = {
-  criterion: CriterionType.none,
+  criterion: AstCriterionType.none,
   formComponent: NoneCriterionForm,
   messages: () => ({
     name: messages.filterName,

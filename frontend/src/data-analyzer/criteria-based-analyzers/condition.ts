@@ -1,6 +1,6 @@
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import {
-  CriterionType,
+  AstCriterionType,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
@@ -9,8 +9,8 @@ import { StatementNodeType } from "@ast/ast-nodes";
 
 export const countConditions = (
   ast: GeneralAst,
-  _input: CriteriaBasedAnalyzerInput[CriterionType.condition],
-): CriteriaBasedAnalyzerOutput[CriterionType.condition] => {
+  _input: CriteriaBasedAnalyzerInput[AstCriterionType.condition],
+): CriteriaBasedAnalyzerOutput[AstCriterionType.condition] => {
   let conditions = 0;
 
   walkAst(ast, {
