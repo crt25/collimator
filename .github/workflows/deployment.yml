@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-7_deployment # The initial branch the deployment was developed on - may be removed after the first deployment
+      - feature/CRT-35_data_visualizer_dashboard # We need to deploy before merged to main (End of November 2024) - will be removed later
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
