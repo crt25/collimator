@@ -28,7 +28,7 @@ export class SolutionAnalysisService {
       );
 
       // use an upsert to make sure we only add it if the analysis has not already been performed
-      // this may happen if a re-analysis is trigerred because the initial analysis takes
+      // this may happen if a re-analysis is triggered  because the initial analysis takes
       // longer than expected
       return this.prisma.solutionAnalysis.upsert({
         create: {

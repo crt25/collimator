@@ -89,16 +89,11 @@ const TaskModal = ({
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <ModalBody>
-          {url ? (
+          {url && (
             <EmbeddedApp
               src={url}
               ref={embeddedApp}
               onAppAvailable={loadAppData}
-            />
-          ) : (
-            <FormattedMessage
-              id="TaskModal.unsupportedApp"
-              defaultMessage="An unsupported application type was selected. Please report this issue."
             />
           )}
         </ModalBody>

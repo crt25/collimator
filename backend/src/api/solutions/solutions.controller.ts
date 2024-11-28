@@ -73,10 +73,7 @@ export class SolutionsController {
       file.buffer,
     );
 
-    return ExistingSolutionDto.fromQueryResult({
-      ...solution,
-      mimeType: file.mimetype,
-    });
+    return ExistingSolutionDto.fromQueryResult(solution);
   }
 
   @Get()

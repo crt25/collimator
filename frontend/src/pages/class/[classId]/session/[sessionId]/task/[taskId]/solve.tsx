@@ -150,7 +150,8 @@ const SolveTaskPage = () => {
           ) : (
             <FormattedMessage
               id="SolveTask.unsupportedApp"
-              defaultMessage="An unsupported application type was selected. Please report this issue."
+              defaultMessage="The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
+              values={{ type: task.type, taskId: task.id }}
             />
           )
         }

@@ -22,22 +22,45 @@ describe("PasswordDerivedKey", () => {
     it("can encrypt and decrypt a binary message", async () => {
       const key = await PasswordDerivedKey.derive(crypto, password, salt);
       const plainText = new Uint8Array([1, 2, 3, 4, 5]);
-      const cipherText1 = await key.encrypt(plainText);
-      const cipherText2 = await key.encrypt(plainText);
+      const cipherText = await key.encrypt(plainText);
 
       // dummy test to ensure the encryption is not a no-op
-      expect(cipherText1).not.toEqual(plainText);
-      expect(cipherText2).not.toEqual(plainText);
-
-      // encryption must be randomized to be secure under IND-CPA
-      expect(cipherText1).not.toEqual(cipherText2);
+      expect(cipherText).not.toEqual(plainText);
 
       // decryption must return the original plaintext
-      const decrypted = new Uint8Array(await key.decrypt(cipherText1));
+      const decrypted = new Uint8Array(await key.decrypt(cipherText));
       expect(decrypted).toEqual(plainText);
     });
 
+    it("encryption is randomized", async () => {
+      const key = await PasswordDerivedKey.derive(crypto, password, salt);
+      const plainText = new Uint8Array([1, 2, 3, 4, 5]);
+      const cipherText1 = await key.encrypt(plainText);
+      const cipherText2 = await key.encrypt(plainText);
+
+      // encryption must be randomized to be secure under IND-CPA
+      expect(cipherText1).not.toEqual(cipherText2);
+    });
+
     it("can encrypt and decrypt a string", async () => {
+      const key = await PasswordDerivedKey.derive(crypto, password, salt);
+      const plainText = JSON.stringify({
+        some: "content",
+        that: {
+          has: [{ nested: "values" }],
+        },
+      });
+      const cipherText = await key.encryptString(plainText);
+
+      // dummy test to ensure the encryption is not a no-op
+      expect(cipherText).not.toEqual(plainText);
+
+      // decryption must return the original plaintext
+      const decrypted = await key.decryptString(cipherText);
+      expect(decrypted).toEqual(plainText);
+    });
+
+    it("string encryption is randomized", async () => {
       const key = await PasswordDerivedKey.derive(crypto, password, salt);
       const plainText = JSON.stringify({
         some: "content",
@@ -49,16 +72,8 @@ describe("PasswordDerivedKey", () => {
       const cipherText1 = await key.encryptString(plainText);
       const cipherText2 = await key.encryptString(plainText);
 
-      // dummy test to ensure the encryption is not a no-op
-      expect(cipherText1).not.toEqual(plainText);
-      expect(cipherText2).not.toEqual(plainText);
-
       // encryption must be randomized to be secure under IND-CPA
       expect(cipherText1).not.toEqual(cipherText2);
-
-      // decryption must return the original plaintext
-      const decrypted = await key.decryptString(cipherText1);
-      expect(decrypted).toEqual(plainText);
     });
 
     it("can decrypt a message with a new key derived from the same password and salt", async () => {

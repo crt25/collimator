@@ -8,7 +8,11 @@ export default class StudentKeyPair extends KeyPair {
     keyPair: CryptoKeyPair,
     saltPublicKey: CryptoKey,
   ): Promise<StudentKeyPair> {
-    // derive a symmetric key from the key pair - basically ECDH with ourselves
+    /**
+     * Derive a symmetric key from the key pair - basically ECDH with ourselves
+     * This is due to limitations in the WebCrypto API where we cannot directly derive a symmetric key
+     * from a ECDH key pair. (November 2024)
+     */
     const derivedSymmetricKey = await KeyPair.deriveSymmetricKey(
       crypto,
       keyPair.privateKey,

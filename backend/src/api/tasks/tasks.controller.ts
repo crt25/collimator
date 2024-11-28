@@ -70,10 +70,7 @@ export class TasksController {
       file.buffer,
     );
 
-    return ExistingTaskDto.fromQueryResult({
-      ...task,
-      mimeType: file.mimetype,
-    });
+    return ExistingTaskDto.fromQueryResult(task);
   }
 
   @Get()
