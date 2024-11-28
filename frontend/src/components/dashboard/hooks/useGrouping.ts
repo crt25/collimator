@@ -136,8 +136,16 @@ export const useGrouping = (
           category |= Category.matchesFilters;
         }
 
+        if (solution.totalTests > 0) {
+          category |= Category.hasTests;
+        }
+
+        if (solution.passedTests > 0) {
+          category |= Category.passesSomeTests;
+        }
+
         if (solution.passedTests >= solution.totalTests) {
-          category |= Category.passesTests;
+          category |= Category.passesAllTests;
         }
 
         const group = groups.find((g) =>

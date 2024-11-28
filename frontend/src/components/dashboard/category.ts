@@ -10,13 +10,21 @@ const messages = defineMessages({
     id: "Category.yAxis",
     defaultMessage: "y-Axis",
   },
-  correct: {
-    id: "Category.correct",
-    defaultMessage: "Correct",
+  noTests: {
+    id: "Category.noTests",
+    defaultMessage: "Without tests",
   },
-  inCorrect: {
+  allTestsPass: {
+    id: "Category.allTestsPass",
+    defaultMessage: "All tests pass",
+  },
+  someTestsPass: {
+    id: "Category.partiallyCorrect",
+    defaultMessage: "Some tests pass",
+  },
+  noTestsPass: {
     id: "Category.inCorrect",
-    defaultMessage: "Incorrect",
+    defaultMessage: "No test passes",
   },
   filteredOut: {
     id: "Category.filteredOut",
@@ -28,8 +36,12 @@ export enum Category {
   none = 0,
   // whether all filters match
   matchesFilters = 1 << 0,
+  // whether there is at least one test
+  hasTests = 1 << 1,
+  // whether at least one test passes
+  passesSomeTests = 1 << 2,
   // whether all tests pass
-  passesTests = 1 << 1,
+  passesAllTests = 1 << 3,
 }
 
 const hasFlag = (category: Category, flag: Category): boolean =>
@@ -39,12 +51,22 @@ export const getCategoryName = (
   intl: IntlShape,
   category: Category,
 ): string => {
-  const passesTests = hasFlag(category, Category.passesTests);
+  const hasTests = hasFlag(category, Category.hasTests);
+  const passesATest = hasFlag(category, Category.passesSomeTests);
+  const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
 
-  let name = intl.formatMessage(
-    passesTests ? messages.correct : messages.inCorrect,
-  );
+  let name = intl.formatMessage(messages.noTests);
+
+  if (hasTests) {
+    if (passesAllTests) {
+      name = intl.formatMessage(messages.allTestsPass);
+    } else if (passesATest) {
+      name = intl.formatMessage(messages.someTestsPass);
+    } else {
+      name = intl.formatMessage(messages.noTestsPass);
+    }
+  }
 
   if (!matchesFilter) {
     name += " (" + intl.formatMessage(messages.filteredOut) + ")";
@@ -56,14 +78,26 @@ export const getCategoryName = (
 type PatternType = Parameters<typeof pattern.draw>[0];
 
 export const getCanvasPattern = (category: Category): CanvasPattern => {
-  const testsPass = hasFlag(category, Category.passesTests);
+  const hasTests = hasFlag(category, Category.hasTests);
+  const passesATest = hasFlag(category, Category.passesSomeTests);
+  const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
 
-  const color: [number, number, number, number] = testsPass
-    ? [39, 174, 96, 1]
-    : [231, 76, 60, 1];
+  let color: [number, number, number, number] = [155, 89, 182, 1];
+  let patternName: PatternType = "zigzag";
 
-  const patternName: PatternType = testsPass ? "disc" : "diagonal";
+  if (hasTests) {
+    if (passesAllTests) {
+      color = [39, 174, 96, 1];
+      patternName = "disc";
+    } else if (passesATest) {
+      color = [243, 156, 18, 1];
+      patternName = "triangle";
+    } else {
+      color = [231, 76, 60, 1];
+      patternName = "diagonal";
+    }
+  }
 
   if (!matchesFilter) {
     color[3] = 0.25;
