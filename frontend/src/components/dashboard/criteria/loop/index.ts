@@ -56,6 +56,11 @@ export const LoopCriterionFilter: CriterionFilterDefinition<
   criterion: AstCriterionType.loop,
   formComponent: LoopCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: AstCriterionType.loop,
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     const numberOfLoops = analyzeAst(
       analysis.generalAst,

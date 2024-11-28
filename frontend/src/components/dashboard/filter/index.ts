@@ -64,3 +64,32 @@ export const matchesFilter = (
       TestCriterionFilter.matchesFilter(criterion, analysis),
     )
     .exhaustive();
+
+export const getInitialFilterValues = (
+  criterion: FilterCriterionType,
+): FilterCriterion =>
+  match(criterion)
+    .with(MetaCriterionType.none, () => NoCriterionFilter.initialValues)
+    .with(
+      AstCriterionType.statement,
+      () => StatementCriterionFilter.initialValues,
+    )
+    .with(
+      AstCriterionType.expression,
+      () => ExpressionCriterionFilter.initialValues,
+    )
+    .with(
+      AstCriterionType.condition,
+      () => ConditionCriterionFilter.initialValues,
+    )
+    .with(AstCriterionType.loop, () => LoopCriterionFilter.initialValues)
+    .with(
+      AstCriterionType.functionCall,
+      () => FunctionCallCriterionFilter.initialValues,
+    )
+    .with(
+      AstCriterionType.functionDeclaration,
+      () => FunctionDeclarationCriterionFilter.initialValues,
+    )
+    .with(MetaCriterionType.test, () => TestCriterionFilter.initialValues)
+    .exhaustive();

@@ -56,6 +56,11 @@ export const ExpressionCriterionFilter: CriterionFilterDefinition<
   criterion: AstCriterionType.expression,
   formComponent: ExpressionCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: AstCriterionType.expression,
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     const numberOfExpressions = analyzeAst(
       analysis.generalAst,

@@ -279,7 +279,6 @@ const initOverlayCanvas = (
 
         selection = { ...defaultSelection };
         ctx.clearRect(0, 0, overlay.width, overlay.height);
-        console.log("up");
       },
       {
         once: true,

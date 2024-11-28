@@ -21,7 +21,7 @@ const messages = defineMessages({
 });
 
 export interface FunctionCallFilterCriterion extends CriterionBase<Criterion> {
-  functionName?: string;
+  functionName: string;
   minimumCount: number;
   maximumCount: number;
 }
@@ -65,6 +65,12 @@ export const FunctionCallCriterionFilter: CriterionFilterDefinition<
   criterion: AstCriterionType.functionCall,
   formComponent: FunctionCallCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: AstCriterionType.functionCall,
+    functionName: "",
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     const numberOfFunctionCalls = analyzeAst(
       analysis.generalAst,

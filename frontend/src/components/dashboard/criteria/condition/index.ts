@@ -56,6 +56,11 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
   criterion: AstCriterionType.condition,
   formComponent: ConditionCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: AstCriterionType.condition,
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     const numberOfConditions = analyzeAst(
       analysis.generalAst,

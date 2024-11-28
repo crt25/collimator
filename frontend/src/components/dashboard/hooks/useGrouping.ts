@@ -137,11 +137,6 @@ export const useGrouping = (
         }
 
         if (solution.passedTests >= solution.totalTests) {
-          console.log(
-            "solution.passedTests",
-            solution.passedTests,
-            solution.totalTests,
-          );
           category |= Category.passesTests;
         }
 

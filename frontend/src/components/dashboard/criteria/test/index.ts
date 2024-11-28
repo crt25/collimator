@@ -40,6 +40,11 @@ export const TestCriterionFilter: CriterionFilterDefinition<
   criterion: MetaCriterionType.test,
   formComponent: TestCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: MetaCriterionType.test,
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     return (
       config.minimumCount <= analysis.passedTests &&

@@ -12,9 +12,8 @@ export type CriterionFormProps<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > = {
-  submitMessage: MessageDescriptor;
-  initialValues: Partial<Omit<Criterion, "criterion">>;
-  onUpdate: (criteron: Criterion) => void;
+  value: Criterion;
+  onChange: (criteron: Criterion) => void;
 };
 
 export type CriterionFormComponent<
@@ -50,6 +49,7 @@ export interface CriterionFilterDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
 > extends CriterionDefinition<Type, Criterion> {
+  initialValues: Criterion;
   matchesFilter: (criterion: Criterion, analysis: CurrentAnalysis) => boolean;
 }
 

@@ -34,7 +34,7 @@ const MinMaxRange = ({
   step?: number;
   onChange: (min: number, max: number) => void;
   label: MessageDescriptor;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   const intl = useIntl();
 

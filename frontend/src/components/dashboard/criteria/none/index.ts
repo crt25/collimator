@@ -8,11 +8,7 @@ type Criterion = MetaCriterionType.none;
 const messages = defineMessages({
   filterName: {
     id: "criteria.none.filterName",
-    defaultMessage: "Select a new filter",
-  },
-  groupName: {
-    id: "criteria.none.groupName",
-    defaultMessage: "Select a new grouping criterion",
+    defaultMessage: "Add a new filter",
   },
 });
 
@@ -27,5 +23,8 @@ export const NoCriterionFilter: CriterionFilterDefinition<
   messages: () => ({
     name: messages.filterName,
   }),
+  initialValues: {
+    criterion: MetaCriterionType.none,
+  },
   matchesFilter: () => false,
 };

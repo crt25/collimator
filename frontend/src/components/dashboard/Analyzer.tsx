@@ -22,6 +22,8 @@ const Parameters = styled.div`
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
 
+  margin-bottom: 1rem;
+
   select {
     width: 100%;
   }

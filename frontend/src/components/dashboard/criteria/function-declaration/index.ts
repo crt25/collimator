@@ -58,6 +58,11 @@ export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
   criterion: AstCriterionType.functionDeclaration,
   formComponent: FunctionDeclarationCriterionFilterForm,
   messages: () => messages,
+  initialValues: {
+    criterion: AstCriterionType.functionDeclaration,
+    minimumCount: 0,
+    maximumCount: 100,
+  },
   matchesFilter: (config, analysis) => {
     const numberOfFunctionDeclarations = analyzeAst(
       analysis.generalAst,
