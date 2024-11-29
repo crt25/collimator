@@ -5,7 +5,7 @@ import {
   getClassesControllerCreateV0ResponseMock,
   getClassesControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { ClassForm } from "./class-form";
+import { ClassFormPageModel } from "./class-form-page-model";
 import { CreateClassDto } from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
@@ -48,7 +48,7 @@ test.describe("/class/create", () => {
   });
 
   test("can create a new class", async ({ page: pwPage, baseURL }) => {
-    const page = await ClassForm.create(pwPage);
+    const page = await ClassFormPageModel.create(pwPage);
 
     const teacherId = mockUsersResponse[0].id;
 

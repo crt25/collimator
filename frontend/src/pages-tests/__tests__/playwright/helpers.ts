@@ -12,10 +12,12 @@ export const jsonResponse = {
 
 export type CrtTestOptions = {
   apiURL: string;
+  scratchURL: string;
 };
 
 export const test = testBase.extend<CrtTestOptions>({
   apiURL: ["", { option: true }],
+  scratchURL: ["", { option: true }],
   page: async ({ page }, use) => {
     // ensure we capture page errors
     const errors: string[] = [];

@@ -10,7 +10,7 @@ const StyledSelect = styled.select`
   border-radius: var(--border-radius);
 `;
 
-const InputWrapper = styled.label<{ isShown: boolean }>`
+const InputWrapper = styled.label<{ isShown?: boolean }>`
   display: block;
   margin-bottom: 1rem;
 
@@ -25,6 +25,7 @@ const Label = styled.span`
 interface Props {
   label: MessageDescriptor;
   options: { value: string | number; label: string | MessageDescriptor }[];
+  alwaysShow?: boolean;
   children: React.ReactNode;
 }
 
@@ -33,20 +34,22 @@ const Select = forwardRef(function Select(
   ref: React.Ref<HTMLSelectElement>,
 ) {
   const intl = useIntl();
-  const { label, options, children, ...inputProps } = props;
+  const { label, options, children, alwaysShow, ...inputProps } = props;
 
   return (
-    <InputWrapper isShown={options.length > 1}>
+    <InputWrapper isShown={options.length > 1 || alwaysShow}>
       <Label>{intl.formatMessage(label)}</Label>
-      <StyledSelect {...inputProps} ref={ref}>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {typeof option.label === "string"
-              ? option.label
-              : intl.formatMessage(option.label)}
-          </option>
-        ))}
-      </StyledSelect>
+      <div>
+        <StyledSelect {...inputProps} ref={ref}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {typeof option.label === "string"
+                ? option.label
+                : intl.formatMessage(option.label)}
+            </option>
+          ))}
+        </StyledSelect>
+      </div>
       {children}
     </InputWrapper>
   );

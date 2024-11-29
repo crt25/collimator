@@ -1,13 +1,17 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<{ disabled?: boolean }>`
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
 
   border: none;
 
-  background-color: var(--button-background-color);
+  background-color: ${({ disabled }) =>
+    disabled
+      ? "var(--button-disabled-background-color)"
+      : "var(--button-background-color)"};
+
   color: var(--button-foreground-color);
 `;
 
@@ -19,14 +23,18 @@ const InputWrapper = styled.label`
 interface Props {
   label: MessageDescriptor;
   children?: React.ReactNode;
+  disabled?: boolean;
 }
 
 const SubmitFormButton = (
-  props: Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "type"> &
+  props: Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "value" | "type" | "disabled"
+  > &
     Props,
 ) => {
   const intl = useIntl();
-  const { label, children, ...inputProps } = props;
+  const { label, children, disabled, ...inputProps } = props;
 
   return (
     <InputWrapper>
@@ -35,6 +43,7 @@ const SubmitFormButton = (
         {...inputProps}
         type="submit"
         value={intl.formatMessage(label)}
+        disabled={disabled}
       />
       {children}
     </InputWrapper>

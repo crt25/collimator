@@ -1,4 +1,4 @@
-import { test, expect } from "playwright-test-coverage";
+import { expect, test } from "../helpers";
 import { useAdminUser } from "../authentication/authentication-helpers";
 
 test.describe("/session/[sessionId]/task/[taskId]/solve", () => {

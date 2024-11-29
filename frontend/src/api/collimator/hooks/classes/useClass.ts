@@ -12,9 +12,9 @@ const fetchAndTransform = (id: number): Promise<GetClassReturnType> =>
   classesControllerFindOneV0(id).then(ExistingClassExtended.fromDto);
 
 export const useClass = (
-  id: number | string,
+  id?: number | string,
 ): ApiResponse<GetClassReturnType, Error> => {
-  const numericId = typeof id === "string" ? parseInt(id, 10) : id;
+  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
 
   return useSWR(getClassesControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)

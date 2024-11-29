@@ -12,9 +12,9 @@ const fetchAndTransform = (id: number): Promise<GetUserReturnType> =>
   usersControllerFindOneV0(id).then(ExistingUser.fromDto);
 
 export const useUser = (
-  id: number | string,
+  id?: number | string,
 ): ApiResponse<GetUserReturnType, Error> => {
-  const numericId = typeof id === "string" ? parseInt(id, 10) : id;
+  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
 
   return useSWR(getUsersControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)
