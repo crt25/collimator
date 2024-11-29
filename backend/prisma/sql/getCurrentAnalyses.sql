@@ -9,7 +9,7 @@ SELECT
   student.pseudonym as "studentPseudonym"
 FROM "Solution" solution
 INNER JOIN "SolutionAnalysis" analysis ON solution.id = analysis."solutionId"
-INNER JOIN "Student" student ON solution."studentId" = solution."studentId"
+INNER JOIN "Student" student ON student."id" = solution."studentId"
 WHERE solution."sessionId" = $1
 AND solution."taskId" = $2
 ORDER BY solution."studentId", solution."createdAt" DESC;
