@@ -10,6 +10,6 @@ SELECT
 FROM "Solution" solution
 INNER JOIN "SolutionAnalysis" analysis ON solution.id = analysis."solutionId"
 INNER JOIN "Student" student ON solution."studentId" = solution."studentId"
-WHERE solution."sessionId" = $2
-AND solution."taskId" = $1
+WHERE solution."sessionId" = $1
+AND solution."taskId" = $2
 ORDER BY solution."studentId", solution."createdAt" DESC;
