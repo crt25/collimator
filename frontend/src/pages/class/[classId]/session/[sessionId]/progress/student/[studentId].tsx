@@ -10,14 +10,18 @@ import SessionNavigation from "@/components/session/SessionNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import { useUser } from "@/api/collimator/hooks/users/useUser";
+import StudentProgress from "@/components/dashboard/StudentProgress";
 
 const UserSessionProgress = () => {
   const router = useRouter();
-  const { classId, sessionId, userId } = router.query as {
+  const {
+    classId,
+    sessionId,
+    studentId: studentIdString,
+  } = router.query as {
     classId: string;
     sessionId: string;
-    userId: string;
+    studentId: string;
   };
 
   const {
@@ -32,11 +36,7 @@ const UserSessionProgress = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const {
-    data: user,
-    error: userError,
-    isLoading: isLoadingUser,
-  } = useUser(userId);
+  const studentId = parseInt(studentIdString, 10);
 
   return (
     <>
@@ -49,7 +49,7 @@ const UserSessionProgress = () => {
             breadcrumb
             classId={klass?.id}
             sessionId={session?.id}
-            user={user}
+            student={klass?.students.find((s) => s.id === studentId)}
           />
         </Breadcrumbs>
         <PageHeader>
@@ -59,11 +59,17 @@ const UserSessionProgress = () => {
           />
         </PageHeader>
         <MultiSwrContent
-          errors={[klassError, sessionError, userError]}
-          isLoading={[isLoadingKlass, isLoadingSession, isLoadingUser]}
-          data={[klass, session, user]}
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+          data={[klass, session]}
         >
-          {([_klass]) => sessionId}
+          {([klass, session]) => (
+            <StudentProgress
+              klass={klass}
+              session={session}
+              studentId={studentId}
+            />
+          )}
         </MultiSwrContent>
       </Container>
     </>

@@ -65,9 +65,9 @@ async function main(): Promise<void> {
   await Promise.all(
     ["bob", "charlie"].map(async (name, index) => {
       const student = await prisma.student.upsert({
-        where: { id: name },
+        where: { id: index + 1 },
         update: {},
-        create: { id: name, classId: klass.id },
+        create: { id: index + 1, pseudonym: name, classId: klass.id },
       });
 
       console.log(["student", student]);

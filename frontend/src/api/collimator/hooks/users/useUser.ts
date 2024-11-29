@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse } from "../helpers";
+import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingUser } from "../../models/users/existing-user";
 import {
   getUsersControllerFindOneV0Url,
@@ -14,7 +14,7 @@ const fetchAndTransform = (id: number): Promise<GetUserReturnType> =>
 export const useUser = (
   id?: number | string,
 ): ApiResponse<GetUserReturnType, Error> => {
-  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
+  const numericId = getIdOrNaN(id);
 
   return useSWR(getUsersControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)

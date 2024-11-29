@@ -39,8 +39,9 @@ model Class {
 }
 
 model Student {
-  id      String @id // anonymized (teacher-computed) ID
-  classId Int
+  id        Int    @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
+  pseudonym String @unique // anonymized (teacher-computed) ID
+  classId   Int
 
   class     Class      @relation(fields: [classId], references: [id], onDelete: Restrict)
   solutions Solution[]
@@ -73,8 +74,8 @@ enum SessionStatus {
 }
 
 model Session {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
   title           String
   description     String
   classId         Int
@@ -137,7 +138,7 @@ model Solution {
   createdAt DateTime @default(now())
   data      Bytes
   mimeType  String
-  studentId String
+  studentId Int
   taskId    Int
   sessionId Int
 

@@ -3,7 +3,7 @@ import {
   classesControllerFindOneV0,
   getClassesControllerFindOneV0Url,
 } from "../../generated/endpoints/classes/classes";
-import { ApiResponse } from "../helpers";
+import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
 
 export type GetClassReturnType = ExistingClassExtended;
@@ -14,7 +14,7 @@ const fetchAndTransform = (id: number): Promise<GetClassReturnType> =>
 export const useClass = (
   id?: number | string,
 ): ApiResponse<GetClassReturnType, Error> => {
-  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
+  const numericId = getIdOrNaN(id);
 
   return useSWR(getClassesControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)

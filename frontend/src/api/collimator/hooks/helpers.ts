@@ -59,3 +59,6 @@ export const invalidateParameterizedKey = <TParams>(
     );
   });
 };
+
+export const getIdOrNaN = (id?: string | number): number =>
+  typeof id === "number" ? id : parseInt(id ?? "no id", 10);

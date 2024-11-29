@@ -6,10 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from "./classStudentDto";
 export * from "./classTeacherDto";
 export * from "./classesControllerFindAllV0Params";
 export * from "./createClassDto";
 export * from "./createSessionDto";
+export * from "./createSolutionDto";
 export * from "./createTaskDto";
 export * from "./createUserDto";
 export * from "./deletedClassDto";
@@ -24,6 +26,7 @@ export * from "./existingSessionDto";
 export * from "./existingSessionDtoLesson";
 export * from "./existingSessionExtendedDto";
 export * from "./existingSessionExtendedDtoLesson";
+export * from "./existingSolutionDto";
 export * from "./existingTaskDto";
 export * from "./existingUserDto";
 export * from "./sessionClassDto";

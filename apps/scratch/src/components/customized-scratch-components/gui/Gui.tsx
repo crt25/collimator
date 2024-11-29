@@ -94,6 +94,8 @@ const GUIComponent = (props: {
   blocksTabVisible?: boolean;
   blocksId?: string;
   canEditTask?: boolean;
+  isStandaloneCodeEnabled?: boolean;
+  isCodeTabEnabled?: boolean;
   isCostumesTabEnabled?: boolean;
   isSoundsTabEnabled?: boolean;
   cardsVisible?: boolean;
@@ -132,6 +134,8 @@ const GUIComponent = (props: {
     blocksTabVisible,
     cardsVisible,
     canEditTask,
+    isStandaloneCodeEnabled,
+    isCodeTabEnabled,
     isCostumesTabEnabled,
     isSoundsTabEnabled,
     connectionModalVisible,
@@ -267,14 +271,16 @@ const GUIComponent = (props: {
                     onSelect={onActivateTab}
                   >
                     <TabList className={tabClassNames.tabList}>
-                      <Tab className={tabClassNames.tab}>
-                        <img draggable={false} src={codeIcon} />
-                        <FormattedMessage
-                          defaultMessage="Code"
-                          description="Button to get to the code panel"
-                          id="gui.gui.codeTab"
-                        />
-                      </Tab>
+                      {isCodeTabEnabled && (
+                        <Tab className={tabClassNames.tab}>
+                          <img draggable={false} src={codeIcon} />
+                          <FormattedMessage
+                            defaultMessage="Code"
+                            description="Button to get to the code panel"
+                            id="gui.gui.codeTab"
+                          />
+                        </Tab>
+                      )}
                       {isCostumesTabEnabled && (
                         <Tab
                           className={tabClassNames.tab}
@@ -310,54 +316,85 @@ const GUIComponent = (props: {
                         </Tab>
                       )}
                     </TabList>
-                    <TabPanel className={tabClassNames.tabPanel}>
-                      <Box className={styles.blocksWrapper}>
-                        <Blocks
-                          canEditTask={canEditTask}
-                          key={`${blocksId}/${theme}`}
-                          grow={1}
-                          isVisible={blocksTabVisible}
-                          options={{
-                            media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
-                            zoom: {
-                              controls: true,
-                              wheel: true,
-                              startScale: BLOCKS_DEFAULT_SCALE,
-                            },
-                            grid: {
-                              spacing: 40,
-                              length: 2,
-                              colour: "#ddd",
-                            },
-                            comments: true,
-                            collapse: false,
-                            sounds: false,
-                          }}
-                          stageSize={stageSize}
-                          theme={theme}
-                          vm={vm}
-                        />
-                      </Box>
-                      {canEditTask && (
-                        <Box className={styles.extensionButtonContainer}>
-                          <button
-                            className={styles.extensionButton}
-                            title={intl.formatMessage(messages.addExtension)}
-                            onClick={onExtensionButtonClick}
-                            data-testid="add-extension-button"
-                          >
-                            <img
-                              className={styles.extensionButtonIcon}
-                              draggable={false}
-                              src={addExtensionIcon}
-                            />
-                          </button>
+                    {isCodeTabEnabled && (
+                      <TabPanel className={tabClassNames.tabPanel}>
+                        <Box className={styles.blocksWrapper}>
+                          <Blocks
+                            showFlyout={true}
+                            canEditTask={canEditTask}
+                            key={`${blocksId}/${theme}`}
+                            grow={1}
+                            isVisible={blocksTabVisible}
+                            options={{
+                              media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
+                              zoom: {
+                                controls: true,
+                                wheel: true,
+                                startScale: BLOCKS_DEFAULT_SCALE,
+                              },
+                              grid: {
+                                spacing: 40,
+                                length: 2,
+                                colour: "#ddd",
+                              },
+                              comments: true,
+                              collapse: false,
+                              sounds: false,
+                            }}
+                            stageSize={stageSize}
+                            theme={theme}
+                            vm={vm}
+                          />
                         </Box>
-                      )}
-                      <Box className={styles.watermark}>
-                        <Watermark />
-                      </Box>
-                    </TabPanel>
+                        {canEditTask && (
+                          <Box className={styles.extensionButtonContainer}>
+                            <button
+                              className={styles.extensionButton}
+                              title={intl.formatMessage(messages.addExtension)}
+                              onClick={onExtensionButtonClick}
+                              data-testid="add-extension-button"
+                            >
+                              <img
+                                className={styles.extensionButtonIcon}
+                                draggable={false}
+                                src={addExtensionIcon}
+                              />
+                            </button>
+                          </Box>
+                        )}
+                        <Box className={styles.watermark}>
+                          <Watermark />
+                        </Box>
+                      </TabPanel>
+                    )}
+                    {isStandaloneCodeEnabled && (
+                      <Blocks
+                        showFlyout={false}
+                        canEditTask={canEditTask}
+                        key={`${blocksId}/${theme}`}
+                        grow={1}
+                        isVisible={true}
+                        options={{
+                          media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
+                          zoom: {
+                            controls: true,
+                            wheel: true,
+                            startScale: BLOCKS_DEFAULT_SCALE,
+                          },
+                          grid: {
+                            spacing: 40,
+                            length: 2,
+                            colour: "#ddd",
+                          },
+                          comments: false,
+                          collapse: false,
+                          sounds: false,
+                        }}
+                        stageSize={stageSize}
+                        theme={theme}
+                        vm={vm}
+                      />
+                    )}
                     {isCostumesTabEnabled && (
                       <TabPanel className={tabClassNames.tabPanel}>
                         {costumesTabVisible ? <CostumeTab vm={vm} /> : null}

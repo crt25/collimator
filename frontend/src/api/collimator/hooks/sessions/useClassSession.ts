@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse } from "../helpers";
+import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingSessionExtended } from "../../models/sessions/existing-session-extended";
 import {
   getSessionsControllerFindOneV0Url,
@@ -20,10 +20,8 @@ export const useClassSession = (
   classId?: number | string,
   id?: number | string,
 ): ApiResponse<GetSessionReturnType, Error> => {
-  const numericClassId =
-    typeof classId === "number" ? classId : parseInt(classId ?? "no id", 10);
-  const numericSessionId =
-    typeof id === "number" ? id : parseInt(id ?? "no id", 10);
+  const numericClassId = getIdOrNaN(classId);
+  const numericSessionId = getIdOrNaN(id);
 
   return useSWR(
     getSessionsControllerFindOneV0Url(numericClassId, numericSessionId),

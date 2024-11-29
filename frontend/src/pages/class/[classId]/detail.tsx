@@ -47,7 +47,7 @@ const ClassDetail = () => {
                         defaultMessage="Number of Students"
                       />
                     </td>
-                    <td>{klass.studentCount}</td>
+                    <td>{klass.students.length}</td>
                   </tr>
                 </tbody>
               </Table>

@@ -52,7 +52,7 @@ export class SolutionsController {
         sessionId,
         taskId,
         // TODO: add studentId when authentication is implemented
-        studentId: "bob",
+        studentId: 1,
       },
       file.mimetype,
       file.buffer,

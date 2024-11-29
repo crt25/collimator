@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse } from "../helpers";
+import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import {
   getTasksControllerDownloadOneV0Url,
@@ -16,7 +16,7 @@ const fetchAndTransform = (id: number): Promise<GetTaskReturnType> =>
 export const useTask = (
   id?: number | string,
 ): ApiResponse<GetTaskReturnType, Error> => {
-  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
+  const numericId = getIdOrNaN(id);
 
   return useSWR(getTasksControllerFindOneV0Url(numericId), () =>
     isNaN(numericId)
@@ -27,7 +27,7 @@ export const useTask = (
 };
 
 export const useTaskFile = (id?: number | string): ApiResponse<Blob, Error> => {
-  const numericId = typeof id === "number" ? id : parseInt(id ?? "no id", 10);
+  const numericId = getIdOrNaN(id);
 
   return useSWR(getTasksControllerDownloadOneV0Url(numericId), () =>
     isNaN(numericId)

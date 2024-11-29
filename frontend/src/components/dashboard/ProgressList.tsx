@@ -1,17 +1,18 @@
-import {
-  DataTableFilterEvent,
-  DataTablePageEvent,
-  DataTableSortEvent,
-} from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useCallback, useEffect, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
+import { useCallback, useMemo } from "react";
+import DataTable from "@/components/DataTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHand, faStar } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { TableMessages } from "@/i18n/table-messages";
+import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
+import MultiSwrContent from "../MultiSwrContent";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -21,10 +22,26 @@ const ProgressListWrapper = styled.div`
   }
 `;
 
+const CenterContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const RightAlignContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
 const TaskState = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  * {
+    text-align: center;
+  }
 `;
 
 const TimeOnTask = styled.div``;
@@ -52,140 +69,180 @@ const messages = defineMessages({
   },
 });
 
-export interface UserProgress {
-  userId: number;
-  name: string;
-}
+type TaskSolutions = {
+  taskId: number;
+  solutions: ExistingSolution[];
+};
 
-const taskTemplate = (_taskIndex: number) =>
-  function TaskTemplate(_rowData: UserProgress) {
+type StudentProgress = {
+  studentId: number;
+  name: string;
+  taskSolutions: TaskSolutions[];
+};
+
+const taskTemplate = (taskId: number) =>
+  function TaskTemplate(rowData: StudentProgress) {
+    const intl = useIntl();
+
+    const solutionToDisplay = useMemo(() => {
+      const solutions = rowData.taskSolutions.find(
+        (s) => s.taskId === taskId,
+      )?.solutions;
+
+      return ExistingSolution.findSolutionToDisplay(solutions);
+    }, [rowData]);
+
     return (
-      <TaskState>
-        <div>
-          <FontAwesomeIcon icon={faStar} />
-        </div>
-        <div>00:00</div>
-      </TaskState>
+      <CenterContent>
+        <TaskState>
+          <div>
+            {solutionToDisplay ? <FontAwesomeIcon icon={faStar} /> : null}
+          </div>
+          {solutionToDisplay && (
+            <time>{intl.formatTime(solutionToDisplay.createdAt)}</time>
+          )}
+        </TaskState>
+      </CenterContent>
     );
   };
 
 const ProgressList = ({
   classId,
   sessionId,
-  fetchData,
 }: {
   classId: number;
   sessionId: number;
-  fetchData: (
-    state: LazyTableState,
-  ) => Promise<{ items: UserProgress[]; totalCount: number }>;
 }) => {
   const intl = useIntl();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [totalRecords, setTotalRecords] = useState<number>(0);
-  const [Classs, setClasss] = useState<UserProgress[]>([]);
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
 
-  useEffect(() => {
-    setLoading(true);
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
 
-    fetchData(lazyState).then(({ items, totalCount }) => {
-      setTotalRecords(totalCount);
-      setClasss(items);
-      setLoading(false);
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
+
+  const {
+    data: solutions,
+    error: solutionsError,
+    isLoading: isLoadingSolutions,
+  } = useAllSessionSolutions(classId, sessionId);
+
+  const progress = useMemo(() => {
+    if (!klass || !session || !solutions) {
+      return [];
+    }
+
+    return klass.students.map<StudentProgress>((student) => {
+      // group solutions of this student by task
+      const taskSolutions = session.tasks.map((task) => {
+        // find all solutions for this task and student
+        const studentSolutions = solutions.find(
+          (s) => s.taskId === task.id,
+        )?.solutions;
+
+        return {
+          taskId: task.id,
+          solutions:
+            studentSolutions?.filter(
+              (solution) => solution.studentId === student.id,
+            ) ?? [],
+        };
+      });
+
+      return {
+        studentId: student.id,
+        // TODO: decrypt student pseudonym
+        name: student.pseudonym,
+        taskSolutions: taskSolutions,
+      };
     });
-  }, [lazyState, fetchData]);
-
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
+  }, [klass, session, solutions]);
 
   const timeOnTaskTemplate = useCallback(
-    (_rowData: UserProgress) => <TimeOnTask>00:00</TimeOnTask>,
+    (_rowData: StudentProgress) => (
+      <RightAlignContent>
+        <TimeOnTask>00:00</TimeOnTask>
+      </RightAlignContent>
+    ),
     [],
   );
 
   const helpTemplate = useCallback(
-    (_rowData: UserProgress) => (
-      <span>
+    (_rowData: StudentProgress) => (
+      <CenterContent>
         <FontAwesomeIcon icon={faHand} />
-      </span>
+      </CenterContent>
     ),
     [],
   );
 
   return (
     <ProgressListWrapper>
-      <DataTable
-        value={Classs}
-        lazy
-        filterDisplay="row"
-        dataKey="id"
-        paginator
-        first={lazyState.first}
-        rows={10}
-        totalRecords={totalRecords}
-        onPage={onPage}
-        onSort={onSort}
-        sortField={lazyState.sortField}
-        sortOrder={lazyState.sortOrder}
-        onFilter={onFilter}
-        filters={lazyState.filters}
-        loading={loading}
-        onRowClick={(e) =>
-          router.push(
-            `/class/${classId}/session/${sessionId}/progress/user/${(e.data as UserProgress).userId}`,
-          )
-        }
+      <MultiSwrContent
+        data={[klass, session, solutions]}
+        errors={[klassError, sessionError, solutionsError]}
+        isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
       >
-        <Column
-          field="name"
-          header={intl.formatMessage(messages.nameColumn)}
-          sortable
-          filter
-          filterPlaceholder={intl.formatMessage(
-            TableMessages.searchFilterPlaceholder,
-          )}
-          filterMatchMode="contains"
-          showFilterMenu={false}
-        />
-        {new Array(5).fill(0).map((_, i) => (
-          <Column
-            key={i}
-            header={`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}
-            body={taskTemplate(i)}
-          />
-        ))}
-        <Column
-          header={intl.formatMessage(messages.timeOnTaskColumn)}
-          body={timeOnTaskTemplate}
-        />
-        <Column
-          header={intl.formatMessage(messages.helpColumn)}
-          body={helpTemplate}
-        />
-      </DataTable>
+        {([klass, session]) => (
+          <DataTable
+            value={progress}
+            filterDisplay="row"
+            dataKey="id"
+            paginator
+            rows={10}
+            loading={klass.students.length !== progress.length}
+            onRowClick={(e) =>
+              router.push(
+                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).studentId}`,
+              )
+            }
+          >
+            <Column
+              field="name"
+              header={intl.formatMessage(messages.nameColumn)}
+              sortable
+              filter
+              filterPlaceholder={intl.formatMessage(
+                TableMessages.searchFilterPlaceholder,
+              )}
+              filterMatchMode="contains"
+              showFilterMenu={false}
+            />
+            <Column
+              header={intl.formatMessage(messages.helpColumn)}
+              alignHeader={"center"}
+              body={helpTemplate}
+            />
+            {session.tasks.map((task, i) => (
+              <Column
+                key={task.id}
+                header={
+                  <>
+                    {`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}{" "}
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </>
+                }
+                headerTooltip={task.title}
+                headerTooltipOptions={{ position: "bottom" }}
+                alignHeader={"center"}
+                body={taskTemplate(task.id)}
+              />
+            ))}
+            <Column
+              header={intl.formatMessage(messages.timeOnTaskColumn)}
+              alignHeader={"right"}
+              body={timeOnTaskTemplate}
+            />
+          </DataTable>
+        )}
+      </MultiSwrContent>
     </ProgressListWrapper>
   );
 };
