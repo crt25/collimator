@@ -1,0 +1,103 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ClassNavigation from "@/components/class/ClassNavigation";
+import Header from "@/components/Header";
+import PageHeader from "@/components/PageHeader";
+import CrtNavigation from "@/components/CrtNavigation";
+import { useRouter } from "next/router";
+import { Container } from "react-bootstrap";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { useCallback } from "react";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { useUpdateClassSession } from "@/api/collimator/hooks/sessions/useUpdateClassSession";
+import SessionNavigation from "@/components/session/SessionNavigation";
+import MultiSwrContent from "@/components/MultiSwrContent";
+import SessionForm, {
+  SessionFormValues,
+} from "@/components/session/SessionForm";
+
+const messages = defineMessages({
+  submit: {
+    id: "EditSession.submit",
+    defaultMessage: "Save Session",
+  },
+});
+
+const EditSession = () => {
+  const router = useRouter();
+  const { classId, sessionId } = router.query as {
+    classId: string;
+    sessionId: string;
+  };
+
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
+
+  const updateSession = useUpdateClassSession();
+
+  const onSubmit = useCallback(
+    async (formValues: SessionFormValues) => {
+      if (klass && session) {
+        await updateSession(klass.id, session.id, {
+          title: formValues.title,
+          description: formValues.description,
+          taskIds: formValues.taskIds,
+        });
+
+        router.back();
+      }
+    },
+    [klass, session, updateSession, router],
+  );
+
+  return (
+    <>
+      <Header />
+      <Container>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb klass={klass} />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
+        </Breadcrumbs>
+        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
+        <PageHeader>
+          <FormattedMessage
+            id="EditSession.header"
+            defaultMessage="Edit Session"
+          />
+        </PageHeader>
+        <MultiSwrContent
+          data={[klass, session]}
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+        >
+          {([
+            /* wait for class to load, needed for update*/
+            _klass,
+            session,
+          ]) => (
+            <SessionForm
+              submitMessage={messages.submit}
+              initialValues={{
+                title: session.title,
+                description: session.description,
+                taskIds: session.tasks.map((t) => t.id),
+              }}
+              onSubmit={onSubmit}
+            />
+          )}
+        </MultiSwrContent>
+      </Container>
+    </>
+  );
+};
+
+export default EditSession;

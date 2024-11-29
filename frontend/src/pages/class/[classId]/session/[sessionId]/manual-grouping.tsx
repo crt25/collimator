@@ -9,16 +9,26 @@ import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 
 const SessionManualGrouping = () => {
   const router = useRouter();
-  const { classId, sessionId: sessionIdString } = router.query as {
+  const { classId, sessionId } = router.query as {
     classId: string;
     sessionId: string;
   };
 
-  const { data: klass, error, isLoading: isLoadingClass } = useClass(classId);
-  const sessionId = parseInt(sessionIdString, 10);
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
 
   return (
     <>
@@ -26,13 +36,9 @@ const SessionManualGrouping = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation
-            classId={klass?.id}
-            breadcrumb
-            sessionId={sessionId}
-          />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
-        <SessionNavigation classId={klass?.id} sessionId={sessionId} />
+        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
             id="SessionManualGrouping.header"
@@ -40,9 +46,9 @@ const SessionManualGrouping = () => {
           />
         </PageHeader>
         <MultiSwrContent
-          errors={[error]}
-          isLoading={[isLoadingClass]}
-          data={[klass]}
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+          data={[klass, session]}
         >
           {([_klass]) => sessionId}
         </MultiSwrContent>

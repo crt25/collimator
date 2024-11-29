@@ -14,11 +14,10 @@ const allowedRoutesForUnauthenticatedUsers = [
   // this page has a special role in the process of student authentication
   // in particular, an ephemeral key pair is generated for the session
   // and the student's authentication is completed by communicating with the teacher
-  "/session/[sessionId]/join",
+  "/class/[classId]/session/[sessionId]/join",
 ];
 const allowedRoutesForStudents = [
-  "/session/[sessionId]/join",
-  "/session/[sessionId]/task/[taskId]/solve",
+  "/class/[classId]/session/[sessionId]/task/[taskId]/solve",
 ];
 
 const AuthenticationBarrier = ({
@@ -66,7 +65,7 @@ const AuthenticationBarrier = ({
   // but only do so once the authentication state has been loaded
   useEffect(() => {
     if (authenticationStateLoaded && !isAllowedToSeePage) {
-      router.push("/login?redirectUri=" + router.asPath);
+      router.replace("/login?redirectUri=" + router.asPath);
     }
   }, [authenticationStateLoaded, router, isAllowedToSeePage]);
 

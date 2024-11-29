@@ -1,21 +1,19 @@
 import { useCallback } from "react";
 import {
-  getTasksControllerUpdateFileV0Url,
+  tasksControllerUpdateFileV0,
   tasksControllerUpdateV0,
 } from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
-import { fetchApi } from "@/api/fetch";
-import { ExistingTaskDto } from "../../generated/models";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useRevalidateTask } from "./useRevalidateTask";
 
 type Args = Parameters<typeof tasksControllerUpdateV0>;
-type UpdateUserType = (...args: Args) => Promise<ExistingTask>;
+type UpdateTaskType = (...args: Args) => Promise<ExistingTask>;
 
-const fetchAndTransform: UpdateUserType = (...args) =>
+const fetchAndTransform: UpdateTaskType = (...args) =>
   tasksControllerUpdateV0(...args).then(ExistingTask.fromDto);
 
-export const useUpdateTask = (): UpdateUserType => {
+export const useUpdateTask = (): UpdateTaskType => {
   const revalidateTask = useRevalidateTask();
   const revalidateTaskList = useRevalidateTaskList();
 
@@ -31,19 +29,11 @@ export const useUpdateTask = (): UpdateUserType => {
   );
 };
 
-const updateTaskFile = (taskId: number, task: Blob): Promise<ExistingTask> => {
-  const formData = new FormData();
+type FileArgs = Parameters<typeof tasksControllerUpdateFileV0>;
+type UpdateTaskFileType = (...args: FileArgs) => Promise<ExistingTask>;
 
-  formData.append("file", task);
+const fetchAndTransformFile: UpdateTaskFileType = (...args) =>
+  tasksControllerUpdateFileV0(...args).then(ExistingTask.fromDto);
 
-  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateFileV0Url(taskId), {
-    method: "PATCH",
-    body: formData,
-  }).then(ExistingTask.fromDto);
-};
-
-export const useUpdateTaskFile = (): typeof updateTaskFile =>
-  useCallback<typeof updateTaskFile>(
-    (taskId, task) => updateTaskFile(taskId, task),
-    [],
-  );
+export const useUpdateTaskFile = (): UpdateTaskFileType =>
+  useCallback((...args: FileArgs) => fetchAndTransformFile(...args), []);

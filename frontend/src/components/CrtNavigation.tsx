@@ -34,10 +34,10 @@ const tabs: NavigationTab[] = [
     url: "/class",
     title: (intl) => intl.formatMessage(messages.classesTab),
   },
-  {
-    url: "/lesson",
-    title: (intl) => intl.formatMessage(messages.lessonsTab),
-  },
+  // {
+  //   url: "/lesson",
+  //   title: (intl) => intl.formatMessage(messages.lessonsTab),
+  // },
   {
     url: "/task",
     title: (intl) => intl.formatMessage(messages.tasksTab),
@@ -66,7 +66,7 @@ const CrtNavigation = ({
         <>
           {user && (
             <BreadcrumbItem href={`/user/${user.id}`}>
-              {user.name || user.email}
+              {user.name ?? user.email}
             </BreadcrumbItem>
           )}
           {klass && (

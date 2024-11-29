@@ -1,9 +1,12 @@
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import FullHeightRow from "@/components/layout/FullHeightRow";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import RemainingHeightContainer from "@/components/layout/RemainingHeightContainer";
 import VerticalSpacing from "@/components/layout/VerticalSpacing";
+import MultiSwrContent from "@/components/MultiSwrContent";
 import TaskDescription from "@/components/TaskDescription";
 import TaskList from "@/components/TaskList";
 import {
@@ -26,14 +29,27 @@ const SubHeader = styled.h2`
 
 const JoinSession = () => {
   const router = useRouter();
-  const { sessionId: sessionIdString, key: teacherPublicKeyFingerprint } =
-    router.query as {
-      sessionId?: string;
-      key?: string;
-    };
+  const {
+    classId,
+    sessionId,
+    key: teacherPublicKeyFingerprint,
+  } = router.query as {
+    classId?: string;
+    sessionId?: string;
+    key?: string;
+  };
 
-  const sessionId =
-    sessionIdString !== undefined && parseInt(sessionIdString, 10);
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
 
   const authenticationContext = useContext(AuthenticationContext);
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
@@ -41,17 +57,17 @@ const JoinSession = () => {
   // if the student is not locally authenticated (i.e. the id token was obtained), redirect to the login page
   useEffect(() => {
     // stop early if we do not have a session id
-    if (!sessionId) {
+    if (!session) {
       return;
     }
 
-    if (isStudentFullyAuthenticated(authenticationContext, sessionId)) {
+    if (isStudentFullyAuthenticated(authenticationContext, session.id)) {
       return;
     }
 
     if (!isStudentLocallyAuthenticated(authenticationContext)) {
-      router.push(
-        `/login/student?sessionId=${sessionId}&key=${teacherPublicKeyFingerprint}`,
+      router.replace(
+        `/login/student?classId=${session.klass.id}&sessionId=${session.id}&key=${teacherPublicKeyFingerprint}`,
       );
       return;
     }
@@ -91,7 +107,7 @@ const JoinSession = () => {
           ...authenticationContext,
           keyPair,
           authenticationToken,
-          sessionId,
+          sessionId: session.id,
         });
       })
       .catch((error) => {
@@ -100,23 +116,26 @@ const JoinSession = () => {
   }, [
     authenticationContext,
     router,
-    sessionId,
+    session,
     teacherPublicKeyFingerprint,
     updateAuthenticationContext,
   ]);
 
   const onJoinSession = useCallback(async () => {
     if (
-      !sessionId ||
-      !isStudentFullyAuthenticated(authenticationContext, sessionId)
+      !klass ||
+      !session ||
+      session.tasks.length <= 0 ||
+      !isStudentFullyAuthenticated(authenticationContext, session.id)
     ) {
       return;
     }
 
     // once this is done, the student is fully authenticated and can join the session
-    // first, fetch the tasks for the session and then redirect to the first task
-    router.push(`/session/${sessionId}/task/1`);
-  }, [sessionId, authenticationContext, router]);
+    router.replace(
+      `/class/${klass.id}/session/${session.id}/task/${session.tasks[0].id}/solve`,
+    );
+  }, [klass, session, authenticationContext, router]);
 
   if (!isStudentAuthenticated(authenticationContext) || !sessionId) {
     // the user will be redirected to the login page if the state does not match
@@ -141,77 +160,39 @@ const JoinSession = () => {
     <MaxScreenHeight>
       <Header />
       <VerticalSpacing />
+
       <RemainingHeightContainer>
-        <FullHeightRow>
-          <Col xs={4}>
-            <SubHeader>
-              <FormattedMessage
-                id="JoinSession.taskList"
-                defaultMessage="Tasks"
-              />
-            </SubHeader>
-            <TaskList sessionId={sessionId} />
-          </Col>
-          <Col xs={8}>
-            <SubHeader>Introduction to Scratch</SubHeader>
-            <TaskDescription>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                sed diam voluptua. At vero eos et accusam et justo duo dolores
-                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-                est Lorem ipsum dolor sit amet.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                sed diam voluptua. At vero eos et accusam et justo duo dolores
-                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-                est Lorem ipsum dolor sit amet.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                sed diam voluptua. At vero eos et accusam et justo duo dolores
-                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-                est Lorem ipsum dolor sit amet.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                sed diam voluptua. At vero eos et accusam et justo duo dolores
-                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-                est Lorem ipsum dolor sit ametx.
-              </p>
-            </TaskDescription>
-            <Button onClick={onJoinSession}>
-              <FormattedMessage
-                id="JoinSession.joinSession"
-                defaultMessage="Join Session"
-              />
-            </Button>
-          </Col>
-        </FullHeightRow>
+        <MultiSwrContent
+          data={[klass, session]}
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+        >
+          {([klass, session]) => (
+            <FullHeightRow>
+              <Col xs={4}>
+                <SubHeader>
+                  <FormattedMessage
+                    id="JoinSession.taskList"
+                    defaultMessage="Tasks"
+                  />
+                </SubHeader>
+                <TaskList classId={klass.id} session={session} />
+              </Col>
+              <Col xs={8}>
+                <SubHeader>{session.title}</SubHeader>
+                <TaskDescription>
+                  <p>{session.description}</p>
+                </TaskDescription>
+                <Button onClick={onJoinSession}>
+                  <FormattedMessage
+                    id="JoinSession.joinSession"
+                    defaultMessage="Join Session"
+                  />
+                </Button>
+              </Col>
+            </FullHeightRow>
+          )}
+        </MultiSwrContent>
       </RemainingHeightContainer>
       <VerticalSpacing />
     </MaxScreenHeight>

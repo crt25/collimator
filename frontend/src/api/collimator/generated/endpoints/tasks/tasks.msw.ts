@@ -13,7 +13,9 @@ import type { DeletedTaskDto, ExistingTaskDto } from "../../models";
 export const getTasksControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingTaskDto> = {},
 ): ExistingTaskDto => ({
+  creatorId: faker.number.int({ min: undefined, max: undefined }),
   description: faker.word.sample(),
+  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   title: faker.word.sample(),
   type: faker.helpers.arrayElement([
@@ -27,7 +29,11 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
+    creatorId: faker.number.int({ min: undefined, max: undefined }),
     description: faker.word.sample(),
+    file: new Blob(
+      faker.helpers.arrayElements(faker.word.words(10).split(" ")),
+    ),
     id: faker.number.int({ min: undefined, max: undefined }),
     title: faker.word.sample(),
     type: faker.helpers.arrayElement([
@@ -38,7 +44,9 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
 export const getTasksControllerFindOneV0ResponseMock = (
   overrideResponse: Partial<ExistingTaskDto> = {},
 ): ExistingTaskDto => ({
+  creatorId: faker.number.int({ min: undefined, max: undefined }),
   description: faker.word.sample(),
+  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   title: faker.word.sample(),
   type: faker.helpers.arrayElement([
@@ -50,7 +58,9 @@ export const getTasksControllerFindOneV0ResponseMock = (
 export const getTasksControllerUpdateV0ResponseMock = (
   overrideResponse: Partial<ExistingTaskDto> = {},
 ): ExistingTaskDto => ({
+  creatorId: faker.number.int({ min: undefined, max: undefined }),
   description: faker.word.sample(),
+  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   title: faker.word.sample(),
   type: faker.helpers.arrayElement([
@@ -62,7 +72,9 @@ export const getTasksControllerUpdateV0ResponseMock = (
 export const getTasksControllerRemoveV0ResponseMock = (
   overrideResponse: Partial<DeletedTaskDto> = {},
 ): DeletedTaskDto => ({
+  creatorId: faker.number.int({ min: undefined, max: undefined }),
   description: faker.word.sample(),
+  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   title: faker.word.sample(),
   type: faker.helpers.arrayElement([
@@ -74,7 +86,9 @@ export const getTasksControllerRemoveV0ResponseMock = (
 export const getTasksControllerUpdateFileV0ResponseMock = (
   overrideResponse: Partial<ExistingTaskDto> = {},
 ): ExistingTaskDto => ({
+  creatorId: faker.number.int({ min: undefined, max: undefined }),
   description: faker.word.sample(),
+  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   title: faker.word.sample(),
   type: faker.helpers.arrayElement([

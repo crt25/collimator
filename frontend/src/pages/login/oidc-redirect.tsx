@@ -52,11 +52,7 @@ const OpenIdConnectRedirect = () => {
           );
         }
 
-        const redirect = () =>
-          // first go to the home page and then redirect to the desired page
-          // so that the user is not stuck on the login page if the redirect fails
-          // or lands on the authentication page if a router.back() is called
-          router.push("/").then(() => router.push(redirectPath));
+        const redirect = () => router.replace(redirectPath);
 
         if (isStudent) {
           // the (remaining) authentication logic for students is handled on the join session page
