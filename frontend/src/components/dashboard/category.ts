@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: "Category.noTests",
     defaultMessage: "Without tests",
   },
+  automaticGroup: {
+    id: "Category.automaticGroup",
+    defaultMessage: "Automatic Group",
+  },
   allTestsPass: {
     id: "Category.allTestsPass",
     defaultMessage: "All tests pass",
@@ -42,6 +46,8 @@ export enum Category {
   passesSomeTests = 1 << 2,
   // whether all tests pass
   passesAllTests = 1 << 3,
+  // whether it is an automatic group
+  isAutomaticGroup = 1 << 4,
 }
 
 const hasFlag = (category: Category, flag: Category): boolean =>
@@ -55,8 +61,11 @@ export const getCategoryName = (
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
+  const isAutomaticGroup = hasFlag(category, Category.isAutomaticGroup);
 
-  let name = intl.formatMessage(messages.noTests);
+  let name = isAutomaticGroup
+    ? intl.formatMessage(messages.automaticGroup)
+    : intl.formatMessage(messages.noTests);
 
   if (hasTests) {
     if (passesAllTests) {
@@ -77,19 +86,21 @@ export const getCategoryName = (
 
 type PatternType = Parameters<typeof pattern.draw>[0];
 
-export const getCanvasPattern = (category: Category): CanvasPattern => {
+export const getCanvasPattern = (
+  category: Category,
+): string | CanvasPattern => {
   const hasTests = hasFlag(category, Category.hasTests);
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
 
   let color: [number, number, number, number] = [155, 89, 182, 1];
-  let patternName: PatternType = "zigzag";
+  let patternName: PatternType | null = "zigzag";
 
   if (hasTests) {
     if (passesAllTests) {
       color = [39, 174, 96, 1];
-      patternName = "disc";
+      patternName = null;
     } else if (passesATest) {
       color = [243, 156, 18, 1];
       patternName = "triangle";
@@ -105,5 +116,9 @@ export const getCanvasPattern = (category: Category): CanvasPattern => {
 
   const colorString = `rgba(${color.slice(0, 3).join(" ")} / ${color[3]})`;
 
-  return pattern.draw(patternName, colorString);
+  if (patternName) {
+    return pattern.draw(patternName, colorString);
+  }
+
+  return colorString;
 };
