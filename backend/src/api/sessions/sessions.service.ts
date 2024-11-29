@@ -92,20 +92,34 @@ export class SessionsService {
       // however we need a transaction because of this open bug:
       // https://github.com/prisma/prisma/issues/16606
       this.prisma.sessionTask.deleteMany({
-        where: { sessionId: id },
+        where: {
+          taskId: {
+            notIn: taskIds,
+          },
+          sessionId: id,
+        },
       }),
       this.prisma.session.update({
-        data: {
-          ...session,
-          tasks: {
-            createMany: {
-              data: taskIds.map((taskId, index) => ({ taskId, index })),
-            },
-          },
-        },
+        data: session,
         where: { classId, id },
         include: compactInclude,
       }),
+      ...taskIds.map((taskId, index) =>
+        this.prisma.sessionTask.upsert({
+          where: {
+            sessionId_taskId: {
+              sessionId: id,
+              taskId,
+            },
+          },
+          update: { index },
+          create: {
+            taskId,
+            index,
+            sessionId: id,
+          },
+        }),
+      ),
     ]);
     return update;
   }
