@@ -106,7 +106,11 @@ test.describe("/solve", () => {
       type: "response",
       procedure: "getSubmission",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
-      result: {},
+      result: {
+        file: {},
+        totalTests: expect.any(Number),
+        passedTests: expect.any(Number),
+      },
     });
   });
 
@@ -427,15 +431,28 @@ test.describe("/solve", () => {
     await expect(page.assertionState.passed).toHaveText("0");
     await expect(page.assertionState.total).toHaveText("1");
 
+    await pwPage.evaluate(() => {
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getSubmission",
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    await pwPage.waitForFunction(() => window.postedMessages.length > 1);
+
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
       id: 0,
-      type: "request",
-      procedure: "reportProgress",
-      arguments: {
+      type: "response",
+      procedure: "getSubmission",
+      result: {
+        file: {},
         totalTests: 1,
         passedTests: 0,
       },
@@ -462,15 +479,28 @@ test.describe("/solve", () => {
     await expect(page.assertionState.passed).toHaveText("1");
     await expect(page.assertionState.total).toHaveText("1");
 
+    await pwPage.evaluate(() => {
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 0,
+        type: "request",
+        procedure: "getSubmission",
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    await pwPage.waitForFunction(() => window.postedMessages.length > 1);
+
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
-      id: expect.any(Number),
-      type: "request",
-      procedure: "reportProgress",
-      arguments: {
+      id: 0,
+      type: "response",
+      procedure: "getSubmission",
+      result: {
+        file: {},
         totalTests: 1,
         passedTests: 1,
       },
@@ -494,29 +524,13 @@ test.describe("/solve", () => {
     // be at position x = 100, violating the assertion
     await page.pressGreenFlag();
 
-    // wait for results
-    await pwPage.waitForFunction(() => window.postedMessages.length === 2);
+    await pwPage.waitForTimeout(1000);
 
     await page.pressGreenFlag();
 
-    // wait for results
-    await pwPage.waitForFunction(() => window.postedMessages.length === 3);
+    await pwPage.waitForTimeout(1000);
 
     await expect(page.assertionState.passed).toHaveText("1");
     await expect(page.assertionState.total).toHaveText("1");
-
-    const messages = await pwPage.evaluate(() => window.postedMessages);
-
-    expect(messages).toHaveLength(3);
-
-    expect(messages[2].message).toEqual({
-      id: expect.any(Number),
-      type: "request",
-      procedure: "reportProgress",
-      arguments: {
-        totalTests: 1,
-        passedTests: 1,
-      },
-    });
   });
 });
