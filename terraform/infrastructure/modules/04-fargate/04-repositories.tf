@@ -14,7 +14,7 @@ module "ecr_backend" {
         description  = "Keep last two images",
         selection = {
           tagStatus     = "tagged",
-          tagPrefixList = ["v"],
+          tagPrefixList = ["latest"],
           countType     = "imageCountMoreThan",
           countNumber   = 2
         },
