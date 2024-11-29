@@ -1,9 +1,8 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Expose } from "class-transformer";
-import { TaskType } from "@prisma/client";
 
-export class UpdateTaskDto {
+export class CreateSessionDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -16,14 +15,12 @@ export class UpdateTaskDto {
   @Expose()
   readonly description!: string;
 
-  @IsEnum(TaskType)
+  @IsArray()
+  @IsNumber({}, { each: true })
   @IsNotEmpty()
   @ApiProperty({
-    example: TaskType.SCRATCH,
-    description: `The task's type.`,
-    enumName: "TaskType",
-    enum: Object.keys(TaskType),
+    type: [Number],
   })
   @Expose()
-  readonly type!: TaskType;
+  readonly taskIds!: number[];
 }

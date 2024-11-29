@@ -43,6 +43,8 @@ async function main(): Promise<void> {
     update: {},
     create: {
       classId: klass.id,
+      title: "First session",
+      description: "This is the first session",
     },
   });
 
@@ -54,6 +56,7 @@ async function main(): Promise<void> {
     create: {
       sessionId: session.id,
       taskId: task.id,
+      index: 0,
     },
   });
 

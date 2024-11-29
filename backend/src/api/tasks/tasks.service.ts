@@ -3,7 +3,10 @@ import { Task, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TaskId } from "./dto";
 
-export type TaskCreateInput = Omit<Prisma.TaskCreateInput, "data" | "mimeType">;
+export type TaskCreateInput = Omit<
+  Prisma.TaskUncheckedCreateInput,
+  "data" | "mimeType"
+>;
 export type TaskUpdateInput = Omit<Prisma.TaskUpdateInput, "data" | "mimeType">;
 export type TaskWithoutData = Omit<Task, "data">;
 export type TaskDataOnly = Pick<Task, "data" | "mimeType">;

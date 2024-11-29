@@ -34,6 +34,7 @@ export class UsersController {
   @ApiCreatedResponse({ type: ExistingUserDto })
   @ApiForbiddenResponse()
   async create(@Body() createUserDto: CreateUserDto): Promise<ExistingUserDto> {
+    // TODO: returns 500 if user already exists. Test and fix!
     const user = await this.usersService.create(createUserDto);
     return ExistingUserDto.fromQueryResult(user);
   }

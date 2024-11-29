@@ -12,6 +12,8 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import {
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -37,6 +39,11 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    type: CreateTaskDto,
+    description: "The task to create",
+  })
   @ApiCreatedResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @UseInterceptors(FileInterceptor("file"))
@@ -45,7 +52,11 @@ export class TasksController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ExistingTaskDto> {
     const task = await this.tasksService.create(
-      createTaskDto,
+      {
+        ...createTaskDto,
+        // TODO: add creatorId when authentication is implemented
+        // creatorId: 1,
+      },
       file.mimetype,
       file.buffer,
     );

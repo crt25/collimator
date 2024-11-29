@@ -24,6 +24,8 @@ model User {
   type  UserType
 
   classes Class[]
+  lessons Lesson[]
+  tasks   Task[]
 }
 
 model Class {
@@ -42,16 +44,48 @@ model Student {
 
   class     Class      @relation(fields: [classId], references: [id], onDelete: Restrict)
   solutions Solution[]
+  // studentActivity StudentActivity[]
+}
+
+enum LessonVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+model Lesson {
+  id          Int              @id @default(autoincrement())
+  createdAt   DateTime         @default(now())
+  title       String
+  description String
+  visibility  LessonVisibility
+  creatorId   Int?
+
+  tasks    LessonTask[]
+  sessions Session[]
+  creator  User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+}
+
+enum SessionStatus {
+  CREATED
+  ONGOING
+  PAUSED
+  FINISHED
 }
 
 model Session {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  classId   Int
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  title           String
+  description     String
+  classId         Int
+  basedOnLessonId Int?
+  status          SessionStatus @default(CREATED)
 
+  lesson    Lesson?       @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)
   tasks     SessionTask[]
   solutions Solution[]
+  // studentActivity StudentActivity[]
 }
 
 enum TaskType {
@@ -65,18 +99,35 @@ model Task {
   type        TaskType
   data        Bytes
   mimeType    String
+  creatorId   Int?
 
   solutions Solution[]
   sessions  SessionTask[]
+  lessons   LessonTask[]
+  creator   User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  // studentActivity StudentActivity[]
+}
+
+model LessonTask {
+  lessonId Int
+  taskId   Int
+  index    Int
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Restrict)
+
+  @@id([lessonId, taskId])
 }
 
 model SessionTask {
   sessionId Int
   taskId    Int
+  index     Int
 
   session   Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   task      Task       @relation(fields: [taskId], references: [id], onDelete: Restrict)
   solutions Solution[]
+  // studentActivity StudentActivity[]
 
   @@id([sessionId, taskId])
 }
@@ -105,3 +156,40 @@ model SolutionAnalysis {
 
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
 }
+
+// Tables to keep intermediate student activity:
+//
+// enum StudentActivityType {
+//   TASK_STARTED
+//   TASK_RUN_SOLUTION
+//   TASK_TEST_RESULTS
+//   TASK_CLOSED
+//   TASK_APP_ACTIVITY
+// }
+//
+// model StudentActivity {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//
+//   type StudentActivityType
+//
+//   studentId String
+//   sessionId Int
+//   taskId    Int
+//
+//   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+//   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+//   task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+//   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+//
+//   appActivity StudentActivityApp?
+// }
+//
+// model StudentActivityApp {
+//   id Int @id
+//
+//   type String
+//   data String
+//
+//   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
+// }
