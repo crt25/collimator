@@ -135,7 +135,7 @@ model SessionTask {
 model Solution {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  data      String
+  data      Bytes
   mimeType  String
   studentId String
   taskId    Int

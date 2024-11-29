@@ -80,7 +80,10 @@ async function main(): Promise<void> {
           studentId: student.id,
           taskId: task.id,
           sessionId: session.id,
-          data: `Some text file here from student ${student.id}!`,
+          data: Buffer.from(
+            `Some text file here from student ${student.id}!`,
+            "utf8",
+          ),
           mimeType: "text/plain",
         },
       });
