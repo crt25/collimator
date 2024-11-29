@@ -64,11 +64,17 @@ data "aws_iam_policy_document" "deploy" {
       "ecr:BatchCheckLayerAvailability",
       "ecr:PutImage",
       "ecr:BatchGetImage",
+    ]
+    resources = var.ecr_repository_arns
+  }
 
+  statement {
+    effect = "Allow"
+    actions = [
       # and updating / re-deploying a service
       "ecs:UpdateService",
     ]
-    resources = var.ecr_repository_arns
+    resources = var.ecs_repository_arns
   }
 
   statement {
