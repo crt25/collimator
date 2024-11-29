@@ -24,7 +24,7 @@ variable "ecr_repository_arns" {
   type = list(string)
 }
 
-variable "ecs_repository_arns" {
+variable "ecs_service_arns" {
   type = list(string)
 }
 

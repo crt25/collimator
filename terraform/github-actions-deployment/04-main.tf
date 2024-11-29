@@ -74,7 +74,7 @@ data "aws_iam_policy_document" "deploy" {
       # and updating / re-deploying a service
       "ecs:UpdateService",
     ]
-    resources = var.ecs_repository_arns
+    resources = var.ecs_service_arns
   }
 
   statement {
