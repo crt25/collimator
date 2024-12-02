@@ -59,7 +59,7 @@ test.describe("/class/create", () => {
     await list.createItem();
   });
 
-  test.only("can create a new class", async ({ page: pwPage, baseURL }) => {
+  test("can create a new class", async ({ page: pwPage, baseURL }) => {
     const page = await ClassFormPageModel.create(pwPage);
 
     const teacherId = mockUsersResponse[0].id;

@@ -40,10 +40,9 @@ export class RoleGuard implements CanActivate {
     }
 
     try {
-      const user =
-        await this.authenticationService.findByAuthenticationTokenOrThrow(
-          getTokenFromExecutionContext(context),
-        );
+      const user = await this.authenticationService.findUserByAuthTokenOrThrow(
+        getTokenFromExecutionContext(context),
+      );
 
       if (this.authenticationService.isStudent(user)) {
         if (!allowedRoles.includes(NonUserRoles.STUDENT)) {
@@ -66,9 +65,14 @@ export class RoleGuard implements CanActivate {
           user,
         );
       }
-    } catch {
+    } catch (e) {
+      if (e instanceof ForbiddenException) {
+        throw e;
+      }
+
       throw new UnauthorizedException();
     }
+
     return true;
   }
 }

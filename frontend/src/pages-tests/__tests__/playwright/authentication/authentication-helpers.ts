@@ -12,7 +12,7 @@ import {
   UserType,
 } from "@/api/collimator/generated/models";
 import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
-import { Encoder, Decoder, Packet } from "socket.io-parser";
+import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import {
   StudentAuthenticationRequest,
   StudentAuthenticationRequestContent,
@@ -305,25 +305,25 @@ export const setupForAuthentication = async (
 
       // see protocol definition at https://socket.io/docs/v4/socket-io-protocol/#exchange-protocol
 
-      if (packet.type === 0) {
+      if (packet.type === PacketType.CONNECT) {
         // on connection, respond
         ws.send(connectMessage);
         return;
       }
 
-      if (packet.type === 1) {
+      if (packet.type === PacketType.DISCONNECT) {
         ws.close();
         return;
       }
 
-      if (packet.type === 4) {
-        // not sure what this is, the protocol definition does not mention it
+      // not sure why this is sent, the protocol definition does not mention this being sent by the client
+      if (packet.type === PacketType.CONNECT_ERROR) {
         ws.send('40{"sid":"ajVdtT-qu_urvILFAAA0"}');
         return;
       }
 
       if (
-        packet.type === 2 &&
+        packet.type === PacketType.EVENT &&
         Array.isArray(packet.data) &&
         packet.data.length >= 1
       ) {
