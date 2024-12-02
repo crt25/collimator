@@ -66,7 +66,6 @@ const getOptions = async (
 
   if ("keyPair" in authContext) {
     try {
-      throw new Error();
       options = await Promise.all(
         options.map(async ({ label, value }) => {
           const decryptedIdentity: StudentIdentity = JSON.parse(
