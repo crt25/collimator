@@ -10,7 +10,7 @@ import {
   Group,
   ManualGroup,
   SolutionGroupAssignment,
-} from "./grouping";
+} from "./types";
 import { Category } from "../category";
 
 export const useGrouping = (
@@ -22,11 +22,14 @@ export const useGrouping = (
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
 ): {
+  isGroupingAvailable: boolean;
   categorizedDataPoints: CategorizedDataPoints[];
   groupAssignments: SolutionGroupAssignment[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
+  const [isGroupingAvailable, setIsGroupingAvailable] =
+    useState<boolean>(false);
   const [dataPoints, setDataPoints] = useState<CategorizedDataPoints[]>([]);
   const [groupAssignment, setGroupAssignment] = useState<
     SolutionGroupAssignment[]
@@ -54,14 +57,21 @@ export const useGrouping = (
 
   useEffect(() => {
     let isCancelled = false;
-    if (isAutomaticGrouping) {
+
+    if (!isAutomaticGrouping) {
+      setDataPoints(manual.dataPoints);
+      setGroupAssignment(manual.groupAssignment);
+      setGroups(manual.groups);
+      setManualGroups(manual.groups);
+      setIsGroupingAvailable(true);
+    } else {
+      setIsGroupingAvailable(false);
+
       computeAutomaticGrouping().then(
         ({ automaticGroups, groupAssignments }) => {
           if (isCancelled) {
             return;
           }
-
-          console.log("done", automaticGroups);
 
           setDataPoints([
             {
@@ -72,13 +82,9 @@ export const useGrouping = (
           setGroupAssignment(groupAssignments);
           setGroups(automaticGroups);
           setManualGroups([]);
+          setIsGroupingAvailable(true);
         },
       );
-    } else {
-      setDataPoints(manual.dataPoints);
-      setGroupAssignment(manual.groupAssignment);
-      setGroups(manual.groups);
-      setManualGroups(manual.groups);
     }
 
     return (): void => {
@@ -87,6 +93,7 @@ export const useGrouping = (
   }, [isAutomaticGrouping, manual, computeAutomaticGrouping]);
 
   return {
+    isGroupingAvailable,
     categorizedDataPoints: dataPoints,
     groupAssignments: groupAssignment,
     groups: groups,

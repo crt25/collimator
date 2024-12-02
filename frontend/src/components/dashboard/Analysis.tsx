@@ -27,7 +27,7 @@ import {
   EventContext,
 } from "chartjs-plugin-annotation";
 import { _DeepPartialObject } from "chart.js/dist/types/utils";
-import { CategorizedDataPoints, ManualGroup } from "./hooks/grouping";
+import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 
 type AdditionalChartData = {
   groupName: string;

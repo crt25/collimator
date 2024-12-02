@@ -12,7 +12,7 @@ import { decodeBase64 } from "@/utilities/crypto/base64";
 import CodeView from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
-import { Group, SolutionGroupAssignment } from "./hooks/grouping";
+import { Group, SolutionGroupAssignment } from "./hooks/types";
 
 const messages = defineMessages({
   defaultGroupOption: {

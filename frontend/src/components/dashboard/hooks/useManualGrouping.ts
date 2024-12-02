@@ -9,7 +9,20 @@ import {
   DataPoint,
   ManualGroup,
   SolutionGroupAssignment,
-} from "./grouping";
+} from "./types";
+
+class SolutionNotInGroupError extends Error {
+  constructor(
+    public solution: CurrentAnalysis,
+    public xAxis: AxesCriterionType,
+    public yAxis: AxesCriterionType,
+    public x: number,
+    public y: number,
+    public groups: Omit<ManualGroup, "label">[],
+  ) {
+    super("All data points must be within a group");
+  }
+}
 
 const charCodeOfCapitalA = 65;
 const numberOfCharacters = 26;
@@ -152,8 +165,13 @@ export const useManualGrouping = (
         );
 
         if (!group) {
-          throw new Error(
-            "All data points must be within a group - this error should never be thrown",
+          throw new SolutionNotInGroupError(
+            solution,
+            xAxis,
+            yAxis,
+            xAxisValue,
+            yAxisValue,
+            groups,
           );
         }
 

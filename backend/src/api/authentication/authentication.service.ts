@@ -13,12 +13,12 @@ import { ConfigService } from "@nestjs/config";
 export type AuthToken = string;
 
 // we use a sliding window for token expiration checked against the last used timestamp
-const slidingTokenLifetime = 1000 * 60 * 60 * 4;
+const slidingTokenLifetime = 1000 * 60 * 60 * 4; // 4 hours
 
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
-const lastUsedAccuracy = 1000 * 60 * 10;
+const lastUsedAccuracy = 1000 * 60 * 10; // 10 minutes
 
-const registrationTokenLifetime = 1000 * 60 * 60 * 24 * 5;
+const registrationTokenLifetime = 1000 * 60 * 60 * 24 * 5; // 5 days
 
 export type PublicKey = {
   id: number;

@@ -77,16 +77,21 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask,
   );
 
-  const { categorizedDataPoints, groupAssignments, groups, manualGroups } =
-    useGrouping(
-      isAutomaticGrouping,
-      numberOfGroups,
-      solutions,
-      filters,
-      splits,
-      xAxis,
-      yAxis,
-    );
+  const {
+    isGroupingAvailable,
+    categorizedDataPoints,
+    groupAssignments,
+    groups,
+    manualGroups,
+  } = useGrouping(
+    isAutomaticGrouping,
+    numberOfGroups,
+    solutions,
+    filters,
+    splits,
+    xAxis,
+    yAxis,
+  );
 
   const updateXAxis = useCallback(
     (newAxis: AxesCriterionType) => {
@@ -162,6 +167,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   type="number"
                   value={numberOfGroups}
                   onChange={(e) => setNumberOfGroups(parseInt(e.target.value))}
+                />
+              )}
+
+              {!isGroupingAvailable && (
+                <FormattedMessage
+                  id="Analyzer.noGroupingAvailable"
+                  defaultMessage="Computing groups, please be patient."
                 />
               )}
             </Parameters>
