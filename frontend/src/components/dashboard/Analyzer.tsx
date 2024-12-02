@@ -134,7 +134,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     >
       {([task]) => (
         <Row>
-          <Col xs={3}>
+          <Col xs={12} lg={3}>
             <Parameters>
               <Select
                 label={messages.taskSelection}
@@ -178,7 +178,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               )}
             </Parameters>
           </Col>
-          <Col xs={9}>
+          <Col xs={12} lg={9}>
             {selectedTask && (
               <Analysis
                 taskType={task.type}

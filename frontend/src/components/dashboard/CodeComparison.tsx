@@ -37,6 +37,17 @@ const SelectionMenu = styled.div`
   gap: 1rem;
 
   margin-bottom: 1rem;
+
+  & > :first-child {
+    /* the group select should not shrink */
+    flex-shrink: 0;
+  }
+
+  & > * {
+    /* avoid overflow */
+    min-width: 0;
+    flex-grow: 1;
+  }
 `;
 
 const defaultGroupValue = "null";
@@ -55,6 +66,7 @@ const getOptions = async (
 
   if ("keyPair" in authContext) {
     try {
+      throw new Error();
       options = await Promise.all(
         options.map(async ({ label, value }) => {
           const decryptedIdentity: StudentIdentity = JSON.parse(
@@ -179,10 +191,16 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedLeftSolution,
       );
 
+      const leftGroup = groups.find((g) => g.key === selectedLeftGroup);
+
       if (leftSolution) {
         setSelectedLeftGroup(leftSolution.groupKey);
         setSelectedLeftSolution(leftSolution.solution.id);
+      } else if (leftGroup) {
+        // de-select the solution if it no longer exists
+        setSelectedLeftSolution(defaultSolutionValue);
       } else {
+        // de-select the group and the solution if they no longer exists
         setSelectedLeftGroup(defaultGroupValue);
         setSelectedLeftSolution(defaultSolutionValue);
       }
@@ -193,9 +211,13 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedRightSolution,
       );
 
+      const rightGroup = groups.find((g) => g.key === selectedRightGroup);
+
       if (rightSolution) {
         setSelectedRightGroup(rightSolution.groupKey);
         setSelectedRightSolution(rightSolution.solution.id);
+      } else if (rightGroup) {
+        setSelectedRightSolution(defaultSolutionValue);
       } else {
         setSelectedRightGroup(defaultGroupValue);
         setSelectedRightSolution(defaultSolutionValue);
