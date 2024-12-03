@@ -1,15 +1,18 @@
 import {
   adminFile,
   setupForAuthentication,
-  userEmail,
   studentFile,
+  userName,
 } from "./authentication-helpers";
 import { test as setup, expect, jsonResponse } from "../helpers";
 import { headerCurrentUserName } from "../selectors";
 import * as fs from "fs";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { getSessionsControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
+import {
+  getSessionsControllerFindOneV0Url,
+  getSessionsControllerIsAnonymousV0Url,
+} from "@/api/collimator/generated/endpoints/sessions/sessions";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 
 // Follows the pattern described at https://playwright.dev/docs/auth#multiple-signed-in-roles
@@ -55,6 +58,18 @@ setup("authenticate as student", async ({ page, baseURL, apiURL }) => {
   const sessionResponse = getSessionsControllerFindOneV0ResponseMock({ id: 3 });
 
   await page.route(
+    `${apiURL}${getSessionsControllerIsAnonymousV0Url(2, 3)}`,
+    (route) =>
+      route.fulfill({
+        ...jsonResponse,
+        body: JSON.stringify({
+          id: sessionResponse.id,
+          isAnonymous: false,
+        }),
+      }),
+  );
+
+  await page.route(
     `${apiURL}${getSessionsControllerFindOneV0Url(2, 3)}`,
     (route) =>
       route.fulfill({
@@ -65,6 +80,7 @@ setup("authenticate as student", async ({ page, baseURL, apiURL }) => {
             ...sessionResponse.class,
             id: 2,
           },
+          isAnonymous: false,
         }),
       }),
   );
@@ -80,7 +96,7 @@ setup("authenticate as student", async ({ page, baseURL, apiURL }) => {
   await page.waitForURL(/session\/3\/join/);
 
   await expect(page.locator(headerCurrentUserName).innerText()).resolves.toBe(
-    userEmail,
+    userName,
   );
 
   // https://playwright.dev/docs/auth#session-storage

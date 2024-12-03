@@ -38,6 +38,7 @@ const CreateSession = () => {
           title: formValues.title,
           description: formValues.description,
           taskIds: formValues.taskIds,
+          isAnonymous: formValues.isAnonymous,
         });
 
         router.back();

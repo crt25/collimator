@@ -1,7 +1,7 @@
-import { useUserEmail } from "@/hooks/useUserEmail";
+import { useUserName } from "@/hooks/useUserName";
 import { useContext as useContextMock } from "react";
 
-const email = "john@doe.com";
+const name = "John Doe";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),
@@ -10,16 +10,16 @@ jest.mock("react", () => ({
 
 const useContext = useContextMock as jest.Mock;
 
-describe("useUserEmail", () => {
-  it("should return the user email if the user is authenticated", () => {
-    useContext.mockReturnValue({ email });
+describe("useUserName", () => {
+  it("should return the user name if the user is authenticated", () => {
+    useContext.mockReturnValue({ name });
 
-    expect(useUserEmail()).toBe(email);
+    expect(useUserName()).toBe(name);
   });
 
   it("should return the undefined if the user is not authenticated", () => {
     useContext.mockReturnValue({});
 
-    expect(useUserEmail()).toBe(undefined);
+    expect(useUserName()).toBe(undefined);
   });
 });

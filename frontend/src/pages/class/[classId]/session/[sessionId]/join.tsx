@@ -1,6 +1,9 @@
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
 import Button from "@/components/Button";
+import Input from "@/components/form/Input";
+import SubmitFormButton from "@/components/form/SubmitFormButton";
 import Header from "@/components/Header";
 import FullHeightRow from "@/components/layout/FullHeightRow";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
@@ -8,6 +11,7 @@ import RemainingHeightContainer from "@/components/layout/RemainingHeightContain
 import VerticalSpacing from "@/components/layout/VerticalSpacing";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import ProgressSpinner from "@/components/ProgressSpinner";
+import SwrContent from "@/components/SwrContent";
 import TaskDescription from "@/components/TaskDescription";
 import TaskList from "@/components/TaskList";
 import {
@@ -15,17 +19,31 @@ import {
   isStudentAuthenticated,
   isStudentFullyAuthenticated,
   isStudentLocallyAuthenticated,
+  latestAuthenticationContextVersion,
+  StudentLocallyAuthenticated,
 } from "@/contexts/AuthenticationContext";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { WebSocketContext } from "@/contexts/WebSocketProvider";
+import { UserRole } from "@/types/user/user-role";
 import { StudentAuthenticationRequestContent } from "@/types/websocket-events";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Col, Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
+
+const messages = defineMessages({
+  choosePseudonym: {
+    id: "JoinSession.choosePseudonym",
+    defaultMessage: "Enter a pseudonym",
+  },
+  savePseudonym: {
+    id: "JoinSession.savePseudonym",
+    defaultMessage: "Confirm",
+  },
+});
 
 const SubHeader = styled.h2`
   margin-bottom: 1rem;
@@ -113,6 +131,14 @@ const JoinSession = () => {
   const classId = parseInt(classIdString ?? "no id", 10);
   const sessionId = parseInt(sessionIdString ?? "no id", 10);
 
+  const [anonymousName, setAnonymousName] = useState<string>("");
+  const [isAnonymousNameSet, setIsAnonymousNameSet] = useState<boolean>(false);
+  const {
+    data: isSessionAnonymous,
+    isLoading: isLoadingWhetherSessionAnonymous,
+    error: isSessionAnonymousError,
+  } = useIsSessionAnonymous(classId, sessionId);
+
   const authenticationContext = useContext(AuthenticationContext);
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
   const websocketContext = useContext(WebSocketContext);
@@ -120,9 +146,16 @@ const JoinSession = () => {
 
   // if the student is not locally authenticated (i.e. the id token was obtained), redirect to the login page
   useEffect(() => {
-    // stop early if we do not have a session id, a teacher public key fingerprint or a websocket context
-
-    if (isNaN(classId) || isNaN(sessionId) || !teacherPublicKeyFingerprint) {
+    if (
+      // stop early if we do not have a session id, a teacher public key fingerprint or a websocket context
+      isNaN(classId) ||
+      isNaN(sessionId) ||
+      !teacherPublicKeyFingerprint ||
+      // if we do not know whether the session is anonymous, we cannot proceed
+      isSessionAnonymous === undefined ||
+      // if we know that the session is anonymous but the pseudonym has not been set, we cannot proceed either
+      (isSessionAnonymous === true && !isAnonymousNameSet)
+    ) {
       return;
     }
 
@@ -130,7 +163,14 @@ const JoinSession = () => {
       return;
     }
 
-    if (!isStudentLocallyAuthenticated(authenticationContext)) {
+    // the student context is either null (anonymous) or locally authenticated
+    let studentContext: StudentLocallyAuthenticated | null;
+
+    if (isSessionAnonymous) {
+      studentContext = null;
+    } else if (isStudentLocallyAuthenticated(authenticationContext)) {
+      studentContext = authenticationContext;
+    } else {
       router.replace(
         `/login/student?classId=${classId}&sessionId=${sessionId}&key=${teacherPublicKeyFingerprint}`,
       );
@@ -191,19 +231,33 @@ const JoinSession = () => {
 
             // verify the shared secret by decrypting the confirmation message from the teacher
             // if the message can be decrypted, store the shared secret + the authentication token
+            // if the message cannot be decrypted, the student is not allowed to join the session as someone is trying to impersonate the teacher
             const authenticationToken = await ephemeralKey.decryptString(
               decodeBase64(data.authenticationToken),
             );
 
-            // if the message cannot be decrypted, the student is not allowed to join the session as someone is trying to impersonate the teacher
-            updateAuthenticationContext({
-              ...authenticationContext,
-              keyPair,
-              authenticationToken,
-              sessionId: sessionId,
-              teacherPublicKey,
-              ephemeralKey,
-            });
+            if (studentContext === null) {
+              updateAuthenticationContext({
+                version: latestAuthenticationContextVersion,
+                role: UserRole.student,
+                idToken: undefined,
+                name: anonymousName,
+                keyPair,
+                authenticationToken,
+                sessionId: sessionId,
+                teacherPublicKey,
+                ephemeralKey,
+              });
+            } else {
+              updateAuthenticationContext({
+                ...studentContext,
+                keyPair,
+                authenticationToken,
+                sessionId: sessionId,
+                teacherPublicKey,
+                ephemeralKey,
+              });
+            }
 
             isAuthenticating.current = false;
           },
@@ -215,10 +269,18 @@ const JoinSession = () => {
             studentPublicKey: JSON.stringify(await keyPair.exportPublicKey()),
             encryptedAuthenticationRequest: encodeBase64(
               await ephemeralKey.encryptString(
-                JSON.stringify({
-                  classId,
-                  idToken: authenticationContext.idToken,
-                } as StudentAuthenticationRequestContent),
+                JSON.stringify(
+                  (studentContext
+                    ? {
+                        classId,
+                        idToken: studentContext.idToken,
+                      }
+                    : {
+                        classId,
+                        isAnonymous: true,
+                        pseudonym: anonymousName,
+                      }) as StudentAuthenticationRequestContent,
+                ),
               ),
             ),
           });
@@ -241,7 +303,51 @@ const JoinSession = () => {
     sessionId,
     teacherPublicKeyFingerprint,
     updateAuthenticationContext,
+    isSessionAnonymous,
+    isAnonymousNameSet,
+    anonymousName,
   ]);
+
+  if (
+    isSessionAnonymous === undefined ||
+    (isSessionAnonymous === true && !isAnonymousNameSet)
+  ) {
+    // as long as we do not know whether the session is anonymous, show a loading spinner
+    // then, when we know that the session is anonymous, show a form to enter a pseudonym
+    return (
+      <SwrContent
+        data={isSessionAnonymous}
+        isLoading={isLoadingWhetherSessionAnonymous}
+        error={isSessionAnonymousError}
+      >
+        {() => (
+          <>
+            <Header />
+            <Container>
+              <p>
+                <FormattedMessage
+                  id="JoinSession.anonymousSessionDescription"
+                  defaultMessage="This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
+                />
+              </p>
+              <Input
+                label={messages.choosePseudonym}
+                value={anonymousName}
+                onChange={(e) => setAnonymousName(e.target.value)}
+              />
+
+              <SubmitFormButton
+                label={messages.savePseudonym}
+                onClick={() => {
+                  setIsAnonymousNameSet(true);
+                }}
+              />
+            </Container>
+          </>
+        )}
+      </SwrContent>
+    );
+  }
 
   if (!isStudentAuthenticated(authenticationContext) || !sessionId) {
     // the user will be redirected to the login page if the state does not match

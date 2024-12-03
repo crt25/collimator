@@ -8,6 +8,7 @@
 
 export interface UpdateSessionDto {
   description: string;
+  isAnonymous: boolean;
   taskIds: number[];
   title: string;
 }

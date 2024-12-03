@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-47_automatic_grouping # We need to deploy before merged to main (End of November 2024) - will be removed later
+      - feature/CRT-55_anonymous_sessions # We need to deploy before merged to main (End of November 2024) - will be removed later
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}

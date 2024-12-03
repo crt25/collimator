@@ -12,6 +12,7 @@ import type {
   DeletedSessionDto,
   ExistingSessionDto,
   ExistingSessionExtendedDto,
+  IsSessionAnonymousDto,
 } from "../../models";
 
 export const getSessionsControllerCreateV0ResponseMock = (
@@ -20,6 +21,7 @@ export const getSessionsControllerCreateV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -44,6 +46,7 @@ export const getSessionsControllerFindAllV0ResponseMock =
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       description: faker.word.sample(),
       id: faker.number.int({ min: undefined, max: undefined }),
+      isAnonymous: faker.datatype.boolean(),
       lesson: {
         id: faker.number.int({ min: undefined, max: undefined }),
         name: faker.word.sample(),
@@ -58,6 +61,14 @@ export const getSessionsControllerFindAllV0ResponseMock =
       title: faker.word.sample(),
     }));
 
+export const getSessionsControllerIsAnonymousV0ResponseMock = (
+  overrideResponse: Partial<IsSessionAnonymousDto> = {},
+): IsSessionAnonymousDto => ({
+  id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
+  ...overrideResponse,
+});
+
 export const getSessionsControllerFindOneV0ResponseMock = (
   overrideResponse: Partial<ExistingSessionExtendedDto> = {},
 ): ExistingSessionExtendedDto => ({
@@ -68,6 +79,7 @@ export const getSessionsControllerFindOneV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -92,6 +104,7 @@ export const getSessionsControllerUpdateV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -113,6 +126,7 @@ export const getSessionsControllerRemoveV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -134,6 +148,7 @@ export const getSessionsControllerStartV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -155,6 +170,7 @@ export const getSessionsControllerPauseV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -176,6 +192,7 @@ export const getSessionsControllerFinishV0ResponseMock = (
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.word.sample(),
   id: faker.number.int({ min: undefined, max: undefined }),
+  isAnonymous: faker.datatype.boolean(),
   lesson: {
     id: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
@@ -235,6 +252,32 @@ export const getSessionsControllerFindAllV0MockHandler = (
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   });
+};
+
+export const getSessionsControllerIsAnonymousV0MockHandler = (
+  overrideResponse?:
+    | IsSessionAnonymousDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<IsSessionAnonymousDto> | IsSessionAnonymousDto),
+) => {
+  return http.get(
+    "*/api/v0/classes/:classId/sessions/:id/is-anonymous",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSessionsControllerIsAnonymousV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
 };
 
 export const getSessionsControllerFindOneV0MockHandler = (
@@ -386,6 +429,7 @@ export const getSessionsControllerFinishV0MockHandler = (
 export const getSessionsMock = () => [
   getSessionsControllerCreateV0MockHandler(),
   getSessionsControllerFindAllV0MockHandler(),
+  getSessionsControllerIsAnonymousV0MockHandler(),
   getSessionsControllerFindOneV0MockHandler(),
   getSessionsControllerUpdateV0MockHandler(),
   getSessionsControllerRemoveV0MockHandler(),

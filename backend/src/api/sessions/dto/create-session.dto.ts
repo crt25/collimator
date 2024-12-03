@@ -1,5 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from "class-validator";
 import { Expose } from "class-transformer";
 
 export class CreateSessionDto {
@@ -14,6 +20,11 @@ export class CreateSessionDto {
   @ApiProperty()
   @Expose()
   readonly description!: string;
+
+  @IsBoolean()
+  @ApiProperty()
+  @Expose()
+  readonly isAnonymous!: boolean;
 
   @IsArray()
   @IsNumber({}, { each: true })

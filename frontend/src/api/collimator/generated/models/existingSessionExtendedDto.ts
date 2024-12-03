@@ -17,6 +17,7 @@ export interface ExistingSessionExtendedDto {
   description: string;
   /** The session's unique identifier, a positive integer. */
   id: number;
+  isAnonymous: boolean;
   /**
    * The corresponding lesson.
    * @nullable
@@ -24,7 +25,7 @@ export interface ExistingSessionExtendedDto {
   lesson: ExistingSessionExtendedDtoLesson;
   /** The session's status. */
   status: SessionStatus;
-  /** The session's task. */
+  /** The session's tasks. */
   tasks: SessionTaskDto[];
   title: string;
 }

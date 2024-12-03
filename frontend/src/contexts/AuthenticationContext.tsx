@@ -60,7 +60,6 @@ export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: undefined;
   name: string;
-  email: string;
   role: UserRole.student;
 };
 
@@ -76,17 +75,26 @@ export type StudentAuthenticated = Omit<
   ephemeralKey: EphemeralKey;
 };
 
+export type StudentAuthenticatedAnonymous = Omit<
+  StudentAuthenticated,
+  "idToken"
+> & {
+  idToken: undefined;
+};
+
 export type AuthenticationContextType =
   | Unauthenticated
   | AdminOrTeacherAuthenticated
   | StudentLocallyAuthenticated
-  | StudentAuthenticated;
+  | StudentAuthenticated
+  | StudentAuthenticatedAnonymous;
 
 type SerializedAuthenticationContextTypeV1 =
   | Unauthenticated
   | SerializedTeacherKeyPair<AdminOrTeacherAuthenticated>
   | StudentLocallyAuthenticated
-  | SerializedStudentKeyPair<StudentAuthenticated>;
+  | SerializedStudentKeyPair<StudentAuthenticated>
+  | SerializedStudentKeyPair<StudentAuthenticatedAnonymous>;
 
 export type SerializedAuthenticationContextType =
   SerializedAuthenticationContextTypeV1;
@@ -105,25 +113,32 @@ export const isStudentLocallyAuthenticated = (
 export const isStudentFullyAuthenticated = (
   authContext: AuthenticationContextType,
   sessionId: number,
-): authContext is StudentAuthenticated =>
+): authContext is StudentAuthenticated | StudentAuthenticatedAnonymous =>
   authContext.version === latestAuthenticationContextVersion &&
   authContext.role === UserRole.student &&
-  authContext.idToken !== undefined &&
   authContext.authenticationToken !== undefined &&
   authContext.sessionId === sessionId;
 
 export const isStudentAuthenticated = (
   authContext: AuthenticationContextType,
-): authContext is StudentLocallyAuthenticated | StudentAuthenticated =>
+): authContext is
+  | StudentLocallyAuthenticated
+  | StudentAuthenticated
+  | StudentAuthenticatedAnonymous =>
   authContext.version === latestAuthenticationContextVersion &&
   authContext.role === UserRole.student &&
-  authContext.idToken !== undefined;
+  // if the authentication token is set, the student is fully authenticated
+  // if not, but the id token is set, the student is locally authenticated
+  (authContext.authenticationToken !== undefined ||
+    authContext.idToken !== undefined);
 
 export const isFullyAuthenticated = (
   authContext: AuthenticationContextType,
-): authContext is AdminOrTeacherAuthenticated | StudentAuthenticated =>
+): authContext is
+  | AdminOrTeacherAuthenticated
+  | StudentAuthenticated
+  | StudentAuthenticatedAnonymous =>
   authContext.version === latestAuthenticationContextVersion &&
-  authContext.idToken !== undefined &&
   authContext.authenticationToken !== undefined;
 
 export const authenticationContextDefaultValue: AuthenticationContextType = {
