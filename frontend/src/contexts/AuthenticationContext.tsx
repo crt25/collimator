@@ -1,4 +1,5 @@
 import { UserRole } from "@/types/user/user-role";
+import EphemeralKey from "@/utilities/crypto/EphemeralKey";
 import KeyPair from "@/utilities/crypto/KeyPair";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
@@ -13,6 +14,7 @@ type SerializedKeyPair<
     privateKey: JsonWebKey;
     publicKey: JsonWebKey;
   };
+  saltPublicKey: JsonWebKey;
 };
 
 type AuthenticationContextVersion = "1";
@@ -27,24 +29,18 @@ type Unauthenticated = AuthenticationVersion1 & {
   role: undefined;
 };
 
-type TeacherAuthenticated = AuthenticationVersion1 & {
+export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: string;
+  userId: number;
   name: string;
   email: string;
-  role: UserRole.teacher;
+  role: UserRole.teacher | UserRole.admin;
   keyPair: TeacherLongTermKeyPair;
+  keyPairId: number;
 };
 
-type AdminAuthenticated = AuthenticationVersion1 & {
-  idToken: string;
-  authenticationToken: string;
-  name: string;
-  email: string;
-  role: Exclude<UserRole, UserRole.student | UserRole.teacher>;
-};
-
-type StudentLocallyAuthenticated = AuthenticationVersion1 & {
+export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   idToken: string;
   authenticationToken: undefined;
   name: string;
@@ -52,7 +48,7 @@ type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   role: UserRole.student;
 };
 
-type StudentAuthenticated = Omit<
+export type StudentAuthenticated = Omit<
   StudentLocallyAuthenticated,
   "authenticationToken"
 > & {
@@ -60,19 +56,18 @@ type StudentAuthenticated = Omit<
   sessionId: number;
   authenticationToken: string;
   keyPair: StudentKeyPair;
+  ephemeralKey: EphemeralKey;
 };
 
 export type AuthenticationContextType =
   | Unauthenticated
-  | TeacherAuthenticated
-  | AdminAuthenticated
+  | AdminOrTeacherAuthenticated
   | StudentLocallyAuthenticated
   | StudentAuthenticated;
 
 type SerializedAuthenticationContextTypeV1 =
   | Unauthenticated
-  | SerializedKeyPair<TeacherAuthenticated>
-  | AdminAuthenticated
+  | SerializedKeyPair<AdminOrTeacherAuthenticated>
   | StudentLocallyAuthenticated
   | SerializedKeyPair<StudentAuthenticated>;
 
@@ -107,6 +102,13 @@ export const isStudentAuthenticated = (
   authContext.role === UserRole.student &&
   authContext.idToken !== undefined;
 
+export const isFullyAuthenticated = (
+  authContext: AuthenticationContextType,
+): authContext is AdminOrTeacherAuthenticated | StudentAuthenticated =>
+  authContext.version === latestAuthenticationContextVersion &&
+  authContext.idToken !== undefined &&
+  authContext.authenticationToken !== undefined;
+
 export const authenticationContextDefaultValue: AuthenticationContextType = {
   version: latestAuthenticationContextVersion,
   idToken: undefined,
@@ -127,11 +129,10 @@ export const serializeAuthenticationContext = async (
 
   const { keyPair, ...rest } = authContext;
 
-  const serializedKeyPair = await keyPair.exportUnprotected();
-
   return {
     ...rest,
-    keyPair: serializedKeyPair,
+    keyPair: await keyPair.exportUnprotected(),
+    saltPublicKey: await keyPair.exportSaltPublicKey(),
   };
 };
 
@@ -143,20 +144,38 @@ export const deserializeAuthenticationContext = async (
     return serializedContext;
   }
 
-  const { keyPair, ...rest } = serializedContext;
+  const { keyPair, saltPublicKey, ...rest } = serializedContext;
 
   const importedCryptoKeyPair = await KeyPair.importUnprotected(
     crypto,
     keyPair,
   );
 
-  return rest.role === UserRole.teacher
-    ? {
-        ...rest,
-        keyPair: new TeacherLongTermKeyPair(crypto, importedCryptoKeyPair),
-      }
-    : {
-        ...rest,
-        keyPair: new StudentKeyPair(crypto, importedCryptoKeyPair),
-      };
+  const importedSaltPublicKey = await crypto.importKey(
+    "jwk",
+    saltPublicKey,
+    KeyPair.ImportAlgorithm,
+    true,
+    [],
+  );
+
+  if (rest.role === UserRole.student) {
+    return {
+      ...rest,
+      keyPair: await StudentKeyPair.create(
+        crypto,
+        importedCryptoKeyPair,
+        importedSaltPublicKey,
+      ),
+    };
+  }
+
+  return {
+    ...rest,
+    keyPair: await TeacherLongTermKeyPair.create(
+      crypto,
+      importedCryptoKeyPair,
+      importedSaltPublicKey,
+    ),
+  };
 };

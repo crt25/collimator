@@ -1,9 +1,12 @@
+import { encodeBase64Url } from "./base64";
+import SymmetricKey from "./SymmetricKey";
+
 type SerializedKeyPair = {
   privateKey: JsonWebKey;
   publicKey: JsonWebKey;
 };
 
-export default abstract class KeyPair {
+export default abstract class KeyPair extends SymmetricKey {
   public static AsymmetricKeyAlgorithm = "ECDH";
   private static AsymmetricKeyCurve = "P-521";
 
@@ -21,10 +24,19 @@ export default abstract class KeyPair {
 
   protected crypto: SubtleCrypto;
   protected keyPair: CryptoKeyPair;
+  protected saltPublicKey: CryptoKey;
 
-  constructor(crypto: SubtleCrypto, keyPair: CryptoKeyPair) {
+  protected constructor(
+    crypto: SubtleCrypto,
+    keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
+    derivedSymmetricKey: CryptoKey,
+  ) {
+    super(crypto, derivedSymmetricKey);
+
     this.crypto = crypto;
     this.keyPair = keyPair;
+    this.saltPublicKey = saltPublicKey;
   }
 
   /**
@@ -33,6 +45,13 @@ export default abstract class KeyPair {
    */
   exportPublicKey(): Promise<JsonWebKey> {
     return this.crypto.exportKey("jwk", this.keyPair.publicKey);
+  }
+
+  /**
+   * Exports the salt public key of the key pair.
+   */
+  exportSaltPublicKey(): Promise<JsonWebKey> {
+    return this.crypto.exportKey("jwk", this.saltPublicKey);
   }
 
   /**
@@ -90,10 +109,46 @@ export default abstract class KeyPair {
       new TextEncoder().encode(JSON.stringify(key)),
     );
 
-    return btoa(
-      Array.from(new Uint8Array(digest))
-        .map((byte) => String.fromCharCode(byte).toString())
-        .join(""),
+    return encodeBase64Url(digest);
+  }
+
+  /**
+   * Derives a key from based on a private key and a public key
+   * using the ECDH algorithm.
+   * Note that we also abuse this method to derive a symmetric key from the key pair
+   * as if we were performing ECDH with ourselves.
+   * This is due to limitations in the WebCrypto API where we cannot directly derive a symmetric key
+   * from a ECDH key pair. (November 2024)
+   */
+  static async deriveSymmetricKey(
+    crypto: SubtleCrypto,
+    privateKey: CryptoKey,
+    publicKey: CryptoKey,
+  ): Promise<CryptoKey> {
+    return await crypto.deriveKey(
+      { name: KeyPair.AsymmetricKeyAlgorithm, public: publicKey },
+      privateKey,
+      SymmetricKey.SymmetricDeriveAlgorithm,
+      // do not allow the extraction of the derived key - it is ephemeral
+      false,
+      SymmetricKey.KeyUsages,
     );
+  }
+
+  /**
+   * Generates a new, random public key.
+   * This is used like a salt to derive a random symmetric key for a user.
+   * This is necessary due to limitations in the WebCrypto API.
+   * Specifically, we cannot derive a symmetric key directly from a ECDH key pair nor
+   * can we directly use the private key to encrypt data.
+   */
+  static async generateRandomPublicKey(
+    crypto: SubtleCrypto,
+  ): Promise<CryptoKey> {
+    const keyPair = await crypto.generateKey(KeyPair.GenerateAlgorithm, true, [
+      "deriveKey",
+    ]);
+
+    return keyPair.publicKey;
   }
 }

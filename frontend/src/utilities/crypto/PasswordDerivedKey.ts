@@ -40,12 +40,16 @@ export class PasswordDerivedKey extends SymmetricKey {
         hash: "SHA-512",
       },
       passwordKey,
-      SymmetricKey.DeriveAlgorithm,
+      SymmetricKey.SymmetricDeriveAlgorithm,
       // we never want to export this again, the key will be re-derived instead
       false,
       SymmetricKey.KeyUsages,
     );
 
     return new PasswordDerivedKey(crypto, derivedKey);
+  }
+
+  static generateSalt(): ArrayBuffer {
+    return crypto.getRandomValues(new Uint8Array(16));
   }
 }

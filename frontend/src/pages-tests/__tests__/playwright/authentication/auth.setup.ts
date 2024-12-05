@@ -14,13 +14,18 @@ import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/gen
 
 // Follows the pattern described at https://playwright.dev/docs/auth#multiple-signed-in-roles
 
-setup("authenticate as admin", async ({ page, baseURL }) => {
-  await setupForAuthentication(page, baseURL!);
+setup("authenticate as admin", async ({ page, baseURL, apiURL }) => {
+  await setupForAuthentication(page, baseURL!, apiURL);
 
   await page.goto(`${baseURL!}/?login=test`);
   await page.waitForSelector("[data-testid=signin-button]");
 
   await page.getByTestId("signin-button").click();
+
+  // generate a new key pair
+  await page.getByTestId("password").fill("hunter2");
+  await page.getByTestId("backupPassword").fill("hunter3");
+  await page.getByTestId("submit").click();
 
   await page.waitForURL(`${baseURL!}/?login=test`);
 
@@ -32,7 +37,11 @@ setup("authenticate as admin", async ({ page, baseURL }) => {
 });
 
 setup("authenticate as student", async ({ page, baseURL, apiURL }) => {
-  await setupForAuthentication(page, baseURL!);
+  const teacherPublicKeyHash = await setupForAuthentication(
+    page,
+    baseURL!,
+    apiURL,
+  );
 
   await page.route(`${apiURL}${getClassesControllerFindOneV0Url(2)}`, (route) =>
     route.fulfill({
@@ -60,7 +69,10 @@ setup("authenticate as student", async ({ page, baseURL, apiURL }) => {
       }),
   );
 
-  await page.goto(`${baseURL!}/class/2/session/3/join?key=abc`);
+  await page.goto(
+    `${baseURL!}/class/2/session/3/join?key=${teacherPublicKeyHash}`,
+  );
+
   await page.waitForSelector("[data-testid=signin-student-button]");
 
   await page.getByTestId("signin-student-button").click();

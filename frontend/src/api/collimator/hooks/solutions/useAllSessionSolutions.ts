@@ -6,6 +6,7 @@ import {
   fetchSolutionsAndTransform,
   GetSolutionsReturnType,
 } from "./useAllSessionTaskSolutions";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 type SessionSolution = { taskId: number; solutions: GetSolutionsReturnType };
 
@@ -13,6 +14,7 @@ export const useAllSessionSolutions = (
   classId: number,
   sessionId: number,
 ): ApiResponse<SessionSolution[], Error> => {
+  const authOptions = useAuthenticationOptions();
   const { data } = useClassSession(classId, sessionId);
 
   return useSWR(
@@ -30,6 +32,7 @@ export const useAllSessionSolutions = (
         ? Promise.all(
             data.tasks.map((task) =>
               fetchSolutionsAndTransform(
+                authOptions,
                 classId,
                 sessionId,
                 task.id,

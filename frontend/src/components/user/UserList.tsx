@@ -56,7 +56,7 @@ const messages = defineMessages({
   },
 });
 
-const UserList = ({ classId: _classId }: { classId?: number }) => {
+const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
 

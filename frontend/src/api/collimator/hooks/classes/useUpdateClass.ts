@@ -8,20 +8,31 @@ import { useSWRConfig } from "swr";
 import { GetClassReturnType } from "./useClass";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
 import { useRevalidateClassList } from "./useRevalidateClassList";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { UpdateClassDto } from "../../generated/models";
 
-type Args = Parameters<typeof classesControllerUpdateV0>;
-type UpdateClassType = (...args: Args) => Promise<ExistingClass>;
+type UpdateClassType = (
+  id: number,
+  updateClassDto: UpdateClassDto,
+) => Promise<ExistingClass>;
 
-const fetchAndTransform: UpdateClassType = (...args) =>
-  classesControllerUpdateV0(...args).then(ExistingClass.fromDto);
+const fetchAndTransform = (
+  options: RequestInit,
+  id: number,
+  updateClassDto: UpdateClassDto,
+): ReturnType<UpdateClassType> =>
+  classesControllerUpdateV0(id, updateClassDto, options).then(
+    ExistingClass.fromDto,
+  );
 
 export const useUpdateClass = (): UpdateClassType => {
+  const authOptions = useAuthenticationOptions();
   const { mutate, cache } = useSWRConfig();
   const revalidateClassList = useRevalidateClassList();
 
-  return useCallback(
-    (...args: Args) =>
-      fetchAndTransform(...args).then((result) => {
+  return useCallback<UpdateClassType>(
+    (id, updateClassDto) =>
+      fetchAndTransform(authOptions, id, updateClassDto).then((result) => {
         // revalidate the updated class
 
         const cachedData: GetClassReturnType | undefined = cache.get(
@@ -50,6 +61,6 @@ export const useUpdateClass = (): UpdateClassType => {
 
         return result;
       }),
-    [mutate, cache, revalidateClassList],
+    [authOptions, mutate, cache, revalidateClassList],
   );
 };

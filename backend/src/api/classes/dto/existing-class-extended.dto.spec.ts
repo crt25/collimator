@@ -12,7 +12,7 @@ describe("ExistingClassExtendedDto", () => {
       (_, i) =>
         ({
           id: i + 1,
-          pseudonym: `Student ${i + 1}`,
+          pseudonym: Buffer.from(`Student ${i + 1}`, "utf-8"),
         }) as Student,
     ),
   };

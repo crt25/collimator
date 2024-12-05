@@ -8,51 +8,63 @@ import {
 } from "../../generated/endpoints/sessions/sessions";
 import { ExistingSession } from "../../models/sessions/existing-session";
 import { ExistingSessionExtended } from "../../models/sessions/existing-session-extended";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { UpdateSessionDto } from "../../generated/models";
 
-type Args = Parameters<typeof sessionsControllerUpdateV0>;
-type UpdateSessionType = (...args: Args) => Promise<ExistingSession>;
+type UpdateSessionType = (
+  classId: number,
+  id: number,
+  updateSessionDto: UpdateSessionDto,
+) => Promise<ExistingSession>;
 
-const fetchAndTransform: UpdateSessionType = (...args) =>
-  sessionsControllerUpdateV0(...args).then(ExistingSession.fromDto);
+const fetchAndTransform = (
+  options: RequestInit,
+  classId: number,
+  id: number,
+  updateSessionDto: UpdateSessionDto,
+): ReturnType<UpdateSessionType> =>
+  sessionsControllerUpdateV0(classId, id, updateSessionDto, options).then(
+    ExistingSession.fromDto,
+  );
 
 export const useUpdateClassSession = (): UpdateSessionType => {
+  const authOptions = useAuthenticationOptions();
   const { mutate, cache } = useSWRConfig();
   const revalidateList = useRevalidateClassSessionList();
 
-  return useCallback(
-    (...args: Args) =>
-      fetchAndTransform(...args).then((result) => {
-        // revalidate the updated session
-        const classId = args[0];
+  return useCallback<UpdateSessionType>(
+    (classId, id, updateSessionDto) =>
+      fetchAndTransform(authOptions, classId, id, updateSessionDto).then(
+        (result) => {
+          const key = getSessionsControllerFindOneV0Url(classId, result.id);
 
-        const key = getSessionsControllerFindOneV0Url(classId, result.id);
+          const cachedData: GetSessionReturnType | undefined =
+            cache.get(key)?.data;
 
-        const cachedData: GetSessionReturnType | undefined =
-          cache.get(key)?.data;
+          if (cachedData === undefined) {
+            mutate(key);
 
-        if (cachedData === undefined) {
-          mutate(key);
+            return result;
+          }
 
-          return result;
-        }
+          // perform an optimistic partial update but also revalidate the data
+          // to make sure it's up to date (for instance we don't have enough information to update the task list)
+          const updatedData: GetSessionReturnType =
+            ExistingSessionExtended.fromDto({
+              ...cachedData,
+              class: cachedData.klass,
+              ...result,
+            });
 
-        // perform an optimistic partial update but also revalidate the data
-        // to make sure it's up to date (for instance we don't have enough information to update the task list)
-        const updatedData: GetSessionReturnType =
-          ExistingSessionExtended.fromDto({
-            ...cachedData,
-            class: cachedData.klass,
-            ...result,
+          mutate(key, updatedData, {
+            revalidate: true,
           });
 
-        mutate(key, updatedData, {
-          revalidate: true,
-        });
+          revalidateList(classId);
 
-        revalidateList(classId);
-
-        return result;
-      }),
-    [mutate, cache, revalidateList],
+          return result;
+        },
+      ),
+    [authOptions, mutate, cache, revalidateList],
   );
 };

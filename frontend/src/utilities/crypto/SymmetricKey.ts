@@ -16,17 +16,17 @@ export default abstract class SymmetricKey {
 
   public static KeyUsages: KeyUsage[] = ["encrypt", "decrypt"];
 
-  public static GenerateAlgorithm: AesKeyGenParams = {
+  public static SymmetricGenerateAlgorithm: AesKeyGenParams = {
     name: SymmetricKey.SymmetricKeyAlgorithm,
     length: SymmetricKey.SymmetricKeySize,
   };
 
-  public static ImportAlgorithm: AesKeyAlgorithm = {
+  public static SymmetricImportAlgorithm: AesKeyAlgorithm = {
     name: SymmetricKey.SymmetricKeyAlgorithm,
     length: SymmetricKey.SymmetricKeySize,
   };
 
-  public static DeriveAlgorithm: AesDerivedKeyParams = {
+  public static SymmetricDeriveAlgorithm: AesDerivedKeyParams = {
     name: SymmetricKey.SymmetricKeyAlgorithm,
     length: SymmetricKey.SymmetricKeySize,
   };
@@ -77,7 +77,7 @@ export default abstract class SymmetricKey {
    * Decrypts the given data with the ephemeral key.
    * The IV is expected to be prepended to the ciphertext.
    */
-  decrypt(data: Uint8Array): Promise<ArrayBuffer> {
+  decrypt(data: ArrayBuffer): Promise<ArrayBuffer> {
     const iv = data.slice(0, SymmetricKey.IVSize);
     const ciphertext = data.slice(SymmetricKey.IVSize);
 
@@ -97,7 +97,7 @@ export default abstract class SymmetricKey {
    * The IV is expected to be prepended to the ciphertext.
    * The additional data is also authenticated meaning if it does not match the one used during encryption, the decryption will fail.
    */
-  async decryptString(data: Uint8Array): Promise<string> {
+  async decryptString(data: ArrayBuffer): Promise<string> {
     return new TextDecoder().decode(await this.decrypt(data));
   }
 }

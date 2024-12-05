@@ -12,28 +12,36 @@ import {
 } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
 import { LazyTableResult, LazyTableState } from "@/components/DataTable";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetClassesReturnType = ExistingClassWithTeacher[];
 
 const fetchAndTransform = (
+  options: RequestInit,
   params?: ClassesControllerFindAllV0Params,
 ): Promise<GetClassesReturnType> =>
-  classesControllerFindAllV0(params).then((data) =>
+  classesControllerFindAllV0(params, options).then((data) =>
     fromDtos(ExistingClassWithTeacher, data),
   );
 
 export const useAllClasses = (
   params?: ClassesControllerFindAllV0Params,
-): ApiResponse<GetClassesReturnType, Error> =>
-  useSWR(
+): ApiResponse<GetClassesReturnType, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  return useSWR(
     // use the URL with the params as the first entry in the key for easier invalidation
     getSwrParamererizedKey(getClassesControllerFindAllV0Url, params),
-    () => fetchAndTransform(params),
+    () => fetchAndTransform(authOptions, params),
   );
+};
 
 export const useAllClassesLazyTable = (
   _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> =>
-  useSWR(getSwrParamererizedKey(getClassesControllerFindAllV0Url), () =>
-    fetchAndTransform().then(transformToLazyTableResult),
+): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  return useSWR(getSwrParamererizedKey(getClassesControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions).then(transformToLazyTableResult),
   );
+};

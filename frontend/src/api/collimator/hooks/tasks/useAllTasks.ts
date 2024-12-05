@@ -11,21 +11,30 @@ import {
   tasksControllerFindAllV0,
 } from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetTasksReturnType = ExistingTask[];
 
-const fetchAndTransform = (): Promise<GetTasksReturnType> =>
-  tasksControllerFindAllV0().then((data) => fromDtos(ExistingTask, data));
-
-export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> =>
-  // use the URL with the params as the first entry in the key for easier invalidation
-  useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
-    fetchAndTransform(),
+const fetchAndTransform = (options: RequestInit): Promise<GetTasksReturnType> =>
+  tasksControllerFindAllV0(options).then((data) =>
+    fromDtos(ExistingTask, data),
   );
+
+export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  // use the URL with the params as the first entry in the key for easier invalidation
+  return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions),
+  );
+};
 
 export const useAllTasksLazyTable = (
   _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> =>
-  useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
-    fetchAndTransform().then(transformToLazyTableResult),
+): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> => {
+  const authOptions = useAuthenticationOptions();
+
+  return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
+    fetchAndTransform(authOptions).then(transformToLazyTableResult),
   );
+};

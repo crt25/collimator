@@ -1,9 +1,28 @@
 import EphemeralKey from "./EphemeralKey";
 import KeyPair from "./KeyPair";
 import { PasswordDerivedKey } from "./PasswordDerivedKey";
-import SymmetricKey from "./SymmetricKey";
 
 export default class TeacherLongTermKeyPair extends KeyPair {
+  static async create(
+    crypto: SubtleCrypto,
+    keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
+  ): Promise<TeacherLongTermKeyPair> {
+    // derive a symmetric key from the key pair - basically ECDH with ourselves
+    const derivedSymmetricKey = await KeyPair.deriveSymmetricKey(
+      crypto,
+      keyPair.privateKey,
+      saltPublicKey,
+    );
+
+    return new TeacherLongTermKeyPair(
+      crypto,
+      keyPair,
+      saltPublicKey,
+      derivedSymmetricKey,
+    );
+  }
+
   /**
    * Exports the long-term key in a (password-protected) format that can be stored server-side.
    * @param key The key used to encrypt the long-term key.
@@ -23,8 +42,9 @@ export default class TeacherLongTermKeyPair extends KeyPair {
    */
   static async importKeyPair(
     crypto: SubtleCrypto,
-    encryptedLongTermPrivateKey: Uint8Array,
-    plainTextpublicKey: JsonWebKey,
+    encryptedLongTermPrivateKey: ArrayBuffer,
+    plainTextPublicKey: JsonWebKey,
+    plainSaltPublicKey: JsonWebKey,
     key: PasswordDerivedKey,
   ): Promise<TeacherLongTermKeyPair> {
     const longTermPrivateKey = JSON.parse(
@@ -42,7 +62,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
 
     const publicKey = await crypto.importKey(
       "jwk",
-      plainTextpublicKey,
+      plainTextPublicKey,
       KeyPair.ImportAlgorithm,
       // we want to be able to extract the key for local temporary storage in the session
       true,
@@ -50,10 +70,22 @@ export default class TeacherLongTermKeyPair extends KeyPair {
       [],
     );
 
-    return new TeacherLongTermKeyPair(crypto, {
-      privateKey,
-      publicKey,
-    });
+    const saltPublicKey = await crypto.importKey(
+      "jwk",
+      plainSaltPublicKey,
+      KeyPair.ImportAlgorithm,
+      true,
+      [],
+    );
+
+    return TeacherLongTermKeyPair.create(
+      crypto,
+      {
+        privateKey,
+        publicKey,
+      },
+      saltPublicKey,
+    );
   }
 
   /**
@@ -88,13 +120,10 @@ export default class TeacherLongTermKeyPair extends KeyPair {
 
     return new EphemeralKey(
       this.crypto,
-      await this.crypto.deriveKey(
-        { name: KeyPair.AsymmetricKeyAlgorithm, public: publicKey },
+      await KeyPair.deriveSymmetricKey(
+        this.crypto,
         this.keyPair.privateKey,
-        SymmetricKey.DeriveAlgorithm,
-        // do not allow the extraction of the derived key - it is ephemeral
-        false,
-        SymmetricKey.KeyUsages,
+        publicKey,
       ),
     );
   }
@@ -107,7 +136,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
    * a given student's identity, the key must be rotated.
    */
   static async generate(crypto: SubtleCrypto): Promise<TeacherLongTermKeyPair> {
-    return new TeacherLongTermKeyPair(
+    return TeacherLongTermKeyPair.create(
       crypto,
       await crypto.generateKey(
         KeyPair.GenerateAlgorithm,
@@ -115,6 +144,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
         true,
         KeyPair.KeyUsages,
       ),
+      await KeyPair.generateRandomPublicKey(crypto),
     );
   }
 }

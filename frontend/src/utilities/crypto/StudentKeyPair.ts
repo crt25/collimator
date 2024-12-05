@@ -3,6 +3,26 @@ import KeyPair from "./KeyPair";
 import SymmetricKey from "./SymmetricKey";
 
 export default class StudentKeyPair extends KeyPair {
+  static async create(
+    crypto: SubtleCrypto,
+    keyPair: CryptoKeyPair,
+    saltPublicKey: CryptoKey,
+  ): Promise<StudentKeyPair> {
+    // derive a symmetric key from the key pair - basically ECDH with ourselves
+    const derivedSymmetricKey = await KeyPair.deriveSymmetricKey(
+      crypto,
+      keyPair.privateKey,
+      saltPublicKey,
+    );
+
+    return new StudentKeyPair(
+      crypto,
+      keyPair,
+      saltPublicKey,
+      derivedSymmetricKey,
+    );
+  }
+
   /**
    * Derives a shared ephemeral key from the key pair and the public key of the other party.
    * By doing so, we finish the Diffie-Hellman key exchange and obtain a shared secret.
@@ -35,7 +55,7 @@ export default class StudentKeyPair extends KeyPair {
       await this.crypto.deriveKey(
         { name: KeyPair.AsymmetricKeyAlgorithm, public: publicKey },
         this.keyPair.privateKey,
-        SymmetricKey.DeriveAlgorithm,
+        SymmetricKey.SymmetricDeriveAlgorithm,
         // do not allow the extraction of the derived key - it is ephemeral
         false,
         SymmetricKey.KeyUsages,
@@ -44,7 +64,7 @@ export default class StudentKeyPair extends KeyPair {
   }
 
   static async generate(crypto: SubtleCrypto): Promise<StudentKeyPair> {
-    return new StudentKeyPair(
+    return StudentKeyPair.create(
       crypto,
       await crypto.generateKey(
         KeyPair.GenerateAlgorithm,
@@ -52,6 +72,7 @@ export default class StudentKeyPair extends KeyPair {
         true,
         KeyPair.KeyUsages,
       ),
+      await KeyPair.generateRandomPublicKey(crypto),
     );
   }
 }

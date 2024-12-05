@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -29,11 +30,17 @@ import {
 } from "./dto";
 import { ClassesService } from "./classes.service";
 import { fromQueryResults } from "../helpers";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { User } from "@prisma/client";
 
 @Controller("classes")
 @ApiTags("classes")
 export class ClassesController {
-  constructor(private readonly classesService: ClassesService) {}
+  constructor(
+    private readonly classesService: ClassesService,
+    private readonly authorizationService: AuthorizationService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: ExistingClassDto })
@@ -49,14 +56,20 @@ export class ClassesController {
   @ApiQuery({ name: "teacherId", required: false, type: Number })
   @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() user: User,
     @Query("teacherId", new ParseIntPipe({ optional: true }))
     teacherId?: number,
   ): Promise<ExistingClassWithTeacherDto[]> {
+    const isAuthorized =
+      await this.authorizationService.canListClassesOfTeacher(user, teacherId);
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     // TODO: add pagination support
 
     const classes = await this.classesService.listClassesWithTeacher({
-      // TODO: Implement this properly when auth is available
-      // TODO: Only allow teachers to see their own classes
       where: teacherId ? { teacherId } : undefined,
     });
 
@@ -68,8 +81,15 @@ export class ClassesController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
+    @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
   ): Promise<ExistingClassExtendedDto> {
+    const isAuthorized = await this.authorizationService.canViewClass(user, id);
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const klass = await this.classesService.findByIdOrThrow(id);
     return ExistingClassExtendedDto.fromQueryResult(klass);
   }
@@ -79,9 +99,19 @@ export class ClassesController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async update(
+    @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
     @Body() updateClassDto: UpdateClassDto,
   ): Promise<ExistingClassDto> {
+    const isAuthorized = await this.authorizationService.canUpdateClass(
+      user,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const klass = await this.classesService.update(id, updateClassDto);
     return ExistingClassDto.fromQueryResult(klass);
   }
@@ -91,8 +121,18 @@ export class ClassesController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async remove(
+    @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
   ): Promise<DeletedClassDto> {
+    const isAuthorized = await this.authorizationService.canDeleteClass(
+      user,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const klass = await this.classesService.deleteById(id);
     return DeletedClassDto.fromQueryResult(klass);
   }

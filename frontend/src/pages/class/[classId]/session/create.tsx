@@ -11,6 +11,8 @@ import SessionForm, {
 import { useCreateSession } from "@/api/collimator/hooks/sessions/useCreateSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
+import ClassNavigation from "@/components/class/ClassNavigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const messages = defineMessages({
   submit: {
@@ -48,7 +50,10 @@ const CreateSession = () => {
     <>
       <Header />
       <Container>
-        <CrtNavigation />
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb klass={klass} />
+        </Breadcrumbs>
+        <ClassNavigation classId={klass?.id} />
         <PageHeader>
           <FormattedMessage
             id="CreateSession.header"

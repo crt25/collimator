@@ -18,6 +18,7 @@ import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationCont
 import AuthenticationBarrier from "@/components/authentication/AuthenticationBarrier";
 import { PrimeReactProvider } from "primereact/api";
 import YupLocalization from "@/components/form/YupLocalization";
+import WebSocketProvider from "@/contexts/WebSocketProvider";
 
 const authenticationStateKey = "authenticationState";
 
@@ -103,7 +104,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <AuthenticationBarrier
                   authenticationStateLoaded={authenticationStateLoaded}
                 >
-                  <Component {...pageProps} />
+                  <WebSocketProvider>
+                    <Component {...pageProps} />
+                  </WebSocketProvider>
                 </AuthenticationBarrier>
               </UpdateAuthenticationContext.Provider>
             </AuthenticationContext.Provider>

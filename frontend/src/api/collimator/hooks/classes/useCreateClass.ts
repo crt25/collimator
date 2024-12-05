@@ -2,23 +2,32 @@ import { classesControllerCreateV0 } from "../../generated/endpoints/classes/cla
 import { useCallback } from "react";
 import { ExistingClass } from "../../models/classes/existing-class";
 import { useRevalidateClassList } from "./useRevalidateClassList";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { CreateClassDto } from "../../generated/models";
 
-type Args = Parameters<typeof classesControllerCreateV0>;
-type CreateClassType = (...args: Args) => Promise<ExistingClass>;
+type CreateClassType = (
+  createClassDto: CreateClassDto,
+) => Promise<ExistingClass>;
 
-const createAndTransform: CreateClassType = (...args) =>
-  classesControllerCreateV0(...args).then(ExistingClass.fromDto);
+const createAndTransform = (
+  options: RequestInit,
+  createClassDto: CreateClassDto,
+): ReturnType<CreateClassType> =>
+  classesControllerCreateV0(createClassDto, options).then(
+    ExistingClass.fromDto,
+  );
 
 export const useCreateClass = (): CreateClassType => {
+  const authOptions = useAuthenticationOptions();
   const revalidateClassList = useRevalidateClassList();
 
-  return useCallback(
-    (...args: Args) =>
-      createAndTransform(...args).then((result) => {
+  return useCallback<CreateClassType>(
+    (dto) =>
+      createAndTransform(authOptions, dto).then((result) => {
         revalidateClassList();
 
         return result;
       }),
-    [revalidateClassList],
+    [authOptions, revalidateClassList],
   );
 };

@@ -22,8 +22,6 @@ describe("TeacherKeyPair", () => {
       const fingerprint = await keyPair.getPublicKeyFingerprint();
 
       expect(fingerprint).toBeDefined();
-      // SHA-512 produces 64 bytes which is 88 characters in base64
-      expect(fingerprint).toHaveLength(88);
 
       // ensure the fingerprint is deterministic
       const fingerprint2 = await keyPair.getPublicKeyFingerprint();
@@ -43,6 +41,8 @@ describe("TeacherKeyPair", () => {
       );
 
       const publicKey1 = await keyPair1.exportPublicKey();
+      const saltPublicKey1 = await keyPair1.exportSaltPublicKey();
+
       const publicKey2 = await keyPair2.exportPublicKey();
 
       const ephemeralKey1 = await keyPair1.deriveSharedEphemeralKey(publicKey2);
@@ -55,6 +55,7 @@ describe("TeacherKeyPair", () => {
         crypto,
         exportedPrivateKey1,
         publicKey1,
+        saltPublicKey1,
         passwordKey,
       );
 

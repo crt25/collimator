@@ -1,0 +1,105 @@
+import {
+  ClassStudent,
+  StudentIdentity,
+} from "@/api/collimator/models/classes/class-student";
+import { useContext, useEffect, useState } from "react";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { decodeBase64 } from "@/utilities/crypto/base64";
+import styled from "@emotion/styled";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+
+const NameWrapper = styled.span``;
+
+const messages = defineMessages({
+  cannotDecrypt: {
+    id: "StudentName.cannotDecrypt",
+    defaultMessage: "Unable to decrypt identity",
+  },
+});
+
+export const StudentName = ({ student }: { student: ClassStudent }) => {
+  const intl = useIntl();
+  const authContext = useContext(AuthenticationContext);
+
+  const [isDecrypting, setIsDecrypting] = useState(true);
+  const [decryptedName, setDecryptedName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (!("keyPairId" in authContext)) {
+      setIsDecrypting(false);
+      return;
+    }
+
+    setIsDecrypting(true);
+
+    const decryptName = async () => {
+      if (student.keyPairId !== authContext.keyPairId) {
+        // no need trying to decrypt if the key pair is not the same that was used to encrypt
+        setDecryptedName(null);
+        setIsDecrypting(false);
+
+        return;
+      }
+
+      const decryptedIdentity: StudentIdentity = JSON.parse(
+        await authContext.keyPair.decryptString(
+          decodeBase64(student.pseudonym),
+        ),
+      );
+
+      if (isCancelled) {
+        // another update has been triggered
+        return;
+      }
+
+      setDecryptedName(decryptedIdentity.name);
+      setIsDecrypting(false);
+    };
+
+    decryptName().catch((e) => {
+      console.error("Decryption failed", e, student, authContext.keyPairId);
+
+      setDecryptedName(null);
+
+      if (isCancelled) {
+        // another update has been triggered
+        return;
+      }
+
+      setIsDecrypting(false);
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [authContext, student]);
+
+  if (isDecrypting) {
+    return (
+      <NameWrapper>
+        <FormattedMessage
+          id="StudentName.decrypting"
+          defaultMessage="Decrypting..."
+        />
+      </NameWrapper>
+    );
+  }
+
+  if (decryptedName === null) {
+    return (
+      <NameWrapper>
+        {student.pseudonym}{" "}
+        <FontAwesomeIcon
+          icon={faInfoCircle}
+          title={intl.formatMessage(messages.cannotDecrypt)}
+        />
+      </NameWrapper>
+    );
+  }
+
+  return <NameWrapper>{decryptedName}</NameWrapper>;
+};

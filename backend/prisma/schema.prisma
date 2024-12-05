@@ -14,7 +14,7 @@ datasource db {
 
 enum UserType {
   TEACHER
-  ADMIN
+  ADMIN // admins are also teachers
 }
 
 model User {
@@ -23,9 +23,37 @@ model User {
   email String   @unique
   type  UserType
 
-  classes Class[]
-  lessons Lesson[]
-  tasks   Task[]
+  keyPair              KeyPair?
+  authenticationTokens AuthenticationToken[]
+  classes              Class[]
+  lessons              Lesson[]
+  tasks                Task[]
+}
+
+model KeyPair {
+  id                   Int      @id @default(autoincrement())
+  teacherId            Int      @unique
+  publicKey            Bytes // A teacher's public key
+  publicKeyFingerprint String   @unique // The SHA-512 fingerprint of the public key encoded in URL-safe base64. the unique is used to lookup the key by fingerprint.
+  createdAt            DateTime @default(now())
+
+  // Salt used to derive a symmetric key based on this keypair.
+  // For now, it is equal to a random public key s.t. we can perform ECDH with it
+  // and derive a symmetric key using the web crypto API which has its limitations.
+  salt Bytes
+
+  privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
+  teacher     User                  @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  Student     Student[]
+}
+
+model EncryptedPrivateKey {
+  id                  Int   @id @default(autoincrement())
+  publicKeyId         Int // The public key this private key corresponds to
+  encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
+  salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
+
+  publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
 
 model Class {
@@ -39,13 +67,18 @@ model Class {
 }
 
 model Student {
-  id        Int    @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
-  pseudonym String @unique // anonymized (teacher-computed) ID
+  id        Int   @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
+  pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
   classId   Int
+  keyPairId Int? // if null, the respective key is no longer available
 
-  class     Class      @relation(fields: [classId], references: [id], onDelete: Restrict)
-  solutions Solution[]
+  authenticationTokens AuthenticationToken[]
+  class                Class                 @relation(fields: [classId], references: [id], onDelete: Restrict)
+  solutions            Solution[]
+  encryptedUsing       KeyPair?              @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
   // studentActivity StudentActivity[]
+
+  @@unique([pseudonym, classId], name: "pseudonymUniquePerClass")
 }
 
 enum LessonVisibility {
@@ -156,6 +189,18 @@ model SolutionAnalysis {
   genericAst String
 
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+}
+
+model AuthenticationToken {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime
+  token      String   @unique
+  userId     Int?
+  studentId  Int?
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 // Tables to keep intermediate student activity:

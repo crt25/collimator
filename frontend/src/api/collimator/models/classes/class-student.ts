@@ -1,13 +1,24 @@
 import { ClassStudentDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
 
+export type StudentIdentity = {
+  longTermIdentifier: string;
+  name: string;
+};
+
 export class ClassStudent {
   readonly id: number;
   readonly pseudonym: string;
+  readonly keyPairId: number | null;
 
-  protected constructor({ id, pseudonym }: ClassProperties<ClassStudent>) {
+  protected constructor({
+    id,
+    pseudonym,
+    keyPairId,
+  }: ClassProperties<ClassStudent>) {
     this.id = id;
     this.pseudonym = pseudonym;
+    this.keyPairId = keyPairId;
   }
 
   static fromDto(dto: ClassStudentDto): ClassStudent {

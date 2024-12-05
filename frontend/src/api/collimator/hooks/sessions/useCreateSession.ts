@@ -2,25 +2,36 @@ import { useCallback } from "react";
 import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 import { ExistingSession } from "../../models/sessions/existing-session";
 import { sessionsControllerCreateV0 } from "../../generated/endpoints/sessions/sessions";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { CreateSessionDto } from "../../generated/models";
 
-type Args = Parameters<typeof sessionsControllerCreateV0>;
-type CreateSessionType = (...args: Args) => Promise<ExistingSession>;
+type CreateSessionType = (
+  classId: number,
+  createSessionDto: CreateSessionDto,
+) => Promise<ExistingSession>;
 
-const createAndTransform: CreateSessionType = (...args) =>
-  sessionsControllerCreateV0(...args).then(ExistingSession.fromDto);
+const createAndTransform = (
+  options: RequestInit,
+  classId: number,
+  createSessionDto: CreateSessionDto,
+): ReturnType<CreateSessionType> =>
+  sessionsControllerCreateV0(classId, createSessionDto, options).then(
+    ExistingSession.fromDto,
+  );
 
 export const useCreateSession = (): CreateSessionType => {
   const revalidateList = useRevalidateClassSessionList();
+  const authOptions = useAuthenticationOptions();
 
-  return useCallback(
-    (...args: Args) =>
-      createAndTransform(...args).then((result) => {
-        const classId = args[0];
+  return useCallback<CreateSessionType>(
+    (classId, createSessionDto) =>
+      createAndTransform(authOptions, classId, createSessionDto).then(
+        (result) => {
+          revalidateList(classId);
 
-        revalidateList(classId);
-
-        return result;
-      }),
-    [revalidateList],
+          return result;
+        },
+      ),
+    [authOptions, revalidateList],
   );
 };

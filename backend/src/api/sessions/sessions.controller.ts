@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -16,7 +17,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
-import { SessionStatus } from "@prisma/client";
+import { SessionStatus, Student, User, UserType } from "@prisma/client";
 import {
   CreateSessionDto,
   ExistingSessionDto,
@@ -27,19 +28,36 @@ import {
 } from "./dto";
 import { SessionsService } from "./sessions.service";
 import { fromQueryResults } from "../helpers";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { NonUserRoles, Roles } from "../authentication/role.decorator";
+import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 
 @Controller("classes/:classId/sessions")
 @ApiTags("sessions")
 export class SessionsController {
-  constructor(private readonly sessionsService: SessionsService) {}
+  constructor(
+    private readonly sessionsService: SessionsService,
+    private readonly authorizationService: AuthorizationService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: ExistingSessionDto })
   @ApiForbiddenResponse()
   async create(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Body() createSessionDto: CreateSessionDto,
   ): Promise<ExistingSessionDto> {
+    const isAuthorized = await this.authorizationService.canCreateSession(
+      user,
+      classId,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const { taskIds, ...dto } = createSessionDto;
     const session = await this.sessionsService.create(classId, dto, taskIds);
 
@@ -51,8 +69,18 @@ export class SessionsController {
   @Get()
   @ApiOkResponse({ type: ExistingSessionDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
   ): Promise<ExistingSessionDto[]> {
+    const isAuthorized = await this.authorizationService.canListSessions(
+      user,
+      classId,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     // TODO: add pagination support
 
     const sessions = await this.sessionsService.findMany({
@@ -63,12 +91,25 @@ export class SessionsController {
 
   @Get(":id")
   @ApiOkResponse({ type: ExistingSessionExtendedDto })
+  @Roles([UserType.TEACHER, UserType.ADMIN, NonUserRoles.STUDENT])
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<ExistingSessionExtendedDto> {
+    const isAuthorized = await this.authorizationService.canViewSession(
+      user,
+      student,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const session = await this.sessionsService.findByIdAndClassOrThrow(
       id,
       classId,
@@ -81,10 +122,20 @@ export class SessionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async start(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(classId, id, SessionStatus.ONGOING);
+    const isAuthorized = await this.authorizationService.canUpdateSession(
+      user,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    return this.changeStatus(user, classId, id, SessionStatus.ONGOING);
   }
 
   @Post(":id/pause")
@@ -92,10 +143,11 @@ export class SessionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async pause(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(classId, id, SessionStatus.PAUSED);
+    return this.changeStatus(user, classId, id, SessionStatus.PAUSED);
   }
 
   @Post(":id/finish")
@@ -103,17 +155,28 @@ export class SessionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async finish(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(classId, id, SessionStatus.FINISHED);
+    return this.changeStatus(user, classId, id, SessionStatus.FINISHED);
   }
 
   async changeStatus(
+    authenticatedUser: User,
     classId: number,
     id: SessionId,
     status: SessionStatus,
   ): Promise<ExistingSessionDto> {
+    const isAuthorized = await this.authorizationService.canUpdateSession(
+      authenticatedUser,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const session = await this.sessionsService.changeStatusByIdAndClass(
       id,
       status,
@@ -127,10 +190,20 @@ export class SessionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async update(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
     @Body() updateSessionDto: UpdateSessionDto,
   ): Promise<ExistingSessionDto> {
+    const isAuthorized = await this.authorizationService.canUpdateSession(
+      user,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const { taskIds, ...dto } = updateSessionDto;
     const session = await this.sessionsService.update(
       id,
@@ -146,9 +219,19 @@ export class SessionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async remove(
+    @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
   ): Promise<DeletedSessionDto> {
+    const isAuthorized = await this.authorizationService.canDeleteSession(
+      user,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const session = await this.sessionsService.deletedByIdAndClass(id, classId);
     return DeletedSessionDto.fromQueryResult(session);
   }

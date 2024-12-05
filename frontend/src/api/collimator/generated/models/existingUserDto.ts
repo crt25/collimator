@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { ExistingUserDtoPublicKeyId } from "./existingUserDtoPublicKeyId";
 import type { UserType } from "./userType";
 
 export interface ExistingUserDto {
@@ -17,6 +18,11 @@ export interface ExistingUserDto {
    * @nullable
    */
   name: string | null;
+  /**
+   * The unique identifier of the associated public key.
+   * @nullable
+   */
+  publicKeyId: ExistingUserDtoPublicKeyId;
   /** The user's role. */
   type: UserType;
 }

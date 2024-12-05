@@ -9,6 +9,7 @@ describe("ExistingUserDto", () => {
     name: "Alice",
     email: "alice@example.com",
     type: UserType.TEACHER,
+    publicKeyId: 123,
   };
 
   const target: ValidationPipe = new ValidationPipe({
@@ -79,6 +80,11 @@ describe("ExistingUserDto", () => {
       "type",
       "tomato",
       `type must be one of the following values: ${Object.values(UserType).join(", ")}`,
+    ],
+    [
+      "publicKeyId",
+      "not_a_number",
+      "publicKeyId must be a number conforming to the specified constraints",
     ],
   ])("validate DTO wrong field (%s)", async (field, value, error) => {
     await target

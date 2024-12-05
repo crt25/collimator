@@ -6,14 +6,26 @@ import {
   getClassesControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { ClassFormPageModel } from "./class-form-page-model";
-import { CreateClassDto } from "@/api/collimator/generated/models";
+import {
+  CreateClassDto,
+  ExistingUserDto,
+  UserType,
+} from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { ClassListPageModel } from "./class-list-page-model";
 
 test.describe("/class/create", () => {
   const mockCreateResponse = getClassesControllerCreateV0ResponseMock();
-  const mockUsersResponse = getUsersControllerFindAllV0ResponseMock();
+  const mockUsersResponse = [
+    ...getUsersControllerFindAllV0ResponseMock(),
+    {
+      id: 0,
+      email: "jane@doe.com",
+      name: "Jane Doe",
+      type: UserType.TEACHER,
+    } as ExistingUserDto,
+  ];
 
   let createRequest: CreateClassDto | null = null;
 
