@@ -330,7 +330,7 @@ const Analysis = ({
 
   useEffect(() => {
     const chart = chartRef.current;
-    if (chart && chart.canvas) {
+    if (chart?.canvas) {
       chart.config.data = chartData;
       chart.config.options = chartOptions;
       chart.update();
