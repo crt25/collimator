@@ -29,7 +29,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
   useEffect(() => {
     let isCancelled = false;
 
-    if (!("keyPair" in authContext)) {
+    if (!("keyPairId" in authContext)) {
       setIsDecrypting(false);
       return;
     }
@@ -37,6 +37,14 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
     setIsDecrypting(true);
 
     const decryptName = async () => {
+      if (student.keyPairId !== authContext.keyPairId) {
+        // no need trying to decrypt if the key pair is not the same that was used to encrypt
+        setDecryptedName(null);
+        setIsDecrypting(false);
+
+        return;
+      }
+
       const decryptedIdentity: StudentIdentity = JSON.parse(
         await authContext.keyPair.decryptString(
           decodeBase64(student.pseudonym),
@@ -52,7 +60,11 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
       setIsDecrypting(false);
     };
 
-    decryptName().catch(() => {
+    decryptName().catch((e) => {
+      console.error("Decryption failed", e, student, authContext.keyPairId);
+
+      setDecryptedName(null);
+
       if (isCancelled) {
         // another update has been triggered
         return;
