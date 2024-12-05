@@ -35,9 +35,7 @@ export class AuthenticationGateway
 
     try {
       const user =
-        await this.authenticationService.findByAuthenticationTokenOrThrow(
-          token,
-        );
+        await this.authenticationService.findUserByAuthTokenOrThrow(token);
 
       if (!this.authenticationService.isStudent(user)) {
         const userId = user.id;
