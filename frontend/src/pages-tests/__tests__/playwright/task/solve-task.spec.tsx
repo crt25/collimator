@@ -74,7 +74,6 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
   });
 
   test("shows an iframe", async ({ page }) => {
-    await page.waitForTimeout(10 * 1000);
     expect(page.locator("iframe")).toHaveCount(1);
   });
 

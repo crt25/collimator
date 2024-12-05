@@ -18,8 +18,11 @@ import {
   startBackend,
   startFrontendWithBackendProxy,
   unlockPort,
+  waitUntil,
   waitUntilReachable,
 } from "./setup/helpers";
+import { readFileSync } from "node:fs";
+import { userSeedsFile } from "../../../../scripts/e2e-testing-config";
 
 export const isDebug = process.env.DEBUG !== undefined;
 
@@ -51,6 +54,16 @@ export type CrtWorkerOptions = {
         postgresConfig: PostgresConfig;
         uniqueDbName: string;
       };
+};
+
+export const getItemIdFromTableTestId = (
+  testId: string | undefined | null,
+): number => {
+  if (!testId) {
+    throw new Error("testId is required");
+  }
+
+  return parseInt(testId.split("-")[1], 10);
 };
 
 export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
@@ -257,7 +270,6 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         await client.connect();
         await client.query(
           // drop with force, the db is currently used by the backend.
-          // after re-create the backend will reconnect to the new db.
           `DROP DATABASE IF EXISTS "${workerConfig.uniqueDbName}" WITH (FORCE)`,
         );
         await client.query(
@@ -266,9 +278,38 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         await client.end();
       }
 
+      const seedByMail = JSON.parse(
+        readFileSync(userSeedsFile, {
+          encoding: "utf-8",
+        }),
+      );
+
+      const anyFingerprint = (
+        Object.values(seedByMail) as { publicKeyFingerprint: string }[]
+      )
+        .map((seed) => seed.publicKeyFingerprint)
+        .find(Boolean);
+
+      if (!anyFingerprint) {
+        throw new Error("No public key fingerprints found in the seed file");
+      }
+
+      // trigger request that will make backend re-connect to the database
+      await waitUntil(
+        async () => {
+          const response = await fetch(
+            `http://localhost:${workerConfig.backendPort}/api/v0/authentication/public-key/${anyFingerprint}`,
+          );
+
+          return response.status === 200;
+        },
+        60,
+        300,
+      );
+
       return use(undefined);
     },
-    { auto: true, scope: "test" },
+    { auto: true, scope: "test", timeout: 10 * 1000 },
   ],
 
   page: async ({ page }, use) => {

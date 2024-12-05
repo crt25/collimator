@@ -60,6 +60,10 @@ const messages = defineMessages({
   },
 });
 
+const classNameTemplate = (rowData: ExistingClassWithTeacher) => (
+  <span data-testid={`class-${rowData.id}-name`}>{rowData.name}</span>
+);
+
 const ClassList = () => {
   const intl = useIntl();
   const router = useRouter();
@@ -192,6 +196,7 @@ const ClassList = () => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={classNameTemplate}
             />
             <Column
               header={intl.formatMessage(messages.lastSessionColumn)}

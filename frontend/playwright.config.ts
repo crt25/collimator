@@ -81,10 +81,6 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   // timeout per test
   timeout: 30 * 1000,
 
-  // apparently nextjs does not support running multiple development servers at the same time
-  // from the same folder.
-  workers: 1,
-
   webServer: {
     // Run your local dev server before starting the tests.
     command: `tsx ./scripts/e2e-testing.ts`,
