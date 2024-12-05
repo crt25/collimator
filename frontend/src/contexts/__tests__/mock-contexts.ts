@@ -9,7 +9,7 @@ import { UserRole } from "@/types/user/user-role";
 
 const userId = 1;
 const name = "John";
-const email = "john@doe.com";
+const email = "john.doe@example.com";
 const authenticationToken = "authenticationToken";
 const idToken = "id token";
 

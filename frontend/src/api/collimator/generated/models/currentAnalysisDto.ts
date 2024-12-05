@@ -15,6 +15,11 @@ export interface CurrentAnalysisDto {
   passedTests: number;
   /** The analysis's unique identifier, a positive integer. */
   solutionId: number;
+  /**
+   * The unique identifier of the key pair used to encrypt the student's pseudonym.
+   * @nullable
+   */
+  studentKeyPairId: number | null;
   /** The pseudonym of the student */
   studentPseudonym: string;
   /** The total number of tests. */

@@ -10,6 +10,8 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECR_REGISTRY_URI: ${{ vars.ECR_REGISTRY_URI }}
   ROLE_TO_ASSUME: ${{ vars.DEV_ROLE_TO_ASSUME }}
+  DEPLOY_URL : ${{ vars.DEPLOY_URL }}
+  ENTRA_ID_CLIENT_ID: ${{ vars.ENTRA_ID_CLIENT_ID }}
   BACKEND_IMAGE_NAME: collimator-dev-backend
   FRONTEND_BUCKET_ID: collimator-dev-static-frontend
   SCRATCH_APP_BUCKET_ID: collimator-dev-app-scratch
@@ -20,9 +22,15 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+
   deploy:
+    needs: [tests]
     runs-on: ubuntu-latest
     steps:
+    
       # Build application and prepare deployment
 
       - name: Git clone the repository
@@ -37,7 +45,6 @@ jobs:
         with:
             role-to-assume: ${{ env.ROLE_TO_ASSUME }}
             aws-region: ${{ env.AWS_REGION }}
-        
         
       - name: Enable Corepack
         run: corepack enable
@@ -54,10 +61,10 @@ jobs:
         working-directory: ./frontend
         run: yarn build
         env:
-          NEXT_PUBLIC_BACKEND_HOSTNAME: https://collimator.tyratox.ch
-          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: https://collimator.tyratox.ch/scratch
+          NEXT_PUBLIC_BACKEND_HOSTNAME: ${{ env.DEPLOY_URL }}
+          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/scratch
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
-          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: d8336644-c349-4b7f-972c-829aebc41f1b
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ env.ENTRA_ID_CLIENT_ID }}
 
       - name: Prepare scratch app build
         working-directory: ./apps/scratch

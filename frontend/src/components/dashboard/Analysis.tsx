@@ -28,6 +28,8 @@ import {
 } from "chartjs-plugin-annotation";
 import { _DeepPartialObject } from "chart.js/dist/types/utils";
 import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
+import { Colors } from "@/constants/colors";
+import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 
 type AdditionalChartData = {
   groupName: string;
@@ -62,13 +64,11 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
-const groupLabelColor = "rgba(0, 0, 0, 0.5)";
-const deleteLabelColor = "rgba(255, 99, 132, 0.5)";
-const deleteLabelColorHover = "rgba(255, 99, 132, 1)";
+const bubbleChartRadius = 10;
 
 const onEnterLabel = (context: EventContext) => {
   (context.element.options as AnnotationOptions<"label">).color =
-    deleteLabelColorHover;
+    Colors.chartLabel.deleteSplitLabelColorHover;
 
   // rerender chart
   return true;
@@ -76,7 +76,7 @@ const onEnterLabel = (context: EventContext) => {
 
 const onLeaveLabel = (context: EventContext) => {
   (context.element.options as AnnotationOptions<"label">).color =
-    deleteLabelColor;
+    Colors.chartLabel.deleteSplitLabelColor;
 
   // rerender chart
   return true;
@@ -130,7 +130,7 @@ const Analysis = ({
         data: category.dataPoints.map((dataPoint) => ({
           x: dataPoint.x,
           y: dataPoint.y,
-          r: 10,
+          r: bubbleChartRadius,
           additionalData: {
             groupName: dataPoint.groupName,
           } as AdditionalChartData,
@@ -192,14 +192,13 @@ const Analysis = ({
           (split) => {
             const onClickLabel = (ctx: EventContext, evt: ChartEvent) => {
               if (
-                (evt.native && "handled" in evt.native) ||
-                "blockDeletes" in ctx.chart
+                !evt.native ||
+                isAlreadyHandled(evt.native) ||
+                cannotDeleteSplits(ctx)
               ) {
                 return;
               }
-
-              // @ts-expect-error This is an annoying way working around the fact that stopImmediatePropagation doesn't work
-              evt.native["handled"] = true;
+              markAsHandled(evt.native);
 
               setSplits((splits) => splits.filter((s) => s !== split));
             };
@@ -207,8 +206,8 @@ const Analysis = ({
             const labelProps = {
               type: "label" as const,
               content: "x",
-              color: deleteLabelColor,
-              backgroundColor: "rgb(255 255 255 / 1)",
+              color: Colors.chartLabel.deleteSplitLabelColor,
+              backgroundColor: Colors.chartLabel.deletSplitLabelBackgroundColor,
               padding: {
                 x: 13,
                 y: 2,
@@ -229,7 +228,6 @@ const Analysis = ({
                     xMax: (ctx) => ctx.chart.scales.x.max,
                     yMin: split.y,
                     yMax: split.y,
-                    backgroundColor: "rgba(255, 99, 132, 0.25)",
                   },
                   {
                     ...labelProps,
@@ -265,18 +263,18 @@ const Analysis = ({
           {
             type: "label" as const,
             content: group.label,
-            color: groupLabelColor,
+            color: Colors.chartLabel.groupLabelColor,
             xValue: (ctx) => {
               const min = Math.max(group.minX, ctx.chart.scales.x.min);
               const max = Math.min(group.maxX, ctx.chart.scales.x.max);
 
-              return min + (max - min) / 2;
+              return (max + min) / 2;
             },
             yValue: (ctx) => {
               const min = Math.max(group.minY, ctx.chart.scales.y.min);
               const max = Math.min(group.maxY, ctx.chart.scales.y.max);
 
-              return min + (max - min) / 2;
+              return (max + min) / 2;
             },
             padding: 0,
             font: {
@@ -317,7 +315,7 @@ const Analysis = ({
         x: xAxisConfig,
         y: yAxisConfig,
       },
-      /* seems buggy */
+      /* disable animations - looks weird when re-rendering the chart */
       animation: false,
     }),
     [
@@ -332,7 +330,7 @@ const Analysis = ({
 
   useEffect(() => {
     const chart = chartRef.current;
-    if (chart && chart.canvas) {
+    if (chart?.canvas) {
       chart.config.data = chartData;
       chart.config.options = chartOptions;
       chart.update();

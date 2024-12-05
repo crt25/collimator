@@ -37,7 +37,7 @@ export const WithInitialValues = {
     onSubmit: fn(),
     initialValues: {
       name: "John Doe",
-      openIdConnectSub: "john@doe.com",
+      openIdConnectSub: "john.doe@example.com",
       type: "ADMIN",
     },
   } as Args,
