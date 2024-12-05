@@ -1,5 +1,6 @@
 import { defineMessages, IntlShape } from "react-intl";
 import pattern from "patternomaly";
+import { Colors } from "@/constants/colors";
 
 const messages = defineMessages({
   xAxis: {
@@ -83,27 +84,28 @@ export const getCanvasPattern = (category: Category): CanvasPattern => {
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
 
-  let color: [number, number, number, number] = [155, 89, 182, 1];
+  let color: [number, number, number] = Colors.dataPoint.default;
+  let alpha = 1;
   let patternName: PatternType = "zigzag";
 
   if (hasTests) {
     if (passesAllTests) {
-      color = [39, 174, 96, 1];
+      color = Colors.dataPoint.success;
       patternName = "disc";
     } else if (passesATest) {
-      color = [243, 156, 18, 1];
+      color = Colors.dataPoint.partialSuccess;
       patternName = "triangle";
     } else {
-      color = [231, 76, 60, 1];
+      color = Colors.dataPoint.noSuccess;
       patternName = "diagonal";
     }
   }
 
   if (!matchesFilter) {
-    color[3] = 0.25;
+    alpha = 0.25;
   }
 
-  const colorString = `rgba(${color.slice(0, 3).join(" ")} / ${color[3]})`;
+  const colorString = `rgba(${color.slice(0, 3).join(" ")} / ${alpha})`;
 
   return pattern.draw(patternName, colorString);
 };

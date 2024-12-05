@@ -234,7 +234,7 @@ export class AuthenticationService {
   /**
    * Tries to sign in a user with the given JWT token.
    * @param jwt The JWT token to sign in with.
-   * @param provider The authentication provider used for singing in.
+   * @param provider The authentication provider used for signing in.
    * @param registrationToken An optional registration token required the first time a user signs in.
    * @returns A new authentication token.
    */
@@ -271,10 +271,9 @@ export class AuthenticationService {
       if (!email || !registrationToken) {
         throw originalError;
       }
-      // migrate user from email to oidc sub.
-      // this is necessary because the user might have signed in with email before
-      // or the user was created by an admin and there is now way to determine the oidc sub
-      // for other email addresses
+      // Migrate user from email to oidc sub.
+      // This is necessary because users are created by admins and
+      // there is no way to determine the oidc sub for a given email addresses.
       user = await this.findUserToRegisterOrThrow(
         email,
         provider,

@@ -22,7 +22,7 @@ test.describe("/class/create", () => {
     // ensure that there are at least two users (the mock above always returns at least one)
     {
       id: -1,
-      email: "jane@doe.com",
+      email: "jane.doe@example.com",
       name: "Jane Doe",
       type: UserType.TEACHER,
     } as ExistingUserDto,

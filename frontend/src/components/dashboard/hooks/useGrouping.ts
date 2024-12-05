@@ -8,8 +8,11 @@ import { ChartSplit, SplitType } from "../chartjs-plugins/select";
 export type AnalyzedSolution = {
   solutionId: number;
   studentPseudonym: string;
+  studentKeyPairId: number;
+
   xAxisValue: number;
   yAxisValue: number;
+
   category: Category;
   groupKey: string;
 };
@@ -165,6 +168,7 @@ export const useGrouping = (
         return {
           solutionId: solution.solutionId,
           studentPseudonym: solution.studentPseudonym,
+          studentKeyPairId: solution.studentKeyPairId,
           xAxisValue,
           yAxisValue,
           category,

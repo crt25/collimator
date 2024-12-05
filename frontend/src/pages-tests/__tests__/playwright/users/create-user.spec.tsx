@@ -45,7 +45,7 @@ test.describe("/user/create", () => {
     const page = await UserFormPageModel.create(pwPage);
 
     await page.inputs.name.fill("Jane Doe");
-    await page.inputs.email.fill("jane@doe.com");
+    await page.inputs.email.fill("jane.doe@example.com");
     await page.inputs.type.selectOption(UserType.TEACHER);
     await page.submitButton.click();
 
@@ -53,7 +53,7 @@ test.describe("/user/create", () => {
 
     expect(createRequest).toEqual({
       name: "Jane Doe",
-      email: "jane@doe.com",
+      email: "jane.doe@example.com",
       type: UserType.TEACHER,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
@@ -63,7 +63,7 @@ test.describe("/user/create", () => {
     const page = await UserFormPageModel.create(pwPage);
 
     await page.inputs.name.fill("Jane Doe");
-    await page.inputs.email.fill("jane@doe.com");
+    await page.inputs.email.fill("jane.doe@example.com");
     await page.inputs.type.selectOption(UserType.ADMIN);
     await page.submitButton.click();
 
@@ -71,7 +71,7 @@ test.describe("/user/create", () => {
 
     expect(createRequest).toEqual({
       name: "Jane Doe",
-      email: "jane@doe.com",
+      email: "jane.doe@example.com",
       type: UserType.ADMIN,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
