@@ -136,19 +136,17 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
             </Parameters>
           </Col>
           <Col xs={9}>
-            {selectedTask && (
-              <Analysis
-                taskType={task.type}
-                xAxis={xAxis}
-                setXAxis={updateXAxis}
-                yAxis={yAxis}
-                setYAxis={updateYAxis}
-                categories={categoriesWithGroups}
-                groups={groups}
-                splits={splits}
-                setSplits={setSplits}
-              />
-            )}
+            <Analysis
+              taskType={task.type}
+              xAxis={xAxis}
+              setXAxis={updateXAxis}
+              yAxis={yAxis}
+              setYAxis={updateYAxis}
+              categories={categoriesWithGroups}
+              groups={groups}
+              splits={splits}
+              setSplits={setSplits}
+            />
           </Col>
           <Col xs={12}>
             {task && (

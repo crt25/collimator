@@ -48,7 +48,7 @@ const getGroupName = (idx: number): string => {
     idx = Math.floor(idx / numberOfCharacters);
   } while (idx > 0);
 
-  return name.reverse().join("");
+  return name.toReversed().join("");
 };
 
 const isWithinGroup = (

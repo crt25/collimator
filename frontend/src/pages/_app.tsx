@@ -102,6 +102,11 @@ const App = ({ Component, pageProps }: AppProps) => {
     }
   }, [localizationState.locale]);
 
+  const updateLocalizationState = useMemo(
+    () => ({ setState: setLocalizationState }),
+    [setLocalizationState],
+  );
+
   return (
     <CacheProvider value={cache}>
       <IntlProvider locale={localizationState.locale} messages={messages}>
@@ -112,7 +117,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 value={updateAuthenticationState}
               >
                 <UpdateLocalizationContext.Provider
-                  value={{ setState: setLocalizationState }}
+                  value={updateLocalizationState}
                 >
                   <AuthenticationBarrier
                     authenticationStateLoaded={authenticationStateLoaded}
