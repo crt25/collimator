@@ -7,7 +7,7 @@ import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/gene
 import { classList } from "../selectors";
 import { ClassListPageModel } from "./class-list-page-model";
 import { ExistingClassWithTeacherDto } from "@/api/collimator/generated/models";
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 
 test.describe("/class", () => {
   const klass: ExistingClassWithTeacherDto = {

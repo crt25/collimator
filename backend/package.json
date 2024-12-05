@@ -105,7 +105,7 @@
     "testEnvironment": "node"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node --project tsconfig.seed.json prisma/seed/index.ts"
   },
   "packageManager": "yarn@4.5.0"
 }

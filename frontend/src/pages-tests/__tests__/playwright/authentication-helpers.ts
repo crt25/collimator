@@ -1,6 +1,5 @@
 import { BrowserContext, Page } from "@playwright/test";
 import { subtle } from "crypto";
-import { jsonResponse } from "../helpers";
 import * as fs from "fs";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
@@ -20,18 +19,17 @@ import {
 } from "@/types/websocket-events";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
+import { jsonResponse } from "./helpers";
+import { mockOidcProviderUrl, mockOidcProxyUrl } from "./setup/config";
 
 const crypto = subtle as SubtleCrypto;
-
-export const userName = "Jane Doe";
-export const userEmail = "janedoe@example.com";
-export const issuer = "http://localhost:3000/issuer";
-export const sub = "1234567890";
 
 export const adminFile = "playwright/.auth/admin.json";
 export const studentFile = "playwright/.auth/student.json";
 
-export const generateKey = async (): Promise<[CryptoKeyPair, JsonWebKey]> => {
+export const generateKey = async (
+  kid: string,
+): Promise<[CryptoKeyPair, JsonWebKey]> => {
   const keyPair = await subtle.generateKey(
     {
       name: "ECDSA",
@@ -43,6 +41,9 @@ export const generateKey = async (): Promise<[CryptoKeyPair, JsonWebKey]> => {
 
   // export public key to JWK
   const publicKey = await subtle.exportKey("jwk", keyPair.publicKey);
+
+  // @ts-expect-error kid is not part of the type
+  publicKey["kid"] = kid;
 
   return [keyPair, publicKey];
 };
@@ -56,15 +57,20 @@ const encode = (packet: Packet): string => "4" + typedEncode(packet)[0];
 
 export const generateJwt = async (
   keyPair: CryptoKeyPair,
+  kid: string,
   clientId: string,
   nonce: string,
+  issuer: string,
+  oidcSub: string,
+  userEmail: string,
+  userName: string,
 ): Promise<string> => {
   const publicKey = await subtle.exportKey("jwk", keyPair.publicKey);
 
   // create a mock open id connect id token
   const idToken = {
     iss: issuer,
-    sub,
+    sub: oidcSub,
     aud: clientId,
     exp: Date.now() + 60 * 60 * 1000,
     iat: Date.now(),
@@ -78,6 +84,7 @@ export const generateJwt = async (
       typ: "JWT",
       alg: "ES256",
       jwk: publicKey,
+      kid,
     }),
   ).toString("base64url");
 
@@ -104,50 +111,34 @@ export const generateJwt = async (
   return jwt;
 };
 
-const response = {
-  ...jsonResponse,
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-  },
-};
-
-let nonce = "some nonce";
-
-export const setupForAuthentication = async (
+const setupMockOidcProvider = async (
   page: Page,
+  providerUrl: string,
   baseUrl: string,
-  apiUrl: string,
-): Promise<string> => {
-  const [keyPair, publicKey] = await generateKey();
+): Promise<void> => {
+  const sub = "some-unique-id";
+  const email = "jane@doe.com";
+  const name = "Jane Doe";
+
+  let nonce = "";
+
+  const response = {
+    ...jsonResponse,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  };
+
+  const kid = "test-key";
+  const [keyPair, publicKey] = await generateKey(kid);
 
   // intercept the openid configuration request
   await page.route(/.well-known\/openid-configuration/, (route) => {
     route.fulfill({
       ...response,
-      body: JSON.stringify({
-        authorization_endpoint: `https://localhost:3000/__oidc__/authorize`,
-        token_endpoint: `https://localhost:3000/__oidc__/token-request`,
-        jwks_uri: `https://localhost:3000/__oidc__/jwks`,
-        userinfo_endpoint: `https://localhost:3000/__oidc__/userinfo`,
-        token_endpoint_auth_methods_supported: ["client_secret_post"],
-        response_modes_supported: ["query", "fragment", "form_post"],
-        id_token_signing_alg_values_supported: ["ES256"],
-        response_types_supported: [
-          "code",
-          "id_token",
-          "code id_token",
-          "id_token token",
-        ],
-        scopes_supported: ["openid", "profile", "email", "offline_access"],
-        issuer: "http://localhost:3000/issuer",
-        request_uri_parameter_supported: false,
-
-        http_logout_supported: false,
-        frontchannel_logout_supported: false,
-        claims_supported: ["sub", "iss", "aud", "exp", "iat", "email"],
-      }),
+      body: JSON.stringify(getOpenIdConnectConfigResponse(providerUrl)),
     });
   });
 
@@ -200,7 +191,16 @@ export const setupForAuthentication = async (
       string,
     ];
 
-    const jwt = await generateJwt(keyPair, clientId, nonce);
+    const jwt = await generateJwt(
+      keyPair,
+      kid,
+      clientId,
+      nonce,
+      providerUrl,
+      sub,
+      email,
+      name,
+    );
 
     route.fulfill({
       ...response,
@@ -220,15 +220,22 @@ export const setupForAuthentication = async (
       ...response,
       body: JSON.stringify({
         sub,
-        name: userName,
+        name,
         given_name: "Jane",
         family_name: "Doe",
         preferred_username: "j.doe",
-        email: userEmail,
-        picture: "http://example.com/janedoe/me.jpg",
+        email,
       }),
     });
   });
+};
+
+export const setupForMockStudentAuthentication = async (
+  page: Page,
+  baseUrl: string,
+  apiUrl: string,
+): Promise<string> => {
+  setupMockOidcProvider(page, mockOidcProxyUrl, baseUrl);
 
   const teacherKeyPair = await TeacherLongTermKeyPair.generate(crypto);
   const teacherPublicKey = await teacherKeyPair.exportPublicKey();
@@ -245,22 +252,6 @@ export const setupForAuthentication = async (
           createdAt: new Date().toISOString(),
           publicKey: JSON.stringify(teacherPublicKey),
         } as PublicKeyDto),
-      }),
-  );
-
-  await page.route(
-    `${apiUrl}${getAuthenticationControllerLoginV0Url()}`,
-    (route) =>
-      route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify({
-          id: 1,
-          authenticationToken: "a token",
-          email: userEmail,
-          name: userName,
-          type: UserType.ADMIN,
-          keyPair: null,
-        } as AuthenticationResponseDto),
       }),
   );
 
@@ -369,6 +360,206 @@ export const setupForAuthentication = async (
   });
 
   return teacherPublicKeyHash;
+};
+
+export const getOpenIdConnectConfigResponse = (
+  baseUrl: string,
+): {
+  authorization_endpoint: string;
+  token_endpoint: string;
+  jwks_uri: string;
+  userinfo_endpoint: string;
+  token_endpoint_auth_methods_supported: string[];
+  response_modes_supported: string[];
+  id_token_signing_alg_values_supported: string[];
+  response_types_supported: string[];
+  scopes_supported: string[];
+  issuer: string;
+  request_uri_parameter_supported: boolean;
+  http_logout_supported: boolean;
+  frontchannel_logout_supported: boolean;
+  claims_supported: string[];
+} => ({
+  authorization_endpoint: `${baseUrl}/__oidc__/authorize`,
+  token_endpoint: `${baseUrl}/__oidc__/token-request`,
+  jwks_uri: `${baseUrl}/__oidc__/jwks`,
+  userinfo_endpoint: `${baseUrl}/__oidc__/userinfo`,
+  token_endpoint_auth_methods_supported: ["client_secret_post"],
+  response_modes_supported: ["query", "fragment", "form_post"],
+  id_token_signing_alg_values_supported: ["ES256"],
+  response_types_supported: [
+    "code",
+    "id_token",
+    "code id_token",
+    "id_token token",
+  ],
+  scopes_supported: ["openid", "profile", "email", "offline_access"],
+  issuer: baseUrl,
+  request_uri_parameter_supported: false,
+
+  http_logout_supported: false,
+  frontchannel_logout_supported: false,
+  claims_supported: ["sub", "iss", "aud", "exp", "iat", "email"],
+});
+
+export const setupForUserAuthentication = async (
+  page: Page,
+  baseUrl: string,
+  apiUrl: string | null,
+  user: {
+    oidcSub: string;
+    email: string;
+    name: string;
+  },
+): Promise<void> => {
+  if (!apiUrl) {
+    // forward OIDC requests
+    await page.route(
+      new RegExp(
+        mockOidcProxyUrl.replaceAll("/", "\\/").replaceAll(".", "\\."),
+      ),
+      async (route, request) => {
+        const url = new URL(request.url());
+
+        try {
+          const response = await fetch(
+            `${mockOidcProviderUrl}${url.pathname}${url.search}`,
+            {
+              method: request.method(),
+              headers: {
+                ...request.headers(),
+                "x-forwarded-url": `${url.protocol}//${url.host}`,
+              },
+              body: request.postData(),
+              // the response may be a redirect - do *not* follow but just return the response
+              redirect: "manual",
+            },
+          );
+
+          route.fulfill({
+            contentType:
+              response.headers.get("content-type") || "application/json",
+            status: response.status,
+            headers: response.headers.entries().reduce(
+              (acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+              },
+              {} as Record<string, string>,
+            ),
+            body: Buffer.from(
+              await response.blob().then((b) => b.arrayBuffer()),
+            ),
+          });
+        } catch (e) {
+          console.error("fetch failed", e);
+          throw e;
+        }
+      },
+    );
+
+    // setup the mock provider to return the desired user data
+    await fetch(`${mockOidcProviderUrl}/user`, {
+      method: "POST",
+      body: JSON.stringify(user),
+    });
+
+    // if we are not mocking the API we can already stop here
+    return;
+  }
+
+  setupMockOidcProvider(page, mockOidcProxyUrl, baseUrl);
+
+  const teacherKeyPair = await TeacherLongTermKeyPair.generate(crypto);
+  const teacherPublicKey = await teacherKeyPair.exportPublicKey();
+  const teacherPublicKeyHash = await teacherKeyPair.getPublicKeyFingerprint();
+
+  await page.route(
+    `${apiUrl}${getAuthenticationControllerFindPublicKeyV0Url(teacherPublicKeyHash)}`,
+    (route) =>
+      route.fulfill({
+        ...jsonResponse,
+        body: JSON.stringify({
+          id: 1,
+          teacherId: 1,
+          createdAt: new Date().toISOString(),
+          publicKey: JSON.stringify(teacherPublicKey),
+        } as PublicKeyDto),
+      }),
+  );
+
+  await page.route(
+    `${apiUrl}${getAuthenticationControllerLoginV0Url()}`,
+    (route) =>
+      route.fulfill({
+        ...jsonResponse,
+        body: JSON.stringify({
+          id: 1,
+          authenticationToken: "a token",
+          email: user.email,
+          name: user.name,
+          type: UserType.ADMIN,
+          keyPair: null,
+        } as AuthenticationResponseDto),
+      }),
+  );
+
+  await page.route(`${apiUrl}${getUsersControllerUpdateKeyV0Url(1)}`, (route) =>
+    route.fulfill({
+      ...jsonResponse,
+      body: JSON.stringify(1),
+    }),
+  );
+
+  await page.routeWebSocket(/socket\.io/, async (ws) => {
+    const connectMessage = encode({
+      type: 0,
+      nsp: "/",
+      data: {
+        sid: "E9efP6492KDwJe5sAAAv",
+        upgrades: [],
+        pingInterval: 25000,
+        pingTimeout: 20000,
+        maxPayload: 1000000,
+      },
+    });
+
+    // first message without '4' prefix
+    ws.send(connectMessage.substring(1));
+
+    ws.onMessage(async (message) => {
+      if (typeof message !== "string") {
+        throw new Error("Expected message to be a string");
+      }
+
+      const waitForPacket = new Promise<Packet>((resolve) =>
+        decoder.once("decoded", resolve),
+      );
+      // always drop the first '4' character - socket.io protocol
+      decoder.add(message.substring(1));
+
+      const packet = await waitForPacket;
+
+      // see protocol definition at https://socket.io/docs/v4/socket-io-protocol/#exchange-protocol
+
+      if (packet.type === 0) {
+        // on connection, respond
+        ws.send(connectMessage);
+        return;
+      }
+
+      if (packet.type === 1) {
+        ws.close();
+        return;
+      }
+
+      if (packet.type === 4) {
+        // not sure what this is, the protocol definition does not mention it
+        ws.send('40{"sid":"ajVdtT-qu_urvILFAAA0"}');
+        return;
+      }
+    });
+  });
 };
 
 export const signIn = async (page: Page): Promise<void> => {

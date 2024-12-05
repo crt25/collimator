@@ -1,4 +1,4 @@
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 import { getClassesControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {

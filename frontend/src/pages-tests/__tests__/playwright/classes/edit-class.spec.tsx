@@ -1,4 +1,4 @@
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,

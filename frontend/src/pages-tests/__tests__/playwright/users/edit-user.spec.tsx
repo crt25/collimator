@@ -13,7 +13,7 @@ import {
   ExistingUserDto,
 } from "@/api/collimator/generated/models";
 import { UserListPageModel } from "./user-list-page-model";
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 
 test.describe("/user/{id}/edit", () => {
   const user: ExistingUserDto = {

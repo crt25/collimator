@@ -1,5 +1,5 @@
 import { expect, jsonResponse, test } from "../helpers";
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";

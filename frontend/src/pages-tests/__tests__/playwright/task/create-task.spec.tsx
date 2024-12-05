@@ -1,5 +1,5 @@
 import { ExistingTaskDto, TaskType } from "@/api/collimator/generated/models";
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 import { expect, mockUrlResponses, test } from "../helpers";
 import { TaskListPageModel } from "./task-list-page-model";
 import {

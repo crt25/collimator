@@ -4,6 +4,24 @@ import {
   test as testBase,
   expect as expectBase,
 } from "playwright-test-coverage";
+import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
+import pg from "pg";
+import {
+  buildClientConfig,
+  getFreePortAndLock,
+  getUrl,
+  killProcessByPid,
+  PostgresConfig,
+  setupBackendPort,
+  setupFrontendPort,
+  setupProjectNamePrefix,
+  startBackend,
+  startFrontendWithBackendProxy,
+  unlockPort,
+  waitUntilReachable,
+} from "./setup/helpers";
+
+export const isDebug = process.env.DEBUG !== undefined;
 
 export const jsonResponse = {
   status: 200,
@@ -13,11 +31,246 @@ export const jsonResponse = {
 export type CrtTestOptions = {
   apiURL: string;
   scratchURL: string;
+  _databaseSeed: undefined;
 };
 
-export const test = testBase.extend<CrtTestOptions>({
-  apiURL: ["", { option: true }],
+export type CrtWorkerOptions = {
+  _setLastTestFileName: {
+    setLastTestFileName: (testFileName: string) => void;
+    getLastTestFileName: () => string | null;
+  };
+  workerConfig:
+    | {
+        frontendPort: number;
+        backendPort: number;
+      }
+    | {
+        frontendPort: number;
+        backendPort: number;
+
+        postgresConfig: PostgresConfig;
+        uniqueDbName: string;
+      };
+};
+
+export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
   scratchURL: ["", { option: true }],
+  workerConfig: [
+    async ({}, use, testInfo): Promise<void> => {
+      if (testInfo.project.name.startsWith(setupProjectNamePrefix)) {
+        // we are in a setup project, so just return the setup config.
+        // the setup must be performed before we can do the per-test db tests.
+        // otherwise the authentication state and the base db state will be missing.
+        return use({
+          frontendPort: setupFrontendPort,
+          backendPort: setupBackendPort,
+        });
+      }
+
+      const dbUrlRaw = process.env.DATABASE_URL;
+
+      if (!dbUrlRaw) {
+        throw new Error("DATABASE_URL is not set");
+      }
+
+      const postgresConfig = buildClientConfig(dbUrlRaw);
+      const uniqueDbName = `${postgresConfig.database}-clone-${testInfo.workerIndex}`;
+      {
+        const client = new pg.Client({
+          ...postgresConfig,
+          // connect to the default 'postgres' database, not the test template db to avoid concurrency issues
+          database: "postgres",
+        });
+
+        // create a new database based on the template database
+        await client.connect();
+        await client.query(`DROP DATABASE IF EXISTS "${uniqueDbName}"`);
+        await client.query(
+          `CREATE DATABASE "${uniqueDbName}" TEMPLATE "${postgresConfig.database}"`,
+        );
+        await client.end();
+      }
+
+      const testConfig = {
+        ...postgresConfig,
+        database: uniqueDbName,
+      };
+
+      const testUrl = getUrl(testConfig);
+
+      const backendPort = await getFreePortAndLock();
+      const frontendPort = await getFreePortAndLock(
+        // the frontend port must be different from the backend port
+        // and we cannot sequentially start them using automatic port allocation
+        // because they need to know each other's ports before starting (env vars)
+        backendPort + 1,
+      );
+
+      if (isDebug) {
+        console.log(
+          `Using backend http://localhost:${backendPort} and frontend http://localhost:${frontendPort}`,
+        );
+      }
+
+      const backendProcess = startBackend({
+        databaseUrl: testUrl,
+        port: backendPort,
+        frontendHostname: `http://localhost:${frontendPort}`,
+        jwkEndpoint: `${mockOidcProviderUrl}/__oidc__/jwks`,
+        userInfoEndpoint: `${mockOidcProviderUrl}/__oidc__/userinfo`,
+        clientId: mockOidcClientId,
+      });
+
+      if (isDebug) {
+        backendProcess.stdout.on("data", (data) => {
+          console.log("[backend]", data.toString());
+        });
+      }
+
+      backendProcess.stderr.on("data", (data) => {
+        console.error("[backend]", data.toString());
+      });
+
+      if (!backendProcess.pid) {
+        throw new Error("Could not start the backend server");
+      }
+
+      const frontendProcess = startFrontendWithBackendProxy({
+        port: frontendPort,
+        backendUrl: `http://localhost:${backendPort}`,
+      });
+
+      if (isDebug) {
+        frontendProcess.stdout.on("data", (data) => {
+          console.log("[frontend]", data.toString());
+        });
+      }
+
+      frontendProcess.stderr.on("data", (data) => {
+        console.error("[frontend]", data.toString());
+      });
+
+      if (!frontendProcess.pid) {
+        throw new Error("Could not start the frontend server");
+      }
+
+      await waitUntilReachable([
+        { port: backendPort!, path: "/api-json" },
+        { port: frontendPort!, path: "/" },
+      ]);
+
+      let error: Error | undefined = undefined;
+
+      await use({
+        backendPort,
+        frontendPort,
+        postgresConfig,
+        uniqueDbName,
+      }).catch((e) => {
+        // suppress errors until after cleanup
+        error = e;
+      });
+
+      // stop the started servers
+      killProcessByPid(backendProcess.pid);
+      killProcessByPid(frontendProcess.pid);
+
+      // drop the database
+      {
+        const client = new pg.Client(postgresConfig);
+        await client.connect();
+        await client.query(`DROP DATABASE IF EXISTS "${uniqueDbName}"`);
+        await client.end();
+      }
+
+      unlockPort(backendPort);
+      unlockPort(frontendPort);
+
+      if (error) {
+        return Promise.reject(error);
+      }
+    },
+    {
+      scope: "worker",
+      // always run this fixture
+      auto: true,
+      // ensure the fixture time is not considered test time
+      timeout: 120 * 1000,
+    },
+  ],
+
+  apiURL: async ({ workerConfig }, use) =>
+    // since we proxy backend requests via the frontend, the apiUrl also uses the frontend port
+    // but only paths starting with /api will be routed to the API
+    use(`http://localhost:${workerConfig.frontendPort}`),
+
+  baseURL: async ({ workerConfig }, use) =>
+    use(`http://localhost:${workerConfig.frontendPort}`),
+
+  _setLastTestFileName: [
+    async ({}, use): Promise<void> => {
+      let lastTestFileName: string | null = null;
+
+      const setLastTestFileName = (testFileName: string): void => {
+        lastTestFileName = testFileName;
+      };
+
+      const getLastTestFileName = (): string | null => lastTestFileName;
+
+      await use({
+        setLastTestFileName,
+        getLastTestFileName,
+      });
+    },
+    { auto: true, scope: "worker" },
+  ],
+
+  _databaseSeed: [
+    async (
+      {
+        workerConfig,
+        _setLastTestFileName: { getLastTestFileName, setLastTestFileName },
+      },
+      use,
+      testInfo,
+    ): Promise<void> => {
+      if (!("uniqueDbName" in workerConfig)) {
+        // if there is no unique db there is nothing to re-seed
+        return use(undefined);
+      }
+
+      const lastTestFileName = getLastTestFileName();
+      const testFileName = testInfo.titlePath[0];
+
+      // update the last test file name
+      setLastTestFileName(testFileName);
+
+      // if we are still in the same test file there is nothing to do
+      // also if null, this is the first file so nothing to reset yet.
+      if (lastTestFileName === null || testFileName === lastTestFileName) {
+        return use(undefined);
+      }
+
+      // if we changed the test file, reset the database
+      {
+        const client = new pg.Client(workerConfig.postgresConfig);
+        await client.connect();
+        await client.query(
+          // drop with force, the db is currently used by the backend.
+          // after re-create the backend will reconnect to the new db.
+          `DROP DATABASE IF EXISTS "${workerConfig.uniqueDbName}" WITH (FORCE)`,
+        );
+        await client.query(
+          `CREATE DATABASE "${workerConfig.uniqueDbName}" TEMPLATE "${workerConfig.postgresConfig.database}"`,
+        );
+        await client.end();
+      }
+
+      return use(undefined);
+    },
+    { auto: true, scope: "test" },
+  ],
+
   page: async ({ page }, use) => {
     // ensure we capture page errors
     const errors: string[] = [];
@@ -33,7 +286,7 @@ export const test = testBase.extend<CrtTestOptions>({
       }
     });
 
-    await use(page);
+    return use(page);
   },
 });
 

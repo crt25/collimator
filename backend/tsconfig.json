@@ -22,5 +22,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": false,
     "types": ["@types/jest", "@quramy/jest-prisma-node"],
+    "paths": {
+      "@e2e-data/*": [
+        "../frontend/src/pages-tests/__tests__/playwright/setup/seeding/*"
+      ]
+    }
   }
 }

@@ -11,7 +11,7 @@ import {
   getUsersControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { UserListPageModel } from "./user-list-page-model";
-import { useAdminUser } from "../authentication/authentication-helpers";
+import { useAdminUser } from "../authentication-helpers";
 
 test.describe("/user/create", () => {
   const mockCreateResponse = getUsersControllerCreateV0ResponseMock();
