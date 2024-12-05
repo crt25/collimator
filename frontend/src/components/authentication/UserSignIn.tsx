@@ -196,7 +196,7 @@ const UserSignIn = ({
         userId,
         role: type === UserType.ADMIN ? UserRole.admin : UserRole.teacher,
         email: userEmail,
-        name: userName || userEmail,
+        name: userName ?? userEmail,
         keyPair: teacherKeyPair,
         keyPairId,
       });

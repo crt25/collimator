@@ -73,9 +73,14 @@ jobs:
                 working-directory: ./apps/scratch
                 run: yarn lint
 
+                # the database must be fully migrated before running prisma:generate
+            -   name: Prepare test database
+                working-directory: ./backend
+                run: yarn prisma migrate deploy
+
             -   name: Build backend
                 working-directory: ./backend
-                run: yarn build
+                run: yarn prisma:generate && yarn build
 
             -   name: Build frontend
                 working-directory: ./frontend
@@ -88,10 +93,6 @@ jobs:
             -   name: Build scratch app
                 working-directory: ./apps/scratch
                 run: yarn build
-
-            -   name: Prepare test database
-                working-directory: ./backend
-                run: yarn prisma migrate deploy
 
             -   name: Test backend
                 working-directory: ./backend

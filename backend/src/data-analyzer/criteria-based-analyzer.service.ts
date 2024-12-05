@@ -1,64 +1,41 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleDestroy } from "@nestjs/common";
 import { GeneralAst } from "src/ast/types/general-ast";
-import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
+import CriteriaBasedAnalysisWorker, {
+  AnalysisInput,
+  AnalysisOutput,
+} from "./criteria-based-analysis-worker.piscina";
+import { Piscina } from "piscina";
+import { resolve } from "path";
+import { getPiscinaPath } from "src/utilities/is-test";
 
-export enum Criteria {
-  callsFunction = "callsFunction",
-  containsLoop = "containsLoop",
-  containsCondition = "containsCondition",
-  containsFunctionDeclaration = "containsFunctionDeclaration",
-}
-
-export interface CriteriaBasedAnalyzerInput {
-  [Criteria.callsFunction]?: {
-    functionName: string;
-  };
-  [Criteria.containsLoop]?: true;
-  [Criteria.containsCondition]?: true;
-  [Criteria.containsFunctionDeclaration]?: true;
-}
-
-export interface CriteriaBasedAnalyzerOutput {
-  [Criteria.callsFunction]?: boolean;
-  [Criteria.containsLoop]?: boolean;
-  [Criteria.containsCondition]?: boolean;
-  [Criteria.containsFunctionDeclaration]?: boolean;
-}
+type AnalysisWorker = typeof CriteriaBasedAnalysisWorker;
 
 @Injectable()
-export class CriteriaBasedAnalyzerService {
+export class CriteriaBasedAnalyzerService implements OnModuleDestroy {
+  private readonly criteriaAnalysisWorker = new Piscina<
+    Parameters<AnalysisWorker>[0],
+    ReturnType<AnalysisWorker>
+  >({
+    filename: getPiscinaPath(
+      resolve(
+        __dirname,
+        // use the .js extension because NestJS compiles the typescript files
+        `./criteria-based-analysis-worker.piscina.js`,
+      ),
+    ),
+  });
+
+  onModuleDestroy(): void {
+    this.criteriaAnalysisWorker.destroy();
+  }
+
   analyze(
-    submission: GeneralAst,
-    input: CriteriaBasedAnalyzerInput,
-  ): CriteriaBasedAnalyzerOutput {
-    return {
-      [Criteria.callsFunction]:
-        input[Criteria.callsFunction] &&
-        CriteriaBasedAnalyzer.callsFunction(
-          submission,
-          input[Criteria.callsFunction],
-        ),
-
-      [Criteria.containsLoop]:
-        input[Criteria.containsLoop] &&
-        CriteriaBasedAnalyzer.containsLoop(
-          submission,
-          input[Criteria.containsLoop],
-        ),
-
-      [Criteria.containsCondition]:
-        input[Criteria.containsCondition] &&
-        CriteriaBasedAnalyzer.containsCondition(
-          submission,
-          input[Criteria.containsCondition],
-        ),
-
-      [Criteria.containsFunctionDeclaration]:
-        input[Criteria.containsFunctionDeclaration] &&
-        CriteriaBasedAnalyzer.containsFunctionDeclaration(
-          submission,
-          input[Criteria.containsFunctionDeclaration],
-        ),
-    };
+    asts: GeneralAst[],
+    input: AnalysisInput[],
+  ): Promise<AnalysisOutput[][]> {
+    return this.criteriaAnalysisWorker.run({
+      asts,
+      input,
+    });
   }
 }

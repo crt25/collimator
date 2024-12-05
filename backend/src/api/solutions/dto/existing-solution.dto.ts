@@ -32,6 +32,9 @@ export class ExistingSolutionDto implements SolutionWithoutData {
   @Exclude()
   readonly mimeType!: string;
 
+  @Exclude()
+  readonly failedAnalyses!: number;
+
   static fromQueryResult(data: SolutionWithoutData): ExistingSolutionDto {
     return plainToInstance(ExistingSolutionDto, data, {
       excludeExtraneousValues: true,

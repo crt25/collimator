@@ -14,7 +14,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { RoleGuard } from "src/api/authentication/role.guard";
 import { AuthenticationGateway } from "src/api/authentication/authentication.gateway";
 import { ConfigModule } from "@nestjs/config";
-import { User, UserType } from "@prisma/client";
+import { User } from "@prisma/client";
 
 export const getApp = async (): Promise<INestApplication> => {
   const mockPrismaService = {
@@ -72,6 +72,8 @@ export const getApp = async (): Promise<INestApplication> => {
 
   const app = moduleFixture.createNestApplication();
   await app.init();
+  app.enableShutdownHooks();
+
   return app;
 };
 
@@ -104,13 +106,6 @@ export const ensureUserExists = async (
       lastUsedAt: new Date(),
     },
   });
-};
-
-export const adminUser: User = {
-  id: 15_000_000,
-  email: "jane@doe.com",
-  name: "Jane Doe",
-  type: UserType.ADMIN,
 };
 
 export const adminUserToken = "adminUserToken";

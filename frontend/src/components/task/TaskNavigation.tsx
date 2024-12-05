@@ -20,8 +20,6 @@ const TaskNavigation = ({
   breadcrumb,
 }: {
   taskId?: number;
-  userId?: number;
-  sessionId?: number;
   breadcrumb?: boolean;
 }) => {
   const prefix = `/task/${taskId}/`;

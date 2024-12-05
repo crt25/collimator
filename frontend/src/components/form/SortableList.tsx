@@ -12,9 +12,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  useSortable,
 } from "@dnd-kit/sortable";
 import { ListGroup } from "react-bootstrap";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCallback } from "react";
 import styled from "@emotion/styled";
@@ -54,7 +54,10 @@ const SortableListInput = <TItem extends { id: number }>({
   children: (item: TItem) => React.ReactNode;
 }) => {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      // add a constraint so that elements within are still clickable, see https://github.com/clauderic/dnd-kit/issues/800#issuecomment-2426989739
+      activationConstraint: { distance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -69,8 +72,6 @@ const SortableListInput = <TItem extends { id: number }>({
         const newIndex = items.findIndex((i) => i.id === over.id);
 
         updateItems(arrayMove([...items], oldIndex, newIndex));
-
-        return;
       }
     },
     [updateItems, items],

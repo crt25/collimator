@@ -19,6 +19,9 @@ import {
 } from "react";
 import SortableListInput from "../form/SortableList";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import styled from "@emotion/styled";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const messages = defineMessages({
   title: {
@@ -48,6 +51,16 @@ export interface SessionFormValues {
   description: string;
   taskIds: number[];
 }
+
+const TaskListElement = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const RemoveTask = styled.span`
+  cursor: pointer;
+`;
 
 const addTaskEmptyId = -1;
 
@@ -170,7 +183,18 @@ const SessionForm = ({
             items={selectedTasks}
             updateItems={setSelectedTasks}
           >
-            {(task) => task.title}
+            {(task) => (
+              <TaskListElement>
+                <span>{task.title}</span>
+                <RemoveTask
+                  onClick={() =>
+                    setSelectedTasks(selectedTasks.filter((t) => t !== task))
+                  }
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </RemoveTask>
+              </TaskListElement>
+            )}
           </SortableListInput>
 
           <Select

@@ -1,17 +1,17 @@
 import { GeneralAst } from "src/ast/types/general-ast";
-import {
-  Criteria,
-  CriteriaBasedAnalyzerInput,
-  CriteriaBasedAnalyzerOutput,
-} from "../criteria-based-analyzer.service";
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import { StatementNodeType } from "src/ast/types/general-ast/ast-nodes";
 import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
+import {
+  Criterion,
+  CriteriaBasedAnalyzerInput,
+  CriteriaBasedAnalyzerOutput,
+} from "../criteria-based-analysis-worker.piscina";
 
 export const callsFunction = (
   ast: GeneralAst,
-  input: Exclude<CriteriaBasedAnalyzerInput[Criteria.callsFunction], undefined>,
-): CriteriaBasedAnalyzerOutput[Criteria.callsFunction] => {
+  input: Exclude<CriteriaBasedAnalyzerInput[Criterion.callsFunction], undefined>,
+): CriteriaBasedAnalyzerOutput[Criterion.callsFunction] => {
   let callsFunction = false;
 
   walkAst(ast, {

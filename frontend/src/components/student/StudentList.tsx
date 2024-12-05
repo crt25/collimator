@@ -17,8 +17,8 @@ const messages = defineMessages({
   },
 });
 
-const nameTemplate = (sudent: ClassStudent) => {
-  return <StudentName student={sudent} />;
+const nameTemplate = (student: ClassStudent) => {
+  return <StudentName student={student} />;
 };
 
 const StudentList = ({ klass }: { klass: ExistingClassExtended }) => {

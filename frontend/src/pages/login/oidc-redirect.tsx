@@ -25,7 +25,7 @@ const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   userInfo.email_verified === false ? undefined : userInfo.email;
 
 const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
-  userInfo.preferred_username || userInfo.name;
+  userInfo.preferred_username ?? userInfo.name;
 
 const OpenIdConnectRedirect = () => {
   const router = useRouter();

@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   // "prismaSchemaFolder" is not yet supported by JetBrains IDEs
-  previewFeatures = ["omitApi"] // ,"prismaSchemaFolder"]
+  previewFeatures = ["omitApi", "typedSql"] // ,"prismaSchemaFolder"]
 }
 
 datasource db {
@@ -167,13 +167,14 @@ model SessionTask {
 }
 
 model Solution {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  data      Bytes
-  mimeType  String
-  studentId Int
-  taskId    Int
-  sessionId Int
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  data           Bytes
+  mimeType       String
+  studentId      Int
+  taskId         Int
+  sessionId      Int
+  failedAnalyses Int      @default(0)
 
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)

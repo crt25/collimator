@@ -33,16 +33,23 @@ export class AuthenticationGateway
       return;
     }
 
-    const user =
-      await this.authenticationService.findUserByAuthTokenOrThrow(token);
+    try {
+      const user =
+        await this.authenticationService.findUserByAuthTokenOrThrow(token);
 
-    if (user && !this.authenticationService.isStudent(user)) {
-      const userId = user.id;
-      if (!this.socketsByUserId.has(userId)) {
-        this.socketsByUserId.set(userId, []);
+      if (!this.authenticationService.isStudent(user)) {
+        const userId = user.id;
+        if (!this.socketsByUserId.has(userId)) {
+          this.socketsByUserId.set(userId, []);
+        }
+
+        this.socketsByUserId.get(userId)!.push(client);
       }
-
-      this.socketsByUserId.get(userId)!.push(client);
+    } catch (e) {
+      console.info(
+        "the user tried to connect with a wrong token - treat as not authenticated",
+        e,
+      );
     }
   }
 

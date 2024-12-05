@@ -19,8 +19,9 @@ test.describe("/class/create", () => {
   const mockCreateResponse = getClassesControllerCreateV0ResponseMock();
   const mockUsersResponse = [
     ...getUsersControllerFindAllV0ResponseMock(),
+    // ensure that there are at least two users (the mock above always returns at least one)
     {
-      id: 0,
+      id: -1,
       email: "jane@doe.com",
       name: "Jane Doe",
       type: UserType.TEACHER,

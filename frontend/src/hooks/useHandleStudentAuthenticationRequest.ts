@@ -48,16 +48,17 @@ const findOrCreatePseudonym = async (
     (pseudonym) => pseudonym !== null,
   );
 
-  return matchingPseudonym
-    ? matchingPseudonym
-    : encodeBase64(
-        await keyPair.encryptString(
-          JSON.stringify({
-            longTermIdentifier,
-            name,
-          } as StudentIdentity),
-        ),
-      );
+  return (
+    matchingPseudonym ??
+    encodeBase64(
+      await keyPair.encryptString(
+        JSON.stringify({
+          longTermIdentifier,
+          name,
+        } as StudentIdentity),
+      ),
+    )
+  );
 };
 
 type Input = Parameters<

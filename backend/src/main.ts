@@ -13,6 +13,8 @@ async function bootstrap(): Promise<void> {
   const API_VERSIONS = ["0"];
 
   const app = await NestFactory.create(AppModule);
+
+  app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix(API_PREFIX);
