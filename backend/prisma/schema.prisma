@@ -124,6 +124,7 @@ model Session {
   classId         Int
   basedOnLessonId Int?
   status          SessionStatus @default(CREATED)
+  isAnonymous     Boolean       @default(false)
 
   lesson    Lesson?       @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)

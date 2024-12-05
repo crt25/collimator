@@ -15,37 +15,39 @@ import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { useCallback } from "react";
 
 const findOrCreatePseudonym = async (
-  verifiedToken: Awaited<ReturnType<typeof verifyJwtToken>>,
+  longTermIdentifier: string | null,
+  name: string,
   klass: ExistingClassExtended,
   keyPair: TeacherLongTermKeyPair,
 ): Promise<string> => {
-  const longTermIdentifier = verifiedToken.payload["sub"];
-  const name = verifiedToken.payload["name"];
-
   // try to decrypt all students in the class
-  const matchingPseudonyms = await Promise.all(
-    klass.students.map(async (student) => {
-      try {
-        const decryptedIdentity = JSON.parse(
-          await keyPair.decryptString(decodeBase64(student.pseudonym)),
-        ) as StudentIdentity;
+  let matchingPseudonyms: (string | false)[] = [];
 
-        return decryptedIdentity.longTermIdentifier === longTermIdentifier
-          ? student.pseudonym
-          : null;
-      } catch {
-        // we failed to decrypt the student, so we just return null as if the identity did not match
-        return null;
-      }
-    }),
-  );
+  if (longTermIdentifier !== null) {
+    matchingPseudonyms = await Promise.all(
+      klass.students.map(async (student) => {
+        try {
+          const decryptedIdentity = JSON.parse(
+            await keyPair.decryptString(decodeBase64(student.pseudonym)),
+          ) as StudentIdentity;
+
+          return decryptedIdentity.longTermIdentifier === longTermIdentifier
+            ? student.pseudonym
+            : false;
+        } catch {
+          // we failed to decrypt the student, so we just return false as if the identity did not match
+          return false;
+        }
+      }),
+    );
+  }
 
   // Should multiple students have the same long term identity, we take the first one.
   // In practice, this should never happen as it means that the same long term identity was encrypted
   // with the same key. This exact code is here to make sure that if there is an existing
   // student with the same long term identity, we assign them the same pseudonym.
   const matchingPseudonym = matchingPseudonyms.find(
-    (pseudonym) => pseudonym !== null,
+    (pseudonym) => pseudonym !== false,
   );
 
   return (
@@ -92,11 +94,36 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
       ) as StudentAuthenticationRequestContent;
 
       // verify the received id token and fetch the class
-      const [verifiedToken, klass] = await Promise.all([
-        verifyJwtToken(
-          authenticationRequest.idToken,
-          openIdConnectMicrosoftClientId,
-        ),
+      const [{ longTermIdentifier, name }, klass] = await Promise.all([
+        authenticationRequest.isAnonymous
+          ? Promise.resolve({
+              longTermIdentifier: null,
+              name: authenticationRequest.pseudonym,
+            })
+          : verifyJwtToken(
+              authenticationRequest.idToken,
+              openIdConnectMicrosoftClientId,
+            ).then((verifiedToken) => {
+              const longTermIdentifier = verifiedToken.payload["sub"];
+              const name = verifiedToken.payload["name"];
+
+              if (!longTermIdentifier) {
+                throw new Error(
+                  "Received student id token does not contain a 'sub' claim",
+                );
+              }
+
+              if (!name || typeof name !== "string") {
+                throw new Error(
+                  "Received student id token does not contain a 'name' claim",
+                );
+              }
+
+              return {
+                longTermIdentifier: longTermIdentifier,
+                name: name,
+              };
+            }),
         fetchClass(authenticationRequest.classId),
       ]);
 
@@ -107,7 +134,8 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
       }
 
       const pseudonym = await findOrCreatePseudonym(
-        verifiedToken,
+        longTermIdentifier,
+        name,
         klass,
         authContext.keyPair,
       );

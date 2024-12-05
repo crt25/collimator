@@ -11,6 +11,7 @@ export class ExistingSessionExtended {
   readonly id: number;
   readonly title: string;
   readonly description: string;
+  readonly isAnonymous: boolean;
   readonly createdAt: string;
   readonly klass: SessionClass;
   readonly lesson: SessionLesson | null;
@@ -21,6 +22,7 @@ export class ExistingSessionExtended {
     id,
     title,
     description,
+    isAnonymous,
     createdAt,
     klass,
     lesson,
@@ -30,6 +32,7 @@ export class ExistingSessionExtended {
     this.id = id;
     this.title = title;
     this.description = description;
+    this.isAnonymous = isAnonymous;
     this.createdAt = createdAt;
     this.klass = klass;
     this.lesson = lesson;

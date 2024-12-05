@@ -6,6 +6,7 @@ export class ExistingSession {
   readonly id: number;
   readonly title: string;
   readonly description: string;
+  readonly isAnonymous: boolean;
   readonly createdAt: string;
   readonly lesson: SessionLesson | null;
   readonly status: SessionStatus;
@@ -15,6 +16,7 @@ export class ExistingSession {
     id,
     title,
     description,
+    isAnonymous,
     createdAt,
     lesson,
     status,
@@ -23,6 +25,7 @@ export class ExistingSession {
     this.id = id;
     this.title = title;
     this.description = description;
+    this.isAnonymous = isAnonymous;
     this.createdAt = createdAt;
     this.lesson = lesson;
     this.status = status;

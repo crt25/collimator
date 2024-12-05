@@ -44,12 +44,17 @@ const messages = defineMessages({
     id: "CreateSessionForm.selectTaskToAdd",
     defaultMessage: "Select a task to add",
   },
+  isAnonymous: {
+    id: "CreateSessionForm.isAnonymous",
+    defaultMessage: "Whether students are anonymous when working on tasks.",
+  },
 });
 
 export interface SessionFormValues {
   title: string;
   description: string;
   taskIds: number[];
+  isAnonymous: boolean;
 }
 
 const TaskListElement = styled.div`
@@ -77,12 +82,17 @@ const SessionForm = ({
     title: yup.string().required(),
     description: yup.string().required(),
     taskIds: yup.array().of(yup.number().required()).required(),
+    isAnonymous: yup.boolean().required(),
   });
 
   const resolver = useYupResolver(schema);
 
   const defaultValues = useMemo(
-    () => ({ ...initialValues, taskIds: initialValues?.taskIds ?? [] }),
+    () => ({
+      ...initialValues,
+      taskIds: initialValues?.taskIds ?? [],
+      isAnonymous: false,
+    }),
     [initialValues],
   );
 
@@ -206,7 +216,7 @@ const SessionForm = ({
               },
               // in theory tasks should never be undefined, but it seems to happen sometimes??
               // TODO: investigate why this happens
-              ...(tasks ?? [])
+              ...(Array.isArray(tasks) ? tasks : [])
                 // don't list again tasks that are already selected
                 .filter((t) => !selectedTaskIds.includes(t.id))
                 .map((t) => ({
@@ -218,6 +228,17 @@ const SessionForm = ({
             onChange={onAddTask}
             value={addTaskId}
           />
+
+          <Input
+            label={messages.isAnonymous}
+            {...register("isAnonymous")}
+            data-testid="isAnonymous"
+            type="checkbox"
+          >
+            <ValidationErrorMessage>
+              {errors.isAnonymous?.message}
+            </ValidationErrorMessage>
+          </Input>
 
           <SubmitFormButton label={submitMessage} />
         </form>

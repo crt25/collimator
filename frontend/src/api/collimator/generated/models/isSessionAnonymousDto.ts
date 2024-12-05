@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CreateSessionDto {
-  description: string;
+export interface IsSessionAnonymousDto {
+  /** The id of a lesson. */
+  id: number;
+  /** Whether the session is anonymous. */
   isAnonymous: boolean;
-  taskIds: number[];
-  title: string;
 }

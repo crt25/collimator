@@ -13,6 +13,7 @@ export interface DeletedSessionDto {
   description: string;
   /** The session's unique identifier, a positive integer. */
   id: number;
+  isAnonymous: boolean;
   /**
    * The lesson from which this session was created.
    * @nullable

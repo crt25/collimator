@@ -1,5 +1,5 @@
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
-import { useUserEmail } from "@/hooks/useUserEmail";
+import { useUserName } from "@/hooks/useUserName";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import React from "react";
@@ -47,7 +47,7 @@ const Menu = styled.menu`
 
 const Header = ({ children }: { children?: React.ReactNode }) => {
   const isAuthenticated = useIsAuthenticated();
-  const email = useUserEmail();
+  const name = useUserName();
 
   return (
     <StyledHeader>
@@ -61,7 +61,7 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
             {isAuthenticated ? (
               <Dropdown>
                 <Dropdown.Toggle data-testid="current-user">
-                  {email}
+                  {name}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>

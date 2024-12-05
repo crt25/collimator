@@ -30,8 +30,9 @@ import { SessionsService } from "./sessions.service";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { NonUserRoles, Roles } from "../authentication/role.decorator";
+import { NonUserRoles, Public, Roles } from "../authentication/role.decorator";
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
+import { IsSessionAnonymousDto } from "./dto/is-session-anonymous.dto";
 
 @Controller("classes/:classId/sessions")
 @ApiTags("sessions")
@@ -87,6 +88,22 @@ export class SessionsController {
       where: { classId },
     });
     return fromQueryResults(ExistingSessionDto, sessions);
+  }
+
+  @Get(":id/is-anonymous")
+  @ApiOkResponse({ type: IsSessionAnonymousDto })
+  @Public()
+  @ApiNotFoundResponse()
+  async isAnonymous(
+    @Param("classId", ParseIntPipe) classId: number,
+    @Param("id", ParseIntPipe) id: SessionId,
+  ): Promise<IsSessionAnonymousDto> {
+    const session = await this.sessionsService.findByIdAndClassOrThrow(
+      id,
+      classId,
+    );
+
+    return IsSessionAnonymousDto.fromQueryResult(session);
   }
 
   @Get(":id")
