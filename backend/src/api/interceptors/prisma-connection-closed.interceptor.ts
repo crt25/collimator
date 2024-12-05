@@ -22,7 +22,7 @@ export class PrismaConnectionClosedInterceptor implements NestInterceptor {
       .pipe(
         catchError((err) =>
           throwError(() =>
-            this.isPrismaNotFound(err)
+            this.isPrismaConnectionClosed(err)
               ? new InternalServerErrorException()
               : err,
           ),
@@ -30,7 +30,7 @@ export class PrismaConnectionClosedInterceptor implements NestInterceptor {
       );
   }
 
-  private isPrismaNotFound(error: unknown): boolean {
+  private isPrismaConnectionClosed(error: unknown): boolean {
     return (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === Prisma_Server_Closed_Connection_ErrorCode
