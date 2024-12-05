@@ -12,7 +12,7 @@ type AnalysisWorker = typeof CriteriaBasedAnalysisWorker;
 
 @Injectable()
 export class CriteriaBasedAnalyzerService implements OnModuleDestroy {
-  private criteriaAnalysisWorker = new Piscina<
+  private readonly criteriaAnalysisWorker = new Piscina<
     Parameters<AnalysisWorker>[0],
     ReturnType<AnalysisWorker>
   >({

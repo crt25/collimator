@@ -45,8 +45,11 @@ export class AuthenticationGateway
 
         this.socketsByUserId.get(userId)!.push(client);
       }
-    } catch {
-      // the user tried to connect with a wrong token - treat as not authenticated
+    } catch (e) {
+      console.info(
+        "the user tried to connect with a wrong token - treat as not authenticated",
+        e,
+      );
     }
   }
 

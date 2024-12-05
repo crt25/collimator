@@ -25,7 +25,7 @@ export class CallsFunctionCriterionInputDto extends AnalysisCriterionInputDto {
   @IsNotEmpty()
   @ApiProperty({
     example: "motion_movesteps",
-    description: "The public key as a JSON Web Key (JWK)",
+    description: "The name of the function to check for.",
   })
   functionName!: string;
 
