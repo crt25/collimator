@@ -91,31 +91,32 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
             const { longTermIdentifier, name } = verifiedToken;
 
             // try to decrypt all students in the class
-            const matchingPseudonyms =
-              // if the student is anonymous, we don't have a long term identifier
-              // in this case we just return an empty array as we can't match the student
-              // to an existing student
-              typeof longTermIdentifier === "string"
-                ? await Promise.all(
-                    klass.students.map(async (student) => {
-                      try {
-                        const decryptedIdentity = JSON.parse(
-                          await authContext.keyPair.decryptString(
-                            decodeBase64(student.pseudonym),
-                          ),
-                        ) as StudentIdentity;
+            let matchingPseudonyms: (string | false)[] = [];
 
-                        return decryptedIdentity.longTermIdentifier ===
-                          longTermIdentifier
-                          ? student.pseudonym
-                          : false;
-                      } catch {
-                        // we failed to decrypt the student, so we just return null as if the identity did not match
-                        return false;
-                      }
-                    }),
-                  )
-                : [];
+            // if the student is anonymous, we don't have a long term identifier
+            // in this case we just return an empty array as we can't match the student
+            // to an existing student
+            if (typeof longTermIdentifier === "string") {
+              matchingPseudonyms = await Promise.all(
+                klass.students.map(async (student) => {
+                  try {
+                    const decryptedIdentity = JSON.parse(
+                      await authContext.keyPair.decryptString(
+                        decodeBase64(student.pseudonym),
+                      ),
+                    ) as StudentIdentity;
+
+                    return decryptedIdentity.longTermIdentifier ===
+                      longTermIdentifier
+                      ? student.pseudonym
+                      : false;
+                  } catch {
+                    // we failed to decrypt the student, so we just return false as if the identity did not match
+                    return false;
+                  }
+                }),
+              );
+            }
 
             // in case multiple students have the same long term identity, we take the first one
             // in practise this should never happen as this means that the same long term identity was encrypted
