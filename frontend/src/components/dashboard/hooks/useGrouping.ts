@@ -8,7 +8,7 @@ import { ChartSplit, SplitType } from "../chartjs-plugins/select";
 export type AnalyzedSolution = {
   solutionId: number;
   studentPseudonym: string;
-  studentKeyPairId: number;
+  studentKeyPairId: number | null;
 
   xAxisValue: number;
   yAxisValue: number;

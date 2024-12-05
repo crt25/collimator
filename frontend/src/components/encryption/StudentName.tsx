@@ -21,7 +21,7 @@ export const StudentName = ({
   keyPairId,
 }: {
   pseudonym: string;
-  keyPairId: number;
+  keyPairId: number | null;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);

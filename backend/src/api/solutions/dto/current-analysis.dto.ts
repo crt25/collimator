@@ -43,6 +43,16 @@ export class CurrentAnalysisDto {
   readonly studentPseudonym!: string;
 
   @ApiProperty({
+    example: 1,
+    description:
+      "The unique identifier of the key pair used to encrypt the student's pseudonym.",
+    nullable: true,
+    type: "number",
+  })
+  @Expose()
+  readonly studentKeyPairId!: number | null;
+
+  @ApiProperty({
     description: "The generalized AST of the solution.",
   })
   @Expose()

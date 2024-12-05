@@ -11,7 +11,7 @@ export class CurrentAnalysis {
   readonly passedTests: number;
 
   readonly studentPseudonym: string;
-  readonly studentKeyPairId: number;
+  readonly studentKeyPairId: number | null;
 
   protected constructor({
     id,

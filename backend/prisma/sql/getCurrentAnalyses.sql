@@ -6,7 +6,8 @@ SELECT
   analysis.*,
   solution."totalTests",
   solution."passedTests",
-  student.pseudonym as "studentPseudonym"
+  student.pseudonym as "studentPseudonym",
+  student."keyPairId" as "studentKeyPairId"
 FROM "Solution" solution
 INNER JOIN "SolutionAnalysis" analysis ON solution.id = analysis."solutionId"
 INNER JOIN "Student" student ON solution."studentId" = solution."studentId"
