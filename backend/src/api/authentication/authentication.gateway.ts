@@ -35,9 +35,7 @@ export class AuthenticationGateway
 
     try {
       const user =
-        await this.authenticationService.findByAuthenticationTokenOrThrow(
-          token,
-        );
+        await this.authenticationService.findUserByAuthTokenOrThrow(token);
 
       if (!this.authenticationService.isStudent(user)) {
         const userId = user.id;
@@ -48,9 +46,8 @@ export class AuthenticationGateway
         this.socketsByUserId.get(userId)!.push(client);
       }
     } catch (e) {
-      // the user tried to connect with a wrong token - treat as not authenticated
       console.info(
-        "User tried to connect with invalid token, we treat them as not authenticated",
+        "A user tried to connect with invalid token, we treat them as not authenticated",
         e,
       );
     }

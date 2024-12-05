@@ -4,6 +4,7 @@ import { MessageDescriptor, useIntl } from "react-intl";
 
 const StyledSelect = styled.select`
   padding: 0.5rem 1rem;
+  max-width: 100%;
 
   background-color: var(--background-color);
   border: var(--foreground-color) 1px solid;

@@ -19,7 +19,7 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    example: "john@doe.com",
+    example: "john.doe@example.com",
     description: "The email address of a user.",
   })
   @Expose()

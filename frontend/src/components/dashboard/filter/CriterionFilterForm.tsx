@@ -28,6 +28,9 @@ const createProps = <Filter extends FilterCriterion>(
         (f) => f.criterion === filter.criterion,
       );
 
+      // since newFilters will always be the latest value
+      // but the caller of this function may be holding onto the old value
+      // we need to ignore the update if the filter has been removed
       if (index === -1) {
         return currentFilters;
       }

@@ -13,12 +13,12 @@ import { ConfigService } from "@nestjs/config";
 export type AuthToken = string;
 
 // we use a sliding window for token expiration checked against the last used timestamp
-const slidingTokenLifetime = 1000 * 60 * 60 * 4;
+const slidingTokenLifetime = 1000 * 60 * 60 * 4; // 4 hours
 
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
-const lastUsedAccuracy = 1000 * 60 * 10;
+const lastUsedAccuracy = 1000 * 60 * 10; // 10 minutes
 
-const registrationTokenLifetime = 1000 * 60 * 10;
+const registrationTokenLifetime = 1000 * 60 * 60 * 24 * 5; // 5 days
 
 export type PublicKey = {
   id: number;
@@ -234,7 +234,7 @@ export class AuthenticationService {
   /**
    * Tries to sign in a user with the given JWT token.
    * @param jwt The JWT token to sign in with.
-   * @param provider The authentication provider used for singing in.
+   * @param provider The authentication provider used for signing in.
    * @param registrationToken An optional registration token required the first time a user signs in.
    * @returns A new authentication token.
    */
@@ -271,10 +271,9 @@ export class AuthenticationService {
       if (!email || !registrationToken) {
         throw originalError;
       }
-      // migrate user from email to oidc sub.
-      // this is necessary because the user might have signed in with email before
-      // or the user was created by an admin and there is now way to determine the oidc sub
-      // for other email addresses
+      // Migrate user from email to oidc sub.
+      // This is necessary because users are created by admins and
+      // there is no way to determine the oidc sub for a given email addresses.
       user = await this.findUserToRegisterOrThrow(
         email,
         provider,
@@ -370,9 +369,7 @@ export class AuthenticationService {
     return authToken.token;
   }
 
-  async findByAuthenticationTokenOrThrow(
-    token: AuthToken,
-  ): Promise<User | Student> {
+  async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {
     const authToken = await this.prisma.authenticationToken.findUniqueOrThrow({
       where: {
         token,

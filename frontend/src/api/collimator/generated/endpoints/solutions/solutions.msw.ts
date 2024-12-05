@@ -47,6 +47,10 @@ export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
       id: faker.number.int({ min: undefined, max: undefined }),
       passedTests: faker.number.int({ min: undefined, max: undefined }),
       solutionId: faker.number.int({ min: undefined, max: undefined }),
+      studentKeyPairId: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        null,
+      ]),
       studentPseudonym: faker.word.sample(),
       totalTests: faker.number.int({ min: undefined, max: undefined }),
     }));

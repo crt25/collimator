@@ -11,6 +11,7 @@ export class CurrentAnalysis {
   readonly passedTests: number;
 
   readonly studentPseudonym: string;
+  readonly studentKeyPairId: number | null;
 
   protected constructor({
     id,
@@ -19,6 +20,7 @@ export class CurrentAnalysis {
     totalTests,
     passedTests,
     studentPseudonym,
+    studentKeyPairId,
   }: ClassProperties<CurrentAnalysis>) {
     this.id = id;
     this.solutionId = solutionId;
@@ -26,6 +28,7 @@ export class CurrentAnalysis {
     this.totalTests = totalTests;
     this.passedTests = passedTests;
     this.studentPseudonym = studentPseudonym;
+    this.studentKeyPairId = studentKeyPairId;
   }
 
   static fromDto(dto: CurrentAnalysisDto): CurrentAnalysis {

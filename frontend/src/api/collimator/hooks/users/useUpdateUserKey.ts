@@ -24,6 +24,8 @@ export const useUpdateUserKey = (): UpdateUserType => {
       fetchAndTransform(
         authToken
           ? {
+              // we allow passing the auth token manually since this function is used durig the login process
+              // and before the authentication context is set up
               headers: {
                 Authorization: `Bearer ${authToken}`,
               },

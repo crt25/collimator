@@ -1,5 +1,6 @@
 import { defineMessages, IntlShape } from "react-intl";
 import pattern from "patternomaly";
+import { Colors } from "@/constants/colors";
 
 const messages = defineMessages({
   xAxis: {
@@ -13,6 +14,10 @@ const messages = defineMessages({
   noTests: {
     id: "Category.noTests",
     defaultMessage: "Without tests",
+  },
+  automaticGroup: {
+    id: "Category.automaticGroup",
+    defaultMessage: "Automatic Group",
   },
   allTestsPass: {
     id: "Category.allTestsPass",
@@ -42,6 +47,8 @@ export enum Category {
   passesSomeTests = 1 << 2,
   // whether all tests pass
   passesAllTests = 1 << 3,
+  // whether it is an automatic group
+  isAutomaticGroup = 1 << 4,
 }
 
 const hasFlag = (category: Category, flag: Category): boolean =>
@@ -55,8 +62,11 @@ export const getCategoryName = (
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
+  const isAutomaticGroup = hasFlag(category, Category.isAutomaticGroup);
 
-  let name = intl.formatMessage(messages.noTests);
+  let name = isAutomaticGroup
+    ? intl.formatMessage(messages.automaticGroup)
+    : intl.formatMessage(messages.noTests);
 
   if (hasTests) {
     if (passesAllTests) {
@@ -77,33 +87,40 @@ export const getCategoryName = (
 
 type PatternType = Parameters<typeof pattern.draw>[0];
 
-export const getCanvasPattern = (category: Category): CanvasPattern => {
+export const getCanvasPattern = (
+  category: Category,
+): string | CanvasPattern => {
   const hasTests = hasFlag(category, Category.hasTests);
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
 
-  let color: [number, number, number, number] = [155, 89, 182, 1];
-  let patternName: PatternType = "zigzag";
+  let color: [number, number, number] = Colors.dataPoint.default;
+  let alpha = 1;
+  let patternName: PatternType | null = "zigzag";
 
   if (hasTests) {
     if (passesAllTests) {
-      color = [39, 174, 96, 1];
-      patternName = "disc";
+      color = Colors.dataPoint.success;
+      patternName = null;
     } else if (passesATest) {
-      color = [243, 156, 18, 1];
+      color = Colors.dataPoint.partialSuccess;
       patternName = "triangle";
     } else {
-      color = [231, 76, 60, 1];
+      color = Colors.dataPoint.noSuccess;
       patternName = "diagonal";
     }
   }
 
   if (!matchesFilter) {
-    color[3] = 0.25;
+    alpha = 0.25;
   }
 
-  const colorString = `rgba(${color.slice(0, 3).join(" ")} / ${color[3]})`;
+  const colorString = `rgba(${color.slice(0, 3).join(" ")} / ${alpha})`;
 
-  return pattern.draw(patternName, colorString);
+  if (patternName) {
+    return pattern.draw(patternName, colorString);
+  }
+
+  return colorString;
 };

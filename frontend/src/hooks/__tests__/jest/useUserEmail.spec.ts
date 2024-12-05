@@ -1,7 +1,7 @@
 import { useUserEmail } from "@/hooks/useUserEmail";
 import { useContext as useContextMock } from "react";
 
-const email = "john@doe.com";
+const email = "john.doe@example.com";
 
 jest.mock("react", () => ({
   ...jest.requireActual("react"),

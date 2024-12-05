@@ -56,18 +56,7 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
           <img src="https://placeholder.pics/svg/300x100" alt="Logo" />
         </Logo>
         <Menu>
-          {children ? (
-            children
-          ) : (
-            <React.Fragment>
-              <li>
-                <Link href="/">Contact</Link>
-              </li>
-              <li>
-                <Link href="/">About</Link>
-              </li>
-            </React.Fragment>
-          )}
+          {children ? children : null}
           <li>
             {isAuthenticated ? (
               <Dropdown>

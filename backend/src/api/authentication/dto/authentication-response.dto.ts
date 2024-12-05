@@ -29,7 +29,7 @@ export class AuthenticationResponseDto {
   name!: string | null;
 
   @ApiProperty({
-    example: "john@doe.com",
+    example: "john.doe@example.com",
     description: "The email address of the authenticated user.",
   })
   @Expose()

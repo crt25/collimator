@@ -1,5 +1,11 @@
 import { Chart, ChartType, Plugin } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
+import {
+  blockDeletingSplits,
+  isAlreadyHandled,
+  markAsHandled,
+  unblockDeletingSplits,
+} from "../hacks";
 
 // globally register external plugins
 Chart.register(annotationPlugin);
@@ -35,6 +41,7 @@ type VerticalSplit = {
 export type ChartSplit = HorizontalSplit | VerticalSplit;
 
 interface Options {
+  enabled?: boolean;
   onAddSplit?: (split: ChartSplit) => void;
   fillColor1?: string | CanvasGradient | CanvasPattern;
   fillColor2?: string | CanvasGradient | CanvasPattern;
@@ -88,17 +95,21 @@ const SelectPlugin: Plugin & {
       initialSelection = this.cleanupListeners();
     }
 
-    if (overlay === null) {
-      overlay = createOverlayHtmlCanvasElement(chart);
-      parent.prepend(overlay);
-    }
+    if (opts.select?.enabled) {
+      if (overlay === null) {
+        overlay = createOverlayHtmlCanvasElement(chart);
+        parent.prepend(overlay);
+      }
 
-    this.cleanupListeners = initOverlayCanvas(
-      chart,
-      overlay,
-      opts.select,
-      initialSelection,
-    );
+      this.cleanupListeners = initOverlayCanvas(
+        chart,
+        overlay,
+        opts.select,
+        initialSelection,
+      );
+    } else {
+      this.cleanupListeners = undefined;
+    }
   },
 
   beforeInit(chart) {
@@ -110,12 +121,24 @@ const SelectPlugin: Plugin & {
   },
 
   resize(chart, { size }) {
+    const opts = chart.config.options?.plugins as PartialChartPluginOptions;
+
+    if (!opts.select?.enabled) {
+      return;
+    }
+
     const overlay = getOverlayCanvas(chart);
     overlay.width = size.width;
     overlay.height = size.height;
   },
 
   beforeDestroy(chart) {
+    const opts = chart.config.options?.plugins as PartialChartPluginOptions;
+
+    if (!opts.select?.enabled) {
+      return;
+    }
+
     const overlay = getOverlayCanvas(chart);
     overlay.remove();
 
@@ -128,6 +151,10 @@ const SelectPlugin: Plugin & {
     const opts = chart.config.options?.plugins as PartialChartPluginOptions;
     const onAddSplit = opts?.select?.onAddSplit;
 
+    if (!opts.select?.enabled) {
+      return;
+    }
+
     if (!onAddSplit) {
       return;
     }
@@ -139,19 +166,12 @@ const SelectPlugin: Plugin & {
         return;
       }
 
-      if ("handled" in evt) {
+      if (isAlreadyHandled(evt)) {
         return;
       }
 
-      if ("blockDeletes" in chart) {
-        // unblock delete clicks
-
-        delete chart["blockDeletes"];
-        return;
-      }
-
-      // @ts-expect-error This is an annoying way working around the fact that stopImmediatePropagation doesn't work
-      evt["handled"] = true;
+      markAsHandled(evt);
+      unblockDeletingSplits(chart);
 
       const rect = chartCanvas.getBoundingClientRect();
       const { x, y } = getCoordinatesInChartArea(
@@ -273,8 +293,7 @@ const initOverlayCanvas = (
           );
 
           // block any click event within the event propagation
-          // @ts-expect-error Works around the weird event system of chartjs
-          chart.blockDeletes = true;
+          blockDeletingSplits(chart);
         }
 
         selection = { ...defaultSelection };
