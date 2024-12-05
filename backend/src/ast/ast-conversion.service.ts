@@ -11,7 +11,7 @@ type ConversionWorker = typeof SolutionConversionWorker;
 
 @Injectable()
 export class AstConversionService implements OnModuleDestroy {
-  private conversionWorker = new Piscina<
+  private readonly conversionWorker = new Piscina<
     Parameters<ConversionWorker>[0],
     ReturnType<ConversionWorker>
   >({

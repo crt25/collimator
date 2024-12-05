@@ -19,13 +19,13 @@ export const users = [defaultAdmin, defaultTeacher];
 export const classOne = {
   id: 201,
   name: "Class One",
-  teacherId: defaultTeacher.id!,
+  teacherId: defaultTeacher.id,
 };
 
 export const classTwo = {
   id: 202,
   name: "Class Two",
-  teacherId: defaultTeacher.id!,
+  teacherId: defaultTeacher.id,
 };
 
 export const classes = [classOne, classTwo];
