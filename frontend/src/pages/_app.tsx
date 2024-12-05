@@ -5,7 +5,6 @@ import type { AppProps } from "next/app";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AuthenticationContext,
@@ -18,65 +17,76 @@ import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationCont
 import AuthenticationBarrier from "@/components/authentication/AuthenticationBarrier";
 import { PrimeReactProvider } from "primereact/api";
 import YupLocalization from "@/components/form/YupLocalization";
+import {
+  defaultLocalizationState,
+  LocalizationState,
+  UpdateLocalizationContext,
+} from "@/contexts/LocalizationContext";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
 
 const authenticationStateKey = "authenticationState";
+const localizationStateKey = "localizationState";
 
 const cache = createCache({ key: "next" });
 
-const getInitialState = async (): Promise<AuthenticationContextType> => {
-  if (typeof sessionStorage === "undefined") {
-    // for SSR we return the default value
-    return authenticationContextDefaultValue;
-  }
+const getInitialAuthenticationState =
+  async (): Promise<AuthenticationContextType> => {
+    if (typeof sessionStorage === "undefined") {
+      // for SSR we return the default value
+      return authenticationContextDefaultValue;
+    }
 
-  // load the stored authentication state from sessionStorage
-  const storedAuthenticationState = sessionStorage.getItem(
-    authenticationStateKey,
-  );
+    // load the stored authentication state from sessionStorage
+    const storedAuthenticationState = sessionStorage.getItem(
+      authenticationStateKey,
+    );
 
-  return storedAuthenticationState
-    ? deserializeAuthenticationContext(
-        window.crypto.subtle,
-        JSON.parse(storedAuthenticationState),
-      )
-    : authenticationContextDefaultValue;
-};
+    return storedAuthenticationState
+      ? deserializeAuthenticationContext(
+          window.crypto.subtle,
+          JSON.parse(storedAuthenticationState),
+        )
+      : authenticationContextDefaultValue;
+  };
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const router = useRouter();
-
   const [authenticationStateLoaded, setAuthenticationStateLoaded] =
     useState(false);
 
   const [authenticationState, setAuthenticationState] =
     useState<AuthenticationContextType>(authenticationContextDefaultValue);
 
-  const updateAuthenticationState = useCallback(
-    (newState: AuthenticationContextType) =>
-      setAuthenticationState(() => {
-        // store the new state in the session storage asynchronously
-        serializeAuthenticationContext(newState)
-          .then((serializedNewState) => {
-            sessionStorage.setItem(
-              authenticationStateKey,
-              JSON.stringify(serializedNewState),
-            );
-          })
-          .catch((e) => {
-            console.error("Failed to store serialized authentication state", e);
-          });
+  const [localizationState, setLocalizationState] =
+    useLocalStorage<LocalizationState>(
+      localizationStateKey,
+      defaultLocalizationState,
+    );
 
-        // synchronously return the new state
-        return newState;
-      }),
+  const updateAuthenticationState = useCallback(
+    (newState: AuthenticationContextType) => {
+      // store the new state in the session storage asynchronously
+      serializeAuthenticationContext(newState)
+        .then((serializedNewState) => {
+          sessionStorage.setItem(
+            authenticationStateKey,
+            JSON.stringify(serializedNewState),
+          );
+        })
+        .catch((e) => {
+          console.error("Failed to store serialized authentication state", e);
+        });
+
+      // synchronously update the react state
+      setAuthenticationState(newState);
+    },
     [],
   );
 
   useEffect(() => {
     // load the stored authentication state from sessionStorage
-    getInitialState().then((initialState) => {
-      updateAuthenticationState(initialState);
+    getInitialAuthenticationState().then((authenticationState) => {
+      updateAuthenticationState(authenticationState);
       setAuthenticationStateLoaded(true);
     });
     // we only want to run this effect once when mounting the component
@@ -84,30 +94,34 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, []);
 
   const messages = useMemo(() => {
-    switch (router.locale) {
+    switch (localizationState.locale) {
       case "fr":
         return French;
       default:
         return English;
     }
-  }, [router.locale]);
+  }, [localizationState.locale]);
 
   return (
     <CacheProvider value={cache}>
-      <IntlProvider locale={router.locale || "en"} messages={messages}>
+      <IntlProvider locale={localizationState.locale} messages={messages}>
         <YupLocalization>
           <PrimeReactProvider>
             <AuthenticationContext.Provider value={authenticationState}>
               <UpdateAuthenticationContext.Provider
                 value={updateAuthenticationState}
               >
-                <AuthenticationBarrier
-                  authenticationStateLoaded={authenticationStateLoaded}
+                <UpdateLocalizationContext.Provider
+                  value={{ setState: setLocalizationState }}
                 >
-                  <WebSocketProvider>
-                    <Component {...pageProps} />
-                  </WebSocketProvider>
-                </AuthenticationBarrier>
+                  <AuthenticationBarrier
+                    authenticationStateLoaded={authenticationStateLoaded}
+                  >
+                    <WebSocketProvider>
+                      <Component {...pageProps} />
+                    </WebSocketProvider>
+                  </AuthenticationBarrier>
+                </UpdateLocalizationContext.Provider>
               </UpdateAuthenticationContext.Provider>
             </AuthenticationContext.Provider>
           </PrimeReactProvider>

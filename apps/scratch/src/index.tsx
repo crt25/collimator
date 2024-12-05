@@ -8,29 +8,36 @@ import Edit from "./pages/Edit";
 import Show from "./pages/Show";
 import { Toaster } from "react-hot-toast";
 
+export const basePath = "/scratch";
+
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
 
 const appRoot = document.getElementById("root") as HTMLElement;
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <ErrorPage />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "solve",
+      element: <Solve />,
+    },
+    {
+      path: "edit",
+      element: <Edit />,
+    },
+    {
+      path: "show",
+      element: <Show />,
+    },
+  ],
   {
-    path: "/",
-    element: <ErrorPage />,
-    errorElement: <ErrorPage />,
+    basename: basePath,
   },
-  {
-    path: "solve",
-    element: <Solve />,
-  },
-  {
-    path: "edit",
-    element: <Edit />,
-  },
-  {
-    path: "show",
-    element: <Show />,
-  },
-]);
+);
 
 ReactDOM.render(
   <>
