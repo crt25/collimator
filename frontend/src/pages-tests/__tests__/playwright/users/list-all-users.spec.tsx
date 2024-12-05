@@ -13,7 +13,7 @@ test.describe("/user", () => {
   const user: ExistingUserDto = {
     id: 1,
     name: "Jane Doe",
-    email: "jane@doe.com",
+    email: "jane.doe@example.com",
     type: "TEACHER",
   };
   let mockResponse: ExistingUserDto[] = [];

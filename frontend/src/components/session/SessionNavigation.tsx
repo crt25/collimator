@@ -45,7 +45,10 @@ const SessionNavigation = ({
     />
     {breadcrumb && student && (
       <BreadcrumbItem>
-        <StudentName pseudonym={student.pseudonym} />
+        <StudentName
+          pseudonym={student.pseudonym}
+          keyPairId={student.keyPairId}
+        />
       </BreadcrumbItem>
     )}
   </>
