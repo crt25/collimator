@@ -370,9 +370,7 @@ export class AuthenticationService {
     return authToken.token;
   }
 
-  async findByAuthenticationTokenOrThrow(
-    token: AuthToken,
-  ): Promise<User | Student> {
+  async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {
     const authToken = await this.prisma.authenticationToken.findUniqueOrThrow({
       where: {
         token,

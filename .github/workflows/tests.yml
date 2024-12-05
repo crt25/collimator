@@ -1,6 +1,6 @@
 name: Tests
 
-on: push
+on: [pull_request, workflow_call]
 
 jobs:
     # Label of the runner job
