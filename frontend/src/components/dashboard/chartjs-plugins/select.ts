@@ -41,6 +41,7 @@ type VerticalSplit = {
 export type ChartSplit = HorizontalSplit | VerticalSplit;
 
 interface Options {
+  enabled?: boolean;
   onAddSplit?: (split: ChartSplit) => void;
   fillColor1?: string | CanvasGradient | CanvasPattern;
   fillColor2?: string | CanvasGradient | CanvasPattern;
@@ -94,17 +95,21 @@ const SelectPlugin: Plugin & {
       initialSelection = this.cleanupListeners();
     }
 
-    if (overlay === null) {
-      overlay = createOverlayHtmlCanvasElement(chart);
-      parent.prepend(overlay);
-    }
+    if (opts.select?.enabled) {
+      if (overlay === null) {
+        overlay = createOverlayHtmlCanvasElement(chart);
+        parent.prepend(overlay);
+      }
 
-    this.cleanupListeners = initOverlayCanvas(
-      chart,
-      overlay,
-      opts.select,
-      initialSelection,
-    );
+      this.cleanupListeners = initOverlayCanvas(
+        chart,
+        overlay,
+        opts.select,
+        initialSelection,
+      );
+    } else {
+      this.cleanupListeners = undefined;
+    }
   },
 
   beforeInit(chart) {
@@ -116,12 +121,24 @@ const SelectPlugin: Plugin & {
   },
 
   resize(chart, { size }) {
+    const opts = chart.config.options?.plugins as PartialChartPluginOptions;
+
+    if (!opts.select?.enabled) {
+      return;
+    }
+
     const overlay = getOverlayCanvas(chart);
     overlay.width = size.width;
     overlay.height = size.height;
   },
 
   beforeDestroy(chart) {
+    const opts = chart.config.options?.plugins as PartialChartPluginOptions;
+
+    if (!opts.select?.enabled) {
+      return;
+    }
+
     const overlay = getOverlayCanvas(chart);
     overlay.remove();
 
@@ -133,6 +150,10 @@ const SelectPlugin: Plugin & {
   beforeEvent(chart, args) {
     const opts = chart.config.options?.plugins as PartialChartPluginOptions;
     const onAddSplit = opts?.select?.onAddSplit;
+
+    if (!opts.select?.enabled) {
+      return;
+    }
 
     if (!onAddSplit) {
       return;

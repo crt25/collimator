@@ -10,7 +10,7 @@ import {
   Plugin,
   ChartEvent,
 } from "chart.js";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import Select from "../form/Select";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -20,7 +20,6 @@ import XAxis from "./axes/XAxis";
 import YAxisSelector from "./axes/YAxisSelector";
 import Tooltip from "./Tooltip";
 import { getCanvasPattern, getCategoryName } from "./category";
-import { CategoryWithGroups, Group } from "./hooks/useGrouping";
 import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import {
   AnnotationOptions,
@@ -28,14 +27,12 @@ import {
   EventContext,
 } from "chartjs-plugin-annotation";
 import { _DeepPartialObject } from "chart.js/dist/types/utils";
-import { StudentName } from "../encryption/StudentName";
+import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 import { Colors } from "@/constants/colors";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 
 type AdditionalChartData = {
   groupName: string;
-  studentPseudonym: string;
-  keyPairId: number;
 };
 
 type PointWithAdditionalData = BubbleDataPoint & {
@@ -43,6 +40,10 @@ type PointWithAdditionalData = BubbleDataPoint & {
 };
 
 const messages = defineMessages({
+  groupName: {
+    id: "Analysis.groupName",
+    defaultMessage: "Group",
+  },
   xAxis: {
     id: "Analysis.xAxis",
     defaultMessage: "x-Axis",
@@ -87,8 +88,9 @@ const Analysis = ({
   yAxis,
   setYAxis,
   taskType,
-  categories,
-  groups,
+  manualGroups: groups,
+  categorizedDataPoints,
+  splittingEnabled,
   splits,
   setSplits,
 }: {
@@ -97,8 +99,9 @@ const Analysis = ({
   yAxis: AxesCriterionType;
   setYAxis: (axis: AxesCriterionType) => void;
   taskType: TaskType;
-  categories: CategoryWithGroups[];
-  groups: Group[];
+  manualGroups: ManualGroup[];
+  categorizedDataPoints: CategorizedDataPoints[];
+  splittingEnabled: boolean;
   splits: ChartSplit[];
   setSplits: (
     updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
@@ -115,26 +118,28 @@ const Analysis = ({
   const yAxisConfig = useMemo(() => getAxisConfig(yAxis), [yAxis]);
 
   const chartRef = useRef<ChartJsChart | null>(null);
+  const initialChartDataRef = useRef<{
+    data: ChartData<"bubble">;
+    options: ChartConfiguration<"bubble">["options"];
+  } | null>(null);
 
   const chartData = useMemo<ChartData<"bubble">>(
     () => ({
-      datasets: categories.map((category) => ({
+      datasets: categorizedDataPoints.map((category) => ({
         label: getCategoryName(intl, category.category),
-        data: category.solutions.map((solution) => ({
-          x: solution.xAxisValue,
-          y: solution.yAxisValue,
+        data: category.dataPoints.map((dataPoint) => ({
+          x: dataPoint.x,
+          y: dataPoint.y,
           r: bubbleChartRadius,
           additionalData: {
-            groupName: solution.groupKey,
-            studentPseudonym: solution.studentPseudonym,
-            keyPairId: solution.studentKeyPairId,
+            groupName: dataPoint.groupName,
           } as AdditionalChartData,
         })),
 
         backgroundColor: getCanvasPattern(category.category),
       })),
     }),
-    [categories, intl],
+    [categorizedDataPoints, intl],
   );
 
   const onTooltip = useCallback(
@@ -183,75 +188,77 @@ const Analysis = ({
       clip: false,
 
       annotations: [
-        ...splits.flatMap<AnnotationOptions>((split) => {
-          const onClickLabel = (ctx: EventContext, evt: ChartEvent) => {
-            if (
-              !evt.native ||
-              isAlreadyHandled(evt.native) ||
-              cannotDeleteSplits(ctx)
-            ) {
-              return;
-            }
-            markAsHandled(evt.native);
+        ...(splittingEnabled ? splits : []).flatMap<AnnotationOptions>(
+          (split) => {
+            const onClickLabel = (ctx: EventContext, evt: ChartEvent) => {
+              if (
+                !evt.native ||
+                isAlreadyHandled(evt.native) ||
+                cannotDeleteSplits(ctx)
+              ) {
+                return;
+              }
+              markAsHandled(evt.native);
 
-            setSplits((splits) => splits.filter((s) => s !== split));
-          };
+              setSplits((splits) => splits.filter((s) => s !== split));
+            };
 
-          const labelProps = {
-            type: "label" as const,
-            content: "x",
-            color: Colors.chartLabel.deleteSplitLabelColor,
-            backgroundColor: Colors.chartLabel.deletSplitLabelBackgroundColor,
-            padding: {
-              x: 13,
-              y: 2,
-            },
-            font: {
-              size: 25,
-            },
-            click: onClickLabel,
-            enter: onEnterLabel,
-            leave: onLeaveLabel,
-          };
+            const labelProps = {
+              type: "label" as const,
+              content: "x",
+              color: Colors.chartLabel.deleteSplitLabelColor,
+              backgroundColor: Colors.chartLabel.deletSplitLabelBackgroundColor,
+              padding: {
+                x: 13,
+                y: 2,
+              },
+              font: {
+                size: 25,
+              },
+              click: onClickLabel,
+              enter: onEnterLabel,
+              leave: onLeaveLabel,
+            };
 
-          return split.type === SplitType.horizontal
-            ? [
-                {
-                  type: "line",
-                  xMin: (ctx) => ctx.chart.scales.x.min,
-                  xMax: (ctx) => ctx.chart.scales.x.max,
-                  yMin: split.y,
-                  yMax: split.y,
-                },
-                {
-                  ...labelProps,
-                  xValue: (ctx) => ctx.chart.scales.x.min,
-                  yValue: split.y,
-                  position: {
-                    x: "end" as const,
-                    y: "center" as const,
+            return split.type === SplitType.horizontal
+              ? [
+                  {
+                    type: "line",
+                    xMin: (ctx) => ctx.chart.scales.x.min,
+                    xMax: (ctx) => ctx.chart.scales.x.max,
+                    yMin: split.y,
+                    yMax: split.y,
                   },
-                },
-              ]
-            : [
-                {
-                  type: "line",
-                  xMin: split.x,
-                  xMax: split.x,
-                  yMin: (ctx) => ctx.chart.scales.y.min,
-                  yMax: (ctx) => ctx.chart.scales.y.max,
-                },
-                {
-                  ...labelProps,
-                  xValue: split.x,
-                  yValue: (ctx) => ctx.chart.scales.y.min,
-                  position: {
-                    x: "center" as const,
-                    y: "start" as const,
+                  {
+                    ...labelProps,
+                    xValue: (ctx) => ctx.chart.scales.x.min,
+                    yValue: split.y,
+                    position: {
+                      x: "end" as const,
+                      y: "center" as const,
+                    },
                   },
-                },
-              ];
-        }),
+                ]
+              : [
+                  {
+                    type: "line",
+                    xMin: split.x,
+                    xMax: split.x,
+                    yMin: (ctx) => ctx.chart.scales.y.min,
+                    yMax: (ctx) => ctx.chart.scales.y.max,
+                  },
+                  {
+                    ...labelProps,
+                    xValue: split.x,
+                    yValue: (ctx) => ctx.chart.scales.y.min,
+                    position: {
+                      x: "center" as const,
+                      y: "start" as const,
+                    },
+                  },
+                ];
+          },
+        ),
         ...groups.flatMap<AnnotationOptions>((group) => [
           {
             type: "label" as const,
@@ -277,7 +284,7 @@ const Analysis = ({
         ]),
       ],
     }),
-    [splits, setSplits, groups],
+    [splittingEnabled, splits, setSplits, groups],
   );
 
   const chartOptions = useMemo<ChartConfiguration<"bubble">["options"]>(
@@ -290,6 +297,7 @@ const Analysis = ({
         },
 
         select: {
+          enabled: splittingEnabled,
           onAddSplit: (split) => {
             setSplits((splits) => [...splits, split]);
           },
@@ -310,15 +318,31 @@ const Analysis = ({
       /* disable animations - looks weird when re-rendering the chart */
       animation: false,
     }),
-    [xAxisConfig, yAxisConfig, onTooltip, annotations, setSplits],
+    [
+      splittingEnabled,
+      xAxisConfig,
+      yAxisConfig,
+      onTooltip,
+      annotations,
+      setSplits,
+    ],
   );
 
   useEffect(() => {
     const chart = chartRef.current;
-    if (chart) {
+    if (chart?.canvas) {
       chart.config.data = chartData;
       chart.config.options = chartOptions;
       chart.update();
+
+      // clear the initial data, now that we have a chart reference
+      initialChartDataRef.current = null;
+    } else {
+      // chart was not yet initialized - store the data for later
+      initialChartDataRef.current = {
+        data: chartData,
+        options: chartOptions,
+      };
     }
   }, [chartData, chartOptions]);
 
@@ -341,9 +365,10 @@ const Analysis = ({
         id: "analysis",
         afterInit: (chart) => {
           chartRef.current = chart;
+          chart.config.data = initialChartDataRef.current?.data ?? chartData;
+          chart.config.options =
+            initialChartDataRef.current?.options ?? chartOptions;
 
-          chart.config.data = chartData;
-          chart.config.options = chartOptions;
           chart.update();
         },
       } as Plugin,
@@ -372,31 +397,16 @@ const Analysis = ({
         <XAxis />
         <YAxis />
         <Tooltip ref={tooltipRef} isShown={tooltipDataPoints.length > 0}>
-          {tooltipDataPoints.map((data) => (
-            <div key={data.additionalData.studentPseudonym}>
+          {tooltipDataPoints.map((data, index) => (
+            <div key={`${data.x}-${data.y}-${index}`}>
               <div className="data">
                 <div>
                   <span>
-                    <FormattedMessage
-                      id="Analysis.student"
-                      defaultMessage="Student"
-                    />
+                    <strong>{intl.formatMessage(messages.groupName)}</strong>
                   </span>
                   <span>
-                    <StudentName
-                      pseudonym={data.additionalData.studentPseudonym}
-                      keyPairId={data.additionalData.keyPairId}
-                    />
+                    <strong>{data.additionalData.groupName}</strong>
                   </span>
-                </div>
-                <div>
-                  <span>
-                    <FormattedMessage
-                      id="Analysis.group"
-                      defaultMessage="Group"
-                    />
-                  </span>
-                  <span>{data.additionalData.groupName}</span>
                 </div>
                 <div>
                   <span>

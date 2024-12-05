@@ -1,5 +1,8 @@
 name: Development Deployment
 
+# only allow one workflow running at a given point that deploys the development environment
+concurrency: development-deployment
+
 on:
   push:
     branches:
@@ -24,6 +27,10 @@ jobs:
   tests:
     uses: ./.github/workflows/tests.yml
     secrets: inherit
+    concurrency:
+      # avoid running the tests twice for a given branch
+      group: ${{ github.head_ref || github.ref_name }}-tests
+      cancel-in-progress: true
 
   deploy:
     needs: [tests]

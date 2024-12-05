@@ -11,11 +11,12 @@ import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import CodeComparison from "./CodeComparison";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import MultiSwrContent from "../MultiSwrContent";
-import { useGrouping } from "./hooks/useGrouping";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { AxesCriterionType } from "./axes";
 import { ChartSplit } from "./chartjs-plugins/select";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
+import { useGrouping } from "./hooks/useGrouping";
+import Input from "../form/Input";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -31,8 +32,16 @@ const Parameters = styled.div`
 
 const messages = defineMessages({
   taskSelection: {
-    id: "Analyzer.parameters.taskSelection",
+    id: "Analyzer.taskSelection",
     defaultMessage: "Task Selection",
+  },
+  automaticGrouping: {
+    id: "Analyzer.automaticGrouping",
+    defaultMessage: "Automatic Grouping",
+  },
+  numberOfGroups: {
+    id: "Analyzer.numberOfGroups",
+    defaultMessage: "Number of groups",
   },
 });
 
@@ -40,6 +49,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const [selectedTask, setSelectedTask] = useState<number | undefined>(
     session.tasks[0]?.id,
   );
+
+  const [isAutomaticGrouping, setIsAutomaticGrouping] = useState(false);
+  const [numberOfGroups, setNumberOfGroups] = useState(3);
 
   const [xAxis, setXAxis] = useState<AxesCriterionType>(
     AstCriterionType.statement,
@@ -65,7 +77,15 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask,
   );
 
-  const { categoriesWithGroups, groups } = useGrouping(
+  const {
+    isGroupingAvailable,
+    categorizedDataPoints,
+    groupAssignments,
+    groups,
+    manualGroups,
+  } = useGrouping(
+    isAutomaticGrouping,
+    numberOfGroups,
     solutions,
     filters,
     splits,
@@ -114,7 +134,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     >
       {([task]) => (
         <Row>
-          <Col xs={3}>
+          <Col xs={12} lg={3}>
             <Parameters>
               <Select
                 label={messages.taskSelection}
@@ -133,20 +153,46 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 filters={filters}
                 setFilters={setFilters}
               />
+
+              <Input
+                label={messages.automaticGrouping}
+                type="checkbox"
+                checked={isAutomaticGrouping}
+                onChange={(e) => setIsAutomaticGrouping(e.target.checked)}
+              />
+
+              {isAutomaticGrouping && (
+                <Input
+                  label={messages.numberOfGroups}
+                  type="number"
+                  value={numberOfGroups}
+                  onChange={(e) => setNumberOfGroups(parseInt(e.target.value))}
+                />
+              )}
+
+              {!isGroupingAvailable && (
+                <FormattedMessage
+                  id="Analyzer.noGroupingAvailable"
+                  defaultMessage="Computing groups, please be patient."
+                />
+              )}
             </Parameters>
           </Col>
-          <Col xs={9}>
-            <Analysis
-              taskType={task.type}
-              xAxis={xAxis}
-              setXAxis={updateXAxis}
-              yAxis={yAxis}
-              setYAxis={updateYAxis}
-              categories={categoriesWithGroups}
-              groups={groups}
-              splits={splits}
-              setSplits={setSplits}
-            />
+          <Col xs={12} lg={9}>
+            {selectedTask && (
+              <Analysis
+                taskType={task.type}
+                xAxis={xAxis}
+                setXAxis={updateXAxis}
+                yAxis={yAxis}
+                setYAxis={updateYAxis}
+                categorizedDataPoints={categorizedDataPoints}
+                manualGroups={manualGroups}
+                splittingEnabled={!isAutomaticGrouping}
+                splits={splits}
+                setSplits={setSplits}
+              />
+            )}
           </Col>
           <Col xs={12}>
             {task && (
@@ -155,7 +201,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 sessionId={session.id}
                 taskId={task.id}
                 taskType={task.type}
-                categories={categoriesWithGroups}
+                groupAssignments={groupAssignments}
                 groups={groups}
               />
             )}

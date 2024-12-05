@@ -4,6 +4,8 @@ import { MessageDescriptor, useIntl } from "react-intl";
 
 const StyledInput = styled.input`
   padding: 0.25rem 0.5rem;
+
+  max-width: 100%;
 `;
 
 const InputWrapper = styled.label`

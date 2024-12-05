@@ -6973,6 +6973,7 @@ __metadata:
     eslint-plugin-storybook: "npm:^0.11.0"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
+    jqgram: "npm:^0.2.5"
     msw: "npm:^2.6.0"
     next: "npm:14.2.12"
     nyc: "npm:^17.1.0"
@@ -11056,6 +11057,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jqgram@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "jqgram@npm:0.2.5"
+  dependencies:
+    node-clone: "npm:~0.1.1"
+    setimmediate: "npm:~1.0.1"
+  checksum: 10c0/b850b1e7cc504144159de0b549b834a2e215de750d60c771688516717e506b11d195ca393a4d81b5757945014346158e7cbd95598fd280430b2f7454d239d1cc
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -12046,6 +12057,13 @@ __metadata:
   dependencies:
     node-gyp: "npm:latest"
   checksum: 10c0/fb32a206276d608037fa1bcd7e9921e177fe992fc610d098aa3128baca3c0050fc1e014fa007e9b3874cf865ddb4f5bd9f43ccb7cbbbe4efaff6a83e920b17e9
+  languageName: node
+  linkType: hard
+
+"node-clone@npm:~0.1.1":
+  version: 0.1.1
+  resolution: "node-clone@npm:0.1.1"
+  checksum: 10c0/13f9c1fa2f2bcc36a0792c8ea67b4e87b863a7ef4b8542b8843d93441a1b9a2b4ed7401f297df3fd372efe4b833e5d03eff08fc5dbc11f59b929e901140bf477
   languageName: node
   linkType: hard
 
@@ -14167,7 +14185,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"setimmediate@npm:^1.0.4":
+"setimmediate@npm:^1.0.4, setimmediate@npm:~1.0.1":
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
   checksum: 10c0/5bae81bfdbfbd0ce992893286d49c9693c82b1bcc00dcaaf3a09c8f428fdeacf4190c013598b81875dfac2b08a572422db7df779a99332d0fce186d15a3e4d49

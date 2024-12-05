@@ -61,7 +61,7 @@ export class ExistingSessionExtendedDto
   readonly class!: SessionClassDto;
 
   @ApiProperty({
-    description: "The session's task.",
+    description: "The session's tasks.",
     type: [SessionTaskDto],
   })
   @Transform(
