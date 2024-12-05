@@ -40,7 +40,7 @@ import { AuthenticatedUser } from "../authentication/authenticated-user.decorato
 export class SolutionsController {
   constructor(
     private readonly solutionsService: SolutionsService,
-    private authorizationService: AuthorizationService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Post()

@@ -39,7 +39,7 @@ import { User } from "@prisma/client";
 export class ClassesController {
   constructor(
     private readonly classesService: ClassesService,
-    private authorizationService: AuthorizationService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Post()

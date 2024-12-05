@@ -21,8 +21,8 @@ import { PublicKeyDto } from "./dto/public-key.dto";
 @Controller("authentication")
 export class AuthenticationController {
   constructor(
-    private authenticationService: AuthenticationService,
-    private authorizationService: AuthorizationService,
+    private readonly authenticationService: AuthenticationService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Get("/public-key/:fingerprint")

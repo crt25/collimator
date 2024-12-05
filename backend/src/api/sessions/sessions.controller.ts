@@ -38,7 +38,7 @@ import { AuthenticatedStudent } from "../authentication/authenticated-student.de
 export class SessionsController {
   constructor(
     private readonly sessionsService: SessionsService,
-    private authorizationService: AuthorizationService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   @Post()
