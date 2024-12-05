@@ -77,12 +77,18 @@ type TaskSolutions = {
 };
 
 type StudentProgress = {
+  id: number;
   student: ClassStudent;
   taskSolutions: TaskSolutions[];
 };
 
 const nameTemplate = (progress: StudentProgress) => {
-  return <StudentName student={progress.student} />;
+  return (
+    <StudentName
+      pseudonym={progress.student.pseudonym}
+      keyPairId={progress.student.keyPairId}
+    />
+  );
 };
 
 const taskTemplate = (taskId: number) =>
@@ -162,6 +168,7 @@ const ProgressList = ({
       });
 
       return {
+        id: student.id,
         student,
         taskSolutions: taskSolutions,
       };

@@ -9,13 +9,9 @@ const messages = defineMessages({
     id: "SessionNavigation.progress",
     defaultMessage: "Progress",
   },
-  manualGroupingTab: {
-    id: "SessionNavigation.manualGroupingTab",
-    defaultMessage: "Manual Grouping",
-  },
-  automaticGroupingTab: {
-    id: "SessionNavigation.automaticGroupingTab",
-    defaultMessage: "Automatic Grouping",
+  analysisTab: {
+    id: "SessionNavigation.analysisTab",
+    defaultMessage: "Analysis",
   },
 });
 
@@ -25,12 +21,8 @@ const tabs: NavigationTab[] = [
     title: (intl) => intl.formatMessage(messages.progressTab),
   },
   {
-    url: "manual-grouping",
-    title: (intl) => intl.formatMessage(messages.manualGroupingTab),
-  },
-  {
-    url: "automatic-grouping",
-    title: (intl) => intl.formatMessage(messages.automaticGroupingTab),
+    url: "analysis",
+    title: (intl) => intl.formatMessage(messages.analysisTab),
   },
 ];
 
@@ -53,7 +45,10 @@ const SessionNavigation = ({
     />
     {breadcrumb && student && (
       <BreadcrumbItem>
-        <StudentName student={student} />
+        <StudentName
+          pseudonym={student.pseudonym}
+          keyPairId={student.keyPairId}
+        />
       </BreadcrumbItem>
     )}
   </>

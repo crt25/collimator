@@ -24,8 +24,24 @@ const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
   // otherwise, return the email (which may also be undefined)
   userInfo.email_verified === false ? undefined : userInfo.email;
 
-const getNameFromUserInfo = (userInfo: UserInfoResponse): string | undefined =>
-  userInfo.preferred_username ?? userInfo.name;
+const getNameFromUserInfo = (
+  userInfo: UserInfoResponse,
+): string | undefined => {
+  let name = userInfo.name;
+
+  if (!name) {
+    const givenName = (userInfo.given_name ?? userInfo.givenname) as string;
+    const familyName = (userInfo.family_name ?? userInfo.familyname) as string;
+
+    if (givenName && familyName) {
+      return `${givenName} ${familyName}`;
+    }
+
+    name = givenName ?? familyName ?? undefined;
+  }
+
+  return name;
+};
 
 const OpenIdConnectRedirect = () => {
   const router = useRouter();
@@ -55,44 +71,53 @@ const OpenIdConnectRedirect = () => {
     authenticationStarted.current = true;
 
     authenticate()
-      .then(async ({ idToken, userInfo, isStudent, redirectPath }) => {
-        const email = getEmailFromClaims(userInfo);
-        const name = getNameFromUserInfo(userInfo);
+      .then(
+        async ({
+          idToken,
+          userInfo,
+          isStudent,
+          redirectPath,
+          registrationToken,
+        }) => {
+          const email = getEmailFromClaims(userInfo);
+          const name = getNameFromUserInfo(userInfo);
 
-        if (!email || !name) {
-          throw new Error(
-            `Email or name not found in user info: ${JSON.stringify(userInfo)}`,
-          );
-        }
+          if (!email || !name) {
+            throw new Error(
+              `Email or name not found in user info: ${JSON.stringify(userInfo)}`,
+            );
+          }
 
-        if (isStudent) {
-          // the (remaining) authentication logic for students is handled on the join session page
-          // we do not need to authenticate against the collimator backend
-          updateAuthenticationContext({
-            version: latestAuthenticationContextVersion,
+          if (isStudent) {
+            // the (remaining) authentication logic for students is handled on the join session page
+            // we do not need to authenticate against the collimator backend
+            updateAuthenticationContext({
+              version: latestAuthenticationContextVersion,
+              idToken: idToken,
+              authenticationToken: undefined,
+              role: UserRole.student,
+              email,
+              name,
+            });
+
+            await router.replace(redirectPath);
+            return;
+          }
+          // this is the cause of slightly increased risk of the student's identity being tracked
+          // we connect to the collimator backend and authenticate directly
+          // note that this is not necessary for the student login flow because the teacher signs in
+          // students to the collimator backend
+
+          // we authenticate against the collimator backend using the id token
+          const authResponse = await authenticateUser({
+            authenticationProvider: AuthenticationProvider.MICROSOFT,
             idToken: idToken,
-            authenticationToken: undefined,
-            role: UserRole.student,
-            email,
-            name,
+            registrationToken,
           });
 
-          await router.replace(redirectPath);
-          return;
-        }
-        // this is the cause of slightly increased risk of the student's identity being tracked
-        // we connect to the collimator backend and authenticate directly
-        // note that this is not necessary for the student login flow because the teacher signs in
-        // students to the collimator backend
-
-        // we authenticate against the collimator backend using the id token
-        const authResponse = await authenticateUser({
-          authenticationProvider: AuthenticationProvider.microsoft,
-          idToken: idToken,
-        });
-
-        setUserSignInState({ authResponse, idToken, redirectPath });
-      })
+          setUserSignInState({ authResponse, idToken, redirectPath });
+        },
+      )
       .catch((e) => {
         if (e instanceof AuthenticationError) {
           setErrorRedirectPath(e.redirectPath);

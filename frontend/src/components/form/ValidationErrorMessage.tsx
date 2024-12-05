@@ -4,9 +4,27 @@ const ErrorMessageWrapper = styled.div`
   color: var(--error-color);
 `;
 
-const ValidationErrorMessage = ({ children }: { children?: string | null }) => {
+type ErrorMessage = string | null | undefined;
+
+const ValidationErrorMessage = ({
+  children,
+}: {
+  children?: ErrorMessage | ErrorMessage[];
+}) => {
   if (!children) {
     return null;
+  }
+
+  if (Array.isArray(children)) {
+    return (
+      <ErrorMessageWrapper>
+        {children
+          .filter((c) => c !== null && c !== undefined)
+          .map((child, index) => (
+            <div key={index}>{child}</div>
+          ))}
+      </ErrorMessageWrapper>
+    );
   }
 
   return <ErrorMessageWrapper>{children}</ErrorMessageWrapper>;

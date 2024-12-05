@@ -4,4 +4,4 @@ export * from "./ast-node-base";
 
 export type GeneralAst = ActorNode[];
 
-export { ActorNode, StatementNode, EventListenerNode };
+export type { ActorNode, StatementNode, EventListenerNode };

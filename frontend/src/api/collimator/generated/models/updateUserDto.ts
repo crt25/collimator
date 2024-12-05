@@ -5,10 +5,13 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { AuthenticationProvider } from "./authenticationProvider";
 import type { UserType } from "./userType";
 
 export interface UpdateUserDto {
-  /** The user's email address. */
+  /** The authentication provider used to sign in. */
+  authenticationProvider: AuthenticationProvider;
+  /** The email address of a user. */
   email: string;
   /**
    * The user's full name (optional).

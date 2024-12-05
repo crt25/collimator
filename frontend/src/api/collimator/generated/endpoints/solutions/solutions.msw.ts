@@ -7,16 +7,18 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { ExistingSolutionDto } from "../../models";
+import type { CurrentAnalysisDto, ExistingSolutionDto } from "../../models";
 
 export const getSolutionsControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingSolutionDto> = {},
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
+  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
+  totalTests: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 
@@ -28,9 +30,29 @@ export const getSolutionsControllerFindAllV0ResponseMock =
     ).map(() => ({
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       id: faker.number.int({ min: undefined, max: undefined }),
+      passedTests: faker.number.int({ min: undefined, max: undefined }),
       sessionId: faker.number.int({ min: undefined, max: undefined }),
       studentId: faker.number.int({ min: undefined, max: undefined }),
       taskId: faker.number.int({ min: undefined, max: undefined }),
+      totalTests: faker.number.int({ min: undefined, max: undefined }),
+    }));
+
+export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
+  (): CurrentAnalysisDto[] =>
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      genericAst: faker.word.sample(),
+      id: faker.number.int({ min: undefined, max: undefined }),
+      passedTests: faker.number.int({ min: undefined, max: undefined }),
+      solutionId: faker.number.int({ min: undefined, max: undefined }),
+      studentKeyPairId: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        null,
+      ]),
+      studentPseudonym: faker.word.sample(),
+      totalTests: faker.number.int({ min: undefined, max: undefined }),
     }));
 
 export const getSolutionsControllerFindOneV0ResponseMock = (
@@ -38,9 +60,11 @@ export const getSolutionsControllerFindOneV0ResponseMock = (
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
+  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
+  totalTests: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 
@@ -96,6 +120,32 @@ export const getSolutionsControllerFindAllV0MockHandler = (
   );
 };
 
+export const getSolutionsControllerFindCurrentAnalysisV0MockHandler = (
+  overrideResponse?:
+    | CurrentAnalysisDto[]
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<CurrentAnalysisDto[]> | CurrentAnalysisDto[]),
+) => {
+  return http.get(
+    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/current-analyses",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSolutionsControllerFindCurrentAnalysisV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
+
 export const getSolutionsControllerFindOneV0MockHandler = (
   overrideResponse?:
     | ExistingSolutionDto
@@ -143,6 +193,7 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateV0MockHandler(),
   getSolutionsControllerFindAllV0MockHandler(),
+  getSolutionsControllerFindCurrentAnalysisV0MockHandler(),
   getSolutionsControllerFindOneV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
 ];

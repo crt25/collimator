@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/router";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
+import { AuthenticationProvider } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
   submit: {
@@ -24,6 +25,7 @@ const CreateUser = () => {
       await createUser({
         name: formValues.name,
         email: formValues.email,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: formValues.type,
       });
 

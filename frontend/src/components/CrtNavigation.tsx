@@ -5,6 +5,7 @@ import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { UserRole } from "@/types/user/user-role";
 
 const messages = defineMessages({
   usersTab: {
@@ -29,6 +30,7 @@ const tabs: NavigationTab[] = [
   {
     url: "/user",
     title: (intl) => intl.formatMessage(messages.usersTab),
+    isShown: (authContext) => authContext.role === UserRole.admin,
   },
   {
     url: "/class",

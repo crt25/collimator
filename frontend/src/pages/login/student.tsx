@@ -14,10 +14,12 @@ const StudentLoginPage = () => {
     classId,
     sessionId,
     key: teacherPublicKeyFingerprint,
+    registrationToken,
   } = router.query as {
     classId?: string;
     sessionId?: string;
     key?: string;
+    registrationToken?: string;
   };
 
   const onAuthenticateWithMicrosoft = useCallback(() => {
@@ -30,9 +32,10 @@ const StudentLoginPage = () => {
 
     redirectToOpenIdConnectProvider(
       `/class/${classId}/session/${sessionId}/join?key=${teacherPublicKeyFingerprint}`,
+      registrationToken,
       true,
     );
-  }, [classId, sessionId, teacherPublicKeyFingerprint]);
+  }, [classId, sessionId, teacherPublicKeyFingerprint, registrationToken]);
 
   if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (

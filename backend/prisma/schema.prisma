@@ -17,17 +17,27 @@ enum UserType {
   ADMIN // admins are also teachers
 }
 
+enum AuthenticationProvider {
+  MICROSOFT
+}
+
 model User {
-  id    Int      @id @default(autoincrement())
-  name  String?
-  email String   @unique
-  type  UserType
+  id                     Int                    @id @default(autoincrement())
+  name                   String?
+  oidcSub                String?
+  email                  String
+  authenticationProvider AuthenticationProvider
+  type                   UserType
 
   keyPair              KeyPair?
+  registrationToken    RegistrationToken?
   authenticationTokens AuthenticationToken[]
   classes              Class[]
   lessons              Lesson[]
   tasks                Task[]
+
+  @@unique([oidcSub, authenticationProvider], name: "uniqueOidcSubPerProvider")
+  @@unique([email, authenticationProvider], name: "uniqueEmailPerProvider")
 }
 
 model KeyPair {
@@ -176,6 +186,9 @@ model Solution {
   sessionId      Int
   failedAnalyses Int      @default(0)
 
+  totalTests  Int
+  passedTests Int
+
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
@@ -190,6 +203,15 @@ model SolutionAnalysis {
   genericAst String
 
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+}
+
+model RegistrationToken {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  token     String   @unique
+  userId    Int      @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuthenticationToken {

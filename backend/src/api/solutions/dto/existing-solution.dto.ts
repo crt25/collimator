@@ -29,6 +29,20 @@ export class ExistingSolutionDto implements SolutionWithoutData {
   @Expose()
   readonly taskId!: number;
 
+  @ApiProperty({
+    example: 12,
+    description: "The total number of tests.",
+  })
+  @Expose()
+  readonly totalTests!: number;
+
+  @ApiProperty({
+    example: 10,
+    description: "The number of passed tests.",
+  })
+  @Expose()
+  readonly passedTests!: number;
+
   @Exclude()
   readonly mimeType!: string;
 

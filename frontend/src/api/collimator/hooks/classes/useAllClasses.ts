@@ -13,6 +13,9 @@ import {
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
 import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useContext, useMemo } from "react";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { UserRole } from "@/types/user/user-role";
 
 export type GetClassesReturnType = ExistingClassWithTeacher[];
 
@@ -27,21 +30,45 @@ const fetchAndTransform = (
 export const useAllClasses = (
   params?: ClassesControllerFindAllV0Params,
 ): ApiResponse<GetClassesReturnType, Error> => {
+  const authenticationContext = useContext(AuthenticationContext);
   const authOptions = useAuthenticationOptions();
+
+  const parameters = useMemo<ClassesControllerFindAllV0Params>(() => {
+    const parameters: ClassesControllerFindAllV0Params = { ...params };
+
+    // if the user is a teacher, only fetch classes for that teacher
+    if (authenticationContext.role === UserRole.teacher) {
+      parameters.teacherId = authenticationContext.userId;
+    }
+
+    return parameters;
+  }, [params, authenticationContext]);
 
   return useSWR(
     // use the URL with the params as the first entry in the key for easier invalidation
-    getSwrParamererizedKey(getClassesControllerFindAllV0Url, params),
-    () => fetchAndTransform(authOptions, params),
+    getSwrParamererizedKey(getClassesControllerFindAllV0Url, parameters),
+    () => fetchAndTransform(authOptions, parameters),
   );
 };
 
 export const useAllClassesLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> => {
+  const authenticationContext = useContext(AuthenticationContext);
   const authOptions = useAuthenticationOptions();
 
+  const parameters = useMemo<ClassesControllerFindAllV0Params>(() => {
+    const parameters: ClassesControllerFindAllV0Params = {};
+
+    // if the user is a teacher, only fetch classes for that teacher
+    if (authenticationContext.role === UserRole.teacher) {
+      parameters.teacherId = authenticationContext.userId;
+    }
+
+    return parameters;
+  }, [authenticationContext]);
+
   return useSWR(getSwrParamererizedKey(getClassesControllerFindAllV0Url), () =>
-    fetchAndTransform(authOptions).then(transformToLazyTableResult),
+    fetchAndTransform(authOptions, parameters).then(transformToLazyTableResult),
   );
 };

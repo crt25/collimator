@@ -1,6 +1,10 @@
 import { expect, mockUrlResponses, test } from "../helpers";
 import { UserFormPageModel } from "./user-form-page-model";
-import { CreateUserDto, UserType } from "@/api/collimator/generated/models";
+import {
+  AuthenticationProvider,
+  CreateUserDto,
+  UserType,
+} from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import {
   getUsersControllerCreateV0ResponseMock,
@@ -41,7 +45,7 @@ test.describe("/user/create", () => {
     const page = await UserFormPageModel.create(pwPage);
 
     await page.inputs.name.fill("Jane Doe");
-    await page.inputs.email.fill("jane@doe.com");
+    await page.inputs.email.fill("jane.doe@example.com");
     await page.inputs.type.selectOption(UserType.TEACHER);
     await page.submitButton.click();
 
@@ -49,8 +53,9 @@ test.describe("/user/create", () => {
 
     expect(createRequest).toEqual({
       name: "Jane Doe",
-      email: "jane@doe.com",
+      email: "jane.doe@example.com",
       type: UserType.TEACHER,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
   });
 
@@ -58,7 +63,7 @@ test.describe("/user/create", () => {
     const page = await UserFormPageModel.create(pwPage);
 
     await page.inputs.name.fill("Jane Doe");
-    await page.inputs.email.fill("jane@doe.com");
+    await page.inputs.email.fill("jane.doe@example.com");
     await page.inputs.type.selectOption(UserType.ADMIN);
     await page.submitButton.click();
 
@@ -66,8 +71,9 @@ test.describe("/user/create", () => {
 
     expect(createRequest).toEqual({
       name: "Jane Doe",
-      email: "jane@doe.com",
+      email: "jane.doe@example.com",
       type: UserType.ADMIN,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
     });
   });
 });

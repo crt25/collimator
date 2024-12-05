@@ -1,7 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { plainToInstance } from "class-transformer";
-import { PrismaClient, User, UserType } from "@prisma/client";
+import {
+  AuthenticationProvider,
+  PrismaClient,
+  User,
+  UserType,
+} from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UsersController } from "./users.controller";
@@ -18,6 +23,8 @@ describe("UsersController", () => {
     id: 1,
     name: "Admin",
     email: "root@collimator.com",
+    oidcSub: null,
+    authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
   };
 
@@ -53,6 +60,8 @@ describe("UsersController", () => {
     const user = {
       name: "Alice",
       email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
     const createdUser = { ...user, id: 1 };
@@ -70,6 +79,8 @@ describe("UsersController", () => {
     const user = {
       name: "Alice",
       email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
     const updatedUser = { ...user, id: 2 };
@@ -93,6 +104,8 @@ describe("UsersController", () => {
       id: 2,
       name: "Alice",
       email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
     prismaMock.user.delete.mockResolvedValue(user);
@@ -110,6 +123,8 @@ describe("UsersController", () => {
       id: 1,
       name: "Alice",
       email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
     prismaMock.user.findUniqueOrThrow.mockResolvedValue(user);
@@ -128,6 +143,8 @@ describe("UsersController", () => {
       id: 1,
       name: "Alice",
       email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
     };
     prismaMock.user.findUniqueOrThrow.mockRejectedValue(new Error("Not found"));
@@ -142,12 +159,16 @@ describe("UsersController", () => {
         id: 1,
         name: "Alice",
         email: "alice@example.com",
+        oidcSub: null,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.TEACHER,
       },
       {
         id: 2,
         name: "Bob",
         email: "bob@example.com",
+        oidcSub: null,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.ADMIN,
       },
     ];

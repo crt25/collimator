@@ -81,10 +81,16 @@ const UserTaskProgress = ({
       <Accordion.Item key={sessionTask.id} eventKey={sessionTask.id.toString()}>
         <Accordion.Header>{sessionTask.title}</Accordion.Header>
         <Accordion.Body>
-          <FormattedMessage
-            id="UserTaskProgress.unsupportedApp"
-            defaultMessage="An unsupported application type was selected. Please report this issue."
-          />
+          {task && (
+            <FormattedMessage
+              id="UserTaskProgress.unsupportedApp"
+              defaultMessage="The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
+              values={{
+                type: task.type,
+                taskId: task.id,
+              }}
+            />
+          )}
         </Accordion.Body>
       </Accordion.Item>
     );

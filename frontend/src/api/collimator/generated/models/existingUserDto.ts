@@ -5,11 +5,14 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { AuthenticationProvider } from "./authenticationProvider";
 import type { ExistingUserDtoPublicKeyId } from "./existingUserDtoPublicKeyId";
 import type { UserType } from "./userType";
 
 export interface ExistingUserDto {
-  /** The user's email address. */
+  /** The authentication provider used to sign in. */
+  authenticationProvider: AuthenticationProvider;
+  /** The email address of a user. */
   email: string;
   /** The user unique identifier, a positive integer. */
   id: number;
@@ -18,6 +21,11 @@ export interface ExistingUserDto {
    * @nullable
    */
   name: string | null;
+  /**
+   * An identifier for the user which is unique for the authentication provider.
+   * @nullable
+   */
+  oidcSub: string | null;
   /**
    * The unique identifier of the associated public key.
    * @nullable

@@ -4,10 +4,9 @@ import { SolutionsService } from "./solutions.service";
 import { AstModule } from "src/ast/ast.module";
 import { TasksModule } from "../tasks/tasks.module";
 import { SolutionAnalysisService } from "./solution-analysis.service";
-import { DataAnalyzerModule } from "src/data-analyzer/data-analyzer.module";
 
 @Module({
-  imports: [TasksModule, AstModule, DataAnalyzerModule],
+  imports: [TasksModule, AstModule],
   providers: [SolutionsService, SolutionAnalysisService],
   controllers: [SolutionsController],
 })

@@ -12,5 +12,9 @@ export type GetSubmissionRequest = RemoteProcedureCallRequest<
 
 export type GetSubmissionResponse = RemoteProcedureCallResponse<
   ProcedureName,
-  Blob
+  {
+    file: Blob;
+    totalTests: number;
+    passedTests: number;
+  }
 >;

@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   email: {
     id: "UserForm.email",
-    defaultMessage: "Email",
+    defaultMessage: "Email address",
   },
   type: {
     id: "UserForm.role",

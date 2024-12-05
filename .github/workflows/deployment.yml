@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-7_deployment # The initial branch the deployment was developed on - may be removed after the first deployment
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -100,4 +99,9 @@ jobs:
 
       - name: Upload docker image
         run: docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        working-directory: ./backend
+
+      # not trivial with terraform, so we do it via the AWS CLI
+      - name: Deploy new docker image
+        run: aws ecs update-service --cluster collimator-dev-backend --service collimator-dev-backend --force-new-deployment
         working-directory: ./backend

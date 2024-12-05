@@ -5,7 +5,11 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import type { CreateSolutionDto, ExistingSolutionDto } from "../../models";
+import type {
+  CreateSolutionDto,
+  CurrentAnalysisDto,
+  ExistingSolutionDto,
+} from "../../models";
 import { fetchApi } from "../../../../fetch";
 
 export const getSolutionsControllerCreateV0Url = (
@@ -24,6 +28,8 @@ export const solutionsControllerCreateV0 = async (
   options?: RequestInit,
 ): Promise<ExistingSolutionDto> => {
   const formData = new FormData();
+  formData.append("totalTests", createSolutionDto.totalTests.toString());
+  formData.append("passedTests", createSolutionDto.passedTests.toString());
   formData.append("file", createSolutionDto.file);
 
   return fetchApi<Promise<ExistingSolutionDto>>(
@@ -52,6 +58,29 @@ export const solutionsControllerFindAllV0 = async (
 ): Promise<ExistingSolutionDto[]> => {
   return fetchApi<Promise<ExistingSolutionDto[]>>(
     getSolutionsControllerFindAllV0Url(classId, sessionId, taskId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
+export const getSolutionsControllerFindCurrentAnalysisV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/current-analyses`;
+};
+
+export const solutionsControllerFindCurrentAnalysisV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  options?: RequestInit,
+): Promise<CurrentAnalysisDto[]> => {
+  return fetchApi<Promise<CurrentAnalysisDto[]>>(
+    getSolutionsControllerFindCurrentAnalysisV0Url(classId, sessionId, taskId),
     {
       ...options,
       method: "GET",

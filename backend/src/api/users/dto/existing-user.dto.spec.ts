@@ -1,5 +1,5 @@
 import { ArgumentMetadata, ValidationPipe } from "@nestjs/common";
-import { UserType } from "@prisma/client";
+import { AuthenticationProvider, UserType } from "@prisma/client";
 import { plainToInstance } from "class-transformer";
 import { ExistingUserDto } from "./existing-user.dto";
 
@@ -8,6 +8,8 @@ describe("ExistingUserDto", () => {
     id: 318,
     name: "Alice",
     email: "alice@example.com",
+    oidcSub: null,
+    authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: UserType.TEACHER,
     publicKeyId: 123,
   };
@@ -29,6 +31,8 @@ describe("ExistingUserDto", () => {
     expect(userDto.id).toEqual(user.id);
     expect(userDto.name).toEqual(user.name);
     expect(userDto.email).toEqual(user.email);
+    expect(userDto.oidcSub).toEqual(user.oidcSub);
+    expect(userDto.authenticationProvider).toEqual(user.authenticationProvider);
     expect(userDto.type).toEqual(user.type);
   });
 
@@ -48,6 +52,13 @@ describe("ExistingUserDto", () => {
     ],
     ["name", ["name should not be empty", "name must be a string"]],
     ["email", ["email should not be empty", "email must be an email"]],
+    [
+      "authenticationProvider",
+      [
+        "authenticationProvider should not be empty",
+        "authenticationProvider must be one of the following values: MICROSOFT",
+      ],
+    ],
     [
       "type",
       [
@@ -72,21 +83,29 @@ describe("ExistingUserDto", () => {
     [
       "id",
       "not_a_number",
-      "id must be a number conforming to the specified constraints",
+      ["id must be a number conforming to the specified constraints"],
     ],
-    ["name", 123, "name must be a string"],
-    ["email", "not_an_email", "email must be an email"],
+    ["name", 123, ["name must be a string"]],
+    ["email", 123, ["email must be an email", "email must be a string"]],
+    ["oidcSub", 123, ["oidcSub must be a string"]],
+    [
+      "authenticationProvider",
+      "xyz",
+      ["authenticationProvider must be one of the following values: MICROSOFT"],
+    ],
     [
       "type",
       "tomato",
-      `type must be one of the following values: ${Object.values(UserType).join(", ")}`,
+      [
+        `type must be one of the following values: ${Object.values(UserType).join(", ")}`,
+      ],
     ],
     [
       "publicKeyId",
       "not_a_number",
-      "publicKeyId must be a number conforming to the specified constraints",
+      ["publicKeyId must be a number conforming to the specified constraints"],
     ],
-  ])("validate DTO wrong field (%s)", async (field, value, error) => {
+  ])("validate DTO wrong field (%s)", async (field, value, errors) => {
     await target
       .transform(<ExistingUserDto>{ ...user, [field]: value }, metadata)
       .then(() => {
@@ -95,7 +114,7 @@ describe("ExistingUserDto", () => {
       })
       .catch((err) => {
         const messages = err.getResponse().message;
-        expect(messages).toEqual([error]);
+        expect(messages).toEqual(errors);
       });
   });
 });

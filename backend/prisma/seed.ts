@@ -1,19 +1,31 @@
-import { PrismaClient } from "@prisma/client";
+import { AuthenticationProvider, PrismaClient } from "@prisma/client";
+import { randomBytes } from "crypto";
 
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
-  const teacher = await prisma.user.upsert({
+  const count = await prisma.user.count({
     where: { email: "nico@anansi-solutions.net" },
-    update: {},
-    create: {
-      email: "nico@anansi-solutions.net",
-      name: "Nico",
-      type: "ADMIN",
-    },
   });
+  if (count === 0) {
+    const admin = await prisma.user.create({
+      data: {
+        email: "nico@anansi-solutions.net",
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
+        name: "Nico",
+        type: "ADMIN",
+      },
+    });
 
-  console.log(["teacher", teacher]);
+    const token = await prisma.registrationToken.create({
+      data: {
+        token: randomBytes(32).toString("hex"),
+        userId: admin.id,
+      },
+    });
+
+    console.log(["admin", admin, token.token]);
+  }
 }
 
 main()

@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
   ],
 
   use: {
-    baseURL: "http://localhost:3101",
+    baseURL: "http://localhost:3101/scratch",
   },
 };
 
@@ -29,7 +29,7 @@ if (!process.env.SERVER_ALREADY_RUNS) {
   config.webServer = {
     // Run your local dev server before starting the tests.
     command: "yarn dev:coverage",
-    url: "http://localhost:3101",
+    url: "http://localhost:3101/scratch",
     timeout: 120 * 1000,
   };
 }

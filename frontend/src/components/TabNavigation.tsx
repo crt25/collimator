@@ -4,6 +4,12 @@ import { useRouter } from "next/router";
 import { Nav } from "react-bootstrap";
 import { IntlShape, useIntl } from "react-intl";
 import BreadcrumbItem from "./BreadcrumbItem";
+import {
+  AuthenticationContext,
+  AuthenticationContextType,
+} from "@/contexts/AuthenticationContext";
+import { isNonNull } from "@/utilities/is-non-null";
+import { useContext } from "react";
 
 const StyledNav = styled(Nav)`
   margin: 1rem 0;
@@ -20,6 +26,7 @@ const StyledNav = styled(Nav)`
 export interface NavigationTab<T = undefined> {
   url: string;
   title: (intl: IntlShape, args: T) => string;
+  isShown?: (authContext: AuthenticationContextType) => boolean;
 }
 
 // regex to remove both leading & trailing slashes
@@ -40,16 +47,25 @@ const TabNavigation = <T extends unknown = undefined>({
   : { tabTitleArguments: T })) => {
   const router = useRouter();
   const intl = useIntl();
+  const authContext = useContext(AuthenticationContext);
 
-  const navigationTabs = tabs.map((tab) => {
-    const url = prefix ? `${prefix}${tab.url}` : tab.url;
+  const navigationTabs = tabs
+    .map((tab) => {
+      const isShown = tab.isShown ? tab.isShown(authContext) : true;
 
-    const strippedUrl = url.replace(stripSlashRegex, "");
-    const strippedPath = router.asPath.replace(stripSlashRegex, "");
-    const isActive = strippedPath.startsWith(strippedUrl);
+      if (!isShown) {
+        return null;
+      }
 
-    return { ...tab, url, isActive };
-  });
+      const url = prefix ? `${prefix}${tab.url}` : tab.url;
+
+      const strippedUrl = url.replace(stripSlashRegex, "");
+      const strippedPath = router.asPath.replace(stripSlashRegex, "");
+      const isActive = strippedPath.startsWith(strippedUrl);
+
+      return { ...tab, url, isActive };
+    })
+    .filter(isNonNull);
 
   if (breadcrumb) {
     const activeItems = navigationTabs.filter((tab) => tab.isActive);

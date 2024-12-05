@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { plainToInstance } from "class-transformer";
-import { PrismaClient, User } from "@prisma/client";
+import { AuthenticationProvider, PrismaClient, User } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ClassesController } from "./classes.controller";
@@ -26,6 +26,8 @@ describe("ClassesController", () => {
     id: 1,
     name: "Admin",
     email: "root@collimator.com",
+    oidcSub: null,
+    authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
   };
 

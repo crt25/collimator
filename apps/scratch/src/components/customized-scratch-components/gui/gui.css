@@ -1,3 +1,13 @@
+.gui-wrapper {
+    display: contents;
+}
+
+.min-width-wrapper > * {
+    /* this CSS is copied over from the scratch codebase */
+    /* Setting min width makes the UI scroll below those sizes */
+    min-width: 1024px;  
+}
+
 .body-wrapper {
     height: 100%;
 }

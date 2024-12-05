@@ -101,7 +101,7 @@ const SessionForm = ({
 
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
-  const taskIds = watch("taskIds");
+  const selectedTaskIds = watch("taskIds");
 
   // ensure that the selected tasks are always in sync with the form
   const setSelectedTasks = useCallback(
@@ -138,22 +138,22 @@ const SessionForm = ({
       // reset the select
       setAddTaskId(addTaskEmptyId);
 
-      return taskIds;
+      return selectedTaskIds;
     },
-    [taskIds, data, selectedTasks, setSelectedTasks],
+    [selectedTaskIds, data, selectedTasks, setSelectedTasks],
   );
 
   useEffect(() => {
     // initialize the selected tasks if we have data and the form is empty
-    if (data && selectedTasks.length === 0 && taskIds.length > 0) {
+    if (data && selectedTasks.length === 0 && selectedTaskIds.length > 0) {
       _setSelectedTasks(
         // map the taskIds to the actual tasks (correct order is provided by the backend)
-        taskIds
+        selectedTaskIds
           .map((taskId) => data.find((t) => t.id === taskId))
           .filter((t) => t !== undefined),
       );
     }
-  }, [data, taskIds, selectedTasks, setSelectedTasks]);
+  }, [data, selectedTaskIds, selectedTasks, setSelectedTasks]);
 
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
@@ -204,9 +204,11 @@ const SessionForm = ({
                 value: addTaskEmptyId,
                 label: messages.selectTaskToAdd,
               },
-              ...tasks
-                // avoid duplicates
-                .filter((t) => !taskIds.includes(t.id))
+              // in theory tasks should never be undefined, but it seems to happen sometimes??
+              // TODO: investigate why this happens
+              ...(tasks ?? [])
+                // don't list again tasks that are already selected
+                .filter((t) => !selectedTaskIds.includes(t.id))
                 .map((t) => ({
                   value: t.id,
                   label: t.title,

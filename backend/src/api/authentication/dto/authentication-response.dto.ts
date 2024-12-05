@@ -29,8 +29,8 @@ export class AuthenticationResponseDto {
   name!: string | null;
 
   @ApiProperty({
-    example: "jane@doe.com",
-    description: "The email of the authenticated user.",
+    example: "john.doe@example.com",
+    description: "The email address of the authenticated user.",
   })
   @Expose()
   email!: string;

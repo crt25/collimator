@@ -20,6 +20,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@ast/*": [
+        "../backend/src/ast/types/general-ast/*"
+      ],
       // Tell TypeScript where to find the types for Scratch libraries.
       "scratch-vm": [
         "./node_modules/@turbowarp/types/index.d.ts"
@@ -52,7 +55,8 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "../backend/src/ast/types/general-ast/**/*.ts"
   ],
   "exclude": [
     "node_modules"

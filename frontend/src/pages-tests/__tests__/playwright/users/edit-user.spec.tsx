@@ -87,6 +87,7 @@ test.describe("/user/{id}/edit", () => {
       name: updatedUser.name,
       email: updatedUser.email,
       type: updatedUser.type,
+      authenticationProvider: updatedUser.authenticationProvider,
     });
   });
 });

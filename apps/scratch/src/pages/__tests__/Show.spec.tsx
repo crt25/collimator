@@ -29,7 +29,7 @@ test.describe("/show", () => {
       }),
     );
 
-    await page.goto(`${baseURL!}/show`);
+    await page.goto(`${baseURL!}/show?showStage`);
 
     await page.waitForSelector("#root");
 

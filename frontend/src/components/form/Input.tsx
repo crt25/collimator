@@ -18,7 +18,7 @@ const Label = styled.span`
 
 interface Props {
   label: MessageDescriptor;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Input = forwardRef(function Input(

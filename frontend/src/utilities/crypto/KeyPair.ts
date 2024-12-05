@@ -115,10 +115,6 @@ export default abstract class KeyPair extends SymmetricKey {
   /**
    * Derives a key from based on a private key and a public key
    * using the ECDH algorithm.
-   * Note that we also abuse this method to derive a symmetric key from the key pair
-   * as if we were performing ECDH with ourselves.
-   * This is due to limitations in the WebCrypto API where we cannot directly derive a symmetric key
-   * from a ECDH key pair. (November 2024)
    */
   static async deriveSymmetricKey(
     crypto: SubtleCrypto,

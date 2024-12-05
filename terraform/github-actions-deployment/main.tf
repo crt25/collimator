@@ -49,22 +49,31 @@ resource "aws_iam_role" "this" {
 
 # create a policy template
 data "aws_iam_policy_document" "deploy" {
-  # ECR permissions
-  # allow pushing new ECR images
-  # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticcontainerregistry.html
-  # https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-push-iam.html
+
   statement {
     effect = "Allow"
     actions = [
-
+      # ECR permissions
+      # allow pushing new ECR images
+      # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticcontainerregistry.html
+      # https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-push-iam.html
       "ecr:CompleteLayerUpload",
       "ecr:UploadLayerPart",
       "ecr:InitiateLayerUpload",
       "ecr:BatchCheckLayerAvailability",
       "ecr:PutImage",
-      "ecr:BatchGetImage"
+      "ecr:BatchGetImage",
     ]
     resources = var.ecr_repository_arns
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      # and updating / re-deploying a service
+      "ecs:UpdateService",
+    ]
+    resources = var.ecs_service_arns
   }
 
   statement {

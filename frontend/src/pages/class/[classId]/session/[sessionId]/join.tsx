@@ -151,7 +151,7 @@ const JoinSession = () => {
     StudentKeyPair.generate(window.crypto.subtle)
       .then(async (keyPair) => {
         // next, fetch the public key of the teacher using the fingerprint
-        const { publicKey, teacherId } = await fetchPublicKey(
+        const { publicKey: teacherPublicKey, teacherId } = await fetchPublicKey(
           teacherPublicKeyFingerprint,
         );
 
@@ -159,7 +159,7 @@ const JoinSession = () => {
         // this shared secret is then used to encrypt messages sent to the teacher during this session
 
         const ephemeralKey = await keyPair.deriveSharedEphemeralKey(
-          publicKey,
+          teacherPublicKey,
           teacherPublicKeyFingerprint,
         );
 
@@ -201,6 +201,7 @@ const JoinSession = () => {
               keyPair,
               authenticationToken,
               sessionId: sessionId,
+              teacherPublicKey,
               ephemeralKey,
             });
 

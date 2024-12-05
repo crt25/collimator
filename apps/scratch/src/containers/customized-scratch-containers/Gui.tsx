@@ -153,7 +153,7 @@ class GUI extends React.Component<Props> {
         if (projectAsset) {
           loadCrtProject(
             this.props.vm,
-            (projectAsset as unknown as { data: object }).data,
+            (projectAsset as unknown as { data: ArrayBuffer }).data,
           );
         } else {
           throw new Error("Could not load default project");

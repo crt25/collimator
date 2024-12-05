@@ -1,18 +1,24 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
-import { Student, User, UserType } from "@prisma/client";
+import {
+  AuthenticationProvider,
+  Student,
+  User,
+  UserType,
+} from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { randomBytes } from "crypto";
 import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
-import ms from "ms";
 
 export type AuthToken = string;
 
 // we use a sliding window for token expiration checked against the last used timestamp
-const slidingTokenLifetime = ms("4h");
+const slidingTokenLifetime = 1000 * 60 * 60 * 4;
 
 // to avoid updating the last used timestamp on every request, we only update it if the token was last used more than 10 minutes ago
-const lastUsedAccuracy = ms("10m");
+const lastUsedAccuracy = 1000 * 60 * 10;
+
+const registrationTokenLifetime = 1000 * 60 * 10;
 
 export type PublicKey = {
   id: number;
@@ -40,6 +46,8 @@ export type UserIdentity = {
   id: number;
   name: string | null;
   email: string;
+  oidcSub: string | null;
+  authenticationProvider: AuthenticationProvider;
   type: UserType;
 };
 
@@ -49,6 +57,30 @@ export type WithToken = {
 
 export type UserIdentityWithKey = UserIdentity & WithKey;
 export type UserIdentityWithKeyAndToken = UserIdentityWithKey & WithToken;
+
+const selectUserIdentityWithKey = {
+  id: true,
+  name: true,
+  oidcSub: true,
+  email: true,
+  authenticationProvider: true,
+  type: true,
+  keyPair: {
+    select: {
+      id: true,
+      publicKey: true,
+      publicKeyFingerprint: true,
+      salt: true,
+      createdAt: true,
+      privateKeys: {
+        select: {
+          encryptedPrivateKey: true,
+          salt: true,
+        },
+      },
+    },
+  },
+};
 
 type KeySet = ReturnType<typeof jose.createRemoteJWKSet>;
 type Jwt = jose.JWTVerifyResult<jose.JWTPayload> &
@@ -87,10 +119,6 @@ const verifyJwtToken = async (
 // generate strong, cryptographically secure token
 // 128 bits (16 bytes) should be plenty, let's use 256 for good measure
 const generateToken = (): AuthToken => randomBytes(32).toString("hex");
-
-export enum AuthenticationProvider {
-  microsoft = "microsoft",
-}
 
 @Injectable()
 export class AuthenticationService {
@@ -141,6 +169,12 @@ export class AuthenticationService {
         lastUsedAt: { lt: new Date(Date.now() - slidingTokenLifetime) },
       },
     });
+
+    await this.prisma.registrationToken.deleteMany({
+      where: {
+        createdAt: { lt: new Date(Date.now() - registrationTokenLifetime) },
+      },
+    });
   }
 
   protected verifyToken(
@@ -151,7 +185,7 @@ export class AuthenticationService {
     let clientId: string;
 
     switch (provider) {
-      case AuthenticationProvider.microsoft:
+      case AuthenticationProvider.MICROSOFT:
         keySet = this.microsoftKeySet;
         clientId = this.microsoftClientId;
         break;
@@ -162,56 +196,114 @@ export class AuthenticationService {
     return verifyJwtToken(keySet, jwt, clientId);
   }
 
-  protected findUserByEmailOrThrow(
-    email: string,
+  protected findUserByOidcSubOrThrow(
+    oidcSub: string,
+    authenticationProvider: AuthenticationProvider,
   ): Promise<UserIdentityWithKey> {
     return this.prisma.user.findUniqueOrThrow({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        type: true,
-        keyPair: {
-          select: {
-            id: true,
-            publicKey: true,
-            publicKeyFingerprint: true,
-            salt: true,
-            createdAt: true,
-            privateKeys: {
-              select: {
-                encryptedPrivateKey: true,
-                salt: true,
-              },
-            },
-          },
+      select: selectUserIdentityWithKey,
+      where: {
+        uniqueOidcSubPerProvider: {
+          oidcSub,
+          authenticationProvider,
         },
       },
-      where: { email },
+    });
+  }
+
+  protected findUserToRegisterOrThrow(
+    email: string,
+    authenticationProvider: AuthenticationProvider,
+    registrationToken: string,
+  ): Promise<UserIdentityWithKey> {
+    return this.prisma.user.findUniqueOrThrow({
+      select: selectUserIdentityWithKey,
+      where: {
+        uniqueEmailPerProvider: {
+          email,
+          authenticationProvider,
+        },
+        registrationToken: {
+          token: registrationToken,
+          createdAt: { gte: new Date(Date.now() - registrationTokenLifetime) },
+        },
+      },
     });
   }
 
   /**
    * Tries to sign in a user with the given JWT token.
    * @param jwt The JWT token to sign in with.
+   * @param provider The authentication provider used for signing in.
+   * @param registrationToken An optional registration token required the first time a user signs in.
    * @returns A new authentication token.
    */
   async signInUser(
     jwt: string,
     provider: AuthenticationProvider,
+    registrationToken?: string | null,
   ): Promise<UserIdentityWithKeyAndToken> {
     const verifiedToken = await this.verifyToken(jwt, provider);
 
-    const email = verifiedToken.payload["email"] as string;
+    const sub = verifiedToken.payload["sub"];
 
-    if (!email) {
-      throw new Error("Email not found in JWT token");
+    if (!sub) {
+      throw new Error("Sub not found in JWT token");
     }
 
-    const user = await this.findUserByEmailOrThrow(email);
+    let originalError: Error | null = null;
 
-    if (!user) {
-      throw new Error("User not found");
+    let user: UserIdentityWithKey;
+
+    const oidcUser = await this.findUserByOidcSubOrThrow(sub, provider).catch(
+      // in case the user is not found, we may need to migrate the user from email to oidc sub
+      (e) => {
+        originalError = e;
+        return null;
+      },
+    );
+
+    if (oidcUser) {
+      user = oidcUser;
+    } else {
+      const email = verifiedToken.payload["email"] as string | undefined;
+
+      if (!email || !registrationToken) {
+        throw originalError;
+      }
+      // Migrate user from email to oidc sub.
+      // This is necessary because users are created by admins and
+      // there is no way to determine the oidc sub for a given email addresses.
+      user = await this.findUserToRegisterOrThrow(
+        email,
+        provider,
+        registrationToken,
+      );
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          oidcSub: sub,
+        },
+      });
+
+      // delete registration token
+      await this.prisma.registrationToken.deleteMany({
+        where: {
+          userId: user.id,
+        },
+      });
+    }
+
+    const email = verifiedToken.payload["email"] as string | undefined;
+    if (email && user.email !== email) {
+      // update user email address
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          email,
+        },
+      });
     }
 
     const randomToken = generateToken();

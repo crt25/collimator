@@ -1,7 +1,4 @@
-import {
-  ClassStudent,
-  StudentIdentity,
-} from "@/api/collimator/models/classes/class-student";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
@@ -19,7 +16,13 @@ const messages = defineMessages({
   },
 });
 
-export const StudentName = ({ student }: { student: ClassStudent }) => {
+export const StudentName = ({
+  pseudonym,
+  keyPairId,
+}: {
+  pseudonym: string;
+  keyPairId: number | null;
+}) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
 
@@ -27,7 +30,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
 
   useEffect(() => {
-    let isCancelled = false;
+    const isCancelled = false;
 
     if (!("keyPairId" in authContext)) {
       setIsDecrypting(false);
@@ -37,7 +40,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
     setIsDecrypting(true);
 
     const decryptName = async () => {
-      if (student.keyPairId !== authContext.keyPairId) {
+      if (keyPairId !== authContext.keyPairId) {
         // no need trying to decrypt if the key pair is not the same that was used to encrypt
         setDecryptedName(null);
         setIsDecrypting(false);
@@ -46,9 +49,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
       }
 
       const decryptedIdentity: StudentIdentity = JSON.parse(
-        await authContext.keyPair.decryptString(
-          decodeBase64(student.pseudonym),
-        ),
+        await authContext.keyPair.decryptString(decodeBase64(pseudonym)),
       );
 
       if (isCancelled) {
@@ -61,7 +62,13 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
     };
 
     decryptName().catch((e) => {
-      console.error("Decryption failed", e, student, authContext.keyPairId);
+      console.error(
+        "Decryption failed",
+        e,
+        pseudonym,
+        keyPairId,
+        authContext.keyPairId,
+      );
 
       setDecryptedName(null);
 
@@ -72,11 +79,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
 
       setIsDecrypting(false);
     });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [authContext, student]);
+  }, [authContext, pseudonym, keyPairId]);
 
   if (isDecrypting) {
     return (
@@ -92,7 +95,7 @@ export const StudentName = ({ student }: { student: ClassStudent }) => {
   if (decryptedName === null) {
     return (
       <NameWrapper>
-        {student.pseudonym}{" "}
+        {pseudonym}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}

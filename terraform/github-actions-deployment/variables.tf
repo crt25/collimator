@@ -24,6 +24,10 @@ variable "ecr_repository_arns" {
   type = list(string)
 }
 
+variable "ecs_service_arns" {
+  type = list(string)
+}
+
 variable "s3_bucket_arns" {
   type = list(string)
 }

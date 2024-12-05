@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { User, Prisma, KeyPair } from "@prisma/client";
+import { ForbiddenException, Injectable } from "@nestjs/common";
+import { User, Prisma, KeyPair, RegistrationToken } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
+import { randomBytes } from "crypto";
 
 @Injectable()
 export class UsersService {
@@ -58,6 +59,35 @@ export class UsersService {
         },
         teacherId: userId,
         salt,
+      },
+    });
+  }
+
+  async createRegistrationTokenOrThrow(
+    userId: UserId,
+  ): Promise<RegistrationToken> {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    if (user.oidcSub !== null) {
+      throw new ForbiddenException();
+    }
+
+    // generate strong, cryptographically secure token
+    // 128 bits (16 bytes) should be plenty, let's use 256 for good measure
+    const token = randomBytes(32).toString("hex");
+
+    await this.prisma.registrationToken.deleteMany({
+      where: {
+        userId,
+      },
+    });
+
+    return await this.prisma.registrationToken.create({
+      data: {
+        token,
+        userId,
       },
     });
   }
