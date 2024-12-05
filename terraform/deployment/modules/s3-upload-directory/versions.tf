@@ -1,4 +1,4 @@
-﻿terraform {
+terraform {
   required_version = ">= 1.5"
 
   required_providers {
@@ -6,12 +6,6 @@
       source  = "hashicorp/aws"
       version = "5.75.0"
     }
-  }
-
-  backend "s3" {
-    bucket = var.tfstate_bucket_name
-    key    = "github-actions-deployment/${var.environment}"
-    region = var.region
   }
 }
 
