@@ -10,6 +10,7 @@ import {
   buildClientConfig,
   getFreePortAndLock,
   getUrl,
+  gracefullyStopBackend,
   killProcessByPid,
   PostgresConfig,
   setupBackendPort,
@@ -111,23 +112,23 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
       const testUrl = getUrl(testConfig);
 
+      // the frontend port must be different from the backend port
+      // and we cannot sequentially start them using automatic port allocation
+      // because they need to know each other's ports before starting (env vars)
       const backendPort = await getFreePortAndLock();
-      const frontendPort = await getFreePortAndLock(
-        // the frontend port must be different from the backend port
-        // and we cannot sequentially start them using automatic port allocation
-        // because they need to know each other's ports before starting (env vars)
-        backendPort + 1,
-      );
+      const backendStopPort = await getFreePortAndLock(backendPort + 1);
+      const frontendPort = await getFreePortAndLock(backendPort + 2);
 
       if (isDebug) {
         console.log(
-          `Using backend http://localhost:${backendPort} and frontend http://localhost:${frontendPort}`,
+          `Using backend http://localhost:${backendPort} (http://localhost:${backendStopPort} to stop) and frontend http://localhost:${frontendPort}`,
         );
       }
 
       const backendProcess = startBackend({
         databaseUrl: testUrl,
         port: backendPort,
+        stopPort: backendStopPort,
         frontendHostname: `http://localhost:${frontendPort}`,
         jwkEndpoint: `${mockOidcProviderUrl}/__oidc__/jwks`,
         userInfoEndpoint: `${mockOidcProviderUrl}/__oidc__/userinfo`,
@@ -184,9 +185,11 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         error = e;
       });
 
-      // stop the started servers
-      killProcessByPid(backendProcess.pid);
+      // kill the frontend
       killProcessByPid(frontendProcess.pid);
+
+      // gracefully stop the backend - this is required for coverage output
+      await gracefullyStopBackend(backendProcess, backendStopPort);
 
       // drop the database
       {
@@ -197,6 +200,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       }
 
       unlockPort(backendPort);
+      unlockPort(backendStopPort);
       unlockPort(frontendPort);
 
       if (error) {

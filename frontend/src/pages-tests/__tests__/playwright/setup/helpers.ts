@@ -21,6 +21,7 @@ export type PostgresConfig = {
 export const portLockDirectory = "playwright/.port";
 
 export const setupBackendPort = 3999;
+export const setupBackendShutdownPort = 9999;
 export const setupFrontendPort = 3000;
 export const setupProjectNamePrefix = "setup:";
 
@@ -83,16 +84,18 @@ export const startMockOidcServer = (config: {
 export const startBackend = (config: {
   databaseUrl?: string;
   port?: number | string;
+  stopPort?: number | string;
   frontendHostname?: string;
   jwkEndpoint?: string;
   userInfoEndpoint?: string;
   clientId?: string;
 }): ChildProcessWithoutNullStreams =>
-  spawn("node", ["dist/main.js"], {
+  spawn("yarn", ["start:built:coverage"], {
     env: {
       NODE_ENV: "production",
       DATABASE_URL: config.databaseUrl,
       PORT: config.port?.toString(),
+      STOP_PORT: config.stopPort?.toString(),
       FRONTEND_HOSTNAME: config.frontendHostname,
       OPEN_ID_CONNECT_JWK_ENDPOINT: config.jwkEndpoint,
       OPEN_ID_CONNECT_USERINFO_ENDPOINT: config.userInfoEndpoint,
@@ -172,6 +175,43 @@ export const killProcessByPid = (pid: number): void => {
 
 export const killProcess = (pidFile: string): void =>
   killProcessByPid(parseInt(readFileSync(pidFile, "utf-8"), 10));
+
+export const triggerBackendGracefulShutdown = async (
+  stopPort: number,
+): Promise<void> => {
+  await fetch(`http://localhost:${stopPort}`);
+};
+
+export const gracefullyStopBackend = async (
+  backendProcess: ChildProcessWithoutNullStreams,
+  stopPort: number,
+): Promise<void> =>
+  new Promise((resolve) => {
+    // resolve the promise once the process exists
+    backendProcess.on("close", resolve);
+
+    // trigger the stop and wait for it to terminate
+    triggerBackendGracefulShutdown(stopPort);
+  });
+
+export const waitForProcessToStop = (
+  pid: number,
+  maxTries = 60,
+  timeoutMs = 1000,
+): Promise<void> =>
+  waitUntil(
+    async () => {
+      // some black magic - https://stackoverflow.com/a/21296291/2897827
+      try {
+        process.kill(pid, 0);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    maxTries,
+    timeoutMs,
+  );
 
 export const waitUntil = async (
   condition: () => Promise<boolean>,

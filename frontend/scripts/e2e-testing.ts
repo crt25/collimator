@@ -23,7 +23,7 @@ const main = async (): Promise<void> => {
   }
 
   // kill existing processes if they are running
-  killE2eSetupProcesses();
+  await killE2eSetupProcesses();
 
   // add shutdown hook
   process.on("exit", () => {
@@ -31,6 +31,7 @@ const main = async (): Promise<void> => {
   });
 
   const backendPort = process.env.BACKEND_PORT;
+  const backendStopPort = process.env.BACKEND_STOP_PORT;
   const oidcMockServerPort = process.env.OIDC_MOCK_SERVER_PORT;
   const oidcClientId = process.env.OIDC_CLIENT_ID;
 
@@ -105,6 +106,7 @@ const main = async (): Promise<void> => {
   const backendProcess = startBackend({
     databaseUrl: process.env.DATABASE_URL,
     port: backendPort,
+    stopPort: backendStopPort,
     frontendHostname: process.env.FRONTEND_URL,
     jwkEndpoint: process.env.OPENID_CONNECT_JWK_ENDPOINT,
     userInfoEndpoint: process.env.OPENID_CONNECT_USERINFO_ENDPOINT,

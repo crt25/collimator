@@ -7,6 +7,7 @@ import {
 } from "@/pages-tests/__tests__/playwright/setup/config";
 import {
   setupBackendPort,
+  setupBackendShutdownPort,
   setupFrontendPort,
   setupProjectNamePrefix,
 } from "@/pages-tests/__tests__/playwright/setup/helpers";
@@ -97,6 +98,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
       FRONTEND_URL: frontendUrl,
       // 3) the backend server
       BACKEND_PORT: setupBackendPort.toString(),
+      BACKEND_STOP_PORT: setupBackendShutdownPort.toString(),
       OPENID_CONNECT_JWK_ENDPOINT: `${mockOidcProviderUrl}/__oidc__/jwks`,
       OPENID_CONNECT_USERINFO_ENDPOINT: `${mockOidcProviderUrl}/__oidc__/userinfo`,
       OIDC_CLIENT_ID: mockOidcClientId,
@@ -106,8 +108,8 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     stdout: "pipe",
     stderr: "pipe",
 
-    // timeout for starting up the development server
-    timeout: 120 * 1000,
+    // timeout for building the frontend, starting the backend, frontend and OpenID connect mock server
+    timeout: 180 * 1000,
   },
 };
 
