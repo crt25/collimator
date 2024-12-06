@@ -6,7 +6,7 @@ import {
 } from "../selectors";
 
 export abstract class ListPageModel {
-  private readonly itemPrefix: string;
+  protected readonly itemPrefix: string;
   protected readonly page: Page;
 
   protected constructor(page: Page, itemPrefix: string) {

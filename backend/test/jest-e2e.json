@@ -13,6 +13,6 @@
     "\\.d\\.ts$",
     "\\.spec\\.(t|j)s$"
   ],
-  "coverageDirectory": "./coverage-e2e",
+  "coverageDirectory": "./coverage-nest-e2e",
   "setupFilesAfterEnv": ["<rootDir>/test/setup-prisma.ts"]
 }

@@ -1,9 +1,7 @@
 import { AuthenticationProvider, PrismaClient } from "@prisma/client";
 import { randomBytes } from "crypto";
 
-const prisma = new PrismaClient();
-
-async function main(): Promise<void> {
+export const seedProduction = async (prisma: PrismaClient): Promise<void> => {
   const count = await prisma.user.count({
     where: { email: "nico@anansi-solutions.net" },
   });
@@ -26,14 +24,4 @@ async function main(): Promise<void> {
 
     console.log(["admin", admin, token.token]);
   }
-}
-
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+};

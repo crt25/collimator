@@ -28,8 +28,18 @@ next-env.d.ts
 
 /playwright-report/
 /playwright/.cache
-/playwright/.auth/**/*
-!/playwright/.auth/.gitkeep
+
+# override parent .gitignore
+!/playwright/.*
+
+# ignore all files in directories
+/playwright/.*/**/*
+# except .gitkeep
+!/playwright/.*/.gitkeep
+
+
 /blob-report/
 
 *storybook.log
+
+.env.test
