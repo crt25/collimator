@@ -7,12 +7,8 @@ import {
 } from "react";
 import { io } from "socket.io-client";
 import {
-  AdminOrTeacherAuthenticated,
   AuthenticationContext,
-  isFullyAuthenticated,
-  isStudentLocallyAuthenticated,
-  StudentAuthenticated,
-  StudentLocallyAuthenticated,
+  AuthenticationContextType,
 } from "./AuthenticationContext";
 import { backendHostName } from "@/utilities/constants";
 import { CollimatorSocket } from "@/types/websocket-events";
@@ -37,14 +33,11 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     useHandleStudentAuthenticationRequest();
 
   const setupListeners = useCallback(
-    (
-      authContext:
-        | AdminOrTeacherAuthenticated
-        | StudentAuthenticated
-        | StudentLocallyAuthenticated,
-      socket: CollimatorSocket,
-    ) => {
-      if (authContext.role === UserRole.student) {
+    (authContext: AuthenticationContextType, socket: CollimatorSocket) => {
+      if (
+        authContext.role !== UserRole.admin &&
+        authContext.role !== UserRole.teacher
+      ) {
         return;
       }
 
@@ -59,13 +52,6 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   useEffect(() => {
-    if (
-      !isFullyAuthenticated(authContext) &&
-      !isStudentLocallyAuthenticated(authContext)
-    ) {
-      return;
-    }
-
     let webSocket: CollimatorSocket | null = null;
 
     const connectToWebSocket = async () => {

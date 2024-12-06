@@ -38,6 +38,7 @@ export * from "./existingSolutionDto";
 export * from "./existingTaskDto";
 export * from "./existingUserDto";
 export * from "./existingUserDtoPublicKeyId";
+export * from "./isSessionAnonymousDto";
 export * from "./keyPairDto";
 export * from "./privateKeyDto";
 export * from "./publicKeyDto";

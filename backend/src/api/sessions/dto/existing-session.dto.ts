@@ -30,6 +30,10 @@ export class ExistingSessionDto
   @Expose()
   readonly description!: string;
 
+  @ApiProperty()
+  @Expose()
+  readonly isAnonymous!: boolean;
+
   @IsEnum(SessionStatus)
   @IsNotEmpty()
   @ApiProperty({

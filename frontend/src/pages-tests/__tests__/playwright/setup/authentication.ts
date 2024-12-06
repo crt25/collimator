@@ -9,7 +9,10 @@ import { headerCurrentUserName } from "../selectors";
 import * as fs from "fs";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { getSessionsControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
+import {
+  getSessionsControllerFindOneV0Url,
+  getSessionsControllerIsAnonymousV0Url,
+} from "@/api/collimator/generated/endpoints/sessions/sessions";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 import { adminUser } from "./seeding/user";
 
@@ -54,6 +57,18 @@ setup.describe("authentication against a mock backend", () => {
     });
 
     await page.route(
+      `${apiURL}${getSessionsControllerIsAnonymousV0Url(2, 3)}`,
+      (route) =>
+        route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify({
+            id: sessionResponse.id,
+            isAnonymous: false,
+          }),
+        }),
+    );
+
+    await page.route(
       `${apiURL}${getSessionsControllerFindOneV0Url(2, 3)}`,
       (route) =>
         route.fulfill({
@@ -64,6 +79,7 @@ setup.describe("authentication against a mock backend", () => {
               ...sessionResponse.class,
               id: 2,
             },
+            isAnonymous: false,
           }),
         }),
     );
@@ -79,7 +95,7 @@ setup.describe("authentication against a mock backend", () => {
     await page.waitForURL(/session\/3\/join/);
 
     await expect(page.locator(headerCurrentUserName).innerText()).resolves.toBe(
-      adminUser.email,
+      adminUser.name,
     );
   });
 });

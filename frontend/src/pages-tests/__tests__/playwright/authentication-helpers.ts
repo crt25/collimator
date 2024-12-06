@@ -333,11 +333,14 @@ export const setupForMockStudentAuthentication = async (
           ) as StudentAuthenticationRequestContent;
 
           // we skip the verification of the id token here
-          const idTokenPayload = JSON.parse(
-            Buffer.from(request.idToken.split(".")[1], "base64url").toString(
-              "utf-8",
-            ),
-          );
+          const studentName = request.isAnonymous
+            ? request.pseudonym
+            : JSON.parse(
+                Buffer.from(
+                  request.idToken.split(".")[1],
+                  "base64url",
+                ).toString("utf-8"),
+              )["name"];
 
           ws.send(
             encode({
@@ -348,7 +351,7 @@ export const setupForMockStudentAuthentication = async (
                 {
                   // use the student's name as the authentication token
                   authenticationToken: encodeBase64(
-                    await ephemeralKey.encryptString(idTokenPayload["name"]),
+                    await ephemeralKey.encryptString(studentName),
                   ),
                 } as StudentAuthenticationResponse,
               ],

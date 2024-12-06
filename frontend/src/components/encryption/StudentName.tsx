@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: "StudentName.cannotDecrypt",
     defaultMessage: "Unable to decrypt identity",
   },
+  anonymous: {
+    id: "StudentName.anonymous",
+    defaultMessage: "Anonymous",
+  },
 });
 
 export const StudentName = ({
@@ -28,6 +32,7 @@ export const StudentName = ({
 
   const [isDecrypting, setIsDecrypting] = useState(true);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
+  const [isAnonymousUser, setIsAnonymousUser] = useState<boolean>(false);
 
   useEffect(() => {
     const isCancelled = false;
@@ -57,6 +62,7 @@ export const StudentName = ({
         return;
       }
 
+      setIsAnonymousUser(decryptedIdentity.longTermIdentifier === null);
       setDecryptedName(decryptedIdentity.name);
       setIsDecrypting(false);
     };
@@ -104,5 +110,12 @@ export const StudentName = ({
     );
   }
 
-  return <NameWrapper>{decryptedName}</NameWrapper>;
+  return (
+    <NameWrapper>
+      {decryptedName}
+      {isAnonymousUser
+        ? " (" + intl.formatMessage(messages.anonymous) + ")"
+        : ""}
+    </NameWrapper>
+  );
 };

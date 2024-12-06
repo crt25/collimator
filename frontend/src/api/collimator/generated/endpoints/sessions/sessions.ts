@@ -10,6 +10,7 @@ import type {
   DeletedSessionDto,
   ExistingSessionDto,
   ExistingSessionExtendedDto,
+  IsSessionAnonymousDto,
   UpdateSessionDto,
 } from "../../models";
 import { fetchApi } from "../../../../fetch";
@@ -44,6 +45,27 @@ export const sessionsControllerFindAllV0 = async (
 ): Promise<ExistingSessionDto[]> => {
   return fetchApi<Promise<ExistingSessionDto[]>>(
     getSessionsControllerFindAllV0Url(classId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
+export const getSessionsControllerIsAnonymousV0Url = (
+  classId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${id}/is-anonymous`;
+};
+
+export const sessionsControllerIsAnonymousV0 = async (
+  classId: number,
+  id: number,
+  options?: RequestInit,
+): Promise<IsSessionAnonymousDto> => {
+  return fetchApi<Promise<IsSessionAnonymousDto>>(
+    getSessionsControllerIsAnonymousV0Url(classId, id),
     {
       ...options,
       method: "GET",

@@ -19,11 +19,6 @@ import {
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
 
-const getEmailFromClaims = (userInfo: UserInfoResponse): string | undefined =>
-  // if the email is not verified, return undefined
-  // otherwise, return the email (which may also be undefined)
-  userInfo.email_verified === false ? undefined : userInfo.email;
-
 const getNameFromUserInfo = (
   userInfo: UserInfoResponse,
 ): string | undefined => {
@@ -79,12 +74,11 @@ const OpenIdConnectRedirect = () => {
           redirectPath,
           registrationToken,
         }) => {
-          const email = getEmailFromClaims(userInfo);
           const name = getNameFromUserInfo(userInfo);
 
-          if (!email || !name) {
+          if (!name) {
             throw new Error(
-              `Email or name not found in user info: ${JSON.stringify(userInfo)}`,
+              `Name not found in user info: ${JSON.stringify(userInfo)}`,
             );
           }
 
@@ -96,7 +90,6 @@ const OpenIdConnectRedirect = () => {
               idToken: idToken,
               authenticationToken: undefined,
               role: UserRole.student,
-              email,
               name,
             });
 
