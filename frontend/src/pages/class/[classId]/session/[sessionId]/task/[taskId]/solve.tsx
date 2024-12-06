@@ -9,6 +9,8 @@ import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { scratchAppHostName } from "@/utilities/constants";
+import { downloadBlob } from "@/utilities/download";
+import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -91,6 +93,31 @@ const SolveTaskPage = () => {
     }
   }, [taskFile]);
 
+  const onImport = useCallback(async () => {
+    if (!embeddedApp.current) {
+      return;
+    }
+
+    const task = await readSingleFileFromDisk();
+
+    await embeddedApp.current.sendRequest({
+      procedure: "loadTask",
+      arguments: task,
+    });
+  }, []);
+
+  const onExport = useCallback(async () => {
+    if (!embeddedApp.current) {
+      return;
+    }
+
+    const response = await embeddedApp.current.sendRequest({
+      procedure: "getTask",
+    });
+
+    downloadBlob(response.result, "task.sb3");
+  }, []);
+
   if (!sessionId || !taskId) {
     return null;
   }
@@ -129,6 +156,16 @@ const SolveTaskPage = () => {
               id="SolveTask.getStarted"
               defaultMessage="Submit Solution"
             />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={onExport}>
+            <FormattedMessage id="SolveTask.export" defaultMessage="Export" />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={onImport}>
+            <FormattedMessage id="SolveTask.import" defaultMessage="Import" />
           </Button>
         </li>
       </Header>
