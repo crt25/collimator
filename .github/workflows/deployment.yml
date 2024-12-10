@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-55_anonymous_sessions # We need to deploy before merged to main (End of November 2024) - will be removed later
+      - feature/import-export-solutions # We need to deploy before merged to main (6th of December) - will be removed later
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -28,10 +28,6 @@ jobs:
   tests:
     uses: ./.github/workflows/tests.yml
     secrets: inherit
-    concurrency:
-      # avoid running the tests twice for a given branch
-      group: ${{ github.head_ref || github.ref_name }}-tests
-      cancel-in-progress: true
 
   deploy:
     needs: [tests]
