@@ -170,6 +170,9 @@ export const useEmbeddedScratch = (
 
             try {
               await loadCrtProject(vm, taskMergedWithSubmission);
+              // TODO: change the editing target to the relevant sprite
+              // const subTaskId = request.arguments.subTaskId;
+              // vm.setEditingTarget(subTaskId);
               respondToMessageEvent({
                 procedure: "loadSubmission",
               });

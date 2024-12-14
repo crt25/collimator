@@ -13,7 +13,7 @@ export class CurrentAnalysis {
   readonly studentPseudonym: string;
   readonly studentKeyPairId: number | null;
 
-  protected constructor({
+  public constructor({
     id,
     solutionId,
     generalAst,

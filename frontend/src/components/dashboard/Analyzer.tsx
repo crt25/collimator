@@ -1,22 +1,24 @@
-import styled from "@emotion/styled";
+import { useCallback, useMemo, useState } from "react";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Row } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
-import Select from "../form/Select";
-import { useCallback, useState } from "react";
-import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
-import { FilterCriterion } from "./filter";
+import styled from "@emotion/styled";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
-import Analysis from "./Analysis";
-import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import CodeComparison from "./CodeComparison";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import MultiSwrContent from "../MultiSwrContent";
+import { useTask } from "@/api/collimator/hooks/tasks/useTask";
+import { ActorNode } from "@ast/ast-nodes";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import MultiSwrContent from "../MultiSwrContent";
+import Select from "../form/Select";
+import Input from "../form/Input";
 import { AxesCriterionType } from "./axes";
 import { ChartSplit } from "./chartjs-plugins/select";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
+import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
+import { FilterCriterion } from "./filter";
 import { useGrouping } from "./hooks/useGrouping";
-import Input from "../form/Input";
+import Analysis from "./Analysis";
+import CodeComparison from "./CodeComparison";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -35,6 +37,14 @@ const messages = defineMessages({
     id: "Analyzer.taskSelection",
     defaultMessage: "Task Selection",
   },
+  subTaskSelection: {
+    id: "Analyzer.subTaskSelection",
+    defaultMessage: "Sub-task Selection",
+  },
+  allSubTasks: {
+    id: "Analyzer.allSubTasks",
+    defaultMessage: "All sub-tasks",
+  },
   automaticGrouping: {
     id: "Analyzer.automaticGrouping",
     defaultMessage: "Automatic Grouping",
@@ -45,10 +55,35 @@ const messages = defineMessages({
   },
 });
 
+/**
+ * Generate a derived analysis, keeping everything identical,
+ * except it extracts a subset of the general AST.
+ *
+ * @param analysis The starting analysis
+ * @param id The ID of the subtask to extract.
+ */
+export function selectSubAnalysis(
+  analysis: CurrentAnalysis,
+  id: string,
+): CurrentAnalysis {
+  return new CurrentAnalysis({
+    ...analysis,
+    generalAst: [(analysis.generalAst as ActorNode[])[parseInt(id, 10)]],
+  });
+}
+
+const ALL_SUBTASKS = "__ANALYZE_ALL_SUBTASKS__";
+
 const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
+  const intl = useIntl();
+
   const [selectedTask, setSelectedTask] = useState<number | undefined>(
     session.tasks[0]?.id,
   );
+
+  const [selectedSubTaskId, setSelectedSubTaskId] = useState<
+    string | undefined
+  >();
 
   const [isAutomaticGrouping, setIsAutomaticGrouping] = useState(false);
   const [numberOfGroups, setNumberOfGroups] = useState(3);
@@ -77,6 +112,19 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask,
   );
 
+  // TODO: This is a temporary solution to get the subtasks, find a better way
+  const aSolution = solutions?.find((s) => s.generalAst.length > 0);
+  const subtasks =
+    aSolution?.generalAst.map((_, index) => index.toString()) ?? [];
+
+  const subTaskSolutions = useMemo(() => {
+    return solutions?.map((solution) =>
+      selectedSubTaskId !== undefined
+        ? selectSubAnalysis(solution, selectedSubTaskId)
+        : solution,
+    );
+  }, [solutions, selectedSubTaskId]);
+
   const {
     isGroupingAvailable,
     categorizedDataPoints,
@@ -86,7 +134,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   } = useGrouping(
     isAutomaticGrouping,
     numberOfGroups,
-    solutions,
+    subTaskSolutions,
     filters,
     splits,
     xAxis,
@@ -148,6 +196,30 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 alwaysShow
               />
 
+              <Select
+                label={messages.subTaskSelection}
+                options={[
+                  {
+                    label: intl.formatMessage(messages.allSubTasks),
+                    value: ALL_SUBTASKS,
+                  },
+                  ...subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  })),
+                ]}
+                data-testid="select-task"
+                onChange={(e) =>
+                  setSelectedSubTaskId(
+                    e.target.value !== ALL_SUBTASKS
+                      ? e.target.value
+                      : undefined,
+                  )
+                }
+                value={selectedSubTaskId}
+                alwaysShow
+              />
+
               <AnalyzerFilterForm
                 taskType={task.type}
                 filters={filters}
@@ -200,6 +272,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 classId={session.klass.id}
                 sessionId={session.id}
                 taskId={task.id}
+                subTaskId={selectedSubTaskId}
                 taskType={task.type}
                 groupAssignments={groupAssignments}
                 groups={groups}

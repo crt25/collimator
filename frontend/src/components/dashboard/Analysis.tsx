@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
+import { defineMessages, useIntl } from "react-intl";
+import styled from "@emotion/styled";
 import { Chart } from "primereact/chart";
 import {
   ChartConfiguration,
@@ -10,28 +11,27 @@ import {
   Plugin,
   ChartEvent,
 } from "chart.js";
-import { defineMessages, useIntl } from "react-intl";
-import styled from "@emotion/styled";
-import Select from "../form/Select";
-import { TaskType } from "@/api/collimator/generated/models";
-import XAxisSelector from "./axes/XAxisSelector";
-import YAxis from "./axes/YAxis";
-import XAxis from "./axes/XAxis";
-import YAxisSelector from "./axes/YAxisSelector";
-import Tooltip from "./Tooltip";
-import { getCanvasPattern, getCategoryName } from "./category";
-import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
+import { _DeepPartialObject } from "chart.js/dist/types/utils";
 import {
   AnnotationOptions,
   AnnotationPluginOptions,
   EventContext,
 } from "chartjs-plugin-annotation";
-import { _DeepPartialObject } from "chart.js/dist/types/utils";
-import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
-import { Colors } from "@/constants/colors";
-import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
-import { getStudentNickname } from "@/utilities/student-name";
+import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { Colors } from "@/constants/colors";
+import { getStudentNickname } from "@/utilities/student-name";
+import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
+import XAxisSelector from "./axes/XAxisSelector";
+import YAxis from "./axes/YAxis";
+import XAxis from "./axes/XAxis";
+import YAxisSelector from "./axes/YAxisSelector";
+import { getCanvasPattern, getCategoryName } from "./category";
+import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
+import Select from "../form/Select";
+import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
+import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
+import Tooltip from "./Tooltip";
 
 type AdditionalChartData = {
   groupName: string;

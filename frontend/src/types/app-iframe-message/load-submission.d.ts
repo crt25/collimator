@@ -10,6 +10,7 @@ export type LoadSubmissionRequest = RemoteProcedureCallRequest<
   {
     task: Blob;
     submission: Blob;
+    subTaskId?: string;
   }
 >;
 

@@ -104,6 +104,7 @@ const CodeComparison = ({
   classId,
   sessionId,
   taskId,
+  subTaskId,
   taskType,
   groupAssignments,
   groups,
@@ -111,6 +112,7 @@ const CodeComparison = ({
   classId: number;
   sessionId: number;
   taskId: number;
+  subTaskId?: string;
   taskType: TaskType;
   groupAssignments: SolutionGroupAssignment[];
   groups: Group[];
@@ -316,6 +318,7 @@ const CodeComparison = ({
                 classId={classId}
                 sessionId={sessionId}
                 taskId={taskId}
+                subTaskId={subTaskId}
                 taskType={taskType}
                 solutionId={leftSolution.solution.id}
               />
@@ -361,6 +364,7 @@ const CodeComparison = ({
                 classId={classId}
                 sessionId={sessionId}
                 taskId={taskId}
+                subTaskId={subTaskId}
                 taskType={taskType}
                 solutionId={rightSolution.solution.id}
               />

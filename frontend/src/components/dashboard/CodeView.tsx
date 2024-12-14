@@ -20,12 +20,14 @@ const CodeView = ({
   classId,
   sessionId,
   taskId,
+  subTaskId,
   taskType,
   solutionId,
 }: {
   classId: number;
   sessionId: number;
   taskId: number;
+  subTaskId?: string;
   taskType: TaskType;
   solutionId: number;
 }) => {
@@ -52,10 +54,11 @@ const CodeView = ({
         arguments: {
           task: taskFile,
           submission: solutionFile,
+          subTaskId: subTaskId,
         },
       });
     }
-  }, [taskFile, solutionFile]);
+  }, [taskFile, solutionFile, subTaskId]);
 
   if (!iframeSrc) {
     return (
