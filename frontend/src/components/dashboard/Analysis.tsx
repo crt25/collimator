@@ -30,9 +30,11 @@ import { _DeepPartialObject } from "chart.js/dist/types/utils";
 import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 import { Colors } from "@/constants/colors";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 type AdditionalChartData = {
   groupName: string;
+  solutions?: CurrentAnalysis[];
 };
 
 type PointWithAdditionalData = BubbleDataPoint & {
@@ -43,6 +45,10 @@ const messages = defineMessages({
   groupName: {
     id: "Analysis.groupName",
     defaultMessage: "Group",
+  },
+  numberOfStudents: {
+    id: "Analysis.numberOfStudents",
+    defaultMessage: "Number of Students",
   },
   xAxis: {
     id: "Analysis.xAxis",
@@ -133,6 +139,7 @@ const Analysis = ({
           r: bubbleChartRadius,
           additionalData: {
             groupName: dataPoint.groupName,
+            solutions: dataPoint.solutions,
           } as AdditionalChartData,
         })),
 
@@ -397,32 +404,58 @@ const Analysis = ({
         <XAxis />
         <YAxis />
         <Tooltip ref={tooltipRef} isShown={tooltipDataPoints.length > 0}>
-          {tooltipDataPoints.map((data, index) => (
-            <div key={`${data.x}-${data.y}-${index}`}>
+          {tooltipDataPoints.length === 0 ? null : (
+            <div>
               <div className="data">
                 <div>
                   <span>
                     <strong>{intl.formatMessage(messages.groupName)}</strong>
                   </span>
                   <span>
-                    <strong>{data.additionalData.groupName}</strong>
+                    <strong>
+                      {tooltipDataPoints[0].additionalData.groupName}
+                    </strong>
                   </span>
                 </div>
                 <div>
                   <span>
                     {intl.formatMessage(selectedXAxis?.label ?? messages.xAxis)}
                   </span>
-                  <span>{data.x}</span>
+                  <span>{tooltipDataPoints[0].x}</span>
                 </div>
                 <div>
                   <span>
                     {intl.formatMessage(selectedYAxis?.label ?? messages.yAxis)}
                   </span>
-                  <span>{data.y}</span>
+                  <span>{tooltipDataPoints[0].y}</span>
+                </div>
+                <div>
+                  <span>{intl.formatMessage(messages.numberOfStudents)}</span>
+                  <span>
+                    {tooltipDataPoints
+                      .map((p) => p.additionalData.solutions?.length ?? 0)
+                      .reduce((sum, a) => sum + a, 0)}
+                  </span>
+                </div>
+                <div>
+                  <ul>
+                    {tooltipDataPoints.map((dataPoint) => {
+                      const solutions = dataPoint.additionalData.solutions;
+                      return solutions === undefined || solutions.length === 0
+                        ? null
+                        : solutions.map((solution) => (
+                            <li key={solution.id}>
+                              <span>
+                                {solution.studentPseudonym}
+                              </span>
+                            </li>
+                          ));
+                    })}
+                  </ul>
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </Tooltip>
       </ChartWrapper>
       <XAxisSelector>

@@ -8,6 +8,7 @@ export interface CategorizedDataPoints {
 
 export interface DataPoint {
   groupName: string;
+  solutions?: CurrentAnalysis[];
   x: number;
   y: number;
 }

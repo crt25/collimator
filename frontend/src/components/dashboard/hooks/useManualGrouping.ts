@@ -78,9 +78,9 @@ const isWithinGroup = (
   group.minX <= x && x < group.maxX && group.minY <= y && y < group.maxY;
 
 interface IntermediateAnalysis extends DataPoint {
-  solution: CurrentAnalysis;
   category: Category;
   groupKey: string;
+  solutions: [CurrentAnalysis];
 }
 
 export const useManualGrouping = (
@@ -180,7 +180,7 @@ export const useManualGrouping = (
         }
 
         return {
-          solution,
+          solutions: [solution],
           x: xAxisValue,
           y: yAxisValue,
           category,
@@ -211,7 +211,7 @@ export const useManualGrouping = (
       ),
       groupAssignment: mapEntries.flatMap(([_, solutions]) =>
         solutions.map((solution) => ({
-          solution: solution.solution,
+          solution: solution.solutions[0],
           groupKey: solution.groupKey,
         })),
       ),
