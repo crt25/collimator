@@ -13,6 +13,7 @@ import CodeView from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import { Group, SolutionGroupAssignment } from "./hooks/types";
+import { getStudentNickname } from "@/utilities/student-name";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -64,10 +65,13 @@ const getOptions = async (
     value: solution.solution.id,
   }));
 
-  if ("keyPair" in authContext) {
-    try {
-      options = await Promise.all(
-        options.map(async ({ label, value }) => {
+  // TODO: && this with a parameter
+  const showStudentName = false && "keyPair" in authContext;
+
+  options = await Promise.all(
+    options.map(async ({ label, value }) => {
+      if (showStudentName) {
+        try {
           const decryptedIdentity: StudentIdentity = JSON.parse(
             await authContext.keyPair.decryptString(decodeBase64(label)),
           );
@@ -76,12 +80,17 @@ const getOptions = async (
             label: decryptedIdentity.name,
             value,
           };
-        }),
-      );
-    } catch {
-      // if decryption fails, use the pseudonym strings
-    }
-  }
+        } catch {
+          // if decryption fails, use the nickname
+        }
+      }
+
+      return {
+        label: getStudentNickname(label),
+        value,
+      };
+    }),
+  );
 
   return options;
 };

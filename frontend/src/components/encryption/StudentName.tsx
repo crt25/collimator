@@ -1,11 +1,12 @@
-import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { useContext, useEffect, useState } from "react";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { decodeBase64 } from "@/utilities/crypto/base64";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { decodeBase64 } from "@/utilities/crypto/base64";
+import { getStudentNickname } from "@/utilities/student-name";
 
 const NameWrapper = styled.span``;
 
@@ -23,9 +24,11 @@ const messages = defineMessages({
 export const StudentName = ({
   pseudonym,
   keyPairId,
+  showActualName,
 }: {
   pseudonym: string;
   keyPairId: number | null;
+  showActualName?: boolean;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
@@ -101,7 +104,7 @@ export const StudentName = ({
   if (decryptedName === null) {
     return (
       <NameWrapper>
-        {pseudonym}{" "}
+        {getStudentNickname(pseudonym)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}
@@ -110,9 +113,14 @@ export const StudentName = ({
     );
   }
 
+  const name =
+    !showActualName || isAnonymousUser
+      ? getStudentNickname(pseudonym)
+      : decryptedName;
+
   return (
     <NameWrapper>
-      {decryptedName}
+      {name}
       {isAnonymousUser
         ? " (" + intl.formatMessage(messages.anonymous) + ")"
         : ""}

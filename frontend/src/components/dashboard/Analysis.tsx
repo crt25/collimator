@@ -30,6 +30,7 @@ import { _DeepPartialObject } from "chart.js/dist/types/utils";
 import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 import { Colors } from "@/constants/colors";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
+import { getStudentNickname } from "@/utilities/student-name";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 type AdditionalChartData = {
@@ -446,7 +447,7 @@ const Analysis = ({
                         : solutions.map((solution) => (
                             <li key={solution.id}>
                               <span>
-                                {solution.studentPseudonym}
+                                {getStudentNickname(solution.studentPseudonym)}
                               </span>
                             </li>
                           ));
