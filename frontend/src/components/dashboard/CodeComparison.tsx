@@ -138,10 +138,12 @@ const CodeComparison = ({
         label: intl.formatMessage(messages.defaultGroupOption),
         value: defaultGroupValue,
       },
-      ...groups.map((g) => ({
-        label: intl.formatMessage(messages.groupLabelPrefix) + g.label,
-        value: g.key,
-      })),
+      ...groups
+        .map((g) => ({
+          label: intl.formatMessage(messages.groupLabelPrefix) + g.label,
+          value: g.key,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
     ],
     [intl, groups],
   );
