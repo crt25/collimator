@@ -18,7 +18,11 @@ import { getStudentNickname } from "@/utilities/student-name";
 const messages = defineMessages({
   defaultGroupOption: {
     id: "CodeComparison.defaultOption",
-    defaultMessage: "Select a group",
+    defaultMessage: "Group: All students",
+  },
+  groupLabelPrefix: {
+    id: "CodeComparison.groupPrefix",
+    defaultMessage: "Group: ",
   },
   defaultSolutionOption: {
     id: "CodeComparison.defaultSolutionOption",
@@ -33,6 +37,7 @@ const CodeComparisonWrapper = styled.div`
 const SelectionMenu = styled.div`
   display: flex;
   flex-direction: row;
+  flex-flow: wrap;
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
@@ -134,7 +139,7 @@ const CodeComparison = ({
         value: defaultGroupValue,
       },
       ...groups.map((g) => ({
-        label: g.label,
+        label: intl.formatMessage(messages.groupLabelPrefix) + g.label,
         value: g.key,
       })),
     ],
@@ -145,7 +150,8 @@ const CodeComparison = ({
     () =>
       groupAssignments.find(
         (s) =>
-          s.groupKey === selectedLeftGroup &&
+          (s.groupKey === selectedLeftGroup ||
+            defaultGroupValue === selectedLeftGroup) &&
           s.solution.id === selectedLeftSolution,
       ),
     [groupAssignments, selectedLeftGroup, selectedLeftSolution],
@@ -155,7 +161,8 @@ const CodeComparison = ({
     () =>
       groupAssignments.find(
         (s) =>
-          s.groupKey === selectedRightGroup &&
+          (s.groupKey === selectedRightGroup ||
+            defaultGroupValue === selectedRightGroup) &&
           s.solution.id === selectedRightSolution,
       ),
     [groupAssignments, selectedRightGroup, selectedRightSolution],
@@ -163,7 +170,9 @@ const CodeComparison = ({
 
   useEffect(() => {
     const solutions = groupAssignments.filter(
-      (s) => s.groupKey === selectedLeftGroup,
+      (s) =>
+        selectedLeftGroup === defaultGroupValue ||
+        s.groupKey === selectedLeftGroup,
     );
 
     getOptions(authContext, solutions).then((options) => {
@@ -179,7 +188,9 @@ const CodeComparison = ({
 
   useEffect(() => {
     const solutions = groupAssignments.filter(
-      (s) => s.groupKey === selectedRightGroup,
+      (s) =>
+        selectedRightGroup === defaultGroupValue ||
+        s.groupKey === selectedRightGroup,
     );
 
     getOptions(authContext, solutions).then((options) => {
@@ -199,12 +210,14 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedLeftSolution,
       );
 
-      const leftGroup = groups.find((g) => g.key === selectedLeftGroup);
+      const leftGroup = groups.some((g) => g.key === selectedLeftGroup);
 
       if (leftSolution) {
-        setSelectedLeftGroup(leftSolution.groupKey);
         setSelectedLeftSolution(leftSolution.solution.id);
-      } else if (leftGroup) {
+        if (selectedLeftGroup !== defaultGroupValue) {
+          setSelectedLeftGroup(leftSolution.groupKey);
+        }
+      } else if (leftGroup || selectedLeftGroup === defaultGroupValue) {
         // de-select the solution if it no longer exists
         setSelectedLeftSolution(defaultSolutionValue);
       } else {
@@ -219,12 +232,14 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedRightSolution,
       );
 
-      const rightGroup = groups.find((g) => g.key === selectedRightGroup);
+      const rightGroup = groups.some((g) => g.key === selectedRightGroup);
 
       if (rightSolution) {
-        setSelectedRightGroup(rightSolution.groupKey);
         setSelectedRightSolution(rightSolution.solution.id);
-      } else if (rightGroup) {
+        if (selectedRightGroup !== defaultGroupValue) {
+          setSelectedRightGroup(rightSolution.groupKey);
+        }
+      } else if (rightGroup || selectedRightGroup === defaultGroupValue) {
         setSelectedRightSolution(defaultSolutionValue);
       } else {
         setSelectedRightGroup(defaultGroupValue);
