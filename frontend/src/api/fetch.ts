@@ -20,7 +20,11 @@ export const fetchApi = async <T>(
     throw new Error(`Unexpected response code ${response.status}`);
   }
 
-  return response.json() as T;
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
 };
 
 export const fetchFile = async (

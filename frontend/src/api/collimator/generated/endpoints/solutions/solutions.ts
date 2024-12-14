@@ -113,6 +113,34 @@ export const solutionsControllerFindOneV0 = async (
   );
 };
 
+/**
+ * @summary Delete all solutions by a student for a given session/task
+ */
+export const getSolutionsControllerDeleteOneV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/${id}`;
+};
+
+export const solutionsControllerDeleteOneV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return fetchApi<Promise<void>>(
+    getSolutionsControllerDeleteOneV0Url(classId, sessionId, taskId, id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
+
 export const getSolutionsControllerDownloadOneV0Url = (
   classId: number,
   sessionId: number,

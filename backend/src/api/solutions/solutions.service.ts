@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Solution, Prisma, SolutionAnalysis } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { getCurrentAnalyses } from "@prisma/client/sql";
+import { getCurrentAnalyses, deleteStudentSolutions } from "@prisma/client/sql";
 
 import { SolutionId } from "./dto";
 import { Cron } from "@nestjs/schedule";
@@ -80,6 +80,25 @@ export class SolutionsService {
       ...args,
       omit: omitData,
     });
+  }
+
+  /**
+   * Deletes the current solution by its ID, as well as all previous solutions
+   * by that student for that session/task. This is a demo convenience method.
+   * @param sessionId
+   * @param taskId
+   * @param id
+   */
+  async deleteAllSolutionsById(
+    sessionId: number,
+    taskId: number,
+    id: SolutionId,
+  ): Promise<boolean> {
+    const result = await this.prisma.$queryRawTyped(
+      deleteStudentSolutions(sessionId, taskId, id),
+    );
+    const deletedRows = result[0]?.count ?? 0;
+    return deletedRows > 0;
   }
 
   async create(

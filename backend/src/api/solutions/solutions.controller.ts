@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -16,8 +19,10 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
@@ -27,6 +32,7 @@ import { fromQueryResults } from "../helpers";
 import { Express } from "express";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
+  AdminOnly,
   NonUserRoles,
   Roles,
   StudentOnly,
@@ -188,5 +194,30 @@ export class SolutionsController {
     return new StreamableFile(solution.data, {
       type: solution.mimeType,
     });
+  }
+
+  @Delete(":id")
+  @AdminOnly()
+  @ApiOperation({
+    summary: "Delete all solutions by a student for a given session/task",
+  })
+  @ApiNoContentResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  async deleteOne(
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+    @Param("id", ParseIntPipe) id: SolutionId,
+  ): Promise<void> {
+    const succeeded = await this.solutionsService.deleteAllSolutionsById(
+      sessionId,
+      taskId,
+      id,
+    );
+    if (!succeeded) {
+      throw new NotFoundException();
+    }
   }
 }
