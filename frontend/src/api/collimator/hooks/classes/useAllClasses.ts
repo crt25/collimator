@@ -68,7 +68,15 @@ export const useAllClassesLazyTable = (
     return parameters;
   }, [authenticationContext]);
 
-  return useSWR(getSwrParamererizedKey(getClassesControllerFindAllV0Url), () =>
-    fetchAndTransform(authOptions, parameters).then(transformToLazyTableResult),
+  return useSWR(
+    getSwrParamererizedKey(
+      getClassesControllerFindAllV0Url,
+      undefined,
+      "lazyTable",
+    ),
+    () =>
+      fetchAndTransform(authOptions, parameters).then(
+        transformToLazyTableResult,
+      ),
   );
 };

@@ -34,7 +34,12 @@ export const useAllTasksLazyTable = (
 ): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
-    fetchAndTransform(authOptions).then(transformToLazyTableResult),
+  return useSWR(
+    getSwrParamererizedKey(
+      getTasksControllerFindAllV0Url,
+      undefined,
+      "lazyTable",
+    ),
+    () => fetchAndTransform(authOptions).then(transformToLazyTableResult),
   );
 };
