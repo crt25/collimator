@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
 
+const logModule = "[Embedded Scratch]";
+
 const messages = defineMessages({
   cannotLoadProject: {
     id: "useEmbeddedScratch.cannotLoadProject",
@@ -46,6 +48,7 @@ export const useEmbeddedScratch = (
 ): ReturnType<typeof useIframeParent> => {
   const handleRequest = useCallback<Parameters<typeof useIframeParent>[0]>(
     async (request, respondToMessageEvent) => {
+      console.debug(`${logModule} VM: ${!!vm}, RPC: ${request.procedure}`);
       switch (request.procedure) {
         case "getHeight":
           respondToMessageEvent({
@@ -169,6 +172,7 @@ export const useEmbeddedScratch = (
               .then((blob) => blob.arrayBuffer());
 
             try {
+              console.debug(`${logModule} Loading project`);
               await loadCrtProject(vm, taskMergedWithSubmission);
               // TODO: change the editing target to the relevant sprite
               // const subTaskId = request.arguments.subTaskId;
@@ -177,7 +181,7 @@ export const useEmbeddedScratch = (
                 procedure: "loadSubmission",
               });
             } catch (e) {
-              console.error(e);
+              console.error(`${logModule} Project load failure: ${e}`);
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
           }
