@@ -6,6 +6,7 @@ import { scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import MultiSwrContent from "../MultiSwrContent";
+import { useFileHash } from "@/hooks/useFileHash";
 
 const getSolutionCodeUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -45,6 +46,9 @@ const CodeView = ({
 
   const iframeSrc = useMemo(() => getSolutionCodeUrl(taskType), [taskType]);
 
+  const taskFileHash = useFileHash(taskFile);
+  const solutionFileHash = useFileHash(solutionFile);
+
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
 
   const onAppAvailable = useCallback(() => {
@@ -58,7 +62,9 @@ const CodeView = ({
         },
       });
     }
-  }, [taskFile, solutionFile, subTaskId]);
+    // since solutionFileHash is a blob, use its hash as a proxy for its content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskFileHash, solutionFileHash, subTaskId]);
 
   if (!iframeSrc) {
     return (

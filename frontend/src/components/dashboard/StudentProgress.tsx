@@ -13,6 +13,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { FormattedMessage } from "react-intl";
+import { useFileHash } from "@/hooks/useFileHash";
 
 type Progress = ExistingSolution;
 type ProgressByTask = { [taskId: number]: Progress };
@@ -57,6 +58,8 @@ const UserTaskProgress = ({
     error: solutionFileError,
   } = useSolutionFile(classId, sessionId, sessionTask.id, progress.id);
 
+  const solutionFileHash = useFileHash(solutionFile);
+
   const iframeSrc = useMemo(
     () => (task ? getDisplaySolutionUrl(task.type) : null),
     [task],
@@ -74,7 +77,9 @@ const UserTaskProgress = ({
         },
       });
     }
-  }, [taskFile, solutionFile]);
+    // since solutionFileHash is a blob, use its hash as a proxy for its content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskFile, solutionFileHash]);
 
   if (!iframeSrc) {
     return (

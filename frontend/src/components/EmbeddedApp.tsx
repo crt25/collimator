@@ -198,10 +198,12 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         iframe.style.height = `${response.result}px`;
 
         setIsAppAvailable(true);
-        if (onAppAvailable) {
-          onAppAvailable();
-        }
+        onAppAvailable?.();
       };
+
+      if (isIFrameLoaded.current) {
+        onAppAvailable?.();
+      }
 
       iframe.addEventListener("load", callback);
 
