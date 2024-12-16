@@ -134,6 +134,10 @@ jobs:
                 working-directory: ./apps/scratch
                 run: yarn test
 
+            -   name: Run e2e tests
+                working-directory: ./e2e
+                run: yarn test
+
             -   name: SonarCloud Scan
                 uses: SonarSource/sonarcloud-github-action@master
                 env:
