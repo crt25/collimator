@@ -1,16 +1,16 @@
-import { CrtTestOptions } from "@/pages-tests/__tests__/playwright/helpers";
+import { CrtTestOptions } from "./helpers";
 import {
   mockOidcClientId,
   mockOidcProviderPort,
   mockOidcProviderUrl,
   mockOidcProxyUrl,
-} from "@/pages-tests/__tests__/playwright/setup/config";
+} from "./setup/config";
 import {
   setupBackendPort,
   setupBackendShutdownPort,
   setupFrontendPort,
   setupProjectNamePrefix,
-} from "@/pages-tests/__tests__/playwright/setup/helpers";
+} from "./setup/helpers";
 import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
 const frontendUrl = `http://localhost:${setupFrontendPort}`;
@@ -29,7 +29,7 @@ if (!dbUrl) {
 const setupDependencies = [setupFinishProjectName];
 
 const config: PlaywrightTestConfig<CrtTestOptions> = {
-  testMatch: "**/__tests__/playwright/**/*.spec.tsx",
+  testMatch: "*.spec.ts",
 
   projects: [
     ...(skipSetup
@@ -50,12 +50,12 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
            */
           {
             name: authenticationProjectName,
-            testMatch: /playwright\/setup\/authentication\.ts/,
+            testMatch: /setup\/authentication\.ts/,
           },
         ]),
     {
       name: setupFinishProjectName,
-      testMatch: /playwright\/setup\/setup-finish\.ts/,
+      testMatch: /setup\/setup-finish\.ts/,
       dependencies: skipSetup ? [] : [authenticationProjectName],
     },
     {

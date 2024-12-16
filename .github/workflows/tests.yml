@@ -57,6 +57,10 @@ jobs:
                 working-directory: ./frontend
                 run: yarn install
 
+            -   name: Install playwright dependencies
+                working-directory: ./frontend
+                run: yarn playwright install --with-deps
+
             -   name: Install scratch app dependencies
                 working-directory: ./apps/scratch
                 run: yarn install

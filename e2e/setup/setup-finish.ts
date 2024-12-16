@@ -1,6 +1,6 @@
 import { mkdirSync, rmSync } from "fs";
 import { test as setup } from "../helpers";
-import { killE2eSetupProcesses } from "../../../../../scripts/e2e-testing-config";
+import { killE2eSetupProcesses } from "../scripts/e2e-testing-config";
 import { portLockDirectory } from "./helpers";
 
 setup("finish setup", async () => {

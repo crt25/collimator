@@ -7,14 +7,14 @@ import {
   startFrontendWithBackendProxy,
   startMockOidcServer,
   waitUntilReachable,
-} from "@/pages-tests/__tests__/playwright/setup/helpers";
+} from "../setup/helpers";
 import {
   backendPidFile,
   frontendPidFile,
   killE2eSetupProcesses,
   oidcPidFile,
 } from "./e2e-testing-config";
-import { isDebug } from "@/pages-tests/__tests__/playwright/helpers";
+import { isDebug } from "../helpers";
 
 const main = async (): Promise<void> => {
   if (!process.env.DATABASE_URL) {

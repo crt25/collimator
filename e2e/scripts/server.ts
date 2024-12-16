@@ -1,17 +1,14 @@
 import express, { Request, Response } from "express";
 import path from "path";
-import { fileURLToPath } from "url";
 import { createProxyMiddleware } from "http-proxy-middleware";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getFrontendPath } from "../setup/helpers";
 
 const dynamicRoutesPattern = /\/([A-z]+)\/\d+/g;
 const dynamicRoutesReplacement = "/$1/[$1Id]";
 
 const app = express();
 
-const staticDir = path.join(__dirname, "..", "dist");
+const staticDir = path.join(getFrontendPath(), "dist");
 
 app.use(
   "/api",

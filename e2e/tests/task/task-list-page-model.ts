@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
-import { taskList } from "../selectors";
-import { ListPageModel } from "../page-models/list-page-model";
-import { getItemIdFromTableTestId } from "../helpers";
+import { taskList } from "../../selectors";
+import { ListPageModel } from "../../page-models/list-page-model";
+import { getItemIdFromTableTestId } from "../../helpers";
 
 export class TaskListPageModel extends ListPageModel {
   protected constructor(page: Page) {

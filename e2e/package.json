@@ -1,0 +1,29 @@
+{
+  "name": "e2e",
+  "packageManager": "yarn@4.5.3",
+  "type": "module",
+  "scripts": {
+    "start:frontend": "tsx scripts/server.ts",
+    "start:mock-oidc": "tsx scripts/mock-oidc-server.ts",
+    "test:pre": "shx rm -rf coverage/ .nyc_output/ && cd ../backend && yarn build:coverage",
+    "test:pw": "yarn test:pre && COVERAGE=true dotenv -- playwright test && nyc report --report-dir coverage",
+    "test:pw:skip-setup": "yarn test:pre && COVERAGE=true SKIP_SETUP=true dotenv -- playwright test && nyc report --report-dir coverage",
+    "test:pw:debug": "COVERAGE=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'",
+    "test:pw:debug:skip-setup": "COVERAGE=true SKIP_SETUP=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "dotenv-cli": "^7.4.4",
+    "express": "^4.21.2",
+    "http-proxy-middleware": "^3.0.3",
+    "pg": "^8.13.1",
+    "playwright-test-coverage": "^1.2.12",
+    "portfinder": "^1.0.32",
+    "shx": "^0.3.4",
+    "socket.io-client": "^4.8.1",
+    "tsx": "^4.19.2"
+  }
+}

@@ -15,9 +15,6 @@ next-env.d.ts
 # jest coverage
 /coverage
 
-# playwright coverage
-/coverage-pw
-
 # playwright component testing coverage
 /coverage-ct
 
@@ -28,14 +25,6 @@ next-env.d.ts
 
 /playwright-report/
 /playwright/.cache
-
-# override parent .gitignore
-!/playwright/.*
-
-# ignore all files in directories
-/playwright/.*/**/*
-# except .gitkeep
-!/playwright/.*/.gitkeep
 
 
 /blob-report/

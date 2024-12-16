@@ -1,10 +1,10 @@
-import { isDebug } from "@/pages-tests/__tests__/playwright/helpers";
+import { isDebug } from "../helpers";
 import {
   killProcess,
   setupBackendShutdownPort,
   triggerBackendGracefulShutdown,
   waitForProcessToStop,
-} from "@/pages-tests/__tests__/playwright/setup/helpers";
+} from "../setup/helpers";
 import { existsSync, readFileSync, unlinkSync } from "fs";
 
 export const pidDirectory = "playwright/.pid";

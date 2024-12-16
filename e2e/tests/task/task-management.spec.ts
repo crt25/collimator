@@ -1,10 +1,10 @@
 import { TaskType } from "@/api/collimator/generated/models";
-import { useAdminUser } from "../authentication-helpers";
-import { expect, test } from "../helpers";
+import { useAdminUser } from "../../authentication-helpers";
+import { expect, test } from "../../helpers";
 import { TaskListPageModel } from "./task-list-page-model";
 import { routeDummyApp } from "./helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
-import { taskList } from "../selectors";
+import { taskList } from "../../selectors";
 
 const newTaskTitle = "new task name";
 const newTaskDecription = "new task description";

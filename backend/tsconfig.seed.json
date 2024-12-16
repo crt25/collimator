@@ -3,7 +3,7 @@
   "ts-node": {
     "require": ["tsconfig-paths/register"],
     "moduleTypes": {
-      "../frontend/*": "cjs"
+      "../e2e/*": "cjs"
     }
   }
 }

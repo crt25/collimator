@@ -2,7 +2,7 @@ import {
   generateJwt,
   generateKey,
   getOpenIdConnectConfigResponse,
-} from "@/pages-tests/__tests__/playwright/authentication-helpers";
+} from "../authentication-helpers";
 import express from "express";
 
 const setHeaders = (res: express.Response): void => {

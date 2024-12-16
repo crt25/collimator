@@ -1,6 +1,6 @@
-import { useAdminUser } from "../authentication-helpers";
-import { expect, test } from "../helpers";
-import { classList } from "../selectors";
+import { useAdminUser } from "../../authentication-helpers";
+import { expect, test } from "../../helpers";
+import { classList } from "../../selectors";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 

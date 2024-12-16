@@ -27,25 +27,36 @@ export const setupProjectNamePrefix = "setup:";
 
 export const getBackendPath = (): string => {
   const segments = process.cwd().split(path.sep);
-  const frontendIdx = segments.lastIndexOf("frontend");
+  const e2eIdx = segments.lastIndexOf("e2e");
 
-  if (frontendIdx === -1) {
-    throw new Error("Could not find frontend segment in path");
+  if (e2eIdx === -1) {
+    throw new Error("Could not find e2e segment in path");
   }
 
-  // construct the path to the backend folder - can be obtained by replacing the last 'frontend' segment with 'backend'
-  return [...segments.slice(0, frontendIdx), "backend"].join(path.sep);
+  // construct the path to the backend folder - can be obtained by replacing the last 'e2e' segment with 'backend'
+  return [...segments.slice(0, e2eIdx), "backend"].join(path.sep);
 };
 
 export const getFrontendPath = (): string => {
   const segments = process.cwd().split(path.sep);
-  const frontendIdx = segments.lastIndexOf("frontend");
+  const e2eIdx = segments.lastIndexOf("e2e");
 
-  if (frontendIdx === -1) {
-    throw new Error("Could not find frontend segment in path");
+  if (e2eIdx === -1) {
+    throw new Error("Could not find e2e segment in path");
   }
 
-  return segments.slice(0, frontendIdx + 1).join(path.sep);
+  return [...segments.slice(0, e2eIdx), "frontend"].join(path.sep);
+};
+
+export const getE2EPath = (): string => {
+  const segments = process.cwd().split(path.sep);
+  const e2eIdx = segments.lastIndexOf("e2e");
+
+  if (e2eIdx === -1) {
+    throw new Error("Could not find e2e segment in path");
+  }
+
+  return segments.slice(0, e2eIdx + 1).join(path.sep);
 };
 
 export const resetDatabase = (config: {
@@ -69,7 +80,7 @@ export const startMockOidcServer = (config: {
   frontendHostname?: string;
   url?: string;
 }): ChildProcessWithoutNullStreams =>
-  spawn("yarn", ["test:mock-oidc"], {
+  spawn("yarn", ["start:mock-oidc"], {
     env: {
       NODE_ENV: "production",
       PORT: config.port?.toString(),
@@ -77,7 +88,7 @@ export const startMockOidcServer = (config: {
       // set the proxy URL s.t. the issuer URL is what the frontend expects
       URL: config.url,
     },
-    cwd: getFrontendPath(),
+    cwd: getE2EPath(),
     shell: true,
   });
 
@@ -132,13 +143,13 @@ export const startFrontendWithBackendProxy = (config: {
   port?: number | string;
   backendUrl?: string;
 }): ChildProcessWithoutNullStreams =>
-  spawn("yarn", ["start:test"], {
+  spawn("yarn", ["start:frontend"], {
     env: {
       NODE_ENV: "development",
       PORT: config.port?.toString(),
       BACKEND_URL: config.backendUrl,
     },
-    cwd: getFrontendPath(),
+    cwd: getE2EPath(),
     shell: true,
   });
 
