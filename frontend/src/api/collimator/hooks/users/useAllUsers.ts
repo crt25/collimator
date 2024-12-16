@@ -12,6 +12,7 @@ import {
 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useMemo } from "react";
 
 export type GetUsersReturnType = ExistingUser[];
 
@@ -32,14 +33,19 @@ export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
 export const useAllUsersLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> => {
-  const authOptions = useAuthenticationOptions();
+  const { data, isLoading, error } = useAllUsers();
 
-  return useSWR(
-    getSwrParamererizedKey(
-      getUsersControllerFindAllV0Url,
-      undefined,
-      "lazyTable",
-    ),
-    () => fetchAndTransform(authOptions).then(transformToLazyTableResult),
-  );
+  const transformedData = useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
+
+    return transformToLazyTableResult(data);
+  }, [data]);
+
+  return {
+    data: transformedData,
+    isLoading,
+    error,
+  };
 };

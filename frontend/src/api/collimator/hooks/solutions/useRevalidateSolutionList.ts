@@ -4,6 +4,7 @@ import {
   getSolutionsControllerFindAllV0Url,
   getSolutionsControllerFindCurrentAnalysisV0Url,
 } from "@/api/collimator/generated/endpoints/solutions/solutions";
+import { allTasksPlaceholder } from "./useAllSessionSolutions";
 
 export const useRevalidateSolutionList = (): ((
   classId: number,
@@ -22,7 +23,13 @@ export const useRevalidateSolutionList = (): ((
         ),
       );
 
-      mutate(getSolutionsControllerFindAllV0Url(classId, sessionId, -1));
+      mutate(
+        getSolutionsControllerFindAllV0Url(
+          classId,
+          sessionId,
+          allTasksPlaceholder,
+        ),
+      );
     },
     [mutate],
   );

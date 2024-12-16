@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -90,6 +90,14 @@ export const StudentName = ({
     });
   }, [authContext, pseudonym, keyPairId]);
 
+  const name = useMemo(
+    () =>
+      !showActualName || isAnonymousUser
+        ? getStudentNickname(pseudonym)
+        : decryptedName,
+    [showActualName, isAnonymousUser, decryptedName, pseudonym],
+  );
+
   if (isDecrypting) {
     return (
       <NameWrapper>
@@ -101,7 +109,7 @@ export const StudentName = ({
     );
   }
 
-  if (decryptedName === null) {
+  if (name === null) {
     return (
       <NameWrapper>
         {getStudentNickname(pseudonym)}{" "}
@@ -112,11 +120,6 @@ export const StudentName = ({
       </NameWrapper>
     );
   }
-
-  const name =
-    !showActualName || isAnonymousUser
-      ? getStudentNickname(pseudonym)
-      : decryptedName;
 
   return (
     <NameWrapper>

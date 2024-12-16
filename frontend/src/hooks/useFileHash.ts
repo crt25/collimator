@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 async function blobToHash(blob: Blob): Promise<string> {
   const arrayBuffer = await blob.arrayBuffer();
@@ -9,19 +9,28 @@ async function blobToHash(blob: Blob): Promise<string> {
 }
 
 export const useFileHash = (fileData: Blob | undefined): string => {
-  const [blob, setBlob] = useState<Blob>();
   const [hash, setHash] = useState<string>("");
 
-  if (fileData === blob) {
-    return hash;
-  }
+  useEffect(() => {
+    if (fileData === undefined) {
+      setHash("");
+      return;
+    }
 
-  if (fileData === undefined) {
-    return "";
-  }
+    let isCancelled = false;
 
-  setBlob(fileData);
-  blobToHash(fileData).then(setHash);
+    blobToHash(fileData).then((hash) => {
+      if (isCancelled) {
+        return;
+      }
+
+      setHash(hash);
+    });
+
+    return (): void => {
+      isCancelled = true;
+    };
+  }, [fileData]);
 
   return hash;
 };

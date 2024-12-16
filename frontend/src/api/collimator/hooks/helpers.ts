@@ -30,14 +30,12 @@ export const transformToLazyTableResult = <TData>(
  * The second element is the URL with the params to allow for caching and re-use.
  * @param getUrl A function that, given the params, returns the URL.
  * @param params The params for the getUrl function.
- * @param transform A string that can be used to differentiate between transforms of the same data.
  * @returns A swr key consisting of two strings.
  */
 export const getSwrParamererizedKey = <TParams>(
   getUrl: (params?: TParams) => string,
   params?: TParams,
-  transform: "none" | "lazyTable" = "none",
-): [string, string, string] => [getUrl(), getUrl(params), transform];
+): [string, string] => [getUrl(), getUrl(params)];
 
 type Mutate = typeof mutate;
 

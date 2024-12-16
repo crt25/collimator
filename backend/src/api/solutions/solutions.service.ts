@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Solution, Prisma, SolutionAnalysis } from "@prisma/client";
+import { Solution, Prisma, SolutionAnalysis, AstVersion } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentAnalyses, deleteStudentSolutions } from "@prisma/client/sql";
 
@@ -29,6 +29,8 @@ const maximumNumberOfAnalysisRetries = 3;
 
 const omitData = { data: true };
 
+const latestAstVersion = AstVersion.v1;
+
 @Injectable()
 export class SolutionsService {
   constructor(
@@ -47,11 +49,18 @@ export class SolutionsService {
     });
   }
 
-  findCurrentAnalyses(
+  async findCurrentAnalyses(
     sessionId: number,
     taskId: number,
   ): Promise<CurrentAnalysis[]> {
-    return this.prisma.$queryRawTyped(getCurrentAnalyses(sessionId, taskId));
+    const analyses = await this.prisma.$queryRawTyped(
+      getCurrentAnalyses(sessionId, taskId),
+    );
+
+    // filter out analyses that are not of the latest AST version
+    return analyses.filter(
+      (analysis) => analysis.astVersion === latestAstVersion,
+    );
   }
 
   findAnalysisByIdOrThrow(
@@ -123,7 +132,7 @@ export class SolutionsService {
 
     // perform the analysis but do *not* wait for the promise to resolve
     // this will happen in the background
-    this.analysisService.performAnalysis(solution);
+    this.analysisService.performAnalysis(solution, latestAstVersion);
 
     return solution;
   }
@@ -150,7 +159,44 @@ export class SolutionsService {
     await Promise.all(
       solutionsWithoutAnalysis.map((solution) =>
         this.analysisService
-          .performAnalysis(solution)
+          .performAnalysis(solution, latestAstVersion)
+          // ignore exceptions, we'll just re-try
+          .catch(),
+      ),
+    );
+  }
+
+  // check every minute (with seconds = 30) whether there are analyses that were not upgraded
+  @Cron("30 * * * * *", { name: "runUpgradeAnalyes" })
+  async runUpgradeAnalyes(): Promise<void> {
+    const solutionsWithoutAnalysis =
+      await this.prisma.solutionAnalysis.findMany({
+        where: {
+          AND: [
+            {
+              NOT: {
+                astVersion: latestAstVersion,
+              },
+            },
+            {
+              solution: {
+                failedAnalyses: {
+                  lt: maximumNumberOfAnalysisRetries,
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          solution: true,
+        },
+      });
+
+    // run all of them
+    await Promise.all(
+      solutionsWithoutAnalysis.map(({ solution }) =>
+        this.analysisService
+          .performAnalysis(solution, latestAstVersion)
           // ignore exceptions, we'll just re-try
           .catch(),
       ),

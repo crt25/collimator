@@ -44,7 +44,7 @@ const SelectionMenu = styled.div`
 
   margin-bottom: 1rem;
 
-  & > :first-child {
+  & > label:first-of-type {
     /* the group select should not shrink */
     flex-shrink: 0;
   }
@@ -53,6 +53,10 @@ const SelectionMenu = styled.div`
     /* avoid overflow */
     min-width: 0;
     flex-grow: 1;
+
+    select {
+      width: 100%;
+    }
   }
 `;
 

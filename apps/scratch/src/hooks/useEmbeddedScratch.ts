@@ -175,8 +175,18 @@ export const useEmbeddedScratch = (
               console.debug(`${logModule} Loading project`);
               await loadCrtProject(vm, taskMergedWithSubmission);
               // TODO: change the editing target to the relevant sprite
-              // const subTaskId = request.arguments.subTaskId;
-              // vm.setEditingTarget(subTaskId);
+              const { subTaskId } = request.arguments;
+              console.log("subTaskId", subTaskId);
+              if (subTaskId) {
+                const target = vm.runtime.targets.find(
+                  (target) => target.getName() === subTaskId,
+                );
+
+                if (target) {
+                  console.log("setEditingTarget", target.id);
+                  vm.setEditingTarget(target.id);
+                }
+              }
               respondToMessageEvent({
                 procedure: "loadSubmission",
               });

@@ -3,10 +3,8 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Row } from "react-bootstrap";
 import styled from "@emotion/styled";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import { ActorNode } from "@ast/ast-nodes";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
@@ -19,6 +17,7 @@ import { FilterCriterion } from "./filter";
 import { useGrouping } from "./hooks/useGrouping";
 import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -54,23 +53,6 @@ const messages = defineMessages({
     defaultMessage: "Number of groups",
   },
 });
-
-/**
- * Generate a derived analysis, keeping everything identical,
- * except it extracts a subset of the general AST.
- *
- * @param analysis The starting analysis
- * @param id The ID of the subtask to extract.
- */
-export function selectSubAnalysis(
-  analysis: CurrentAnalysis,
-  id: string,
-): CurrentAnalysis {
-  return new CurrentAnalysis({
-    ...analysis,
-    generalAst: [(analysis.generalAst as ActorNode[])[parseInt(id, 10)]],
-  });
-}
 
 const ALL_SUBTASKS = "__ANALYZE_ALL_SUBTASKS__";
 
@@ -112,18 +94,27 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask,
   );
 
-  // TODO: This is a temporary solution to get the subtasks, find a better way
-  const aSolution = solutions?.find((s) => s.generalAst.length > 0);
-  const subtasks =
-    aSolution?.generalAst.map((_, index) => index.toString()) ?? [];
+  const subtasks = useMemo(() => {
+    if (!solutions) {
+      return [];
+    }
 
-  const subTaskSolutions = useMemo(() => {
-    return solutions?.map((solution) =>
-      selectedSubTaskId !== undefined
-        ? selectSubAnalysis(solution, selectedSubTaskId)
-        : solution,
-    );
-  }, [solutions, selectedSubTaskId]);
+    return [
+      ...solutions
+        .map((s) => CurrentAnalysis.findComponentIds(s))
+        .reduce((acc, x) => acc.union(x), new Set<string>()),
+    ];
+  }, [solutions]);
+
+  const subTaskSolutions = useMemo(
+    () =>
+      solutions?.map((solution) =>
+        selectedSubTaskId !== undefined
+          ? CurrentAnalysis.selectComponent(solution, selectedSubTaskId)
+          : solution,
+      ),
+    [solutions, selectedSubTaskId],
+  );
 
   const {
     isGroupingAvailable,

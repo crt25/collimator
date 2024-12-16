@@ -54,29 +54,19 @@ export const useAllClasses = (
 export const useAllClassesLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> => {
-  const authenticationContext = useContext(AuthenticationContext);
-  const authOptions = useAuthenticationOptions();
+  const { data, isLoading, error } = useAllClasses();
 
-  const parameters = useMemo<ClassesControllerFindAllV0Params>(() => {
-    const parameters: ClassesControllerFindAllV0Params = {};
-
-    // if the user is a teacher, only fetch classes for that teacher
-    if (authenticationContext.role === UserRole.teacher) {
-      parameters.teacherId = authenticationContext.userId;
+  const transformedData = useMemo(() => {
+    if (!data) {
+      return undefined;
     }
 
-    return parameters;
-  }, [authenticationContext]);
+    return transformToLazyTableResult(data);
+  }, [data]);
 
-  return useSWR(
-    getSwrParamererizedKey(
-      getClassesControllerFindAllV0Url,
-      undefined,
-      "lazyTable",
-    ),
-    () =>
-      fetchAndTransform(authOptions, parameters).then(
-        transformToLazyTableResult,
-      ),
-  );
+  return {
+    data: transformedData,
+    isLoading,
+    error,
+  };
 };
