@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { registeredUsers, unregisteredUsers } from "@e2e-data/user";
+import {
+  getPublicKeyFingerprint,
+  registeredUsers,
+  unregisteredUsers,
+} from "@e2e-data/user";
 import { getRandomValues, randomBytes, subtle } from "crypto";
 const crypto = subtle;
 
@@ -15,28 +19,13 @@ const salt = randomBytes(32);
 export const createUsers = async (prisma: PrismaClient): Promise<void> => {
   await Promise.all([
     ...registeredUsers.map(async (user) => {
-      const keyPair = await crypto.generateKey(
-        {
-          name: "ECDH",
-          namedCurve: "P-521",
-        },
-        true,
-        ["deriveKey"],
-      );
-
       const privateKey = new TextEncoder().encode(
-        JSON.stringify(await crypto.exportKey("jwk", keyPair.privateKey)),
+        JSON.stringify(user.privateKey),
       );
-      const publicKey = JSON.stringify(
-        await crypto.exportKey("jwk", keyPair.publicKey),
+      const publicKey = JSON.stringify(user.publicKey);
+      const publicKeyFingerprint = await getPublicKeyFingerprint(
+        user.publicKey,
       );
-
-      const digest = await crypto.digest(
-        "SHA-512",
-        new TextEncoder().encode(publicKey),
-      );
-
-      const publicKeyFingerprint = Buffer.from(digest).toString("base64url");
 
       const privateKeyData = user.passwords.map(async (password) => {
         const passwordKey = await crypto.importKey(
@@ -99,11 +88,6 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
       // export the public key and store it as the salt
       const saltPublicKey = JSON.stringify(
         await crypto.exportKey("jwk", saltKeyPair.publicKey),
-      );
-
-      // log the fingerprint s.t. the testing scripts can use it
-      console.log(
-        `USER_SEED\t${user.email}\t${JSON.stringify({ publicKeyFingerprint })}`,
       );
 
       return prisma.user.create({

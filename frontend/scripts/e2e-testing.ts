@@ -13,7 +13,6 @@ import {
   frontendPidFile,
   killE2eSetupProcesses,
   oidcPidFile,
-  userSeedsFile,
 } from "./e2e-testing-config";
 import { isDebug } from "@/pages-tests/__tests__/playwright/helpers";
 
@@ -55,27 +54,9 @@ const main = async (): Promise<void> => {
 
   console.log(reset.stderr.toString("utf-8"));
 
-  // split seedStdOut by new line
-  const userSeedByMail = Object.fromEntries(
-    seedStdOut
-      // intentionally using '\n' instead of EOL since the output is always '\n', even on windows
-      .split("\n")
-      .filter((line) => line.startsWith("USER_SEED\t"))
-      .map((line) => {
-        const [_, email, seed] = line.split("\t");
-
-        return [
-          email,
-          JSON.parse(seed) as {
-            publicKeyFingerprint: string;
-          },
-        ];
-      }),
-  );
-
-  writeFileSync(userSeedsFile, JSON.stringify(userSeedByMail), {
-    encoding: "utf-8",
-  });
+  if (reset.status !== 0) {
+    throw new Error("Could not reset the database");
+  }
 
   // start mock OIDC server
   const oidcProcess = startMockOidcServer({

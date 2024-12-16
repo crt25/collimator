@@ -22,8 +22,7 @@ import {
   waitUntil,
   waitUntilReachable,
 } from "./setup/helpers";
-import { readFileSync } from "node:fs";
-import { userSeedsFile } from "../../../../scripts/e2e-testing-config";
+import { adminUser, getPublicKeyFingerprint } from "./setup/seeding/user";
 
 export const isDebug = process.env.DEBUG !== undefined;
 
@@ -282,21 +281,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         await client.end();
       }
 
-      const seedByMail = JSON.parse(
-        readFileSync(userSeedsFile, {
-          encoding: "utf-8",
-        }),
-      );
-
-      const anyFingerprint = (
-        Object.values(seedByMail) as { publicKeyFingerprint: string }[]
-      )
-        .map((seed) => seed.publicKeyFingerprint)
-        .find(Boolean);
-
-      if (!anyFingerprint) {
-        throw new Error("No public key fingerprints found in the seed file");
-      }
+      const anyFingerprint = await getPublicKeyFingerprint(adminUser.publicKey);
 
       // trigger request that will make backend re-connect to the database
       await waitUntil(

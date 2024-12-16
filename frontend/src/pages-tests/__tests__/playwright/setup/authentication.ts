@@ -109,7 +109,6 @@ setup.describe("authentication against the real backend", () => {
 
     await page.getByTestId("signin-button").click();
 
-    // generate a new key pair
     await page.getByTestId("password").fill(adminUser.passwords[0]);
     await page.getByTestId("submit").click();
 

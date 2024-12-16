@@ -17,7 +17,7 @@ const frontendUrl = `http://localhost:${setupFrontendPort}`;
 const backendUrl = `http://localhost:${setupBackendPort}`;
 
 const authenticationProjectName = `${setupProjectNamePrefix}authentication`;
-const setupFinishProjectName = `${setupProjectNamePrefix}setup-finish`;
+const setupFinishProjectName = `${setupProjectNamePrefix}finish`;
 
 const skipSetup = process.env.SKIP_SETUP === "true";
 const dbUrl = process.env.DATABASE_URL;
@@ -26,7 +26,7 @@ if (!dbUrl) {
   throw new Error("DATABASE_URL is not set");
 }
 
-const setupDependencies = skipSetup ? [] : [setupFinishProjectName];
+const setupDependencies = [setupFinishProjectName];
 
 const config: PlaywrightTestConfig<CrtTestOptions> = {
   testMatch: "**/__tests__/playwright/**/*.spec.tsx",
@@ -36,7 +36,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
       ? []
       : [
           /**
-           * Frst (unless skipSetup is set), the e2e-testing script is being run.
+           * First (unless skipSetup is set), the e2e-testing script is being run.
            * After that - again unless skipSetup is set - we run these two setup projects.
            * The e2e-testing script resets and seeds the new test db and starts a frontend, a backend
            * and a mock OpenID Connect server instance. These are then used during the setup projects
@@ -52,13 +52,12 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
             name: authenticationProjectName,
             testMatch: /playwright\/setup\/authentication\.ts/,
           },
-          {
-            name: setupFinishProjectName,
-            testMatch: /playwright\/setup\/setup-finish\.ts/,
-            dependencies: [authenticationProjectName],
-          },
         ]),
-
+    {
+      name: setupFinishProjectName,
+      testMatch: /playwright\/setup\/setup-finish\.ts/,
+      dependencies: skipSetup ? [] : [authenticationProjectName],
+    },
     {
       name: "Desktop",
       use: devices["Desktop Chrome"],

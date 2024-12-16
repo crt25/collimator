@@ -7,8 +7,6 @@ import {
 } from "@/pages-tests/__tests__/playwright/setup/helpers";
 import { existsSync, readFileSync, unlinkSync } from "fs";
 
-export const userSeedsFile = "playwright/.seed/users.json";
-
 export const pidDirectory = "playwright/.pid";
 export const oidcPidFile = `${pidDirectory}/oidc`;
 export const backendPidFile = `${pidDirectory}/backend`;
