@@ -66,6 +66,7 @@ export const createScratchHatOutput = (
 ): GeneralAst => [
   {
     nodeType: AstNodeType.actor,
+    componentId: "Stage",
     eventListeners: [eventListenerNode],
     functionDeclarations: [],
   } as ActorNode,
@@ -142,6 +143,7 @@ export const createScratchCodeOutput = (
 ): GeneralAst => [
   {
     nodeType: AstNodeType.actor,
+    componentId: "Stage",
     eventListeners: [
       {
         nodeType: AstNodeType.eventListener,
@@ -231,6 +233,7 @@ export const createScratchExpressionOutput = (
 ): GeneralAst => [
   {
     nodeType: AstNodeType.actor,
+    componentId: "Stage",
     eventListeners: [
       {
         nodeType: AstNodeType.eventListener,
