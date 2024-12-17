@@ -9,9 +9,7 @@ import { basePath } from "..";
 // This allows us to configure the CRT parameters with the intl parameter available
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
-  return function CrtHoc(
-    props: T & { reportProgress?: boolean; intl: InjectedIntl },
-  ) {
+  return function CrtHoc(props: T & { intl: InjectedIntl }) {
     const [vm, setVm] = useState<VM | null>(null);
 
     const { hasLoaded } = useEmbeddedScratch(vm, props.intl);

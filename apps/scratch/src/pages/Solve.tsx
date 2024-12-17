@@ -12,7 +12,6 @@ const Solve = () => {
         addOfficialScratchWebStores: () => void;
       }) => storageInstance.addOfficialScratchWebStores()}
       basePath="/"
-      reportProgress={true}
     />
   );
 };
