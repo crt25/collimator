@@ -86,10 +86,6 @@ jobs:
                 working-directory: ./frontend
                 run: yarn build
 
-            -   name: Prepare scratch app build
-                working-directory: ./apps/scratch
-                run: yarn prepublish
-
             -   name: Build scratch app
                 working-directory: ./apps/scratch
                 run: yarn build

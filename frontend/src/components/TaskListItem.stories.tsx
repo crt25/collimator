@@ -1,4 +1,4 @@
-import { TaskStatus } from "@/types/task/task-status";
+import { TaskProgress } from "@/api/collimator/generated/models";
 import TaskListItem from "./TaskListItem";
 
 type Args = Parameters<typeof TaskListItem>[0];
@@ -21,27 +21,27 @@ export default {
 export const Unopened = {
   args: {
     children: "Task 1",
-    status: TaskStatus.unOpened,
+    progress: TaskProgress.unOpened,
   } as Args,
 };
 
 export const Opened = {
   args: {
     children: "Task 1",
-    status: TaskStatus.opened,
+    progress: TaskProgress.opened,
   } as Args,
 };
 
 export const PartiallyDone = {
   args: {
     children: "Task 1",
-    status: TaskStatus.partiallyDone,
+    progress: TaskProgress.partiallyDone,
   } as Args,
 };
 
 export const Done = {
   args: {
     children: "Task 1",
-    status: TaskStatus.done,
+    progress: TaskProgress.done,
   } as Args,
 };
