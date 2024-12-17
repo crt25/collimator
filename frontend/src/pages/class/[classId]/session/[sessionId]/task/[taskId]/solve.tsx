@@ -13,10 +13,11 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useFileHash } from "@/hooks/useFileHash";
 import toast from "react-hot-toast";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -29,6 +30,8 @@ const getSolveUrl = (taskType: TaskType) => {
 
 const SolveTaskPage = () => {
   const router = useRouter();
+  const intl = useIntl();
+
   const { classId, sessionId, taskId } = router.query as {
     classId?: string;
     sessionId?: string;
@@ -121,19 +124,23 @@ const SolveTaskPage = () => {
           arguments: {
             task: taskFile,
             submission: solutionFile,
+            language: intl.locale as Language,
           },
         });
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
         embeddedApp.current.sendRequest({
           procedure: "loadTask",
-          arguments: taskFile,
+          arguments: {
+            task: taskFile,
+            language: intl.locale as Language,
+          },
         });
       }
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session, task]);
+  }, [embeddedApp, taskFileHash, session, task, intl]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -144,9 +151,12 @@ const SolveTaskPage = () => {
 
     await embeddedApp.current.sendRequest({
       procedure: "loadTask",
-      arguments: task,
+      arguments: {
+        task,
+        language: intl.locale as Language,
+      },
     });
-  }, []);
+  }, [intl]);
 
   const onExport = useCallback(async () => {
     if (!embeddedApp.current) {

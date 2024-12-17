@@ -6,6 +6,9 @@ import { loadCrtProject } from "../vm/load-crt-project";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
+import { useDispatch } from "react-redux";
+import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
+import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
 
 const logModule = "[Embedded Scratch]";
 
@@ -46,6 +49,15 @@ export const useEmbeddedScratch = (
   vm: VM | null,
   intl: InjectedIntl,
 ): ReturnType<typeof useIframeParent> => {
+  const dispatch = useDispatch();
+
+  const setLanguage = useCallback(
+    // ensure that the languages are supported by scratch
+    // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
+    (language: Language) => dispatch(selectLocale(language)),
+    [],
+  );
+
   const handleRequest = useCallback<Parameters<typeof useIframeParent>[0]>(
     async (request, respondToMessageEvent) => {
       console.debug(`${logModule} VM: ${!!vm}, RPC: ${request.procedure}`);
@@ -136,9 +148,11 @@ export const useEmbeddedScratch = (
           break;
         case "loadTask":
           if (vm) {
-            const sb3Project = await request.arguments.arrayBuffer();
+            const sb3Project = await request.arguments.task.arrayBuffer();
             try {
+              setLanguage(request.arguments.language);
               await loadCrtProject(vm, sb3Project);
+
               respondToMessageEvent({
                 procedure: "loadTask",
               });
@@ -150,6 +164,8 @@ export const useEmbeddedScratch = (
           break;
         case "loadSubmission":
           if (vm) {
+            setLanguage(request.arguments.language);
+
             const sb3Project = await request.arguments.task.arrayBuffer();
             const submission = await request.arguments.submission.text();
 
@@ -174,16 +190,14 @@ export const useEmbeddedScratch = (
             try {
               console.debug(`${logModule} Loading project`);
               await loadCrtProject(vm, taskMergedWithSubmission);
-              // TODO: change the editing target to the relevant sprite
               const { subTaskId } = request.arguments;
-              console.log("subTaskId", subTaskId);
+
               if (subTaskId) {
                 const target = vm.runtime.targets.find(
                   (target) => target.getName() === subTaskId,
                 );
 
                 if (target) {
-                  console.log("setEditingTarget", target.id);
                   vm.setEditingTarget(target.id);
                 }
               }

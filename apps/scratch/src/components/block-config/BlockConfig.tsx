@@ -148,7 +148,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
               <FormattedMessage
                 defaultMessage="How many times can this block be used?"
                 description="Label shown next to the input field for configuring how often a block can be used by students."
-                id="crt.blockConfig.hasBlockUsageLimit"
+                id="crt.blockConfig.blockUsageLimit"
               />
             </span>
             <input

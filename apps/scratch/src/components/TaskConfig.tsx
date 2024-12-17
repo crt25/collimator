@@ -118,14 +118,14 @@ const TaskConfig = ({
           <FormattedMessage
             defaultMessage="Allow all standard blocks to be used"
             description="Label shown on the button that, when clicked, allows all standard blocks to be used by students."
-            id="crt.taskConfig.heading"
+            id="crt.taskConfig.allowAllStandardBlocks"
           />
         </button>
         <button onClick={onAllowNoBlocks} data-testid="allow-no-blocks-button">
           <FormattedMessage
             defaultMessage="Disallow all blocks"
             description="Label shown on the button that, when clicked, disallows all blocks from being used by students."
-            id="crt.taskConfig.heading"
+            id="crt.taskConfig.disallowAllBlocks"
           />
         </button>
 
@@ -135,7 +135,7 @@ const TaskConfig = ({
               <FormattedMessage
                 defaultMessage="Enable assertions simulating a student solving the task."
                 description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
-                id="crt.taskConfig.heading"
+                id="crt.taskConfig.enableAssertions"
               />
             </span>
             <input

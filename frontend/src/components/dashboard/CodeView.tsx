@@ -1,5 +1,5 @@
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo, useRef } from "react";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
@@ -7,6 +7,7 @@ import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import MultiSwrContent from "../MultiSwrContent";
 import { useFileHash } from "@/hooks/useFileHash";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const getSolutionCodeUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -32,6 +33,8 @@ const CodeView = ({
   taskType: TaskType;
   solutionId: number;
 }) => {
+  const intl = useIntl();
+
   const {
     data: taskFile,
     isLoading: isLoadingTaskFile,
@@ -59,6 +62,7 @@ const CodeView = ({
           task: taskFile,
           submission: solutionFile,
           subTaskId: subTaskId,
+          language: intl.locale as Language,
         },
       });
     }
