@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import Select from "../form/Select";
@@ -14,6 +14,7 @@ import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import { Group, SolutionGroupAssignment } from "./hooks/types";
 import { getStudentNickname } from "@/utilities/student-name";
+import Button from "../Button";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -302,7 +303,6 @@ const CodeComparison = ({
               />
               {leftSolution && (
                 <Button
-                  variant="primary"
                   onClick={(e) => {
                     e.stopPropagation();
 
@@ -348,7 +348,6 @@ const CodeComparison = ({
               />
               {rightSolution && (
                 <Button
-                  variant="primary"
                   onClick={(e) => {
                     e.stopPropagation();
 

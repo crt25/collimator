@@ -1,4 +1,4 @@
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import styled from "@emotion/styled";
@@ -6,6 +6,7 @@ import { ReactNode, useCallback, useRef, useState } from "react";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
+import Button, { ButtonVariant } from "../Button";
 
 const LargeModal = styled(Modal)`
   & > .modal-dialog {
@@ -105,7 +106,7 @@ const TaskModal = ({
             <Button
               disabled={!appLoaded}
               onClick={loadAppData}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="reset-button"
             >
               <FormattedMessage id="TaskModal.reset" defaultMessage="Reset" />
@@ -115,7 +116,7 @@ const TaskModal = ({
             <Button
               disabled={!appLoaded}
               onClick={onImportTask}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="import-button"
             >
               <FormattedMessage
@@ -128,7 +129,7 @@ const TaskModal = ({
             <Button
               disabled={!appLoaded}
               onClick={onExportTask}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="export-button"
             >
               <FormattedMessage
@@ -150,7 +151,7 @@ const TaskModal = ({
                 }
                 setIsShown(false);
               }}
-              variant="primary"
+              variant={ButtonVariant.secondary}
               data-testid="save-button"
             >
               <FormattedMessage
