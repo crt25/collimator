@@ -15,6 +15,8 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFileHash } from "@/hooks/useFileHash";
+import toast from "react-hot-toast";
+import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -50,6 +52,8 @@ const SolveTaskPage = () => {
     error: taskFileError,
     isLoading: isLoadingTaskFile,
   } = useTaskFile(taskId);
+
+  const fetchLatestSolutionFile = useFetchLatestSolutionFile();
 
   const createSolution = useCreateSolution();
 
@@ -103,16 +107,33 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
-  const onAppAvailable = useCallback(() => {
-    if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadTask",
-        arguments: taskFile,
-      });
+  const onAppAvailable = useCallback(async () => {
+    if (embeddedApp.current && taskFile && session && task) {
+      try {
+        const solutionFile = await fetchLatestSolutionFile(
+          session.klass.id,
+          session.id,
+          task.id,
+        );
+
+        embeddedApp.current.sendRequest({
+          procedure: "loadSubmission",
+          arguments: {
+            task: taskFile,
+            submission: solutionFile,
+          },
+        });
+      } catch {
+        // if we cannot fetch the latest solution file we load the task from scratch
+        embeddedApp.current.sendRequest({
+          procedure: "loadTask",
+          arguments: taskFile,
+        });
+      }
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash]);
+  }, [embeddedApp, taskFileHash, session, task]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
