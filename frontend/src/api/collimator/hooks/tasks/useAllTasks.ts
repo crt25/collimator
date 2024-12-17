@@ -12,6 +12,7 @@ import {
 } from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useMemo } from "react";
 
 export type GetTasksReturnType = ExistingTask[];
 
@@ -32,9 +33,19 @@ export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> => {
 export const useAllTasksLazyTable = (
   _state: LazyTableState,
 ): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> => {
-  const authOptions = useAuthenticationOptions();
+  const { data, isLoading, error } = useAllTasks();
 
-  return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
-    fetchAndTransform(authOptions).then(transformToLazyTableResult),
-  );
+  const transformedData = useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
+
+    return transformToLazyTableResult(data);
+  }, [data]);
+
+  return {
+    data: transformedData,
+    isLoading,
+    error,
+  };
 };

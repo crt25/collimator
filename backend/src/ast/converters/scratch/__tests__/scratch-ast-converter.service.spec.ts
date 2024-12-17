@@ -4567,6 +4567,7 @@ describe("Scratch AST converter", () => {
       expect(ast).toEqual([
         {
           nodeType: AstNodeType.actor,
+          componentId: "Stage",
           eventListeners: [
             {
               nodeType: AstNodeType.eventListener,
@@ -5005,6 +5006,7 @@ describe("Scratch AST converter", () => {
       expect(ast).toEqual([
         {
           nodeType: AstNodeType.actor,
+          componentId: "Stage",
           eventListeners: [
             {
               nodeType: AstNodeType.eventListener,
@@ -5332,6 +5334,7 @@ describe("Scratch AST converter", () => {
       expect(ast).toEqual([
         {
           nodeType: AstNodeType.actor,
+          componentId: "Stage",
           eventListeners: [
             {
               nodeType: AstNodeType.eventListener,
@@ -5460,6 +5463,7 @@ describe("Scratch AST converter", () => {
       expect(ast).toEqual([
         {
           nodeType: AstNodeType.actor,
+          componentId: "Stage",
           eventListeners: [
             {
               nodeType: AstNodeType.eventListener,

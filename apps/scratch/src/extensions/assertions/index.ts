@@ -274,8 +274,9 @@ class AssertionExtension {
         target.setDirection(state.direction);
         target.setDraggable(state.draggable);
         target.setRotationStyle(state.rotationStyle);
+
         // see https://github.com/scratchfoundation/scratch-vm/blob/bb1659e1f42de5bd28d7233c8e418c4e536a2bf0/src/sprites/rendered-target.js#L850C71-L850C97
-        target.renderer.setDrawableOrder(
+        target.renderer?.setDrawableOrder(
           target.drawableID,
           state.layerOrder,
           "sprite",

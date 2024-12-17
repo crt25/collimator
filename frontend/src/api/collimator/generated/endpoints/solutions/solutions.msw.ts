@@ -172,6 +172,25 @@ export const getSolutionsControllerFindOneV0MockHandler = (
   );
 };
 
+export const getSolutionsControllerDeleteOneV0MockHandler = (
+  overrideResponse?:
+    | void
+    | ((
+        info: Parameters<Parameters<typeof http.delete>[1]>[0],
+      ) => Promise<void> | void),
+) => {
+  return http.delete(
+    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/:id",
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === "function") {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
+    },
+  );
+};
+
 export const getSolutionsControllerDownloadOneV0MockHandler = (
   overrideResponse?:
     | void
@@ -195,5 +214,6 @@ export const getSolutionsMock = () => [
   getSolutionsControllerFindAllV0MockHandler(),
   getSolutionsControllerFindCurrentAnalysisV0MockHandler(),
   getSolutionsControllerFindOneV0MockHandler(),
+  getSolutionsControllerDeleteOneV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
 ];

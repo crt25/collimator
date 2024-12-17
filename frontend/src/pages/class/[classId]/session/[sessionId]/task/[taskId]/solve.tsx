@@ -14,6 +14,7 @@ import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
+import { useFileHash } from "@/hooks/useFileHash";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -52,9 +53,11 @@ const SolveTaskPage = () => {
 
   const createSolution = useCreateSolution();
 
+  const taskFileHash = useFileHash(taskFile);
+
   const iframeSrc = useMemo(
-    () => (task ? getSolveUrl(task.type) : null),
-    [task],
+    () => (task?.type ? getSolveUrl(task.type) : null),
+    [task?.type],
   );
 
   const [showSessionMenu, setShowSessionMenu] = useState(false);
@@ -91,7 +94,9 @@ const SolveTaskPage = () => {
         arguments: taskFile,
       });
     }
-  }, [taskFile]);
+    // since taskFile is a blob, use its hash as a proxy for its content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [embeddedApp, taskFileHash]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
