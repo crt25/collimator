@@ -1,0 +1,10 @@
+/playwright-report/
+/playwright/.cache
+
+# override parent .gitignore
+!/playwright/.*
+
+# ignore all files in directories
+/playwright/.*/**/*
+# except .gitkeep
+!/playwright/.*/.gitkeep

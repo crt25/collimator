@@ -57,6 +57,10 @@ jobs:
                 working-directory: ./frontend
                 run: yarn install
 
+            -   name: Install playwright dependencies
+                working-directory: ./frontend
+                run: yarn playwright install --with-deps
+
             -   name: Install scratch app dependencies
                 working-directory: ./apps/scratch
                 run: yarn install
@@ -128,6 +132,10 @@ jobs:
 
             -   name: Test scratch app
                 working-directory: ./apps/scratch
+                run: yarn test
+
+            -   name: Run e2e tests
+                working-directory: ./e2e
                 run: yarn test
 
             -   name: SonarCloud Scan

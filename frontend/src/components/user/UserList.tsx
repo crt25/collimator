@@ -61,6 +61,10 @@ const messages = defineMessages({
   },
 });
 
+const userNameTemplate = (rowData: ExistingUser) => (
+  <span data-testid={`user-${rowData.id}-name`}>{rowData.name}</span>
+);
+
 const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
@@ -203,6 +207,7 @@ const UserList = () => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={userNameTemplate}
             />
             <Column
               field="role"

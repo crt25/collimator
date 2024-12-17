@@ -22,6 +22,10 @@ import { AuthenticationModule } from "./authentication/authentication.module";
       provide: APP_INTERCEPTOR,
       useClass: interceptors.PrismaNotFoundInterceptor,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: interceptors.PrismaConnectionClosedInterceptor,
+    },
   ],
 })
 export class ApiModule {}
