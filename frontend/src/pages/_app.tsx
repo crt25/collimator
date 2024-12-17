@@ -24,6 +24,7 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
+import { Toaster } from "react-hot-toast";
 
 const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
@@ -124,6 +125,12 @@ const App = ({ Component, pageProps }: AppProps) => {
                   >
                     <WebSocketProvider>
                       <Component {...pageProps} />
+                      <Toaster
+                        toastOptions={{
+                          position: "bottom-right",
+                          duration: 5000,
+                        }}
+                      />
                     </WebSocketProvider>
                   </AuthenticationBarrier>
                 </UpdateLocalizationContext.Provider>

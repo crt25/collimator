@@ -81,6 +81,22 @@ const SolveTaskPage = () => {
       totalTests: response.result.totalTests,
       passedTests: response.result.passedTests,
     });
+
+    if (response.result.passedTests >= response.result.totalTests) {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.solutionSubmitted"
+          defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
+        />,
+      );
+    } else {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.solutionSubmitted"
+          defaultMessage="The solution was submitted successfully."
+        />,
+      );
+    }
   }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
