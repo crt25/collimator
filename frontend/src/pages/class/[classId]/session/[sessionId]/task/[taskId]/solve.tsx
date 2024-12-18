@@ -70,11 +70,14 @@ const SolveTaskPage = () => {
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
+  const isScratchMutexAvailable = useRef(true);
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current) {
+    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
       return;
     }
+
+    isScratchMutexAvailable.current = false;
 
     if (!session || !task || !taskFile) {
       return;
@@ -105,6 +108,8 @@ const SolveTaskPage = () => {
         />,
       );
     }
+
+    isScratchMutexAvailable.current = true;
   }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
@@ -112,7 +117,13 @@ const SolveTaskPage = () => {
   }, []);
 
   const onAppAvailable = useCallback(async () => {
-    if (embeddedApp.current && taskFile && session && task) {
+    if (
+      embeddedApp.current &&
+      taskFile &&
+      session &&
+      task &&
+      isScratchMutexAvailable.current
+    ) {
       if (wasInitialized.current) {
         embeddedApp.current.sendRequest({
           procedure: "setLocale",
@@ -130,7 +141,9 @@ const SolveTaskPage = () => {
           task.id,
         );
 
-        embeddedApp.current.sendRequest({
+        isScratchMutexAvailable.current = false;
+
+        await embeddedApp.current.sendRequest({
           procedure: "loadSubmission",
           arguments: {
             task: taskFile,
@@ -140,13 +153,15 @@ const SolveTaskPage = () => {
         });
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
-        embeddedApp.current.sendRequest({
+        await embeddedApp.current.sendRequest({
           procedure: "loadTask",
           arguments: {
             task: taskFile,
             language: intl.locale as Language,
           },
         });
+      } finally {
+        isScratchMutexAvailable.current = true;
       }
     }
     // since taskFile is a blob, use its hash as a proxy for its content
