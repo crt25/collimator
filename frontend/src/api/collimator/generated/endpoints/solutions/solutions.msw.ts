@@ -68,6 +68,19 @@ export const getSolutionsControllerFindOneV0ResponseMock = (
   ...overrideResponse,
 });
 
+export const getSolutionsControllerLatestSolutionV0ResponseMock = (
+  overrideResponse: Partial<ExistingSolutionDto> = {},
+): ExistingSolutionDto => ({
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  id: faker.number.int({ min: undefined, max: undefined }),
+  passedTests: faker.number.int({ min: undefined, max: undefined }),
+  sessionId: faker.number.int({ min: undefined, max: undefined }),
+  studentId: faker.number.int({ min: undefined, max: undefined }),
+  taskId: faker.number.int({ min: undefined, max: undefined }),
+  totalTests: faker.number.int({ min: undefined, max: undefined }),
+  ...overrideResponse,
+});
+
 export const getSolutionsControllerCreateV0MockHandler = (
   overrideResponse?:
     | ExistingSolutionDto
@@ -209,6 +222,32 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
     },
   );
 };
+
+export const getSolutionsControllerLatestSolutionV0MockHandler = (
+  overrideResponse?:
+    | ExistingSolutionDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ExistingSolutionDto> | ExistingSolutionDto),
+) => {
+  return http.get(
+    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/latest",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSolutionsControllerLatestSolutionV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateV0MockHandler(),
   getSolutionsControllerFindAllV0MockHandler(),
@@ -216,4 +255,5 @@ export const getSolutionsMock = () => [
   getSolutionsControllerFindOneV0MockHandler(),
   getSolutionsControllerDeleteOneV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
+  getSolutionsControllerLatestSolutionV0MockHandler(),
 ];

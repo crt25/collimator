@@ -1,6 +1,7 @@
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { ModalMessages } from "@/i18n/modal-messages";
+import Button, { ButtonVariant } from "../Button";
 
 const ConfirmationModal = ({
   isShown,
@@ -36,7 +37,7 @@ const ConfirmationModal = ({
       <Modal.Footer>
         <Button
           onClick={() => setIsShown(false)}
-          variant="secondary"
+          variant={ButtonVariant.secondary}
           data-testid="cancel-button"
         >
           {intl.formatMessage(ModalMessages.cancel)}
@@ -49,7 +50,7 @@ const ConfirmationModal = ({
 
             setIsShown(false);
           }}
-          variant={isDangerous ? "danger" : "primary"}
+          variant={isDangerous ? ButtonVariant.danger : ButtonVariant.primary}
           data-testid="confirm-button"
         >
           {intl.formatMessage(messages.confirmButton)}

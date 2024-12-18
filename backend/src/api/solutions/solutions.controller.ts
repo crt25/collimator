@@ -132,6 +132,29 @@ export class SolutionsController {
     return fromQueryResults(CurrentAnalysisDto, solutions);
   }
 
+  @Get("latest")
+  @StudentOnly()
+  @ApiOkResponse({ type: ExistingSolutionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async latestSolution(
+    @AuthenticatedStudent() student: Student,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+  ): Promise<StreamableFile> {
+    const solution =
+      await this.solutionsService.downloadLatestStudentSolutionOrThrow(
+        sessionId,
+        taskId,
+        student.id,
+      );
+
+    return new StreamableFile(solution.data, {
+      type: solution.mimeType,
+    });
+  }
+
   @Get(":id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingSolutionDto })

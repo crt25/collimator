@@ -34,5 +34,9 @@ export const fetchFile = async (
   const request = new Request(`${backendHostName}${url}`, options);
   const response = await fetch(request);
 
+  if (response.status !== 200) {
+    throw new Error("Could not fetch file");
+  }
+
   return response.blob();
 };

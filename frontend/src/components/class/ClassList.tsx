@@ -6,7 +6,7 @@ import {
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
 import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
@@ -20,6 +20,7 @@ import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
 import SwrContent from "../SwrContent";
+import Button, { ButtonVariant } from "../Button";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -121,7 +122,7 @@ const ClassList = () => {
       <div data-testid={`class-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
-            variant="secondary"
+            variant={ButtonVariant.secondary}
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/class/${rowData.id}/edit`);
@@ -208,7 +209,7 @@ const ClassList = () => {
               filterElement={
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    variant="secondary"
+                    variant={ButtonVariant.secondary}
                     onClick={() => router.push("class/create")}
                     data-testid="class-create-button"
                   >

@@ -6,7 +6,7 @@ import {
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
 import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
@@ -21,6 +21,7 @@ import SwrContent from "../SwrContent";
 import { useDeleteUser } from "@/api/collimator/hooks/users/useDeleteUser";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGenerateRegistrationToken";
+import Button, { ButtonVariant } from "../Button";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -115,7 +116,7 @@ const UserList = () => {
       <div data-testid={`user-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
-            variant="secondary"
+            variant={ButtonVariant.secondary}
             data-testid={`user-${rowData.id}-edit-button`}
           >
             <FontAwesomeIcon
@@ -222,7 +223,7 @@ const UserList = () => {
               filterElement={
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    variant="secondary"
+                    variant={ButtonVariant.secondary}
                     onClick={() => router.push("user/create")}
                     data-testid="user-create-button"
                   >

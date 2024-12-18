@@ -15,6 +15,8 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFileHash } from "@/hooks/useFileHash";
+import toast from "react-hot-toast";
+import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -51,6 +53,8 @@ const SolveTaskPage = () => {
     isLoading: isLoadingTaskFile,
   } = useTaskFile(taskId);
 
+  const fetchLatestSolutionFile = useFetchLatestSolutionFile();
+
   const createSolution = useCreateSolution();
 
   const taskFileHash = useFileHash(taskFile);
@@ -62,11 +66,14 @@ const SolveTaskPage = () => {
 
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const isScratchMutexAvailable = useRef(true);
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current) {
+    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
       return;
     }
+
+    isScratchMutexAvailable.current = false;
 
     if (!session || !task || !taskFile) {
       return;
@@ -81,22 +88,67 @@ const SolveTaskPage = () => {
       totalTests: response.result.totalTests,
       passedTests: response.result.passedTests,
     });
+
+    if (response.result.passedTests >= response.result.totalTests) {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.solutionSubmitted"
+          defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
+        />,
+      );
+    } else {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.solutionSubmitted"
+          defaultMessage="The solution was submitted successfully."
+        />,
+      );
+    }
+
+    isScratchMutexAvailable.current = true;
   }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
   }, []);
 
-  const onAppAvailable = useCallback(() => {
-    if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadTask",
-        arguments: taskFile,
-      });
+  const onAppAvailable = useCallback(async () => {
+    if (
+      embeddedApp.current &&
+      taskFile &&
+      session &&
+      task &&
+      isScratchMutexAvailable.current
+    ) {
+      try {
+        const solutionFile = await fetchLatestSolutionFile(
+          session.klass.id,
+          session.id,
+          task.id,
+        );
+
+        isScratchMutexAvailable.current = false;
+
+        await embeddedApp.current.sendRequest({
+          procedure: "loadSubmission",
+          arguments: {
+            task: taskFile,
+            submission: solutionFile,
+          },
+        });
+      } catch {
+        // if we cannot fetch the latest solution file we load the task from scratch
+        await embeddedApp.current.sendRequest({
+          procedure: "loadTask",
+          arguments: taskFile,
+        });
+      } finally {
+        isScratchMutexAvailable.current = true;
+      }
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash]);
+  }, [embeddedApp, taskFileHash, session, task]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
