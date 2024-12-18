@@ -20,6 +20,7 @@ import YupLocalization from "@/components/form/YupLocalization";
 import {
   defaultLocalizationState,
   LocalizationState,
+  SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -96,7 +97,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   const messages = useMemo(() => {
     switch (localizationState.locale) {
-      case "fr":
+      case SupportedLocale.french:
         return French;
       default:
         return English;

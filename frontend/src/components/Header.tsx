@@ -6,6 +6,7 @@ import React from "react";
 import { Container, Dropdown } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import DropdownLinkItem from "./dropdown/DropdownLinkItem";
+import LanguageChooser from "./LanguageChooser";
 
 const StyledHeader = styled.header`
   padding: 0.5rem 0;
@@ -57,6 +58,9 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
         </Logo>
         <Menu>
           {children ? children : null}
+          <li>
+            <LanguageChooser />
+          </li>
           <li>
             {isAuthenticated ? (
               <Dropdown>
