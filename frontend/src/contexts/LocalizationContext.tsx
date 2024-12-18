@@ -25,9 +25,9 @@ export const defaultLocalizationState = (): LocalizationState => {
   // navigator.languages is ordered by preference, so we only need to look
   // at the first match
   // if we want to country-based localization, we have to get rid of the substring() call
-  const firstMatch = userLanguages.find((language) =>
-    allSupportedLocales.has(language.substring(0, 2) as SupportedLocale),
-  );
+  const firstMatch = userLanguages
+    .map((language) => language.substring(0, 2) as SupportedLocale)
+    .find((language) => allSupportedLocales.has(language));
 
   const chosenLocale = (firstMatch as SupportedLocale) || defaultLocale;
 
