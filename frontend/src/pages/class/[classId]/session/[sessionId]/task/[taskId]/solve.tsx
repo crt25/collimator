@@ -66,11 +66,14 @@ const SolveTaskPage = () => {
 
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const isScratchMutexAvailable = useRef(true);
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current) {
+    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
       return;
     }
+
+    isScratchMutexAvailable.current = false;
 
     if (!session || !task || !taskFile) {
       return;
@@ -101,6 +104,8 @@ const SolveTaskPage = () => {
         />,
       );
     }
+
+    isScratchMutexAvailable.current = true;
   }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
@@ -108,7 +113,13 @@ const SolveTaskPage = () => {
   }, []);
 
   const onAppAvailable = useCallback(async () => {
-    if (embeddedApp.current && taskFile && session && task) {
+    if (
+      embeddedApp.current &&
+      taskFile &&
+      session &&
+      task &&
+      isScratchMutexAvailable.current
+    ) {
       try {
         const solutionFile = await fetchLatestSolutionFile(
           session.klass.id,
@@ -116,7 +127,9 @@ const SolveTaskPage = () => {
           task.id,
         );
 
-        embeddedApp.current.sendRequest({
+        isScratchMutexAvailable.current = false;
+
+        await embeddedApp.current.sendRequest({
           procedure: "loadSubmission",
           arguments: {
             task: taskFile,
@@ -125,10 +138,12 @@ const SolveTaskPage = () => {
         });
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
-        embeddedApp.current.sendRequest({
+        await embeddedApp.current.sendRequest({
           procedure: "loadTask",
           arguments: taskFile,
         });
+      } finally {
+        isScratchMutexAvailable.current = true;
       }
     }
     // since taskFile is a blob, use its hash as a proxy for its content
