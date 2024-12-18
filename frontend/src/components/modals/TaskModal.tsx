@@ -1,5 +1,5 @@
 import { Modal } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import styled from "@emotion/styled";
 import { ReactNode, useCallback, useRef, useState } from "react";
@@ -7,6 +7,7 @@ import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import Button, { ButtonVariant } from "../Button";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const LargeModal = styled(Modal)`
   & > .modal-dialog {
@@ -48,6 +49,7 @@ const TaskModal = ({
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const intl = useIntl();
 
   const onImportTask = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -58,9 +60,12 @@ const TaskModal = ({
 
     await embeddedApp.current.sendRequest({
       procedure: "loadTask",
-      arguments: task,
+      arguments: {
+        task,
+        language: intl.locale as Language,
+      },
     });
-  }, []);
+  }, [intl.locale]);
 
   const onExportTask = useCallback(async () => {
     if (!embeddedApp.current) {

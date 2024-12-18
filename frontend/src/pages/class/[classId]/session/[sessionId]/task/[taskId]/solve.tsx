@@ -69,6 +69,7 @@ const SolveTaskPage = () => {
 
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const wasInitialized = useRef(false);
 
   const onSubmitSolution = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -112,6 +113,16 @@ const SolveTaskPage = () => {
 
   const onAppAvailable = useCallback(async () => {
     if (embeddedApp.current && taskFile && session && task) {
+      if (wasInitialized.current) {
+        embeddedApp.current.sendRequest({
+          procedure: "setLocale",
+          arguments: intl.locale as Language,
+        });
+        return;
+      }
+
+      wasInitialized.current = true;
+
       try {
         const solutionFile = await fetchLatestSolutionFile(
           session.klass.id,

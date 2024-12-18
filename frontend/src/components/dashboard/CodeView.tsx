@@ -68,7 +68,7 @@ const CodeView = ({
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskFileHash, solutionFileHash, subTaskId]);
+  }, [taskFileHash, solutionFileHash, subTaskId, intl.locale]);
 
   if (!iframeSrc) {
     return (

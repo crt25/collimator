@@ -51,7 +51,7 @@ export const useEmbeddedScratch = (
 ): ReturnType<typeof useIframeParent> => {
   const dispatch = useDispatch();
 
-  const setLanguage = useCallback(
+  const setLocale = useCallback(
     // ensure that the languages are supported by scratch
     // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
     (language: Language) => dispatch(selectLocale(language)),
@@ -150,7 +150,7 @@ export const useEmbeddedScratch = (
           if (vm) {
             const sb3Project = await request.arguments.task.arrayBuffer();
             try {
-              setLanguage(request.arguments.language);
+              setLocale(request.arguments.language);
               await loadCrtProject(vm, sb3Project);
 
               respondToMessageEvent({
@@ -164,7 +164,7 @@ export const useEmbeddedScratch = (
           break;
         case "loadSubmission":
           if (vm) {
-            setLanguage(request.arguments.language);
+            setLocale(request.arguments.language);
 
             const sb3Project = await request.arguments.task.arrayBuffer();
             const submission = await request.arguments.submission.text();
@@ -208,6 +208,20 @@ export const useEmbeddedScratch = (
               console.error(`${logModule} Project load failure: ${e}`);
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
+          }
+          break;
+        case "setLocale":
+          if (vm) {
+            // save content
+            const sb3Project = await saveCrtProject(vm);
+
+            // change language - apparently scratch resets the content with this?
+            setLocale(request.arguments);
+            await loadCrtProject(vm, await sb3Project.arrayBuffer());
+
+            respondToMessageEvent({
+              procedure: "setLocale",
+            });
           }
           break;
         default:
