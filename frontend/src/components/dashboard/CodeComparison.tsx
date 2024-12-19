@@ -15,6 +15,7 @@ import ViewSolutionModal from "../modals/ViewSolutionModal";
 import { Group, SolutionGroupAssignment } from "./hooks/types";
 import { getStudentNickname } from "@/utilities/student-name";
 import Button from "../Button";
+import { defaultGroupValue, defaultSolutionValue } from "./Analyzer";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -60,9 +61,6 @@ const SelectionMenu = styled.div`
     }
   }
 `;
-
-const defaultGroupValue = "null";
-const defaultSolutionValue = -1;
 
 type Option = { label: string; value: number };
 
@@ -113,6 +111,14 @@ const CodeComparison = ({
   taskType,
   groupAssignments,
   groups,
+  selectedLeftGroup,
+  setSelectedLeftGroup,
+  selectedRightGroup,
+  setSelectedRightGroup,
+  selectedLeftSolution,
+  setSelectedLeftSolution,
+  selectedRightSolution,
+  setSelectedRightSolution,
 }: {
   classId: number;
   sessionId: number;
@@ -121,23 +127,23 @@ const CodeComparison = ({
   taskType: TaskType;
   groupAssignments: SolutionGroupAssignment[];
   groups: Group[];
+  selectedLeftGroup: string;
+  setSelectedLeftGroup: (group: string) => void;
+  selectedRightGroup: string;
+  setSelectedRightGroup: (group: string) => void;
+  selectedLeftSolution: number;
+  setSelectedLeftSolution: (solution: number) => void;
+  selectedRightSolution: number;
+  setSelectedRightSolution: (solution: number) => void;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
   const [modalSolutionId, setModalSolutionId] = useState<number | null>(null);
-  const [selectedLeftGroup, setSelectedLeftGroup] = useState(defaultGroupValue);
-  const [selectedRightGroup, setSelectedRightGroup] =
-    useState(defaultGroupValue);
 
   const [leftSolutionOptions, setLeftSolutionOptions] = useState<Option[]>([]);
   const [rightSolutionOptions, setRightSolutionOptions] = useState<Option[]>(
     [],
   );
-
-  const [selectedRightSolution, setSelectedRightSolution] =
-    useState(defaultSolutionValue);
-  const [selectedLeftSolution, setSelectedLeftSolution] =
-    useState(defaultSolutionValue);
 
   const groupOptions = useMemo(
     () => [
@@ -147,8 +153,8 @@ const CodeComparison = ({
       },
       ...groups
         .map((g) => ({
-          label: intl.formatMessage(messages.groupLabelPrefix) + g.label,
-          value: g.key,
+          label: intl.formatMessage(messages.groupLabelPrefix) + g.groupLabel,
+          value: g.groupKey,
         }))
         .sort((a, b) => a.label.localeCompare(b.label)),
     ],
@@ -219,7 +225,7 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedLeftSolution,
       );
 
-      const leftGroup = groups.some((g) => g.key === selectedLeftGroup);
+      const leftGroup = groups.some((g) => g.groupKey === selectedLeftGroup);
 
       if (leftSolution) {
         setSelectedLeftSolution(leftSolution.solution.id);
@@ -241,7 +247,7 @@ const CodeComparison = ({
         (s) => s.solution.id === selectedRightSolution,
       );
 
-      const rightGroup = groups.some((g) => g.key === selectedRightGroup);
+      const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
 
       if (rightSolution) {
         setSelectedRightSolution(rightSolution.solution.id);

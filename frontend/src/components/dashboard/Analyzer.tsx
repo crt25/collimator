@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Col, Row } from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import styled from "@emotion/styled";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
@@ -18,6 +18,7 @@ import { useGrouping } from "./hooks/useGrouping";
 import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import Button, { ButtonVariant } from "../Button";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -52,9 +53,27 @@ const messages = defineMessages({
     id: "Analyzer.numberOfGroups",
     defaultMessage: "Number of groups",
   },
+  selectSolutionForComparisonTitle: {
+    id: "Analyzer.selectSolutionForComparisonTitle",
+    defaultMessage: "Selecting Solution for Comparison",
+  },
+  selectSolutionForComparisonDescription: {
+    id: "Analyzer.selectSolutionForComparisonDescription",
+    defaultMessage: "Where should the selected solution be placed?",
+  },
+  selectSolutionForComparisonLeft: {
+    id: "Analyzer.selectSolutionForComparisonLeft",
+    defaultMessage: "Left",
+  },
+  selectSolutionForComparisonRight: {
+    id: "Analyzer.selectSolutionForComparisonRight",
+    defaultMessage: "Right",
+  },
 });
 
 const ALL_SUBTASKS = "__ANALYZE_ALL_SUBTASKS__";
+export const defaultGroupValue = "null";
+export const defaultSolutionValue = -1;
 
 const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const intl = useIntl();
@@ -77,6 +96,24 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
   const [filters, setFilters] = useState<FilterCriterion[]>([]);
   const [splits, setSplits] = useState<ChartSplit[]>([]);
+
+  // the state for the code comparison - managed in this component so that we can
+  // change the state easily when the user clicks on a solution in the analysis chart
+  const [selectedSolutionId, setSelectedSolutionId] = useState<
+    | {
+        groupKey: string;
+        solutionId: number;
+      }
+    | undefined
+  >(undefined);
+  const [selectedLeftGroup, setSelectedLeftGroup] = useState(defaultGroupValue);
+  const [selectedRightGroup, setSelectedRightGroup] =
+    useState(defaultGroupValue);
+
+  const [selectedRightSolution, setSelectedRightSolution] =
+    useState(defaultSolutionValue);
+  const [selectedLeftSolution, setSelectedLeftSolution] =
+    useState(defaultSolutionValue);
 
   const {
     data: task,
@@ -156,6 +193,22 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     [xAxis, yAxis],
   );
 
+  const onSelectSolution = useCallback(
+    (groupKey: string, solution: CurrentAnalysis) => {
+      if (selectedLeftSolution === defaultSolutionValue) {
+        setSelectedLeftGroup(groupKey);
+        setSelectedLeftSolution(solution.id);
+      } else if (selectedRightSolution === defaultSolutionValue) {
+        setSelectedRightGroup(groupKey);
+        setSelectedRightSolution(solution.id);
+      } else {
+        // let the user choose
+        setSelectedSolutionId({ groupKey, solutionId: solution.id });
+      }
+    },
+    [selectedLeftSolution, selectedRightSolution],
+  );
+
   if (!selectedTask) {
     return (
       <FormattedMessage
@@ -166,113 +219,168 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   }
 
   return (
-    <MultiSwrContent
-      data={[task, solutions]}
-      isLoading={[isLoadingTask, isLoadingSolutions]}
-      errors={[taskError, solutionsError]}
-    >
-      {([task]) => (
-        <Row>
-          <Col xs={12} lg={3}>
-            <Parameters>
-              <Select
-                label={messages.taskSelection}
-                options={session.tasks.map((task) => ({
-                  label: task.title,
-                  value: task.id,
-                }))}
-                data-testid="select-task"
-                onChange={(e) => setSelectedTask(parseInt(e.target.value))}
-                value={selectedTask}
-                alwaysShow
-              />
+    <>
+      <MultiSwrContent
+        data={[task, solutions]}
+        isLoading={[isLoadingTask, isLoadingSolutions]}
+        errors={[taskError, solutionsError]}
+      >
+        {([task]) => (
+          <Row>
+            <Col xs={12} lg={3}>
+              <Parameters>
+                <Select
+                  label={messages.taskSelection}
+                  options={session.tasks.map((task) => ({
+                    label: task.title,
+                    value: task.id,
+                  }))}
+                  data-testid="select-task"
+                  onChange={(e) => setSelectedTask(parseInt(e.target.value))}
+                  value={selectedTask}
+                  alwaysShow
+                />
 
-              <Select
-                label={messages.subTaskSelection}
-                options={[
-                  {
-                    label: intl.formatMessage(messages.allSubTasks),
-                    value: ALL_SUBTASKS,
-                  },
-                  ...subtasks.map((subtask) => ({
-                    label: subtask.toString(),
-                    value: subtask,
-                  })),
-                ]}
-                data-testid="select-task"
-                onChange={(e) =>
-                  setSelectedSubTaskId(
-                    e.target.value !== ALL_SUBTASKS
-                      ? e.target.value
-                      : undefined,
-                  )
-                }
-                value={selectedSubTaskId}
-                alwaysShow
-              />
+                <Select
+                  label={messages.subTaskSelection}
+                  options={[
+                    {
+                      label: intl.formatMessage(messages.allSubTasks),
+                      value: ALL_SUBTASKS,
+                    },
+                    ...subtasks.map((subtask) => ({
+                      label: subtask.toString(),
+                      value: subtask,
+                    })),
+                  ]}
+                  data-testid="select-task"
+                  onChange={(e) =>
+                    setSelectedSubTaskId(
+                      e.target.value !== ALL_SUBTASKS
+                        ? e.target.value
+                        : undefined,
+                    )
+                  }
+                  value={selectedSubTaskId}
+                  alwaysShow
+                />
 
-              <AnalyzerFilterForm
-                taskType={task.type}
-                filters={filters}
-                setFilters={setFilters}
-              />
+                <AnalyzerFilterForm
+                  taskType={task.type}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
 
-              <Input
-                label={messages.automaticGrouping}
-                type="checkbox"
-                checked={isAutomaticGrouping}
-                onChange={(e) => setIsAutomaticGrouping(e.target.checked)}
-              />
-
-              {isAutomaticGrouping && (
                 <Input
-                  label={messages.numberOfGroups}
-                  type="number"
-                  value={numberOfGroups}
-                  onChange={(e) => setNumberOfGroups(parseInt(e.target.value))}
+                  label={messages.automaticGrouping}
+                  type="checkbox"
+                  checked={isAutomaticGrouping}
+                  onChange={(e) => setIsAutomaticGrouping(e.target.checked)}
                 />
-              )}
 
-              {!isGroupingAvailable && (
-                <FormattedMessage
-                  id="Analyzer.noGroupingAvailable"
-                  defaultMessage="Computing groups, please be patient."
+                {isAutomaticGrouping && (
+                  <Input
+                    label={messages.numberOfGroups}
+                    type="number"
+                    value={numberOfGroups}
+                    onChange={(e) =>
+                      setNumberOfGroups(parseInt(e.target.value))
+                    }
+                  />
+                )}
+
+                {!isGroupingAvailable && (
+                  <FormattedMessage
+                    id="Analyzer.noGroupingAvailable"
+                    defaultMessage="Computing groups, please be patient."
+                  />
+                )}
+              </Parameters>
+            </Col>
+            <Col xs={12} lg={9}>
+              {selectedTask && (
+                <Analysis
+                  taskType={task.type}
+                  xAxis={xAxis}
+                  setXAxis={updateXAxis}
+                  yAxis={yAxis}
+                  setYAxis={updateYAxis}
+                  categorizedDataPoints={categorizedDataPoints}
+                  manualGroups={manualGroups}
+                  splittingEnabled={!isAutomaticGrouping}
+                  splits={splits}
+                  setSplits={setSplits}
+                  onSelectSolution={onSelectSolution}
                 />
               )}
-            </Parameters>
-          </Col>
-          <Col xs={12} lg={9}>
-            {selectedTask && (
-              <Analysis
-                taskType={task.type}
-                xAxis={xAxis}
-                setXAxis={updateXAxis}
-                yAxis={yAxis}
-                setYAxis={updateYAxis}
-                categorizedDataPoints={categorizedDataPoints}
-                manualGroups={manualGroups}
-                splittingEnabled={!isAutomaticGrouping}
-                splits={splits}
-                setSplits={setSplits}
-              />
-            )}
-          </Col>
-          <Col xs={12}>
-            {task && (
-              <CodeComparison
-                classId={session.klass.id}
-                sessionId={session.id}
-                taskId={task.id}
-                subTaskId={selectedSubTaskId}
-                taskType={task.type}
-                groupAssignments={groupAssignments}
-                groups={groups}
-              />
-            )}
-          </Col>
-        </Row>
-      )}
-    </MultiSwrContent>
+            </Col>
+            <Col xs={12}>
+              {task && (
+                <CodeComparison
+                  classId={session.klass.id}
+                  sessionId={session.id}
+                  taskId={task.id}
+                  subTaskId={selectedSubTaskId}
+                  taskType={task.type}
+                  groupAssignments={groupAssignments}
+                  groups={groups}
+                  selectedLeftGroup={selectedLeftGroup}
+                  setSelectedLeftGroup={setSelectedLeftGroup}
+                  selectedRightGroup={selectedRightGroup}
+                  setSelectedRightGroup={setSelectedRightGroup}
+                  selectedLeftSolution={selectedLeftSolution}
+                  setSelectedLeftSolution={setSelectedLeftSolution}
+                  selectedRightSolution={selectedRightSolution}
+                  setSelectedRightSolution={setSelectedRightSolution}
+                />
+              )}
+            </Col>
+          </Row>
+        )}
+      </MultiSwrContent>
+      <Modal
+        show={selectedSolutionId !== undefined}
+        onHide={() => setSelectedSolutionId(undefined)}
+        data-testid="solution-selection-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {intl.formatMessage(messages.selectSolutionForComparisonTitle)}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {intl.formatMessage(messages.selectSolutionForComparisonDescription)}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              if (selectedSolutionId) {
+                setSelectedLeftGroup(selectedSolutionId.groupKey);
+                setSelectedLeftSolution(selectedSolutionId.solutionId);
+                setSelectedSolutionId(undefined);
+              }
+            }}
+            variant={ButtonVariant.primary}
+            data-testid="cancel-button"
+          >
+            {intl.formatMessage(messages.selectSolutionForComparisonLeft)}
+          </Button>
+          <Button
+            onClick={() => {
+              if (selectedSolutionId) {
+                setSelectedRightGroup(selectedSolutionId.groupKey);
+                setSelectedRightSolution(selectedSolutionId.solutionId);
+                setSelectedSolutionId(undefined);
+              }
+            }}
+            variant={ButtonVariant.primary}
+            data-testid="cancel-button"
+          >
+            {intl.formatMessage(messages.selectSolutionForComparisonRight)}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

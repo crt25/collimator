@@ -7,6 +7,7 @@ export interface CategorizedDataPoints {
 }
 
 export interface DataPoint {
+  groupKey: string;
   groupName: string;
   solutions?: CurrentAnalysis[];
   x: number;
@@ -14,8 +15,8 @@ export interface DataPoint {
 }
 
 export interface GroupBase {
-  key: string;
-  label: string;
+  groupKey: string;
+  groupLabel: string;
 }
 
 export interface SolutionGroupAssignment {
