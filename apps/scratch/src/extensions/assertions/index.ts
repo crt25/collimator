@@ -1,12 +1,31 @@
 // adapted from https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extensions/scratch3_music/index.js
 
 import VM from "scratch-vm";
-import formatMessage from "format-message";
 import { ExtensionId, ExtensionMetadata, ExtensionUtilType } from "..";
 import { BlockType } from "../../blocks/block-type";
 import { ArgumentType } from "../../blocks/argument-type";
 import testIconWhite from "./test-icon-white.svg";
 import testIconBlack from "./test-icon-black.svg";
+import { defineMessages } from "react-intl";
+import { formatMessage } from "../../i18n";
+
+const messages = defineMessages({
+  categoryName: {
+    id: "crt.extensions.assertions.categoryName",
+    defaultMessage: "Assertions",
+    description: "Label for the Assertions extension category",
+  },
+  eventWhenTaskFinishedRunning: {
+    id: "crt.extensions.assertions.event_whenTaskFinishedRunning",
+    defaultMessage: "when task finished running",
+    description:
+      "The name displayed on the scratch block that runs after the project has stopped running",
+  },
+  assert: {
+    id: "crt.extensions.assertions.assert",
+    defaultMessage: "Assert [CONDITION] is true",
+  },
+});
 
 /**
  * Icon svg to be displayed at the left edge of each extension block, encoded as a data URI.
@@ -365,22 +384,13 @@ class AssertionExtension {
   getInfo(): ExtensionMetadata {
     return {
       id: EXTENSION_ID,
-      name: formatMessage({
-        id: "crt.extensions.assertions.categoryName",
-        default: "Assertions",
-        description: "Label for the Assertions extension category",
-      }),
+      name: formatMessage(messages.categoryName),
       menuIconURI,
       blockIconURI,
       blocks: [
         {
           opcode: "event_whenTaskFinishedRunning",
-          text: formatMessage({
-            id: "crt.extensions.assertions.event_whenTaskFinishedRunning",
-            default: "when task finished running",
-            description:
-              "The name displayed on the scratch block that runs after the project has stopped running",
-          }),
+          text: formatMessage(messages.eventWhenTaskFinishedRunning),
           blockType: BlockType.hat,
           isEdgeActivated: false,
           arguments: {},
@@ -390,10 +400,7 @@ class AssertionExtension {
           // collimator via a opcode prefix what the block should be translated to.
           opcode: "noop_assert",
           blockType: BlockType.command,
-          text: formatMessage({
-            id: "crt.extensions.assertions.assert",
-            default: "Assert [CONDITION] is true",
-          }),
+          text: formatMessage(messages.assert),
           arguments: {
             CONDITION: {
               type: ArgumentType.boolean,

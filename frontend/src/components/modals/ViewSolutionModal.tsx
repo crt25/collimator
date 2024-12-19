@@ -1,4 +1,4 @@
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -7,6 +7,7 @@ import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import MultiSwrContent from "../MultiSwrContent";
 import { EmbeddedAppRef } from "../EmbeddedApp";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const getViewUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -34,6 +35,7 @@ const ViewSolutionModal = ({
   taskType: TaskType;
   solutionId: number;
 }) => {
+  const intl = useIntl();
   const url = useMemo(() => getViewUrl(taskType), [taskType]);
 
   const {
@@ -56,11 +58,12 @@ const ViewSolutionModal = ({
           arguments: {
             task: taskFile,
             submission: solutionFile,
+            language: intl.locale as Language,
           },
         });
       }
     },
-    [taskFile, solutionFile],
+    [taskFile, solutionFile, intl],
   );
 
   if (!isShown) {

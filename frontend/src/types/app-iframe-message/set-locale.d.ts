@@ -4,17 +4,14 @@ import {
   RemoteProcedureCallResponse,
 } from "./remote-procedure-call";
 
-type ProcedureName = "loadTask";
+type ProcedureName = "setLocale";
 
-export type LoadTaskRequest = RemoteProcedureCallRequest<
+export type SetLocaleRequest = RemoteProcedureCallRequest<
   ProcedureName,
-  {
-    task: Blob;
-    language: Language;
-  }
+  Language
 >;
 
-export type LoadTaskResponse = RemoteProcedureCallResponse<
+export type SetLocaleResponse = RemoteProcedureCallResponse<
   ProcedureName,
   undefined
 >;

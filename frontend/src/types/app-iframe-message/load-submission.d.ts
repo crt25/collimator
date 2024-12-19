@@ -1,3 +1,4 @@
+import { Language } from "./languages";
 import {
   RemoteProcedureCallRequest,
   RemoteProcedureCallResponse,
@@ -11,6 +12,7 @@ export type LoadSubmissionRequest = RemoteProcedureCallRequest<
     task: Blob;
     submission: Blob;
     subTaskId?: string;
+    language: Language;
   }
 >;
 

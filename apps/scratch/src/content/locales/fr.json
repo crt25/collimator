@@ -1,0 +1,53 @@
+{
+  "crt.blockConfig.blockUsageLimit": {
+    "description": "Label shown next to the input field for configuring how often a block can be used by students.",
+    "message": "Combien de fois ce bloc peut-il être utilisé ?"
+  },
+  "crt.blockConfig.canBlockBeUsed": {
+    "description": "Label shown next to the checkbox for configuring whether a given block can be used by students.",
+    "message": "Ce bloc peut-il être utilisé par les étudiants ?"
+  },
+  "crt.blockConfig.hasBlockUsageLimit": {
+    "description": "Label shown next to the input field for configuring how often a block can be used by students.",
+    "message": "Combien de fois ce bloc peut-il être utilisé ?"
+  },
+  "crt.blockConfig.heading": {
+    "description": "Heading of the block config modal shown when configuring whether a given block can be used by students.",
+    "message": "Configuration du bloc"
+  },
+  "crt.extension.assertions.description": {
+    "description": "Description for the 'Assertions' extension",
+    "message": "Affirmer des conditions sur le code des élèves"
+  },
+  "crt.extension.assertions.name": {
+    "description": "Name for the 'Assertions' extension",
+    "message": "Affirmations"
+  },
+  "crt.extensions.assertions.assert": {
+    "message": "Affirmer que [CONDITION] est vrai"
+  },
+  "crt.extensions.assertions.categoryName": {
+    "description": "Label for the Assertions extension category",
+    "message": "Affirmations"
+  },
+  "crt.extensions.assertions.event_whenTaskFinishedRunning": {
+    "description": "The name displayed on the scratch block that runs after the project has stopped running",
+    "message": "lorsque l'exécution de la tâche est terminée"
+  },
+  "crt.taskConfig.allowAllStandardBlocks": {
+    "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
+    "message": "Permettre l'utilisation de tous les blocs standard"
+  },
+  "crt.taskConfig.disallowAllBlocks": {
+    "description": "Label shown on the button that, when clicked, disallows all blocks from being used by students.",
+    "message": "Interdire tous les blocs"
+  },
+  "crt.taskConfig.enableAssertions": {
+    "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
+    "message": "Activer les assertions simulant la résolution de la tâche par un étudiant."
+  },
+  "crt.taskConfig.heading": {
+    "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
+    "message": "Configuration des tâches"
+  }
+}
