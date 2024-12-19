@@ -601,9 +601,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   onProjectLoaded = () => {
-    if (!this.props.showFlyout) {
-      this.getWorkspace().scrollCenter();
-    }
+    this.getWorkspace().scrollCenter();
   };
 
   updateToolboxBlockValue(id: string, value: string) {
