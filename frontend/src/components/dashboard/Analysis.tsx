@@ -30,13 +30,16 @@ import { getCanvasPattern, getCategoryName } from "./category";
 import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import Select from "../form/Select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
-import { CategorizedDataPoints, DataPoint, ManualGroup } from "./hooks/types";
+import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
+import { createStar } from "./shapes/star";
 
 type AdditionalChartData = {
   groupKey: string;
   groupName: string;
   solutions?: CurrentAnalysis[];
+  isSelected: boolean;
+  isBookmarked: boolean;
 };
 
 type PointWithAdditionalData = BubbleDataPoint & {
@@ -100,6 +103,9 @@ const onLeaveLabel = (context: EventContext) => {
   return true;
 };
 
+const customShapeSizeFactor = 3;
+const customShapeStrokeFactor = 2;
+
 const Analysis = ({
   xAxis,
   setXAxis,
@@ -113,6 +119,7 @@ const Analysis = ({
   setSplits,
   selectedSolutionIds,
   onSelectSolution,
+  bookmarkedSolutionIds,
 }: {
   xAxis: AxesCriterionType;
   setXAxis: (axis: AxesCriterionType) => void;
@@ -128,6 +135,7 @@ const Analysis = ({
   ) => void;
   selectedSolutionIds: number[];
   onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  bookmarkedSolutionIds: number[];
 }) => {
   const intl = useIntl();
 
@@ -148,57 +156,77 @@ const Analysis = ({
 
   const chartData = useMemo<ChartData<"bubble">>(
     () => ({
-      datasets: categorizedDataPoints.flatMap((category) => {
-        const selectedDataPoints: DataPoint[] = [];
-        const unselectedDataPoints: DataPoint[] = [];
+      datasets: categorizedDataPoints.map((category) => {
+        const data = category.dataPoints
+          .map((dataPoint) => {
+            const isSelected = dataPoint.solutions?.some((s) =>
+              selectedSolutionIds.includes(s.id),
+            );
 
-        for (const dataPoint of category.dataPoints) {
-          if (
-            dataPoint.solutions?.some((s) => selectedSolutionIds.includes(s.id))
-          ) {
-            selectedDataPoints.push(dataPoint);
-          } else {
-            unselectedDataPoints.push(dataPoint);
-          }
-        }
+            const isBookmarked = dataPoint.solutions?.some((s) =>
+              bookmarkedSolutionIds.includes(s.id),
+            );
 
-        return [
-          {
-            label: `${getCategoryName(intl, category.category)} (${intl.formatMessage(messages.selected)})`,
-            data: selectedDataPoints.map((dataPoint) => ({
+            return {
               x: dataPoint.x,
               y: dataPoint.y,
-              r: bubbleChartRadius + selectedDataPointBorderWidth,
+              r: isSelected
+                ? // add half of the border width to the radius if the data point is selected
+                  // to ensure the border is fully visible
+                  bubbleChartRadius + selectedDataPointBorderWidth / 2
+                : bubbleChartRadius,
               additionalData: {
                 groupKey: dataPoint.groupKey,
                 groupName: dataPoint.groupName,
                 solutions: dataPoint.solutions,
+                isSelected,
+                isBookmarked,
               } as AdditionalChartData,
-            })),
+            };
+          })
+          // the legend always uses the first item - ensure
+          // the first item is a non-selected data point if there is one
+          // see https://github.com/chartjs/Chart.js/pull/5621
+          .toSorted(
+            (a, b) =>
+              +a.additionalData.isSelected - +b.additionalData.isSelected,
+          );
 
-            backgroundColor: getCanvasPattern(category.category),
-            borderColor: Colors.dataPoint.selectedBorderColor,
-            borderWidth: selectedDataPointBorderWidth,
-          },
-          {
-            label: getCategoryName(intl, category.category),
-            data: unselectedDataPoints.map((dataPoint) => ({
-              x: dataPoint.x,
-              y: dataPoint.y,
-              r: bubbleChartRadius,
-              additionalData: {
-                groupKey: dataPoint.groupKey,
-                groupName: dataPoint.groupName,
-                solutions: dataPoint.solutions,
-              } as AdditionalChartData,
-            })),
+        const pattern = getCanvasPattern(category.category);
 
-            backgroundColor: getCanvasPattern(category.category),
-          },
-        ].filter((dataset) => dataset.data.length > 0);
+        return {
+          label: getCategoryName(intl, category.category),
+          data,
+
+          backgroundColor: pattern,
+          pointStyle: data.map((point) =>
+            point.additionalData.isBookmarked
+              ? createStar(
+                  customShapeSizeFactor *
+                    (bubbleChartRadius + selectedDataPointBorderWidth),
+                  pattern,
+                  point.additionalData.isSelected
+                    ? customShapeStrokeFactor * selectedDataPointBorderWidth
+                    : 0,
+                  Colors.dataPoint.selectedBorderColor,
+                )
+              : "circle",
+          ),
+          borderColor: data.map((point) =>
+            point.additionalData.isSelected
+              ? Colors.dataPoint.selectedBorderColor
+              : "black",
+          ),
+          hoverBorderWidth: data.map((point) =>
+            point.additionalData.isSelected ? selectedDataPointBorderWidth : 0,
+          ),
+          borderWidth: data.map((point) =>
+            point.additionalData.isSelected ? selectedDataPointBorderWidth : 0,
+          ),
+        };
       }),
     }),
-    [categorizedDataPoints, selectedSolutionIds, intl],
+    [categorizedDataPoints, selectedSolutionIds, bookmarkedSolutionIds, intl],
   );
 
   const onTooltip = useCallback(
@@ -419,9 +447,6 @@ const Analysis = ({
     [taskType],
   );
 
-  const selectedXAxis = axisOptions.find((o) => o.value === xAxis);
-  const selectedYAxis = axisOptions.find((o) => o.value === yAxis);
-
   const plugins = useMemo(
     () => [
       SelectPlugin,
@@ -445,13 +470,33 @@ const Analysis = ({
 
   const onMouseEnterTooltip = useCallback(() => {
     tooltipHovered.current = true;
-    console.log("enter");
   }, []);
 
   const onMouseLeaveTooltip = useCallback(() => {
     tooltipHovered.current = false;
     setTooltipDataPoints([]);
   }, []);
+
+  // group the tooltip data points by group name
+  // s.t. we can display one tooltip per group
+  const tooltipsByGroupName = useMemo(
+    () =>
+      Object.entries(
+        tooltipDataPoints.reduce(
+          (acc, dataPoint) => {
+            if (dataPoint.additionalData.groupName in acc) {
+              acc[dataPoint.additionalData.groupName].push(dataPoint);
+            } else {
+              acc[dataPoint.additionalData.groupName] = [dataPoint];
+            }
+
+            return acc;
+          },
+          {} as Record<string, PointWithAdditionalData[]>,
+        ),
+      ),
+    [tooltipDataPoints],
+  );
 
   return (
     <AnalysisWrapper>
@@ -476,42 +521,28 @@ const Analysis = ({
           onMouseEnter={onMouseEnterTooltip}
           onMouseLeave={onMouseLeaveTooltip}
         >
-          {tooltipDataPoints.length === 0 ? null : (
-            <div>
+          {tooltipsByGroupName.map(([name, points]) => (
+            <div key={name}>
               <div className="data">
                 <div>
                   <span>
                     <strong>{intl.formatMessage(messages.groupName)}</strong>
                   </span>
                   <span>
-                    <strong>
-                      {tooltipDataPoints[0].additionalData.groupName}
-                    </strong>
+                    <strong>{name}</strong>
                   </span>
-                </div>
-                <div>
-                  <span>
-                    {intl.formatMessage(selectedXAxis?.label ?? messages.xAxis)}
-                  </span>
-                  <span>{tooltipDataPoints[0].x}</span>
-                </div>
-                <div>
-                  <span>
-                    {intl.formatMessage(selectedYAxis?.label ?? messages.yAxis)}
-                  </span>
-                  <span>{tooltipDataPoints[0].y}</span>
                 </div>
                 <div>
                   <span>{intl.formatMessage(messages.numberOfStudents)}</span>
                   <span>
-                    {tooltipDataPoints
+                    {points
                       .map((p) => p.additionalData.solutions?.length ?? 0)
                       .reduce((sum, a) => sum + a, 0)}
                   </span>
                 </div>
                 <div>
                   <ul>
-                    {tooltipDataPoints.map((dataPoint) => {
+                    {points.map((dataPoint) => {
                       const solutions = dataPoint.additionalData.solutions;
                       return solutions === undefined || solutions.length === 0
                         ? null
@@ -534,7 +565,7 @@ const Analysis = ({
                 </div>
               </div>
             </div>
-          )}
+          ))}
         </Tooltip>
       </ChartWrapper>
       <XAxisSelector>
