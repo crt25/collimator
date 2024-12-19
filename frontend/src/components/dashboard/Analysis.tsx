@@ -30,7 +30,7 @@ import { getCanvasPattern, getCategoryName } from "./category";
 import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import Select from "../form/Select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
-import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
+import { CategorizedDataPoints, DataPoint, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
 
 type AdditionalChartData = {
@@ -60,6 +60,10 @@ const messages = defineMessages({
     id: "Analysis.yAxis",
     defaultMessage: "y-Axis",
   },
+  selected: {
+    id: "Analysis.selected",
+    defaultMessage: "Selected",
+  },
 });
 
 const AnalysisWrapper = styled.div``;
@@ -78,6 +82,7 @@ const StudentName = styled.span`
 `;
 
 const bubbleChartRadius = 10;
+const selectedDataPointBorderWidth = 5;
 
 const onEnterLabel = (context: EventContext) => {
   (context.element.options as AnnotationOptions<"label">).color =
@@ -106,6 +111,7 @@ const Analysis = ({
   splittingEnabled,
   splits,
   setSplits,
+  selectedSolutionIds,
   onSelectSolution,
 }: {
   xAxis: AxesCriterionType;
@@ -120,6 +126,7 @@ const Analysis = ({
   setSplits: (
     updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
   ) => void;
+  selectedSolutionIds: number[];
   onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
@@ -141,23 +148,57 @@ const Analysis = ({
 
   const chartData = useMemo<ChartData<"bubble">>(
     () => ({
-      datasets: categorizedDataPoints.map((category) => ({
-        label: getCategoryName(intl, category.category),
-        data: category.dataPoints.map((dataPoint) => ({
-          x: dataPoint.x,
-          y: dataPoint.y,
-          r: bubbleChartRadius,
-          additionalData: {
-            groupKey: dataPoint.groupKey,
-            groupName: dataPoint.groupName,
-            solutions: dataPoint.solutions,
-          } as AdditionalChartData,
-        })),
+      datasets: categorizedDataPoints.flatMap((category) => {
+        const selectedDataPoints: DataPoint[] = [];
+        const unselectedDataPoints: DataPoint[] = [];
 
-        backgroundColor: getCanvasPattern(category.category),
-      })),
+        for (const dataPoint of category.dataPoints) {
+          if (
+            dataPoint.solutions?.some((s) => selectedSolutionIds.includes(s.id))
+          ) {
+            selectedDataPoints.push(dataPoint);
+          } else {
+            unselectedDataPoints.push(dataPoint);
+          }
+        }
+
+        return [
+          {
+            label: `${getCategoryName(intl, category.category)} (${intl.formatMessage(messages.selected)})`,
+            data: selectedDataPoints.map((dataPoint) => ({
+              x: dataPoint.x,
+              y: dataPoint.y,
+              r: bubbleChartRadius + selectedDataPointBorderWidth,
+              additionalData: {
+                groupKey: dataPoint.groupKey,
+                groupName: dataPoint.groupName,
+                solutions: dataPoint.solutions,
+              } as AdditionalChartData,
+            })),
+
+            backgroundColor: getCanvasPattern(category.category),
+            borderColor: Colors.dataPoint.selectedBorderColor,
+            borderWidth: selectedDataPointBorderWidth,
+          },
+          {
+            label: getCategoryName(intl, category.category),
+            data: unselectedDataPoints.map((dataPoint) => ({
+              x: dataPoint.x,
+              y: dataPoint.y,
+              r: bubbleChartRadius,
+              additionalData: {
+                groupKey: dataPoint.groupKey,
+                groupName: dataPoint.groupName,
+                solutions: dataPoint.solutions,
+              } as AdditionalChartData,
+            })),
+
+            backgroundColor: getCanvasPattern(category.category),
+          },
+        ].filter((dataset) => dataset.data.length > 0);
+      }),
     }),
-    [categorizedDataPoints, intl],
+    [categorizedDataPoints, selectedSolutionIds, intl],
   );
 
   const onTooltip = useCallback(
