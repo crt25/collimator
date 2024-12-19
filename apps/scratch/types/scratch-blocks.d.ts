@@ -54,7 +54,7 @@ declare namespace ScratchBlocksExtended {
      */
     registerButtonCallback: (
       key: string,
-      func: (flyoutButton: unknown) => void
+      func: (flyoutButton: unknown) => void,
     ) => void;
 
     /**
@@ -74,8 +74,30 @@ declare namespace ScratchBlocksExtended {
     glowBlock: (id: string, shouldGlow: boolean) => void;
     reportValue: (id: string, data: unknown) => void;
     resize: () => void;
+    scroll: (x: number, y: number) => void;
+    scrollCenter: () => void;
 
-    toolbox_: Toolbox;
+    getMetrics: () =>
+      | {
+          absoluteLeft: number;
+          absoluteTop: number;
+          contentHeight: number;
+          contentLeft: number;
+          contentTop: number;
+          contentWidth: number;
+          flyoutHeight: number;
+          flyoutWidth: number;
+          toolboxHeight: number;
+          toolboxPosition: number;
+          toolboxWidth: number;
+          viewHeight: number;
+          viewLeft: number;
+          viewTop: number;
+          viewWidth: number;
+        }
+      | undefined;
+
+    toolbox_: Toolbox | undefined;
     toolboxRefreshEnabled_: boolean;
 
     scrollX: number;
@@ -107,7 +129,7 @@ declare namespace ScratchBlocksExtended {
     createVariable: (
       workspace: Workspace,
       opt_callback?: (id: string) => void,
-      opt_type?: string
+      opt_type?: string,
     ) => void;
   };
 
@@ -115,7 +137,7 @@ declare namespace ScratchBlocksExtended {
     // https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/tests/custom_procedure_playground.html#L174
     externalProcedureDefCallback?: (
       data: HTMLElement,
-      callback: () => void
+      callback: () => void,
     ) => void;
 
     /**
@@ -145,7 +167,7 @@ declare namespace ScratchBlocksExtended {
    */
   const inject: (
     container: HTMLElement | string,
-    opt_options: Record<string, unknown>
+    opt_options: Record<string, unknown>,
   ) => Workspace;
 
   // based on https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/blockly.js#L410
@@ -154,7 +176,7 @@ declare namespace ScratchBlocksExtended {
     defaultValue: string,
     callback: (val: string) => void,
     _opt_title?: string,
-    _opt_varType?: string
+    _opt_varType?: string,
   ) => void;
 
   let statusButtonCallback: (id: string) => void;
@@ -171,7 +193,7 @@ declare namespace ScratchBlocksExtended {
    */
   const FieldColourSlider: ((
     color: string,
-    opt_validator: (newColor: string) => string | null | undefined
+    opt_validator: (newColor: string) => string | null | undefined,
   ) => void) & {
     activateEyedropper_: null | undefined | (() => void);
   };
@@ -182,7 +204,7 @@ declare namespace ScratchBlocksExtended {
 
   // https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/tests/jsunit/test_utilities.js#L144
   const defineBlocksWithJsonArray: (
-    jsonArray: Record<string, unknown>[]
+    jsonArray: Record<string, unknown>[],
   ) => void;
 
   const refreshStatusButtons: (workspace: Workspace) => void;
