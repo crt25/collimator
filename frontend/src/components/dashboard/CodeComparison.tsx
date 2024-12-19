@@ -16,6 +16,9 @@ import { Group, SolutionGroupAssignment } from "./hooks/types";
 import { getStudentNickname } from "@/utilities/student-name";
 import Button from "../Button";
 import { defaultGroupValue, defaultSolutionValue } from "./Analyzer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -51,10 +54,14 @@ const SelectionMenu = styled.div`
     flex-shrink: 0;
   }
 
+  & > label:nth-of-type(2) {
+    /* make student select take up remaining space */
+    flex-grow: 1;
+  }
+
   & > * {
     /* avoid overflow */
     min-width: 0;
-    flex-grow: 1;
 
     select {
       width: 100%;
@@ -67,6 +74,7 @@ type Option = { label: string; value: number };
 const getOptions = async (
   authContext: AuthenticationContextType,
   solutions: SolutionGroupAssignment[],
+  bookmarkedSolutionIds: number[],
 ): Promise<Option[]> => {
   let options: Option[] = solutions.map((solution) => ({
     label: solution.solution.studentPseudonym,
@@ -100,7 +108,14 @@ const getOptions = async (
     }),
   );
 
-  return options;
+  return options.map((option) => {
+    const isBookmarked = bookmarkedSolutionIds.includes(option.value);
+
+    return {
+      ...option,
+      label: isBookmarked ? `⭐ ${option.label}` : option.label,
+    };
+  });
 };
 
 const CodeComparison = ({
@@ -119,6 +134,8 @@ const CodeComparison = ({
   setSelectedLeftSolution,
   selectedRightSolution,
   setSelectedRightSolution,
+  bookmarkedSolutionIds,
+  setBookmarkedSolutionIds,
 }: {
   classId: number;
   sessionId: number;
@@ -135,6 +152,8 @@ const CodeComparison = ({
   setSelectedLeftSolution: (solution: number) => void;
   selectedRightSolution: number;
   setSelectedRightSolution: (solution: number) => void;
+  bookmarkedSolutionIds: number[];
+  setBookmarkedSolutionIds: (bookmarkedSolutionIds: number[]) => void;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
@@ -190,16 +209,24 @@ const CodeComparison = ({
         s.groupKey === selectedLeftGroup,
     );
 
-    getOptions(authContext, solutions).then((options) => {
-      setLeftSolutionOptions([
-        {
-          label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSolutionValue,
-        },
-        ...options,
-      ]);
-    });
-  }, [intl, selectedLeftGroup, groupAssignments, authContext]);
+    getOptions(authContext, solutions, bookmarkedSolutionIds).then(
+      (options) => {
+        setLeftSolutionOptions([
+          {
+            label: intl.formatMessage(messages.defaultSolutionOption),
+            value: defaultSolutionValue,
+          },
+          ...options,
+        ]);
+      },
+    );
+  }, [
+    intl,
+    selectedLeftGroup,
+    groupAssignments,
+    authContext,
+    bookmarkedSolutionIds,
+  ]);
 
   useEffect(() => {
     const solutions = groupAssignments.filter(
@@ -208,16 +235,24 @@ const CodeComparison = ({
         s.groupKey === selectedRightGroup,
     );
 
-    getOptions(authContext, solutions).then((options) => {
-      setRightSolutionOptions([
-        {
-          label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSolutionValue,
-        },
-        ...options,
-      ]);
-    });
-  }, [intl, selectedRightGroup, groupAssignments, authContext]);
+    getOptions(authContext, solutions, bookmarkedSolutionIds).then(
+      (options) => {
+        setRightSolutionOptions([
+          {
+            label: intl.formatMessage(messages.defaultSolutionOption),
+            value: defaultSolutionValue,
+          },
+          ...options,
+        ]);
+      },
+    );
+  }, [
+    intl,
+    selectedRightGroup,
+    groupAssignments,
+    authContext,
+    bookmarkedSolutionIds,
+  ]);
 
   useEffect(() => {
     if (selectedLeftSolution) {
@@ -265,6 +300,22 @@ const CodeComparison = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groups, groupAssignments]);
 
+  const isLeftSolutionBookmarked = useMemo(
+    () =>
+      leftSolution
+        ? bookmarkedSolutionIds.includes(leftSolution.solution.id)
+        : false,
+    [bookmarkedSolutionIds, leftSolution],
+  );
+
+  const isRightSolutionBookmarked = useMemo(
+    () =>
+      rightSolution
+        ? bookmarkedSolutionIds.includes(rightSolution.solution.id)
+        : false,
+    [bookmarkedSolutionIds, rightSolution],
+  );
+
   return (
     <>
       {modalSolutionId && (
@@ -308,19 +359,42 @@ const CodeComparison = ({
                 noMargin
               />
               {leftSolution && (
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    setModalSolutionId(leftSolution.solution.id);
-                  }}
-                  data-testid={`left-view-button`}
-                >
-                  <FormattedMessage
-                    id="CodeComparison.view"
-                    defaultMessage="View"
-                  />
-                </Button>
+                <>
+                  <Button
+                    onClick={() => {
+                      setModalSolutionId(leftSolution.solution.id);
+                    }}
+                    data-testid="left-view-button"
+                  >
+                    <FormattedMessage
+                      id="CodeComparison.view"
+                      defaultMessage="View"
+                    />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (isLeftSolutionBookmarked) {
+                        setBookmarkedSolutionIds(
+                          bookmarkedSolutionIds.filter(
+                            (id) => id !== leftSolution.solution.id,
+                          ),
+                        );
+                      } else {
+                        setBookmarkedSolutionIds([
+                          ...bookmarkedSolutionIds,
+                          leftSolution.solution.id,
+                        ]);
+                      }
+                    }}
+                    data-testid="left-bookmark-button"
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        isLeftSolutionBookmarked ? faSolidStar : faStrokeStar
+                      }
+                    />
+                  </Button>
+                </>
               )}
             </SelectionMenu>
             {leftSolution && (
@@ -353,19 +427,44 @@ const CodeComparison = ({
                 noMargin
               />
               {rightSolution && (
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
+                <>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-                    setModalSolutionId(rightSolution.solution.id);
-                  }}
-                  data-testid={`right-view-button`}
-                >
-                  <FormattedMessage
-                    id="CodeComparison.view"
-                    defaultMessage="View"
-                  />
-                </Button>
+                      setModalSolutionId(rightSolution.solution.id);
+                    }}
+                    data-testid="right-view-button"
+                  >
+                    <FormattedMessage
+                      id="CodeComparison.view"
+                      defaultMessage="View"
+                    />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (isRightSolutionBookmarked) {
+                        setBookmarkedSolutionIds(
+                          bookmarkedSolutionIds.filter(
+                            (id) => id !== rightSolution.solution.id,
+                          ),
+                        );
+                      } else {
+                        setBookmarkedSolutionIds([
+                          ...bookmarkedSolutionIds,
+                          rightSolution.solution.id,
+                        ]);
+                      }
+                    }}
+                    data-testid="left-bookmark-button"
+                  >
+                    <FontAwesomeIcon
+                      icon={
+                        isRightSolutionBookmarked ? faSolidStar : faStrokeStar
+                      }
+                    />
+                  </Button>
+                </>
               )}
             </SelectionMenu>
             {rightSolution && (

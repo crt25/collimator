@@ -97,6 +97,10 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const [filters, setFilters] = useState<FilterCriterion[]>([]);
   const [splits, setSplits] = useState<ChartSplit[]>([]);
 
+  const [bookmarkedSolutionIds, setBookmarkedSolutionIds] = useState<number[]>(
+    [],
+  );
+
   // the state for the code comparison - managed in this component so that we can
   // change the state easily when the user clicks on a solution in the analysis chart
   const [selectedSolutionId, setSelectedSolutionId] = useState<
@@ -306,15 +310,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   yAxis={yAxis}
                   setYAxis={updateYAxis}
                   categorizedDataPoints={categorizedDataPoints}
-                  selectedSolutionIds={[
-                    selectedLeftSolution,
-                    selectedRightSolution,
-                  ]}
                   manualGroups={manualGroups}
                   splittingEnabled={!isAutomaticGrouping}
                   splits={splits}
                   setSplits={setSplits}
+                  selectedSolutionIds={[
+                    selectedLeftSolution,
+                    selectedRightSolution,
+                  ]}
                   onSelectSolution={onSelectSolution}
+                  bookmarkedSolutionIds={bookmarkedSolutionIds}
                 />
               )}
             </Col>
@@ -336,6 +341,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   setSelectedLeftSolution={setSelectedLeftSolution}
                   selectedRightSolution={selectedRightSolution}
                   setSelectedRightSolution={setSelectedRightSolution}
+                  bookmarkedSolutionIds={bookmarkedSolutionIds}
+                  setBookmarkedSolutionIds={setBookmarkedSolutionIds}
                 />
               )}
             </Col>
