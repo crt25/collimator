@@ -34,6 +34,7 @@ import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
 
 type AdditionalChartData = {
+  groupKey: string;
   groupName: string;
   solutions?: CurrentAnalysis[];
 };
@@ -71,6 +72,11 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
+const StudentName = styled.span`
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
 const bubbleChartRadius = 10;
 
 const onEnterLabel = (context: EventContext) => {
@@ -100,6 +106,7 @@ const Analysis = ({
   splittingEnabled,
   splits,
   setSplits,
+  onSelectSolution,
 }: {
   xAxis: AxesCriterionType;
   setXAxis: (axis: AxesCriterionType) => void;
@@ -113,6 +120,7 @@ const Analysis = ({
   setSplits: (
     updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
   ) => void;
+  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
 
@@ -120,6 +128,7 @@ const Analysis = ({
     PointWithAdditionalData[]
   >([]);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const tooltipHovered = useRef(false);
 
   const xAxisConfig = useMemo(() => getAxisConfig(xAxis), [xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(yAxis), [yAxis]);
@@ -139,6 +148,7 @@ const Analysis = ({
           y: dataPoint.y,
           r: bubbleChartRadius,
           additionalData: {
+            groupKey: dataPoint.groupKey,
             groupName: dataPoint.groupName,
             solutions: dataPoint.solutions,
           } as AdditionalChartData,
@@ -161,6 +171,11 @@ const Analysis = ({
       const tooltipElement = tooltipRef.current;
 
       if (!tooltipElement) {
+        return;
+      }
+
+      if (tooltipHovered.current) {
+        // do *not* change the tooltip while the user is hovering over it
         return;
       }
 
@@ -270,7 +285,7 @@ const Analysis = ({
         ...groups.flatMap<AnnotationOptions>((group) => [
           {
             type: "label" as const,
-            content: group.label,
+            content: group.groupLabel,
             color: Colors.chartLabel.groupLabelColor,
             xValue: (ctx) => {
               const min = Math.max(group.minX, ctx.chart.scales.x.min);
@@ -387,6 +402,16 @@ const Analysis = ({
     [],
   );
 
+  const onMouseEnterTooltip = useCallback(() => {
+    tooltipHovered.current = true;
+    console.log("enter");
+  }, []);
+
+  const onMouseLeaveTooltip = useCallback(() => {
+    tooltipHovered.current = false;
+    setTooltipDataPoints([]);
+  }, []);
+
   return (
     <AnalysisWrapper>
       <YAxisSelector>
@@ -404,7 +429,12 @@ const Analysis = ({
         <Chart type="bubble" plugins={plugins} />
         <XAxis />
         <YAxis />
-        <Tooltip ref={tooltipRef} isShown={tooltipDataPoints.length > 0}>
+        <Tooltip
+          ref={tooltipRef}
+          isShown={tooltipDataPoints.length > 0}
+          onMouseEnter={onMouseEnterTooltip}
+          onMouseLeave={onMouseLeaveTooltip}
+        >
           {tooltipDataPoints.length === 0 ? null : (
             <div>
               <div className="data">
@@ -446,9 +476,16 @@ const Analysis = ({
                         ? null
                         : solutions.map((solution) => (
                             <li key={solution.id}>
-                              <span>
+                              <StudentName
+                                onClick={() =>
+                                  onSelectSolution(
+                                    dataPoint.additionalData.groupKey,
+                                    solution,
+                                  )
+                                }
+                              >
                                 {getStudentNickname(solution.studentPseudonym)}
-                              </span>
+                              </StudentName>
                             </li>
                           ));
                     })}

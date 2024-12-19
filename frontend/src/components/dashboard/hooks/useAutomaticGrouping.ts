@@ -41,7 +41,7 @@ export const useAutomaticGrouping = (
 
     for (let i = 0; i < groups.length; i++) {
       const group = groups[i];
-      const key = i.toString();
+      const groupKey = i.toString();
       const label = getGroupName(i);
 
       const xAxisValues = group.solutions.map((solution) =>
@@ -53,8 +53,8 @@ export const useAutomaticGrouping = (
       );
 
       automaticGroups.push({
-        key,
-        label,
+        groupKey,
+        groupLabel: label,
         groupName: label,
         x: mean(xAxisValues),
         y: mean(yAxisValues),
@@ -63,7 +63,7 @@ export const useAutomaticGrouping = (
 
       group.solutions.forEach((solution) =>
         groupAssignments.push({
-          groupKey: key,
+          groupKey,
           solution,
         }),
       );

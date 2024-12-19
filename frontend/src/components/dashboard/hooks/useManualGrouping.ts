@@ -18,7 +18,7 @@ class SolutionNotInGroupError extends Error {
     public yAxis: AxesCriterionType,
     public x: number,
     public y: number,
-    public groups: Omit<ManualGroup, "label">[],
+    public groups: Omit<ManualGroup, "groupLabel">[],
   ) {
     super("All data points must be within a group");
   }
@@ -104,7 +104,9 @@ export const useManualGrouping = (
       };
     }
 
-    const groups: (Omit<ManualGroup, "label"> & { label?: string })[] = [];
+    const groups: (Omit<ManualGroup, "groupLabel"> & {
+      groupLabel?: string;
+    })[] = [];
 
     const verticalSplits = splits
       .filter((s) => s.type === SplitType.vertical)
@@ -130,7 +132,7 @@ export const useManualGrouping = (
         },
       ]) {
         groups.push({
-          key: groups.length.toString(),
+          groupKey: groups.length.toString(),
           minX: lastX,
           maxX: vSplit.x,
           minY: lastY,
@@ -175,8 +177,8 @@ export const useManualGrouping = (
           );
         }
 
-        if (!group.label) {
-          group.label = getGroupName(usedGroupIdx++);
+        if (!group.groupLabel) {
+          group.groupLabel = getGroupName(usedGroupIdx++);
         }
 
         return {
@@ -184,8 +186,8 @@ export const useManualGrouping = (
           x: xAxisValue,
           y: yAxisValue,
           category,
-          groupKey: group.key,
-          groupName: group.label,
+          groupKey: group.groupKey,
+          groupName: group.groupLabel,
         };
       })
       .reduce((categories, analyzedSolution) => {
@@ -215,6 +217,8 @@ export const useManualGrouping = (
           groupKey: solution.groupKey,
         })),
       ),
-      groups: groups.filter((g): g is ManualGroup => g.label !== undefined),
+      groups: groups.filter(
+        (g): g is ManualGroup => g.groupLabel !== undefined,
+      ),
     };
   }, [isAutomaticGrouping, solutions, xAxis, yAxis, filters, splits]);
