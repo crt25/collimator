@@ -71,7 +71,7 @@ export const getGroupName = (idx: number): string => {
 };
 
 const isWithinGroup = (
-  group: Omit<ManualGroup, "label">,
+  group: Omit<ManualGroup, "groupLabel">,
   x: number,
   y: number,
 ): boolean =>
