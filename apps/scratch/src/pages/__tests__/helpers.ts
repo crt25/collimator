@@ -39,7 +39,10 @@ export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
       id: 0,
       type: "request",
       procedure: "loadTask",
-      arguments: task,
+      arguments: {
+        task,
+        language: "en",
+      },
     });
 
     window.dispatchEvent(event);
