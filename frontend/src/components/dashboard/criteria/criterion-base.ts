@@ -12,15 +12,18 @@ export interface CriterionBase<Type extends CriterionType> {
 export type CriterionFormProps<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
+  Parameters extends CriterionBase<Type>,
 > = {
   value: Criterion;
+  parameters: Parameters;
   onChange: (criteron: Criterion) => void;
 };
 
 export type CriterionFormComponent<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
-> = React.FunctionComponent<CriterionFormProps<Type, Criterion>>;
+  Parameters extends CriterionBase<Type>,
+> = React.FunctionComponent<CriterionFormProps<Type, Criterion, Parameters>>;
 
 export type AxisConfig = DeepPartial<
   // use the scale options for cartesian scales
@@ -39,9 +42,10 @@ export interface CriterionAxisDefinition<Type extends CriterionType> {
 interface CriterionDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
+  Parameters extends CriterionBase<Type>,
 > {
   criterion: Type;
-  formComponent: CriterionFormComponent<Type, Criterion>;
+  formComponent: CriterionFormComponent<Type, Criterion, Parameters>;
   messages: (taskType: TaskType) => {
     name: MessageDescriptor;
   };
@@ -50,15 +54,33 @@ interface CriterionDefinition<
 export interface CriterionFilterDefinition<
   Type extends CriterionType,
   Criterion extends CriterionBase<Type>,
-> extends CriterionDefinition<Type, Criterion> {
+  Parameters extends CriterionBase<Type>,
+> extends CriterionDefinition<Type, Criterion, Parameters> {
   initialValues: Criterion;
-  matchesFilter: (criterion: Criterion, analysis: CurrentAnalysis) => boolean;
+  run: (
+    criterion: Criterion,
+    analyses: CurrentAnalysis[],
+  ) => {
+    matchesFilter: boolean[];
+    parameters: Parameters;
+  };
 }
 
 export type DefinitionCriterion<T> =
-  T extends CriterionDefinition<infer _Type, infer Criterion>
+  T extends CriterionDefinition<infer _Type, infer Criterion, infer _Params>
     ? Criterion
     : never;
 
 export type DefinitionCriterionType<T> =
-  T extends CriterionFormComponent<infer Type, infer _Criterion> ? Type : never;
+  T extends CriterionFormComponent<infer Type, infer _Criterion, infer _Params>
+    ? Type
+    : never;
+
+export type FilterDefinitionParameters<T> =
+  T extends CriterionFilterDefinition<
+    infer _Type,
+    infer _Criterion,
+    infer CriterionParameters
+  >
+    ? CriterionParameters
+    : never;

@@ -35,10 +35,6 @@ const messages = defineMessages({
     id: "Category.inCorrect",
     defaultMessage: "No test passes",
   },
-  filteredOut: {
-    id: "Category.filteredOut",
-    defaultMessage: "filtered out",
-  },
 });
 
 export enum Category {
@@ -68,7 +64,6 @@ export const getCategoryName = (
   const hasTests = hasFlag(category, Category.hasTests);
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
-  const matchesFilter = hasFlag(category, Category.matchesFilters);
   const isAutomaticGroup = hasFlag(category, Category.isAutomaticGroup);
 
   if (isMixed) {
@@ -87,10 +82,6 @@ export const getCategoryName = (
     } else {
       name = intl.formatMessage(messages.noTestsPass);
     }
-  }
-
-  if (!matchesFilter) {
-    name += " (" + intl.formatMessage(messages.filteredOut) + ")";
   }
 
   return name;

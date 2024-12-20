@@ -11,7 +11,8 @@ import {
   AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 
-type Criterion = AstCriterionType.condition;
+const criterion = AstCriterionType.condition;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -25,15 +26,21 @@ export interface ConditionFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
+export interface ConditionFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minNumberOfConditions: number;
+  maxNumberOfConditions: number;
+}
+
 const toAnalysisInput = (
   _criterion: ConditionFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.condition> => ({
-  criterion: AstCriterionType.condition,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: AstCriterionType.condition,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
@@ -43,7 +50,7 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) => {
     const numberOfConditions = analyzeAst(analysis.generalAst, {
-      criterion: AstCriterionType.condition,
+      criterion,
       input: undefined,
     }).output;
 
@@ -53,25 +60,34 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
 
 export const ConditionCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  ConditionFilterCriterion
+  ConditionFilterCriterion,
+  ConditionFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.condition,
+  criterion,
   formComponent: ConditionCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.condition,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const numberOfConditions = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return (
-      config.minimumCount <= numberOfConditions &&
-      config.maximumCount >= numberOfConditions
+  run: (config, analyes) => {
+    const numberOfConditionsList = analyes.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
     );
+
+    return {
+      matchesFilter: numberOfConditionsList.map(
+        (numberOfConditions) =>
+          config.minimumCount <= numberOfConditions &&
+          config.maximumCount >= numberOfConditions,
+      ),
+      parameters: {
+        criterion,
+        minNumberOfConditions: Math.min(...numberOfConditionsList),
+        maxNumberOfConditions: Math.max(...numberOfConditionsList),
+      },
+    };
   },
 };

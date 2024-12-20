@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { filterCriteria, FilterCriterion, FilterCriterionType } from "./filter";
+import {
+  filterCriteria,
+  FilterCriterion,
+  FilterCriterionParameters,
+  FilterCriterionType,
+} from "./filter";
 import CriterionFilterForm from "./filter/CriterionFilterForm";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -60,10 +65,14 @@ const AppliedFilters = ({
   taskType,
   filters,
   setFilters,
+  parametersByCriterion,
 }: {
   taskType: TaskType;
   filters: FilterCriterion[];
   setFilters: (value: SetStateAction<FilterCriterion[]>) => void;
+  parametersByCriterion: {
+    [key in FilterCriterionType]?: FilterCriterionParameters;
+  };
 }) => {
   const intl = useIntl();
   if (filters.length === 0) {
@@ -72,25 +81,39 @@ const AppliedFilters = ({
 
   return (
     <Wrapper>
-      {filters.map((filter) => (
-        <div key={filter.criterion}>
-          <h4>
-            <span>
-              {intl.formatMessage(
-                filterNameByCriterion[filter.criterion](taskType),
-              )}
-            </span>
+      {filters.map((filter) => {
+        const params = parametersByCriterion[filter.criterion];
 
-            <span>
-              <FontAwesomeIcon
-                icon={faXmark}
-                onClick={() => setFilters(filters.filter((f) => f !== filter))}
-              />
-            </span>
-          </h4>
-          <CriterionFilterForm setFilters={setFilters} filter={filter} />
-        </div>
-      ))}
+        if (params === undefined) {
+          return null;
+        }
+
+        return (
+          <div key={filter.criterion}>
+            <h4>
+              <span>
+                {intl.formatMessage(
+                  filterNameByCriterion[filter.criterion](taskType),
+                )}
+              </span>
+
+              <span>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  onClick={() =>
+                    setFilters(filters.filter((f) => f !== filter))
+                  }
+                />
+              </span>
+            </h4>
+            <CriterionFilterForm
+              setFilters={setFilters}
+              filter={filter}
+              parameters={params}
+            />
+          </div>
+        );
+      })}
     </Wrapper>
   );
 };

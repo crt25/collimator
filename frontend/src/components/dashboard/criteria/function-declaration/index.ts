@@ -11,7 +11,8 @@ import {
 } from "@/data-analyzer/analyze-asts";
 import FunctionDeclarationCriterionFilterForm from "./FunctionDeclarationCriterionFilterForm";
 
-type Criterion = AstCriterionType.functionDeclaration;
+const criterion = AstCriterionType.functionDeclaration;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -26,16 +27,22 @@ export interface FunctionDeclarationFilterCriterion
   maximumCount: number;
 }
 
+export interface FunctionDeclarationFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minNumberOfFunctionDeclarations: number;
+  maxNumberOfFunctionDeclarations: number;
+}
+
 const toAnalysisInput = (
   _criterion: FunctionDeclarationFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.functionDeclaration> => ({
-  criterion: AstCriterionType.functionDeclaration,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion> =
   {
-    criterion: AstCriterionType.functionDeclaration,
+    criterion,
     messages: () => messages,
     config: {
       type: "linear",
@@ -45,7 +52,7 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
     },
     getAxisValue: (analysis) => {
       const numberOfFunctionDeclarations = analyzeAst(analysis.generalAst, {
-        criterion: AstCriterionType.functionDeclaration,
+        criterion,
         input: undefined,
       }).output;
 
@@ -55,25 +62,38 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
 
 export const FunctionDeclarationCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  FunctionDeclarationFilterCriterion
+  FunctionDeclarationFilterCriterion,
+  FunctionDeclarationFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.functionDeclaration,
+  criterion,
   formComponent: FunctionDeclarationCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.functionDeclaration,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const numberOfFunctionDeclarations = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return (
-      config.minimumCount <= numberOfFunctionDeclarations &&
-      config.maximumCount >= numberOfFunctionDeclarations
+  run: (config, analyses) => {
+    const numberOfFunctionDeclarationsList = analyses.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
     );
+
+    return {
+      matchesFilter: numberOfFunctionDeclarationsList.map(
+        (numberOfFunctionDeclarations) =>
+          config.minimumCount <= numberOfFunctionDeclarations &&
+          config.maximumCount >= numberOfFunctionDeclarations,
+      ),
+      parameters: {
+        criterion,
+        maxNumberOfFunctionDeclarations: Math.max(
+          ...numberOfFunctionDeclarationsList,
+        ),
+        minNumberOfFunctionDeclarations: Math.min(
+          ...numberOfFunctionDeclarationsList,
+        ),
+      },
+    };
   },
 };
