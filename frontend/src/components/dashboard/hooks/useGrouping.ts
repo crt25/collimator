@@ -6,7 +6,7 @@ import { FilterCriterion } from "../filter";
 import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
 import {
-  CategorizedDataPoints,
+  CategorizedDataPoint,
   Group,
   ManualGroup,
   SolutionGroupAssignment,
@@ -23,14 +23,14 @@ export const useGrouping = (
   yAxis: AxesCriterionType,
 ): {
   isGroupingAvailable: boolean;
-  categorizedDataPoints: CategorizedDataPoints[];
+  categorizedDataPoints: CategorizedDataPoint[];
   groupAssignments: SolutionGroupAssignment[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
   const [isGroupingAvailable, setIsGroupingAvailable] =
     useState<boolean>(false);
-  const [dataPoints, setDataPoints] = useState<CategorizedDataPoints[]>([]);
+  const [dataPoints, setDataPoints] = useState<CategorizedDataPoint[]>([]);
   const [groupAssignment, setGroupAssignment] = useState<
     SolutionGroupAssignment[]
   >([]);
@@ -58,34 +58,42 @@ export const useGrouping = (
   useEffect(() => {
     let isCancelled = false;
 
+    let dataPoints: CategorizedDataPoint[] = [];
+
     if (!isAutomaticGrouping) {
-      setDataPoints(manual.dataPoints);
-      setGroupAssignment(manual.groupAssignment);
+      dataPoints = manual.dataPoints;
+
       setGroups(manual.groups);
       setManualGroups(manual.groups);
       setIsGroupingAvailable(true);
     } else {
       setIsGroupingAvailable(false);
 
-      computeAutomaticGrouping().then(
-        ({ automaticGroups, groupAssignments }) => {
-          if (isCancelled) {
-            return;
-          }
+      computeAutomaticGrouping().then((automaticGroups) => {
+        if (isCancelled) {
+          return;
+        }
 
-          setDataPoints([
-            {
-              category: Category.matchesFilters | Category.isAutomaticGroup,
-              dataPoints: automaticGroups,
-            },
-          ]);
-          setGroupAssignment(groupAssignments);
-          setGroups(automaticGroups);
-          setManualGroups([]);
-          setIsGroupingAvailable(true);
-        },
-      );
+        dataPoints = automaticGroups.map((group) => ({
+          ...group,
+          category: Category.matchesFilters | Category.isAutomaticGroup,
+        }));
+
+        setGroups(automaticGroups);
+        setManualGroups([]);
+        setIsGroupingAvailable(true);
+      });
     }
+
+    setDataPoints(dataPoints);
+    setGroupAssignment(
+      dataPoints.flatMap((dataPoint) =>
+        dataPoint.solutions.map((solution) => ({
+          groupKey: dataPoint.groupKey,
+          solution,
+        })),
+      ),
+    );
 
     return (): void => {
       isCancelled = true;

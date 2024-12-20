@@ -1,15 +1,16 @@
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
 
-export interface CategorizedDataPoints {
+export interface CategorizedDataPoint extends DataPoint {
   category: Category;
-  dataPoints: DataPoint[];
+  groupKey: string;
+  solutions: CurrentAnalysis[];
 }
 
 export interface DataPoint {
   groupKey: string;
   groupName: string;
-  solutions?: CurrentAnalysis[];
+  solutions: CurrentAnalysis[];
   x: number;
   y: number;
 }
