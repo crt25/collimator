@@ -19,6 +19,7 @@ import { defaultGroupValue, defaultSolutionValue } from "./Analyzer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
+import { compareLabels } from "@/utilities/comparisons";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -108,14 +109,16 @@ const getOptions = async (
     }),
   );
 
-  return options.map((option) => {
-    const isBookmarked = bookmarkedSolutionIds.includes(option.value);
+  return options
+    .map((option) => {
+      const isBookmarked = bookmarkedSolutionIds.includes(option.value);
 
-    return {
-      ...option,
-      label: isBookmarked ? `⭐ ${option.label}` : option.label,
-    };
-  });
+      return {
+        ...option,
+        label: isBookmarked ? `⭐ ${option.label}` : option.label,
+      };
+    })
+    .toSorted(compareLabels);
 };
 
 const CodeComparison = ({
@@ -175,7 +178,7 @@ const CodeComparison = ({
           label: intl.formatMessage(messages.groupLabelPrefix) + g.groupLabel,
           value: g.groupKey,
         }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
+        .toSorted(compareLabels),
     ],
     [intl, groups],
   );
