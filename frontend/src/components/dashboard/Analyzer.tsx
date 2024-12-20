@@ -10,7 +10,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
 import { AxesCriterionType } from "./axes";
-import { ChartSplit } from "./chartjs-plugins/select";
+import { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import { FilterCriterion } from "./filter";
@@ -173,28 +173,50 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     yAxis,
   );
 
-  const updateXAxis = useCallback(
-    (newAxis: AxesCriterionType) => {
-      if (yAxis === newAxis) {
+  const updateAxis = useCallback(
+    (
+      axis: AxesCriterionType,
+      otherAxis: AxesCriterionType,
+      newAxis: AxesCriterionType,
+      setAxis: (axis: AxesCriterionType) => void,
+      setOtherAxis: (axis: AxesCriterionType) => void,
+    ) => {
+      let newSplits: ChartSplit[] = [];
+
+      if (otherAxis === newAxis) {
         // flip axes
-        setYAxis(xAxis);
+        setOtherAxis(axis);
+
+        // when flipping axes, keep the splits
+        newSplits = splits.map((split) =>
+          split.type === SplitType.horizontal
+            ? {
+                type: SplitType.vertical,
+                x: split.y,
+              }
+            : {
+                type: SplitType.horizontal,
+                y: split.x,
+              },
+        );
       }
 
-      setXAxis(newAxis);
+      setAxis(newAxis);
+      setSplits(newSplits);
     },
-    [xAxis, yAxis],
+    [splits],
+  );
+
+  const updateXAxis = useCallback(
+    (newAxis: AxesCriterionType) =>
+      updateAxis(xAxis, yAxis, newAxis, setXAxis, setYAxis),
+    [xAxis, yAxis, updateAxis],
   );
 
   const updateYAxis = useCallback(
-    (newAxis: AxesCriterionType) => {
-      if (xAxis === newAxis) {
-        // flip axes
-        setXAxis(yAxis);
-      }
-
-      setYAxis(newAxis);
-    },
-    [xAxis, yAxis],
+    (newAxis: AxesCriterionType) =>
+      updateAxis(yAxis, xAxis, newAxis, setYAxis, setXAxis),
+    [xAxis, yAxis, updateAxis],
   );
 
   const onSelectSolution = useCallback(
