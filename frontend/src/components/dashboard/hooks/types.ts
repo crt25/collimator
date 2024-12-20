@@ -4,13 +4,13 @@ import { Category } from "../category";
 export interface CategorizedDataPoint extends DataPoint {
   category: Category;
   groupKey: string;
-  solutions: CurrentAnalysis[];
+  analyses: CurrentAnalysis[];
 }
 
 export interface DataPoint {
   groupKey: string;
   groupName: string;
-  solutions: CurrentAnalysis[];
+  analyses: CurrentAnalysis[];
   x: number;
   y: number;
 }
@@ -20,8 +20,8 @@ export interface GroupBase {
   groupLabel: string;
 }
 
-export interface SolutionGroupAssignment {
-  solution: CurrentAnalysis;
+export interface AnalysisGroupAssignment {
+  analysis: CurrentAnalysis;
   groupKey: string;
 }
 

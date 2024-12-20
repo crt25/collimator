@@ -3,32 +3,35 @@ import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
 import { GeneralAst } from "@ast/index";
 
 export enum AstCriterionType {
-  statement = "statement",
+  condition = "condition",
   expression = "expression",
   functionCall = "functionCall",
-  loop = "loop",
-  condition = "condition",
   functionDeclaration = "functionDeclaration",
+  height = "height",
+  loop = "loop",
+  statement = "statement",
 }
 
 export interface CriteriaBasedAnalyzerInput {
-  [AstCriterionType.statement]: void;
+  [AstCriterionType.condition]: void;
   [AstCriterionType.expression]: void;
+  [AstCriterionType.functionDeclaration]: void;
   [AstCriterionType.functionCall]: {
     functionName?: string;
   };
+  [AstCriterionType.height]: void;
   [AstCriterionType.loop]: void;
-  [AstCriterionType.condition]: void;
-  [AstCriterionType.functionDeclaration]: void;
+  [AstCriterionType.statement]: void;
 }
 
 export interface CriteriaBasedAnalyzerOutput {
-  [AstCriterionType.statement]: number;
+  [AstCriterionType.condition]: number;
   [AstCriterionType.expression]: number;
   [AstCriterionType.functionCall]: number;
-  [AstCriterionType.loop]: number;
-  [AstCriterionType.condition]: number;
   [AstCriterionType.functionDeclaration]: number;
+  [AstCriterionType.height]: number;
+  [AstCriterionType.loop]: number;
+  [AstCriterionType.statement]: number;
 }
 
 export type CriteriaToAnalyzeInput<T extends AstCriterionType> = {
@@ -44,8 +47,8 @@ export type CriteriaToAnalyzeOutput<T extends AstCriterionType> = {
 type AnalysisFunction = {
   (
     ast: GeneralAst,
-    input: CriteriaToAnalyzeInput<AstCriterionType.statement>,
-  ): CriteriaToAnalyzeOutput<AstCriterionType.statement>;
+    input: CriteriaToAnalyzeInput<AstCriterionType.condition>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.condition>;
   (
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.expression>,
@@ -56,16 +59,20 @@ type AnalysisFunction = {
   ): CriteriaToAnalyzeOutput<AstCriterionType.functionCall>;
   (
     ast: GeneralAst,
-    input: CriteriaToAnalyzeInput<AstCriterionType.condition>,
-  ): CriteriaToAnalyzeOutput<AstCriterionType.condition>;
-  (
-    ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.functionDeclaration>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.functionDeclaration>;
   (
     ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.height>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.height>;
+  (
+    ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.loop>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.loop>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.statement>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.statement>;
 };
 
 // @ts-expect-error Not sure how to fix the typescript issue
@@ -92,6 +99,10 @@ export const analyzeAst: AnalysisFunction = (ast, input) =>
         output: CriteriaBasedAnalyzer.countFunctionCalls(ast, input),
       }),
     )
+    .with({ criterion: AstCriterionType.height }, ({ criterion, input }) => ({
+      criterion,
+      output: CriteriaBasedAnalyzer.computeHeight(ast, input),
+    }))
     .with({ criterion: AstCriterionType.loop }, ({ criterion, input }) => ({
       criterion,
       output: CriteriaBasedAnalyzer.countLoops(ast, input),

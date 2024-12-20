@@ -170,7 +170,7 @@ export const useManualGrouping = (
         }
 
         return {
-          solutions: [solution],
+          analyses: [solution],
           x: xAxisValue,
           y: yAxisValue,
           category,

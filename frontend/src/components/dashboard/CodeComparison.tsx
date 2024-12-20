@@ -12,7 +12,7 @@ import { decodeBase64 } from "@/utilities/crypto/base64";
 import CodeView from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
-import { Group, SolutionGroupAssignment } from "./hooks/types";
+import { Group, AnalysisGroupAssignment } from "./hooks/types";
 import { getStudentNickname } from "@/utilities/student-name";
 import Button from "../Button";
 import { defaultGroupValue, defaultSolutionValue } from "./Analyzer";
@@ -73,12 +73,12 @@ type Option = { label: string; value: number };
 
 const getOptions = async (
   authContext: AuthenticationContextType,
-  solutions: SolutionGroupAssignment[],
+  assignments: AnalysisGroupAssignment[],
   bookmarkedSolutionIds: number[],
 ): Promise<Option[]> => {
-  let options: Option[] = solutions.map((solution) => ({
-    label: solution.solution.studentPseudonym,
-    value: solution.solution.id,
+  let options: Option[] = assignments.map((assignment) => ({
+    label: assignment.analysis.studentPseudonym,
+    value: assignment.analysis.solutionId,
   }));
 
   // TODO: && this with a parameter
@@ -142,7 +142,7 @@ const CodeComparison = ({
   taskId: number;
   subTaskId?: string;
   taskType: TaskType;
-  groupAssignments: SolutionGroupAssignment[];
+  groupAssignments: AnalysisGroupAssignment[];
   groups: Group[];
   selectedLeftGroup: string;
   setSelectedLeftGroup: (group: string) => void;
@@ -180,24 +180,24 @@ const CodeComparison = ({
     [intl, groups],
   );
 
-  const leftSolution = useMemo(
+  const leftAssignment = useMemo(
     () =>
       groupAssignments.find(
         (s) =>
           (s.groupKey === selectedLeftGroup ||
             defaultGroupValue === selectedLeftGroup) &&
-          s.solution.id === selectedLeftSolution,
+          s.analysis.solutionId === selectedLeftSolution,
       ),
     [groupAssignments, selectedLeftGroup, selectedLeftSolution],
   );
 
-  const rightSolution = useMemo(
+  const rightAssignment = useMemo(
     () =>
       groupAssignments.find(
         (s) =>
           (s.groupKey === selectedRightGroup ||
             defaultGroupValue === selectedRightGroup) &&
-          s.solution.id === selectedRightSolution,
+          s.analysis.solutionId === selectedRightSolution,
       ),
     [groupAssignments, selectedRightGroup, selectedRightSolution],
   );
@@ -257,13 +257,13 @@ const CodeComparison = ({
   useEffect(() => {
     if (selectedLeftSolution) {
       const leftSolution = groupAssignments.find(
-        (s) => s.solution.id === selectedLeftSolution,
+        (s) => s.analysis.solutionId === selectedLeftSolution,
       );
 
       const leftGroup = groups.some((g) => g.groupKey === selectedLeftGroup);
 
       if (leftSolution) {
-        setSelectedLeftSolution(leftSolution.solution.id);
+        setSelectedLeftSolution(leftSolution.analysis.solutionId);
         if (selectedLeftGroup !== defaultGroupValue) {
           setSelectedLeftGroup(leftSolution.groupKey);
         }
@@ -279,13 +279,13 @@ const CodeComparison = ({
 
     if (selectedRightSolution) {
       const rightSolution = groupAssignments.find(
-        (s) => s.solution.id === selectedRightSolution,
+        (s) => s.analysis.solutionId === selectedRightSolution,
       );
 
       const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
 
       if (rightSolution) {
-        setSelectedRightSolution(rightSolution.solution.id);
+        setSelectedRightSolution(rightSolution.analysis.solutionId);
         if (selectedRightGroup !== defaultGroupValue) {
           setSelectedRightGroup(rightSolution.groupKey);
         }
@@ -302,18 +302,18 @@ const CodeComparison = ({
 
   const isLeftSolutionBookmarked = useMemo(
     () =>
-      leftSolution
-        ? bookmarkedSolutionIds.includes(leftSolution.solution.id)
+      leftAssignment
+        ? bookmarkedSolutionIds.includes(leftAssignment.analysis.solutionId)
         : false,
-    [bookmarkedSolutionIds, leftSolution],
+    [bookmarkedSolutionIds, leftAssignment],
   );
 
   const isRightSolutionBookmarked = useMemo(
     () =>
-      rightSolution
-        ? bookmarkedSolutionIds.includes(rightSolution.solution.id)
+      rightAssignment
+        ? bookmarkedSolutionIds.includes(rightAssignment.analysis.solutionId)
         : false,
-    [bookmarkedSolutionIds, rightSolution],
+    [bookmarkedSolutionIds, rightAssignment],
   );
 
   return (
@@ -358,11 +358,11 @@ const CodeComparison = ({
                 alwaysShow
                 noMargin
               />
-              {leftSolution && (
+              {leftAssignment && (
                 <>
                   <Button
                     onClick={() => {
-                      setModalSolutionId(leftSolution.solution.id);
+                      setModalSolutionId(leftAssignment.analysis.solutionId);
                     }}
                     data-testid="left-view-button"
                   >
@@ -376,13 +376,13 @@ const CodeComparison = ({
                       if (isLeftSolutionBookmarked) {
                         setBookmarkedSolutionIds(
                           bookmarkedSolutionIds.filter(
-                            (id) => id !== leftSolution.solution.id,
+                            (id) => id !== leftAssignment.analysis.solutionId,
                           ),
                         );
                       } else {
                         setBookmarkedSolutionIds([
                           ...bookmarkedSolutionIds,
-                          leftSolution.solution.id,
+                          leftAssignment.analysis.solutionId,
                         ]);
                       }
                     }}
@@ -397,14 +397,14 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {leftSolution && (
+            {leftAssignment && (
               <CodeView
                 classId={classId}
                 sessionId={sessionId}
                 taskId={taskId}
                 subTaskId={subTaskId}
                 taskType={taskType}
-                solutionId={leftSolution.solution.id}
+                solutionId={leftAssignment.analysis.solutionId}
               />
             )}
           </Col>
@@ -426,13 +426,13 @@ const CodeComparison = ({
                 alwaysShow
                 noMargin
               />
-              {rightSolution && (
+              {rightAssignment && (
                 <>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      setModalSolutionId(rightSolution.solution.id);
+                      setModalSolutionId(rightAssignment.analysis.solutionId);
                     }}
                     data-testid="right-view-button"
                   >
@@ -446,13 +446,13 @@ const CodeComparison = ({
                       if (isRightSolutionBookmarked) {
                         setBookmarkedSolutionIds(
                           bookmarkedSolutionIds.filter(
-                            (id) => id !== rightSolution.solution.id,
+                            (id) => id !== rightAssignment.analysis.solutionId,
                           ),
                         );
                       } else {
                         setBookmarkedSolutionIds([
                           ...bookmarkedSolutionIds,
-                          rightSolution.solution.id,
+                          rightAssignment.analysis.solutionId,
                         ]);
                       }
                     }}
@@ -467,14 +467,14 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {rightSolution && (
+            {rightAssignment && (
               <CodeView
                 classId={classId}
                 sessionId={sessionId}
                 taskId={taskId}
                 subTaskId={subTaskId}
                 taskType={taskType}
-                solutionId={rightSolution.solution.id}
+                solutionId={rightAssignment.analysis.solutionId}
               />
             )}
           </Col>
