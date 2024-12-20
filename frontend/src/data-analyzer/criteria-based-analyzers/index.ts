@@ -1,3 +1,4 @@
+import { computeHeight } from "./ast-height";
 import { countFunctionCalls } from "./calls-function";
 import { countConditions } from "./condition";
 import { countFunctionDeclaration } from "./contains-function-declaration";
@@ -12,4 +13,5 @@ export const CriteriaBasedAnalyzer = {
   countConditions,
   countFunctionDeclaration,
   countLoops,
+  computeHeight,
 };

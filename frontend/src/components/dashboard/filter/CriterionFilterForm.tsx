@@ -11,6 +11,7 @@ import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
+import { AstHeightCriterionFilter } from "../criteria/ast-height";
 
 const createProps = <Filter extends FilterCriterion>(
   filter: Filter,
@@ -53,22 +54,13 @@ const CriterionFilterForm = ({
   ) => void;
 }) =>
   match(filter)
-    .with({ criterion: MetaCriterionType.none }, (f) => (
-      <NoCriterionFilter.formComponent {...createProps(f, setFilters)} />
-    ))
-    .with({ criterion: AstCriterionType.statement }, (f) => (
-      <StatementCriterionFilter.formComponent {...createProps(f, setFilters)} />
+    .with({ criterion: AstCriterionType.condition }, (f) => (
+      <ConditionCriterionFilter.formComponent {...createProps(f, setFilters)} />
     ))
     .with({ criterion: AstCriterionType.expression }, (f) => (
       <ExpressionCriterionFilter.formComponent
         {...createProps(f, setFilters)}
       />
-    ))
-    .with({ criterion: AstCriterionType.condition }, (f) => (
-      <ConditionCriterionFilter.formComponent {...createProps(f, setFilters)} />
-    ))
-    .with({ criterion: AstCriterionType.loop }, (f) => (
-      <LoopCriterionFilter.formComponent {...createProps(f, setFilters)} />
     ))
     .with({ criterion: AstCriterionType.functionCall }, (f) => (
       <FunctionCallCriterionFilter.formComponent
@@ -79,6 +71,18 @@ const CriterionFilterForm = ({
       <FunctionDeclarationCriterionFilter.formComponent
         {...createProps(f, setFilters)}
       />
+    ))
+    .with({ criterion: AstCriterionType.height }, (f) => (
+      <AstHeightCriterionFilter.formComponent {...createProps(f, setFilters)} />
+    ))
+    .with({ criterion: AstCriterionType.loop }, (f) => (
+      <LoopCriterionFilter.formComponent {...createProps(f, setFilters)} />
+    ))
+    .with({ criterion: MetaCriterionType.none }, (f) => (
+      <NoCriterionFilter.formComponent {...createProps(f, setFilters)} />
+    ))
+    .with({ criterion: AstCriterionType.statement }, (f) => (
+      <StatementCriterionFilter.formComponent {...createProps(f, setFilters)} />
     ))
     .with({ criterion: MetaCriterionType.test }, (f) => (
       <TestCriterionFilter.formComponent {...createProps(f, setFilters)} />
