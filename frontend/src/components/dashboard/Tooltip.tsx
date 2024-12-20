@@ -23,6 +23,10 @@ const Tooltip = styled.div<{ isShown: boolean }>`
       }
     }
   }
+
+  .group {
+    margin-top: 0.5rem;
+  }
 `;
 
 export default Tooltip;

@@ -37,7 +37,9 @@ export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
   messages: () => messages,
   config: {
     type: "linear",
-    min: 0,
+    ticks: {
+      precision: 0,
+    },
   },
   getAxisValue: (analysis) => {
     const numberOfLoops = analyzeAst(analysis.generalAst, {

@@ -4,7 +4,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { FilterCriterion, matchesFilter } from "../filter";
 import { getGroupName } from "./useManualGrouping";
 import { mean } from "../criteria/statistics/mean";
-import { AutomaticGroup, SolutionGroupAssignment } from "./types";
+import { AutomaticGroup } from "./types";
 import { DistanceType } from "./ast-distance/distance-type";
 import { getAutomaticGroups } from "./automatic-grouping";
 import { AutomaticGroupingType } from "./automatic-grouping/grouping-type";
@@ -16,17 +16,14 @@ export const useAutomaticGrouping = (
   filters: FilterCriterion[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
-): (() => Promise<{
-  groupAssignments: SolutionGroupAssignment[];
-  automaticGroups: AutomaticGroup[];
-}>) =>
+): (() => Promise<AutomaticGroup[]>) =>
   useCallback(async () => {
     const solutions = solutionsInput?.filter((solution) =>
       filters.every((filter) => matchesFilter(filter, solution)),
     );
 
     if (!solutions || solutions.length === 0 || !isAutomaticGrouping) {
-      return { groupAssignments: [], automaticGroups: [] };
+      return [];
     }
 
     const groups = await getAutomaticGroups(
@@ -36,7 +33,6 @@ export const useAutomaticGrouping = (
       DistanceType.pq,
     );
 
-    const groupAssignments: SolutionGroupAssignment[] = [];
     const automaticGroups: AutomaticGroup[] = [];
 
     for (let i = 0; i < groups.length; i++) {
@@ -60,19 +56,9 @@ export const useAutomaticGrouping = (
         y: mean(yAxisValues),
         solutions: group.solutions,
       });
-
-      group.solutions.forEach((solution) =>
-        groupAssignments.push({
-          groupKey,
-          solution,
-        }),
-      );
     }
 
-    return {
-      groupAssignments,
-      automaticGroups,
-    };
+    return automaticGroups;
   }, [
     isAutomaticGrouping,
     numberOfGroups,

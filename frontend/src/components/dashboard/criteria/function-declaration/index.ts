@@ -39,7 +39,9 @@ export const FunctionDeclarationCriterionAxis: CriterionAxisDefinition<Criterion
     messages: () => messages,
     config: {
       type: "linear",
-      min: 0,
+      ticks: {
+        precision: 0,
+      },
     },
     getAxisValue: (analysis) => {
       const numberOfFunctionDeclarations = analyzeAst(analysis.generalAst, {

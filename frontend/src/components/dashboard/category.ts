@@ -11,6 +11,10 @@ const messages = defineMessages({
     id: "Category.yAxis",
     defaultMessage: "y-Axis",
   },
+  mixed: {
+    id: "Category.mixed",
+    defaultMessage: "Mixed",
+  },
   noTests: {
     id: "Category.noTests",
     defaultMessage: "Without tests",
@@ -39,16 +43,18 @@ const messages = defineMessages({
 
 export enum Category {
   none = 0,
+  // whether multiple different categories are present
+  mixed = 1 << 0,
   // whether all filters match
-  matchesFilters = 1 << 0,
+  matchesFilters = 1 << 1,
   // whether there is at least one test
-  hasTests = 1 << 1,
+  hasTests = 1 << 2,
   // whether at least one test passes
-  passesSomeTests = 1 << 2,
+  passesSomeTests = 1 << 3,
   // whether all tests pass
-  passesAllTests = 1 << 3,
+  passesAllTests = 1 << 4,
   // whether it is an automatic group
-  isAutomaticGroup = 1 << 4,
+  isAutomaticGroup = 1 << 5,
 }
 
 const hasFlag = (category: Category, flag: Category): boolean =>
@@ -58,11 +64,16 @@ export const getCategoryName = (
   intl: IntlShape,
   category: Category,
 ): string => {
+  const isMixed = hasFlag(category, Category.mixed);
   const hasTests = hasFlag(category, Category.hasTests);
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
   const isAutomaticGroup = hasFlag(category, Category.isAutomaticGroup);
+
+  if (isMixed) {
+    return intl.formatMessage(messages.mixed);
+  }
 
   let name = isAutomaticGroup
     ? intl.formatMessage(messages.automaticGroup)
@@ -90,10 +101,18 @@ type PatternType = Parameters<typeof pattern.draw>[0];
 export const getCanvasPattern = (
   category: Category,
 ): string | CanvasPattern => {
+  const isMixed = hasFlag(category, Category.mixed);
   const hasTests = hasFlag(category, Category.hasTests);
   const passesATest = hasFlag(category, Category.passesSomeTests);
   const passesAllTests = hasFlag(category, Category.passesAllTests);
   const matchesFilter = hasFlag(category, Category.matchesFilters);
+
+  if (isMixed) {
+    return pattern.draw(
+      "plus",
+      `rgba(${Colors.dataPoint.mixed.slice(0, 3).join(" ")} / 1)`,
+    );
+  }
 
   let color: [number, number, number] = Colors.dataPoint.default;
   let alpha = 1;

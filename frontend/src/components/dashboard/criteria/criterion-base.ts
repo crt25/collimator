@@ -3,6 +3,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CartesianScaleTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
 import { CriterionType } from "./criterion-type";
+import { DeepPartial } from "chart.js/dist/types/utils";
 
 export interface CriterionBase<Type extends CriterionType> {
   criterion: Type;
@@ -21,7 +22,7 @@ export type CriterionFormComponent<
   Criterion extends CriterionBase<Type>,
 > = React.FunctionComponent<CriterionFormProps<Type, Criterion>>;
 
-export type AxisConfig = Partial<
+export type AxisConfig = DeepPartial<
   // use the scale options for cartesian scales
   ScaleOptionsByType<keyof CartesianScaleTypeRegistry>
 >;

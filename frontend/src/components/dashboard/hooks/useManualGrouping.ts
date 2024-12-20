@@ -4,12 +4,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { Category } from "../category";
 import { FilterCriterion, matchesFilter } from "../filter";
 import { ChartSplit, SplitType } from "../chartjs-plugins/select";
-import {
-  CategorizedDataPoints,
-  DataPoint,
-  ManualGroup,
-  SolutionGroupAssignment,
-} from "./types";
+import { CategorizedDataPoint, ManualGroup } from "./types";
 
 class SolutionNotInGroupError extends Error {
   constructor(
@@ -77,12 +72,6 @@ const isWithinGroup = (
 ): boolean =>
   group.minX <= x && x < group.maxX && group.minY <= y && y < group.maxY;
 
-interface IntermediateAnalysis extends DataPoint {
-  category: Category;
-  groupKey: string;
-  solutions: [CurrentAnalysis];
-}
-
 export const useManualGrouping = (
   isAutomaticGrouping: boolean,
   solutions: CurrentAnalysis[] | undefined,
@@ -91,8 +80,7 @@ export const useManualGrouping = (
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
 ): {
-  dataPoints: CategorizedDataPoints[];
-  groupAssignment: SolutionGroupAssignment[];
+  dataPoints: CategorizedDataPoint[];
   groups: ManualGroup[];
 } =>
   useMemo(() => {
@@ -147,8 +135,8 @@ export const useManualGrouping = (
 
     let usedGroupIdx = 0;
 
-    const solutionsByCategory = solutions
-      .map<IntermediateAnalysis>((solution) => {
+    const categorizedDataPoints = solutions.map<CategorizedDataPoint>(
+      (solution) => {
         const xAxisValue = getAxisAnalysisValue(xAxis, solution);
         const yAxisValue = getAxisAnalysisValue(yAxis, solution);
 
@@ -189,34 +177,11 @@ export const useManualGrouping = (
           groupKey: group.groupKey,
           groupName: group.groupLabel,
         };
-      })
-      .reduce((categories, analyzedSolution) => {
-        let entry = categories.get(analyzedSolution.category);
-        if (!entry) {
-          entry = [];
-        }
-
-        entry.push(analyzedSolution);
-        categories.set(analyzedSolution.category, entry);
-
-        return categories;
-      }, new Map<Category, IntermediateAnalysis[]>());
-
-    const mapEntries = [...solutionsByCategory.entries()];
+      },
+    );
 
     return {
-      dataPoints: mapEntries.map<CategorizedDataPoints>(
-        ([category, solutions]) => ({
-          category,
-          dataPoints: solutions,
-        }),
-      ),
-      groupAssignment: mapEntries.flatMap(([_, solutions]) =>
-        solutions.map((solution) => ({
-          solution: solution.solutions[0],
-          groupKey: solution.groupKey,
-        })),
-      ),
+      dataPoints: categorizedDataPoints,
       groups: groups.filter(
         (g): g is ManualGroup => g.groupLabel !== undefined,
       ),
