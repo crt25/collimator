@@ -16,6 +16,17 @@
 
   --assertions-default-color: #ff3355;
   --assertions-success-color: #0b8e69;
+
+  --scratch-motion-block-color: #4C97FF;
+  --scratch-looks-block-color: #9966FF;
+  --scratch-sound-block-color: #CF63CF;
+  --scratch-control-block-color: #FFAB19;
+  --scratch-events-block-color: #FFBF00;
+  --scratch-sensing-block-color: #5CB1D6;
+  --scratch-operators-block-color: #59C059;
+  --scratch-variables-block-color: #FF8C1A;
+  --scratch-list-block-color: #FF661A;
+  --scratch-function-block-color: #FF6680;
 }
 
 body {
@@ -120,6 +131,67 @@ body,
   original colors: https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/colours.js#L29
 */
 
+
+[data-category="motion"] 
+{
+  --block-color: var(--scratch-motion-block-color);
+}
+
+[data-category="looks"] 
+{
+  --block-color: var(--scratch-looks-block-color);
+}
+
+[data-category="sounds"] 
+{
+  --block-color: var(--scratch-sound-block-color);
+}
+
+[data-category="control"] 
+{
+  --block-color: var(--scratch-control-block-color);
+}
+
+[data-category="events"] 
+{
+  --block-color: var(--scratch-events-block-color);
+}
+
+[data-category="sensing"] 
+{
+  --block-color: var(--scratch-sensing-block-color);
+}
+
+[data-category="sensing"] 
+{
+  --block-color: var(--scratch-sensing-block-color);
+}
+
+[data-category="operators"] 
+{
+  --block-color: var(--scratch-operators-block-color);
+}
+
+[data-category="data"] 
+{
+  --block-color: var(--scratch-variables-block-color);
+}
+
+[data-category="data-lists"] 
+{
+  --block-color: var(--scratch-list-block-color);
+}
+
+[data-category="Assertions"] 
+{
+  --block-color: #0FBD8C;
+}
+
+.blocklyDraggable:not([data-category])
+{
+  --block-color: var(--scratch-function-block-color);
+}
+
 .frozen-block-frozen > .blocklyBlockBackground,
 .frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
 .frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line,
@@ -127,15 +199,34 @@ body,
 .frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
 .frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line
 {
-  fill: var(--disabled-block-background-color);
-  stroke: var(--disabled-block-background-color);
+  --bg-color: color-mix(
+    in srgb,
+    var(--block-color, var(--disabled-block-background-color)),
+    var(--disabled-block-background-color)
+    60%
+  );
+
+  fill: var(--bg-color);
+  stroke: color-mix(
+    in srgb,
+    var(--bg-color),
+    #000,
+    50%
+  );
 }
 
-.frozen-block-frozen > [data-argument-type^="text"] > .blocklyBlockBackground,
-.frozen-block-appendable > [data-argument-type^="text"] > .blocklyBlockBackground
+.frozen-block-frozen .blocklyPath[data-argument-type^="boolean"],
+.frozen-block-appendable .blocklyPath[data-argument-type^="boolean"]
 {
-  stroke: var(--disabled-block-background-color);
-  fill: var(--disabled-block-foreground-color);
+  /* ensure the boolean slots are darker than the block around it */
+  --bg-color: color-mix(
+    in srgb,
+    var(--block-color, var(--disabled-block-background-color)),
+    var(--disabled-block-background-color)
+    80%
+  );
+
+  fill: var(--bg-color);
 }
 
 /*
