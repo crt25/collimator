@@ -15,6 +15,8 @@ export const countFunctionCalls = (
     undefined
   >,
 ): CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall] => {
+  const callsByFunctionName: Record<string, number> = {};
+
   let numberOfCalls = 0;
 
   walkAst(ast, {
@@ -25,6 +27,12 @@ export const countFunctionCalls = (
           node.name === input.functionName
         ) {
           numberOfCalls++;
+        }
+
+        if (node.name in callsByFunctionName) {
+          callsByFunctionName[node.name]++;
+        } else {
+          callsByFunctionName[node.name] = 1;
         }
       }
 
@@ -45,5 +53,8 @@ export const countFunctionCalls = (
     },
   });
 
-  return numberOfCalls;
+  return {
+    callsByFunctionName,
+    numberOfCalls,
+  };
 };

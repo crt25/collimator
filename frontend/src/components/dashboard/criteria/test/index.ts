@@ -7,7 +7,8 @@ import {
 import TestCriterionFilterForm from "./TestCriterionFilterForm";
 import { MetaCriterionType } from "../meta-criterion-type";
 
-type Criterion = MetaCriterionType.test;
+const criterion = MetaCriterionType.test;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -21,8 +22,14 @@ export interface TestFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
+export interface TestFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minPassedTests: number;
+  maxPassedTests: number;
+}
+
 export const TestCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: MetaCriterionType.test,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
@@ -37,20 +44,31 @@ export const TestCriterionAxis: CriterionAxisDefinition<Criterion> = {
 
 export const TestCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  TestFilterCriterion
+  TestFilterCriterion,
+  TestFilterCriterionParameters
 > = {
-  criterion: MetaCriterionType.test,
+  criterion,
   formComponent: TestCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: MetaCriterionType.test,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    return (
-      config.minimumCount <= analysis.passedTests &&
-      config.maximumCount >= analysis.passedTests
-    );
+  run: (config, analyses) => {
+    const passedTestsList = analyses.map((a) => a.passedTests);
+
+    return {
+      matchesFilter: passedTestsList.map(
+        (passedTests) =>
+          config.minimumCount <= passedTests &&
+          config.maximumCount >= passedTests,
+      ),
+      parameters: {
+        criterion: MetaCriterionType.test,
+        minPassedTests: Math.min(...passedTestsList),
+        maxPassedTests: Math.max(...passedTestsList),
+      },
+    };
   },
 };

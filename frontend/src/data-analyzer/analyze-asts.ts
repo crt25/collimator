@@ -27,7 +27,10 @@ export interface CriteriaBasedAnalyzerInput {
 export interface CriteriaBasedAnalyzerOutput {
   [AstCriterionType.condition]: number;
   [AstCriterionType.expression]: number;
-  [AstCriterionType.functionCall]: number;
+  [AstCriterionType.functionCall]: {
+    numberOfCalls: number;
+    callsByFunctionName: Record<string, number>;
+  };
   [AstCriterionType.functionDeclaration]: number;
   [AstCriterionType.height]: number;
   [AstCriterionType.loop]: number;
