@@ -38,7 +38,7 @@ type AdditionalChartData = {
   groups: {
     key: string;
     name: string;
-    solutions: CurrentAnalysis[];
+    analyses: CurrentAnalysis[];
   }[];
   isSelected: boolean;
   isBookmarked: boolean;
@@ -206,15 +206,19 @@ const Analysis = ({
 
       // check if any of the data points is selected or bookmarked
       const isSelected = dataPoints.some((dataPoint) =>
-        dataPoint.solutions?.some((s) => selectedSolutionIds.includes(s.id)),
+        dataPoint.analyses?.some((s) =>
+          selectedSolutionIds.includes(s.solutionId),
+        ),
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
-        dataPoint.solutions?.some((s) => bookmarkedSolutionIds.includes(s.id)),
+        dataPoint.analyses?.some((s) =>
+          bookmarkedSolutionIds.includes(s.solutionId),
+        ),
       );
 
       const solutionsCount = dataPoints.reduce(
-        (acc, dataPoint) => acc + (dataPoint.solutions?.length || 0),
+        (acc, dataPoint) => acc + (dataPoint.analyses?.length || 0),
         0,
       );
 
@@ -251,7 +255,7 @@ const Analysis = ({
               ).map(([key, groupDataPoints]) => ({
                 key,
                 name: groupDataPoints[0].groupName,
-                solutions: groupDataPoints.flatMap((d) => d.solutions ?? []),
+                analyses: groupDataPoints.flatMap((d) => d.analyses ?? []),
               })),
               isSelected,
               isBookmarked,
@@ -649,18 +653,19 @@ const Analysis = ({
                   </div>
                   <div>
                     <span>{intl.formatMessage(messages.numberOfStudents)}</span>
-                    <span>{group.solutions.length}</span>
+                    <span>{group.analyses.length}</span>
                   </div>
                   <div>
                     <ul>
-                      {group.solutions.map((solution) => (
-                        <li key={solution.id}>
+                      {group.analyses.map((analysis) => (
+                        <li key={analysis.id}>
                           <StudentName
                             onClick={() =>
-                              onSelectSolution(group.key, solution)
+                              onSelectSolution(group.key, analysis)
                             }
                           >
-                            {getStudentNickname(solution.studentPseudonym)}
+                            {getStudentNickname(analysis.studentPseudonym)} (
+                            {analysis.solutionId})
                           </StudentName>
                         </li>
                       ))}

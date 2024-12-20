@@ -15,15 +15,17 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { TestCriterionAxis } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { CriterionType } from "../criteria/criterion-type";
+import { AstHeightCriterionAxis } from "../criteria/ast-height";
 
 export const axisCriteria = [
-  StatementCriterionAxis,
-  ExpressionCriterionAxis,
   ConditionCriterionAxis,
-  LoopCriterionAxis,
+  ExpressionCriterionAxis,
   FunctionCallCriterionAxis,
   FunctionDeclarationCriterionAxis,
   TestCriterionAxis,
+  LoopCriterionAxis,
+  StatementCriterionAxis,
+  AstHeightCriterionAxis,
 ];
 
 type AxesCriterionDefinition = (typeof axisCriteria)[number];
@@ -44,15 +46,16 @@ const getAxisDefinition = (
 ): CriterionAxisDefinition<CriterionType> =>
   match(axisType)
     .returnType<CriterionAxisDefinition<CriterionType>>()
-    .with(AstCriterionType.statement, () => StatementCriterionAxis)
     .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
     .with(AstCriterionType.condition, () => ConditionCriterionAxis)
-    .with(AstCriterionType.loop, () => LoopCriterionAxis)
     .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis)
     .with(
       AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionAxis,
     )
+    .with(AstCriterionType.height, () => AstHeightCriterionAxis)
+    .with(AstCriterionType.loop, () => LoopCriterionAxis)
+    .with(AstCriterionType.statement, () => StatementCriterionAxis)
     .with(MetaCriterionType.test, () => TestCriterionAxis)
     .exhaustive();
 

@@ -9,7 +9,7 @@ import {
   CategorizedDataPoint,
   Group,
   ManualGroup,
-  SolutionGroupAssignment,
+  AnalysisGroupAssignment,
 } from "./types";
 import { Category } from "../category";
 
@@ -24,7 +24,7 @@ export const useGrouping = (
 ): {
   isGroupingAvailable: boolean;
   categorizedDataPoints: CategorizedDataPoint[];
-  groupAssignments: SolutionGroupAssignment[];
+  groupAssignments: AnalysisGroupAssignment[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
@@ -32,7 +32,7 @@ export const useGrouping = (
     useState<boolean>(false);
   const [dataPoints, setDataPoints] = useState<CategorizedDataPoint[]>([]);
   const [groupAssignment, setGroupAssignment] = useState<
-    SolutionGroupAssignment[]
+    AnalysisGroupAssignment[]
   >([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [manualGroups, setManualGroups] = useState<ManualGroup[]>([]);
@@ -88,9 +88,9 @@ export const useGrouping = (
     setDataPoints(dataPoints);
     setGroupAssignment(
       dataPoints.flatMap((dataPoint) =>
-        dataPoint.solutions.map((solution) => ({
+        dataPoint.analyses.map((analysis) => ({
           groupKey: dataPoint.groupKey,
-          solution,
+          analysis,
         })),
       ),
     );

@@ -198,16 +198,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   );
 
   const onSelectSolution = useCallback(
-    (groupKey: string, solution: CurrentAnalysis) => {
+    (groupKey: string, { solutionId }: CurrentAnalysis) => {
       if (selectedLeftSolution === defaultSolutionValue) {
         setSelectedLeftGroup(groupKey);
-        setSelectedLeftSolution(solution.id);
+        setSelectedLeftSolution(solutionId);
       } else if (selectedRightSolution === defaultSolutionValue) {
         setSelectedRightGroup(groupKey);
-        setSelectedRightSolution(solution.id);
+        setSelectedRightSolution(solutionId);
       } else {
         // let the user choose
-        setSelectedSolutionId({ groupKey, solutionId: solution.id });
+        setSelectedSolutionId({ groupKey, solutionId });
       }
     },
     [selectedLeftSolution, selectedRightSolution],

@@ -54,7 +54,7 @@ export const useAutomaticGrouping = (
         groupName: label,
         x: mean(xAxisValues),
         y: mean(yAxisValues),
-        solutions: group.solutions,
+        analyses: group.solutions,
       });
     }
 
