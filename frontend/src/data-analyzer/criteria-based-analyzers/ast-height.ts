@@ -22,12 +22,12 @@ export const computeHeight = (
   const callback = (_node: unknown, depth: number): AstWalkSignal => {
     maxDepth = Math.max(maxDepth, depth);
 
-    console.log("Depth: ", depth, _node, ast);
-
     return AstWalkSignal.continueWalking;
   };
 
   walkAst(ast, {
+    actorCallback: callback,
+    eventListenerCallback: callback,
     statementCallback: callback,
     expressionCallback: callback,
   });

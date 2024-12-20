@@ -41,27 +41,11 @@ export const AstHeightCriterionAxis: CriterionAxisDefinition<Criterion> = {
       precision: 0,
     },
   },
-  getAxisValue: (analysis) => {
-    const x = analyzeAst(analysis.generalAst, {
+  getAxisValue: (analysis) =>
+    analyzeAst(analysis.generalAst, {
       criterion: AstCriterionType.height,
       input: undefined,
-    }).output;
-
-    if (analysis.solutionId === 35) {
-      console.log("-----------------------------------------");
-
-      const x = analyzeAst(analysis.generalAst, {
-        criterion: AstCriterionType.height,
-        input: undefined,
-      }).output;
-
-      console.log("height", analysis.solutionId, x);
-
-      console.log("-----------------------------------------");
-    }
-
-    return x;
-  },
+    }).output,
 };
 
 export const AstHeightCriterionFilter: CriterionFilterDefinition<

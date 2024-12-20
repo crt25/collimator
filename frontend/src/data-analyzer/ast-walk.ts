@@ -1,5 +1,10 @@
 import { isNonNull } from "@/utilities/is-non-null";
-import { StatementNode, StatementNodeType } from "@ast/ast-nodes";
+import {
+  ActorNode,
+  EventListenerNode,
+  StatementNode,
+  StatementNodeType,
+} from "@ast/ast-nodes";
 import {
   ExpressionNode,
   ExpressionNodeType,
@@ -198,6 +203,11 @@ const eventListenerDepth = actorDepth + 1;
 export const walkAst = (
   ast: GeneralAst,
   callbacks: {
+    actorCallback?: (node: ActorNode, depth: number) => AstWalkSignal;
+    eventListenerCallback?: (
+      node: EventListenerNode,
+      depth: number,
+    ) => AstWalkSignal;
     statementCallback?: (node: StatementNode, depth: number) => AstWalkSignal;
     expressionCallback?: (node: ExpressionNode, depth: number) => AstWalkSignal;
   } = {},
@@ -206,12 +216,29 @@ export const walkAst = (
   },
 ): void => {
   for (const actor of ast) {
+    if (callbacks.actorCallback) {
+      if (
+        callbacks.actorCallback(actor, actorDepth) === AstWalkSignal.stopWalking
+      ) {
+        return;
+      }
+    }
+
     for (const eventListener of actor.eventListeners) {
+      if (callbacks.eventListenerCallback) {
+        if (
+          callbacks.eventListenerCallback(eventListener, actorDepth) ===
+          AstWalkSignal.stopWalking
+        ) {
+          return;
+        }
+      }
+
       if (callbacks.expressionCallback) {
         for (const parameter of eventListener.condition.parameters) {
           walkExpression(
             parameter,
-            eventListenerDepth,
+            eventListenerDepth + 1,
             callbacks.expressionCallback,
             options,
           );
@@ -220,14 +247,14 @@ export const walkAst = (
 
       walkStatement(
         eventListener.action,
-        eventListenerDepth,
+        eventListenerDepth + 1,
         callbacks,
         options,
       );
     }
 
     for (const functionDeclaration of actor.functionDeclarations) {
-      walkStatement(functionDeclaration, actorDepth, callbacks, options);
+      walkStatement(functionDeclaration, actorDepth + 1, callbacks, options);
     }
   }
 };
