@@ -26,7 +26,9 @@ export const TestCriterionAxis: CriterionAxisDefinition<Criterion> = {
   messages: () => messages,
   config: {
     type: "linear",
-    min: 0,
+    ticks: {
+      precision: 0,
+    },
   },
   getAxisValue: (analysis) => {
     return analysis.passedTests;

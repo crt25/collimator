@@ -37,7 +37,9 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<Criterion> = {
   messages: () => messages,
   config: {
     type: "linear",
-    min: 0,
+    ticks: {
+      precision: 0,
+    },
   },
   getAxisValue: (analysis) => {
     const numberOfConditions = analyzeAst(analysis.generalAst, {
