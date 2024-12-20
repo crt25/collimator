@@ -373,7 +373,7 @@ const Analysis = ({
               color: Colors.chartLabel.deleteSplitLabelColor,
               backgroundColor: Colors.chartLabel.deletSplitLabelBackgroundColor,
               padding: {
-                x: 13,
+                x: 8,
                 y: 2,
               },
               font: {
