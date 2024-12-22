@@ -1,4 +1,4 @@
-import { Col, Row } from "react-bootstrap";
+import { ButtonGroup, Col, Row } from "react-bootstrap";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import Select from "../form/Select";
@@ -77,7 +77,23 @@ const ModalFooter = styled.div`
 
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ModalFooterLeft = styled.div`
+  display: flex;
+  flex-direction: row;
   justify-content: flex-start;
+  align-items: center;
+
+  gap: 1rem;
+`;
+
+const ModalFooterRight = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
 
   gap: 1rem;
@@ -390,6 +406,20 @@ const CodeComparison = ({
     [yAxis, taskType],
   );
 
+  const leftStudentName = useMemo(
+    () =>
+      leftSolutionOptions.find((o) => o.value === selectedLeftSolution)
+        ?.label || "",
+    [leftSolutionOptions, selectedLeftSolution],
+  );
+
+  const rightStudentName = useMemo(
+    () =>
+      rightSolutionOptions.find((o) => o.value === selectedRightSolution)
+        ?.label || "",
+    [rightSolutionOptions, selectedRightSolution],
+  );
+
   return (
     <>
       {modalDataPoint && (
@@ -403,16 +433,43 @@ const CodeComparison = ({
           solutionId={modalDataPoint?.analysis.solutionId}
           footer={
             <ModalFooter>
-              {xAxisLabel && (
-                <div>
-                  {intl.formatMessage(xAxisLabel)}: {modalDataPoint.dataPoint.x}
-                </div>
-              )}
-              {yAxisLabel && (
-                <div>
-                  {intl.formatMessage(yAxisLabel)}: {modalDataPoint.dataPoint.y}
-                </div>
-              )}
+              <ModalFooterLeft>
+                {xAxisLabel && (
+                  <div>
+                    {intl.formatMessage(xAxisLabel)}:{" "}
+                    {modalDataPoint.dataPoint.x}
+                  </div>
+                )}
+                {yAxisLabel && (
+                  <div>
+                    {intl.formatMessage(yAxisLabel)}:{" "}
+                    {modalDataPoint.dataPoint.y}
+                  </div>
+                )}
+              </ModalFooterLeft>
+              <ModalFooterRight>
+                {selectedRightSolution !== defaultSolutionValue &&
+                selectedRightSolution !== defaultSolutionValue ? (
+                  <ButtonGroup>
+                    <Button
+                      active={modalSide === "left"}
+                      onClick={() => {
+                        setModalSide("left");
+                      }}
+                    >
+                      {leftStudentName}
+                    </Button>
+                    <Button
+                      active={modalSide === "right"}
+                      onClick={() => {
+                        setModalSide("right");
+                      }}
+                    >
+                      {rightStudentName}
+                    </Button>
+                  </ButtonGroup>
+                ) : null}
+              </ModalFooterRight>
             </ModalFooter>
           }
         />
