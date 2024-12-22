@@ -48,7 +48,7 @@ import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
@@ -93,6 +93,7 @@ const GUIComponent = (props: {
   basePath: string;
   blocksTabVisible?: boolean;
   blocksId?: string;
+  cannotInteractWithBlocks?: boolean;
   canEditTask?: boolean;
   isStandaloneCodeEnabled?: boolean;
   isCodeTabEnabled?: boolean;
@@ -133,6 +134,7 @@ const GUIComponent = (props: {
     blocksId,
     blocksTabVisible,
     cardsVisible,
+    cannotInteractWithBlocks,
     canEditTask,
     isStandaloneCodeEnabled,
     isCodeTabEnabled,
@@ -209,14 +211,22 @@ const GUIComponent = (props: {
     return () => {};
   }, [vm.runtime, canEditTask]);
 
+  const className = useMemo(() => {
+    const classes = [crtStyles.guiWrapper];
+
+    if (isStageEnabled) {
+      classes.push(crtStyles.minWidthWrapper);
+    }
+
+    if (cannotInteractWithBlocks) {
+      classes.push(crtStyles.cannotInteractWithBlocks);
+    }
+
+    return classNames(...classes);
+  }, [isStageEnabled, cannotInteractWithBlocks]);
+
   return (
-    <div
-      className={
-        isStageEnabled
-          ? classNames(crtStyles.guiWrapper, crtStyles.minWidthWrapper)
-          : crtStyles.guiWrapper
-      }
-    >
+    <div className={className}>
       <MediaQuery minWidth={layout.fullSizeMinWidth}>
         {(isFullSize) => {
           const stageSize = resolveStageSize(stageSizeMode, isFullSize);

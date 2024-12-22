@@ -1,17 +1,21 @@
 .gui-wrapper {
-    display: contents;
+  display: contents;
 }
 
 .min-width-wrapper > * {
-    /* this CSS is copied over from the scratch codebase */
-    /* Setting min width makes the UI scroll below those sizes */
-    min-width: 1024px;  
+  /* this CSS is copied over from the scratch codebase */
+  /* Setting min width makes the UI scroll below those sizes */
+  min-width: 1024px;
 }
 
 .body-wrapper {
-    height: 100%;
+  height: 100%;
 }
 
 .body-wrapper * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.cannot-interact-with-blocks :global(svg.blocklySvg g.blocklyBlockCanvas) {
+  pointer-events: none;
 }
