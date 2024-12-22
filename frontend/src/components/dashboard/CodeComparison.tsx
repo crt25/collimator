@@ -1,11 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import { useContext, useEffect, useMemo, useState } from "react";
-import {
-  defineMessages,
-  FormattedMessage,
-  MessageDescriptor,
-  useIntl,
-} from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import Select from "../form/Select";
 import styled from "@emotion/styled";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
