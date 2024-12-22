@@ -204,20 +204,15 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     };
   }, [subTaskAnalyses, filters]);
 
-  const {
-    isGroupingAvailable,
-    categorizedDataPoints,
-    groupAssignments,
-    groups,
-    manualGroups,
-  } = useGrouping(
-    isAutomaticGrouping,
-    numberOfGroups,
-    filteredAnalyses,
-    splits,
-    xAxis,
-    yAxis,
-  );
+  const { isGroupingAvailable, categorizedDataPoints, groups, manualGroups } =
+    useGrouping(
+      isAutomaticGrouping,
+      numberOfGroups,
+      filteredAnalyses,
+      splits,
+      xAxis,
+      yAxis,
+    );
 
   const updateAxis = useCallback(
     (
@@ -400,8 +395,10 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   taskId={task.id}
                   subTaskId={selectedSubTaskId}
                   taskType={task.type}
-                  groupAssignments={groupAssignments}
+                  categorizedDataPoints={categorizedDataPoints}
                   groups={groups}
+                  xAxis={xAxis}
+                  yAxis={yAxis}
                   selectedLeftGroup={selectedLeftGroup}
                   setSelectedLeftGroup={setSelectedLeftGroup}
                   selectedRightGroup={selectedRightGroup}

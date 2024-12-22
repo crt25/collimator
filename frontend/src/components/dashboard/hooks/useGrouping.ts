@@ -7,7 +7,6 @@ import {
   CategorizedDataPoint,
   Group,
   ManualGroup,
-  AnalysisGroupAssignment,
   FilteredAnalysis,
 } from "./types";
 import { Category } from "../category";
@@ -22,16 +21,12 @@ export const useGrouping = (
 ): {
   isGroupingAvailable: boolean;
   categorizedDataPoints: CategorizedDataPoint[];
-  groupAssignments: AnalysisGroupAssignment[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
   const [isGroupingAvailable, setIsGroupingAvailable] =
     useState<boolean>(false);
   const [dataPoints, setDataPoints] = useState<CategorizedDataPoint[]>([]);
-  const [groupAssignment, setGroupAssignment] = useState<
-    AnalysisGroupAssignment[]
-  >([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [manualGroups, setManualGroups] = useState<ManualGroup[]>([]);
 
@@ -82,14 +77,6 @@ export const useGrouping = (
     }
 
     setDataPoints(dataPoints);
-    setGroupAssignment(
-      dataPoints.flatMap((dataPoint) =>
-        dataPoint.analyses.map((analysis) => ({
-          groupKey: dataPoint.groupKey,
-          analysis,
-        })),
-      ),
-    );
 
     return (): void => {
       isCancelled = true;
@@ -99,7 +86,6 @@ export const useGrouping = (
   return {
     isGroupingAvailable,
     categorizedDataPoints: dataPoints,
-    groupAssignments: groupAssignment,
     groups: groups,
     manualGroups: manualGroups,
   };
