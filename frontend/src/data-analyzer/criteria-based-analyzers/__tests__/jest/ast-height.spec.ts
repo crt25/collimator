@@ -3,13 +3,19 @@ import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { GeneralAst } from "@ast/index";
 import { computeHeight } from "../../ast-height";
+import {
+  AstCriterionType,
+  CriteriaBasedAnalyzerOutput,
+} from "@/data-analyzer/analyze-asts";
 
 describe("Criteria Based Analyzer", () => {
   describe("height", () => {
     it("returns '0' if the AST does not have any actors", () => {
       const output = computeHeight([], undefined);
 
-      expect(output).toBe(0);
+      expect(output).toBe(
+        0 satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.height],
+      );
     });
 
     it("returns '1' if the AST contains an actor", () => {
@@ -24,7 +30,9 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(1);
+      expect(output).toBe(
+        1 satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.height],
+      );
     });
 
     it("returns '3' if the AST contains an actor with an event listener", () => {
@@ -64,7 +72,9 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(3);
+      expect(output).toBe(
+        3 satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.height],
+      );
     });
 
     it("returns the depth of the deepest leaf", () => {
@@ -139,7 +149,9 @@ describe("Criteria Based Analyzer", () => {
         undefined,
       );
 
-      expect(output).toBe(5);
+      expect(output).toBe(
+        5 satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.height],
+      );
     });
   });
 });

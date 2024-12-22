@@ -19,21 +19,25 @@ export const countFunctionCalls = (
 
   let numberOfCalls = 0;
 
+  const onFunctionCalled = (functionName: string): void => {
+    if (
+      input.functionName === undefined ||
+      functionName === input.functionName
+    ) {
+      numberOfCalls++;
+    }
+
+    if (functionName in callsByFunctionName) {
+      callsByFunctionName[functionName]++;
+    } else {
+      callsByFunctionName[functionName] = 1;
+    }
+  };
+
   walkAst(ast, {
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.functionCall) {
-        if (
-          input.functionName === undefined ||
-          node.name === input.functionName
-        ) {
-          numberOfCalls++;
-        }
-
-        if (node.name in callsByFunctionName) {
-          callsByFunctionName[node.name]++;
-        } else {
-          callsByFunctionName[node.name] = 1;
-        }
+        onFunctionCalled(node.name);
       }
 
       return AstWalkSignal.continueWalking;
@@ -41,12 +45,7 @@ export const countFunctionCalls = (
 
     expressionCallback: (node) => {
       if (node.expressionType == ExpressionNodeType.functionCall) {
-        if (
-          input.functionName === undefined ||
-          node.name === input.functionName
-        ) {
-          numberOfCalls++;
-        }
+        onFunctionCalled(node.name);
       }
 
       return AstWalkSignal.continueWalking;
