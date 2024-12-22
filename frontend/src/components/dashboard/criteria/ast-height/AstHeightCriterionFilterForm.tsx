@@ -1,5 +1,8 @@
 import { defineMessages } from "react-intl";
-import { AstHeightFilterCriterion } from ".";
+import {
+  AstHeightFilterCriterion,
+  AstHeightFilterCriterionParameters,
+} from ".";
 import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
@@ -11,24 +14,26 @@ const messages = defineMessages({
   },
 });
 
-const min = 0;
-const max = 100;
-
 const AstHeightCriterionFilterForm: CriterionFormComponent<
   AstCriterionType.height,
-  AstHeightFilterCriterion
-> = ({ value, onChange }) => (
+  AstHeightFilterCriterion,
+  AstHeightFilterCriterionParameters
+> = ({
+  value,
+  onChange,
+  parameters: { minimumAstHeight, maximumAstHeight },
+}) => (
   <form data-testid="ast-height-filter-form">
     <MinMaxRange
-      min={min}
-      max={max}
-      valueMin={value.minimumCount}
-      valueMax={value.maximumCount}
+      min={minimumAstHeight}
+      max={maximumAstHeight}
+      valueMin={value.minimumHeight}
+      valueMax={value.maximumHeight}
       onChange={(min, max) =>
         onChange({
           ...value,
-          minimumCount: min,
-          maximumCount: max,
+          minimumHeight: min,
+          maximumHeight: max,
         })
       }
       label={messages.count}

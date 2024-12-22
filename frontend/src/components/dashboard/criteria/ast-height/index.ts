@@ -11,7 +11,8 @@ import {
   AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 
-type Criterion = AstCriterionType.height;
+const criterion = AstCriterionType.height;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -21,19 +22,25 @@ const messages = defineMessages({
 });
 
 export interface AstHeightFilterCriterion extends CriterionBase<Criterion> {
-  minimumCount: number;
-  maximumCount: number;
+  minimumHeight: number;
+  maximumHeight: number;
+}
+
+export interface AstHeightFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minimumAstHeight: number;
+  maximumAstHeight: number;
 }
 
 const toAnalysisInput = (
   _criterion: AstHeightFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.height> => ({
-  criterion: AstCriterionType.height,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const AstHeightCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: AstCriterionType.height,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
@@ -43,29 +50,40 @@ export const AstHeightCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) =>
     analyzeAst(analysis.generalAst, {
-      criterion: AstCriterionType.height,
+      criterion,
       input: undefined,
     }).output,
 };
 
 export const AstHeightCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  AstHeightFilterCriterion
+  AstHeightFilterCriterion,
+  AstHeightFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.height,
+  criterion,
   formComponent: AstHeightCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.height,
-    minimumCount: 0,
-    maximumCount: 100,
+    criterion,
+    minimumHeight: 0,
+    maximumHeight: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const height = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
+  run: (config, analyses) => {
+    const heights = analyses.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
+    );
 
-    return config.minimumCount <= height && config.maximumCount >= height;
+    return {
+      matchesFilter: heights.map(
+        (height) =>
+          config.minimumHeight <= height && config.maximumHeight >= height,
+      ),
+      parameters: {
+        criterion,
+        minimumAstHeight: Math.min(...heights),
+        maximumAstHeight: Math.max(...heights),
+      },
+    };
   },
 };

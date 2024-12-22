@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAutomaticGrouping } from "./useAutomaticGrouping";
 import { useManualGrouping } from "./useManualGrouping";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { FilterCriterion } from "../filter";
 import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
 import {
@@ -10,14 +8,14 @@ import {
   Group,
   ManualGroup,
   AnalysisGroupAssignment,
+  FilteredAnalysis,
 } from "./types";
 import { Category } from "../category";
 
 export const useGrouping = (
   isAutomaticGrouping: boolean,
   numberOfGroups: number,
-  solutions: CurrentAnalysis[] | undefined,
-  filters: FilterCriterion[],
+  solutions: FilteredAnalysis[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
@@ -40,7 +38,6 @@ export const useGrouping = (
   const manual = useManualGrouping(
     isAutomaticGrouping,
     solutions,
-    filters,
     splits,
     xAxis,
     yAxis,
@@ -50,7 +47,6 @@ export const useGrouping = (
     isAutomaticGrouping,
     numberOfGroups,
     solutions,
-    filters,
     xAxis,
     yAxis,
   );

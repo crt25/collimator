@@ -13,12 +13,18 @@ import { AxesCriterionType } from "./axes";
 import { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
-import { FilterCriterion } from "./filter";
+import {
+  FilterCriterion,
+  FilterCriterionParameters,
+  FilterCriterionType,
+  runFilter,
+} from "./filter";
 import { useGrouping } from "./hooks/useGrouping";
 import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import Button, { ButtonVariant } from "../Button";
+import { FilteredAnalysis } from "./hooks/types";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -126,9 +132,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   } = useTask(selectedTask);
 
   const {
-    data: solutions,
-    isLoading: isLoadingSolutions,
-    error: solutionsError,
+    data: analyses,
+    isLoading: isLoadingAnalyses,
+    error: analysesErrors,
   } = useCurrentSessionTaskSolutions(
     session.klass.id,
     session.id,
@@ -136,26 +142,67 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   );
 
   const subtasks = useMemo(() => {
-    if (!solutions) {
+    if (!analyses) {
       return [];
     }
 
     return [
-      ...solutions
+      ...analyses
         .map((s) => CurrentAnalysis.findComponentIds(s))
         .reduce((acc, x) => acc.union(x), new Set<string>()),
     ];
-  }, [solutions]);
+  }, [analyses]);
 
-  const subTaskSolutions = useMemo(
+  const subTaskAnalyses = useMemo(
     () =>
-      solutions?.map((solution) =>
+      analyses?.map((analysis) =>
         selectedSubTaskId !== undefined
-          ? CurrentAnalysis.selectComponent(solution, selectedSubTaskId)
-          : solution,
+          ? CurrentAnalysis.selectComponent(analysis, selectedSubTaskId)
+          : analysis,
       ),
-    [solutions, selectedSubTaskId],
+    [analyses, selectedSubTaskId],
   );
+
+  const { filteredAnalyses, parametersByCriterion } = useMemo<{
+    filteredAnalyses: FilteredAnalysis[];
+    parametersByCriterion: {
+      [key in FilterCriterionType]?: FilterCriterionParameters;
+    };
+  }>(() => {
+    if (!subTaskAnalyses) {
+      return {
+        filteredAnalyses: [],
+        parametersByCriterion: {},
+      };
+    }
+
+    const matchesAllFilters = new Array<boolean>(subTaskAnalyses?.length).fill(
+      true,
+    );
+
+    const parametersByCriterion: {
+      [key in FilterCriterionType]?: FilterCriterionParameters;
+    } = {};
+
+    for (const f of filters) {
+      const result = runFilter(f, subTaskAnalyses);
+      result.matchesFilter.forEach((m, idx) => {
+        matchesAllFilters[idx] = matchesAllFilters[idx] && m;
+      });
+
+      parametersByCriterion[f.criterion] = result.parameters;
+    }
+
+    const filteredAnalyses = subTaskAnalyses?.map((analysis, idx) => ({
+      analysis,
+      matchesAllFilters: matchesAllFilters[idx],
+    }));
+
+    return {
+      filteredAnalyses,
+      parametersByCriterion,
+    };
+  }, [subTaskAnalyses, filters]);
 
   const {
     isGroupingAvailable,
@@ -166,8 +213,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   } = useGrouping(
     isAutomaticGrouping,
     numberOfGroups,
-    subTaskSolutions,
-    filters,
+    filteredAnalyses,
     splits,
     xAxis,
     yAxis,
@@ -247,9 +293,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   return (
     <>
       <MultiSwrContent
-        data={[task, solutions]}
-        isLoading={[isLoadingTask, isLoadingSolutions]}
-        errors={[taskError, solutionsError]}
+        data={[task, analyses]}
+        isLoading={[isLoadingTask, isLoadingAnalyses]}
+        errors={[taskError, analysesErrors]}
       >
         {([task]) => (
           <Row>
@@ -295,6 +341,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   taskType={task.type}
                   filters={filters}
                   setFilters={setFilters}
+                  parametersByCriterion={parametersByCriterion}
                 />
 
                 <Input

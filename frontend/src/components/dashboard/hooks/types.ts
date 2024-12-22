@@ -1,6 +1,11 @@
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
 
+export interface FilteredAnalysis {
+  analysis: CurrentAnalysis;
+  matchesAllFilters: boolean;
+}
+
 export interface CategorizedDataPoint extends DataPoint {
   category: Category;
   groupKey: string;

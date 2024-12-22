@@ -11,7 +11,8 @@ import {
 } from "@/data-analyzer/analyze-asts";
 import LoopCriterionFilterForm from "./LoopCriterionFilterForm";
 
-type Criterion = AstCriterionType.loop;
+const criterion = AstCriterionType.loop;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -25,15 +26,21 @@ export interface LoopFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
+export interface LoopFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minNumberOfLoops: number;
+  maxNumberOfLoops: number;
+}
+
 const toAnalysisInput = (
   _criterion: LoopFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.loop> => ({
-  criterion: AstCriterionType.loop,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: AstCriterionType.loop,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
@@ -43,7 +50,7 @@ export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
   },
   getAxisValue: (analysis) => {
     const numberOfLoops = analyzeAst(analysis.generalAst, {
-      criterion: AstCriterionType.loop,
+      criterion,
       input: undefined,
     }).output;
 
@@ -53,25 +60,34 @@ export const LoopCriterionAxis: CriterionAxisDefinition<Criterion> = {
 
 export const LoopCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  LoopFilterCriterion
+  LoopFilterCriterion,
+  LoopFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.loop,
+  criterion,
   formComponent: LoopCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.loop,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const numberOfLoops = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return (
-      config.minimumCount <= numberOfLoops &&
-      config.maximumCount >= numberOfLoops
+  run: (config, analyses) => {
+    const numberOfLoopsList = analyses.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
     );
+
+    return {
+      matchesFilter: numberOfLoopsList.map(
+        (numberOfLoops) =>
+          config.minimumCount <= numberOfLoops &&
+          config.maximumCount >= numberOfLoops,
+      ),
+      parameters: {
+        criterion,
+        maxNumberOfLoops: Math.max(...numberOfLoopsList),
+        minNumberOfLoops: Math.min(...numberOfLoopsList),
+      },
+    };
   },
 };
