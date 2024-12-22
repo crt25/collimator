@@ -83,6 +83,12 @@ const ModalFooter = styled.div`
   gap: 1rem;
 `;
 
+const CodeViewPlaceholder = styled.div`
+  height: 100vh;
+  border: var(--foreground-color) 1px solid;
+  border-radius: var(--border-radius);
+`;
+
 type Option = { label: string; value: number };
 
 const getOptions = async (
@@ -477,7 +483,7 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {leftDataPoint && (
+            {leftDataPoint ? (
               <CodeView
                 classId={classId}
                 sessionId={sessionId}
@@ -486,6 +492,8 @@ const CodeComparison = ({
                 taskType={taskType}
                 solutionId={leftDataPoint.analysis.solutionId}
               />
+            ) : (
+              <CodeViewPlaceholder />
             )}
           </Col>
           <Col xs={6}>
@@ -547,7 +555,7 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {rightDataPoint && (
+            {rightDataPoint ? (
               <CodeView
                 classId={classId}
                 sessionId={sessionId}
@@ -556,6 +564,8 @@ const CodeComparison = ({
                 taskType={taskType}
                 solutionId={rightDataPoint.analysis.solutionId}
               />
+            ) : (
+              <CodeViewPlaceholder />
             )}
           </Col>
         </Row>

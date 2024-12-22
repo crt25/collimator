@@ -8,6 +8,21 @@ import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import MultiSwrContent from "../MultiSwrContent";
 import { useFileHash } from "@/hooks/useFileHash";
 import { Language } from "@/types/app-iframe-message/languages";
+import styled from "@emotion/styled";
+
+const CodeViewWrapper = styled.div`
+  position: relative;
+  /* always take up 100% of the screen */
+  height: 100vh;
+
+  border: var(--foreground-color) 1px solid;
+  border-radius: var(--border-radius);
+
+  > *,
+  > * > iframe {
+    height: 100%;
+  }
+`;
 
 const getSolutionCodeUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -81,19 +96,21 @@ const CodeView = ({
   }
 
   return (
-    <MultiSwrContent
-      data={[taskFile, solutionFile]}
-      isLoading={[isLoadingTaskFile, isLoadingSolutionFile]}
-      errors={[taskFileError, solutionFileError]}
-    >
-      {() => (
-        <EmbeddedApp
-          src={iframeSrc}
-          ref={embeddedApp}
-          onAppAvailable={onAppAvailable}
-        />
-      )}
-    </MultiSwrContent>
+    <CodeViewWrapper>
+      <MultiSwrContent
+        data={[taskFile, solutionFile]}
+        isLoading={[isLoadingTaskFile, isLoadingSolutionFile]}
+        errors={[taskFileError, solutionFileError]}
+      >
+        {() => (
+          <EmbeddedApp
+            src={iframeSrc}
+            ref={embeddedApp}
+            onAppAvailable={onAppAvailable}
+          />
+        )}
+      </MultiSwrContent>
+    </CodeViewWrapper>
   );
 };
 
