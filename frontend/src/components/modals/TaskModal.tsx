@@ -34,6 +34,7 @@ const TaskModal = ({
   showExportButton,
   showSaveButton,
   onSave,
+  footer,
 }: {
   title: ReactNode;
   url: string | null | undefined;
@@ -46,6 +47,7 @@ const TaskModal = ({
   showExportButton?: boolean;
   showSaveButton?: boolean;
   onSave?: (blob: Blob) => void;
+  footer?: React.ReactNode;
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
@@ -107,6 +109,7 @@ const TaskModal = ({
           )}
         </ModalBody>
         <Modal.Footer>
+          {footer}
           {showResetButton && (
             <Button
               disabled={!appLoaded}

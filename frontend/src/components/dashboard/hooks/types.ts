@@ -25,11 +25,6 @@ export interface GroupBase {
   groupLabel: string;
 }
 
-export interface AnalysisGroupAssignment {
-  analysis: CurrentAnalysis;
-  groupKey: string;
-}
-
 export interface ManualGroup extends GroupBase {
   minX: number;
   maxX: number;

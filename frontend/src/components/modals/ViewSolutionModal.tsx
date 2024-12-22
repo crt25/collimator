@@ -1,5 +1,5 @@
 import { FormattedMessage, useIntl } from "react-intl";
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import TaskModal from "./TaskModal";
@@ -26,6 +26,7 @@ const ViewSolutionModal = ({
   taskId,
   taskType,
   solutionId,
+  footer,
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
@@ -34,6 +35,7 @@ const ViewSolutionModal = ({
   taskId: number;
   taskType: TaskType;
   solutionId: number;
+  footer?: React.ReactNode;
 }) => {
   const intl = useIntl();
   const url = useMemo(() => getViewUrl(taskType), [taskType]);
@@ -89,6 +91,7 @@ const ViewSolutionModal = ({
           url={url}
           loadContent={loadContent}
           showResetButton
+          footer={footer}
         />
       )}
     </MultiSwrContent>
