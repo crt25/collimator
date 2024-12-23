@@ -149,6 +149,24 @@ export class ScratchEditorPage {
     return block.dragTo(this.toolbox, { force: true });
   }
 
+  async moveBlock(
+    block: Locator,
+    target: Locator,
+    targetPosition?: { x: number; y: number },
+  ) {
+    await this.scrollBlockIntoView(block);
+
+    return block.dragTo(target, {
+      force: true,
+      targetPosition: targetPosition
+        ? {
+            x: targetPosition.x,
+            y: targetPosition.y,
+          }
+        : undefined,
+    });
+  }
+
   async appendNewBlockToBottomOfStack(opcode: string, block: Locator) {
     const randomClass = "bottom-of-stack-" + randomBytes(20).toString("hex");
 

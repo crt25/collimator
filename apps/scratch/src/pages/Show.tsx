@@ -8,6 +8,7 @@ const Show = () => {
 
   return (
     <Gui
+      cannotInteractWithBlocks={true}
       canEditTask={false}
       isStandaloneCodeEnabled={true}
       isCostumesTabEnabled={false}
