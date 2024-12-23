@@ -19,3 +19,12 @@
 .cannot-interact-with-blocks :global(svg.blocklySvg g.blocklyBlockCanvas) {
   pointer-events: none;
 }
+
+.editor-wrapper {
+  flex-grow: 1;
+  flex-shrink: 0;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+}

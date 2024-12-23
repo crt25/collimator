@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useReducer } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Modal, Row } from "react-bootstrap";
-import styled from "@emotion/styled";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
@@ -29,18 +28,9 @@ import {
   defaultGroupValue,
   defaultSolutionValue,
 } from "./Analyzer.state";
-
-const Parameters = styled.div`
-  padding: 1rem;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
-
-  margin-bottom: 1rem;
-
-  select {
-    width: 100%;
-  }
-`;
+import AnalysisParameters from "./AnalysisParameters";
+import { useSubtasks } from "./hooks/useSubtasks";
+import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
 
 const messages = defineMessages({
   taskSelection: {
@@ -117,27 +107,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     state.selectedTask,
   );
 
-  const subtasks = useMemo(() => {
-    if (!analyses) {
-      return [];
-    }
-
-    return [
-      ...analyses
-        .map((s) => CurrentAnalysis.findComponentIds(s))
-        .reduce((acc, x) => acc.union(x), new Set<string>()),
-    ];
-  }, [analyses]);
-
-  const subTaskAnalyses = useMemo(
-    () =>
-      analyses?.map((analysis) =>
-        state.selectedSubTaskId !== undefined
-          ? CurrentAnalysis.selectComponent(analysis, state.selectedSubTaskId)
-          : analysis,
-      ),
-    [analyses, state.selectedSubTaskId],
-  );
+  const subtasks = useSubtasks(analyses);
+  const subTaskAnalyses = useSubtaskAnalyses(analyses, state.selectedSubTaskId);
 
   const { filteredAnalyses, parametersByCriterion } = useMemo<{
     filteredAnalyses: FilteredAnalysis[];
@@ -234,7 +205,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         {([task]) => (
           <Row>
             <Col xs={12} lg={3}>
-              <Parameters>
+              <AnalysisParameters>
                 <Select
                   label={messages.taskSelection}
                   options={session.tasks.map((task) => ({
@@ -264,7 +235,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                       value: subtask,
                     })),
                   ]}
-                  data-testid="select-task"
+                  data-testid="select-subtask"
                   onChange={(e) =>
                     dispatch({
                       type: AnalyzerStateActionType.setSelectedSubTask,
@@ -322,7 +293,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     defaultMessage="Computing groups, please be patient."
                   />
                 )}
-              </Parameters>
+              </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
               {state.selectedTask && (

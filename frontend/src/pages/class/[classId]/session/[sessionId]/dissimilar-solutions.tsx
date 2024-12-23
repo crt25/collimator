@@ -10,9 +10,9 @@ import { FormattedMessage } from "react-intl";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import Analyzer from "@/components/dashboard/Analyzer";
+import DissimilarityAnalysis from "@/components/dashboard/DissimilarityAnalysis";
 
-const SessionAnalysis = () => {
+const DissimilarSolutions = () => {
   const router = useRouter();
   const { classId, sessionId } = router.query as {
     classId: string;
@@ -42,8 +42,8 @@ const SessionAnalysis = () => {
         <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
-            id="SessionAnalysis.header"
-            defaultMessage="Analysis"
+            id="DissimilarSolutions.header"
+            defaultMessage="Dissimilar Solutions"
           />
         </PageHeader>
         <MultiSwrContent
@@ -51,11 +51,11 @@ const SessionAnalysis = () => {
           isLoading={[isLoadingKlass, isLoadingSession]}
           data={[klass, session]}
         >
-          {([_klass, session]) => <Analyzer session={session} />}
+          {([_klass, session]) => <DissimilarityAnalysis session={session} />}
         </MultiSwrContent>
       </Container>
     </>
   );
 };
 
-export default SessionAnalysis;
+export default DissimilarSolutions;

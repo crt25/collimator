@@ -270,7 +270,13 @@ const GUIComponent = (props: {
               ) : null}
               <Box className={crtStyles.bodyWrapper}>
                 <Box className={styles.flexWrapper}>
-                  <Box className={styles.editorWrapper}>
+                  <Box
+                    className={
+                      props.isStageEnabled
+                        ? styles.editorWrapper
+                        : crtStyles.editorWrapper
+                    }
+                  >
                     <Tabs
                       forceRenderTabPanel
                       className={tabClassNames.tabs}
