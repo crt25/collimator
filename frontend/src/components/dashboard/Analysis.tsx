@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { Chart } from "primereact/chart";
@@ -33,6 +40,11 @@ import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 import { CategorizedDataPoint, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
 import { createStar } from "./shapes/star";
+import {
+  AnalyzerState,
+  AnalyzerStateAction,
+  AnalyzerStateActionType,
+} from "./Analyzer.state";
 
 type AdditionalChartData = {
   groups: {
@@ -104,39 +116,74 @@ const onLeaveLabel = (context: EventContext) => {
   return true;
 };
 
+const setAxis = (
+  dispatch: Dispatch<AnalyzerStateAction>,
+  axis: AxesCriterionType,
+  otherAxis: AxesCriterionType,
+  newAxis: AxesCriterionType,
+  axisDimension: "x" | "y",
+  splits: ChartSplit[],
+) => {
+  let newSplits: ChartSplit[] = [];
+
+  const setAxisType =
+    axisDimension === "x"
+      ? AnalyzerStateActionType.setXAxis
+      : AnalyzerStateActionType.setYAxis;
+
+  const setOtherAxisType =
+    axisDimension === "x"
+      ? AnalyzerStateActionType.setYAxis
+      : AnalyzerStateActionType.setXAxis;
+
+  if (otherAxis === newAxis) {
+    // flip axes
+    dispatch({
+      type: setOtherAxisType,
+      axis,
+    });
+
+    // when flipping axes, keep the splits
+    newSplits = splits.map((split) =>
+      split.type === SplitType.horizontal
+        ? {
+            type: SplitType.vertical,
+            x: split.y,
+          }
+        : {
+            type: SplitType.horizontal,
+            y: split.x,
+          },
+    );
+  }
+
+  dispatch({
+    type: setAxisType,
+    axis: newAxis,
+  });
+  dispatch({
+    type: AnalyzerStateActionType.setSplits,
+    splits: newSplits,
+  });
+};
+
 const customShapeSizeFactor = 3;
 const customShapeStrokeFactor = 2;
 
 const Analysis = ({
-  xAxis,
-  setXAxis,
-  yAxis,
-  setYAxis,
   taskType,
+  state,
+  dispatch,
   manualGroups: groups,
   categorizedDataPoints,
-  splittingEnabled,
-  splits,
-  setSplits,
-  selectedSolutionIds,
   onSelectSolution,
-  bookmarkedSolutionIds,
 }: {
-  xAxis: AxesCriterionType;
-  setXAxis: (axis: AxesCriterionType) => void;
-  yAxis: AxesCriterionType;
-  setYAxis: (axis: AxesCriterionType) => void;
   taskType: TaskType;
+  state: AnalyzerState;
+  dispatch: Dispatch<AnalyzerStateAction>;
   manualGroups: ManualGroup[];
   categorizedDataPoints: CategorizedDataPoint[];
-  splittingEnabled: boolean;
-  splits: ChartSplit[];
-  setSplits: (
-    updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
-  ) => void;
-  selectedSolutionIds: number[];
   onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
-  bookmarkedSolutionIds: number[];
 }) => {
   const intl = useIntl();
 
@@ -146,8 +193,25 @@ const Analysis = ({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const tooltipHovered = useRef(false);
 
-  const xAxisConfig = useMemo(() => getAxisConfig(xAxis), [xAxis]);
-  const yAxisConfig = useMemo(() => getAxisConfig(yAxis), [yAxis]);
+  const setXAxis = useCallback(
+    (newAxis: AxesCriterionType) =>
+      setAxis(dispatch, state.xAxis, state.yAxis, newAxis, "x", state.splits),
+    [dispatch, state.xAxis, state.yAxis, state.splits],
+  );
+
+  const setYAxis = useCallback(
+    (newAxis: AxesCriterionType) =>
+      setAxis(dispatch, state.yAxis, state.xAxis, newAxis, "y", state.splits),
+    [dispatch, state.xAxis, state.yAxis, state.splits],
+  );
+
+  const splittingEnabled = !state.isAutomaticGrouping;
+  const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
+  const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
+  const selectedSolutionIds = useMemo(
+    () => [state.selectedLeftSolution, state.selectedRightSolution],
+    [state.selectedLeftSolution, state.selectedRightSolution],
+  );
 
   const chartRef = useRef<ChartJsChart | null>(null);
   const initialChartDataRef = useRef<{
@@ -213,7 +277,7 @@ const Analysis = ({
 
       const isBookmarked = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          bookmarkedSolutionIds.includes(s.solutionId),
+          state.bookmarkedSolutionIds.includes(s.solutionId),
         ),
       );
 
@@ -299,7 +363,12 @@ const Analysis = ({
           ),
       ],
     } satisfies ChartData<"bubble">;
-  }, [categorizedDataPoints, selectedSolutionIds, bookmarkedSolutionIds, intl]);
+  }, [
+    intl,
+    categorizedDataPoints,
+    selectedSolutionIds,
+    state.bookmarkedSolutionIds,
+  ]);
 
   const onTooltip = useCallback(
     ({
@@ -352,7 +421,7 @@ const Analysis = ({
       clip: false,
 
       annotations: [
-        ...(splittingEnabled ? splits : []).flatMap<AnnotationOptions>(
+        ...(splittingEnabled ? state.splits : []).flatMap<AnnotationOptions>(
           (split) => {
             const onClickLabel = (ctx: EventContext, evt: ChartEvent) => {
               if (
@@ -364,7 +433,10 @@ const Analysis = ({
               }
               markAsHandled(evt.native);
 
-              setSplits((splits) => splits.filter((s) => s !== split));
+              dispatch({
+                type: AnalyzerStateActionType.setSplits,
+                splits: (splits) => splits.filter((s) => s !== split),
+              });
             };
 
             const labelProps = {
@@ -448,7 +520,7 @@ const Analysis = ({
         ]),
       ],
     }),
-    [splittingEnabled, splits, setSplits, groups],
+    [splittingEnabled, state.splits, dispatch, groups],
   );
 
   const chartOptions = useMemo<ChartConfiguration<"bubble">["options"]>(
@@ -500,9 +572,11 @@ const Analysis = ({
 
         select: {
           enabled: splittingEnabled,
-          onAddSplit: (split) => {
-            setSplits((splits) => [...splits, split]);
-          },
+          onAddSplit: (split) =>
+            dispatch({
+              type: AnalyzerStateActionType.setSplits,
+              splits: (splits) => [...splits, split],
+            }),
         },
 
         tooltip: {
@@ -526,7 +600,7 @@ const Analysis = ({
       yAxisConfig,
       onTooltip,
       annotations,
-      setSplits,
+      dispatch,
     ],
   );
 
@@ -557,8 +631,8 @@ const Analysis = ({
     [taskType],
   );
 
-  const selectedXAxis = axisOptions.find((o) => o.value === xAxis);
-  const selectedYAxis = axisOptions.find((o) => o.value === yAxis);
+  const selectedXAxis = axisOptions.find((o) => o.value === state.xAxis);
+  const selectedYAxis = axisOptions.find((o) => o.value === state.yAxis);
 
   const plugins = useMemo(
     () => [
@@ -598,7 +672,7 @@ const Analysis = ({
           onChange={(e) => {
             setYAxis(e.target.value as AxesCriterionType);
           }}
-          value={yAxis}
+          value={state.yAxis}
           alwaysShow
           noMargin
         />
@@ -683,7 +757,7 @@ const Analysis = ({
           onChange={(e) => {
             setXAxis(e.target.value as AxesCriterionType);
           }}
-          value={xAxis}
+          value={state.xAxis}
           alwaysShow
           noMargin
         />

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useReducer } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Modal, Row } from "react-bootstrap";
 import styled from "@emotion/styled";
@@ -9,12 +9,9 @@ import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
-import { AxesCriterionType } from "./axes";
-import { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
-  FilterCriterion,
   FilterCriterionParameters,
   FilterCriterionType,
   runFilter,
@@ -25,6 +22,13 @@ import CodeComparison from "./CodeComparison";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import Button, { ButtonVariant } from "../Button";
 import { FilteredAnalysis } from "./hooks/types";
+import {
+  allSubtasks,
+  AnalyzerStateActionType,
+  analyzerStateReducer,
+  defaultGroupValue,
+  defaultSolutionValue,
+} from "./Analyzer.state";
 
 const Parameters = styled.div`
   padding: 1rem;
@@ -77,59 +81,31 @@ const messages = defineMessages({
   },
 });
 
-const ALL_SUBTASKS = "__ANALYZE_ALL_SUBTASKS__";
-export const defaultGroupValue = "null";
-export const defaultSolutionValue = -1;
-
 const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const intl = useIntl();
 
-  const [selectedTask, setSelectedTask] = useState<number | undefined>(
-    session.tasks[0]?.id,
-  );
-
-  const [selectedSubTaskId, setSelectedSubTaskId] = useState<
-    string | undefined
-  >();
-
-  const [isAutomaticGrouping, setIsAutomaticGrouping] = useState(false);
-  const [numberOfGroups, setNumberOfGroups] = useState(3);
-
-  const [xAxis, setXAxis] = useState<AxesCriterionType>(
-    AstCriterionType.statement,
-  );
-  const [yAxis, setYAxis] = useState<AxesCriterionType>(MetaCriterionType.test);
-
-  const [filters, setFilters] = useState<FilterCriterion[]>([]);
-  const [splits, setSplits] = useState<ChartSplit[]>([]);
-
-  const [bookmarkedSolutionIds, setBookmarkedSolutionIds] = useState<number[]>(
-    [],
-  );
-
-  // the state for the code comparison - managed in this component so that we can
-  // change the state easily when the user clicks on a solution in the analysis chart
-  const [selectedSolutionId, setSelectedSolutionId] = useState<
-    | {
-        groupKey: string;
-        solutionId: number;
-      }
-    | undefined
-  >(undefined);
-  const [selectedLeftGroup, setSelectedLeftGroup] = useState(defaultGroupValue);
-  const [selectedRightGroup, setSelectedRightGroup] =
-    useState(defaultGroupValue);
-
-  const [selectedRightSolution, setSelectedRightSolution] =
-    useState(defaultSolutionValue);
-  const [selectedLeftSolution, setSelectedLeftSolution] =
-    useState(defaultSolutionValue);
+  const [state, dispatch] = useReducer(analyzerStateReducer, {
+    selectedTask: session.tasks[0]?.id,
+    selectedSubTaskId: undefined,
+    isAutomaticGrouping: false,
+    numberOfGroups: 3,
+    xAxis: AstCriterionType.statement,
+    yAxis: MetaCriterionType.test,
+    filters: [],
+    splits: [],
+    bookmarkedSolutionIds: [],
+    selectedSolutionId: undefined,
+    selectedLeftGroup: defaultGroupValue,
+    selectedRightGroup: defaultGroupValue,
+    selectedRightSolution: defaultSolutionValue,
+    selectedLeftSolution: defaultSolutionValue,
+  });
 
   const {
     data: task,
     isLoading: isLoadingTask,
     error: taskError,
-  } = useTask(selectedTask);
+  } = useTask(state.selectedTask);
 
   const {
     data: analyses,
@@ -138,7 +114,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   } = useCurrentSessionTaskSolutions(
     session.klass.id,
     session.id,
-    selectedTask,
+    state.selectedTask,
   );
 
   const subtasks = useMemo(() => {
@@ -156,11 +132,11 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const subTaskAnalyses = useMemo(
     () =>
       analyses?.map((analysis) =>
-        selectedSubTaskId !== undefined
-          ? CurrentAnalysis.selectComponent(analysis, selectedSubTaskId)
+        state.selectedSubTaskId !== undefined
+          ? CurrentAnalysis.selectComponent(analysis, state.selectedSubTaskId)
           : analysis,
       ),
-    [analyses, selectedSubTaskId],
+    [analyses, state.selectedSubTaskId],
   );
 
   const { filteredAnalyses, parametersByCriterion } = useMemo<{
@@ -184,7 +160,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
       [key in FilterCriterionType]?: FilterCriterionParameters;
     } = {};
 
-    for (const f of filters) {
+    for (const f of state.filters) {
       const result = runFilter(f, subTaskAnalyses);
       result.matchesFilter.forEach((m, idx) => {
         matchesAllFilters[idx] = matchesAllFilters[idx] && m;
@@ -202,81 +178,44 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
       filteredAnalyses,
       parametersByCriterion,
     };
-  }, [subTaskAnalyses, filters]);
+  }, [subTaskAnalyses, state.filters]);
 
   const { isGroupingAvailable, categorizedDataPoints, groups, manualGroups } =
     useGrouping(
-      isAutomaticGrouping,
-      numberOfGroups,
+      state.isAutomaticGrouping,
+      state.numberOfGroups,
       filteredAnalyses,
-      splits,
-      xAxis,
-      yAxis,
+      state.splits,
+      state.xAxis,
+      state.yAxis,
     );
-
-  const updateAxis = useCallback(
-    (
-      axis: AxesCriterionType,
-      otherAxis: AxesCriterionType,
-      newAxis: AxesCriterionType,
-      setAxis: (axis: AxesCriterionType) => void,
-      setOtherAxis: (axis: AxesCriterionType) => void,
-    ) => {
-      let newSplits: ChartSplit[] = [];
-
-      if (otherAxis === newAxis) {
-        // flip axes
-        setOtherAxis(axis);
-
-        // when flipping axes, keep the splits
-        newSplits = splits.map((split) =>
-          split.type === SplitType.horizontal
-            ? {
-                type: SplitType.vertical,
-                x: split.y,
-              }
-            : {
-                type: SplitType.horizontal,
-                y: split.x,
-              },
-        );
-      }
-
-      setAxis(newAxis);
-      setSplits(newSplits);
-    },
-    [splits],
-  );
-
-  const updateXAxis = useCallback(
-    (newAxis: AxesCriterionType) =>
-      updateAxis(xAxis, yAxis, newAxis, setXAxis, setYAxis),
-    [xAxis, yAxis, updateAxis],
-  );
-
-  const updateYAxis = useCallback(
-    (newAxis: AxesCriterionType) =>
-      updateAxis(yAxis, xAxis, newAxis, setYAxis, setXAxis),
-    [xAxis, yAxis, updateAxis],
-  );
 
   const onSelectSolution = useCallback(
     (groupKey: string, { solutionId }: CurrentAnalysis) => {
-      if (selectedLeftSolution === defaultSolutionValue) {
-        setSelectedLeftGroup(groupKey);
-        setSelectedLeftSolution(solutionId);
-      } else if (selectedRightSolution === defaultSolutionValue) {
-        setSelectedRightGroup(groupKey);
-        setSelectedRightSolution(solutionId);
+      if (state.selectedLeftSolution === defaultSolutionValue) {
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedLeft,
+          groupKey,
+          solutionId,
+        });
+      } else if (state.selectedRightSolution === defaultSolutionValue) {
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedRight,
+          groupKey,
+          solutionId,
+        });
       } else {
         // let the user choose
-        setSelectedSolutionId({ groupKey, solutionId });
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedSolution,
+          selectedSolutionId: { groupKey, solutionId },
+        });
       }
     },
-    [selectedLeftSolution, selectedRightSolution],
+    [state.selectedLeftSolution, state.selectedRightSolution],
   );
 
-  if (!selectedTask) {
+  if (!state.selectedTask) {
     return (
       <FormattedMessage
         id="Analyzer.noTasksInSession"
@@ -303,8 +242,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     value: task.id,
                   }))}
                   data-testid="select-task"
-                  onChange={(e) => setSelectedTask(parseInt(e.target.value))}
-                  value={selectedTask}
+                  onChange={(e) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setSelectedTask,
+                      selectedTaskId: parseInt(e.target.value),
+                    })
+                  }
+                  value={state.selectedTask}
                   alwaysShow
                 />
 
@@ -313,7 +257,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   options={[
                     {
                       label: intl.formatMessage(messages.allSubTasks),
-                      value: ALL_SUBTASKS,
+                      value: allSubtasks,
                     },
                     ...subtasks.map((subtask) => ({
                       label: subtask.toString(),
@@ -322,37 +266,52 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   ]}
                   data-testid="select-task"
                   onChange={(e) =>
-                    setSelectedSubTaskId(
-                      e.target.value !== ALL_SUBTASKS
-                        ? e.target.value
-                        : undefined,
-                    )
+                    dispatch({
+                      type: AnalyzerStateActionType.setSelectedSubTask,
+                      selectedSubTaskId:
+                        e.target.value !== allSubtasks
+                          ? e.target.value
+                          : undefined,
+                    })
                   }
-                  value={selectedSubTaskId}
+                  value={state.selectedSubTaskId}
                   alwaysShow
                 />
 
                 <AnalyzerFilterForm
                   taskType={task.type}
-                  filters={filters}
-                  setFilters={setFilters}
+                  filters={state.filters}
+                  setFilters={(filters) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setFilters,
+                      filters,
+                    })
+                  }
                   parametersByCriterion={parametersByCriterion}
                 />
 
                 <Input
                   label={messages.automaticGrouping}
                   type="checkbox"
-                  checked={isAutomaticGrouping}
-                  onChange={(e) => setIsAutomaticGrouping(e.target.checked)}
+                  checked={state.isAutomaticGrouping}
+                  onChange={(e) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setAutomaticGrouping,
+                      isAutomaticGrouping: e.target.checked,
+                    })
+                  }
                 />
 
-                {isAutomaticGrouping && (
+                {state.isAutomaticGrouping && (
                   <Input
                     label={messages.numberOfGroups}
                     type="number"
-                    value={numberOfGroups}
+                    value={state.numberOfGroups}
                     onChange={(e) =>
-                      setNumberOfGroups(parseInt(e.target.value))
+                      dispatch({
+                        type: AnalyzerStateActionType.setNumberOfGroups,
+                        numberOfGroups: parseInt(e.target.value),
+                      })
                     }
                   />
                 )}
@@ -366,24 +325,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               </Parameters>
             </Col>
             <Col xs={12} lg={9}>
-              {selectedTask && (
+              {state.selectedTask && (
                 <Analysis
                   taskType={task.type}
-                  xAxis={xAxis}
-                  setXAxis={updateXAxis}
-                  yAxis={yAxis}
-                  setYAxis={updateYAxis}
+                  state={state}
+                  dispatch={dispatch}
                   categorizedDataPoints={categorizedDataPoints}
                   manualGroups={manualGroups}
-                  splittingEnabled={!isAutomaticGrouping}
-                  splits={splits}
-                  setSplits={setSplits}
-                  selectedSolutionIds={[
-                    selectedLeftSolution,
-                    selectedRightSolution,
-                  ]}
                   onSelectSolution={onSelectSolution}
-                  bookmarkedSolutionIds={bookmarkedSolutionIds}
                 />
               )}
             </Col>
@@ -393,22 +342,11 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   classId={session.klass.id}
                   sessionId={session.id}
                   taskId={task.id}
-                  subTaskId={selectedSubTaskId}
+                  state={state}
+                  dispatch={dispatch}
                   taskType={task.type}
                   categorizedDataPoints={categorizedDataPoints}
                   groups={groups}
-                  xAxis={xAxis}
-                  yAxis={yAxis}
-                  selectedLeftGroup={selectedLeftGroup}
-                  setSelectedLeftGroup={setSelectedLeftGroup}
-                  selectedRightGroup={selectedRightGroup}
-                  setSelectedRightGroup={setSelectedRightGroup}
-                  selectedLeftSolution={selectedLeftSolution}
-                  setSelectedLeftSolution={setSelectedLeftSolution}
-                  selectedRightSolution={selectedRightSolution}
-                  setSelectedRightSolution={setSelectedRightSolution}
-                  bookmarkedSolutionIds={bookmarkedSolutionIds}
-                  setBookmarkedSolutionIds={setBookmarkedSolutionIds}
                 />
               )}
             </Col>
@@ -416,8 +354,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         )}
       </MultiSwrContent>
       <Modal
-        show={selectedSolutionId !== undefined}
-        onHide={() => setSelectedSolutionId(undefined)}
+        show={state.selectedSolutionId !== undefined}
+        onHide={() =>
+          dispatch({
+            type: AnalyzerStateActionType.setSelectedSolution,
+            selectedSolutionId: undefined,
+          })
+        }
         data-testid="solution-selection-modal"
       >
         <Modal.Header closeButton>
@@ -431,10 +374,17 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         <Modal.Footer>
           <Button
             onClick={() => {
-              if (selectedSolutionId) {
-                setSelectedLeftGroup(selectedSolutionId.groupKey);
-                setSelectedLeftSolution(selectedSolutionId.solutionId);
-                setSelectedSolutionId(undefined);
+              if (state.selectedSolutionId) {
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedLeft,
+                  groupKey: state.selectedSolutionId.groupKey,
+                  solutionId: state.selectedSolutionId.solutionId,
+                });
+
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedSolution,
+                  selectedSolutionId: undefined,
+                });
               }
             }}
             variant={ButtonVariant.primary}
@@ -444,10 +394,17 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
           </Button>
           <Button
             onClick={() => {
-              if (selectedSolutionId) {
-                setSelectedRightGroup(selectedSolutionId.groupKey);
-                setSelectedRightSolution(selectedSolutionId.solutionId);
-                setSelectedSolutionId(undefined);
+              if (state.selectedSolutionId) {
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedRight,
+                  groupKey: state.selectedSolutionId.groupKey,
+                  solutionId: state.selectedSolutionId.solutionId,
+                });
+
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedSolution,
+                  selectedSolutionId: undefined,
+                });
               }
             }}
             variant={ButtonVariant.primary}
