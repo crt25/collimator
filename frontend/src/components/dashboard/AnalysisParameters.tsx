@@ -8,7 +8,7 @@ const AnalysisParameters = styled.div`
   margin-bottom: 1rem;
 
   select,
-  input {
+  input:not([type="checkbox"]) {
     width: 100%;
   }
 `;

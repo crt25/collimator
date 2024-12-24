@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
-import { ChartSplit, SplitType } from "../chartjs-plugins/select";
 import { CategorizedDataPoint, FilteredAnalysis, ManualGroup } from "./types";
+import { ChartSplit, SplitType } from "../chartjs-plugins";
 
 class SolutionNotInGroupError extends Error {
   constructor(

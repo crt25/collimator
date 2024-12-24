@@ -1,7 +1,7 @@
 import { SetStateAction } from "react";
 import { AxesCriterionType } from "./axes";
-import { ChartSplit } from "./chartjs-plugins/select";
 import { FilterCriterion } from "./filter";
+import { ChartSplit } from "./chartjs-plugins";
 
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
 export const defaultGroupValue = "null";
@@ -22,8 +22,9 @@ export enum AnalyzerStateActionType {
   setSelectedRightGroup,
   setSelectedLeftSolution,
   setSelectedRightSolution,
-  setSelectedSolution,
+  setClickedSolution,
   setBookmarkedSolutions,
+  setSelectedSolutions,
 }
 
 export interface SetSelectedTaskAction {
@@ -84,13 +85,19 @@ export interface SetSolutionAction {
 }
 
 export interface SetSelectedSolutionAction {
-  type: AnalyzerStateActionType.setSelectedSolution;
+  type: AnalyzerStateActionType.setClickedSolution;
   selectedSolutionId: { groupKey: string; solutionId: number } | undefined;
 }
 
 export interface SetBookmarkedSolutionsAction {
   type: AnalyzerStateActionType.setBookmarkedSolutions;
   bookmarkedSolutionIds: number[];
+}
+
+export interface SetSelectedSolutionsAction {
+  type: AnalyzerStateActionType.setSelectedSolutions;
+  solutionIds: number[];
+  unionWithPrevious?: boolean;
 }
 
 export type AnalyzerStateAction =
@@ -105,7 +112,8 @@ export type AnalyzerStateAction =
   | SetGroupAction
   | SetSolutionAction
   | SetSelectedSolutionAction
-  | SetBookmarkedSolutionsAction;
+  | SetBookmarkedSolutionsAction
+  | SetSelectedSolutionsAction;
 
 export interface AnalyzerState {
   selectedTask: number | undefined;
@@ -117,16 +125,20 @@ export interface AnalyzerState {
   filters: FilterCriterion[];
   splits: ChartSplit[];
   bookmarkedSolutionIds: number[];
-  selectedSolutionId:
-    | {
-        groupKey: string;
-        solutionId: number;
-      }
-    | undefined;
-  selectedLeftGroup: string;
-  selectedRightGroup: string;
-  selectedRightSolution: number;
-  selectedLeftSolution: number;
+  selectedSolutionIds: number[];
+
+  comparison: {
+    clickedSolution:
+      | {
+          groupKey: string;
+          solutionId: number;
+        }
+      | undefined;
+    selectedLeftGroup: string;
+    selectedRightGroup: string;
+    selectedRightSolution: number;
+    selectedLeftSolution: number;
+  };
 }
 
 const getNewState = <T>(setState: SetStateAction<T>, oldState: T): T =>
@@ -158,27 +170,67 @@ export const analyzerStateReducer = (
     case AnalyzerStateActionType.setSelectedLeft:
       return {
         ...state,
-        selectedLeftGroup: action.groupKey,
-        selectedLeftSolution: action.solutionId,
+        comparison: {
+          ...state.comparison,
+          selectedLeftGroup: action.groupKey,
+          selectedLeftSolution: action.solutionId,
+        },
       };
     case AnalyzerStateActionType.setSelectedRight:
       return {
         ...state,
-        selectedRightGroup: action.groupKey,
-        selectedRightSolution: action.solutionId,
+        comparison: {
+          ...state.comparison,
+          selectedRightGroup: action.groupKey,
+          selectedRightSolution: action.solutionId,
+        },
       };
     case AnalyzerStateActionType.setSelectedLeftGroup:
-      return { ...state, selectedLeftGroup: action.groupKey };
+      return {
+        ...state,
+        comparison: { ...state.comparison, selectedLeftGroup: action.groupKey },
+      };
     case AnalyzerStateActionType.setSelectedRightGroup:
-      return { ...state, selectedRightGroup: action.groupKey };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedRightGroup: action.groupKey,
+        },
+      };
     case AnalyzerStateActionType.setSelectedLeftSolution:
-      return { ...state, selectedLeftSolution: action.solutionId };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedLeftSolution: action.solutionId,
+        },
+      };
     case AnalyzerStateActionType.setSelectedRightSolution:
-      return { ...state, selectedRightSolution: action.solutionId };
-    case AnalyzerStateActionType.setSelectedSolution:
-      return { ...state, selectedSolutionId: action.selectedSolutionId };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedRightSolution: action.solutionId,
+        },
+      };
+    case AnalyzerStateActionType.setClickedSolution:
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          clickedSolution: action.selectedSolutionId,
+        },
+      };
     case AnalyzerStateActionType.setBookmarkedSolutions:
       return { ...state, bookmarkedSolutionIds: action.bookmarkedSolutionIds };
+    case AnalyzerStateActionType.setSelectedSolutions:
+      return {
+        ...state,
+        selectedSolutionIds: action.unionWithPrevious
+          ? [...state.selectedSolutionIds, ...action.solutionIds]
+          : action.solutionIds,
+      };
     default:
       return state;
   }

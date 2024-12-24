@@ -1,8 +1,13 @@
 import { Chart, ChartType, Plugin } from "chart.js";
-import { markAsHandled } from "../hacks";
+import {
+  blockDeletingSplits,
+  isAlreadyHandled,
+  markAsHandled,
+  unblockDeletingSplits,
+} from "../hacks";
 
 interface PartialChartPluginOptions {
-  select?: Options;
+  split?: Options;
 }
 
 interface Selection {
@@ -14,23 +19,33 @@ interface Selection {
   isDragging: boolean;
 }
 
+export enum SplitType {
+  horizontal = "horizontal",
+  vertical = "vertical",
+}
+
+type HorizontalSplit = {
+  type: SplitType.horizontal;
+  y: number;
+};
+
+type VerticalSplit = {
+  type: SplitType.vertical;
+  x: number;
+};
+
+export type ChartSplit = HorizontalSplit | VerticalSplit;
+
 interface Options {
   enabled?: boolean;
-  onSelection?: (selection: {
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-    unionWithPrevious: boolean;
-  }) => void;
-  fillColor?: string | CanvasGradient | CanvasPattern;
+  onAddSplit?: (split: ChartSplit) => void;
 }
 
 // declare plugin option typings https://www.chartjs.org/docs/latest/developers/plugins.html#typescript-typings
 declare module "chart.js" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface PluginOptionsByType<TType extends ChartType> {
-    select: Options;
+    split: Options;
   }
 }
 
@@ -43,14 +58,15 @@ const defaultSelection: Selection = {
   isDragging: false,
 };
 
-const overlayClass = "canvas-select-overlay";
-const minSelection = 20;
+const overlayClass = "canvas-split-overlay";
+const minimumDistanceDragged = 20;
+const cursorThickness = 2;
 
-const SelectPlugin: Plugin & {
+const SplitPlugin: Plugin & {
   initChart: (chart: Chart) => void;
   cleanupListeners?: () => Selection;
 } = {
-  id: "select-plugin",
+  id: "split-plugin",
 
   cleanupListeners: undefined,
 
@@ -73,7 +89,7 @@ const SelectPlugin: Plugin & {
       initialSelection = this.cleanupListeners();
     }
 
-    if (opts.select?.enabled) {
+    if (opts.split?.enabled) {
       if (overlay === null) {
         overlay = createOverlayHtmlCanvasElement(chart);
         parent.prepend(overlay);
@@ -82,7 +98,7 @@ const SelectPlugin: Plugin & {
       this.cleanupListeners = initOverlayCanvas(
         chart,
         overlay,
-        opts.select,
+        opts.split,
         initialSelection,
       );
     } else {
@@ -101,7 +117,7 @@ const SelectPlugin: Plugin & {
   resize(chart, { size }) {
     const opts = chart.config.options?.plugins as PartialChartPluginOptions;
 
-    if (!opts.select?.enabled) {
+    if (!opts.split?.enabled) {
       return;
     }
 
@@ -113,7 +129,7 @@ const SelectPlugin: Plugin & {
   beforeDestroy(chart) {
     const opts = chart.config.options?.plugins as PartialChartPluginOptions;
 
-    if (!opts.select?.enabled) {
+    if (!opts.split?.enabled) {
       return;
     }
 
@@ -122,6 +138,44 @@ const SelectPlugin: Plugin & {
 
     if (this.cleanupListeners) {
       this.cleanupListeners();
+    }
+  },
+
+  beforeEvent(chart, args) {
+    const opts = chart.config.options?.plugins as PartialChartPluginOptions;
+    const onAddSplit = opts?.split?.onAddSplit;
+
+    if (!opts.split?.enabled) {
+      return;
+    }
+
+    if (!onAddSplit) {
+      return;
+    }
+
+    if (args.event.type === "click") {
+      const chartCanvas = chart.canvas;
+      const evt = args.event.native as MouseEvent;
+      if (!evt) {
+        return;
+      }
+
+      if (isAlreadyHandled(evt)) {
+        return;
+      }
+
+      const rect = chartCanvas.getBoundingClientRect();
+      const { x, y } = getCoordinatesInChartArea(
+        chart,
+        evt.clientX - rect.left,
+        evt.clientY - rect.top,
+      );
+
+      if (addNewSplit(chart, x, y, onAddSplit, x, y)) {
+        // if a split was added, block any click event within the event propagation
+        markAsHandled(evt);
+        unblockDeletingSplits(chart);
+      }
     }
   },
 };
@@ -144,36 +198,43 @@ const getOverlayCanvas = (chart: Chart): HTMLCanvasElement => {
   return overlay;
 };
 
-const mapRange = (
-  value: number,
-  min: number,
-  max: number,
-  toMin: number,
-  toMax: number,
-  flip = false,
-): number =>
-  flip
-    ? (1 - (value - min) / (max - min)) * (toMax - toMin) + toMin
-    : ((value - min) / (max - min)) * (toMax - toMin) + toMin;
+const addNewSplit = (
+  chart: Chart,
+  originalX: number,
+  originalY: number,
+  onAddSplit: (split: ChartSplit) => void,
+  splitX: number,
+  splitY: number,
+): boolean => {
+  if (isXSplit(chart, originalX, originalY)) {
+    const xFraction =
+      (splitX - chart.chartArea.left) /
+      (chart.chartArea.right - chart.chartArea.left);
+    const { min: minX, max: maxX } = chart.scales.x;
 
-const transformXToChartAxisCoordinates = (chart: Chart, x: number): number =>
-  mapRange(
-    x,
-    chart.chartArea.left,
-    chart.chartArea.right,
-    chart.scales.x.min,
-    chart.scales.x.max,
-  );
+    onAddSplit({
+      type: SplitType.vertical,
+      x: (maxX - minX) * xFraction + minX,
+    });
+  } else if (isYSplit(chart, originalX, originalY)) {
+    const yFraction =
+      // 1 minus because the DOM coordinate system is top to bottom whereas a graph is bottom to top
+      1 -
+      (splitY - chart.chartArea.top) /
+        (chart.chartArea.bottom - chart.chartArea.top);
 
-const transformYToChartAxisCoordinates = (chart: Chart, y: number): number =>
-  mapRange(
-    y,
-    chart.chartArea.top,
-    chart.chartArea.bottom,
-    chart.scales.y.min,
-    chart.scales.y.max,
-    true,
-  );
+    const { min: minY, max: maxY } = chart.scales.y;
+
+    onAddSplit({
+      type: SplitType.horizontal,
+      y: (maxY - minY) * yFraction + minY,
+    });
+  } else {
+    return false;
+  }
+
+  return true;
+};
 
 const initOverlayCanvas = (
   chart: Chart,
@@ -189,80 +250,53 @@ const initOverlayCanvas = (
   }
 
   let selection: Selection = { ...initialSelection };
-  const onSelection = options?.onSelection;
+  const onAddSplit = options?.onAddSplit;
 
-  if (!onSelection) {
+  if (!onAddSplit) {
     return () => selection;
   }
 
   const onPointerDown = (evt: PointerEvent): void => {
     const rect = chartCanvas.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-
-    if (
-      x < chart.chartArea.left ||
-      x > chart.chartArea.right ||
-      y < chart.chartArea.top ||
-      y > chart.chartArea.bottom
-    ) {
-      // pointer is outside of the chart area
-      return;
-    }
+    const { x, y } = getCoordinatesInChartArea(
+      chart,
+      evt.clientX - rect.left,
+      evt.clientY - rect.top,
+    );
 
     selection.startX = x;
     selection.startY = y;
 
     selection.isDragging = true;
 
-    // pointerup/click may be anywhere on the window
+    // pointerup may be anywhere on the window
     window.addEventListener(
-      "click",
+      "pointerup",
       (evt) => {
-        const chartContentRect = chartCanvas.getBoundingClientRect();
+        if (isMinimumDistanceDragged(selection)) {
+          const chartContentRect = chartCanvas.getBoundingClientRect();
 
-        const coordinates = getCoordinatesInChartArea(
-          chart,
-          evt.clientX - chartContentRect.left,
-          evt.clientY - chartContentRect.top,
-        );
+          const { x, y } = getCoordinatesInChartArea(
+            chart,
+            evt.clientX - chartContentRect.left,
+            evt.clientY - chartContentRect.top,
+          );
 
-        let minX = Math.min(selection.startX, coordinates.x);
-        let maxX = Math.max(selection.startX, coordinates.x);
-        let minY = Math.min(selection.startY, coordinates.y);
-        let maxY = Math.max(selection.startY, coordinates.y);
+          addNewSplit(
+            chart,
+            selection.startX,
+            selection.startY,
+            onAddSplit,
+            x,
+            y,
+          );
 
-        const xDiff = maxX - minX;
-        const yDiff = maxY - minY;
-
-        if (xDiff < minSelection) {
-          const increaseBy = minSelection - xDiff;
-          minX -= increaseBy / 2;
-          maxX += increaseBy / 2;
+          // block any click event within the event propagation
+          blockDeletingSplits(chart);
         }
-
-        if (yDiff < minSelection) {
-          const increaseBy = minSelection - yDiff;
-          minY -= increaseBy / 2;
-          maxY += increaseBy / 2;
-        }
-
-        onSelection({
-          minX: transformXToChartAxisCoordinates(chart, minX),
-          maxX: transformXToChartAxisCoordinates(chart, maxX),
-
-          // for the y-axis, we need to flip the min and max because
-          // in browser coordinates the y-axis grows from top to bottom
-          minY: transformYToChartAxisCoordinates(chart, maxY),
-          maxY: transformYToChartAxisCoordinates(chart, minY),
-
-          unionWithPrevious: evt.shiftKey,
-        });
 
         selection = { ...defaultSelection };
         ctx.clearRect(0, 0, overlay.width, overlay.height);
-
-        markAsHandled(evt);
       },
       {
         once: true,
@@ -294,13 +328,25 @@ const initOverlayCanvas = (
       selection.width = currentX - selection.startX;
       selection.height = currentY - selection.startY;
 
-      ctx.fillStyle = options?.fillColor ?? "rgba(0, 0, 0, 0.1)";
-      ctx.fillRect(
-        selection.startX,
-        selection.startY,
-        selection.width,
-        selection.height,
-      );
+      if (isXSplit(chart, selection.startX, selection.startY)) {
+        // x-axis selection
+
+        ctx.fillRect(
+          currentX - cursorThickness,
+          chart.chartArea.top,
+          cursorThickness,
+          chart.chartArea.bottom - chart.chartArea.top,
+        );
+      } else if (isYSplit(chart, selection.startX, selection.startY)) {
+        // y-axis selection
+
+        ctx.fillRect(
+          chart.chartArea.left,
+          currentY - cursorThickness,
+          chart.chartArea.right - chart.chartArea.left,
+          cursorThickness,
+        );
+      }
     }
   };
 
@@ -348,4 +394,28 @@ const getCoordinatesInChartArea = (
   ),
 });
 
-export default SelectPlugin;
+const isXSplit = (
+  chart: Chart,
+  originalX: number,
+  originalY: number,
+): boolean =>
+  // within the x-axis
+  chart.chartArea.bottom <= originalY &&
+  chart.chartArea.left <= originalX &&
+  chart.chartArea.right >= originalX;
+
+const isYSplit = (
+  chart: Chart,
+  originalX: number,
+  originalY: number,
+): boolean =>
+  // within the y-axis
+  chart.chartArea.left >= originalX &&
+  chart.chartArea.bottom >= originalY &&
+  chart.chartArea.top <= originalY;
+
+const isMinimumDistanceDragged = (selection: Selection): boolean =>
+  Math.max(Math.abs(selection.height), Math.abs(selection.width)) >=
+  minimumDistanceDragged;
+
+export default SplitPlugin;

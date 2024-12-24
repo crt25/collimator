@@ -14,7 +14,8 @@ const deleteSplitLabelColor = "rgba(255, 99, 132, 0.5)";
 const deleteSplitLabelColorHover = "rgba(255, 99, 132, 1)";
 const deletSplitLabelBackgroundColor = "rgb(255, 255, 255)";
 
-const highlighBorderColor = "rgba(241,196,15,1)";
+const highlighBorderColor1 = "rgba(241,196,15,1)";
+const highlighBorderColor2 = "rgba(0,0,0,1)";
 
 export const Colors = {
   dataPoint: {
@@ -23,7 +24,8 @@ export const Colors = {
     success: dataPointSuccess,
     partialSuccess: dataPointPartialSuccess,
     noSuccess: dataPointNoSuccess,
-    selectedBorderColor: highlighBorderColor,
+    selectedForComparisonBorderColor: highlighBorderColor1,
+    selectedBorderColor: highlighBorderColor2,
   },
   chartLabel: {
     groupLabelColor,
