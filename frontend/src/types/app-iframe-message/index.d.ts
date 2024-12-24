@@ -6,8 +6,10 @@ import {
   LoadSubmissionResponse,
 } from "./load-submission";
 import { LoadTaskRequest, LoadTaskResponse } from "./load-task";
+import { SetLocaleRequest, SetLocaleResponse } from "./set-locale";
 
 export type AppIFrameRequest =
+  | SetLocaleRequest
   | GetHeightRequest
   | GetSubmissionRequest
   | GetTaskRequest
@@ -15,6 +17,7 @@ export type AppIFrameRequest =
   | LoadSubmissionRequest;
 
 export type AppIFrameResponse =
+  | SetLocaleResponse
   | GetHeightReponse
   | GetSubmissionResponse
   | GetTaskResponse

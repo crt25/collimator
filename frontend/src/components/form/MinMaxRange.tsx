@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
 import PrimeRange from "./PrimeRange";
+import { useMemo } from "react";
 
 const Label = styled.span`
   display: block;
@@ -18,8 +19,8 @@ const CurrentValues = styled.span`
 `;
 
 const MinMaxRange = ({
-  valueMin,
-  valueMax,
+  valueMin: valueMinIn,
+  valueMax: valueMaxIn,
   min,
   max,
   step,
@@ -37,6 +38,16 @@ const MinMaxRange = ({
   children?: React.ReactNode;
 }) => {
   const intl = useIntl();
+
+  const valueMin = useMemo(
+    () => Math.min(Math.max(valueMinIn, min), max),
+    [min, max, valueMinIn],
+  );
+
+  const valueMax = useMemo(
+    () => Math.min(Math.max(valueMaxIn, min), max),
+    [min, max, valueMaxIn],
+  );
 
   return (
     <>

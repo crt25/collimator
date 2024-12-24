@@ -11,7 +11,8 @@ import {
 } from "@/data-analyzer/analyze-asts";
 import StatementCriterionFilterForm from "./StatementCriterionFilterForm";
 
-type Criterion = AstCriterionType.statement;
+const criterion = AstCriterionType.statement;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -25,23 +26,31 @@ export interface StatementFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
+export interface StatementFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minNumberOfStatements: number;
+  maxNumberOfStatements: number;
+}
+
 const toAnalysisInput = (
   _config: StatementFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.statement> => ({
-  criterion: AstCriterionType.statement,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const StatementCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: AstCriterionType.statement,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
-    min: 0,
+    ticks: {
+      precision: 0,
+    },
   },
   getAxisValue: (analysis) => {
     const numberOfStatements = analyzeAst(analysis.generalAst, {
-      criterion: AstCriterionType.statement,
+      criterion,
       input: undefined,
     }).output;
 
@@ -51,25 +60,34 @@ export const StatementCriterionAxis: CriterionAxisDefinition<Criterion> = {
 
 export const StatementCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  StatementFilterCriterion
+  StatementFilterCriterion,
+  StatementFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.statement,
+  criterion,
   formComponent: StatementCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.statement,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const numberOfStatements = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return (
-      config.minimumCount <= numberOfStatements &&
-      config.maximumCount >= numberOfStatements
+  run: (config, analyses) => {
+    const numberOfStatementsList = analyses.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
     );
+
+    return {
+      matchesFilter: numberOfStatementsList.map(
+        (numberOfStatements) =>
+          config.minimumCount <= numberOfStatements &&
+          config.maximumCount >= numberOfStatements,
+      ),
+      parameters: {
+        criterion,
+        maxNumberOfStatements: Math.max(...numberOfStatementsList),
+        minNumberOfStatements: Math.min(...numberOfStatementsList),
+      },
+    };
   },
 };

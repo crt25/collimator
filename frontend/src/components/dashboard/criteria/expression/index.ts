@@ -11,7 +11,8 @@ import {
 } from "@/data-analyzer/analyze-asts";
 import ExpressionCriterionFilterForm from "./ExpressionCriterionFilterForm";
 
-type Criterion = AstCriterionType.expression;
+const criterion = AstCriterionType.expression;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
@@ -25,23 +26,31 @@ export interface ExpressionFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
+export interface ExpressionFilterCriterionParameters
+  extends CriterionBase<Criterion> {
+  minNumberOfExpressions: number;
+  maxNumberOfExpressions: number;
+}
+
 const toAnalysisInput = (
   _criterion: ExpressionFilterCriterion,
-): CriteriaToAnalyzeInput<AstCriterionType.expression> => ({
-  criterion: AstCriterionType.expression,
+): CriteriaToAnalyzeInput<Criterion> => ({
+  criterion,
   input: undefined,
 });
 
 export const ExpressionCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion: AstCriterionType.expression,
+  criterion,
   messages: () => messages,
   config: {
     type: "linear",
-    min: 0,
+    ticks: {
+      precision: 0,
+    },
   },
   getAxisValue: (analysis) => {
     const numberOfExpressions = analyzeAst(analysis.generalAst, {
-      criterion: AstCriterionType.expression,
+      criterion,
       input: undefined,
     }).output;
 
@@ -51,25 +60,34 @@ export const ExpressionCriterionAxis: CriterionAxisDefinition<Criterion> = {
 
 export const ExpressionCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  ExpressionFilterCriterion
+  ExpressionFilterCriterion,
+  ExpressionFilterCriterionParameters
 > = {
-  criterion: AstCriterionType.expression,
+  criterion,
   formComponent: ExpressionCriterionFilterForm,
   messages: () => messages,
   initialValues: {
-    criterion: AstCriterionType.expression,
+    criterion,
     minimumCount: 0,
     maximumCount: 100,
   },
-  matchesFilter: (config, analysis) => {
-    const numberOfExpressions = analyzeAst(
-      analysis.generalAst,
-      toAnalysisInput(config),
-    ).output;
-
-    return (
-      config.minimumCount <= numberOfExpressions &&
-      config.maximumCount >= numberOfExpressions
+  run: (config, analyses) => {
+    const numberOfExpressionsList = analyses.map(
+      (analysis) =>
+        analyzeAst(analysis.generalAst, toAnalysisInput(config)).output,
     );
+
+    return {
+      matchesFilter: numberOfExpressionsList.map(
+        (numberOfExpressions) =>
+          config.minimumCount <= numberOfExpressions &&
+          config.maximumCount >= numberOfExpressions,
+      ),
+      parameters: {
+        criterion,
+        maxNumberOfExpressions: Math.max(...numberOfExpressionsList),
+        minNumberOfExpressions: Math.min(...numberOfExpressionsList),
+      },
+    };
   },
 };

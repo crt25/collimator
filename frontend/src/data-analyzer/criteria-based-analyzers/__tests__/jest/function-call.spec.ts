@@ -3,6 +3,10 @@ import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { GeneralAst } from "@ast/index";
 import { countFunctionCalls } from "../../calls-function";
+import {
+  AstCriterionType,
+  CriteriaBasedAnalyzerOutput,
+} from "@/data-analyzer/analyze-asts";
 
 describe("Criteria Based Analyzer", () => {
   describe("callsFunction", () => {
@@ -53,7 +57,12 @@ describe("Criteria Based Analyzer", () => {
         },
       );
 
-      expect(output).toBe(1);
+      expect(output).toEqual({
+        callsByFunctionName: {
+          motion_movesteps: 1,
+        },
+        numberOfCalls: 1,
+      } satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall]);
     });
 
     it("returns '1' if the function is called in an expression", () => {
@@ -96,7 +105,12 @@ describe("Criteria Based Analyzer", () => {
         },
       );
 
-      expect(output).toBe(1);
+      expect(output).toEqual({
+        callsByFunctionName: {
+          myFunction: 1,
+        },
+        numberOfCalls: 1,
+      } satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall]);
     });
 
     it("adds together the number of function calls in statements and expressions", () => {
@@ -152,7 +166,12 @@ describe("Criteria Based Analyzer", () => {
         },
       );
 
-      expect(output).toBe(3);
+      expect(output).toEqual({
+        callsByFunctionName: {
+          myFunction: 3,
+        },
+        numberOfCalls: 3,
+      } satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall]);
     });
 
     it("returns '0' if the function is not called", () => {
@@ -202,7 +221,14 @@ describe("Criteria Based Analyzer", () => {
         },
       );
 
-      expect(output).toBe(0);
+      expect(output).toEqual({
+        callsByFunctionName: {
+          myFunction1: 1,
+          myFunction2: 1,
+        },
+
+        numberOfCalls: 0,
+      } satisfies CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall]);
     });
   });
 });

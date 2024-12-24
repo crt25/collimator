@@ -301,6 +301,10 @@ test.describe("/edit", () => {
   test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
     const { page } = await TestTaskPage.load(pwPage);
 
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
     const editableStackButton = page.getBlockFreezeButton(
       page.taskBlocks.catActor.visualTopOfEditableStack,
     );

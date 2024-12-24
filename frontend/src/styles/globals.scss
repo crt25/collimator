@@ -13,19 +13,19 @@
   --button-background-color: #007bff;
   --button-foreground-color: #ffffff;
 
+  --button-secondary-background-color: #6c757d;
+  --button-secondary-foreground-color: #ffffff;
+
+  --button-danger-background-color: var(--error-color);
+  --button-danger-foreground-color: #ffffff;
+
   --button-disabled-background-color: #999999;
 
   --header-background-color: #ccc;
   --header-foreground-color: var(--foreground-color);
 
+  --success-color: #2ecc71;
   --error-color: #dc3545;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #0a0a0a;
-    --foreground-color: #ededed;
-  }
 }
 
 html,
@@ -54,12 +54,6 @@ a {
 
   &:hover {
     text-decoration: underline;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
   }
 }
 

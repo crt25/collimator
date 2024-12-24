@@ -177,11 +177,6 @@ module "cloudfront" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 
-  geo_restriction = {
-    restriction_type = "whitelist"
-    locations        = ["CH"]
-  }
-
   tags = var.tags
 }
 

@@ -12,9 +12,10 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
 import MultiSwrContent from "../MultiSwrContent";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { StudentName } from "../encryption/StudentName";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
+import { useDeleteSolution } from "@/api/collimator/hooks/solutions/useDeleteSolution";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -47,6 +48,12 @@ const TaskState = styled.div`
 `;
 
 const TimeOnTask = styled.div``;
+
+const SpacedIcon = styled.div`
+  svg {
+    margin-left: 0.5rem;
+  }
+`;
 
 const messages = defineMessages({
   nameColumn: {
@@ -91,7 +98,7 @@ const nameTemplate = (progress: StudentProgress) => {
   );
 };
 
-const taskTemplate = (taskId: number) =>
+const taskTemplate = (classId: number, taskId: number) =>
   function TaskTemplate(rowData: StudentProgress) {
     const intl = useIntl();
 
@@ -103,14 +110,36 @@ const taskTemplate = (taskId: number) =>
       return ExistingSolution.findSolutionToDisplay(solutions);
     }, [rowData]);
 
+    const deleteSolution = useDeleteSolution();
+
     return (
       <CenterContent>
         <TaskState>
-          <div>
-            {solutionToDisplay ? <FontAwesomeIcon icon={faStar} /> : null}
-          </div>
-          {solutionToDisplay && (
-            <time>{intl.formatTime(solutionToDisplay.createdAt)}</time>
+          {!solutionToDisplay ? null : (
+            <>
+              <div>
+                <SpacedIcon>
+                  <FontAwesomeIcon icon={faStar} />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteSolution(
+                        classId,
+                        solutionToDisplay?.sessionId,
+                        solutionToDisplay?.taskId,
+                        solutionToDisplay?.id,
+                      )
+                        .then(() => console.info("Solution deleted"))
+                        .catch((error) =>
+                          console.error("Solution deletion failed", error),
+                        );
+                    }}
+                  />
+                </SpacedIcon>
+              </div>
+              <time>{intl.formatTime(solutionToDisplay.createdAt)}</time>
+            </>
           )}
         </TaskState>
       </CenterContent>
@@ -243,7 +272,7 @@ const ProgressList = ({
                 headerTooltip={task.title}
                 headerTooltipOptions={{ position: "bottom" }}
                 alignHeader={"center"}
-                body={taskTemplate(task.id)}
+                body={taskTemplate(classId, task.id)}
               />
             ))}
             <Column

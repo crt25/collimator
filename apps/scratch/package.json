@@ -13,10 +13,11 @@
     "posttest": "nyc report",
     "eject": "react-scripts eject",
     "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
-    "extract:i18n": "formatjs extract 'src/{components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
-    "compile:i18n": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
-    "i18n": "yarn extract:i18n && yarn compile:i18n",
-    "prepublish": "node scripts/prepublish.mjs"
+    "i18n:extract": "formatjs extract 'src/{components,sections,extensions}/**/*.{js,ts,tsx}' --format crowdin --out-file src/content/locales/en.json",
+    "i18n:compile": "formatjs compile-folder --ast --format crowdin src/content/locales src/content/compiled-locales",
+    "i18n:fill": "node ./scripts/fill-locales.mjs",
+    "i18n": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
+    "postinstall": "node scripts/postinstall.mjs"
   },
   "homepage": "/scratch",
   "dependencies": {
@@ -187,6 +188,7 @@
   },
   "packageManager": "yarn@4.5.0",
   "devDependencies": {
+    "@formatjs/cli": "^6.3.14",
     "@types/archiver": "^6.0.3",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
