@@ -162,11 +162,6 @@ body,
   --block-color: var(--scratch-sensing-block-color);
 }
 
-[data-category="sensing"] 
-{
-  --block-color: var(--scratch-sensing-block-color);
-}
-
 [data-category="operators"] 
 {
   --block-color: var(--scratch-operators-block-color);
