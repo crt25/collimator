@@ -76,6 +76,8 @@ declare namespace ScratchBlocksExtended {
     resize: () => void;
     scroll: (x: number, y: number) => void;
     scrollCenter: () => void;
+    centerOnBlock: (id: string) => void;
+    zoomToFit: () => void;
 
     getMetrics: () =>
       | {
