@@ -149,13 +149,13 @@ const DissimilarityAnalysis = ({
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
-              {dissimilarAnalyses
-                ? dissimilarAnalyses.map(([a, b]) => (
-                    <Row key={`${a.id}-${b.id}`}>
-                      <CodeViewCol xs={12} lg={6}>
+              <Row>
+                {dissimilarAnalyses
+                  ? dissimilarAnalyses.map((analysis) => (
+                      <CodeViewCol key={analysis.id} xs={12} lg={6}>
                         <StudentName
-                          pseudonym={a.studentPseudonym}
-                          keyPairId={a.studentKeyPairId}
+                          pseudonym={analysis.studentPseudonym}
+                          keyPairId={analysis.studentKeyPairId}
                         />
                         <CodeView
                           classId={session.klass.id}
@@ -163,26 +163,12 @@ const DissimilarityAnalysis = ({
                           taskId={task.id}
                           subTaskId={selectedSubTaskId}
                           taskType={task.type}
-                          solutionId={a.solutionId}
+                          solutionId={analysis.solutionId}
                         />
                       </CodeViewCol>
-                      <CodeViewCol xs={12} lg={6}>
-                        <StudentName
-                          pseudonym={b.studentPseudonym}
-                          keyPairId={b.studentKeyPairId}
-                        />
-                        <CodeView
-                          classId={session.klass.id}
-                          sessionId={session.id}
-                          taskId={task.id}
-                          subTaskId={selectedSubTaskId}
-                          taskType={task.type}
-                          solutionId={b.solutionId}
-                        />
-                      </CodeViewCol>
-                    </Row>
-                  ))
-                : null}
+                    ))
+                  : null}
+              </Row>
             </Col>
           </Row>
         )}
