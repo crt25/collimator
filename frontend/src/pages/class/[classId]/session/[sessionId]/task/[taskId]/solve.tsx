@@ -96,7 +96,7 @@ const SolveTaskPage = () => {
     if (response.result.passedTests >= response.result.totalTests) {
       toast.success(
         <FormattedMessage
-          id="SolveTask.solutionSubmitted"
+          id="SolveTask.correctSolutionSubmitted"
           defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
         />,
       );
@@ -211,14 +211,14 @@ const SolveTaskPage = () => {
             {showSessionMenu ? (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.hideSession"
                   defaultMessage="Hide Session"
                 />
               </span>
             ) : (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.showSession"
                   defaultMessage="Show Session"
                 />
               </span>
@@ -231,7 +231,7 @@ const SolveTaskPage = () => {
             data-testid="submit-solution-button"
           >
             <FormattedMessage
-              id="SolveTask.getStarted"
+              id="SolveTask.submitSolution"
               defaultMessage="Submit Solution"
             />
           </Button>
