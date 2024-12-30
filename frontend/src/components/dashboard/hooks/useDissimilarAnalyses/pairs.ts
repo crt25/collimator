@@ -37,11 +37,13 @@ const getDissimilarAnalyses = async (
           analyses[i].generalAst,
           analyses[j].generalAst,
         ).then((distance) => {
-          distances.push({
-            from: analyses[i],
-            to: analyses[j],
-            distance,
-          });
+          if (distance > 0) {
+            distances.push({
+              from: analyses[i],
+              to: analyses[j],
+              distance,
+            });
+          }
         }),
       );
     }
