@@ -378,14 +378,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 yAxis={yAxis}
                 setYAxis={updateYAxis}
                 categorizedDataPoints={categorizedDataPoints}
-                manualGroups={manualGroups}
-                splittingEnabled={!isAutomaticGrouping}
-                splits={splits}
-                setSplits={setSplits}
                 selectedSolutionIds={[
                   selectedLeftSolution,
                   selectedRightSolution,
                 ]}
+                manualGroups={manualGroups}
+                splittingEnabled={!isAutomaticGrouping}
+                splits={splits}
+                setSplits={setSplits}
                 onSelectSolution={onSelectSolution}
                 bookmarkedSolutionIds={bookmarkedSolutionIds}
               />
