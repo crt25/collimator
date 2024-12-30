@@ -1,3 +1,5 @@
+type FillOrStrokeStyle = string | CanvasGradient | CanvasPattern;
+
 const drawStar = (
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -5,9 +7,9 @@ const drawStar = (
   spikes: number,
   outerRadius: number,
   innerRadius: number,
-  fillStyle: string | CanvasGradient | CanvasPattern,
+  fillStyle: FillOrStrokeStyle,
   strokeWidth = 0,
-  strokeStyle: string | CanvasGradient | CanvasPattern = "black",
+  strokeStyle: FillOrStrokeStyle = "black",
 ): void => {
   let rot = (Math.PI / 2) * 3;
   let x = cx;
@@ -41,7 +43,7 @@ const drawStar = (
 
 export const createStar = (
   size: number,
-  fill: string | CanvasGradient | CanvasPattern,
+  fill: FillOrStrokeStyle,
   strokeWidth = 0,
   stroke = "black",
 ): HTMLCanvasElement => {
