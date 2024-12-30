@@ -72,7 +72,7 @@ const SelectionMenu = styled.div`
   }
 `;
 
-const ModalFooter = styled.div`
+const ModalHeader = styled.div`
   flex-grow: 1;
 
   display: flex;
@@ -81,19 +81,20 @@ const ModalFooter = styled.div`
   align-items: center;
 `;
 
-const ModalFooterLeft = styled.div`
+const ModalHeaderLeft = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 
+  margin-left: 1rem;
   gap: 1rem;
 `;
 
-const ModalFooterRight = styled.div`
+const AxisValues = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
 
   gap: 1rem;
@@ -425,23 +426,9 @@ const CodeComparison = ({
           taskId={taskId}
           taskType={taskType}
           solutionId={modalDataPoint?.analysis.solutionId}
-          footer={
-            <ModalFooter>
-              <ModalFooterLeft>
-                {xAxisLabel && (
-                  <div>
-                    {intl.formatMessage(xAxisLabel)}:{" "}
-                    {modalDataPoint.dataPoint.x}
-                  </div>
-                )}
-                {yAxisLabel && (
-                  <div>
-                    {intl.formatMessage(yAxisLabel)}:{" "}
-                    {modalDataPoint.dataPoint.y}
-                  </div>
-                )}
-              </ModalFooterLeft>
-              <ModalFooterRight>
+          header={
+            <ModalHeader>
+              <ModalHeaderLeft>
                 {selectedRightSolution !== defaultSolutionValue &&
                 selectedRightSolution !== defaultSolutionValue ? (
                   <ButtonGroup>
@@ -463,8 +450,22 @@ const CodeComparison = ({
                     </Button>
                   </ButtonGroup>
                 ) : null}
-              </ModalFooterRight>
-            </ModalFooter>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+              </ModalHeaderLeft>
+            </ModalHeader>
           }
         />
       )}
@@ -535,14 +536,30 @@ const CodeComparison = ({
               )}
             </SelectionMenu>
             {leftDataPoint ? (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={subTaskId}
-                taskType={taskType}
-                solutionId={leftDataPoint.analysis.solutionId}
-              />
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={subTaskId}
+                  taskType={taskType}
+                  solutionId={leftDataPoint.analysis.solutionId}
+                />
+              </div>
             ) : (
               <CodeViewContainer />
             )}
@@ -607,14 +624,30 @@ const CodeComparison = ({
               )}
             </SelectionMenu>
             {rightDataPoint ? (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={subTaskId}
-                taskType={taskType}
-                solutionId={rightDataPoint.analysis.solutionId}
-              />
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={subTaskId}
+                  taskType={taskType}
+                  solutionId={rightDataPoint.analysis.solutionId}
+                />
+              </div>
             ) : (
               <CodeViewContainer />
             )}
