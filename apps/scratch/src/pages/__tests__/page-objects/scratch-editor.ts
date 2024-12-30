@@ -17,7 +17,7 @@ import {
 export class ScratchEditorPage {
   protected readonly page: Page;
 
-  constructor(page: Page) {
+  protected constructor(page: Page) {
     this.page = page;
   }
 
@@ -237,5 +237,11 @@ export class ScratchEditorPage {
           ?.parentElement?.querySelectorAll(isScratchBlock).length ?? 0,
       { isVisualTopOfStack, isScratchBlock },
     );
+  }
+
+  resetZoom() {
+    return this.page
+      .locator('[*|href="/scratch/static/blocks-media/default/zoom-reset.svg"]')
+      .click();
   }
 }
