@@ -24,7 +24,8 @@ export enum AnalyzerStateActionType {
   setSelectedLeftSolution,
   setSelectedRightSolution,
   setSelectedSolution,
-  setBookmarkedSolutions,
+  addBookmarkedSolution,
+  removeBookmarkedSolution,
 }
 
 export interface SetSelectedTaskAction {
@@ -94,9 +95,14 @@ export interface SetSelectedSolutionAction {
   selectedSolutionId: { groupKey: string; solutionId: number } | undefined;
 }
 
-export interface SetBookmarkedSolutionsAction {
-  type: AnalyzerStateActionType.setBookmarkedSolutions;
-  bookmarkedSolutionIds: number[];
+export interface AddBookmarkedSolutionsAction {
+  type: AnalyzerStateActionType.addBookmarkedSolution;
+  solutionId: number;
+}
+
+export interface RemoveBookmarkedSolutionsAction {
+  type: AnalyzerStateActionType.removeBookmarkedSolution;
+  solutionId: number;
 }
 
 export type AnalyzerStateAction =
@@ -112,7 +118,8 @@ export type AnalyzerStateAction =
   | SetGroupAction
   | SetSolutionAction
   | SetSelectedSolutionAction
-  | SetBookmarkedSolutionsAction;
+  | AddBookmarkedSolutionsAction
+  | RemoveBookmarkedSolutionsAction;
 
 export interface AnalyzerState {
   selectedTask: number | undefined;
@@ -228,8 +235,21 @@ export const analyzerStateReducer = (
       return { ...state, selectedRightSolution: action.solutionId };
     case AnalyzerStateActionType.setSelectedSolution:
       return { ...state, selectedSolutionId: action.selectedSolutionId };
-    case AnalyzerStateActionType.setBookmarkedSolutions:
-      return { ...state, bookmarkedSolutionIds: action.bookmarkedSolutionIds };
+    case AnalyzerStateActionType.addBookmarkedSolution:
+      return {
+        ...state,
+        bookmarkedSolutionIds: [
+          ...state.bookmarkedSolutionIds,
+          action.solutionId,
+        ],
+      };
+    case AnalyzerStateActionType.removeBookmarkedSolution:
+      return {
+        ...state,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.filter(
+          (id) => id !== action.solutionId,
+        ),
+      };
     default:
       return state;
   }

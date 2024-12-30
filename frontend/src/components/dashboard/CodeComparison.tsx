@@ -545,19 +545,13 @@ const CodeComparison = ({
                     onClick={() => {
                       if (isLeftSolutionBookmarked) {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds:
-                            state.bookmarkedSolutionIds.filter(
-                              (id) => id !== leftDataPoint.analysis.solutionId,
-                            ),
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
                         });
                       } else {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: [
-                            ...state.bookmarkedSolutionIds,
-                            leftDataPoint.analysis.solutionId,
-                          ],
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
                         });
                       }
                     }}
@@ -646,19 +640,13 @@ const CodeComparison = ({
                     onClick={() => {
                       if (isRightSolutionBookmarked) {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds:
-                            state.bookmarkedSolutionIds.filter(
-                              (id) => id !== rightDataPoint.analysis.solutionId,
-                            ),
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
                         });
                       } else {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: [
-                            ...state.bookmarkedSolutionIds,
-                            rightDataPoint.analysis.solutionId,
-                          ],
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
                         });
                       }
                     }}
