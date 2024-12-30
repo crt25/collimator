@@ -12,7 +12,7 @@ import styled from "@emotion/styled";
 
 export const CodeViewContainer = styled.div`
   /* always take up 100% of the screen (minus some margin for the selects) */
-  min-height: calc(100vh - 5rem);
+  height: calc(100vh - 5rem);
 
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
@@ -23,7 +23,7 @@ const CodeViewWrapper = styled(CodeViewContainer)`
 
   > *,
   > * > iframe {
-    height: 100%;
+    height: 100% !important;
   }
 `;
 
