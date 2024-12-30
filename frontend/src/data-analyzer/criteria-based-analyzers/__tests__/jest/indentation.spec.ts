@@ -52,7 +52,7 @@ describe("Criteria Based Analyzer", () => {
       );
     });
 
-    it("returns the depth of the deepest leaf", () => {
+    it("returns the indentation of the deepest leaf", () => {
       const output = computeIndentation(
         [
           {
