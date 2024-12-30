@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { Chart } from "primereact/chart";
 import {
@@ -31,7 +31,8 @@ import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import Select from "../form/Select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 import { CategorizedDataPoints, ManualGroup } from "./hooks/types";
-import Tooltip from "./Tooltip";
+import ChartTooltip from "./ChartTooltip";
+import { Tooltip } from "react-tooltip";
 
 type AdditionalChartData = {
   groupKey: string;
@@ -70,6 +71,18 @@ const ChartWrapper = styled.div`
   /* make space for axes */
   padding-left: 1rem;
   padding-bottom: 1rem;
+`;
+
+const SideSelections = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+
+  cursor: pointer;
+`;
+
+const SideSelection = styled.div`
+  text-decoration: underline;
 `;
 
 const StudentName = styled.span`
@@ -120,7 +133,11 @@ const Analysis = ({
   setSplits: (
     updateSplits: (currentSplits: ChartSplit[]) => ChartSplit[],
   ) => void;
-  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  onSelectSolution: (
+    groupId: string,
+    solution: CurrentAnalysis,
+    side?: "left" | "right",
+  ) => void;
 }) => {
   const intl = useIntl();
 
@@ -404,7 +421,6 @@ const Analysis = ({
 
   const onMouseEnterTooltip = useCallback(() => {
     tooltipHovered.current = true;
-    console.log("enter");
   }, []);
 
   const onMouseLeaveTooltip = useCallback(() => {
@@ -429,7 +445,7 @@ const Analysis = ({
         <Chart type="bubble" plugins={plugins} />
         <XAxis />
         <YAxis />
-        <Tooltip
+        <ChartTooltip
           ref={tooltipRef}
           isShown={tooltipDataPoints.length > 0}
           onMouseEnter={onMouseEnterTooltip}
@@ -474,27 +490,72 @@ const Analysis = ({
                       const solutions = dataPoint.additionalData.solutions;
                       return solutions === undefined || solutions.length === 0
                         ? null
-                        : solutions.map((solution) => (
-                            <li key={solution.id}>
-                              <StudentName
-                                onClick={() =>
-                                  onSelectSolution(
-                                    dataPoint.additionalData.groupKey,
-                                    solution,
-                                  )
-                                }
-                              >
-                                {getStudentNickname(solution.studentPseudonym)}
-                              </StudentName>
-                            </li>
-                          ));
+                        : solutions.map((solution) => {
+                            const tooltipId = `select-solution-${solution.id}`;
+
+                            return (
+                              <li key={solution.id}>
+                                <StudentName
+                                  data-tooltip-id={tooltipId}
+                                  onClick={() =>
+                                    onSelectSolution(
+                                      dataPoint.additionalData.groupKey,
+                                      solution,
+                                    )
+                                  }
+                                >
+                                  {getStudentNickname(
+                                    solution.studentPseudonym,
+                                  )}
+                                </StudentName>
+                                <Tooltip id={tooltipId} clickable>
+                                  <FormattedMessage
+                                    id="Analysis.selectSolutionForComparisonDescription"
+                                    defaultMessage="Where should the selected solution be placed?"
+                                  />
+                                  <SideSelections>
+                                    <SideSelection
+                                      onClick={() => {
+                                        onSelectSolution(
+                                          dataPoint.additionalData.groupKey,
+                                          solution,
+                                          "left",
+                                        );
+                                      }}
+                                      data-testid="cancel-button"
+                                    >
+                                      <FormattedMessage
+                                        id="Analysis.selectSolutionForComparisonLeft"
+                                        defaultMessage="↙ Left"
+                                      />
+                                    </SideSelection>
+                                    <SideSelection
+                                      onClick={() => {
+                                        onSelectSolution(
+                                          dataPoint.additionalData.groupKey,
+                                          solution,
+                                          "right",
+                                        );
+                                      }}
+                                      data-testid="cancel-button"
+                                    >
+                                      <FormattedMessage
+                                        id="Analysis.selectSolutionForComparisonRight"
+                                        defaultMessage="Right ↘"
+                                      />
+                                    </SideSelection>
+                                  </SideSelections>
+                                </Tooltip>
+                              </li>
+                            );
+                          });
                     })}
                   </ul>
                 </div>
               </div>
             </div>
           )}
-        </Tooltip>
+        </ChartTooltip>
       </ChartWrapper>
       <XAxisSelector>
         <Select

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-const Tooltip = styled.div<{ isShown: boolean }>`
+const ChartTooltip = styled.div<{ isShown: boolean }>`
   position: absolute;
 
   /* ensure the tooltip doesn't get overly squashed if at the screen edge */
@@ -25,4 +25,4 @@ const Tooltip = styled.div<{ isShown: boolean }>`
   }
 `;
 
-export default Tooltip;
+export default ChartTooltip;
