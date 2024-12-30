@@ -16,6 +16,7 @@ import { TestCriterionAxis } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { CriterionType } from "../criteria/criterion-type";
 import { AstHeightCriterionAxis } from "../criteria/ast-height";
+import { IndentationCriterionAxis } from "../criteria/indentation";
 
 export const axisCriteria = [
   ConditionCriterionAxis,
@@ -25,6 +26,7 @@ export const axisCriteria = [
   TestCriterionAxis,
   LoopCriterionAxis,
   StatementCriterionAxis,
+  IndentationCriterionAxis,
   AstHeightCriterionAxis,
 ];
 
@@ -54,6 +56,7 @@ const getAxisDefinition = (
       () => FunctionDeclarationCriterionAxis,
     )
     .with(AstCriterionType.height, () => AstHeightCriterionAxis)
+    .with(AstCriterionType.indentation, () => IndentationCriterionAxis)
     .with(AstCriterionType.loop, () => LoopCriterionAxis)
     .with(AstCriterionType.statement, () => StatementCriterionAxis)
     .with(MetaCriterionType.test, () => TestCriterionAxis)

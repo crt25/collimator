@@ -12,6 +12,7 @@ import { FunctionDeclarationCriterionFilter } from "../criteria/function-declara
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";
+import { IndentationCriterionFilter } from "../criteria/indentation";
 
 const createProps = <
   Filter extends FilterCriterion,
@@ -121,6 +122,17 @@ const CriterionFilterForm = ({
       },
       (f) => (
         <AstHeightCriterionFilter.formComponent
+          {...createProps(f, setFilters)}
+        />
+      ),
+    )
+    .with(
+      {
+        filter: { criterion: AstCriterionType.indentation },
+        parameters: { criterion: AstCriterionType.indentation },
+      },
+      (f) => (
+        <IndentationCriterionFilter.formComponent
           {...createProps(f, setFilters)}
         />
       ),

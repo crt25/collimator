@@ -15,6 +15,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";
+import { IndentationCriterionFilter } from "../criteria/indentation";
 
 export const filterCriteria = [
   // always keep that first in the list
@@ -26,6 +27,7 @@ export const filterCriteria = [
   LoopCriterionFilter,
   StatementCriterionFilter,
   TestCriterionFilter,
+  IndentationCriterionFilter,
   AstHeightCriterionFilter,
 ];
 
@@ -69,6 +71,9 @@ export const runFilter = (
     .with({ criterion: AstCriterionType.height }, (criterion) =>
       AstHeightCriterionFilter.run(criterion, analyses),
     )
+    .with({ criterion: AstCriterionType.indentation }, (criterion) =>
+      IndentationCriterionFilter.run(criterion, analyses),
+    )
     .with({ criterion: AstCriterionType.loop }, (criterion) =>
       LoopCriterionFilter.run(criterion, analyses),
     )
@@ -104,6 +109,10 @@ export const getInitialFilterValues = (
       () => FunctionDeclarationCriterionFilter.initialValues,
     )
     .with(AstCriterionType.height, () => AstHeightCriterionFilter.initialValues)
+    .with(
+      AstCriterionType.indentation,
+      () => IndentationCriterionFilter.initialValues,
+    )
     .with(AstCriterionType.loop, () => LoopCriterionFilter.initialValues)
     .with(MetaCriterionType.none, () => NoCriterionFilter.initialValues)
     .with(MetaCriterionType.test, () => TestCriterionFilter.initialValues)

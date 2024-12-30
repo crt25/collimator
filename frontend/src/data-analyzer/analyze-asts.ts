@@ -8,6 +8,7 @@ export enum AstCriterionType {
   functionCall = "functionCall",
   functionDeclaration = "functionDeclaration",
   height = "height",
+  indentation = "indentation",
   loop = "loop",
   statement = "statement",
 }
@@ -20,6 +21,7 @@ export interface CriteriaBasedAnalyzerInput {
     functionName?: string;
   };
   [AstCriterionType.height]: void;
+  [AstCriterionType.indentation]: void;
   [AstCriterionType.loop]: void;
   [AstCriterionType.statement]: void;
 }
@@ -33,6 +35,7 @@ export interface CriteriaBasedAnalyzerOutput {
   };
   [AstCriterionType.functionDeclaration]: number;
   [AstCriterionType.height]: number;
+  [AstCriterionType.indentation]: number;
   [AstCriterionType.loop]: number;
   [AstCriterionType.statement]: number;
 }
@@ -68,6 +71,10 @@ type AnalysisFunction = {
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.height>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.height>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.indentation>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.indentation>;
   (
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.loop>,
@@ -106,6 +113,13 @@ export const analyzeAst: AnalysisFunction = (ast, input) =>
       criterion,
       output: CriteriaBasedAnalyzer.computeHeight(ast, input),
     }))
+    .with(
+      { criterion: AstCriterionType.indentation },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.computeHeight(ast, input),
+      }),
+    )
     .with({ criterion: AstCriterionType.loop }, ({ criterion, input }) => ({
       criterion,
       output: CriteriaBasedAnalyzer.countLoops(ast, input),
