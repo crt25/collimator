@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { expect } from "playwright/test";
+import { expect, Page } from "playwright/test";
 import {
   getBlockConfigBlockLimitInputSelector,
   getBlockConfigCanBeUsedCheckboxSelector,
@@ -83,5 +83,12 @@ export class EditTaskPage extends ScratchEditorPage {
     ).not.toBeChecked();
 
     await this.taskConfigFormElements.submit.click();
+  }
+
+  static async load(pwPage: Page): Promise<EditTaskPage> {
+    const page = new EditTaskPage(pwPage);
+    await page.resetZoom();
+
+    return page;
   }
 }
