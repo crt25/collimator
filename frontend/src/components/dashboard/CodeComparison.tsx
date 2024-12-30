@@ -404,14 +404,14 @@ const CodeComparison = ({
   const leftStudentName = useMemo(
     () =>
       leftSolutionOptions.find((o) => o.value === selectedLeftSolution)
-        ?.label || "",
+        ?.label ?? "",
     [leftSolutionOptions, selectedLeftSolution],
   );
 
   const rightStudentName = useMemo(
     () =>
       rightSolutionOptions.find((o) => o.value === selectedRightSolution)
-        ?.label || "",
+        ?.label ?? "",
     [rightSolutionOptions, selectedRightSolution],
   );
 
@@ -429,7 +429,7 @@ const CodeComparison = ({
           header={
             <ModalHeader>
               <ModalHeaderLeft>
-                {selectedRightSolution !== defaultSolutionValue &&
+                {selectedLeftSolution !== defaultSolutionValue &&
                 selectedRightSolution !== defaultSolutionValue ? (
                   <ButtonGroup>
                     <Button

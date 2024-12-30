@@ -199,7 +199,7 @@ const Button = (
 
   const className = useMemo(
     () =>
-      [active ? "active" : null, buttonProps.className || null]
+      [active ? "active" : null, buttonProps.className ?? null]
         .filter(isNonNull)
         .join(" "),
     [buttonProps.className, active],
