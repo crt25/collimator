@@ -1,6 +1,6 @@
 import { SetStateAction } from "react";
 import { AxesCriterionType } from "./axes";
-import { ChartSplit } from "./chartjs-plugins/select";
+import { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import { FilterCriterion } from "./filter";
 
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
@@ -11,7 +11,8 @@ export enum AnalyzerStateActionType {
   setSelectedTask,
   setSelectedSubTask,
   setFilters,
-  setSplits,
+  addSplit,
+  removeSplit,
   setXAxis,
   setYAxis,
   setAutomaticGrouping,
@@ -41,9 +42,14 @@ export interface SetFiltersAction {
   filters: SetStateAction<FilterCriterion[]>;
 }
 
-export interface SetSplitsAction {
-  type: AnalyzerStateActionType.setSplits;
-  splits: SetStateAction<ChartSplit[]>;
+export interface AddSplitAction {
+  type: AnalyzerStateActionType.addSplit;
+  split: ChartSplit;
+}
+
+export interface RemoveSplitAction {
+  type: AnalyzerStateActionType.removeSplit;
+  split: ChartSplit;
 }
 
 export interface SetAxisAction {
@@ -97,7 +103,8 @@ export type AnalyzerStateAction =
   | SetSelectedTaskAction
   | SetSelectedSubTaskAction
   | SetFiltersAction
-  | SetSplitsAction
+  | AddSplitAction
+  | RemoveSplitAction
   | SetAxisAction
   | SetAutomaticGroupingAction
   | SetNumberOfGroupsAction
@@ -134,6 +141,45 @@ const getNewState = <T>(setState: SetStateAction<T>, oldState: T): T =>
     ? (setState as (state: T) => T)(oldState)
     : setState;
 
+const setAxis = (
+  state: AnalyzerState,
+  axisDimension: "x" | "y",
+  newAxis: AxesCriterionType,
+): AnalyzerState => {
+  let newSplits: ChartSplit[] = [];
+
+  const otherAxis = axisDimension === "x" ? state.yAxis : state.xAxis;
+  let newOtherAxis = otherAxis;
+
+  if (otherAxis === newAxis) {
+    // flip axes
+    newOtherAxis = axisDimension === "x" ? state.xAxis : state.yAxis;
+
+    // when flipping axes, keep the splits
+    newSplits = state.splits.map((split) =>
+      split.type === SplitType.horizontal
+        ? {
+            type: SplitType.vertical,
+            x: split.y,
+          }
+        : {
+            type: SplitType.horizontal,
+            y: split.x,
+          },
+    );
+  }
+
+  const xAxis = axisDimension === "x" ? newAxis : newOtherAxis;
+  const yAxis = axisDimension === "y" ? newAxis : newOtherAxis;
+
+  return {
+    ...state,
+    xAxis,
+    yAxis,
+    splits: newSplits,
+  };
+};
+
 export const analyzerStateReducer = (
   state: AnalyzerState,
   action: AnalyzerStateAction,
@@ -145,12 +191,17 @@ export const analyzerStateReducer = (
       return { ...state, selectedSubTaskId: action.selectedSubTaskId };
     case AnalyzerStateActionType.setFilters:
       return { ...state, filters: getNewState(action.filters, state.filters) };
-    case AnalyzerStateActionType.setSplits:
-      return { ...state, splits: getNewState(action.splits, state.splits) };
+    case AnalyzerStateActionType.addSplit:
+      return { ...state, splits: [...state.splits, action.split] };
+    case AnalyzerStateActionType.removeSplit:
+      return {
+        ...state,
+        splits: state.splits.filter((split) => split !== action.split),
+      };
     case AnalyzerStateActionType.setXAxis:
-      return { ...state, xAxis: action.axis };
+      return setAxis(state, "x", action.axis);
     case AnalyzerStateActionType.setYAxis:
-      return { ...state, yAxis: action.axis };
+      return setAxis(state, "y", action.axis);
     case AnalyzerStateActionType.setAutomaticGrouping:
       return { ...state, isAutomaticGrouping: action.isAutomaticGrouping };
     case AnalyzerStateActionType.setNumberOfGroups:

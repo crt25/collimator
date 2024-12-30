@@ -34,7 +34,7 @@ import YAxis from "./axes/YAxis";
 import XAxis from "./axes/XAxis";
 import YAxisSelector from "./axes/YAxisSelector";
 import { Category, getCanvasPattern, getCategoryName } from "./category";
-import SelectPlugin, { ChartSplit, SplitType } from "./chartjs-plugins/select";
+import SelectPlugin, { SplitType } from "./chartjs-plugins/select";
 import Select from "../form/Select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 import { CategorizedDataPoint, ManualGroup } from "./hooks/types";
@@ -116,57 +116,6 @@ const onLeaveLabel = (context: EventContext) => {
   return true;
 };
 
-const setAxis = (
-  dispatch: Dispatch<AnalyzerStateAction>,
-  axis: AxesCriterionType,
-  otherAxis: AxesCriterionType,
-  newAxis: AxesCriterionType,
-  axisDimension: "x" | "y",
-  splits: ChartSplit[],
-) => {
-  let newSplits: ChartSplit[] = [];
-
-  const setAxisType =
-    axisDimension === "x"
-      ? AnalyzerStateActionType.setXAxis
-      : AnalyzerStateActionType.setYAxis;
-
-  const setOtherAxisType =
-    axisDimension === "x"
-      ? AnalyzerStateActionType.setYAxis
-      : AnalyzerStateActionType.setXAxis;
-
-  if (otherAxis === newAxis) {
-    // flip axes
-    dispatch({
-      type: setOtherAxisType,
-      axis,
-    });
-
-    // when flipping axes, keep the splits
-    newSplits = splits.map((split) =>
-      split.type === SplitType.horizontal
-        ? {
-            type: SplitType.vertical,
-            x: split.y,
-          }
-        : {
-            type: SplitType.horizontal,
-            y: split.x,
-          },
-    );
-  }
-
-  dispatch({
-    type: setAxisType,
-    axis: newAxis,
-  });
-  dispatch({
-    type: AnalyzerStateActionType.setSplits,
-    splits: newSplits,
-  });
-};
-
 const customShapeSizeFactor = 3;
 const customShapeStrokeFactor = 2;
 
@@ -195,14 +144,14 @@ const Analysis = ({
 
   const setXAxis = useCallback(
     (newAxis: AxesCriterionType) =>
-      setAxis(dispatch, state.xAxis, state.yAxis, newAxis, "x", state.splits),
-    [dispatch, state.xAxis, state.yAxis, state.splits],
+      dispatch({ type: AnalyzerStateActionType.setXAxis, axis: newAxis }),
+    [dispatch],
   );
 
   const setYAxis = useCallback(
     (newAxis: AxesCriterionType) =>
-      setAxis(dispatch, state.yAxis, state.xAxis, newAxis, "y", state.splits),
-    [dispatch, state.xAxis, state.yAxis, state.splits],
+      dispatch({ type: AnalyzerStateActionType.setYAxis, axis: newAxis }),
+    [dispatch],
   );
 
   const splittingEnabled = !state.isAutomaticGrouping;
@@ -218,8 +167,6 @@ const Analysis = ({
     data: ChartData<"bubble">;
     options: ChartConfiguration<"bubble">["options"];
   } | null>(null);
-
-  console.log("categorizedDataPoints", categorizedDataPoints);
 
   const chartData = useMemo<ChartData<"bubble">>(() => {
     const categories = new Set(categorizedDataPoints.map((d) => d.category));
@@ -436,8 +383,8 @@ const Analysis = ({
               markAsHandled(evt.native);
 
               dispatch({
-                type: AnalyzerStateActionType.setSplits,
-                splits: (splits) => splits.filter((s) => s !== split),
+                type: AnalyzerStateActionType.removeSplit,
+                split,
               });
             };
 
@@ -576,8 +523,8 @@ const Analysis = ({
           enabled: splittingEnabled,
           onAddSplit: (split) =>
             dispatch({
-              type: AnalyzerStateActionType.setSplits,
-              splits: (splits) => [...splits, split],
+              type: AnalyzerStateActionType.addSplit,
+              split,
             }),
         },
 
