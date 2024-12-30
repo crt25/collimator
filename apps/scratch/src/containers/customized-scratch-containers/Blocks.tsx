@@ -601,7 +601,21 @@ class Blocks extends React.Component<Props, State> {
   }
 
   onProjectLoaded = () => {
-    this.getWorkspace().scrollCenter();
+    const workspace = this.getWorkspace();
+
+    const blockId =
+      workspace
+        .getAllBlocks()
+        // @ts-expect-error The typing is not correct for getAllBlocks
+        .find((b) => b["type"] === "event_whenflagclicked")?.id ??
+      // @ts-expect-error The typing is not correct for getAllBlocks
+      workspace.getAllBlocks()?.id;
+
+    if (blockId) {
+      workspace.centerOnBlock(blockId);
+    } else {
+      workspace.zoomToFit();
+    }
   };
 
   updateToolboxBlockValue(id: string, value: string) {

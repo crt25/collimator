@@ -477,7 +477,7 @@ const Analysis = ({
               // because we have a dataset per (x, y) coordinate to account for overlapping points
               ...ci.data.datasets
                 .map((dataset, idx) => ({
-                  label: dataset.label || "",
+                  label: dataset.label ?? "",
                   index: idx,
                 }))
                 .filter(({ label }) => label.startsWith(`_${legendItem.text}`))
