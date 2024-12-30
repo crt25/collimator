@@ -56,7 +56,10 @@ const getAxisDefinition = (
       () => CustomFunctionCallCriterionAxis,
     )
     .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
-    .with(AstCriterionType.builtInFunctionCall, () => BuiltInFunctionCallCriterionAxis)
+    .with(
+      AstCriterionType.builtInFunctionCall,
+      () => BuiltInFunctionCallCriterionAxis,
+    )
     .with(
       AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionAxis,
