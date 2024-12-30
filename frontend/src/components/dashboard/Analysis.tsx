@@ -174,7 +174,7 @@ const Analysis = ({
   taskType,
   state,
   dispatch,
-  manualGroups: groups,
+  manualGroups,
   categorizedDataPoints,
   onSelectSolution,
 }: {
@@ -218,6 +218,8 @@ const Analysis = ({
     data: ChartData<"bubble">;
     options: ChartConfiguration<"bubble">["options"];
   } | null>(null);
+
+  console.log("categorizedDataPoints", categorizedDataPoints);
 
   const chartData = useMemo<ChartData<"bubble">>(() => {
     const categories = new Set(categorizedDataPoints.map((d) => d.category));
@@ -495,7 +497,7 @@ const Analysis = ({
                 ];
           },
         ),
-        ...groups.flatMap<AnnotationOptions>((group) => [
+        ...manualGroups.flatMap<AnnotationOptions>((group) => [
           {
             type: "label" as const,
             content: group.groupLabel,
@@ -520,7 +522,7 @@ const Analysis = ({
         ]),
       ],
     }),
-    [splittingEnabled, state.splits, dispatch, groups],
+    [splittingEnabled, state.splits, dispatch, manualGroups],
   );
 
   const chartOptions = useMemo<ChartConfiguration<"bubble">["options"]>(
