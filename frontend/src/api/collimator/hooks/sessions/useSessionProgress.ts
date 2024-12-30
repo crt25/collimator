@@ -6,6 +6,7 @@ import {
 } from "../../generated/endpoints/sessions/sessions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { StudentSessionProgress } from "../../models/sessions/student-session-progress";
+
 const fetchByClassIdAndTransform = (
   options: RequestInit,
   classId: number,
@@ -22,10 +23,8 @@ export const useSessionProgress = (
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) =>
-        getSessionsControllerGetSessionProgressV0Url(classId, sessionId),
-      undefined,
+    getSwrParamererizedKey((_params?: undefined) =>
+      getSessionsControllerGetSessionProgressV0Url(classId, sessionId),
     ),
     () => fetchByClassIdAndTransform(authOptions, classId, sessionId),
   );
