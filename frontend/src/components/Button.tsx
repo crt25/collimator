@@ -193,13 +193,13 @@ const Button = (
   );
 
   const WrapperComponent = useMemo(
-    () => WrapperComponentByVariant[variant || ButtonVariant.primary],
+    () => WrapperComponentByVariant[variant ?? ButtonVariant.primary],
     [variant],
   );
 
   const className = useMemo(
     () =>
-      [active ? "active" : null, buttonProps.className || null]
+      [active ? "active" : null, buttonProps.className ?? null]
         .filter(isNonNull)
         .join(" "),
     [buttonProps.className, active],

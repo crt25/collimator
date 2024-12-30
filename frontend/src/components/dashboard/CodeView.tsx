@@ -10,17 +10,20 @@ import { useFileHash } from "@/hooks/useFileHash";
 import { Language } from "@/types/app-iframe-message/languages";
 import styled from "@emotion/styled";
 
-const CodeViewWrapper = styled.div`
-  position: relative;
-  /* always take up 100% of the screen */
-  height: 100vh;
+export const CodeViewContainer = styled.div`
+  /* always take up 100% of the screen (minus some margin for the selects and axis values) */
+  height: calc(100vh - 6rem);
 
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
+`;
+
+const CodeViewWrapper = styled(CodeViewContainer)`
+  position: relative;
 
   > *,
   > * > iframe {
-    height: 100%;
+    height: 100% !important;
   }
 `;
 
