@@ -4,6 +4,7 @@ import { GeneralAst } from "@ast/index";
 
 export enum AstCriterionType {
   condition = "condition",
+  customFunctionCall = "customFunctionCall",
   expression = "expression",
   functionCall = "functionCall",
   functionDeclaration = "functionDeclaration",
@@ -15,6 +16,7 @@ export enum AstCriterionType {
 
 export interface CriteriaBasedAnalyzerInput {
   [AstCriterionType.condition]: void;
+  [AstCriterionType.customFunctionCall]: void;
   [AstCriterionType.expression]: void;
   [AstCriterionType.functionDeclaration]: void;
   [AstCriterionType.functionCall]: {
@@ -28,6 +30,7 @@ export interface CriteriaBasedAnalyzerInput {
 
 export interface CriteriaBasedAnalyzerOutput {
   [AstCriterionType.condition]: number;
+  [AstCriterionType.customFunctionCall]: number;
   [AstCriterionType.expression]: number;
   [AstCriterionType.functionCall]: {
     numberOfCalls: number;
@@ -55,6 +58,10 @@ type AnalysisFunction = {
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.condition>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.condition>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.customFunctionCall>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.customFunctionCall>;
   (
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.expression>,
@@ -100,6 +107,13 @@ export const analyzeAst: AnalysisFunction = (ast, input) =>
       ({ criterion, input }) => ({
         criterion,
         output: CriteriaBasedAnalyzer.countExpressions(ast, input),
+      }),
+    )
+    .with(
+      { criterion: AstCriterionType.customFunctionCall },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.countCustomFunctionCalls(ast, input),
       }),
     )
     .with(

@@ -16,12 +16,14 @@ import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";
 import { IndentationCriterionFilter } from "../criteria/indentation";
+import { CustomFunctionCallCriterionFilter } from "../criteria/custom-function-call";
 
 export const filterCriteria = [
   // always keep that first in the list
   NoCriterionFilter,
   ConditionCriterionFilter,
   ExpressionCriterionFilter,
+  CustomFunctionCallCriterionFilter,
   FunctionCallCriterionFilter,
   FunctionDeclarationCriterionFilter,
   LoopCriterionFilter,
@@ -59,6 +61,9 @@ export const runFilter = (
     .with({ criterion: AstCriterionType.condition }, (criterion) =>
       ConditionCriterionFilter.run(criterion, analyses),
     )
+    .with({ criterion: AstCriterionType.customFunctionCall }, (criterion) =>
+      CustomFunctionCallCriterionFilter.run(criterion, analyses),
+    )
     .with({ criterion: AstCriterionType.expression }, (criterion) =>
       ExpressionCriterionFilter.run(criterion, analyses),
     )
@@ -95,6 +100,10 @@ export const getInitialFilterValues = (
     .with(
       AstCriterionType.condition,
       () => ConditionCriterionFilter.initialValues,
+    )
+    .with(
+      AstCriterionType.customFunctionCall,
+      () => CustomFunctionCallCriterionFilter.initialValues,
     )
     .with(
       AstCriterionType.expression,

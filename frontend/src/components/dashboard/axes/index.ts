@@ -17,10 +17,12 @@ import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { CriterionType } from "../criteria/criterion-type";
 import { AstHeightCriterionAxis } from "../criteria/ast-height";
 import { IndentationCriterionAxis } from "../criteria/indentation";
+import { CustomFunctionCallCriterionAxis } from "../criteria/custom-function-call";
 
 export const axisCriteria = [
   ConditionCriterionAxis,
   ExpressionCriterionAxis,
+  CustomFunctionCallCriterionAxis,
   FunctionCallCriterionAxis,
   FunctionDeclarationCriterionAxis,
   TestCriterionAxis,
@@ -48,8 +50,12 @@ const getAxisDefinition = (
 ): CriterionAxisDefinition<CriterionType> =>
   match(axisType)
     .returnType<CriterionAxisDefinition<CriterionType>>()
-    .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
     .with(AstCriterionType.condition, () => ConditionCriterionAxis)
+    .with(
+      AstCriterionType.customFunctionCall,
+      () => CustomFunctionCallCriterionAxis,
+    )
+    .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
     .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis)
     .with(
       AstCriterionType.functionDeclaration,
