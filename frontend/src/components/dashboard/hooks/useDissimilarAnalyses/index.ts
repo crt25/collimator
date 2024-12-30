@@ -1,6 +1,6 @@
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { getAstDistance } from "./ast-distance";
-import { DistanceType } from "./ast-distance/distance-type";
+import { getAstDistance } from "../ast-distance";
+import { DistanceType } from "../ast-distance/distance-type";
 import { useEffect, useState } from "react";
 
 export class TooManyCombinationsError extends Error {
@@ -105,7 +105,7 @@ const getDissimilarAnalyses = async (
     return analysesIn;
   }
 
-  if (analysesIn.length < numberOfAnalyses || numberOfAnalyses < 2) {
+  if (analysesIn.length < numberOfAnalyses) {
     return [];
   }
 

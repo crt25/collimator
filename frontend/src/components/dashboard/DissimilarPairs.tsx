@@ -11,27 +11,27 @@ import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
 import Select from "../form/Select";
 import { allSubtasks } from "./Analyzer.state";
-import { useDissimilarAnalyses } from "./hooks/useDissimilarAnalyses";
 import CodeView from "./CodeView";
 import styled from "@emotion/styled";
 import { StudentName } from "../encryption/StudentName";
+import { useDissimilarPairs } from "./hooks/useDissimilarAnalyses/pairs";
 
 const messages = defineMessages({
   taskSelection: {
-    id: "DissimilarityAnalysis.taskSelection",
+    id: "DissimilarPairs.taskSelection",
     defaultMessage: "Task Selection",
   },
   subTaskSelection: {
-    id: "DissimilarityAnalysis.subTaskSelection",
+    id: "DissimilarPairs.subTaskSelection",
     defaultMessage: "Sub-task Selection",
   },
   allSubTasks: {
-    id: "DissimilarityAnalysis.allSubTasks",
+    id: "DissimilarPairs.allSubTasks",
     defaultMessage: "All sub-tasks",
   },
-  numberOfDissimilarSolutions: {
-    id: "DissimilarityAnalysis.numberOfDissimilarSolutions",
-    defaultMessage: "Number of dissimilar solutions",
+  numberOfDissimilarPairs: {
+    id: "DissimilarPairs.numberOfDissimilarPairs",
+    defaultMessage: "Number of dissimilar pairs",
   },
 });
 
@@ -39,11 +39,7 @@ const CodeViewCol = styled(Col)`
   margin-bottom: 1rem;
 `;
 
-const DissimilarityAnalysis = ({
-  session,
-}: {
-  session: ExistingSessionExtended;
-}) => {
+const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
   const intl = useIntl();
 
   const [selectedTask, setSelectedTask] = useState<number | undefined>(
@@ -54,7 +50,7 @@ const DissimilarityAnalysis = ({
     string | undefined
   >();
 
-  const [numberOfSolutions, setNumberOfSolutions] = useState<number>(1);
+  const [numberOfSolutions, setNumberOfSolutions] = useState<number>(2);
 
   const {
     data: task,
@@ -74,23 +70,16 @@ const DissimilarityAnalysis = ({
 
   const subtasks = useSubtasks(analyses);
   const subTaskAnalyses = useSubtaskAnalyses(analyses, selectedSubTaskId);
-  const { analyses: dissimilarAnalyses, tooManyCombinations } =
-    useDissimilarAnalyses(subTaskAnalyses, numberOfSolutions);
+  const dissimilarPairs = useDissimilarPairs(
+    subTaskAnalyses,
+    numberOfSolutions,
+  );
 
   if (!selectedTask) {
     return (
       <FormattedMessage
         id="DissimilarityAnalysis.noTasksInSession"
         defaultMessage="There are no tasks in this session."
-      />
-    );
-  }
-
-  if (tooManyCombinations) {
-    return (
-      <FormattedMessage
-        id="DissimilarityAnalysis.tooManyCombinations"
-        defaultMessage="Too many combinations to calculate dissimilar pairs."
       />
     );
   }
@@ -145,25 +134,25 @@ const DissimilarityAnalysis = ({
                 />
 
                 <Input
-                  label={messages.numberOfDissimilarSolutions}
+                  label={messages.numberOfDissimilarPairs}
                   type="number"
                   value={numberOfSolutions}
-                  min={1}
+                  min={2}
                   max={subTaskAnalyses?.length}
                   onChange={(e) =>
-                    setNumberOfSolutions(Math.max(1, parseInt(e.target.value)))
+                    setNumberOfSolutions(Math.max(2, parseInt(e.target.value)))
                   }
                 />
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
-              <Row>
-                {dissimilarAnalyses
-                  ? dissimilarAnalyses.map((analysis) => (
-                      <CodeViewCol key={analysis.id} xs={12} lg={6}>
+              {dissimilarPairs
+                ? dissimilarPairs.map(([a, b]) => (
+                    <Row key={`${a.id}-${b.id}`}>
+                      <CodeViewCol key={a.id} xs={12} lg={6}>
                         <StudentName
-                          pseudonym={analysis.studentPseudonym}
-                          keyPairId={analysis.studentKeyPairId}
+                          pseudonym={a.studentPseudonym}
+                          keyPairId={a.studentKeyPairId}
                         />
                         <CodeView
                           classId={session.klass.id}
@@ -171,12 +160,26 @@ const DissimilarityAnalysis = ({
                           taskId={task.id}
                           subTaskId={selectedSubTaskId}
                           taskType={task.type}
-                          solutionId={analysis.solutionId}
+                          solutionId={a.solutionId}
                         />
                       </CodeViewCol>
-                    ))
-                  : null}
-              </Row>
+                      <CodeViewCol key={a.id} xs={12} lg={6}>
+                        <StudentName
+                          pseudonym={b.studentPseudonym}
+                          keyPairId={b.studentKeyPairId}
+                        />
+                        <CodeView
+                          classId={session.klass.id}
+                          sessionId={session.id}
+                          taskId={task.id}
+                          subTaskId={selectedSubTaskId}
+                          taskType={task.type}
+                          solutionId={b.solutionId}
+                        />
+                      </CodeViewCol>
+                    </Row>
+                  ))
+                : null}
             </Col>
           </Row>
         )}
@@ -185,4 +188,4 @@ const DissimilarityAnalysis = ({
   );
 };
 
-export default DissimilarityAnalysis;
+export default DissimilarPairs;
