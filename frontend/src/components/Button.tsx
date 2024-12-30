@@ -193,7 +193,7 @@ const Button = (
   );
 
   const WrapperComponent = useMemo(
-    () => WrapperComponentByVariant[variant || ButtonVariant.primary],
+    () => WrapperComponentByVariant[variant ?? ButtonVariant.primary],
     [variant],
   );
 

@@ -9,7 +9,7 @@ import {
   AuthenticationContextType,
 } from "@/contexts/AuthenticationContext";
 import { decodeBase64 } from "@/utilities/crypto/base64";
-import CodeView from "./CodeView";
+import CodeView, { CodeViewContainer } from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import { Group, CategorizedDataPoint } from "./hooks/types";
@@ -97,12 +97,6 @@ const ModalFooterRight = styled.div`
   align-items: center;
 
   gap: 1rem;
-`;
-
-const CodeViewPlaceholder = styled.div`
-  height: 100vh;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
 `;
 
 type Option = { label: string; value: number };
@@ -550,7 +544,7 @@ const CodeComparison = ({
                 solutionId={leftDataPoint.analysis.solutionId}
               />
             ) : (
-              <CodeViewPlaceholder />
+              <CodeViewContainer />
             )}
           </Col>
           <Col xs={6}>
@@ -622,7 +616,7 @@ const CodeComparison = ({
                 solutionId={rightDataPoint.analysis.solutionId}
               />
             ) : (
-              <CodeViewPlaceholder />
+              <CodeViewContainer />
             )}
           </Col>
         </Row>
