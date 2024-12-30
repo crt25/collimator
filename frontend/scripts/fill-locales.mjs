@@ -5,27 +5,13 @@ const defaultLocale = "en";
 const defaultLocaleFilename = `${defaultLocale}.json`;
 
 const __dirname = import.meta.dirname;
-const localesDir = path.resolve(__dirname, "../src/content/locales");
+const localesDir = path.resolve(__dirname, "../content/locales");
 
 const defaultMessages = JSON.parse(
   fs.readFileSync(path.resolve(localesDir, defaultLocaleFilename)),
 );
 
-const defaultMessagesKeys = Object.keys(defaultMessages).filter((key) =>
-  // only keep crt keys in the translations
-  key.startsWith("crt."),
-);
-
-fs.writeFileSync(
-  path.resolve(localesDir, defaultLocaleFilename),
-  JSON.stringify(
-    Object.fromEntries(
-      defaultMessagesKeys.map((key) => [key, defaultMessages[key]]),
-    ),
-    undefined,
-    2,
-  ),
-);
+const defaultMessagesKeys = Object.keys(defaultMessages);
 
 const locales = fs
   .readdirSync(localesDir)
