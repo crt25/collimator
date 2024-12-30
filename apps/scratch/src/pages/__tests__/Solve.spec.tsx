@@ -39,7 +39,7 @@ test.describe("/solve", () => {
   });
 
   test("can select the stage", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const page = await SolveTaskPage.load(pwPage);
 
     await page.selectStage();
 
@@ -48,7 +48,7 @@ test.describe("/solve", () => {
   });
 
   test("can toggle fullscreen", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const page = await SolveTaskPage.load(pwPage);
 
     expect(page.fullscreenButton).toHaveCount(1);
     await page.enableFullScreen();
