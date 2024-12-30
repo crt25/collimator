@@ -4,7 +4,7 @@ import { match } from "ts-pattern";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { NoCriterionFilter } from "../criteria/none";
 import { ConditionCriterionFilter } from "../criteria/condition";
-import { FunctionCallCriterionFilter } from "../criteria/function-call";
+import { BuiltInFunctionCallCriterionFilter } from "../criteria/built-in-function-call";
 import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
@@ -107,11 +107,11 @@ const CriterionFilterForm = ({
     )
     .with(
       {
-        filter: { criterion: AstCriterionType.functionCall },
-        parameters: { criterion: AstCriterionType.functionCall },
+        filter: { criterion: AstCriterionType.builtInFunctionCall },
+        parameters: { criterion: AstCriterionType.builtInFunctionCall },
       },
       (f) => (
-        <FunctionCallCriterionFilter.formComponent
+        <BuiltInFunctionCallCriterionFilter.formComponent
           {...createProps(f, setFilters)}
         />
       ),

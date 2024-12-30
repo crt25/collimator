@@ -1,5 +1,5 @@
 import { computeHeight } from "./ast-height";
-import { countFunctionCalls } from "./calls-function";
+import { countBuiltInFunctionCalls } from "./built-in-function-call";
 import { countConditions } from "./condition";
 import { countFunctionDeclaration } from "./contains-function-declaration";
 import { countCustomFunctionCalls } from "./custom-function-call";
@@ -12,7 +12,7 @@ export const CriteriaBasedAnalyzer = {
   countStatements,
   countExpressions,
   countCustomFunctionCalls,
-  countFunctionCalls,
+  countFunctionCalls: countBuiltInFunctionCalls,
   countConditions,
   countFunctionDeclaration,
   countLoops,

@@ -6,7 +6,7 @@ import {
   DefinitionCriterion,
 } from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
-import { FunctionCallCriterionAxis } from "../criteria/function-call";
+import { BuiltInFunctionCallCriterionAxis } from "../criteria/built-in-function-call";
 import { FunctionDeclarationCriterionAxis } from "../criteria/function-declaration";
 import { LoopCriterionAxis } from "../criteria/loop";
 import { StatementCriterionAxis } from "../criteria/statement";
@@ -23,7 +23,7 @@ export const axisCriteria = [
   ConditionCriterionAxis,
   ExpressionCriterionAxis,
   CustomFunctionCallCriterionAxis,
-  FunctionCallCriterionAxis,
+  BuiltInFunctionCallCriterionAxis,
   FunctionDeclarationCriterionAxis,
   TestCriterionAxis,
   LoopCriterionAxis,
@@ -56,7 +56,7 @@ const getAxisDefinition = (
       () => CustomFunctionCallCriterionAxis,
     )
     .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
-    .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis)
+    .with(AstCriterionType.builtInFunctionCall, () => BuiltInFunctionCallCriterionAxis)
     .with(
       AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionAxis,

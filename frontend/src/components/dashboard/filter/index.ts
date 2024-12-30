@@ -4,7 +4,7 @@ import {
   DefinitionCriterion,
   FilterDefinitionParameters,
 } from "../criteria/criterion-base";
-import { FunctionCallCriterionFilter } from "../criteria/function-call";
+import { BuiltInFunctionCallCriterionFilter } from "../criteria/built-in-function-call";
 import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
@@ -24,7 +24,7 @@ export const filterCriteria = [
   ConditionCriterionFilter,
   ExpressionCriterionFilter,
   CustomFunctionCallCriterionFilter,
-  FunctionCallCriterionFilter,
+  BuiltInFunctionCallCriterionFilter,
   FunctionDeclarationCriterionFilter,
   LoopCriterionFilter,
   StatementCriterionFilter,
@@ -67,8 +67,8 @@ export const runFilter = (
     .with({ criterion: AstCriterionType.expression }, (criterion) =>
       ExpressionCriterionFilter.run(criterion, analyses),
     )
-    .with({ criterion: AstCriterionType.functionCall }, (criterion) =>
-      FunctionCallCriterionFilter.run(criterion, analyses),
+    .with({ criterion: AstCriterionType.builtInFunctionCall }, (criterion) =>
+      BuiltInFunctionCallCriterionFilter.run(criterion, analyses),
     )
     .with({ criterion: AstCriterionType.functionDeclaration }, (criterion) =>
       FunctionDeclarationCriterionFilter.run(criterion, analyses),
@@ -110,8 +110,8 @@ export const getInitialFilterValues = (
       () => ExpressionCriterionFilter.initialValues,
     )
     .with(
-      AstCriterionType.functionCall,
-      () => FunctionCallCriterionFilter.initialValues,
+      AstCriterionType.builtInFunctionCall,
+      () => BuiltInFunctionCallCriterionFilter.initialValues,
     )
     .with(
       AstCriterionType.functionDeclaration,
