@@ -37,7 +37,7 @@ test.describe("/show", () => {
   });
 
   test("does not show stage", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const page = await SolveTaskPage.load(pwPage);
 
     expect(page.stage).toHaveCount(0);
   });
