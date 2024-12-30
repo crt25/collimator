@@ -296,16 +296,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
-              {state.selectedTask && (
-                <Analysis
-                  taskType={task.type}
-                  state={state}
-                  dispatch={dispatch}
-                  categorizedDataPoints={categorizedDataPoints}
-                  manualGroups={manualGroups}
-                  onSelectSolution={onSelectSolution}
-                />
-              )}
+              <Analysis
+                taskType={task.type}
+                state={state}
+                dispatch={dispatch}
+                categorizedDataPoints={categorizedDataPoints}
+                manualGroups={manualGroups}
+                onSelectSolution={onSelectSolution}
+              />
             </Col>
             <Col xs={12}>
               {task && (

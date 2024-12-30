@@ -26,6 +26,7 @@ const ViewSolutionModal = ({
   taskId,
   taskType,
   solutionId,
+  header,
   footer,
 }: {
   isShown: boolean;
@@ -35,6 +36,7 @@ const ViewSolutionModal = ({
   taskId: number;
   taskType: TaskType;
   solutionId: number;
+  header?: React.ReactNode;
   footer?: React.ReactNode;
 }) => {
   const intl = useIntl();
@@ -91,6 +93,7 @@ const ViewSolutionModal = ({
           url={url}
           loadContent={loadContent}
           showResetButton
+          header={header}
           footer={footer}
         />
       )}
