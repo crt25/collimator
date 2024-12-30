@@ -74,16 +74,23 @@ const DissimilarityAnalysis = ({
 
   const subtasks = useSubtasks(analyses);
   const subTaskAnalyses = useSubtaskAnalyses(analyses, selectedSubTaskId);
-  const dissimilarAnalyses = useDissimilarAnalyses(
-    subTaskAnalyses,
-    numberOfSolutions,
-  );
+  const { analyses: dissimilarAnalyses, tooManyCombinations } =
+    useDissimilarAnalyses(subTaskAnalyses, numberOfSolutions);
 
   if (!selectedTask) {
     return (
       <FormattedMessage
         id="DissimilarityAnalysis.noTasksInSession"
         defaultMessage="There are no tasks in this session."
+      />
+    );
+  }
+
+  if (tooManyCombinations) {
+    return (
+      <FormattedMessage
+        id="DissimilarityAnalysis.tooManyCombinations"
+        defaultMessage="Too many combinations to calculate dissimilar pairs."
       />
     );
   }
@@ -142,6 +149,7 @@ const DissimilarityAnalysis = ({
                   type="number"
                   value={numberOfSolutions}
                   min={2}
+                  max={subTaskAnalyses?.length}
                   onChange={(e) =>
                     setNumberOfSolutions(Math.max(2, parseInt(e.target.value)))
                   }

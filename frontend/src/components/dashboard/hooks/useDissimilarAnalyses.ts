@@ -3,6 +3,14 @@ import { getAstDistance } from "./ast-distance";
 import { DistanceType } from "./ast-distance/distance-type";
 import { useEffect, useState } from "react";
 
+export class TooManyCombinationsError extends Error {
+  constructor() {
+    super(
+      "The number of combinations is too high. Please select a smaller number of analyses.",
+    );
+  }
+}
+
 /**
  * Computes all combinations of k elements from a set.
  * Inspired by https://github.com/lvlte/project-euler/blob/main/lib/combinatorics.js#L170
@@ -79,6 +87,11 @@ function* getCombinations(n: number, k: number): Generator<number[]> {
   return combinationSet;
 }
 
+const choose = (n: number, k: number): number => {
+  if (k === 0) return 1;
+  return (n * choose(n - 1, k - 1)) / k;
+};
+
 const getDissimilarAnalyses = async (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfAnalyses: number,
@@ -88,8 +101,21 @@ const getDissimilarAnalyses = async (
     return undefined;
   }
 
-  if (analysesIn.length <= numberOfAnalyses || numberOfAnalyses < 2) {
+  if (analysesIn.length === numberOfAnalyses) {
+    return analysesIn;
+  }
+
+  if (analysesIn.length < numberOfAnalyses || numberOfAnalyses < 2) {
     return [];
+  }
+
+  const numberOfCombinations = choose(analysesIn.length, numberOfAnalyses);
+
+  if (
+    !Number.isFinite(numberOfCombinations) ||
+    numberOfCombinations > 100_000
+  ) {
+    throw new TooManyCombinationsError();
   }
 
   const analyses = analysesIn?.map((analysis, index) => ({
@@ -151,7 +177,13 @@ export const useDissimilarAnalyses = (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfSolutions: number,
   distanceType: DistanceType = DistanceType.pq,
-): CurrentAnalysis[] | undefined => {
+): {
+  tooManyCombinations: boolean;
+  analyses: CurrentAnalysis[] | undefined;
+} => {
+  const [tooManyCombinations, setTooManyCombinations] =
+    useState<boolean>(false);
+
   const [analyses, setAnalyses] = useState<CurrentAnalysis[] | undefined>(
     undefined,
   );
@@ -159,20 +191,31 @@ export const useDissimilarAnalyses = (
   useEffect(() => {
     let isCancelled = false;
 
-    getDissimilarAnalyses(analysesIn, numberOfSolutions, distanceType).then(
-      (analyses) => {
+    getDissimilarAnalyses(analysesIn, numberOfSolutions, distanceType)
+      .then((analyses) => {
         if (isCancelled) {
           return;
         }
 
+        setTooManyCombinations(false);
         setAnalyses(analyses);
-      },
-    );
+      })
+      .catch((e) => {
+        if (isCancelled) {
+          return;
+        }
+
+        if (e instanceof TooManyCombinationsError) {
+          setTooManyCombinations(true);
+        } else {
+          throw e;
+        }
+      });
 
     return (): void => {
       isCancelled = true;
     };
   }, [analysesIn, numberOfSolutions, distanceType]);
 
-  return analyses;
+  return { tooManyCombinations, analyses };
 };
