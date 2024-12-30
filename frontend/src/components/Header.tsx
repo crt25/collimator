@@ -54,7 +54,7 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
           <img src="https://placeholder.pics/svg/300x100" alt="Logo" />
         </Logo>
         <Menu>
-          {children ? children : null}
+          {children ?? null}
           <li>
             <LanguageChooser />
           </li>
