@@ -84,7 +84,7 @@ const ModalFooter = styled.div`
 `;
 
 const CodeViewPlaceholder = styled.div`
-  height: 100vh;
+  min-height: calc(100vh - 5rem);
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
 `;

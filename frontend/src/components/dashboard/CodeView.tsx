@@ -13,7 +13,7 @@ import styled from "@emotion/styled";
 const CodeViewWrapper = styled.div`
   position: relative;
   /* always take up 100% of the screen */
-  height: 100vh;
+  min-height: calc(100vh - 5rem);
 
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
