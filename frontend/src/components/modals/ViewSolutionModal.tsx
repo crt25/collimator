@@ -12,7 +12,7 @@ import { Language } from "@/types/app-iframe-message/languages";
 const getViewUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
-      return `${scratchAppHostName}/edit`;
+      return `${scratchAppHostName}/solve`;
     default:
       return null;
   }
