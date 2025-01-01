@@ -1,5 +1,5 @@
 import { FormattedMessage, useIntl } from "react-intl";
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import TaskModal from "./TaskModal";
@@ -12,7 +12,7 @@ import { Language } from "@/types/app-iframe-message/languages";
 const getViewUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
-      return `${scratchAppHostName}/show?showStage`;
+      return `${scratchAppHostName}/edit`;
     default:
       return null;
   }
@@ -26,6 +26,8 @@ const ViewSolutionModal = ({
   taskId,
   taskType,
   solutionId,
+  header,
+  footer,
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
@@ -34,6 +36,8 @@ const ViewSolutionModal = ({
   taskId: number;
   taskType: TaskType;
   solutionId: number;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }) => {
   const intl = useIntl();
   const url = useMemo(() => getViewUrl(taskType), [taskType]);
@@ -89,6 +93,8 @@ const ViewSolutionModal = ({
           url={url}
           loadContent={loadContent}
           showResetButton
+          header={header}
+          footer={footer}
         />
       )}
     </MultiSwrContent>

@@ -1,26 +1,28 @@
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
 
-export interface CategorizedDataPoints {
+export interface FilteredAnalysis {
+  analysis: CurrentAnalysis;
+  matchesAllFilters: boolean;
+}
+
+export interface CategorizedDataPoint extends DataPoint {
   category: Category;
-  dataPoints: DataPoint[];
+  groupKey: string;
+  analyses: CurrentAnalysis[];
 }
 
 export interface DataPoint {
+  groupKey: string;
   groupName: string;
-  solutions?: CurrentAnalysis[];
+  analyses: CurrentAnalysis[];
   x: number;
   y: number;
 }
 
 export interface GroupBase {
-  key: string;
-  label: string;
-}
-
-export interface SolutionGroupAssignment {
-  solution: CurrentAnalysis;
   groupKey: string;
+  groupLabel: string;
 }
 
 export interface ManualGroup extends GroupBase {
