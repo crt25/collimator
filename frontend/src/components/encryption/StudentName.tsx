@@ -126,7 +126,7 @@ export const StudentName = ({
   return (
     <NameWrapper>
       {name}
-      {isAnonymousUser
+      {isAnonymousUser && showActualName
         ? " (" + intl.formatMessage(messages.anonymous) + ")"
         : ""}
     </NameWrapper>

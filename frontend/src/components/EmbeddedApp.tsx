@@ -211,6 +211,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       };
 
       if (isIFrameLoaded.current) {
+        // If the iframe has already been loaded, call immediately.
+        // This is necessary when switching content in the embedded app, as
+        // the load event may have already fired when the iframe was loaded.
         onAppAvailable?.();
       }
 

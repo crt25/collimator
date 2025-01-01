@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { Chart } from "primereact/chart";
 import {
@@ -27,7 +27,6 @@ import {
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Colors } from "@/constants/colors";
-import { getStudentNickname } from "@/utilities/student-name";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
 import YAxis from "./axes/YAxis";
@@ -45,6 +44,9 @@ import {
   AnalyzerStateAction,
   AnalyzerStateActionType,
 } from "./Analyzer.state";
+import { StudentName } from "@/components/encryption/StudentName";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
 
 type AdditionalChartData = {
   groups: {
@@ -93,7 +95,7 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
-const StudentName = styled.span`
+const StudentNameWrapper = styled.span`
   text-decoration: underline;
   cursor: pointer;
 `;
@@ -118,6 +120,165 @@ const onLeaveLabel = (context: EventContext) => {
 
 const customShapeSizeFactor = 3;
 const customShapeStrokeFactor = 2;
+
+const TooltipContent = ({
+  dataPoints,
+  xAxis,
+  yAxis,
+  onSelectSolution,
+}: {
+  dataPoints: PointWithAdditionalData[];
+  xAxis:
+    | {
+        label: MessageDescriptor;
+        value: AstCriterionType | MetaCriterionType.test;
+      }
+    | undefined;
+  yAxis:
+    | {
+        label: MessageDescriptor;
+        value: AstCriterionType | MetaCriterionType.test;
+      }
+    | undefined;
+  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+}) => {
+  const intl = useIntl();
+  return (
+    <>
+      {dataPoints.map((dataPoint) => (
+        <div key={`${dataPoint.x}-${dataPoint.y}`}>
+          <div className="data">
+            <div>
+              <span>
+                <strong>
+                  {intl.formatMessage(xAxis?.label ?? messages.xAxis)}
+                </strong>
+              </span>
+              <span>
+                <strong>{dataPoint.x}</strong>
+              </span>
+            </div>
+            <div>
+              <span>
+                <strong>
+                  {intl.formatMessage(yAxis?.label ?? messages.yAxis)}
+                </strong>
+              </span>
+              <span>
+                <strong>{dataPoint.y}</strong>
+              </span>
+            </div>
+          </div>
+          {dataPoint.additionalData.groups.map((group) => (
+            <div key={group.key} className="data group">
+              <div>
+                <span>
+                  <strong>{intl.formatMessage(messages.groupName)}</strong>
+                </span>
+                <span>
+                  <strong>{group.name}</strong>
+                </span>
+              </div>
+              <div>
+                <span>{intl.formatMessage(messages.numberOfStudents)}</span>
+                <span>{group.analyses.length}</span>
+              </div>
+              <div>
+                <ul>
+                  {group.analyses.map((analysis) => (
+                    <li key={analysis.id}>
+                      <StudentNameWrapper
+                        onClick={() => onSelectSolution(group.key, analysis)}
+                        // add id for debugging purposes
+                        id={
+                          "analysis-" +
+                          analysis.id +
+                          "-solution-" +
+                          analysis.solutionId
+                        }
+                      >
+                        <StudentName
+                          pseudonym={analysis.studentPseudonym}
+                          keyPairId={analysis.studentKeyPairId}
+                          showActualName={false}
+                        ></StudentName>
+                      </StudentNameWrapper>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+};
+
+type AggregateDataPoint = {
+  x: number;
+  y: number;
+  dataPoints: CategorizedDataPoint[];
+};
+
+function aggregateDataPointsByCoordinate(
+  categorizedDataPoints: CategorizedDataPoint[],
+): AggregateDataPoint[] {
+  // first turn the data points into a map of maps (X,Y) -> data points
+  const byCoordinates = categorizedDataPoints.reduce((acc, dataPoint) => {
+    const byX = acc.get(dataPoint.x);
+    if (byX) {
+      const byY = byX.get(dataPoint.y);
+
+      if (byY) {
+        byY.push(dataPoint);
+      } else {
+        byX.set(dataPoint.y, [dataPoint]);
+      }
+    } else {
+      acc.set(dataPoint.x, new Map([[dataPoint.y, [dataPoint]]]));
+    }
+
+    return acc;
+  }, new Map<number, Map<number, CategorizedDataPoint[]>>());
+
+  // then flatMap the map of maps to a list of objects
+  const mergedDataPoints = byCoordinates
+    .entries()
+    .flatMap(([x, byY]) =>
+      byY.entries().map(([y, dataPoints]) => ({
+        x,
+        y,
+        dataPoints,
+      })),
+    )
+    .toArray();
+
+  return mergedDataPoints;
+}
+
+function buildGroupsByKey(
+  dataPoints: CategorizedDataPoint[],
+): { key: string; name: string; analyses: CurrentAnalysis[] }[] {
+  return Object.entries(
+    dataPoints.reduce(
+      (byGroupKey, dataPoint) => {
+        if (dataPoint.groupKey in byGroupKey) {
+          byGroupKey[dataPoint.groupKey].push(dataPoint);
+        } else {
+          byGroupKey[dataPoint.groupKey] = [dataPoint];
+        }
+
+        return byGroupKey;
+      },
+      {} as { [groupKey: string]: CategorizedDataPoint[] },
+    ),
+  ).map(([key, groupDataPoints]) => ({
+    key,
+    name: groupDataPoints[0].groupName,
+    analyses: groupDataPoints.flatMap((d) => d.analyses ?? []),
+  }));
+}
 
 const Analysis = ({
   taskType,
@@ -169,42 +330,15 @@ const Analysis = ({
   } | null>(null);
 
   const chartData = useMemo<ChartData<"bubble">>(() => {
-    const categories = new Set(categorizedDataPoints.map((d) => d.category));
-
-    // aggregate data points within a category by x and y coordinates
-    const byCoordinates = categorizedDataPoints.reduce((acc, dataPoint) => {
-      const byX = acc.get(dataPoint.x);
-      if (byX) {
-        const byY = byX.get(dataPoint.y);
-
-        if (byY) {
-          byY.push(dataPoint);
-        } else {
-          byX.set(dataPoint.y, [dataPoint]);
-        }
-      } else {
-        acc.set(dataPoint.x, new Map([[dataPoint.y, [dataPoint]]]));
-      }
-
-      return acc;
-    }, new Map<number, Map<number, CategorizedDataPoint[]>>());
+    const aggregatedDataPoints = aggregateDataPointsByCoordinate(
+      categorizedDataPoints,
+    );
 
     let hasMixed = false;
 
-    const mergedDataPoints = byCoordinates
-      .entries()
-      .flatMap(([x, byY]) =>
-        byY.entries().map(([y, dataPoints]) => ({
-          x,
-          y,
-          dataPoints,
-        })),
-      )
-      .toArray();
-
     // map each (x, y) coordinate to a chart.js dataset
     // since points of different categories may overlap
-    const points = mergedDataPoints.flatMap(({ x, y, dataPoints }) => {
+    const points = aggregatedDataPoints.flatMap(({ x, y, dataPoints }) => {
       if (dataPoints.length === 0) {
         return [];
       }
@@ -237,6 +371,9 @@ const Analysis = ({
 
       const size = Math.min(solutionsCount * 8, 40);
       const pattern = getCanvasPattern(category);
+      const starStrokeWidth = isSelected
+        ? customShapeStrokeFactor * selectedDataPointBorderWidth
+        : 0;
 
       return {
         // with a leading underscore, the label is hidden in the legend
@@ -252,24 +389,7 @@ const Analysis = ({
               // to ensure the border is on top of the bubble size
               (isSelected ? selectedDataPointBorderWidth / 2 : 0),
             additionalData: {
-              groups: Object.entries(
-                dataPoints.reduce(
-                  (byGroupKey, dataPoint) => {
-                    if (dataPoint.groupKey in byGroupKey) {
-                      byGroupKey[dataPoint.groupKey].push(dataPoint);
-                    } else {
-                      byGroupKey[dataPoint.groupKey] = [dataPoint];
-                    }
-
-                    return byGroupKey;
-                  },
-                  {} as { [groupKey: string]: CategorizedDataPoint[] },
-                ),
-              ).map(([key, groupDataPoints]) => ({
-                key,
-                name: groupDataPoints[0].groupName,
-                analyses: groupDataPoints.flatMap((d) => d.analyses ?? []),
-              })),
+              groups: buildGroupsByKey(dataPoints),
               isSelected,
               isBookmarked,
             } satisfies AdditionalChartData,
@@ -281,9 +401,7 @@ const Analysis = ({
           ? createStar(
               customShapeSizeFactor * (size + selectedDataPointBorderWidth),
               pattern,
-              isSelected
-                ? customShapeStrokeFactor * selectedDataPointBorderWidth
-                : 0,
+              starStrokeWidth,
               Colors.dataPoint.selectedBorderColor,
             )
           : "circle",
@@ -294,6 +412,8 @@ const Analysis = ({
         borderWidth: isSelected ? selectedDataPointBorderWidth : 0,
       };
     });
+
+    const categories = new Set(categorizedDataPoints.map((d) => d.category));
 
     return {
       datasets: [
@@ -636,68 +756,12 @@ const Analysis = ({
           onMouseEnter={onMouseEnterTooltip}
           onMouseLeave={onMouseLeaveTooltip}
         >
-          {tooltipDataPoints.map((dataPoint) => (
-            <div key={`${dataPoint.x}-${dataPoint.y}`}>
-              <div className="data">
-                <div>
-                  <span>
-                    <strong>
-                      {intl.formatMessage(
-                        selectedXAxis?.label ?? messages.xAxis,
-                      )}
-                    </strong>
-                  </span>
-                  <span>
-                    <strong>{dataPoint.x}</strong>
-                  </span>
-                </div>
-                <div>
-                  <span>
-                    <strong>
-                      {intl.formatMessage(
-                        selectedYAxis?.label ?? messages.yAxis,
-                      )}
-                    </strong>
-                  </span>
-                  <span>
-                    <strong>{dataPoint.y}</strong>
-                  </span>
-                </div>
-              </div>
-              {dataPoint.additionalData.groups.map((group) => (
-                <div key={group.key} className="data group">
-                  <div>
-                    <span>
-                      <strong>{intl.formatMessage(messages.groupName)}</strong>
-                    </span>
-                    <span>
-                      <strong>{group.name}</strong>
-                    </span>
-                  </div>
-                  <div>
-                    <span>{intl.formatMessage(messages.numberOfStudents)}</span>
-                    <span>{group.analyses.length}</span>
-                  </div>
-                  <div>
-                    <ul>
-                      {group.analyses.map((analysis) => (
-                        <li key={analysis.id}>
-                          <StudentName
-                            onClick={() =>
-                              onSelectSolution(group.key, analysis)
-                            }
-                          >
-                            {getStudentNickname(analysis.studentPseudonym)} (
-                            {analysis.solutionId})
-                          </StudentName>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
+          <TooltipContent
+            dataPoints={tooltipDataPoints}
+            xAxis={selectedXAxis}
+            yAxis={selectedYAxis}
+            onSelectSolution={onSelectSolution}
+          />
         </Tooltip>
       </ChartWrapper>
       <XAxisSelector>
