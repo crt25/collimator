@@ -14,6 +14,7 @@ import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { isNonNull } from "@/utilities/is-non-null";
 
 export enum ButtonVariant {
   primary = "primary",
@@ -59,6 +60,11 @@ const WrapperComponentByVariant = Object.fromEntries(
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
+
+      &:is(.btn-group > div) + * button {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     `,
   ]),
 );
@@ -80,6 +86,7 @@ const StyledButton = styled.button`
   align-items: center;
   gap: 1rem;
 
+  &.active,
   &:hover {
     background-color: var(--btn-bg-color-hover);
   }
@@ -132,9 +139,17 @@ const Button = (
     HTMLButtonElement
   > & {
     variant?: ButtonVariant;
+    active?: boolean;
   },
 ) => {
-  const { onClick: onClickFn, children, variant, ...buttonProps } = props;
+  const {
+    onClick: onClickFn,
+    children,
+    variant,
+    active,
+    ...buttonProps
+  } = props;
+
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean | null>(null);
   const enabled = useRef(true);
@@ -182,9 +197,17 @@ const Button = (
     [variant],
   );
 
+  const className = useMemo(
+    () =>
+      [active ? "active" : null, buttonProps.className ?? null]
+        .filter(isNonNull)
+        .join(" "),
+    [buttonProps.className, active],
+  );
+
   return (
     <WrapperComponent>
-      <StyledButton {...buttonProps} onClick={onClick}>
+      <StyledButton {...buttonProps} className={className} onClick={onClick}>
         <ButtonChildren>{children}</ButtonChildren>
         {(isLoading || isSuccessful !== null) && (
           <ButtonState>
