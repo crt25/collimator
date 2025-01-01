@@ -248,6 +248,7 @@ class Blocks extends React.Component<Props, State> {
       "requestToolboxUpdate",
       "onWorkspaceChange",
       "onBlocksChange",
+      "onProjectLoaded",
     ]);
     this.ScratchBlocks.prompt = this.handlePromptStart;
     this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -279,6 +280,9 @@ class Blocks extends React.Component<Props, State> {
       rtl: this.props.isRtl,
       toolbox: this.props.toolboxXML,
       colours: getColorsForTheme(this.props.theme),
+      // if we hide the flyout, move it to the top (https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/options.js#L90C7-L90C23)
+      // where the flyout is seemingly ignored by the scrollbars :)
+      horizontalLayout: !this.props.showFlyout,
     });
 
     if (!this.blocks) {
@@ -442,8 +446,7 @@ class Blocks extends React.Component<Props, State> {
         // vm.getLocale() will be out of sync if locale was changed while not visible
         this.setLocale();
       } else {
-        this.props.vm.refreshWorkspace();
-        this.requestToolboxUpdate();
+        this.refreshWorkspace();
       }
 
       window.dispatchEvent(new Event("resize"));
@@ -461,6 +464,11 @@ class Blocks extends React.Component<Props, State> {
     this.props.vm.clearFlyoutBlocks();
   }
 
+  refreshWorkspace() {
+    this.props.vm.refreshWorkspace();
+    this.requestToolboxUpdate();
+  }
+
   requestToolboxUpdate() {
     clearTimeout(this.toolboxUpdateTimeout);
     this.toolboxUpdateTimeout = setTimeout(() => {
@@ -474,8 +482,7 @@ class Blocks extends React.Component<Props, State> {
       const flyout = this.getWorkspaceFlyout();
 
       flyout.setRecyclingEnabled(false);
-      this.props.vm.refreshWorkspace();
-      this.requestToolboxUpdate();
+      this.refreshWorkspace();
       this.withToolboxUpdates(() => {
         flyout.setRecyclingEnabled(true);
       });
@@ -486,6 +493,10 @@ class Blocks extends React.Component<Props, State> {
     this.toolboxUpdateTimeout = undefined;
 
     const workspace = this.getWorkspace();
+    if (!workspace.toolbox_) {
+      return;
+    }
+
     const categoryId = workspace.toolbox_.getSelectedCategoryId();
     const offset = workspace.toolbox_.getCategoryScrollOffset();
     workspace.updateToolbox(this.props.toolboxXML);
@@ -561,6 +572,7 @@ class Blocks extends React.Component<Props, State> {
       "PERIPHERAL_DISCONNECTED",
       this.handleStatusButtonUpdate,
     );
+    this.props.vm.runtime.on("PROJECT_LOADED", this.onProjectLoaded);
   }
 
   detachVM() {
@@ -585,7 +597,26 @@ class Blocks extends React.Component<Props, State> {
       "PERIPHERAL_DISCONNECTED",
       this.handleStatusButtonUpdate,
     );
+    this.props.vm.runtime.off("PROJECT_LOADED", this.onProjectLoaded);
   }
+
+  onProjectLoaded = () => {
+    const workspace = this.getWorkspace();
+
+    const blockId =
+      workspace
+        .getAllBlocks()
+        // @ts-expect-error The typing is not correct for getAllBlocks
+        .find((b) => b["type"] === "event_whenflagclicked")?.id ??
+      // @ts-expect-error The typing is not correct for getAllBlocks
+      workspace.getAllBlocks()?.id;
+
+    if (blockId) {
+      workspace.centerOnBlock(blockId);
+    } else {
+      workspace.zoomToFit();
+    }
+  };
 
   updateToolboxBlockValue(id: string, value: string) {
     this.withToolboxUpdates(() => {
@@ -864,7 +895,7 @@ class Blocks extends React.Component<Props, State> {
     }
 
     this.withToolboxUpdates(() => {
-      this.getWorkspace().toolbox_.setSelectedCategoryById(categoryId);
+      this.getWorkspace().toolbox_?.setSelectedCategoryById(categoryId);
     });
   }
 
@@ -997,7 +1028,7 @@ class Blocks extends React.Component<Props, State> {
     this.props.onRequestCloseCustomProcedures(data);
     const ws = this.getWorkspace();
     ws.refreshToolboxSelection_();
-    ws.toolbox_.scrollToCategoryById("myBlocks");
+    ws.toolbox_?.scrollToCategoryById("myBlocks");
   }
 
   handleDrop(dragInfo: {
@@ -1018,13 +1049,12 @@ class Blocks extends React.Component<Props, State> {
         );
       })
       .then(() => {
-        this.props.vm.refreshWorkspace();
-        this.updateToolbox(); // To show new variables/custom blocks
+        this.refreshWorkspace();
       });
   }
 
   getWorkspace(): Workspace {
-    if (!this.workspace?.toolbox_) {
+    if (!this.workspace) {
       throw new Error("No workspace was found");
     }
 

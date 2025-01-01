@@ -6,15 +6,13 @@ const Tooltip = styled.div<{ isShown: boolean }>`
   /* ensure the tooltip doesn't get overly squashed if at the screen edge */
   min-width: 12rem;
 
-  /* prevent the tooltip from stealing the hover */
-  pointer-events: none;
-
   opacity: ${({ isShown }) => (isShown ? "1" : "0")};
 
   padding: 0.5rem 1rem;
   background-color: var(--background-color);
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
+  z-index: 9000;
 
   .data {
     & > div > span:first-of-type {
@@ -24,6 +22,10 @@ const Tooltip = styled.div<{ isShown: boolean }>`
         content: ":";
       }
     }
+  }
+
+  .group {
+    margin-top: 0.5rem;
   }
 `;
 
