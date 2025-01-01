@@ -3,7 +3,8 @@ import { CriterionBase, CriterionFilterDefinition } from "../criterion-base";
 import NoneCriterionForm from "./NoneCriterionForm";
 import { MetaCriterionType } from "../meta-criterion-type";
 
-type Criterion = MetaCriterionType.none;
+const criterion = MetaCriterionType.none;
+type Criterion = typeof criterion;
 
 const messages = defineMessages({
   filterName: {
@@ -13,18 +14,25 @@ const messages = defineMessages({
 });
 
 export type NoneCriterion = CriterionBase<Criterion>;
+export type NoneCriterionParameters = CriterionBase<Criterion>;
 
 export const NoCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  NoneCriterion
+  NoneCriterion,
+  NoneCriterionParameters
 > = {
-  criterion: MetaCriterionType.none,
+  criterion,
   formComponent: NoneCriterionForm,
   messages: () => ({
     name: messages.filterName,
   }),
   initialValues: {
-    criterion: MetaCriterionType.none,
+    criterion,
   },
-  matchesFilter: () => false,
+  run: (_, analyses) => ({
+    matchesFilter: analyses.map(() => false),
+    parameters: {
+      criterion,
+    },
+  }),
 };

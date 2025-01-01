@@ -22,7 +22,7 @@ const Breadcrumbs = ({
 }) => (
   <StyledNav aria-label="breadcrumb">
     <StyledOl className="breadcrumb">
-      <BreadcrumbItem href={homeHref || "/"}>
+      <BreadcrumbItem href={homeHref ?? "/"}>
         <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
       </BreadcrumbItem>
       {children}

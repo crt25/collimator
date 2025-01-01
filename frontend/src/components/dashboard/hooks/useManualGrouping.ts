@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
-import { FilterCriterion, matchesFilter } from "../filter";
 import { ChartSplit, SplitType } from "../chartjs-plugins/select";
-import { CategorizedDataPoint, ManualGroup } from "./types";
+import { CategorizedDataPoint, FilteredAnalysis, ManualGroup } from "./types";
 
 class SolutionNotInGroupError extends Error {
   constructor(
@@ -74,8 +73,7 @@ const isWithinGroup = (
 
 export const useManualGrouping = (
   isAutomaticGrouping: boolean,
-  solutions: CurrentAnalysis[] | undefined,
-  filters: FilterCriterion[],
+  filteredAnalyses: FilteredAnalysis[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
@@ -84,7 +82,7 @@ export const useManualGrouping = (
   groups: ManualGroup[];
 } =>
   useMemo(() => {
-    if (!solutions || isAutomaticGrouping) {
+    if (isAutomaticGrouping) {
       return {
         dataPoints: [],
         groupAssignment: [],
@@ -135,20 +133,12 @@ export const useManualGrouping = (
 
     let usedGroupIdx = 0;
 
-    const categorizedDataPoints = solutions.map<CategorizedDataPoint>(
-      (solution) => {
-        const xAxisValue = getAxisAnalysisValue(xAxis, solution);
-        const yAxisValue = getAxisAnalysisValue(yAxis, solution);
+    const categorizedDataPoints = filteredAnalyses.map<CategorizedDataPoint>(
+      ({ analysis, matchesAllFilters }) => {
+        const xAxisValue = getAxisAnalysisValue(xAxis, analysis);
+        const yAxisValue = getAxisAnalysisValue(yAxis, analysis);
 
-        const matchesAllFilters = filters
-          .map((f) => matchesFilter(f, solution))
-          .reduce(
-            (matchesAllFilters, matchesFilter) =>
-              matchesAllFilters && matchesFilter,
-            true,
-          );
-
-        const category = getCategory(solution, matchesAllFilters);
+        const category = getCategory(analysis, matchesAllFilters);
 
         const group = groups.find((g) =>
           isWithinGroup(g, xAxisValue, yAxisValue),
@@ -156,7 +146,7 @@ export const useManualGrouping = (
 
         if (!group) {
           throw new SolutionNotInGroupError(
-            solution,
+            analysis,
             xAxis,
             yAxis,
             xAxisValue,
@@ -170,7 +160,7 @@ export const useManualGrouping = (
         }
 
         return {
-          analyses: [solution],
+          analyses: [analysis],
           x: xAxisValue,
           y: yAxisValue,
           category,
@@ -186,4 +176,4 @@ export const useManualGrouping = (
         (g): g is ManualGroup => g.groupLabel !== undefined,
       ),
     };
-  }, [isAutomaticGrouping, solutions, xAxis, yAxis, filters, splits]);
+  }, [isAutomaticGrouping, filteredAnalyses, xAxis, yAxis, splits]);
