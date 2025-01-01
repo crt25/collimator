@@ -46,7 +46,7 @@ export default class TeacherLongTermKeyPair extends KeyPair {
    */
   static async importKeyPair(
     crypto: SubtleCrypto,
-    encryptedLongTermPrivateKey: ArrayBuffer,
+    encryptedLongTermPrivateKey: Uint8Array,
     plainTextPublicKey: JsonWebKey,
     plainSaltPublicKey: JsonWebKey,
     key: PasswordDerivedKey,

@@ -4,30 +4,31 @@ import {
   CriterionBase,
   CriterionFilterDefinition,
 } from "../criterion-base";
-import FunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
+import BuiltInFunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
 import {
   analyzeAst,
   CriteriaToAnalyzeInput,
   AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
 
-const criterion = AstCriterionType.functionCall;
+const criterion = AstCriterionType.builtInFunctionCall;
 type Criterion = typeof criterion;
 
 const messages = defineMessages({
   name: {
-    id: "criteria.functionCall.name",
-    defaultMessage: "Function Call",
+    id: "criteria.builtInFunctionCall.name",
+    defaultMessage: "Built-in Function Calls",
   },
 });
 
-export interface FunctionCallFilterCriterion extends CriterionBase<Criterion> {
+export interface BuiltInFunctionCallFilterCriterion
+  extends CriterionBase<Criterion> {
   functionName: string;
   minimumCount: number;
   maximumCount: number;
 }
 
-export interface FunctionCallFilterCriterionParameters
+export interface BuiltInFunctionCallFilterCriterionParameters
   extends CriterionBase<Criterion> {
   minCallsByFunctionName: {
     [functionName: string]: number;
@@ -38,7 +39,7 @@ export interface FunctionCallFilterCriterionParameters
 }
 
 const toAnalysisInput = (
-  functionCallCriterion: FunctionCallFilterCriterion,
+  functionCallCriterion: BuiltInFunctionCallFilterCriterion,
 ): CriteriaToAnalyzeInput<Criterion> => {
   const name = functionCallCriterion.functionName?.trim();
 
@@ -50,34 +51,35 @@ const toAnalysisInput = (
   };
 };
 
-export const FunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> = {
-  criterion,
-  messages: () => messages,
-  config: {
-    type: "linear",
-    ticks: {
-      precision: 0,
-    },
-  },
-  getAxisValue: (analysis) => {
-    const numberOfFunctionCalls = analyzeAst(analysis.generalAst, {
-      criterion,
-      input: {
-        functionName: undefined,
+export const BuiltInFunctionCallCriterionAxis: CriterionAxisDefinition<Criterion> =
+  {
+    criterion,
+    messages: () => messages,
+    config: {
+      type: "linear",
+      ticks: {
+        precision: 0,
       },
-    }).output.numberOfCalls;
+    },
+    getAxisValue: (analysis) => {
+      const numberOfFunctionCalls = analyzeAst(analysis.generalAst, {
+        criterion,
+        input: {
+          functionName: undefined,
+        },
+      }).output.numberOfCalls;
 
-    return numberOfFunctionCalls;
-  },
-};
+      return numberOfFunctionCalls;
+    },
+  };
 
-export const FunctionCallCriterionFilter: CriterionFilterDefinition<
+export const BuiltInFunctionCallCriterionFilter: CriterionFilterDefinition<
   Criterion,
-  FunctionCallFilterCriterion,
-  FunctionCallFilterCriterionParameters
+  BuiltInFunctionCallFilterCriterion,
+  BuiltInFunctionCallFilterCriterionParameters
 > = {
   criterion,
-  formComponent: FunctionCallCriterionFilterForm,
+  formComponent: BuiltInFunctionCallCriterionFilterForm,
   messages: () => messages,
   initialValues: {
     criterion,

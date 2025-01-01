@@ -85,14 +85,20 @@ const lazyWalkExpression = (
  * Walks through all statements in the AST and calls the callback for each statement.
  * @param node The AST node to walk
  * @param depth The depth of the current AST node
+ * @param indentation The current indentation level
  * @param statementCallback The callback to call for each statement. If the callback returns false, the walking will stop.
  * @param options Options for the walking
  */
 const walkStatement = (
   node: StatementNode,
   depth: number,
+  indentation: number,
   callbacks: {
-    statementCallback?: (node: StatementNode, depth: number) => AstWalkSignal;
+    statementCallback?: (
+      node: StatementNode,
+      depth: number,
+      indentation: number,
+    ) => AstWalkSignal;
     expressionCallback?: (node: ExpressionNode, depth: number) => AstWalkSignal;
   },
   options: {
@@ -101,7 +107,8 @@ const walkStatement = (
 ): AstWalkSignal => {
   if (
     callbacks.statementCallback &&
-    callbacks.statementCallback(node, depth) === AstWalkSignal.stopWalking
+    callbacks.statementCallback(node, depth, indentation) ===
+      AstWalkSignal.stopWalking
   ) {
     return AstWalkSignal.stopWalking;
   }
@@ -116,8 +123,20 @@ const walkStatement = (
           callbacks.expressionCallback,
           options,
         ),
-        lazyWalkStatement(node.whenTrue, depth + 1, callbacks, options),
-        lazyWalkStatement(node.whenFalse, depth + 1, callbacks, options),
+        lazyWalkStatement(
+          node.whenTrue,
+          depth + 1,
+          indentation + 1,
+          callbacks,
+          options,
+        ),
+        lazyWalkStatement(
+          node.whenFalse,
+          depth + 1,
+          indentation + 1,
+          callbacks,
+          options,
+        ),
       ]),
     )
     .with({ statementType: StatementNodeType.loop }, (node) =>
@@ -128,13 +147,27 @@ const walkStatement = (
           callbacks.expressionCallback,
           options,
         ),
-        lazyWalkStatement(node.body, depth + 1, callbacks, options),
+        lazyWalkStatement(
+          node.body,
+          depth + 1,
+          indentation + 1,
+          callbacks,
+          options,
+        ),
       ]),
     )
     .with({ statementType: StatementNodeType.functionDeclaration }, (node) =>
       performWalksUntilStop(
         options.walkFunctionDeclarations
-          ? [lazyWalkStatement(node.body, depth + 1, callbacks, options)]
+          ? [
+              lazyWalkStatement(
+                node.body,
+                depth + 1,
+                indentation + 1,
+                callbacks,
+                options,
+              ),
+            ]
           : [],
       ),
     )
@@ -142,7 +175,14 @@ const walkStatement = (
     .with({ statementType: StatementNodeType.sequence }, (node) =>
       performWalksUntilStop(
         node.statements.map((statement) =>
-          lazyWalkStatement(statement, depth + 1, callbacks, options),
+          lazyWalkStatement(
+            statement,
+            depth + 1,
+            // do *not* increase the indentation level for sequence statements
+            indentation,
+            callbacks,
+            options,
+          ),
         ),
       ),
     )
@@ -208,7 +248,11 @@ export const walkAst = (
       node: EventListenerNode,
       depth: number,
     ) => AstWalkSignal;
-    statementCallback?: (node: StatementNode, depth: number) => AstWalkSignal;
+    statementCallback?: (
+      node: StatementNode,
+      depth: number,
+      indentation: number,
+    ) => AstWalkSignal;
     expressionCallback?: (node: ExpressionNode, depth: number) => AstWalkSignal;
   } = {},
   options = {
@@ -248,13 +292,14 @@ export const walkAst = (
       walkStatement(
         eventListener.action,
         eventListenerDepth + 1,
+        0,
         callbacks,
         options,
       );
     }
 
     for (const functionDeclaration of actor.functionDeclarations) {
-      walkStatement(functionDeclaration, actorDepth + 1, callbacks, options);
+      walkStatement(functionDeclaration, actorDepth + 1, 0, callbacks, options);
     }
   }
 };

@@ -49,7 +49,7 @@ export class PasswordDerivedKey extends SymmetricKey {
     return new PasswordDerivedKey(crypto, derivedKey);
   }
 
-  static generateSalt(): ArrayBuffer {
+  static generateSalt(): Uint8Array {
     return crypto.getRandomValues(new Uint8Array(16));
   }
 }
