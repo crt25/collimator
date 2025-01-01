@@ -42,7 +42,7 @@ const SessionAnalysis = () => {
         <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
-            id="SessionGrouping.header"
+            id="SessionAnalysis.header"
             defaultMessage="Analysis"
           />
         </PageHeader>

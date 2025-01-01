@@ -12,8 +12,9 @@ import { scratchAppHostName } from "@/utilities/constants";
 import MultiSwrContent from "../MultiSwrContent";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useFileHash } from "@/hooks/useFileHash";
+import { Language } from "@/types/app-iframe-message/languages";
 
 type Progress = ExistingSolution;
 type ProgressByTask = { [taskId: number]: Progress };
@@ -40,6 +41,8 @@ const UserTaskProgress = ({
   task: SessionTask;
   progress: Progress;
 }) => {
+  const intl = useIntl();
+
   const {
     data: task,
     isLoading: isLoadingTask,
@@ -74,12 +77,13 @@ const UserTaskProgress = ({
         arguments: {
           task: taskFile,
           submission: solutionFile,
+          language: intl.locale as Language,
         },
       });
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskFile, solutionFileHash]);
+  }, [taskFile, solutionFileHash, intl.locale]);
 
   if (!iframeSrc) {
     return (

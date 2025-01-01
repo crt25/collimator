@@ -17,7 +17,7 @@ import {
 export class ScratchEditorPage {
   protected readonly page: Page;
 
-  constructor(page: Page) {
+  protected constructor(page: Page) {
     this.page = page;
   }
 
@@ -135,14 +135,36 @@ export class ScratchEditorPage {
     const offsetX =
       (await scrollToBlock.evaluate(
         (canvas) => canvas.getBoundingClientRect().x,
-      )) - toolboxRight;
+      )) -
+      toolboxRight -
+      75; // ensure the entire block (including the freeze buttons at the top right) is visible
 
     // scroll all the way to the right so that
     await this.page.mouse.wheel(offsetX, 0);
   }
 
-  removeBlock(block: Locator) {
+  async removeBlock(block: Locator) {
+    await this.scrollBlockIntoView(block);
+
     return block.dragTo(this.toolbox, { force: true });
+  }
+
+  async moveBlock(
+    block: Locator,
+    target: Locator,
+    targetPosition?: { x: number; y: number },
+  ) {
+    await this.scrollBlockIntoView(block);
+
+    return block.dragTo(target, {
+      force: true,
+      targetPosition: targetPosition
+        ? {
+            x: targetPosition.x,
+            y: targetPosition.y,
+          }
+        : undefined,
+    });
   }
 
   async appendNewBlockToBottomOfStack(opcode: string, block: Locator) {
@@ -215,5 +237,11 @@ export class ScratchEditorPage {
           ?.parentElement?.querySelectorAll(isScratchBlock).length ?? 0,
       { isVisualTopOfStack, isScratchBlock },
     );
+  }
+
+  resetZoom() {
+    return this.page
+      .locator('[*|href="/scratch/static/blocks-media/default/zoom-reset.svg"]')
+      .click();
   }
 }

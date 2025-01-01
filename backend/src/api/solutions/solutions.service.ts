@@ -84,6 +84,20 @@ export class SolutionsService {
     });
   }
 
+  downloadLatestStudentSolutionOrThrow(
+    sessionId: number,
+    taskId: number,
+    studentId: number,
+  ): Promise<SolutionDataOnly> {
+    return this.prisma.solution.findFirstOrThrow({
+      select: { data: true, mimeType: true },
+      where: { sessionId, taskId, studentId },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
   findMany(args?: Prisma.SolutionFindManyArgs): Promise<SolutionWithoutData[]> {
     return this.prisma.solution.findMany({
       ...args,

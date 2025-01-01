@@ -165,3 +165,26 @@ export const solutionsControllerDownloadOneV0 = async (
     },
   );
 };
+
+export const getSolutionsControllerLatestSolutionV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/latest`;
+};
+
+export const solutionsControllerLatestSolutionV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  options?: RequestInit,
+): Promise<ExistingSolutionDto> => {
+  return fetchApi<Promise<ExistingSolutionDto>>(
+    getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
