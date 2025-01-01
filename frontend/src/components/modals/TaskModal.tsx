@@ -34,6 +34,8 @@ const TaskModal = ({
   showExportButton,
   showSaveButton,
   onSave,
+  header,
+  footer,
 }: {
   title: ReactNode;
   url: string | null | undefined;
@@ -46,6 +48,8 @@ const TaskModal = ({
   showExportButton?: boolean;
   showSaveButton?: boolean;
   onSave?: (blob: Blob) => void;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
@@ -96,6 +100,7 @@ const TaskModal = ({
       <MaxScreenHeightInModal>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
+          {header}
         </Modal.Header>
         <ModalBody>
           {url && (
@@ -107,6 +112,7 @@ const TaskModal = ({
           )}
         </ModalBody>
         <Modal.Footer>
+          {footer}
           {showResetButton && (
             <Button
               disabled={!appLoaded}

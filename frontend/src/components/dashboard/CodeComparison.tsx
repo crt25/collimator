@@ -1,5 +1,5 @@
-import { Col, Row } from "react-bootstrap";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { ButtonGroup, Col, Row } from "react-bootstrap";
+import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import Select from "../form/Select";
 import styled from "@emotion/styled";
@@ -9,16 +9,25 @@ import {
   AuthenticationContextType,
 } from "@/contexts/AuthenticationContext";
 import { decodeBase64 } from "@/utilities/crypto/base64";
-import CodeView from "./CodeView";
+import CodeView, { CodeViewContainer } from "./CodeView";
 import { TaskType } from "@/api/collimator/generated/models";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
-import { Group, AnalysisGroupAssignment } from "./hooks/types";
+import { Group, CategorizedDataPoint } from "./hooks/types";
 import { getStudentNickname } from "@/utilities/student-name";
 import Button from "../Button";
-import { defaultGroupValue, defaultSolutionValue } from "./Analyzer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
+import { compareLabels } from "@/utilities/comparisons";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { axisCriteria } from "./axes";
+import {
+  AnalyzerState,
+  AnalyzerStateAction,
+  AnalyzerStateActionType,
+  defaultGroupValue,
+  defaultSolutionValue,
+} from "./Analyzer.state";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -69,16 +78,44 @@ const SelectionMenu = styled.div`
   }
 `;
 
+const ModalHeader = styled.div`
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ModalHeaderLeft = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  margin-left: 1rem;
+  gap: 1rem;
+`;
+
+const AxisValues = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  gap: 1rem;
+`;
+
 type Option = { label: string; value: number };
 
 const getOptions = async (
   authContext: AuthenticationContextType,
-  assignments: AnalysisGroupAssignment[],
+  analyses: CurrentAnalysis[],
   bookmarkedSolutionIds: number[],
 ): Promise<Option[]> => {
-  let options: Option[] = assignments.map((assignment) => ({
-    label: assignment.analysis.studentPseudonym,
-    value: assignment.analysis.solutionId,
+  let options: Option[] = analyses.map((analysis) => ({
+    label: analysis.studentPseudonym,
+    value: analysis.solutionId,
   }));
 
   // TODO: && this with a parameter
@@ -108,56 +145,72 @@ const getOptions = async (
     }),
   );
 
-  return options.map((option) => {
-    const isBookmarked = bookmarkedSolutionIds.includes(option.value);
+  return options
+    .map((option) => {
+      const isBookmarked = bookmarkedSolutionIds.includes(option.value);
 
-    return {
-      ...option,
-      label: isBookmarked ? `⭐ ${option.label}` : option.label,
-    };
-  });
+      return {
+        ...option,
+        label: isBookmarked ? `⭐ ${option.label}` : option.label,
+      };
+    })
+    .toSorted(compareLabels);
 };
+
+const findAssignment = (
+  categorizedDataPoints: CategorizedDataPoint[],
+  selectedGroup: string,
+  selectedSolutionId: number,
+):
+  | {
+      dataPoint: CategorizedDataPoint;
+      analysis: CurrentAnalysis;
+    }
+  | undefined =>
+  categorizedDataPoints
+    .map((dataPoint) => {
+      if (
+        dataPoint.groupKey === selectedGroup ||
+        defaultGroupValue === selectedGroup
+      ) {
+        const analysis = dataPoint.analyses.find(
+          (analysis) => analysis.solutionId === selectedSolutionId,
+        );
+
+        if (analysis) {
+          return {
+            dataPoint,
+            analysis,
+          };
+        }
+      }
+
+      return null;
+    })
+    .find((analysis) => analysis !== null);
 
 const CodeComparison = ({
   classId,
   sessionId,
   taskId,
-  subTaskId,
   taskType,
-  groupAssignments,
+  state,
+  dispatch,
+  categorizedDataPoints,
   groups,
-  selectedLeftGroup,
-  setSelectedLeftGroup,
-  selectedRightGroup,
-  setSelectedRightGroup,
-  selectedLeftSolution,
-  setSelectedLeftSolution,
-  selectedRightSolution,
-  setSelectedRightSolution,
-  bookmarkedSolutionIds,
-  setBookmarkedSolutionIds,
 }: {
   classId: number;
   sessionId: number;
   taskId: number;
-  subTaskId?: string;
   taskType: TaskType;
-  groupAssignments: AnalysisGroupAssignment[];
+  state: AnalyzerState;
+  dispatch: Dispatch<AnalyzerStateAction>;
+  categorizedDataPoints: CategorizedDataPoint[];
   groups: Group[];
-  selectedLeftGroup: string;
-  setSelectedLeftGroup: (group: string) => void;
-  selectedRightGroup: string;
-  setSelectedRightGroup: (group: string) => void;
-  selectedLeftSolution: number;
-  setSelectedLeftSolution: (solution: number) => void;
-  selectedRightSolution: number;
-  setSelectedRightSolution: (solution: number) => void;
-  bookmarkedSolutionIds: number[];
-  setBookmarkedSolutionIds: (bookmarkedSolutionIds: number[]) => void;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
-  const [modalSolutionId, setModalSolutionId] = useState<number | null>(null);
+  const [modalSide, setModalSide] = useState<"left" | "right" | null>(null);
 
   const [leftSolutionOptions, setLeftSolutionOptions] = useState<Option[]>([]);
   const [rightSolutionOptions, setRightSolutionOptions] = useState<Option[]>(
@@ -175,41 +228,49 @@ const CodeComparison = ({
           label: intl.formatMessage(messages.groupLabelPrefix) + g.groupLabel,
           value: g.groupKey,
         }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
+        .toSorted(compareLabels),
     ],
     [intl, groups],
   );
 
-  const leftAssignment = useMemo(
+  const leftDataPoint = useMemo(
     () =>
-      groupAssignments.find(
-        (s) =>
-          (s.groupKey === selectedLeftGroup ||
-            defaultGroupValue === selectedLeftGroup) &&
-          s.analysis.solutionId === selectedLeftSolution,
+      findAssignment(
+        categorizedDataPoints,
+        state.selectedLeftGroup,
+        state.selectedLeftSolution,
       ),
-    [groupAssignments, selectedLeftGroup, selectedLeftSolution],
+    [
+      categorizedDataPoints,
+      state.selectedLeftGroup,
+      state.selectedLeftSolution,
+    ],
   );
 
-  const rightAssignment = useMemo(
+  const rightDataPoint = useMemo(
     () =>
-      groupAssignments.find(
-        (s) =>
-          (s.groupKey === selectedRightGroup ||
-            defaultGroupValue === selectedRightGroup) &&
-          s.analysis.solutionId === selectedRightSolution,
+      findAssignment(
+        categorizedDataPoints,
+        state.selectedRightGroup,
+        state.selectedRightSolution,
       ),
-    [groupAssignments, selectedRightGroup, selectedRightSolution],
+    [
+      categorizedDataPoints,
+      state.selectedRightGroup,
+      state.selectedRightSolution,
+    ],
   );
 
   useEffect(() => {
-    const solutions = groupAssignments.filter(
-      (s) =>
-        selectedLeftGroup === defaultGroupValue ||
-        s.groupKey === selectedLeftGroup,
-    );
+    const analyses = categorizedDataPoints
+      .filter(
+        (s) =>
+          state.selectedLeftGroup === defaultGroupValue ||
+          s.groupKey === state.selectedLeftGroup,
+      )
+      .flatMap((point) => point.analyses);
 
-    getOptions(authContext, solutions, bookmarkedSolutionIds).then(
+    getOptions(authContext, analyses, state.bookmarkedSolutionIds).then(
       (options) => {
         setLeftSolutionOptions([
           {
@@ -222,20 +283,22 @@ const CodeComparison = ({
     );
   }, [
     intl,
-    selectedLeftGroup,
-    groupAssignments,
+    categorizedDataPoints,
+    state.selectedLeftGroup,
     authContext,
-    bookmarkedSolutionIds,
+    state.bookmarkedSolutionIds,
   ]);
 
   useEffect(() => {
-    const solutions = groupAssignments.filter(
-      (s) =>
-        selectedRightGroup === defaultGroupValue ||
-        s.groupKey === selectedRightGroup,
-    );
+    const analyses = categorizedDataPoints
+      .filter(
+        (s) =>
+          state.selectedRightGroup === defaultGroupValue ||
+          s.groupKey === state.selectedRightGroup,
+      )
+      .flatMap((point) => point.analyses);
 
-    getOptions(authContext, solutions, bookmarkedSolutionIds).then(
+    getOptions(authContext, analyses, state.bookmarkedSolutionIds).then(
       (options) => {
         setRightSolutionOptions([
           {
@@ -248,87 +311,186 @@ const CodeComparison = ({
     );
   }, [
     intl,
-    selectedRightGroup,
-    groupAssignments,
+    categorizedDataPoints,
+    state.selectedRightGroup,
     authContext,
-    bookmarkedSolutionIds,
+    state.bookmarkedSolutionIds,
   ]);
 
   useEffect(() => {
-    if (selectedLeftSolution) {
-      const leftSolution = groupAssignments.find(
-        (s) => s.analysis.solutionId === selectedLeftSolution,
+    if (state.selectedLeftSolution) {
+      const leftGroup = groups.some(
+        (g) => g.groupKey === state.selectedLeftGroup,
       );
 
-      const leftGroup = groups.some((g) => g.groupKey === selectedLeftGroup);
-
-      if (leftSolution) {
-        setSelectedLeftSolution(leftSolution.analysis.solutionId);
-        if (selectedLeftGroup !== defaultGroupValue) {
-          setSelectedLeftGroup(leftSolution.groupKey);
+      // leftDataPoint is already re-computed based on the current categorized data points
+      // and therefore undefined if it no longer exists
+      if (leftDataPoint) {
+        // the solution may now be in a different group -> select that unless we previously selected
+        // the default group (all)
+        if (state.selectedLeftGroup !== defaultGroupValue) {
+          dispatch({
+            type: AnalyzerStateActionType.setSelectedLeftGroup,
+            groupKey: leftDataPoint.dataPoint.groupKey,
+          });
         }
-      } else if (leftGroup || selectedLeftGroup === defaultGroupValue) {
-        // de-select the solution if it no longer exists
-        setSelectedLeftSolution(defaultSolutionValue);
+      } else if (leftGroup || state.selectedLeftGroup === defaultGroupValue) {
+        // solution no longer exists but the group does => de-select the solution
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedLeftSolution,
+          solutionId: defaultSolutionValue,
+        });
       } else {
         // de-select the group and the solution if they no longer exists
-        setSelectedLeftGroup(defaultGroupValue);
-        setSelectedLeftSolution(defaultSolutionValue);
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedLeft,
+          groupKey: defaultGroupValue,
+          solutionId: defaultSolutionValue,
+        });
       }
     }
 
-    if (selectedRightSolution) {
-      const rightSolution = groupAssignments.find(
-        (s) => s.analysis.solutionId === selectedRightSolution,
+    if (state.selectedRightSolution) {
+      const rightGroup = groups.some(
+        (g) => g.groupKey === state.selectedRightGroup,
       );
 
-      const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
-
-      if (rightSolution) {
-        setSelectedRightSolution(rightSolution.analysis.solutionId);
-        if (selectedRightGroup !== defaultGroupValue) {
-          setSelectedRightGroup(rightSolution.groupKey);
+      if (rightDataPoint) {
+        if (state.selectedRightGroup !== defaultGroupValue) {
+          dispatch({
+            type: AnalyzerStateActionType.setSelectedRightGroup,
+            groupKey: rightDataPoint.dataPoint.groupKey,
+          });
         }
-      } else if (rightGroup || selectedRightGroup === defaultGroupValue) {
-        setSelectedRightSolution(defaultSolutionValue);
+      } else if (rightGroup || state.selectedRightGroup === defaultGroupValue) {
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedRightSolution,
+          solutionId: defaultSolutionValue,
+        });
       } else {
-        setSelectedRightGroup(defaultGroupValue);
-        setSelectedRightSolution(defaultSolutionValue);
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedRight,
+          groupKey: defaultGroupValue,
+          solutionId: defaultSolutionValue,
+        });
       }
     }
     // this should only be triggerd if the groups change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groups, groupAssignments]);
+  }, [groups, categorizedDataPoints]);
 
   const isLeftSolutionBookmarked = useMemo(
     () =>
-      leftAssignment
-        ? bookmarkedSolutionIds.includes(leftAssignment.analysis.solutionId)
+      leftDataPoint
+        ? state.bookmarkedSolutionIds.includes(
+            leftDataPoint.analysis.solutionId,
+          )
         : false,
-    [bookmarkedSolutionIds, leftAssignment],
+    [state.bookmarkedSolutionIds, leftDataPoint],
   );
 
   const isRightSolutionBookmarked = useMemo(
     () =>
-      rightAssignment
-        ? bookmarkedSolutionIds.includes(rightAssignment.analysis.solutionId)
+      rightDataPoint
+        ? state.bookmarkedSolutionIds.includes(
+            rightDataPoint.analysis.solutionId,
+          )
         : false,
-    [bookmarkedSolutionIds, rightAssignment],
+    [state.bookmarkedSolutionIds, rightDataPoint],
+  );
+
+  const modalDataPoint = useMemo(() => {
+    if (!modalSide) {
+      return null;
+    }
+
+    if (modalSide === "left") {
+      return leftDataPoint;
+    } else {
+      return rightDataPoint;
+    }
+  }, [leftDataPoint, rightDataPoint, modalSide]);
+
+  const xAxisLabel = useMemo(
+    () =>
+      axisCriteria.find((c) => c.criterion === state.xAxis)?.messages(taskType)
+        .name,
+    [state.xAxis, taskType],
+  );
+
+  const yAxisLabel = useMemo(
+    () =>
+      axisCriteria.find((c) => c.criterion === state.yAxis)?.messages(taskType)
+        .name,
+    [state.yAxis, taskType],
+  );
+
+  const leftStudentName = useMemo(
+    () =>
+      leftSolutionOptions.find((o) => o.value === state.selectedLeftSolution)
+        ?.label ?? "",
+    [leftSolutionOptions, state.selectedLeftSolution],
+  );
+
+  const rightStudentName = useMemo(
+    () =>
+      rightSolutionOptions.find((o) => o.value === state.selectedRightSolution)
+        ?.label ?? "",
+    [rightSolutionOptions, state.selectedRightSolution],
   );
 
   return (
     <>
-      {modalSolutionId && (
+      {modalDataPoint && (
         <ViewSolutionModal
-          isShown={modalSolutionId !== null}
-          setIsShown={(isShown) =>
-            setModalSolutionId(isShown ? modalSolutionId : null)
-          }
+          isShown={true}
+          setIsShown={(isShown) => setModalSide(isShown ? modalSide : null)}
           classId={classId}
           sessionId={sessionId}
           taskId={taskId}
           taskType={taskType}
-          solutionId={modalSolutionId}
+          solutionId={modalDataPoint?.analysis.solutionId}
+          footer={
+            <ModalHeader>
+              <ModalHeaderLeft>
+                {state.selectedLeftSolution !== defaultSolutionValue &&
+                state.selectedRightSolution !== defaultSolutionValue ? (
+                  <ButtonGroup>
+                    <Button
+                      active={modalSide === "left"}
+                      onClick={() => {
+                        setModalSide("left");
+                      }}
+                    >
+                      {leftStudentName}
+                    </Button>
+                    <Button
+                      active={modalSide === "right"}
+                      onClick={() => {
+                        setModalSide("right");
+                      }}
+                    >
+                      {rightStudentName}
+                    </Button>
+                  </ButtonGroup>
+                ) : null}
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+              </ModalHeaderLeft>
+            </ModalHeader>
+          }
         />
       )}
       <CodeComparisonWrapper>
@@ -344,25 +506,33 @@ const CodeComparison = ({
             <SelectionMenu>
               <Select
                 options={groupOptions}
-                value={selectedLeftGroup}
-                onChange={(e) => setSelectedLeftGroup(e.target.value)}
+                value={state.selectedLeftGroup}
+                onChange={(e) =>
+                  dispatch({
+                    type: AnalyzerStateActionType.setSelectedLeftGroup,
+                    groupKey: e.target.value,
+                  })
+                }
                 alwaysShow
                 noMargin
               />
               <Select
                 options={leftSolutionOptions}
-                value={selectedLeftSolution}
+                value={state.selectedLeftSolution}
                 onChange={(e) =>
-                  setSelectedLeftSolution(parseInt(e.target.value))
+                  dispatch({
+                    type: AnalyzerStateActionType.setSelectedLeftSolution,
+                    solutionId: parseInt(e.target.value),
+                  })
                 }
                 alwaysShow
                 noMargin
               />
-              {leftAssignment && (
+              {leftDataPoint && (
                 <>
                   <Button
                     onClick={() => {
-                      setModalSolutionId(leftAssignment.analysis.solutionId);
+                      setModalSide("left");
                     }}
                     data-testid="left-view-button"
                   >
@@ -374,16 +544,15 @@ const CodeComparison = ({
                   <Button
                     onClick={() => {
                       if (isLeftSolutionBookmarked) {
-                        setBookmarkedSolutionIds(
-                          bookmarkedSolutionIds.filter(
-                            (id) => id !== leftAssignment.analysis.solutionId,
-                          ),
-                        );
+                        dispatch({
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
+                        });
                       } else {
-                        setBookmarkedSolutionIds([
-                          ...bookmarkedSolutionIds,
-                          leftAssignment.analysis.solutionId,
-                        ]);
+                        dispatch({
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
+                        });
                       }
                     }}
                     data-testid="left-bookmark-button"
@@ -397,42 +566,68 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {leftAssignment && (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={subTaskId}
-                taskType={taskType}
-                solutionId={leftAssignment.analysis.solutionId}
-              />
+            {leftDataPoint ? (
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={state.selectedSubTaskId}
+                  taskType={taskType}
+                  solutionId={leftDataPoint.analysis.solutionId}
+                />
+              </div>
+            ) : (
+              <CodeViewContainer />
             )}
           </Col>
           <Col xs={6}>
             <SelectionMenu>
               <Select
                 options={groupOptions}
-                value={selectedRightGroup}
-                onChange={(e) => setSelectedRightGroup(e.target.value)}
+                value={state.selectedRightGroup}
+                onChange={(e) =>
+                  dispatch({
+                    type: AnalyzerStateActionType.setSelectedRightGroup,
+                    groupKey: e.target.value,
+                  })
+                }
                 alwaysShow
                 noMargin
               />
               <Select
                 options={rightSolutionOptions}
-                value={selectedRightSolution}
+                value={state.selectedRightSolution}
                 onChange={(e) =>
-                  setSelectedRightSolution(parseInt(e.target.value))
+                  dispatch({
+                    type: AnalyzerStateActionType.setSelectedRightSolution,
+                    solutionId: parseInt(e.target.value),
+                  })
                 }
                 alwaysShow
                 noMargin
               />
-              {rightAssignment && (
+              {rightDataPoint && (
                 <>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      setModalSolutionId(rightAssignment.analysis.solutionId);
+                      setModalSide("right");
                     }}
                     data-testid="right-view-button"
                   >
@@ -444,16 +639,15 @@ const CodeComparison = ({
                   <Button
                     onClick={() => {
                       if (isRightSolutionBookmarked) {
-                        setBookmarkedSolutionIds(
-                          bookmarkedSolutionIds.filter(
-                            (id) => id !== rightAssignment.analysis.solutionId,
-                          ),
-                        );
+                        dispatch({
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
+                        });
                       } else {
-                        setBookmarkedSolutionIds([
-                          ...bookmarkedSolutionIds,
-                          rightAssignment.analysis.solutionId,
-                        ]);
+                        dispatch({
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
+                        });
                       }
                     }}
                     data-testid="left-bookmark-button"
@@ -467,15 +661,33 @@ const CodeComparison = ({
                 </>
               )}
             </SelectionMenu>
-            {rightAssignment && (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={subTaskId}
-                taskType={taskType}
-                solutionId={rightAssignment.analysis.solutionId}
-              />
+            {rightDataPoint ? (
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={state.selectedSubTaskId}
+                  taskType={taskType}
+                  solutionId={rightDataPoint.analysis.solutionId}
+                />
+              </div>
+            ) : (
+              <CodeViewContainer />
             )}
           </Col>
         </Row>
