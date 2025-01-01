@@ -6,7 +6,7 @@ import {
   DefinitionCriterion,
 } from "../criteria/criterion-base";
 import { ExpressionCriterionAxis } from "../criteria/expression";
-import { FunctionCallCriterionAxis } from "../criteria/function-call";
+import { BuiltInFunctionCallCriterionAxis } from "../criteria/built-in-function-call";
 import { FunctionDeclarationCriterionAxis } from "../criteria/function-declaration";
 import { LoopCriterionAxis } from "../criteria/loop";
 import { StatementCriterionAxis } from "../criteria/statement";
@@ -16,15 +16,19 @@ import { TestCriterionAxis } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { CriterionType } from "../criteria/criterion-type";
 import { AstHeightCriterionAxis } from "../criteria/ast-height";
+import { IndentationCriterionAxis } from "../criteria/indentation";
+import { CustomFunctionCallCriterionAxis } from "../criteria/custom-function-call";
 
 export const axisCriteria = [
   ConditionCriterionAxis,
   ExpressionCriterionAxis,
-  FunctionCallCriterionAxis,
+  CustomFunctionCallCriterionAxis,
+  BuiltInFunctionCallCriterionAxis,
   FunctionDeclarationCriterionAxis,
   TestCriterionAxis,
   LoopCriterionAxis,
   StatementCriterionAxis,
+  IndentationCriterionAxis,
   AstHeightCriterionAxis,
 ];
 
@@ -46,14 +50,22 @@ const getAxisDefinition = (
 ): CriterionAxisDefinition<CriterionType> =>
   match(axisType)
     .returnType<CriterionAxisDefinition<CriterionType>>()
-    .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
     .with(AstCriterionType.condition, () => ConditionCriterionAxis)
-    .with(AstCriterionType.functionCall, () => FunctionCallCriterionAxis)
+    .with(
+      AstCriterionType.customFunctionCall,
+      () => CustomFunctionCallCriterionAxis,
+    )
+    .with(AstCriterionType.expression, () => ExpressionCriterionAxis)
+    .with(
+      AstCriterionType.builtInFunctionCall,
+      () => BuiltInFunctionCallCriterionAxis,
+    )
     .with(
       AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionAxis,
     )
     .with(AstCriterionType.height, () => AstHeightCriterionAxis)
+    .with(AstCriterionType.indentation, () => IndentationCriterionAxis)
     .with(AstCriterionType.loop, () => LoopCriterionAxis)
     .with(AstCriterionType.statement, () => StatementCriterionAxis)
     .with(MetaCriterionType.test, () => TestCriterionAxis)

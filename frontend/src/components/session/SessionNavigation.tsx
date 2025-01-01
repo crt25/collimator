@@ -13,6 +13,14 @@ const messages = defineMessages({
     id: "SessionNavigation.analysisTab",
     defaultMessage: "Analysis",
   },
+  dissimilarSolutionsTab: {
+    id: "SessionNavigation.dissimilarSolutionsTab",
+    defaultMessage: "Dissimilar Solutions",
+  },
+  dissimilarPairsTab: {
+    id: "SessionNavigation.dissimilarPairsTab",
+    defaultMessage: "Dissimilar Pairs",
+  },
 });
 
 const tabs: NavigationTab[] = [
@@ -23,6 +31,14 @@ const tabs: NavigationTab[] = [
   {
     url: "analysis",
     title: (intl) => intl.formatMessage(messages.analysisTab),
+  },
+  {
+    url: "dissimilar-solutions",
+    title: (intl) => intl.formatMessage(messages.dissimilarSolutionsTab),
+  },
+  {
+    url: "dissimilar-pairs",
+    title: (intl) => intl.formatMessage(messages.dissimilarPairsTab),
   },
 ];
 
