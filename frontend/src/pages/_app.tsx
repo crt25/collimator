@@ -27,6 +27,8 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
 import { Toaster } from "react-hot-toast";
 
+const logModule = "[App]";
+
 const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
 
@@ -76,7 +78,10 @@ const App = ({ Component, pageProps }: AppProps) => {
           );
         })
         .catch((e) => {
-          console.error("Failed to store serialized authentication state", e);
+          console.error(
+            `${logModule} Failed to store serialized authentication state`,
+            e,
+          );
         });
 
       // synchronously update the react state

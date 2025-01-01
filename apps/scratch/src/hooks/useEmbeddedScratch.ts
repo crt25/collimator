@@ -126,7 +126,10 @@ export const useEmbeddedScratch = (
 
               return await loadCrtProject(vm, zip);
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
@@ -141,7 +144,10 @@ export const useEmbeddedScratch = (
                 result: content,
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
@@ -157,7 +163,10 @@ export const useEmbeddedScratch = (
                 procedure: "loadTask",
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
           }
