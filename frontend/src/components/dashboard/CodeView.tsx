@@ -1,5 +1,5 @@
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo, useRef } from "react";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
@@ -7,6 +7,25 @@ import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import MultiSwrContent from "../MultiSwrContent";
 import { useFileHash } from "@/hooks/useFileHash";
+import { Language } from "@/types/app-iframe-message/languages";
+import styled from "@emotion/styled";
+
+export const CodeViewContainer = styled.div`
+  /* always take up 100% of the screen (minus some margin for the selects and axis values) */
+  height: calc(100vh - 6rem);
+
+  border: var(--foreground-color) 1px solid;
+  border-radius: var(--border-radius);
+`;
+
+const CodeViewWrapper = styled(CodeViewContainer)`
+  position: relative;
+
+  > *,
+  > * > iframe {
+    height: 100% !important;
+  }
+`;
 
 const getSolutionCodeUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -32,6 +51,8 @@ const CodeView = ({
   taskType: TaskType;
   solutionId: number;
 }) => {
+  const intl = useIntl();
+
   const {
     data: taskFile,
     isLoading: isLoadingTaskFile,
@@ -59,12 +80,13 @@ const CodeView = ({
           task: taskFile,
           submission: solutionFile,
           subTaskId: subTaskId,
+          language: intl.locale as Language,
         },
       });
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskFileHash, solutionFileHash, subTaskId]);
+  }, [taskFileHash, solutionFileHash, subTaskId, intl.locale]);
 
   if (!iframeSrc) {
     return (
@@ -77,19 +99,21 @@ const CodeView = ({
   }
 
   return (
-    <MultiSwrContent
-      data={[taskFile, solutionFile]}
-      isLoading={[isLoadingTaskFile, isLoadingSolutionFile]}
-      errors={[taskFileError, solutionFileError]}
-    >
-      {() => (
-        <EmbeddedApp
-          src={iframeSrc}
-          ref={embeddedApp}
-          onAppAvailable={onAppAvailable}
-        />
-      )}
-    </MultiSwrContent>
+    <CodeViewWrapper>
+      <MultiSwrContent
+        data={[taskFile, solutionFile]}
+        isLoading={[isLoadingTaskFile, isLoadingSolutionFile]}
+        errors={[taskFileError, solutionFileError]}
+      >
+        {() => (
+          <EmbeddedApp
+            src={iframeSrc}
+            ref={embeddedApp}
+            onAppAvailable={onAppAvailable}
+          />
+        )}
+      </MultiSwrContent>
+    </CodeViewWrapper>
   );
 };
 

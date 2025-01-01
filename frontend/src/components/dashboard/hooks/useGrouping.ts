@@ -1,46 +1,38 @@
 import { useEffect, useState } from "react";
 import { useAutomaticGrouping } from "./useAutomaticGrouping";
 import { useManualGrouping } from "./useManualGrouping";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { FilterCriterion } from "../filter";
 import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
 import {
-  CategorizedDataPoints,
+  CategorizedDataPoint,
   Group,
   ManualGroup,
-  SolutionGroupAssignment,
+  FilteredAnalysis,
 } from "./types";
 import { Category } from "../category";
 
 export const useGrouping = (
   isAutomaticGrouping: boolean,
   numberOfGroups: number,
-  solutions: CurrentAnalysis[] | undefined,
-  filters: FilterCriterion[],
+  solutions: FilteredAnalysis[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
 ): {
   isGroupingAvailable: boolean;
-  categorizedDataPoints: CategorizedDataPoints[];
-  groupAssignments: SolutionGroupAssignment[];
+  categorizedDataPoints: CategorizedDataPoint[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
   const [isGroupingAvailable, setIsGroupingAvailable] =
     useState<boolean>(false);
-  const [dataPoints, setDataPoints] = useState<CategorizedDataPoints[]>([]);
-  const [groupAssignment, setGroupAssignment] = useState<
-    SolutionGroupAssignment[]
-  >([]);
+  const [dataPoints, setDataPoints] = useState<CategorizedDataPoint[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [manualGroups, setManualGroups] = useState<ManualGroup[]>([]);
 
   const manual = useManualGrouping(
     isAutomaticGrouping,
     solutions,
-    filters,
     splits,
     xAxis,
     yAxis,
@@ -50,7 +42,6 @@ export const useGrouping = (
     isAutomaticGrouping,
     numberOfGroups,
     solutions,
-    filters,
     xAxis,
     yAxis,
   );
@@ -59,32 +50,30 @@ export const useGrouping = (
     let isCancelled = false;
 
     if (!isAutomaticGrouping) {
-      setDataPoints(manual.dataPoints);
-      setGroupAssignment(manual.groupAssignment);
+      const dataPoints = manual.dataPoints;
+
       setGroups(manual.groups);
       setManualGroups(manual.groups);
       setIsGroupingAvailable(true);
+      setDataPoints(dataPoints);
     } else {
       setIsGroupingAvailable(false);
 
-      computeAutomaticGrouping().then(
-        ({ automaticGroups, groupAssignments }) => {
-          if (isCancelled) {
-            return;
-          }
+      computeAutomaticGrouping().then((automaticGroups) => {
+        if (isCancelled) {
+          return;
+        }
 
-          setDataPoints([
-            {
-              category: Category.matchesFilters | Category.isAutomaticGroup,
-              dataPoints: automaticGroups,
-            },
-          ]);
-          setGroupAssignment(groupAssignments);
-          setGroups(automaticGroups);
-          setManualGroups([]);
-          setIsGroupingAvailable(true);
-        },
-      );
+        const dataPoints = automaticGroups.map((group) => ({
+          ...group,
+          category: Category.matchesFilters | Category.isAutomaticGroup,
+        }));
+
+        setGroups(automaticGroups);
+        setManualGroups([]);
+        setIsGroupingAvailable(true);
+        setDataPoints(dataPoints);
+      });
     }
 
     return (): void => {
@@ -95,8 +84,7 @@ export const useGrouping = (
   return {
     isGroupingAvailable,
     categorizedDataPoints: dataPoints,
-    groupAssignments: groupAssignment,
-    groups: groups,
-    manualGroups: manualGroups,
+    groups,
+    manualGroups,
   };
 };

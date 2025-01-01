@@ -37,7 +37,7 @@ test.describe("/show", () => {
   });
 
   test("does not show stage", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const page = await SolveTaskPage.load(pwPage);
 
     expect(page.stage).toHaveCount(0);
   });
@@ -73,5 +73,33 @@ test.describe("/show", () => {
     await expect(page.blocksOfCurrentTarget).toHaveCount(
       task.blocksOfMainTarget,
     );
+  });
+
+  test("cannot move blocks", async ({ page: pwPage }) => {
+    const { page } = await TestTaskPage.load(pwPage);
+
+    const parentBefore = await page.taskBlocks.catActor.editableBlock.evaluate(
+      (el) => el.closest(".blocklyDraggable"),
+    );
+
+    // ensure the block has a parent
+    expect(parentBefore).not.toBeNull();
+
+    await page.moveBlock(
+      page.taskBlocks.catActor.editableBlock,
+      page.blockCanvas,
+      {
+        x: 0,
+        y: 0,
+      },
+    );
+
+    // ensure the block has not moved
+    const parentAfter = await page.taskBlocks.catActor.editableBlock.evaluate(
+      (el) => el.closest(".blocklyDraggable"),
+    );
+
+    // ensure the parent is the same before and after
+    expect(parentBefore).toEqual(parentAfter);
   });
 });
