@@ -11,6 +11,7 @@ const drawStar = (
   strokeWidth = 0,
   strokeStyle: FillOrStrokeStyle = "black",
 ): void => {
+  // code adapted from https://stackoverflow.com/a/25840319/2897827
   let rot = (Math.PI / 2) * 3;
   let x = cx;
   let y = cy;
@@ -18,6 +19,7 @@ const drawStar = (
 
   ctx.beginPath();
   ctx.moveTo(cx, cy - outerRadius);
+
   for (let i = 0; i < spikes; i++) {
     x = cx + Math.cos(rot) * outerRadius;
     y = cy + Math.sin(rot) * outerRadius;
@@ -29,8 +31,10 @@ const drawStar = (
     ctx.lineTo(x, y);
     rot += step;
   }
+
   ctx.lineTo(cx, cy - outerRadius);
   ctx.closePath();
+
   if (strokeWidth > 0) {
     ctx.lineWidth = strokeWidth;
     ctx.strokeStyle = strokeStyle;

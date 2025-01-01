@@ -192,7 +192,7 @@ export const setupForAuthentication = async (
   // intercept token request
   await page.route(/\/__oidc__\/token-request/, async (route) => {
     // get post data as string
-    const postData = route.request().postData() || "";
+    const postData = route.request().postData() ?? "";
 
     // get client_id from post data
     const [_, clientId] = postData.match(/client_id=([^&]+)/) as [

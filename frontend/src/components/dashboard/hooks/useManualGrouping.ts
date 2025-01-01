@@ -2,14 +2,8 @@ import { useMemo } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Category } from "../category";
-import { FilterCriterion, matchesFilter } from "../filter";
 import { ChartSplit, SplitType } from "../chartjs-plugins/select";
-import {
-  CategorizedDataPoints,
-  DataPoint,
-  ManualGroup,
-  SolutionGroupAssignment,
-} from "./types";
+import { CategorizedDataPoint, FilteredAnalysis, ManualGroup } from "./types";
 
 class SolutionNotInGroupError extends Error {
   constructor(
@@ -77,26 +71,18 @@ const isWithinGroup = (
 ): boolean =>
   group.minX <= x && x < group.maxX && group.minY <= y && y < group.maxY;
 
-interface IntermediateAnalysis extends DataPoint {
-  category: Category;
-  groupKey: string;
-  solutions: [CurrentAnalysis];
-}
-
 export const useManualGrouping = (
   isAutomaticGrouping: boolean,
-  solutions: CurrentAnalysis[] | undefined,
-  filters: FilterCriterion[],
+  filteredAnalyses: FilteredAnalysis[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
 ): {
-  dataPoints: CategorizedDataPoints[];
-  groupAssignment: SolutionGroupAssignment[];
+  dataPoints: CategorizedDataPoint[];
   groups: ManualGroup[];
 } =>
   useMemo(() => {
-    if (!solutions || isAutomaticGrouping) {
+    if (isAutomaticGrouping) {
       return {
         dataPoints: [],
         groupAssignment: [],
@@ -147,20 +133,12 @@ export const useManualGrouping = (
 
     let usedGroupIdx = 0;
 
-    const solutionsByCategory = solutions
-      .map<IntermediateAnalysis>((solution) => {
-        const xAxisValue = getAxisAnalysisValue(xAxis, solution);
-        const yAxisValue = getAxisAnalysisValue(yAxis, solution);
+    const categorizedDataPoints = filteredAnalyses.map<CategorizedDataPoint>(
+      ({ analysis, matchesAllFilters }) => {
+        const xAxisValue = getAxisAnalysisValue(xAxis, analysis);
+        const yAxisValue = getAxisAnalysisValue(yAxis, analysis);
 
-        const matchesAllFilters = filters
-          .map((f) => matchesFilter(f, solution))
-          .reduce(
-            (matchesAllFilters, matchesFilter) =>
-              matchesAllFilters && matchesFilter,
-            true,
-          );
-
-        const category = getCategory(solution, matchesAllFilters);
+        const category = getCategory(analysis, matchesAllFilters);
 
         const group = groups.find((g) =>
           isWithinGroup(g, xAxisValue, yAxisValue),
@@ -168,7 +146,7 @@ export const useManualGrouping = (
 
         if (!group) {
           throw new SolutionNotInGroupError(
-            solution,
+            analysis,
             xAxis,
             yAxis,
             xAxisValue,
@@ -182,43 +160,20 @@ export const useManualGrouping = (
         }
 
         return {
-          solutions: [solution],
+          analyses: [analysis],
           x: xAxisValue,
           y: yAxisValue,
           category,
           groupKey: group.groupKey,
           groupName: group.groupLabel,
         };
-      })
-      .reduce((categories, analyzedSolution) => {
-        let entry = categories.get(analyzedSolution.category);
-        if (!entry) {
-          entry = [];
-        }
-
-        entry.push(analyzedSolution);
-        categories.set(analyzedSolution.category, entry);
-
-        return categories;
-      }, new Map<Category, IntermediateAnalysis[]>());
-
-    const mapEntries = [...solutionsByCategory.entries()];
+      },
+    );
 
     return {
-      dataPoints: mapEntries.map<CategorizedDataPoints>(
-        ([category, solutions]) => ({
-          category,
-          dataPoints: solutions,
-        }),
-      ),
-      groupAssignment: mapEntries.flatMap(([_, solutions]) =>
-        solutions.map((solution) => ({
-          solution: solution.solutions[0],
-          groupKey: solution.groupKey,
-        })),
-      ),
+      dataPoints: categorizedDataPoints,
       groups: groups.filter(
         (g): g is ManualGroup => g.groupLabel !== undefined,
       ),
     };
-  }, [isAutomaticGrouping, solutions, xAxis, yAxis, filters, splits]);
+  }, [isAutomaticGrouping, filteredAnalyses, xAxis, yAxis, splits]);
