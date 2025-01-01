@@ -4,32 +4,41 @@ import { GeneralAst } from "@ast/index";
 
 export enum AstCriterionType {
   condition = "condition",
+  customFunctionCall = "customFunctionCall",
   expression = "expression",
-  functionCall = "functionCall",
+  builtInFunctionCall = "builtInFunctionCall",
   functionDeclaration = "functionDeclaration",
   height = "height",
+  indentation = "indentation",
   loop = "loop",
   statement = "statement",
 }
 
 export interface CriteriaBasedAnalyzerInput {
   [AstCriterionType.condition]: void;
+  [AstCriterionType.customFunctionCall]: void;
   [AstCriterionType.expression]: void;
   [AstCriterionType.functionDeclaration]: void;
-  [AstCriterionType.functionCall]: {
+  [AstCriterionType.builtInFunctionCall]: {
     functionName?: string;
   };
   [AstCriterionType.height]: void;
+  [AstCriterionType.indentation]: void;
   [AstCriterionType.loop]: void;
   [AstCriterionType.statement]: void;
 }
 
 export interface CriteriaBasedAnalyzerOutput {
   [AstCriterionType.condition]: number;
+  [AstCriterionType.customFunctionCall]: number;
   [AstCriterionType.expression]: number;
-  [AstCriterionType.functionCall]: number;
+  [AstCriterionType.builtInFunctionCall]: {
+    numberOfCalls: number;
+    callsByFunctionName: Record<string, number>;
+  };
   [AstCriterionType.functionDeclaration]: number;
   [AstCriterionType.height]: number;
+  [AstCriterionType.indentation]: number;
   [AstCriterionType.loop]: number;
   [AstCriterionType.statement]: number;
 }
@@ -51,12 +60,16 @@ type AnalysisFunction = {
   ): CriteriaToAnalyzeOutput<AstCriterionType.condition>;
   (
     ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.customFunctionCall>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.customFunctionCall>;
+  (
+    ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.expression>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.expression>;
   (
     ast: GeneralAst,
-    input: CriteriaToAnalyzeInput<AstCriterionType.functionCall>,
-  ): CriteriaToAnalyzeOutput<AstCriterionType.functionCall>;
+    input: CriteriaToAnalyzeInput<AstCriterionType.builtInFunctionCall>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.builtInFunctionCall>;
   (
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.functionDeclaration>,
@@ -65,6 +78,10 @@ type AnalysisFunction = {
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.height>,
   ): CriteriaToAnalyzeOutput<AstCriterionType.height>;
+  (
+    ast: GeneralAst,
+    input: CriteriaToAnalyzeInput<AstCriterionType.indentation>,
+  ): CriteriaToAnalyzeOutput<AstCriterionType.indentation>;
   (
     ast: GeneralAst,
     input: CriteriaToAnalyzeInput<AstCriterionType.loop>,
@@ -93,7 +110,14 @@ export const analyzeAst: AnalysisFunction = (ast, input) =>
       }),
     )
     .with(
-      { criterion: AstCriterionType.functionCall },
+      { criterion: AstCriterionType.customFunctionCall },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.countCustomFunctionCalls(ast, input),
+      }),
+    )
+    .with(
+      { criterion: AstCriterionType.builtInFunctionCall },
       ({ criterion, input }) => ({
         criterion,
         output: CriteriaBasedAnalyzer.countFunctionCalls(ast, input),
@@ -103,6 +127,13 @@ export const analyzeAst: AnalysisFunction = (ast, input) =>
       criterion,
       output: CriteriaBasedAnalyzer.computeHeight(ast, input),
     }))
+    .with(
+      { criterion: AstCriterionType.indentation },
+      ({ criterion, input }) => ({
+        criterion,
+        output: CriteriaBasedAnalyzer.computeHeight(ast, input),
+      }),
+    )
     .with({ criterion: AstCriterionType.loop }, ({ criterion, input }) => ({
       criterion,
       output: CriteriaBasedAnalyzer.countLoops(ast, input),
