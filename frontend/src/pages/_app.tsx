@@ -20,10 +20,12 @@ import YupLocalization from "@/components/form/YupLocalization";
 import {
   defaultLocalizationState,
   LocalizationState,
+  SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
+import { Toaster } from "react-hot-toast";
 
 const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
@@ -95,7 +97,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   const messages = useMemo(() => {
     switch (localizationState.locale) {
-      case "fr":
+      case SupportedLocale.french:
         return French;
       default:
         return English;
@@ -124,6 +126,12 @@ const App = ({ Component, pageProps }: AppProps) => {
                   >
                     <WebSocketProvider>
                       <Component {...pageProps} />
+                      <Toaster
+                        toastOptions={{
+                          position: "bottom-right",
+                          duration: 5000,
+                        }}
+                      />
                     </WebSocketProvider>
                   </AuthenticationBarrier>
                 </UpdateLocalizationContext.Provider>

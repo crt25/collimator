@@ -198,10 +198,16 @@ model Solution {
   analysis SolutionAnalysis?
 }
 
+enum AstVersion {
+  v0
+  v1
+}
+
 model SolutionAnalysis {
-  id         Int    @id @default(autoincrement())
-  solutionId Int    @unique
+  id         Int        @id @default(autoincrement())
+  solutionId Int        @unique
   genericAst String
+  astVersion AstVersion @default(v0)
 
   solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
 }

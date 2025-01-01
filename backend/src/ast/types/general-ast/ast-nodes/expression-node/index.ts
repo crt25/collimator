@@ -1,4 +1,4 @@
-import { FunctionCallNode } from "./function-call-node";
+import { FunctionCallExpressionNode } from "./function-call-node";
 import { LiteralNode } from "./literal-node";
 import { OperatorNode } from "./operator-node";
 import { VariableNode } from "./variable-node";
@@ -7,8 +7,8 @@ export * from "./expression-node-type";
 
 export type ExpressionNode =
   | LiteralNode
-  | FunctionCallNode
+  | FunctionCallExpressionNode
   | VariableNode
   | OperatorNode;
 
-export type { FunctionCallNode, LiteralNode, OperatorNode, VariableNode };
+export type { FunctionCallExpressionNode as FunctionCallNode, LiteralNode, OperatorNode, VariableNode };

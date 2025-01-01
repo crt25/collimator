@@ -3,8 +3,8 @@ import styled from "@emotion/styled";
 const Tooltip = styled.div<{ isShown: boolean }>`
   position: absolute;
 
-  /* prevent the tooltip from stealing the hover */
-  pointer-events: none;
+  /* ensure the tooltip doesn't get overly squashed if at the screen edge */
+  min-width: 12rem;
 
   opacity: ${({ isShown }) => (isShown ? "1" : "0")};
 
@@ -12,6 +12,7 @@ const Tooltip = styled.div<{ isShown: boolean }>`
   background-color: var(--background-color);
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
+  z-index: 9000;
 
   .data {
     & > div > span:first-of-type {
@@ -21,6 +22,10 @@ const Tooltip = styled.div<{ isShown: boolean }>`
         content: ":";
       }
     }
+  }
+
+  .group {
+    margin-top: 0.5rem;
   }
 `;
 

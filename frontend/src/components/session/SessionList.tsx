@@ -6,7 +6,7 @@ import {
 import { Column } from "primereact/column";
 import { useCallback, useContext, useState } from "react";
 import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import Tag from "@/components/Tag";
 import Tags from "@/components/Tags";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +23,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "../MultiSwrContent";
+import Button, { ButtonVariant } from "../Button";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -163,7 +164,7 @@ const SessionList = ({ classId }: { classId: number }) => {
       <div>
         <Dropdown as={ButtonGroup}>
           <Button
-            variant="secondary"
+            variant={ButtonVariant.secondary}
             onClick={(e) => {
               e.stopPropagation();
 
@@ -288,7 +289,7 @@ const SessionList = ({ classId }: { classId: number }) => {
               filterElement={
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    variant="secondary"
+                    variant={ButtonVariant.secondary}
                     onClick={() =>
                       router.push(`/class/${classId}/session/create`)
                     }

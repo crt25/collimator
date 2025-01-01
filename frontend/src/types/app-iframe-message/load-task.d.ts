@@ -1,3 +1,4 @@
+import { Language } from "./languages";
 import {
   RemoteProcedureCallRequest,
   RemoteProcedureCallResponse,
@@ -5,7 +6,13 @@ import {
 
 type ProcedureName = "loadTask";
 
-export type LoadTaskRequest = RemoteProcedureCallRequest<ProcedureName, Blob>;
+export type LoadTaskRequest = RemoteProcedureCallRequest<
+  ProcedureName,
+  {
+    task: Blob;
+    language: Language;
+  }
+>;
 
 export type LoadTaskResponse = RemoteProcedureCallResponse<
   ProcedureName,

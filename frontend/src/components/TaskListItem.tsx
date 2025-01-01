@@ -1,4 +1,4 @@
-import { TaskStatus } from "@/types/task/task-status";
+import { TaskProgress } from "@/api/collimator/generated/models";
 import styled from "@emotion/styled";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-regular-svg-icons";
 import { faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
@@ -57,16 +57,16 @@ const IconWrapper = styled.div`
 `;
 
 const iconByTaskStatus = (
-  status: TaskStatus,
+  status: TaskProgress,
 ): FontAwesomeIconProps["icon"] | null => {
   switch (status) {
-    case TaskStatus.done:
+    case TaskProgress.done:
       return faStar;
-    case TaskStatus.partiallyDone:
+    case TaskProgress.partiallyDone:
       return faStarHalfStroke;
-    case TaskStatus.opened:
+    case TaskProgress.opened:
       return faScrewdriverWrench;
-    case TaskStatus.unOpened:
+    case TaskProgress.unOpened:
     default:
       return null;
   }
@@ -74,16 +74,16 @@ const iconByTaskStatus = (
 
 const TaskListItem = ({
   children,
-  status,
+  progress,
   active,
   onClick,
 }: {
   children: React.ReactNode;
-  status: TaskStatus;
+  progress: TaskProgress;
   active?: boolean;
   onClick?: () => void;
 }) => {
-  const icon = iconByTaskStatus(status);
+  const icon = iconByTaskStatus(progress);
 
   return (
     <li>

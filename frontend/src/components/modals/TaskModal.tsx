@@ -1,11 +1,13 @@
-import { Button, Modal } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { Modal } from "react-bootstrap";
+import { FormattedMessage, useIntl } from "react-intl";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import styled from "@emotion/styled";
 import { ReactNode, useCallback, useRef, useState } from "react";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
+import Button, { ButtonVariant } from "../Button";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const LargeModal = styled(Modal)`
   & > .modal-dialog {
@@ -32,6 +34,8 @@ const TaskModal = ({
   showExportButton,
   showSaveButton,
   onSave,
+  header,
+  footer,
 }: {
   title: ReactNode;
   url: string | null | undefined;
@@ -44,9 +48,12 @@ const TaskModal = ({
   showExportButton?: boolean;
   showSaveButton?: boolean;
   onSave?: (blob: Blob) => void;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const intl = useIntl();
 
   const onImportTask = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -57,9 +64,12 @@ const TaskModal = ({
 
     await embeddedApp.current.sendRequest({
       procedure: "loadTask",
-      arguments: task,
+      arguments: {
+        task,
+        language: intl.locale as Language,
+      },
     });
-  }, []);
+  }, [intl.locale]);
 
   const onExportTask = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -90,6 +100,7 @@ const TaskModal = ({
       <MaxScreenHeightInModal>
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
+          {header}
         </Modal.Header>
         <ModalBody>
           {url && (
@@ -101,11 +112,12 @@ const TaskModal = ({
           )}
         </ModalBody>
         <Modal.Footer>
+          {footer}
           {showResetButton && (
             <Button
               disabled={!appLoaded}
               onClick={loadAppData}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="reset-button"
             >
               <FormattedMessage id="TaskModal.reset" defaultMessage="Reset" />
@@ -115,7 +127,7 @@ const TaskModal = ({
             <Button
               disabled={!appLoaded}
               onClick={onImportTask}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="import-button"
             >
               <FormattedMessage
@@ -128,7 +140,7 @@ const TaskModal = ({
             <Button
               disabled={!appLoaded}
               onClick={onExportTask}
-              variant="secondary"
+              variant={ButtonVariant.secondary}
               data-testid="export-button"
             >
               <FormattedMessage
@@ -150,7 +162,7 @@ const TaskModal = ({
                 }
                 setIsShown(false);
               }}
-              variant="primary"
+              variant={ButtonVariant.secondary}
               data-testid="save-button"
             >
               <FormattedMessage
