@@ -5,6 +5,7 @@ import {
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
 import { GeneralAst } from "@ast/index";
+import { StatementNodeType } from "@ast/ast-nodes";
 
 export const countStatements = (
   ast: GeneralAst,
@@ -13,8 +14,11 @@ export const countStatements = (
   let count = 0;
 
   walkAst(ast, {
-    statementCallback: () => {
-      count++;
+    statementCallback: (node) => {
+      // We only want to count the statement nodes that are not sequences
+      if (node.statementType !== StatementNodeType.sequence) {
+        count++;
+      }
 
       return AstWalkSignal.continueWalking;
     },
