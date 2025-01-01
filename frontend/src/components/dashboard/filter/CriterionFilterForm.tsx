@@ -4,7 +4,7 @@ import { match } from "ts-pattern";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { NoCriterionFilter } from "../criteria/none";
 import { ConditionCriterionFilter } from "../criteria/condition";
-import { FunctionCallCriterionFilter } from "../criteria/function-call";
+import { BuiltInFunctionCallCriterionFilter } from "../criteria/built-in-function-call";
 import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
@@ -13,6 +13,7 @@ import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";
 import { IndentationCriterionFilter } from "../criteria/indentation";
+import { CustomFunctionCallCriterionFilter } from "../criteria/custom-function-call";
 
 const createProps = <
   Filter extends FilterCriterion,
@@ -84,6 +85,17 @@ const CriterionFilterForm = ({
     )
     .with(
       {
+        filter: { criterion: AstCriterionType.customFunctionCall },
+        parameters: { criterion: AstCriterionType.customFunctionCall },
+      },
+      (f) => (
+        <CustomFunctionCallCriterionFilter.formComponent
+          {...createProps(f, setFilters)}
+        />
+      ),
+    )
+    .with(
+      {
         filter: { criterion: AstCriterionType.expression },
         parameters: { criterion: AstCriterionType.expression },
       },
@@ -95,11 +107,11 @@ const CriterionFilterForm = ({
     )
     .with(
       {
-        filter: { criterion: AstCriterionType.functionCall },
-        parameters: { criterion: AstCriterionType.functionCall },
+        filter: { criterion: AstCriterionType.builtInFunctionCall },
+        parameters: { criterion: AstCriterionType.builtInFunctionCall },
       },
       (f) => (
-        <FunctionCallCriterionFilter.formComponent
+        <BuiltInFunctionCallCriterionFilter.formComponent
           {...createProps(f, setFilters)}
         />
       ),
