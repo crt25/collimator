@@ -8,25 +8,17 @@ import { GeneralAst } from "@ast/index";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 
-export const countFunctionCalls = (
+export const countBuiltInFunctionCalls = (
   ast: GeneralAst,
   input: Exclude<
-    CriteriaBasedAnalyzerInput[AstCriterionType.functionCall],
+    CriteriaBasedAnalyzerInput[AstCriterionType.builtInFunctionCall],
     undefined
   >,
-): CriteriaBasedAnalyzerOutput[AstCriterionType.functionCall] => {
+): CriteriaBasedAnalyzerOutput[AstCriterionType.builtInFunctionCall] => {
   const callsByFunctionName: Record<string, number> = {};
-
-  let numberOfCalls = 0;
+  const declaredFunctionNames = new Set<string>();
 
   const onFunctionCalled = (functionName: string): void => {
-    if (
-      input.functionName === undefined ||
-      functionName === input.functionName
-    ) {
-      numberOfCalls++;
-    }
-
     if (functionName in callsByFunctionName) {
       callsByFunctionName[functionName]++;
     } else {
@@ -38,6 +30,10 @@ export const countFunctionCalls = (
     statementCallback: (node) => {
       if (node.statementType == StatementNodeType.functionCall) {
         onFunctionCalled(node.name);
+      }
+
+      if (node.statementType === StatementNodeType.functionDeclaration) {
+        declaredFunctionNames.add(node.name);
       }
 
       return AstWalkSignal.continueWalking;
@@ -52,8 +48,22 @@ export const countFunctionCalls = (
     },
   });
 
+  const builtInFunctionCallsByName = Object.fromEntries(
+    Object.entries(callsByFunctionName).filter(
+      ([functionName]) => !declaredFunctionNames.has(functionName),
+    ),
+  );
+
+  const numberOfCalls =
+    input.functionName === undefined
+      ? Object.values(builtInFunctionCallsByName).reduce(
+          (sum, calls) => sum + calls,
+          0,
+        )
+      : (builtInFunctionCallsByName[input.functionName] ?? 0);
+
   return {
-    callsByFunctionName,
+    callsByFunctionName: builtInFunctionCallsByName,
     numberOfCalls,
   };
 };

@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
 import {
-  FunctionCallFilterCriterion,
-  FunctionCallFilterCriterionParameters,
+  BuiltInFunctionCallFilterCriterion,
+  BuiltInFunctionCallFilterCriterionParameters,
 } from ".";
 import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
@@ -11,23 +11,23 @@ import Select from "@/components/form/Select";
 
 const messages = defineMessages({
   functionName: {
-    id: "FunctionCallCriterionFilterForm.functionName",
+    id: "BuiltInFunctionCallCriterionFilterForm.functionName",
     defaultMessage: "Function Name",
   },
   anyFunction: {
-    id: "FunctionCallCriterionFilterForm.anyFunction",
+    id: "BuiltInFunctionCallCriterionFilterForm.anyFunction",
     defaultMessage: "Any function",
   },
   count: {
-    id: "FunctionCallCriterionFilterForm.count",
+    id: "BuiltInFunctionCallCriterionFilterForm.count",
     defaultMessage: "Number of function calls",
   },
 });
 
-const FunctionCallCriterionFilterForm: CriterionFormComponent<
-  AstCriterionType.functionCall,
-  FunctionCallFilterCriterion,
-  FunctionCallFilterCriterionParameters
+const BuiltInFunctionCallCriterionFilterForm: CriterionFormComponent<
+  AstCriterionType.builtInFunctionCall,
+  BuiltInFunctionCallFilterCriterion,
+  BuiltInFunctionCallFilterCriterionParameters
 > = ({
   value,
   onChange,
@@ -110,4 +110,4 @@ const FunctionCallCriterionFilterForm: CriterionFormComponent<
   );
 };
 
-export default FunctionCallCriterionFilterForm;
+export default BuiltInFunctionCallCriterionFilterForm;
