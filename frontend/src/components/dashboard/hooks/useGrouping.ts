@@ -7,7 +7,6 @@ import {
   CategorizedDataPoint,
   Group,
   ManualGroup,
-  AnalysisGroupAssignment,
   FilteredAnalysis,
 } from "./types";
 import { Category } from "../category";
@@ -22,16 +21,12 @@ export const useGrouping = (
 ): {
   isGroupingAvailable: boolean;
   categorizedDataPoints: CategorizedDataPoint[];
-  groupAssignments: AnalysisGroupAssignment[];
   groups: Group[];
   manualGroups: ManualGroup[];
 } => {
   const [isGroupingAvailable, setIsGroupingAvailable] =
     useState<boolean>(false);
   const [dataPoints, setDataPoints] = useState<CategorizedDataPoint[]>([]);
-  const [groupAssignment, setGroupAssignment] = useState<
-    AnalysisGroupAssignment[]
-  >([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [manualGroups, setManualGroups] = useState<ManualGroup[]>([]);
 
@@ -54,14 +49,13 @@ export const useGrouping = (
   useEffect(() => {
     let isCancelled = false;
 
-    let dataPoints: CategorizedDataPoint[] = [];
-
     if (!isAutomaticGrouping) {
-      dataPoints = manual.dataPoints;
+      const dataPoints = manual.dataPoints;
 
       setGroups(manual.groups);
       setManualGroups(manual.groups);
       setIsGroupingAvailable(true);
+      setDataPoints(dataPoints);
     } else {
       setIsGroupingAvailable(false);
 
@@ -70,7 +64,7 @@ export const useGrouping = (
           return;
         }
 
-        dataPoints = automaticGroups.map((group) => ({
+        const dataPoints = automaticGroups.map((group) => ({
           ...group,
           category: Category.matchesFilters | Category.isAutomaticGroup,
         }));
@@ -78,18 +72,9 @@ export const useGrouping = (
         setGroups(automaticGroups);
         setManualGroups([]);
         setIsGroupingAvailable(true);
+        setDataPoints(dataPoints);
       });
     }
-
-    setDataPoints(dataPoints);
-    setGroupAssignment(
-      dataPoints.flatMap((dataPoint) =>
-        dataPoint.analyses.map((analysis) => ({
-          groupKey: dataPoint.groupKey,
-          analysis,
-        })),
-      ),
-    );
 
     return (): void => {
       isCancelled = true;
@@ -99,8 +84,7 @@ export const useGrouping = (
   return {
     isGroupingAvailable,
     categorizedDataPoints: dataPoints,
-    groupAssignments: groupAssignment,
-    groups: groups,
-    manualGroups: manualGroups,
+    groups,
+    manualGroups,
   };
 };
