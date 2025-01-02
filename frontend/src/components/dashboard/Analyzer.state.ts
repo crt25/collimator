@@ -238,10 +238,10 @@ export const analyzerStateReducer = (
     case AnalyzerStateActionType.addBookmarkedSolution:
       return {
         ...state,
-        bookmarkedSolutionIds: [
-          ...state.bookmarkedSolutionIds,
-          action.solutionId,
-        ],
+        bookmarkedSolutionIds:
+          state.bookmarkedSolutionIds.indexOf(action.solutionId) === -1
+            ? [...state.bookmarkedSolutionIds, action.solutionId]
+            : state.bookmarkedSolutionIds,
       };
     case AnalyzerStateActionType.removeBookmarkedSolution:
       return {

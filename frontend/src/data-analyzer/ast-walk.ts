@@ -85,7 +85,7 @@ const lazyWalkExpression = (
  * Walks through all statements in the AST and calls the callback for each statement.
  * @param node The AST node to walk
  * @param depth The depth of the current AST node
- * @param indentation The current indentation level
+ * @param indentation The current (semantic) indentation level
  * @param statementCallback The callback to call for each statement. If the callback returns false, the walking will stop.
  * @param options Options for the walking
  */

@@ -15,6 +15,8 @@ import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationCon
 import { UserRole } from "@/types/user/user-role";
 import { UseFormSetError } from "react-hook-form";
 
+const logModule = "[UserSignIn]";
+
 const messages = defineMessages({
   submit: {
     id: "UserSignIn.submit",
@@ -230,7 +232,7 @@ const UserSignIn = ({
             message: intl.formatMessage(messages.backupPasswordRequired),
           });
         } else {
-          console.error("Error during user sign in", e);
+          console.error(`${logModule} Unexpected error during user sign in`, e);
 
           setError("password", {
             type: "custom",

@@ -54,7 +54,7 @@ const DissimilarityAnalysis = ({
     string | undefined
   >();
 
-  const [numberOfSolutions, setNumberOfSolutions] = useState<number>(1);
+  const [numberOfSolutions, setNumberOfSolutions] = useState<number>(2);
 
   const {
     data: task,
@@ -148,10 +148,10 @@ const DissimilarityAnalysis = ({
                   label={messages.numberOfDissimilarSolutions}
                   type="number"
                   value={numberOfSolutions}
-                  min={1}
+                  min={2}
                   max={subTaskAnalyses?.length}
                   onChange={(e) =>
-                    setNumberOfSolutions(Math.max(1, parseInt(e.target.value)))
+                    setNumberOfSolutions(Math.max(2, parseInt(e.target.value)))
                   }
                 />
               </AnalysisParameters>

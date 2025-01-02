@@ -3,10 +3,12 @@ import { getAstDistance } from "../ast-distance";
 import { DistanceType } from "../ast-distance/distance-type";
 import { useEffect, useState } from "react";
 
+const logModule = `[useDissimilarAnalyses]`;
+
 export class TooManyCombinationsError extends Error {
   constructor() {
     super(
-      "The number of combinations is too high. Please select a smaller number of analyses.",
+      `${logModule} The number of combinations is too high. Please select a smaller number of analyses.`,
     );
   }
 }
@@ -20,7 +22,10 @@ function* getCombinations(n: number, k: number): Generator<number[]> {
   const combinationSet: number[][] = [];
 
   if (k > n) {
-    throw new Error("k must be less than or equal to n");
+    console.error(
+      `${logModule} Can't generate combinations. k must be less than or equal to n. Got ${k} > ${n}`,
+    );
+    return;
   }
 
   const combination = Array.from(Array(k), (_, idx) => idx);

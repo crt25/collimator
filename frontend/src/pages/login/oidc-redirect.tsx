@@ -19,6 +19,8 @@ import {
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
 
+const logModule = "[OpenIdConnectRedirect]";
+
 const getNameFromUserInfo = (
   userInfo: UserInfoResponse,
 ): string | undefined => {
@@ -116,7 +118,7 @@ const OpenIdConnectRedirect = () => {
           setErrorRedirectPath(e.redirectPath);
         }
 
-        console.error("Authentication failed", e);
+        console.error(`${logModule} Authentication failed`, e);
         setAuthenticationFailed(true);
       });
     // we only want to run this once when the component is mounted
