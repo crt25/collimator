@@ -11,6 +11,12 @@
       "value": "Number of Students"
     }
   ],
+  "Analysis.selected": [
+    {
+      "type": 0,
+      "value": "Selected"
+    }
+  ],
   "Analysis.xAxis": [
     {
       "type": 0,
@@ -53,6 +59,30 @@
       "value": "Number of groups"
     }
   ],
+  "Analyzer.selectSolutionForComparisonDescription": [
+    {
+      "type": 0,
+      "value": "Where should the selected solution be placed?"
+    }
+  ],
+  "Analyzer.selectSolutionForComparisonLeft": [
+    {
+      "type": 0,
+      "value": "Left"
+    }
+  ],
+  "Analyzer.selectSolutionForComparisonRight": [
+    {
+      "type": 0,
+      "value": "Right"
+    }
+  ],
+  "Analyzer.selectSolutionForComparisonTitle": [
+    {
+      "type": 0,
+      "value": "Selecting Solution for Comparison"
+    }
+  ],
   "Analyzer.subTaskSelection": [
     {
       "type": 0,
@@ -71,10 +101,34 @@
       "value": "Filtering Criteria"
     }
   ],
+  "AstHeightCriterionFilterForm.count": [
+    {
+      "type": 0,
+      "value": "Height of the AST"
+    }
+  ],
   "Breadcrumbs.home": [
     {
       "type": 0,
       "value": "Home"
+    }
+  ],
+  "BuiltInFunctionCallCriterionFilterForm.anyFunction": [
+    {
+      "type": 0,
+      "value": "Any function"
+    }
+  ],
+  "BuiltInFunctionCallCriterionFilterForm.count": [
+    {
+      "type": 0,
+      "value": "Number of function calls"
+    }
+  ],
+  "BuiltInFunctionCallCriterionFilterForm.functionName": [
+    {
+      "type": 0,
+      "value": "Function Name"
     }
   ],
   "Category.allTestsPass": [
@@ -89,16 +143,16 @@
       "value": "Automatic Group"
     }
   ],
-  "Category.filteredOut": [
-    {
-      "type": 0,
-      "value": "filtered out"
-    }
-  ],
   "Category.inCorrect": [
     {
       "type": 0,
       "value": "No test passes"
+    }
+  ],
+  "Category.mixed": [
+    {
+      "type": 0,
+      "value": "Mixed"
     }
   ],
   "Category.noTests": [
@@ -399,6 +453,114 @@
       "value": "Users"
     }
   ],
+  "CustomFunctionCallCriterionFilterForm.count": [
+    {
+      "type": 0,
+      "value": "Number of custom function callss"
+    }
+  ],
+  "DEPRECATED: Category.filteredOut": [
+    {
+      "type": 0,
+      "value": "filtered out"
+    }
+  ],
+  "DEPRECATED: FunctionCallCriterionFilterForm.count": [
+    {
+      "type": 0,
+      "value": "Number of function calls"
+    }
+  ],
+  "DEPRECATED: FunctionCallCriterionFilterForm.functionName": [
+    {
+      "type": 0,
+      "value": "Function Name"
+    }
+  ],
+  "DEPRECATED: SessionGrouping.header": [
+    {
+      "type": 0,
+      "value": "Analysis"
+    }
+  ],
+  "DEPRECATED: criteria.functionCall.name": [
+    {
+      "type": 0,
+      "value": "Function Call"
+    }
+  ],
+  "DissimilarAnalysisPairs.header": [
+    {
+      "type": 0,
+      "value": "Dissimilar Solutions"
+    }
+  ],
+  "DissimilarPairs.allSubTasks": [
+    {
+      "type": 0,
+      "value": "All sub-tasks"
+    }
+  ],
+  "DissimilarPairs.numberOfDissimilarPairs": [
+    {
+      "type": 0,
+      "value": "Number of dissimilar pairs"
+    }
+  ],
+  "DissimilarPairs.subTaskSelection": [
+    {
+      "type": 0,
+      "value": "Sub-task Selection"
+    }
+  ],
+  "DissimilarPairs.taskSelection": [
+    {
+      "type": 0,
+      "value": "Task Selection"
+    }
+  ],
+  "DissimilarSolutions.header": [
+    {
+      "type": 0,
+      "value": "Dissimilar Solutions"
+    }
+  ],
+  "DissimilarityAnalysis.allSubTasks": [
+    {
+      "type": 0,
+      "value": "All sub-tasks"
+    }
+  ],
+  "DissimilarityAnalysis.noTasksInSession": [
+    {
+      "type": 0,
+      "value": "There are no tasks in this session."
+    }
+  ],
+  "DissimilarityAnalysis.numberOfDissimilarSolutions": [
+    {
+      "type": 0,
+      "value": "Number of dissimilar solutions"
+    }
+  ],
+  "DissimilarityAnalysis.subTaskSelection": [
+    {
+      "type": 0,
+      "value": "Sub-task Selection"
+    }
+  ],
+  "DissimilarityAnalysis.taskSelection": [
+    {
+      "type": 0,
+      "value": "Task Selection"
+    }
+  ],
+  "DissimilarityAnalysis.tooManyCombinations": [
+    {
+      "type": 0,
+      "value": "Too many combinations to calculate dissimilar pairs."
+    }
+  ],
   "EditClass.header": [
     {
       "type": 0,
@@ -471,18 +633,6 @@
       "value": "Number of expressions"
     }
   ],
-  "FunctionCallCriterionFilterForm.count": [
-    {
-      "type": 0,
-      "value": "Number of function calls"
-    }
-  ],
-  "FunctionCallCriterionFilterForm.functionName": [
-    {
-      "type": 0,
-      "value": "Function Name"
-    }
-  ],
   "FunctionDeclarationCriterionFilterForm.count": [
     {
       "type": 0,
@@ -505,6 +655,12 @@
     {
       "type": 0,
       "value": "Home"
+    }
+  ],
+  "IndentationCriterionFilterForm.level": [
+    {
+      "type": 0,
+      "value": "Level of code indentation"
     }
   ],
   "JoinSession.anonymousSessionDescription": [
@@ -729,7 +885,7 @@
       "value": "Time on Task"
     }
   ],
-  "SessionGrouping.header": [
+  "SessionAnalysis.header": [
     {
       "type": 0,
       "value": "Analysis"
@@ -793,6 +949,18 @@
     {
       "type": 0,
       "value": "Analysis"
+    }
+  ],
+  "SessionNavigation.dissimilarPairsTab": [
+    {
+      "type": 0,
+      "value": "Dissimilar Pairs"
+    }
+  ],
+  "SessionNavigation.dissimilarSolutionsTab": [
+    {
+      "type": 0,
+      "value": "Dissimilar Solutions"
     }
   ],
   "SessionNavigation.progress": [
@@ -919,6 +1087,40 @@
       "value": "Decrypting..."
     }
   ],
+  "TaskDetail.unsupportedApp": [
+    {
+      "type": 0,
+      "value": "The unsupported application type "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " was selected (Task id "
+    },
+    {
+      "type": 1,
+      "value": "taskId"
+    },
+    {
+      "type": 0,
+      "value": "). Please report this issue."
+    }
+  ],
+  "TaskForm.SaveError": [
+    {
+      "type": 0,
+      "value": "An error occurred while saving the task. Try again later."
+    }
+  ],
+  "TaskForm.SaveSuccess": [
+    {
+      "type": 0,
+      "value": "The task was saved successfully."
+    }
+  ],
   "TaskForm.blob.create": [
     {
       "type": 0,
@@ -937,6 +1139,24 @@
       "value": "The provided file data is invalid"
     }
   ],
+  "TaskForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
+    }
+  ],
+  "TaskForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, I don't need to save."
+    }
+  ],
+  "TaskForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
+    }
+  ],
   "TaskForm.description": [
     {
       "type": 0,
@@ -953,6 +1173,12 @@
     {
       "type": 0,
       "value": "Type"
+    }
+  ],
+  "TaskModal.closeConfirmation": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to close without saving?"
     }
   ],
   "TaskModal.export": [
@@ -1151,10 +1377,28 @@
       "value": "View solution"
     }
   ],
+  "criteria.astHeight.name": [
+    {
+      "type": 0,
+      "value": "Nestedness (AST Tree Height)"
+    }
+  ],
+  "criteria.builtInFunctionCall.name": [
+    {
+      "type": 0,
+      "value": "Built-in Function Calls"
+    }
+  ],
   "criteria.condition.name": [
     {
       "type": 0,
       "value": "If"
+    }
+  ],
+  "criteria.customFunctionCall.name": [
+    {
+      "type": 0,
+      "value": "Custom Function Calls"
     }
   ],
   "criteria.expression.name": [
@@ -1163,16 +1407,16 @@
       "value": "Expression"
     }
   ],
-  "criteria.functionCall.name": [
-    {
-      "type": 0,
-      "value": "Function Call"
-    }
-  ],
   "criteria.functionDeclaration.name": [
     {
       "type": 0,
       "value": "Function Declaration"
+    }
+  ],
+  "criteria.indentation.name": [
+    {
+      "type": 0,
+      "value": "Code Indentation"
     }
   ],
   "criteria.loop.name": [
