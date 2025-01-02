@@ -38,7 +38,7 @@ const useNavigationObserver = ({
   useEffect(() => {
     navigationConfirmed.current = false;
 
-    const onRouteChange = (url: string) => {
+    const onRouteChange = (url: string): void => {
       if (currentPath !== url) {
         // if the user clicked on the browser back button then the url displayed in the browser gets incorrectly updated
         // This is needed to restore the correct url.

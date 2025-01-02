@@ -45,7 +45,7 @@ const EditTask = () => {
         });
       }
     },
-    [task.data, taskFile.data, updateTask, updateTaskFile, router],
+    [task.data, taskFile.data, updateTask, updateTaskFile],
   );
 
   return (

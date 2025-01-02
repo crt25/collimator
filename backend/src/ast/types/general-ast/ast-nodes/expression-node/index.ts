@@ -11,4 +11,9 @@ export type ExpressionNode =
   | VariableNode
   | OperatorNode;
 
-export type { FunctionCallExpressionNode as FunctionCallNode, LiteralNode, OperatorNode, VariableNode };
+export type {
+  FunctionCallExpressionNode as FunctionCallNode,
+  LiteralNode,
+  OperatorNode,
+  VariableNode,
+};
