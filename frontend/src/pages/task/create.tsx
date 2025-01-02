@@ -27,8 +27,6 @@ const CreateTask = () => {
         type: formValues.type,
         file: formValues.blob,
       });
-
-      router.back();
     },
     [createTask, router],
   );
