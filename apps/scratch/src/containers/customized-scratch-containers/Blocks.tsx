@@ -616,6 +616,12 @@ class Blocks extends React.Component<Props, State> {
     } else {
       workspace.zoomToFit();
     }
+
+    if (this.blocks && !this.props.canEditTask) {
+      // the project is frequently reloaded in dev mode,
+      // so we need to re-freeze the blocks on reload.
+      freezeTaskBlocks(this.props.vm, this.blocks);
+    }
   };
 
   updateToolboxBlockValue(id: string, value: string) {
