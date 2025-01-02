@@ -154,9 +154,11 @@ export const useEmbeddedScratch = (
           break;
         case "loadTask":
           if (vm) {
-            const sb3Project = await request.arguments.task.arrayBuffer();
             try {
               setLocale(request.arguments.language);
+
+              console.debug(`${logModule} Loading project`);
+              const sb3Project = await request.arguments.task.arrayBuffer();
               await loadCrtProject(vm, sb3Project);
 
               respondToMessageEvent({
