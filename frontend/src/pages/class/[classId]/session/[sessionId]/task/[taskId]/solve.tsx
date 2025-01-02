@@ -9,9 +9,15 @@ import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { scratchAppHostName } from "@/utilities/constants";
+import { downloadBlob } from "@/utilities/download";
+import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useFileHash } from "@/hooks/useFileHash";
+import toast from "react-hot-toast";
+import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
+import { Language } from "@/types/app-iframe-message/languages";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -24,6 +30,8 @@ const getSolveUrl = (taskType: TaskType) => {
 
 const SolveTaskPage = () => {
   const router = useRouter();
+  const intl = useIntl();
+
   const { classId, sessionId, taskId } = router.query as {
     classId?: string;
     sessionId?: string;
@@ -48,20 +56,28 @@ const SolveTaskPage = () => {
     isLoading: isLoadingTaskFile,
   } = useTaskFile(taskId);
 
+  const fetchLatestSolutionFile = useFetchLatestSolutionFile();
+
   const createSolution = useCreateSolution();
 
+  const taskFileHash = useFileHash(taskFile);
+
   const iframeSrc = useMemo(
-    () => (task ? getSolveUrl(task.type) : null),
-    [task],
+    () => (task?.type ? getSolveUrl(task.type) : null),
+    [task?.type],
   );
 
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
+  const wasInitialized = useRef(false);
+  const isScratchMutexAvailable = useRef(true);
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current) {
+    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
       return;
     }
+
+    isScratchMutexAvailable.current = false;
 
     if (!session || !task || !taskFile) {
       return;
@@ -76,20 +92,109 @@ const SolveTaskPage = () => {
       totalTests: response.result.totalTests,
       passedTests: response.result.passedTests,
     });
+
+    if (response.result.passedTests >= response.result.totalTests) {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.correctSolutionSubmitted"
+          defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
+        />,
+      );
+    } else {
+      toast.success(
+        <FormattedMessage
+          id="SolveTask.solutionSubmitted"
+          defaultMessage="The solution was submitted successfully."
+        />,
+      );
+    }
+
+    isScratchMutexAvailable.current = true;
   }, [session, task, taskFile, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
   }, []);
 
-  const onAppAvailable = useCallback(() => {
-    if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadTask",
-        arguments: taskFile,
-      });
+  const onAppAvailable = useCallback(async () => {
+    if (
+      embeddedApp.current &&
+      taskFile &&
+      session &&
+      task &&
+      isScratchMutexAvailable.current
+    ) {
+      if (wasInitialized.current) {
+        embeddedApp.current.sendRequest({
+          procedure: "setLocale",
+          arguments: intl.locale as Language,
+        });
+        return;
+      }
+
+      wasInitialized.current = true;
+
+      try {
+        const solutionFile = await fetchLatestSolutionFile(
+          session.klass.id,
+          session.id,
+          task.id,
+        );
+
+        isScratchMutexAvailable.current = false;
+
+        await embeddedApp.current.sendRequest({
+          procedure: "loadSubmission",
+          arguments: {
+            task: taskFile,
+            submission: solutionFile,
+            language: intl.locale as Language,
+          },
+        });
+      } catch {
+        // if we cannot fetch the latest solution file we load the task from scratch
+        await embeddedApp.current.sendRequest({
+          procedure: "loadTask",
+          arguments: {
+            task: taskFile,
+            language: intl.locale as Language,
+          },
+        });
+      } finally {
+        isScratchMutexAvailable.current = true;
+      }
     }
-  }, [taskFile]);
+    // since taskFile is a blob, use its hash as a proxy for its content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [embeddedApp, taskFileHash, session, task, intl]);
+
+  const onImport = useCallback(async () => {
+    if (!embeddedApp.current) {
+      return;
+    }
+
+    const task = await readSingleFileFromDisk();
+
+    await embeddedApp.current.sendRequest({
+      procedure: "loadTask",
+      arguments: {
+        task,
+        language: intl.locale as Language,
+      },
+    });
+  }, [intl]);
+
+  const onExport = useCallback(async () => {
+    if (!embeddedApp.current) {
+      return;
+    }
+
+    const response = await embeddedApp.current.sendRequest({
+      procedure: "getTask",
+    });
+
+    downloadBlob(response.result, "task.sb3");
+  }, []);
 
   if (!sessionId || !taskId) {
     return null;
@@ -106,14 +211,14 @@ const SolveTaskPage = () => {
             {showSessionMenu ? (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.hideSession"
                   defaultMessage="Hide Session"
                 />
               </span>
             ) : (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.showSession"
                   defaultMessage="Show Session"
                 />
               </span>
@@ -126,9 +231,19 @@ const SolveTaskPage = () => {
             data-testid="submit-solution-button"
           >
             <FormattedMessage
-              id="SolveTask.getStarted"
+              id="SolveTask.submitSolution"
               defaultMessage="Submit Solution"
             />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={onExport}>
+            <FormattedMessage id="SolveTask.export" defaultMessage="Export" />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={onImport}>
+            <FormattedMessage id="SolveTask.import" defaultMessage="Import" />
           </Button>
         </li>
       </Header>

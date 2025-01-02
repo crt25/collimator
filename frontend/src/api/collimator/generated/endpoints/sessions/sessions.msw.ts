@@ -7,12 +7,13 @@
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import { SessionStatus } from "../../models";
+import { SessionStatus, TaskProgress } from "../../models";
 import type {
   DeletedSessionDto,
   ExistingSessionDto,
   ExistingSessionExtendedDto,
   IsSessionAnonymousDto,
+  StudentSessionProgressDto,
 } from "../../models";
 
 export const getSessionsControllerCreateV0ResponseMock = (
@@ -205,6 +206,22 @@ export const getSessionsControllerFinishV0ResponseMock = (
     (_, i) => i + 1,
   ).map(() => faker.number.int({ min: undefined, max: undefined })),
   title: faker.word.sample(),
+  ...overrideResponse,
+});
+
+export const getSessionsControllerGetSessionProgressV0ResponseMock = (
+  overrideResponse: Partial<StudentSessionProgressDto> = {},
+): StudentSessionProgressDto => ({
+  id: faker.number.int({ min: undefined, max: undefined }),
+  taskProgress: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    id: faker.number.int({ min: undefined, max: undefined }),
+    taskProgress: faker.helpers.arrayElement([
+      faker.helpers.arrayElement(Object.values(TaskProgress)),
+    ]),
+  })),
   ...overrideResponse,
 });
 
@@ -426,6 +443,32 @@ export const getSessionsControllerFinishV0MockHandler = (
     },
   );
 };
+
+export const getSessionsControllerGetSessionProgressV0MockHandler = (
+  overrideResponse?:
+    | StudentSessionProgressDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<StudentSessionProgressDto> | StudentSessionProgressDto),
+) => {
+  return http.get(
+    "*/api/v0/classes/:classId/sessions/:id/progress",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSessionsControllerGetSessionProgressV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
 export const getSessionsMock = () => [
   getSessionsControllerCreateV0MockHandler(),
   getSessionsControllerFindAllV0MockHandler(),
@@ -436,4 +479,5 @@ export const getSessionsMock = () => [
   getSessionsControllerStartV0MockHandler(),
   getSessionsControllerPauseV0MockHandler(),
   getSessionsControllerFinishV0MockHandler(),
+  getSessionsControllerGetSessionProgressV0MockHandler(),
 ];

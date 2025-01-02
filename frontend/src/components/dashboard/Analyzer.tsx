@@ -1,39 +1,49 @@
-import styled from "@emotion/styled";
-import { Col, Row } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
-import Select from "../form/Select";
-import { useCallback, useState } from "react";
-import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
-import { FilterCriterion } from "./filter";
+import { useCallback, useMemo, useReducer } from "react";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { Col, Modal, Row } from "react-bootstrap";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
-import Analysis from "./Analysis";
-import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import CodeComparison from "./CodeComparison";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import MultiSwrContent from "../MultiSwrContent";
+import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { AxesCriterionType } from "./axes";
-import { ChartSplit } from "./chartjs-plugins/select";
-import { MetaCriterionType } from "./criteria/meta-criterion-type";
-import { useGrouping } from "./hooks/useGrouping";
+import MultiSwrContent from "../MultiSwrContent";
+import Select from "../form/Select";
 import Input from "../form/Input";
-
-const Parameters = styled.div`
-  padding: 1rem;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
-
-  margin-bottom: 1rem;
-
-  select {
-    width: 100%;
-  }
-`;
+import { MetaCriterionType } from "./criteria/meta-criterion-type";
+import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
+import {
+  FilterCriterionParameters,
+  FilterCriterionType,
+  runFilter,
+} from "./filter";
+import { useGrouping } from "./hooks/useGrouping";
+import Analysis from "./Analysis";
+import CodeComparison from "./CodeComparison";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import Button, { ButtonVariant } from "../Button";
+import { FilteredAnalysis } from "./hooks/types";
+import {
+  allSubtasks,
+  AnalyzerStateActionType,
+  analyzerStateReducer,
+  defaultGroupValue,
+  defaultSolutionValue,
+} from "./Analyzer.state";
+import AnalysisParameters from "./AnalysisParameters";
+import { useSubtasks } from "./hooks/useSubtasks";
+import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
 
 const messages = defineMessages({
   taskSelection: {
     id: "Analyzer.taskSelection",
     defaultMessage: "Task Selection",
+  },
+  subTaskSelection: {
+    id: "Analyzer.subTaskSelection",
+    defaultMessage: "Sub-task Selection",
+  },
+  allSubTasks: {
+    id: "Analyzer.allSubTasks",
+    defaultMessage: "All sub-tasks",
   },
   automaticGrouping: {
     id: "Analyzer.automaticGrouping",
@@ -43,81 +53,140 @@ const messages = defineMessages({
     id: "Analyzer.numberOfGroups",
     defaultMessage: "Number of groups",
   },
+  selectSolutionForComparisonTitle: {
+    id: "Analyzer.selectSolutionForComparisonTitle",
+    defaultMessage: "Selecting Solution for Comparison",
+  },
+  selectSolutionForComparisonDescription: {
+    id: "Analyzer.selectSolutionForComparisonDescription",
+    defaultMessage: "Where should the selected solution be placed?",
+  },
+  selectSolutionForComparisonLeft: {
+    id: "Analyzer.selectSolutionForComparisonLeft",
+    defaultMessage: "Left",
+  },
+  selectSolutionForComparisonRight: {
+    id: "Analyzer.selectSolutionForComparisonRight",
+    defaultMessage: "Right",
+  },
 });
 
 const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
-  const [selectedTask, setSelectedTask] = useState<number | undefined>(
-    session.tasks[0]?.id,
-  );
+  const intl = useIntl();
 
-  const [isAutomaticGrouping, setIsAutomaticGrouping] = useState(false);
-  const [numberOfGroups, setNumberOfGroups] = useState(3);
-
-  const [xAxis, setXAxis] = useState<AxesCriterionType>(
-    AstCriterionType.statement,
-  );
-  const [yAxis, setYAxis] = useState<AxesCriterionType>(MetaCriterionType.test);
-
-  const [filters, setFilters] = useState<FilterCriterion[]>([]);
-  const [splits, setSplits] = useState<ChartSplit[]>([]);
+  const [state, dispatch] = useReducer(analyzerStateReducer, {
+    selectedTask: session.tasks[0]?.id,
+    selectedSubTaskId: undefined,
+    isAutomaticGrouping: false,
+    numberOfGroups: 3,
+    xAxis: AstCriterionType.statement,
+    yAxis: MetaCriterionType.test,
+    filters: [],
+    splits: [],
+    bookmarkedSolutionIds: [],
+    selectedSolutionId: undefined,
+    selectedLeftGroup: defaultGroupValue,
+    selectedRightGroup: defaultGroupValue,
+    selectedRightSolution: defaultSolutionValue,
+    selectedLeftSolution: defaultSolutionValue,
+  });
 
   const {
     data: task,
     isLoading: isLoadingTask,
     error: taskError,
-  } = useTask(selectedTask);
+  } = useTask(state.selectedTask);
 
   const {
-    data: solutions,
-    isLoading: isLoadingSolutions,
-    error: solutionsError,
+    data: analyses,
+    isLoading: isLoadingAnalyses,
+    error: analysesErrors,
   } = useCurrentSessionTaskSolutions(
     session.klass.id,
     session.id,
-    selectedTask,
+    state.selectedTask,
   );
 
-  const {
-    isGroupingAvailable,
-    categorizedDataPoints,
-    groupAssignments,
-    groups,
-    manualGroups,
-  } = useGrouping(
-    isAutomaticGrouping,
-    numberOfGroups,
-    solutions,
-    filters,
-    splits,
-    xAxis,
-    yAxis,
-  );
+  const subtasks = useSubtasks(analyses);
+  const subTaskAnalyses = useSubtaskAnalyses(analyses, state.selectedSubTaskId);
 
-  const updateXAxis = useCallback(
-    (newAxis: AxesCriterionType) => {
-      if (yAxis === newAxis) {
-        // flip axes
-        setYAxis(xAxis);
+  const { filteredAnalyses, parametersByCriterion } = useMemo<{
+    filteredAnalyses: FilteredAnalysis[];
+    parametersByCriterion: {
+      [key in FilterCriterionType]?: FilterCriterionParameters;
+    };
+  }>(() => {
+    if (!subTaskAnalyses) {
+      return {
+        filteredAnalyses: [],
+        parametersByCriterion: {},
+      };
+    }
+
+    const matchesAllFilters = new Array<boolean>(subTaskAnalyses?.length).fill(
+      true,
+    );
+
+    const parametersByCriterion: {
+      [key in FilterCriterionType]?: FilterCriterionParameters;
+    } = {};
+
+    for (const f of state.filters) {
+      const result = runFilter(f, subTaskAnalyses);
+      result.matchesFilter.forEach((m, idx) => {
+        matchesAllFilters[idx] = matchesAllFilters[idx] && m;
+      });
+
+      parametersByCriterion[f.criterion] = result.parameters;
+    }
+
+    const filteredAnalyses = subTaskAnalyses?.map((analysis, idx) => ({
+      analysis,
+      matchesAllFilters: matchesAllFilters[idx],
+    }));
+
+    return {
+      filteredAnalyses,
+      parametersByCriterion,
+    };
+  }, [subTaskAnalyses, state.filters]);
+
+  const { isGroupingAvailable, categorizedDataPoints, groups, manualGroups } =
+    useGrouping(
+      state.isAutomaticGrouping,
+      state.numberOfGroups,
+      filteredAnalyses,
+      state.splits,
+      state.xAxis,
+      state.yAxis,
+    );
+
+  const onSelectSolution = useCallback(
+    (groupKey: string, { solutionId }: CurrentAnalysis) => {
+      if (state.selectedLeftSolution === defaultSolutionValue) {
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedLeft,
+          groupKey,
+          solutionId,
+        });
+      } else if (state.selectedRightSolution === defaultSolutionValue) {
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedRight,
+          groupKey,
+          solutionId,
+        });
+      } else {
+        // let the user choose
+        dispatch({
+          type: AnalyzerStateActionType.setSelectedSolution,
+          selectedSolutionId: { groupKey, solutionId },
+        });
       }
-
-      setXAxis(newAxis);
     },
-    [xAxis, yAxis],
+    [state.selectedLeftSolution, state.selectedRightSolution],
   );
 
-  const updateYAxis = useCallback(
-    (newAxis: AxesCriterionType) => {
-      if (xAxis === newAxis) {
-        // flip axes
-        setXAxis(yAxis);
-      }
-
-      setYAxis(newAxis);
-    },
-    [xAxis, yAxis],
-  );
-
-  if (!selectedTask) {
+  if (!state.selectedTask) {
     return (
       <FormattedMessage
         id="Analyzer.noTasksInSession"
@@ -127,88 +196,194 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   }
 
   return (
-    <MultiSwrContent
-      data={[task, solutions]}
-      isLoading={[isLoadingTask, isLoadingSolutions]}
-      errors={[taskError, solutionsError]}
-    >
-      {([task]) => (
-        <Row>
-          <Col xs={12} lg={3}>
-            <Parameters>
-              <Select
-                label={messages.taskSelection}
-                options={session.tasks.map((task) => ({
-                  label: task.title,
-                  value: task.id,
-                }))}
-                data-testid="select-task"
-                onChange={(e) => setSelectedTask(parseInt(e.target.value))}
-                value={selectedTask}
-                alwaysShow
-              />
+    <>
+      <MultiSwrContent
+        data={[task, analyses]}
+        isLoading={[isLoadingTask, isLoadingAnalyses]}
+        errors={[taskError, analysesErrors]}
+      >
+        {([task]) => (
+          <Row>
+            <Col xs={12} lg={3}>
+              <AnalysisParameters>
+                <Select
+                  label={messages.taskSelection}
+                  options={session.tasks.map((task) => ({
+                    label: task.title,
+                    value: task.id,
+                  }))}
+                  data-testid="select-task"
+                  onChange={(e) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setSelectedTask,
+                      selectedTaskId: parseInt(e.target.value),
+                    })
+                  }
+                  value={state.selectedTask}
+                  alwaysShow
+                />
 
-              <AnalyzerFilterForm
-                taskType={task.type}
-                filters={filters}
-                setFilters={setFilters}
-              />
+                <Select
+                  label={messages.subTaskSelection}
+                  options={[
+                    {
+                      label: intl.formatMessage(messages.allSubTasks),
+                      value: allSubtasks,
+                    },
+                    ...subtasks.map((subtask) => ({
+                      label: subtask.toString(),
+                      value: subtask,
+                    })),
+                  ]}
+                  data-testid="select-subtask"
+                  onChange={(e) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setSelectedSubTask,
+                      selectedSubTaskId:
+                        e.target.value !== allSubtasks
+                          ? e.target.value
+                          : undefined,
+                    })
+                  }
+                  value={state.selectedSubTaskId}
+                  alwaysShow
+                />
 
-              <Input
-                label={messages.automaticGrouping}
-                type="checkbox"
-                checked={isAutomaticGrouping}
-                onChange={(e) => setIsAutomaticGrouping(e.target.checked)}
-              />
+                <AnalyzerFilterForm
+                  taskType={task.type}
+                  filters={state.filters}
+                  setFilters={(filters) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setFilters,
+                      filters,
+                    })
+                  }
+                  parametersByCriterion={parametersByCriterion}
+                />
 
-              {isAutomaticGrouping && (
                 <Input
-                  label={messages.numberOfGroups}
-                  type="number"
-                  value={numberOfGroups}
-                  onChange={(e) => setNumberOfGroups(parseInt(e.target.value))}
+                  label={messages.automaticGrouping}
+                  type="checkbox"
+                  checked={state.isAutomaticGrouping}
+                  onChange={(e) =>
+                    dispatch({
+                      type: AnalyzerStateActionType.setAutomaticGrouping,
+                      isAutomaticGrouping: e.target.checked,
+                    })
+                  }
                 />
-              )}
 
-              {!isGroupingAvailable && (
-                <FormattedMessage
-                  id="Analyzer.noGroupingAvailable"
-                  defaultMessage="Computing groups, please be patient."
-                />
-              )}
-            </Parameters>
-          </Col>
-          <Col xs={12} lg={9}>
-            {selectedTask && (
+                {state.isAutomaticGrouping && (
+                  <Input
+                    label={messages.numberOfGroups}
+                    type="number"
+                    value={state.numberOfGroups}
+                    onChange={(e) =>
+                      dispatch({
+                        type: AnalyzerStateActionType.setNumberOfGroups,
+                        numberOfGroups: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                )}
+
+                {!isGroupingAvailable && (
+                  <FormattedMessage
+                    id="Analyzer.noGroupingAvailable"
+                    defaultMessage="Computing groups, please be patient."
+                  />
+                )}
+              </AnalysisParameters>
+            </Col>
+            <Col xs={12} lg={9}>
               <Analysis
                 taskType={task.type}
-                xAxis={xAxis}
-                setXAxis={updateXAxis}
-                yAxis={yAxis}
-                setYAxis={updateYAxis}
+                state={state}
+                dispatch={dispatch}
                 categorizedDataPoints={categorizedDataPoints}
                 manualGroups={manualGroups}
-                splittingEnabled={!isAutomaticGrouping}
-                splits={splits}
-                setSplits={setSplits}
+                onSelectSolution={onSelectSolution}
               />
-            )}
-          </Col>
-          <Col xs={12}>
-            {task && (
-              <CodeComparison
-                classId={session.klass.id}
-                sessionId={session.id}
-                taskId={task.id}
-                taskType={task.type}
-                groupAssignments={groupAssignments}
-                groups={groups}
-              />
-            )}
-          </Col>
-        </Row>
-      )}
-    </MultiSwrContent>
+            </Col>
+            <Col xs={12}>
+              {task && (
+                <CodeComparison
+                  classId={session.klass.id}
+                  sessionId={session.id}
+                  taskId={task.id}
+                  state={state}
+                  dispatch={dispatch}
+                  taskType={task.type}
+                  categorizedDataPoints={categorizedDataPoints}
+                  groups={groups}
+                />
+              )}
+            </Col>
+          </Row>
+        )}
+      </MultiSwrContent>
+      <Modal
+        show={state.selectedSolutionId !== undefined}
+        onHide={() =>
+          dispatch({
+            type: AnalyzerStateActionType.setSelectedSolution,
+            selectedSolutionId: undefined,
+          })
+        }
+        data-testid="solution-selection-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {intl.formatMessage(messages.selectSolutionForComparisonTitle)}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {intl.formatMessage(messages.selectSolutionForComparisonDescription)}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              if (state.selectedSolutionId) {
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedLeft,
+                  groupKey: state.selectedSolutionId.groupKey,
+                  solutionId: state.selectedSolutionId.solutionId,
+                });
+
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedSolution,
+                  selectedSolutionId: undefined,
+                });
+              }
+            }}
+            variant={ButtonVariant.primary}
+            data-testid="cancel-button"
+          >
+            {intl.formatMessage(messages.selectSolutionForComparisonLeft)}
+          </Button>
+          <Button
+            onClick={() => {
+              if (state.selectedSolutionId) {
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedRight,
+                  groupKey: state.selectedSolutionId.groupKey,
+                  solutionId: state.selectedSolutionId.solutionId,
+                });
+
+                dispatch({
+                  type: AnalyzerStateActionType.setSelectedSolution,
+                  selectedSolutionId: undefined,
+                });
+              }
+            }}
+            variant={ButtonVariant.primary}
+            data-testid="cancel-button"
+          >
+            {intl.formatMessage(messages.selectSolutionForComparisonRight)}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

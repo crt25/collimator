@@ -2,6 +2,7 @@ import VM from "scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
 import { ignoreEvent, svgNamespace } from "./helpers";
 import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 
 const buttonHeight = 20;
 const buttonWidth = 60;
@@ -25,13 +26,46 @@ const getBlockId = (dataId: string): string => {
   return dataId;
 };
 
+const getBlockLimit = (
+  config: ScratchCrtConfig,
+  block: SVGGElement,
+): number | boolean | undefined => {
+  if (isDataBlock(block)) {
+    return config.allowedBlocks.variables ? -1 : 0;
+  }
+  if (isProcedureBlock(block)) {
+    return config.allowedBlocks.customBlocks ? -1 : 0;
+  }
+
+  const dataId = getBlockId(block.getAttribute("data-id") as string);
+  return config.allowedBlocks[dataId];
+};
+
+const isDataBlock = (block: SVGGElement): boolean => {
+  const blockCategory = block.getAttribute("data-category") as string;
+
+  // We can't only use the data_ prefix, as variables have arbitrary strings as ID
+  return blockCategory === "data" || blockCategory === "data-lists";
+};
+
+const isProcedureBlock = (block: SVGGElement): boolean => {
+  const dataId = getBlockId(block.getAttribute("data-id") as string);
+  const blockShape = block.getAttribute("data-shapes") as string;
+  const blockCategory = block.getAttribute("data-category");
+
+  return (
+    dataId.startsWith("procedures_") ||
+    (blockShape === "stack" && blockCategory === null)
+  );
+};
+
 /**
  * Whether to show the block configuration button for a given block id.
+ * For data and procedure blocks, we cannot limit the number of blocks,
+ * but only enable or disable them entirely.
  */
-const showBlockConfig = (blockId: string): boolean =>
-  // for data and procedure blocks, we cannot limit the number of blocks
-  // but only enable or disable them entirely
-  !(blockId.startsWith("data_") || blockId.startsWith("procedure_"));
+const showBlockConfig = (block: SVGGElement): boolean =>
+  !isProcedureBlock(block) && !isDataBlock(block);
 
 /**
  * Count the number of blocks used in the VM for each opcode.
@@ -129,6 +163,23 @@ export const updateSingleBlockConfigButton = (
 
   const config = vm.crtConfig;
 
+  if (opcode === "procedures_definition") {
+    // Hack to ensure that the procedure block is found when a procedure
+    // definition is added. Scratch maps a new procedure to 3 blocks:
+    // - procedures_definition: the existence of the procedure
+    // - procedures_prototype: its name and parameters
+    // - procedures_call: the call itself, shown in the blocks palette
+    opcode = "procedures_call";
+
+    if (canEditTask) {
+      config.allowedBlocks.customBlocks = true;
+    }
+  } else if (opcode.startsWith("data_")) {
+    if (canEditTask) {
+      config.allowedBlocks.variables = true;
+    }
+  }
+
   const block = container.querySelector<SVGGElement>(
     `g.blocklyDraggable[data-id$='${opcode}']`,
   );
@@ -143,7 +194,7 @@ export const updateSingleBlockConfigButton = (
 
   updateBlockConfigButton(
     block,
-    config.allowedBlocks[blockId],
+    getBlockLimit(config, block),
     countUsedBlocks(vm, blockId)[blockId],
     canEditTask,
   );
@@ -164,7 +215,7 @@ const updateBlockConfigButtons = (
   blocks.forEach((block) => {
     const blockId = getBlockId(block.getAttribute("data-id") as string);
 
-    const allowedCount = config.allowedBlocks[blockId];
+    const allowedCount = getBlockLimit(config, block);
 
     updateBlockConfigButton(
       block,
@@ -188,6 +239,12 @@ const onSetCount = (event: MouseEvent): void => {
   }
 };
 
+/**
+ * Add block configuration buttons to all blocks in a container.
+ * @param vm
+ * @param container
+ * @param canEditTask
+ */
 export const addBlockConfigButtons = (
   vm: VM,
   container: HTMLElement,
@@ -197,46 +254,56 @@ export const addBlockConfigButtons = (
 
   // add a config button to each block
   blocks.forEach((block) => {
-    const blockId = getBlockId(block.getAttribute("data-id") as string);
-
-    if (!showBlockConfig(blockId)) {
-      return;
-    }
-
-    // ensure the buttons are not already present
-    if (block.querySelector(`g.${blockConfigClass}`)) {
-      return;
-    }
-
-    const group = document.createElementNS(svgNamespace, "g");
-
-    group.setAttribute("class", blockConfigClass);
-    group.setAttribute("data-testid", blockConfigTestId);
-    group.setAttribute("transform", `translate(0, -10)`);
-    group.addEventListener("click", canEditTask ? onSetCount : ignoreEvent);
-    group.addEventListener("mousedown", ignoreEvent);
-    group.addEventListener("mouseup", ignoreEvent);
-
-    // create svg rect element with text inside
-    const rect = document.createElementNS(svgNamespace, "rect");
-    rect.setAttribute("class", "interactive");
-    rect.setAttribute("width", buttonWidth.toString());
-    rect.setAttribute("height", buttonHeight.toString());
-    rect.setAttribute("x", "0");
-    rect.setAttribute("y", "0");
-    rect.setAttribute("rx", "5");
-    rect.setAttribute("ry", "5");
-
-    const text = document.createElementNS(svgNamespace, "text");
-    text.setAttribute("x", "5");
-    text.setAttribute("y", "15");
-    text.textContent = ``;
-
-    group.appendChild(rect);
-    group.appendChild(text);
-    block.appendChild(group);
+    addBlockConfigButton(block, canEditTask);
   });
 
   // update the buttons
   updateBlockConfigButtons(vm, blocks, canEditTask);
+};
+
+/**
+ * Add a block configuration button to a block.
+ * @param block
+ * @param canEditTask
+ */
+const addBlockConfigButton = (
+  block: SVGGElement,
+  canEditTask: undefined | boolean,
+): void => {
+  if (!showBlockConfig(block)) {
+    return;
+  }
+
+  // ensure the buttons are not already present
+  if (block.querySelector(`g.${blockConfigClass}`)) {
+    return;
+  }
+
+  const group = document.createElementNS(svgNamespace, "g");
+
+  group.setAttribute("class", blockConfigClass);
+  group.setAttribute("data-testid", blockConfigTestId);
+  group.setAttribute("transform", `translate(0, -10)`);
+  group.addEventListener("click", canEditTask ? onSetCount : ignoreEvent);
+  group.addEventListener("mousedown", ignoreEvent);
+  group.addEventListener("mouseup", ignoreEvent);
+
+  // create svg rect element with text inside
+  const rect = document.createElementNS(svgNamespace, "rect");
+  rect.setAttribute("class", "interactive");
+  rect.setAttribute("width", buttonWidth.toString());
+  rect.setAttribute("height", buttonHeight.toString());
+  rect.setAttribute("x", "0");
+  rect.setAttribute("y", "0");
+  rect.setAttribute("rx", "5");
+  rect.setAttribute("ry", "5");
+
+  const text = document.createElementNS(svgNamespace, "text");
+  text.setAttribute("x", "5");
+  text.setAttribute("y", "15");
+  text.textContent = ``;
+
+  group.appendChild(rect);
+  group.appendChild(text);
+  block.appendChild(group);
 };

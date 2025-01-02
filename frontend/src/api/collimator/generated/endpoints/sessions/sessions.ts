@@ -11,6 +11,7 @@ import type {
   ExistingSessionDto,
   ExistingSessionExtendedDto,
   IsSessionAnonymousDto,
+  StudentSessionProgressDto,
   UpdateSessionDto,
 } from "../../models";
 import { fetchApi } from "../../../../fetch";
@@ -198,6 +199,27 @@ export const sessionsControllerFinishV0 = async (
     {
       ...options,
       method: "POST",
+    },
+  );
+};
+
+export const getSessionsControllerGetSessionProgressV0Url = (
+  classId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${id}/progress`;
+};
+
+export const sessionsControllerGetSessionProgressV0 = async (
+  classId: number,
+  id: number,
+  options?: RequestInit,
+): Promise<StudentSessionProgressDto> => {
+  return fetchApi<Promise<StudentSessionProgressDto>>(
+    getSessionsControllerGetSessionProgressV0Url(classId, id),
+    {
+      ...options,
+      method: "GET",
     },
   );
 };

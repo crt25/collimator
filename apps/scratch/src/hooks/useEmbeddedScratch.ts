@@ -6,6 +6,11 @@ import { loadCrtProject } from "../vm/load-crt-project";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
+import { useDispatch } from "react-redux";
+import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
+import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
+
+const logModule = "[Embedded Scratch]";
 
 const messages = defineMessages({
   cannotLoadProject: {
@@ -44,8 +49,18 @@ export const useEmbeddedScratch = (
   vm: VM | null,
   intl: InjectedIntl,
 ): ReturnType<typeof useIframeParent> => {
+  const dispatch = useDispatch();
+
+  const setLocale = useCallback(
+    // ensure that the languages are supported by scratch
+    // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
+    (language: Language) => dispatch(selectLocale(language)),
+    [],
+  );
+
   const handleRequest = useCallback<Parameters<typeof useIframeParent>[0]>(
     async (request, respondToMessageEvent) => {
+      console.debug(`${logModule} VM: ${!!vm}, RPC: ${request.procedure}`);
       switch (request.procedure) {
         case "getHeight":
           respondToMessageEvent({
@@ -111,7 +126,10 @@ export const useEmbeddedScratch = (
 
               return await loadCrtProject(vm, zip);
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
@@ -126,27 +144,39 @@ export const useEmbeddedScratch = (
                 result: content,
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
           break;
         case "loadTask":
           if (vm) {
-            const sb3Project = await request.arguments.arrayBuffer();
             try {
+              setLocale(request.arguments.language);
+
+              console.debug(`${logModule} Loading project`);
+              const sb3Project = await request.arguments.task.arrayBuffer();
               await loadCrtProject(vm, sb3Project);
+
               respondToMessageEvent({
                 procedure: "loadTask",
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
           }
           break;
         case "loadSubmission":
           if (vm) {
+            setLocale(request.arguments.language);
+
             const sb3Project = await request.arguments.task.arrayBuffer();
             const submission = await request.arguments.submission.text();
 
@@ -169,14 +199,40 @@ export const useEmbeddedScratch = (
               .then((blob) => blob.arrayBuffer());
 
             try {
+              console.debug(`${logModule} Loading project`);
               await loadCrtProject(vm, taskMergedWithSubmission);
+              const { subTaskId } = request.arguments;
+
+              if (subTaskId) {
+                const target = vm.runtime.targets.find(
+                  (target) => target.getName() === subTaskId,
+                );
+
+                if (target) {
+                  vm.setEditingTarget(target.id);
+                }
+              }
               respondToMessageEvent({
                 procedure: "loadSubmission",
               });
             } catch (e) {
-              console.error(e);
+              console.error(`${logModule} Project load failure: ${e}`);
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
+          }
+          break;
+        case "setLocale":
+          if (vm) {
+            // save content
+            const sb3Project = await saveCrtProject(vm);
+
+            // change language - apparently scratch resets the content with this?
+            setLocale(request.arguments);
+            await loadCrtProject(vm, await sb3Project.arrayBuffer());
+
+            respondToMessageEvent({
+              procedure: "setLocale",
+            });
           }
           break;
         default:

@@ -49,11 +49,9 @@ window.addEventListener("message", (event) => {
         break;
 
       case "loadTask":
-        task = message.arguments;
+        task = message.arguments.task;
 
-        message.arguments
-          .text()
-          .then((text) => console.log("loaded task", text));
+        task.text().then((text) => console.log("loaded task", text));
         break;
     }
   } else {

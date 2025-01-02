@@ -15,6 +15,8 @@ import { CollimatorSocket } from "@/types/websocket-events";
 import { UserRole } from "@/types/user/user-role";
 import { useHandleStudentAuthenticationRequest } from "@/hooks/useHandleStudentAuthenticationRequest";
 
+const logModule = "[WebSocketProvider]";
+
 export type WebSocketContextType = {
   socket: CollimatorSocket;
 };
@@ -65,7 +67,7 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
       setupListeners(authContext, webSocket);
 
       webSocket.on("connect_error", async (error) => {
-        console.error("WebSocket connection error", error);
+        console.error(`${logModule} connection error`, error);
       });
 
       setWebSocketState({ socket: webSocket });

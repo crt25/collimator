@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { SetStateAction, useMemo } from "react";
 import {
   FilterCriterion,
+  FilterCriterionParameters,
   FilterCriterionType,
   filterCriteria,
   getInitialFilterValues,
@@ -21,10 +22,14 @@ const AnalyzerFilterForm = ({
   taskType,
   filters,
   setFilters,
+  parametersByCriterion,
 }: {
   taskType: TaskType;
   filters: FilterCriterion[];
   setFilters: (value: SetStateAction<FilterCriterion[]>) => void;
+  parametersByCriterion: {
+    [key in FilterCriterionType]?: FilterCriterionParameters;
+  };
 }) => {
   const filterOptions = useMemo(() => {
     const usedCriteria = new Set(filters.map((f) => f.criterion));
@@ -62,6 +67,7 @@ const AnalyzerFilterForm = ({
         taskType={taskType}
         filters={filters}
         setFilters={setFilters}
+        parametersByCriterion={parametersByCriterion}
       />
     </>
   );

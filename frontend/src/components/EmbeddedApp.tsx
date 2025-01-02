@@ -45,6 +45,8 @@ const StyledIFrame = styled.iframe`
   flex-grow: 1;
 `;
 
+const logModule = "[Embedded App]";
+
 const MAX_COUNTER = 1000000;
 let counter = 0;
 
@@ -60,7 +62,7 @@ const postMessageToIFrame = (
 ) => {
   if (!iframe.contentWindow) {
     console.error(
-      "Cannot post message to iframe without content window:",
+      `${logModule} Cannot post message to iframe without content window:`,
       iframe,
     );
     return;
@@ -110,7 +112,11 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
           // store the resolve function in the pendingRequests object
           pendingRequests.current[counter] = (response: AppIFrameResponse) => {
             if (response.procedure !== request.procedure) {
-              console.error("Invalid response procedure", response, request);
+              console.error(
+                `${logModule} Invalid response procedure`,
+                response,
+                request,
+              );
               return;
             }
 
@@ -158,14 +164,17 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       const message = event.data as AppIFrameMessage;
 
       if (message.type === "request") {
-        console.error("Requests are not supported");
+        console.error(`${logModule} Request messages are not supported`);
         return;
       }
 
       // get the resolve function from the pendingRequests object
       const resolve = pendingRequests.current[message.id];
       if (!resolve) {
-        console.error("No resolve function found for message", message);
+        console.error(
+          `${logModule} No resolve function found for message`,
+          message,
+        );
       }
 
       // call the resolve function with the message
@@ -198,10 +207,15 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         iframe.style.height = `${response.result}px`;
 
         setIsAppAvailable(true);
-        if (onAppAvailable) {
-          onAppAvailable();
-        }
+        onAppAvailable?.();
       };
+
+      if (isIFrameLoaded.current) {
+        // If the iframe has already been loaded, call immediately.
+        // This is necessary when switching content in the embedded app, as
+        // the load event may have already fired when the iframe was loaded.
+        onAppAvailable?.();
+      }
 
       iframe.addEventListener("load", callback);
 
@@ -231,7 +245,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         src={src}
         ref={getIFramRef}
         allow="fullscreen; camera; microphone"
-        sandbox="allow-scripts allow-same-origin allow-downloads allow-forms"
+        sandbox="allow-scripts allow-same-origin allow-downloads allow-forms allow-modals"
         referrerPolicy="no-referrer-when-downgrade"
         loading="lazy"
       />

@@ -1,6 +1,11 @@
 import { Chart } from "chart.js";
 import { EventContext } from "chartjs-plugin-annotation";
 
+// These hacks are designed to handle the fact that we can't stop the propagation
+// of events in Chart.js. This is because Chart.js uses a custom event system
+// and not all the plugins use it properly.
+// These workaround functions help prevent event propagation.
+
 export const isAlreadyHandled = (event: Event): boolean =>
   "handled" in event ? true : false;
 

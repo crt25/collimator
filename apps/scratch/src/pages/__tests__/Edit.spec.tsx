@@ -137,7 +137,7 @@ test.describe("/edit", () => {
   test("can update the block config to allow an arbitrary number of a given block", async ({
     page: pwPage,
   }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
     const configButton = page.getBlockConfigButton("motion_movesteps");
 
     // open modal
@@ -167,7 +167,7 @@ test.describe("/edit", () => {
   test("can update the block config to allow an a fixed number of a given block", async ({
     page: pwPage,
   }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
     const configButton = page.getBlockConfigButton("motion_movesteps");
 
     // open modal
@@ -201,7 +201,7 @@ test.describe("/edit", () => {
   });
 
   test("can load assertions extension", async ({ page: pwPage }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
 
     await page.addExtensionButton.click();
 
@@ -218,7 +218,7 @@ test.describe("/edit", () => {
   });
 
   test("can load assertion extension twice", async ({ page: pwPage }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
 
     await page.addExtensionButton.click();
 
@@ -237,7 +237,7 @@ test.describe("/edit", () => {
   test("can use button to allow the usage of all blocks", async ({
     page: pwPage,
   }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
 
     const moveSteps = page.getBlockConfigButton("motion_movesteps");
     const glideTo = page.getBlockConfigButton("motion_glideto");
@@ -260,7 +260,7 @@ test.describe("/edit", () => {
   test("can use button to allow the usage of no blocks", async ({
     page: pwPage,
   }) => {
-    const page = new EditTaskPage(pwPage);
+    const page = await EditTaskPage.load(pwPage);
 
     const moveSteps = page.getBlockConfigButton("motion_movesteps");
     const goto = page.getBlockConfigButton("motion_goto");
@@ -301,6 +301,10 @@ test.describe("/edit", () => {
   test("can toggle freeze mode of task blocks", async ({ page: pwPage }) => {
     const { page } = await TestTaskPage.load(pwPage);
 
+    await page.scrollBlockIntoView(
+      page.taskBlocks.catActor.visualTopOfEditableStack,
+    );
+
     const editableStackButton = page.getBlockFreezeButton(
       page.taskBlocks.catActor.visualTopOfEditableStack,
     );
@@ -335,7 +339,7 @@ test.describe("/edit", () => {
   test("does not reset to the initial state when running", async ({
     page: pwPage,
   }) => {
-    const editPage = new EditTaskPage(pwPage);
+    const editPage = await EditTaskPage.load(pwPage);
     const { page } = await AssertionTaskPage.load(pwPage);
 
     await expect(page.assertionState.passed).toHaveCount(0);
@@ -370,7 +374,7 @@ test.describe("/edit", () => {
   test("resets to the initial state when running in assertion mode", async ({
     page: pwPage,
   }) => {
-    const editPage = new EditTaskPage(pwPage);
+    const editPage = await EditTaskPage.load(pwPage);
     const { page } = await AssertionTaskPage.load(pwPage);
 
     await expect(page.assertionState.passed).toHaveCount(0);
@@ -418,7 +422,7 @@ test.describe("/edit", () => {
   });
 
   test("can disable assertion mode", async ({ page: pwPage }) => {
-    const editPage = new EditTaskPage(pwPage);
+    const editPage = await EditTaskPage.load(pwPage);
     const { page } = await AssertionTaskPage.load(pwPage);
 
     await expect(page.assertionState.passed).toHaveCount(0);

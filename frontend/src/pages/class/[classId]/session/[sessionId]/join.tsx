@@ -34,6 +34,8 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Col, Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 
+const logModule = "[JoinSession]";
+
 const messages = defineMessages({
   choosePseudonym: {
     id: "JoinSession.choosePseudonym",
@@ -293,7 +295,10 @@ const JoinSession = () => {
         intervalId = setInterval(sendRequest, 5 * 1000);
       })
       .catch((error) => {
-        console.error("Failed to generate student key pair", error);
+        console.error(
+          `${logModule} Failed to generate student key pair`,
+          error,
+        );
       });
   }, [
     authenticationContext,
