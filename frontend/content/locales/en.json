@@ -5,6 +5,9 @@
   "Analysis.numberOfStudents": {
     "message": "Number of Students"
   },
+  "Analysis.selected": {
+    "message": "Selected"
+  },
   "Analysis.xAxis": {
     "message": "x-Axis"
   },
@@ -26,6 +29,18 @@
   "Analyzer.numberOfGroups": {
     "message": "Number of groups"
   },
+  "Analyzer.selectSolutionForComparisonDescription": {
+    "message": "Where should the selected solution be placed?"
+  },
+  "Analyzer.selectSolutionForComparisonLeft": {
+    "message": "Left"
+  },
+  "Analyzer.selectSolutionForComparisonRight": {
+    "message": "Right"
+  },
+  "Analyzer.selectSolutionForComparisonTitle": {
+    "message": "Selecting Solution for Comparison"
+  },
   "Analyzer.subTaskSelection": {
     "message": "Sub-task Selection"
   },
@@ -35,8 +50,20 @@
   "AnalyzerFilterForm.filterCriteria": {
     "message": "Filtering Criteria"
   },
+  "AstHeightCriterionFilterForm.count": {
+    "message": "Height of the AST"
+  },
   "Breadcrumbs.home": {
     "message": "Home"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.anyFunction": {
+    "message": "Any function"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.count": {
+    "message": "Number of function calls"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.functionName": {
+    "message": "Function Name"
   },
   "Category.allTestsPass": {
     "message": "All tests pass"
@@ -44,11 +71,11 @@
   "Category.automaticGroup": {
     "message": "Automatic Group"
   },
-  "Category.filteredOut": {
-    "message": "filtered out"
-  },
   "Category.inCorrect": {
     "message": "No test passes"
+  },
+  "Category.mixed": {
+    "message": "Mixed"
   },
   "Category.noTests": {
     "message": "Without tests"
@@ -191,6 +218,45 @@
   "CrtNavigation.usersTab": {
     "message": "Users"
   },
+  "CustomFunctionCallCriterionFilterForm.count": {
+    "message": "Number of custom function callss"
+  },
+  "DissimilarAnalysisPairs.header": {
+    "message": "Dissimilar Solutions"
+  },
+  "DissimilarPairs.allSubTasks": {
+    "message": "All sub-tasks"
+  },
+  "DissimilarPairs.numberOfDissimilarPairs": {
+    "message": "Number of dissimilar pairs"
+  },
+  "DissimilarPairs.subTaskSelection": {
+    "message": "Sub-task Selection"
+  },
+  "DissimilarPairs.taskSelection": {
+    "message": "Task Selection"
+  },
+  "DissimilarSolutions.header": {
+    "message": "Dissimilar Solutions"
+  },
+  "DissimilarityAnalysis.allSubTasks": {
+    "message": "All sub-tasks"
+  },
+  "DissimilarityAnalysis.noTasksInSession": {
+    "message": "There are no tasks in this session."
+  },
+  "DissimilarityAnalysis.numberOfDissimilarSolutions": {
+    "message": "Number of dissimilar solutions"
+  },
+  "DissimilarityAnalysis.subTaskSelection": {
+    "message": "Sub-task Selection"
+  },
+  "DissimilarityAnalysis.taskSelection": {
+    "message": "Task Selection"
+  },
+  "DissimilarityAnalysis.tooManyCombinations": {
+    "message": "Too many combinations to calculate dissimilar pairs."
+  },
   "EditClass.header": {
     "message": "Edit Class"
   },
@@ -227,12 +293,6 @@
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },
-  "FunctionCallCriterionFilterForm.count": {
-    "message": "Number of function calls"
-  },
-  "FunctionCallCriterionFilterForm.functionName": {
-    "message": "Function Name"
-  },
   "FunctionDeclarationCriterionFilterForm.count": {
     "message": "Number of function declarations"
   },
@@ -244,6 +304,9 @@
   },
   "Home.header": {
     "message": "Home"
+  },
+  "IndentationCriterionFilterForm.level": {
+    "message": "Level of code indentation"
   },
   "JoinSession.anonymousSessionDescription": {
     "message": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
@@ -357,7 +420,7 @@
   "ProgressList.columns.timeOnTask": {
     "message": "Time on Task"
   },
-  "SessionGrouping.header": {
+  "SessionAnalysis.header": {
     "message": "Analysis"
   },
   "SessionList.columns.actions": {
@@ -389,6 +452,12 @@
   },
   "SessionNavigation.analysisTab": {
     "message": "Analysis"
+  },
+  "SessionNavigation.dissimilarPairsTab": {
+    "message": "Dissimilar Pairs"
+  },
+  "SessionNavigation.dissimilarSolutionsTab": {
+    "message": "Dissimilar Solutions"
   },
   "SessionNavigation.progress": {
     "message": "Progress"
@@ -444,6 +513,15 @@
   "StudentName.decrypting": {
     "message": "Decrypting..."
   },
+  "TaskDetail.unsupportedApp": {
+    "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
+  },
+  "TaskForm.SaveError": {
+    "message": "An error occurred while saving the task. Try again later."
+  },
+  "TaskForm.SaveSuccess": {
+    "message": "The task was saved successfully."
+  },
   "TaskForm.blob.create": {
     "message": "Create task in external application"
   },
@@ -453,6 +531,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.closeConfirmation.body": {
+    "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
+  },
+  "TaskForm.closeConfirmation.button": {
+    "message": "Yes, I don't need to save."
+  },
+  "TaskForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
   "TaskForm.description": {
     "message": "Description"
   },
@@ -461,6 +548,9 @@
   },
   "TaskForm.type": {
     "message": "Type"
+  },
+  "TaskModal.closeConfirmation": {
+    "message": "Are you sure you want to close without saving?"
   },
   "TaskModal.export": {
     "message": "Export task"
@@ -552,29 +642,38 @@
   "ViewSolutionModal.title": {
     "message": "View solution"
   },
+  "criteria.astHeight.name": {
+    "message": "Maximum Code Nestedness (AST Tree Height)"
+  },
+  "criteria.builtInFunctionCall.name": {
+    "message": "Number of Built-in Function Calls"
+  },
   "criteria.condition.name": {
-    "message": "If"
+    "message": "Number of if statements"
+  },
+  "criteria.customFunctionCall.name": {
+    "message": "Nunber of Custom Function Calls"
   },
   "criteria.expression.name": {
-    "message": "Expression"
-  },
-  "criteria.functionCall.name": {
-    "message": "Function Call"
+    "message": "Number of Expressions"
   },
   "criteria.functionDeclaration.name": {
-    "message": "Function Declaration"
+    "message": "Number of Function Declarations"
+  },
+  "criteria.indentation.name": {
+    "message": "Maximum Code Indentation"
   },
   "criteria.loop.name": {
-    "message": "Loop"
+    "message": "Number of Loop"
   },
   "criteria.none.filterName": {
     "message": "Add a new filter"
   },
   "criteria.statement.name": {
-    "message": "Statement"
+    "message": "Number of Statements"
   },
   "criteria.test.name": {
-    "message": "Passed Tests"
+    "message": "Number of Passed Tests"
   },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"
