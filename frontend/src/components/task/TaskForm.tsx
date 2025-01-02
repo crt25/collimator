@@ -79,7 +79,7 @@ const TaskForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
-  onSubmit: (data: TaskFormValues) => void;
+  onSubmit: (data: TaskFormValues) => Promise<void>;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
@@ -143,7 +143,7 @@ const TaskForm = ({
       let data: TaskFormValues;
       handleSubmit((v: TaskFormValues) => {
         data = v;
-        onSubmit(v);
+        return onSubmit(v);
       })(e)
         .then(() => {
           reset({
