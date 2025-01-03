@@ -4,19 +4,19 @@ import { tasksControllerRemoveV0 } from "../../generated/endpoints/tasks/tasks";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
-type DeleteUserType = (id: number) => Promise<DeletedTask>;
+type DeleteTaskType = (id: number) => Promise<DeletedTask>;
 
 const fetchAndTransform = (
   options: RequestInit,
   id: number,
-): ReturnType<DeleteUserType> =>
+): ReturnType<DeleteTaskType> =>
   tasksControllerRemoveV0(id, options).then(DeletedTask.fromDto);
 
-export const useDeleteTask = (): DeleteUserType => {
+export const useDeleteTask = (): DeleteTaskType => {
   const revalidateTaskList = useRevalidateTaskList();
   const authOptions = useAuthenticationOptions();
 
-  return useCallback<DeleteUserType>(
+  return useCallback<DeleteTaskType>(
     (id) =>
       fetchAndTransform(authOptions, id).then((result) => {
         // Invalidate the cache for the task list

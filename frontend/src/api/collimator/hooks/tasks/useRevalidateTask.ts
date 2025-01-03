@@ -4,8 +4,8 @@ import { GetTaskReturnType } from "./useTask";
 import { getTasksControllerFindOneV0Url } from "../../generated/endpoints/tasks/tasks";
 
 export const useRevalidateTask = (): ((
-  userId: number,
-  newUser?: GetTaskReturnType,
+  taskId: number,
+  newTask?: GetTaskReturnType,
 ) => void) => {
   const { mutate } = useSWRConfig();
 
