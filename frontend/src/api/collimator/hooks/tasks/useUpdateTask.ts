@@ -3,11 +3,12 @@ import {
   tasksControllerUpdateFileV0,
   tasksControllerUpdateV0,
 } from "../../generated/endpoints/tasks/tasks";
+import { UpdateTaskDto, UpdateTaskFileDto } from "../../generated/models";
 import { ExistingTask } from "../../models/tasks/existing-task";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useRevalidateTask } from "./useRevalidateTask";
-import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UpdateTaskDto, UpdateTaskFileDto } from "../../generated/models";
+import { useRevalidateTaskFile } from "./useRevalidateTaskFile";
 
 type UpdateTaskType = (
   id: number,
@@ -56,10 +57,17 @@ const fetchAndTransformFile = (
 
 export const useUpdateTaskFile = (): UpdateTaskFileType => {
   const authOptions = useAuthenticationOptions();
+  const revalidateTaskFile = useRevalidateTaskFile();
 
   return useCallback(
     (id, updateTaskFileDto) =>
-      fetchAndTransformFile(authOptions, id, updateTaskFileDto),
-    [authOptions],
+      fetchAndTransformFile(authOptions, id, updateTaskFileDto).then(
+        (result) => {
+          revalidateTaskFile(id, updateTaskFileDto.file);
+
+          return result;
+        },
+      ),
+    [authOptions, revalidateTaskFile],
   );
 };
