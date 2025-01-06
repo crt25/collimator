@@ -168,21 +168,23 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       }
 
       await waitUntilReachable([
-        { port: backendPort!, path: "/api-json" },
-        { port: frontendPort!, path: "/" },
+        { port: backendPort, path: "/api-json" },
+        { port: frontendPort, path: "/" },
       ]);
 
       let error: Error | undefined = undefined;
 
-      await use({
-        backendPort,
-        frontendPort,
-        postgresConfig,
-        uniqueDbName,
-      }).catch((e) => {
+      try {
+        await use({
+          backendPort,
+          frontendPort,
+          postgresConfig,
+          uniqueDbName,
+        });
+      } catch (e) {
         // suppress errors until after cleanup
-        error = e;
-      });
+        error = e as Error;
+      }
 
       // kill the frontend
       killProcessByPid(frontendProcess.pid);

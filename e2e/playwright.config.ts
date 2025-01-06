@@ -86,6 +86,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     command: `tsx ./scripts/e2e-testing.ts`,
     url: frontendUrl,
     env: {
+      ...process.env,
       NODE_ENV: "production",
       // union of all environment variables needed for
       // 1) seeding the database

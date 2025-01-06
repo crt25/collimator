@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
@@ -17,7 +16,6 @@ const messages = defineMessages({
 
 const CreateTask = () => {
   const createTask = useCreateTask();
-  const router = useRouter();
 
   const onSubmit = useCallback(
     async (formValues: TaskFormValues) => {
@@ -27,10 +25,8 @@ const CreateTask = () => {
         type: formValues.type,
         file: formValues.blob,
       });
-
-      router.back();
     },
-    [createTask, router],
+    [createTask],
   );
 
   return (

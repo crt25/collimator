@@ -65,6 +65,7 @@ export const resetDatabase = (config: {
 }): SpawnSyncReturns<Buffer> =>
   spawnSync("yarn", ["prisma:migrate", "reset", "--force"], {
     env: {
+      ...process.env,
       NODE_ENV: "production",
       SEEDING_MODE: config.seedingMode,
       DATABASE_URL: config.databaseUrl,
@@ -82,6 +83,7 @@ export const startMockOidcServer = (config: {
 }): ChildProcessWithoutNullStreams =>
   spawn("yarn", ["start:mock-oidc"], {
     env: {
+      ...process.env,
       NODE_ENV: "production",
       PORT: config.port?.toString(),
       FRONTEND_HOSTNAME: config.frontendHostname,
@@ -103,6 +105,7 @@ export const startBackend = (config: {
 }): ChildProcessWithoutNullStreams =>
   spawn("yarn", ["start:built:coverage"], {
     env: {
+      ...process.env,
       NODE_ENV: "production",
       DATABASE_URL: config.databaseUrl,
       PORT: config.port?.toString(),
@@ -127,6 +130,7 @@ export const buildFrontend = (
 ): void => {
   spawnSync("yarn", ["build:coverage"], {
     env: {
+      ...process.env,
       NODE_ENV: "production",
       NEXT_PUBLIC_BACKEND_HOSTNAME: config.backendHostname,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
@@ -145,6 +149,7 @@ export const startFrontendWithBackendProxy = (config: {
 }): ChildProcessWithoutNullStreams =>
   spawn("yarn", ["start:frontend"], {
     env: {
+      ...process.env,
       NODE_ENV: "development",
       PORT: config.port?.toString(),
       BACKEND_URL: config.backendUrl,

@@ -53,16 +53,20 @@ jobs:
                 working-directory: ./frontend
                 run: yarn install
 
-            -   name: Install playwright dependencies
-                working-directory: ./frontend
-                run: yarn playwright install --with-deps
-
             -   name: Install scratch app dependencies
                 working-directory: ./apps/scratch
                 run: yarn install
 
             -   name: Install playwright dependencies
                 working-directory: ./apps/scratch
+                run: yarn playwright install --with-deps
+
+            -   name: Install E2E test dependencies
+                working-directory: ./e2e
+                run: yarn install
+
+            -   name: Install playwright dependencies
+                working-directory: ./e2e
                 run: yarn playwright install --with-deps
 
             -   name: Lint backend

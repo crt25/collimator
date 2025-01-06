@@ -18,8 +18,8 @@ const getPath = (url: string): string => {
 };
 
 const getUrl = (request: express.Request, fallback: string): string =>
-  (request.headers["x-forwarded-url"] as string) ||
-  `http://${request.headers["host"]}` ||
+  (request.headers["x-forwarded-url"] as string | undefined) ??
+  `http://${request.headers["host"]}` ??
   fallback;
 
 (async (): Promise<void> => {
@@ -27,8 +27,8 @@ const getUrl = (request: express.Request, fallback: string): string =>
   const [keyPair, publicKey] = await generateKey(kid);
 
   const app = express();
-  const port = process.env.PORT || 3333;
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+  const port = process.env.PORT ?? 3333;
+  const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:3000";
 
   const localUrl = `http://localhost:${port}`;
   const localConfig = getOpenIdConnectConfigResponse(localUrl);
@@ -106,7 +106,7 @@ const getUrl = (request: express.Request, fallback: string): string =>
     const postData = (request.body as Buffer).toString("utf-8");
 
     // get client_id from post data
-    const [_, clientId] = postData.match(/client_id=([^&]+)/) as [
+    const [_, clientId] = /client_id=([^&]+)/.exec(postData) as unknown as [
       string,
       string,
     ];

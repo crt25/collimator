@@ -5,9 +5,10 @@
   "scripts": {
     "start:frontend": "tsx scripts/server.ts",
     "start:mock-oidc": "tsx scripts/mock-oidc-server.ts",
-    "test:pre": "shx rm -rf coverage/ .nyc_output/ && cd ../backend && yarn build:coverage",
-    "test": "yarn test:pre && COVERAGE=true dotenv -- playwright test && nyc report --report-dir coverage",
-    "test:skip-setup": "yarn test:pre && COVERAGE=true SKIP_SETUP=true dotenv -- playwright test && nyc report --report-dir coverage",
+    "test:pre": "shx rm -rf ../frontend/coverage-pw .nyc_output/ && cd ../backend && yarn build:coverage",
+    "test:report-coverage": "cd ../frontend && npx nyc report --report-dir coverage-pw --temp-dir ../e2e/.nyc_output",
+    "test": "yarn test:pre && COVERAGE=true dotenv -- playwright test && yarn test:report-coverage",
+    "test:skip-setup": "yarn test:pre && COVERAGE=true SKIP_SETUP=true dotenv -- playwright test && yarn test:report-coverage",
     "test:debug": "COVERAGE=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'",
     "test:debug:skip-setup": "COVERAGE=true SKIP_SETUP=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'"
   },

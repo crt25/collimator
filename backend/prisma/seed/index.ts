@@ -11,7 +11,7 @@ enum SeedingMode {
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
-  const mode = (process.env.SEEDING_MODE ||
+  const mode = (process.env.SEEDING_MODE ??
     SeedingMode.production) as SeedingMode;
 
   const seedFn = match(mode)

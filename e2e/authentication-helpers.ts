@@ -155,17 +155,17 @@ const setupMockOidcProvider = async (
   // intercept the authorization request
   await page.route(/\/__oidc__\/authorize/, (route, request) => {
     // extract redirect_uri from the request
-    const [_, redirectUri] = request.url().match(/redirect_uri=([^&]+)/) as [
+    const [_, redirectUri] = /redirect_uri=([^&]+)/.exec(request.url()) as unknown as [
       string,
       string,
     ];
 
     // extract nonce, and state from the request
-    const [__, nonceInUrl] = request.url().match(/nonce=([^&]+)/) as [
+    const [__, nonceInUrl] = /nonce=([^&]+)/.exec(request.url()) as unknown as [
       string,
       string,
     ];
-    const [___, state] = request.url().match(/state=([^&]+)/) as [
+    const [___, state] = /state=([^&]+)/.exec(request.url()) as unknown as [
       string,
       string,
     ];
@@ -186,7 +186,7 @@ const setupMockOidcProvider = async (
     const postData = route.request().postData() ?? "";
 
     // get client_id from post data
-    const [_, clientId] = postData.match(/client_id=([^&]+)/) as [
+    const [_, clientId] = /client_id=([^&]+)/.exec(postData) as unknown as [
       string,
       string,
     ];
@@ -441,7 +441,7 @@ export const setupForUserAuthentication = async (
 
           route.fulfill({
             contentType:
-              response.headers.get("content-type") || "application/json",
+              response.headers.get("content-type") ?? "application/json",
             status: response.status,
             headers: response.headers.entries().reduce(
               (acc, [key, value]) => {
@@ -559,7 +559,6 @@ export const setupForUserAuthentication = async (
       if (packet.type === 4) {
         // not sure what this is, the protocol definition does not mention it
         ws.send('40{"sid":"ajVdtT-qu_urvILFAAA0"}');
-        return;
       }
     });
   });

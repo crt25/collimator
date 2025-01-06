@@ -15,7 +15,8 @@ next-env.d.ts
 # jest coverage
 /coverage
 
-# playwright component testing coverage
+# playwright coverage
+/coverage-pw
 /coverage-ct
 
 # storybook coverage
