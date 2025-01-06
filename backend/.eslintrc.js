@@ -4,6 +4,7 @@ module.exports = {
   extends: [
     path.join(__dirname, "../.eslintrc.js"),
     "plugin:prettier/recommended",
+    "plugin:import/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -24,5 +25,8 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+    }]
   },
 };
