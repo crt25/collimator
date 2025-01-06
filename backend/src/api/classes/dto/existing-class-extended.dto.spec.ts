@@ -1,5 +1,5 @@
-import { ExistingClassExtendedDto } from "./existing-class-extended.dto";
 import { Class, Student } from "@prisma/client";
+import { ExistingClassExtendedDto } from "./existing-class-extended.dto";
 
 describe("ExistingClassExtendedDto", () => {
   const klass = {

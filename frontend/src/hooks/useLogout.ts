@@ -1,8 +1,8 @@
-import { authenticationContextDefaultValue } from "@/contexts/AuthenticationContext";
-import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { useRouter } from "next/router";
 import { useCallback, useContext } from "react";
 import { useSWRConfig } from "swr";
+import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
+import { authenticationContextDefaultValue } from "@/contexts/AuthenticationContext";
 
 export const useLogout = (): (() => void) => {
   const { mutate } = useSWRConfig();

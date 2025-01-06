@@ -9,13 +9,6 @@ import {
   LiteralNode,
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { Block } from "src/ast/types/input/scratch/generated/sb3";
-import {
-  BlockInputValue,
-  BlockTreeWithEventHatRoot,
-  NonHatBlock,
-  NonHatBlockTree,
-  TreeNode,
-} from "./types";
 import { isWhenBackdropSwitchesToBlock } from "src/ast/types/input/scratch/blocks/event/when-backdrop-switches-to";
 import { isWhenBroadcastReceivedBlock } from "src/ast/types/input/scratch/blocks/event/when-broadcast-received";
 import { isWhenGreaterThanBlock } from "src/ast/types/input/scratch/blocks/event/when-greater-than";
@@ -28,12 +21,17 @@ import { match, P } from "ts-pattern";
 import { BlockReferenceInput } from "src/ast/types/input/scratch/blocks/block-reference-input";
 import { BlockInputType } from "src/ast/types/input/scratch/block-input-type";
 import { isDefinitionBlock } from "src/ast/types/input/scratch/blocks/procedure/definition";
-import { convertInputsToExpression } from "./scratch-block-input-converter";
 import {
   KnownBuiltinScratchStatementBlock,
   KnownBuiltinScratchExpressionBlock,
   KnownBuiltinScratchHatBlock,
 } from "src/ast/types/input/scratch/blocks";
+import {
+  ExtensionExpressionBlock,
+  ExtensionStatementBlock,
+} from "src/ast/types/input/scratch/blocks/extensions";
+import { isArbitraryHatBlock } from "src/ast/types/input/scratch/blocks/extensions/arbitrary-hat-block";
+import { convertInputsToExpression } from "./scratch-block-input-converter";
 import {
   isControlStatementBlock,
   isControlExpressionBlock,
@@ -72,10 +70,12 @@ import {
   isExtensionStatementBlock,
 } from "./scratch-extension-block-converter";
 import {
-  ExtensionExpressionBlock,
-  ExtensionStatementBlock,
-} from "src/ast/types/input/scratch/blocks/extensions";
-import { isArbitraryHatBlock } from "src/ast/types/input/scratch/blocks/extensions/arbitrary-hat-block";
+  BlockInputValue,
+  BlockTreeWithEventHatRoot,
+  NonHatBlock,
+  NonHatBlockTree,
+  TreeNode,
+} from "./types";
 
 export const createLiteralNode = (type: string, value: string): LiteralNode => {
   return {

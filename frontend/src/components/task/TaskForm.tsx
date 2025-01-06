@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   defineMessages,
   FormattedMessage,
@@ -13,16 +13,15 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
+import { getTaskTypeMessage } from "@/i18n/task-type-messages";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
 import Select from "../form/Select";
-import { getTaskTypeMessage } from "@/i18n/task-type-messages";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
-import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { useRouter } from "next/router";
 
 const EditTaskButton = styled(Button)`
   margin-top: 1rem;
@@ -84,6 +83,7 @@ const TaskForm = ({
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
+  const cannotNavigate = useRef(false);
 
   const schema = useYupSchema({
     title: yup.string().required(),
@@ -130,26 +130,43 @@ const TaskForm = ({
   });
 
   const navigate = useNavigationObserver({
-    shouldStopNavigation: isDirty,
+    shouldStopNavigation: () => cannotNavigate.current,
     onNavigate: () => {
       setShowQuitNoSaveModal(true);
     },
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    // when the form becomes dirty, we do not allow navigation
+    cannotNavigate.current = isDirty;
+  }, [isDirty]);
 
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
+      // store the current value of canNavigate
+      const canNavigateNow = cannotNavigate.current;
+
+      // allow navigation in the processing of the form submission
+      cannotNavigate.current = false;
+
       let data: TaskFormValues;
+
       handleSubmit((v: TaskFormValues) => {
         data = v;
         return onSubmit(v);
       })(e)
         .then(() => {
+          // restore the value of canNavigate
+          cannotNavigate.current = canNavigateNow;
+
+          // reset the form to the updated values
+          // and mark the blob as not changed
+          // so the user can navigate without confirmation
           reset({
             ...data,
             blobChanged: false,
           });
+
           toast.success(
             <FormattedMessage
               id="TaskForm.SaveSuccess"
@@ -157,8 +174,6 @@ const TaskForm = ({
             />,
             { position: "top-center" },
           );
-
-          router.back();
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
@@ -171,7 +186,7 @@ const TaskForm = ({
           );
         });
     },
-    [handleSubmit, onSubmit, reset, router],
+    [handleSubmit, onSubmit, reset],
   );
 
   const blob = watch("blob") as Blob | undefined | null;

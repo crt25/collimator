@@ -27,6 +27,10 @@ import {
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { Colors } from "@/constants/colors";
+import { StudentName } from "@/components/encryption/StudentName";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
+import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
 import YAxis from "./axes/YAxis";
@@ -34,7 +38,6 @@ import XAxis from "./axes/XAxis";
 import YAxisSelector from "./axes/YAxisSelector";
 import { Category, getCanvasPattern, getCategoryName } from "./category";
 import SelectPlugin, { SplitType } from "./chartjs-plugins/select";
-import Select from "../form/Select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 import { CategorizedDataPoint, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
@@ -44,9 +47,6 @@ import {
   AnalyzerStateAction,
   AnalyzerStateActionType,
 } from "./Analyzer.state";
-import { StudentName } from "@/components/encryption/StudentName";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
 
 type AdditionalChartData = {
   groups: {

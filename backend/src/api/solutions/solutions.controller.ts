@@ -26,10 +26,9 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
-import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
-import { SolutionsService } from "./solutions.service";
-import { fromQueryResults } from "../helpers";
 import { Express } from "express";
+import { Student, User, UserType } from "@prisma/client";
+import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
   AdminOnly,
@@ -38,8 +37,9 @@ import {
   StudentOnly,
 } from "../authentication/role.decorator";
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
-import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { SolutionsService } from "./solutions.service";
+import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
 import { CurrentAnalysisDto } from "./dto/current-analysis.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")

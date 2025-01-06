@@ -3,8 +3,8 @@ import { Solution, Prisma, SolutionAnalysis, AstVersion } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentAnalyses, deleteStudentSolutions } from "@prisma/client/sql";
 
-import { SolutionId } from "./dto";
 import { Cron } from "@nestjs/schedule";
+import { SolutionId } from "./dto";
 import { SolutionAnalysisService } from "./solution-analysis.service";
 
 export type SolutionCreateInput = Omit<

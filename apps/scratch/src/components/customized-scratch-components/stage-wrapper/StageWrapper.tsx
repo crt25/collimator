@@ -10,7 +10,6 @@ import Stage from "@scratch-submodule/scratch-gui/src/containers/stage.jsx";
 import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
 import styles from "@scratch-submodule/scratch-gui/src/components/stage-wrapper/stage-wrapper.css";
 import headerStyles from "@scratch-submodule/scratch-gui/src/components/stage-header/stage-header.css";
-import crtStyles from "./stage-wrapper.css";
 import { setStageSize } from "@scratch-submodule/scratch-gui/src/reducers/stage-size";
 import { setFullScreen } from "@scratch-submodule/scratch-gui/src";
 import Button from "@scratch-submodule/scratch-gui/src/components/button/button";
@@ -22,12 +21,13 @@ import smallStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-
 import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
 import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar/icon--settings.svg";
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
-import Controls from "../../../scratch/scratch-gui/src/containers/controls";
-import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import Controls from "../../../scratch/scratch-gui/src/containers/controls";
+import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import TaskConfig from "../../TaskConfig";
 import AssertionsState from "../../assertions-state/AssertionsState";
+import crtStyles from "./stage-wrapper.css";
 
 const messages = defineMessages({
   largeStageSizeMessage: {

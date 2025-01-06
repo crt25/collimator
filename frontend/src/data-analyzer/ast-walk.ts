@@ -1,4 +1,3 @@
-import { isNonNull } from "@/utilities/is-non-null";
 import {
   ActorNode,
   EventListenerNode,
@@ -11,6 +10,7 @@ import {
 } from "@ast/ast-nodes/expression-node";
 import { GeneralAst } from "@ast/index";
 import { match } from "ts-pattern";
+import { isNonNull } from "@/utilities/is-non-null";
 
 export enum AstWalkSignal {
   continueWalking,

@@ -1,16 +1,16 @@
 import styled from "@emotion/styled";
+import { MessageDescriptor, useIntl } from "react-intl";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { SetStateAction } from "react";
+import { TaskType } from "@/api/collimator/generated/models";
+import CriterionFilterForm from "./filter/CriterionFilterForm";
 import {
   filterCriteria,
   FilterCriterion,
   FilterCriterionParameters,
   FilterCriterionType,
 } from "./filter";
-import CriterionFilterForm from "./filter/CriterionFilterForm";
-import { MessageDescriptor, useIntl } from "react-intl";
-import { TaskType } from "@/api/collimator/generated/models";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { SetStateAction } from "react";
 
 const Wrapper = styled.div`
   border-top: 1px solid var(--foreground-color);

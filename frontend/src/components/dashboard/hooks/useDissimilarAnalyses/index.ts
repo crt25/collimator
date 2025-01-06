@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { getAstDistance } from "../ast-distance";
 import { DistanceType } from "../ast-distance/distance-type";
-import { useEffect, useState } from "react";
 
 const logModule = `[useDissimilarAnalyses]`;
 

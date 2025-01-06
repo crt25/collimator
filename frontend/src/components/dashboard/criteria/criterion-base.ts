@@ -1,9 +1,9 @@
-import { TaskType } from "@/api/collimator/generated/models";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CartesianScaleTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
-import { CriterionType } from "./criterion-type";
 import { DeepPartial } from "chart.js/dist/types/utils";
+import { TaskType } from "@/api/collimator/generated/models";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { CriterionType } from "./criterion-type";
 
 export interface CriterionBase<Type extends CriterionType> {
   criterion: Type;

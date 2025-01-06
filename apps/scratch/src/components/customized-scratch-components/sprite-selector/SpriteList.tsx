@@ -9,8 +9,8 @@ import SortableAsset from "@scratch-submodule/scratch-gui/src/components/asset-p
 import ThrottledPropertyHOC from "@scratch-submodule/scratch-gui/src/lib/throttled-property-hoc.jsx";
 
 import styles from "@scratch-submodule/scratch-gui/src/components/sprite-selector/sprite-selector.css";
-import { Sprite } from "../target-pane/TargetPane";
 import React from "react";
+import { Sprite } from "../target-pane/TargetPane";
 
 const ThrottledSpriteSelectorItem = ThrottledPropertyHOC(
   "asset",

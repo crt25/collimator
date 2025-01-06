@@ -1,6 +1,15 @@
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { ExpressionBlockTree, NonHatBlockTree } from "./types";
 import { match, P } from "ts-pattern";
+import { DataExpressionBlock } from "src/ast/types/input/scratch/blocks/data";
+import { ControlExpressionBlock } from "src/ast/types/input/scratch/blocks/control";
+import { EventExpressionBlock } from "src/ast/types/input/scratch/blocks/event";
+import { LooksExpressionBlock } from "src/ast/types/input/scratch/blocks/looks";
+import { MotionExpressionBlock } from "src/ast/types/input/scratch/blocks/motion";
+import { OperatorExpressionBlock } from "src/ast/types/input/scratch/blocks/operator";
+import { ProcedureExpressionBlock } from "src/ast/types/input/scratch/blocks/procedure";
+import { SensingExpressionBlock } from "src/ast/types/input/scratch/blocks/sensing";
+import { SoundExpressionBlock } from "src/ast/types/input/scratch/blocks/sound";
+import { ExpressionBlockTree, NonHatBlockTree } from "./types";
 import {
   convertControlBlockTreeToExpression,
   isControlExpressionBlock,
@@ -37,15 +46,6 @@ import {
   convertSoundBlockTreeToExpression,
   isSoundExpressionBlock,
 } from "./scratch-sound-block-converter";
-import { DataExpressionBlock } from "src/ast/types/input/scratch/blocks/data";
-import { ControlExpressionBlock } from "src/ast/types/input/scratch/blocks/control";
-import { EventExpressionBlock } from "src/ast/types/input/scratch/blocks/event";
-import { LooksExpressionBlock } from "src/ast/types/input/scratch/blocks/looks";
-import { MotionExpressionBlock } from "src/ast/types/input/scratch/blocks/motion";
-import { OperatorExpressionBlock } from "src/ast/types/input/scratch/blocks/operator";
-import { ProcedureExpressionBlock } from "src/ast/types/input/scratch/blocks/procedure";
-import { SensingExpressionBlock } from "src/ast/types/input/scratch/blocks/sensing";
-import { SoundExpressionBlock } from "src/ast/types/input/scratch/blocks/sound";
 import { isExpressionBlock } from "./helpers";
 
 export const convertBlockTreeToExpression = (

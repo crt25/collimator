@@ -1,13 +1,13 @@
 import { ExistingUserDto } from "@/api/collimator/generated/models";
-import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
-import { userList } from "../selectors";
 import {
   getUsersControllerFindAllV0Url,
   getUsersControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
-import { UserListPageModel } from "./user-list-page-model";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
+import { userList } from "../selectors";
 import { useAdminUser } from "../authentication/authentication-helpers";
+import { UserListPageModel } from "./user-list-page-model";
 
 test.describe("/user", () => {
   const user: ExistingUserDto = {

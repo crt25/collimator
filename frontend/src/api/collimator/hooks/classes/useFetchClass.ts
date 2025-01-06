@@ -1,5 +1,5 @@
-import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { useCallback } from "react";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { fetchSingleClassAndTransform, GetClassReturnType } from "./useClass";
 
 export const useFetchClass = (): ((

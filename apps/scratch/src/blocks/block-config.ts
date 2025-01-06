@@ -1,8 +1,8 @@
 import VM from "scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
-import { ignoreEvent, svgNamespace } from "./helpers";
 import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { ignoreEvent, svgNamespace } from "./helpers";
 
 const buttonHeight = 20;
 const buttonWidth = 60;

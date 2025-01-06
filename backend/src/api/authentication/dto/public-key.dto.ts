@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
+import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import {
   PublicKey,
   UserIdentityWithKeyAndToken,
 } from "../authentication.service";
-import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 type KeyPair = Exclude<UserIdentityWithKeyAndToken["keyPair"], null>;
 

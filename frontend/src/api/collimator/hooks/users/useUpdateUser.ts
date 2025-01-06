@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { usersControllerUpdateV0 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
-import { useRevalidateUserList } from "./useRevalidateUserList";
-import { useRevalidateUser } from "./useRevalidateUser";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { UpdateUserDto } from "../../generated/models";
+import { useRevalidateUserList } from "./useRevalidateUserList";
+import { useRevalidateUser } from "./useRevalidateUser";
 
 type UpdateUserType = (
   id: number,

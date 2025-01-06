@@ -20,10 +20,6 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/alerts";
 import { setRestore } from "@scratch-submodule/scratch-gui/src/reducers/restore-deletion";
 import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants";
-import TargetPaneComponent, {
-  Sprite,
-  Props as TargetPaneProps,
-} from "../../components/customized-scratch-components/target-pane/TargetPane";
 import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 import spriteLibraryContent from "@scratch-submodule/scratch-gui/src/lib/libraries/sprites.json";
 import {
@@ -40,6 +36,10 @@ import {
 import randomizeSpritePosition from "@scratch-submodule/scratch-gui/src/lib/randomize-sprite-position";
 import downloadBlob from "@scratch-submodule/scratch-gui/src/lib/download-blob";
 import { Action, Dispatch } from "redux";
+import TargetPaneComponent, {
+  Sprite,
+  Props as TargetPaneProps,
+} from "../../components/customized-scratch-components/target-pane/TargetPane";
 
 interface Metrics {
   scrollX: number;

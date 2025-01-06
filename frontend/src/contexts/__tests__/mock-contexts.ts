@@ -1,11 +1,11 @@
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
+import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
+import { UserRole } from "@/types/user/user-role";
 import {
   authenticationContextDefaultValue,
   AuthenticationContextType,
   latestAuthenticationContextVersion,
 } from "../AuthenticationContext";
-import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
-import { UserRole } from "@/types/user/user-role";
 
 const userId = 1;
 const name = "John";

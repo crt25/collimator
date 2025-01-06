@@ -1,15 +1,15 @@
 import { defineMessages } from "react-intl";
 import {
+  analyzeAst,
+  CriteriaToAnalyzeInput,
+  AstCriterionType,
+} from "@/data-analyzer/analyze-asts";
+import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
 } from "../criterion-base";
 import ConditionCriterionFilterForm from "./ConditionCriterionFilterForm";
-import {
-  analyzeAst,
-  CriteriaToAnalyzeInput,
-  AstCriterionType,
-} from "@/data-analyzer/analyze-asts";
 
 const criterion = AstCriterionType.condition;
 type Criterion = typeof criterion;

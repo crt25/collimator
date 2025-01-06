@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import BreadcrumbItem from "./BreadcrumbItem";
 import { FormattedMessage } from "react-intl";
+import BreadcrumbItem from "./BreadcrumbItem";
 
 const StyledNav = styled.nav`
   margin-top: 1rem;

@@ -5,10 +5,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthenticationService } from "./authentication.service";
 import { Student, User, UserType } from "@prisma/client";
-import { ALLOWED_ROLES, NonUserRoles, Role } from "./role.decorator";
 import { Reflector } from "@nestjs/core";
+import { AuthenticationService } from "./authentication.service";
+import { ALLOWED_ROLES, NonUserRoles, Role } from "./role.decorator";
 import { getTokenFromExecutionContext } from "./helpers";
 
 export const userRequestKey = "user";

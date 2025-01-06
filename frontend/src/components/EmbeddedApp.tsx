@@ -1,8 +1,3 @@
-import {
-  AppIFrameMessage,
-  AppIFrameRequest,
-  AppIFrameResponse,
-} from "@/types/app-iframe-message";
 import styled from "@emotion/styled";
 import {
   forwardRef,
@@ -12,6 +7,11 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  AppIFrameMessage,
+  AppIFrameRequest,
+  AppIFrameResponse,
+} from "@/types/app-iframe-message";
 import ProgressSpinner from "./ProgressSpinner";
 
 const LoadingWrapper = styled.div`

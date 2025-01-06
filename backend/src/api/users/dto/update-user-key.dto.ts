@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { CreateKeyPairDto } from "./create-key-pair.dto";
 import { ValidateNested } from "class-validator";
+import { CreateKeyPairDto } from "./create-key-pair.dto";
 
 export class UpdateUserKeyDto {
   @ValidateNested()

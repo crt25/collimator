@@ -1,11 +1,8 @@
-import { useAdminUser } from "../authentication/authentication-helpers";
 import { getClassesControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
-import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
   getClassesControllerCreateV0ResponseMock,
   getClassesControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { ClassFormPageModel } from "./class-form-page-model";
 import {
   CreateClassDto,
   ExistingUserDto,
@@ -13,6 +10,9 @@ import {
 } from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
+import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 
 test.describe("/class/create", () => {

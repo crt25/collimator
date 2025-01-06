@@ -1,16 +1,16 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
-import Input from "../form/Input";
 import { defineMessages, MessageDescriptor } from "react-intl";
-import SubmitFormButton from "../form/SubmitFormButton";
+import { useMemo } from "react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { omitNullValues, PartialNullable } from "@/utilities/type";
-import { useMemo } from "react";
-import Select from "../form/Select";
 import { UserType } from "@/api/collimator/generated/models";
 import { getUserTypeMessage } from "@/i18n/user-type-messages";
+import ValidationErrorMessage from "../form/ValidationErrorMessage";
+import Input from "../form/Input";
+import SubmitFormButton from "../form/SubmitFormButton";
+import Select from "../form/Select";
 
 const messages = defineMessages({
   name: {

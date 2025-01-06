@@ -1,12 +1,12 @@
+import { useRouter } from "next/router";
+import { useCallback } from "react";
+import { Container } from "react-bootstrap";
+import { FormattedMessage, useIntl } from "react-intl";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import { WarningMessages } from "@/i18n/warning-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { Container } from "react-bootstrap";
-import { FormattedMessage, useIntl } from "react-intl";
 
 const LoginPage = () => {
   const router = useRouter();

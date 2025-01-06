@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
-import { AuthenticationController } from "./authentication.controller";
-import { AuthenticationService } from "./authentication.service";
 import { APP_GUARD } from "@nestjs/core";
-import { RoleGuard } from "./role.guard";
-import { AuthorizationModule } from "../authorization/authorization.module";
-import { AuthenticationGateway } from "./authentication.gateway";
 import { PrismaModule } from "src/prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
+import { AuthorizationModule } from "../authorization/authorization.module";
+import { AuthenticationController } from "./authentication.controller";
+import { AuthenticationService } from "./authentication.service";
+import { RoleGuard } from "./role.guard";
+import { AuthenticationGateway } from "./authentication.gateway";
 
 @Module({
   imports: [PrismaModule, ConfigModule, AuthorizationModule],

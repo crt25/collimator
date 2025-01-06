@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
-import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { CriterionFormComponent } from "../criterion-base";
 import {
   ExpressionFilterCriterion,
   ExpressionFilterCriterionParameters,

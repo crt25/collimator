@@ -4,8 +4,8 @@ import {
   CriterionBase,
   CriterionFilterDefinition,
 } from "../criterion-base";
-import TestCriterionFilterForm from "./TestCriterionFilterForm";
 import { MetaCriterionType } from "../meta-criterion-type";
+import TestCriterionFilterForm from "./TestCriterionFilterForm";
 
 const criterion = MetaCriterionType.test;
 type Criterion = typeof criterion;

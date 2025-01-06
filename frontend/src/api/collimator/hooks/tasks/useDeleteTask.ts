@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { DeletedTask } from "../../models/tasks/deleted-task";
 import { tasksControllerRemoveV0 } from "../../generated/endpoints/tasks/tasks";
-import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useRevalidateTaskList } from "./useRevalidateTaskList";
 
 type DeleteTaskType = (id: number) => Promise<DeletedTask>;
 

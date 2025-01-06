@@ -1,6 +1,6 @@
-import { useLogout } from "@/hooks/useLogout";
 import { useContext as useContextMock } from "react";
 import { useRouter as useRouterMock } from "next/router";
+import { useLogout } from "@/hooks/useLogout";
 import { authenticationContextDefaultValue } from "@/contexts/AuthenticationContext";
 
 jest.mock("react", () => ({

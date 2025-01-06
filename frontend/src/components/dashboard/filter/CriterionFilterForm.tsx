@@ -1,4 +1,3 @@
-import { FilterCriterion, FilterCriterionParameters } from ".";
 import React from "react";
 import { match } from "ts-pattern";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
@@ -14,6 +13,7 @@ import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";
 import { IndentationCriterionFilter } from "../criteria/indentation";
 import { CustomFunctionCallCriterionFilter } from "../criteria/custom-function-call";
+import { FilterCriterion, FilterCriterionParameters } from ".";
 
 const createProps = <
   Filter extends FilterCriterion,

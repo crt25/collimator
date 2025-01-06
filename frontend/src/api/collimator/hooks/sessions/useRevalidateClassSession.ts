@@ -1,7 +1,7 @@
 import { useSWRConfig } from "swr";
 import { useCallback } from "react";
-import { GetSessionReturnType } from "./useClassSession";
 import { getSessionsControllerFindOneV0Url } from "../../generated/endpoints/sessions/sessions";
+import { GetSessionReturnType } from "./useClassSession";
 
 export const useRevalidateClassSession = (): ((
   classId: number,

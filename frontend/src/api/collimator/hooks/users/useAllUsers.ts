@@ -1,18 +1,18 @@
 import useSWR from "swr";
+import { useMemo } from "react";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   ApiResponse,
   fromDtos,
   getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   getUsersControllerFindAllV0Url,
   usersControllerFindAllV0,
 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { useMemo } from "react";
 
 export type GetUsersReturnType = ExistingUser[];
 

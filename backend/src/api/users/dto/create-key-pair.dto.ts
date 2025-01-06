@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { CreatePrivateKeyDto } from "./create-private-key.dto";
 import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import { CreatePrivateKeyDto } from "./create-private-key.dto";
 
 export class CreateKeyPairDto {
   @IsString()

@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { CoreModule } from "./core/core.module";
-import { AstModule } from "./ast/ast.module";
 import { ApiModule } from "src/api/api.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { CoreModule } from "./core/core.module";
+import { AstModule } from "./ast/ast.module";
 
 @Module({
   imports: [

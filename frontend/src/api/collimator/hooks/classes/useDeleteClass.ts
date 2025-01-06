@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { classesControllerRemoveV0 } from "../../generated/endpoints/classes/classes";
 import { DeletedClass } from "../../models/classes/deleted-class";
-import { useRevalidateClassList } from "./useRevalidateClassList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useRevalidateClassList } from "./useRevalidateClassList";
 
 type DeleteClassType = (id: number) => Promise<DeletedClass>;
 

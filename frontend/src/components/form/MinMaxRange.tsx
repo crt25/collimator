@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
-import PrimeRange from "./PrimeRange";
 import { useMemo } from "react";
+import PrimeRange from "./PrimeRange";
 
 const Label = styled.span`
   display: block;

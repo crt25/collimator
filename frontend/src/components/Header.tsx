@@ -1,10 +1,10 @@
-import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
-import { useUserName } from "@/hooks/useUserName";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import React from "react";
 import { Container, Dropdown } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
+import { useUserName } from "@/hooks/useUserName";
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 import DropdownLinkItem from "./dropdown/DropdownLinkItem";
 import LanguageChooser from "./LanguageChooser";
 

@@ -1,11 +1,11 @@
 import useSWR from "swr";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   ApiResponse,
   fromDtos,
   getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   getSessionsControllerFindAllV0Url,
   sessionsControllerFindAllV0,

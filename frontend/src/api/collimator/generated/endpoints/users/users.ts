@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   CreateUserDto,
   DeletedUserDto,
@@ -13,7 +14,6 @@ import type {
   UpdateUserDto,
   UpdateUserKeyDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getUsersControllerCreateV0Url = () => {
   return `/api/v0/users`;

@@ -1,9 +1,9 @@
+import { randomBytes } from "crypto";
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { User, Prisma, KeyPair, RegistrationToken } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
-import { randomBytes } from "crypto";
 
 @Injectable()
 export class UsersService {

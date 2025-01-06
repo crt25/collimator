@@ -49,10 +49,9 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
-import ExtensionLibrary from "./ExtensionLibrary";
+import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import {
   addBlockConfigButtons,
   updateSingleBlockConfigButton,
@@ -72,6 +71,7 @@ import {
   isWithinStack,
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
+import ExtensionLibrary from "./ExtensionLibrary";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {

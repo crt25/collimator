@@ -1,9 +1,9 @@
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { BlockInputValue, NonHatBlockTree, ScratchInputType } from "./types";
 import { match, P } from "ts-pattern";
+import { BlockInputType } from "src/ast/types/input/scratch/block-input-type";
+import { BlockInputValue, NonHatBlockTree, ScratchInputType } from "./types";
 import { createLiteralNode, createVariableExpressionBlock } from "./helpers";
 import { convertBlockTreeToExpression } from "./scratch-block-expression-converter";
-import { BlockInputType } from "src/ast/types/input/scratch/block-input-type";
 
 export const convertInputsToExpression = <
   TBlock extends {

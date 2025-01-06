@@ -5,7 +5,7 @@
     "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "root": true,
   "env": {
     "browser": true,
@@ -20,6 +20,9 @@
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+    }]
   }
 }
