@@ -1,5 +1,5 @@
-import LessonList, { Lesson } from "./LessonList";
 import { mockFilterSortDataTable } from "../__tests__/data-table";
+import LessonList, { Lesson } from "./LessonList";
 
 export default {
   component: LessonList,

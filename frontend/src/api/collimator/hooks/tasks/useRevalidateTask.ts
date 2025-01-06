@@ -1,11 +1,11 @@
 import { useSWRConfig } from "swr";
 import { useCallback } from "react";
-import { GetTaskReturnType } from "./useTask";
 import { getTasksControllerFindOneV0Url } from "../../generated/endpoints/tasks/tasks";
+import { GetTaskReturnType } from "./useTask";
 
 export const useRevalidateTask = (): ((
-  userId: number,
-  newUser?: GetTaskReturnType,
+  taskId: number,
+  newTask?: GetTaskReturnType,
 ) => void) => {
   const { mutate } = useSWRConfig();
 

@@ -1,7 +1,7 @@
 import { Column } from "primereact/column";
-import DataTable from "@/components/DataTable";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
+import DataTable from "@/components/DataTable";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { StudentName } from "../encryption/StudentName";

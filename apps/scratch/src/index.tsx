@@ -1,12 +1,12 @@
 import ReactDOM from "react-dom";
 import "./index.css";
-import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import reportWebVitals from "./reportWebVitals";
 import Solve from "./pages/Solve";
 import ErrorPage from "./pages/ErrorPage";
 import Edit from "./pages/Edit";
 import Show from "./pages/Show";
-import { Toaster } from "react-hot-toast";
 
 export const basePath = "/scratch";
 

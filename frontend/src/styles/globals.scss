@@ -13,19 +13,19 @@
   --button-background-color: #007bff;
   --button-foreground-color: #ffffff;
 
+  --button-secondary-background-color: #6c757d;
+  --button-secondary-foreground-color: #ffffff;
+
+  --button-danger-background-color: var(--error-color);
+  --button-danger-foreground-color: #ffffff;
+
   --button-disabled-background-color: #999999;
 
   --header-background-color: #ccc;
   --header-foreground-color: var(--foreground-color);
 
+  --success-color: #2ecc71;
   --error-color: #dc3545;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #0a0a0a;
-    --foreground-color: #ededed;
-  }
 }
 
 html,
@@ -57,12 +57,6 @@ a {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
 // prime react tooltips
 .p-tooltip {
   background-color: var(--background-color);
@@ -71,4 +65,10 @@ a {
   border-radius: var(--border-radius);
 
   padding: 1rem;
+}
+
+.modal {
+  // set the z-index to the same value s.t. we can stack modals (although this is not recommended)
+  --bs-backdrop-zindex: 1050;
+  --bs-modal-zindex: 1050;
 }

@@ -1,18 +1,20 @@
-import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
-import SwrContent from "../SwrContent";
 import { Accordion } from "react-bootstrap";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { SessionTask } from "@/api/collimator/models/sessions/session-task";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
-import MultiSwrContent from "../MultiSwrContent";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
+import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
+import { useFileHash } from "@/hooks/useFileHash";
+import { Language } from "@/types/app-iframe-message/languages";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import { FormattedMessage } from "react-intl";
+import MultiSwrContent from "../MultiSwrContent";
+import SwrContent from "../SwrContent";
 
 type Progress = ExistingSolution;
 type ProgressByTask = { [taskId: number]: Progress };
@@ -39,6 +41,8 @@ const UserTaskProgress = ({
   task: SessionTask;
   progress: Progress;
 }) => {
+  const intl = useIntl();
+
   const {
     data: task,
     isLoading: isLoadingTask,
@@ -57,6 +61,8 @@ const UserTaskProgress = ({
     error: solutionFileError,
   } = useSolutionFile(classId, sessionId, sessionTask.id, progress.id);
 
+  const solutionFileHash = useFileHash(solutionFile);
+
   const iframeSrc = useMemo(
     () => (task ? getDisplaySolutionUrl(task.type) : null),
     [task],
@@ -71,10 +77,13 @@ const UserTaskProgress = ({
         arguments: {
           task: taskFile,
           submission: solutionFile,
+          language: intl.locale as Language,
         },
       });
     }
-  }, [taskFile, solutionFile]);
+    // since solutionFileHash is a blob, use its hash as a proxy for its content
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskFile, solutionFileHash, intl.locale]);
 
   if (!iframeSrc) {
     return (

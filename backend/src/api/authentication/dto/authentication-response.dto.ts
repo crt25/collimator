@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Type } from "class-transformer";
-import { UserIdentityWithKeyAndToken } from "../authentication.service";
 import { UserType } from "@prisma/client";
 import { IsEnum, IsNotEmpty, IsNumber } from "class-validator";
+import { UserIdentityWithKeyAndToken } from "../authentication.service";
 import { KeyPairDto } from "./key-pair.dto";
 
 export class AuthenticationResponseDto {

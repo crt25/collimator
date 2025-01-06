@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Solution, SolutionAnalysis } from "@prisma/client";
+import { AstVersion, Prisma, Solution, SolutionAnalysis } from "@prisma/client";
 import { AstConversionService } from "src/ast/ast-conversion.service";
 import { PrismaService } from "src/prisma/prisma.service";
-import { TasksService } from "../tasks/tasks.service";
 import { incrementFailedAnalysis } from "@prisma/client/sql";
+import { TasksService } from "../tasks/tasks.service";
 
 export type SolutionAnalysisCreateInput = Omit<
   Prisma.SolutionAnalysisUncheckedCreateInput,
@@ -18,7 +18,10 @@ export class SolutionAnalysisService {
     private readonly astConversionService: AstConversionService,
   ) {}
 
-  async performAnalysis(solution: Solution): Promise<SolutionAnalysis> {
+  async performAnalysis(
+    solution: Solution,
+    newAstVersion: AstVersion,
+  ): Promise<SolutionAnalysis> {
     const task = await this.tasksService.findByIdOrThrow(solution.taskId);
 
     try {
@@ -27,15 +30,21 @@ export class SolutionAnalysisService {
         solution,
       );
 
-      // use an upsert to make sure we only add it if the analysis has not already been performed
+      const genericAst = JSON.stringify(ast);
+
+      // use an upsert to handle the case where the analysis has already been performed
       // this may happen if a re-analysis is triggered  because the initial analysis takes
       // longer than expected
       return this.prisma.solutionAnalysis.upsert({
         create: {
           solutionId: solution.id,
-          genericAst: JSON.stringify(ast),
+          genericAst,
+          astVersion: newAstVersion,
         },
-        update: {},
+        update: {
+          genericAst,
+          astVersion: newAstVersion,
+        },
         where: {
           solutionId: solution.id,
         },

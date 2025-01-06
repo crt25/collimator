@@ -30,10 +30,6 @@ jobs:
         env:
             DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
 
-        concurrency:
-            # avoid running the tests twice for a given branch - may be cancelled by a deployment job
-            group: ${{ github.head_ref || github.ref_name }}-tests
-
         steps:
             -   name: Enable Corepack
                 run: corepack enable
@@ -93,10 +89,6 @@ jobs:
             -   name: Build frontend
                 working-directory: ./frontend
                 run: yarn build
-
-            -   name: Prepare scratch app build
-                working-directory: ./apps/scratch
-                run: yarn prepublish
 
             -   name: Build scratch app
                 working-directory: ./apps/scratch

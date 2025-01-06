@@ -1,0 +1,80 @@
+{
+  "crt.blockConfig.blockUsageLimit": [
+    {
+      "type": 0,
+      "value": "How many times can this block be used?"
+    }
+  ],
+  "crt.blockConfig.canBlockBeUsed": [
+    {
+      "type": 0,
+      "value": "Can this block be used by students?"
+    }
+  ],
+  "crt.blockConfig.hasBlockUsageLimit": [
+    {
+      "type": 0,
+      "value": "Is there a limit to how many times this block can be used?"
+    }
+  ],
+  "crt.blockConfig.heading": [
+    {
+      "type": 0,
+      "value": "Block Config"
+    }
+  ],
+  "crt.extension.assertions.description": [
+    {
+      "type": 0,
+      "value": "Assert conditions on students' code"
+    }
+  ],
+  "crt.extension.assertions.name": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.extensions.assertions.assert": [
+    {
+      "type": 0,
+      "value": "Assert [CONDITION] is true"
+    }
+  ],
+  "crt.extensions.assertions.categoryName": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.extensions.assertions.event_whenTaskFinishedRunning": [
+    {
+      "type": 0,
+      "value": "when task finished running"
+    }
+  ],
+  "crt.taskConfig.allowAllStandardBlocks": [
+    {
+      "type": 0,
+      "value": "Allow all standard blocks to be used"
+    }
+  ],
+  "crt.taskConfig.disallowAllBlocks": [
+    {
+      "type": 0,
+      "value": "Disallow all blocks"
+    }
+  ],
+  "crt.taskConfig.enableAssertions": [
+    {
+      "type": 0,
+      "value": "Enable assertions simulating a student solving the task."
+    }
+  ],
+  "crt.taskConfig.heading": [
+    {
+      "type": 0,
+      "value": "Task Config"
+    }
+  ]
+}

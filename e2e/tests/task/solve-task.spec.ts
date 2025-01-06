@@ -1,15 +1,21 @@
-import { expect, jsonResponse, test } from "../../helpers";
-import { useAdminUser } from "../../authentication-helpers";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
-import { getSessionsControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
+import {
+  getSessionsControllerFindOneV0ResponseMock,
+  getSessionsControllerGetSessionProgressV0ResponseMock,
+} from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
+import {
+  getSessionsControllerFindOneV0Url,
+  getSessionsControllerGetSessionProgressV0Url,
+} from "@/api/collimator/generated/endpoints/sessions/sessions";
 import {
   getTasksControllerDownloadOneV0Url,
   getTasksControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/tasks/tasks";
 import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
+import { expect, jsonResponse, test } from "../../helpers";
 import { routeDummyApp } from "./helpers";
+import { useAdminUser } from "../../authentication-helpers";
 
 const taskBinary = new Blob(['{"existing": "task"}'], {
   type: "application/json",
@@ -68,6 +74,23 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
     );
 
     await routeDummyApp(page, `${scratchURL}/solve`);
+
+    await page.route(
+      `${apiURL}${getSessionsControllerGetSessionProgressV0Url(2, 3)}`,
+      (route) =>
+        route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify(
+            getSessionsControllerGetSessionProgressV0ResponseMock({
+              id: 3,
+              taskProgress: sessionResponse.tasks.map((task) => ({
+                id: task.id,
+                taskProgress: "unOpened",
+              })),
+            }),
+          ),
+        }),
+    );
 
     await page.goto(`${baseURL}/class/2/session/3/task/5/solve`);
     await page.waitForSelector("#__next");

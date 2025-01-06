@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -16,24 +19,27 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
-import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
-import { SolutionsService } from "./solutions.service";
-import { fromQueryResults } from "../helpers";
 import { Express } from "express";
+import { Student, User, UserType } from "@prisma/client";
+import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
+  AdminOnly,
   NonUserRoles,
   Roles,
   StudentOnly,
 } from "../authentication/role.decorator";
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
-import { Student, User, UserType } from "@prisma/client";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { SolutionsService } from "./solutions.service";
+import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
 import { CurrentAnalysisDto } from "./dto/current-analysis.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
@@ -126,6 +132,29 @@ export class SolutionsController {
     return fromQueryResults(CurrentAnalysisDto, solutions);
   }
 
+  @Get("latest")
+  @StudentOnly()
+  @ApiOkResponse({ type: ExistingSolutionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async latestSolution(
+    @AuthenticatedStudent() student: Student,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+  ): Promise<StreamableFile> {
+    const solution =
+      await this.solutionsService.downloadLatestStudentSolutionOrThrow(
+        sessionId,
+        taskId,
+        student.id,
+      );
+
+    return new StreamableFile(solution.data, {
+      type: solution.mimeType,
+    });
+  }
+
   @Get(":id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingSolutionDto })
@@ -188,5 +217,30 @@ export class SolutionsController {
     return new StreamableFile(solution.data, {
       type: solution.mimeType,
     });
+  }
+
+  @Delete(":id")
+  @AdminOnly()
+  @ApiOperation({
+    summary: "Delete all solutions by a student for a given session/task",
+  })
+  @ApiNoContentResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  async deleteOne(
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("taskId", ParseIntPipe) taskId: number,
+    @Param("id", ParseIntPipe) id: SolutionId,
+  ): Promise<void> {
+    const succeeded = await this.solutionsService.deleteAllSolutionsById(
+      sessionId,
+      taskId,
+      id,
+    );
+    if (!succeeded) {
+      throw new NotFoundException();
+    }
   }
 }

@@ -11,10 +11,12 @@ import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/end
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import {
   getSessionsControllerFindOneV0Url,
+  getSessionsControllerGetSessionProgressV0Url,
   getSessionsControllerIsAnonymousV0Url,
 } from "@/api/collimator/generated/endpoints/sessions/sessions";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 import { adminUser } from "./seeding/user";
+import { StudentSessionProgressDto, TaskProgress } from "@/api/collimator/generated/models";
 
 // Follows the pattern described at https://playwright.dev/docs/auth#multiple-signed-in-roles
 setup.describe("authentication against a mock backend", () => {
@@ -81,6 +83,21 @@ setup.describe("authentication against a mock backend", () => {
             },
             isAnonymous: false,
           }),
+        }),
+    );
+
+    await page.route(
+      `${apiURL}${getSessionsControllerGetSessionProgressV0Url(2, 3)}`,
+      (route) =>
+        route.fulfill({
+          ...jsonResponse,
+          body: JSON.stringify({
+            id: 3,
+            taskProgress: sessionResponse.tasks.map((t) => ({
+              id: t.id,
+              taskProgress: TaskProgress.unOpened,
+            })),
+          } satisfies StudentSessionProgressDto),
         }),
     );
 

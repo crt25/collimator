@@ -1,10 +1,10 @@
-import UserList from "./UserList";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { backendHostName } from "@/utilities/constants";
 import {
   getUsersControllerDeleteV0Url,
   getUsersControllerFindAllV0Url,
 } from "@/api/collimator/generated/endpoints/users/users";
+import UserList from "./UserList";
 
 const users = getUsersControllerFindAllV0ResponseMock();
 

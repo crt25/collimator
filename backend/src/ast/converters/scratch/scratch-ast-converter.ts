@@ -6,6 +6,8 @@ import {
 import {
   Block,
   ListPrimitive,
+  Sprite,
+  Stage,
   Target,
   VariablePrimitive,
 } from "src/ast/types/input/scratch/generated/sb3";
@@ -26,7 +28,7 @@ import {
 import { convertBlockTreeToStatement } from "./scratch-block-statement-converter";
 import { convertProcedureDefinitionTree } from "./scratch-procedure-block-converter";
 
-export const convertTarget = (target: Target): ActorNode => {
+export const convertTarget = (target: Target & (Stage | Sprite)): ActorNode => {
   const blockById = target.blocks;
   // scratch blocks are flat but we want to represent them as a tree
   // so first build a tree structure
@@ -51,6 +53,7 @@ export const convertTarget = (target: Target): ActorNode => {
 
   return {
     nodeType: AstNodeType.actor,
+    componentId: target.name,
     eventListeners: eventHatRoots.map((root) => convertEventHatTree(root)),
     functionDeclarations: procedureDefinitionRoots.map(
       convertProcedureDefinitionTree,

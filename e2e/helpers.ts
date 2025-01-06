@@ -311,8 +311,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
     page.addListener("close", () => {
       if (errors.length > 0) {
-        console.error("Page errors:");
-        console.error(errors);
+        console.error("Page errors:", errors);
       }
     });
 

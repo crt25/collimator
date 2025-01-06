@@ -1,10 +1,10 @@
 import VM from "scratch-vm";
-import { ignoreEvent, svgNamespace } from "./helpers";
-import { BlockFreezeStates } from "./types";
 import {
   isScratchBlock,
   isVisualTopOfStackWithId,
 } from "../utilities/scratch-selectors";
+import { ignoreEvent, svgNamespace } from "./helpers";
+import { BlockFreezeStates } from "./types";
 
 const buttonHeight = 20;
 const buttonWidth = 30;

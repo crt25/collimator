@@ -5,20 +5,21 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
-import ConfirmationModal from "../modals/ConfirmationModal";
-import SwrContent from "../SwrContent";
 import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import SwrContent from "../SwrContent";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import Button, { ButtonVariant } from "../Button";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -97,7 +98,7 @@ const TaskTable = () => {
       <div data-testid={`task-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
-            variant="secondary"
+            variant={ButtonVariant.secondary}
             onClick={(e) => {
               e.stopPropagation();
 
@@ -176,7 +177,7 @@ const TaskTable = () => {
               filterElement={
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    variant="secondary"
+                    variant={ButtonVariant.secondary}
                     onClick={() => router.push("task/create")}
                     data-testid="task-create-button"
                   >

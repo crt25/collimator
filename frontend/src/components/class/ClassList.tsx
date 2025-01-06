@@ -5,21 +5,22 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { getClassStatusMessage } from "@/i18n/class-status-messages";
 import { TableMessages } from "@/i18n/table-messages";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
-import ConfirmationModal from "../modals/ConfirmationModal";
 import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
+import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
+import Button, { ButtonVariant } from "../Button";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -125,7 +126,7 @@ const ClassList = () => {
       <div data-testid={`class-${rowData.id}-actions`}>
         <Dropdown as={ButtonGroup}>
           <Button
-            variant="secondary"
+            variant={ButtonVariant.secondary}
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/class/${rowData.id}/edit`);
@@ -213,7 +214,7 @@ const ClassList = () => {
               filterElement={
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    variant="secondary"
+                    variant={ButtonVariant.secondary}
                     onClick={() => router.push("class/create")}
                     data-testid="class-create-button"
                   >

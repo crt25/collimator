@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import ErrorMessage from "./ErrorMessage";
 import ProgressSpinner from "./ProgressSpinner";
 
+const logModule = "[MultiSwrContent]";
+
 const areAllElementsDefined = <TData extends readonly unknown[] | []>(
   data: TData,
 ): data is {
@@ -38,7 +40,7 @@ const MultiSwrContent = <TData extends readonly unknown[] | []>({
   }, [children, data]);
 
   if (nonLoadingErrors.length > 0) {
-    console.error(nonLoadingErrors);
+    console.error(`${logModule} Failed to load:`, nonLoadingErrors);
 
     return nonLoadingErrors
       .filter((e) => e !== undefined)

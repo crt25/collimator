@@ -1,6 +1,6 @@
-import TaskList from "./TaskList";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
+import TaskList from "./TaskList";
 
 type Args = Parameters<typeof TaskList>[0];
 

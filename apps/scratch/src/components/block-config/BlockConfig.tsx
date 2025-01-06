@@ -1,10 +1,10 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import VM from "scratch-vm";
+import { FormattedMessage } from "react-intl";
 import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 
-import VM from "scratch-vm";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
 import Modal from "../modal/Modal";
-import { FormattedMessage } from "react-intl";
 
 const cannotBeUsed = 0;
 const infiniteUses = -1;
@@ -148,7 +148,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
               <FormattedMessage
                 defaultMessage="How many times can this block be used?"
                 description="Label shown next to the input field for configuring how often a block can be used by students."
-                id="crt.blockConfig.hasBlockUsageLimit"
+                id="crt.blockConfig.blockUsageLimit"
               />
             </span>
             <input

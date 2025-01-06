@@ -1,15 +1,15 @@
+import { useCallback } from "react";
+import { useSWRConfig } from "swr";
+import { ExistingClass } from "../../models/classes/existing-class";
 import {
   classesControllerUpdateV0,
   getClassesControllerFindOneV0Url,
 } from "../../generated/endpoints/classes/classes";
-import { useCallback } from "react";
-import { ExistingClass } from "../../models/classes/existing-class";
-import { useSWRConfig } from "swr";
-import { GetClassReturnType } from "./useClass";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
-import { useRevalidateClassList } from "./useRevalidateClassList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { UpdateClassDto } from "../../generated/models";
+import { GetClassReturnType } from "./useClass";
+import { useRevalidateClassList } from "./useRevalidateClassList";
 
 type UpdateClassType = (
   id: number,

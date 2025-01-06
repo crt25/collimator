@@ -2,11 +2,13 @@ import useSWR from "swr";
 import { ApiResponse } from "../helpers";
 import { getSolutionsControllerFindAllV0Url } from "../../generated/endpoints/solutions/solutions";
 import { useClassSession } from "../sessions/useClassSession";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import {
   fetchSolutionsAndTransform,
   GetSolutionsReturnType,
 } from "./useAllSessionTaskSolutions";
-import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+
+export const allTasksPlaceholder = -1;
 
 type SessionSolution = { taskId: number; solutions: GetSolutionsReturnType };
 
@@ -25,7 +27,7 @@ export const useAllSessionSolutions = (
       getSolutionsControllerFindAllV0Url(
         classId,
         sessionId,
-        -1 /* use -1 to represent 'all'*/,
+        allTasksPlaceholder /* use placeholder to represent 'all'*/,
       ),
     () =>
       data

@@ -5,12 +5,12 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   CreateSolutionDto,
   CurrentAnalysisDto,
   ExistingSolutionDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getSolutionsControllerCreateV0Url = (
   classId: number,
@@ -113,6 +113,34 @@ export const solutionsControllerFindOneV0 = async (
   );
 };
 
+/**
+ * @summary Delete all solutions by a student for a given session/task
+ */
+export const getSolutionsControllerDeleteOneV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/${id}`;
+};
+
+export const solutionsControllerDeleteOneV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return fetchApi<Promise<void>>(
+    getSolutionsControllerDeleteOneV0Url(classId, sessionId, taskId, id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
+
 export const getSolutionsControllerDownloadOneV0Url = (
   classId: number,
   sessionId: number,
@@ -131,6 +159,29 @@ export const solutionsControllerDownloadOneV0 = async (
 ): Promise<void> => {
   return fetchApi<Promise<void>>(
     getSolutionsControllerDownloadOneV0Url(classId, sessionId, taskId, id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
+export const getSolutionsControllerLatestSolutionV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/latest`;
+};
+
+export const solutionsControllerLatestSolutionV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  options?: RequestInit,
+): Promise<ExistingSolutionDto> => {
+  return fetchApi<Promise<ExistingSolutionDto>>(
+    getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
     {
       ...options,
       method: "GET",

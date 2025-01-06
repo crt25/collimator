@@ -5,17 +5,18 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
-import Tag from "@/components/Tag";
-import Tags from "@/components/Tags";
+import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import Tags from "@/components/Tags";
+import Tag from "@/components/Tag";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
+import Button, { ButtonVariant } from "../Button";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -133,7 +134,7 @@ const LessonList = ({
     (rowData: Lesson) => (
       <div>
         <Dropdown as={ButtonGroup}>
-          <Button variant="secondary">
+          <Button variant={ButtonVariant.secondary}>
             <FontAwesomeIcon
               icon={faEdit}
               onClick={(e) => {
@@ -212,7 +213,7 @@ const LessonList = ({
           filterElement={
             <Dropdown as={ButtonGroup}>
               <Button
-                variant="secondary"
+                variant={ButtonVariant.secondary}
                 onClick={() => router.push("lesson/create")}
               >
                 <FontAwesomeIcon icon={faAdd} />

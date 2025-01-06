@@ -2428,6 +2428,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/cli@npm:^6.3.14":
+  version: 6.3.14
+  resolution: "@formatjs/cli@npm:6.3.14"
+  peerDependencies:
+    "@glimmer/env": ^0.1.7
+    "@glimmer/reference": ^0.91.1 || ^0.92.0 || ^0.93.0
+    "@glimmer/syntax": ^0.92.0 || ^0.93.0
+    "@glimmer/validator": ^0.92.0 || ^0.93.0
+    "@vue/compiler-core": ^3.4.0
+    content-tag: ^2.0.1 || ^3.0.0
+    ember-template-recast: ^6.1.4
+    vue: ^3.4.0
+  peerDependenciesMeta:
+    "@glimmer/env":
+      optional: true
+    "@glimmer/reference":
+      optional: true
+    "@glimmer/syntax":
+      optional: true
+    "@glimmer/validator":
+      optional: true
+    "@vue/compiler-core":
+      optional: true
+    content-tag:
+      optional: true
+    ember-template-recast:
+      optional: true
+    vue:
+      optional: true
+  bin:
+    formatjs: bin/formatjs
+  checksum: 10c0/b4c83ed7fdc8dcd48b2f48fa9cca65b52472fb096eb028517a872f8a71ed3964f4b0a6bbc607f821a9504f396fe7341ef4d9ad44a381a37f280ed7547de66f41
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
   resolution: "@humanwhocodes/config-array@npm:0.13.0"
@@ -4802,6 +4837,7 @@ __metadata:
     "@craco/craco": "npm:^7.1.0"
     "@emotion/react": "npm:^11.13.3"
     "@emotion/styled": "npm:^11.13.0"
+    "@formatjs/cli": "npm:^6.3.14"
     "@microbit/microbit-universal-hex": "npm:^0.2.2"
     "@playwright/test": "npm:^1.48.1"
     "@testing-library/jest-dom": "npm:^5.17.0"
@@ -4849,6 +4885,7 @@ __metadata:
     eslint: "npm:^8"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-config-scratch: "npm:^9.0.9"
+    eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-prettier: "npm:^5.2.1"
     get-float-time-domain-data: "npm:^0.1.0"
     get-user-media-promise: "npm:1.1.4"
@@ -8057,6 +8094,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-module-utils@npm:^2.12.0":
+  version: 2.12.0
+  resolution: "eslint-module-utils@npm:2.12.0"
+  dependencies:
+    debug: "npm:^3.2.7"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10c0/4d8b46dcd525d71276f9be9ffac1d2be61c9d54cc53c992e6333cf957840dee09381842b1acbbb15fc6b255ebab99cd481c5007ab438e5455a14abe1a0468558
+  languageName: node
+  linkType: hard
+
 "eslint-module-utils@npm:^2.9.0":
   version: 2.11.0
   resolution: "eslint-module-utils@npm:2.11.0"
@@ -8108,6 +8157,35 @@ __metadata:
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
   checksum: 10c0/4c9dcb1f27505c4d5dd891d2b551f56c70786d136aa3992a77e785bdc67c9f60200a2c7fb0ce55b7647fe550b12bc433d5dfa59e2c00ab44227791c5ab86badf
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-import@npm:^2.31.0":
+  version: 2.31.0
+  resolution: "eslint-plugin-import@npm:2.31.0"
+  dependencies:
+    "@rtsao/scc": "npm:^1.1.0"
+    array-includes: "npm:^3.1.8"
+    array.prototype.findlastindex: "npm:^1.2.5"
+    array.prototype.flat: "npm:^1.3.2"
+    array.prototype.flatmap: "npm:^1.3.2"
+    debug: "npm:^3.2.7"
+    doctrine: "npm:^2.1.0"
+    eslint-import-resolver-node: "npm:^0.3.9"
+    eslint-module-utils: "npm:^2.12.0"
+    hasown: "npm:^2.0.2"
+    is-core-module: "npm:^2.15.1"
+    is-glob: "npm:^4.0.3"
+    minimatch: "npm:^3.1.2"
+    object.fromentries: "npm:^2.0.8"
+    object.groupby: "npm:^1.0.3"
+    object.values: "npm:^1.2.0"
+    semver: "npm:^6.3.1"
+    string.prototype.trimend: "npm:^1.0.8"
+    tsconfig-paths: "npm:^3.15.0"
+  peerDependencies:
+    eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9
+  checksum: 10c0/e21d116ddd1900e091ad120b3eb68c5dd5437fe2c930f1211781cd38b246f090a6b74d5f3800b8255a0ed29782591521ad44eb21c5534960a8f1fb4040fd913a
   languageName: node
   linkType: hard
 

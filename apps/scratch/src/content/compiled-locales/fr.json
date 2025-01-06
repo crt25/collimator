@@ -1,0 +1,80 @@
+{
+  "crt.blockConfig.blockUsageLimit": [
+    {
+      "type": 0,
+      "value": "Combien de fois ce bloc peut-il être utilisé ?"
+    }
+  ],
+  "crt.blockConfig.canBlockBeUsed": [
+    {
+      "type": 0,
+      "value": "Ce bloc peut-il être utilisé par les étudiants ?"
+    }
+  ],
+  "crt.blockConfig.hasBlockUsageLimit": [
+    {
+      "type": 0,
+      "value": "Combien de fois ce bloc peut-il être utilisé ?"
+    }
+  ],
+  "crt.blockConfig.heading": [
+    {
+      "type": 0,
+      "value": "Configuration du bloc"
+    }
+  ],
+  "crt.extension.assertions.description": [
+    {
+      "type": 0,
+      "value": "Affirmer des conditions sur le code des élèves"
+    }
+  ],
+  "crt.extension.assertions.name": [
+    {
+      "type": 0,
+      "value": "Affirmations"
+    }
+  ],
+  "crt.extensions.assertions.assert": [
+    {
+      "type": 0,
+      "value": "Affirmer que [CONDITION] est vrai"
+    }
+  ],
+  "crt.extensions.assertions.categoryName": [
+    {
+      "type": 0,
+      "value": "Affirmations"
+    }
+  ],
+  "crt.extensions.assertions.event_whenTaskFinishedRunning": [
+    {
+      "type": 0,
+      "value": "lorsque l'exécution de la tâche est terminée"
+    }
+  ],
+  "crt.taskConfig.allowAllStandardBlocks": [
+    {
+      "type": 0,
+      "value": "Permettre l'utilisation de tous les blocs standard"
+    }
+  ],
+  "crt.taskConfig.disallowAllBlocks": [
+    {
+      "type": 0,
+      "value": "Interdire tous les blocs"
+    }
+  ],
+  "crt.taskConfig.enableAssertions": [
+    {
+      "type": 0,
+      "value": "Activer les assertions simulant la résolution de la tâche par un étudiant."
+    }
+  ],
+  "crt.taskConfig.heading": [
+    {
+      "type": 0,
+      "value": "Configuration des tâches"
+    }
+  ]
+}

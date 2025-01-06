@@ -1,8 +1,8 @@
 import { defineMessages } from "react-intl";
-import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { LoopFilterCriterion } from ".";
+import { CriterionFormComponent } from "../criterion-base";
+import { LoopFilterCriterion, LoopFilterCriterionParameters } from ".";
 
 const messages = defineMessages({
   count: {
@@ -11,17 +11,19 @@ const messages = defineMessages({
   },
 });
 
-const min = 0;
-const max = 100;
-
 const LoopCriterionFilterForm: CriterionFormComponent<
   AstCriterionType.loop,
-  LoopFilterCriterion
-> = ({ value, onChange }) => (
+  LoopFilterCriterion,
+  LoopFilterCriterionParameters
+> = ({
+  value,
+  onChange,
+  parameters: { minNumberOfLoops, maxNumberOfLoops },
+}) => (
   <form data-testid="loop-filter-form">
     <MinMaxRange
-      min={min}
-      max={max}
+      min={minNumberOfLoops}
+      max={maxNumberOfLoops}
       valueMin={value.minimumCount}
       valueMax={value.maximumCount}
       onChange={(min, max) =>

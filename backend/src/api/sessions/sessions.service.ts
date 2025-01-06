@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { SessionId } from "./dto";
 import { SessionStatus } from ".prisma/client";
+import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { SessionId } from "./dto";
+import { TaskProgress } from "./task-progress";
 
 const compactInclude = {
   tasks: {
@@ -31,6 +33,11 @@ const fullInclude = {
   class: { select: { id: true, name: true } },
   lesson: { select: { id: true, title: true } },
 };
+
+interface StudentTaskProgress {
+  id: number;
+  taskProgress: TaskProgress;
+}
 
 @Injectable()
 export class SessionsService {
@@ -162,5 +169,34 @@ export class SessionsService {
 
   deleteById(id: SessionId): Promise<Session> {
     return this.deletedByIdAndClass(id);
+  }
+
+  async getSessionProgress(
+    id: SessionId,
+    studentId: number,
+  ): Promise<StudentTaskProgress[]> {
+    const solutions = await this.prisma.$queryRawTyped(
+      getCurrentStudentSolutions(id, studentId),
+    );
+
+    return solutions.map<StudentTaskProgress>((solution) => {
+      let taskProgress = TaskProgress.unOpened;
+
+      if (!isNaN(solution.solutionId) && solution.solutionId > 0) {
+        // solutionId, passedTests and totalTests may be null, we are doing a LEFT JOIN
+        if (solution.passedTests >= solution.totalTests) {
+          taskProgress = TaskProgress.done;
+        } else if (solution.passedTests > 0) {
+          taskProgress = TaskProgress.partiallyDone;
+        } else {
+          taskProgress = TaskProgress.opened;
+        }
+      }
+
+      return {
+        id: solution.taskId,
+        taskProgress,
+      };
+    });
   }
 }

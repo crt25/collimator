@@ -1,7 +1,7 @@
 import { Buffer } from "buffer";
-import archiver from "archiver";
 import * as fs from "fs";
 import * as path from "path";
+import archiver from "archiver";
 
 export const zipDirectory = (sourceDir: string): Promise<Buffer> => {
   const archive = archiver("zip", { zlib: { level: 9 } });

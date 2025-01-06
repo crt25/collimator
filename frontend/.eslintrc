@@ -6,6 +6,7 @@
     "plugin:storybook/recommended",
     "plugin:prettier/recommended"
   ],
+  "plugins": ["import"],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
       "error",
@@ -14,7 +15,10 @@
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+    }]
   },
   "overrides": [
     {

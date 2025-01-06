@@ -1,8 +1,8 @@
 import { defineMessages } from "react-intl";
-import { TestFilterCriterion } from ".";
-import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
+import { CriterionFormComponent } from "../criterion-base";
 import { MetaCriterionType } from "../meta-criterion-type";
+import { TestFilterCriterion, TestFilterCriterionParameters } from ".";
 
 const messages = defineMessages({
   count: {
@@ -11,17 +11,15 @@ const messages = defineMessages({
   },
 });
 
-const min = 0;
-const max = 100;
-
 const TestCriterionFilterForm: CriterionFormComponent<
   MetaCriterionType.test,
-  TestFilterCriterion
-> = ({ value, onChange }) => (
+  TestFilterCriterion,
+  TestFilterCriterionParameters
+> = ({ value, onChange, parameters: { minPassedTests, maxPassedTests } }) => (
   <form data-testid="test-filter-form">
     <MinMaxRange
-      min={min}
-      max={max}
+      min={minPassedTests}
+      max={maxPassedTests}
       valueMin={value.minimumCount}
       valueMax={value.maximumCount}
       onChange={(min, max) =>

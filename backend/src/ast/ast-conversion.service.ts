@@ -1,11 +1,11 @@
+import { resolve } from "path";
 import { Injectable, OnModuleDestroy } from "@nestjs/common";
 import { Solution, TaskType } from "@prisma/client";
 import { Piscina } from "piscina";
-import { resolve } from "path";
-import { GeneralAst } from "./types/general-ast";
 import { TaskWithoutData } from "src/api/tasks/tasks.service";
-import SolutionConversionWorker from "./converters/solution-conversion-worker.piscina";
 import { getPiscinaPath } from "src/utilities/is-test";
+import { GeneralAst } from "./types/general-ast";
+import SolutionConversionWorker from "./converters/solution-conversion-worker.piscina";
 
 type ConversionWorker = typeof SolutionConversionWorker;
 

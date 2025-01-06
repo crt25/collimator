@@ -1,12 +1,14 @@
 import useSWR from "swr";
+import { useCallback } from "react";
+import { fetchFile } from "@/api/fetch";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import {
   getSolutionsControllerDownloadOneV0Url,
   getSolutionsControllerFindOneV0Url,
+  getSolutionsControllerLatestSolutionV0Url,
   solutionsControllerFindOneV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
-import { fetchFile } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetSolutionReturnType = ExistingSolution;
@@ -94,5 +96,25 @@ export const useSolutionFile = (
               method: "GET",
             },
           ),
+  );
+};
+
+export const useFetchLatestSolutionFile = (): ((
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => Promise<Blob>) => {
+  const authOptions = useAuthenticationOptions();
+
+  return useCallback(
+    (classId: number, sessionId: number, taskId: number) =>
+      fetchFile(
+        getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
+        {
+          ...authOptions,
+          method: "GET",
+        },
+      ),
+    [authOptions],
   );
 };

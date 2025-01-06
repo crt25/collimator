@@ -1,10 +1,10 @@
-import TaskTable from "./TaskTable";
 import { backendHostName } from "@/utilities/constants";
 import { getTasksControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
 import {
   getTasksControllerFindAllV0Url,
   getTasksControllerRemoveV0Url,
 } from "@/api/collimator/generated/endpoints/tasks/tasks";
+import TaskTable from "./TaskTable";
 
 const tasks = getTasksControllerFindAllV0ResponseMock();
 

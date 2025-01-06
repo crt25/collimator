@@ -1,17 +1,17 @@
-import { BrowserContext, Page } from "@playwright/test";
 import { subtle } from "crypto";
 import * as fs from "fs";
+import { BrowserContext, Page } from "@playwright/test";
+import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
   getAuthenticationControllerLoginV0Url,
 } from "@/api/collimator/generated/endpoints/authentication/authentication";
+import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import {
   AuthenticationResponseDto,
   PublicKeyDto,
   UserType,
 } from "@/api/collimator/generated/models";
-import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
-import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import {
   StudentAuthenticationRequest,
   StudentAuthenticationRequestContent,
@@ -183,7 +183,7 @@ const setupMockOidcProvider = async (
   // intercept token request
   await page.route(/\/__oidc__\/token-request/, async (route) => {
     // get post data as string
-    const postData = route.request().postData() || "";
+    const postData = route.request().postData() ?? "";
 
     // get client_id from post data
     const [_, clientId] = postData.match(/client_id=([^&]+)/) as [

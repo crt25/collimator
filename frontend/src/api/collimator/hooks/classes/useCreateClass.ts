@@ -1,9 +1,9 @@
-import { classesControllerCreateV0 } from "../../generated/endpoints/classes/classes";
 import { useCallback } from "react";
+import { classesControllerCreateV0 } from "../../generated/endpoints/classes/classes";
 import { ExistingClass } from "../../models/classes/existing-class";
-import { useRevalidateClassList } from "./useRevalidateClassList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CreateClassDto } from "../../generated/models";
+import { useRevalidateClassList } from "./useRevalidateClassList";
 
 type CreateClassType = (
   createClassDto: CreateClassDto,

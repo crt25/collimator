@@ -1,8 +1,8 @@
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useMemo } from "react";
-import DisableSSR from "../next/DisableSSR";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
+import DisableSSR from "../next/DisableSSR";
 
 const allowedRoutesForUnauthenticatedUsers = [
   "/_error",

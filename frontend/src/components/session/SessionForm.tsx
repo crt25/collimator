@@ -1,15 +1,6 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import { defineMessages, MessageDescriptor } from "react-intl";
-import { useYupSchema } from "@/hooks/useYupSchema";
-import { useYupResolver } from "@/hooks/useYupResolver";
-import Select from "../form/Select";
-import SubmitFormButton from "../form/SubmitFormButton";
-import TextArea from "../form/TextArea";
-import Input from "../form/Input";
-import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
-import SwrContent from "../SwrContent";
 import {
   SyntheticEvent,
   useCallback,
@@ -17,11 +8,20 @@ import {
   useMemo,
   useState,
 } from "react";
-import SortableListInput from "../form/SortableList";
-import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useYupSchema } from "@/hooks/useYupSchema";
+import { useYupResolver } from "@/hooks/useYupResolver";
+import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import ValidationErrorMessage from "../form/ValidationErrorMessage";
+import Select from "../form/Select";
+import SubmitFormButton from "../form/SubmitFormButton";
+import TextArea from "../form/TextArea";
+import Input from "../form/Input";
+import SwrContent from "../SwrContent";
+import SortableListInput from "../form/SortableList";
 
 const messages = defineMessages({
   title: {

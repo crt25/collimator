@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { SolutionsController } from "./solutions.controller";
-import { SolutionsService } from "./solutions.service";
 import { AstModule } from "src/ast/ast.module";
 import { TasksModule } from "../tasks/tasks.module";
+import { SolutionsController } from "./solutions.controller";
+import { SolutionsService } from "./solutions.service";
 import { SolutionAnalysisService } from "./solution-analysis.service";
 
 @Module({

@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { usersControllerDeleteV0 } from "../../generated/endpoints/users/users";
 import { DeletedUser } from "../../models/users/deleted-user";
-import { useRevalidateUserList } from "./useRevalidateUserList";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useRevalidateUserList } from "./useRevalidateUserList";
 
 type DeleteUserType = (id: number) => Promise<DeletedUser>;
 

@@ -1,11 +1,11 @@
 import { defineMessages } from "react-intl";
-import TabNavigation, { NavigationTab } from "./TabNavigation";
-import BreadcrumbItem from "./BreadcrumbItem";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { UserRole } from "@/types/user/user-role";
+import BreadcrumbItem from "./BreadcrumbItem";
+import TabNavigation, { NavigationTab } from "./TabNavigation";
 
 const messages = defineMessages({
   usersTab: {

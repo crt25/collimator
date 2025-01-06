@@ -18,6 +18,17 @@ import {
 } from "@nestjs/swagger";
 import "multer";
 import { SessionStatus, Student, User, UserType } from "@prisma/client";
+import { fromQueryResults } from "../helpers";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import {
+  NonUserRoles,
+  Public,
+  Roles,
+  StudentOnly,
+} from "../authentication/role.decorator";
+import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
+import { SessionsService } from "./sessions.service";
 import {
   CreateSessionDto,
   ExistingSessionDto,
@@ -26,13 +37,9 @@ import {
   ExistingSessionExtendedDto,
   SessionId,
 } from "./dto";
-import { SessionsService } from "./sessions.service";
-import { fromQueryResults } from "../helpers";
-import { AuthorizationService } from "../authorization/authorization.service";
-import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { NonUserRoles, Public, Roles } from "../authentication/role.decorator";
-import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { IsSessionAnonymousDto } from "./dto/is-session-anonymous.dto";
+import { StudentSessionProgressDto } from "./dto/student-session-progress.dto";
+import { StudentTaskProgressDto } from "./dto/student-task-progress.dto";
 
 @Controller("classes/:classId/sessions")
 @ApiTags("sessions")
@@ -251,5 +258,26 @@ export class SessionsController {
 
     const session = await this.sessionsService.deletedByIdAndClass(id, classId);
     return DeletedSessionDto.fromQueryResult(session);
+  }
+
+  @Get(":id/progress")
+  @ApiOkResponse({ type: StudentSessionProgressDto })
+  @StudentOnly()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  async getSessionProgress(
+    @AuthenticatedStudent() student: Student,
+    @Param("classId", ParseIntPipe) classId: number,
+    @Param("id", ParseIntPipe) id: SessionId,
+  ): Promise<StudentSessionProgressDto> {
+    const taskProgress = await this.sessionsService.getSessionProgress(
+      id,
+      student.id,
+    );
+
+    return StudentSessionProgressDto.fromQueryResult({
+      id,
+      taskProgress: taskProgress.map(StudentTaskProgressDto.fromQueryResult),
+    });
   }
 }

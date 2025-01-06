@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useAuthenticateStudent } from "@/api/collimator/hooks/authentication/useAuthenticateStudent";
 import { useFetchClass } from "@/api/collimator/hooks/classes/useFetchClass";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
@@ -12,7 +13,6 @@ import { verifyJwtToken } from "@/utilities/authentication/jwt";
 import { openIdConnectMicrosoftClientId } from "@/utilities/constants";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
-import { useCallback } from "react";
 
 const findOrCreatePseudonym = async (
   longTermIdentifier: string | null,

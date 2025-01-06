@@ -1,7 +1,7 @@
 import { Page } from "playwright/test";
+import { expect } from "playwright-test-coverage";
 import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 import { TestTask } from "./tasks";
-import { expect } from "playwright-test-coverage";
 
 export const getExpectedBlockConfigButtonLabel = (
   crtConfig: ScratchCrtConfig,
@@ -39,7 +39,10 @@ export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
       id: 0,
       type: "request",
       procedure: "loadTask",
-      arguments: task,
+      arguments: {
+        task,
+        language: "en",
+      },
     });
 
     window.dispatchEvent(event);

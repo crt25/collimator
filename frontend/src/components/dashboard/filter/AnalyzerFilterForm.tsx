@@ -1,16 +1,17 @@
 import styled from "@emotion/styled";
-import Select from "../../form/Select";
 import { FormattedMessage } from "react-intl";
 import { SetStateAction, useMemo } from "react";
+import { TaskType } from "@/api/collimator/generated/models";
+import AppliedFilters from "../AppliedFilters";
+import Select from "../../form/Select";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import {
   FilterCriterion,
+  FilterCriterionParameters,
   FilterCriterionType,
   filterCriteria,
   getInitialFilterValues,
 } from ".";
-import AppliedFilters from "../AppliedFilters";
-import { TaskType } from "@/api/collimator/generated/models";
-import { MetaCriterionType } from "../criteria/meta-criterion-type";
 
 const Label = styled.label`
   display: block;
@@ -21,10 +22,14 @@ const AnalyzerFilterForm = ({
   taskType,
   filters,
   setFilters,
+  parametersByCriterion,
 }: {
   taskType: TaskType;
   filters: FilterCriterion[];
   setFilters: (value: SetStateAction<FilterCriterion[]>) => void;
+  parametersByCriterion: {
+    [key in FilterCriterionType]?: FilterCriterionParameters;
+  };
 }) => {
   const filterOptions = useMemo(() => {
     const usedCriteria = new Set(filters.map((f) => f.criterion));
@@ -62,6 +67,7 @@ const AnalyzerFilterForm = ({
         taskType={taskType}
         filters={filters}
         setFilters={setFilters}
+        parametersByCriterion={parametersByCriterion}
       />
     </>
   );

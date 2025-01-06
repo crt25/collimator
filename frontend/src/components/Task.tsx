@@ -1,14 +1,14 @@
-import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import TaskDescription from "@/components/TaskDescription";
 import styled from "@emotion/styled";
 import { MutableRefObject } from "react";
 import { CloseButton, Col } from "react-bootstrap";
+import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
+import TaskDescription from "@/components/TaskDescription";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import TaskList from "./TaskList";
 import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import FullHeightRow from "./layout/FullHeightRow";
 import VerticalSpacing from "./layout/VerticalSpacing";
-import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
-import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 
 const TaskWrapper = styled.div`
   flex-grow: 1;

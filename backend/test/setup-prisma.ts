@@ -1,7 +1,7 @@
 import "@quramy/jest-prisma-node";
-import { PrismaClient } from "@prisma/client";
 import { promisify } from "util";
 import { exec } from "child_process";
+import { PrismaClient } from "@prisma/client";
 import { classes, users } from "test/seed";
 
 async function seedDatabase(prisma: PrismaClient): Promise<void> {

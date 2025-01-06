@@ -1,3 +1,4 @@
+import { subtle } from "crypto";
 import {
   AuthenticationContextType,
   deserializeAuthenticationContext,
@@ -5,7 +6,7 @@ import {
   serializeAuthenticationContext,
 } from "@/contexts/AuthenticationContext";
 import KeyPair from "@/utilities/crypto/KeyPair";
-import { subtle } from "crypto";
+import { UserRole } from "@/types/user/user-role";
 import {
   getAuthenticatedAdminContext,
   getAuthenticatedTeacherContext,
@@ -13,7 +14,6 @@ import {
   getLocallyAuthenticatedStudentContext,
   getUnauthenticatedContext,
 } from "../mock-contexts";
-import { UserRole } from "@/types/user/user-role";
 
 const crypto = subtle as SubtleCrypto;
 

@@ -1,10 +1,10 @@
+import { useRouter } from "next/router";
+import { Container } from "react-bootstrap";
+import { FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
-import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 
 const LessonDetail = () => {

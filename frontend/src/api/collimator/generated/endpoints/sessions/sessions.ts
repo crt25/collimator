@@ -5,15 +5,16 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   CreateSessionDto,
   DeletedSessionDto,
   ExistingSessionDto,
   ExistingSessionExtendedDto,
   IsSessionAnonymousDto,
+  StudentSessionProgressDto,
   UpdateSessionDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getSessionsControllerCreateV0Url = (classId: number) => {
   return `/api/v0/classes/${classId}/sessions`;
@@ -198,6 +199,27 @@ export const sessionsControllerFinishV0 = async (
     {
       ...options,
       method: "POST",
+    },
+  );
+};
+
+export const getSessionsControllerGetSessionProgressV0Url = (
+  classId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${id}/progress`;
+};
+
+export const sessionsControllerGetSessionProgressV0 = async (
+  classId: number,
+  id: number,
+  options?: RequestInit,
+): Promise<StudentSessionProgressDto> => {
+  return fetchApi<Promise<StudentSessionProgressDto>>(
+    getSessionsControllerGetSessionProgressV0Url(classId, id),
+    {
+      ...options,
+      method: "GET",
     },
   );
 };

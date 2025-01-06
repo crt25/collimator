@@ -1,10 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CoreModule } from "src/core/core.module";
-import { SolutionsService } from "./solutions.service";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
-import { SolutionAnalysisService } from "./solution-analysis.service";
-import { TasksService } from "../tasks/tasks.service";
 import { AstConversionService } from "src/ast/ast-conversion.service";
+import { TasksService } from "../tasks/tasks.service";
+import { SolutionsService } from "./solutions.service";
+import { SolutionAnalysisService } from "./solution-analysis.service";
 
 describe("SolutionsService", () => {
   let service: SolutionsService;

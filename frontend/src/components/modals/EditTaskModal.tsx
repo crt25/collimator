@@ -1,9 +1,10 @@
-import { FormattedMessage } from "react-intl";
-import { useCallback, useMemo } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import TaskModal from "./TaskModal";
+import { Language } from "@/types/app-iframe-message/languages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
+import TaskModal from "./TaskModal";
 
 const getEditUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -27,20 +28,38 @@ const EditTaskModal = ({
   taskType: TaskType;
   initialTask?: Blob | null;
 }) => {
+  const intl = useIntl();
   const url = useMemo(() => getEditUrl(taskType), [taskType]);
+  const wasInitialized = useRef(false);
 
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
+      if (wasInitialized.current) {
+        embeddedApp.sendRequest({
+          procedure: "setLocale",
+          arguments: intl.locale as Language,
+        });
+        return;
+      }
+      wasInitialized.current = true;
+
       if (initialTask) {
         embeddedApp.sendRequest({
           procedure: "loadTask",
-          arguments: initialTask,
+          arguments: {
+            task: initialTask,
+            language: intl.locale as Language,
+          },
         });
       }
     },
-    [initialTask],
+    [initialTask, intl.locale],
   );
 
+  useEffect(() => {
+    // reset after closing / opening
+    wasInitialized.current = false;
+  }, [isShown]);
   return (
     <TaskModal
       title={

@@ -1,7 +1,7 @@
 import { fn } from "@storybook/test";
-import ConfirmationModal from "./ConfirmationModal";
 import { useState } from "@storybook/preview-api";
 import Button from "../Button";
+import ConfirmationModal from "./ConfirmationModal";
 
 type Args = Omit<
   Parameters<typeof ConfirmationModal>[0],

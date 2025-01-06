@@ -1,5 +1,5 @@
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useContext, useMemo } from "react";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 
 export const useAuthenticationOptions = (): RequestInit => {
   const authContext = useContext(AuthenticationContext);

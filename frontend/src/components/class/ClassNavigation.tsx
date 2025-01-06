@@ -1,8 +1,8 @@
 import { defineMessages } from "react-intl";
-import TabNavigation, { NavigationTab } from "../TabNavigation";
-import BreadcrumbItem from "../BreadcrumbItem";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import TabNavigation, { NavigationTab } from "../TabNavigation";
+import BreadcrumbItem from "../BreadcrumbItem";
 
 const messages = defineMessages({
   classTab: {

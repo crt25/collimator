@@ -9,10 +9,10 @@ import {
 } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
+import { mockConfigModule } from "src/utilities/test/mock-config.service";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { CreateUserDto, ExistingUserDto } from "./dto";
-import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
 describe("UsersController", () => {
   let controller: UsersController;
