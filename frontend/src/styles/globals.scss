@@ -66,3 +66,9 @@ a {
 
   padding: 1rem;
 }
+
+.modal {
+  // set the z-index to the same value s.t. we can stack modals (although this is not recommended)
+  --bs-backdrop-zindex: 1050;
+  --bs-modal-zindex: 1050;
+}

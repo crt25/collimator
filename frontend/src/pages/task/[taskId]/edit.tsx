@@ -43,9 +43,11 @@ const EditTask = () => {
           description: formValues.description,
           type: formValues.type,
         });
+
+        router.back();
       }
     },
-    [task.data, taskFile.data, updateTask, updateTaskFile],
+    [task.data, taskFile.data, updateTask, updateTaskFile, router],
   );
 
   return (

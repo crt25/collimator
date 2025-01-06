@@ -3,7 +3,7 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef } from "react";
 
-const errorMessage = "Please ignore this error.";
+const errorMessage = "[NavigationObserver] Please ignore this error.";
 
 const throwFakeErrorToFoolNextRouter = (): void => {
   // Throwing an actual error class trips the Next.JS 500 Page, this string literal does not.
@@ -17,7 +17,7 @@ const rejectionHandler = (event: PromiseRejectionEvent): void => {
   }
 };
 interface Props {
-  shouldStopNavigation: boolean;
+  shouldStopNavigation: () => boolean;
   onNavigate: () => void;
 }
 
@@ -47,7 +47,7 @@ const useNavigationObserver = ({
       }
 
       if (
-        shouldStopNavigation &&
+        shouldStopNavigation() &&
         url !== currentPath &&
         !navigationConfirmed.current
       ) {

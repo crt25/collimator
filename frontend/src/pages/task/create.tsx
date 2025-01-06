@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
+import { useRouter } from "next/router";
 
 const messages = defineMessages({
   submit: {
@@ -16,6 +17,7 @@ const messages = defineMessages({
 
 const CreateTask = () => {
   const createTask = useCreateTask();
+  const router = useRouter();
 
   const onSubmit = useCallback(
     async (formValues: TaskFormValues) => {
@@ -25,8 +27,10 @@ const CreateTask = () => {
         type: formValues.type,
         file: formValues.blob,
       });
+
+      router.back();
     },
-    [createTask],
+    [createTask, router],
   );
 
   return (
