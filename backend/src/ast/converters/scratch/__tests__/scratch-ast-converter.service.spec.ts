@@ -1,5 +1,11 @@
 import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
 import {
+  ActorNode,
+  StatementNodeType,
+} from "src/ast/types/general-ast/ast-nodes";
+import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
+import { convertScratchToGeneralAst } from "../";
+import {
   createScratchBlockInput,
   createScratchCodeInput,
   createScratchCodeOutput,
@@ -7,12 +13,6 @@ import {
   createScratchExpressionOutput,
   createScratchHatOutput,
 } from "./helpers";
-import {
-  ActorNode,
-  StatementNodeType,
-} from "src/ast/types/general-ast/ast-nodes";
-import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { convertScratchToGeneralAst } from "../";
 
 describe("Scratch AST converter", () => {
   describe("Hat Blocks", () => {

@@ -2,9 +2,9 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import TaskModal from "./TaskModal";
-import { EmbeddedAppRef } from "../EmbeddedApp";
 import { Language } from "@/types/app-iframe-message/languages";
+import { EmbeddedAppRef } from "../EmbeddedApp";
+import TaskModal from "./TaskModal";
 
 const getEditUrl = (taskType: TaskType) => {
   switch (taskType) {

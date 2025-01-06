@@ -1,12 +1,12 @@
 import { NestFactory, Reflector } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from "@nestjs/common";
-import * as swagger from "./swagger";
 import { ConfigService } from "@nestjs/config";
+import { AppModule } from "./app.module";
+import * as swagger from "./swagger";
 
 async function bootstrap(): Promise<void> {
   const API_PREFIX = "api";

@@ -1,6 +1,4 @@
 import { AstNode, AstNodeBase, AstNodeType, GeneralAst } from "@ast/index";
-import { CurrentAnalysisDto } from "../../generated/models";
-import { ClassProperties } from "../class-properties";
 import { match, P } from "ts-pattern";
 import {
   ExpressionNodeType,
@@ -23,6 +21,8 @@ import {
 import { StatementSequenceNode } from "@ast/ast-nodes/statement-node/statement-sequence-node";
 import { isNonNull } from "@/utilities/is-non-null";
 import { AstWalkSignal, walkAst } from "@/data-analyzer/ast-walk";
+import { ClassProperties } from "../class-properties";
+import { CurrentAnalysisDto } from "../../generated/models";
 
 type FoldFunctions<
   TRoot,

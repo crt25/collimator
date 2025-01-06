@@ -1,5 +1,4 @@
 import { backendHostName } from "@/utilities/constants";
-import ProgressList from "./ProgressList";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getSessionsControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
@@ -10,6 +9,7 @@ import {
   ClassStudentDto,
   ExistingSolutionDto,
 } from "@/api/collimator/generated/models";
+import ProgressList from "./ProgressList";
 
 const classId = 1;
 const sessionId = 1;

@@ -1,7 +1,5 @@
 import { useCallback } from "react";
 import { useSWRConfig } from "swr";
-import { GetSessionReturnType } from "./useClassSession";
-import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 import {
   getSessionsControllerFindOneV0Url,
   sessionsControllerUpdateV0,
@@ -10,6 +8,8 @@ import { ExistingSession } from "../../models/sessions/existing-session";
 import { ExistingSessionExtended } from "../../models/sessions/existing-session-extended";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { UpdateSessionDto } from "../../generated/models";
+import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
+import { GetSessionReturnType } from "./useClassSession";
 
 type UpdateSessionType = (
   classId: number,

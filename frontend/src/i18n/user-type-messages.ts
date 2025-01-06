@@ -1,5 +1,5 @@
-import { UserType } from "@/api/collimator/generated/models";
 import { defineMessages, MessageDescriptor } from "react-intl";
+import { UserType } from "@/api/collimator/generated/models";
 
 const UserRoleMessages = defineMessages({
   [UserType.ADMIN]: {

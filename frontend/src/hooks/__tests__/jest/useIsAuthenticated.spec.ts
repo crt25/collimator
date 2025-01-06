@@ -1,5 +1,5 @@
-import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 import { useContext as useContextMock } from "react";
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 
 const authenticationToken = "0123456789";
 

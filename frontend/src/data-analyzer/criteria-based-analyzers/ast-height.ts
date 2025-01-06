@@ -1,10 +1,10 @@
+import { GeneralAst } from "@ast/index";
 import { AstWalkSignal, walkAst } from "../ast-walk";
 import {
   AstCriterionType,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
-import { GeneralAst } from "@ast/index";
 
 export const computeHeight = (
   ast: GeneralAst,

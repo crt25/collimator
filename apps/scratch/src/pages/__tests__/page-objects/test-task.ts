@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "playwright/test";
 import { getBlockConfigButtonSelector } from "../locators";
-import { ScratchEditorPage } from "./scratch-editor";
 import { loadTask } from "../helpers";
 import tasks, { TestTask } from "../tasks";
+import { ScratchEditorPage } from "./scratch-editor";
 
 export class TestTaskPage extends ScratchEditorPage {
   private constructor(page: Page) {

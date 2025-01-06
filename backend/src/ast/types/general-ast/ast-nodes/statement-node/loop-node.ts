@@ -1,7 +1,7 @@
+import { ExpressionNode } from "../expression-node";
 import { StatementSequenceNode } from "./statement-sequence-node";
 import { StatementNodeBase } from "./statement-node-base";
 import { StatementNodeType } from "./statement-node-type";
-import { ExpressionNode } from "../expression-node";
 
 /**
  * A node representing a while loop executing the body as long as

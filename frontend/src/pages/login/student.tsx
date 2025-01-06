@@ -1,12 +1,11 @@
-import Button from "@/components/Button";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
-import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import {} from "@/utilities/constants";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
+import Button from "@/components/Button";
+import Header from "@/components/Header";
+import PageHeader from "@/components/PageHeader";
+import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 
 const StudentLoginPage = () => {
   const router = useRouter();

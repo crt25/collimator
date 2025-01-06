@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import {
   AuthenticationProvider,
@@ -6,7 +7,6 @@ import {
   UserType,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { randomBytes } from "crypto";
 import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
 

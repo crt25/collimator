@@ -1,3 +1,6 @@
+import { match } from "ts-pattern";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { NoCriterionFilter } from "../criteria/none";
 import { ConditionCriterionFilter } from "../criteria/condition";
 import {
@@ -9,9 +12,6 @@ import { StatementCriterionFilter } from "../criteria/statement";
 import { ExpressionCriterionFilter } from "../criteria/expression";
 import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { match } from "ts-pattern";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { AstHeightCriterionFilter } from "../criteria/ast-height";

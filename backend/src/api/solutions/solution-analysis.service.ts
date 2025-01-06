@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { AstVersion, Prisma, Solution, SolutionAnalysis } from "@prisma/client";
 import { AstConversionService } from "src/ast/ast-conversion.service";
 import { PrismaService } from "src/prisma/prisma.service";
-import { TasksService } from "../tasks/tasks.service";
 import { incrementFailedAnalysis } from "@prisma/client/sql";
+import { TasksService } from "../tasks/tasks.service";
 
 export type SolutionAnalysisCreateInput = Omit<
   Prisma.SolutionAnalysisUncheckedCreateInput,

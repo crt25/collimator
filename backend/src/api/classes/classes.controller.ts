@@ -19,6 +19,10 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
+import { User } from "@prisma/client";
+import { fromQueryResults } from "../helpers";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import {
   CreateClassDto,
   ExistingClassDto,
@@ -29,10 +33,6 @@ import {
   ExistingClassExtendedDto,
 } from "./dto";
 import { ClassesService } from "./classes.service";
-import { fromQueryResults } from "../helpers";
-import { AuthorizationService } from "../authorization/authorization.service";
-import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { User } from "@prisma/client";
 
 @Controller("classes")
 @ApiTags("classes")

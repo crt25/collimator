@@ -1,14 +1,14 @@
 import { defineMessages } from "react-intl";
 import {
-  CriterionAxisDefinition,
-  CriterionBase,
-  CriterionFilterDefinition,
-} from "../criterion-base";
-import {
   analyzeAst,
   CriteriaToAnalyzeInput,
   AstCriterionType,
 } from "@/data-analyzer/analyze-asts";
+import {
+  CriterionAxisDefinition,
+  CriterionBase,
+  CriterionFilterDefinition,
+} from "../criterion-base";
 import ExpressionCriterionFilterForm from "./ExpressionCriterionFilterForm";
 
 const criterion = AstCriterionType.expression;

@@ -1,5 +1,5 @@
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { useMemo } from "react";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 export const useSubtaskAnalyses = (
   analyses: CurrentAnalysis[] | undefined,

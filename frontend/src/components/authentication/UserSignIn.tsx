@@ -1,19 +1,19 @@
-import {
-  AuthenticationResponseDto,
-  UserType,
-} from "@/api/collimator/generated/models";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import UserSignInForm, { UserSignInFormValues } from "./UserSignInForm";
 import { useCallback, useContext } from "react";
+import { useRouter } from "next/router";
+import { UseFormSetError } from "react-hook-form";
 import { useUpdateUserKey } from "@/api/collimator/hooks/users/useUpdateUserKey";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { PasswordDerivedKey } from "@/utilities/crypto/PasswordDerivedKey";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
-import { useRouter } from "next/router";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
-import { UseFormSetError } from "react-hook-form";
+import {
+  AuthenticationResponseDto,
+  UserType,
+} from "@/api/collimator/generated/models";
+import UserSignInForm, { UserSignInFormValues } from "./UserSignInForm";
 
 const logModule = "[UserSignIn]";
 

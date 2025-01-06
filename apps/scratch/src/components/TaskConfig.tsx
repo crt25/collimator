@@ -1,7 +1,8 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
 import VM from "scratch-vm";
-import Modal from "./modal/Modal";
+import { FormattedMessage } from "react-intl";
+import styled from "@emotion/styled";
 import {
   allowAllStandardBlocks,
   allowNoBlocks,
@@ -10,8 +11,7 @@ import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
-import { FormattedMessage } from "react-intl";
-import styled from "@emotion/styled";
+import Modal from "./modal/Modal";
 
 const Label = styled.label`
   display: flex !important;

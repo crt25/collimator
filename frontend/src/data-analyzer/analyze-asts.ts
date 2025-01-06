@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
-import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
 import { GeneralAst } from "@ast/index";
+import { CriteriaBasedAnalyzer } from "./criteria-based-analyzers";
 
 export enum AstCriterionType {
   condition = "condition",

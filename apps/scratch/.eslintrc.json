@@ -2,11 +2,10 @@
   "extends": [
     "../../.eslintrc.js",
     "eslint:recommended",
-    "plugin:prettier/recommended",
-    "plugin:import/recommended"
+    "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "root": true,
   "env": {
     "browser": true,

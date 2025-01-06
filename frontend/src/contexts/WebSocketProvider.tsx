@@ -6,14 +6,14 @@ import {
   useState,
 } from "react";
 import { io } from "socket.io-client";
-import {
-  AuthenticationContext,
-  AuthenticationContextType,
-} from "./AuthenticationContext";
 import { backendHostName } from "@/utilities/constants";
 import { CollimatorSocket } from "@/types/websocket-events";
 import { UserRole } from "@/types/user/user-role";
 import { useHandleStudentAuthenticationRequest } from "@/hooks/useHandleStudentAuthenticationRequest";
+import {
+  AuthenticationContext,
+  AuthenticationContextType,
+} from "./AuthenticationContext";
 
 const logModule = "[WebSocketProvider]";
 

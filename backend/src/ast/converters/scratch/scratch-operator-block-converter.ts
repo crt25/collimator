@@ -1,4 +1,3 @@
-import { NonHatBlock, TreeNode } from "./types";
 import {
   AddBlock,
   AndBlock,
@@ -40,6 +39,7 @@ import {
 } from "src/ast/types/input/scratch/blocks/operator";
 import { match, P } from "ts-pattern";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
+import { NonHatBlock, TreeNode } from "./types";
 import { createOperatorExpressionBlock } from "./helpers";
 
 type OperatorExpressionTreeNode = OperatorExpressionBlock & TreeNode;

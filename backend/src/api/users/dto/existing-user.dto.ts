@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from "@prisma/client";
-import { CreateUserDto } from "./create-user.dto";
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Expose, plainToInstance } from "class-transformer";
+import { CreateUserDto } from "./create-user.dto";
 
 export type UserId = number;
 

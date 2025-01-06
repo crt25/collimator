@@ -1,18 +1,17 @@
-import { BrowserContext, Page } from "@playwright/test";
 import { subtle } from "crypto";
-import { jsonResponse } from "../helpers";
 import * as fs from "fs";
+import { BrowserContext, Page } from "@playwright/test";
+import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
   getAuthenticationControllerLoginV0Url,
 } from "@/api/collimator/generated/endpoints/authentication/authentication";
+import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
 import {
   AuthenticationResponseDto,
   PublicKeyDto,
   UserType,
 } from "@/api/collimator/generated/models";
-import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
-import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import {
   StudentAuthenticationRequest,
   StudentAuthenticationRequestContent,
@@ -20,6 +19,7 @@ import {
 } from "@/types/websocket-events";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
+import { jsonResponse } from "../helpers";
 
 const crypto = subtle as SubtleCrypto;
 

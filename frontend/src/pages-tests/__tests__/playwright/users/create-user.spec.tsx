@@ -1,5 +1,3 @@
-import { expect, mockUrlResponses, test } from "../helpers";
-import { UserFormPageModel } from "./user-form-page-model";
 import {
   AuthenticationProvider,
   CreateUserDto,
@@ -10,8 +8,10 @@ import {
   getUsersControllerCreateV0ResponseMock,
   getUsersControllerFindAllV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/users/users.msw";
-import { UserListPageModel } from "./user-list-page-model";
+import { expect, mockUrlResponses, test } from "../helpers";
 import { useAdminUser } from "../authentication/authentication-helpers";
+import { UserListPageModel } from "./user-list-page-model";
+import { UserFormPageModel } from "./user-form-page-model";
 
 test.describe("/user/create", () => {
   const mockCreateResponse = getUsersControllerCreateV0ResponseMock();

@@ -1,6 +1,6 @@
-import { ExistingClassDto } from "./existing-class.dto";
 import { Class } from "@prisma/client";
 import { plainToInstance } from "class-transformer";
+import { ExistingClassDto } from "./existing-class.dto";
 
 export class DeletedClassDto extends ExistingClassDto {
   static fromQueryResult(data: Class): DeletedClassDto {

@@ -18,15 +18,6 @@ import {
 } from "@nestjs/swagger";
 import "multer";
 import { SessionStatus, Student, User, UserType } from "@prisma/client";
-import {
-  CreateSessionDto,
-  ExistingSessionDto,
-  UpdateSessionDto,
-  DeletedSessionDto,
-  ExistingSessionExtendedDto,
-  SessionId,
-} from "./dto";
-import { SessionsService } from "./sessions.service";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
@@ -37,6 +28,15 @@ import {
   StudentOnly,
 } from "../authentication/role.decorator";
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
+import { SessionsService } from "./sessions.service";
+import {
+  CreateSessionDto,
+  ExistingSessionDto,
+  UpdateSessionDto,
+  DeletedSessionDto,
+  ExistingSessionExtendedDto,
+  SessionId,
+} from "./dto";
 import { IsSessionAnonymousDto } from "./dto/is-session-anonymous.dto";
 import { StudentSessionProgressDto } from "./dto/student-session-progress.dto";
 import { StudentTaskProgressDto } from "./dto/student-task-progress.dto";

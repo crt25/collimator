@@ -1,6 +1,6 @@
+import { mutate } from "swr";
 import { LazyTableResult } from "@/components/DataTable";
 import { DtoClass } from "../models/dto-class";
-import { mutate } from "swr";
 
 export type ApiResponse<TData, TError extends Error> = {
   data?: TData;

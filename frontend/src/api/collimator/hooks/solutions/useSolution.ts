@@ -1,4 +1,6 @@
 import useSWR from "swr";
+import { useCallback } from "react";
+import { fetchFile } from "@/api/fetch";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import {
   getSolutionsControllerDownloadOneV0Url,
@@ -7,9 +9,7 @@ import {
   solutionsControllerFindOneV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
-import { fetchFile } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { useCallback } from "react";
 
 export type GetSolutionReturnType = ExistingSolution;
 

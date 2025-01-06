@@ -3,10 +3,9 @@ import React from "react";
 import VM from "scratch-vm";
 import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
 
-import extensionLibraryContent, { ExtensionId } from "../../extensions";
-
 import LibraryComponent from "@scratch-submodule/scratch-gui/src/components/library/library.jsx";
 import extensionIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--sprite.svg";
+import extensionLibraryContent, { ExtensionId } from "../../extensions";
 
 const messages = defineMessages({
   extensionTitle: {

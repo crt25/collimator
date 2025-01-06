@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
+import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
 import BreadcrumbItem from "../BreadcrumbItem";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { StudentName } from "../encryption/StudentName";
 
 const messages = defineMessages({

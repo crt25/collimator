@@ -1,6 +1,6 @@
-import { ExpressionNode } from ".";
 import { ExpressionNodeBase } from "./expression-node-base";
 import { ExpressionNodeType } from "./expression-node-type";
+import { ExpressionNode } from ".";
 
 /**
  * A node representing an n-ary operator including binary operators like

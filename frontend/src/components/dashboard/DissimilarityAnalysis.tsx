@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Row } from "react-bootstrap";
+import styled from "@emotion/styled";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import MultiSwrContent from "../MultiSwrContent";
 import Input from "../form/Input";
+import Select from "../form/Select";
+import { StudentName } from "../encryption/StudentName";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
-import Select from "../form/Select";
 import { allSubtasks } from "./Analyzer.state";
 import { useDissimilarAnalyses } from "./hooks/useDissimilarAnalyses";
 import CodeView from "./CodeView";
-import styled from "@emotion/styled";
-import { StudentName } from "../encryption/StudentName";
 
 const messages = defineMessages({
   taskSelection: {

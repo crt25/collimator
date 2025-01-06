@@ -13,15 +13,15 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
+import { getTaskTypeMessage } from "@/i18n/task-type-messages";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
 import Select from "../form/Select";
-import { getTaskTypeMessage } from "@/i18n/task-type-messages";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
-import ConfirmationModal from "@/components/modals/ConfirmationModal";
 
 const EditTaskButton = styled(Button)`
   margin-top: 1rem;

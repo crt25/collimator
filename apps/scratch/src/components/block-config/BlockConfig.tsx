@@ -1,10 +1,10 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import VM from "scratch-vm";
+import { FormattedMessage } from "react-intl";
 import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 
-import VM from "scratch-vm";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
 import Modal from "../modal/Modal";
-import { FormattedMessage } from "react-intl";
 
 const cannotBeUsed = 0;
 const infiniteUses = -1;

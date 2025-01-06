@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 import { ExistingSession } from "../../models/sessions/existing-session";
 import { sessionsControllerCreateV0 } from "../../generated/endpoints/sessions/sessions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CreateSessionDto } from "../../generated/models";
+import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 
 type CreateSessionType = (
   classId: number,

@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import ProgressSpinner from "./ProgressSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { isNonNull } from "@/utilities/is-non-null";
+import ProgressSpinner from "./ProgressSpinner";
 
 export enum ButtonVariant {
   primary = "primary",

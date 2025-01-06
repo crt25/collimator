@@ -2,12 +2,12 @@ import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
-import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { classList } from "../selectors";
-import { ClassListPageModel } from "./class-list-page-model";
 import { ExistingClassWithTeacherDto } from "@/api/collimator/generated/models";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
+import { classList } from "../selectors";
 import { useAdminUser } from "../authentication/authentication-helpers";
+import { ClassListPageModel } from "./class-list-page-model";
 
 test.describe("/class", () => {
   const klass: ExistingClassWithTeacherDto = {

@@ -2,11 +2,11 @@ import { AstNodeType } from "@ast/ast-node-type";
 import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import { StatementNodeType } from "@ast/ast-nodes";
 import { GeneralAst } from "@ast/index";
-import { countBuiltInFunctionCalls } from "../../built-in-function-call";
 import {
   AstCriterionType,
   CriteriaBasedAnalyzerOutput,
 } from "@/data-analyzer/analyze-asts";
+import { countBuiltInFunctionCalls } from "../../built-in-function-call";
 
 describe("Criteria Based Analyzer", () => {
   describe("callsFunction", () => {

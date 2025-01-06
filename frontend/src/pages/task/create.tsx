@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
-import { useRouter } from "next/router";
 
 const messages = defineMessages({
   submit: {

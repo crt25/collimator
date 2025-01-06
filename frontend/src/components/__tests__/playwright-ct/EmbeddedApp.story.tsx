@@ -1,5 +1,5 @@
-import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useEffect, useRef } from "react";
+import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 
 declare global {
   interface Window {

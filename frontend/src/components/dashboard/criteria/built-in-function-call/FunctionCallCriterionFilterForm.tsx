@@ -1,13 +1,13 @@
 import { defineMessages } from "react-intl";
+import { useMemo } from "react";
+import MinMaxRange from "@/components/form/MinMaxRange";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import Select from "@/components/form/Select";
+import { CriterionFormComponent } from "../criterion-base";
 import {
   BuiltInFunctionCallFilterCriterion,
   BuiltInFunctionCallFilterCriterionParameters,
 } from ".";
-import { CriterionFormComponent } from "../criterion-base";
-import MinMaxRange from "@/components/form/MinMaxRange";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { useMemo } from "react";
-import Select from "@/components/form/Select";
 
 const messages = defineMessages({
   functionName: {

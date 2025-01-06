@@ -1,5 +1,5 @@
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { useEffect, useState } from "react";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 

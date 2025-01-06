@@ -1,13 +1,13 @@
-import { AuthenticatedTeacher } from "@/contexts/__tests__/decorators/authentication";
-import StudentList from "./StudentList";
-import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { useContext, useState } from "react";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useEffect } from "@storybook/preview-api";
+import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { AuthenticatedTeacher } from "@/contexts/__tests__/decorators/authentication";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { encodeBase64 } from "@/utilities/crypto/base64";
-import ProgressSpinner from "../ProgressSpinner";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
+import ProgressSpinner from "../ProgressSpinner";
+import StudentList from "./StudentList";
 
 type Args = Omit<Parameters<typeof StudentList>[0], "klass">;
 

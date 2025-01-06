@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
-import Select from "../../form/Select";
 import { FormattedMessage } from "react-intl";
 import { SetStateAction, useMemo } from "react";
+import { TaskType } from "@/api/collimator/generated/models";
+import AppliedFilters from "../AppliedFilters";
+import Select from "../../form/Select";
+import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import {
   FilterCriterion,
   FilterCriterionParameters,
@@ -9,9 +12,6 @@ import {
   filterCriteria,
   getInitialFilterValues,
 } from ".";
-import AppliedFilters from "../AppliedFilters";
-import { TaskType } from "@/api/collimator/generated/models";
-import { MetaCriterionType } from "../criteria/meta-criterion-type";
 
 const Label = styled.label`
   display: block;

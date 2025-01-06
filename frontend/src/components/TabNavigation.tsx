@@ -3,13 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Nav } from "react-bootstrap";
 import { IntlShape, useIntl } from "react-intl";
-import BreadcrumbItem from "./BreadcrumbItem";
+import { useContext } from "react";
 import {
   AuthenticationContext,
   AuthenticationContextType,
 } from "@/contexts/AuthenticationContext";
 import { isNonNull } from "@/utilities/is-non-null";
-import { useContext } from "react";
+import BreadcrumbItem from "./BreadcrumbItem";
 
 const StyledNav = styled(Nav)`
   margin: 1rem 0;

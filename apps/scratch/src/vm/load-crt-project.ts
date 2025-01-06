@@ -1,7 +1,7 @@
 import VM from "scratch-vm";
-import { defaultCrtConfig } from "./default-crt-config";
 import JSZip from "jszip";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { defaultCrtConfig } from "./default-crt-config";
 
 let nextProject: ArrayBuffer | undefined = undefined;
 let isLoading = false;

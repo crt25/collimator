@@ -1,15 +1,15 @@
 import { defineMessages } from "react-intl";
 import {
+  analyzeAst,
+  CriteriaToAnalyzeInput,
+  AstCriterionType,
+} from "@/data-analyzer/analyze-asts";
+import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
 } from "../criterion-base";
 import BuiltInFunctionCallCriterionFilterForm from "./FunctionCallCriterionFilterForm";
-import {
-  analyzeAst,
-  CriteriaToAnalyzeInput,
-  AstCriterionType,
-} from "@/data-analyzer/analyze-asts";
 
 const criterion = AstCriterionType.builtInFunctionCall;
 type Criterion = typeof criterion;

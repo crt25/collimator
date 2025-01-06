@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
-import TaskListItem from "./TaskListItem";
-import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useRouter } from "next/router";
-import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
-import SwrContent from "./SwrContent";
-import { StudentSessionProgress } from "@/api/collimator/models/sessions/student-session-progress";
 import { useMemo } from "react";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
+import { StudentSessionProgress } from "@/api/collimator/models/sessions/student-session-progress";
 import { TaskProgress } from "@/api/collimator/generated/models";
+import SwrContent from "./SwrContent";
+import TaskListItem from "./TaskListItem";
 
 const TaskListWrapper = styled.menu`
   flex-grow: 1;

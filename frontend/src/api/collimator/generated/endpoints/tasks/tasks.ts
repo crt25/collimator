@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   CreateTaskDto,
   DeletedTaskDto,
@@ -12,7 +13,6 @@ import type {
   UpdateTaskDto,
   UpdateTaskFileDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getTasksControllerCreateV0Url = () => {
   return `/api/v0/tasks`;

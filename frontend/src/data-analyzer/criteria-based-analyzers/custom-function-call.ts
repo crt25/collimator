@@ -1,12 +1,12 @@
-import { AstWalkSignal, walkAst } from "../ast-walk";
+import { GeneralAst } from "@ast/index";
+import { StatementNodeType } from "@ast/ast-nodes";
+import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
 import {
   AstCriterionType,
   CriteriaBasedAnalyzerInput,
   CriteriaBasedAnalyzerOutput,
 } from "../analyze-asts";
-import { GeneralAst } from "@ast/index";
-import { StatementNodeType } from "@ast/ast-nodes";
-import { ExpressionNodeType } from "@ast/ast-nodes/expression-node";
+import { AstWalkSignal, walkAst } from "../ast-walk";
 
 export const countCustomFunctionCalls = (
   ast: GeneralAst,

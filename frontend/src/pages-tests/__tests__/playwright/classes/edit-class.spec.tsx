@@ -1,15 +1,12 @@
-import { useAdminUser } from "../authentication/authentication-helpers";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
-import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import {
   getClassesControllerFindAllV0ResponseMock,
   getClassesControllerFindOneV0ResponseMock,
   getClassesControllerUpdateV0ResponseMock,
 } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import { ClassFormPageModel } from "./class-form-page-model";
 import {
   CreateClassDto,
   ExistingClassDto,
@@ -18,6 +15,9 @@ import {
 } from "@/api/collimator/generated/models";
 import { getUsersControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { getUsersControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/users/users";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
+import { useAdminUser } from "../authentication/authentication-helpers";
+import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 
 const klass: ExistingClassWithTeacherDto =

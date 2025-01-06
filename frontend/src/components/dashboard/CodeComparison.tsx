@@ -1,25 +1,25 @@
 import { ButtonGroup, Col, Row } from "react-bootstrap";
 import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import Select from "../form/Select";
 import styled from "@emotion/styled";
-import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
+import { getStudentNickname } from "@/utilities/student-name";
+import { TaskType } from "@/api/collimator/generated/models";
+import { decodeBase64 } from "@/utilities/crypto/base64";
 import {
   AuthenticationContext,
   AuthenticationContextType,
 } from "@/contexts/AuthenticationContext";
-import { decodeBase64 } from "@/utilities/crypto/base64";
-import CodeView, { CodeViewContainer } from "./CodeView";
-import { TaskType } from "@/api/collimator/generated/models";
-import ViewSolutionModal from "../modals/ViewSolutionModal";
-import { Group, CategorizedDataPoint } from "./hooks/types";
-import { getStudentNickname } from "@/utilities/student-name";
-import Button from "../Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { compareLabels } from "@/utilities/comparisons";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import Button from "../Button";
+import ViewSolutionModal from "../modals/ViewSolutionModal";
+import Select from "../form/Select";
+import { Group, CategorizedDataPoint } from "./hooks/types";
+import CodeView, { CodeViewContainer } from "./CodeView";
 import { axisCriteria } from "./axes";
 import {
   AnalyzerState,

@@ -1,11 +1,11 @@
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
-import Breadcrumbs from "./Breadcrumbs";
-import CrtNavigation from "./CrtNavigation";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { getUsersControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
+import CrtNavigation from "./CrtNavigation";
+import Breadcrumbs from "./Breadcrumbs";
 
 export default {
   component: CrtNavigation,

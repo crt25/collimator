@@ -1,5 +1,5 @@
-import { getJwkSet } from "./openid-connect";
 import * as jose from "jose";
+import { getJwkSet } from "./openid-connect";
 
 /**
  * Verify a JWT token using the public key from the server.

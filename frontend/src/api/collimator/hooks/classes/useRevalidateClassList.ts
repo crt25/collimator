@@ -1,7 +1,7 @@
 import { useSWRConfig } from "swr";
+import { useCallback } from "react";
 import { getClassesControllerFindAllV0Url } from "../../generated/endpoints/classes/classes";
 import { invalidateParameterizedKey } from "../helpers";
-import { useCallback } from "react";
 
 export const useRevalidateClassList = (): (() => void) => {
   const { mutate } = useSWRConfig();

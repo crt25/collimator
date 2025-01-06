@@ -1,6 +1,6 @@
-import { Page } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import { Page } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
 

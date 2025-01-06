@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { useAutomaticGrouping } from "./useAutomaticGrouping";
-import { useManualGrouping } from "./useManualGrouping";
 import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
+import { Category } from "../category";
+import { useAutomaticGrouping } from "./useAutomaticGrouping";
+import { useManualGrouping } from "./useManualGrouping";
 import {
   CategorizedDataPoint,
   Group,
   ManualGroup,
   FilteredAnalysis,
 } from "./types";
-import { Category } from "../category";
 
 export const useGrouping = (
   isAutomaticGrouping: boolean,

@@ -1,5 +1,3 @@
-import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
-import { UserFormPageModel } from "./user-form-page-model";
 import {
   getUsersControllerFindAllV0ResponseMock,
   getUsersControllerFindOneV0ResponseMock,
@@ -12,8 +10,10 @@ import {
   CreateUserDto,
   ExistingUserDto,
 } from "@/api/collimator/generated/models";
-import { UserListPageModel } from "./user-list-page-model";
+import { expect, jsonResponse, mockUrlResponses, test } from "../helpers";
 import { useAdminUser } from "../authentication/authentication-helpers";
+import { UserListPageModel } from "./user-list-page-model";
+import { UserFormPageModel } from "./user-form-page-model";
 
 test.describe("/user/{id}/edit", () => {
   const user: ExistingUserDto = {

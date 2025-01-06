@@ -1,4 +1,6 @@
+import { match } from "ts-pattern";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { ConditionCriterionAxis } from "../criteria/condition";
 import {
   AxisConfig,
@@ -10,8 +12,6 @@ import { BuiltInFunctionCallCriterionAxis } from "../criteria/built-in-function-
 import { FunctionDeclarationCriterionAxis } from "../criteria/function-declaration";
 import { LoopCriterionAxis } from "../criteria/loop";
 import { StatementCriterionAxis } from "../criteria/statement";
-import { match } from "ts-pattern";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TestCriterionAxis } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
 import { CriterionType } from "../criteria/criterion-type";

@@ -4,7 +4,6 @@ module.exports = {
   extends: [
     path.join(__dirname, "../.eslintrc.js"),
     "plugin:prettier/recommended",
-    "plugin:import/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -16,6 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
+  plugins: ["import"],
   rules: {
     "@typescript-eslint/no-unused-vars": [
       "error",

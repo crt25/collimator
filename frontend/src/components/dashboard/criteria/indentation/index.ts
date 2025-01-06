@@ -1,15 +1,15 @@
 import { defineMessages } from "react-intl";
 import {
+  analyzeAst,
+  CriteriaToAnalyzeInput,
+  AstCriterionType,
+} from "@/data-analyzer/analyze-asts";
+import {
   CriterionAxisDefinition,
   CriterionBase,
   CriterionFilterDefinition,
 } from "../criterion-base";
 import IndentationCriterionFilterForm from "./IndentationCriterionFilterForm";
-import {
-  analyzeAst,
-  CriteriaToAnalyzeInput,
-  AstCriterionType,
-} from "@/data-analyzer/analyze-asts";
 
 const criterion = AstCriterionType.indentation;
 type Criterion = typeof criterion;

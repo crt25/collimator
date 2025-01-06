@@ -1,11 +1,11 @@
 import { defineMessages } from "react-intl";
+import MinMaxRange from "@/components/form/MinMaxRange";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { CriterionFormComponent } from "../criterion-base";
 import {
   ConditionFilterCriterion,
   ConditionFilterCriterionParameters,
 } from ".";
-import { CriterionFormComponent } from "../criterion-base";
-import MinMaxRange from "@/components/form/MinMaxRange";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 
 const messages = defineMessages({
   count: {

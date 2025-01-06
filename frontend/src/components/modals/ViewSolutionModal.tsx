@@ -2,12 +2,12 @@ import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import TaskModal from "./TaskModal";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
+import { Language } from "@/types/app-iframe-message/languages";
 import MultiSwrContent from "../MultiSwrContent";
 import { EmbeddedAppRef } from "../EmbeddedApp";
-import { Language } from "@/types/app-iframe-message/languages";
+import TaskModal from "./TaskModal";
 
 const getViewUrl = (taskType: TaskType) => {
   switch (taskType) {

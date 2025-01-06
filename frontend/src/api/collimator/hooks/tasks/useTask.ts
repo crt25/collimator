@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { fetchFile } from "@/api/fetch";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import {
@@ -6,7 +7,6 @@ import {
   getTasksControllerFindOneV0Url,
   tasksControllerFindOneV0,
 } from "../../generated/endpoints/tasks/tasks";
-import { fetchFile } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export type GetTaskReturnType = ExistingTask;
