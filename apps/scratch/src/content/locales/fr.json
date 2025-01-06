@@ -38,6 +38,14 @@
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
     "message": "Permettre l'utilisation de tous les blocs standard"
   },
+  "crt.taskConfig.allowCustomProcedureBlocks": {
+    "description": "Label for checkbox to allow custom procedures in task",
+    "message": "Allow 'My Blocks' custom procedures"
+  },
+  "crt.taskConfig.allowVariableBlocks": {
+    "description": "Label for checkbox to allow variables in task",
+    "message": "Allow variable blocks"
+  },
   "crt.taskConfig.disallowAllBlocks": {
     "description": "Label shown on the button that, when clicked, disallows all blocks from being used by students.",
     "message": "Interdire tous les blocs"
