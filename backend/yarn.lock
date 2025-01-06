@@ -1142,12 +1142,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^10.4.6":
-  version: 10.4.6
-  resolution: "@nestjs/common@npm:10.4.6"
+"@nestjs/common@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/common@npm:10.4.15"
   dependencies:
     iterare: "npm:1.2.1"
-    tslib: "npm:2.7.0"
+    tslib: "npm:2.8.1"
     uid: "npm:2.0.2"
   peerDependencies:
     class-transformer: "*"
@@ -1159,7 +1159,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/8bfa30ffbca605ae5b5c1b79d0fc6f9edc3b4538880e083dcde7a6e6ae5721d4bd64212a768eb9d921be878da7098e2ca2da390eedb97e4b3a724dfb6039d9e7
+  checksum: 10c0/9566993fd3f805df2be632f5a16ca90d81b0deeb50e1e7cde4a49d4948c0d8d7db58b42ded70f35061e95e91a40d2adcd9e19cb2771090114eb737f62d2ea4c6
   languageName: node
   linkType: hard
 
@@ -1177,15 +1177,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^10.4.6":
-  version: 10.4.6
-  resolution: "@nestjs/core@npm:10.4.6"
+"@nestjs/core@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/core@npm:10.4.15"
   dependencies:
     "@nuxtjs/opencollective": "npm:0.3.2"
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
     path-to-regexp: "npm:3.3.0"
-    tslib: "npm:2.7.0"
+    tslib: "npm:2.8.1"
     uid: "npm:2.0.2"
   peerDependencies:
     "@nestjs/common": ^10.0.0
@@ -1201,13 +1201,13 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/7d43f0863799cbda52e616be9102af67363ceb3f56c69678be77630298ae09e1e0f92cef95d785f185262c2e00f80fd456f8df1328949417068b437a8fee04c1
+  checksum: 10c0/68958efca25b28ea38bcfc810751c626a913a848d9ec86aab0a6021e708632b95585f0da5d5c2b0513bb64cacfc97d391b45ec002b718a8e90fdda1b4354bed1
   languageName: node
   linkType: hard
 
-"@nestjs/mapped-types@npm:*, @nestjs/mapped-types@npm:2.0.5":
-  version: 2.0.5
-  resolution: "@nestjs/mapped-types@npm:2.0.5"
+"@nestjs/mapped-types@npm:*, @nestjs/mapped-types@npm:2.0.6":
+  version: 2.0.6
+  resolution: "@nestjs/mapped-types@npm:2.0.6"
   peerDependencies:
     "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
     class-transformer: ^0.4.0 || ^0.5.0
@@ -1218,50 +1218,50 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/f92743cb4c0fe3b1eecdf0c7c6a40f0e7478574a9e1a25ebdbd29db29a7319c2ae608c08d07f7b9525bea01a5e20dbd73222100204d3a13500db4f56676446a1
+  checksum: 10c0/c04ba9518d75c76ac6d00faa7a701d111b20bd220706bdef99777a4678f3423fa259ff5cc2968967a54bb58a08a85a7be6a781bfa07ddfb26304f82ee63c628b
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^10.4.6":
-  version: 10.4.6
-  resolution: "@nestjs/platform-express@npm:10.4.6"
+"@nestjs/platform-express@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/platform-express@npm:10.4.15"
   dependencies:
     body-parser: "npm:1.20.3"
     cors: "npm:2.8.5"
-    express: "npm:4.21.1"
+    express: "npm:4.21.2"
     multer: "npm:1.4.4-lts.1"
-    tslib: "npm:2.7.0"
+    tslib: "npm:2.8.1"
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
-  checksum: 10c0/1d2f9d913a0b4a066aaa783810d0d029a9f201243f8ac52d396c8361a19b73d44e05d8d656388af61696784bdfff1cb8dd711bb0b1765496c6bf40b410284081
+  checksum: 10c0/95df4c0580718dc78571827cbe074f8db24ecceb8d0305e9984b645ff806514dd8ddaacc8786f0bf7b78091032c77d8a244ba780007e58463ccdf6255ca7f039
   languageName: node
   linkType: hard
 
-"@nestjs/platform-socket.io@npm:^10.4.7":
-  version: 10.4.7
-  resolution: "@nestjs/platform-socket.io@npm:10.4.7"
+"@nestjs/platform-socket.io@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/platform-socket.io@npm:10.4.15"
   dependencies:
-    socket.io: "npm:4.8.0"
-    tslib: "npm:2.7.0"
+    socket.io: "npm:4.8.1"
+    tslib: "npm:2.8.1"
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/websockets": ^10.0.0
     rxjs: ^7.1.0
-  checksum: 10c0/8c57c636a2fb11eb0a5e8815a6e72f464d5645d4b312b18332a96a4fbd1c2868babc9e1d8c4d47248543443e6ca3d60f3c2c6790c0f5fef56afbfa566ba39983
+  checksum: 10c0/27e1db81f341743cfd87c651c76f8560d1ab8ed1ab029620e630b43d191148478376410b695cd22d7f2943209e79b8e57e312236312c5458e50e69ad7bb637d5
   languageName: node
   linkType: hard
 
-"@nestjs/schedule@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "@nestjs/schedule@npm:4.1.1"
+"@nestjs/schedule@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@nestjs/schedule@npm:4.1.2"
   dependencies:
-    cron: "npm:3.1.7"
-    uuid: "npm:10.0.0"
+    cron: "npm:3.2.1"
+    uuid: "npm:11.0.3"
   peerDependencies:
     "@nestjs/common": ^8.0.0 || ^9.0.0 || ^10.0.0
     "@nestjs/core": ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10c0/8226c481809915766d9392c9a15f175e286b333f415a47e5ebaaf092599bd4fee3fec71f10cb3ff5263c232a9e387201d619b8677a452feb301b6b1f41d0a99d
+  checksum: 10c0/90124e454fb4d170eb806c2afea67a2f4466d2e9b01b8c5516f4d8bd0592fc949f53263e3441a3c494cf624d3f4aa233d798964e0e2f580b9347d5ec81d49b53
   languageName: node
   linkType: hard
 
@@ -1295,16 +1295,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/swagger@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@nestjs/swagger@npm:8.0.1"
+"@nestjs/swagger@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@nestjs/swagger@npm:8.1.0"
   dependencies:
     "@microsoft/tsdoc": "npm:^0.15.0"
-    "@nestjs/mapped-types": "npm:2.0.5"
+    "@nestjs/mapped-types": "npm:2.0.6"
     js-yaml: "npm:4.1.0"
     lodash: "npm:4.17.21"
     path-to-regexp: "npm:3.3.0"
-    swagger-ui-dist: "npm:5.17.14"
+    swagger-ui-dist: "npm:5.18.2"
   peerDependencies:
     "@fastify/static": ^6.0.0 || ^7.0.0
     "@nestjs/common": ^9.0.0 || ^10.0.0
@@ -1319,7 +1319,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/da7b05c170575e21a79559c666bdeb29711d59105db0a1589b4a841846a96456cde5ae71d6394af13b4370e939ce847d2dd53e501368b99134e76c7f6ab65c12
+  checksum: 10c0/67cdf2fe3608d3145e03a861e4c1a685d36617b9daa2e79949250b348756d07fd4b765bebc36fe55748c3abeabf21846dcd99c13c88833e4aaea22e81c772329
   languageName: node
   linkType: hard
 
@@ -1342,13 +1342,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/websockets@npm:^10.4.7":
-  version: 10.4.7
-  resolution: "@nestjs/websockets@npm:10.4.7"
+"@nestjs/websockets@npm:^10.4.15":
+  version: 10.4.15
+  resolution: "@nestjs/websockets@npm:10.4.15"
   dependencies:
     iterare: "npm:1.2.1"
     object-hash: "npm:3.0.0"
-    tslib: "npm:2.7.0"
+    tslib: "npm:2.8.1"
   peerDependencies:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
@@ -1358,7 +1358,7 @@ __metadata:
   peerDependenciesMeta:
     "@nestjs/platform-socket.io":
       optional: true
-  checksum: 10c0/8a75adcea1fa273608f946b7a9daa53d648c138af077785f0fb5bb3c2413402095f0140540bc20407443a2b0657d003c66c614053afa5dede7804def97ca94e9
+  checksum: 10c0/3a2274705ab14eb8a06021d0fb86ab2deca32847949d05fbc27358a9d3455b30979ca5a94a74684bd75bd51c4d6b9e9b6f513ac72f8bf758e3fce18978179141
   languageName: node
   linkType: hard
 
@@ -1438,15 +1438,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^5.21.1":
-  version: 5.21.1
-  resolution: "@prisma/client@npm:5.21.1"
+"@prisma/client@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@prisma/client@npm:6.1.0"
   peerDependencies:
     prisma: "*"
   peerDependenciesMeta:
     prisma:
       optional: true
-  checksum: 10c0/066bf678d6bda048893eb9080818339a99bba995a0ba19935cccda30a10eb46c6674bc445bbbbb37881e52d3010c72ce4a28565156b80bfea5438cafd9868941
+  checksum: 10c0/6cb3c81ce52e37f4d48598e114ff1f9c46297a3299ddf80701d26794aacb8e46f3726cb20dd4f1528cd7b8a713d38e8e68a1fd2be8c370f0925f92b7a9b6b955
   languageName: node
   linkType: hard
 
@@ -1523,6 +1523,13 @@ __metadata:
   version: 1.1.0
   resolution: "@rtsao/scc@npm:1.1.0"
   checksum: 10c0/b5bcfb0d87f7d1c1c7c0f7693f53b07866ed9fec4c34a97a8c948fb9a7c0082e416ce4d3b60beb4f5e167cbe04cdeefbf6771320f3ede059b9ce91188c409a5b
+  languageName: node
+  linkType: hard
+
+"@scarf/scarf@npm:=1.4.0":
+  version: 1.4.0
+  resolution: "@scarf/scarf@npm:1.4.0"
+  checksum: 10c0/332118bb488e7a70eaad068fb1a33f016d30442fb0498b37a80cb425c1e741853a5de1a04dce03526ed6265481ecf744aa6e13f072178d19e6b94b19f623ae1c
   languageName: node
   linkType: hard
 
@@ -2654,18 +2661,18 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.7.0"
     "@nestjs/cli": "npm:^10.4.7"
-    "@nestjs/common": "npm:^10.4.6"
+    "@nestjs/common": "npm:^10.4.15"
     "@nestjs/config": "npm:^3.3.0"
-    "@nestjs/core": "npm:^10.4.6"
+    "@nestjs/core": "npm:^10.4.15"
     "@nestjs/mapped-types": "npm:*"
-    "@nestjs/platform-express": "npm:^10.4.6"
-    "@nestjs/platform-socket.io": "npm:^10.4.7"
-    "@nestjs/schedule": "npm:^4.1.1"
+    "@nestjs/platform-express": "npm:^10.4.15"
+    "@nestjs/platform-socket.io": "npm:^10.4.15"
+    "@nestjs/schedule": "npm:^4.1.2"
     "@nestjs/schematics": "npm:^10.2.3"
-    "@nestjs/swagger": "npm:^8.0.1"
+    "@nestjs/swagger": "npm:^8.1.0"
     "@nestjs/testing": "npm:^10.4.6"
-    "@nestjs/websockets": "npm:^10.4.7"
-    "@prisma/client": "npm:^5.21.1"
+    "@nestjs/websockets": "npm:^10.4.15"
+    "@prisma/client": "npm:^6.1.0"
     "@quramy/jest-prisma-node": "npm:^1.8.1"
     "@types/express": "npm:^5.0.0"
     "@types/jest": "npm:^29.5.14"
@@ -2676,7 +2683,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.13.0"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
-    dotenv-cli: "npm:^7.4.2"
+    dotenv-cli: "npm:^8.0.0"
     eslint: "npm:^8.42.0"
     eslint-config-prettier: "npm:^9.0.0"
     eslint-plugin-import: "npm:^2.31.0"
@@ -2687,7 +2694,7 @@ __metadata:
     jose: "npm:^5.9.6"
     json-schema-to-typescript: "npm:^15.0.2"
     mkdirp: "npm:^3.0.1"
-    piscina: "npm:^4.7.0"
+    piscina: "npm:^4.8.0"
     prettier: "npm:^3.0.0"
     prisma: "npm:^5.21.1"
     reflect-metadata: "npm:^0.2.0"
@@ -2697,7 +2704,7 @@ __metadata:
     ts-jest: "npm:^29.1.0"
     ts-loader: "npm:^9.4.3"
     ts-node: "npm:^10.9.1"
-    ts-pattern: "npm:^5.5.0"
+    ts-pattern: "npm:^5.6.0"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.6.3"
   languageName: unknown
@@ -3360,13 +3367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron@npm:3.1.7":
-  version: 3.1.7
-  resolution: "cron@npm:3.1.7"
+"cron@npm:3.2.1":
+  version: 3.2.1
+  resolution: "cron@npm:3.2.1"
   dependencies:
     "@types/luxon": "npm:~3.4.0"
-    luxon: "npm:~3.4.0"
-  checksum: 10c0/c009c79714ae2916233c8cd2700cdda17c9e20d0e8e32eeb6c0d63b8e89bb7c38dbf9f0423f0f6da52d3f054f735aabb988cbe5b25bb55d9c6ca48ed4cfaaaec
+    luxon: "npm:~3.5.0"
+  checksum: 10c0/26e2ea54c4e15abbc70d391b6366b7e9c72281637cdf0c077726b03a65901c013b2817854ef942f02c452b40b6d482f879d0eeb2a8f7b0c6cc53694e740bf1fa
   languageName: node
   linkType: hard
 
@@ -3378,6 +3385,17 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: 10c0/5738c312387081c98d69c98e105b6327b069197f864a60593245d64c8089c8a0a744e16349281210d56835bb9274130d825a78b2ad6853ca13cfbeffc0c31750
+  languageName: node
+  linkType: hard
+
+"cross-spawn@npm:^7.0.6":
+  version: 7.0.6
+  resolution: "cross-spawn@npm:7.0.6"
+  dependencies:
+    path-key: "npm:^3.1.0"
+    shebang-command: "npm:^2.0.0"
+    which: "npm:^2.0.1"
+  checksum: 10c0/053ea8b2135caff68a9e81470e845613e374e7309a47731e81639de3eaeb90c3d01af0e0b44d2ab9d50b43467223b88567dfeb3262db942dc063b9976718ffc1
   languageName: node
   linkType: hard
 
@@ -3571,17 +3589,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-cli@npm:^7.4.2":
-  version: 7.4.2
-  resolution: "dotenv-cli@npm:7.4.2"
+"dotenv-cli@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "dotenv-cli@npm:8.0.0"
   dependencies:
-    cross-spawn: "npm:^7.0.3"
+    cross-spawn: "npm:^7.0.6"
     dotenv: "npm:^16.3.0"
     dotenv-expand: "npm:^10.0.0"
     minimist: "npm:^1.2.6"
   bin:
     dotenv: cli.js
-  checksum: 10c0/7841bfaa78975aa6b51e529bf5795e062bc6e595021d1931427bb55a6f75e1775d944f4dd91bef8accbbd539c466bfee48fa804e0f6b3a1bcf18ae7de0d64bed
+  checksum: 10c0/000469632758b7b44aaaa80cbbbd7f0c94dc170ec02e51aa8d8280341a0108fb7407954c23054257b77235b064033efdb8745836633eb6fd1586924953cf0528
   languageName: node
   linkType: hard
 
@@ -4185,9 +4203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:4.21.1":
-  version: 4.21.1
-  resolution: "express@npm:4.21.1"
+"express@npm:4.21.2":
+  version: 4.21.2
+  resolution: "express@npm:4.21.2"
   dependencies:
     accepts: "npm:~1.3.8"
     array-flatten: "npm:1.1.1"
@@ -4208,7 +4226,7 @@ __metadata:
     methods: "npm:~1.1.2"
     on-finished: "npm:2.4.1"
     parseurl: "npm:~1.3.3"
-    path-to-regexp: "npm:0.1.10"
+    path-to-regexp: "npm:0.1.12"
     proxy-addr: "npm:~2.0.7"
     qs: "npm:6.13.0"
     range-parser: "npm:~1.2.1"
@@ -4220,7 +4238,7 @@ __metadata:
     type-is: "npm:~1.6.18"
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
-  checksum: 10c0/0c287867e5f6129d3def1edd9b63103a53c40d4dc8628839d4b6827e35eb8f0de5a4656f9d85f4457eba584f9871ebb2ad26c750b36bd75d9bbb8bcebdc4892c
+  checksum: 10c0/38168fd0a32756600b56e6214afecf4fc79ec28eca7f7a91c2ab8d50df4f47562ca3f9dee412da7f5cea6b1a1544b33b40f9f8586dbacfbdada0fe90dbb10a1f
   languageName: node
   linkType: hard
 
@@ -6238,10 +6256,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:~3.4.0":
-  version: 3.4.4
-  resolution: "luxon@npm:3.4.4"
-  checksum: 10c0/02e26a0b039c11fd5b75e1d734c8f0332c95510f6a514a9a0991023e43fb233884da02d7f966823ffb230632a733fc86d4a4b1e63c3fbe00058b8ee0f8c728af
+"luxon@npm:~3.5.0":
+  version: 3.5.0
+  resolution: "luxon@npm:3.5.0"
+  checksum: 10c0/335789bba95077db831ef99894edadeb23023b3eb2137a1b56acd0d290082b691cf793143d69e30bc069ec95f0b49f36419f48e951c68014f19ffe12045e3494
   languageName: node
   linkType: hard
 
@@ -6988,10 +7006,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:0.1.10":
-  version: 0.1.10
-  resolution: "path-to-regexp@npm:0.1.10"
-  checksum: 10c0/34196775b9113ca6df88e94c8d83ba82c0e1a2063dd33bfe2803a980da8d49b91db8104f49d5191b44ea780d46b8670ce2b7f4a5e349b0c48c6779b653f1afe4
+"path-to-regexp@npm:0.1.12":
+  version: 0.1.12
+  resolution: "path-to-regexp@npm:0.1.12"
+  checksum: 10c0/1c6ff10ca169b773f3bba943bbc6a07182e332464704572962d277b900aeee81ac6aa5d060ff9e01149636c30b1f63af6e69dd7786ba6e0ddb39d4dee1f0645b
   languageName: node
   linkType: hard
 
@@ -7037,15 +7055,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"piscina@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "piscina@npm:4.7.0"
+"piscina@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "piscina@npm:4.8.0"
   dependencies:
     "@napi-rs/nice": "npm:^1.0.1"
   dependenciesMeta:
     "@napi-rs/nice":
       optional: true
-  checksum: 10c0/d539857c9140d820173c78c9d6b7c20597ae4ff10a5060ff90ffc1d22a098eccd98f4d16073ce51c6d07e530079fa4d9a31ff7b4477b1411011e108b5b5689d4
+  checksum: 10c0/963ee0dc0862e936c88357b21b0b4fa32407ab21e9600756504411f368dcfae7478c8a19e13d0dd8afed56a8252a8e5967ee4413aa33dd436751b7ee2804531e
   languageName: node
   linkType: hard
 
@@ -7775,9 +7793,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socket.io@npm:4.8.0":
-  version: 4.8.0
-  resolution: "socket.io@npm:4.8.0"
+"socket.io@npm:4.8.1":
+  version: 4.8.1
+  resolution: "socket.io@npm:4.8.1"
   dependencies:
     accepts: "npm:~1.3.4"
     base64id: "npm:~2.0.0"
@@ -7786,7 +7804,7 @@ __metadata:
     engine.io: "npm:~6.6.0"
     socket.io-adapter: "npm:~2.5.2"
     socket.io-parser: "npm:~4.2.4"
-  checksum: 10c0/eab8a0da617f2583a0003883155f252f814c59324f4b174b5e940fcce2bd3a553ab9c6d7f128c7b515a537f776b1b4e34293b8324ec048c4b8df2bf8930ce8bf
+  checksum: 10c0/acf931a2bb235be96433b71da3d8addc63eeeaa8acabd33dc8d64e12287390a45f1e9f389a73cf7dc336961cd491679741b7a016048325c596835abbcc017ca9
   languageName: node
   linkType: hard
 
@@ -8086,10 +8104,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swagger-ui-dist@npm:5.17.14":
-  version: 5.17.14
-  resolution: "swagger-ui-dist@npm:5.17.14"
-  checksum: 10c0/cb61bba39e76d7d0d83da605a55e9504c1a5b421f9f13cced06d3e222f0a291594d417ec57b30a38aabe30d8a7e257c4977b8f0bba0e865d60f92b0a8ef4dfc1
+"swagger-ui-dist@npm:5.18.2":
+  version: 5.18.2
+  resolution: "swagger-ui-dist@npm:5.18.2"
+  dependencies:
+    "@scarf/scarf": "npm:=1.4.0"
+  checksum: 10c0/254f0d0b14766d505e69c36ea656afe838c32eefe1317aa4a8a2ffae06f1e53c55333130c6cea2f57bb47825b0cc465436f3f7af41254bd24b0601e56f914dba
   languageName: node
   linkType: hard
 
@@ -8359,10 +8379,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-pattern@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "ts-pattern@npm:5.5.0"
-  checksum: 10c0/4ae1fbeadcf193e72b27419d5fe71f559c100e45710eabf29e2ff3a8fa9ba29adfcd6d5d7d8169b95e2b264683a2eb8d94dbd3c893357b045b52b0c34c2b7c72
+"ts-pattern@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "ts-pattern@npm:5.6.0"
+  checksum: 10c0/0da058218634ba5880d21816493c6634b56c111044aaec8e882a7b58a7564b6cc201b03012b7fd54b775af4ebe723d3ff91243769e9dc8aedb1f10dacc5f8f83
   languageName: node
   linkType: hard
 
@@ -8404,6 +8424,13 @@ __metadata:
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
   checksum: 10c0/469e1d5bf1af585742128827000711efa61010b699cb040ab1800bcd3ccdd37f63ec30642c9e07c4439c1db6e46345582614275daca3e0f4abae29b0083f04a6
+  languageName: node
+  linkType: hard
+
+"tslib@npm:2.8.1":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 
@@ -8624,12 +8651,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:10.0.0":
-  version: 10.0.0
-  resolution: "uuid@npm:10.0.0"
+"uuid@npm:11.0.3":
+  version: 11.0.3
+  resolution: "uuid@npm:11.0.3"
   bin:
-    uuid: dist/bin/uuid
-  checksum: 10c0/eab18c27fe4ab9fb9709a5d5f40119b45f2ec8314f8d4cf12ce27e4c6f4ffa4a6321dc7db6c515068fa373c075b49691ba969f0010bf37f44c37ca40cd6bf7fe
+    uuid: dist/esm/bin/uuid
+  checksum: 10c0/cee762fc76d949a2ff9205770334699e0043d52bb766472593a25f150077c9deed821230251ea3d6ab3943a5ea137d2826678797f1d5f6754c7ce5ce27e9f7a6
   languageName: node
   linkType: hard
 
