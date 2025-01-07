@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/rules-of-hooks */
 import * as fs from "fs";
 import * as path from "path";
 import * as crypto from "crypto";
