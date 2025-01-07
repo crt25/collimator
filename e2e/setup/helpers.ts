@@ -5,9 +5,9 @@ import {
   SpawnSyncReturns,
 } from "child_process";
 import path from "path";
-import { getPortPromise } from "portfinder";
 import { readFileSync, unlinkSync, writeFileSync } from "fs";
 import os from "os";
+import { getPortPromise } from "portfinder";
 import { isDebug } from "../helpers";
 
 export type PostgresConfig = {

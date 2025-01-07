@@ -4,8 +4,8 @@ import {
   test as testBase,
   expect as expectBase,
 } from "playwright-test-coverage";
-import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
 import pg from "pg";
+import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
 import {
   buildClientConfig,
   getFreePortAndLock,

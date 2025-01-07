@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
 import path from "path";
+import express, { Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { getFrontendPath } from "../setup/helpers";
 

@@ -1,9 +1,9 @@
 import { expect, test } from "../../helpers";
-import { UserFormPageModel } from "./user-form-page-model";
-import { UserType } from "@/api/collimator/generated/models";
-import { UserListPageModel } from "./user-list-page-model";
 import { useAdminUser } from "../../authentication-helpers";
 import { userList } from "../../selectors";
+import { UserFormPageModel } from "./user-form-page-model";
+import { UserListPageModel } from "./user-list-page-model";
+import { UserType } from "@/api/collimator/generated/models";
 
 const newTeacherName = "new teacher name";
 const newTeacherEmail = "teacher.new@example.com";

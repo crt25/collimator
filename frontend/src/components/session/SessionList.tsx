@@ -72,6 +72,10 @@ const messages = defineMessages({
   },
 });
 
+const sessionTitleTemplate = (rowData: ExistingSession) => (
+  <span data-testid={`session-${rowData.id}-title`}>{rowData.title}</span>
+);
+
 const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
@@ -259,6 +263,7 @@ const SessionList = ({ classId }: { classId: number }) => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={sessionTitleTemplate}
             />
             <Column
               header={intl.formatMessage(messages.tagsColumn)}

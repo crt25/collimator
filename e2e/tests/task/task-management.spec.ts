@@ -1,10 +1,11 @@
-import { TaskType } from "@/api/collimator/generated/models";
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
+import { taskList } from "../../selectors";
 import { TaskListPageModel } from "./task-list-page-model";
 import { routeDummyApp } from "./helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
-import { taskList } from "../../selectors";
+import { createTask } from "./task-management";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const newTaskTitle = "new task name";
 const newTaskDecription = "new task description";
@@ -25,28 +26,12 @@ test.describe("task management", () => {
   });
 
   test.describe("/task/[taskId]/edit", () => {
-    test.beforeEach(async ({ page }) => {
-      const list = await TaskListPageModel.create(page);
-      await list.createItem();
-    });
-
     test("can create a task", async ({ page: pwPage, baseURL }) => {
-      const page = await TaskFormPageModel.create(pwPage);
-
-      await page.inputs.title.fill(newTaskTitle);
-      await page.inputs.description.fill(newTaskDecription);
-      await page.inputs.type.selectOption(newTaskType);
-      await page.openEditTaskModal();
-      await page.saveTask();
-      await page.submitButton.click();
-
-      await pwPage.waitForURL(`${baseURL}/task`);
-
-      const list = await TaskListPageModel.create(pwPage);
-
-      await expect(list.getTitleElementByTitle(newTaskTitle)).toHaveCount(1);
-
-      newTaskId = await list.getIdByName(newTaskTitle);
+      newTaskId = await createTask(baseURL!, pwPage, {
+        title: newTaskTitle,
+        description: newTaskDecription,
+        type: newTaskType,
+      }).then((r) => r.id);
     });
   });
 

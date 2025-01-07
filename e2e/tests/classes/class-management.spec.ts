@@ -3,6 +3,7 @@ import { expect, test } from "../../helpers";
 import { classList } from "../../selectors";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
+import { createClass } from "./class-management";
 
 const newClassName = "new class name";
 let newClassId: number = -1;
@@ -19,31 +20,13 @@ test.describe("class management", () => {
   });
 
   test.describe("/class/create", () => {
-    test.beforeEach(async ({ page }) => {
-      const list = await ClassListPageModel.create(page);
-      await list.createItem();
-    });
-
     test("can create a new class", async ({ page: pwPage, baseURL }) => {
-      const form = await ClassFormPageModel.create(pwPage);
+      const { id, teacherId } = await createClass(baseURL!, pwPage, {
+        name: newClassName,
+      });
 
-      await form.inputs.className.fill(newClassName);
-
-      const teacherIds = await form.getTeacherIds();
-      expect(teacherIds.length).toBeGreaterThanOrEqual(1);
-
-      newClassTeacherId = teacherIds[0];
-
-      await form.inputs.teacherId.selectOption(newClassTeacherId.toString());
-      await form.submitButton.click();
-
-      await pwPage.waitForURL(`${baseURL}/class`);
-
-      const list = await ClassListPageModel.create(pwPage);
-
-      await expect(list.getNameElementByName(newClassName)).toHaveCount(1);
-
-      newClassId = await list.getIdByName(newClassName);
+      newClassId = id;
+      newClassTeacherId = teacherId;
     });
   });
 

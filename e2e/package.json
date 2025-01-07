@@ -3,6 +3,8 @@
   "packageManager": "yarn@4.5.3",
   "type": "module",
   "scripts": {
+    "lint": "eslint \"./**/*.ts\" --fix",
+    "build:frontend": "tsx scripts/build-frontend.ts",
     "start:frontend": "tsx scripts/server.ts",
     "start:mock-oidc": "tsx scripts/mock-oidc-server.ts",
     "test:pre": "shx rm -rf ../frontend/coverage-pw .nyc_output/ && cd ../backend && yarn build:coverage",
@@ -17,14 +19,22 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.2",
     "@types/pg": "^8.11.10",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
     "dotenv-cli": "^7.4.4",
+    "eslint": "8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
     "pg": "^8.13.1",
     "playwright-test-coverage": "^1.2.12",
     "portfinder": "^1.0.32",
+    "prettier": "^3.4.2",
     "shx": "^0.3.4",
     "socket.io-client": "^4.8.1",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }

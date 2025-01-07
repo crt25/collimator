@@ -1,3 +1,4 @@
+import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 import { CrtTestOptions } from "./helpers";
 import {
   mockOidcClientId,
@@ -11,7 +12,6 @@ import {
   setupFrontendPort,
   setupProjectNamePrefix,
 } from "./setup/helpers";
-import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
 const frontendUrl = `http://localhost:${setupFrontendPort}`;
 const backendUrl = `http://localhost:${setupBackendPort}`;
