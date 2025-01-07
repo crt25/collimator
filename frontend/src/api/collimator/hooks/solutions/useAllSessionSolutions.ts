@@ -2,11 +2,11 @@ import useSWR from "swr";
 import { ApiResponse } from "../helpers";
 import { getSolutionsControllerFindAllV0Url } from "../../generated/endpoints/solutions/solutions";
 import { useClassSession } from "../sessions/useClassSession";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import {
   fetchSolutionsAndTransform,
   GetSolutionsReturnType,
 } from "./useAllSessionTaskSolutions";
-import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
 export const allTasksPlaceholder = -1;
 

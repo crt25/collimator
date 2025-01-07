@@ -1,12 +1,12 @@
 import { Meta as MetaType } from "@storybook/react/*";
-import { EmbeddedAppRef } from "./EmbeddedApp";
-import Task from "./Task";
 import { useState, useRef } from "@storybook/preview-api";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import Task from "./Task";
+import { EmbeddedAppRef } from "./EmbeddedApp";
 
 type Args = Omit<
   Parameters<typeof Task>[0],

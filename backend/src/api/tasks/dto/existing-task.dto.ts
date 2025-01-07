@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, plainToInstance } from "class-transformer";
-import { CreateTaskDto } from "./create-task.dto";
 import { TaskWithoutData } from "../tasks.service";
+import { CreateTaskDto } from "./create-task.dto";
 
 export type TaskId = number;
 

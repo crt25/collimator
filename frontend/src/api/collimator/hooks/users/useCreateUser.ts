@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { ExistingUser } from "../../models/users/existing-user";
 import { usersControllerCreateV0 } from "../../generated/endpoints/users/users";
-import { useRevalidateUserList } from "./useRevalidateUserList";
-import { useRevalidateUser } from "./useRevalidateUser";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CreateUserDto } from "../../generated/models";
+import { useRevalidateUserList } from "./useRevalidateUserList";
+import { useRevalidateUser } from "./useRevalidateUser";
 
 type CreateUserType = (createUserDto: CreateUserDto) => Promise<ExistingUser>;
 

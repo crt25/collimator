@@ -37,7 +37,7 @@ test.describe("/show", () => {
   });
 
   test("does not show stage", async ({ page: pwPage }) => {
-    const page = new SolveTaskPage(pwPage);
+    const page = await SolveTaskPage.load(pwPage);
 
     expect(page.stage).toHaveCount(0);
   });
@@ -75,7 +75,7 @@ test.describe("/show", () => {
     );
   });
 
-  test.only("cannot move blocks", async ({ page: pwPage }) => {
+  test("cannot move blocks", async ({ page: pwPage }) => {
     const { page } = await TestTaskPage.load(pwPage);
 
     const parentBefore = await page.taskBlocks.catActor.editableBlock.evaluate(

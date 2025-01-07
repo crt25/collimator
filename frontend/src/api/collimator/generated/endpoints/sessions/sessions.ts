@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   CreateSessionDto,
   DeletedSessionDto,
@@ -14,7 +15,6 @@ import type {
   StudentSessionProgressDto,
   UpdateSessionDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getSessionsControllerCreateV0Url = (classId: number) => {
   return `/api/v0/classes/${classId}/sessions`;

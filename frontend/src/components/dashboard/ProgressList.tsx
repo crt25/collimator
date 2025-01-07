@@ -1,21 +1,21 @@
 import { Column } from "primereact/column";
 import { useCallback, useMemo } from "react";
-import DataTable from "@/components/DataTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHand, faStar } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
+import { faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import DataTable from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
-import MultiSwrContent from "../MultiSwrContent";
-import { faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { StudentName } from "../encryption/StudentName";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { useDeleteSolution } from "@/api/collimator/hooks/solutions/useDeleteSolution";
+import MultiSwrContent from "../MultiSwrContent";
+import { StudentName } from "../encryption/StudentName";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;

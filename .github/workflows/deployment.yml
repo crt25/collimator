@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-80_dissimilar_solutions # Christmas release 2024, to be removed
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}

@@ -43,7 +43,6 @@ import {
 } from "@scratch-submodule/scratch-gui/src/lib/themes";
 
 import styles from "@scratch-submodule/scratch-gui/src/components/gui/gui.css";
-import crtStyles from "./gui.css";
 import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--extensions.svg";
 import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
@@ -53,6 +52,7 @@ import { useEffect, useMemo } from "react";
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
+import crtStyles from "./gui.css";
 
 const messages = defineMessages({
   addExtension: {

@@ -1,3 +1,8 @@
+import styled from "@emotion/styled";
+import { useRouter } from "next/router";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Col, Container } from "react-bootstrap";
+import { defineMessages, FormattedMessage } from "react-intl";
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
@@ -28,11 +33,8 @@ import { UserRole } from "@/types/user/user-role";
 import { StudentAuthenticationRequestContent } from "@/types/websocket-events";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
-import styled from "@emotion/styled";
-import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Col, Container } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
+
+const logModule = "[JoinSession]";
 
 const messages = defineMessages({
   choosePseudonym: {
@@ -293,7 +295,10 @@ const JoinSession = () => {
         intervalId = setInterval(sendRequest, 5 * 1000);
       })
       .catch((error) => {
-        console.error("Failed to generate student key pair", error);
+        console.error(
+          `${logModule} Failed to generate student key pair`,
+          error,
+        );
       });
   }, [
     authenticationContext,

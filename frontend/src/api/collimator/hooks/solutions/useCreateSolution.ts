@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { useRevalidateSolution } from "./useRevalidateSolution";
 import { solutionsControllerCreateV0 } from "../../generated/endpoints/solutions/solutions";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CreateSolutionDto } from "../../generated/models";
+import { useRevalidateSolution } from "./useRevalidateSolution";
 
 type CreateSolutionType = (
   classId: number,

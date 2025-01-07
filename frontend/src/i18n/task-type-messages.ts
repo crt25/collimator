@@ -1,5 +1,5 @@
-import { TaskType } from "@/api/collimator/generated/models";
 import { defineMessages, MessageDescriptor } from "react-intl";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const TaskTypeMessages = defineMessages({
   [TaskType.SCRATCH]: {

@@ -1,9 +1,9 @@
+import useSWR from "swr";
 import {
   getSessionsControllerIsAnonymousV0Url,
   sessionsControllerIsAnonymousV0,
 } from "../../generated/endpoints/sessions/sessions";
 import { ApiResponse, getIdOrNaN } from "../helpers";
-import useSWR from "swr";
 
 type IsSessionAnonymousType = (
   classId: number,

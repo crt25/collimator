@@ -1,7 +1,5 @@
 import { StatementNode } from "src/ast/types/general-ast/ast-nodes";
 import { match, P } from "ts-pattern";
-import { NonHatBlock, TreeNode } from "./types";
-import { createFunctionCallBlock } from "./helpers";
 import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import {
   ExtensionExpressionBlock,
@@ -15,6 +13,8 @@ import {
   ArbitraryNoOpBlock,
   isArbitraryNoOpBlock,
 } from "src/ast/types/input/scratch/blocks/extensions/arbitrary-no-op-block";
+import { createFunctionCallBlock } from "./helpers";
+import { NonHatBlock, TreeNode } from "./types";
 
 type ExtensionStatementTreeNode = ExtensionStatementBlock & TreeNode;
 type ExtensionExpressionTreeNode = ExtensionExpressionBlock & TreeNode;

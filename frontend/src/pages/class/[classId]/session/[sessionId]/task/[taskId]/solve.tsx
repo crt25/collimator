@@ -1,3 +1,7 @@
+import { useRouter } from "next/router";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import toast from "react-hot-toast";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
@@ -11,11 +15,7 @@ import Task from "@/components/Task";
 import { scratchAppHostName } from "@/utilities/constants";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
-import { useRouter } from "next/router";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
 import { useFileHash } from "@/hooks/useFileHash";
-import toast from "react-hot-toast";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { Language } from "@/types/app-iframe-message/languages";
 
@@ -96,7 +96,7 @@ const SolveTaskPage = () => {
     if (response.result.passedTests >= response.result.totalTests) {
       toast.success(
         <FormattedMessage
-          id="SolveTask.solutionSubmitted"
+          id="SolveTask.correctSolutionSubmitted"
           defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
         />,
       );
@@ -211,14 +211,14 @@ const SolveTaskPage = () => {
             {showSessionMenu ? (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.hideSession"
                   defaultMessage="Hide Session"
                 />
               </span>
             ) : (
               <span>
                 <FormattedMessage
-                  id="SolveTask.getStarted"
+                  id="SolveTask.showSession"
                   defaultMessage="Show Session"
                 />
               </span>
@@ -231,7 +231,7 @@ const SolveTaskPage = () => {
             data-testid="submit-solution-button"
           >
             <FormattedMessage
-              id="SolveTask.getStarted"
+              id="SolveTask.submitSolution"
               defaultMessage="Submit Solution"
             />
           </Button>

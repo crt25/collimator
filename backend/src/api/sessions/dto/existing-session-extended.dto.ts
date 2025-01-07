@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
+import { IsEnum, IsNotEmpty } from "class-validator";
 import { SessionClassDto } from "./session-class.dto";
 import { SessionLessonDto } from "./session-lesson.dto";
 import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
-import { IsEnum, IsNotEmpty } from "class-validator";
 
 type TaskList = { task: { id: number; name: string } }[];
 

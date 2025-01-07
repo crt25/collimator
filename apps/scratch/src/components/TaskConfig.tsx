@@ -1,7 +1,8 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
 import VM from "scratch-vm";
-import Modal from "./modal/Modal";
+import { FormattedMessage } from "react-intl";
+import styled from "@emotion/styled";
 import {
   allowAllStandardBlocks,
   allowNoBlocks,
@@ -10,7 +11,19 @@ import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
-import { FormattedMessage } from "react-intl";
+import Modal from "./modal/Modal";
+
+const Label = styled.label`
+  display: flex !important;
+
+  span {
+    margin-bottom: 0rem !important;
+  }
+
+  input {
+    margin-left: 0.5rem;
+  }
+`;
 
 const TaskConfig = ({
   vm,
@@ -26,6 +39,9 @@ const TaskConfig = ({
     useState(false);
 
   const [enableAssertions, setEnableAssertions] = useState(false);
+  const [allowCustomProcedureBlocks, setAllowCustomProcedureBlocks] =
+    useState(false);
+  const [allowVariableBlocks, setAllowVariableBlocks] = useState(false);
 
   const updateConfig = useCallback(
     (
@@ -56,13 +72,35 @@ const TaskConfig = ({
         e,
         (config) => (config.allowedBlocks = allowAllStandardBlocks),
       );
+
+      setAllowCustomProcedureBlocks(true);
+      setAllowVariableBlocks(true);
     },
     [updateConfig],
   );
 
+  useEffect(() => {
+    if (!vm.crtConfig) {
+      console.error("No task config found");
+      return;
+    }
+
+    setAllowCustomProcedureBlocks(
+      vm.crtConfig.allowedBlocks.customBlocks ?? false,
+    );
+    setAllowVariableBlocks(vm.crtConfig.allowedBlocks.variables ?? false);
+  }, [
+    vm.crtConfig,
+    vm.crtConfig?.allowedBlocks.customBlocks,
+    vm.crtConfig?.allowedBlocks.variables,
+  ]);
+
   const onAllowNoBlocks = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-      updateConfig(e, (config) => (config.allowedBlocks = allowNoBlocks)),
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setAllowCustomProcedureBlocks(false);
+      setAllowVariableBlocks(false);
+      updateConfig(e, (config) => (config.allowedBlocks = allowNoBlocks));
+    },
     [updateConfig],
   );
 
@@ -128,16 +166,44 @@ const TaskConfig = ({
             id="crt.taskConfig.disallowAllBlocks"
           />
         </button>
+        <Label>
+          <FormattedMessage
+            defaultMessage="Allow variable blocks"
+            description="Label for checkbox to allow variables in task"
+            id="crt.taskConfig.allowVariableBlocks"
+          />
+          <input
+            checked={allowVariableBlocks}
+            type="checkbox"
+            onChange={(e) => {
+              setAllowVariableBlocks(e.target.checked);
+              vm.crtConfig!.allowedBlocks.variables = e.target.checked;
+            }}
+          />
+        </Label>
+        <Label>
+          <FormattedMessage
+            defaultMessage="Allow 'My Blocks' custom procedures"
+            description="Label for checkbox to allow custom procedures in task"
+            id="crt.taskConfig.allowCustomProcedureBlocks"
+          />
+          <input
+            checked={allowCustomProcedureBlocks}
+            type="checkbox"
+            onChange={(e) => {
+              setAllowCustomProcedureBlocks(e.target.checked);
+              vm.crtConfig!.allowedBlocks.customBlocks = e.target.checked;
+            }}
+          />
+        </Label>
 
         {isAssertionsExtensionEnabled && (
-          <label>
-            <span>
-              <FormattedMessage
-                defaultMessage="Enable assertions simulating a student solving the task."
-                description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
-                id="crt.taskConfig.enableAssertions"
-              />
-            </span>
+          <Label>
+            <FormattedMessage
+              defaultMessage="Enable assertions simulating a student solving the task."
+              description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
+              id="crt.taskConfig.enableAssertions"
+            />
             <input
               type="checkbox"
               min="0"
@@ -145,7 +211,7 @@ const TaskConfig = ({
               onChange={(e) => setEnableAssertions(e.target.checked)}
               data-testid="enable-assertions-checkbox"
             />
-          </label>
+          </Label>
         )}
 
         <input

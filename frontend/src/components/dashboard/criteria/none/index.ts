@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
 import { CriterionBase, CriterionFilterDefinition } from "../criterion-base";
-import NoneCriterionForm from "./NoneCriterionForm";
 import { MetaCriterionType } from "../meta-criterion-type";
+import NoneCriterionForm from "./NoneCriterionForm";
 
 const criterion = MetaCriterionType.none;
 type Criterion = typeof criterion;

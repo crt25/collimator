@@ -1,25 +1,15 @@
 import { ButtonGroup, Col, Row } from "react-bootstrap";
 import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import Select from "../form/Select";
 import styled from "@emotion/styled";
-import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
-import {
-  AuthenticationContext,
-  AuthenticationContextType,
-} from "@/contexts/AuthenticationContext";
-import { decodeBase64 } from "@/utilities/crypto/base64";
-import CodeView from "./CodeView";
-import { TaskType } from "@/api/collimator/generated/models";
-import ViewSolutionModal from "../modals/ViewSolutionModal";
-import { Group, CategorizedDataPoint } from "./hooks/types";
-import { getStudentNickname } from "@/utilities/student-name";
-import Button from "../Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
-import { compareLabels } from "@/utilities/comparisons";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import Button from "../Button";
+import ViewSolutionModal from "../modals/ViewSolutionModal";
+import Select from "../form/Select";
+import { Group, CategorizedDataPoint } from "./hooks/types";
+import CodeView, { CodeViewContainer } from "./CodeView";
 import { axisCriteria } from "./axes";
 import {
   AnalyzerState,
@@ -28,6 +18,16 @@ import {
   defaultGroupValue,
   defaultSolutionValue,
 } from "./Analyzer.state";
+import { getStudentNickname } from "@/utilities/student-name";
+import { TaskType } from "@/api/collimator/generated/models";
+import { decodeBase64 } from "@/utilities/crypto/base64";
+import {
+  AuthenticationContext,
+  AuthenticationContextType,
+} from "@/contexts/AuthenticationContext";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
+import { compareLabels } from "@/utilities/comparisons";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -78,7 +78,7 @@ const SelectionMenu = styled.div`
   }
 `;
 
-const ModalFooter = styled.div`
+const ModalHeader = styled.div`
   flex-grow: 1;
 
   display: flex;
@@ -87,28 +87,23 @@ const ModalFooter = styled.div`
   align-items: center;
 `;
 
-const ModalFooterLeft = styled.div`
+const ModalHeaderLeft = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  margin-left: 1rem;
+  gap: 1rem;
+`;
+
+const AxisValues = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 
   gap: 1rem;
-`;
-
-const ModalFooterRight = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-
-  gap: 1rem;
-`;
-
-const CodeViewPlaceholder = styled.div`
-  height: 100vh;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
 `;
 
 type Option = { label: string; value: number };
@@ -422,14 +417,14 @@ const CodeComparison = ({
   const leftStudentName = useMemo(
     () =>
       leftSolutionOptions.find((o) => o.value === selectedLeftSolution)
-        ?.label || "",
+        ?.label ?? "",
     [leftSolutionOptions, selectedLeftSolution],
   );
 
   const rightStudentName = useMemo(
     () =>
       rightSolutionOptions.find((o) => o.value === selectedRightSolution)
-        ?.label || "",
+        ?.label ?? "",
     [rightSolutionOptions, selectedRightSolution],
   );
 
@@ -445,23 +440,9 @@ const CodeComparison = ({
           taskType={taskType}
           solutionId={modalDataPoint?.analysis.solutionId}
           footer={
-            <ModalFooter>
-              <ModalFooterLeft>
-                {xAxisLabel && (
-                  <div>
-                    {intl.formatMessage(xAxisLabel)}:{" "}
-                    {modalDataPoint.dataPoint.x}
-                  </div>
-                )}
-                {yAxisLabel && (
-                  <div>
-                    {intl.formatMessage(yAxisLabel)}:{" "}
-                    {modalDataPoint.dataPoint.y}
-                  </div>
-                )}
-              </ModalFooterLeft>
-              <ModalFooterRight>
-                {selectedRightSolution !== defaultSolutionValue &&
+            <ModalHeader>
+              <ModalHeaderLeft>
+                {selectedLeftSolution !== defaultSolutionValue &&
                 selectedRightSolution !== defaultSolutionValue ? (
                   <ButtonGroup>
                     <Button
@@ -482,8 +463,22 @@ const CodeComparison = ({
                     </Button>
                   </ButtonGroup>
                 ) : null}
-              </ModalFooterRight>
-            </ModalFooter>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {modalDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+              </ModalHeaderLeft>
+            </ModalHeader>
           }
         />
       )}
@@ -539,18 +534,13 @@ const CodeComparison = ({
                     onClick={() => {
                       if (isLeftSolutionBookmarked) {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: bookmarkedSolutionIds.filter(
-                            (id) => id !== leftDataPoint.analysis.solutionId,
-                          ),
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
                         });
                       } else {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: [
-                            ...bookmarkedSolutionIds,
-                            leftDataPoint.analysis.solutionId,
-                          ],
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: leftDataPoint.analysis.solutionId,
                         });
                       }
                     }}
@@ -566,16 +556,32 @@ const CodeComparison = ({
               )}
             </SelectionMenu>
             {leftDataPoint ? (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={selectedSubTaskId}
-                taskType={taskType}
-                solutionId={leftDataPoint.analysis.solutionId}
-              />
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {leftDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={selectedSubTaskId}
+                  taskType={taskType}
+                  solutionId={leftDataPoint.analysis.solutionId}
+                />
+              </div>
             ) : (
-              <CodeViewPlaceholder />
+              <CodeViewContainer />
             )}
           </Col>
           <Col xs={6}>
@@ -623,18 +629,13 @@ const CodeComparison = ({
                     onClick={() => {
                       if (isRightSolutionBookmarked) {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: bookmarkedSolutionIds.filter(
-                            (id) => id !== rightDataPoint.analysis.solutionId,
-                          ),
+                          type: AnalyzerStateActionType.removeBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
                         });
                       } else {
                         dispatch({
-                          type: AnalyzerStateActionType.setBookmarkedSolutions,
-                          bookmarkedSolutionIds: [
-                            ...bookmarkedSolutionIds,
-                            rightDataPoint.analysis.solutionId,
-                          ],
+                          type: AnalyzerStateActionType.addBookmarkedSolution,
+                          solutionId: rightDataPoint.analysis.solutionId,
                         });
                       }
                     }}
@@ -650,16 +651,32 @@ const CodeComparison = ({
               )}
             </SelectionMenu>
             {rightDataPoint ? (
-              <CodeView
-                classId={classId}
-                sessionId={sessionId}
-                taskId={taskId}
-                subTaskId={selectedSubTaskId}
-                taskType={taskType}
-                solutionId={rightDataPoint.analysis.solutionId}
-              />
+              <div>
+                <AxisValues>
+                  {xAxisLabel && (
+                    <div>
+                      {intl.formatMessage(xAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.x}
+                    </div>
+                  )}
+                  {yAxisLabel && (
+                    <div>
+                      {intl.formatMessage(yAxisLabel)}:{" "}
+                      {rightDataPoint.dataPoint.y}
+                    </div>
+                  )}
+                </AxisValues>
+                <CodeView
+                  classId={classId}
+                  sessionId={sessionId}
+                  taskId={taskId}
+                  subTaskId={selectedSubTaskId}
+                  taskType={taskType}
+                  solutionId={rightDataPoint.analysis.solutionId}
+                />
+              </div>
             ) : (
-              <CodeViewPlaceholder />
+              <CodeViewContainer />
             )}
           </Col>
         </Row>

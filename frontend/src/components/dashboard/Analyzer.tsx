@@ -5,9 +5,11 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
+import Button, { ButtonVariant } from "../Button";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
@@ -18,8 +20,6 @@ import {
 import { useGrouping } from "./hooks/useGrouping";
 import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import Button, { ButtonVariant } from "../Button";
 import { FilteredAnalysis } from "./hooks/types";
 import {
   allSubtasks,
@@ -305,16 +305,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
-              {state.selectedTask && (
-                <Analysis
-                  taskType={task.type}
-                  state={state}
-                  dispatch={dispatch}
-                  categorizedDataPoints={categorizedDataPoints}
-                  manualGroups={manualGroups}
-                  onSelectSolution={onSelectSolution}
-                />
-              )}
+              <Analysis
+                taskType={task.type}
+                state={state}
+                dispatch={dispatch}
+                categorizedDataPoints={categorizedDataPoints}
+                manualGroups={manualGroups}
+                onSelectSolution={onSelectSolution}
+              />
             </Col>
             <Col xs={12}>
               {task && (

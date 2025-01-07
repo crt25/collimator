@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   ClassesControllerFindAllV0Params,
   CreateClassDto,
@@ -14,7 +15,6 @@ import type {
   ExistingClassWithTeacherDto,
   UpdateClassDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getClassesControllerCreateV0Url = () => {
   return `/api/v0/classes`;

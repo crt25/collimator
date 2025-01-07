@@ -1,10 +1,10 @@
-import ClassList from "./ClassList";
 import { getClassesControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { backendHostName } from "@/utilities/constants";
 import {
   getClassesControllerFindAllV0Url,
   getClassesControllerRemoveV0Url,
 } from "@/api/collimator/generated/endpoints/classes/classes";
+import ClassList from "./ClassList";
 
 const classes = getClassesControllerFindAllV0ResponseMock();
 

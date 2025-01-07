@@ -1,7 +1,7 @@
 import { SetStateAction } from "react";
 import { AxesCriterionType } from "./axes";
 import { FilterCriterion } from "./filter";
-import { ChartSplit } from "./chartjs-plugins";
+import { ChartSplit, SplitType } from "./chartjs-plugins";
 
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
 export const defaultGroupValue = "null";
@@ -11,7 +11,8 @@ export enum AnalyzerStateActionType {
   setSelectedTask,
   setSelectedSubTask,
   setFilters,
-  setSplits,
+  addSplit,
+  removeSplit,
   setXAxis,
   setYAxis,
   setAutomaticGrouping,
@@ -23,8 +24,9 @@ export enum AnalyzerStateActionType {
   setSelectedLeftSolution,
   setSelectedRightSolution,
   setClickedSolution,
-  setBookmarkedSolutions,
   setSelectedSolutions,
+  addBookmarkedSolution,
+  removeBookmarkedSolution,
 }
 
 export interface SetSelectedTaskAction {
@@ -42,9 +44,14 @@ export interface SetFiltersAction {
   filters: SetStateAction<FilterCriterion[]>;
 }
 
-export interface SetSplitsAction {
-  type: AnalyzerStateActionType.setSplits;
-  splits: SetStateAction<ChartSplit[]>;
+export interface AddSplitAction {
+  type: AnalyzerStateActionType.addSplit;
+  split: ChartSplit;
+}
+
+export interface RemoveSplitAction {
+  type: AnalyzerStateActionType.removeSplit;
+  split: ChartSplit;
 }
 
 export interface SetAxisAction {
@@ -84,14 +91,19 @@ export interface SetSolutionAction {
   solutionId: number;
 }
 
-export interface SetSelectedSolutionAction {
+export interface SetClickedSolutionAction {
   type: AnalyzerStateActionType.setClickedSolution;
-  selectedSolutionId: { groupKey: string; solutionId: number } | undefined;
+  clickedSolutionId: { groupKey: string; solutionId: number } | undefined;
 }
 
-export interface SetBookmarkedSolutionsAction {
-  type: AnalyzerStateActionType.setBookmarkedSolutions;
-  bookmarkedSolutionIds: number[];
+export interface AddBookmarkedSolutionsAction {
+  type: AnalyzerStateActionType.addBookmarkedSolution;
+  solutionId: number;
+}
+
+export interface RemoveBookmarkedSolutionsAction {
+  type: AnalyzerStateActionType.removeBookmarkedSolution;
+  solutionId: number;
 }
 
 export interface SetSelectedSolutionsAction {
@@ -104,16 +116,18 @@ export type AnalyzerStateAction =
   | SetSelectedTaskAction
   | SetSelectedSubTaskAction
   | SetFiltersAction
-  | SetSplitsAction
+  | AddSplitAction
+  | RemoveSplitAction
   | SetAxisAction
   | SetAutomaticGroupingAction
   | SetNumberOfGroupsAction
   | SetSideAction
   | SetGroupAction
   | SetSolutionAction
-  | SetSelectedSolutionAction
-  | SetBookmarkedSolutionsAction
-  | SetSelectedSolutionsAction;
+  | SetClickedSolutionAction
+  | SetSelectedSolutionsAction
+  | AddBookmarkedSolutionsAction
+  | RemoveBookmarkedSolutionsAction;
 
 export interface AnalyzerState {
   selectedTask: number | undefined;
@@ -146,6 +160,45 @@ const getNewState = <T>(setState: SetStateAction<T>, oldState: T): T =>
     ? (setState as (state: T) => T)(oldState)
     : setState;
 
+const setAxis = (
+  state: AnalyzerState,
+  axisDimension: "x" | "y",
+  newAxis: AxesCriterionType,
+): AnalyzerState => {
+  let newSplits: ChartSplit[] = [];
+
+  const otherAxis = axisDimension === "x" ? state.yAxis : state.xAxis;
+  let newOtherAxis = otherAxis;
+
+  if (otherAxis === newAxis) {
+    // flip axes
+    newOtherAxis = axisDimension === "x" ? state.xAxis : state.yAxis;
+
+    // when flipping axes, keep the splits
+    newSplits = state.splits.map((split) =>
+      split.type === SplitType.horizontal
+        ? {
+            type: SplitType.vertical,
+            x: split.y,
+          }
+        : {
+            type: SplitType.horizontal,
+            y: split.x,
+          },
+    );
+  }
+
+  const xAxis = axisDimension === "x" ? newAxis : newOtherAxis;
+  const yAxis = axisDimension === "y" ? newAxis : newOtherAxis;
+
+  return {
+    ...state,
+    xAxis,
+    yAxis,
+    splits: newSplits,
+  };
+};
+
 export const analyzerStateReducer = (
   state: AnalyzerState,
   action: AnalyzerStateAction,
@@ -157,12 +210,17 @@ export const analyzerStateReducer = (
       return { ...state, selectedSubTaskId: action.selectedSubTaskId };
     case AnalyzerStateActionType.setFilters:
       return { ...state, filters: getNewState(action.filters, state.filters) };
-    case AnalyzerStateActionType.setSplits:
-      return { ...state, splits: getNewState(action.splits, state.splits) };
+    case AnalyzerStateActionType.addSplit:
+      return { ...state, splits: [...state.splits, action.split] };
+    case AnalyzerStateActionType.removeSplit:
+      return {
+        ...state,
+        splits: state.splits.filter((split) => split !== action.split),
+      };
     case AnalyzerStateActionType.setXAxis:
-      return { ...state, xAxis: action.axis };
+      return setAxis(state, "x", action.axis);
     case AnalyzerStateActionType.setYAxis:
-      return { ...state, yAxis: action.axis };
+      return setAxis(state, "y", action.axis);
     case AnalyzerStateActionType.setAutomaticGrouping:
       return { ...state, isAutomaticGrouping: action.isAutomaticGrouping };
     case AnalyzerStateActionType.setNumberOfGroups:
@@ -219,11 +277,24 @@ export const analyzerStateReducer = (
         ...state,
         comparison: {
           ...state.comparison,
-          clickedSolution: action.selectedSolutionId,
+          clickedSolution: action.clickedSolutionId,
         },
       };
-    case AnalyzerStateActionType.setBookmarkedSolutions:
-      return { ...state, bookmarkedSolutionIds: action.bookmarkedSolutionIds };
+    case AnalyzerStateActionType.addBookmarkedSolution:
+      return {
+        ...state,
+        bookmarkedSolutionIds:
+          state.bookmarkedSolutionIds.indexOf(action.solutionId) === -1
+            ? [...state.bookmarkedSolutionIds, action.solutionId]
+            : state.bookmarkedSolutionIds,
+      };
+    case AnalyzerStateActionType.removeBookmarkedSolution:
+      return {
+        ...state,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.filter(
+          (id) => id !== action.solutionId,
+        ),
+      };
     case AnalyzerStateActionType.setSelectedSolutions:
       return {
         ...state,

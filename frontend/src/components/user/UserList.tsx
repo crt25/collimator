@@ -5,7 +5,6 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import DataTable, { LazyTableState } from "@/components/DataTable";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
@@ -13,14 +12,15 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import DataTable, { LazyTableState } from "@/components/DataTable";
 import { getUserTypeMessage } from "@/i18n/user-type-messages";
 import { TableMessages } from "@/i18n/table-messages";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { useAllUsersLazyTable } from "@/api/collimator/hooks/users/useAllUsers";
-import SwrContent from "../SwrContent";
 import { useDeleteUser } from "@/api/collimator/hooks/users/useDeleteUser";
-import ConfirmationModal from "../modals/ConfirmationModal";
 import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGenerateRegistrationToken";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
 
 const UserListWrapper = styled.div`
@@ -61,6 +61,10 @@ const messages = defineMessages({
     defaultMessage: "Get registration link",
   },
 });
+
+const userNameTemplate = (rowData: ExistingUser) => (
+  <span data-testid={`user-${rowData.id}-name`}>{rowData.name}</span>
+);
 
 const UserList = () => {
   const intl = useIntl();
@@ -204,6 +208,7 @@ const UserList = () => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={userNameTemplate}
             />
             <Column
               field="role"

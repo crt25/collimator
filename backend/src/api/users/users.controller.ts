@@ -16,7 +16,11 @@ import {
   ApiOkResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { UsersService } from "./users.service";
+import { User } from "@prisma/client";
+import { fromQueryResults } from "../helpers";
+import { AdminOnly } from "../authentication/role.decorator";
+import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { AuthorizationService } from "../authorization/authorization.service";
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -24,11 +28,7 @@ import {
   DeletedUserDto,
   UserId,
 } from "./dto";
-import { fromQueryResults } from "../helpers";
-import { AdminOnly } from "../authentication/role.decorator";
-import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { User } from "@prisma/client";
-import { AuthorizationService } from "../authorization/authorization.service";
+import { UsersService } from "./users.service";
 import { UpdateUserKeyDto } from "./dto/update-user-key.dto";
 import { RegistrationTokenDto } from "./dto/registration-token.dto";
 

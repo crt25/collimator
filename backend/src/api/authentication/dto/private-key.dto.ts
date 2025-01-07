@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
-import { UserIdentityWithKeyAndToken } from "../authentication.service";
 import { IsNotEmpty, IsString } from "class-validator";
+import { UserIdentityWithKeyAndToken } from "../authentication.service";
 
 type PrivateKey = Exclude<
   UserIdentityWithKeyAndToken["keyPair"],

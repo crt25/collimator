@@ -1,11 +1,10 @@
 import "@/styles/globals.scss";
-import English from "../../content/compiled-locales/en.json";
-import French from "../../content/compiled-locales/fr.json";
-import type { AppProps } from "next/app";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PrimeReactProvider } from "primereact/api";
+import { Toaster } from "react-hot-toast";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -15,7 +14,6 @@ import {
 } from "@/contexts/AuthenticationContext";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import AuthenticationBarrier from "@/components/authentication/AuthenticationBarrier";
-import { PrimeReactProvider } from "primereact/api";
 import YupLocalization from "@/components/form/YupLocalization";
 import {
   defaultLocalizationState,
@@ -25,7 +23,11 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
-import { Toaster } from "react-hot-toast";
+import French from "../../content/compiled-locales/fr.json";
+import English from "../../content/compiled-locales/en.json";
+import type { AppProps } from "next/app";
+
+const logModule = "[App]";
 
 const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
@@ -76,7 +78,10 @@ const App = ({ Component, pageProps }: AppProps) => {
           );
         })
         .catch((e) => {
-          console.error("Failed to store serialized authentication state", e);
+          console.error(
+            `${logModule} Failed to store serialized authentication state`,
+            e,
+          );
         });
 
       // synchronously update the react state

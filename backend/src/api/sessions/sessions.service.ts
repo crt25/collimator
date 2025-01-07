@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { SessionId } from "./dto";
 import { SessionStatus } from ".prisma/client";
-import { TaskProgress } from "./task-progress";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { SessionId } from "./dto";
+import { TaskProgress } from "./task-progress";
 
 const compactInclude = {
   tasks: {

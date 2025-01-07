@@ -3,6 +3,7 @@
 const nextConfig = {
   output: "export",
   distDir: "dist",
+  productionBrowserSourceMaps: true,
 
   reactStrictMode: true,
 

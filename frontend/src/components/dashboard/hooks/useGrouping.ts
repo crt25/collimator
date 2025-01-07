@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { useAutomaticGrouping } from "./useAutomaticGrouping";
-import { useManualGrouping } from "./useManualGrouping";
 import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
+import { Category } from "../category";
+import { useAutomaticGrouping } from "./useAutomaticGrouping";
+import { useManualGrouping } from "./useManualGrouping";
 import {
   CategorizedDataPoint,
   Group,
   ManualGroup,
   FilteredAnalysis,
 } from "./types";
-import { Category } from "../category";
 
 export const useGrouping = (
   isAutomaticGrouping: boolean,
@@ -49,14 +49,13 @@ export const useGrouping = (
   useEffect(() => {
     let isCancelled = false;
 
-    let dataPoints: CategorizedDataPoint[] = [];
-
     if (!isAutomaticGrouping) {
-      dataPoints = manual.dataPoints;
+      const dataPoints = manual.dataPoints;
 
       setGroups(manual.groups);
       setManualGroups(manual.groups);
       setIsGroupingAvailable(true);
+      setDataPoints(dataPoints);
     } else {
       setIsGroupingAvailable(false);
 
@@ -65,7 +64,7 @@ export const useGrouping = (
           return;
         }
 
-        dataPoints = automaticGroups.map((group) => ({
+        const dataPoints = automaticGroups.map((group) => ({
           ...group,
           category: Category.matchesFilters | Category.isAutomaticGroup,
         }));
@@ -73,10 +72,9 @@ export const useGrouping = (
         setGroups(automaticGroups);
         setManualGroups([]);
         setIsGroupingAvailable(true);
+        setDataPoints(dataPoints);
       });
     }
-
-    setDataPoints(dataPoints);
 
     return (): void => {
       isCancelled = true;
@@ -86,7 +84,7 @@ export const useGrouping = (
   return {
     isGroupingAvailable,
     categorizedDataPoints: dataPoints,
-    groups: groups,
-    manualGroups: manualGroups,
+    groups,
+    manualGroups,
   };
 };

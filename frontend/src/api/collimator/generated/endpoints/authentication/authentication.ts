@@ -5,6 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import { fetchApi } from "../../../../fetch";
 import type {
   AuthenticationRequestDto,
   AuthenticationResponseDto,
@@ -12,7 +13,6 @@ import type {
   StudentAuthenticationRequestDto,
   StudentAuthenticationResponseDto,
 } from "../../models";
-import { fetchApi } from "../../../../fetch";
 
 export const getAuthenticationControllerFindPublicKeyV0Url = (
   fingerprint: string,

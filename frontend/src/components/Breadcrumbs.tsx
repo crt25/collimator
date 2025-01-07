@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import BreadcrumbItem from "./BreadcrumbItem";
 import { FormattedMessage } from "react-intl";
+import BreadcrumbItem from "./BreadcrumbItem";
 
 const StyledNav = styled.nav`
   margin-top: 1rem;
@@ -22,7 +22,7 @@ const Breadcrumbs = ({
 }) => (
   <StyledNav aria-label="breadcrumb">
     <StyledOl className="breadcrumb">
-      <BreadcrumbItem href={homeHref || "/"}>
+      <BreadcrumbItem href={homeHref ?? "/"}>
         <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
       </BreadcrumbItem>
       {children}

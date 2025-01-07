@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
 import { Category } from "../category";
 import { CategorizedDataPoint, FilteredAnalysis, ManualGroup } from "./types";
 import { ChartSplit, SplitType } from "../chartjs-plugins";
@@ -61,7 +61,7 @@ export const getGroupName = (idx: number): string => {
     idx = Math.floor(idx / numberOfCharacters);
   } while (idx > 0);
 
-  return name.reverse().join("");
+  return name.toReversed().join("");
 };
 
 const isWithinGroup = (

@@ -1,4 +1,8 @@
 import useSWR from "swr";
+import { useContext, useMemo } from "react";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { UserRole } from "@/types/user/user-role";
 import {
   classesControllerFindAllV0,
   getClassesControllerFindAllV0Url,
@@ -11,11 +15,7 @@ import {
   transformToLazyTableResult,
 } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { useContext, useMemo } from "react";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import { UserRole } from "@/types/user/user-role";
 
 export type GetClassesReturnType = ExistingClassWithTeacher[];
 

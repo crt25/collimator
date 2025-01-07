@@ -1,18 +1,18 @@
 import useSWR from "swr";
+import { useMemo } from "react";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   ApiResponse,
   fromDtos,
   getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   getTasksControllerFindAllV0Url,
   tasksControllerFindAllV0,
 } from "../../generated/endpoints/tasks/tasks";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { useMemo } from "react";
 
 export type GetTasksReturnType = ExistingTask[];
 

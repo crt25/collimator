@@ -3,7 +3,6 @@ import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
 
 import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
 import SpriteInfo from "@scratch-submodule/scratch-gui/src//containers/sprite-info.jsx";
-import SpriteList from "./SpriteList";
 import ActionMenu from "@scratch-submodule/scratch-gui/src/components/action-menu/action-menu.jsx";
 import VM from "scratch-vm";
 // @ts-expect-error - no type definitions
@@ -19,6 +18,7 @@ import searchIcon from "@scratch-submodule/scratch-gui/src/components/action-men
 import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
 import { Sprite } from "../target-pane/TargetPane";
 import { WithoutInteraction } from "../../WithoutInteraction";
+import SpriteList from "./SpriteList";
 
 const messages = defineMessages({
   addSpriteFromLibrary: {

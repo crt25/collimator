@@ -1,14 +1,14 @@
 import VM from "scratch-vm";
-import { useIframeParent } from "./useIframeParent";
 import { useCallback } from "react";
-import { saveCrtProject } from "../vm/save-crt-project";
-import { loadCrtProject } from "../vm/load-crt-project";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
+import { loadCrtProject } from "../vm/load-crt-project";
+import { saveCrtProject } from "../vm/save-crt-project";
 import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
+import { useIframeParent } from "./useIframeParent";
 
 const logModule = "[Embedded Scratch]";
 
@@ -126,7 +126,10 @@ export const useEmbeddedScratch = (
 
               return await loadCrtProject(vm, zip);
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
@@ -141,23 +144,31 @@ export const useEmbeddedScratch = (
                 result: content,
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotSaveProject));
             }
           }
           break;
         case "loadTask":
           if (vm) {
-            const sb3Project = await request.arguments.task.arrayBuffer();
             try {
               setLocale(request.arguments.language);
+
+              console.debug(`${logModule} Loading project`);
+              const sb3Project = await request.arguments.task.arrayBuffer();
               await loadCrtProject(vm, sb3Project);
 
               respondToMessageEvent({
                 procedure: "loadTask",
               });
             } catch (e) {
-              console.error(e);
+              console.error(
+                `${logModule} RPC: ${request.procedure} failed with error:`,
+                e,
+              );
               toast.error(intl.formatMessage(messages.cannotLoadProject));
             }
           }

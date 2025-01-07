@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "playwright/test";
 import { getBlockConfigButtonSelector } from "../locators";
-import { ScratchEditorPage } from "./scratch-editor";
 import { loadTask } from "../helpers";
 import tasks, { TestTask } from "../tasks";
+import { ScratchEditorPage } from "./scratch-editor";
 
 export class TestTaskPage extends ScratchEditorPage {
   private constructor(page: Page) {
@@ -51,10 +51,13 @@ export class TestTaskPage extends ScratchEditorPage {
   }
 
   static async load(
-    page: Page,
+    pwPage: Page,
   ): Promise<{ page: TestTaskPage; task: TestTask }> {
-    await loadTask(page, tasks.testTask);
+    await loadTask(pwPage, tasks.testTask);
 
-    return { page: new TestTaskPage(page), task: tasks.testTask };
+    const page = new TestTaskPage(pwPage);
+    await page.resetZoom();
+
+    return { page, task: tasks.testTask };
   }
 }

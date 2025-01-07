@@ -1,4 +1,3 @@
-import { TaskProgress } from "@/api/collimator/generated/models";
 import styled from "@emotion/styled";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-regular-svg-icons";
 import { faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +5,7 @@ import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome";
+import { TaskProgress } from "@/api/collimator/generated/models";
 
 const TaskListItemWrapper = styled.button<{ active?: boolean }>`
   width: 100%;

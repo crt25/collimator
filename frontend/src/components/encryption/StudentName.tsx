@@ -10,6 +10,8 @@ import { getStudentNickname } from "@/utilities/student-name";
 
 const NameWrapper = styled.span``;
 
+const logModule = "[StudentName]";
+
 const messages = defineMessages({
   cannotDecrypt: {
     id: "StudentName.cannotDecrypt",
@@ -72,7 +74,7 @@ export const StudentName = ({
 
     decryptName().catch((e) => {
       console.error(
-        "Decryption failed",
+        `${logModule} Student identity decryption failed`,
         e,
         pseudonym,
         keyPairId,
@@ -124,7 +126,7 @@ export const StudentName = ({
   return (
     <NameWrapper>
       {name}
-      {isAnonymousUser
+      {isAnonymousUser && showActualName
         ? " (" + intl.formatMessage(messages.anonymous) + ")"
         : ""}
     </NameWrapper>

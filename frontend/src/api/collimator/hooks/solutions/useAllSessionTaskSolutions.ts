@@ -1,11 +1,11 @@
 import useSWR from "swr";
+import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import {
   ApiResponse,
   fromDtos,
   getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
 import {
   getSolutionsControllerFindAllV0Url,

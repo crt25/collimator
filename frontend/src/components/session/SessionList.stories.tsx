@@ -1,10 +1,10 @@
-import SessionList from "./SessionList";
 import { backendHostName } from "@/utilities/constants";
 import { getSessionsControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 import {
   getSessionsControllerFindAllV0Url,
   getSessionsControllerRemoveV0Url,
 } from "@/api/collimator/generated/endpoints/sessions/sessions";
+import SessionList from "./SessionList";
 
 const classId = 1;
 const sessions = getSessionsControllerFindAllV0ResponseMock();

@@ -1,3 +1,7 @@
+import { useRouter } from "next/router";
+import { useCallback } from "react";
+import { Container } from "react-bootstrap";
+import { defineMessages, FormattedMessage } from "react-intl";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import {
   useUpdateTask,
@@ -8,10 +12,6 @@ import Header from "@/components/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import PageHeader from "@/components/PageHeader";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
-import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { Container } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
 
 const messages = defineMessages({
   submit: {
@@ -43,11 +43,9 @@ const EditTask = () => {
           description: formValues.description,
           type: formValues.type,
         });
-
-        router.back();
       }
     },
-    [task.data, taskFile.data, updateTask, updateTaskFile, router],
+    [task.data, taskFile.data, updateTask, updateTaskFile],
   );
 
   return (

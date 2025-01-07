@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 import { sessionsControllerRemoveV0 } from "../../generated/endpoints/sessions/sessions";
 import { DeletedSession } from "../../models/sessions/deleted-session";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 
 type DeleteClassSessionType = (
   classId: number,

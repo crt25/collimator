@@ -1,8 +1,8 @@
 import { defineMessages } from "react-intl";
-import { TestFilterCriterion, TestFilterCriterionParameters } from ".";
-import { CriterionFormComponent } from "../criterion-base";
 import MinMaxRange from "@/components/form/MinMaxRange";
+import { CriterionFormComponent } from "../criterion-base";
 import { MetaCriterionType } from "../meta-criterion-type";
+import { TestFilterCriterion, TestFilterCriterionParameters } from ".";
 
 const messages = defineMessages({
   count: {

@@ -1,12 +1,13 @@
+import { createServer } from "http";
 import { NestFactory, Reflector } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from "@nestjs/common";
-import * as swagger from "./swagger";
 import { ConfigService } from "@nestjs/config";
+import { AppModule } from "./app.module";
+import * as swagger from "./swagger";
 
 async function bootstrap(): Promise<void> {
   const API_PREFIX = "api";
@@ -41,8 +42,18 @@ async function bootstrap(): Promise<void> {
     credentials: false,
   });
 
-  const port = app.get(ConfigService).get<number>("PORT") ?? 3000;
+  const stopPort = app.get(ConfigService).get<number>("STOP_PORT") ?? null;
+  if (stopPort !== null) {
+    const stopServer = createServer((_request, response) => {
+      response.writeHead(200, { "Content-Type": "text/plain" });
+      response.end();
 
+      app.close();
+      stopServer.close();
+    }).listen(stopPort);
+  }
+
+  const port = app.get(ConfigService).get<number>("PORT") ?? 3000;
   await app.listen(port);
 }
 

@@ -1,9 +1,9 @@
 import VM from "scratch-vm";
-import styles from "./assertions-state.css";
+import classNames from "classnames";
 import icon from "../../extensions/assertions/test-icon-white.svg";
 import { useAssertionsEnabled } from "../../hooks/useAssertionsEnabled";
 import { useAssertionsState } from "../../hooks/useAssertionsState";
-import classNames from "classnames";
+import styles from "./assertions-state.css";
 
 const AssertionsState = ({ vm }: { vm: VM }) => {
   const assertionsEnabled = useAssertionsEnabled(vm);

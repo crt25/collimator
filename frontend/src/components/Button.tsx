@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import ProgressSpinner from "./ProgressSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { isNonNull } from "@/utilities/is-non-null";
+import ProgressSpinner from "./ProgressSpinner";
 
 export enum ButtonVariant {
   primary = "primary",
@@ -193,13 +193,13 @@ const Button = (
   );
 
   const WrapperComponent = useMemo(
-    () => WrapperComponentByVariant[variant || ButtonVariant.primary],
+    () => WrapperComponentByVariant[variant ?? ButtonVariant.primary],
     [variant],
   );
 
   const className = useMemo(
     () =>
-      [active ? "active" : null, buttonProps.className || null]
+      [active ? "active" : null, buttonProps.className ?? null]
         .filter(isNonNull)
         .join(" "),
     [buttonProps.className, active],

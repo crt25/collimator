@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { adminUserToken, ensureUserExists, getApp } from "./helper";
 import { classes, defaultAdmin, defaultTeacher, users } from "test/seed";
+import { adminUserToken, ensureUserExists, getApp } from "./helper";
 
 const checkClassesInList = (expectedClasses, returnedClasses): void => {
   expect(returnedClasses).toHaveLength(expectedClasses.length);

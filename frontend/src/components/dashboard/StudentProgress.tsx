@@ -1,20 +1,20 @@
-import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
-import SwrContent from "../SwrContent";
 import { Accordion } from "react-bootstrap";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { SessionTask } from "@/api/collimator/models/sessions/session-task";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
-import MultiSwrContent from "../MultiSwrContent";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
-import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useFileHash } from "@/hooks/useFileHash";
 import { Language } from "@/types/app-iframe-message/languages";
+import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import MultiSwrContent from "../MultiSwrContent";
+import SwrContent from "../SwrContent";
 
 type Progress = ExistingSolution;
 type ProgressByTask = { [taskId: number]: Progress };

@@ -32,6 +32,9 @@ export const test = baseTest.extend({
               `playwright_coverage_${generateUUID()}.json`,
             ),
             coverageJSON,
+            {
+              encoding: "utf-8",
+            },
           );
       },
     );

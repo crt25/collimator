@@ -7,6 +7,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { ApiForbiddenResponse, ApiOkResponse } from "@nestjs/swagger";
+import { User } from "@prisma/client";
+import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticationService } from "./authentication.service";
 import { AuthenticationRequestDto } from "./dto/authentication-request.dto";
 import { AuthenticationResponseDto } from "./dto/authentication-response.dto";
@@ -14,8 +16,6 @@ import { Public } from "./role.decorator";
 import { StudentAuthenticationRequestDto } from "./dto/student-authentication-request.dto";
 import { StudentAuthenticationResponseDto } from "./dto/student-authentication-response.dto";
 import { AuthenticatedUser } from "./authenticated-user.decorator";
-import { User } from "@prisma/client";
-import { AuthorizationService } from "../authorization/authorization.service";
 import { PublicKeyDto } from "./dto/public-key.dto";
 
 @Controller("authentication")

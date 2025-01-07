@@ -1,13 +1,13 @@
 // adapted from https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extensions/scratch3_music/index.js
 
 import VM from "scratch-vm";
+import { defineMessages } from "react-intl";
 import { ExtensionId, ExtensionMetadata, ExtensionUtilType } from "..";
 import { BlockType } from "../../blocks/block-type";
 import { ArgumentType } from "../../blocks/argument-type";
+import { formatMessage } from "../../i18n";
 import testIconWhite from "./test-icon-white.svg";
 import testIconBlack from "./test-icon-black.svg";
-import { defineMessages } from "react-intl";
-import { formatMessage } from "../../i18n";
 
 const messages = defineMessages({
   categoryName: {

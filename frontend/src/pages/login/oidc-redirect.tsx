@@ -1,14 +1,14 @@
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
-import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
-import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
-import { authenticate } from "@/utilities/authentication/openid-connect";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
+import { authenticate } from "@/utilities/authentication/openid-connect";
+import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
+import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
+import PageHeader from "@/components/PageHeader";
+import Header from "@/components/Header";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { UserRole } from "@/types/user/user-role";
 import { useAuthenticateUser } from "@/api/collimator/hooks/authentication/useAuthenticateUser";
@@ -18,6 +18,8 @@ import {
 } from "@/api/collimator/generated/models";
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
+
+const logModule = "[OpenIdConnectRedirect]";
 
 const getNameFromUserInfo = (
   userInfo: UserInfoResponse,
@@ -116,7 +118,7 @@ const OpenIdConnectRedirect = () => {
           setErrorRedirectPath(e.redirectPath);
         }
 
-        console.error("Authentication failed", e);
+        console.error(`${logModule} Authentication failed`, e);
         setAuthenticationFailed(true);
       });
     // we only want to run this once when the component is mounted

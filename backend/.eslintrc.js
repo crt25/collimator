@@ -15,6 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
+  plugins: ["import"],
   rules: {
     "@typescript-eslint/no-unused-vars": [
       "error",
@@ -24,5 +25,8 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+    }]
   },
 };

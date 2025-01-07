@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
-import { invalidateParameterizedKey } from "../helpers";
 import { useCallback } from "react";
+import { invalidateParameterizedKey } from "../helpers";
 import { getUsersControllerFindAllV0Url } from "../../generated/endpoints/users/users";
 
 export const useRevalidateUserList = (): (() => void) => {

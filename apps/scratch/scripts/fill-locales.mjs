@@ -36,15 +36,23 @@ for (const locale of locales) {
 
   let messages = JSON.parse(fs.readFileSync(filename));
 
+  const deprecatedMessages = Object.fromEntries(
+    Object.entries(messages).filter(
+      ([messageKey, _]) => !defaultMessagesKeys.includes(messageKey),
+    ),
+  ).map(([messageKey, messageValue]) => [
+    `DEPRECATED: ${messageKey}`,
+    messageValue,
+  ]);
+
   // only keep the keys present in the default locale
-  messages = Object.fromEntries(
-    defaultMessagesKeys.map((key) => [
+  messages = Object.fromEntries([
+    ...deprecatedMessages,
+    ...defaultMessagesKeys.map((key) => [
       key,
       messages[key] || defaultMessages[key],
     ]),
-  );
+  ]);
 
   fs.writeFileSync(filename, JSON.stringify(messages, undefined, 2));
 }
-
-console.log();

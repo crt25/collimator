@@ -4,6 +4,8 @@ import { plainToInstance } from "class-transformer";
 import { AuthenticationProvider, PrismaClient, User } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
+import { mockConfigModule } from "src/utilities/test/mock-config.service";
+import { fromQueryResults } from "../helpers";
 import { ClassesController } from "./classes.controller";
 import { ClassesService, ClassExtended } from "./classes.service";
 import {
@@ -14,8 +16,6 @@ import {
   ExistingClassExtendedDto,
   ExistingClassWithTeacherDto,
 } from "./dto";
-import { fromQueryResults } from "../helpers";
-import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
 describe("ClassesController", () => {
   let controller: ClassesController;

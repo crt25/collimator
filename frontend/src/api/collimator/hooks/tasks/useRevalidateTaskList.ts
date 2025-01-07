@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
-import { invalidateParameterizedKey } from "../helpers";
 import { useCallback } from "react";
+import { invalidateParameterizedKey } from "../helpers";
 import { getTasksControllerFindAllV0Url } from "../../generated/endpoints/tasks/tasks";
 
 export const useRevalidateTaskList = (): (() => void) => {

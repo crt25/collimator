@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { AxesCriterionType, getAxisAnalysisValue } from "../axes";
-import { getGroupName } from "./useManualGrouping";
 import { mean } from "../criteria/statistics/mean";
+import { getGroupName } from "./useManualGrouping";
 import { AutomaticGroup, FilteredAnalysis } from "./types";
 import { DistanceType } from "./ast-distance/distance-type";
 import { getAutomaticGroups } from "./automatic-grouping";

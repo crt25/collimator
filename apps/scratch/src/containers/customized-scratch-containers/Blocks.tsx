@@ -49,10 +49,9 @@ import {
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
-import ExtensionLibrary from "./ExtensionLibrary";
+import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import {
   addBlockConfigButtons,
   updateSingleBlockConfigButton,
@@ -72,6 +71,7 @@ import {
   isWithinStack,
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
+import ExtensionLibrary from "./ExtensionLibrary";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
@@ -601,7 +601,27 @@ class Blocks extends React.Component<Props, State> {
   }
 
   onProjectLoaded = () => {
-    this.getWorkspace().scrollCenter();
+    const workspace = this.getWorkspace();
+
+    const blockId =
+      workspace
+        .getAllBlocks()
+        // @ts-expect-error The typing is not correct for getAllBlocks
+        .find((b) => b["type"] === "event_whenflagclicked")?.id ??
+      // @ts-expect-error The typing is not correct for getAllBlocks
+      workspace.getAllBlocks()?.id;
+
+    if (blockId) {
+      workspace.centerOnBlock(blockId);
+    } else {
+      workspace.zoomToFit();
+    }
+
+    if (this.blocks && !this.props.canEditTask) {
+      // the project is frequently reloaded in dev mode,
+      // so we need to re-freeze the blocks on reload.
+      freezeTaskBlocks(this.props.vm, this.blocks);
+    }
   };
 
   updateToolboxBlockValue(id: string, value: string) {
