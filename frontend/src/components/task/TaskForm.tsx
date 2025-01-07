@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
 import styled from "@emotion/styled";
+import { useRouter } from "next/router";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -141,14 +142,10 @@ const TaskForm = ({
     cannotNavigate.current = isDirty;
   }, [isDirty]);
 
+  const router = useRouter();
+
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
-      // store the current value of canNavigate
-      const canNavigateNow = cannotNavigate.current;
-
-      // allow navigation in the processing of the form submission
-      cannotNavigate.current = false;
-
       let data: TaskFormValues;
 
       handleSubmit((v: TaskFormValues) => {
@@ -156,8 +153,8 @@ const TaskForm = ({
         return onSubmit(v);
       })(e)
         .then(() => {
-          // restore the value of canNavigate
-          cannotNavigate.current = canNavigateNow;
+          // allow navigation after the task has been saved
+          cannotNavigate.current = false;
 
           // reset the form to the updated values
           // and mark the blob as not changed
@@ -174,6 +171,8 @@ const TaskForm = ({
             />,
             { position: "top-center" },
           );
+
+          router.back();
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
@@ -186,7 +185,7 @@ const TaskForm = ({
           );
         });
     },
-    [handleSubmit, onSubmit, reset],
+    [handleSubmit, onSubmit, reset, router],
   );
 
   const blob = watch("blob") as Blob | undefined | null;

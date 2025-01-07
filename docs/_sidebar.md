@@ -12,7 +12,6 @@
   - [General AST](data-analyzer/ast.md)
   - [G-AST Converters](data-analyzer/converters.md)
 
-- Scratch
+- Quality Assurance
 
-  - [.sb3 Format](scratch/sb3.md)
-  - [Modifications](scratch/modifications.md)
+  - [End-to-End Tests](quality-assurance/e2e.md)

@@ -42,7 +42,7 @@ class DecryptionError extends Error {
   }
 }
 
-class NoBockupPasswordError extends Error {
+class NoBackupPasswordError extends Error {
   constructor() {
     super("No backup password provided");
   }
@@ -89,7 +89,7 @@ const UserSignIn = ({
 
       if (keyPair === null) {
         if (!userProvidedBackupPassword) {
-          throw new NoBockupPasswordError();
+          throw new NoBackupPasswordError();
         }
 
         // this is the first time the teacher is logging in, create a new key pair
@@ -226,7 +226,7 @@ const UserSignIn = ({
             type: "custom",
             message: intl.formatMessage(messages.decryptionFailed),
           });
-        } else if (e instanceof NoBockupPasswordError) {
+        } else if (e instanceof NoBackupPasswordError) {
           setError("backupPassword", {
             type: "custom",
             message: intl.formatMessage(messages.backupPasswordRequired),

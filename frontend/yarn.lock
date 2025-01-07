@@ -6980,7 +6980,6 @@ __metadata:
     nyc: "npm:^17.1.0"
     openid-client: "npm:^6.1.3"
     orval: "npm:^7.2.0"
-    parse-multipart-data: "npm:^1.5.0"
     patternomaly: "npm:^1.3.2"
     playwright-test-coverage: "npm:^1.2.12"
     prettier: "npm:^3.3.3"
@@ -12737,13 +12736,6 @@ __metadata:
     json-parse-even-better-errors: "npm:^2.3.0"
     lines-and-columns: "npm:^1.1.6"
   checksum: 10c0/77947f2253005be7a12d858aedbafa09c9ae39eb4863adf330f7b416ca4f4a08132e453e08de2db46459256fb66afaac5ee758b44fe6541b7cdaf9d252e59585
-  languageName: node
-  linkType: hard
-
-"parse-multipart-data@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "parse-multipart-data@npm:1.5.0"
-  checksum: 10c0/d2139ee1391cea6b9ec1dc6363ddc602b7d02b1e41a54dcbfc5fc63c13a88f372170fa4971a8a3a792ea034aef0517f555732bcfd0eed2411c0d86fc1e2278c7
   languageName: node
   linkType: hard
 

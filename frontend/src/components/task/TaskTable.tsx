@@ -52,6 +52,10 @@ const messages = defineMessages({
   },
 });
 
+const taskTitleTemplate = (rowData: ExistingTask) => (
+  <span data-testid={`task-${rowData.id}-title`}>{rowData.title}</span>
+);
+
 const TaskTable = () => {
   const intl = useIntl();
   const router = useRouter();
@@ -164,6 +168,7 @@ const TaskTable = () => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={taskTitleTemplate}
             />
             <Column
               header={intl.formatMessage(messages.actionsColumn)}

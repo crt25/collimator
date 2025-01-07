@@ -17,8 +17,6 @@ next-env.d.ts
 
 # playwright coverage
 /coverage-pw
-
-# playwright component testing coverage
 /coverage-ct
 
 # storybook coverage
@@ -28,8 +26,10 @@ next-env.d.ts
 
 /playwright-report/
 /playwright/.cache
-/playwright/.auth/**/*
-!/playwright/.auth/.gitkeep
+
+
 /blob-report/
 
 *storybook.log
+
+.env.test

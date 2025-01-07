@@ -47,7 +47,7 @@ export class AuthenticationGateway
       }
     } catch (e) {
       console.info(
-        "the user tried to connect with a wrong token - treat as not authenticated",
+        "A user tried to connect with invalid token, we treat them as not authenticated",
         e,
       );
     }
