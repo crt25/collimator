@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ChartSplit } from "../chartjs-plugins/select";
 import { AxesCriterionType } from "../axes";
 import { Category } from "../category";
+import { ChartSplit } from "../chartjs-plugins";
 import { useAutomaticGrouping } from "./useAutomaticGrouping";
 import { useManualGrouping } from "./useManualGrouping";
 import {

@@ -316,7 +316,7 @@ const CodeComparison = ({
       .filter(
         (s) =>
           selectedRightGroup === defaultGroupValue ||
-          selectedLeftGroup === selectedGroupValue ||
+          selectedRightGroup === selectedGroupValue ||
           selectedRightGroup === s.groupKey,
       )
       .flatMap((point) =>

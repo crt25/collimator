@@ -25,6 +25,12 @@ import {
   AnnotationPluginOptions,
   EventContext,
 } from "chartjs-plugin-annotation";
+import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { StudentName } from "@/components/encryption/StudentName";
+import { Colors } from "@/constants/colors";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { TaskType } from "@/api/collimator/generated/models";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
@@ -42,12 +48,6 @@ import {
   AnalyzerStateActionType,
 } from "./Analyzer.state";
 import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
-import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
-import { StudentName } from "@/components/encryption/StudentName";
-import { Colors } from "@/constants/colors";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { TaskType } from "@/api/collimator/generated/models";
 
 type AdditionalChartData = {
   groups: {
