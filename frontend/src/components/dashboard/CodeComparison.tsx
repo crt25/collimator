@@ -5,6 +5,16 @@ import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
+import { getStudentNickname } from "@/utilities/student-name";
+import { TaskType } from "@/api/collimator/generated/models";
+import { decodeBase64 } from "@/utilities/crypto/base64";
+import {
+  AuthenticationContext,
+  AuthenticationContextType,
+} from "@/contexts/AuthenticationContext";
+import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
+import { compareLabels } from "@/utilities/comparisons";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import Select from "../form/Select";
@@ -17,22 +27,17 @@ import {
   AnalyzerStateActionType,
   defaultGroupValue,
   defaultSolutionValue,
+  selectedGroupValue,
 } from "./Analyzer.state";
-import { getStudentNickname } from "@/utilities/student-name";
-import { TaskType } from "@/api/collimator/generated/models";
-import { decodeBase64 } from "@/utilities/crypto/base64";
-import {
-  AuthenticationContext,
-  AuthenticationContextType,
-} from "@/contexts/AuthenticationContext";
-import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
-import { compareLabels } from "@/utilities/comparisons";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 const messages = defineMessages({
   defaultGroupOption: {
     id: "CodeComparison.defaultOption",
     defaultMessage: "Group: All students",
+  },
+  selectedSolutions: {
+    id: "CodeComparison.selectedSolutions",
+    defaultMessage: "Group: Selected students",
   },
   groupLabelPrefix: {
     id: "CodeComparison.groupPrefix",
@@ -171,7 +176,8 @@ const findAssignment = (
     .map((dataPoint) => {
       if (
         dataPoint.groupKey === selectedGroup ||
-        defaultGroupValue === selectedGroup
+        defaultGroupValue === selectedGroup ||
+        selectedGroupValue === selectedGroup
       ) {
         const analysis = dataPoint.analyses.find(
           (analysis) => analysis.solutionId === selectedSolutionId,
@@ -195,6 +201,7 @@ const CodeComparison = ({
   taskId,
   taskType,
   state: {
+    selectedSolutionIds,
     comparison: {
       selectedLeftGroup,
       selectedLeftSolution,
@@ -234,6 +241,10 @@ const CodeComparison = ({
         label: intl.formatMessage(messages.defaultGroupOption),
         value: defaultGroupValue,
       },
+      {
+        label: intl.formatMessage(messages.selectedSolutions),
+        value: selectedGroupValue,
+      },
       ...groups
         .map((g) => ({
           label: intl.formatMessage(messages.groupLabelPrefix) + g.groupLabel,
@@ -269,9 +280,18 @@ const CodeComparison = ({
       .filter(
         (s) =>
           selectedLeftGroup === defaultGroupValue ||
-          s.groupKey === selectedLeftGroup,
+          selectedLeftGroup === selectedGroupValue ||
+          selectedLeftGroup === s.groupKey,
       )
-      .flatMap((point) => point.analyses);
+      .flatMap((point) =>
+        point.analyses.filter(
+          (analysis) =>
+            // either we are not looking for the selected solutions
+            selectedLeftGroup !== selectedGroupValue ||
+            // or the solution is manually selected
+            selectedSolutionIds.includes(analysis.solutionId),
+        ),
+      );
 
     getOptions(authContext, analyses, bookmarkedSolutionIds).then((options) => {
       setLeftSolutionOptions([
@@ -288,6 +308,7 @@ const CodeComparison = ({
     selectedLeftGroup,
     authContext,
     bookmarkedSolutionIds,
+    selectedSolutionIds,
   ]);
 
   useEffect(() => {
@@ -295,9 +316,18 @@ const CodeComparison = ({
       .filter(
         (s) =>
           selectedRightGroup === defaultGroupValue ||
-          s.groupKey === selectedRightGroup,
+          selectedLeftGroup === selectedGroupValue ||
+          selectedRightGroup === s.groupKey,
       )
-      .flatMap((point) => point.analyses);
+      .flatMap((point) =>
+        point.analyses.filter(
+          (analysis) =>
+            // either we are not looking for the selected solutions
+            selectedRightGroup !== selectedGroupValue ||
+            // or the solution is manually selected
+            selectedSolutionIds.includes(analysis.solutionId),
+        ),
+      );
 
     getOptions(authContext, analyses, bookmarkedSolutionIds).then((options) => {
       setRightSolutionOptions([
@@ -314,6 +344,7 @@ const CodeComparison = ({
     selectedRightGroup,
     authContext,
     bookmarkedSolutionIds,
+    selectedSolutionIds,
   ]);
 
   useEffect(() => {
@@ -324,8 +355,10 @@ const CodeComparison = ({
       // and therefore undefined if it no longer exists
       if (leftDataPoint) {
         // the solution may now be in a different group -> select that unless we previously selected
-        // the default group (all)
-        if (selectedLeftGroup !== defaultGroupValue) {
+        // the default group (all) OR the group of selected solutions
+        if (
+          ![defaultGroupValue, selectedGroupValue].includes(selectedLeftGroup)
+        ) {
           dispatch({
             type: AnalyzerStateActionType.setSelectedLeftGroup,
             groupKey: leftDataPoint.dataPoint.groupKey,
@@ -351,7 +384,9 @@ const CodeComparison = ({
       const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
 
       if (rightDataPoint) {
-        if (selectedRightGroup !== defaultGroupValue) {
+        if (
+          ![defaultGroupValue, selectedGroupValue].includes(selectedRightGroup)
+        ) {
           dispatch({
             type: AnalyzerStateActionType.setSelectedRightGroup,
             groupKey: rightDataPoint.dataPoint.groupKey,

@@ -4,7 +4,8 @@ import { FilterCriterion } from "./filter";
 import { ChartSplit, SplitType } from "./chartjs-plugins";
 
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
-export const defaultGroupValue = "null";
+export const defaultGroupValue = "__ALL_STUDENTS__";
+export const selectedGroupValue = "__SELECTED_SOLUTIONS__";
 export const defaultSolutionValue = -1;
 
 export enum AnalyzerStateActionType {

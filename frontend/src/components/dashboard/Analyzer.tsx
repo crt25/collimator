@@ -185,7 +185,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         // let the user choose
         dispatch({
           type: AnalyzerStateActionType.setClickedSolution,
-          selectedSolutionId: { groupKey, solutionId },
+          clickedSolutionId: { groupKey, solutionId },
         });
       }
     },
@@ -336,7 +336,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         onHide={() =>
           dispatch({
             type: AnalyzerStateActionType.setClickedSolution,
-            selectedSolutionId: undefined,
+            clickedSolutionId: undefined,
           })
         }
         data-testid="solution-selection-modal"
@@ -361,7 +361,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
                 dispatch({
                   type: AnalyzerStateActionType.setClickedSolution,
-                  selectedSolutionId: undefined,
+                  clickedSolutionId: undefined,
                 });
               }
             }}
@@ -381,7 +381,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
                 dispatch({
                   type: AnalyzerStateActionType.setClickedSolution,
-                  selectedSolutionId: undefined,
+                  clickedSolutionId: undefined,
                 });
               }
             }}
