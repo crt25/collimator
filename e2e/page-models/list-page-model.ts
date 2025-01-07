@@ -38,6 +38,8 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-create-button`).click();
   }
 
+  abstract viewItem(itemId: number | string): Promise<void>;
+
   async deleteItem(itemId: number | string): Promise<void> {
     await this.getItemActionsDropdownButton(itemId).click();
     await this.getDeleteItemButton(itemId).click();

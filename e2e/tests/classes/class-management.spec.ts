@@ -1,6 +1,6 @@
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
-import { classList } from "../../selectors";
+import { classList, classStudentList } from "../../selectors";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 import { createClass } from "./class-management";
@@ -66,13 +66,45 @@ test.describe("class management", () => {
     });
   });
 
+  test.describe("/class/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await ClassListPageModel.create(page);
+
+      await list.viewItem(newClassId);
+      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+    });
+
+    test("shows class details", async ({ page }) => {
+      await expect(page.getByTestId("class-details")).toHaveCount(1);
+    });
+  });
+
+  test.describe("/class/{id}/students", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await ClassListPageModel.create(page);
+
+      await list.viewItem(newClassId);
+      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+      await page.getByTestId("tab-class-students").click();
+      await page.waitForURL(`${baseURL}/class/${newClassId}/students`);
+    });
+
+    test("renders the student members", async ({ page }) => {
+      await expect(
+        page
+          .locator(classStudentList)
+          .locator("tbody tr [data-testid^='student-']"),
+      ).toHaveCount(0);
+    });
+  });
+
   test.describe("/class", () => {
     test.beforeEach(async ({ page }) => {
       await ClassListPageModel.create(page);
     });
 
     test("renders the fetched items", async ({ page }) => {
-      expect(page.locator(classList).locator("tbody tr")).toHaveCount(1);
+      await expect(page.locator(classList).locator("tbody tr")).toHaveCount(1);
     });
 
     test("can delete listed items", async ({ page: pwPage }) => {

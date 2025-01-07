@@ -103,7 +103,9 @@ test.describe("session management", () => {
       });
 
       test("renders the fetched items", async ({ page }) => {
-        expect(page.locator(sessionList).locator("tbody tr")).toHaveCount(1);
+        await expect(page.locator(sessionList).locator("tbody tr")).toHaveCount(
+          1,
+        );
       });
 
       test("can delete listed items", async ({ page: pwPage }) => {

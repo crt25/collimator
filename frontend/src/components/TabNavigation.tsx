@@ -27,6 +27,7 @@ export interface NavigationTab<T = undefined> {
   url: string;
   title: (intl: IntlShape, args: T) => string;
   isShown?: (authContext: AuthenticationContextType) => boolean;
+  testId?: string;
 }
 
 // regex to remove both leading & trailing slashes
@@ -89,6 +90,7 @@ const TabNavigation = <T extends unknown = undefined>({
             role="button"
             tabIndex={0}
             href={tab.url}
+            data-testid={tab.testId}
           >
             {tab.title(intl, tabTitleArguments as T)}
           </Link>

@@ -60,13 +60,26 @@ test.describe("task management", () => {
     });
   });
 
+  test.describe("/task/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await TaskListPageModel.create(page);
+
+      await list.viewItem(newTaskId);
+      await page.waitForURL(`${baseURL}/task/${newTaskId}/detail`);
+    });
+
+    test("renders the task", async ({ page }) => {
+      await expect(page.locator("iframe")).toHaveCount(1);
+    });
+  });
+
   test.describe("/task", () => {
     test.beforeEach(async ({ page }) => {
       await TaskListPageModel.create(page);
     });
 
     test("renders the fetched items", async ({ page }) => {
-      expect(page.locator(taskList).locator("tbody tr")).toHaveCount(1);
+      await expect(page.locator(taskList).locator("tbody tr")).toHaveCount(1);
     });
 
     test("can delete listed items", async ({ page: pwPage }) => {

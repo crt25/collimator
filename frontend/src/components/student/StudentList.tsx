@@ -19,7 +19,11 @@ const messages = defineMessages({
 
 const nameTemplate = (student: ClassStudent) => {
   return (
-    <StudentName pseudonym={student.pseudonym} keyPairId={student.keyPairId} />
+    <StudentName
+      pseudonym={student.pseudonym}
+      keyPairId={student.keyPairId}
+      testId={`student-${student.id}-name`}
+    />
   );
 };
 
@@ -27,7 +31,7 @@ const StudentList = ({ klass }: { klass: ExistingClassExtended }) => {
   const intl = useIntl();
 
   return (
-    <StudentListWrapper data-testid="user-list">
+    <StudentListWrapper data-testid="student-list">
       <DataTable
         value={klass.students}
         lazy
