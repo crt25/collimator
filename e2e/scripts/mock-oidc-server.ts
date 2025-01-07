@@ -19,7 +19,7 @@ const getPath = (url: string): string => {
 
 const getUrl = (request: express.Request, fallback: string): string =>
   (request.headers["x-forwarded-url"] as string | undefined) ??
-  `http://${request.headers["host"]}` ??
+  (request.headers["host"] && `http://${request.headers["host"]}`) ??
   fallback;
 
 (async (): Promise<void> => {
