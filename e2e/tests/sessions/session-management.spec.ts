@@ -1,13 +1,13 @@
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
-import { sessionList } from "../../selectors";
+import { progressList, sessionList } from "../../selectors";
 import { createClass } from "../classes/class-management";
 import { routeDummyApp } from "../task/helpers";
 import { createTask } from "../task/task-management";
 import { SessionFormPageModel } from "./session-form-page-model";
 import { SessionListPageModel } from "./session-list-page-model";
 import { createSession } from "./session-management";
-import { TaskType } from "@/api/collimator/generated/models";
+import checkXPositionWithAssertion from "./tasks/check-x-position-with-assertion";
 
 const newClassName = "new class name";
 let newClassId: number = -1;
@@ -35,7 +35,7 @@ test.describe("session management", () => {
       await createTask(baseURL!, page, {
         title: taskTitle,
         description: "A description.",
-        type: TaskType.SCRATCH,
+        template: checkXPositionWithAssertion,
       }).then((r) => {
         taskIds.push(r.id);
       });
@@ -94,6 +94,21 @@ test.describe("session management", () => {
         await expect(list.getTitle(newSessionId)).toHaveText(
           updatedSessionName,
         );
+      });
+    });
+
+    test.describe("/class/{id}/session/{id}/progress", () => {
+      test.beforeEach(async ({ baseURL, page }) => {
+        const list = await SessionListPageModel.create(page);
+
+        await list.viewItem(newSessionId);
+        await page.waitForURL(
+          `${baseURL}/class/${newClassId}/session/${newSessionId}/progress`,
+        );
+      });
+
+      test("renders the progress list", async ({ page }) => {
+        await expect(page.locator(progressList)).toHaveCount(1);
       });
     });
 

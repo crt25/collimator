@@ -211,7 +211,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                       `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
                     );
                   }}
-                  data-testid={`session-${rowData.id}-delete-button`}
+                  data-testid={`session-${rowData.id}-copy-session-link-button`}
                 >
                   {intl.formatMessage(messages.copySessionLink)}
                 </Dropdown.Item>

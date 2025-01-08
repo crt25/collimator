@@ -23,17 +23,17 @@ const tabs: NavigationTab[] = [
   {
     url: "detail",
     title: (intl) => intl.formatMessage(messages.classTab),
-    testId: "tab-class-details",
+    testId: "class-details-tab",
   },
   {
     url: "students",
     title: (intl) => intl.formatMessage(messages.studentsTab),
-    testId: "tab-class-students",
+    testId: "class-students-tab",
   },
   {
     url: "session",
     title: (intl) => intl.formatMessage(messages.sesstionsTab),
-    testId: "tab-class-sessions",
+    testId: "class-sessions-tab",
   },
 ];
 

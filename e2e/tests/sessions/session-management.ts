@@ -15,6 +15,7 @@ export const createSession = async (
   },
 ): Promise<{
   id: number;
+  taskIds: number[];
 }> => {
   await pwPage.goto(`${baseUrl}/class/${session.classId}/session`);
 
@@ -87,5 +88,5 @@ export const createSession = async (
 
   const newSessionId = await list.getIdByTitle(session.name);
 
-  return { id: newSessionId };
+  return { id: newSessionId, taskIds: reorderedSelectedTasks };
 };

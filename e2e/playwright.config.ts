@@ -74,10 +74,6 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     },
   ],
 
-  use: {
-    scratchURL: "http://localhost:3101/scratch",
-  },
-
   // timeout per test
   timeout: 30 * 1000,
 

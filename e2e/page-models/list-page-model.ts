@@ -28,6 +28,12 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-delete-button`);
   }
 
+  getSessionLinkButton(itemId: number | string) {
+    return this.page.getByTestId(
+      `${this.itemPrefix}-${itemId}-copy-session-link-button`,
+    );
+  }
+
   editItem(itemId: number | string): Promise<void> {
     return this.page
       .getByTestId(`${this.itemPrefix}-${itemId}-edit-button`)
@@ -49,5 +55,16 @@ export abstract class ListPageModel {
       .locator(confirmationModal)
       .locator(confirmationModalConfirmButton)
       .click();
+  }
+
+  async getSessionLink(itemId: number | string): Promise<string> {
+    await this.page
+      .context()
+      .grantPermissions(["clipboard-read", "clipboard-write"]);
+
+    await this.getItemActionsDropdownButton(itemId).click();
+    await this.getSessionLinkButton(itemId).click();
+
+    return this.page.evaluate(() => navigator.clipboard.readText());
   }
 }

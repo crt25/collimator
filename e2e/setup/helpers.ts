@@ -18,6 +18,10 @@ export type PostgresConfig = {
   database: string;
 };
 
+export enum CrtApp {
+  scratch = "scratch",
+}
+
 export const portLockDirectory = "playwright/.port";
 
 export const setupBackendPort = 3999;
@@ -46,6 +50,17 @@ export const getFrontendPath = (): string => {
   }
 
   return [...segments.slice(0, e2eIdx), "frontend"].join(path.sep);
+};
+
+export const getAppPath = (app: CrtApp): string => {
+  const segments = process.cwd().split(path.sep);
+  const e2eIdx = segments.lastIndexOf("e2e");
+
+  if (e2eIdx === -1) {
+    throw new Error("Could not find e2e segment in path");
+  }
+
+  return [...segments.slice(0, e2eIdx), "apps", app].join(path.sep);
 };
 
 export const getE2EPath = (): string => {
@@ -135,9 +150,25 @@ export const buildFrontend = (
       NEXT_PUBLIC_BACKEND_HOSTNAME: config.backendHostname,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: config.oidcClientId,
-      NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "http://localhost:3101/scratch",
+      NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "/scratch",
     },
     cwd: getFrontendPath(),
+    shell: true,
+    stdio: ["ignore", stdout, stderr],
+  });
+};
+
+export const buildApp = (
+  app: CrtApp,
+  stdout: "pipe" | "ignore",
+  stderr: "pipe" | "ignore",
+): void => {
+  spawnSync("yarn", ["build"], {
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+    },
+    cwd: getAppPath(app),
     shell: true,
     stdio: ["ignore", stdout, stderr],
   });

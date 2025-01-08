@@ -1,6 +1,7 @@
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { taskList } from "../../selectors";
+import checkXPositionWithAssertion from "../sessions/tasks/check-x-position-with-assertion";
 import { TaskListPageModel } from "./task-list-page-model";
 import { routeDummyApp } from "./helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
@@ -9,7 +10,6 @@ import { TaskType } from "@/api/collimator/generated/models";
 
 const newTaskTitle = "new task name";
 const newTaskDecription = "new task description";
-const newTaskType = TaskType.SCRATCH;
 let newTaskId: number = -1;
 
 const updatedTaskTitle = "updated task name";
@@ -30,7 +30,7 @@ test.describe("task management", () => {
       newTaskId = await createTask(baseURL!, pwPage, {
         title: newTaskTitle,
         description: newTaskDecription,
-        type: newTaskType,
+        template: checkXPositionWithAssertion,
       }).then((r) => r.id);
     });
   });

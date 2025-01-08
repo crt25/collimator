@@ -797,9 +797,10 @@ const Analysis = ({
           value={state.yAxis}
           alwaysShow
           noMargin
+          data-testid="analysis-y-axis"
         />
       </YAxisSelector>
-      <ChartWrapper>
+      <ChartWrapper data-testid="analysis-chart">
         <Chart type="bubble" plugins={plugins} />
         <XAxis />
         <YAxis />
@@ -826,6 +827,7 @@ const Analysis = ({
           value={state.xAxis}
           alwaysShow
           noMargin
+          data-testid="analysis-x-axis"
         />
       </XAxisSelector>
     </AnalysisWrapper>

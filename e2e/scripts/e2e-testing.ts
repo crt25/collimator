@@ -1,6 +1,5 @@
 import { writeFileSync } from "fs";
 import {
-  buildFrontend,
   resetDatabase,
   setupFrontendPort,
   startBackend,
@@ -123,17 +122,6 @@ const main = async (): Promise<void> => {
       path: "/user",
     },
   ]);
-
-  buildFrontend(
-    {
-      // use a relative path s.t. we don't have to rebuild the frontend for each test
-      backendHostname: "",
-      oidcUrl: process.env.OIDC_MOCK_SERVER_PROXY_URL,
-      oidcClientId,
-    },
-    isDebug ? "pipe" : "ignore",
-    "pipe",
-  );
 
   const frontendProcess = startFrontendWithBackendProxy({
     port: setupFrontendPort,

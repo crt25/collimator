@@ -83,6 +83,8 @@ const TaskModal = ({
       return;
     }
 
+    setAppLoaded(false);
+
     const task = await readSingleFileFromDisk();
 
     await embeddedApp.current.sendRequest({
@@ -92,6 +94,8 @@ const TaskModal = ({
         language: intl.locale as Language,
       },
     });
+
+    setAppLoaded(true);
   }, [intl.locale]);
 
   const onExportTask = useCallback(async () => {

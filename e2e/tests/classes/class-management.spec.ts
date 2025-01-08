@@ -85,7 +85,7 @@ test.describe("class management", () => {
 
       await list.viewItem(newClassId);
       await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
-      await page.getByTestId("tab-class-students").click();
+      await page.getByTestId("class-students-tab").click();
       await page.waitForURL(`${baseURL}/class/${newClassId}/students`);
     });
 

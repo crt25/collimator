@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
 import { expect } from "../../helpers";
+import { TaskTemplateWithSolutions } from "../sessions/tasks/task-template-with-solutions";
 import { TaskFormPageModel } from "./task-form-page-model";
 import { TaskListPageModel } from "./task-list-page-model";
-import { TaskType } from "@/api/collimator/generated/models";
 
 export const createTask = async (
   baseUrl: string,
@@ -10,7 +10,7 @@ export const createTask = async (
   task: {
     title: string;
     description: string;
-    type: TaskType;
+    template: TaskTemplateWithSolutions;
   },
 ): Promise<{
   id: number;
@@ -24,8 +24,19 @@ export const createTask = async (
 
   await page.inputs.title.fill(task.title);
   await page.inputs.description.fill(task.description);
-  await page.inputs.type.selectOption(task.type);
+  await page.inputs.type.selectOption(task.template.type);
   await page.openEditTaskModal();
+
+  const fileChooserPromise = pwPage.waitForEvent("filechooser");
+  await page.importTask();
+
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles({
+    name: "task template",
+    mimeType: task.template.mimeType.template,
+    buffer: await task.template.template(),
+  });
+
   await page.saveTask();
   await page.submitButton.click();
 
