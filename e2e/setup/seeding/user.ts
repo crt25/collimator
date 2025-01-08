@@ -1,17 +1,23 @@
-import { JsonWebKey, subtle } from "crypto";
+import { webcrypto, subtle } from "crypto";
 const crypto = subtle;
 
 export const getPublicKeyFingerprint = async (
-  publicKey: JsonWebKey,
+  publicKey: webcrypto.JsonWebKey,
 ): Promise<string> =>
   Buffer.from(
     await crypto.digest(
       "SHA-512",
-      new TextEncoder().encode(JSON.stringify(publicKey)),
+      new TextEncoder().encode(
+        JSON.stringify(
+          publicKey,
+          // sort the keys to ensure a consistent fingerprint
+          Object.keys(publicKey).toSorted(),
+        ),
+      ),
     ),
   ).toString("base64url");
 
-const adminPublicKey: JsonWebKey = {
+const adminPublicKey: webcrypto.JsonWebKey = {
   key_ops: [],
   ext: true,
   kty: "EC",
@@ -20,13 +26,14 @@ const adminPublicKey: JsonWebKey = {
   crv: "P-521",
 };
 
-const adminPrivateKey: JsonWebKey = {
+const adminPrivateKey: webcrypto.JsonWebKey = {
   ...adminPublicKey,
   key_ops: ["deriveKey"],
   d: "Afi3NZX8Bn_tAmuYRdyoPnK4Rsqu11ef3K6DpZTKio7dMBR3NyPI9FZNKlOJDb1J_RbV9QxXejCqUvaFIbMKdQD0",
 };
 
 export const adminUser = {
+  id: 1,
   oidcSub: "1234",
   email: "jane@doe.com",
   name: "Jane Doe",
@@ -38,6 +45,7 @@ export const adminUser = {
 };
 
 export const newTeacher = {
+  id: 2,
   oidcSub: "5678",
   email: "richard@feynman.com",
   name: "Richard Feynman",

@@ -1,10 +1,10 @@
+import { getRandomValues, randomBytes, subtle } from "crypto";
 import { PrismaClient } from "@prisma/client";
 import {
   getPublicKeyFingerprint,
   registeredUsers,
   unregisteredUsers,
 } from "@e2e-data/user";
-import { getRandomValues, randomBytes, subtle } from "crypto";
 const crypto = subtle;
 
 const symmetricKeyAlgo = "AES-GCM";
@@ -23,6 +23,7 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
         JSON.stringify(user.privateKey),
       );
       const publicKey = JSON.stringify(user.publicKey);
+
       const publicKeyFingerprint = await getPublicKeyFingerprint(
         user.publicKey,
       );
@@ -92,6 +93,7 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
 
       return prisma.user.create({
         data: {
+          id: user.id,
           oidcSub: user.oidcSub,
           email: user.email,
           name: user.name,
@@ -115,6 +117,7 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
     ...unregisteredUsers.map((user) =>
       prisma.user.create({
         data: {
+          id: user.id,
           oidcSub: user.oidcSub,
           email: user.email,
           name: user.name,
