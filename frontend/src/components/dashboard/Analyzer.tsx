@@ -23,6 +23,7 @@ import CodeComparison from "./CodeComparison";
 import { FilteredAnalysis } from "./hooks/types";
 import {
   allSubtasks,
+  AnalyzerState,
   AnalyzerStateActionType,
   analyzerStateReducer,
   defaultGroupValue,
@@ -83,13 +84,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     yAxis: MetaCriterionType.test,
     filters: [],
     splits: [],
-    bookmarkedSolutionIds: [],
-    selectedSolutionId: undefined,
-    selectedLeftGroup: defaultGroupValue,
-    selectedRightGroup: defaultGroupValue,
-    selectedRightSolution: defaultSolutionValue,
-    selectedLeftSolution: defaultSolutionValue,
-  });
+    bookmarkedSolutionIds: new Set<number>(),
+    selectedSolutionIds: new Set<number>(),
+    comparison: {
+      clickedSolution: undefined,
+      selectedLeftGroup: defaultGroupValue,
+      selectedRightGroup: defaultGroupValue,
+      selectedRightSolution: defaultSolutionValue,
+      selectedLeftSolution: defaultSolutionValue,
+    },
+  } satisfies AnalyzerState);
 
   const {
     data: task,
@@ -163,13 +167,15 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
   const onSelectSolution = useCallback(
     (groupKey: string, { solutionId }: CurrentAnalysis) => {
-      if (state.selectedLeftSolution === defaultSolutionValue) {
+      if (state.comparison.selectedLeftSolution === defaultSolutionValue) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedLeft,
           groupKey,
           solutionId,
         });
-      } else if (state.selectedRightSolution === defaultSolutionValue) {
+      } else if (
+        state.comparison.selectedRightSolution === defaultSolutionValue
+      ) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedRight,
           groupKey,
@@ -178,12 +184,15 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
       } else {
         // let the user choose
         dispatch({
-          type: AnalyzerStateActionType.setSelectedSolution,
-          selectedSolutionId: { groupKey, solutionId },
+          type: AnalyzerStateActionType.setClickedSolution,
+          clickedSolutionId: { groupKey, solutionId },
         });
       }
     },
-    [state.selectedLeftSolution, state.selectedRightSolution],
+    [
+      state.comparison.selectedLeftSolution,
+      state.comparison.selectedRightSolution,
+    ],
   );
 
   if (!state.selectedTask) {
@@ -323,11 +332,11 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         )}
       </MultiSwrContent>
       <Modal
-        show={state.selectedSolutionId !== undefined}
+        show={state.comparison.clickedSolution !== undefined}
         onHide={() =>
           dispatch({
-            type: AnalyzerStateActionType.setSelectedSolution,
-            selectedSolutionId: undefined,
+            type: AnalyzerStateActionType.setClickedSolution,
+            clickedSolutionId: undefined,
           })
         }
         data-testid="solution-selection-modal"
@@ -343,16 +352,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         <Modal.Footer>
           <Button
             onClick={() => {
-              if (state.selectedSolutionId) {
+              if (state.comparison.clickedSolution) {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedLeft,
-                  groupKey: state.selectedSolutionId.groupKey,
-                  solutionId: state.selectedSolutionId.solutionId,
+                  groupKey: state.comparison.clickedSolution.groupKey,
+                  solutionId: state.comparison.clickedSolution.solutionId,
                 });
 
                 dispatch({
-                  type: AnalyzerStateActionType.setSelectedSolution,
-                  selectedSolutionId: undefined,
+                  type: AnalyzerStateActionType.setClickedSolution,
+                  clickedSolutionId: undefined,
                 });
               }
             }}
@@ -363,16 +372,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
           </Button>
           <Button
             onClick={() => {
-              if (state.selectedSolutionId) {
+              if (state.comparison.clickedSolution) {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedRight,
-                  groupKey: state.selectedSolutionId.groupKey,
-                  solutionId: state.selectedSolutionId.solutionId,
+                  groupKey: state.comparison.clickedSolution.groupKey,
+                  solutionId: state.comparison.clickedSolution.solutionId,
                 });
 
                 dispatch({
-                  type: AnalyzerStateActionType.setSelectedSolution,
-                  selectedSolutionId: undefined,
+                  type: AnalyzerStateActionType.setClickedSolution,
+                  clickedSolutionId: undefined,
                 });
               }
             }}

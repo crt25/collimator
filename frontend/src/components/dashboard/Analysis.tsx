@@ -17,6 +17,7 @@ import {
   BubbleDataPoint,
   Plugin,
   ChartEvent,
+  ChartDataset,
 } from "chart.js";
 import { _DeepPartialObject } from "chart.js/dist/types/utils";
 import {
@@ -24,12 +25,12 @@ import {
   AnnotationPluginOptions,
   EventContext,
 } from "chartjs-plugin-annotation";
-import { TaskType } from "@/api/collimator/generated/models";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { Colors } from "@/constants/colors";
-import { StudentName } from "@/components/encryption/StudentName";
-import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
+import { AstCriterionType } from "@/data-analyzer/analyze-asts";
+import { StudentName } from "@/components/encryption/StudentName";
+import { Colors } from "@/constants/colors";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { TaskType } from "@/api/collimator/generated/models";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
@@ -37,7 +38,6 @@ import YAxis from "./axes/YAxis";
 import XAxis from "./axes/XAxis";
 import YAxisSelector from "./axes/YAxisSelector";
 import { Category, getCanvasPattern, getCategoryName } from "./category";
-import SelectPlugin, { SplitType } from "./chartjs-plugins/select";
 import { cannotDeleteSplits, isAlreadyHandled, markAsHandled } from "./hacks";
 import { CategorizedDataPoint, ManualGroup } from "./hooks/types";
 import Tooltip from "./Tooltip";
@@ -47,6 +47,7 @@ import {
   AnalyzerStateAction,
   AnalyzerStateActionType,
 } from "./Analyzer.state";
+import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
 
 type AdditionalChartData = {
   groups: {
@@ -54,7 +55,8 @@ type AdditionalChartData = {
     name: string;
     analyses: CurrentAnalysis[];
   }[];
-  isSelected: boolean;
+  isSelectedForComparison: boolean;
+  isPartOfSelectionGroup: boolean;
   isBookmarked: boolean;
 };
 
@@ -221,9 +223,9 @@ type AggregateDataPoint = {
   dataPoints: CategorizedDataPoint[];
 };
 
-function aggregateDataPointsByCoordinate(
+const aggregateDataPointsByCoordinate = (
   categorizedDataPoints: CategorizedDataPoint[],
-): AggregateDataPoint[] {
+): AggregateDataPoint[] => {
   // first turn the data points into a map of maps (X,Y) -> data points
   const byCoordinates = categorizedDataPoints.reduce((acc, dataPoint) => {
     const byX = acc.get(dataPoint.x);
@@ -255,12 +257,12 @@ function aggregateDataPointsByCoordinate(
     .toArray();
 
   return mergedDataPoints;
-}
+};
 
-function buildGroupsByKey(
+const buildGroupsByKey = (
   dataPoints: CategorizedDataPoint[],
-): { key: string; name: string; analyses: CurrentAnalysis[] }[] {
-  return Object.entries(
+): { key: string; name: string; analyses: CurrentAnalysis[] }[] =>
+  Object.entries(
     dataPoints.reduce(
       (byGroupKey, dataPoint) => {
         if (dataPoint.groupKey in byGroupKey) {
@@ -278,7 +280,6 @@ function buildGroupsByKey(
     name: groupDataPoints[0].groupName,
     analyses: groupDataPoints.flatMap((d) => d.analyses ?? []),
   }));
-}
 
 const Analysis = ({
   taskType,
@@ -318,9 +319,15 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const selectedSolutionIds = useMemo(
-    () => [state.selectedLeftSolution, state.selectedRightSolution],
-    [state.selectedLeftSolution, state.selectedRightSolution],
+  const solutionIdsSelectedForComparison = useMemo(
+    () => [
+      state.comparison.selectedLeftSolution,
+      state.comparison.selectedRightSolution,
+    ],
+    [
+      state.comparison.selectedLeftSolution,
+      state.comparison.selectedRightSolution,
+    ],
   );
 
   const chartRef = useRef<ChartJsChart | null>(null);
@@ -338,7 +345,9 @@ const Analysis = ({
 
     // map each (x, y) coordinate to a chart.js dataset
     // since points of different categories may overlap
-    const points = aggregatedDataPoints.flatMap(({ x, y, dataPoints }) => {
+    const points = aggregatedDataPoints.flatMap<
+      ChartDataset<"bubble", PointWithAdditionalData[]>
+    >(({ x, y, dataPoints }) => {
       if (dataPoints.length === 0) {
         return [];
       }
@@ -352,15 +361,21 @@ const Analysis = ({
       hasMixed = hasMixed || multipleCategories;
 
       // check if any of the data points is selected or bookmarked
-      const isSelected = dataPoints.some((dataPoint) =>
+      const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          selectedSolutionIds.includes(s.solutionId),
+          solutionIdsSelectedForComparison.includes(s.solutionId),
+        ),
+      );
+
+      const isPartOfSelectionGroup = dataPoints.some((dataPoint) =>
+        dataPoint.analyses?.some((s) =>
+          state.selectedSolutionIds.has(s.solutionId),
         ),
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.bookmarkedSolutionIds.includes(s.solutionId),
+          state.bookmarkedSolutionIds.has(s.solutionId),
         ),
       );
 
@@ -371,6 +386,14 @@ const Analysis = ({
 
       const size = Math.min(solutionsCount * 8, 40);
       const pattern = getCanvasPattern(category);
+      const isSelected = isSelectedForComparison || isPartOfSelectionGroup;
+
+      let borderColor = "black";
+      if (isSelectedForComparison) {
+        borderColor = Colors.dataPoint.selectedForComparisonBorderColor;
+      } else if (isPartOfSelectionGroup) {
+        borderColor = Colors.dataPoint.selectedBorderColor;
+      }
       const starStrokeWidth = isSelected
         ? customShapeStrokeFactor * selectedDataPointBorderWidth
         : 0;
@@ -390,7 +413,8 @@ const Analysis = ({
               (isSelected ? selectedDataPointBorderWidth / 2 : 0),
             additionalData: {
               groups: buildGroupsByKey(dataPoints),
-              isSelected,
+              isSelectedForComparison,
+              isPartOfSelectionGroup,
               isBookmarked,
             } satisfies AdditionalChartData,
           },
@@ -402,12 +426,10 @@ const Analysis = ({
               customShapeSizeFactor * (size + selectedDataPointBorderWidth),
               pattern,
               starStrokeWidth,
-              Colors.dataPoint.selectedBorderColor,
+              Colors.dataPoint.selectedForComparisonBorderColor,
             )
           : "circle",
-        borderColor: isSelected
-          ? Colors.dataPoint.selectedBorderColor
-          : "black",
+        borderColor,
         hoverBorderWidth: isSelected ? selectedDataPointBorderWidth : 0,
         borderWidth: isSelected ? selectedDataPointBorderWidth : 0,
       };
@@ -435,8 +457,9 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    selectedSolutionIds,
+    solutionIdsSelectedForComparison,
     state.bookmarkedSolutionIds,
+    state.selectedSolutionIds,
   ]);
 
   const onTooltip = useCallback(
@@ -468,7 +491,7 @@ const Analysis = ({
 
       // update position of tooltip
       tooltipElement.style.left = positionX + tooltip.caretX + "px";
-      tooltipElement.style.top = positionY + tooltip.caretY + "px";
+      tooltipElement.style.top = positionY + tooltip.caretY + 15 + "px";
 
       setTooltipDataPoints(
         tooltip.dataPoints.map(
@@ -639,13 +662,42 @@ const Analysis = ({
           },
         },
 
-        select: {
+        split: {
           enabled: splittingEnabled,
           onAddSplit: (split) =>
             dispatch({
               type: AnalyzerStateActionType.addSplit,
               split,
             }),
+        },
+
+        select: {
+          enabled: true,
+          onSelection: (selection) => {
+            if (chartRef.current) {
+              const matchingSolutionIds =
+                chartRef.current.data.datasets.flatMap((dataset) =>
+                  (
+                    dataset.data as unknown as PointWithAdditionalData[]
+                  ).flatMap((dataPoint) =>
+                    dataPoint.x >= selection.minX &&
+                    dataPoint.x <= selection.maxX &&
+                    dataPoint.y >= selection.minY &&
+                    dataPoint.y <= selection.maxY
+                      ? dataPoint.additionalData.groups.flatMap((group) =>
+                          group.analyses.map((analysis) => analysis.solutionId),
+                        )
+                      : [],
+                  ),
+                );
+
+              dispatch({
+                type: AnalyzerStateActionType.setSelectedSolutions,
+                solutionIds: matchingSolutionIds,
+                unionWithPrevious: selection.unionWithPrevious,
+              });
+            }
+          },
         },
 
         tooltip: {
@@ -705,6 +757,7 @@ const Analysis = ({
 
   const plugins = useMemo(
     () => [
+      SplitPlugin,
       SelectPlugin,
       {
         id: "analysis",

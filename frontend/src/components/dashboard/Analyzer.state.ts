@@ -1,10 +1,11 @@
 import { SetStateAction } from "react";
 import { AxesCriterionType } from "./axes";
-import { ChartSplit, SplitType } from "./chartjs-plugins/select";
 import { FilterCriterion } from "./filter";
+import { ChartSplit, SplitType } from "./chartjs-plugins";
 
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
-export const defaultGroupValue = "null";
+export const defaultGroupValue = "__ALL_STUDENTS__";
+export const selectedGroupValue = "__SELECTED_SOLUTIONS__";
 export const defaultSolutionValue = -1;
 
 export enum AnalyzerStateActionType {
@@ -23,7 +24,8 @@ export enum AnalyzerStateActionType {
   setSelectedRightGroup,
   setSelectedLeftSolution,
   setSelectedRightSolution,
-  setSelectedSolution,
+  setClickedSolution,
+  setSelectedSolutions,
   addBookmarkedSolution,
   removeBookmarkedSolution,
 }
@@ -90,9 +92,9 @@ export interface SetSolutionAction {
   solutionId: number;
 }
 
-export interface SetSelectedSolutionAction {
-  type: AnalyzerStateActionType.setSelectedSolution;
-  selectedSolutionId: { groupKey: string; solutionId: number } | undefined;
+export interface SetClickedSolutionAction {
+  type: AnalyzerStateActionType.setClickedSolution;
+  clickedSolutionId: { groupKey: string; solutionId: number } | undefined;
 }
 
 export interface AddBookmarkedSolutionsAction {
@@ -103,6 +105,12 @@ export interface AddBookmarkedSolutionsAction {
 export interface RemoveBookmarkedSolutionsAction {
   type: AnalyzerStateActionType.removeBookmarkedSolution;
   solutionId: number;
+}
+
+export interface SetSelectedSolutionsAction {
+  type: AnalyzerStateActionType.setSelectedSolutions;
+  solutionIds: number[];
+  unionWithPrevious?: boolean;
 }
 
 export type AnalyzerStateAction =
@@ -117,7 +125,8 @@ export type AnalyzerStateAction =
   | SetSideAction
   | SetGroupAction
   | SetSolutionAction
-  | SetSelectedSolutionAction
+  | SetClickedSolutionAction
+  | SetSelectedSolutionsAction
   | AddBookmarkedSolutionsAction
   | RemoveBookmarkedSolutionsAction;
 
@@ -130,17 +139,21 @@ export interface AnalyzerState {
   yAxis: AxesCriterionType;
   filters: FilterCriterion[];
   splits: ChartSplit[];
-  bookmarkedSolutionIds: number[];
-  selectedSolutionId:
-    | {
-        groupKey: string;
-        solutionId: number;
-      }
-    | undefined;
-  selectedLeftGroup: string;
-  selectedRightGroup: string;
-  selectedRightSolution: number;
-  selectedLeftSolution: number;
+  bookmarkedSolutionIds: Set<number>;
+  selectedSolutionIds: Set<number>;
+
+  comparison: {
+    clickedSolution:
+      | {
+          groupKey: string;
+          solutionId: number;
+        }
+      | undefined;
+    selectedLeftGroup: string;
+    selectedRightGroup: string;
+    selectedRightSolution: number;
+    selectedLeftSolution: number;
+  };
 }
 
 const getNewState = <T>(setState: SetStateAction<T>, oldState: T): T =>
@@ -216,39 +229,80 @@ export const analyzerStateReducer = (
     case AnalyzerStateActionType.setSelectedLeft:
       return {
         ...state,
-        selectedLeftGroup: action.groupKey,
-        selectedLeftSolution: action.solutionId,
+        comparison: {
+          ...state.comparison,
+          selectedLeftGroup: action.groupKey,
+          selectedLeftSolution: action.solutionId,
+        },
       };
     case AnalyzerStateActionType.setSelectedRight:
       return {
         ...state,
-        selectedRightGroup: action.groupKey,
-        selectedRightSolution: action.solutionId,
+        comparison: {
+          ...state.comparison,
+          selectedRightGroup: action.groupKey,
+          selectedRightSolution: action.solutionId,
+        },
       };
     case AnalyzerStateActionType.setSelectedLeftGroup:
-      return { ...state, selectedLeftGroup: action.groupKey };
+      return {
+        ...state,
+        comparison: { ...state.comparison, selectedLeftGroup: action.groupKey },
+      };
     case AnalyzerStateActionType.setSelectedRightGroup:
-      return { ...state, selectedRightGroup: action.groupKey };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedRightGroup: action.groupKey,
+        },
+      };
     case AnalyzerStateActionType.setSelectedLeftSolution:
-      return { ...state, selectedLeftSolution: action.solutionId };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedLeftSolution: action.solutionId,
+        },
+      };
     case AnalyzerStateActionType.setSelectedRightSolution:
-      return { ...state, selectedRightSolution: action.solutionId };
-    case AnalyzerStateActionType.setSelectedSolution:
-      return { ...state, selectedSolutionId: action.selectedSolutionId };
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          selectedRightSolution: action.solutionId,
+        },
+      };
+    case AnalyzerStateActionType.setClickedSolution:
+      return {
+        ...state,
+        comparison: {
+          ...state.comparison,
+          clickedSolution: action.clickedSolutionId,
+        },
+      };
     case AnalyzerStateActionType.addBookmarkedSolution:
       return {
         ...state,
-        bookmarkedSolutionIds:
-          state.bookmarkedSolutionIds.indexOf(action.solutionId) === -1
-            ? [...state.bookmarkedSolutionIds, action.solutionId]
-            : state.bookmarkedSolutionIds,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.union(
+          new Set<number>([action.solutionId]),
+        ),
       };
     case AnalyzerStateActionType.removeBookmarkedSolution:
       return {
         ...state,
-        bookmarkedSolutionIds: state.bookmarkedSolutionIds.filter(
-          (id) => id !== action.solutionId,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.difference(
+          new Set<number>([action.solutionId]),
         ),
+      };
+    case AnalyzerStateActionType.setSelectedSolutions:
+      const newSelection = new Set<number>(action.solutionIds);
+
+      return {
+        ...state,
+        selectedSolutionIds: action.unionWithPrevious
+          ? state.selectedSolutionIds.union(newSelection)
+          : newSelection,
       };
     default:
       return state;
