@@ -22,14 +22,12 @@ for (const locale of locales) {
 
   let messages = JSON.parse(fs.readFileSync(filename));
 
-  const deprecatedMessages = Object.fromEntries(
-    Object.entries(messages).filter(
-      ([messageKey, _]) => !defaultMessagesKeys.includes(messageKey),
-    ),
-  ).map(([messageKey, messageValue]) => [
-    `DEPRECATED: ${messageKey}`,
-    messageValue,
-  ]);
+  const deprecatedMessages = Object.entries(messages)
+    .filter(([messageKey, _]) => !defaultMessagesKeys.includes(messageKey))
+    .map(([messageKey, messageValue]) => [
+      `DEPRECATED: ${messageKey}`,
+      messageValue,
+    ]);
 
   // only keep the keys present in the default locale
   messages = Object.fromEntries([

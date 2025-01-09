@@ -81,10 +81,6 @@ const messages = defineMessages({
     id: "Analysis.yAxis",
     defaultMessage: "y-Axis",
   },
-  selected: {
-    id: "Analysis.selected",
-    defaultMessage: "Selected",
-  },
 });
 
 const AnalysisWrapper = styled.div``;
