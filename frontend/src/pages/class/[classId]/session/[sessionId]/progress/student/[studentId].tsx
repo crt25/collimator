@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -11,6 +11,14 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import StudentProgress from "@/components/dashboard/StudentProgress";
+import { useStudentName } from "@/hooks/useStudentName";
+
+const messages = defineMessages({
+  title: {
+    id: "UserSessionProgress.title",
+    defaultMessage: "Student Progress - {name}",
+  },
+});
 
 const UserSessionProgress = () => {
   const router = useRouter();
@@ -37,10 +45,21 @@ const UserSessionProgress = () => {
   } = useClassSession(classId, sessionId);
 
   const studentId = parseInt(studentIdString, 10);
+  const student = klass?.students.find((s) => s.id === studentId);
+
+  const { name } = useStudentName({
+    keyPairId: student?.keyPairId,
+    pseudonym: student?.pseudonym,
+  });
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          name: name ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
@@ -49,7 +68,7 @@ const UserSessionProgress = () => {
             breadcrumb
             classId={klass?.id}
             sessionId={session?.id}
-            student={klass?.students.find((s) => s.id === studentId)}
+            student={student}
           />
         </Breadcrumbs>
         <PageHeader>

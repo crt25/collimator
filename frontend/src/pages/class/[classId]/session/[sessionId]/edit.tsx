@@ -17,6 +17,10 @@ import SessionForm, {
 } from "@/components/session/SessionForm";
 
 const messages = defineMessages({
+  title: {
+    id: "EditSession.title",
+    defaultMessage: "Edit Session - {title}",
+  },
   submit: {
     id: "EditSession.submit",
     defaultMessage: "Save Session",
@@ -62,7 +66,12 @@ const EditSession = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          title: session?.title ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

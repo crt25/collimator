@@ -1,11 +1,18 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+
+const messages = defineMessages({
+  title: {
+    id: "StudentLoginPage.title",
+    defaultMessage: "Student Login",
+  },
+});
 
 const StudentLoginPage = () => {
   const router = useRouter();
@@ -39,7 +46,7 @@ const StudentLoginPage = () => {
   if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (
       <>
-        <Header />
+        <Header title={messages.title} />
         <Container>
           <FormattedMessage
             id="StudentLoginPage.invalidParameters"
@@ -52,7 +59,7 @@ const StudentLoginPage = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <PageHeader>
           <FormattedMessage

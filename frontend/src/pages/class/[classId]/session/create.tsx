@@ -15,6 +15,10 @@ import ClassNavigation from "@/components/class/ClassNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 const messages = defineMessages({
+  title: {
+    id: "CreateSession.title",
+    defaultMessage: "Create Session",
+  },
   submit: {
     id: "CreateSession.submit",
     defaultMessage: "Create Session",
@@ -49,7 +53,7 @@ const CreateSession = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

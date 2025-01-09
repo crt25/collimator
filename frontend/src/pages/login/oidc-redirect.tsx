@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
 import { authenticate } from "@/utilities/authentication/openid-connect";
@@ -18,6 +18,13 @@ import {
 } from "@/api/collimator/generated/models";
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
+
+const messages = defineMessages({
+  title: {
+    id: "OpenIdConnectRedirect.title",
+    defaultMessage: "Authentication Processing",
+  },
+});
 
 const logModule = "[OpenIdConnectRedirect]";
 
@@ -128,7 +135,7 @@ const OpenIdConnectRedirect = () => {
   if (authenticationFailed) {
     return (
       <>
-        <Header />
+        <Header title={messages.title} />
         <Container>
           <PageHeader>
             <FormattedMessage
@@ -150,7 +157,7 @@ const OpenIdConnectRedirect = () => {
   if (userSignInState !== null) {
     return (
       <>
-        <Header />
+        <Header title={messages.title} />
         <Container>
           <PageHeader>
             <FormattedMessage
@@ -170,7 +177,7 @@ const OpenIdConnectRedirect = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <PageHeader>
           <FormattedMessage
