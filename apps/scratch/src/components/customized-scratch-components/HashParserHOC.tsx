@@ -14,8 +14,7 @@ import { Dispatch } from "redux";
  * @returns {React.Component} component with hash parsing behavior
  */
 const HashParserHOC = function <
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  T extends {} & {
+  T extends {
     isFetchingWithoutId?: boolean;
     setProjectId: (projectId: string) => void;
     reduxProjectId: string | number;
@@ -30,6 +29,7 @@ const HashParserHOC = function <
       super(props);
       bindAll(this, ["handleHashChange"]);
     }
+
     componentDidMount() {
       window.addEventListener("hashchange", this.handleHashChange);
       this.handleHashChange();
@@ -40,7 +40,7 @@ const HashParserHOC = function <
     }
 
     handleHashChange() {
-      const hashMatch = window.location.hash.match(/#(\d+)/);
+      const hashMatch = /#(\d+)/.exec(window.location.hash);
       const hashProjectId =
         hashMatch === null ? defaultProjectId : hashMatch[1];
 
@@ -72,23 +72,28 @@ const HashParserHOC = function <
 
   const mapStateToProps = (state: State) => {
     const loadingState = state.scratchGui.projectState.loadingState;
+
     return {
       isFetchingWithoutId: getIsFetchingWithoutId(loadingState),
       reduxProjectId: state.scratchGui.projectState.projectId,
     };
   };
+
   const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
     setProjectId: (projectId: string | number) => {
       dispatch(setProjectId(projectId));
     },
   });
 
-  // Allow incoming props to override redux-provided props. Used to mock in tests.
   const mergeProps = (
     stateProps: ReturnType<typeof mapStateToProps>,
     dispatchProps: ReturnType<typeof mapDispatchToProps>,
     ownProps: T,
-  ) => Object.assign({}, stateProps, dispatchProps, ownProps);
+  ) => ({
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+  });
 
   return connect(
     mapStateToProps,

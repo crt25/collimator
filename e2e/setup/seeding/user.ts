@@ -11,7 +11,7 @@ export const getPublicKeyFingerprint = async (
         JSON.stringify(
           publicKey,
           // sort the keys to ensure a consistent fingerprint
-          Object.keys(publicKey).toSorted(),
+          Object.keys(publicKey).toSorted((a, b) => a.localeCompare(b)),
         ),
       ),
     ),

@@ -110,7 +110,7 @@ export default abstract class KeyPair extends SymmetricKey {
         JSON.stringify(
           key,
           // sort the keys to ensure a consistent fingerprint
-          Object.keys(key).toSorted(),
+          Object.keys(key).toSorted((a, b) => a.localeCompare(b)),
         ),
       ),
     );

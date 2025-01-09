@@ -25,7 +25,7 @@ export const createAnonymousSubmission = async (
     await joinPage.joinSession();
 
     await studentPage.waitForURL(
-      new RegExp(`/class/\\d+/session/\\d+/task/\\d+/solve`),
+      /\/class\/\d+\/session\/\d+\/task\/\d+\/solve/,
     );
 
     const solvePage = await SolveTaskPageModel.create(studentPage);
