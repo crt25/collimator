@@ -23,9 +23,11 @@ const messages = defineMessages({
 });
 
 const StyledHeader = styled.header`
-  padding: 0.5rem 0;
+  padding: 1rem 0;
   background-color: var(--header-background-color);
   color: var(--header-foreground-color);
+
+  border-bottom: 1px solid var(--header-border-color);
 `;
 
 const HeaderInner = styled(Container)`
@@ -37,6 +39,9 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  font-size: 1.5rem;
+  font-weight: bold;
 
   img,
   svg {
