@@ -86,3 +86,4 @@ updates:
         - dependency-name: "scratch-render"
         - dependency-name: "scratch-render-fonts"
         - dependency-name: "scratch-svg-renderer"
+        - dependency-name: "scratch-storage"
