@@ -56,7 +56,7 @@ type AdditionalChartData = {
     analyses: CurrentAnalysis[];
   }[];
   isSelectedForComparison: boolean;
-  isManuallySelected: boolean;
+  isPartOfSelectionGroup: boolean;
   isBookmarked: boolean;
 };
 
@@ -367,15 +367,15 @@ const Analysis = ({
         ),
       );
 
-      const isManuallySelected = dataPoints.some((dataPoint) =>
+      const isPartOfSelectionGroup = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.selectedSolutionIds.includes(s.solutionId),
+          state.selectedSolutionIds.has(s.solutionId),
         ),
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.bookmarkedSolutionIds.includes(s.solutionId),
+          state.bookmarkedSolutionIds.has(s.solutionId),
         ),
       );
 
@@ -386,12 +386,12 @@ const Analysis = ({
 
       const size = Math.min(solutionsCount * 8, 40);
       const pattern = getCanvasPattern(category);
-      const isSelected = isSelectedForComparison || isManuallySelected;
+      const isSelected = isSelectedForComparison || isPartOfSelectionGroup;
 
       let borderColor = "black";
       if (isSelectedForComparison) {
         borderColor = Colors.dataPoint.selectedForComparisonBorderColor;
-      } else if (isManuallySelected) {
+      } else if (isPartOfSelectionGroup) {
         borderColor = Colors.dataPoint.selectedBorderColor;
       }
       const starStrokeWidth = isSelected
@@ -414,7 +414,7 @@ const Analysis = ({
             additionalData: {
               groups: buildGroupsByKey(dataPoints),
               isSelectedForComparison,
-              isManuallySelected,
+              isPartOfSelectionGroup,
               isBookmarked,
             } satisfies AdditionalChartData,
           },

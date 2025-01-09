@@ -84,8 +84,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     yAxis: MetaCriterionType.test,
     filters: [],
     splits: [],
-    bookmarkedSolutionIds: [],
-    selectedSolutionIds: [],
+    bookmarkedSolutionIds: new Set<number>(),
+    selectedSolutionIds: new Set<number>(),
     comparison: {
       clickedSolution: undefined,
       selectedLeftGroup: defaultGroupValue,
