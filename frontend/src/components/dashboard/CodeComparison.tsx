@@ -116,7 +116,7 @@ type Option = { label: string; value: number };
 const getOptions = async (
   authContext: AuthenticationContextType,
   analyses: CurrentAnalysis[],
-  bookmarkedSolutionIds: number[],
+  bookmarkedSolutionIds: Set<number>,
 ): Promise<Option[]> => {
   let options: Option[] = analyses.map((analysis) => ({
     label: analysis.studentPseudonym,
@@ -152,7 +152,7 @@ const getOptions = async (
 
   return options
     .map((option) => {
-      const isBookmarked = bookmarkedSolutionIds.includes(option.value);
+      const isBookmarked = bookmarkedSolutionIds.has(option.value);
 
       return {
         ...option,
@@ -289,7 +289,7 @@ const CodeComparison = ({
             // either we are not looking for the selected solutions
             selectedLeftGroup !== selectedGroupValue ||
             // or the solution is manually selected
-            selectedSolutionIds.includes(analysis.solutionId),
+            selectedSolutionIds.has(analysis.solutionId),
         ),
       );
 
@@ -325,7 +325,7 @@ const CodeComparison = ({
             // either we are not looking for the selected solutions
             selectedRightGroup !== selectedGroupValue ||
             // or the solution is manually selected
-            selectedSolutionIds.includes(analysis.solutionId),
+            selectedSolutionIds.has(analysis.solutionId),
         ),
       );
 
@@ -412,7 +412,7 @@ const CodeComparison = ({
   const isLeftSolutionBookmarked = useMemo(
     () =>
       leftDataPoint
-        ? bookmarkedSolutionIds.includes(leftDataPoint.analysis.solutionId)
+        ? bookmarkedSolutionIds.has(leftDataPoint.analysis.solutionId)
         : false,
     [bookmarkedSolutionIds, leftDataPoint],
   );
@@ -420,7 +420,7 @@ const CodeComparison = ({
   const isRightSolutionBookmarked = useMemo(
     () =>
       rightDataPoint
-        ? bookmarkedSolutionIds.includes(rightDataPoint.analysis.solutionId)
+        ? bookmarkedSolutionIds.has(rightDataPoint.analysis.solutionId)
         : false,
     [bookmarkedSolutionIds, rightDataPoint],
   );

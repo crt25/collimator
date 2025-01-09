@@ -139,8 +139,8 @@ export interface AnalyzerState {
   yAxis: AxesCriterionType;
   filters: FilterCriterion[];
   splits: ChartSplit[];
-  bookmarkedSolutionIds: number[];
-  selectedSolutionIds: number[];
+  bookmarkedSolutionIds: Set<number>;
+  selectedSolutionIds: Set<number>;
 
   comparison: {
     clickedSolution:
@@ -284,24 +284,25 @@ export const analyzerStateReducer = (
     case AnalyzerStateActionType.addBookmarkedSolution:
       return {
         ...state,
-        bookmarkedSolutionIds:
-          state.bookmarkedSolutionIds.indexOf(action.solutionId) === -1
-            ? [...state.bookmarkedSolutionIds, action.solutionId]
-            : state.bookmarkedSolutionIds,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.union(
+          new Set<number>([action.solutionId]),
+        ),
       };
     case AnalyzerStateActionType.removeBookmarkedSolution:
       return {
         ...state,
-        bookmarkedSolutionIds: state.bookmarkedSolutionIds.filter(
-          (id) => id !== action.solutionId,
+        bookmarkedSolutionIds: state.bookmarkedSolutionIds.difference(
+          new Set<number>([action.solutionId]),
         ),
       };
     case AnalyzerStateActionType.setSelectedSolutions:
+      const newSelection = new Set<number>(action.solutionIds);
+
       return {
         ...state,
         selectedSolutionIds: action.unionWithPrevious
-          ? [...state.selectedSolutionIds, ...action.solutionIds]
-          : action.solutionIds,
+          ? state.selectedSolutionIds.union(newSelection)
+          : newSelection,
       };
     default:
       return state;
