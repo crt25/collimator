@@ -8,6 +8,10 @@ import BreadcrumbItem from "./BreadcrumbItem";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 
 const messages = defineMessages({
+  homeTab: {
+    id: "CrtNavigation.homeTab",
+    defaultMessage: "Home",
+  },
   usersTab: {
     id: "CrtNavigation.usersTab",
     defaultMessage: "Users",
@@ -27,6 +31,10 @@ const messages = defineMessages({
 });
 
 const tabs: NavigationTab[] = [
+  {
+    url: "/",
+    title: (intl) => intl.formatMessage(messages.homeTab),
+  },
   {
     url: "/user",
     title: (intl) => intl.formatMessage(messages.usersTab),
