@@ -12,6 +12,10 @@ export default {
 export const EmptyUnauthenticated = {
   decorators: [Unauthenticated],
   args: {
+    title: {
+      id: "some.id",
+      defaultMessage: "the HTML title",
+    },
     children: null,
   },
 };
@@ -19,6 +23,10 @@ export const EmptyUnauthenticated = {
 export const AuthenticatedWithStringContent = {
   decorators: [AuthenticatedTeacher],
   args: {
+    title: {
+      id: "some.id",
+      defaultMessage: "the HTML title",
+    },
     children: "some string content",
   },
 };
