@@ -4,8 +4,8 @@ import {
   test as testBase,
   expect as expectBase,
 } from "playwright-test-coverage";
-import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
 import pg from "pg";
+import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
 import {
   buildClientConfig,
   getFreePortAndLock,
@@ -67,7 +67,6 @@ export const getItemIdFromTableTestId = (
 };
 
 export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
-  scratchURL: ["", { option: true }],
   workerConfig: [
     async ({}, use, testInfo): Promise<void> => {
       if (testInfo.project.name.startsWith(setupProjectNamePrefix)) {
@@ -224,6 +223,9 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
   baseURL: async ({ workerConfig }, use) =>
     use(`http://localhost:${workerConfig.frontendPort}`),
+
+  scratchURL: async ({ workerConfig }, use) =>
+    use(`http://localhost:${workerConfig.frontendPort}/scratch`),
 
   _setLastTestFileName: [
     async ({}, use): Promise<void> => {

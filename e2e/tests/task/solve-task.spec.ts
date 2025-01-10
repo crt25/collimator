@@ -1,3 +1,6 @@
+import { expect, jsonResponse, test } from "../../helpers";
+import { useAdminUser } from "../../authentication-helpers";
+import { routeDummyApp } from "./helpers";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import {
@@ -13,9 +16,6 @@ import {
   getTasksControllerFindOneV0Url,
 } from "@/api/collimator/generated/endpoints/tasks/tasks";
 import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
-import { expect, jsonResponse, test } from "../../helpers";
-import { routeDummyApp } from "./helpers";
-import { useAdminUser } from "../../authentication-helpers";
 
 const taskBinary = new Blob(['{"existing": "task"}'], {
   type: "application/json",

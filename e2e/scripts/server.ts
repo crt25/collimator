@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
 import path from "path";
+import express, { Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { getFrontendPath } from "../setup/helpers";
+import { CrtApp, getAppPath, getFrontendPath } from "../setup/helpers";
 
 const dynamicRoutesPattern = /\/([A-z]+)\/\d+/g;
 const dynamicRoutesReplacement = "/$1/[$1Id]";
@@ -9,6 +9,22 @@ const dynamicRoutesReplacement = "/$1/[$1Id]";
 const app = express();
 
 const staticDir = path.join(getFrontendPath(), "dist");
+const scratchAppDir = path.join(getAppPath(CrtApp.scratch), "build");
+
+app.use("/scratch", (request, response, next) => {
+  let [urlPath, search] = request.url.split("?");
+
+  urlPath = urlPath.endsWith("/") ? urlPath.slice(0, -1) : urlPath;
+  search = search ? `?${search}` : "";
+
+  if (urlPath === "/" || urlPath === "" || !path.extname(urlPath)) {
+    request.url = `/index.html${search}`;
+  }
+
+  next();
+});
+
+app.use("/scratch", express.static(scratchAppDir));
 
 app.use(
   "/api",

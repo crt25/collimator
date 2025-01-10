@@ -2,6 +2,8 @@ import { subtle } from "crypto";
 import * as fs from "fs";
 import { BrowserContext, Page } from "@playwright/test";
 import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
+import { jsonResponse } from "./helpers";
+import { mockOidcProviderUrl, mockOidcProxyUrl } from "./setup/config";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
   getAuthenticationControllerLoginV0Url,
@@ -19,8 +21,6 @@ import {
 } from "@/types/websocket-events";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
-import { jsonResponse } from "./helpers";
-import { mockOidcProviderUrl, mockOidcProxyUrl } from "./setup/config";
 
 const crypto = subtle as SubtleCrypto;
 
@@ -155,10 +155,9 @@ const setupMockOidcProvider = async (
   // intercept the authorization request
   await page.route(/\/__oidc__\/authorize/, (route, request) => {
     // extract redirect_uri from the request
-    const [_, redirectUri] = /redirect_uri=([^&]+)/.exec(request.url()) as unknown as [
-      string,
-      string,
-    ];
+    const [_, redirectUri] = /redirect_uri=([^&]+)/.exec(
+      request.url(),
+    ) as unknown as [string, string];
 
     // extract nonce, and state from the request
     const [__, nonceInUrl] = /nonce=([^&]+)/.exec(request.url()) as unknown as [

@@ -23,7 +23,11 @@ const SortableListWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const SortableItem = (props: { id: number; children: React.ReactNode }) => {
+const SortableItem = (props: {
+  id: number;
+  testId?: string;
+  children: React.ReactNode;
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.id });
 
@@ -38,6 +42,7 @@ const SortableItem = (props: { id: number; children: React.ReactNode }) => {
       style={style}
       {...attributes}
       {...listeners}
+      data-testid={props.testId}
     >
       {props.children}
     </ListGroup.Item>
@@ -48,10 +53,12 @@ const SortableListInput = <TItem extends { id: number }>({
   items,
   updateItems,
   children: renderItemContent,
+  testId,
 }: {
   items: TItem[];
   updateItems: (items: TItem[]) => void;
   children: (item: TItem) => React.ReactNode;
+  testId?: string;
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -78,7 +85,7 @@ const SortableListInput = <TItem extends { id: number }>({
   );
 
   return (
-    <SortableListWrapper>
+    <SortableListWrapper data-testid={testId}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -87,7 +94,11 @@ const SortableListInput = <TItem extends { id: number }>({
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
           <ListGroup>
             {items.map((item) => (
-              <SortableItem key={`${item.id}`} id={item.id}>
+              <SortableItem
+                key={`${item.id}`}
+                id={item.id}
+                testId={`${testId}-item-${item.id}`}
+              >
                 {renderItemContent(item)}
               </SortableItem>
             ))}

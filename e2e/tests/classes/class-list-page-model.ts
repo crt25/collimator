@@ -29,6 +29,10 @@ export class ClassListPageModel extends ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-name`);
   }
 
+  viewItem(itemId: number | string): Promise<void> {
+    return this.getName(itemId).click();
+  }
+
   static async create(page: Page) {
     await page.waitForSelector(classList);
 

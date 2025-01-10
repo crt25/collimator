@@ -27,10 +27,12 @@ export const StudentName = ({
   pseudonym,
   keyPairId,
   showActualName,
+  testId,
 }: {
   pseudonym: string;
   keyPairId: number | null;
   showActualName?: boolean;
+  testId?: string;
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
@@ -102,7 +104,7 @@ export const StudentName = ({
 
   if (isDecrypting) {
     return (
-      <NameWrapper>
+      <NameWrapper data-testid={testId}>
         <FormattedMessage
           id="StudentName.decrypting"
           defaultMessage="Decrypting..."
@@ -113,7 +115,7 @@ export const StudentName = ({
 
   if (name === null) {
     return (
-      <NameWrapper>
+      <NameWrapper data-testid={testId}>
         {getStudentNickname(pseudonym)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
@@ -124,7 +126,7 @@ export const StudentName = ({
   }
 
   return (
-    <NameWrapper>
+    <NameWrapper data-testid={testId}>
       {name}
       {isAnonymousUser && showActualName
         ? " (" + intl.formatMessage(messages.anonymous) + ")"

@@ -175,6 +175,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
           `${logModule} No resolve function found for message`,
           message,
         );
+        return;
       }
 
       // call the resolve function with the message
@@ -240,8 +241,11 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   }, []);
 
   return (
+    // add key to the iframe to force a re-render when the src changes
+    // https://www.aleksandrhovhannisyan.com/blog/react-iframes-back-navigation-bug/
     <IFrameWrapper>
       <StyledIFrame
+        key={src}
         src={src}
         ref={getIFramRef}
         allow="fullscreen; camera; microphone"

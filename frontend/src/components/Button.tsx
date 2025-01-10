@@ -215,11 +215,19 @@ const Button = (
               <ProgressSpinner />
             ) : isSuccessful === true ? (
               <Success>
-                <FontAwesomeIcon icon={faCheckCircle} className="icon" />
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="icon"
+                  data-testid="success-icon"
+                />
               </Success>
             ) : isSuccessful === false ? (
               <Failure>
-                <FontAwesomeIcon icon={faTimesCircle} className="icon" />
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  className="icon"
+                  data-testid="failure-icon"
+                />
               </Failure>
             ) : null}
           </ButtonState>

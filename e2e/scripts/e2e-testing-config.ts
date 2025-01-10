@@ -1,3 +1,4 @@
+import { existsSync, readFileSync, unlinkSync } from "fs";
 import { isDebug } from "../helpers";
 import {
   killProcess,
@@ -5,7 +6,6 @@ import {
   triggerBackendGracefulShutdown,
   waitForProcessToStop,
 } from "../setup/helpers";
-import { existsSync, readFileSync, unlinkSync } from "fs";
 
 export const pidDirectory = "playwright/.pid";
 export const oidcPidFile = `${pidDirectory}/oidc`;

@@ -111,6 +111,9 @@ const TaskForm = ({
 
   const defaultValues = useMemo(
     () => ({
+      type: TaskType.SCRATCH,
+      title: "",
+      description: "",
       ...initialValues,
       // when initializating the form, the blob has not yet changed
       blobChanged: false,
@@ -130,11 +133,14 @@ const TaskForm = ({
     defaultValues,
   });
 
+  const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
+  const onNavigate = useCallback(() => {
+    setShowQuitNoSaveModal(true);
+  }, []);
+
   const navigate = useNavigationObserver({
-    shouldStopNavigation: () => cannotNavigate.current,
-    onNavigate: () => {
-      setShowQuitNoSaveModal(true);
-    },
+    shouldStopNavigation,
+    onNavigate,
   });
 
   useEffect(() => {

@@ -1,14 +1,14 @@
-import { TaskType } from "@/api/collimator/generated/models";
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
-import { TaskListPageModel } from "./task-list-page-model";
-import { routeDummyApp } from "./helpers";
-import { TaskFormPageModel } from "./task-form-page-model";
 import { taskList } from "../../selectors";
+import checkXPositionWithAssertion from "../sessions/tasks/check-x-position-with-assertion";
+import { TaskListPageModel } from "./task-list-page-model";
+import { TaskFormPageModel } from "./task-form-page-model";
+import { createTask } from "./task-management";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const newTaskTitle = "new task name";
 const newTaskDecription = "new task description";
-const newTaskType = TaskType.SCRATCH;
 let newTaskId: number = -1;
 
 const updatedTaskTitle = "updated task name";
@@ -16,37 +16,19 @@ const updatedTaskDecription = "updated task description";
 const updatedTaskType = TaskType.SCRATCH;
 
 test.describe("task management", () => {
-  test.beforeEach(async ({ context, page, baseURL, scratchURL }) => {
+  test.beforeEach(async ({ context, page, baseURL }) => {
     await useAdminUser(context);
-
-    await routeDummyApp(page, `${scratchURL}/edit`);
 
     await page.goto(`${baseURL}/task`);
   });
 
   test.describe("/task/[taskId]/edit", () => {
-    test.beforeEach(async ({ page }) => {
-      const list = await TaskListPageModel.create(page);
-      await list.createItem();
-    });
-
     test("can create a task", async ({ page: pwPage, baseURL }) => {
-      const page = await TaskFormPageModel.create(pwPage);
-
-      await page.inputs.title.fill(newTaskTitle);
-      await page.inputs.description.fill(newTaskDecription);
-      await page.inputs.type.selectOption(newTaskType);
-      await page.openEditTaskModal();
-      await page.saveTask();
-      await page.submitButton.click();
-
-      await pwPage.waitForURL(`${baseURL}/task`);
-
-      const list = await TaskListPageModel.create(pwPage);
-
-      await expect(list.getTitleElementByTitle(newTaskTitle)).toHaveCount(1);
-
-      newTaskId = await list.getIdByName(newTaskTitle);
+      newTaskId = await createTask(baseURL!, pwPage, {
+        title: newTaskTitle,
+        description: newTaskDecription,
+        template: checkXPositionWithAssertion,
+      }).then((r) => r.id);
     });
   });
 
@@ -75,13 +57,26 @@ test.describe("task management", () => {
     });
   });
 
+  test.describe("/task/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await TaskListPageModel.create(page);
+
+      await list.viewItem(newTaskId);
+      await page.waitForURL(`${baseURL}/task/${newTaskId}/detail`);
+    });
+
+    test("renders the task", async ({ page }) => {
+      await expect(page.locator("iframe")).toHaveCount(1);
+    });
+  });
+
   test.describe("/task", () => {
     test.beforeEach(async ({ page }) => {
       await TaskListPageModel.create(page);
     });
 
     test("renders the fetched items", async ({ page }) => {
-      expect(page.locator(taskList).locator("tbody tr")).toHaveCount(1);
+      await expect(page.locator(taskList).locator("tbody tr")).toHaveCount(1);
     });
 
     test("can delete listed items", async ({ page: pwPage }) => {

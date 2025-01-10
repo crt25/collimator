@@ -1,5 +1,5 @@
-import { AuthenticationProvider, PrismaClient } from "@prisma/client";
 import { randomBytes } from "crypto";
+import { AuthenticationProvider, PrismaClient } from "@prisma/client";
 
 export const seedProduction = async (prisma: PrismaClient): Promise<void> => {
   const count = await prisma.user.count({
