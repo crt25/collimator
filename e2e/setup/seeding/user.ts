@@ -7,13 +7,7 @@ export const getPublicKeyFingerprint = async (
   Buffer.from(
     await crypto.digest(
       "SHA-512",
-      new TextEncoder().encode(
-        JSON.stringify(
-          publicKey,
-          // sort the keys to ensure a consistent fingerprint
-          Object.keys(publicKey).toSorted((a, b) => a.localeCompare(b)),
-        ),
-      ),
+      new TextEncoder().encode(publicKey["x"] + "@" + publicKey["y"]),
     ),
   ).toString("base64url");
 

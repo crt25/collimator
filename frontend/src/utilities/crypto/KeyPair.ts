@@ -106,13 +106,7 @@ export default abstract class KeyPair extends SymmetricKey {
   ): Promise<string> {
     const digest = await crypto.digest(
       "SHA-512",
-      new TextEncoder().encode(
-        JSON.stringify(
-          key,
-          // sort the keys to ensure a consistent fingerprint
-          Object.keys(key).toSorted((a, b) => a.localeCompare(b)),
-        ),
-      ),
+      new TextEncoder().encode(key["x"] + "@" + key["y"]),
     );
 
     return encodeBase64Url(digest);
