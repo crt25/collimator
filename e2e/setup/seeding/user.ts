@@ -27,7 +27,7 @@ const adminPrivateKey: webcrypto.JsonWebKey = {
 };
 
 export const adminUser = {
-  id: 1,
+  id: 10_000,
   oidcSub: "1234",
   email: "jane@doe.com",
   name: "Jane Doe",
@@ -39,7 +39,7 @@ export const adminUser = {
 };
 
 export const newTeacher = {
-  id: 2,
+  id: 10_001,
   oidcSub: "5678",
   email: "richard@feynman.com",
   name: "Richard Feynman",
