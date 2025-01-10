@@ -2,7 +2,6 @@ import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { progressList, sessionList } from "../../selectors";
 import { createClass } from "../classes/class-management";
-import { routeDummyApp } from "../task/helpers";
 import { createTask } from "../task/task-management";
 import { SessionFormPageModel } from "./session-form-page-model";
 import { SessionListPageModel } from "./session-list-page-model";
@@ -21,9 +20,8 @@ let newSessionId: number = -1;
 const updatedSessionName = "updated session name";
 
 test.describe("session management", () => {
-  test.beforeEach(async ({ page, context, scratchURL }) => {
+  test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
-    await routeDummyApp(page, `${scratchURL}/edit`);
   });
 
   test("preparation", async ({ page, baseURL }) => {

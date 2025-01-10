@@ -3,7 +3,6 @@ import { expect, test } from "../../helpers";
 import { taskList } from "../../selectors";
 import checkXPositionWithAssertion from "../sessions/tasks/check-x-position-with-assertion";
 import { TaskListPageModel } from "./task-list-page-model";
-import { routeDummyApp } from "./helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
 import { createTask } from "./task-management";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -17,10 +16,8 @@ const updatedTaskDecription = "updated task description";
 const updatedTaskType = TaskType.SCRATCH;
 
 test.describe("task management", () => {
-  test.beforeEach(async ({ context, page, baseURL, scratchURL }) => {
+  test.beforeEach(async ({ context, page, baseURL }) => {
     await useAdminUser(context);
-
-    await routeDummyApp(page, `${scratchURL}/edit`);
 
     await page.goto(`${baseURL}/task`);
   });

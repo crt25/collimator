@@ -107,6 +107,13 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     // timeout for building the frontend, starting the backend, frontend and OpenID connect mock server
     timeout: 180 * 1000,
   },
+
+  // collected traces on the CI
+  // https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
+  retries: 1,
+  use: {
+    trace: "on-first-retry",
+  },
 };
 
 if (skipSetup) {
