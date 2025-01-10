@@ -1,7 +1,7 @@
 import { buildApp, CrtApp } from "../setup/helpers";
 
 const main = async (): Promise<void> => {
-  buildApp(CrtApp.scratch, "pipe", "pipe");
+  buildApp(CrtApp.scratch);
 };
 
 main().catch((error) => {

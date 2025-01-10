@@ -140,8 +140,8 @@ export const buildFrontend = (
     oidcUrl?: string;
     oidcClientId?: string;
   },
-  stdout: "pipe" | "ignore",
-  stderr: "pipe" | "ignore",
+  stdout: "pipe" | "ignore" = "pipe",
+  stderr: "pipe" | "ignore" = "pipe",
 ): void => {
   spawnSync("yarn", ["build:coverage"], {
     env: {
@@ -160,8 +160,8 @@ export const buildFrontend = (
 
 export const buildApp = (
   app: CrtApp,
-  stdout: "pipe" | "ignore",
-  stderr: "pipe" | "ignore",
+  stdout: "pipe" | "ignore" = "pipe",
+  stderr: "pipe" | "ignore" = "pipe",
 ): void => {
   spawnSync("yarn", ["build"], {
     env: {
