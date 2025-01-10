@@ -32,7 +32,7 @@ let sessionLink = "";
 
 const pseudonym = "I AM GROOT";
 
-test.describe.only("session analysis", () => {
+test.describe("session analysis", () => {
   test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
   });
