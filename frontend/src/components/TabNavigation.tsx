@@ -63,8 +63,6 @@ const TabNavigation = <T extends unknown = undefined>({
       const strippedUrl = url.replace(stripSlashRegex, "");
       const strippedPath = router.asPath.replace(stripSlashRegex, "");
 
-      console.log(strippedUrl, strippedPath);
-
       const isActive =
         strippedUrl === ""
           ? // special case for the home page (""), which must match exactly

@@ -1,10 +1,12 @@
 import "@/styles/globals.scss";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PrimeReactProvider } from "primereact/api";
 import { Toaster } from "react-hot-toast";
+import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -26,6 +28,9 @@ import WebSocketProvider from "@/contexts/WebSocketProvider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";
+
+// https://docs.fontawesome.com/web/use-with/react/use-with
+fontAwesomeConfig.autoAddCss = false;
 
 const logModule = "[App]";
 
