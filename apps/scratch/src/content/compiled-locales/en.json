@@ -59,6 +59,18 @@
       "value": "Allow all standard blocks to be used"
     }
   ],
+  "crt.taskConfig.allowCustomProcedureBlocks": [
+    {
+      "type": 0,
+      "value": "Allow 'My Blocks' custom procedures"
+    }
+  ],
+  "crt.taskConfig.allowVariableBlocks": [
+    {
+      "type": 0,
+      "value": "Allow variable blocks"
+    }
+  ],
   "crt.taskConfig.disallowAllBlocks": [
     {
       "type": 0,

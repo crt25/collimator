@@ -13,6 +13,10 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 
 const messages = defineMessages({
+  title: {
+    id: "EditClass.title",
+    defaultMessage: "Edit Class - {name}",
+  },
   submit: {
     id: "EditClass.submit",
     defaultMessage: "Save Class",
@@ -45,7 +49,12 @@ const EditClass = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          name: klass?.name ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

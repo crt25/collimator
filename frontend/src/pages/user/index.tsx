@@ -1,15 +1,22 @@
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import UserList from "@/components/user/UserList";
 
+const messages = defineMessages({
+  title: {
+    id: "ListUsers.title",
+    defaultMessage: "Users",
+  },
+});
+
 const ListUsers = () => {
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <Breadcrumbs />
         <CrtNavigation />

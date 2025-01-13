@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Container } from "react-bootstrap";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -14,6 +14,13 @@ import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
 import { scratchAppHostName } from "@/utilities/constants";
 import { Language } from "@/types/app-iframe-message/languages";
+
+const messages = defineMessages({
+  title: {
+    id: "TaskDetail.title",
+    defaultMessage: "Task - {title}",
+  },
+});
 
 const getDisplaySolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -69,7 +76,12 @@ const TaskDetail = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          title: task?.title ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb task={task} />

@@ -13,6 +13,10 @@ import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
+  title: {
+    id: "EditUser.title",
+    defaultMessage: "Edit User - {name}",
+  },
   submit: {
     id: "EditUser.submit",
     defaultMessage: "Save User",
@@ -47,7 +51,12 @@ const EditUser = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          name: user?.name ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb user={user} />

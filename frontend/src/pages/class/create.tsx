@@ -9,6 +9,10 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 
 const messages = defineMessages({
+  title: {
+    id: "CreateClass.title",
+    defaultMessage: "Create Class",
+  },
   submit: {
     id: "CreateClass.submit",
     defaultMessage: "Create Class",
@@ -33,7 +37,7 @@ const CreateClass = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <CrtNavigation />
         <PageHeader>

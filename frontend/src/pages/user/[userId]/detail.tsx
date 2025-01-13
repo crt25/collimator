@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Container, Table } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
@@ -8,6 +8,13 @@ import CrtNavigation from "@/components/CrtNavigation";
 import UserNavigation from "@/components/user/UserNavigation";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import SwrContent from "@/components/SwrContent";
+
+const messages = defineMessages({
+  title: {
+    id: "UserDetail.title",
+    defaultMessage: "User - {name}",
+  },
+});
 
 const UserDetail = () => {
   const router = useRouter();
@@ -19,7 +26,12 @@ const UserDetail = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          name: user?.name ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb />

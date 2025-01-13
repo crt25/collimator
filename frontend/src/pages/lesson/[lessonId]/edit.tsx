@@ -6,6 +6,10 @@ import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 
 const messages = defineMessages({
+  title: {
+    id: "EditLesson.title",
+    defaultMessage: "Edit Lesson - {name}",
+  },
   submit: {
     id: "EditLesson.submit",
     defaultMessage: "Save Lesson",
@@ -15,7 +19,12 @@ const messages = defineMessages({
 const EditLesson = () => {
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          name: "Lesson 1",
+        }}
+      />
       <Container>
         <CrtNavigation />
         <PageHeader>

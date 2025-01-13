@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -18,6 +18,13 @@ import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { Language } from "@/types/app-iframe-message/languages";
+
+const messages = defineMessages({
+  title: {
+    id: "SolveTaskPage.title",
+    defaultMessage: "Solve - {title}",
+  },
+});
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
@@ -202,7 +209,7 @@ const SolveTaskPage = () => {
 
   return (
     <MaxScreenHeight>
-      <Header>
+      <Header title={messages.title} titleParameters={{ title: task?.title }}>
         <li>
           <Button
             onClick={toggleSessionMenu}

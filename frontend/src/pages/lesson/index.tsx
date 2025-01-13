@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import LessonList, { Lesson } from "@/components/lesson/LessonList";
@@ -75,10 +75,17 @@ const lessons: Lesson[] = [
   },
 ];
 
+const messages = defineMessages({
+  title: {
+    id: "ListLessons.title",
+    defaultMessage: "Lessons",
+  },
+});
+
 const ListLessons = () => {
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <Breadcrumbs />
         <CrtNavigation />

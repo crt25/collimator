@@ -26,6 +26,18 @@
   "Analyzer.numberOfGroups": {
     "message": "Number of groups"
   },
+  "Analyzer.selectSolutionForComparisonDescription": {
+    "message": "Where should the selected solution be placed?"
+  },
+  "Analyzer.selectSolutionForComparisonLeft": {
+    "message": "Left"
+  },
+  "Analyzer.selectSolutionForComparisonRight": {
+    "message": "Right"
+  },
+  "Analyzer.selectSolutionForComparisonTitle": {
+    "message": "Selecting Solution for Comparison"
+  },
   "Analyzer.subTaskSelection": {
     "message": "Sub-task Selection"
   },
@@ -35,8 +47,20 @@
   "AnalyzerFilterForm.filterCriteria": {
     "message": "Filtering Criteria"
   },
+  "AstHeightCriterionFilterForm.count": {
+    "message": "Height of the AST"
+  },
   "Breadcrumbs.home": {
     "message": "Home"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.anyFunction": {
+    "message": "Any function"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.count": {
+    "message": "Number of function calls"
+  },
+  "BuiltInFunctionCallCriterionFilterForm.functionName": {
+    "message": "Function Name"
   },
   "Category.allTestsPass": {
     "message": "All tests pass"
@@ -44,11 +68,11 @@
   "Category.automaticGroup": {
     "message": "Automatic Group"
   },
-  "Category.filteredOut": {
-    "message": "filtered out"
-  },
   "Category.inCorrect": {
     "message": "No test passes"
+  },
+  "Category.mixed": {
+    "message": "Mixed"
   },
   "Category.noTests": {
     "message": "Without tests"
@@ -67,6 +91,9 @@
   },
   "ClassDetail.table.teacher": {
     "message": "Teacher"
+  },
+  "ClassDetail.title": {
+    "message": "Class - {name}"
   },
   "ClassForm.name": {
     "message": "Name"
@@ -107,6 +134,12 @@
   "ClassNavigation.studentsTab": {
     "message": "Students"
   },
+  "ClassSessionList.title": {
+    "message": "{name} - Sessions"
+  },
+  "ClassUserList.title": {
+    "message": "{name} - Students"
+  },
   "CodeComparison.defaultOption": {
     "message": "Group: All students"
   },
@@ -118,6 +151,9 @@
   },
   "CodeComparison.heading": {
     "message": "Comparison"
+  },
+  "CodeComparison.selectedSolutions": {
+    "message": "Group: Selected students"
   },
   "CodeComparison.view": {
     "message": "View"
@@ -134,10 +170,16 @@
   "CreateClass.submit": {
     "message": "Create Class"
   },
+  "CreateClass.title": {
+    "message": "Create Class"
+  },
   "CreateLesson.header": {
     "message": "Create Lesson"
   },
   "CreateLesson.submit": {
+    "message": "Create Lesson"
+  },
+  "CreateLesson.title": {
     "message": "Create Lesson"
   },
   "CreateLessonForm.name": {
@@ -147,6 +189,9 @@
     "message": "Create Session"
   },
   "CreateSession.submit": {
+    "message": "Create Session"
+  },
+  "CreateSession.title": {
     "message": "Create Session"
   },
   "CreateSessionForm.addTask": {
@@ -173,14 +218,23 @@
   "CreateTask.submit": {
     "message": "Create Task"
   },
+  "CreateTask.title": {
+    "message": "Create Task"
+  },
   "CreateUser.header": {
     "message": "Create User"
   },
   "CreateUser.submit": {
     "message": "Create User"
   },
+  "CreateUser.title": {
+    "message": "Create User"
+  },
   "CrtNavigation.classesTab": {
     "message": "Classes"
+  },
+  "CrtNavigation.homeTab": {
+    "message": "Home"
   },
   "CrtNavigation.lessonsTab": {
     "message": "Lessons"
@@ -191,11 +245,59 @@
   "CrtNavigation.usersTab": {
     "message": "Users"
   },
+  "CustomFunctionCallCriterionFilterForm.count": {
+    "message": "Number of custom function callss"
+  },
+  "DissimilarAnalysisPairs.header": {
+    "message": "Dissimilar Solutions"
+  },
+  "DissimilarAnalysisPairs.title": {
+    "message": "Dissimilar Pairs - {title}"
+  },
+  "DissimilarPairs.allSubTasks": {
+    "message": "All sub-tasks"
+  },
+  "DissimilarPairs.numberOfDissimilarPairs": {
+    "message": "Number of dissimilar pairs"
+  },
+  "DissimilarPairs.subTaskSelection": {
+    "message": "Sub-task Selection"
+  },
+  "DissimilarPairs.taskSelection": {
+    "message": "Task Selection"
+  },
+  "DissimilarSolutions.header": {
+    "message": "Dissimilar Solutions"
+  },
+  "DissimilarSolutions.title": {
+    "message": "Dissimilar Solutions - {title}"
+  },
+  "DissimilarityAnalysis.allSubTasks": {
+    "message": "All sub-tasks"
+  },
+  "DissimilarityAnalysis.noTasksInSession": {
+    "message": "There are no tasks in this session."
+  },
+  "DissimilarityAnalysis.numberOfDissimilarSolutions": {
+    "message": "Number of dissimilar solutions"
+  },
+  "DissimilarityAnalysis.subTaskSelection": {
+    "message": "Sub-task Selection"
+  },
+  "DissimilarityAnalysis.taskSelection": {
+    "message": "Task Selection"
+  },
+  "DissimilarityAnalysis.tooManyCombinations": {
+    "message": "Too many combinations to calculate dissimilar pairs."
+  },
   "EditClass.header": {
     "message": "Edit Class"
   },
   "EditClass.submit": {
     "message": "Save Class"
+  },
+  "EditClass.title": {
+    "message": "Edit Class - {name}"
   },
   "EditLesson.header": {
     "message": "Edit Lesson"
@@ -203,17 +305,26 @@
   "EditLesson.submit": {
     "message": "Save Lesson"
   },
+  "EditLesson.title": {
+    "message": "Edit Lesson - {name}"
+  },
   "EditSession.header": {
     "message": "Edit Session"
   },
   "EditSession.submit": {
     "message": "Save Session"
   },
+  "EditSession.title": {
+    "message": "Edit Session - {title}"
+  },
   "EditTask.header": {
     "message": "Edit Task"
   },
   "EditTask.submit": {
     "message": "Save Task"
+  },
+  "EditTask.title": {
+    "message": "Edit Task - {title}"
   },
   "EditTaskModal.title": {
     "message": "Edit task"
@@ -224,17 +335,17 @@
   "EditUser.submit": {
     "message": "Save User"
   },
+  "EditUser.title": {
+    "message": "Edit User - {name}"
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },
-  "FunctionCallCriterionFilterForm.count": {
-    "message": "Number of function calls"
-  },
-  "FunctionCallCriterionFilterForm.functionName": {
-    "message": "Function Name"
-  },
   "FunctionDeclarationCriterionFilterForm.count": {
     "message": "Number of function declarations"
+  },
+  "Header.applicationName": {
+    "message": "ClassMosaic"
   },
   "Header.signIn": {
     "message": "Sign In"
@@ -244,6 +355,12 @@
   },
   "Home.header": {
     "message": "Home"
+  },
+  "Home.title": {
+    "message": "Home"
+  },
+  "IndentationCriterionFilterForm.level": {
+    "message": "Level of code indentation"
   },
   "JoinSession.anonymousSessionDescription": {
     "message": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
@@ -263,6 +380,9 @@
   "JoinSession.taskList": {
     "message": "Tasks"
   },
+  "JoinSession.title": {
+    "message": "Join Session"
+  },
   "JoinSession.waitingForTeacher": {
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the session",
     "message": "Waiting for the teacher's machine to admit you to the session..."
@@ -275,6 +395,9 @@
   },
   "LessonDetail.header": {
     "message": "Lesson"
+  },
+  "LessonDetail.title": {
+    "message": "Lesson - {name}"
   },
   "LessonList.columns.actions": {
     "message": "Actions"
@@ -294,14 +417,26 @@
   "ListClasses.header": {
     "message": "Class Manager"
   },
+  "ListClasses.title": {
+    "message": "Classes"
+  },
   "ListLessons.header": {
     "message": "Lesson Manager"
+  },
+  "ListLessons.title": {
+    "message": "Lessons"
   },
   "ListTasks.header": {
     "message": "Task Manager"
   },
+  "ListTasks.title": {
+    "message": "Tasks"
+  },
   "ListUsers.header": {
     "message": "User Manager"
+  },
+  "ListUsers.title": {
+    "message": "Users"
   },
   "LoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
@@ -309,8 +444,14 @@
   "LoginPage.header": {
     "message": "Login"
   },
+  "LoginPage.title": {
+    "message": "Teacher Login"
+  },
   "LogoutPage.loggingOut": {
     "message": "You are being logged out..."
+  },
+  "LogoutPage.title": {
+    "message": "Logout"
   },
   "LoopCriterionFilterForm.count": {
     "message": "Number of loops"
@@ -332,6 +473,9 @@
   },
   "OpenIdConnectRedirect.signInForm.unknownError": {
     "message": "An unknown error occurred"
+  },
+  "OpenIdConnectRedirect.title": {
+    "message": "Authentication Processing"
   },
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": {
     "message": "The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
@@ -357,8 +501,11 @@
   "ProgressList.columns.timeOnTask": {
     "message": "Time on Task"
   },
-  "SessionGrouping.header": {
+  "SessionAnalysis.header": {
     "message": "Analysis"
+  },
+  "SessionAnalysis.title": {
+    "message": "Analysis - {title}"
   },
   "SessionList.columns.actions": {
     "message": "Actions"
@@ -390,11 +537,20 @@
   "SessionNavigation.analysisTab": {
     "message": "Analysis"
   },
+  "SessionNavigation.dissimilarPairsTab": {
+    "message": "Dissimilar Pairs"
+  },
+  "SessionNavigation.dissimilarSolutionsTab": {
+    "message": "Dissimilar Solutions"
+  },
   "SessionNavigation.progress": {
     "message": "Progress"
   },
   "SessionProgress.header": {
     "message": "Session Progress"
+  },
+  "SessionProgress.title": {
+    "message": "Progress - {title}"
   },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Your successfully solved this task. You can check if there are more tasks in the session menu."
@@ -420,6 +576,9 @@
   "SolveTask.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
   },
+  "SolveTaskPage.title": {
+    "message": "Solve - {title}"
+  },
   "StatementCriterionFilterForm.count": {
     "message": "Number of statements"
   },
@@ -435,6 +594,9 @@
   "StudentLoginPage.invalidParameters": {
     "message": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
   },
+  "StudentLoginPage.title": {
+    "message": "Student Login"
+  },
   "StudentName.anonymous": {
     "message": "Anonymous"
   },
@@ -443,6 +605,18 @@
   },
   "StudentName.decrypting": {
     "message": "Decrypting..."
+  },
+  "TaskDetail.title": {
+    "message": "Task - {title}"
+  },
+  "TaskDetail.unsupportedApp": {
+    "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
+  },
+  "TaskForm.SaveError": {
+    "message": "An error occurred while saving the task. Try again later."
+  },
+  "TaskForm.SaveSuccess": {
+    "message": "The task was saved successfully."
   },
   "TaskForm.blob.create": {
     "message": "Create task in external application"
@@ -453,6 +627,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.closeConfirmation.body": {
+    "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
+  },
+  "TaskForm.closeConfirmation.button": {
+    "message": "Yes, I don't need to save."
+  },
+  "TaskForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
   "TaskForm.description": {
     "message": "Description"
   },
@@ -461,6 +644,9 @@
   },
   "TaskForm.type": {
     "message": "Type"
+  },
+  "TaskModal.closeConfirmation": {
+    "message": "Are you sure you want to close without saving?"
   },
   "TaskModal.export": {
     "message": "Export task"
@@ -501,6 +687,9 @@
   "UserDetail.table.type": {
     "message": "Type"
   },
+  "UserDetail.title": {
+    "message": "User - {name}"
+  },
   "UserForm.email": {
     "message": "Email address"
   },
@@ -537,6 +726,9 @@
   "UserSessionProgress.header": {
     "message": "User Progress"
   },
+  "UserSessionProgress.title": {
+    "message": "Student Progress - {name}"
+  },
   "UserSignIn.submit": {
     "message": "Sign In"
   },
@@ -552,17 +744,26 @@
   "ViewSolutionModal.title": {
     "message": "View solution"
   },
+  "criteria.astHeight.name": {
+    "message": "Nestedness (AST Tree Height)"
+  },
+  "criteria.builtInFunctionCall.name": {
+    "message": "Built-in Function Calls"
+  },
   "criteria.condition.name": {
     "message": "If"
+  },
+  "criteria.customFunctionCall.name": {
+    "message": "Custom Function Calls"
   },
   "criteria.expression.name": {
     "message": "Expression"
   },
-  "criteria.functionCall.name": {
-    "message": "Function Call"
-  },
   "criteria.functionDeclaration.name": {
     "message": "Function Declaration"
+  },
+  "criteria.indentation.name": {
+    "message": "Code Indentation"
   },
   "criteria.loop.name": {
     "message": "Loop"
