@@ -105,6 +105,8 @@ jobs:
             -   name: End-to-end Test backend
                 working-directory: ./backend
                 run: yarn test:e2e:cov
+                env:
+                    CI: true
 
             -   name: Test frontend
                 working-directory: ./frontend
@@ -133,9 +135,21 @@ jobs:
             -   name: Run e2e tests
                 working-directory: ./e2e
                 run: yarn test
+                env:
+                    # use a different database for e2e tests
+                    DATABASE_URL: postgresql://postgres:postgres@localhost:5433/collimator-tests?schema=public
 
             -   name: SonarCloud Scan
                 uses: SonarSource/sonarcloud-github-action@master
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
                     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+            - name: Archive playwright traces
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: playwright-traces
+                # https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
+                path: |
+                    **/test-results/*/trace.zip

@@ -1,9 +1,9 @@
 import { expect, test } from "../../helpers";
-import { UserFormPageModel } from "./user-form-page-model";
-import { UserType } from "@/api/collimator/generated/models";
-import { UserListPageModel } from "./user-list-page-model";
 import { useAdminUser } from "../../authentication-helpers";
 import { userList } from "../../selectors";
+import { UserFormPageModel } from "./user-form-page-model";
+import { UserListPageModel } from "./user-list-page-model";
+import { UserType } from "@/api/collimator/generated/models";
 
 const newTeacherName = "new teacher name";
 const newTeacherEmail = "teacher.new@example.com";
@@ -150,6 +150,19 @@ test.describe("user management", () => {
     });
   });
 
+  test.describe("/user/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await UserListPageModel.create(page);
+
+      await list.viewItem(newAdminId);
+      await page.waitForURL(`${baseURL}/user/${newAdminId}/detail`);
+    });
+
+    test("renders user information", async ({ page }) => {
+      await expect(page.getByTestId("user-details")).toHaveCount(1);
+    });
+  });
+
   test.describe("/user", () => {
     test.beforeEach(async ({ page }) => {
       await UserListPageModel.create(page);
@@ -157,7 +170,7 @@ test.describe("user management", () => {
 
     test("renders the fetched items", async ({ page }) => {
       // 2 from seedings + 2 from the create tests
-      expect(page.locator(userList).locator("tbody tr")).toHaveCount(4);
+      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(4);
     });
 
     test("can delete listed items", async ({ page: pwPage }) => {

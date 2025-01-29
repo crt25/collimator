@@ -34,10 +34,10 @@ import systemPreferencesHOC from "@scratch-submodule/scratch-gui/src/lib/system-
 import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isScratchDesktop.js";
 import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
-import HashParserHOC from "@scratch-submodule/scratch-gui/src/lib/hash-parser-hoc";
 import GUIComponent from "../../components/customized-scratch-components/gui/Gui";
 import { loadCrtProject } from "../../vm/load-crt-project";
 import CrtHoc from "../../components/CrtHoc";
+import HashParserHOC from "../../components/customized-scratch-components/HashParserHOC";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 

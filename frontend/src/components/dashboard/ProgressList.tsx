@@ -223,7 +223,7 @@ const ProgressList = ({
   );
 
   return (
-    <ProgressListWrapper>
+    <ProgressListWrapper data-testid="progress-list">
       <MultiSwrContent
         data={[klass, session, solutions]}
         errors={[klassError, sessionError, solutionsError]}

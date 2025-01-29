@@ -29,7 +29,7 @@ const UserDetail = () => {
           {(user) => (
             <div>
               <PageHeader>{user.name ?? user.oidcSub}</PageHeader>
-              <Table bordered role="presentation">
+              <Table bordered role="presentation" data-testid="user-details">
                 <tbody>
                   <tr>
                     <td>

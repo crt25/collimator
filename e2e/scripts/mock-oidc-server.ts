@@ -1,9 +1,9 @@
+import express from "express";
 import {
   generateJwt,
   generateKey,
   getOpenIdConnectConfigResponse,
 } from "../authentication-helpers";
-import express from "express";
 
 const setHeaders = (res: express.Response): void => {
   res.contentType("application/json");

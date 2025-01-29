@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { Page } from "@playwright/test";
+import { BrowserContext, Page } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
 
@@ -11,7 +11,10 @@ const dummyApp = fs.readFileSync(
 
 export const initialDummyTask = '{"dummy": "task"}';
 
-export const routeDummyApp = (page: Page, url: string): Promise<void> =>
+export const routeDummyApp = (
+  page: Page | BrowserContext,
+  url: string,
+): Promise<void> =>
   page.route(url, async (route) =>
     route.fulfill({
       body: `

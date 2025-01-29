@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import {
   adminFile,
   setupForUserAuthentication,
@@ -6,7 +7,7 @@ import {
 } from "../authentication-helpers";
 import { test as setup, expect, jsonResponse } from "../helpers";
 import { headerCurrentUserName } from "../selectors";
-import * as fs from "fs";
+import { adminUser } from "./seeding/user";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import {
@@ -15,8 +16,10 @@ import {
   getSessionsControllerIsAnonymousV0Url,
 } from "@/api/collimator/generated/endpoints/sessions/sessions";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
-import { adminUser } from "./seeding/user";
-import { StudentSessionProgressDto, TaskProgress } from "@/api/collimator/generated/models";
+import {
+  StudentSessionProgressDto,
+  TaskProgress,
+} from "@/api/collimator/generated/models";
 
 // Follows the pattern described at https://playwright.dev/docs/auth#multiple-signed-in-roles
 setup.describe("authentication against a mock backend", () => {

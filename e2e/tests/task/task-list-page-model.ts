@@ -29,6 +29,10 @@ export class TaskListPageModel extends ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-title`);
   }
 
+  viewItem(itemId: number | string): Promise<void> {
+    return this.getTitle(itemId).click();
+  }
+
   static async create(page: Page) {
     await page.waitForSelector(taskList);
 

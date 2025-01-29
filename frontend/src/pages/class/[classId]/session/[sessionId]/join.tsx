@@ -105,7 +105,7 @@ const JoinSessionContent = ({
             <TaskDescription>
               <p>{session.description}</p>
             </TaskDescription>
-            <Button onClick={onJoinSession}>
+            <Button onClick={onJoinSession} data-testid="join-session-button">
               <FormattedMessage
                 id="JoinSession.joinSession"
                 defaultMessage="Join Session"
@@ -336,12 +336,14 @@ const JoinSession = () => {
                 />
               </p>
               <Input
+                data-testid="pseudonym-input"
                 label={messages.choosePseudonym}
                 value={anonymousName}
                 onChange={(e) => setAnonymousName(e.target.value)}
               />
 
               <SubmitFormButton
+                data-testid="pseudonym-submit-button"
                 label={messages.savePseudonym}
                 onClick={() => {
                   setIsAnonymousNameSet(true);

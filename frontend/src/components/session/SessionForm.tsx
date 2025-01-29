@@ -168,7 +168,7 @@ const SessionForm = ({
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="session-form">
           <Input
             label={messages.title}
             {...register("title")}
@@ -192,11 +192,13 @@ const SessionForm = ({
           <SortableListInput
             items={selectedTasks}
             updateItems={setSelectedTasks}
+            testId="selected-tasks"
           >
             {(task) => (
               <TaskListElement>
                 <span>{task.title}</span>
                 <RemoveTask
+                  data-testid="remove-task"
                   onClick={() =>
                     setSelectedTasks(selectedTasks.filter((t) => t !== task))
                   }
@@ -224,7 +226,7 @@ const SessionForm = ({
                   label: t.title,
                 })),
             ]}
-            data-testid="addTask"
+            data-testid="add-task"
             onChange={onAddTask}
             value={addTaskId}
           />
@@ -232,7 +234,7 @@ const SessionForm = ({
           <Input
             label={messages.isAnonymous}
             {...register("isAnonymous")}
-            data-testid="isAnonymous"
+            data-testid="is-anonymous"
             type="checkbox"
           >
             <ValidationErrorMessage>

@@ -72,6 +72,10 @@ const messages = defineMessages({
   },
 });
 
+const sessionTitleTemplate = (rowData: ExistingSession) => (
+  <span data-testid={`session-${rowData.id}-title`}>{rowData.title}</span>
+);
+
 const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
@@ -207,7 +211,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                       `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
                     );
                   }}
-                  data-testid={`session-${rowData.id}-delete-button`}
+                  data-testid={`session-${rowData.id}-copy-session-link-button`}
                 >
                   {intl.formatMessage(messages.copySessionLink)}
                 </Dropdown.Item>
@@ -259,6 +263,7 @@ const SessionList = ({ classId }: { classId: number }) => {
               )}
               filterMatchMode="contains"
               showFilterMenu={false}
+              body={sessionTitleTemplate}
             />
             <Column
               header={intl.formatMessage(messages.tagsColumn)}

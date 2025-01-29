@@ -22,6 +22,10 @@
       "@/*": ["../frontend/src/*"],
     }
   },
+  "include": [
+    "./**/*.ts",
+    "../frontend/src/types/app-iframe-message/**/*.d.ts",
+  ],
   "exclude": [
     "node_modules"
   ]

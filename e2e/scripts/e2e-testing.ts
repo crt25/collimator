@@ -1,6 +1,5 @@
 import { writeFileSync } from "fs";
 import {
-  buildFrontend,
   resetDatabase,
   setupFrontendPort,
   startBackend,
@@ -8,13 +7,13 @@ import {
   startMockOidcServer,
   waitUntilReachable,
 } from "../setup/helpers";
+import { isDebug } from "../helpers";
 import {
   backendPidFile,
   frontendPidFile,
   killE2eSetupProcesses,
   oidcPidFile,
 } from "./e2e-testing-config";
-import { isDebug } from "../helpers";
 
 const main = async (): Promise<void> => {
   if (!process.env.DATABASE_URL) {
@@ -123,17 +122,6 @@ const main = async (): Promise<void> => {
       path: "/user",
     },
   ]);
-
-  buildFrontend(
-    {
-      // use a relative path s.t. we don't have to rebuild the frontend for each test
-      backendHostname: "",
-      oidcUrl: process.env.OIDC_MOCK_SERVER_PROXY_URL,
-      oidcClientId,
-    },
-    isDebug ? "pipe" : "ignore",
-    "pipe",
-  );
 
   const frontendProcess = startFrontendWithBackendProxy({
     port: setupFrontendPort,

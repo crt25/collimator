@@ -1,3 +1,4 @@
+import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 import { CrtTestOptions } from "./helpers";
 import {
   mockOidcClientId,
@@ -11,7 +12,6 @@ import {
   setupFrontendPort,
   setupProjectNamePrefix,
 } from "./setup/helpers";
-import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 
 const frontendUrl = `http://localhost:${setupFrontendPort}`;
 const backendUrl = `http://localhost:${setupBackendPort}`;
@@ -74,9 +74,8 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
     },
   ],
 
-  use: {
-    scratchURL: "http://localhost:3101/scratch",
-  },
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  forbidOnly: !!process.env.CI,
 
   // timeout per test
   timeout: 30 * 1000,
@@ -110,6 +109,13 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
 
     // timeout for building the frontend, starting the backend, frontend and OpenID connect mock server
     timeout: 180 * 1000,
+  },
+
+  // collected traces on the CI
+  // https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
+  retries: 1,
+  use: {
+    trace: "on-first-retry",
   },
 };
 

@@ -27,10 +27,12 @@ const tabs: NavigationTab[] = [
   {
     url: "progress",
     title: (intl) => intl.formatMessage(messages.progressTab),
+    testId: "session-progress-tab",
   },
   {
     url: "analysis",
     title: (intl) => intl.formatMessage(messages.analysisTab),
+    testId: "session-analysis-tab",
   },
   {
     url: "dissimilar-solutions",
