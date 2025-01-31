@@ -25,7 +25,9 @@ for (const locale of locales) {
   const deprecatedMessages = Object.entries(messages)
     .filter(([messageKey, _]) => !defaultMessagesKeys.includes(messageKey))
     .map(([messageKey, messageValue]) => [
-      `DEPRECATED: ${messageKey}`,
+      messageKey.startsWith("DEPRECATED")
+        ? messageKey
+        : `DEPRECATED: ${messageKey}`,
       messageValue,
     ]);
 
