@@ -1,3 +1,4 @@
+import "./instrument";
 import { createServer } from "http";
 import { NestFactory, Reflector } from "@nestjs/core";
 import {

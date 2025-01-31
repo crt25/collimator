@@ -7,3 +7,5 @@
 /coverage-e2e
 /coverage-nest-e2e
 /.nyc_output
+# Sentry Config File
+.sentryclirc
