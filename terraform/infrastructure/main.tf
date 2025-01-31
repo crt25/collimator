@@ -54,6 +54,7 @@ module "backend" {
   source = "./modules/fargate"
 
   name        = "${var.name}-${var.environment}-backend"
+  environment = var.environment
   domain_name = var.domain_name
   region      = var.region
 
@@ -65,6 +66,7 @@ module "backend" {
   public_subnet_ids      = module.network.public_subnet_ids
 
   open_id_connect_microsoft_client_id = var.open_id_connect_microsoft_client_id
+  sentry_dsn                          = var.sentry_dsn 
   database_url                        = module.database.database_url
 
   tags = var.tags
