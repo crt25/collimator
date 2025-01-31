@@ -80,7 +80,7 @@
   "crt.taskConfig.enableAssertions": [
     {
       "type": 0,
-      "value": "Activer les assertions simulant la résolution de la tâche par un étudiant."
+      "value": "Activer les affirmations simulant la résolution de la tâche par un étudiant."
     }
   ],
   "crt.taskConfig.heading": [

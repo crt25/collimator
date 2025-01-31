@@ -2428,9 +2428,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/cli@npm:^6.3.14":
-  version: 6.3.14
-  resolution: "@formatjs/cli@npm:6.3.14"
+"@formatjs/cli@npm:^6.3.15":
+  version: 6.3.15
+  resolution: "@formatjs/cli@npm:6.3.15"
   peerDependencies:
     "@glimmer/env": ^0.1.7
     "@glimmer/reference": ^0.91.1 || ^0.92.0 || ^0.93.0
@@ -2459,7 +2459,7 @@ __metadata:
       optional: true
   bin:
     formatjs: bin/formatjs
-  checksum: 10c0/b4c83ed7fdc8dcd48b2f48fa9cca65b52472fb096eb028517a872f8a71ed3964f4b0a6bbc607f821a9504f396fe7341ef4d9ad44a381a37f280ed7547de66f41
+  checksum: 10c0/eb848bb1d81152ca25235c95e55e1d389e46aa3436b01a406676a7f1f4c66f440b0dc71abcf995c4c98416bf4d35d2e0e5351ad98cdf77bc54b31f176fd67e1c
   languageName: node
   linkType: hard
 
@@ -3778,12 +3778,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.9.0":
-  version: 22.9.0
-  resolution: "@types/node@npm:22.9.0"
+"@types/node@npm:^22.10.5":
+  version: 22.10.5
+  resolution: "@types/node@npm:22.10.5"
   dependencies:
-    undici-types: "npm:~6.19.8"
-  checksum: 10c0/3f46cbe0a49bab4ba30494025e4c8a6e699b98ac922857aa1f0209ce11a1313ee46e6808b8f13fe5b8b960a9d7796b77c8d542ad4e9810e85ef897d5593b5d51
+    undici-types: "npm:~6.20.0"
+  checksum: 10c0/6a0e7d1fe6a86ef6ee19c3c6af4c15542e61aea2f4cee655b6252efb356795f1f228bc8299921e82924e80ff8eca29b74d9dd0dd5cc1a90983f892f740b480df
   languageName: node
   linkType: hard
 
@@ -3818,9 +3818,9 @@ __metadata:
   linkType: hard
 
 "@types/prop-types@npm:*, @types/prop-types@npm:^15":
-  version: 15.7.13
-  resolution: "@types/prop-types@npm:15.7.13"
-  checksum: 10c0/1b20fc67281902c6743379960247bc161f3f0406ffc0df8e7058745a85ea1538612109db0406290512947f9632fe9e10e7337bf0ce6338a91d6c948df16a7c61
+  version: 15.7.14
+  resolution: "@types/prop-types@npm:15.7.14"
+  checksum: 10c0/1ec775160bfab90b67a782d735952158c7e702ca4502968aa82565bd8e452c2de8601c8dfe349733073c31179116cf7340710160d3836aa8a1ef76d1532893b1
   languageName: node
   linkType: hard
 
@@ -3912,12 +3912,12 @@ __metadata:
   linkType: hard
 
 "@types/react-virtualized@npm:^9":
-  version: 9.21.30
-  resolution: "@types/react-virtualized@npm:9.21.30"
+  version: 9.22.0
+  resolution: "@types/react-virtualized@npm:9.22.0"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/react": "npm:*"
-  checksum: 10c0/267fd00de3fe1f93ba535e1b98b1106d61c9172a6741d8a65aa4f16720177edb359bf997518f3deb2c078b4b275e512bccd3ee941ae4019b5c7836aa16b8ed8e
+  checksum: 10c0/dede58499c90fbc2042e58a3c7192a92b8bc61fed0589a95911d2a0726f202fa0bd87c9fc68e861ce0a6a034a7460a195b291ff49465a3b620e9f630bfdc9246
   languageName: node
   linkType: hard
 
@@ -4837,7 +4837,7 @@ __metadata:
     "@craco/craco": "npm:^7.1.0"
     "@emotion/react": "npm:^11.13.3"
     "@emotion/styled": "npm:^11.13.0"
-    "@formatjs/cli": "npm:^6.3.14"
+    "@formatjs/cli": "npm:^6.3.15"
     "@microbit/microbit-universal-hex": "npm:^0.2.2"
     "@playwright/test": "npm:^1.48.1"
     "@testing-library/jest-dom": "npm:^5.17.0"
@@ -4853,7 +4853,7 @@ __metadata:
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/lodash.defaultsdeep": "npm:^4"
     "@types/lodash.omit": "npm:^4.5.9"
-    "@types/node": "npm:^22.9.0"
+    "@types/node": "npm:^22.10.5"
     "@types/omggif": "npm:^1"
     "@types/papaparse": "npm:^5"
     "@types/prop-types": "npm:^15"
@@ -18087,10 +18087,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.19.2, undici-types@npm:~6.19.8":
+"undici-types@npm:~6.19.2":
   version: 6.19.8
   resolution: "undici-types@npm:6.19.8"
   checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.20.0":
+  version: 6.20.0
+  resolution: "undici-types@npm:6.20.0"
+  checksum: 10c0/68e659a98898d6a836a9a59e6adf14a5d799707f5ea629433e025ac90d239f75e408e2e5ff086afc3cace26f8b26ee52155293564593fbb4a2f666af57fc59bf
   languageName: node
   linkType: hard
 

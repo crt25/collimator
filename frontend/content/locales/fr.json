@@ -20,6 +20,9 @@
   "Analysis.numberOfStudents": {
     "message": "Number of Students"
   },
+  "Analysis.selected": {
+    "message": "Selected"
+  },
   "Analysis.xAxis": {
     "message": "x-Axis"
   },

@@ -11,6 +11,12 @@
       "value": "Number of Students"
     }
   ],
+  "Analysis.selected": [
+    {
+      "type": 0,
+      "value": "Selected"
+    }
+  ],
   "Analysis.xAxis": [
     {
       "type": 0,
@@ -525,31 +531,31 @@
       "value": "Number of custom function callss"
     }
   ],
-  "DEPRECATED: DEPRECATED: Category.filteredOut": [
+  "DEPRECATED: Category.filteredOut": [
     {
       "type": 0,
       "value": "filtered out"
     }
   ],
-  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.count": [
+  "DEPRECATED: FunctionCallCriterionFilterForm.count": [
     {
       "type": 0,
       "value": "Number of function calls"
     }
   ],
-  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.functionName": [
+  "DEPRECATED: FunctionCallCriterionFilterForm.functionName": [
     {
       "type": 0,
       "value": "Function Name"
     }
   ],
-  "DEPRECATED: DEPRECATED: SessionGrouping.header": [
+  "DEPRECATED: SessionGrouping.header": [
     {
       "type": 0,
       "value": "Analysis"
     }
   ],
-  "DEPRECATED: DEPRECATED: criteria.functionCall.name": [
+  "DEPRECATED: criteria.functionCall.name": [
     {
       "type": 0,
       "value": "Function Call"

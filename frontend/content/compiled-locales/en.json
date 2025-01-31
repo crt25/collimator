@@ -11,6 +11,12 @@
       "value": "Number of Students"
     }
   ],
+  "Analysis.selected": [
+    {
+      "type": 0,
+      "value": "Selected"
+    }
+  ],
   "Analysis.xAxis": [
     {
       "type": 0,
