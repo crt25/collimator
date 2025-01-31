@@ -81,8 +81,7 @@ const Header = ({
     <>
       <Head>
         <title>
-          {intl.formatMessage(messages.applicationName)} -{" "}
-          {intl.formatMessage(title, titleParameters)}
+          {`${intl.formatMessage(messages.applicationName)} - ${intl.formatMessage(title, titleParameters)}`}
         </title>
         {description && (
           <meta name="description" content={intl.formatMessage(description)} />

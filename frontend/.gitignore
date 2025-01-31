@@ -33,3 +33,5 @@ next-env.d.ts
 *storybook.log
 
 .env.test
+# Sentry Config File
+.env.sentry-build-plugin
