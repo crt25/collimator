@@ -1,3 +1,4 @@
+import "./instrument";
 import ReactDOM from "react-dom";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
