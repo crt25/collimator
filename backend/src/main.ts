@@ -34,7 +34,12 @@ async function bootstrap(): Promise<void> {
 
   app.enableCors({
     origin: frontendHostname,
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Sentry-Trace",
+      "Baggage ",
+    ],
     exposedHeaders: [],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     // ignore preflight requests

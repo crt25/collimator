@@ -4,7 +4,10 @@
 generator client {
   provider        = "prisma-client-js"
   // "prismaSchemaFolder" is not yet supported by JetBrains IDEs
-  previewFeatures = ["omitApi", "typedSql"] // ,"prismaSchemaFolder"]
+  // when updating to prisma 6, remove "omitApi" and "tracing"
+  // see https://docs.sentry.io/platforms/javascript/guides/nestjs/configuration/integrations/prisma/ for
+  // the changes required for sentry
+  previewFeatures = ["omitApi", "typedSql", "tracing"] // ,"prismaSchemaFolder"]
 }
 
 datasource db {

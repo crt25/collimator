@@ -5,6 +5,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { CoreModule } from "./core/core.module";
 import { AstModule } from "./ast/ast.module";
+import { SentryService } from "./sentry.service";
 
 @Module({
   imports: [
@@ -18,5 +19,6 @@ import { AstModule } from "./ast/ast.module";
     ApiModule,
     ScheduleModule.forRoot(),
   ],
+  providers: [SentryService],
 })
 export class AppModule {}

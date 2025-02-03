@@ -19,6 +19,10 @@ env:
   SCRATCH_APP_BUCKET_ID: collimator-dev-app-scratch
   TERRAFORM_STATE_BUCKET: collimator-dev-cd-tf-state
 
+  # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
+  SENTRY_RELEASE: ${{ github.sha }}
+  SENTRY_ENVIRONMENT: development
+
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
@@ -99,7 +103,7 @@ jobs:
         env:
           REACT_APP_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
 
-      - name: Upload scratch app sourcemaps
+      - name: Upload scratch app source maps
         working-directory: ./apps/scratch
         run: yarn sentry:sourcemaps
         env:

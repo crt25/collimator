@@ -4,6 +4,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentAnalyses, deleteStudentSolutions } from "@prisma/client/sql";
 
 import { Cron } from "@nestjs/schedule";
+import { SentryCron } from "@sentry/nestjs";
 import { SolutionId } from "./dto";
 import { SolutionAnalysisService } from "./solution-analysis.service";
 
@@ -153,6 +154,14 @@ export class SolutionsService {
 
   // check every minute (with seconds = 0) whether there are analyses that were not performed
   @Cron("0 * * * * *", { name: "runUnperformedAnalyes" })
+  @SentryCron("runUnperformedAnalyes", {
+    schedule: {
+      type: "crontab",
+      value: "0 * * * * *",
+    },
+    checkinMargin: 1, // In minutes.
+    maxRuntime: 5, // In minutes.
+  })
   async runUnperformedAnalyes(): Promise<void> {
     const solutionsWithoutAnalysis = await this.prisma.solution.findMany({
       where: {
@@ -182,6 +191,14 @@ export class SolutionsService {
 
   // check every minute (with seconds = 30) whether there are analyses that were not upgraded
   @Cron("30 * * * * *", { name: "runUpgradeAnalyes" })
+  @SentryCron("runUpgradeAnalyes", {
+    schedule: {
+      type: "crontab",
+      value: "30 * * * * *",
+    },
+    checkinMargin: 5, // In minutes.
+    maxRuntime: 30, // In minutes.
+  })
   async runUpgradeAnalyes(): Promise<void> {
     const solutionsWithoutAnalysis =
       await this.prisma.solutionAnalysis.findMany({
