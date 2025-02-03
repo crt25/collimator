@@ -145,12 +145,6 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
                     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-            -   name: Upload backend source maps
-                working-directory: ./backend
-                run: yarn sentry:sourcemaps
-                env:
-                    SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
-
             - name: Archive playwright traces
               if: always()
               uses: actions/upload-artifact@v4

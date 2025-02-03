@@ -31,6 +31,29 @@ jobs:
   deploy:
     needs: [tests]
     runs-on: ubuntu-latest
+
+    # Service containers to run with `runner-job`
+    services:
+        # Label used to access the service container
+        postgres:
+            # Docker Hub image
+            image: postgres
+            # Provide the password for postgres
+            env:
+                POSTGRES_PASSWORD: postgres
+            # Set health checks to wait until postgres has started
+            options: >-
+                --health-cmd pg_isready
+                --health-interval 10s
+                --health-timeout 5s
+                --health-retries 5
+            ports:
+                # Maps TCP port 5433 on the host to Postgres
+                - 5433:5432
+                
+    env:
+        DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+
     steps:
     
       # Build application and prepare deployment
@@ -88,6 +111,22 @@ jobs:
       - name: Init terraform
         run: tofu init -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
         working-directory: ./terraform/deployment
+
+      # the database must be fully migrated before running prisma:generate
+      # we build the backend so tha we can upload the source maps to sentry
+      - name: Prepare test database
+        working-directory: ./backend
+        run: yarn prisma migrate deploy
+
+      - name: Build backend
+        working-directory: ./backend
+        run: yarn prisma:generate && yarn build
+
+      - name: Upload backend source maps
+        working-directory: ./backend
+        run: yarn sentry:sourcemaps
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
 
       - name: Build backend docker image
         run: docker build -t ${{ env.BACKEND_IMAGE_NAME }} .
