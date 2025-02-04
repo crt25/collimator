@@ -49,6 +49,14 @@ module "ecs_service" {
         {
           name  = "OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID",
           value = var.open_id_connect_microsoft_client_id
+        },
+        {
+          name  = "SENTRY_DSN",
+          value = var.sentry_dsn
+        },
+        {
+          name  = "SENTRY_ENVIRONMENT",
+          value = var.environment
         }
       ]
     }

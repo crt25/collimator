@@ -2,6 +2,10 @@ variable "name" {
   type = string
 }
 
+variable "environment" {
+  type = string
+}
+
 variable "domain_name" {
   type = string
 }
@@ -47,5 +51,9 @@ variable "discovery_service_arn" {
 }
 
 variable "open_id_connect_microsoft_client_id" {
+  type = string
+}
+
+variable "sentry_dsn" {
   type = string
 }

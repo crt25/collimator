@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
+import { SentryGlobalFilter } from "@sentry/nestjs/setup";
 import * as interceptors from "./interceptors";
 import { UsersModule } from "./users/users.module";
 import { ClassesModule } from "./classes/classes.module";
@@ -25,6 +26,11 @@ import { AuthenticationModule } from "./authentication/authentication.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: interceptors.PrismaConnectionClosedInterceptor,
+    },
+    // global filter for Sentry *after* exception filters or interceptors which we don't want to catch
+    {
+      provide: APP_FILTER,
+      useClass: SentryGlobalFilter,
     },
   ],
 })

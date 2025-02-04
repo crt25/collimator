@@ -91,3 +91,6 @@ out
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
+
+# Sentry Config File
+.sentryclirc
