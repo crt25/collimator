@@ -7,6 +7,12 @@
       version = ">= 5.75.0"
     }
   }
+
+  backend "s3" {
+    bucket = var.tfstate_bucket_name
+    key    = "infrastructure/dns-zone"
+    region = var.region
+  }
 }
 
 provider "aws" {

@@ -7,4 +7,10 @@
       version = ">= 5.75.0"
     }
   }
+
+  backend "s3" {
+    bucket = var.tfstate_bucket_name
+    key    = "infrastructure/infrastructure"
+    region = var.region
+  }
 }
