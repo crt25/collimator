@@ -129,8 +129,8 @@ test.describe("/edit", () => {
       page.taskBlocks.catActor.visualTopOfAppendableStack,
     );
 
-    await expect(editableStackButton).toHaveText("✎");
-    await expect(frozenStackButton).toHaveText("🛇");
+    await expect(editableStackButton).toHaveText("✍️");
+    await expect(frozenStackButton).toHaveText("🔒");
     await expect(appendableStackButton).toHaveText("+");
   });
 
@@ -309,13 +309,13 @@ test.describe("/edit", () => {
       page.taskBlocks.catActor.visualTopOfEditableStack,
     );
 
-    await expect(editableStackButton).toHaveText("✎");
+    await expect(editableStackButton).toHaveText("✍️");
     await editableStackButton.click();
-    await expect(editableStackButton).toHaveText("🛇");
+    await expect(editableStackButton).toHaveText("🔒");
     await editableStackButton.click();
     await expect(editableStackButton).toHaveText("+");
     await editableStackButton.click();
-    await expect(editableStackButton).toHaveText("✎");
+    await expect(editableStackButton).toHaveText("✍️");
   });
 
   test("can prepend blocks to all stacks", async ({ page: pwPage }) => {
