@@ -14,6 +14,10 @@ import PageHeader from "@/components/PageHeader";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
 
 const messages = defineMessages({
+  title: {
+    id: "EditTask.title",
+    defaultMessage: "Edit Task - {title}",
+  },
   submit: {
     id: "EditTask.submit",
     defaultMessage: "Save Task",
@@ -50,7 +54,12 @@ const EditTask = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          title: task.data?.title ?? "",
+        }}
+      />
       <Container>
         <CrtNavigation task={task.data} />
         <PageHeader>

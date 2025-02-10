@@ -29,7 +29,8 @@
     "scratch:download:types:definitions": "curl -o .temp/scratch/sb3_definitions.json https://raw.githubusercontent.com/scratchfoundation/scratch-parser/refs/heads/master/lib/sb3_definitions.json",
     "scratch:download:types:schema": "curl -o .temp/scratch/sb3_schema.json https://raw.githubusercontent.com/scratchfoundation/scratch-parser/refs/heads/master/lib/sb3_schema.json",
     "scratch:download:types": "yarn mkdirp .temp/scratch && yarn scratch:download:types:definitions && yarn scratch:download:types:schema",
-    "scratch:update-types": "yarn scratch:download:types && cd .temp/scratch && json2ts -i sb3_schema.json -o ../../src/ast/types/input/scratch/generated/sb3.ts"
+    "scratch:update-types": "yarn scratch:download:types && cd .temp/scratch && json2ts -i sb3_schema.json -o ../../src/ast/types/input/scratch/generated/sb3.ts",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-backend ./dist && sentry-cli sourcemaps upload --org hep-vaud --project crt-backend ./dist"
   },
   "c8": {
     "all": true,
@@ -52,6 +53,9 @@
     "@nestjs/swagger": "^8.0.1",
     "@nestjs/websockets": "^10.4.7",
     "@prisma/client": "^5.21.1",
+    "@sentry/cli": "^2.41.1",
+    "@sentry/nestjs": "^8.52.1",
+    "@sentry/profiling-node": "^8.52.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv-cli": "^7.4.2",

@@ -1,10 +1,17 @@
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { useLogout } from "@/hooks/useLogout";
+
+const messages = defineMessages({
+  title: {
+    id: "LogoutPage.title",
+    defaultMessage: "Logout",
+  },
+});
 
 const LogoutPage = () => {
   const logout = useLogout();
@@ -15,7 +22,7 @@ const LogoutPage = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <PageHeader>
           <FormattedMessage

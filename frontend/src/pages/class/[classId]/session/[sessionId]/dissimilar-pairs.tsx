@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Container } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -11,6 +11,13 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import DissimilarPairs from "@/components/dashboard/DissimilarPairs";
+
+const messages = defineMessages({
+  title: {
+    id: "DissimilarAnalysisPairs.title",
+    defaultMessage: "Dissimilar Pairs - {title}",
+  },
+});
 
 const DissimilarAnalysisPairs = () => {
   const router = useRouter();
@@ -33,7 +40,12 @@ const DissimilarAnalysisPairs = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        title={messages.title}
+        titleParameters={{
+          title: session?.title ?? "",
+        }}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

@@ -16,8 +16,9 @@
     "i18n:extract": "formatjs extract 'src/{components,sections,extensions}/**/*.{js,ts,tsx}' --format crowdin --out-file src/content/locales/en.json",
     "i18n:compile": "formatjs compile-folder --ast --format crowdin src/content/locales src/content/compiled-locales",
     "i18n:fill": "node ./scripts/fill-locales.mjs",
-    "i18n": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
-    "postinstall": "node scripts/postinstall.mjs"
+    "i18n:update": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
+    "postinstall": "node scripts/postinstall.mjs",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-scratch ./build && sentry-cli sourcemaps upload --org hep-vaud --project crt-scratch ./build"
   },
   "homepage": "/scratch",
   "dependencies": {
@@ -28,6 +29,8 @@
     "@emotion/styled": "^11.13.0",
     "@microbit/microbit-universal-hex": "^0.2.2",
     "@playwright/test": "^1.48.1",
+    "@sentry/cli": "^2.41.1",
+    "@sentry/react": "^8.52.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",

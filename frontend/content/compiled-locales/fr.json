@@ -191,6 +191,16 @@
       "value": "Teacher"
     }
   ],
+  "ClassDetail.title": [
+    {
+      "type": 0,
+      "value": "Class - "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -269,6 +279,26 @@
       "value": "Students"
     }
   ],
+  "ClassSessionList.title": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " - Sessions"
+    }
+  ],
+  "ClassUserList.title": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " - Students"
+    }
+  ],
   "CodeComparison.defaultOption": [
     {
       "type": 0,
@@ -291,6 +321,12 @@
     {
       "type": 0,
       "value": "Comparison"
+    }
+  ],
+  "CodeComparison.selectedSolutions": [
+    {
+      "type": 0,
+      "value": "Group: Selected students"
     }
   ],
   "CodeComparison.view": [
@@ -339,6 +375,12 @@
       "value": "Create Class"
     }
   ],
+  "CreateClass.title": [
+    {
+      "type": 0,
+      "value": "Create Class"
+    }
+  ],
   "CreateLesson.header": [
     {
       "type": 0,
@@ -346,6 +388,12 @@
     }
   ],
   "CreateLesson.submit": [
+    {
+      "type": 0,
+      "value": "Create Lesson"
+    }
+  ],
+  "CreateLesson.title": [
     {
       "type": 0,
       "value": "Create Lesson"
@@ -364,6 +412,12 @@
     }
   ],
   "CreateSession.submit": [
+    {
+      "type": 0,
+      "value": "Create Session"
+    }
+  ],
+  "CreateSession.title": [
     {
       "type": 0,
       "value": "Create Session"
@@ -417,6 +471,12 @@
       "value": "Create Task"
     }
   ],
+  "CreateTask.title": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
   "CreateUser.header": [
     {
       "type": 0,
@@ -429,10 +489,22 @@
       "value": "Create User"
     }
   ],
+  "CreateUser.title": [
+    {
+      "type": 0,
+      "value": "Create User"
+    }
+  ],
   "CrtNavigation.classesTab": [
     {
       "type": 0,
       "value": "Classes"
+    }
+  ],
+  "CrtNavigation.homeTab": [
+    {
+      "type": 0,
+      "value": "Home"
     }
   ],
   "CrtNavigation.lessonsTab": [
@@ -495,6 +567,16 @@
       "value": "Dissimilar Solutions"
     }
   ],
+  "DissimilarAnalysisPairs.title": [
+    {
+      "type": 0,
+      "value": "Dissimilar Pairs - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
   "DissimilarPairs.allSubTasks": [
     {
       "type": 0,
@@ -523,6 +605,16 @@
     {
       "type": 0,
       "value": "Dissimilar Solutions"
+    }
+  ],
+  "DissimilarSolutions.title": [
+    {
+      "type": 0,
+      "value": "Dissimilar Solutions - "
+    },
+    {
+      "type": 1,
+      "value": "title"
     }
   ],
   "DissimilarityAnalysis.allSubTasks": [
@@ -573,6 +665,16 @@
       "value": "Save Class"
     }
   ],
+  "EditClass.title": [
+    {
+      "type": 0,
+      "value": "Edit Class - "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "EditLesson.header": [
     {
       "type": 0,
@@ -583,6 +685,16 @@
     {
       "type": 0,
       "value": "Save Lesson"
+    }
+  ],
+  "EditLesson.title": [
+    {
+      "type": 0,
+      "value": "Edit Lesson - "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "EditSession.header": [
@@ -597,6 +709,16 @@
       "value": "Save Session"
     }
   ],
+  "EditSession.title": [
+    {
+      "type": 0,
+      "value": "Edit Session - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
   "EditTask.header": [
     {
       "type": 0,
@@ -607,6 +729,16 @@
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "EditTask.title": [
+    {
+      "type": 0,
+      "value": "Edit Task - "
+    },
+    {
+      "type": 1,
+      "value": "title"
     }
   ],
   "EditTaskModal.title": [
@@ -627,6 +759,16 @@
       "value": "Save User"
     }
   ],
+  "EditUser.title": [
+    {
+      "type": 0,
+      "value": "Edit User - "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,
@@ -637,6 +779,12 @@
     {
       "type": 0,
       "value": "Number of function declarations"
+    }
+  ],
+  "Header.applicationName": [
+    {
+      "type": 0,
+      "value": "ClassMosaic"
     }
   ],
   "Header.signIn": [
@@ -652,6 +800,12 @@
     }
   ],
   "Home.header": [
+    {
+      "type": 0,
+      "value": "Home"
+    }
+  ],
+  "Home.title": [
     {
       "type": 0,
       "value": "Home"
@@ -699,6 +853,12 @@
       "value": "Tasks"
     }
   ],
+  "JoinSession.title": [
+    {
+      "type": 0,
+      "value": "Join Session"
+    }
+  ],
   "JoinSession.waitingForTeacher": [
     {
       "type": 0,
@@ -721,6 +881,16 @@
     {
       "type": 0,
       "value": "Lesson"
+    }
+  ],
+  "LessonDetail.title": [
+    {
+      "type": 0,
+      "value": "Lesson - "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "LessonList.columns.actions": [
@@ -759,10 +929,22 @@
       "value": "Class Manager"
     }
   ],
+  "ListClasses.title": [
+    {
+      "type": 0,
+      "value": "Classes"
+    }
+  ],
   "ListLessons.header": [
     {
       "type": 0,
       "value": "Lesson Manager"
+    }
+  ],
+  "ListLessons.title": [
+    {
+      "type": 0,
+      "value": "Lessons"
     }
   ],
   "ListTasks.header": [
@@ -771,10 +953,22 @@
       "value": "Task Manager"
     }
   ],
+  "ListTasks.title": [
+    {
+      "type": 0,
+      "value": "Tasks"
+    }
+  ],
   "ListUsers.header": [
     {
       "type": 0,
       "value": "User Manager"
+    }
+  ],
+  "ListUsers.title": [
+    {
+      "type": 0,
+      "value": "Users"
     }
   ],
   "LoginPage.authenticate.microsoft": [
@@ -789,10 +983,22 @@
       "value": "Login"
     }
   ],
+  "LoginPage.title": [
+    {
+      "type": 0,
+      "value": "Teacher Login"
+    }
+  ],
   "LogoutPage.loggingOut": [
     {
       "type": 0,
       "value": "You are being logged out..."
+    }
+  ],
+  "LogoutPage.title": [
+    {
+      "type": 0,
+      "value": "Logout"
     }
   ],
   "LoopCriterionFilterForm.count": [
@@ -835,6 +1041,12 @@
     {
       "type": 0,
       "value": "An unknown error occurred"
+    }
+  ],
+  "OpenIdConnectRedirect.title": [
+    {
+      "type": 0,
+      "value": "Authentication Processing"
     }
   ],
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": [
@@ -889,6 +1101,16 @@
     {
       "type": 0,
       "value": "Analysis"
+    }
+  ],
+  "SessionAnalysis.title": [
+    {
+      "type": 0,
+      "value": "Analysis - "
+    },
+    {
+      "type": 1,
+      "value": "title"
     }
   ],
   "SessionList.columns.actions": [
@@ -975,6 +1197,16 @@
       "value": "Session Progress"
     }
   ],
+  "SessionProgress.title": [
+    {
+      "type": 0,
+      "value": "Progress - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
   "SolveTask.correctSolutionSubmitted": [
     {
       "type": 0,
@@ -1039,6 +1271,16 @@
       "value": "). Please report this issue."
     }
   ],
+  "SolveTaskPage.title": [
+    {
+      "type": 0,
+      "value": "Solve - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
   "StatementCriterionFilterForm.count": [
     {
       "type": 0,
@@ -1069,6 +1311,12 @@
       "value": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
     }
   ],
+  "StudentLoginPage.title": [
+    {
+      "type": 0,
+      "value": "Student Login"
+    }
+  ],
   "StudentName.anonymous": [
     {
       "type": 0,
@@ -1085,6 +1333,16 @@
     {
       "type": 0,
       "value": "Decrypting..."
+    }
+  ],
+  "TaskDetail.title": [
+    {
+      "type": 0,
+      "value": "Task - "
+    },
+    {
+      "type": 1,
+      "value": "title"
     }
   ],
   "TaskDetail.unsupportedApp": [
@@ -1259,6 +1517,16 @@
       "value": "Type"
     }
   ],
+  "UserDetail.title": [
+    {
+      "type": 0,
+      "value": "User - "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "UserForm.email": [
     {
       "type": 0,
@@ -1329,6 +1597,16 @@
     {
       "type": 0,
       "value": "User Progress"
+    }
+  ],
+  "UserSessionProgress.title": [
+    {
+      "type": 0,
+      "value": "Student Progress - "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "UserSignIn.submit": [

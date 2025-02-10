@@ -37,6 +37,10 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 const logModule = "[JoinSession]";
 
 const messages = defineMessages({
+  title: {
+    id: "JoinSession.title",
+    defaultMessage: "Join Session",
+  },
   choosePseudonym: {
     id: "JoinSession.choosePseudonym",
     defaultMessage: "Enter a pseudonym",
@@ -327,7 +331,7 @@ const JoinSession = () => {
       >
         {() => (
           <>
-            <Header />
+            <Header title={messages.title} />
             <Container>
               <p>
                 <FormattedMessage
@@ -364,7 +368,7 @@ const JoinSession = () => {
   if (!teacherPublicKeyFingerprint) {
     return (
       <>
-        <Header />
+        <Header title={messages.title} />
         <Container>
           <FormattedMessage
             id="JoinSession.invalidJoinLink"
@@ -377,7 +381,7 @@ const JoinSession = () => {
 
   return (
     <MaxScreenHeight>
-      <Header />
+      <Header title={messages.title} />
       <VerticalSpacing />
 
       <RemainingHeightContainer>

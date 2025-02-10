@@ -17,6 +17,10 @@ variable "domain_name" {
   type = string
 }
 
+variable "sentry_dsn" {
+  type    = string
+}
+
 variable "open_id_connect_microsoft_client_id" {
   type    = string
   default = "d8336644-c349-4b7f-972c-829aebc41f1b"

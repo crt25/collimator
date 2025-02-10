@@ -1,4 +1,19 @@
 {
+  "DEPRECATED: DEPRECATED: Category.filteredOut": {
+    "message": "filtered out"
+  },
+  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.count": {
+    "message": "Number of function calls"
+  },
+  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.functionName": {
+    "message": "Function Name"
+  },
+  "DEPRECATED: DEPRECATED: SessionGrouping.header": {
+    "message": "Analysis"
+  },
+  "DEPRECATED: DEPRECATED: criteria.functionCall.name": {
+    "message": "Function Call"
+  },
   "Analysis.groupName": {
     "message": "Group"
   },
@@ -95,6 +110,9 @@
   "ClassDetail.table.teacher": {
     "message": "Teacher"
   },
+  "ClassDetail.title": {
+    "message": "Class - {name}"
+  },
   "ClassForm.name": {
     "message": "Name"
   },
@@ -134,6 +152,12 @@
   "ClassNavigation.studentsTab": {
     "message": "Students"
   },
+  "ClassSessionList.title": {
+    "message": "{name} - Sessions"
+  },
+  "ClassUserList.title": {
+    "message": "{name} - Students"
+  },
   "CodeComparison.defaultOption": {
     "message": "Group: All students"
   },
@@ -145,6 +169,9 @@
   },
   "CodeComparison.heading": {
     "message": "Comparison"
+  },
+  "CodeComparison.selectedSolutions": {
+    "message": "Group: Selected students"
   },
   "CodeComparison.view": {
     "message": "View"
@@ -161,10 +188,16 @@
   "CreateClass.submit": {
     "message": "Create Class"
   },
+  "CreateClass.title": {
+    "message": "Create Class"
+  },
   "CreateLesson.header": {
     "message": "Create Lesson"
   },
   "CreateLesson.submit": {
+    "message": "Create Lesson"
+  },
+  "CreateLesson.title": {
     "message": "Create Lesson"
   },
   "CreateLessonForm.name": {
@@ -174,6 +207,9 @@
     "message": "Create Session"
   },
   "CreateSession.submit": {
+    "message": "Create Session"
+  },
+  "CreateSession.title": {
     "message": "Create Session"
   },
   "CreateSessionForm.addTask": {
@@ -200,14 +236,23 @@
   "CreateTask.submit": {
     "message": "Create Task"
   },
+  "CreateTask.title": {
+    "message": "Create Task"
+  },
   "CreateUser.header": {
     "message": "Create User"
   },
   "CreateUser.submit": {
     "message": "Create User"
   },
+  "CreateUser.title": {
+    "message": "Create User"
+  },
   "CrtNavigation.classesTab": {
     "message": "Classes"
+  },
+  "CrtNavigation.homeTab": {
+    "message": "Home"
   },
   "CrtNavigation.lessonsTab": {
     "message": "Lessons"
@@ -224,6 +269,9 @@
   "DissimilarAnalysisPairs.header": {
     "message": "Dissimilar Solutions"
   },
+  "DissimilarAnalysisPairs.title": {
+    "message": "Dissimilar Pairs - {title}"
+  },
   "DissimilarPairs.allSubTasks": {
     "message": "All sub-tasks"
   },
@@ -238,6 +286,9 @@
   },
   "DissimilarSolutions.header": {
     "message": "Dissimilar Solutions"
+  },
+  "DissimilarSolutions.title": {
+    "message": "Dissimilar Solutions - {title}"
   },
   "DissimilarityAnalysis.allSubTasks": {
     "message": "All sub-tasks"
@@ -263,11 +314,17 @@
   "EditClass.submit": {
     "message": "Save Class"
   },
+  "EditClass.title": {
+    "message": "Edit Class - {name}"
+  },
   "EditLesson.header": {
     "message": "Edit Lesson"
   },
   "EditLesson.submit": {
     "message": "Save Lesson"
+  },
+  "EditLesson.title": {
+    "message": "Edit Lesson - {name}"
   },
   "EditSession.header": {
     "message": "Edit Session"
@@ -275,11 +332,17 @@
   "EditSession.submit": {
     "message": "Save Session"
   },
+  "EditSession.title": {
+    "message": "Edit Session - {title}"
+  },
   "EditTask.header": {
     "message": "Edit Task"
   },
   "EditTask.submit": {
     "message": "Save Task"
+  },
+  "EditTask.title": {
+    "message": "Edit Task - {title}"
   },
   "EditTaskModal.title": {
     "message": "Edit task"
@@ -290,11 +353,17 @@
   "EditUser.submit": {
     "message": "Save User"
   },
+  "EditUser.title": {
+    "message": "Edit User - {name}"
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },
   "FunctionDeclarationCriterionFilterForm.count": {
     "message": "Number of function declarations"
+  },
+  "Header.applicationName": {
+    "message": "ClassMosaic"
   },
   "Header.signIn": {
     "message": "Sign In"
@@ -303,6 +372,9 @@
     "message": "Sign Out"
   },
   "Home.header": {
+    "message": "Home"
+  },
+  "Home.title": {
     "message": "Home"
   },
   "IndentationCriterionFilterForm.level": {
@@ -326,6 +398,9 @@
   "JoinSession.taskList": {
     "message": "Tasks"
   },
+  "JoinSession.title": {
+    "message": "Join Session"
+  },
   "JoinSession.waitingForTeacher": {
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the session",
     "message": "Waiting for the teacher's machine to admit you to the session..."
@@ -338,6 +413,9 @@
   },
   "LessonDetail.header": {
     "message": "Lesson"
+  },
+  "LessonDetail.title": {
+    "message": "Lesson - {name}"
   },
   "LessonList.columns.actions": {
     "message": "Actions"
@@ -357,14 +435,26 @@
   "ListClasses.header": {
     "message": "Class Manager"
   },
+  "ListClasses.title": {
+    "message": "Classes"
+  },
   "ListLessons.header": {
     "message": "Lesson Manager"
+  },
+  "ListLessons.title": {
+    "message": "Lessons"
   },
   "ListTasks.header": {
     "message": "Task Manager"
   },
+  "ListTasks.title": {
+    "message": "Tasks"
+  },
   "ListUsers.header": {
     "message": "User Manager"
+  },
+  "ListUsers.title": {
+    "message": "Users"
   },
   "LoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
@@ -372,8 +462,14 @@
   "LoginPage.header": {
     "message": "Login"
   },
+  "LoginPage.title": {
+    "message": "Teacher Login"
+  },
   "LogoutPage.loggingOut": {
     "message": "You are being logged out..."
+  },
+  "LogoutPage.title": {
+    "message": "Logout"
   },
   "LoopCriterionFilterForm.count": {
     "message": "Number of loops"
@@ -395,6 +491,9 @@
   },
   "OpenIdConnectRedirect.signInForm.unknownError": {
     "message": "An unknown error occurred"
+  },
+  "OpenIdConnectRedirect.title": {
+    "message": "Authentication Processing"
   },
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": {
     "message": "The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
@@ -422,6 +521,9 @@
   },
   "SessionAnalysis.header": {
     "message": "Analysis"
+  },
+  "SessionAnalysis.title": {
+    "message": "Analysis - {title}"
   },
   "SessionList.columns.actions": {
     "message": "Actions"
@@ -465,6 +567,9 @@
   "SessionProgress.header": {
     "message": "Session Progress"
   },
+  "SessionProgress.title": {
+    "message": "Progress - {title}"
+  },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Your successfully solved this task. You can check if there are more tasks in the session menu."
   },
@@ -489,6 +594,9 @@
   "SolveTask.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
   },
+  "SolveTaskPage.title": {
+    "message": "Solve - {title}"
+  },
   "StatementCriterionFilterForm.count": {
     "message": "Number of statements"
   },
@@ -504,6 +612,9 @@
   "StudentLoginPage.invalidParameters": {
     "message": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
   },
+  "StudentLoginPage.title": {
+    "message": "Student Login"
+  },
   "StudentName.anonymous": {
     "message": "Anonymous"
   },
@@ -512,6 +623,9 @@
   },
   "StudentName.decrypting": {
     "message": "Decrypting..."
+  },
+  "TaskDetail.title": {
+    "message": "Task - {title}"
   },
   "TaskDetail.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
@@ -591,6 +705,9 @@
   "UserDetail.table.type": {
     "message": "Type"
   },
+  "UserDetail.title": {
+    "message": "User - {name}"
+  },
   "UserForm.email": {
     "message": "Email address"
   },
@@ -626,6 +743,9 @@
   },
   "UserSessionProgress.header": {
     "message": "User Progress"
+  },
+  "UserSessionProgress.title": {
+    "message": "Student Progress - {name}"
   },
   "UserSignIn.submit": {
     "message": "Sign In"

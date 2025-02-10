@@ -10,6 +10,10 @@ import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
+  title: {
+    id: "CreateUser.title",
+    defaultMessage: "Create User",
+  },
   submit: {
     id: "CreateUser.submit",
     defaultMessage: "Create User",
@@ -36,7 +40,7 @@ const CreateUser = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <CrtNavigation />
         <PageHeader>

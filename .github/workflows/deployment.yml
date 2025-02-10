@@ -19,6 +19,10 @@ env:
   SCRATCH_APP_BUCKET_ID: collimator-dev-app-scratch
   TERRAFORM_STATE_BUCKET: collimator-dev-cd-tf-state
 
+  # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
+  SENTRY_RELEASE: ${{ github.sha }}
+  SENTRY_ENVIRONMENT: development
+
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
@@ -31,6 +35,29 @@ jobs:
   deploy:
     needs: [tests]
     runs-on: ubuntu-latest
+
+    # Service containers to run with `runner-job`
+    services:
+        # Label used to access the service container
+        postgres:
+            # Docker Hub image
+            image: postgres
+            # Provide the password for postgres
+            env:
+                POSTGRES_PASSWORD: postgres
+            # Set health checks to wait until postgres has started
+            options: >-
+                --health-cmd pg_isready
+                --health-interval 10s
+                --health-timeout 5s
+                --health-retries 5
+            ports:
+                # Maps TCP port 5433 on the host to Postgres
+                - 5433:5432
+                
+    env:
+        DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+
     steps:
     
       # Build application and prepare deployment
@@ -67,10 +94,20 @@ jobs:
           NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/scratch
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ env.ENTRA_ID_CLIENT_ID }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ env.FRONTEND_SENTRY_DSN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.FRONTEND_SENTRY_AUTH_TOKEN }}
 
       - name: Build scratch app
         working-directory: ./apps/scratch
         run: yarn build
+        env:
+          REACT_APP_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
+
+      - name: Upload scratch app source maps
+        working-directory: ./apps/scratch
+        run: yarn sentry:sourcemaps
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
 
       - name: Install OpenTofu
         uses: opentofu/setup-opentofu@v1
@@ -78,6 +115,22 @@ jobs:
       - name: Init terraform
         run: tofu init -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
         working-directory: ./terraform/deployment
+
+      # the database must be fully migrated before running prisma:generate
+      # we build the backend so tha we can upload the source maps to sentry
+      - name: Prepare test database
+        working-directory: ./backend
+        run: yarn prisma migrate deploy
+
+      - name: Build backend
+        working-directory: ./backend
+        run: yarn prisma:generate && yarn build
+
+      - name: Upload backend source maps
+        working-directory: ./backend
+        run: yarn sentry:sourcemaps
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
 
       - name: Build backend docker image
         run: docker build -t ${{ env.BACKEND_IMAGE_NAME }} .

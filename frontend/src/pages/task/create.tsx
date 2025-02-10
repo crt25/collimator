@@ -8,6 +8,10 @@ import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
 
 const messages = defineMessages({
+  title: {
+    id: "CreateTask.title",
+    defaultMessage: "Create Task",
+  },
   submit: {
     id: "CreateTask.submit",
     defaultMessage: "Create Task",
@@ -31,7 +35,7 @@ const CreateTask = () => {
 
   return (
     <>
-      <Header />
+      <Header title={messages.title} />
       <Container>
         <CrtNavigation />
         <PageHeader>
