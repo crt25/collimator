@@ -86,6 +86,10 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn install
 
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: yarn install
+
       - name: Build frontend
         working-directory: ./frontend
         run: yarn build
@@ -117,7 +121,7 @@ jobs:
         working-directory: ./terraform/deployment
 
       # the database must be fully migrated before running prisma:generate
-      # we build the backend so tha we can upload the source maps to sentry
+      # we build the backend so that we can upload the source maps to sentry
       - name: Prepare test database
         working-directory: ./backend
         run: yarn prisma migrate deploy
