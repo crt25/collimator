@@ -13,9 +13,9 @@ const freezeBlockButtonTestId = "stack-freeze-button";
 const isFreezeBlockButton = `g.${freezeBlockButtonClass}`;
 
 const stateDisplayName: Record<BlockFreezeStates, string> = {
-  [BlockFreezeStates.frozen]: "🛇",
+  [BlockFreezeStates.frozen]: "🔒",
   [BlockFreezeStates.appendable]: "+",
-  [BlockFreezeStates.editable]: "✎",
+  [BlockFreezeStates.editable]: "✍️",
 };
 
 const defaultState = BlockFreezeStates.editable;
