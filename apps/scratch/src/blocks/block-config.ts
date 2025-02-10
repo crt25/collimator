@@ -18,9 +18,9 @@ const getBlockId = (dataId: string): string => {
   // e.g. "someId__motion_xposition"
   // if so, remove this prefix
 
-  const colonIndex = dataId.indexOf("__");
-  if (colonIndex !== -1) {
-    return dataId.slice(colonIndex + 2);
+  const underscoreIndex = dataId.indexOf("__");
+  if (underscoreIndex !== -1) {
+    return dataId.slice(underscoreIndex + 2);
   }
 
   return dataId;
