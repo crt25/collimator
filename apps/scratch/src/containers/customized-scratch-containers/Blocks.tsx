@@ -91,6 +91,7 @@ interface WorkspaceChangeEvent {
     | "comment_delete";
 
   blockId?: string;
+  recordUndo?: boolean;
   xml?: Element;
   oldXml?: Element;
 }
@@ -1116,7 +1117,14 @@ class Blocks extends React.Component<Props, State> {
         );
       }
 
-      if (event.type === "delete" && event.blockId && this.props.canEditTask) {
+      if (
+        event.type === "delete" &&
+        // when switching sprites, blocks are also deleted but with
+        // recordUndo set to false
+        event.recordUndo &&
+        event.blockId &&
+        this.props.canEditTask
+      ) {
         // remove the config for this task block
         delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
       }
