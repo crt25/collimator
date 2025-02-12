@@ -91,7 +91,6 @@ const SessionForm = ({
     () => ({
       ...initialValues,
       taskIds: initialValues?.taskIds ?? [],
-      isAnonymous: false,
     }),
     [initialValues],
   );

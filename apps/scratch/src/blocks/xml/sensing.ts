@@ -76,7 +76,7 @@ const sensingXmlByOpCode: Record<
     isInitialSetup
       ? ""
       : `
-        <block id="askandwait" type="sensing_askandwait">
+        <block id="sensing_askandwait" type="sensing_askandwait">
             <value name="QUESTION">
                 <shadow type="text">
                     <field name="TEXT">${name}</field>
@@ -84,7 +84,7 @@ const sensingXmlByOpCode: Record<
             </value>
         </block>`,
   [SensingOpCode.answer]: () => `
-        <block id="answer" type="sensing_answer"/>`,
+        <block id="sensing_answer" type="sensing_answer"/>`,
   [SensingOpCode.keypressed]: () => `
         <block type="sensing_keypressed">
             <value name="KEY_OPTION">
@@ -103,19 +103,19 @@ const sensingXmlByOpCode: Record<
       : `
         <block type="sensing_setdragmode" id="sensing_setdragmode"/>`,
   [SensingOpCode.loudness]: () => `
-        <block id="loudness" type="sensing_loudness"/>`,
+        <block id="sensing_loudness" type="sensing_loudness"/>`,
   [SensingOpCode.timer]: () => `
-        <block id="timer" type="sensing_timer"/>`,
+        <block id="sensing_timer" type="sensing_timer"/>`,
   [SensingOpCode.resettimer]: () => `
         <block type="sensing_resettimer"/>`,
   [SensingOpCode.of]: () => `
-        <block id="of" type="sensing_of">
+        <block id="sensing_of" type="sensing_of">
             <value name="OBJECT">
                 <shadow id="sensing_of_object_menu" type="sensing_of_object_menu"/>
             </value>
         </block>`,
   [SensingOpCode.current]: () => `
-        <block id="current" type="sensing_current"/>`,
+        <block id="sensing_current" type="sensing_current"/>`,
   [SensingOpCode.dayssince2000]: () => `
         <block type="sensing_dayssince2000"/>`,
   [SensingOpCode.username]: () => `

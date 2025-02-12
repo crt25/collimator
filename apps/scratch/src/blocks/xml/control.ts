@@ -35,15 +35,15 @@ const controlXmlByOpCode: Record<ControlOpCode, (isStage: boolean) => string> =
             </value>
         </block>`,
     [ControlOpCode.forever]: () => `
-        <block id="forever" type="control_forever"/>`,
+        <block id="control_forever" type="control_forever"/>`,
     [ControlOpCode.if]: () => `
         <block type="control_if"/>`,
     [ControlOpCode.if_else]: () => `
         <block type="control_if_else"/>`,
     [ControlOpCode.wait_until]: () => `
-        <block id="wait_until" type="control_wait_until"/>`,
+        <block id="control_wait_until" type="control_wait_until"/>`,
     [ControlOpCode.repeat_until]: () => `
-        <block id="repeat_until" type="control_repeat_until"/>`,
+        <block id="control_repeat_until" type="control_repeat_until"/>`,
     [ControlOpCode.stop]: () => `
         <block type="control_stop"/>`,
     [ControlOpCode.create_clone_of]: () => `

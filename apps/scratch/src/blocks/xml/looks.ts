@@ -204,7 +204,7 @@ const looksXmlByOpCode: Record<
             </value>
         </block>`,
   [LooksOpCode.backdropnumbername]: () => `
-        <block id="backdropnumbername" type="looks_backdropnumbername"/>`,
+        <block id="looks_backdropnumbername" type="looks_backdropnumbername"/>`,
   [LooksOpCode.costumenumbername]: (isStage, targetId) =>
     isStage
       ? ""
