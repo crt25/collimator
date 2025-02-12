@@ -100,6 +100,7 @@ const EditSession = () => {
                 title: session.title,
                 description: session.description,
                 taskIds: session.tasks.map((t) => t.id),
+                isAnonymous: session.isAnonymous,
               }}
               onSubmit={onSubmit}
             />
