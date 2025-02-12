@@ -140,7 +140,7 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
                   min={1}
                   max={subTaskAnalyses?.length}
                   onChange={(e) =>
-                    setNumberOfSolutions(Math.max(2, parseInt(e.target.value)))
+                    setNumberOfSolutions(Math.max(1, parseInt(e.target.value)))
                   }
                 />
               </AnalysisParameters>
