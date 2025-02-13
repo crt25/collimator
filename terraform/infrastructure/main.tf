@@ -66,7 +66,7 @@ module "backend" {
   public_subnet_ids      = module.network.public_subnet_ids
 
   open_id_connect_microsoft_client_id = var.open_id_connect_microsoft_client_id
-  sentry_dsn                          = var.sentry_dsn 
+  sentry_dsn                          = var.sentry_dsn_backend 
   database_url                        = module.database.database_url
 
   tags = var.tags

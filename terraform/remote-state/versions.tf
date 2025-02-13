@@ -9,8 +9,8 @@
   }
 
   backend "s3" {
-    bucket = var.tfstate_bucket_name
-    key    = "infrastructure/dns-zone"
+    bucket = var.name
+    key    = "bootstrap"
     region = var.region
   }
 }
