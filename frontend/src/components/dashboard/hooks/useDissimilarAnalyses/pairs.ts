@@ -3,7 +3,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 
-const getDissimilarAnalyses = async (
+const getDissimilarPairs = async (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfAnalyses: number,
   distanceType: DistanceType = DistanceType.pq,
@@ -12,7 +12,7 @@ const getDissimilarAnalyses = async (
     return undefined;
   }
 
-  if (analysesIn.length <= numberOfAnalyses || numberOfAnalyses < 2) {
+  if (analysesIn.length <= numberOfAnalyses || numberOfAnalyses <= 0) {
     return [];
   }
 
@@ -70,7 +70,7 @@ export const useDissimilarPairs = (
   useEffect(() => {
     let isCancelled = false;
 
-    getDissimilarAnalyses(analysesIn, numberOfSolutions, distanceType).then(
+    getDissimilarPairs(analysesIn, numberOfSolutions, distanceType).then(
       (analyses) => {
         if (isCancelled) {
           return;
