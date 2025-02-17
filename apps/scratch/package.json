@@ -201,7 +201,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.defaultsdeep": "^4",
     "@types/lodash.omit": "^4.5.9",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.4",
     "@types/omggif": "^1",
     "@types/papaparse": "^5",
     "@types/prop-types": "^15",
