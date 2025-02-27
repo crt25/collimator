@@ -15,10 +15,14 @@
 }
 
 .modal {
+  position: relative;
   margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 2rem;
-  border-radius: --border-radius;
+  border-radius: var(--border-radius);
 
+  max-height: calc(100vh - 4rem);
+  overflow: scroll;
   min-width: 40vw;
 
   background-color: var(--modal-background-color);
@@ -48,7 +52,7 @@
   display: block;
   margin-bottom: 1rem;
 
-  background: var(--input-background-color);
+  background-color: var(--input-background-color);
   border: var(--input-border-color) 1px solid;
   border-radius: var(--border-radius);
   padding: 0.25rem 0.5rem;
@@ -58,4 +62,18 @@
 
 .modal button:hover, .modal input[type="submit"]:hover {
   background-color: var(--input-background-color-hover);
+}
+
+.closeButton {
+  position: absolute;
+
+  top: 1rem;
+  right: 1rem;
+
+  cursor: pointer;
+
+  &:after{
+    font-size: 1.5rem;
+    content: "\00d7";
+  }
 }

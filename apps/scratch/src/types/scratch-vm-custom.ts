@@ -5,6 +5,12 @@ export interface CrtBlock {
   isTaskBlock?: boolean;
 }
 
+export interface Assertion {
+  assertionName: string;
+  blockId: string;
+  targetName: string;
+}
+
 export interface CrtEventMap {
   /**
    * Event emitted after the assertions extension has been loaded.
@@ -49,10 +55,10 @@ export interface CrtEventMap {
    * and the checked assertions.
    */
   ASSERTIONS_CHECKED: [
-    // number of total assertions.
-    number,
-    // number of passed assertions.
-    number,
+    // Passed assertions.
+    Assertion[],
+    // Failed assertions.
+    Assertion[],
   ];
 }
 

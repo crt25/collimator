@@ -1,8 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, plainToInstance, Type } from "class-transformer";
+import {
+  Exclude,
+  Expose,
+  plainToInstance,
+  Transform,
+  Type,
+} from "class-transformer";
+import { SolutionTest } from "@prisma/client";
 import { SolutionWithoutData } from "../solutions.service";
+import { SolutionTestDto } from "./solution-test.dto";
 
 export type SolutionId = number;
+type TestList = Omit<SolutionTest, "id">[];
 
 export class ExistingSolutionDto implements SolutionWithoutData {
   @ApiProperty({
@@ -30,18 +39,21 @@ export class ExistingSolutionDto implements SolutionWithoutData {
   readonly taskId!: number;
 
   @ApiProperty({
-    example: 12,
-    description: "The total number of tests.",
+    name: "tests",
+    description: "The tests for the current analysis.",
+    type: [SolutionTestDto],
   })
+  @Transform(
+    ({ value }: { value: TestList }) =>
+      value?.map((test) =>
+        plainToInstance(SolutionTestDto, test, {
+          excludeExtraneousValues: true,
+        }),
+      ) ?? [],
+    { toClassOnly: true },
+  )
   @Expose()
-  readonly totalTests!: number;
-
-  @ApiProperty({
-    example: 10,
-    description: "The number of passed tests.",
-  })
-  @Expose()
-  readonly passedTests!: number;
+  readonly tests!: SolutionTestDto[];
 
   @Exclude()
   readonly mimeType!: string;

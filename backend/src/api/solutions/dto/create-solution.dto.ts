@@ -1,38 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNumber, Min } from "class-validator";
-import { IsAtMost } from "src/api/validators/is-at-most";
+import { IsArray } from "class-validator";
+import { SolutionTestDto } from "./solution-test.dto";
 
 export class CreateSolutionDto {
-  // converts the input to a number - necessary because of the multipart/form-data
-  @Type(() => Number)
-  @IsNumber({
-    allowNaN: false,
-    allowInfinity: false,
-    maxDecimalPlaces: 0,
-  })
-  @Min(0)
+  @Type(() => SolutionTestDto)
+  @IsArray()
   @ApiProperty({
-    example: 12,
-    description: "The total number of tests. Must be a positive integer.",
+    description: "The tests that were run for the solution.",
   })
-  readonly totalTests!: number;
-
-  // converts the input to a number - necessary because of the multipart/form-data
-  @Type(() => Number)
-  @IsNumber({
-    allowNaN: false,
-    allowInfinity: false,
-    maxDecimalPlaces: 0,
-  })
-  @Min(0)
-  @IsAtMost("totalTests")
-  @ApiProperty({
-    example: 10,
-    description:
-      "The number of the tests that passed. Must be a positive integer and smaller than or equal to totalTests.",
-  })
-  readonly passedTests!: number;
+  readonly tests!: SolutionTestDto[];
 
   // The following property is used for Swagger documentation purposes.
   @ApiProperty({

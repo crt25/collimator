@@ -5,16 +5,15 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { SolutionTestDto } from "./solutionTestDto";
 
 export interface ExistingSolutionDto {
   createdAt: string;
   /** The solution's unique identifier, a positive integer. */
   id: number;
-  /** The number of passed tests. */
-  passedTests: number;
   sessionId: number;
   studentId: number;
   taskId: number;
-  /** The total number of tests. */
-  totalTests: number;
+  /** The tests for the current analysis. */
+  tests: SolutionTestDto[];
 }

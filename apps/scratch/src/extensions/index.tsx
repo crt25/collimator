@@ -49,6 +49,9 @@ export interface ExtensionMetadataMenu {
 export interface ExtensionMetadata {
   id: string;
   name: string;
+  color1: string;
+  color2: string;
+  color3: string;
   menuIconURI: string;
   blockIconURI: string;
   blocks: ExtensionMetdataBlock[];
@@ -57,8 +60,15 @@ export interface ExtensionMetadata {
   };
 }
 
+/**
+ * The block utility.
+ * See https://github.com/scratchfoundation/scratch-vm/blob/a41de71ac5680642c37f7e3cd122e77af72ddf52/src/engine/block-utility.js#L229.
+ */
 export interface ExtensionUtilType {
   target: VM.TargetExtended;
+  thread: {
+    stack: string[];
+  };
 }
 
 export default {

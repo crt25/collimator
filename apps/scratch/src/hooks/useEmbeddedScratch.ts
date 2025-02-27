@@ -8,6 +8,8 @@ import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locale
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
+import { Assertion } from "../types/scratch-vm-custom";
+import { Test } from "../../../../frontend/src/types/app-iframe-message/get-submission";
 import { useIframeParent } from "./useIframeParent";
 
 const logModule = "[Embedded Scratch]";
@@ -77,8 +79,8 @@ export const useEmbeddedScratch = (
                   file: new Blob([vm.toJSON()], {
                     type: "application/json",
                   }),
-                  totalTests: 0,
-                  passedTests: 0,
+                  passedTests: [],
+                  failedTests: [],
                 },
               });
 
@@ -91,26 +93,33 @@ export const useEmbeddedScratch = (
 
             try {
               // then backup project state
-              const [zip, json] = await Promise.all([
+              const [_, json] = await Promise.all([
                 saveCrtProject(vm).then((blob) => blob.arrayBuffer()),
                 vm.toJSON(),
               ]);
 
               const waitForAssertions = new Promise<{
-                totalTests: number;
-                passedTests: number;
+                passedAssertions: Assertion[];
+                failedAssertions: Assertion[];
               }>((resolve) => {
                 vm.runtime.once(
                   "ASSERTIONS_CHECKED",
-                  (totalTests, passedTests) =>
-                    resolve({ totalTests, passedTests }),
+                  (passedAssertions, failedAssertions) =>
+                    resolve({ passedAssertions, failedAssertions }),
                 );
 
                 // once the project is backed up, run the project
                 vm.greenFlag();
               });
 
-              const { totalTests, passedTests } = await waitForAssertions;
+              const { passedAssertions, failedAssertions } =
+                await waitForAssertions;
+
+              const mapToTest = (assertion: Assertion): Test => ({
+                identifier: `${assertion.targetName} ${assertion.blockId}`,
+                name: assertion.assertionName,
+                contextName: assertion.targetName,
+              });
 
               // wait for project run to finish
               respondToMessageEvent({
@@ -119,12 +128,10 @@ export const useEmbeddedScratch = (
                   file: new Blob([json], {
                     type: "application/json",
                   }),
-                  totalTests,
-                  passedTests,
+                  passedTests: passedAssertions.map(mapToTest),
+                  failedTests: failedAssertions.map(mapToTest),
                 },
               });
-
-              return await loadCrtProject(vm, zip);
             } catch (e) {
               console.error(
                 `${logModule} RPC: ${request.procedure} failed with error:`,

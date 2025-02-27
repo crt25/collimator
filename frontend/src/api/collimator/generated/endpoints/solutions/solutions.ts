@@ -28,8 +28,7 @@ export const solutionsControllerCreateV0 = async (
   options?: RequestInit,
 ): Promise<ExistingSolutionDto> => {
   const formData = new FormData();
-  formData.append("totalTests", createSolutionDto.totalTests.toString());
-  formData.append("passedTests", createSolutionDto.passedTests.toString());
+  formData.append("tests", JSON.stringify(createSolutionDto.tests));
   formData.append("file", createSolutionDto.file);
 
   return fetchApi<Promise<ExistingSolutionDto>>(
@@ -81,6 +80,29 @@ export const solutionsControllerFindCurrentAnalysisV0 = async (
 ): Promise<CurrentAnalysisDto[]> => {
   return fetchApi<Promise<CurrentAnalysisDto[]>>(
     getSolutionsControllerFindCurrentAnalysisV0Url(classId, sessionId, taskId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
+export const getSolutionsControllerLatestSolutionV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/latest`;
+};
+
+export const solutionsControllerLatestSolutionV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  options?: RequestInit,
+): Promise<ExistingSolutionDto> => {
+  return fetchApi<Promise<ExistingSolutionDto>>(
+    getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
     {
       ...options,
       method: "GET",
@@ -159,29 +181,6 @@ export const solutionsControllerDownloadOneV0 = async (
 ): Promise<void> => {
   return fetchApi<Promise<void>>(
     getSolutionsControllerDownloadOneV0Url(classId, sessionId, taskId, id),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSolutionsControllerLatestSolutionV0Url = (
-  classId: number,
-  sessionId: number,
-  taskId: number,
-) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/latest`;
-};
-
-export const solutionsControllerLatestSolutionV0 = async (
-  classId: number,
-  sessionId: number,
-  taskId: number,
-  options?: RequestInit,
-): Promise<ExistingSolutionDto> => {
-  return fetchApi<Promise<ExistingSolutionDto>>(
-    getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
     {
       ...options,
       method: "GET",

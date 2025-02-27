@@ -18,6 +18,7 @@ import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { Language } from "@/types/app-iframe-message/languages";
+import { Test } from "@/types/app-iframe-message/get-submission";
 
 const messages = defineMessages({
   title: {
@@ -94,13 +95,24 @@ const SolveTaskPage = () => {
       procedure: "getSubmission",
     });
 
+    const mapTest =
+      (passed: boolean) =>
+      ({ identifier, name, contextName }: Test) => ({
+        identifier,
+        name,
+        contextName,
+        passed,
+      });
+
     await createSolution(session.klass.id, session.id, task.id, {
       file: response.result.file,
-      totalTests: response.result.totalTests,
-      passedTests: response.result.passedTests,
+      tests: [
+        ...response.result.failedTests.map(mapTest(false)),
+        ...response.result.passedTests.map(mapTest(true)),
+      ],
     });
 
-    if (response.result.passedTests >= response.result.totalTests) {
+    if (response.result.failedTests.length === 0) {
       toast.success(
         <FormattedMessage
           id="SolveTask.correctSolutionSubmitted"

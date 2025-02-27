@@ -23,6 +23,8 @@ import { isNonNull } from "@/utilities/is-non-null";
 import { AstWalkSignal, walkAst } from "@/data-analyzer/ast-walk";
 import { ClassProperties } from "../class-properties";
 import { CurrentAnalysisDto } from "../../generated/models";
+import { fromDtos } from "../../hooks/helpers";
+import { SolutionTest } from "./solution-test";
 
 type FoldFunctions<
   TRoot,
@@ -334,8 +336,7 @@ export class CurrentAnalysis {
   readonly solutionId: number;
   readonly generalAst: GeneralAst;
 
-  readonly totalTests: number;
-  readonly passedTests: number;
+  readonly tests: SolutionTest[];
 
   readonly studentPseudonym: string;
   readonly studentKeyPairId: number | null;
@@ -344,16 +345,14 @@ export class CurrentAnalysis {
     id,
     solutionId,
     generalAst,
-    totalTests,
-    passedTests,
+    tests,
     studentPseudonym,
     studentKeyPairId,
   }: ClassProperties<CurrentAnalysis>) {
     this.id = id;
     this.solutionId = solutionId;
     this.generalAst = generalAst;
-    this.totalTests = totalTests;
-    this.passedTests = passedTests;
+    this.tests = tests;
     this.studentPseudonym = studentPseudonym;
     this.studentKeyPairId = studentKeyPairId;
   }
@@ -362,6 +361,7 @@ export class CurrentAnalysis {
     return new CurrentAnalysis({
       ...dto,
       generalAst: JSON.parse(dto.genericAst),
+      tests: fromDtos(SolutionTest, dto.tests),
     });
   }
 

@@ -24,7 +24,20 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
-export type CurrentAnalysis = getCurrentAnalyses.Result;
+export type CurrentAnalysis = {
+  id: number;
+  solutionId: number;
+  genericAst: string;
+  astVersion: AstVersion;
+  studentPseudonym: Buffer;
+  studentKeyPairId: number | null;
+  tests: {
+    identifier: string | null;
+    name: string;
+    contextName: string | null;
+    passed: boolean;
+  }[];
+};
 
 const maximumNumberOfAnalysisRetries = 3;
 
@@ -47,6 +60,7 @@ export class SolutionsService {
     return this.prisma.solution.findUniqueOrThrow({
       omit: omitData,
       where: { id, sessionId, taskId },
+      include: { tests: true },
     });
   }
 
@@ -59,8 +73,36 @@ export class SolutionsService {
     );
 
     // filter out analyses that are not of the latest AST version
-    return analyses.filter(
-      (analysis) => analysis.astVersion === latestAstVersion,
+    return Object.values(
+      analyses
+        .filter((analysis) => analysis.astVersion === latestAstVersion)
+        .reduce(
+          (byAnalysisId, analysis) => {
+            const test = {
+              identifier: analysis.testIdentifier,
+              name: analysis.testName,
+              contextName: analysis.testContextName,
+              passed: analysis.testPassed,
+            };
+
+            if (analysis.solutionId in byAnalysisId) {
+              byAnalysisId[analysis.solutionId].tests.push(test);
+            } else {
+              byAnalysisId[analysis.id] = {
+                id: analysis.id,
+                solutionId: analysis.solutionId,
+                genericAst: analysis.genericAst,
+                astVersion: analysis.astVersion,
+                studentPseudonym: analysis.studentPseudonym,
+                studentKeyPairId: analysis.studentKeyPairId,
+                tests: [test],
+              };
+            }
+
+            return byAnalysisId;
+          },
+          {} as { [solutionId: number]: CurrentAnalysis },
+        ),
     );
   }
 
@@ -143,6 +185,9 @@ export class SolutionsService {
 
     const solution = await this.prisma.solution.create({
       data: checkedSolution,
+      include: {
+        tests: true,
+      },
     });
 
     // perform the analysis but do *not* wait for the promise to resolve
