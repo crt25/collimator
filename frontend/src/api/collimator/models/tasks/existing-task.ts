@@ -19,6 +19,15 @@ export class ExistingTask {
     this.type = type;
   }
 
+  equals(other?: ExistingTask): boolean {
+    return (
+      this.id === other?.id &&
+      this.title === other.title &&
+      this.description === other.description &&
+      this.type === other.type
+    );
+  }
+
   static fromDto(dto: ExistingTaskDto): ExistingTask {
     return new ExistingTask(dto);
   }

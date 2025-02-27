@@ -38,5 +38,8 @@ export const useClassSession = (
             numericClassId,
             numericSessionId,
           ),
+    {
+      compare: (a, b) => a === b || (a?.equals(b) ?? false),
+    },
   );
 };

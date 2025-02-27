@@ -40,6 +40,42 @@ export class ExistingSessionExtended {
     this.tasks = tasks;
   }
 
+  equals(other?: ExistingSessionExtended): boolean {
+    const tasks = this.tasks.reduce(
+      (byTaskId, task) => {
+        byTaskId[task.id] = task;
+        return byTaskId;
+      },
+      {} as Record<string, SessionTask>,
+    );
+
+    const otherTasks = (other?.tasks ?? []).reduce(
+      (byTaskId, task) => {
+        byTaskId[task.id] = task;
+        return byTaskId;
+      },
+      {} as Record<string, SessionTask>,
+    );
+
+    const taskIds = [
+      ...new Set([...Object.keys(tasks), ...Object.keys(otherTasks)]),
+    ];
+
+    return (
+      this.id === other?.id &&
+      this.title === other.title &&
+      this.description === other.description &&
+      this.isAnonymous === other.isAnonymous &&
+      this.createdAt === other.createdAt &&
+      this.klass.equals(other.klass) &&
+      (this.lesson == other.lesson ||
+        this.lesson?.equals(other.lesson ?? undefined) === true) &&
+      this.status === other.status &&
+      this.tasks.length === other.tasks.length &&
+      taskIds.every((taskId) => tasks[taskId].equals(otherTasks[taskId]))
+    );
+  }
+
   static fromDto(dto: ExistingSessionExtendedDto): ExistingSessionExtended {
     return new ExistingSessionExtended({
       ...dto,
