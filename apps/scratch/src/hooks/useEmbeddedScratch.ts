@@ -116,7 +116,7 @@ export const useEmbeddedScratch = (
                 await waitForAssertions;
 
               const mapToTest = (assertion: Assertion): Test => ({
-                identifier: `${assertion.targetName} ${assertion.blockId}`,
+                identifier: `${assertion.targetName}/${assertion.blockId}`,
                 name: assertion.assertionName,
                 contextName: assertion.targetName,
               });
