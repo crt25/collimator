@@ -10,6 +10,7 @@ import { saveCrtProject } from "../vm/save-crt-project";
 import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
 import { Assertion } from "../types/scratch-vm-custom";
 import { Test } from "../../../../frontend/src/types/app-iframe-message/get-submission";
+import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
 import { useIframeParent } from "./useIframeParent";
 
 const logModule = "[Embedded Scratch]";
@@ -92,11 +93,12 @@ export const useEmbeddedScratch = (
             vm.runtime.stopAll();
 
             try {
-              // then backup project state
-              const [_, json] = await Promise.all([
-                saveCrtProject(vm).then((blob) => blob.arrayBuffer()),
-                vm.toJSON(),
-              ]);
+              // then save project state
+              const json = vm.toJSON();
+
+              const maximumExecutionTimeInMs =
+                vm.crtConfig?.maximumExecutionTimeInMs ??
+                defaultMaximumExecutionTimeInMs;
 
               const waitForAssertions = new Promise<{
                 passedAssertions: Assertion[];
@@ -105,11 +107,18 @@ export const useEmbeddedScratch = (
                 vm.runtime.once(
                   "ASSERTIONS_CHECKED",
                   (passedAssertions, failedAssertions) =>
-                    resolve({ passedAssertions, failedAssertions }),
+                    resolve({
+                      passedAssertions,
+                      failedAssertions,
+                    }),
                 );
 
                 // once the project is backed up, run the project
                 vm.greenFlag();
+
+                setTimeout(() => {
+                  vm.stopAll();
+                }, maximumExecutionTimeInMs);
               });
 
               const { passedAssertions, failedAssertions } =
