@@ -13,7 +13,7 @@ export const verifyJwtToken = async (
   jwtToken: string,
   audience: string,
 ): Promise<
-  jose.JWTVerifyResult<jose.JWTPayload> & jose.ResolvedKey<jose.KeyLike>
+  jose.JWTVerifyResult<jose.JWTPayload> & jose.ResolvedKey
 > => {
   const jwkSet = await getJwkSet();
 
