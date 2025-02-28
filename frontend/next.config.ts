@@ -1,7 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
-/** @type {import('next').NextConfig} */
+import { NextConfig } from "next";
 
-let nextConfig = {
+let nextConfig: NextConfig = {
   output: "export",
   distDir: "dist",
   productionBrowserSourceMaps: true,
@@ -13,6 +13,12 @@ let nextConfig = {
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
     ignoreDuringBuilds: true,
+  },
+
+  sassOptions: {
+    // ignore deprecation warning from sass because of bootstrap
+    // https://sass-lang.com/documentation/breaking-changes/import/
+    quietDeps: true,
   },
 };
 
