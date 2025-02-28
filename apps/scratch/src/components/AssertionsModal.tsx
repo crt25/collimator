@@ -1,4 +1,3 @@
-import VM from "scratch-vm";
 import { FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { Fragment, useMemo } from "react";
@@ -39,7 +38,6 @@ const AssertionsModal = ({
   passedAssertions,
   failedAssertions,
 }: {
-  vm: VM;
   isShown?: boolean;
   hideModal: () => void;
   passedAssertions: Assertion[];
