@@ -241,7 +241,7 @@ const TaskConfig = ({
                 onChange={(e) =>
                   setMaximumExecutionTimeInS(parseFloat(e.target.value))
                 }
-                data-testid="enable-assertions-checkbox"
+                data-testid="maximum-execution-time-input"
               />
             </Label>
           </>
