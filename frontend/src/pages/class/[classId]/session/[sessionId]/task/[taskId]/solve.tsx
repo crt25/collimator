@@ -141,7 +141,6 @@ const SolveTaskPage = () => {
         procedure: "setLocale",
         arguments: intl.locale as Language,
       });
-      return;
     }
   }, [intl.locale]);
 
