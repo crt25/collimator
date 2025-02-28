@@ -1,8 +1,9 @@
 import { useCallback } from "react";
-import { solutionsControllerCreateV0 } from "../../generated/endpoints/solutions/solutions";
+import { fetchApi } from "@/api/fetch";
+import { getSolutionsControllerCreateV0Url } from "../../generated/endpoints/solutions/solutions";
 import { ExistingSolution } from "../../models/solutions/existing-solution";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { CreateSolutionDto } from "../../generated/models";
+import { CreateSolutionDto, ExistingSolutionDto } from "../../generated/models";
 import { useRevalidateSolution } from "./useRevalidateSolution";
 
 type CreateSolutionType = (
@@ -12,6 +13,27 @@ type CreateSolutionType = (
   createSolutionDto: CreateSolutionDto,
 ) => Promise<ExistingSolution>;
 
+const solutionsControllerCreate = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  createSolutionDto: CreateSolutionDto,
+  options?: RequestInit,
+): Promise<ExistingSolutionDto> => {
+  const formData = new FormData();
+  formData.append("tests", JSON.stringify(createSolutionDto.tests));
+  formData.append("file", createSolutionDto.file);
+
+  return fetchApi<Promise<ExistingSolutionDto>>(
+    getSolutionsControllerCreateV0Url(classId, sessionId, taskId),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
+};
+
 const createAndTransform = (
   options: RequestInit,
   classId: number,
@@ -19,7 +41,7 @@ const createAndTransform = (
   taskId: number,
   createSolutionDto: CreateSolutionDto,
 ): ReturnType<CreateSolutionType> =>
-  solutionsControllerCreateV0(
+  solutionsControllerCreate(
     classId,
     sessionId,
     taskId,

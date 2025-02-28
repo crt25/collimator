@@ -10,6 +10,10 @@ export class SessionTask {
     this.title = title;
   }
 
+  equals(other?: SessionTask): boolean {
+    return this.id === other?.id && this.title === other.title;
+  }
+
   static fromDto(dto: SessionTaskDto): SessionTask {
     return new SessionTask(dto);
   }

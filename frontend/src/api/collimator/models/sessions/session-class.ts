@@ -10,6 +10,10 @@ export class SessionClass {
     this.name = name;
   }
 
+  equals(other?: SessionClass): boolean {
+    return this.id === other?.id && this.name === other.name;
+  }
+
   static fromDto(dto: SessionClassDto): SessionClass {
     return new SessionClass(dto);
   }

@@ -179,24 +179,31 @@ export class SessionsService {
       getCurrentStudentSolutions(id, studentId),
     );
 
-    return solutions.map<StudentTaskProgress>((solution) => {
-      let taskProgress = TaskProgress.unOpened;
+    return solutions
+      .map((s) => ({
+        solutionId: s.solutionId,
+        taskId: s.taskId,
+        passedTests: s.passedTests ?? 0,
+        totalTests: s.totalTests ?? 0,
+      }))
+      .map<StudentTaskProgress>((solution) => {
+        let taskProgress = TaskProgress.unOpened;
 
-      if (!isNaN(solution.solutionId) && solution.solutionId > 0) {
-        // solutionId, passedTests and totalTests may be null, we are doing a LEFT JOIN
-        if (solution.passedTests >= solution.totalTests) {
-          taskProgress = TaskProgress.done;
-        } else if (solution.passedTests > 0) {
-          taskProgress = TaskProgress.partiallyDone;
-        } else {
-          taskProgress = TaskProgress.opened;
+        if (!isNaN(solution.solutionId) && solution.solutionId > 0) {
+          // solutionId, passedTests and totalTests may be null, we are doing a LEFT JOIN
+          if (solution.passedTests >= solution.totalTests) {
+            taskProgress = TaskProgress.done;
+          } else if (solution.passedTests > 0) {
+            taskProgress = TaskProgress.partiallyDone;
+          } else {
+            taskProgress = TaskProgress.opened;
+          }
         }
-      }
 
-      return {
-        id: solution.taskId,
-        taskProgress,
-      };
-    });
+        return {
+          id: solution.taskId,
+          taskProgress,
+        };
+      });
   }
 }

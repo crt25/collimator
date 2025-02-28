@@ -28,6 +28,7 @@ import {
 import "multer";
 import { Express } from "express";
 import { Student, User, UserType } from "@prisma/client";
+import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
@@ -59,7 +60,7 @@ export class SolutionsController {
   })
   @ApiCreatedResponse({ type: ExistingSolutionDto })
   @ApiForbiddenResponse()
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("file"), JsonToObjectsInterceptor(["tests"]))
   async create(
     @AuthenticatedStudent() student: Student,
     @Param("classId", ParseIntPipe) _classId: number,
@@ -74,6 +75,9 @@ export class SolutionsController {
         sessionId,
         taskId,
         studentId: student.id,
+        tests: {
+          create: createSolutionDto.tests,
+        },
       },
       file.mimetype,
       file.buffer,
@@ -103,6 +107,7 @@ export class SolutionsController {
 
     const solutions = await this.solutionsService.findMany({
       where: { sessionId, taskId },
+      include: { tests: true },
     });
     return fromQueryResults(ExistingSolutionDto, solutions);
   }

@@ -34,15 +34,15 @@ export const getCategory = (
     category |= Category.matchesFilters;
   }
 
-  if (solution.totalTests > 0) {
+  if (solution.tests.length > 0) {
     category |= Category.hasTests;
   }
 
-  if (solution.passedTests > 0) {
+  if (solution.tests.some((t) => t.passed)) {
     category |= Category.passesSomeTests;
   }
 
-  if (solution.passedTests >= solution.totalTests) {
+  if (solution.tests.every((t) => t.passed)) {
     category |= Category.passesAllTests;
   }
 

@@ -95,7 +95,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
   );
 
   return (
-    <Modal isShown={blockId !== null}>
+    <Modal isShown={blockId !== null} onHide={() => setBlockId(null)}>
       <h1>
         <FormattedMessage
           defaultMessage="Block Config"

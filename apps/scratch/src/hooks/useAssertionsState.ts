@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
 import VM from "scratch-vm";
+import { Assertion } from "../types/scratch-vm-custom";
 
-export const useAssertionsState = (
-  vm: VM,
-): { total: number; passed: number } => {
-  const [assertionsSatisfied, setAssertionsSatisfied] = useState({
-    total: 0,
-    passed: 0,
+interface AssertionsState {
+  passedAssertions: Assertion[];
+  failedAssertions: Assertion[];
+}
+
+export const useAssertionsState = (vm: VM): AssertionsState => {
+  const [assertionsState, setAssertionsState] = useState<AssertionsState>({
+    passedAssertions: [],
+    failedAssertions: [],
   });
 
   useEffect(() => {
-    const fn = (total: number, passed: number): void =>
-      setAssertionsSatisfied({ total, passed });
+    const fn = (
+      passedAssertions: Assertion[],
+      failedAssertions: Assertion[],
+    ): void => setAssertionsState({ passedAssertions, failedAssertions });
 
     vm.runtime.on("ASSERTIONS_CHECKED", fn);
 
     return (): void => {
       vm.runtime.off("ASSERTIONS_CHECKED", fn);
     };
-  }, [vm, setAssertionsSatisfied]);
+  }, [vm, setAssertionsState]);
 
-  return assertionsSatisfied;
+  return assertionsState;
 };

@@ -71,6 +71,7 @@ import {
   isWithinStack,
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
+import { getCrtColorsTheme } from "../../blocks/colors";
 import ExtensionLibrary from "./ExtensionLibrary";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
@@ -280,7 +281,7 @@ class Blocks extends React.Component<Props, State> {
     const workspaceConfig = defaultsDeep({}, this.props.options, {
       rtl: this.props.isRtl,
       toolbox: this.props.toolboxXML,
-      colours: getColorsForTheme(this.props.theme),
+      colours: getCrtColorsTheme(this.props.theme),
       // if we hide the flyout, move it to the top (https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/options.js#L90C7-L90C23)
       // where the flyout is seemingly ignored by the scrollbars :)
       horizontalLayout: !this.props.showFlyout,

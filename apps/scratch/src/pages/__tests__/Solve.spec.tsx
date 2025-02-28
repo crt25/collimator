@@ -108,8 +108,8 @@ test.describe("/solve", () => {
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
       result: {
         file: {},
-        totalTests: expect.any(Number),
-        passedTests: expect.any(Number),
+        passedTests: [],
+        failedTests: [],
       },
     });
   });
@@ -453,8 +453,14 @@ test.describe("/solve", () => {
       procedure: "getSubmission",
       result: {
         file: {},
-        totalTests: 1,
-        passedTests: 0,
+        failedTests: [
+          {
+            contextName: "Sprite1",
+            identifier: "Sprite1/=AZYDuVf2OMO^acD9JwZ",
+            name: "Unnamed Assertion",
+          },
+        ],
+        passedTests: [],
       },
     });
   });
@@ -501,8 +507,14 @@ test.describe("/solve", () => {
       procedure: "getSubmission",
       result: {
         file: {},
-        totalTests: 1,
-        passedTests: 1,
+        passedTests: [
+          {
+            contextName: "Sprite1",
+            identifier: "Sprite1/=AZYDuVf2OMO^acD9JwZ",
+            name: "Unnamed Assertion",
+          },
+        ],
+        failedTests: [],
       },
     });
   });
