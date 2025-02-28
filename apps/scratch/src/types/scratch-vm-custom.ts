@@ -75,4 +75,9 @@ export interface ScratchCrtConfig {
   freezeStateByBlockId: {
     [taskBlockId: string]: BlockFreezeStates | undefined;
   };
+
+  /**
+   * The maximum time in milliseconds that the solution is allowed to run.
+   */
+  maximumExecutionTimeInMs: number | undefined;
 }
