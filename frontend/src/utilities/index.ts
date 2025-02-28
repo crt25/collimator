@@ -1,3 +1,3 @@
-import * as sessionStorage from "./session-storage";
+import * as localStorage from "./local-storage";
 
-export { sessionStorage };
+export { localStorage };

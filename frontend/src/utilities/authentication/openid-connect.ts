@@ -1,7 +1,7 @@
 import * as client from "openid-client";
 import * as jose from "jose";
 import { AuthenticationError } from "@/errors/authentication";
-import { sessionStorage } from "..";
+import { localStorage } from "..";
 import {
   openIdConnectMicrosoftClientId,
   openIdConnectMicrosoftServer,
@@ -110,7 +110,7 @@ export const redirectToOpenIdConnectProvider = async (
   };
 
   // store the code verifier, state and nonce in the session storage
-  sessionStorage.setItem(
+  localStorage.setItem(
     openIdConnectStateStorageKey,
     JSON.stringify(openIdConnectState),
   );
@@ -137,7 +137,7 @@ export const authenticate = async (): Promise<{
     redirectPath,
     registrationToken,
   } = JSON.parse(
-    sessionStorage.getAndDelete(openIdConnectStateStorageKey),
+    localStorage.getAndDelete(openIdConnectStateStorageKey),
   ) as OpenIdConnectTemporaryState;
 
   const currentUrl: URL = new URL(window.location.href);
