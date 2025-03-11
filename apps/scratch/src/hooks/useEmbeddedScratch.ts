@@ -24,6 +24,10 @@ const messages = defineMessages({
     id: "useEmbeddedScratch.cannotSaveProject",
     defaultMessage: "Could not save the project",
   },
+  timeoutExceeded: {
+    id: "useEmbeddedScratch.timeoutExceeded",
+    defaultMessage: "We stopped the run, it was taking too long.",
+  },
 });
 
 const areAssertionsEnabled = (vm: VM): boolean => {
@@ -104,20 +108,32 @@ export const useEmbeddedScratch = (
                 passedAssertions: Assertion[];
                 failedAssertions: Assertion[];
               }>((resolve) => {
+                let finishedRunning = false;
                 vm.runtime.once(
                   "ASSERTIONS_CHECKED",
-                  (passedAssertions, failedAssertions) =>
+                  (passedAssertions, failedAssertions) => {
+                    finishedRunning = true;
+
                     resolve({
                       passedAssertions,
                       failedAssertions,
-                    }),
+                    });
+                  },
                 );
 
                 // once the project is backed up, run the project
                 vm.greenFlag();
 
                 setTimeout(() => {
-                  vm.stopAll();
+                  if (!finishedRunning) {
+                    vm.stopAll();
+
+                    console.error(
+                      `${logModule} Maximum execution time exceeded`,
+                    );
+
+                    toast.error(intl.formatMessage(messages.timeoutExceeded));
+                  }
                 }, maximumExecutionTimeInMs);
               });
 
