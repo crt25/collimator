@@ -570,26 +570,26 @@ export const signIn = async (page: Page): Promise<void> => {
 
 export const useAdminUser = async (context: BrowserContext): Promise<void> => {
   // https://playwright.dev/docs/auth#session-storage
-  const sessionStorage = JSON.parse(fs.readFileSync(adminFile, "utf-8"));
+  const localStorage = JSON.parse(fs.readFileSync(adminFile, "utf-8"));
   await context.addInitScript((storage: Record<string, string>) => {
     if (window.location.hostname === "localhost") {
       for (const [key, value] of Object.entries(storage)) {
-        window.sessionStorage.setItem(key, value);
+        window.localStorage.setItem(key, value);
       }
     }
-  }, sessionStorage);
+  }, localStorage);
 };
 
 export const useStudentUser = async (
   context: BrowserContext,
 ): Promise<void> => {
   // https://playwright.dev/docs/auth#session-storage
-  const sessionStorage = JSON.parse(fs.readFileSync(studentFile, "utf-8"));
+  const localStorage = JSON.parse(fs.readFileSync(studentFile, "utf-8"));
   await context.addInitScript((storage: Record<string, string>) => {
     if (window.location.hostname === "localhost") {
       for (const [key, value] of Object.entries(storage)) {
-        window.sessionStorage.setItem(key, value);
+        window.localStorage.setItem(key, value);
       }
     }
-  }, sessionStorage);
+  }, localStorage);
 };
