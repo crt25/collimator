@@ -112,7 +112,10 @@ const SolveTaskPage = () => {
       ],
     });
 
-    if (response.result.failedTests.length === 0 && response.result.passedTests.length > 0) {
+    if (
+      response.result.failedTests.length === 0 &&
+      response.result.passedTests.length > 0
+    ) {
       toast.success(
         <FormattedMessage
           id="SolveTask.correctSolutionSubmitted"
@@ -185,7 +188,14 @@ const SolveTaskPage = () => {
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session?.id, session?.klass.id, task?.id, intl]);
+  }, [
+    embeddedApp,
+    taskFileHash,
+    session?.id,
+    session?.klass.id,
+    task?.id,
+    intl,
+  ]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {

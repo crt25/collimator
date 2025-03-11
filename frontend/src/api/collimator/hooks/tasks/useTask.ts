@@ -23,13 +23,11 @@ export const useTask = (
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(
-    getTasksControllerFindOneV0Url(numericId),
-    () =>
-      isNaN(numericId)
-        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-          new Promise<GetTaskReturnType>(() => {})
-        : fetchAndTransform(authOptions, numericId),
+  return useSWR(getTasksControllerFindOneV0Url(numericId), () =>
+    isNaN(numericId)
+      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+        new Promise<GetTaskReturnType>(() => {})
+      : fetchAndTransform(authOptions, numericId),
   );
 };
 
