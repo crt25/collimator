@@ -12,9 +12,7 @@ import { getJwkSet } from "./openid-connect";
 export const verifyJwtToken = async (
   jwtToken: string,
   audience: string,
-): Promise<
-  jose.JWTVerifyResult<jose.JWTPayload> & jose.ResolvedKey
-> => {
+): Promise<jose.JWTVerifyResult<jose.JWTPayload> & jose.ResolvedKey> => {
   const jwkSet = await getJwkSet();
 
   return await jose.jwtVerify(jwtToken, jwkSet, {
