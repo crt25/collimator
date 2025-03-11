@@ -30,9 +30,6 @@ export const useTask = (
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
           new Promise<GetTaskReturnType>(() => {})
         : fetchAndTransform(authOptions, numericId),
-    {
-      compare: (a, b) => a === b || (a?.equals(b) ?? false),
-    },
   );
 };
 

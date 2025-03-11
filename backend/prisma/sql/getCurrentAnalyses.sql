@@ -16,4 +16,4 @@ INNER JOIN "Student" student ON student."id" = solution."studentId"
 INNER JOIN "SolutionTest" test ON test."solutionId" = solution.id
 WHERE solution."sessionId" = $1
 AND solution."taskId" = $2
-ORDER BY solution."studentId", solution."createdAt" DESC;
+ORDER BY solution."studentId", solution."createdAt" DESC, test."name" ASC;
