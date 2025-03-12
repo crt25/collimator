@@ -23,21 +23,21 @@ const registrationTokenLifetime = 1000 * 60 * 60 * 24 * 5; // 5 days
 export type PublicKey = {
   id: number;
   teacherId: number;
-  publicKey: Buffer;
+  publicKey: Uint8Array;
   createdAt: Date;
 };
 
 type WithKey = {
   keyPair: {
     id: number;
-    publicKey: Buffer;
+    publicKey: Uint8Array;
     publicKeyFingerprint: string;
-    salt: Buffer;
+    salt: Uint8Array;
     createdAt: Date;
 
     privateKeys: {
-      encryptedPrivateKey: Buffer;
-      salt: Buffer;
+      encryptedPrivateKey: Uint8Array;
+      salt: Uint8Array;
     }[];
   } | null;
 };
@@ -83,8 +83,7 @@ const selectUserIdentityWithKey = {
 };
 
 type KeySet = ReturnType<typeof jose.createRemoteJWKSet>;
-type Jwt = jose.JWTVerifyResult<jose.JWTPayload> &
-  jose.ResolvedKey<jose.KeyLike>;
+type Jwt = jose.JWTVerifyResult<jose.JWTPayload> & jose.ResolvedKey;
 
 /**
  * Verify a JWT token using the public key from the server.
@@ -98,8 +97,8 @@ const verifyJwtToken = async (
   keySet: KeySet,
   jwtToken: string,
   audience: string,
-): Promise<Jwt> => {
-  return await jose.jwtVerify(jwtToken, keySet, {
+): Promise<Jwt> =>
+  jose.jwtVerify(jwtToken, keySet, {
     algorithms: [
       "RS256",
       "RS384",
@@ -114,7 +113,6 @@ const verifyJwtToken = async (
     audience,
     clockTolerance: 0,
   });
-};
 
 // generate strong, cryptographically secure token
 // 128 bits (16 bytes) should be plenty, let's use 256 for good measure

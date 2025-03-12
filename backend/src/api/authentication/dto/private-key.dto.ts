@@ -16,8 +16,8 @@ export class PrivateKeyDto {
     description: "The base64 encoded public key.",
   })
   @Transform(
-    ({ value }: { value: PrivateKey["encryptedPrivateKey"] }) =>
-      value.toString("base64"),
+    ({ obj: { encryptedPrivateKey } }: { obj: PrivateKey }) =>
+      Buffer.from(encryptedPrivateKey).toString("base64"),
     { toClassOnly: true },
   )
   @Expose()
@@ -31,7 +31,8 @@ export class PrivateKeyDto {
       "The base64 encoded salt used to derive the symmetric key that encrypted the private key.",
   })
   @Transform(
-    ({ value }: { value: PrivateKey["salt"] }) => value.toString("base64"),
+    ({ obj: { salt } }: { obj: PrivateKey }) =>
+      Buffer.from(salt).toString("base64"),
     { toClassOnly: true },
   )
   @Expose()
