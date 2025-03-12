@@ -4591,9 +4591,9 @@ __metadata:
   linkType: hard
 
 "@types/babel__preset-env@npm:^7":
-  version: 7.9.7
-  resolution: "@types/babel__preset-env@npm:7.9.7"
-  checksum: 10c0/e1da078fee75841af512c7084e66f8a2b9136d72185d72c85c6fb41697358d330d195896d7d22834fca92fad1f16a8c0fb6269e890f9e6842c9a9972313b7baa
+  version: 7.10.0
+  resolution: "@types/babel__preset-env@npm:7.10.0"
+  checksum: 10c0/5ad0c3a8bec4f7612ee8aeecb4ee94494d3bc193f6da608cd118175e726bb2cf649515aded650defb968bfae4ec6e6c52c0c06fc83be261c0b8eaa3f8f2cf336
   languageName: node
   linkType: hard
 
@@ -4915,12 +4915,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.13.8":
-  version: 22.13.8
-  resolution: "@types/node@npm:22.13.8"
+"@types/node@npm:^22.13.10":
+  version: 22.13.10
+  resolution: "@types/node@npm:22.13.10"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/bfc92b734a9dce6ac5daee0a52feccdf5dcb3804d895e4bc5384e2f4644612b8801725cd03c8c3c0888fb5eeb16b875877ac44b77641e0196dc1a837b1c2a366
+  checksum: 10c0/a3865f9503d6f718002374f7b87efaadfae62faa499c1a33b12c527cfb9fd86f733e1a1b026b80c5a0e4a965701174bc3305595a7d36078aa1abcf09daa5dee9
   languageName: node
   linkType: hard
 
@@ -5040,12 +5040,12 @@ __metadata:
   linkType: hard
 
 "@types/react-virtualized@npm:^9":
-  version: 9.22.0
-  resolution: "@types/react-virtualized@npm:9.22.0"
+  version: 9.22.2
+  resolution: "@types/react-virtualized@npm:9.22.2"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/react": "npm:*"
-  checksum: 10c0/dede58499c90fbc2042e58a3c7192a92b8bc61fed0589a95911d2a0726f202fa0bd87c9fc68e861ce0a6a034a7460a195b291ff49465a3b620e9f630bfdc9246
+  checksum: 10c0/e46ae29ef3187d15c1a6693694e2612da0b6a7f259b12f86b58d150df02e5ca8bb4776cbe6059af5e0e6e48584e5fa10465e951662a3f74e47663a742f4d4d5d
   languageName: node
   linkType: hard
 
@@ -6130,7 +6130,7 @@ __metadata:
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/lodash.defaultsdeep": "npm:^4"
     "@types/lodash.omit": "npm:^4.5.9"
-    "@types/node": "npm:^22.13.8"
+    "@types/node": "npm:^22.13.10"
     "@types/omggif": "npm:^1"
     "@types/papaparse": "npm:^5"
     "@types/prop-types": "npm:^15"
