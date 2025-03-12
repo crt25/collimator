@@ -70,6 +70,8 @@ updates:
         - dependency-name: "@types/react"
         - dependency-name: "react-dom"
         - dependency-name: "@types/react-dom"
+        # react-router v7 is no longer compatible with react 16
+        - dependency-name: "react-router-dom"
 
         # and some specific versions of some other packages
         - dependency-name: "redux"
