@@ -41,7 +41,7 @@ export class TasksService {
   create(
     task: TaskCreateInput,
     mimeType: string,
-    data: Buffer,
+    data: Uint8Array,
   ): Promise<TaskWithoutData> {
     const checkedTask: Prisma.TaskCreateInput = {
       ...task,
@@ -65,7 +65,7 @@ export class TasksService {
   updateFile(
     id: TaskId,
     mimeType: string,
-    data: Buffer,
+    data: Uint8Array,
   ): Promise<TaskWithoutData> {
     return this.prisma.task.update({
       data: { mimeType, data },

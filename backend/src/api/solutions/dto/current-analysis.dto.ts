@@ -43,9 +43,13 @@ export class CurrentAnalysisDto {
     description: "The pseudonym of the student",
     type: "string",
   })
-  @Transform(({ value }: { value: Buffer }) => value.toString("base64"), {
-    toClassOnly: true,
-  })
+  @Transform(
+    ({ obj: { studentPseudonym } }: { obj: CurrentAnalysis }) =>
+      Buffer.from(studentPseudonym).toString("base64"),
+    {
+      toClassOnly: true,
+    },
+  )
   @Expose()
   readonly studentPseudonym!: string;
 

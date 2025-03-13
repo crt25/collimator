@@ -37,7 +37,7 @@ export class PrismaNotFoundInterceptor implements NestInterceptor {
       (!!error &&
         typeof error == "object" &&
         "name" in error &&
-        error.name === "NotFoundError" &&
+        error.name === "PrismaClientKnownRequestError" &&
         "code" in error &&
         error.code === Prisma_NotFound_ErrorCode &&
         "clientVersion" in error)

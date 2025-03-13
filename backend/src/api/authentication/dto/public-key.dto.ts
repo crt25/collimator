@@ -41,7 +41,8 @@ export class PublicKeyDto {
     description: "The public key as a JSON Web Key (JWK)",
   })
   @Transform(
-    ({ value }: { value: KeyPair["publicKey"] }) => value.toString("utf-8"),
+    ({ obj: { publicKey } }: { obj: KeyPair }) =>
+      new TextDecoder("utf-8").decode(publicKey),
     { toClassOnly: true },
   )
   @Expose()

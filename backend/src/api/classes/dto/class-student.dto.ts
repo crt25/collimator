@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
+import { ClassExtended } from "../classes.service";
 
 export class ClassStudentDto {
   @ApiProperty({
@@ -24,9 +25,13 @@ export class ClassStudentDto {
     description: "The pseudonym of the student",
     type: "string",
   })
-  @Transform(({ value }: { value: Buffer }) => value.toString("base64"), {
-    toClassOnly: true,
-  })
+  @Transform(
+    ({ obj: { pseudonym } }: { obj: ClassExtended["students"][0] }) =>
+      Buffer.from(pseudonym).toString("base64"),
+    {
+      toClassOnly: true,
+    },
+  )
   @Expose()
   readonly pseudonym!: string;
 }

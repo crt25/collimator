@@ -16,9 +16,7 @@ const SolutionConversionWorker = ({
     solution.mimeType === "application/json"
   ) {
     ast = convertScratchToGeneralAst(
-      // do a Buffer.from() because either piscina or prisma
-      // return an array instead of a buffer
-      JSON.parse(Buffer.from(solution.data).toString("utf-8")),
+      JSON.parse(new TextDecoder("utf-8").decode(solution.data)),
     );
   } else {
     throw new Error(

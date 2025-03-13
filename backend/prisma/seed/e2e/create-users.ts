@@ -64,14 +64,14 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
           privateKey,
         );
 
-        const concatenated = new Uint8Array(
+        const encryptedPrivateKey = new Uint8Array(
           iv.byteLength + ciphertext.byteLength,
         );
-        concatenated.set(iv, 0);
-        concatenated.set(new Uint8Array(ciphertext), iv.byteLength);
+        encryptedPrivateKey.set(iv, 0);
+        encryptedPrivateKey.set(new Uint8Array(ciphertext), iv.byteLength);
 
         return {
-          encryptedPrivateKey: Buffer.from(concatenated),
+          encryptedPrivateKey,
           salt,
         };
       });
