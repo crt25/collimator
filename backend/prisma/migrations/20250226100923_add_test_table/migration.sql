@@ -1,10 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `passedTests` on the `Solution` table. All the data in the column will be lost.
-  - You are about to drop the column `totalTests` on the `Solution` table. All the data in the column will be lost.
-
-*/
 -- CreateTable
 CREATE TABLE "SolutionTest" (
     "id" SERIAL NOT NULL,
@@ -18,7 +11,6 @@ CREATE TABLE "SolutionTest" (
 );
 
 -- Migrate the data
-
 INSERT INTO "SolutionTest" ("solutionId", "identifier", "name", "contextName", "passed")
 SELECT s.id as "solutionId", null as "identifier", CONCAT('Failed test ', "failedTest") as "name", null as "contextName", false as "passed"
   FROM public."Solution" s, generate_series(1,1000) "failedTest"

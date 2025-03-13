@@ -72,37 +72,41 @@ export class SolutionsService {
       getCurrentAnalyses(sessionId, taskId),
     );
 
+    type AnalysisById = { [analysisId: number]: CurrentAnalysis };
+
+    const groupByAnalysisId = (
+      byAnalysisId: AnalysisById,
+      analysis: (typeof analyses)[0],
+    ): AnalysisById => {
+      const test = {
+        identifier: analysis.testIdentifier,
+        name: analysis.testName,
+        contextName: analysis.testContextName,
+        passed: analysis.testPassed,
+      };
+
+      if (analysis.id in byAnalysisId) {
+        byAnalysisId[analysis.id].tests.push(test);
+      } else {
+        byAnalysisId[analysis.id] = {
+          id: analysis.id,
+          solutionId: analysis.solutionId,
+          genericAst: analysis.genericAst,
+          astVersion: analysis.astVersion,
+          studentPseudonym: analysis.studentPseudonym,
+          studentKeyPairId: analysis.studentKeyPairId,
+          tests: [test],
+        };
+      }
+
+      return byAnalysisId;
+    };
+
     // filter out analyses that are not of the latest AST version
     return Object.values(
       analyses
         .filter((analysis) => analysis.astVersion === latestAstVersion)
-        .reduce(
-          (byAnalysisId, analysis) => {
-            const test = {
-              identifier: analysis.testIdentifier,
-              name: analysis.testName,
-              contextName: analysis.testContextName,
-              passed: analysis.testPassed,
-            };
-
-            if (analysis.solutionId in byAnalysisId) {
-              byAnalysisId[analysis.solutionId].tests.push(test);
-            } else {
-              byAnalysisId[analysis.id] = {
-                id: analysis.id,
-                solutionId: analysis.solutionId,
-                genericAst: analysis.genericAst,
-                astVersion: analysis.astVersion,
-                studentPseudonym: analysis.studentPseudonym,
-                studentKeyPairId: analysis.studentKeyPairId,
-                tests: [test],
-              };
-            }
-
-            return byAnalysisId;
-          },
-          {} as { [solutionId: number]: CurrentAnalysis },
-        ),
+        .reduce(groupByAnalysisId, {} satisfies AnalysisById),
     );
   }
 

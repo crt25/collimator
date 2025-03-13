@@ -41,26 +41,6 @@ export class ExistingSessionExtended {
   }
 
   equals(other?: ExistingSessionExtended): boolean {
-    const tasks = this.tasks.reduce(
-      (byTaskId, task) => {
-        byTaskId[task.id] = task;
-        return byTaskId;
-      },
-      {} as Record<string, SessionTask>,
-    );
-
-    const otherTasks = (other?.tasks ?? []).reduce(
-      (byTaskId, task) => {
-        byTaskId[task.id] = task;
-        return byTaskId;
-      },
-      {} as Record<string, SessionTask>,
-    );
-
-    const taskIds = [
-      ...new Set([...Object.keys(tasks), ...Object.keys(otherTasks)]),
-    ];
-
     return (
       this.id === other?.id &&
       this.title === other.title &&
@@ -72,7 +52,7 @@ export class ExistingSessionExtended {
         this.lesson?.equals(other.lesson ?? undefined) === true) &&
       this.status === other.status &&
       this.tasks.length === other.tasks.length &&
-      taskIds.every((taskId) => tasks[taskId].equals(otherTasks[taskId]))
+      this.tasks.every((task, idx) => task.equals(other.tasks[idx]))
     );
   }
 

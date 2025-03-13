@@ -41,7 +41,6 @@ const AssertionsState = ({ vm }: { vm: VM }) => {
         <img src={icon} />
       </button>
       <AssertionsModal
-        vm={vm}
         isShown={showModal}
         hideModal={() => setShowModal(false)}
         passedAssertions={passedAssertions}

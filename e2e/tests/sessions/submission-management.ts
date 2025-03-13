@@ -39,8 +39,13 @@ export const createAnonymousSubmission = async (
   } finally {
     try {
       await studentContext.close();
-    } catch {
-      // ignore errors where the context is already closed
+    } catch (e) {
+      // Ignore errors where the context is already closed.
+      // This may happen if the page is closed before because of an error.
+      console.warn(
+        "Could not close student context, probably already closed due to an exception.",
+        e,
+      );
     }
   }
 };

@@ -67,6 +67,9 @@
 .closeButton {
   position: absolute;
 
+  border: none !important;
+  background-color: transparent !important;
+
   top: 1rem;
   right: 1rem;
 

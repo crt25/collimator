@@ -456,7 +456,7 @@ test.describe("/solve", () => {
         failedTests: [
           {
             contextName: "Sprite1",
-            identifier: "Sprite1/=AZYDuVf2OMO^acD9JwZ",
+            identifier: "Sprite1$=AZYDuVf2OMO^acD9JwZ",
             name: "Unnamed Assertion",
           },
         ],
@@ -510,7 +510,7 @@ test.describe("/solve", () => {
         passedTests: [
           {
             contextName: "Sprite1",
-            identifier: "Sprite1/=AZYDuVf2OMO^acD9JwZ",
+            identifier: "Sprite1$=AZYDuVf2OMO^acD9JwZ",
             name: "Unnamed Assertion",
           },
         ],
