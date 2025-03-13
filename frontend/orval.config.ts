@@ -16,7 +16,7 @@ const config = defineConfig({
 
       override: {
         fetch: {
-          includeHttpStatusReturnType: false,
+          includeHttpResponseReturnType: false,
         },
         mutator: {
           path: "./src/api/fetch.ts",
