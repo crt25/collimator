@@ -17,7 +17,7 @@ const Modal = ({
   return (
     <div className={styles.backdrop}>
       <div className={styles.modal}>
-        <div className={styles.closeButton} onClick={onHide} />
+        <button className={styles.closeButton} onClick={onHide} />
         {children}
       </div>
     </div>

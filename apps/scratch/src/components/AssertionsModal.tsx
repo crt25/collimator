@@ -1,4 +1,3 @@
-import VM from "scratch-vm";
 import { FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { Fragment, useMemo } from "react";
@@ -33,13 +32,28 @@ const Table = styled.table`
   }
 `;
 
+type RunAssertion = Assertion & { passed: boolean };
+type AssertionsByTarget = { [target: string]: RunAssertion[] };
+
+const groupByTarget = (
+  byTarget: AssertionsByTarget,
+  assertion: RunAssertion,
+): AssertionsByTarget => {
+  if (assertion.targetName in byTarget) {
+    byTarget[assertion.targetName].push(assertion);
+  } else {
+    byTarget[assertion.targetName] = [assertion];
+  }
+
+  return byTarget;
+};
+
 const AssertionsModal = ({
   isShown,
   hideModal,
   passedAssertions,
   failedAssertions,
 }: {
-  vm: VM;
   isShown?: boolean;
   hideModal: () => void;
   passedAssertions: Assertion[];
@@ -53,25 +67,17 @@ const AssertionsModal = ({
       })),
     [passedAssertions],
   );
+
   const failed = useMemo(
     () => failedAssertions.map((a) => ({ ...a, passed: false })),
     [failedAssertions],
   );
+
   const assertionsByTarget = useMemo(
     () =>
       [...passed, ...failed].reduce(
-        (byTarget, assertion) => {
-          if (assertion.targetName in byTarget) {
-            byTarget[assertion.targetName] = [
-              ...byTarget[assertion.targetName],
-              assertion,
-            ];
-          } else {
-            byTarget[assertion.targetName] = [assertion];
-          }
-          return byTarget;
-        },
-        {} as { [target: string]: (Assertion & { passed: boolean })[] },
+        groupByTarget,
+        {} satisfies AssertionsByTarget,
       ),
     [passed, failed],
   );
