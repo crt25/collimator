@@ -190,15 +190,25 @@ model Solution {
   sessionId      Int
   failedAnalyses Int      @default(0)
 
-  totalTests  Int
-  passedTests Int
-
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
 
   analysis SolutionAnalysis?
+  tests    SolutionTest[]
+}
+
+model SolutionTest {
+  id         Int @id @default(autoincrement())
+  solutionId Int
+
+  identifier  String?
+  name        String
+  contextName String?
+  passed      Boolean
+
+  solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
 }
 
 enum AstVersion {

@@ -5,14 +5,13 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { SolutionTestDto } from "./solutionTestDto";
 
 export interface CurrentAnalysisDto {
   /** The generalized AST of the solution. */
   genericAst: string;
   /** The analysis's unique identifier, a positive integer. */
   id: number;
-  /** The number of passed tests. */
-  passedTests: number;
   /** The analysis's unique identifier, a positive integer. */
   solutionId: number;
   /**
@@ -22,6 +21,6 @@ export interface CurrentAnalysisDto {
   studentKeyPairId: number | null;
   /** The pseudonym of the student */
   studentPseudonym: string;
-  /** The total number of tests. */
-  totalTests: number;
+  /** The tests for the current analysis. */
+  tests: SolutionTestDto[];
 }

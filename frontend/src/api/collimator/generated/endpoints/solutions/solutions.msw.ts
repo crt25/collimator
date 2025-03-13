@@ -14,11 +14,18 @@ export const getSolutionsControllerCreateV0ResponseMock = (
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
-  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
-  totalTests: faker.number.int({ min: undefined, max: undefined }),
+  tests: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    contextName: faker.helpers.arrayElement([faker.word.sample(), null]),
+    identifier: faker.helpers.arrayElement([faker.word.sample(), null]),
+    name: faker.word.sample(),
+    passed: faker.datatype.boolean(),
+  })),
   ...overrideResponse,
 });
 
@@ -30,11 +37,18 @@ export const getSolutionsControllerFindAllV0ResponseMock =
     ).map(() => ({
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       id: faker.number.int({ min: undefined, max: undefined }),
-      passedTests: faker.number.int({ min: undefined, max: undefined }),
       sessionId: faker.number.int({ min: undefined, max: undefined }),
       studentId: faker.number.int({ min: undefined, max: undefined }),
       taskId: faker.number.int({ min: undefined, max: undefined }),
-      totalTests: faker.number.int({ min: undefined, max: undefined }),
+      tests: Array.from(
+        { length: faker.number.int({ min: 1, max: 10 }) },
+        (_, i) => i + 1,
+      ).map(() => ({
+        contextName: faker.helpers.arrayElement([faker.word.sample(), null]),
+        identifier: faker.helpers.arrayElement([faker.word.sample(), null]),
+        name: faker.word.sample(),
+        passed: faker.datatype.boolean(),
+      })),
     }));
 
 export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
@@ -45,39 +59,60 @@ export const getSolutionsControllerFindCurrentAnalysisV0ResponseMock =
     ).map(() => ({
       genericAst: faker.word.sample(),
       id: faker.number.int({ min: undefined, max: undefined }),
-      passedTests: faker.number.int({ min: undefined, max: undefined }),
       solutionId: faker.number.int({ min: undefined, max: undefined }),
       studentKeyPairId: faker.helpers.arrayElement([
         faker.number.int({ min: undefined, max: undefined }),
         null,
       ]),
       studentPseudonym: faker.word.sample(),
-      totalTests: faker.number.int({ min: undefined, max: undefined }),
+      tests: Array.from(
+        { length: faker.number.int({ min: 1, max: 10 }) },
+        (_, i) => i + 1,
+      ).map(() => ({
+        contextName: faker.helpers.arrayElement([faker.word.sample(), null]),
+        identifier: faker.helpers.arrayElement([faker.word.sample(), null]),
+        name: faker.word.sample(),
+        passed: faker.datatype.boolean(),
+      })),
     }));
-
-export const getSolutionsControllerFindOneV0ResponseMock = (
-  overrideResponse: Partial<ExistingSolutionDto> = {},
-): ExistingSolutionDto => ({
-  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  id: faker.number.int({ min: undefined, max: undefined }),
-  passedTests: faker.number.int({ min: undefined, max: undefined }),
-  sessionId: faker.number.int({ min: undefined, max: undefined }),
-  studentId: faker.number.int({ min: undefined, max: undefined }),
-  taskId: faker.number.int({ min: undefined, max: undefined }),
-  totalTests: faker.number.int({ min: undefined, max: undefined }),
-  ...overrideResponse,
-});
 
 export const getSolutionsControllerLatestSolutionV0ResponseMock = (
   overrideResponse: Partial<ExistingSolutionDto> = {},
 ): ExistingSolutionDto => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   id: faker.number.int({ min: undefined, max: undefined }),
-  passedTests: faker.number.int({ min: undefined, max: undefined }),
   sessionId: faker.number.int({ min: undefined, max: undefined }),
   studentId: faker.number.int({ min: undefined, max: undefined }),
   taskId: faker.number.int({ min: undefined, max: undefined }),
-  totalTests: faker.number.int({ min: undefined, max: undefined }),
+  tests: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    contextName: faker.helpers.arrayElement([faker.word.sample(), null]),
+    identifier: faker.helpers.arrayElement([faker.word.sample(), null]),
+    name: faker.word.sample(),
+    passed: faker.datatype.boolean(),
+  })),
+  ...overrideResponse,
+});
+
+export const getSolutionsControllerFindOneV0ResponseMock = (
+  overrideResponse: Partial<ExistingSolutionDto> = {},
+): ExistingSolutionDto => ({
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  id: faker.number.int({ min: undefined, max: undefined }),
+  sessionId: faker.number.int({ min: undefined, max: undefined }),
+  studentId: faker.number.int({ min: undefined, max: undefined }),
+  taskId: faker.number.int({ min: undefined, max: undefined }),
+  tests: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    contextName: faker.helpers.arrayElement([faker.word.sample(), null]),
+    identifier: faker.helpers.arrayElement([faker.word.sample(), null]),
+    name: faker.word.sample(),
+    passed: faker.datatype.boolean(),
+  })),
   ...overrideResponse,
 });
 
@@ -159,6 +194,32 @@ export const getSolutionsControllerFindCurrentAnalysisV0MockHandler = (
   );
 };
 
+export const getSolutionsControllerLatestSolutionV0MockHandler = (
+  overrideResponse?:
+    | ExistingSolutionDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<ExistingSolutionDto> | ExistingSolutionDto),
+) => {
+  return http.get(
+    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/latest",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSolutionsControllerLatestSolutionV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
+
 export const getSolutionsControllerFindOneV0MockHandler = (
   overrideResponse?:
     | ExistingSolutionDto
@@ -222,38 +283,12 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
     },
   );
 };
-
-export const getSolutionsControllerLatestSolutionV0MockHandler = (
-  overrideResponse?:
-    | ExistingSolutionDto
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ExistingSolutionDto> | ExistingSolutionDto),
-) => {
-  return http.get(
-    "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/latest",
-    async (info) => {
-      await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === "function"
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getSolutionsControllerLatestSolutionV0ResponseMock(),
-        ),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    },
-  );
-};
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateV0MockHandler(),
   getSolutionsControllerFindAllV0MockHandler(),
   getSolutionsControllerFindCurrentAnalysisV0MockHandler(),
+  getSolutionsControllerLatestSolutionV0MockHandler(),
   getSolutionsControllerFindOneV0MockHandler(),
   getSolutionsControllerDeleteOneV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
-  getSolutionsControllerLatestSolutionV0MockHandler(),
 ];

@@ -40,6 +40,22 @@ export class ExistingSessionExtended {
     this.tasks = tasks;
   }
 
+  equals(other?: ExistingSessionExtended): boolean {
+    return (
+      this.id === other?.id &&
+      this.title === other.title &&
+      this.description === other.description &&
+      this.isAnonymous === other.isAnonymous &&
+      this.createdAt === other.createdAt &&
+      this.klass.equals(other.klass) &&
+      (this.lesson == other.lesson ||
+        this.lesson?.equals(other.lesson ?? undefined) === true) &&
+      this.status === other.status &&
+      this.tasks.length === other.tasks.length &&
+      this.tasks.every((task, idx) => task.equals(other.tasks[idx]))
+    );
+  }
+
   static fromDto(dto: ExistingSessionExtendedDto): ExistingSessionExtended {
     return new ExistingSessionExtended({
       ...dto,

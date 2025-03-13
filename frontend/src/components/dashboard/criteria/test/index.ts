@@ -38,7 +38,7 @@ export const TestCriterionAxis: CriterionAxisDefinition<Criterion> = {
     },
   },
   getAxisValue: (analysis) => {
-    return analysis.passedTests;
+    return analysis.tests.filter((t) => t.passed).length;
   },
 };
 
@@ -56,7 +56,9 @@ export const TestCriterionFilter: CriterionFilterDefinition<
     maximumCount: 100,
   },
   run: (config, analyses) => {
-    const passedTestsList = analyses.map((a) => a.passedTests);
+    const passedTestsList = analyses.map(
+      (a) => a.tests.filter((t) => t.passed).length,
+    );
 
     return {
       matchesFilter: passedTestsList.map(

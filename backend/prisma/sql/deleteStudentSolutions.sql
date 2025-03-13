@@ -21,6 +21,10 @@ analysisDeleted AS (
   DELETE FROM "SolutionAnalysis"
     WHERE "solutionId" IN (SELECT id FROM solutionsToDelete)
 ),
+testsDeleted AS (
+  DELETE FROM "SolutionTest"
+    WHERE "solutionId" IN (SELECT id FROM solutionsToDelete)
+),
 deletedIds AS (
   DELETE FROM "Solution"
     WHERE id IN (SELECT id FROM solutionsToDelete)

@@ -22,20 +22,30 @@ export const createAnonymousSubmission = async (
     await joinPage.pseudonymInput.fill(pseudonym);
     await joinPage.submit();
 
+    // ensure we start listening for the loadTask event before the page is loaded
+    const solvePagePromise = SolveTaskPageModel.create(studentPage);
+
     await joinPage.joinSession();
 
     await studentPage.waitForURL(
       /\/class\/\d+\/session\/\d+\/task\/\d+\/solve/,
     );
 
-    const solvePage = await SolveTaskPageModel.create(studentPage);
+    const solvePage = await solvePagePromise;
 
     await solvePage.loadSolution(task, solution);
 
     await solvePage.submit();
-
-    await studentPage.close();
   } finally {
-    await studentContext.close();
+    try {
+      await studentContext.close();
+    } catch (e) {
+      // Ignore errors where the context is already closed.
+      // This may happen if the page is closed before because of an error.
+      console.warn(
+        "Could not close student context, probably already closed due to an exception.",
+        e,
+      );
+    }
   }
 };

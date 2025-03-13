@@ -139,7 +139,7 @@ const TaskConfig = ({
   }, [isShown]);
 
   return (
-    <Modal isShown={isShown}>
+    <Modal isShown={isShown} onHide={hideModal}>
       <h1>
         <FormattedMessage
           defaultMessage="Task Config"

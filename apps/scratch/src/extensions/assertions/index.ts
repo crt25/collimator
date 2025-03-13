@@ -6,6 +6,7 @@ import { ExtensionId, ExtensionMetadata, ExtensionUtilType } from "..";
 import { BlockType } from "../../blocks/block-type";
 import { ArgumentType } from "../../blocks/argument-type";
 import { formatMessage } from "../../i18n";
+import { Assertion } from "../../types/scratch-vm-custom";
 import testIconWhite from "./test-icon-white.svg";
 import testIconBlack from "./test-icon-black.svg";
 
@@ -23,7 +24,15 @@ const messages = defineMessages({
   },
   assert: {
     id: "crt.extensions.assertions.assert",
-    defaultMessage: "Assert [CONDITION] is true",
+    defaultMessage: "[NAME]: Assert [CONDITION] is true",
+  },
+  unnamedAssertion: {
+    id: "crt.extensions.assertions.unnamedAssertion",
+    defaultMessage: "Unnamed Assertion",
+  },
+  assertDefaultValue: {
+    id: "crt.extensions.assertions.assertDefaultValue",
+    defaultMessage: "x-Coordinate of final position is correct",
   },
 });
 
@@ -38,8 +47,8 @@ const blockIconURI = testIconWhite;
 const menuIconURI = testIconBlack;
 
 type CustomState = {
-  totalNumberOfAssertions: number;
-  numberOfPassedAssertions: number;
+  passedAssertions: { assertionName: string; blockId: string }[];
+  failedAssertions: { assertionName: string; blockId: string }[];
 };
 
 const EXTENSION_ID = ExtensionId.Assertions;
@@ -110,8 +119,8 @@ interface RememberedSpriteState extends RememberedTargetState {
 class AssertionExtension {
   static readonly STATE_KEY = EXTENSION_ID;
   static readonly DEFAULT_STATE: CustomState = {
-    numberOfPassedAssertions: 0,
-    totalNumberOfAssertions: 0,
+    passedAssertions: [],
+    failedAssertions: [],
   };
 
   /**
@@ -309,8 +318,8 @@ class AssertionExtension {
 
       setCustomState(target, {
         ...state,
-        numberOfPassedAssertions: 0,
-        totalNumberOfAssertions: 0,
+        passedAssertions: [],
+        failedAssertions: [],
       });
     });
   };
@@ -346,29 +355,32 @@ class AssertionExtension {
    * Callback for when the project assertions were run.
    */
   onProjectAssertionsRan = (): void => {
-    const { totalNumberOfAssertions, numberOfPassedAssertions } =
-      this.runtime.targets.reduce(
-        ({ totalNumberOfAssertions, numberOfPassedAssertions }, target) => {
-          const state = getCustomState(target);
+    const targetStates = this.runtime.targets.map((target) => ({
+      targetName: target.getName(),
+      state: getCustomState(target),
+    }));
 
-          return {
-            totalNumberOfAssertions:
-              totalNumberOfAssertions + state.totalNumberOfAssertions,
-            numberOfPassedAssertions:
-              numberOfPassedAssertions + state.numberOfPassedAssertions,
-          };
-        },
-        {
-          totalNumberOfAssertions: 0,
-          numberOfPassedAssertions: 0,
-        },
-      );
-
-    this.runtime.emit(
-      "ASSERTIONS_CHECKED",
-      totalNumberOfAssertions,
-      numberOfPassedAssertions,
+    const passedAssertions = targetStates.flatMap(({ targetName, state }) =>
+      state.passedAssertions.map(
+        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
+      ),
     );
+
+    const failedAssertions = targetStates.flatMap(({ targetName, state }) =>
+      state.failedAssertions.map(
+        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
+      ),
+    );
+
+    for (const assertion of failedAssertions) {
+      this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
+    }
+
+    for (const assertion of passedAssertions) {
+      this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
+    }
+
+    this.runtime.emit("ASSERTIONS_CHECKED", passedAssertions, failedAssertions);
   };
 
   /**
@@ -387,6 +399,9 @@ class AssertionExtension {
       name: formatMessage(messages.categoryName),
       menuIconURI,
       blockIconURI,
+      color1: "#0FBD8C",
+      color2: "#c26a77",
+      color3: "#0B8E69",
       blocks: [
         {
           opcode: "event_whenTaskFinishedRunning",
@@ -402,6 +417,10 @@ class AssertionExtension {
           blockType: BlockType.command,
           text: formatMessage(messages.assert),
           arguments: {
+            NAME: {
+              type: ArgumentType.string,
+              defaultValue: formatMessage(messages.assertDefaultValue),
+            },
             CONDITION: {
               type: ArgumentType.boolean,
             },
@@ -427,16 +446,23 @@ class AssertionExtension {
    * Assert a condition is true.
    */
   noop_assert(
-    args: { CONDITION: boolean },
-    { target }: ExtensionUtilType,
+    args: { NAME?: string; CONDITION: boolean },
+    { target, thread }: ExtensionUtilType,
   ): void {
     const state = getCustomState(target);
+    const newAssertion = {
+      assertionName: args.NAME ?? formatMessage(messages.unnamedAssertion),
+      blockId: thread.stack[thread.stack.length - 1],
+    };
 
     setCustomState(target, {
       ...state,
-      totalNumberOfAssertions: state.totalNumberOfAssertions + 1,
-      numberOfPassedAssertions:
-        state.numberOfPassedAssertions + (args.CONDITION ? 1 : 0),
+      passedAssertions: args.CONDITION
+        ? [...state.passedAssertions, newAssertion]
+        : state.passedAssertions,
+      failedAssertions: !args.CONDITION
+        ? [...state.failedAssertions, newAssertion]
+        : state.failedAssertions,
     });
   }
 }

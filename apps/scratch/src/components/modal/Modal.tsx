@@ -4,8 +4,10 @@ import styles from "./modal.css";
 const Modal = ({
   isShown,
   children,
+  onHide,
 }: {
   isShown?: boolean;
+  onHide: () => void;
   children: React.ReactNode;
 }) => {
   if (!isShown) {
@@ -14,7 +16,10 @@ const Modal = ({
 
   return (
     <div className={styles.backdrop}>
-      <div className={styles.modal}>{children}</div>
+      <div className={styles.modal}>
+        <button className={styles.closeButton} onClick={onHide} />
+        {children}
+      </div>
     </div>
   );
 };

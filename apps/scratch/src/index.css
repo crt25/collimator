@@ -14,8 +14,10 @@
   --input-background-color: #fff;
   --input-background-color-hover: #ddd;
 
-  --assertions-default-color: #ff3355;
-  --assertions-success-color: #0b8e69;
+  /* safe colors according to https://www.nceas.ucsb.edu/sites/default/files/2022-06/Colorblind%20Safe%20Color%20Schemes.pdf (Paul Tol's Bright)*/
+  --assertions-default-color: #c26a77;
+  --assertions-failed-color: #c26a77;
+  --assertions-success-color: #337539;
 
   --scratch-motion-block-color: #4C97FF;
   --scratch-looks-block-color: #9966FF;
@@ -180,6 +182,11 @@ body,
 [data-category="Assertions"] 
 {
   --block-color: #0FBD8C;
+
+  & [stroke="#c26a77"]{
+    /* ensure the secondary color is only shown for highlighting (glow) when an assertion fails */
+    stroke: #0DA57A;
+  }
 }
 
 .blocklyDraggable:not([data-category])

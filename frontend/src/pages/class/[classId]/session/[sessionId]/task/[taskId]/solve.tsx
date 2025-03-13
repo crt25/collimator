@@ -18,6 +18,7 @@ import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { Language } from "@/types/app-iframe-message/languages";
+import { Test } from "@/types/app-iframe-message/get-submission";
 
 const messages = defineMessages({
   title: {
@@ -86,7 +87,7 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task || !taskFile) {
+    if (!session || !task) {
       return;
     }
 
@@ -94,13 +95,27 @@ const SolveTaskPage = () => {
       procedure: "getSubmission",
     });
 
+    const mapTest =
+      (passed: boolean) =>
+      ({ identifier, name, contextName }: Test) => ({
+        identifier,
+        name,
+        contextName,
+        passed,
+      });
+
     await createSolution(session.klass.id, session.id, task.id, {
       file: response.result.file,
-      totalTests: response.result.totalTests,
-      passedTests: response.result.passedTests,
+      tests: [
+        ...response.result.failedTests.map(mapTest(false)),
+        ...response.result.passedTests.map(mapTest(true)),
+      ],
     });
 
-    if (response.result.passedTests >= response.result.totalTests) {
+    if (
+      response.result.failedTests.length === 0 &&
+      response.result.passedTests.length > 0
+    ) {
       toast.success(
         <FormattedMessage
           id="SolveTask.correctSolutionSubmitted"
@@ -117,7 +132,7 @@ const SolveTaskPage = () => {
     }
 
     isScratchMutexAvailable.current = true;
-  }, [session, task, taskFile, createSolution]);
+  }, [session, task, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -173,7 +188,14 @@ const SolveTaskPage = () => {
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session, task, intl]);
+  }, [
+    embeddedApp,
+    taskFileHash,
+    session?.id,
+    session?.klass.id,
+    task?.id,
+    intl,
+  ]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
