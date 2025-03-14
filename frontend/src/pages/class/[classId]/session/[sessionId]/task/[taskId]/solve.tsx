@@ -87,7 +87,7 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task || !taskFile) {
+    if (!session || !task) {
       return;
     }
 
@@ -112,7 +112,10 @@ const SolveTaskPage = () => {
       ],
     });
 
-    if (response.result.failedTests.length === 0) {
+    if (
+      response.result.failedTests.length === 0 &&
+      response.result.passedTests.length > 0
+    ) {
       toast.success(
         <FormattedMessage
           id="SolveTask.correctSolutionSubmitted"
@@ -129,7 +132,7 @@ const SolveTaskPage = () => {
     }
 
     isScratchMutexAvailable.current = true;
-  }, [session, task, taskFile, createSolution]);
+  }, [session, task, createSolution]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -141,7 +144,6 @@ const SolveTaskPage = () => {
         procedure: "setLocale",
         arguments: intl.locale as Language,
       });
-      return;
     }
   }, [intl.locale]);
 

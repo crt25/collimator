@@ -355,49 +355,30 @@ class AssertionExtension {
    * Callback for when the project assertions were run.
    */
   onProjectAssertionsRan = (): void => {
-    const { passedAssertions, failedAssertions } = this.runtime.targets.reduce<{
-      passedAssertions: Assertion[];
-      failedAssertions: Assertion[];
-    }>(
-      ({ passedAssertions, failedAssertions }, target) => {
-        const state = getCustomState(target);
+    const targetStates = this.runtime.targets.map((target) => ({
+      targetName: target.getName(),
+      state: getCustomState(target),
+    }));
 
-        for (const assertion of state.failedAssertions) {
-          this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
-        }
-
-        for (const assertion of state.passedAssertions) {
-          this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
-        }
-
-        const toAssertions = ({
-          assertionName,
-          blockId,
-        }: {
-          assertionName: string;
-          blockId: string;
-        }): Assertion => ({
-          assertionName,
-          blockId,
-          targetName: target.getName(),
-        });
-
-        return {
-          passedAssertions: [
-            ...passedAssertions,
-            ...state.passedAssertions.map(toAssertions),
-          ],
-          failedAssertions: [
-            ...failedAssertions,
-            ...state.failedAssertions.map(toAssertions),
-          ],
-        };
-      },
-      {
-        passedAssertions: [],
-        failedAssertions: [],
-      },
+    const passedAssertions = targetStates.flatMap(({ targetName, state }) =>
+      state.passedAssertions.map(
+        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
+      ),
     );
+
+    const failedAssertions = targetStates.flatMap(({ targetName, state }) =>
+      state.failedAssertions.map(
+        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
+      ),
+    );
+
+    for (const assertion of failedAssertions) {
+      this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
+    }
+
+    for (const assertion of passedAssertions) {
+      this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
+    }
 
     this.runtime.emit("ASSERTIONS_CHECKED", passedAssertions, failedAssertions);
   };

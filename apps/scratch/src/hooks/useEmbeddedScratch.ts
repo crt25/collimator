@@ -13,6 +13,8 @@ import { Test } from "../../../../frontend/src/types/app-iframe-message/get-subm
 import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
 import { useIframeParent } from "./useIframeParent";
 
+export const scratchIdentifierSeparator = "$";
+
 const logModule = "[Embedded Scratch]";
 
 const messages = defineMessages({
@@ -141,7 +143,7 @@ export const useEmbeddedScratch = (
                 await waitForAssertions;
 
               const mapToTest = (assertion: Assertion): Test => ({
-                identifier: `${assertion.targetName}/${assertion.blockId}`,
+                identifier: `${assertion.targetName}${scratchIdentifierSeparator}${assertion.blockId}`,
                 name: assertion.assertionName,
                 contextName: assertion.targetName,
               });
