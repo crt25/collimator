@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -138,6 +138,15 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
+  useEffect(() => {
+    if (embeddedApp.current && wasInitialized.current) {
+      embeddedApp.current.sendRequest({
+        procedure: "setLocale",
+        arguments: intl.locale as Language,
+      });
+    }
+  }, [intl.locale]);
+
   const onAppAvailable = useCallback(async () => {
     if (
       embeddedApp.current &&
@@ -146,14 +155,6 @@ const SolveTaskPage = () => {
       task &&
       isScratchMutexAvailable.current
     ) {
-      if (wasInitialized.current) {
-        embeddedApp.current.sendRequest({
-          procedure: "setLocale",
-          arguments: intl.locale as Language,
-        });
-        return;
-      }
-
       wasInitialized.current = true;
 
       try {
@@ -188,14 +189,7 @@ const SolveTaskPage = () => {
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    embeddedApp,
-    taskFileHash,
-    session?.id,
-    session?.klass.id,
-    task?.id,
-    intl,
-  ]);
+  }, [embeddedApp, taskFileHash]);
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
