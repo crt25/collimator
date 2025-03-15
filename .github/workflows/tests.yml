@@ -1,6 +1,6 @@
 name: Tests
 
-on: [pull_request, workflow_call]
+on: [pull_request, workflow_call, merge_group]
 
 jobs:
     # Label of the runner job
