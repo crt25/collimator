@@ -10,7 +10,7 @@ export const useLocalStorage = <T extends object>(
   initialValue: T | (() => T),
 ): [T, (value: T) => void] => {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof sessionStorage === "undefined") {
+    if (typeof localStorage === "undefined") {
       // for SSR we return the default value
       return getInitialValue(initialValue);
     }

@@ -136,7 +136,7 @@ setup.describe("authentication against the real backend", () => {
 
     // wait for the authentication state to be set
     await page.waitForFunction((): boolean => {
-      const authState = sessionStorage.getItem("authenticationState");
+      const authState = localStorage.getItem("authenticationState");
       if (!authState) {
         return false;
       }
@@ -144,11 +144,10 @@ setup.describe("authentication against the real backend", () => {
       return "authenticationToken" in JSON.parse(authState);
     });
 
-    // https://playwright.dev/docs/auth#session-storage
-    const savedSessionStorage = await page.evaluate((): string =>
-      JSON.stringify(sessionStorage),
+    const savedApplicationStorage = await page.evaluate((): string =>
+      JSON.stringify(localStorage),
     );
-    fs.writeFileSync(adminFile, savedSessionStorage, {
+    fs.writeFileSync(adminFile, savedApplicationStorage, {
       encoding: "utf-8",
     });
   });
@@ -174,11 +173,10 @@ setup.describe("authentication against the real backend", () => {
       adminUser.email,
     );
 
-    // https://playwright.dev/docs/auth#session-storage
-    const sessionStorage = await page.evaluate((): string =>
-      JSON.stringify(sessionStorage),
+    const applicationStorage = await page.evaluate((): string =>
+      JSON.stringify(applicationStorage),
     );
-    fs.writeFileSync(studentFile, sessionStorage, {
+    fs.writeFileSync(studentFile, applicationStorage, {
       encoding: "utf-8",
     });
   });

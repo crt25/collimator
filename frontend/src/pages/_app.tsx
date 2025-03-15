@@ -41,13 +41,13 @@ const cache = createCache({ key: "next" });
 
 const getInitialAuthenticationState =
   async (): Promise<AuthenticationContextType> => {
-    if (typeof sessionStorage === "undefined") {
+    if (typeof localStorage === "undefined") {
       // for SSR we return the default value
       return authenticationContextDefaultValue;
     }
 
-    // load the stored authentication state from sessionStorage
-    const storedAuthenticationState = sessionStorage.getItem(
+    // load the stored authentication state from localStorage
+    const storedAuthenticationState = localStorage.getItem(
       authenticationStateKey,
     );
 
@@ -77,7 +77,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       // store the new state in the session storage asynchronously
       serializeAuthenticationContext(newState)
         .then((serializedNewState) => {
-          sessionStorage.setItem(
+          localStorage.setItem(
             authenticationStateKey,
             JSON.stringify(serializedNewState),
           );
@@ -96,7 +96,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   useEffect(() => {
-    // load the stored authentication state from sessionStorage
+    // load the stored authentication state from localStorage
     getInitialAuthenticationState().then((authenticationState) => {
       updateAuthenticationState(authenticationState);
       setAuthenticationStateLoaded(true);

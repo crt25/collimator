@@ -116,7 +116,7 @@ test.describe("session analysis", () => {
           page.evaluate(
             async ({ url, expectedAnalyses }) => {
               const authState = JSON.parse(
-                sessionStorage.getItem("authenticationState")!,
+                localStorage.getItem("authenticationState")!,
               ) as SerializedAuthenticationContextType;
 
               const response = await fetch(url, {
