@@ -1,7 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
-/** @type {import('next').NextConfig} */
+import { NextConfig } from "next";
 
-let nextConfig = {
+let nextConfig: NextConfig = {
   output: "export",
   distDir: "dist",
   productionBrowserSourceMaps: true,
@@ -13,6 +13,12 @@ let nextConfig = {
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
     ignoreDuringBuilds: true,
+  },
+
+  sassOptions: {
+    // ignore deprecation warning from sass because of bootstrap
+    // https://sass-lang.com/documentation/breaking-changes/import/
+    quietDeps: true,
   },
 };
 
@@ -46,9 +52,6 @@ if (!process.env.BABEL_ENV || process.env.BABEL_ENV !== "coverage") {
     // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
     // side errors will fail.
     // tunnelRoute: "/monitoring",
-
-    // Hides source maps from generated client bundles
-    hideSourceMaps: true,
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,
