@@ -11,6 +11,7 @@ import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
 import { ExtensionId } from "../extensions";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
 import Modal from "./modal/Modal";
 
 const Label = styled.label`
@@ -38,6 +39,9 @@ const TaskConfig = ({
   const [isAssertionsExtensionEnabled, setIsAssertionsExtensionEnabled] =
     useState(false);
 
+  const [maximumExecutionTimeInS, setMaximumExecutionTimeInS] = useState(
+    defaultMaximumExecutionTimeInMs / 1000,
+  );
   const [enableAssertions, setEnableAssertions] = useState(false);
   const [allowCustomProcedureBlocks, setAllowCustomProcedureBlocks] =
     useState(false);
@@ -89,10 +93,15 @@ const TaskConfig = ({
       vm.crtConfig.allowedBlocks.customBlocks ?? false,
     );
     setAllowVariableBlocks(vm.crtConfig.allowedBlocks.variables ?? false);
+    setMaximumExecutionTimeInS(
+      (vm.crtConfig?.maximumExecutionTimeInMs ??
+        defaultMaximumExecutionTimeInMs) / 1000,
+    );
   }, [
     vm.crtConfig,
     vm.crtConfig?.allowedBlocks.customBlocks,
     vm.crtConfig?.allowedBlocks.variables,
+    vm.crtConfig?.maximumExecutionTimeInMs,
   ]);
 
   const onAllowNoBlocks = useCallback(
@@ -109,7 +118,11 @@ const TaskConfig = ({
       e.preventDefault();
       e.stopPropagation();
 
-      updateConfig(e, () => {
+      updateConfig(e, (config) => {
+        config.maximumExecutionTimeInMs = parseInt(
+          (maximumExecutionTimeInS * 1000).toString(),
+        );
+
         // update assertions
         if (isAssertionsExtensionEnabled) {
           vm.runtime.emit(
@@ -198,20 +211,40 @@ const TaskConfig = ({
         </Label>
 
         {isAssertionsExtensionEnabled && (
-          <Label>
-            <FormattedMessage
-              defaultMessage="Enable assertions simulating a student solving the task."
-              description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
-              id="crt.taskConfig.enableAssertions"
-            />
-            <input
-              type="checkbox"
-              min="0"
-              checked={enableAssertions}
-              onChange={(e) => setEnableAssertions(e.target.checked)}
-              data-testid="enable-assertions-checkbox"
-            />
-          </Label>
+          <>
+            <Label>
+              <FormattedMessage
+                defaultMessage="Enable assertions simulating a student solving the task."
+                description="Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing."
+                id="crt.taskConfig.enableAssertions"
+              />
+              <input
+                type="checkbox"
+                min="0"
+                checked={enableAssertions}
+                onChange={(e) => setEnableAssertions(e.target.checked)}
+                data-testid="enable-assertions-checkbox"
+              />
+            </Label>
+
+            <Label>
+              <FormattedMessage
+                defaultMessage="Maximum execution time in seconds."
+                description="Label shown next to the input field for setting the maximum execution time."
+                id="crt.taskConfig.maximumExecutionTime"
+              />
+              <input
+                type="number"
+                min="0"
+                max="120"
+                value={maximumExecutionTimeInS}
+                onChange={(e) =>
+                  setMaximumExecutionTimeInS(parseFloat(e.target.value))
+                }
+                data-testid="maximum-execution-time-input"
+              />
+            </Label>
+          </>
         )}
 
         <input
