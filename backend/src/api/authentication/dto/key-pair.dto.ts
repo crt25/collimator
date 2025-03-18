@@ -42,7 +42,8 @@ export class KeyPairDto extends PublicKeyDto {
     description: "Salt to derive a symmetric key encoded in base64.",
   })
   @Transform(
-    ({ value }: { value: KeyPair["salt"] }) => value.toString("base64"),
+    ({ obj: { salt } }: { obj: KeyPair }) =>
+      Buffer.from(salt).toString("base64"),
     { toClassOnly: true },
   )
   @Expose()

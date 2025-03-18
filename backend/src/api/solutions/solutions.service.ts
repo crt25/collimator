@@ -29,7 +29,7 @@ export type CurrentAnalysis = {
   solutionId: number;
   genericAst: string;
   astVersion: AstVersion;
-  studentPseudonym: Buffer;
+  studentPseudonym: Uint8Array;
   studentKeyPairId: number | null;
   tests: {
     identifier: string | null;
@@ -174,7 +174,7 @@ export class SolutionsService {
   async create(
     solutionInput: SolutionCreateInput,
     mimeType: string,
-    data: Buffer,
+    data: Uint8Array,
   ): Promise<Solution> {
     const { studentId, sessionId, taskId, ...rest } = solutionInput;
     const checkedSolution: Prisma.SolutionCreateInput = {

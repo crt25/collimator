@@ -32,6 +32,7 @@ export class UsersService {
     userId: UserId,
     teacherKey: CreateKeyPairDto,
   ): Promise<KeyPair> {
+    // use UTF-8 encoding for the public key because it is a JSON string, not a binary object.
     const publicKey = Buffer.from(teacherKey.publicKey, "utf-8");
     const salt = Buffer.from(teacherKey.salt, "base64");
 
