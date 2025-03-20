@@ -2,9 +2,6 @@ import { ButtonGroup, Col, Row } from "react-bootstrap";
 import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as faStrokeStar } from "@fortawesome/free-regular-svg-icons";
 import { getStudentNickname } from "@/utilities/student-name";
 import { TaskType } from "@/api/collimator/generated/models";
 import { decodeBase64 } from "@/utilities/crypto/base64";
@@ -27,9 +24,10 @@ import {
   AnalyzerStateAction,
   AnalyzerStateActionType,
   defaultGroupValue,
-  defaultSourceValue,
+  defaultSolutionIdValue,
   selectedGroupValue,
 } from "./Analyzer.state";
+import StarAnalysisButton from "./StarAnalysisButton";
 
 const messages = defineMessages({
   defaultGroupOption: {
@@ -117,20 +115,20 @@ type Option = { label: string; value: string };
 const getOptions = async (
   authContext: AuthenticationContextType,
   analyses: CurrentAnalysis[],
-  bookmarkedSourceIds: Set<string>,
 ): Promise<Option[]> => {
-  let options: Option[] = analyses
+  let options = analyses
     .filter((analysis) => analysis instanceof CurrentStudentAnalysis)
     .map((analysis) => ({
+      isReferenceSolution: analysis.isReferenceSolution,
       label: analysis.studentPseudonym,
-      value: analysis.sourceId,
+      value: analysis.solutionId,
     }));
 
   // TODO: && this with a parameter
   const showStudentName = false && "keyPair" in authContext;
 
   options = await Promise.all(
-    options.map(async ({ label, value }) => {
+    options.map(async ({ label, value, isReferenceSolution }) => {
       if (showStudentName) {
         try {
           const decryptedIdentity: StudentIdentity = JSON.parse(
@@ -138,6 +136,7 @@ const getOptions = async (
           );
 
           return {
+            isReferenceSolution,
             label: decryptedIdentity.name,
             value,
           };
@@ -147,6 +146,7 @@ const getOptions = async (
       }
 
       return {
+        isReferenceSolution,
         label: getStudentNickname(label),
         value,
       };
@@ -154,21 +154,17 @@ const getOptions = async (
   );
 
   return options
-    .map((option) => {
-      const isBookmarked = bookmarkedSourceIds.has(option.value);
-
-      return {
-        ...option,
-        label: isBookmarked ? `⭐ ${option.label}` : option.label,
-      };
-    })
+    .map((option) => ({
+      ...option,
+      label: option.isReferenceSolution ? `⭐ ${option.label}` : option.label,
+    }))
     .toSorted(compareLabels);
 };
 
 const findAssignment = (
   categorizedDataPoints: CategorizedDataPoint[],
   selectedGroup: string,
-  selectedSourceId: string,
+  selectedSolutionId: string,
 ):
   | {
       dataPoint: CategorizedDataPoint;
@@ -183,7 +179,7 @@ const findAssignment = (
         selectedGroupValue === selectedGroup
       ) {
         const analysis = dataPoint.analyses.find(
-          (analysis) => analysis.sourceId === selectedSourceId,
+          (analysis) => analysis.solutionId === selectedSolutionId,
         );
 
         if (analysis) {
@@ -204,14 +200,13 @@ const CodeComparison = ({
   taskId,
   taskType,
   state: {
-    selectedSourceIds,
+    selectedSolutionIds: selectedSolutionIds,
     comparison: {
       selectedLeftGroup,
-      selectedLeftSourceId,
+      selectedLeftSolutionId,
       selectedRightGroup,
-      selectedRightSourceId,
+      selectedRightSolutionId,
     },
-    bookmarkedSourceIds: bookmarkedSolutionIds,
     selectedSubTaskId,
     xAxis,
     yAxis,
@@ -233,10 +228,8 @@ const CodeComparison = ({
   const authContext = useContext(AuthenticationContext);
   const [modalSide, setModalSide] = useState<"left" | "right" | null>(null);
 
-  const [leftSolutionOptions, setLeftSolutionOptions] = useState<Option[]>([]);
-  const [rightSolutionOptions, setRightSolutionOptions] = useState<Option[]>(
-    [],
-  );
+  const [leftOptions, setLeftOptions] = useState<Option[]>([]);
+  const [rightOptions, setRightOptions] = useState<Option[]>([]);
 
   const groupOptions = useMemo(
     () => [
@@ -263,9 +256,9 @@ const CodeComparison = ({
       findAssignment(
         categorizedDataPoints,
         selectedLeftGroup,
-        selectedLeftSourceId,
+        selectedLeftSolutionId,
       ),
-    [categorizedDataPoints, selectedLeftGroup, selectedLeftSourceId],
+    [categorizedDataPoints, selectedLeftGroup, selectedLeftSolutionId],
   );
 
   const rightDataPoint = useMemo(
@@ -273,9 +266,9 @@ const CodeComparison = ({
       findAssignment(
         categorizedDataPoints,
         selectedRightGroup,
-        selectedRightSourceId,
+        selectedRightSolutionId,
       ),
-    [categorizedDataPoints, selectedRightGroup, selectedRightSourceId],
+    [categorizedDataPoints, selectedRightGroup, selectedRightSolutionId],
   );
 
   useEffect(() => {
@@ -289,29 +282,38 @@ const CodeComparison = ({
       .flatMap((point) =>
         point.analyses.filter(
           (analysis) =>
-            // either we are not looking for the selected solutions
+            // either we are not looking for the manually selected data points
             selectedLeftGroup !== selectedGroupValue ||
-            // or the solution is manually selected
-            selectedSourceIds.has(analysis.sourceId),
+            // or the analysis is manually selected
+            selectedSolutionIds.has(analysis.solutionId),
         ),
       );
 
-    getOptions(authContext, analyses, bookmarkedSolutionIds).then((options) => {
-      setLeftSolutionOptions([
+    let isCancelled = false;
+
+    getOptions(authContext, analyses).then((options) => {
+      if (isCancelled) {
+        return;
+      }
+
+      setLeftOptions([
         {
           label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSourceValue,
+          value: defaultSolutionIdValue,
         },
         ...options,
       ]);
     });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [
     intl,
     categorizedDataPoints,
     selectedLeftGroup,
     authContext,
-    bookmarkedSolutionIds,
-    selectedSourceIds,
+    selectedSolutionIds,
   ]);
 
   useEffect(() => {
@@ -325,33 +327,42 @@ const CodeComparison = ({
       .flatMap((point) =>
         point.analyses.filter(
           (analysis) =>
-            // either we are not looking for the selected solutions
+            // either we are not looking for the manually selected data points
             selectedRightGroup !== selectedGroupValue ||
-            // or the solution is manually selected
-            selectedSourceIds.has(analysis.sourceId),
+            // or the analysis is manually selected
+            selectedSolutionIds.has(analysis.solutionId),
         ),
       );
 
-    getOptions(authContext, analyses, bookmarkedSolutionIds).then((options) => {
-      setRightSolutionOptions([
+    let isCancelled = false;
+
+    getOptions(authContext, analyses).then((options) => {
+      if (isCancelled) {
+        return;
+      }
+
+      setRightOptions([
         {
           label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSourceValue,
+          value: defaultSolutionIdValue,
         },
         ...options,
       ]);
+
+      return () => {
+        isCancelled = true;
+      };
     });
   }, [
     intl,
     categorizedDataPoints,
     selectedRightGroup,
     authContext,
-    bookmarkedSolutionIds,
-    selectedSourceIds,
+    selectedSolutionIds,
   ]);
 
   useEffect(() => {
-    if (selectedLeftSourceId) {
+    if (selectedLeftSolutionId) {
       const leftGroup = groups.some((g) => g.groupKey === selectedLeftGroup);
 
       // leftDataPoint is already re-computed based on the current categorized data points
@@ -371,19 +382,19 @@ const CodeComparison = ({
         // solution no longer exists but the group does => de-select the solution
         dispatch({
           type: AnalyzerStateActionType.setSelectedLeftAnalysis,
-          sourceId: defaultSourceValue,
+          solutionId: defaultSolutionIdValue,
         });
       } else {
         // de-select the group and the solution if they no longer exists
         dispatch({
           type: AnalyzerStateActionType.setSelectedLeft,
           groupKey: defaultGroupValue,
-          sourceId: defaultSourceValue,
+          solutionId: defaultSolutionIdValue,
         });
       }
     }
 
-    if (selectedRightSourceId) {
+    if (selectedRightSolutionId) {
       const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
 
       if (rightDataPoint) {
@@ -398,35 +409,19 @@ const CodeComparison = ({
       } else if (rightGroup || selectedRightGroup === defaultGroupValue) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedRightAnalysis,
-          sourceId: defaultSourceValue,
+          solutionId: defaultSolutionIdValue,
         });
       } else {
         dispatch({
           type: AnalyzerStateActionType.setSelectedRight,
           groupKey: defaultGroupValue,
-          sourceId: defaultSourceValue,
+          solutionId: defaultSolutionIdValue,
         });
       }
     }
     // this should only be triggerd if the groups change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groups, categorizedDataPoints]);
-
-  const isLeftSolutionBookmarked = useMemo(
-    () =>
-      leftDataPoint
-        ? bookmarkedSolutionIds.has(leftDataPoint.analysis.sourceId)
-        : false,
-    [bookmarkedSolutionIds, leftDataPoint],
-  );
-
-  const isRightSolutionBookmarked = useMemo(
-    () =>
-      rightDataPoint
-        ? bookmarkedSolutionIds.has(rightDataPoint.analysis.sourceId)
-        : false,
-    [bookmarkedSolutionIds, rightDataPoint],
-  );
 
   const modalDataPoint = useMemo(() => {
     if (!modalSide) {
@@ -454,16 +449,15 @@ const CodeComparison = ({
 
   const leftStudentName = useMemo(
     () =>
-      leftSolutionOptions.find((o) => o.value === selectedLeftSourceId)
-        ?.label ?? "",
-    [leftSolutionOptions, selectedLeftSourceId],
+      leftOptions.find((o) => o.value === selectedLeftSolutionId)?.label ?? "",
+    [leftOptions, selectedLeftSolutionId],
   );
 
   const rightStudentName = useMemo(
     () =>
-      rightSolutionOptions.find((o) => o.value === selectedRightSourceId)
-        ?.label ?? "",
-    [rightSolutionOptions, selectedRightSourceId],
+      rightOptions.find((o) => o.value === selectedRightSolutionId)?.label ??
+      "",
+    [rightOptions, selectedRightSolutionId],
   );
 
   return (
@@ -480,8 +474,8 @@ const CodeComparison = ({
           footer={
             <ModalHeader>
               <ModalHeaderLeft>
-                {selectedLeftSourceId !== defaultSourceValue &&
-                selectedRightSourceId !== defaultSourceValue ? (
+                {selectedLeftSolutionId !== defaultSolutionIdValue &&
+                selectedRightSolutionId !== defaultSolutionIdValue ? (
                   <ButtonGroup>
                     <Button
                       active={modalSide === "left"}
@@ -544,12 +538,12 @@ const CodeComparison = ({
                 noMargin
               />
               <Select
-                options={leftSolutionOptions}
-                value={selectedLeftSourceId}
+                options={leftOptions}
+                value={selectedLeftSolutionId}
                 onChange={(e) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedLeftAnalysis,
-                    sourceId: e.target.value,
+                    solutionId: e.target.value,
                   })
                 }
                 alwaysShow
@@ -568,28 +562,11 @@ const CodeComparison = ({
                       defaultMessage="View"
                     />
                   </Button>
-                  <Button
-                    onClick={() => {
-                      if (isLeftSolutionBookmarked) {
-                        dispatch({
-                          type: AnalyzerStateActionType.removeBookmarkedAnalysis,
-                          sourceId: leftDataPoint.analysis.sourceId,
-                        });
-                      } else {
-                        dispatch({
-                          type: AnalyzerStateActionType.addBookmarkedAnalysis,
-                          sourceId: leftDataPoint.analysis.sourceId,
-                        });
-                      }
-                    }}
-                    data-testid="left-bookmark-button"
-                  >
-                    <FontAwesomeIcon
-                      icon={
-                        isLeftSolutionBookmarked ? faSolidStar : faStrokeStar
-                      }
-                    />
-                  </Button>
+                  <StarAnalysisButton
+                    analysis={leftDataPoint.analysis}
+                    classId={classId}
+                    testId="left-bookmark-button"
+                  />
                 </>
               )}
             </SelectionMenu>
@@ -637,12 +614,12 @@ const CodeComparison = ({
                 noMargin
               />
               <Select
-                options={rightSolutionOptions}
-                value={selectedRightSourceId}
+                options={rightOptions}
+                value={selectedRightSolutionId}
                 onChange={(e) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedRightAnalysis,
-                    sourceId: e.target.value,
+                    solutionId: e.target.value,
                   })
                 }
                 alwaysShow
@@ -663,28 +640,11 @@ const CodeComparison = ({
                       defaultMessage="View"
                     />
                   </Button>
-                  <Button
-                    onClick={() => {
-                      if (isRightSolutionBookmarked) {
-                        dispatch({
-                          type: AnalyzerStateActionType.removeBookmarkedAnalysis,
-                          sourceId: rightDataPoint.analysis.sourceId,
-                        });
-                      } else {
-                        dispatch({
-                          type: AnalyzerStateActionType.addBookmarkedAnalysis,
-                          sourceId: rightDataPoint.analysis.sourceId,
-                        });
-                      }
-                    }}
-                    data-testid="left-bookmark-button"
-                  >
-                    <FontAwesomeIcon
-                      icon={
-                        isRightSolutionBookmarked ? faSolidStar : faStrokeStar
-                      }
-                    />
-                  </Button>
+                  <StarAnalysisButton
+                    analysis={rightDataPoint.analysis}
+                    classId={classId}
+                    testId="right-bookmark-button"
+                  />
                 </>
               )}
             </SelectionMenu>

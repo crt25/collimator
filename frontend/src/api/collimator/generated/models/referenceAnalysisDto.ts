@@ -12,6 +12,8 @@ export interface ReferenceAnalysisDto {
   taskId: number;
   /** The base64 encoded solution hash. */
   solutionHash: string;
+  /** Whether this solution is marked as a reference solution. */
+  isReferenceSolution: boolean;
   /** The tests for the current analysis. */
   tests: ExistingSolutionTestDto[];
   /**

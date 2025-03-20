@@ -148,8 +148,8 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
             <Col xs={12} lg={9}>
               {dissimilarPairs
                 ? dissimilarPairs.map(([a, b]) => (
-                    <Row key={`${a.sourceId}-${b.sourceId}`}>
-                      <CodeViewCol key={a.sourceId} xs={12} lg={6}>
+                    <Row key={`${a.solutionId}-${b.solutionId}`}>
+                      <CodeViewCol key={a.solutionId} xs={12} lg={6}>
                         <StudentName
                           pseudonym={a.studentPseudonym}
                           keyPairId={a.studentKeyPairId}
@@ -163,7 +163,7 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
                           solutionHash={a.solutionHash}
                         />
                       </CodeViewCol>
-                      <CodeViewCol key={b.sourceId} xs={12} lg={6}>
+                      <CodeViewCol key={b.solutionId} xs={12} lg={6}>
                         <StudentName
                           pseudonym={b.studentPseudonym}
                           keyPairId={b.studentKeyPairId}

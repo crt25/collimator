@@ -90,6 +90,7 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
   ).map(() => ({
     taskId: faker.number.int({ min: undefined, max: undefined }),
     solutionHash: faker.string.alpha(20),
+    isReferenceSolution: faker.datatype.boolean(),
     tests: Array.from(
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
@@ -119,6 +120,7 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
   ).map(() => ({
     taskId: faker.number.int({ min: undefined, max: undefined }),
     solutionHash: faker.string.alpha(20),
+    isReferenceSolution: faker.datatype.boolean(),
     tests: Array.from(
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
@@ -375,6 +377,26 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
     },
   );
 };
+
+export const getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler =
+  (
+    overrideResponse?:
+      | void
+      | ((
+          info: Parameters<Parameters<typeof http.patch>[1]>[0],
+        ) => Promise<void> | void),
+  ) => {
+    return http.patch(
+      "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/student/:id/isReference",
+      async (info) => {
+        await delay(1000);
+        if (typeof overrideResponse === "function") {
+          await overrideResponse(info);
+        }
+        return new HttpResponse(null, { status: 200 });
+      },
+    );
+  };
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateStudentSolutionV0MockHandler(),
   getSolutionsControllerFindAllStudentSolutionsV0MockHandler(),
@@ -383,4 +405,5 @@ export const getSolutionsMock = () => [
   getSolutionsControllerFindOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDeleteOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
+  getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler(),
 ];

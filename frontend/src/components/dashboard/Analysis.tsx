@@ -186,7 +186,7 @@ const TooltipContent = ({
                 <ul>
                   {group.analyses.map((analysis) =>
                     analysis instanceof CurrentStudentAnalysis ? (
-                      <li key={analysis.sourceId}>
+                      <li key={analysis.solutionId}>
                         <StudentNameWrapper
                           onClick={() => onSelectAnalysis(group.key, analysis)}
                         >
@@ -311,14 +311,14 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const analysisSourceIdsSelectedForComparison = useMemo(
+  const analysisSolutionIdsSelectedForComparison = useMemo(
     () => [
-      state.comparison.selectedLeftSourceId,
-      state.comparison.selectedRightSourceId,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
     [
-      state.comparison.selectedLeftSourceId,
-      state.comparison.selectedRightSourceId,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
   );
 
@@ -355,20 +355,18 @@ const Analysis = ({
       // check if any of the data points is selected or bookmarked
       const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          analysisSourceIdsSelectedForComparison.includes(s.sourceId),
+          analysisSolutionIdsSelectedForComparison.includes(s.solutionId),
         ),
       );
 
       const isPartOfSelectionGroup = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.selectedSourceIds.has(s.sourceId),
+          state.selectedSolutionIds.has(s.solutionId),
         ),
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
-        dataPoint.analyses?.some((s) =>
-          state.bookmarkedSourceIds.has(s.sourceId),
-        ),
+        dataPoint.analyses?.some((s) => s.isReferenceSolution),
       );
 
       const analysesCount = dataPoints.reduce(
@@ -449,9 +447,8 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    analysisSourceIdsSelectedForComparison,
-    state.bookmarkedSourceIds,
-    state.selectedSourceIds,
+    analysisSolutionIdsSelectedForComparison,
+    state.selectedSolutionIds,
   ]);
 
   const onTooltip = useCallback(
@@ -667,8 +664,8 @@ const Analysis = ({
           enabled: true,
           onSelection: (selection) => {
             if (chartRef.current) {
-              const matchingSourceIds = chartRef.current.data.datasets.flatMap(
-                (dataset) =>
+              const matchingSoulutionIds =
+                chartRef.current.data.datasets.flatMap((dataset) =>
                   (
                     dataset.data as unknown as PointWithAdditionalData[]
                   ).flatMap((dataPoint) =>
@@ -677,15 +674,15 @@ const Analysis = ({
                     dataPoint.y >= selection.minY &&
                     dataPoint.y <= selection.maxY
                       ? dataPoint.additionalData.groups.flatMap((group) =>
-                          group.analyses.map((analysis) => analysis.sourceId),
+                          group.analyses.map((analysis) => analysis.solutionId),
                         )
                       : [],
                   ),
-              );
+                );
 
               dispatch({
                 type: AnalyzerStateActionType.setSelectedAnalyses,
-                sourceIds: matchingSourceIds,
+                solutionId: matchingSoulutionIds,
                 unionWithPrevious: selection.unionWithPrevious,
               });
             }

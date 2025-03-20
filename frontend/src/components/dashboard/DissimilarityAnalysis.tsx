@@ -160,7 +160,7 @@ const DissimilarityAnalysis = ({
               <Row>
                 {dissimilarAnalyses
                   ? dissimilarAnalyses.map((analysis) => (
-                      <CodeViewCol key={analysis.sourceId} xs={12} lg={6}>
+                      <CodeViewCol key={analysis.solutionId} xs={12} lg={6}>
                         <StudentName
                           pseudonym={analysis.studentPseudonym}
                           keyPairId={analysis.studentKeyPairId}

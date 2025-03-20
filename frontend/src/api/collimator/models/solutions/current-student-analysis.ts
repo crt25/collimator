@@ -19,7 +19,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentKeyPairId,
     studentSolutionId,
     ...rest
-  }: ClassProperties<CurrentStudentAnalysis, "sourceId">) {
+  }: ClassProperties<CurrentStudentAnalysis, "sourceId" | "solutionId">) {
     super(rest);
 
     this.sessionId = sessionId;
@@ -33,8 +33,19 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     return `STUDENT:${this.studentId}-${this.taskId}-${this.sessionId}`;
   }
 
+  public override get solutionId(): string {
+    return `STUDENT:${this.studentSolutionId}`;
+  }
+
   protected override withAst(ast: GeneralAst): CurrentStudentAnalysis {
     return new CurrentStudentAnalysis({ ...this, generalAst: ast });
+  }
+
+  public withIsReference(isReferenceSolution: boolean): CurrentStudentAnalysis {
+    return new CurrentStudentAnalysis({
+      ...this,
+      isReferenceSolution,
+    });
   }
 
   static fromDto(dto: CurrentStudentAnalysisDto): CurrentStudentAnalysis {

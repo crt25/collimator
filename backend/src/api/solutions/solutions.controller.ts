@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   StreamableFile,
   UploadedFile,
@@ -51,6 +52,7 @@ import {
 import { CurrentStudentAnalysisDto } from "./dto/current-student-analysis.dto";
 import { ReferenceAnalysisDto } from "./dto/reference-analysis.dto";
 import { CurrentAnalysesDto } from "./dto/current-analyses.dto";
+import { PatchStudentSolutionIsReferenceDto } from "./dto/patch-student-solution-is-reference.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
@@ -225,7 +227,7 @@ export class SolutionsController {
     @AuthenticatedUser() user: User | null,
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) _classId: number,
-    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("sessionId", ParseIntPipe) _sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("hash") hash: string,
   ): Promise<StreamableFile> {
@@ -249,6 +251,39 @@ export class SolutionsController {
     return new StreamableFile(solution.data, {
       type: solution.mimeType,
     });
+  }
+
+  @Patch("student/:id/isReference")
+  @ApiOperation({
+    summary: "Updates the isReference field of a student solution",
+  })
+  @ApiOkResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  @ApiBody({ type: PatchStudentSolutionIsReferenceDto })
+  async patchStudentSolutionIsReference(
+    @AuthenticatedUser() user: User | null,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) _sessionId: number,
+    @Param("taskId", ParseIntPipe) _taskId: number,
+    @Param("id", ParseIntPipe) id: StudentSolutionId,
+    @Body() dto: PatchStudentSolutionIsReferenceDto,
+  ): Promise<void> {
+    const isAuthorized =
+      await this.authorizationService.canUpdateStudentSolutionIsReference(
+        user,
+        id,
+      );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    return this.solutionsService.updateStudentSolutionIsReference(
+      id,
+      dto.isReference,
+    );
   }
 
   @Delete("student/:id")

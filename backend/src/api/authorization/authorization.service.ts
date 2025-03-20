@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { StudentSolutionId } from "../solutions/dto/existing-student-solution.dto";
 
 @Injectable()
 export class AuthorizationService {
@@ -322,5 +323,33 @@ export class AuthorizationService {
     // this line is not reachable but typescript doesn't know that
     // the first guard ensures that either authenticatedUser or authenticatedStudent is not null
     return false;
+  }
+
+  async canUpdateStudentSolutionIsReference(
+    authenticatedUser: User | null,
+    studentSolutionId: StudentSolutionId,
+  ): Promise<boolean> {
+    if (authenticatedUser === null) {
+      return false;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    // teachers may updated the field for solutions submitted by students in their class
+    const solution = await this.prisma.studentSolution.findUnique({
+      select: {},
+      where: {
+        id: studentSolutionId,
+        session: {
+          class: {
+            teacherId: authenticatedUser.id,
+          },
+        },
+      },
+    });
+
+    return solution !== null;
   }
 }

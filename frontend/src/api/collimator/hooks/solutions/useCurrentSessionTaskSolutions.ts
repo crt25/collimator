@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
+import { ApiResponse, fromDtos } from "../helpers";
 import {
   getSolutionsControllerFindCurrentAnalysesV0Url,
   solutionsControllerFindCurrentAnalysesV0,
@@ -49,14 +49,10 @@ export const useCurrentSessionTaskSolutions = (
 
   return useSWR(
     taskId
-      ? getSwrParamererizedKey(
-          (_params?: undefined) =>
-            getSolutionsControllerFindCurrentAnalysesV0Url(
-              classId,
-              sessionId,
-              taskId,
-            ),
-          undefined,
+      ? getSolutionsControllerFindCurrentAnalysesV0Url(
+          classId,
+          sessionId,
+          taskId,
         )
       : // do not fetch if the taskId is undefined
         null,

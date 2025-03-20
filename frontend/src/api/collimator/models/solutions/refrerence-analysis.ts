@@ -11,7 +11,7 @@ export class ReferenceAnalysis extends CurrentAnalysis {
   protected constructor({
     referenceSolutionId,
     ...rest
-  }: ClassProperties<ReferenceAnalysis, "sourceId">) {
+  }: ClassProperties<ReferenceAnalysis, "sourceId" | "solutionId">) {
     super(rest);
 
     this.referenceSolutionId = referenceSolutionId;
@@ -19,6 +19,10 @@ export class ReferenceAnalysis extends CurrentAnalysis {
 
   public override get sourceId(): string {
     return `REFERENCE:${this.referenceSolutionId}`;
+  }
+
+  public override get solutionId(): string {
+    return `REFERENCE:${this.solutionId}`;
   }
 
   protected override withAst(ast: GeneralAst): ReferenceAnalysis {

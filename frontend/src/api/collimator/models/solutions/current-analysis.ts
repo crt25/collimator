@@ -332,6 +332,7 @@ const emptySequence: StatementSequenceNode = {
 export abstract class CurrentAnalysis {
   readonly taskId: number;
   readonly solutionHash: string;
+  readonly isReferenceSolution: boolean;
   readonly generalAst: GeneralAst;
 
   readonly tests: SolutionTest[];
@@ -341,11 +342,13 @@ export abstract class CurrentAnalysis {
     solutionHash,
     generalAst,
     tests,
-  }: ClassProperties<CurrentAnalysis, "sourceId">) {
+    isReferenceSolution,
+  }: ClassProperties<CurrentAnalysis, "sourceId" | "solutionId">) {
     this.taskId = taskId;
     this.solutionHash = solutionHash;
     this.generalAst = generalAst;
     this.tests = tests;
+    this.isReferenceSolution = isReferenceSolution;
   }
 
   /**
@@ -353,6 +356,11 @@ export abstract class CurrentAnalysis {
    * which is stable across time (i.e. if a student submits a new solution)
    */
   public abstract get sourceId(): string;
+
+  /**
+   * A unique identifier for the solution, changing when a student submits a new solution.
+   */
+  public abstract get solutionId(): string;
 
   protected abstract withAst(ast: GeneralAst): CurrentAnalysis;
 

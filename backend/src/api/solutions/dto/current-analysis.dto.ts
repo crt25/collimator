@@ -30,6 +30,14 @@ export abstract class CurrentAnalysisDto
   readonly solutionHash!: string;
 
   @ApiProperty({
+    example: "true",
+    description: "Whether this solution is marked as a reference solution.",
+    type: "boolean",
+  })
+  @Expose()
+  readonly isReferenceSolution!: boolean;
+
+  @ApiProperty({
     name: "tests",
     description: "The tests for the current analysis.",
     type: [ExistingSolutionTestDto],

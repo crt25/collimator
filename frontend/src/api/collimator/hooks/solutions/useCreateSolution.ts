@@ -7,7 +7,7 @@ import {
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CreateSolutionDto } from "../../generated/models";
 import { ExistingStudentSolution } from "../../models/solutions/existing-student-solutions";
-import { useRevalidateSolution } from "./useRevalidateSolution";
+import { useRevalidateStudentSolution } from "./useRevalidateStudentSolution";
 
 type CreateSolutionType = (
   classId: number,
@@ -61,7 +61,7 @@ const createAndTransform = (
   ).then(ExistingStudentSolution.fromDto);
 
 export const useCreateSolution = (): CreateSolutionType => {
-  const revalidateSolution = useRevalidateSolution();
+  const revalidateSolution = useRevalidateStudentSolution();
   const authOptions = useAuthenticationOptions();
 
   return useCallback<CreateSolutionType>(

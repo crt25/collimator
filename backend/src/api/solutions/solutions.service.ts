@@ -59,6 +59,7 @@ type ReferenceKey = [TaskId, ReferenceSolutionId];
 export type AnalysisWithoutId = {
   taskId: number;
   solutionHash: Uint8Array;
+  isReferenceSolution: boolean;
   genericAst: string;
   astVersion: AstVersion;
   tests: {
@@ -174,6 +175,7 @@ export class SolutionsService {
       analysis.studentId === null ||
       analysis.studentPseudonym === null ||
       analysis.sessionId === null ||
+      analysis.isReference === null ||
       analysis.solutionHash === null ||
       analysis.testName === null ||
       analysis.testPassed === null ||
@@ -205,6 +207,7 @@ export class SolutionsService {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
+        isReferenceSolution: analysis.isReference,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
         tests: [test],
@@ -253,6 +256,7 @@ export class SolutionsService {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
+        isReferenceSolution: true,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
         tests: [test],
@@ -284,6 +288,20 @@ export class SolutionsService {
           taskId,
           hash: solutionHash,
         },
+      },
+    });
+  }
+
+  async updateStudentSolutionIsReference(
+    studentSolutionId: number,
+    isReference: boolean,
+  ): Promise<void> {
+    await this.prisma.studentSolution.update({
+      data: {
+        isReference,
+      },
+      where: {
+        id: studentSolutionId,
       },
     });
   }

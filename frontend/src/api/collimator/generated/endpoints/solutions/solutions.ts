@@ -10,6 +10,7 @@ import type {
   CreateSolutionDto,
   CurrentAnalysesDto,
   ExistingStudentSolutionDto,
+  PatchStudentSolutionIsReferenceDto,
 } from "../../models";
 
 export const getSolutionsControllerCreateStudentSolutionV0Url = (
@@ -208,6 +209,42 @@ export const solutionsControllerDownloadOneV0 = async (
     {
       ...options,
       method: "GET",
+    },
+  );
+};
+
+/**
+ * @summary Updates the isReference field of a student solution
+ */
+export const getSolutionsControllerPatchStudentSolutionIsReferenceV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+) => {
+  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference`;
+};
+
+export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  id: number,
+  patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
+  options?: RequestInit,
+): Promise<void> => {
+  return fetchApi<void>(
+    getSolutionsControllerPatchStudentSolutionIsReferenceV0Url(
+      classId,
+      sessionId,
+      taskId,
+      id,
+    ),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchStudentSolutionIsReferenceDto),
     },
   );
 };

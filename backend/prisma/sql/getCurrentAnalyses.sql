@@ -9,7 +9,6 @@ WITH studentSolutions AS (
     FROM "StudentSolution" studentSolution
     WHERE studentSolution."sessionId" = $1
     AND studentSolution."taskId" = $2
-    AND studentSolution."isReference" = false
     ORDER BY
       studentSolution."studentId",
       studentSolution."createdAt" DESC
@@ -35,6 +34,8 @@ INNER JOIN "Student" student
   ON student."id" = studentSolutions."studentId"
 INNER JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolutions.id
+  -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
+WHERE studentSolutions."isReference" = false
 ORDER BY test."name" ASC
 )
 

@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { getSolutionsControllerFindOneStudentSolutionV0Url } from "../../generated/endpoints/solutions/solutions";
 import { GetSolutionReturnType } from "./useSolution";
 
-export const useRevalidateSolution = (): ((
+export const useRevalidateStudentSolution = (): ((
   classId: number,
   sessionId: number,
   taskId: number,

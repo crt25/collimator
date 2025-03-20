@@ -27,7 +27,7 @@ import {
   AnalyzerStateActionType,
   analyzerStateReducer,
   defaultGroupValue,
-  defaultSourceValue,
+  defaultSolutionIdValue,
 } from "./Analyzer.state";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
@@ -84,14 +84,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     yAxis: MetaCriterionType.test,
     filters: [],
     splits: [],
-    bookmarkedSourceIds: new Set<string>(),
-    selectedSourceIds: new Set<string>(),
+    selectedSolutionIds: new Set<string>(),
     comparison: {
       clickedAnalysis: undefined,
       selectedLeftGroup: defaultGroupValue,
       selectedRightGroup: defaultGroupValue,
-      selectedRightSourceId: defaultSourceValue,
-      selectedLeftSourceId: defaultSourceValue,
+      selectedRightSolutionId: defaultSolutionIdValue,
+      selectedLeftSolutionId: defaultSolutionIdValue,
     },
   } satisfies AnalyzerState);
 
@@ -166,32 +165,32 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     );
 
   const onSelectSolution = useCallback(
-    (groupKey: string, { sourceId }: CurrentAnalysis) => {
-      if (state.comparison.selectedLeftSourceId === defaultSourceValue) {
+    (groupKey: string, { solutionId }: CurrentAnalysis) => {
+      if (state.comparison.selectedLeftSolutionId === defaultSolutionIdValue) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedLeft,
           groupKey,
-          sourceId,
+          solutionId,
         });
       } else if (
-        state.comparison.selectedRightSourceId === defaultSourceValue
+        state.comparison.selectedRightSolutionId === defaultSolutionIdValue
       ) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedRight,
           groupKey,
-          sourceId,
+          solutionId,
         });
       } else {
         // let the user choose
         dispatch({
           type: AnalyzerStateActionType.setClickedAnalysis,
-          clickedAnalysis: { groupKey, sourceId },
+          clickedAnalysis: { groupKey, solutionId: solutionId },
         });
       }
     },
     [
-      state.comparison.selectedLeftSourceId,
-      state.comparison.selectedRightSourceId,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
   );
 
@@ -356,7 +355,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedLeft,
                   groupKey: state.comparison.clickedAnalysis.groupKey,
-                  sourceId: state.comparison.clickedAnalysis.sourceId,
+                  solutionId: state.comparison.clickedAnalysis.solutionId,
                 });
 
                 dispatch({
@@ -376,7 +375,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedRight,
                   groupKey: state.comparison.clickedAnalysis.groupKey,
-                  sourceId: state.comparison.clickedAnalysis.sourceId,
+                  solutionId: state.comparison.clickedAnalysis.solutionId,
                 });
 
                 dispatch({
