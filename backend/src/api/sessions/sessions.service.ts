@@ -3,6 +3,8 @@ import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { SessionStatus } from ".prisma/client";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { ClassId } from "../classes/dto";
+import { StudentId } from "../solutions/solutions.service";
 import { SessionId } from "./dto";
 import { TaskProgress } from "./task-progress";
 
@@ -160,7 +162,7 @@ export class SessionsService {
     });
   }
 
-  deletedByIdAndClass(id: SessionId, classId?: number): Promise<Session> {
+  deletedByIdAndClass(id: SessionId, classId?: ClassId): Promise<Session> {
     return this.prisma.session.delete({
       where: { classId, id, status: "CREATED" },
       include: compactInclude,
@@ -173,7 +175,7 @@ export class SessionsService {
 
   async getSessionProgress(
     id: SessionId,
-    studentId: number,
+    studentId: StudentId,
   ): Promise<StudentTaskProgress[]> {
     const solutions = await this.prisma.$queryRawTyped(
       getCurrentStudentSolutions(id, studentId),
@@ -181,7 +183,7 @@ export class SessionsService {
 
     return solutions
       .map((s) => ({
-        solutionId: s.solutionId,
+        studentSolutionId: s.studentSolutionId,
         taskId: s.taskId,
         passedTests: s.passedTests ?? 0,
         totalTests: s.totalTests ?? 0,
@@ -189,8 +191,13 @@ export class SessionsService {
       .map<StudentTaskProgress>((solution) => {
         let taskProgress = TaskProgress.unOpened;
 
-        if (!isNaN(solution.solutionId) && solution.solutionId > 0) {
-          // solutionId, passedTests and totalTests may be null, we are doing a LEFT JOIN
+        if (
+          !isNaN(solution.studentSolutionId) &&
+          solution.studentSolutionId > 0
+        ) {
+          // studentSolutionId may be null, we are doing a LEFT JOIN.
+          // If so, no solution has been submitted yet.
+
           if (solution.passedTests >= solution.totalTests) {
             taskProgress = TaskProgress.done;
           } else if (solution.passedTests > 0) {

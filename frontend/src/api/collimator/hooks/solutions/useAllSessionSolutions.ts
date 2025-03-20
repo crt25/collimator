@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { ApiResponse } from "../helpers";
-import { getSolutionsControllerFindAllV0Url } from "../../generated/endpoints/solutions/solutions";
+import { getSolutionsControllerFindAllStudentSolutionsV0Url } from "../../generated/endpoints/solutions/solutions";
 import { useClassSession } from "../sessions/useClassSession";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import {
@@ -24,7 +24,7 @@ export const useAllSessionSolutions = (
     // here we want to wait for the class session to be loaded before starting to fetch
     // solutions
     data &&
-      getSolutionsControllerFindAllV0Url(
+      getSolutionsControllerFindAllStudentSolutionsV0Url(
         classId,
         sessionId,
         allTasksPlaceholder /* use placeholder to represent 'all'*/,

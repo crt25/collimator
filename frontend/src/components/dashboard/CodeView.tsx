@@ -42,14 +42,14 @@ const CodeView = ({
   taskId,
   subTaskId,
   taskType,
-  solutionId,
+  solutionHash,
 }: {
   classId: number;
   sessionId: number;
   taskId: number;
   subTaskId?: string;
   taskType: TaskType;
-  solutionId: number;
+  solutionHash: string;
 }) => {
   const intl = useIntl();
 
@@ -63,7 +63,7 @@ const CodeView = ({
     data: solutionFile,
     isLoading: isLoadingSolutionFile,
     error: solutionFileError,
-  } = useSolutionFile(classId, sessionId, taskId, solutionId);
+  } = useSolutionFile(classId, sessionId, taskId, solutionHash);
 
   const iframeSrc = useMemo(() => getSolutionCodeUrl(taskType), [taskType]);
 

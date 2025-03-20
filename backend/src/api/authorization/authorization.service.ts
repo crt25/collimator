@@ -220,10 +220,10 @@ export class AuthorizationService {
     return session !== null;
   }
 
-  async canViewSolution(
+  async canViewStudentSolution(
     authenticatedUser: User | null,
     authenticatedStudent: Student | null,
-    solutionId: number,
+    studentSolutionId: number,
   ): Promise<boolean> {
     if (authenticatedUser === null && authenticatedStudent === null) {
       return false;
@@ -233,8 +233,8 @@ export class AuthorizationService {
       return true;
     }
 
-    const solution = await this.prisma.solution.findUniqueOrThrow({
-      where: { id: solutionId },
+    const solution = await this.prisma.studentSolution.findUniqueOrThrow({
+      where: { id: studentSolutionId },
       include: {
         student: { select: { id: true } },
         session: { select: { class: { select: { teacherId: true } } } },
@@ -249,6 +249,74 @@ export class AuthorizationService {
     if (authenticatedUser) {
       // if we are the teacher of the class, we can view the solution
       return solution.session.class.teacherId === authenticatedUser.id;
+    }
+
+    // this line is not reachable but typescript doesn't know that
+    // the first guard ensures that either authenticatedUser or authenticatedStudent is not null
+    return false;
+  }
+
+  async canViewSolution(
+    authenticatedUser: User | null,
+    authenticatedStudent: Student | null,
+    taskId: number,
+    solutionHash: Uint8Array,
+  ): Promise<boolean> {
+    if (authenticatedUser === null && authenticatedStudent === null) {
+      return false;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    if (authenticatedStudent) {
+      // students may only view solutions they submitted
+      const solution = await this.prisma.solution.findUnique({
+        select: {},
+        where: {
+          taskId_hash: { taskId, hash: solutionHash },
+          studentSolutions: {
+            some: {
+              student: { id: authenticatedStudent.id },
+            },
+          },
+        },
+      });
+
+      return solution !== null;
+    }
+
+    if (authenticatedUser) {
+      // users may view solutions submitted by students in their class
+      // and reference solutions.
+
+      const solution = await this.prisma.solution.findUnique({
+        select: {},
+        where: {
+          taskId_hash: { taskId, hash: solutionHash },
+          OR: [
+            {
+              studentSolutions: {
+                some: {
+                  session: {
+                    class: {
+                      teacherId: authenticatedUser.id,
+                    },
+                  },
+                },
+              },
+            },
+            {
+              referenceSolutions: {
+                some: {},
+              },
+            },
+          ],
+        },
+      });
+
+      return solution !== null;
     }
 
     // this line is not reachable but typescript doesn't know that

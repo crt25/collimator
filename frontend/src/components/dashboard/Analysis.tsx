@@ -31,6 +31,7 @@ import { StudentName } from "@/components/encryption/StudentName";
 import { Colors } from "@/constants/colors";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TaskType } from "@/api/collimator/generated/models";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
@@ -123,7 +124,7 @@ const TooltipContent = ({
   dataPoints,
   xAxis,
   yAxis,
-  onSelectSolution,
+  onSelectAnalysis,
 }: {
   dataPoints: PointWithAdditionalData[];
   xAxis:
@@ -138,7 +139,7 @@ const TooltipContent = ({
         value: AstCriterionType | MetaCriterionType.test;
       }
     | undefined;
-  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  onSelectAnalysis: (groupId: string, analysis: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
   return (
@@ -183,26 +184,21 @@ const TooltipContent = ({
               </div>
               <div>
                 <ul>
-                  {group.analyses.map((analysis) => (
-                    <li key={analysis.id}>
-                      <StudentNameWrapper
-                        onClick={() => onSelectSolution(group.key, analysis)}
-                        // add id for debugging purposes
-                        id={
-                          "analysis-" +
-                          analysis.id +
-                          "-solution-" +
-                          analysis.solutionId
-                        }
-                      >
-                        <StudentName
-                          pseudonym={analysis.studentPseudonym}
-                          keyPairId={analysis.studentKeyPairId}
-                          showActualName={false}
-                        ></StudentName>
-                      </StudentNameWrapper>
-                    </li>
-                  ))}
+                  {group.analyses.map((analysis) =>
+                    analysis instanceof CurrentStudentAnalysis ? (
+                      <li key={analysis.sourceId}>
+                        <StudentNameWrapper
+                          onClick={() => onSelectAnalysis(group.key, analysis)}
+                        >
+                          <StudentName
+                            pseudonym={analysis.studentPseudonym}
+                            keyPairId={analysis.studentKeyPairId}
+                            showActualName={false}
+                          />
+                        </StudentNameWrapper>
+                      </li>
+                    ) : null,
+                  )}
                 </ul>
               </div>
             </div>
@@ -283,14 +279,14 @@ const Analysis = ({
   dispatch,
   manualGroups,
   categorizedDataPoints,
-  onSelectSolution,
+  onSelectAnalysis,
 }: {
   taskType: TaskType;
   state: AnalyzerState;
   dispatch: Dispatch<AnalyzerStateAction>;
   manualGroups: ManualGroup[];
   categorizedDataPoints: CategorizedDataPoint[];
-  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  onSelectAnalysis: (groupId: string, analysis: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
 
@@ -315,14 +311,14 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const solutionIdsSelectedForComparison = useMemo(
+  const analysisSourceIdsSelectedForComparison = useMemo(
     () => [
-      state.comparison.selectedLeftSolution,
-      state.comparison.selectedRightSolution,
+      state.comparison.selectedLeftSourceId,
+      state.comparison.selectedRightSourceId,
     ],
     [
-      state.comparison.selectedLeftSolution,
-      state.comparison.selectedRightSolution,
+      state.comparison.selectedLeftSourceId,
+      state.comparison.selectedRightSourceId,
     ],
   );
 
@@ -359,28 +355,28 @@ const Analysis = ({
       // check if any of the data points is selected or bookmarked
       const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          solutionIdsSelectedForComparison.includes(s.solutionId),
+          analysisSourceIdsSelectedForComparison.includes(s.sourceId),
         ),
       );
 
       const isPartOfSelectionGroup = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.selectedSolutionIds.has(s.solutionId),
+          state.selectedSourceIds.has(s.sourceId),
         ),
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          state.bookmarkedSolutionIds.has(s.solutionId),
+          state.bookmarkedSourceIds.has(s.sourceId),
         ),
       );
 
-      const solutionsCount = dataPoints.reduce(
+      const analysesCount = dataPoints.reduce(
         (acc, dataPoint) => acc + (dataPoint.analyses?.length || 0),
         0,
       );
 
-      const size = Math.min(solutionsCount * 8, 40);
+      const size = Math.min(analysesCount * 8, 40);
       const pattern = getCanvasPattern(category);
       const isSelected = isSelectedForComparison || isPartOfSelectionGroup;
 
@@ -402,7 +398,7 @@ const Analysis = ({
             x,
             y,
             r:
-              // increase the radius based on the number of solutions
+              // increase the radius based on the number of analyses
               size +
               // add half of the border width to the radius if the data point is selected
               // to ensure the border is on top of the bubble size
@@ -453,9 +449,9 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    solutionIdsSelectedForComparison,
-    state.bookmarkedSolutionIds,
-    state.selectedSolutionIds,
+    analysisSourceIdsSelectedForComparison,
+    state.bookmarkedSourceIds,
+    state.selectedSourceIds,
   ]);
 
   const onTooltip = useCallback(
@@ -671,8 +667,8 @@ const Analysis = ({
           enabled: true,
           onSelection: (selection) => {
             if (chartRef.current) {
-              const matchingSolutionIds =
-                chartRef.current.data.datasets.flatMap((dataset) =>
+              const matchingSourceIds = chartRef.current.data.datasets.flatMap(
+                (dataset) =>
                   (
                     dataset.data as unknown as PointWithAdditionalData[]
                   ).flatMap((dataPoint) =>
@@ -681,15 +677,15 @@ const Analysis = ({
                     dataPoint.y >= selection.minY &&
                     dataPoint.y <= selection.maxY
                       ? dataPoint.additionalData.groups.flatMap((group) =>
-                          group.analyses.map((analysis) => analysis.solutionId),
+                          group.analyses.map((analysis) => analysis.sourceId),
                         )
                       : [],
                   ),
-                );
+              );
 
               dispatch({
-                type: AnalyzerStateActionType.setSelectedSolutions,
-                solutionIds: matchingSolutionIds,
+                type: AnalyzerStateActionType.setSelectedAnalyses,
+                sourceIds: matchingSourceIds,
                 unionWithPrevious: selection.unionWithPrevious,
               });
             }
@@ -810,7 +806,7 @@ const Analysis = ({
             dataPoints={tooltipDataPoints}
             xAxis={selectedXAxis}
             yAxis={selectedYAxis}
-            onSelectSolution={onSelectSolution}
+            onSelectAnalysis={onSelectAnalysis}
           />
         </Tooltip>
       </ChartWrapper>

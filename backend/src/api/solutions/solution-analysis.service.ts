@@ -37,7 +37,8 @@ export class SolutionAnalysisService {
       // longer than expected
       return this.prisma.solutionAnalysis.upsert({
         create: {
-          solutionId: solution.id,
+          taskId: solution.taskId,
+          solutionHash: solution.hash,
           genericAst,
           astVersion: newAstVersion,
         },
@@ -46,11 +47,16 @@ export class SolutionAnalysisService {
           astVersion: newAstVersion,
         },
         where: {
-          solutionId: solution.id,
+          taskId_solutionHash: {
+            taskId: solution.taskId,
+            solutionHash: solution.hash,
+          },
         },
       });
     } catch (e) {
-      await this.prisma.$queryRawTyped(incrementFailedAnalysis(solution.id));
+      await this.prisma.$queryRawTyped(
+        incrementFailedAnalysis(solution.taskId, solution.hash),
+      );
 
       return Promise.reject(e);
     }

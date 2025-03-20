@@ -1,6 +1,6 @@
 import { useSWRConfig } from "swr";
 import { useCallback } from "react";
-import { getSolutionsControllerFindOneV0Url } from "../../generated/endpoints/solutions/solutions";
+import { getSolutionsControllerFindOneStudentSolutionV0Url } from "../../generated/endpoints/solutions/solutions";
 import { GetSolutionReturnType } from "./useSolution";
 
 export const useRevalidateSolution = (): ((
@@ -21,7 +21,7 @@ export const useRevalidateSolution = (): ((
       newSolution?: GetSolutionReturnType,
     ) => {
       mutate(
-        getSolutionsControllerFindOneV0Url(
+        getSolutionsControllerFindOneStudentSolutionV0Url(
           classId,
           sessionId,
           taskId,

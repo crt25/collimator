@@ -1,11 +1,13 @@
 import useSWR from "swr";
 import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
 import {
-  getSolutionsControllerFindCurrentAnalysisV0Url,
-  solutionsControllerFindCurrentAnalysisV0,
+  getSolutionsControllerFindCurrentAnalysesV0Url,
+  solutionsControllerFindCurrentAnalysesV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CurrentAnalysis } from "../../models/solutions/current-analysis";
+import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
+import { ReferenceAnalysis } from "../../models/solutions/refrerence-analysis";
 
 export type GetCurrentAnalysisReturnType = CurrentAnalysis[];
 
@@ -17,12 +19,24 @@ export const fetchSolutionsAndTransform = (
   _params?: undefined,
 ): Promise<GetCurrentAnalysisReturnType> =>
   taskId
-    ? solutionsControllerFindCurrentAnalysisV0(
+    ? solutionsControllerFindCurrentAnalysesV0(
         classId,
         sessionId,
         taskId,
         options,
-      ).then((data) => fromDtos(CurrentAnalysis, data))
+      ).then((data) => {
+        const studentAnalyses: CurrentStudentAnalysis[] = fromDtos(
+          CurrentStudentAnalysis,
+          data.studentAnalyses,
+        );
+
+        const referenceAnalyses: ReferenceAnalysis[] = fromDtos(
+          ReferenceAnalysis,
+          data.referenceAnalyses,
+        );
+
+        return [...studentAnalyses, ...referenceAnalyses];
+      })
     : Promise.resolve([]);
 
 export const useCurrentSessionTaskSolutions = (
@@ -37,7 +51,7 @@ export const useCurrentSessionTaskSolutions = (
     taskId
       ? getSwrParamererizedKey(
           (_params?: undefined) =>
-            getSolutionsControllerFindCurrentAnalysisV0Url(
+            getSolutionsControllerFindCurrentAnalysesV0Url(
               classId,
               sessionId,
               taskId,

@@ -37,11 +37,11 @@ export const useAutomaticGrouping = (
       const groupKey = i.toString();
       const label = getGroupName(i);
 
-      const xAxisValues = group.solutions.map((solution) =>
+      const xAxisValues = group.analyses.map((solution) =>
         getAxisAnalysisValue(xAxis, solution),
       );
 
-      const yAxisValues = group.solutions.map((solution) =>
+      const yAxisValues = group.analyses.map((solution) =>
         getAxisAnalysisValue(yAxis, solution),
       );
 
@@ -51,7 +51,7 @@ export const useAutomaticGrouping = (
         groupName: label,
         x: mean(xAxisValues),
         y: mean(yAxisValues),
-        analyses: group.solutions,
+        analyses: group.analyses,
       });
     }
 

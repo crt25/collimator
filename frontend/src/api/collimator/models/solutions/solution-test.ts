@@ -1,5 +1,5 @@
+import { ExistingSolutionTestDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
-import { SolutionTestDto } from "../../generated/models";
 
 export class SolutionTest {
   readonly name: string;
@@ -19,7 +19,7 @@ export class SolutionTest {
     this.passed = passed;
   }
 
-  static fromDto(dto: SolutionTestDto): SolutionTest {
+  static fromDto(dto: ExistingSolutionTestDto): SolutionTest {
     return new SolutionTest(dto);
   }
 }
