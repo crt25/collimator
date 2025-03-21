@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { TaskType } from "./taskType";
+import type { CreateReferenceSolutionDto } from "./createReferenceSolutionDto";
 
 export interface CreateTaskDto {
   title: string;
@@ -13,5 +14,9 @@ export interface CreateTaskDto {
   /** The task's type. */
   type: TaskType;
   /** Task file */
-  file: Blob;
+  taskFile: Blob;
+  /** Reference solution files */
+  referenceSolutionsFiles: Blob[];
+  /** The reference solutions for this task. */
+  referenceSolutions: CreateReferenceSolutionDto[];
 }

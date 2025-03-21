@@ -329,9 +329,6 @@
   "EditTask.title": {
     "message": "Edit Task - {title}"
   },
-  "EditTaskModal.title": {
-    "message": "Edit task"
-  },
   "EditUser.header": {
     "message": "Edit User"
   },
@@ -652,16 +649,16 @@
     "message": "Are you sure you want to close without saving?"
   },
   "TaskModal.export": {
-    "message": "Export task"
+    "message": "Export"
   },
   "TaskModal.import": {
-    "message": "Import task"
+    "message": "Import"
   },
   "TaskModal.reset": {
     "message": "Reset"
   },
   "TaskModal.save": {
-    "message": "Save task"
+    "message": "Save"
   },
   "TaskNavigation.classTab": {
     "message": "Task Details"

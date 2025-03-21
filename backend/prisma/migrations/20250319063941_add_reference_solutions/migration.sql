@@ -18,7 +18,7 @@ ALTER TABLE "SolutionAnalysis"
   ADD COLUMN     "taskId" INTEGER,
   DROP CONSTRAINT "SolutionAnalysis_pkey";
 
--- AlterTable
+-- AlterTable"
 ALTER TABLE "SolutionTest"
   ADD COLUMN     "referenceSolutionId" INTEGER,
   ADD COLUMN     "studentSolutionId" INTEGER;
@@ -26,6 +26,8 @@ ALTER TABLE "SolutionTest"
 -- Create new tables
 CREATE TABLE "ReferenceSolution" (
     "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "taskId" INTEGER NOT NULL,
     "solutionHash" BYTEA NOT NULL,
 

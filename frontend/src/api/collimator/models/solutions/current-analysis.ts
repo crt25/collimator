@@ -22,7 +22,7 @@ import { StatementSequenceNode } from "@ast/ast-nodes/statement-node/statement-s
 import { isNonNull } from "@/utilities/is-non-null";
 import { AstWalkSignal, walkAst } from "@/data-analyzer/ast-walk";
 import { ClassProperties } from "../class-properties";
-import { SolutionTest } from "./solution-test";
+import { ExistingSolutionTest } from "./existing-solution-test";
 
 type FoldFunctions<
   TRoot,
@@ -335,7 +335,7 @@ export abstract class CurrentAnalysis {
   readonly isReferenceSolution: boolean;
   readonly generalAst: GeneralAst;
 
-  readonly tests: SolutionTest[];
+  readonly tests: ExistingSolutionTest[];
 
   protected constructor({
     taskId,

@@ -741,12 +741,6 @@
       "value": "title"
     }
   ],
-  "EditTaskModal.title": [
-    {
-      "type": 0,
-      "value": "Edit task"
-    }
-  ],
   "EditUser.header": [
     {
       "type": 0,
@@ -1442,13 +1436,13 @@
   "TaskModal.export": [
     {
       "type": 0,
-      "value": "Export task"
+      "value": "Export"
     }
   ],
   "TaskModal.import": [
     {
       "type": 0,
-      "value": "Import task"
+      "value": "Import"
     }
   ],
   "TaskModal.reset": [
@@ -1460,7 +1454,7 @@
   "TaskModal.save": [
     {
       "type": 0,
-      "value": "Save task"
+      "value": "Save"
     }
   ],
   "TaskNavigation.classTab": [

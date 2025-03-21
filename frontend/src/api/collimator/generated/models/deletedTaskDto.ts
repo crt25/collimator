@@ -12,8 +12,6 @@ export interface DeletedTaskDto {
   description: string;
   /** The task's type. */
   type: TaskType;
-  /** Task file */
-  file: Blob;
   /** The task's unique identifier, a positive integer. */
   id: number;
   /** The user's unique identifier, a positive integer. */

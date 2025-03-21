@@ -39,8 +39,8 @@ export const getSolutionsControllerCreateStudentSolutionV0ResponseMock = (
     contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
     passed: faker.datatype.boolean(),
     id: faker.number.int({ min: undefined, max: undefined }),
-    referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
-    studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+    referenceSolutionId: {},
+    studentSolutionId: {},
   })),
   ...overrideResponse,
 });
@@ -73,11 +73,8 @@ export const getSolutionsControllerFindAllStudentSolutionsV0ResponseMock =
         contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
         passed: faker.datatype.boolean(),
         id: faker.number.int({ min: undefined, max: undefined }),
-        referenceSolutionId: faker.number.int({
-          min: undefined,
-          max: undefined,
-        }),
-        studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+        referenceSolutionId: {},
+        studentSolutionId: {},
       })),
     }));
 
@@ -100,8 +97,8 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
       passed: faker.datatype.boolean(),
       id: faker.number.int({ min: undefined, max: undefined }),
-      referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
-      studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+      referenceSolutionId: {},
+      studentSolutionId: {},
     })),
     studentKeyPairId: faker.helpers.arrayElement([
       faker.number.int({ min: undefined, max: undefined }),
@@ -130,8 +127,8 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
       passed: faker.datatype.boolean(),
       id: faker.number.int({ min: undefined, max: undefined }),
-      referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
-      studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+      referenceSolutionId: {},
+      studentSolutionId: {},
     })),
     studentKeyPairId: faker.helpers.arrayElement([
       faker.number.int({ min: undefined, max: undefined }),
@@ -170,8 +167,8 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0ResponseMock =
       contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
       passed: faker.datatype.boolean(),
       id: faker.number.int({ min: undefined, max: undefined }),
-      referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
-      studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+      referenceSolutionId: {},
+      studentSolutionId: {},
     })),
     ...overrideResponse,
   });
@@ -201,8 +198,8 @@ export const getSolutionsControllerFindOneStudentSolutionV0ResponseMock = (
     contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
     passed: faker.datatype.boolean(),
     id: faker.number.int({ min: undefined, max: undefined }),
-    referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
-    studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
+    referenceSolutionId: {},
+    studentSolutionId: {},
   })),
   ...overrideResponse,
 });

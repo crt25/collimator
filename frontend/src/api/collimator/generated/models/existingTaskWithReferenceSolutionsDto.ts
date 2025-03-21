@@ -6,8 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { TaskType } from "./taskType";
+import type { TaskReferenceSolutionDto } from "./taskReferenceSolutionDto";
 
-export interface ExistingTaskDto {
+export interface ExistingTaskWithReferenceSolutionsDto {
   title: string;
   description: string;
   /** The task's type. */
@@ -16,4 +17,6 @@ export interface ExistingTaskDto {
   id: number;
   /** The user's unique identifier, a positive integer. */
   creatorId: number;
+  /** The list of reference solutions. */
+  referenceSolutions: TaskReferenceSolutionDto[];
 }

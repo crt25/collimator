@@ -2,7 +2,7 @@ import { GeneralAst } from "@ast/index";
 import { ClassProperties } from "../class-properties";
 import { fromDtos } from "../../hooks/helpers";
 import { ReferenceAnalysisDto } from "../../generated/models";
-import { SolutionTest } from "./solution-test";
+import { ExistingSolutionTest } from "./existing-solution-test";
 import { CurrentAnalysis } from "./current-analysis";
 
 export class ReferenceAnalysis extends CurrentAnalysis {
@@ -33,7 +33,7 @@ export class ReferenceAnalysis extends CurrentAnalysis {
     return new ReferenceAnalysis({
       ...dto,
       generalAst: JSON.parse(dto.genericAst),
-      tests: fromDtos(SolutionTest, dto.tests),
+      tests: fromDtos(ExistingSolutionTest, dto.tests),
     });
   }
 }

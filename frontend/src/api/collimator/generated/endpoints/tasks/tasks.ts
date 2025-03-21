@@ -10,8 +10,8 @@ import type {
   CreateTaskDto,
   DeletedTaskDto,
   ExistingTaskDto,
+  ExistingTaskWithReferenceSolutionsDto,
   UpdateTaskDto,
-  UpdateTaskFileDto,
 } from "../../models";
 
 export const getTasksControllerCreateV0Url = () => {
@@ -26,7 +26,13 @@ export const tasksControllerCreateV0 = async (
   formData.append("title", createTaskDto.title);
   formData.append("description", createTaskDto.description);
   formData.append("type", createTaskDto.type);
-  formData.append("file", createTaskDto.file);
+  formData.append("taskFile", createTaskDto.taskFile);
+  createTaskDto.referenceSolutionsFiles.forEach((value) =>
+    formData.append("referenceSolutionsFiles", value),
+  );
+  createTaskDto.referenceSolutions.forEach((value) =>
+    formData.append("referenceSolutions", JSON.stringify(value)),
+  );
 
   return fetchApi<ExistingTaskDto>(getTasksControllerCreateV0Url(), {
     ...options,
@@ -71,11 +77,22 @@ export const tasksControllerUpdateV0 = async (
   updateTaskDto: UpdateTaskDto,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
+  const formData = new FormData();
+  formData.append("title", updateTaskDto.title);
+  formData.append("description", updateTaskDto.description);
+  formData.append("type", updateTaskDto.type);
+  formData.append("taskFile", updateTaskDto.taskFile);
+  updateTaskDto.referenceSolutionsFiles.forEach((value) =>
+    formData.append("referenceSolutionsFiles", value),
+  );
+  updateTaskDto.referenceSolutions.forEach((value) =>
+    formData.append("referenceSolutions", JSON.stringify(value)),
+  );
+
   return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id), {
     ...options,
     method: "PATCH",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(updateTaskDto),
+    body: formData,
   });
 };
 
@@ -93,6 +110,25 @@ export const tasksControllerRemoveV0 = async (
   });
 };
 
+export const getTasksControllerFindOneWithReferenceSolutionsV0Url = (
+  id: number,
+) => {
+  return `/api/v0/tasks/${id}/with-reference-solutions`;
+};
+
+export const tasksControllerFindOneWithReferenceSolutionsV0 = async (
+  id: number,
+  options?: RequestInit,
+): Promise<ExistingTaskWithReferenceSolutionsDto> => {
+  return fetchApi<ExistingTaskWithReferenceSolutionsDto>(
+    getTasksControllerFindOneWithReferenceSolutionsV0Url(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
+
 export const getTasksControllerDownloadOneV0Url = (id: number) => {
   return `/api/v0/tasks/${id}/download`;
 };
@@ -104,24 +140,5 @@ export const tasksControllerDownloadOneV0 = async (
   return fetchApi<void>(getTasksControllerDownloadOneV0Url(id), {
     ...options,
     method: "GET",
-  });
-};
-
-export const getTasksControllerUpdateFileV0Url = (id: number) => {
-  return `/api/v0/tasks/${id}/file`;
-};
-
-export const tasksControllerUpdateFileV0 = async (
-  id: number,
-  updateTaskFileDto: UpdateTaskFileDto,
-  options?: RequestInit,
-): Promise<ExistingTaskDto> => {
-  const formData = new FormData();
-  formData.append("file", updateTaskFileDto.file);
-
-  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateFileV0Url(id), {
-    ...options,
-    method: "PATCH",
-    body: formData,
   });
 };

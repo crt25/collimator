@@ -6,7 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface UpdateTaskFileDto {
-  /** Task file */
-  file: Blob;
-}
+/**
+ * The id of the associated student solution.
+ * @nullable
+ */
+export type ExistingSolutionTestDtoStudentSolutionId = {
+  [key: string]: unknown;
+} | null;

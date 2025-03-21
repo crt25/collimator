@@ -196,7 +196,10 @@ model Solution {
 }
 
 model ReferenceSolution {
-  id           Int   @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+
   taskId       Int
   solutionHash Bytes
 

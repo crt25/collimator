@@ -26,6 +26,18 @@ export class ExistingReferenceSolutionDto
   @Expose()
   readonly id!: ReferenceSolutionId;
 
+  @ApiProperty({
+    description: "The solution's title.",
+  })
+  @Expose()
+  readonly title!: string;
+
+  @ApiProperty({
+    description: "The solution's description.",
+  })
+  @Expose()
+  readonly description!: string;
+
   @ApiProperty()
   readonly taskId!: number;
 

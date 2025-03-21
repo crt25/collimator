@@ -2,16 +2,14 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
-import {
-  useUpdateTask,
-  useUpdateTaskFile,
-} from "@/api/collimator/hooks/tasks/useUpdateTask";
+import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
+import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import PageHeader from "@/components/PageHeader";
 import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
+import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 
 const messages = defineMessages({
   title: {
@@ -30,26 +28,29 @@ const EditTask = () => {
     taskId?: string;
   };
 
-  const task = useTask(taskId);
+  const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
-  const updateTaskFile = useUpdateTaskFile();
 
   const onSubmit = useCallback(
     async (formValues: TaskFormValues) => {
       if (task.data && taskFile.data) {
-        if (formValues.blobChanged) {
-          await updateTaskFile(task.data.id, { file: formValues.blob });
-        }
-
         await updateTask(task.data.id, {
           title: formValues.title,
           description: formValues.description,
           type: formValues.type,
+          taskFile: formValues.taskFile,
+          referenceSolutions: formValues.referenceSolutions.map((solution) => ({
+            ...solution,
+            id: solution.isNew ? null : solution.id,
+          })),
+          referenceSolutionsFiles: Object.values(
+            formValues.referenceSolutionFiles,
+          ),
         });
       }
     },
-    [task.data, taskFile.data, updateTask, updateTaskFile],
+    [task.data, taskFile.data, updateTask],
   );
 
   return (
@@ -72,7 +73,17 @@ const EditTask = () => {
         >
           {([task, taskFile]) => (
             <TaskForm
-              initialValues={{ ...task, blob: taskFile }}
+              initialValues={{
+                ...task,
+                taskFile,
+                referenceSolutionFiles: task.referenceSolutions.reduce(
+                  (acc, solution) => {
+                    acc[solution.id] = solution.solution;
+                    return acc;
+                  },
+                  {} as Record<number, Blob>,
+                ),
+              }}
               submitMessage={messages.submit}
               onSubmit={onSubmit}
             />

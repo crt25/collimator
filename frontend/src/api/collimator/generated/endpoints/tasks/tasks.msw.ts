@@ -10,7 +10,11 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
 import { TaskType } from "../../models";
-import type { DeletedTaskDto, ExistingTaskDto } from "../../models";
+import type {
+  DeletedTaskDto,
+  ExistingTaskDto,
+  ExistingTaskWithReferenceSolutionsDto,
+} from "../../models";
 
 export const getTasksControllerCreateV0ResponseMock = (
   overrideResponse: Partial<ExistingTaskDto> = {},
@@ -18,7 +22,6 @@ export const getTasksControllerCreateV0ResponseMock = (
   title: faker.string.alpha(20),
   description: faker.string.alpha(20),
   type: faker.helpers.arrayElement(Object.values(TaskType)),
-  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   creatorId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
@@ -32,9 +35,6 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
     title: faker.string.alpha(20),
     description: faker.string.alpha(20),
     type: faker.helpers.arrayElement(Object.values(TaskType)),
-    file: new Blob(
-      faker.helpers.arrayElements(faker.word.words(10).split(" ")),
-    ),
     id: faker.number.int({ min: undefined, max: undefined }),
     creatorId: faker.number.int({ min: undefined, max: undefined }),
   }));
@@ -45,7 +45,6 @@ export const getTasksControllerFindOneV0ResponseMock = (
   title: faker.string.alpha(20),
   description: faker.string.alpha(20),
   type: faker.helpers.arrayElement(Object.values(TaskType)),
-  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   creatorId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
@@ -57,7 +56,6 @@ export const getTasksControllerUpdateV0ResponseMock = (
   title: faker.string.alpha(20),
   description: faker.string.alpha(20),
   type: faker.helpers.arrayElement(Object.values(TaskType)),
-  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   creatorId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
@@ -69,21 +67,41 @@ export const getTasksControllerRemoveV0ResponseMock = (
   title: faker.string.alpha(20),
   description: faker.string.alpha(20),
   type: faker.helpers.arrayElement(Object.values(TaskType)),
-  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   creatorId: faker.number.int({ min: undefined, max: undefined }),
   ...overrideResponse,
 });
 
-export const getTasksControllerUpdateFileV0ResponseMock = (
-  overrideResponse: Partial<ExistingTaskDto> = {},
-): ExistingTaskDto => ({
+export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
+  overrideResponse: Partial<ExistingTaskWithReferenceSolutionsDto> = {},
+): ExistingTaskWithReferenceSolutionsDto => ({
   title: faker.string.alpha(20),
   description: faker.string.alpha(20),
   type: faker.helpers.arrayElement(Object.values(TaskType)),
-  file: new Blob(faker.helpers.arrayElements(faker.word.words(10).split(" "))),
   id: faker.number.int({ min: undefined, max: undefined }),
   creatorId: faker.number.int({ min: undefined, max: undefined }),
+  referenceSolutions: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    id: faker.number.int({ min: undefined, max: undefined }),
+    title: faker.string.alpha(20),
+    description: faker.string.alpha(20),
+    mimeType: faker.string.alpha(20),
+    solution: faker.string.alpha(20),
+    tests: Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      identifier: faker.helpers.arrayElement([faker.string.alpha(20), null]),
+      name: faker.string.alpha(20),
+      contextName: faker.helpers.arrayElement([faker.string.alpha(20), null]),
+      passed: faker.datatype.boolean(),
+      id: faker.number.int({ min: undefined, max: undefined }),
+      referenceSolutionId: {},
+      studentSolutionId: {},
+    })),
+  })),
   ...overrideResponse,
 });
 
@@ -202,6 +220,34 @@ export const getTasksControllerRemoveV0MockHandler = (
   });
 };
 
+export const getTasksControllerFindOneWithReferenceSolutionsV0MockHandler = (
+  overrideResponse?:
+    | ExistingTaskWithReferenceSolutionsDto
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) =>
+        | Promise<ExistingTaskWithReferenceSolutionsDto>
+        | ExistingTaskWithReferenceSolutionsDto),
+) => {
+  return http.get(
+    "*/api/v0/tasks/:id/with-reference-solutions",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
+
 export const getTasksControllerDownloadOneV0MockHandler = (
   overrideResponse?:
     | void
@@ -217,35 +263,12 @@ export const getTasksControllerDownloadOneV0MockHandler = (
     return new HttpResponse(null, { status: 200 });
   });
 };
-
-export const getTasksControllerUpdateFileV0MockHandler = (
-  overrideResponse?:
-    | ExistingTaskDto
-    | ((
-        info: Parameters<Parameters<typeof http.patch>[1]>[0],
-      ) => Promise<ExistingTaskDto> | ExistingTaskDto),
-) => {
-  return http.patch("*/api/v0/tasks/:id/file", async (info) => {
-    await delay(1000);
-
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getTasksControllerUpdateFileV0ResponseMock(),
-      ),
-      { status: 201, headers: { "Content-Type": "application/json" } },
-    );
-  });
-};
 export const getTasksMock = () => [
   getTasksControllerCreateV0MockHandler(),
   getTasksControllerFindAllV0MockHandler(),
   getTasksControllerFindOneV0MockHandler(),
   getTasksControllerUpdateV0MockHandler(),
   getTasksControllerRemoveV0MockHandler(),
+  getTasksControllerFindOneWithReferenceSolutionsV0MockHandler(),
   getTasksControllerDownloadOneV0MockHandler(),
-  getTasksControllerUpdateFileV0MockHandler(),
 ];

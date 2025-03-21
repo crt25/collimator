@@ -27,7 +27,9 @@ const CreateTask = () => {
         title: formValues.title,
         description: formValues.description,
         type: formValues.type,
-        file: formValues.blob,
+        referenceSolutions: formValues.referenceSolutions,
+        file: formValues.taskFile,
+        files: formValues.referenceSolutionFiles,
       });
     },
     [createTask],

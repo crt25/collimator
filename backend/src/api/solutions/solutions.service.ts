@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { Injectable } from "@nestjs/common";
 import {
   Solution,
@@ -16,6 +15,7 @@ import { Cron } from "@nestjs/schedule";
 import { SentryCron } from "@sentry/nestjs";
 import { TupleMap } from "src/utilities/tuple-map";
 import { TaskId } from "../tasks/dto";
+import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "./solution-analysis.service";
 import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
@@ -92,12 +92,9 @@ const latestAstVersion = AstVersion.v1;
 export class SolutionsService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly tasksService: TasksService,
     private readonly analysisService: SolutionAnalysisService,
   ) {}
-
-  computeSolutionHash(data: Solution["data"]): Buffer {
-    return createHash("sha256").update(data).digest();
-  }
 
   findByStudentIdOrThrow(
     sessionId: number,
@@ -369,7 +366,7 @@ export class SolutionsService {
   ): Promise<StudentSolutionWithoutData> {
     const { studentId, sessionId, taskId, ...rest } = studentSolutionInput;
 
-    const hash = this.computeSolutionHash(data);
+    const hash = this.tasksService.computeSolutionHash(data);
 
     const checkedStudentSolution: Prisma.StudentSolutionCreateInput = {
       ...rest,

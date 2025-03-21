@@ -6,10 +6,17 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { TaskType } from "./taskType";
+import type { UpdateReferenceSolutionDto } from "./updateReferenceSolutionDto";
 
 export interface UpdateTaskDto {
   title: string;
   description: string;
   /** The task's type. */
   type: TaskType;
+  /** Task file */
+  taskFile: Blob;
+  /** Reference solution files */
+  referenceSolutionsFiles: Blob[];
+  /** The reference solutions for this task. */
+  referenceSolutions: UpdateReferenceSolutionDto[];
 }

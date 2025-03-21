@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -60,11 +60,9 @@ const EditTaskModal = ({
     // reset after closing / opening
     wasInitialized.current = false;
   }, [isShown]);
+
   return (
     <TaskModal
-      title={
-        <FormattedMessage id="EditTaskModal.title" defaultMessage="Edit task" />
-      }
       isShown={isShown}
       setIsShown={setIsShown}
       url={url}

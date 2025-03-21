@@ -5,6 +5,8 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { ExistingSolutionTestDtoReferenceSolutionId } from "./existingSolutionTestDtoReferenceSolutionId";
+import type { ExistingSolutionTestDtoStudentSolutionId } from "./existingSolutionTestDtoStudentSolutionId";
 
 export interface ExistingSolutionTestDto {
   /**
@@ -23,8 +25,14 @@ export interface ExistingSolutionTestDto {
   passed: boolean;
   /** The solution's unique identifier, a positive integer. */
   id: number;
-  /** The id of the associated reference solution. */
-  referenceSolutionId: number;
-  /** The id of the associated student solution. */
-  studentSolutionId: number;
+  /**
+   * The id of the associated reference solution.
+   * @nullable
+   */
+  referenceSolutionId: ExistingSolutionTestDtoReferenceSolutionId;
+  /**
+   * The id of the associated student solution.
+   * @nullable
+   */
+  studentSolutionId: ExistingSolutionTestDtoStudentSolutionId;
 }
