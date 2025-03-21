@@ -343,19 +343,13 @@ export abstract class CurrentAnalysis {
     generalAst,
     tests,
     isReferenceSolution,
-  }: ClassProperties<CurrentAnalysis, "sourceId" | "solutionId">) {
+  }: ClassProperties<CurrentAnalysis, "solutionId">) {
     this.taskId = taskId;
     this.solutionHash = solutionHash;
     this.generalAst = generalAst;
     this.tests = tests;
     this.isReferenceSolution = isReferenceSolution;
   }
-
-  /**
-   * A unique identifier for the analysis source, local to the frontend,
-   * which is stable across time (i.e. if a student submits a new solution)
-   */
-  public abstract get sourceId(): string;
 
   /**
    * A unique identifier for the solution, changing when a student submits a new solution.

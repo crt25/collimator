@@ -79,6 +79,8 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
 };
 
 export type ReferenceAnalysis = AnalysisWithoutId & {
+  title: string;
+  description: string;
   referenceSolutionId: ReferenceSolutionId;
 };
 
@@ -128,7 +130,7 @@ export class SolutionsService {
     const referenceAnalyses: getCurrentAnalyses.Result[] = [];
 
     for (const analysis of filteredAnalyses) {
-      if ("studentSolutionId" in analysis) {
+      if (analysis.studentSolutionId) {
         studentAnalyses.push(analysis);
       } else {
         referenceAnalyses.push(analysis);
@@ -225,6 +227,8 @@ export class SolutionsService {
   ): TupleMap<ReferenceKey, ReferenceAnalysis> {
     if (
       analysis.referenceSolutionId === null ||
+      analysis.referenceSolutionTitle === null ||
+      analysis.referenceSolutionDescription === null ||
       analysis.taskId === null ||
       analysis.solutionHash === null ||
       analysis.testName === null ||
@@ -259,6 +263,8 @@ export class SolutionsService {
         tests: [test],
 
         referenceSolutionId: analysis.referenceSolutionId,
+        title: analysis.referenceSolutionTitle,
+        description: analysis.referenceSolutionDescription,
       });
     }
 
@@ -398,9 +404,7 @@ export class SolutionsService {
     const studentSolution = await this.prisma.studentSolution.create({
       data: checkedStudentSolution,
       include: {
-        solution: {
-          omit: omitData,
-        },
+        solution: true,
         tests: true,
       },
     });

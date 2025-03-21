@@ -32,6 +32,7 @@ import { Colors } from "@/constants/colors";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/refrerence-analysis";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
@@ -49,6 +50,7 @@ import {
   AnalyzerStateActionType,
 } from "./Analyzer.state";
 import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
+import { createReferenceSymbol } from "./shapes/reference";
 
 type AdditionalChartData = {
   groups: {
@@ -73,6 +75,10 @@ const messages = defineMessages({
   numberOfStudents: {
     id: "Analysis.numberOfStudents",
     defaultMessage: "Number of Students",
+  },
+  numberOfReferenceSolutions: {
+    id: "Analysis.numberOfReferenceSolutions",
+    defaultMessage: "Number of Reference Solutions",
   },
   xAxis: {
     id: "Analysis.xAxis",
@@ -168,41 +174,76 @@ const TooltipContent = ({
               </span>
             </div>
           </div>
-          {dataPoint.additionalData.groups.map((group) => (
-            <div key={group.key} className="data group">
-              <div>
-                <span>
-                  <strong>{intl.formatMessage(messages.groupName)}</strong>
-                </span>
-                <span>
-                  <strong>{group.name}</strong>
-                </span>
+          {dataPoint.additionalData.groups.map((group) => {
+            const studentAnalyses = group.analyses.filter(
+              (a) => a instanceof CurrentStudentAnalysis,
+            );
+            const referenceAnalyses = group.analyses.filter(
+              (a) => a instanceof ReferenceAnalysis,
+            );
+
+            return (
+              <div key={group.key} className="data group">
+                <div>
+                  <span>
+                    <strong>{intl.formatMessage(messages.groupName)}</strong>
+                  </span>
+                  <span>
+                    <strong>{group.name}</strong>
+                  </span>
+                </div>
+                {referenceAnalyses.length > 0 && (
+                  <>
+                    <div>
+                      <span>
+                        {intl.formatMessage(
+                          messages.numberOfReferenceSolutions,
+                        )}
+                      </span>
+                      <span>{referenceAnalyses.length}</span>
+                    </div>
+                    <div>
+                      <ul>
+                        {referenceAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>{analysis.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
+
+                {studentAnalyses.length > 0 && (
+                  <>
+                    <div>
+                      <span>
+                        {intl.formatMessage(messages.numberOfStudents)}
+                      </span>
+                      <span>{studentAnalyses.length}</span>
+                    </div>
+                    <div>
+                      <ul>
+                        {studentAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>
+                            <StudentNameWrapper
+                              onClick={() =>
+                                onSelectAnalysis(group.key, analysis)
+                              }
+                            >
+                              <StudentName
+                                pseudonym={analysis.studentPseudonym}
+                                keyPairId={analysis.studentKeyPairId}
+                                showActualName={false}
+                              />
+                            </StudentNameWrapper>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
-              <div>
-                <span>{intl.formatMessage(messages.numberOfStudents)}</span>
-                <span>{group.analyses.length}</span>
-              </div>
-              <div>
-                <ul>
-                  {group.analyses.map((analysis) =>
-                    analysis instanceof CurrentStudentAnalysis ? (
-                      <li key={analysis.solutionId}>
-                        <StudentNameWrapper
-                          onClick={() => onSelectAnalysis(group.key, analysis)}
-                        >
-                          <StudentName
-                            pseudonym={analysis.studentPseudonym}
-                            keyPairId={analysis.studentKeyPairId}
-                            showActualName={false}
-                          />
-                        </StudentNameWrapper>
-                      </li>
-                    ) : null,
-                  )}
-                </ul>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ))}
     </>
@@ -369,6 +410,10 @@ const Analysis = ({
         dataPoint.analyses?.some((s) => s.isReferenceSolution),
       );
 
+      const isReferenceSolution = dataPoints.some((dataPoint) =>
+        dataPoint.analyses?.some((s) => s instanceof ReferenceAnalysis),
+      );
+
       const analysesCount = dataPoints.reduce(
         (acc, dataPoint) => acc + (dataPoint.analyses?.length || 0),
         0,
@@ -387,6 +432,24 @@ const Analysis = ({
       const starStrokeWidth = isSelected
         ? customShapeStrokeFactor * selectedDataPointBorderWidth
         : 0;
+
+      let pointStyle: "circle" | HTMLCanvasElement = "circle";
+
+      if (isReferenceSolution) {
+        pointStyle = createReferenceSymbol(
+          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          pattern,
+          isSelected ? 1 : 0,
+          borderColor,
+        );
+      } else if (isBookmarked) {
+        pointStyle = createStar(
+          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          pattern,
+          starStrokeWidth,
+          borderColor,
+        );
+      }
 
       return {
         // with a leading underscore, the label is hidden in the legend
@@ -411,14 +474,7 @@ const Analysis = ({
         ],
 
         backgroundColor: pattern,
-        pointStyle: isBookmarked
-          ? createStar(
-              customShapeSizeFactor * (size + selectedDataPointBorderWidth),
-              pattern,
-              starStrokeWidth,
-              Colors.dataPoint.selectedForComparisonBorderColor,
-            )
-          : "circle",
+        pointStyle,
         borderColor,
         hoverBorderWidth: isSelected ? selectedDataPointBorderWidth : 0,
         borderWidth: isSelected ? selectedDataPointBorderWidth : 0,

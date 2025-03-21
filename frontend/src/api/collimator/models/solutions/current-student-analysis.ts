@@ -19,7 +19,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentKeyPairId,
     studentSolutionId,
     ...rest
-  }: ClassProperties<CurrentStudentAnalysis, "sourceId" | "solutionId">) {
+  }: ClassProperties<CurrentStudentAnalysis, "solutionId">) {
     super(rest);
 
     this.sessionId = sessionId;
@@ -27,10 +27,6 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     this.studentSolutionId = studentSolutionId;
     this.studentPseudonym = studentPseudonym;
     this.studentKeyPairId = studentKeyPairId;
-  }
-
-  public override get sourceId(): string {
-    return `STUDENT:${this.studentId}-${this.taskId}-${this.sessionId}`;
   }
 
   public override get solutionId(): string {

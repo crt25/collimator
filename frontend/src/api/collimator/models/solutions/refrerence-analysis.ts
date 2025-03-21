@@ -7,22 +7,24 @@ import { CurrentAnalysis } from "./current-analysis";
 
 export class ReferenceAnalysis extends CurrentAnalysis {
   readonly referenceSolutionId: number;
+  readonly title: string;
+  readonly description: string;
 
   protected constructor({
     referenceSolutionId,
+    title,
+    description,
     ...rest
-  }: ClassProperties<ReferenceAnalysis, "sourceId" | "solutionId">) {
+  }: ClassProperties<ReferenceAnalysis, "solutionId">) {
     super(rest);
 
     this.referenceSolutionId = referenceSolutionId;
-  }
-
-  public override get sourceId(): string {
-    return `REFERENCE:${this.referenceSolutionId}`;
+    this.title = title;
+    this.description = description;
   }
 
   public override get solutionId(): string {
-    return `REFERENCE:${this.solutionId}`;
+    return `REFERENCE:${this.referenceSolutionId}`;
   }
 
   protected override withAst(ast: GeneralAst): ReferenceAnalysis {

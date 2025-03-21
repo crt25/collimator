@@ -1,8 +1,8 @@
+import { decodeBase64 } from "@/utilities/crypto";
 import { TaskReferenceSolutionDto } from "../../generated/models";
 import { fromDtos } from "../../hooks/helpers";
 import { ClassProperties } from "../class-properties";
 import { ExistingSolutionTest } from "../solutions/existing-solution-test";
-import { decodeBase64 } from "@/utilities/crypto";
 
 export class TaskReferenceSolution {
   readonly id: number;

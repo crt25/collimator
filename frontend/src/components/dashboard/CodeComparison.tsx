@@ -13,6 +13,7 @@ import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { compareLabels } from "@/utilities/comparisons";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/refrerence-analysis";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import Select from "../form/Select";
@@ -32,11 +33,11 @@ import StarAnalysisButton from "./StarAnalysisButton";
 const messages = defineMessages({
   defaultGroupOption: {
     id: "CodeComparison.defaultOption",
-    defaultMessage: "Group: All students",
+    defaultMessage: "Group: All solutions",
   },
   selectedSolutions: {
     id: "CodeComparison.selectedSolutions",
-    defaultMessage: "Group: Selected students",
+    defaultMessage: "Group: Selected solutions",
   },
   groupLabelPrefix: {
     id: "CodeComparison.groupPrefix",
@@ -44,7 +45,7 @@ const messages = defineMessages({
   },
   defaultSolutionOption: {
     id: "CodeComparison.defaultSolutionOption",
-    defaultMessage: "Select a student",
+    defaultMessage: "Select a solutions",
   },
 });
 
@@ -116,49 +117,52 @@ const getOptions = async (
   authContext: AuthenticationContextType,
   analyses: CurrentAnalysis[],
 ): Promise<Option[]> => {
-  let options = analyses
-    .filter((analysis) => analysis instanceof CurrentStudentAnalysis)
-    .map((analysis) => ({
-      isReferenceSolution: analysis.isReferenceSolution,
-      label: analysis.studentPseudonym,
-      value: analysis.solutionId,
-    }));
-
   // TODO: && this with a parameter
   const showStudentName = false && "keyPair" in authContext;
 
-  options = await Promise.all(
-    options.map(async ({ label, value, isReferenceSolution }) => {
-      if (showStudentName) {
-        try {
-          const decryptedIdentity: StudentIdentity = JSON.parse(
-            await authContext.keyPair.decryptString(decodeBase64(label)),
-          );
+  const options = await Promise.all(
+    analyses.map(async (analysis) => {
+      if (analysis instanceof CurrentStudentAnalysis) {
+        const {
+          studentPseudonym,
+          isReferenceSolution,
+          solutionId: value,
+        } = analysis;
 
-          return {
-            isReferenceSolution,
-            label: decryptedIdentity.name,
-            value,
-          };
-        } catch {
-          // if decryption fails, use the nickname
+        let label = getStudentNickname(studentPseudonym);
+
+        if (showStudentName) {
+          try {
+            const decryptedIdentity: StudentIdentity = JSON.parse(
+              await authContext.keyPair.decryptString(
+                decodeBase64(studentPseudonym),
+              ),
+            );
+
+            label = decryptedIdentity.name;
+          } catch {
+            // if decryption fails, use the nickname
+          }
         }
+
+        return {
+          label: isReferenceSolution ? `⭐ ${label}` : label,
+          value,
+        };
       }
 
-      return {
-        isReferenceSolution,
-        label: getStudentNickname(label),
-        value,
-      };
+      if (analysis instanceof ReferenceAnalysis) {
+        return {
+          label: `𝓡 ${analysis.title}`,
+          value: analysis.solutionId,
+        };
+      }
+
+      throw new Error(`Unknown analysis type: ${JSON.stringify(analysis)}`);
     }),
   );
 
-  return options
-    .map((option) => ({
-      ...option,
-      label: option.isReferenceSolution ? `⭐ ${option.label}` : option.label,
-    }))
-    .toSorted(compareLabels);
+  return options.toSorted(compareLabels);
 };
 
 const findAssignment = (
@@ -200,7 +204,7 @@ const CodeComparison = ({
   taskId,
   taskType,
   state: {
-    selectedSolutionIds: selectedSolutionIds,
+    selectedSolutionIds,
     comparison: {
       selectedLeftGroup,
       selectedLeftSolutionId,

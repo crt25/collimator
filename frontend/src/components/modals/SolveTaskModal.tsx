@@ -1,11 +1,11 @@
 import { useIntl } from "react-intl";
 import { useCallback, useMemo } from "react";
-import { EmbeddedAppRef } from "../EmbeddedApp";
-import TaskModal from "./TaskModal";
 import { Language } from "@/types/app-iframe-message/languages";
 import { GetSubmissionResponse } from "@/types/app-iframe-message/get-submission";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
+import { EmbeddedAppRef } from "../EmbeddedApp";
+import TaskModal from "./TaskModal";
 
 const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {

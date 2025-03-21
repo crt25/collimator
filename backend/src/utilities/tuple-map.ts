@@ -1,10 +1,11 @@
 export class TupleMap<Key, Value> {
-  private _map = new Map<string, Value>();
+  private readonly _map = new Map<string, Value>();
+
   private getKey(key: Key): string {
     return `${this.keyToString(key)}`;
   }
 
-  constructor(private keyToString: (key: Key) => string) {}
+  constructor(private readonly keyToString: (key: Key) => string) {}
 
   /**
    * @returns boolean indicating whether an element with the specified key exists or not.

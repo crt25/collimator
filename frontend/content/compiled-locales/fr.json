@@ -302,19 +302,19 @@
   "CodeComparison.defaultOption": [
     {
       "type": 0,
-      "value": "Group: All students"
+      "value": "Group: All solutions"
     }
   ],
   "CodeComparison.defaultSolutionOption": [
     {
       "type": 0,
-      "value": "Select a student"
+      "value": "Select a solution"
     }
   ],
   "CodeComparison.groupPrefix": [
     {
       "type": 0,
-      "value": "Group:"
+      "value": "Group: "
     }
   ],
   "CodeComparison.heading": [
@@ -326,7 +326,7 @@
   "CodeComparison.selectedSolutions": [
     {
       "type": 0,
-      "value": "Group: Selected students"
+      "value": "Group: Selected solutions"
     }
   ],
   "CodeComparison.view": [

@@ -12,8 +12,8 @@ import { createAnonymousSubmission } from "./submission-management";
 import { SessionProgressPageModel } from "./session-progress-page-model";
 import { SessionAnalysisPageModel } from "./session-analysis-page-model";
 
-import { getSolutionsControllerFindCurrentAnalysisV0Url } from "@/api/collimator/generated/endpoints/solutions/solutions";
-import { CurrentAnalysisDto } from "@/api/collimator/generated/models";
+import { getSolutionsControllerFindCurrentAnalysesV0Url } from "@/api/collimator/generated/endpoints/solutions/solutions";
+import { CurrentAnalysesDto } from "@/api/collimator/generated/models";
 import { SerializedAuthenticationContextType } from "@/contexts/AuthenticationContext";
 
 const newClassName = "new class name";
@@ -105,7 +105,7 @@ test.describe("session analysis", () => {
 
     // wait until all analyses are available - they are created asynchronously
     test("wait for analysis", async ({ page }) => {
-      const url = getSolutionsControllerFindCurrentAnalysisV0Url(
+      const url = getSolutionsControllerFindCurrentAnalysesV0Url(
         classId,
         sessionId,
         firstTaskId,
@@ -114,7 +114,7 @@ test.describe("session analysis", () => {
       await waitUntil(
         () =>
           page.evaluate(
-            async ({ url, expectedAnalyses }) => {
+            async ({ url, expectedStudentAnalyses }) => {
               const authState = JSON.parse(
                 localStorage.getItem("authenticationState")!,
               ) as SerializedAuthenticationContextType;
@@ -129,11 +129,13 @@ test.describe("session analysis", () => {
                 return false;
               }
 
-              const analyses = (await response.json()) as CurrentAnalysisDto[];
+              const analyses = (await response.json()) as CurrentAnalysesDto;
 
-              return analyses.length === expectedAnalyses;
+              return (
+                analyses.studentAnalyses.length === expectedStudentAnalyses
+              );
             },
-            { url, expectedAnalyses: solutions.length },
+            { url, expectedStudentAnalyses: solutions.length },
           ),
         10,
         500,

@@ -547,7 +547,7 @@ const TaskForm = ({
               "referenceSolutionFiles",
               {
                 ...referenceSolutionFiles,
-                [showSolveTaskModalForId!]: solution.file,
+                [showSolveTaskModalForId]: solution.file,
               },
               { shouldDirty: true, shouldValidate: true },
             );

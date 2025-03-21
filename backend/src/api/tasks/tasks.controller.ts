@@ -89,7 +89,6 @@ export class TasksController {
       );
     }
 
-    console.log("referenceSolutions", referenceSolutions);
     const task = await this.tasksService.create(
       {
         ...rest,
@@ -209,8 +208,8 @@ export class TasksController {
     const task = await this.tasksService.update(
       id,
       rest,
-      taskFile!.mimetype,
-      taskFile!.buffer,
+      taskFile.mimetype,
+      taskFile.buffer,
       referenceSolutions,
       referenceSolutionsFiles,
     );

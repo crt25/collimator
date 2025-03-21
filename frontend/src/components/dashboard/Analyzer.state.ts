@@ -266,7 +266,7 @@ export const analyzerStateReducer = (
           clickedAnalysis: action.clickedAnalysis,
         },
       };
-    case AnalyzerStateActionType.setSelectedAnalyses:
+    case AnalyzerStateActionType.setSelectedAnalyses: {
       const newSelection = new Set<string>(action.solutionId);
 
       return {
@@ -275,6 +275,7 @@ export const analyzerStateReducer = (
           ? state.selectedSolutionIds.union(newSelection)
           : newSelection,
       };
+    }
     default:
       return state;
   }

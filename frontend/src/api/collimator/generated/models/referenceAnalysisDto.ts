@@ -25,6 +25,10 @@ export interface ReferenceAnalysisDto {
   astVersion: string;
   /** The generalized AST of the solution. */
   genericAst: string;
+  /** The title of the reference solution */
+  title: string;
+  /** The description of the reference solution */
+  description: string;
   /**
    * The reference solutions's unique identifier, a positive integer.
    */
