@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { getAstDistance } from "../ast-distance";
 import { DistanceType } from "../ast-distance/distance-type";
 
@@ -97,11 +98,11 @@ const choose = (n: number, k: number): number => {
   return (n * choose(n - 1, k - 1)) / k;
 };
 
-const getDissimilarAnalyses = async (
-  analysesIn: CurrentAnalysis[] | undefined,
+const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
+  analysesIn: T[] | undefined,
   numberOfAnalyses: number,
   distanceType: DistanceType = DistanceType.pq,
-): Promise<CurrentAnalysis[] | undefined> => {
+): Promise<T[] | undefined> => {
   if (!analysesIn) {
     return undefined;
   }
@@ -124,7 +125,7 @@ const getDissimilarAnalyses = async (
   }
 
   const analyses = analysesIn?.map((analysis, index) => ({
-    ...analysis,
+    analysis,
     index,
   }));
 
@@ -139,8 +140,8 @@ const getDissimilarAnalyses = async (
       promises.push(
         getAstDistance(
           distanceType,
-          analyses[i].generalAst,
-          analyses[j].generalAst,
+          analyses[i].analysis.generalAst,
+          analyses[j].analysis.generalAst,
         ).then((distance) => {
           distances[i][j] = distance;
           distances[j][i] = distance;
@@ -175,7 +176,7 @@ const getDissimilarAnalyses = async (
     }
   }
 
-  return bestCombination.map((idx) => analyses[idx]);
+  return bestCombination.map((idx) => analyses[idx].analysis);
 };
 
 export const useDissimilarAnalyses = (
@@ -184,14 +185,14 @@ export const useDissimilarAnalyses = (
   distanceType: DistanceType = DistanceType.pq,
 ): {
   tooManyCombinations: boolean;
-  analyses: CurrentAnalysis[] | undefined;
+  analyses: CurrentStudentAnalysis[] | undefined;
 } => {
   const [tooManyCombinations, setTooManyCombinations] =
     useState<boolean>(false);
 
-  const [analyses, setAnalyses] = useState<CurrentAnalysis[] | undefined>(
-    undefined,
-  );
+  const [analyses, setAnalyses] = useState<
+    CurrentStudentAnalysis[] | undefined
+  >(undefined);
 
   useEffect(() => {
     let isCancelled = false;
@@ -203,7 +204,11 @@ export const useDissimilarAnalyses = (
         }
 
         setTooManyCombinations(false);
-        setAnalyses(analyses);
+        setAnalyses(
+          analyses?.filter(
+            (analysis) => analysis instanceof CurrentStudentAnalysis,
+          ),
+        );
       })
       .catch((e) => {
         if (isCancelled) {

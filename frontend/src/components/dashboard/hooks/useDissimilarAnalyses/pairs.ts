@@ -1,29 +1,32 @@
 import { useEffect, useState } from "react";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 
 const getDissimilarPairs = async (
   analysesIn: CurrentAnalysis[] | undefined,
-  numberOfAnalyses: number,
+  numberOfPairs: number,
   distanceType: DistanceType = DistanceType.pq,
-): Promise<[CurrentAnalysis, CurrentAnalysis][] | undefined> => {
+): Promise<[CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined> => {
   if (!analysesIn) {
     return undefined;
   }
 
-  if (analysesIn.length <= numberOfAnalyses || numberOfAnalyses <= 0) {
+  if (numberOfPairs <= 0) {
     return [];
   }
 
-  const analyses = analysesIn?.map((analysis, index) => ({
-    ...analysis,
-    index,
-  }));
+  const analyses = analysesIn
+    ?.filter((analysis) => analysis instanceof CurrentStudentAnalysis)
+    .map((analysis, index) => ({
+      analysis,
+      index,
+    }));
 
   const distances: {
-    from: CurrentAnalysis;
-    to: CurrentAnalysis;
+    from: CurrentStudentAnalysis;
+    to: CurrentStudentAnalysis;
     distance: number;
   }[] = [];
   const promises: Promise<unknown>[] = [];
@@ -34,13 +37,13 @@ const getDissimilarPairs = async (
       promises.push(
         getAstDistance(
           distanceType,
-          analyses[i].generalAst,
-          analyses[j].generalAst,
+          analyses[i].analysis.generalAst,
+          analyses[j].analysis.generalAst,
         ).then((distance) => {
           if (distance > 0) {
             distances.push({
-              from: analyses[i],
-              to: analyses[j],
+              from: analyses[i].analysis,
+              to: analyses[j].analysis,
               distance,
             });
           }
@@ -54,7 +57,7 @@ const getDissimilarPairs = async (
   const sortedEdgesDesc = distances.toSorted((a, b) => b.distance - a.distance);
 
   return sortedEdgesDesc
-    .slice(0, numberOfAnalyses)
+    .slice(0, numberOfPairs)
     .map((edge) => [edge.from, edge.to]);
 };
 
@@ -62,9 +65,9 @@ export const useDissimilarPairs = (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfSolutions: number,
   distanceType: DistanceType = DistanceType.pq,
-): [CurrentAnalysis, CurrentAnalysis][] | undefined => {
+): [CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined => {
   const [analyses, setAnalyses] = useState<
-    [CurrentAnalysis, CurrentAnalysis][] | undefined
+    [CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined
   >(undefined);
 
   useEffect(() => {

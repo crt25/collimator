@@ -6,6 +6,7 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { Language } from "@/types/app-iframe-message/languages";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import { GetSubmissionResponse } from "@/types/app-iframe-message/get-submission";
 import Button, { ButtonVariant } from "../Button";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
@@ -59,7 +60,7 @@ const TaskModal = ({
   header,
   footer,
 }: {
-  title: ReactNode;
+  title?: ReactNode;
   url: string | null | undefined;
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
@@ -69,7 +70,7 @@ const TaskModal = ({
   showImportButton?: boolean;
   showExportButton?: boolean;
   showSaveButton?: boolean;
-  onSave?: (blob: Blob) => void;
+  onSave?: (blob: Blob, submission: GetSubmissionResponse["result"]) => void;
   header?: React.ReactNode;
   footer?: React.ReactNode;
 }) => {
@@ -134,10 +135,12 @@ const TaskModal = ({
         data-testid="task-modal"
       >
         <MaxScreenHeightInModal>
-          <Modal.Header closeButton>
-            <Modal.Title>{title}</Modal.Title>
-            {header}
-          </Modal.Header>
+          {(title || header) && (
+            <Modal.Header closeButton>
+              <Modal.Title>{title}</Modal.Title>
+              {header}
+            </Modal.Header>
+          )}
           <ModalBody>
             {url && (
               <EmbeddedApp
@@ -168,7 +171,7 @@ const TaskModal = ({
               >
                 <FormattedMessage
                   id="TaskModal.import"
-                  defaultMessage="Import task"
+                  defaultMessage="Import"
                 />
               </Button>
             )}
@@ -181,10 +184,17 @@ const TaskModal = ({
               >
                 <FormattedMessage
                   id="TaskModal.export"
-                  defaultMessage="Export task"
+                  defaultMessage="Export"
                 />
               </Button>
             )}
+            <Button
+              onClick={warnBeforeClose}
+              variant={ButtonVariant.danger}
+              data-testid="cancel-button"
+            >
+              <FormattedMessage id="TaskModal.cancel" defaultMessage="Cancel" />
+            </Button>
             {showSaveButton && (
               <Button
                 disabled={!appLoaded}
@@ -194,17 +204,18 @@ const TaskModal = ({
                       procedure: "getTask",
                     });
 
-                    onSave(task.result);
+                    const submission = await embeddedApp.current.sendRequest({
+                      procedure: "getSubmission",
+                    });
+
+                    onSave(task.result, submission.result);
                   }
                   setIsShown(false);
                 }}
-                variant={ButtonVariant.secondary}
+                variant={ButtonVariant.primary}
                 data-testid="save-button"
               >
-                <FormattedMessage
-                  id="TaskModal.save"
-                  defaultMessage="Save task"
-                />
+                <FormattedMessage id="TaskModal.save" defaultMessage="Save" />
               </Button>
             )}
           </Modal.Footer>

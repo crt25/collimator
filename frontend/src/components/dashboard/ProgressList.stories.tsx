@@ -3,11 +3,11 @@ import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/gene
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getSessionsControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
-import { getSolutionsControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/solutions/solutions.msw";
-import { getSolutionsControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/solutions/solutions";
+import { getSolutionsControllerFindAllStudentSolutionsV0ResponseMock } from "@/api/collimator/generated/endpoints/solutions/solutions.msw";
+import { getSolutionsControllerFindAllStudentSolutionsV0Url } from "@/api/collimator/generated/endpoints/solutions/solutions";
 import {
   ClassStudentDto,
-  ExistingSolutionDto,
+  ExistingStudentSolutionDto,
 } from "@/api/collimator/generated/models";
 import ProgressList from "./ProgressList";
 
@@ -42,19 +42,20 @@ export default {
         response: session,
       },
       ...session.tasks.map((task) => ({
-        url: `${backendHostName}${getSolutionsControllerFindAllV0Url(classId, sessionId, task.id)}`,
+        url: `${backendHostName}${getSolutionsControllerFindAllStudentSolutionsV0Url(classId, sessionId, task.id)}`,
         method: "GET",
         status: 200,
-        response: getSolutionsControllerFindAllV0ResponseMock().map(
-          (solution, solutionIndex) =>
-            ({
-              ...solution,
-              studentId:
-                klass.students.find(
-                  (_, studentIndex) => solutionIndex % 4 === studentIndex % 4,
-                )?.id ?? student,
-            }) as ExistingSolutionDto,
-        ),
+        response:
+          getSolutionsControllerFindAllStudentSolutionsV0ResponseMock().map(
+            (solution, solutionIndex) =>
+              ({
+                ...solution,
+                studentId:
+                  klass.students.find(
+                    (_, studentIndex) => solutionIndex % 4 === studentIndex % 4,
+                  )?.id ?? student,
+              }) as ExistingStudentSolutionDto,
+          ),
       })),
     ],
   },

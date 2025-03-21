@@ -11,9 +11,9 @@ import { TableMessages } from "@/i18n/table-messages";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { useDeleteSolution } from "@/api/collimator/hooks/solutions/useDeleteSolution";
+import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 
@@ -80,7 +80,7 @@ const messages = defineMessages({
 
 type TaskSolutions = {
   taskId: number;
-  solutions: ExistingSolution[];
+  solutions: ExistingStudentSolution[];
 };
 
 type StudentProgress = {
@@ -107,7 +107,7 @@ const taskTemplate = (classId: number, taskId: number) =>
         (s) => s.taskId === taskId,
       )?.solutions;
 
-      return ExistingSolution.findSolutionToDisplay(solutions);
+      return ExistingStudentSolution.findSolutionToDisplay(solutions);
     }, [rowData]);
 
     const deleteSolution = useDeleteSolution();

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { solutionsControllerDeleteOneV0 } from "../../generated/endpoints/solutions/solutions";
+import { solutionsControllerDeleteOneStudentSolutionV0 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
 
@@ -17,7 +17,7 @@ const fetchAndTransform = (
   taskId: number,
   solutionId: number,
 ): ReturnType<DeleteSolutionType> =>
-  solutionsControllerDeleteOneV0(
+  solutionsControllerDeleteOneStudentSolutionV0(
     classId,
     sessionId,
     taskId,

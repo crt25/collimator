@@ -159,19 +159,19 @@
     "message": "{name} - Students"
   },
   "CodeComparison.defaultOption": {
-    "message": "Group: All students"
+    "message": "Group: All solutions"
   },
   "CodeComparison.defaultSolutionOption": {
-    "message": "Select a student"
+    "message": "Select a solution"
   },
   "CodeComparison.groupPrefix": {
-    "message": "Group:"
+    "message": "Group: "
   },
   "CodeComparison.heading": {
     "message": "Comparison"
   },
   "CodeComparison.selectedSolutions": {
-    "message": "Group: Selected students"
+    "message": "Group: Selected solutions"
   },
   "CodeComparison.view": {
     "message": "View"
@@ -343,9 +343,6 @@
   },
   "EditTask.title": {
     "message": "Edit Task - {title}"
-  },
-  "EditTaskModal.title": {
-    "message": "Edit task"
   },
   "EditUser.header": {
     "message": "Edit User"
@@ -667,16 +664,16 @@
     "message": "Are you sure you want to close without saving?"
   },
   "TaskModal.export": {
-    "message": "Export task"
+    "message": "Export"
   },
   "TaskModal.import": {
-    "message": "Import task"
+    "message": "Import"
   },
   "TaskModal.reset": {
     "message": "Reset"
   },
   "TaskModal.save": {
-    "message": "Save task"
+    "message": "Save"
   },
   "TaskNavigation.classTab": {
     "message": "Task Details"

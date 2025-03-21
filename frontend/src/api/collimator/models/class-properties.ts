@@ -3,4 +3,7 @@ type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K;
 }[keyof T];
 
-export type ClassProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+export type ClassProperties<T, TOmit extends string = ""> = Omit<
+  Pick<T, NonFunctionPropertyNames<T>>,
+  TOmit
+>;

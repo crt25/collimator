@@ -3,7 +3,7 @@ import { Expose, plainToInstance, Type } from "class-transformer";
 import { SolutionTest } from "@prisma/client";
 import { IsBoolean, IsString } from "class-validator";
 
-export class SolutionTestDto {
+export class CreateSolutionTestDto {
   // @Type converts the input to the given type - necessary because this may be submitted as part of a multipart/form-data
 
   @Type(() => String)
@@ -49,8 +49,13 @@ export class SolutionTestDto {
   @Expose()
   readonly passed!: boolean;
 
-  static fromQueryResult(data: Omit<SolutionTest, "id">): SolutionTestDto {
-    return plainToInstance(SolutionTestDto, data, {
+  static fromQueryResult(
+    data: Omit<
+      SolutionTest,
+      "id" | "referenceSolutionId" | "studentSolutionId"
+    >,
+  ): CreateSolutionTestDto {
+    return plainToInstance(CreateSolutionTestDto, data, {
       excludeExtraneousValues: true,
     });
   }

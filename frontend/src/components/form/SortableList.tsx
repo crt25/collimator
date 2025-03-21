@@ -2,7 +2,6 @@ import {
   closestCenter,
   DndContext,
   DragEndEvent,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -10,7 +9,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
@@ -57,16 +55,13 @@ const SortableListInput = <TItem extends { id: number }>({
 }: {
   items: TItem[];
   updateItems: (items: TItem[]) => void;
-  children: (item: TItem) => React.ReactNode;
+  children: (item: TItem, index: number) => React.ReactNode;
   testId?: string;
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       // add a constraint so that elements within are still clickable, see https://github.com/clauderic/dnd-kit/issues/800#issuecomment-2426989739
       activationConstraint: { distance: 5 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
@@ -93,13 +88,13 @@ const SortableListInput = <TItem extends { id: number }>({
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
           <ListGroup>
-            {items.map((item) => (
+            {items.map((item, index) => (
               <SortableItem
                 key={`${item.id}`}
                 id={item.id}
                 testId={`${testId}-item-${item.id}`}
               >
-                {renderItemContent(item)}
+                {renderItemContent(item, index)}
               </SortableItem>
             ))}
           </ListGroup>

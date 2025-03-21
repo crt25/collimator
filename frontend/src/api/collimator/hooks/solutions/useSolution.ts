@@ -3,15 +3,15 @@ import { useCallback } from "react";
 import { fetchFile } from "@/api/fetch";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import {
+  getSolutionsControllerDownloadLatestStudentSolutionV0Url,
   getSolutionsControllerDownloadOneV0Url,
-  getSolutionsControllerFindOneV0Url,
-  getSolutionsControllerLatestSolutionV0Url,
-  solutionsControllerFindOneV0,
+  getSolutionsControllerFindOneStudentSolutionV0Url,
+  solutionsControllerFindOneStudentSolutionV0,
 } from "../../generated/endpoints/solutions/solutions";
-import { ExistingSolution } from "../../models/solutions/existing-solution";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { ExistingStudentSolution } from "../../models/solutions/existing-student-solutions";
 
-export type GetSolutionReturnType = ExistingSolution;
+export type GetSolutionReturnType = ExistingStudentSolution;
 
 const fetchAndTransform = (
   classId: number,
@@ -19,9 +19,12 @@ const fetchAndTransform = (
   taskId: number,
   id: number,
 ): Promise<GetSolutionReturnType> =>
-  solutionsControllerFindOneV0(classId, sessionId, taskId, id).then(
-    ExistingSolution.fromDto,
-  );
+  solutionsControllerFindOneStudentSolutionV0(
+    classId,
+    sessionId,
+    taskId,
+    id,
+  ).then(ExistingStudentSolution.fromDto);
 
 export const useSolution = (
   classId?: string | number,
@@ -35,7 +38,7 @@ export const useSolution = (
   const numericSolutionId = getIdOrNaN(id);
 
   return useSWR(
-    getSolutionsControllerFindOneV0Url(
+    getSolutionsControllerFindOneStudentSolutionV0Url(
       numericClassId,
       numericSessionId,
       numericTaskId,
@@ -61,12 +64,11 @@ export const useSolutionFile = (
   classId?: string | number,
   sessionId?: string | number,
   taskId?: string | number,
-  id?: string | number,
+  solutionHash?: string,
 ): ApiResponse<Blob, Error> => {
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(sessionId);
   const numericTaskId = getIdOrNaN(taskId);
-  const numericSolutionId = getIdOrNaN(id);
 
   const authOptions = useAuthenticationOptions();
 
@@ -75,13 +77,13 @@ export const useSolutionFile = (
       numericClassId,
       numericSessionId,
       numericTaskId,
-      numericSolutionId,
+      solutionHash ?? "",
     ),
     () =>
       isNaN(numericClassId) ||
       isNaN(numericSessionId) ||
       isNaN(numericTaskId) ||
-      isNaN(numericSolutionId)
+      solutionHash === undefined
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
           new Promise<Blob>(() => {})
         : fetchFile(
@@ -89,7 +91,7 @@ export const useSolutionFile = (
               numericClassId,
               numericSessionId,
               numericTaskId,
-              numericSolutionId,
+              solutionHash,
             ),
             {
               ...authOptions,
@@ -109,7 +111,11 @@ export const useFetchLatestSolutionFile = (): ((
   return useCallback(
     (classId: number, sessionId: number, taskId: number) =>
       fetchFile(
-        getSolutionsControllerLatestSolutionV0Url(classId, sessionId, taskId),
+        getSolutionsControllerDownloadLatestStudentSolutionV0Url(
+          classId,
+          sessionId,
+          taskId,
+        ),
         {
           ...authOptions,
           method: "GET",

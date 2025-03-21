@@ -4,10 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   // "prismaSchemaFolder" is not yet supported by JetBrains IDEs
-  // when updating to prisma 6, remove "omitApi" and "tracing"
-  // see https://docs.sentry.io/platforms/javascript/guides/nestjs/configuration/integrations/prisma/ for
-  // the changes required for sentry
-  previewFeatures = ["omitApi", "typedSql", "tracing"] // ,"prismaSchemaFolder"]
+  previewFeatures = ["typedSql"] // ,"prismaSchemaFolder"]
 }
 
 datasource db {
@@ -87,7 +84,7 @@ model Student {
 
   authenticationTokens AuthenticationToken[]
   class                Class                 @relation(fields: [classId], references: [id], onDelete: Restrict)
-  solutions            Solution[]
+  solutions            StudentSolution[]
   encryptedUsing       KeyPair?              @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
   // studentActivity StudentActivity[]
 
@@ -129,10 +126,10 @@ model Session {
   status          SessionStatus @default(CREATED)
   isAnonymous     Boolean       @default(false)
 
-  lesson    Lesson?       @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
-  class     Class         @relation(fields: [classId], references: [id], onDelete: Cascade)
+  lesson    Lesson?           @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
+  class     Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
   tasks     SessionTask[]
-  solutions Solution[]
+  solutions StudentSolution[]
   // studentActivity StudentActivity[]
 }
 
@@ -149,11 +146,13 @@ model Task {
   mimeType    String
   creatorId   Int?
 
-  solutions Solution[]
-  sessions  SessionTask[]
-  lessons   LessonTask[]
-  creator   User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  studentSolutions   StudentSolution[]
+  referenceSolutions ReferenceSolution[]
+  sessions           SessionTask[]
+  lessons            LessonTask[]
+  creator            User?               @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   // studentActivity StudentActivity[]
+  solution           Solution[]
 }
 
 model LessonTask {
@@ -172,43 +171,77 @@ model SessionTask {
   taskId    Int
   index     Int
 
-  session   Session    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  task      Task       @relation(fields: [taskId], references: [id], onDelete: Restrict)
-  solutions Solution[]
+  session   Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  task      Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  solutions StudentSolution[]
   // studentActivity StudentActivity[]
 
   @@id([sessionId, taskId])
 }
 
 model Solution {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
+  taskId Int
+  hash   Bytes
+
   data           Bytes
   mimeType       String
-  studentId      Int
-  taskId         Int
-  sessionId      Int
-  failedAnalyses Int      @default(0)
+  failedAnalyses Int    @default(0)
 
+  analysis           SolutionAnalysis?
+  task               Task                @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  referenceSolutions ReferenceSolution[]
+  studentSolutions   StudentSolution[]
+
+  @@id([taskId, hash])
+}
+
+model ReferenceSolution {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+
+  taskId       Int
+  solutionHash Bytes
+
+  tests SolutionTest[]
+
+  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+  task     Task     @relation(fields: [taskId], references: [id])
+
+  @@unique([taskId, solutionHash])
+}
+
+model StudentSolution {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  taskId       Int
+  solutionHash Bytes
+  studentId    Int
+  sessionId    Int
+  isReference  Boolean  @default(false)
+
+  tests SolutionTest[]
+
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
-
-  analysis SolutionAnalysis?
-  tests    SolutionTest[]
 }
 
 model SolutionTest {
-  id         Int @id @default(autoincrement())
-  solutionId Int
+  id Int @id @default(autoincrement())
+
+  referenceSolutionId Int?
+  studentSolutionId   Int?
 
   identifier  String?
   name        String
   contextName String?
   passed      Boolean
 
-  solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  referenceSolution ReferenceSolution? @relation(fields: [referenceSolutionId], references: [id])
+  studentSolution   StudentSolution?   @relation(fields: [studentSolutionId], references: [id])
 }
 
 enum AstVersion {
@@ -217,12 +250,14 @@ enum AstVersion {
 }
 
 model SolutionAnalysis {
-  id         Int        @id @default(autoincrement())
-  solutionId Int        @unique
-  genericAst String
-  astVersion AstVersion @default(v0)
+  taskId       Int
+  solutionHash Bytes
+  genericAst   String
+  astVersion   AstVersion @default(v0)
 
-  solution Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+
+  @@id([taskId, solutionHash])
 }
 
 model RegistrationToken {

@@ -1,37 +1,31 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { TaskType } from "@prisma/client";
-import { IsNotEmpty, IsString, IsEnum } from "class-validator";
-import { Expose } from "class-transformer";
+import { IsArray } from "class-validator";
+import { Type } from "class-transformer";
+import { CreateReferenceSolutionDto } from "./create-reference-solution.dto";
+import { TaskDto } from "./task.dto";
 
-export class CreateTaskDto {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  readonly title!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  @Expose()
-  readonly description!: string;
-
-  @IsEnum(TaskType)
-  @IsNotEmpty()
-  @ApiProperty({
-    example: TaskType.SCRATCH,
-    description: `The task's type.`,
-    enumName: "TaskType",
-    enum: Object.keys(TaskType),
-  })
-  @Expose()
-  readonly type!: TaskType;
-
+export class CreateTaskDto extends TaskDto {
   // The following property is used for Swagger documentation purposes.
   @ApiProperty({
     description: "Task file",
     format: "binary",
     type: "string",
   })
-  readonly file!: Express.Multer.File;
+  readonly taskFile!: Express.Multer.File;
+
+  @ApiProperty({
+    description: "Reference solution files",
+    format: "binary",
+    type: "string",
+    isArray: true,
+  })
+  readonly referenceSolutionsFiles!: Express.Multer.File[];
+
+  @Type(() => CreateReferenceSolutionDto)
+  @IsArray()
+  @ApiProperty({
+    description: "The reference solutions for this task.",
+    type: [CreateReferenceSolutionDto],
+  })
+  readonly referenceSolutions!: CreateReferenceSolutionDto[];
 }

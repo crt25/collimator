@@ -1,59 +1,26 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  Exclude,
-  Expose,
-  plainToInstance,
-  Transform,
-  Type,
-} from "class-transformer";
-import { SolutionTest } from "@prisma/client";
+import { Exclude, Expose, plainToInstance, Transform } from "class-transformer";
+import { Modify } from "src/utilities/modify";
 import { SolutionWithoutData } from "../solutions.service";
-import { SolutionTestDto } from "./solution-test.dto";
 
-export type SolutionId = number;
-type TestList = Omit<SolutionTest, "id">[];
-
-export class ExistingSolutionDto implements SolutionWithoutData {
+export class ExistingSolutionDto
+  implements Modify<SolutionWithoutData, { hash: string }>
+{
   @ApiProperty({
-    example: 318,
-    description: "The solution's unique identifier, a positive integer.",
+    example: "dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl",
+    description: "The base64 encoded solution hash.",
   })
+  @Transform(
+    ({ obj: { hash } }: { obj: SolutionWithoutData }) =>
+      Buffer.from(hash).toString("base64url"),
+    { toClassOnly: true },
+  )
   @Expose()
-  readonly id!: SolutionId;
-
-  @ApiProperty()
-  @Expose()
-  @Type(() => Date)
-  readonly createdAt!: Date;
-
-  @ApiProperty()
-  @Expose()
-  readonly studentId!: number;
-
-  @ApiProperty()
-  @Expose()
-  readonly sessionId!: number;
+  readonly hash!: string;
 
   @ApiProperty()
   @Expose()
   readonly taskId!: number;
-
-  @ApiProperty({
-    name: "tests",
-    description: "The tests for the current analysis.",
-    type: [SolutionTestDto],
-  })
-  @Transform(
-    ({ value }: { value: TestList }) =>
-      value?.map((test) =>
-        plainToInstance(SolutionTestDto, test, {
-          excludeExtraneousValues: true,
-        }),
-      ) ?? [],
-    { toClassOnly: true },
-  )
-  @Expose()
-  readonly tests!: SolutionTestDto[];
 
   @Exclude()
   readonly mimeType!: string;
