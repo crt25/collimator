@@ -10,6 +10,21 @@ export class ReferenceAnalysisDto
   implements Modify<ReferenceAnalysis, { solutionHash: string }>
 {
   @ApiProperty({
+    example: "A solution failing all tests",
+    description: "The title of the reference solution",
+  })
+  @Expose()
+  readonly title!: string;
+
+  @ApiProperty({
+    example:
+      "This solution is expected to fail all tests. It is simply equal to the original task.",
+    description: "The description of the reference solution",
+  })
+  @Expose()
+  readonly description!: string;
+
+  @ApiProperty({
     example: 318,
     description:
       "The reference solutions's unique identifier, a positive integer.",

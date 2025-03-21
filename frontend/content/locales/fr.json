@@ -159,19 +159,19 @@
     "message": "{name} - Students"
   },
   "CodeComparison.defaultOption": {
-    "message": "Group: All students"
+    "message": "Group: All solutions"
   },
   "CodeComparison.defaultSolutionOption": {
-    "message": "Select a student"
+    "message": "Select a solution"
   },
   "CodeComparison.groupPrefix": {
-    "message": "Group:"
+    "message": "Group: "
   },
   "CodeComparison.heading": {
     "message": "Comparison"
   },
   "CodeComparison.selectedSolutions": {
-    "message": "Group: Selected students"
+    "message": "Group: Selected solutions"
   },
   "CodeComparison.view": {
     "message": "View"

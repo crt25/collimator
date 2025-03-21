@@ -25,7 +25,9 @@ SELECT
   false AS "isReference",
   studentSolutions."id" AS "studentSolutionId",
   studentSolutions."sessionId" AS "sessionId",
-  NULL::int AS "referenceSolutionId"
+  NULL::int AS "referenceSolutionId",
+  NULL::text AS "referenceSolutionTitle",
+  NULL::text AS "referenceSolutionDescription"
 FROM studentSolutions
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolutions."taskId"
@@ -55,7 +57,9 @@ SELECT
   true AS "isReference",
   studentSolution."id" AS "studentSolutionId",
   studentSolution."sessionId" AS "sessionId",
-  NULL::int AS "referenceSolutionId"
+  NULL::int AS "referenceSolutionId",
+  NULL::text AS "referenceSolutionTitle",
+  NULL::text AS "referenceSolutionDescription"
 FROM "StudentSolution" studentSolution
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolution."taskId"
@@ -86,7 +90,9 @@ SELECT
   true as "isReference",
   NULL::int AS "studentSolutionId",
   NULL::int AS "sessionId",
-  referenceSolution."id" AS "referenceSolutionId"
+  referenceSolution."id" AS "referenceSolutionId",
+  referenceSolution."title" AS "referenceSolutionTitle",
+  referenceSolution."description" AS "referenceSolutionDescription"
 FROM "ReferenceSolution" referenceSolution
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = referenceSolution."taskId"
