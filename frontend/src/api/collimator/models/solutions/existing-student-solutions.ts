@@ -37,14 +37,16 @@ export class ExistingStudentSolution {
   static findSolutionToDisplay(
     solutions?: ExistingStudentSolution[],
   ): ExistingStudentSolution | null {
-    if (!solutions) {
+    if (!solutions || solutions.length === 0) {
       return null;
     }
 
-    const solutionsSortedByDate = solutions.toSorted(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+    return solutions.reduce(
+      (mostRecentSolution, solution) =>
+        mostRecentSolution.createdAt.getTime() >= solution.createdAt.getTime()
+          ? mostRecentSolution
+          : solution,
+      solutions[0],
     );
-
-    return solutionsSortedByDate[0];
   }
 }
