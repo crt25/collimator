@@ -140,7 +140,7 @@ export class SolutionsService {
     const groupedStudentAnalyses = [
       ...studentAnalyses
         .reduce(
-          this.groupByStudentAnalysis,
+          this.groupByStudentAnalysis.bind(this),
           new TupleMap<StudentKey, CurrentStudentAnalysis>(
             ([studentId, taskId, solutionId]) =>
               `${studentId?.toString()};${taskId};${solutionId}`,
@@ -152,7 +152,7 @@ export class SolutionsService {
     const groupedReferenceAnalyses = [
       ...referenceAnalyses
         .reduce(
-          this.groupByReferenceAnalysis,
+          this.groupByReferenceAnalysis.bind(this),
           new TupleMap<ReferenceKey, ReferenceAnalysis>(
             ([taskId, solutionId]) => `${taskId};${solutionId}`,
           ),
@@ -170,7 +170,7 @@ export class SolutionsService {
   ): TupleMap<StudentKey, CurrentStudentAnalysis> {
     if (!this.isStudentAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing student analysis data. ${JSON.stringify(Object.keys(analysis))}`,
+        `Query response for 'getCurrentAnalyses' is missing student analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -225,17 +225,17 @@ export class SolutionsService {
     astVersion: AstVersion;
   } {
     return (
-      analysis.taskId === null ||
-      analysis.studentSolutionId === null ||
-      analysis.studentId === null ||
-      analysis.studentPseudonym === null ||
-      analysis.sessionId === null ||
-      analysis.isReference === null ||
-      analysis.solutionHash === null ||
-      analysis.testName === null ||
-      analysis.testPassed === null ||
-      analysis.genericAst === null ||
-      analysis.astVersion === null
+      analysis.taskId !== null &&
+      analysis.studentSolutionId !== null &&
+      analysis.studentId !== null &&
+      analysis.studentPseudonym !== null &&
+      analysis.sessionId !== null &&
+      analysis.isReference !== null &&
+      analysis.solutionHash !== null &&
+      analysis.testName !== null &&
+      analysis.testPassed !== null &&
+      analysis.genericAst !== null &&
+      analysis.astVersion !== null
     );
   }
 
@@ -245,7 +245,7 @@ export class SolutionsService {
   ): TupleMap<ReferenceKey, ReferenceAnalysis> {
     if (!this.isReferenceAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing reference analysis data. ${JSON.stringify(Object.keys(analysis))}`,
+        `Query response for 'getCurrentAnalyses' is missing reference analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -293,15 +293,15 @@ export class SolutionsService {
     astVersion: AstVersion;
   } {
     return (
-      analysis.referenceSolutionId === null ||
-      analysis.referenceSolutionTitle === null ||
-      analysis.referenceSolutionDescription === null ||
-      analysis.taskId === null ||
-      analysis.solutionHash === null ||
-      analysis.testName === null ||
-      analysis.testPassed === null ||
-      analysis.genericAst === null ||
-      analysis.astVersion === null
+      analysis.referenceSolutionId !== null &&
+      analysis.referenceSolutionTitle !== null &&
+      analysis.referenceSolutionDescription !== null &&
+      analysis.taskId !== null &&
+      analysis.solutionHash !== null &&
+      analysis.testName !== null &&
+      analysis.testPassed !== null &&
+      analysis.genericAst !== null &&
+      analysis.astVersion !== null
     );
   }
 
