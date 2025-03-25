@@ -28,7 +28,6 @@ export class ReferenceAnalysisDto
     example: 318,
     description:
       "The reference solutions's unique identifier, a positive integer.",
-    nullable: false,
   })
   @Expose()
   readonly referenceSolutionId!: ReferenceSolutionId;

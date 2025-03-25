@@ -32,7 +32,7 @@ import { Colors } from "@/constants/colors";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
-import { ReferenceAnalysis } from "@/api/collimator/models/solutions/refrerence-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";

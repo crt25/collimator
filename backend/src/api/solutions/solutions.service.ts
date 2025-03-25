@@ -16,6 +16,7 @@ import { SentryCron } from "@sentry/nestjs";
 import { TupleMap } from "src/utilities/tuple-map";
 import { TaskId } from "../tasks/dto";
 import { TasksService } from "../tasks/tasks.service";
+import { SessionId } from "../sessions/dto";
 import { SolutionAnalysisService } from "./solution-analysis.service";
 import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
@@ -38,11 +39,10 @@ export type SolutionUpdateInput = Omit<
 export type SolutionWithoutData = Omit<Solution, "data">;
 export type SolutionDataOnly = Pick<Solution, "data" | "mimeType">;
 
-type WithTests<T> = T & { tests: SolutionTest[] };
-type WithSolutionButWithoutData<T> = T & {
+type WithTestsAndSolution<T> = T & {
+  tests: SolutionTest[];
   solution: SolutionWithoutData;
 };
-type WithTestsAndSolution<T> = WithSolutionButWithoutData<WithTests<T>>;
 
 export type StudentSolutionWithoutData = WithTestsAndSolution<StudentSolution>;
 export type ReferenceSolutionWithoutData =
@@ -168,19 +168,7 @@ export class SolutionsService {
     byAnalysisId: TupleMap<StudentKey, CurrentStudentAnalysis>,
     analysis: getCurrentAnalyses.Result,
   ): TupleMap<StudentKey, CurrentStudentAnalysis> {
-    if (
-      analysis.taskId === null ||
-      analysis.studentSolutionId === null ||
-      analysis.studentId === null ||
-      analysis.studentPseudonym === null ||
-      analysis.sessionId === null ||
-      analysis.isReference === null ||
-      analysis.solutionHash === null ||
-      analysis.testName === null ||
-      analysis.testPassed === null ||
-      analysis.genericAst === null ||
-      analysis.astVersion === null
-    ) {
+    if (!this.isStudentAnalysis(analysis)) {
       throw new Error(
         `Query response for 'getCurrentAnalyses' is missing student analysis data. ${JSON.stringify(Object.keys(analysis))}`,
       );
@@ -221,21 +209,41 @@ export class SolutionsService {
     return byAnalysisId;
   }
 
-  private groupByReferenceAnalysis(
-    byAnalysisId: TupleMap<ReferenceKey, ReferenceAnalysis>,
+  private isStudentAnalysis(
     analysis: getCurrentAnalyses.Result,
-  ): TupleMap<ReferenceKey, ReferenceAnalysis> {
-    if (
-      analysis.referenceSolutionId === null ||
-      analysis.referenceSolutionTitle === null ||
-      analysis.referenceSolutionDescription === null ||
+  ): analysis is getCurrentAnalyses.Result & {
+    taskId: TaskId;
+    studentSolutionId: StudentSolutionId;
+    studentId: StudentId;
+    studentPseudonym: Uint8Array;
+    sessionId: SessionId;
+    isReference: boolean;
+    solutionHash: Uint8Array;
+    testName: string;
+    testPassed: boolean;
+    genericAst: string;
+    astVersion: AstVersion;
+  } {
+    return (
       analysis.taskId === null ||
+      analysis.studentSolutionId === null ||
+      analysis.studentId === null ||
+      analysis.studentPseudonym === null ||
+      analysis.sessionId === null ||
+      analysis.isReference === null ||
       analysis.solutionHash === null ||
       analysis.testName === null ||
       analysis.testPassed === null ||
       analysis.genericAst === null ||
       analysis.astVersion === null
-    ) {
+    );
+  }
+
+  private groupByReferenceAnalysis(
+    byAnalysisId: TupleMap<ReferenceKey, ReferenceAnalysis>,
+    analysis: getCurrentAnalyses.Result,
+  ): TupleMap<ReferenceKey, ReferenceAnalysis> {
+    if (!this.isReferenceAnalysis(analysis)) {
       throw new Error(
         `Query response for 'getCurrentAnalyses' is missing reference analysis data. ${JSON.stringify(Object.keys(analysis))}`,
       );
@@ -269,6 +277,32 @@ export class SolutionsService {
     }
 
     return byAnalysisId;
+  }
+
+  private isReferenceAnalysis(
+    analysis: getCurrentAnalyses.Result,
+  ): analysis is getCurrentAnalyses.Result & {
+    referenceSolutionId: ReferenceSolutionId;
+    referenceSolutionTitle: string;
+    referenceSolutionDescription: string;
+    taskId: TaskId;
+    solutionHash: Uint8Array;
+    testName: string;
+    testPassed: boolean;
+    genericAst: string;
+    astVersion: AstVersion;
+  } {
+    return (
+      analysis.referenceSolutionId === null ||
+      analysis.referenceSolutionTitle === null ||
+      analysis.referenceSolutionDescription === null ||
+      analysis.taskId === null ||
+      analysis.solutionHash === null ||
+      analysis.testName === null ||
+      analysis.testPassed === null ||
+      analysis.genericAst === null ||
+      analysis.astVersion === null
+    );
   }
 
   findAnalysisOrThrow(

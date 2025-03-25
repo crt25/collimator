@@ -7,7 +7,7 @@ import {
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CurrentAnalysis } from "../../models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
-import { ReferenceAnalysis } from "../../models/solutions/refrerence-analysis";
+import { ReferenceAnalysis } from "../../models/solutions/reference-analysis";
 
 export type GetCurrentAnalysisReturnType = CurrentAnalysis[];
 

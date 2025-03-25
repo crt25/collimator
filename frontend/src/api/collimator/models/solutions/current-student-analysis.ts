@@ -19,7 +19,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentKeyPairId,
     studentSolutionId,
     ...rest
-  }: ClassProperties<CurrentStudentAnalysis, "solutionId">) {
+  }: Omit<ClassProperties<CurrentStudentAnalysis>, "solutionId">) {
     super(rest);
 
     this.sessionId = sessionId;

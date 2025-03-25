@@ -9,11 +9,11 @@ import { faker } from "@faker-js/faker";
 
 import { HttpResponse, delay, http } from "msw";
 
-import { UserType } from "../../models";
-import type {
-  AuthenticationResponseDto,
-  PublicKeyDto,
-  StudentAuthenticationResponseDto,
+import {
+  UserType,
+  type AuthenticationResponseDto,
+  type PublicKeyDto,
+  type StudentAuthenticationResponseDto,
 } from "../../models";
 
 export const getAuthenticationControllerFindPublicKeyV0ResponseMock = (

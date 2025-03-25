@@ -9,11 +9,11 @@ import { faker } from "@faker-js/faker";
 
 import { HttpResponse, delay, http } from "msw";
 
-import { TaskType } from "../../models";
-import type {
-  DeletedTaskDto,
-  ExistingTaskDto,
-  ExistingTaskWithReferenceSolutionsDto,
+import {
+  TaskType,
+  type DeletedTaskDto,
+  type ExistingTaskDto,
+  type ExistingTaskWithReferenceSolutionsDto,
 } from "../../models";
 
 export const getTasksControllerCreateV0ResponseMock = (

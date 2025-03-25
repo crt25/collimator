@@ -9,13 +9,14 @@ import { faker } from "@faker-js/faker";
 
 import { HttpResponse, delay, http } from "msw";
 
-import { SessionStatus, TaskProgress } from "../../models";
-import type {
-  DeletedSessionDto,
-  ExistingSessionDto,
-  ExistingSessionExtendedDto,
-  IsSessionAnonymousDto,
-  StudentSessionProgressDto,
+import {
+  SessionStatus,
+  TaskProgress,
+  type DeletedSessionDto,
+  type ExistingSessionDto,
+  type ExistingSessionExtendedDto,
+  type IsSessionAnonymousDto,
+  type StudentSessionProgressDto,
 } from "../../models";
 
 export const getSessionsControllerCreateV0ResponseMock = (

@@ -13,7 +13,7 @@ import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { compareLabels } from "@/utilities/comparisons";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
-import { ReferenceAnalysis } from "@/api/collimator/models/solutions/refrerence-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import Select from "../form/Select";

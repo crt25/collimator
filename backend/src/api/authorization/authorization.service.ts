@@ -20,6 +20,10 @@ export class AuthorizationService {
   }
 
   canSignInStudent(teacher: User, classId: number): Promise<boolean> {
+    if (teacher.type !== UserType.ADMIN && teacher.type !== UserType.TEACHER) {
+      return Promise.resolve(false);
+    }
+
     return this.isUserTeacherOfClass(teacher.id, classId);
   }
 
@@ -42,7 +46,9 @@ export class AuthorizationService {
 
   async canViewUser(authenticatedUser: User, userId: number): Promise<boolean> {
     return (
+      // everybody can view themselves
       authenticatedUser.id === userId ||
+      // admins can view all users
       authenticatedUser.type === UserType.ADMIN
     );
   }
@@ -97,7 +103,11 @@ export class AuthorizationService {
     }
 
     // teachers can only list their own classes
-    return teacherId !== undefined && authenticatedUser.id === teacherId;
+    return (
+      authenticatedUser.type === UserType.TEACHER &&
+      teacherId !== undefined &&
+      authenticatedUser.id === teacherId
+    );
   }
 
   async canViewClass(
@@ -148,7 +158,7 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
   async canViewSession(
@@ -202,7 +212,7 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
   async canListCurrentAnalyses(
@@ -218,7 +228,7 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
   async canViewStudentSolution(
@@ -247,7 +257,7 @@ export class AuthorizationService {
       return solution.student.id === authenticatedStudent.id;
     }
 
-    if (authenticatedUser) {
+    if (authenticatedUser && authenticatedUser.type === UserType.TEACHER) {
       // if we are the teacher of the class, we can view the solution
       return solution.session.class.teacherId === authenticatedUser.id;
     }
@@ -288,7 +298,7 @@ export class AuthorizationService {
       return solution !== null;
     }
 
-    if (authenticatedUser) {
+    if (authenticatedUser && authenticatedUser.type === UserType.TEACHER) {
       // users may view solutions submitted by students in their class
       // and reference solutions.
 
@@ -350,6 +360,6 @@ export class AuthorizationService {
       },
     });
 
-    return solution !== null;
+    return authenticatedUser.type === UserType.TEACHER && solution !== null;
   }
 }

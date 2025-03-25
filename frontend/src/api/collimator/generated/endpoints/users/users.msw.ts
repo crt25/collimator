@@ -9,11 +9,12 @@ import { faker } from "@faker-js/faker";
 
 import { HttpResponse, delay, http } from "msw";
 
-import { AuthenticationProvider, UserType } from "../../models";
-import type {
-  DeletedUserDto,
-  ExistingUserDto,
-  RegistrationTokenDto,
+import {
+  AuthenticationProvider,
+  UserType,
+  type DeletedUserDto,
+  type ExistingUserDto,
+  type RegistrationTokenDto,
 } from "../../models";
 
 export const getUsersControllerCreateV0ResponseMock = (

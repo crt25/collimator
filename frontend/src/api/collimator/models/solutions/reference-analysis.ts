@@ -15,7 +15,7 @@ export class ReferenceAnalysis extends CurrentAnalysis {
     title,
     description,
     ...rest
-  }: ClassProperties<ReferenceAnalysis, "solutionId">) {
+  }: Omit<ClassProperties<ReferenceAnalysis>, "solutionId">) {
     super(rest);
 
     this.referenceSolutionId = referenceSolutionId;

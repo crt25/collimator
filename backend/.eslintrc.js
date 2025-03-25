@@ -25,8 +25,21 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
-    "import/order": ["error", {
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
-    }]
+    "import/no-duplicates": ["error", { "prefer-inline": true }],
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type",
+        ],
+      },
+    ],
   },
 };

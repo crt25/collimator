@@ -5,7 +5,12 @@ export class TupleMap<Key, Value> {
     return `${this.keyToString(key)}`;
   }
 
-  constructor(private readonly keyToString: (key: Key) => string) {}
+  constructor(
+    /**
+     * Maps the key to a string. No two different keys are allowed to map to the same string.
+     */
+    private readonly keyToString: (key: Key) => string,
+  ) {}
 
   /**
    * @returns boolean indicating whether an element with the specified key exists or not.

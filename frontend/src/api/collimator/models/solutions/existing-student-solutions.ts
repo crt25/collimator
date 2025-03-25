@@ -34,7 +34,6 @@ export class ExistingStudentSolution {
     });
   }
 
-  // TODO: define what solution is to be displayed. e.g. the latest solution that solves the task
   static findSolutionToDisplay(
     solutions?: ExistingStudentSolution[],
   ): ExistingStudentSolution | null {

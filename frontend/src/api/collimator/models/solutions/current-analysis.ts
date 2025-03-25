@@ -343,7 +343,7 @@ export abstract class CurrentAnalysis {
     generalAst,
     tests,
     isReferenceSolution,
-  }: ClassProperties<CurrentAnalysis, "solutionId">) {
+  }: Omit<ClassProperties<CurrentAnalysis>, "solutionId">) {
     this.taskId = taskId;
     this.solutionHash = solutionHash;
     this.generalAst = generalAst;
