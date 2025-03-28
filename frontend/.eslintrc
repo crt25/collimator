@@ -16,6 +16,7 @@
         "caughtErrorsIgnorePattern": "^_"
       }
     ],
+    "import/no-duplicates": ["error", {"prefer-inline": true}],
     "import/order": ["error", {
       "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
     }]

@@ -27,7 +27,7 @@ import {
   AnalyzerStateActionType,
   analyzerStateReducer,
   defaultGroupValue,
-  defaultSolutionValue,
+  defaultSolutionIdValue,
 } from "./Analyzer.state";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
@@ -84,14 +84,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     yAxis: MetaCriterionType.test,
     filters: [],
     splits: [],
-    bookmarkedSolutionIds: new Set<number>(),
-    selectedSolutionIds: new Set<number>(),
+    selectedSolutionIds: new Set<string>(),
     comparison: {
-      clickedSolution: undefined,
+      clickedAnalysis: undefined,
       selectedLeftGroup: defaultGroupValue,
       selectedRightGroup: defaultGroupValue,
-      selectedRightSolution: defaultSolutionValue,
-      selectedLeftSolution: defaultSolutionValue,
+      selectedRightSolutionId: defaultSolutionIdValue,
+      selectedLeftSolutionId: defaultSolutionIdValue,
     },
   } satisfies AnalyzerState);
 
@@ -167,14 +166,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
   const onSelectSolution = useCallback(
     (groupKey: string, { solutionId }: CurrentAnalysis) => {
-      if (state.comparison.selectedLeftSolution === defaultSolutionValue) {
+      if (state.comparison.selectedLeftSolutionId === defaultSolutionIdValue) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedLeft,
           groupKey,
           solutionId,
         });
       } else if (
-        state.comparison.selectedRightSolution === defaultSolutionValue
+        state.comparison.selectedRightSolutionId === defaultSolutionIdValue
       ) {
         dispatch({
           type: AnalyzerStateActionType.setSelectedRight,
@@ -184,14 +183,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
       } else {
         // let the user choose
         dispatch({
-          type: AnalyzerStateActionType.setClickedSolution,
-          clickedSolutionId: { groupKey, solutionId },
+          type: AnalyzerStateActionType.setClickedAnalysis,
+          clickedAnalysis: { groupKey, solutionId: solutionId },
         });
       }
     },
     [
-      state.comparison.selectedLeftSolution,
-      state.comparison.selectedRightSolution,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
   );
 
@@ -311,7 +310,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 dispatch={dispatch}
                 categorizedDataPoints={categorizedDataPoints}
                 manualGroups={manualGroups}
-                onSelectSolution={onSelectSolution}
+                onSelectAnalysis={onSelectSolution}
               />
             </Col>
             <Col xs={12}>
@@ -332,11 +331,11 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         )}
       </MultiSwrContent>
       <Modal
-        show={state.comparison.clickedSolution !== undefined}
+        show={state.comparison.clickedAnalysis !== undefined}
         onHide={() =>
           dispatch({
-            type: AnalyzerStateActionType.setClickedSolution,
-            clickedSolutionId: undefined,
+            type: AnalyzerStateActionType.setClickedAnalysis,
+            clickedAnalysis: undefined,
           })
         }
         data-testid="solution-selection-modal"
@@ -352,16 +351,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
         <Modal.Footer>
           <Button
             onClick={() => {
-              if (state.comparison.clickedSolution) {
+              if (state.comparison.clickedAnalysis) {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedLeft,
-                  groupKey: state.comparison.clickedSolution.groupKey,
-                  solutionId: state.comparison.clickedSolution.solutionId,
+                  groupKey: state.comparison.clickedAnalysis.groupKey,
+                  solutionId: state.comparison.clickedAnalysis.solutionId,
                 });
 
                 dispatch({
-                  type: AnalyzerStateActionType.setClickedSolution,
-                  clickedSolutionId: undefined,
+                  type: AnalyzerStateActionType.setClickedAnalysis,
+                  clickedAnalysis: undefined,
                 });
               }
             }}
@@ -372,16 +371,16 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
           </Button>
           <Button
             onClick={() => {
-              if (state.comparison.clickedSolution) {
+              if (state.comparison.clickedAnalysis) {
                 dispatch({
                   type: AnalyzerStateActionType.setSelectedRight,
-                  groupKey: state.comparison.clickedSolution.groupKey,
-                  solutionId: state.comparison.clickedSolution.solutionId,
+                  groupKey: state.comparison.clickedAnalysis.groupKey,
+                  solutionId: state.comparison.clickedAnalysis.solutionId,
                 });
 
                 dispatch({
-                  type: AnalyzerStateActionType.setClickedSolution,
-                  clickedSolutionId: undefined,
+                  type: AnalyzerStateActionType.setClickedAnalysis,
+                  clickedAnalysis: undefined,
                 });
               }
             }}

@@ -6,14 +6,14 @@ import {
   getSwrParamererizedKey,
   transformToLazyTableResult,
 } from "../helpers";
-import { ExistingSolution } from "../../models/solutions/existing-solution";
 import {
-  getSolutionsControllerFindAllV0Url,
-  solutionsControllerFindAllV0,
+  getSolutionsControllerFindAllStudentSolutionsV0Url,
+  solutionsControllerFindAllStudentSolutionsV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import { ExistingStudentSolution } from "../../models/solutions/existing-student-solutions";
 
-export type GetSolutionsReturnType = ExistingSolution[];
+export type GetSolutionsReturnType = ExistingStudentSolution[];
 
 export const fetchSolutionsAndTransform = (
   options: RequestInit,
@@ -22,9 +22,12 @@ export const fetchSolutionsAndTransform = (
   taskId: number,
   _params?: undefined,
 ): Promise<GetSolutionsReturnType> =>
-  solutionsControllerFindAllV0(classId, sessionId, taskId, options).then(
-    (data) => fromDtos(ExistingSolution, data),
-  );
+  solutionsControllerFindAllStudentSolutionsV0(
+    classId,
+    sessionId,
+    taskId,
+    options,
+  ).then((data) => fromDtos(ExistingStudentSolution, data));
 
 export const useAllSessionTaskSolutions = (
   classId: number,
@@ -37,7 +40,11 @@ export const useAllSessionTaskSolutions = (
   return useSWR(
     getSwrParamererizedKey(
       (_params?: undefined) =>
-        getSolutionsControllerFindAllV0Url(classId, sessionId, taskId),
+        getSolutionsControllerFindAllStudentSolutionsV0Url(
+          classId,
+          sessionId,
+          taskId,
+        ),
       undefined,
     ),
     () =>
@@ -62,7 +69,11 @@ export const useAllSessionTaskSolutionsLazyTable = (
   return useSWR(
     getSwrParamererizedKey(
       (_params?: undefined) =>
-        getSolutionsControllerFindAllV0Url(classId, sessionId, taskId),
+        getSolutionsControllerFindAllStudentSolutionsV0Url(
+          classId,
+          sessionId,
+          taskId,
+        ),
       undefined,
     ),
     () =>

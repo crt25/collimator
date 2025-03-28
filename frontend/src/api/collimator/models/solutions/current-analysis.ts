@@ -22,9 +22,7 @@ import { StatementSequenceNode } from "@ast/ast-nodes/statement-node/statement-s
 import { isNonNull } from "@/utilities/is-non-null";
 import { AstWalkSignal, walkAst } from "@/data-analyzer/ast-walk";
 import { ClassProperties } from "../class-properties";
-import { CurrentAnalysisDto } from "../../generated/models";
-import { fromDtos } from "../../hooks/helpers";
-import { SolutionTest } from "./solution-test";
+import { ExistingSolutionTest } from "./existing-solution-test";
 
 type FoldFunctions<
   TRoot,
@@ -331,51 +329,42 @@ const emptySequence: StatementSequenceNode = {
   statements: [],
 };
 
-export class CurrentAnalysis {
-  readonly id: number;
-  readonly solutionId: number;
+export abstract class CurrentAnalysis {
+  readonly taskId: number;
+  readonly solutionHash: string;
+  readonly isReferenceSolution: boolean;
   readonly generalAst: GeneralAst;
 
-  readonly tests: SolutionTest[];
-
-  readonly studentPseudonym: string;
-  readonly studentKeyPairId: number | null;
+  readonly tests: ExistingSolutionTest[];
 
   protected constructor({
-    id,
-    solutionId,
+    taskId,
+    solutionHash,
     generalAst,
     tests,
-    studentPseudonym,
-    studentKeyPairId,
-  }: ClassProperties<CurrentAnalysis>) {
-    this.id = id;
-    this.solutionId = solutionId;
+    isReferenceSolution,
+  }: Omit<ClassProperties<CurrentAnalysis>, "solutionId">) {
+    this.taskId = taskId;
+    this.solutionHash = solutionHash;
     this.generalAst = generalAst;
     this.tests = tests;
-    this.studentPseudonym = studentPseudonym;
-    this.studentKeyPairId = studentKeyPairId;
+    this.isReferenceSolution = isReferenceSolution;
   }
 
-  static fromDto(dto: CurrentAnalysisDto): CurrentAnalysis {
-    return new CurrentAnalysis({
-      ...dto,
-      generalAst: JSON.parse(dto.genericAst),
-      tests: fromDtos(SolutionTest, dto.tests),
-    });
-  }
+  /**
+   * A unique identifier for the solution, changing when a student submits a new solution.
+   */
+  public abstract get solutionId(): string;
+
+  protected abstract withAst(ast: GeneralAst): CurrentAnalysis;
 
   static selectComponent(
     analysis: CurrentAnalysis,
     componentId: string,
   ): CurrentAnalysis {
-    return new CurrentAnalysis({
-      ...analysis,
-      generalAst: CurrentAnalysis.selectAstComponent(
-        analysis.generalAst,
-        componentId,
-      ),
-    });
+    return analysis.withAst(
+      CurrentAnalysis.selectAstComponent(analysis.generalAst, componentId),
+    );
   }
 
   private static selectAstComponent(

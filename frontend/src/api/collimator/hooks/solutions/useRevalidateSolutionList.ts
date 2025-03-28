@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useSWRConfig } from "swr";
 import {
-  getSolutionsControllerFindAllV0Url,
-  getSolutionsControllerFindCurrentAnalysisV0Url,
-} from "@/api/collimator/generated/endpoints/solutions/solutions";
+  getSolutionsControllerFindAllStudentSolutionsV0Url,
+  getSolutionsControllerFindCurrentAnalysesV0Url,
+} from "../../generated/endpoints/solutions/solutions";
 import { allTasksPlaceholder } from "./useAllSessionSolutions";
 
 export const useRevalidateSolutionList = (): ((
@@ -16,7 +16,7 @@ export const useRevalidateSolutionList = (): ((
   return useCallback(
     (classId: number, sessionId: number, taskId: number) => {
       mutate(
-        getSolutionsControllerFindCurrentAnalysisV0Url(
+        getSolutionsControllerFindCurrentAnalysesV0Url(
           classId,
           sessionId,
           taskId,
@@ -24,7 +24,7 @@ export const useRevalidateSolutionList = (): ((
       );
 
       mutate(
-        getSolutionsControllerFindAllV0Url(
+        getSolutionsControllerFindAllStudentSolutionsV0Url(
           classId,
           sessionId,
           allTasksPlaceholder,

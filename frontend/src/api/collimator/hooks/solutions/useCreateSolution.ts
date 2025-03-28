@@ -1,17 +1,24 @@
 import { useCallback } from "react";
 import { fetchApi } from "@/api/fetch";
-import { getSolutionsControllerCreateV0Url } from "../../generated/endpoints/solutions/solutions";
-import { ExistingSolution } from "../../models/solutions/existing-solution";
+import {
+  getSolutionsControllerCreateStudentSolutionV0Url,
+  solutionsControllerCreateStudentSolutionV0,
+} from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { CreateSolutionDto, ExistingSolutionDto } from "../../generated/models";
-import { useRevalidateSolution } from "./useRevalidateSolution";
+import { CreateSolutionDto } from "../../generated/models";
+import { ExistingStudentSolution } from "../../models/solutions/existing-student-solutions";
+import { useRevalidateStudentSolution } from "./useRevalidateStudentSolution";
 
 type CreateSolutionType = (
   classId: number,
   sessionId: number,
   taskId: number,
   createSolutionDto: CreateSolutionDto,
-) => Promise<ExistingSolution>;
+) => Promise<ExistingStudentSolution>;
+
+type CreateStudentSolutionResponse = Awaited<
+  ReturnType<typeof solutionsControllerCreateStudentSolutionV0>
+>;
 
 const solutionsControllerCreate = async (
   classId: number,
@@ -19,13 +26,17 @@ const solutionsControllerCreate = async (
   taskId: number,
   createSolutionDto: CreateSolutionDto,
   options?: RequestInit,
-): Promise<ExistingSolutionDto> => {
+): Promise<CreateStudentSolutionResponse> => {
   const formData = new FormData();
   formData.append("tests", JSON.stringify(createSolutionDto.tests));
   formData.append("file", createSolutionDto.file);
 
-  return fetchApi<Promise<ExistingSolutionDto>>(
-    getSolutionsControllerCreateV0Url(classId, sessionId, taskId),
+  return fetchApi<Promise<CreateStudentSolutionResponse>>(
+    getSolutionsControllerCreateStudentSolutionV0Url(
+      classId,
+      sessionId,
+      taskId,
+    ),
     {
       ...options,
       method: "POST",
@@ -47,10 +58,10 @@ const createAndTransform = (
     taskId,
     createSolutionDto,
     options,
-  ).then(ExistingSolution.fromDto);
+  ).then(ExistingStudentSolution.fromDto);
 
 export const useCreateSolution = (): CreateSolutionType => {
-  const revalidateSolution = useRevalidateSolution();
+  const revalidateSolution = useRevalidateStudentSolution();
   const authOptions = useAuthenticationOptions();
 
   return useCallback<CreateSolutionType>(

@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, plainToInstance } from "class-transformer";
 import { TaskWithoutData } from "../tasks.service";
-import { CreateTaskDto } from "./create-task.dto";
+import { TaskDto } from "./task.dto";
 
 export type TaskId = number;
 
-export class ExistingTaskDto extends CreateTaskDto implements TaskWithoutData {
+export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   @ApiProperty({
     example: 318,
     description: "The task's unique identifier, a positive integer.",

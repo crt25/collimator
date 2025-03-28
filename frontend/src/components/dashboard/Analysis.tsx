@@ -31,6 +31,8 @@ import { StudentName } from "@/components/encryption/StudentName";
 import { Colors } from "@/constants/colors";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { TaskType } from "@/api/collimator/generated/models";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import Select from "../form/Select";
 import { AxesCriterionType, axisCriteria, getAxisConfig } from "./axes";
 import XAxisSelector from "./axes/XAxisSelector";
@@ -48,6 +50,7 @@ import {
   AnalyzerStateActionType,
 } from "./Analyzer.state";
 import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
+import { createReferenceSymbol } from "./shapes/reference";
 
 type AdditionalChartData = {
   groups: {
@@ -72,6 +75,10 @@ const messages = defineMessages({
   numberOfStudents: {
     id: "Analysis.numberOfStudents",
     defaultMessage: "Number of Students",
+  },
+  numberOfReferenceSolutions: {
+    id: "Analysis.numberOfReferenceSolutions",
+    defaultMessage: "Number of Reference Solutions",
   },
   xAxis: {
     id: "Analysis.xAxis",
@@ -123,7 +130,7 @@ const TooltipContent = ({
   dataPoints,
   xAxis,
   yAxis,
-  onSelectSolution,
+  onSelectAnalysis,
 }: {
   dataPoints: PointWithAdditionalData[];
   xAxis:
@@ -138,7 +145,7 @@ const TooltipContent = ({
         value: AstCriterionType | MetaCriterionType.test;
       }
     | undefined;
-  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  onSelectAnalysis: (groupId: string, analysis: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
   return (
@@ -167,46 +174,76 @@ const TooltipContent = ({
               </span>
             </div>
           </div>
-          {dataPoint.additionalData.groups.map((group) => (
-            <div key={group.key} className="data group">
-              <div>
-                <span>
-                  <strong>{intl.formatMessage(messages.groupName)}</strong>
-                </span>
-                <span>
-                  <strong>{group.name}</strong>
-                </span>
+          {dataPoint.additionalData.groups.map((group) => {
+            const studentAnalyses = group.analyses.filter(
+              (a) => a instanceof CurrentStudentAnalysis,
+            );
+            const referenceAnalyses = group.analyses.filter(
+              (a) => a instanceof ReferenceAnalysis,
+            );
+
+            return (
+              <div key={group.key} className="data group">
+                <div>
+                  <span>
+                    <strong>{intl.formatMessage(messages.groupName)}</strong>
+                  </span>
+                  <span>
+                    <strong>{group.name}</strong>
+                  </span>
+                </div>
+                {referenceAnalyses.length > 0 && (
+                  <>
+                    <div>
+                      <span>
+                        {intl.formatMessage(
+                          messages.numberOfReferenceSolutions,
+                        )}
+                      </span>
+                      <span>{referenceAnalyses.length}</span>
+                    </div>
+                    <div>
+                      <ul>
+                        {referenceAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>{analysis.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
+
+                {studentAnalyses.length > 0 && (
+                  <>
+                    <div>
+                      <span>
+                        {intl.formatMessage(messages.numberOfStudents)}
+                      </span>
+                      <span>{studentAnalyses.length}</span>
+                    </div>
+                    <div>
+                      <ul>
+                        {studentAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>
+                            <StudentNameWrapper
+                              onClick={() =>
+                                onSelectAnalysis(group.key, analysis)
+                              }
+                            >
+                              <StudentName
+                                pseudonym={analysis.studentPseudonym}
+                                keyPairId={analysis.studentKeyPairId}
+                                showActualName={false}
+                              />
+                            </StudentNameWrapper>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
-              <div>
-                <span>{intl.formatMessage(messages.numberOfStudents)}</span>
-                <span>{group.analyses.length}</span>
-              </div>
-              <div>
-                <ul>
-                  {group.analyses.map((analysis) => (
-                    <li key={analysis.id}>
-                      <StudentNameWrapper
-                        onClick={() => onSelectSolution(group.key, analysis)}
-                        // add id for debugging purposes
-                        id={
-                          "analysis-" +
-                          analysis.id +
-                          "-solution-" +
-                          analysis.solutionId
-                        }
-                      >
-                        <StudentName
-                          pseudonym={analysis.studentPseudonym}
-                          keyPairId={analysis.studentKeyPairId}
-                          showActualName={false}
-                        ></StudentName>
-                      </StudentNameWrapper>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ))}
     </>
@@ -283,14 +320,14 @@ const Analysis = ({
   dispatch,
   manualGroups,
   categorizedDataPoints,
-  onSelectSolution,
+  onSelectAnalysis,
 }: {
   taskType: TaskType;
   state: AnalyzerState;
   dispatch: Dispatch<AnalyzerStateAction>;
   manualGroups: ManualGroup[];
   categorizedDataPoints: CategorizedDataPoint[];
-  onSelectSolution: (groupId: string, solution: CurrentAnalysis) => void;
+  onSelectAnalysis: (groupId: string, analysis: CurrentAnalysis) => void;
 }) => {
   const intl = useIntl();
 
@@ -315,14 +352,14 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const solutionIdsSelectedForComparison = useMemo(
+  const analysisSolutionIdsSelectedForComparison = useMemo(
     () => [
-      state.comparison.selectedLeftSolution,
-      state.comparison.selectedRightSolution,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
     [
-      state.comparison.selectedLeftSolution,
-      state.comparison.selectedRightSolution,
+      state.comparison.selectedLeftSolutionId,
+      state.comparison.selectedRightSolutionId,
     ],
   );
 
@@ -359,7 +396,7 @@ const Analysis = ({
       // check if any of the data points is selected or bookmarked
       const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          solutionIdsSelectedForComparison.includes(s.solutionId),
+          analysisSolutionIdsSelectedForComparison.includes(s.solutionId),
         ),
       );
 
@@ -370,17 +407,19 @@ const Analysis = ({
       );
 
       const isBookmarked = dataPoints.some((dataPoint) =>
-        dataPoint.analyses?.some((s) =>
-          state.bookmarkedSolutionIds.has(s.solutionId),
-        ),
+        dataPoint.analyses?.some((s) => s.isReferenceSolution),
       );
 
-      const solutionsCount = dataPoints.reduce(
+      const isReferenceSolution = dataPoints.some((dataPoint) =>
+        dataPoint.analyses?.some((s) => s instanceof ReferenceAnalysis),
+      );
+
+      const analysesCount = dataPoints.reduce(
         (acc, dataPoint) => acc + (dataPoint.analyses?.length || 0),
         0,
       );
 
-      const size = Math.min(solutionsCount * 8, 40);
+      const size = Math.min(analysesCount * 8, 40);
       const pattern = getCanvasPattern(category);
       const isSelected = isSelectedForComparison || isPartOfSelectionGroup;
 
@@ -394,6 +433,24 @@ const Analysis = ({
         ? customShapeStrokeFactor * selectedDataPointBorderWidth
         : 0;
 
+      let pointStyle: "circle" | HTMLCanvasElement = "circle";
+
+      if (isReferenceSolution) {
+        pointStyle = createReferenceSymbol(
+          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          pattern,
+          isSelected ? 1 : 0,
+          borderColor,
+        );
+      } else if (isBookmarked) {
+        pointStyle = createStar(
+          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          pattern,
+          starStrokeWidth,
+          borderColor,
+        );
+      }
+
       return {
         // with a leading underscore, the label is hidden in the legend
         label: `_${getCategoryName(intl, category)}`,
@@ -402,7 +459,7 @@ const Analysis = ({
             x,
             y,
             r:
-              // increase the radius based on the number of solutions
+              // increase the radius based on the number of analyses
               size +
               // add half of the border width to the radius if the data point is selected
               // to ensure the border is on top of the bubble size
@@ -417,14 +474,7 @@ const Analysis = ({
         ],
 
         backgroundColor: pattern,
-        pointStyle: isBookmarked
-          ? createStar(
-              customShapeSizeFactor * (size + selectedDataPointBorderWidth),
-              pattern,
-              starStrokeWidth,
-              Colors.dataPoint.selectedForComparisonBorderColor,
-            )
-          : "circle",
+        pointStyle,
         borderColor,
         hoverBorderWidth: isSelected ? selectedDataPointBorderWidth : 0,
         borderWidth: isSelected ? selectedDataPointBorderWidth : 0,
@@ -453,8 +503,7 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    solutionIdsSelectedForComparison,
-    state.bookmarkedSolutionIds,
+    analysisSolutionIdsSelectedForComparison,
     state.selectedSolutionIds,
   ]);
 
@@ -671,7 +720,7 @@ const Analysis = ({
           enabled: true,
           onSelection: (selection) => {
             if (chartRef.current) {
-              const matchingSolutionIds =
+              const matchingSoulutionIds =
                 chartRef.current.data.datasets.flatMap((dataset) =>
                   (
                     dataset.data as unknown as PointWithAdditionalData[]
@@ -688,8 +737,8 @@ const Analysis = ({
                 );
 
               dispatch({
-                type: AnalyzerStateActionType.setSelectedSolutions,
-                solutionIds: matchingSolutionIds,
+                type: AnalyzerStateActionType.setSelectedAnalyses,
+                solutionId: matchingSoulutionIds,
                 unionWithPrevious: selection.unionWithPrevious,
               });
             }
@@ -810,7 +859,7 @@ const Analysis = ({
             dataPoints={tooltipDataPoints}
             xAxis={selectedXAxis}
             yAxis={selectedYAxis}
-            onSelectSolution={onSelectSolution}
+            onSelectAnalysis={onSelectAnalysis}
           />
         </Tooltip>
       </ChartWrapper>

@@ -809,6 +809,12 @@ class Blocks extends React.Component<Props, State> {
     // TODO: What about monitors that have fields? See todo in scratch-vm blocks.js changeBlock:
     // https://github.com/LLK/scratch-vm/blob/2373f9483edaf705f11d62662f7bb2a57fbb5e28/src/engine/blocks.js#L569-L576
     const flyout = this.getWorkspaceFlyout();
+
+    if (!flyout.setCheckboxState) {
+      // if only the code is shown, this function will not exist
+      return;
+    }
+
     for (const monitor of monitors.values()) {
       const blockId = monitor.get("id") as string;
       const isVisible = monitor.get("visible") as boolean;

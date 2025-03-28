@@ -4,19 +4,19 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { SessionTask } from "@/api/collimator/models/sessions/session-task";
-import { ExistingSolution } from "@/api/collimator/models/solutions/existing-solution";
-import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useFileHash } from "@/hooks/useFileHash";
 import { Language } from "@/types/app-iframe-message/languages";
+import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import MultiSwrContent from "../MultiSwrContent";
 import SwrContent from "../SwrContent";
 
-type Progress = ExistingSolution;
+type Progress = ExistingStudentSolution;
 type ProgressByTask = { [taskId: number]: Progress };
 
 const getDisplaySolutionUrl = (taskType: TaskType) => {
@@ -59,7 +59,12 @@ const UserTaskProgress = ({
     data: solutionFile,
     isLoading: isLoadingSolutionFile,
     error: solutionFileError,
-  } = useSolutionFile(classId, sessionId, sessionTask.id, progress.id);
+  } = useSolutionFile(
+    classId,
+    sessionId,
+    sessionTask.id,
+    progress.solution.hash,
+  );
 
   const solutionFileHash = useFileHash(solutionFile);
 
@@ -154,7 +159,7 @@ const StudentProgress = ({
     }
 
     return solutions.reduce((acc, sessionSolutions) => {
-      const solution = ExistingSolution.findSolutionToDisplay(
+      const solution = ExistingStudentSolution.findSolutionToDisplay(
         sessionSolutions.solutions.filter((s) => s.studentId === studentId),
       );
 

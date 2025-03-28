@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { StudentSolutionId } from "../solutions/dto/existing-student-solution.dto";
 
 @Injectable()
 export class AuthorizationService {
@@ -19,6 +20,10 @@ export class AuthorizationService {
   }
 
   canSignInStudent(teacher: User, classId: number): Promise<boolean> {
+    if (teacher.type !== UserType.ADMIN && teacher.type !== UserType.TEACHER) {
+      return Promise.resolve(false);
+    }
+
     return this.isUserTeacherOfClass(teacher.id, classId);
   }
 
@@ -41,7 +46,9 @@ export class AuthorizationService {
 
   async canViewUser(authenticatedUser: User, userId: number): Promise<boolean> {
     return (
+      // everybody can view themselves
       authenticatedUser.id === userId ||
+      // admins can view all users
       authenticatedUser.type === UserType.ADMIN
     );
   }
@@ -96,7 +103,11 @@ export class AuthorizationService {
     }
 
     // teachers can only list their own classes
-    return teacherId !== undefined && authenticatedUser.id === teacherId;
+    return (
+      authenticatedUser.type === UserType.TEACHER &&
+      teacherId !== undefined &&
+      authenticatedUser.id === teacherId
+    );
   }
 
   async canViewClass(
@@ -147,7 +158,7 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
   async canViewSession(
@@ -201,7 +212,7 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
   async canListCurrentAnalyses(
@@ -217,13 +228,13 @@ export class AuthorizationService {
       select: { id: true },
     });
 
-    return session !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 
-  async canViewSolution(
+  async canViewStudentSolution(
     authenticatedUser: User | null,
     authenticatedStudent: Student | null,
-    solutionId: number,
+    studentSolutionId: number,
   ): Promise<boolean> {
     if (authenticatedUser === null && authenticatedStudent === null) {
       return false;
@@ -233,8 +244,8 @@ export class AuthorizationService {
       return true;
     }
 
-    const solution = await this.prisma.solution.findUniqueOrThrow({
-      where: { id: solutionId },
+    const solution = await this.prisma.studentSolution.findUniqueOrThrow({
+      where: { id: studentSolutionId },
       include: {
         student: { select: { id: true } },
         session: { select: { class: { select: { teacherId: true } } } },
@@ -246,7 +257,7 @@ export class AuthorizationService {
       return solution.student.id === authenticatedStudent.id;
     }
 
-    if (authenticatedUser) {
+    if (authenticatedUser && authenticatedUser.type === UserType.TEACHER) {
       // if we are the teacher of the class, we can view the solution
       return solution.session.class.teacherId === authenticatedUser.id;
     }
@@ -254,5 +265,101 @@ export class AuthorizationService {
     // this line is not reachable but typescript doesn't know that
     // the first guard ensures that either authenticatedUser or authenticatedStudent is not null
     return false;
+  }
+
+  async canViewSolution(
+    authenticatedUser: User | null,
+    authenticatedStudent: Student | null,
+    taskId: number,
+    solutionHash: Uint8Array,
+  ): Promise<boolean> {
+    if (authenticatedUser === null && authenticatedStudent === null) {
+      return false;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    if (authenticatedStudent) {
+      // students may only view solutions they submitted
+      const solution = await this.prisma.solution.findUnique({
+        select: {},
+        where: {
+          taskId_hash: { taskId, hash: solutionHash },
+          studentSolutions: {
+            some: {
+              student: { id: authenticatedStudent.id },
+            },
+          },
+        },
+      });
+
+      return solution !== null;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.TEACHER) {
+      // users may view solutions submitted by students in their class
+      // and reference solutions.
+
+      const solution = await this.prisma.solution.findUnique({
+        select: {},
+        where: {
+          taskId_hash: { taskId, hash: solutionHash },
+          OR: [
+            {
+              studentSolutions: {
+                some: {
+                  session: {
+                    class: {
+                      teacherId: authenticatedUser.id,
+                    },
+                  },
+                },
+              },
+            },
+            {
+              referenceSolutions: {
+                some: {},
+              },
+            },
+          ],
+        },
+      });
+
+      return solution !== null;
+    }
+
+    // this line is not reachable but typescript doesn't know that
+    // the first guard ensures that either authenticatedUser or authenticatedStudent is not null
+    return false;
+  }
+
+  async canUpdateStudentSolutionIsReference(
+    authenticatedUser: User | null,
+    studentSolutionId: StudentSolutionId,
+  ): Promise<boolean> {
+    if (authenticatedUser === null) {
+      return false;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    // teachers may updated the field for solutions submitted by students in their class
+    const solution = await this.prisma.studentSolution.findUnique({
+      select: {},
+      where: {
+        id: studentSolutionId,
+        session: {
+          class: {
+            teacherId: authenticatedUser.id,
+          },
+        },
+      },
+    });
+
+    return authenticatedUser.type === UserType.TEACHER && solution !== null;
   }
 }

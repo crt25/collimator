@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   StreamableFile,
   UploadedFile,
@@ -39,9 +40,19 @@ import {
 } from "../authentication/role.decorator";
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { ClassId } from "../classes/dto";
+import { SessionId } from "../sessions/dto";
+import { TaskId } from "../tasks/dto";
 import { SolutionsService } from "./solutions.service";
-import { CreateSolutionDto, ExistingSolutionDto, SolutionId } from "./dto";
-import { CurrentAnalysisDto } from "./dto/current-analysis.dto";
+import { CreateSolutionDto } from "./dto";
+import {
+  ExistingStudentSolutionDto,
+  StudentSolutionId,
+} from "./dto/existing-student-solution.dto";
+import { CurrentStudentAnalysisDto } from "./dto/current-student-analysis.dto";
+import { ReferenceAnalysisDto } from "./dto/reference-analysis.dto";
+import { CurrentAnalysesDto } from "./dto/current-analyses.dto";
+import { PatchStudentSolutionIsReferenceDto } from "./dto/patch-student-solution-is-reference.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
@@ -51,25 +62,25 @@ export class SolutionsController {
     private readonly authorizationService: AuthorizationService,
   ) {}
 
-  @Post()
+  @Post("student")
   @StudentOnly()
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     type: CreateSolutionDto,
     description: "The solution",
   })
-  @ApiCreatedResponse({ type: ExistingSolutionDto })
+  @ApiCreatedResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @UseInterceptors(FileInterceptor("file"), JsonToObjectsInterceptor(["tests"]))
-  async create(
+  async createStudentSolution(
     @AuthenticatedStudent() student: Student,
-    @Param("classId", ParseIntPipe) _classId: number,
-    @Param("sessionId", ParseIntPipe) sessionId: number,
-    @Param("taskId", ParseIntPipe) taskId: number,
+    @Param("classId", ParseIntPipe) _classId: ClassId,
+    @Param("sessionId", ParseIntPipe) sessionId: SessionId,
+    @Param("taskId", ParseIntPipe) taskId: TaskId,
     @Body() createSolutionDto: CreateSolutionDto,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<ExistingSolutionDto> {
-    const solution = await this.solutionsService.create(
+  ): Promise<ExistingStudentSolutionDto> {
+    const studentSolution = await this.solutionsService.createStudentSolution(
       {
         ...createSolutionDto,
         sessionId,
@@ -83,17 +94,17 @@ export class SolutionsController {
       file.buffer,
     );
 
-    return ExistingSolutionDto.fromQueryResult(solution);
+    return ExistingStudentSolutionDto.fromQueryResult(studentSolution);
   }
 
-  @Get()
-  @ApiOkResponse({ type: ExistingSolutionDto, isArray: true })
-  async findAll(
+  @Get("student")
+  @ApiOkResponse({ type: ExistingStudentSolutionDto, isArray: true })
+  async findAllStudentSolutions(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-  ): Promise<ExistingSolutionDto[]> {
+  ): Promise<ExistingStudentSolutionDto[]> {
     const isAuthorized = await this.authorizationService.canListSolutions(
       user,
       sessionId,
@@ -105,21 +116,24 @@ export class SolutionsController {
 
     // TODO: add pagination support
 
-    const solutions = await this.solutionsService.findMany({
-      where: { sessionId, taskId },
-      include: { tests: true },
+    const solutions = await this.solutionsService.findManyStudentSolutions({
+      where: {
+        sessionId,
+        taskId,
+      },
     });
-    return fromQueryResults(ExistingSolutionDto, solutions);
+
+    return fromQueryResults(ExistingStudentSolutionDto, solutions);
   }
 
   @Get("current-analyses")
-  @ApiOkResponse({ type: CurrentAnalysisDto, isArray: true })
-  async findCurrentAnalysis(
+  @ApiOkResponse({ type: CurrentAnalysesDto })
+  async findCurrentAnalyses(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-  ): Promise<CurrentAnalysisDto[]> {
+  ): Promise<CurrentAnalysesDto> {
     const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
       user,
       sessionId,
@@ -134,15 +148,28 @@ export class SolutionsController {
       taskId,
     );
 
-    return fromQueryResults(CurrentAnalysisDto, solutions);
+    const studentAnalyses: CurrentStudentAnalysisDto[] = fromQueryResults(
+      CurrentStudentAnalysisDto,
+      solutions[0],
+    );
+
+    const referenceAnalyses: ReferenceAnalysisDto[] = fromQueryResults(
+      ReferenceAnalysisDto,
+      solutions[1],
+    );
+
+    return {
+      studentAnalyses,
+      referenceAnalyses,
+    };
   }
 
-  @Get("latest")
+  @Get("student/latest")
   @StudentOnly()
-  @ApiOkResponse({ type: ExistingSolutionDto })
+  @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
-  async latestSolution(
+  async downloadLatestStudentSolution(
     @AuthenticatedStudent() student: Student,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
@@ -160,20 +187,20 @@ export class SolutionsController {
     });
   }
 
-  @Get(":id")
+  @Get("student/:id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
-  @ApiOkResponse({ type: ExistingSolutionDto })
+  @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
-  async findOne(
+  async findOneStudentSolution(
     @AuthenticatedUser() user: User | null,
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Param("id", ParseIntPipe) id: SolutionId,
-  ): Promise<ExistingSolutionDto> {
-    const isAuthorized = await this.authorizationService.canViewSolution(
+    @Param("id", ParseIntPipe) id: StudentSolutionId,
+  ): Promise<ExistingStudentSolutionDto> {
+    const isAuthorized = await this.authorizationService.canViewStudentSolution(
       user,
       student,
       id,
@@ -183,15 +210,15 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const solution = await this.solutionsService.findByIdOrThrow(
+    const solution = await this.solutionsService.findByStudentIdOrThrow(
       sessionId,
       taskId,
       id,
     );
-    return ExistingSolutionDto.fromQueryResult(solution);
+    return ExistingStudentSolutionDto.fromQueryResult(solution);
   }
 
-  @Get(":id/download")
+  @Get(":hash/download")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
   @ApiForbiddenResponse()
@@ -200,31 +227,66 @@ export class SolutionsController {
     @AuthenticatedUser() user: User | null,
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) _classId: number,
-    @Param("sessionId", ParseIntPipe) sessionId: number,
+    @Param("sessionId", ParseIntPipe) _sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Param("id", ParseIntPipe) id: SolutionId,
+    @Param("hash") hash: string,
   ): Promise<StreamableFile> {
+    const solutionHash = Buffer.from(hash, "base64url");
     const isAuthorized = await this.authorizationService.canViewSolution(
       user,
       student,
-      id,
+      taskId,
+      solutionHash,
     );
 
     if (!isAuthorized) {
       throw new ForbiddenException();
     }
 
-    const solution = await this.solutionsService.downloadByIdOrThrow(
-      sessionId,
+    const solution = await this.solutionsService.downloadByHashOrThrow(
       taskId,
-      id,
+      solutionHash,
     );
+
     return new StreamableFile(solution.data, {
       type: solution.mimeType,
     });
   }
 
-  @Delete(":id")
+  @Patch("student/:id/isReference")
+  @ApiOperation({
+    summary: "Updates the isReference field of a student solution",
+  })
+  @ApiOkResponse()
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  @ApiBody({ type: PatchStudentSolutionIsReferenceDto })
+  async patchStudentSolutionIsReference(
+    @AuthenticatedUser() user: User | null,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) _sessionId: number,
+    @Param("taskId", ParseIntPipe) _taskId: number,
+    @Param("id", ParseIntPipe) id: StudentSolutionId,
+    @Body() dto: PatchStudentSolutionIsReferenceDto,
+  ): Promise<void> {
+    const isAuthorized =
+      await this.authorizationService.canUpdateStudentSolutionIsReference(
+        user,
+        id,
+      );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    return this.solutionsService.updateStudentSolutionIsReference(
+      id,
+      dto.isReference,
+    );
+  }
+
+  @Delete("student/:id")
   @AdminOnly()
   @ApiOperation({
     summary: "Delete all solutions by a student for a given session/task",
@@ -233,13 +295,13 @@ export class SolutionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @HttpCode(204)
-  async deleteOne(
+  async deleteOneStudentSolution(
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Param("id", ParseIntPipe) id: SolutionId,
+    @Param("id", ParseIntPipe) id: StudentSolutionId,
   ): Promise<void> {
-    const succeeded = await this.solutionsService.deleteAllSolutionsById(
+    const succeeded = await this.solutionsService.deleteAllStudentSolutionsById(
       sessionId,
       taskId,
       id,

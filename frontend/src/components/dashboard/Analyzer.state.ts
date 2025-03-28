@@ -6,7 +6,7 @@ import { ChartSplit, SplitType } from "./chartjs-plugins";
 export const allSubtasks = "__ANALYZE_ALL_SUBTASKS__";
 export const defaultGroupValue = "__ALL_STUDENTS__";
 export const selectedGroupValue = "__SELECTED_SOLUTIONS__";
-export const defaultSolutionValue = -1;
+export const defaultSolutionIdValue = "";
 
 export enum AnalyzerStateActionType {
   setSelectedTask,
@@ -22,12 +22,10 @@ export enum AnalyzerStateActionType {
   setSelectedRight,
   setSelectedLeftGroup,
   setSelectedRightGroup,
-  setSelectedLeftSolution,
-  setSelectedRightSolution,
-  setClickedSolution,
-  setSelectedSolutions,
-  addBookmarkedSolution,
-  removeBookmarkedSolution,
+  setSelectedLeftAnalysis,
+  setSelectedRightAnalysis,
+  setClickedAnalysis,
+  setSelectedAnalyses,
 }
 
 export interface SetSelectedTaskAction {
@@ -75,7 +73,7 @@ export interface SetSideAction {
     | AnalyzerStateActionType.setSelectedLeft
     | AnalyzerStateActionType.setSelectedRight;
   groupKey: string;
-  solutionId: number;
+  solutionId: string;
 }
 
 export interface SetGroupAction {
@@ -85,31 +83,21 @@ export interface SetGroupAction {
   groupKey: string;
 }
 
-export interface SetSolutionAction {
+export interface SetAnalysisAction {
   type:
-    | AnalyzerStateActionType.setSelectedLeftSolution
-    | AnalyzerStateActionType.setSelectedRightSolution;
-  solutionId: number;
+    | AnalyzerStateActionType.setSelectedLeftAnalysis
+    | AnalyzerStateActionType.setSelectedRightAnalysis;
+  solutionId: string;
 }
 
-export interface SetClickedSolutionAction {
-  type: AnalyzerStateActionType.setClickedSolution;
-  clickedSolutionId: { groupKey: string; solutionId: number } | undefined;
+export interface SetClickedAnalysisAction {
+  type: AnalyzerStateActionType.setClickedAnalysis;
+  clickedAnalysis: { groupKey: string; solutionId: string } | undefined;
 }
 
-export interface AddBookmarkedSolutionsAction {
-  type: AnalyzerStateActionType.addBookmarkedSolution;
-  solutionId: number;
-}
-
-export interface RemoveBookmarkedSolutionsAction {
-  type: AnalyzerStateActionType.removeBookmarkedSolution;
-  solutionId: number;
-}
-
-export interface SetSelectedSolutionsAction {
-  type: AnalyzerStateActionType.setSelectedSolutions;
-  solutionIds: number[];
+export interface SetSelectedAnalysesAction {
+  type: AnalyzerStateActionType.setSelectedAnalyses;
+  solutionId: string[];
   unionWithPrevious?: boolean;
 }
 
@@ -124,11 +112,9 @@ export type AnalyzerStateAction =
   | SetNumberOfGroupsAction
   | SetSideAction
   | SetGroupAction
-  | SetSolutionAction
-  | SetClickedSolutionAction
-  | SetSelectedSolutionsAction
-  | AddBookmarkedSolutionsAction
-  | RemoveBookmarkedSolutionsAction;
+  | SetAnalysisAction
+  | SetClickedAnalysisAction
+  | SetSelectedAnalysesAction;
 
 export interface AnalyzerState {
   selectedTask: number | undefined;
@@ -139,20 +125,19 @@ export interface AnalyzerState {
   yAxis: AxesCriterionType;
   filters: FilterCriterion[];
   splits: ChartSplit[];
-  bookmarkedSolutionIds: Set<number>;
-  selectedSolutionIds: Set<number>;
+  selectedSolutionIds: Set<string>;
 
   comparison: {
-    clickedSolution:
+    clickedAnalysis:
       | {
           groupKey: string;
-          solutionId: number;
+          solutionId: string;
         }
       | undefined;
     selectedLeftGroup: string;
     selectedRightGroup: string;
-    selectedRightSolution: number;
-    selectedLeftSolution: number;
+    selectedRightSolutionId: string;
+    selectedLeftSolutionId: string;
   };
 }
 
@@ -232,7 +217,7 @@ export const analyzerStateReducer = (
         comparison: {
           ...state.comparison,
           selectedLeftGroup: action.groupKey,
-          selectedLeftSolution: action.solutionId,
+          selectedLeftSolutionId: action.solutionId,
         },
       };
     case AnalyzerStateActionType.setSelectedRight:
@@ -241,7 +226,7 @@ export const analyzerStateReducer = (
         comparison: {
           ...state.comparison,
           selectedRightGroup: action.groupKey,
-          selectedRightSolution: action.solutionId,
+          selectedRightSolutionId: action.solutionId,
         },
       };
     case AnalyzerStateActionType.setSelectedLeftGroup:
@@ -257,46 +242,32 @@ export const analyzerStateReducer = (
           selectedRightGroup: action.groupKey,
         },
       };
-    case AnalyzerStateActionType.setSelectedLeftSolution:
+    case AnalyzerStateActionType.setSelectedLeftAnalysis:
       return {
         ...state,
         comparison: {
           ...state.comparison,
-          selectedLeftSolution: action.solutionId,
+          selectedLeftSolutionId: action.solutionId,
         },
       };
-    case AnalyzerStateActionType.setSelectedRightSolution:
+    case AnalyzerStateActionType.setSelectedRightAnalysis:
       return {
         ...state,
         comparison: {
           ...state.comparison,
-          selectedRightSolution: action.solutionId,
+          selectedRightSolutionId: action.solutionId,
         },
       };
-    case AnalyzerStateActionType.setClickedSolution:
+    case AnalyzerStateActionType.setClickedAnalysis:
       return {
         ...state,
         comparison: {
           ...state.comparison,
-          clickedSolution: action.clickedSolutionId,
+          clickedAnalysis: action.clickedAnalysis,
         },
       };
-    case AnalyzerStateActionType.addBookmarkedSolution:
-      return {
-        ...state,
-        bookmarkedSolutionIds: state.bookmarkedSolutionIds.union(
-          new Set<number>([action.solutionId]),
-        ),
-      };
-    case AnalyzerStateActionType.removeBookmarkedSolution:
-      return {
-        ...state,
-        bookmarkedSolutionIds: state.bookmarkedSolutionIds.difference(
-          new Set<number>([action.solutionId]),
-        ),
-      };
-    case AnalyzerStateActionType.setSelectedSolutions:
-      const newSelection = new Set<number>(action.solutionIds);
+    case AnalyzerStateActionType.setSelectedAnalyses: {
+      const newSelection = new Set<string>(action.solutionId);
 
       return {
         ...state,
@@ -304,6 +275,7 @@ export const analyzerStateReducer = (
           ? state.selectedSolutionIds.union(newSelection)
           : newSelection,
       };
+    }
     default:
       return state;
   }

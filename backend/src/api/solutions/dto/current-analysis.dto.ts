@@ -1,57 +1,58 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform } from "class-transformer";
-import { SolutionTest } from "@prisma/client";
-import { CurrentAnalysis } from "../solutions.service";
-import { SolutionTestDto } from "./solution-test.dto";
+import { AstVersion, SolutionTest } from "@prisma/client";
+import { Modify } from "src/utilities/modify";
+import { AnalysisWithoutId } from "../solutions.service";
+import { ExistingSolutionTestDto } from "./existing-solution-test.dto";
 
 type TestList = Omit<SolutionTest, "id">[];
 
-export class CurrentAnalysisDto {
+export abstract class CurrentAnalysisDto
+  implements Modify<AnalysisWithoutId, { solutionHash: string }>
+{
   @ApiProperty({
     example: 318,
-    description: "The analysis's unique identifier, a positive integer.",
+    description: "The task id the analysis is associated with.",
   })
   @Expose()
-  readonly id!: number;
+  readonly taskId!: number;
 
   @ApiProperty({
-    example: 318,
-    description: "The analysis's unique identifier, a positive integer.",
+    example: "dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl",
+    description: "The base64 encoded solution hash.",
+  })
+  @Transform(
+    ({ obj: { solutionHash } }: { obj: AnalysisWithoutId }) =>
+      Buffer.from(solutionHash).toString("base64url"),
+    { toClassOnly: true },
+  )
+  @Expose()
+  readonly solutionHash!: string;
+
+  @ApiProperty({
+    example: "true",
+    description: "Whether this solution is marked as a reference solution.",
+    type: "boolean",
   })
   @Expose()
-  readonly solutionId!: number;
+  readonly isReferenceSolution!: boolean;
 
   @ApiProperty({
     name: "tests",
     description: "The tests for the current analysis.",
-    type: [SolutionTestDto],
+    type: [ExistingSolutionTestDto],
   })
   @Transform(
     ({ value }: { value: TestList }) =>
       value?.map((test) =>
-        plainToInstance(SolutionTestDto, test, {
+        plainToInstance(ExistingSolutionTestDto, test, {
           excludeExtraneousValues: true,
         }),
       ) ?? [],
     { toClassOnly: true },
   )
   @Expose()
-  readonly tests!: SolutionTestDto[];
-
-  @ApiProperty({
-    example: "John Doe",
-    description: "The pseudonym of the student",
-    type: "string",
-  })
-  @Transform(
-    ({ obj: { studentPseudonym } }: { obj: CurrentAnalysis }) =>
-      Buffer.from(studentPseudonym).toString("base64"),
-    {
-      toClassOnly: true,
-    },
-  )
-  @Expose()
-  readonly studentPseudonym!: string;
+  readonly tests!: ExistingSolutionTestDto[];
 
   @ApiProperty({
     example: 1,
@@ -64,14 +65,13 @@ export class CurrentAnalysisDto {
   readonly studentKeyPairId!: number | null;
 
   @ApiProperty({
+    description: "The version of the AST.",
+  })
+  readonly astVersion!: AstVersion;
+
+  @ApiProperty({
     description: "The generalized AST of the solution.",
   })
   @Expose()
   readonly genericAst!: string;
-
-  static fromQueryResult(data: CurrentAnalysis): CurrentAnalysisDto {
-    return plainToInstance(CurrentAnalysisDto, data, {
-      excludeExtraneousValues: true,
-    });
-  }
 }

@@ -1,25 +1,28 @@
+import { ExistingSolutionTestDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
-import { SolutionTestDto } from "../../generated/models";
 
-export class SolutionTest {
+export class ExistingSolutionTest {
+  readonly id: number;
   readonly name: string;
   readonly identifier: string | null;
   readonly contextName: string | null;
   readonly passed: boolean;
 
   protected constructor({
+    id,
     name,
     identifier,
     contextName,
     passed,
-  }: ClassProperties<SolutionTest>) {
+  }: ClassProperties<ExistingSolutionTest>) {
+    this.id = id;
     this.name = name;
     this.identifier = identifier;
     this.contextName = contextName;
     this.passed = passed;
   }
 
-  static fromDto(dto: SolutionTestDto): SolutionTest {
-    return new SolutionTest(dto);
+  static fromDto(dto: ExistingSolutionTestDto): ExistingSolutionTest {
+    return new ExistingSolutionTest(dto);
   }
 }

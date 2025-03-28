@@ -27,7 +27,14 @@ const CreateTask = () => {
         title: formValues.title,
         description: formValues.description,
         type: formValues.type,
-        file: formValues.blob,
+        taskFile: formValues.taskFile,
+        referenceSolutions: formValues.referenceSolutions.map((solution) => ({
+          ...solution,
+          id: solution.isNew ? null : solution.id,
+        })),
+        referenceSolutionsFiles: Object.values(
+          formValues.referenceSolutionFiles,
+        ),
       });
     },
     [createTask],

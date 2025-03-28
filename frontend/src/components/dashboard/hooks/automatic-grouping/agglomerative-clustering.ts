@@ -1,11 +1,16 @@
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { getAstDistance } from "../ast-distance";
 import { DistanceType } from "../ast-distance/distance-type";
-import { SolutionGroup } from "./types";
+import { AnalysisGroup } from "./types";
 
-interface SolutionGroupWithIndexes extends SolutionGroup {
+interface AnalysisWithIndex {
+  analysis: CurrentAnalysis;
   index: number;
-  solutions: (CurrentAnalysis & { index: number })[];
+}
+
+interface SolutionGroupWithIndexes {
+  index: number;
+  analyses: AnalysisWithIndex[];
 }
 
 const meanDistance = (
@@ -15,13 +20,13 @@ const meanDistance = (
 ): number => {
   let sum = 0;
 
-  for (const solutionA of a.solutions) {
-    for (const solutionB of b.solutions) {
+  for (const solutionA of a.analyses) {
+    for (const solutionB of b.analyses) {
       sum += solutionDistanceMap[solutionA.index][solutionB.index];
     }
   }
 
-  return sum / (a.solutions.length * b.solutions.length);
+  return sum / (a.analyses.length * b.analyses.length);
 };
 
 const computeGroupDistance = (
@@ -50,25 +55,32 @@ const computeGroupDistance = (
 };
 
 export const agglomerativeClustering = async (
-  solutions: CurrentAnalysis[],
+  analyses: CurrentAnalysis[],
   numberOfGroups: number,
   distanceType: DistanceType,
-): Promise<SolutionGroup[]> => {
-  const sols = solutions.map((solution, index) => ({ ...solution, index }));
+): Promise<AnalysisGroup[]> => {
+  const analysesWithIndex = analyses.map<AnalysisWithIndex>(
+    (analysis, index) =>
+      ({
+        analysis,
+        index,
+      }) satisfies AnalysisWithIndex,
+  );
+
   // compute the distances between all pairs of solutions
-  const solutionDistances = new Array(sols.length).fill(
-    new Array(sols.length).fill(Number.POSITIVE_INFINITY),
+  const solutionDistances = new Array(analysesWithIndex.length).fill(
+    new Array(analysesWithIndex.length).fill(Number.POSITIVE_INFINITY),
   );
   const promises: Promise<unknown>[] = [];
 
   // precompute all distances - will be memoized
-  for (let i = 0; i < solutions.length; i++) {
-    for (let j = i + 1; j < solutions.length; j++) {
+  for (let i = 0; i < analyses.length; i++) {
+    for (let j = i + 1; j < analyses.length; j++) {
       promises.push(
         getAstDistance(
           distanceType,
-          solutions[i].generalAst,
-          solutions[j].generalAst,
+          analyses[i].generalAst,
+          analyses[j].generalAst,
         ).then((distance) => {
           solutionDistances[i][j] = distance;
           solutionDistances[j][i] = distance;
@@ -81,9 +93,9 @@ export const agglomerativeClustering = async (
 
   // initialize the groups with each solution in its own group
   const groups = new Set<SolutionGroupWithIndexes>(
-    sols.map((solution) => ({
-      index: solution.index,
-      solutions: [solution],
+    analysesWithIndex.map((analysis) => ({
+      index: analysis.index,
+      analyses: [analysis],
     })),
   );
 
@@ -128,7 +140,7 @@ export const agglomerativeClustering = async (
     groups.delete(minDistanceG2);
     groups.add({
       index: minDistanceG1.index,
-      solutions: [...minDistanceG1.solutions, ...minDistanceG2.solutions],
+      analyses: [...minDistanceG1.analyses, ...minDistanceG2.analyses],
     });
 
     // delete the memoized distances between any group and the re-used group index.
@@ -141,5 +153,7 @@ export const agglomerativeClustering = async (
     }
   }
 
-  return [...groups];
+  return [...groups].map((g) => ({
+    analyses: g.analyses.map((a) => a.analysis),
+  }));
 };

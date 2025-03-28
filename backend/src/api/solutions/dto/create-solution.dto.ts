@@ -1,15 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray } from "class-validator";
-import { SolutionTestDto } from "./solution-test.dto";
+import { CreateSolutionTestDto } from "./create-solution-test.dto";
 
 export class CreateSolutionDto {
-  @Type(() => SolutionTestDto)
+  @Type(() => CreateSolutionTestDto)
   @IsArray()
   @ApiProperty({
     description: "The tests that were run for the solution.",
+    type: [CreateSolutionTestDto],
   })
-  readonly tests!: SolutionTestDto[];
+  readonly tests!: CreateSolutionTestDto[];
 
   // The following property is used for Swagger documentation purposes.
   @ApiProperty({

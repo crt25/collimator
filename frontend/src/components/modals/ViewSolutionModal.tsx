@@ -24,8 +24,8 @@ const ViewSolutionModal = ({
   classId,
   sessionId,
   taskId,
+  solutionHash,
   taskType,
-  solutionId,
   header,
   footer,
 }: {
@@ -34,8 +34,8 @@ const ViewSolutionModal = ({
   classId: number;
   sessionId: number;
   taskId: number;
+  solutionHash: string;
   taskType: TaskType;
-  solutionId: number;
   header?: React.ReactNode;
   footer?: React.ReactNode;
 }) => {
@@ -52,7 +52,7 @@ const ViewSolutionModal = ({
     data: solutionFile,
     isLoading: isLoadingSolutionFile,
     error: solutionFileError,
-  } = useSolutionFile(classId, sessionId, taskId, solutionId);
+  } = useSolutionFile(classId, sessionId, taskId, solutionHash);
 
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {

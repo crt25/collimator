@@ -3,16 +3,16 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { DistanceType } from "../ast-distance/distance-type";
 import { AutomaticGroupingType } from "./grouping-type";
 import { agglomerativeClustering } from "./agglomerative-clustering";
-import { SolutionGroup } from "./types";
+import { AnalysisGroup } from "./types";
 
 export const getAutomaticGroups = (
   solutions: CurrentAnalysis[],
   numberOfGroups: number,
   groupingType: AutomaticGroupingType,
   distanceType: DistanceType,
-): Promise<SolutionGroup[]> =>
+): Promise<AnalysisGroup[]> =>
   match(groupingType)
-    .returnType<Promise<SolutionGroup[]>>()
+    .returnType<Promise<AnalysisGroup[]>>()
     .with(AutomaticGroupingType.agglomerativeClustering, () =>
       agglomerativeClustering(solutions, numberOfGroups, distanceType),
     )
