@@ -9,9 +9,11 @@
     "build:scratch": "tsx scripts/build-scratch.ts",
     "start:frontend": "tsx scripts/server.ts",
     "start:mock-oidc": "tsx scripts/mock-oidc-server.ts",
-    "test:pre": "shx rm -rf ../frontend/coverage-pw .nyc_output/ && yarn build:backend && yarn build:frontend && yarn build:scratch",
+    "test:pre:nobuild": "shx rm -rf ../frontend/coverage-pw .nyc_output/",
+    "test:pre": "yarn test:pre:nobuild && yarn build:backend && yarn build:frontend && yarn build:scratch",
     "test:report-coverage": "cd ../frontend && npx nyc report --report-dir coverage-pw --temp-dir ../e2e/.nyc_output",
     "test": "yarn test:pre && COVERAGE=true dotenv -- playwright test && yarn test:report-coverage",
+    "test:nobuild": "yarn test:pre:nobuild && COVERAGE=true dotenv -- playwright test && yarn test:report-coverage",
     "test:skip-setup": "COVERAGE=true SKIP_SETUP=true dotenv -- playwright test",
     "test:debug": "COVERAGE=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'",
     "test:debug:skip-setup": "COVERAGE=true SKIP_SETUP=true DEBUG=true dotenv -- playwright test --debug --project='iPad Mini landscape'"
