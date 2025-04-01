@@ -3547,18 +3547,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/cli@npm:^6.6.1":
-  version: 6.6.1
-  resolution: "@formatjs/cli@npm:6.6.1"
+"@formatjs/cli@npm:^6.6.3":
+  version: 6.6.3
+  resolution: "@formatjs/cli@npm:6.6.3"
   peerDependencies:
     "@glimmer/env": ^0.1.7
-    "@glimmer/reference": ^0.91.1 || ^0.92.0 || ^0.93.0
-    "@glimmer/syntax": ^0.92.0 || ^0.93.0
-    "@glimmer/validator": ^0.92.0 || ^0.93.0
-    "@vue/compiler-core": ^3.4.0
-    content-tag: ^2.0.1 || ^3.0.0
-    ember-template-recast: ^6.1.4
-    vue: ^3.4.0
+    "@glimmer/reference": ^0.94.0
+    "@glimmer/syntax": ^0.94.9
+    "@glimmer/validator": ^0.94.0
+    "@vue/compiler-core": ^3.5.12
+    content-tag: ^3.0.0
+    ember-template-recast: ^6.1.5
+    vue: ^3.5.12
   peerDependenciesMeta:
     "@glimmer/env":
       optional: true
@@ -3578,7 +3578,7 @@ __metadata:
       optional: true
   bin:
     formatjs: bin/formatjs
-  checksum: 10c0/c2fa01a836a3ad99df4cdd37e83a6729941df05ad9a37432cfcb8a3bc8fbe41a87707d127c8c0094803494d7dda26746df4fa637937476ce032b0fd84101e201
+  checksum: 10c0/8083088619946b541f1ea3913d7e30c721b810e7ae6149ed7be4403bec44872dee0b78407bee1376328b04346e3cec31df6d0232a57d9d8f6a818e5d9e538ef6
   languageName: node
   linkType: hard
 
@@ -4826,9 +4826,9 @@ __metadata:
   linkType: hard
 
 "@types/babel__preset-env@npm:^7":
-  version: 7.9.7
-  resolution: "@types/babel__preset-env@npm:7.9.7"
-  checksum: 10c0/e1da078fee75841af512c7084e66f8a2b9136d72185d72c85c6fb41697358d330d195896d7d22834fca92fad1f16a8c0fb6269e890f9e6842c9a9972313b7baa
+  version: 7.10.0
+  resolution: "@types/babel__preset-env@npm:7.10.0"
+  checksum: 10c0/5ad0c3a8bec4f7612ee8aeecb4ee94494d3bc193f6da608cd118175e726bb2cf649515aded650defb968bfae4ec6e6c52c0c06fc83be261c0b8eaa3f8f2cf336
   languageName: node
   linkType: hard
 
@@ -5175,12 +5175,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.13.8":
-  version: 22.13.8
-  resolution: "@types/node@npm:22.13.8"
+"@types/node@npm:^22.13.15":
+  version: 22.13.15
+  resolution: "@types/node@npm:22.13.15"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/bfc92b734a9dce6ac5daee0a52feccdf5dcb3804d895e4bc5384e2f4644612b8801725cd03c8c3c0888fb5eeb16b875877ac44b77641e0196dc1a837b1c2a366
+  checksum: 10c0/a5dd490be73f6e13cac7939dc2bd2de75a5f3532525516cbf5282d7b38c13a6dad5a8ac6a38d3a10a706371467ca11801f88109b34381c77756bdf9ec9b01345
   languageName: node
   linkType: hard
 
@@ -5307,12 +5307,12 @@ __metadata:
   linkType: hard
 
 "@types/react-virtualized@npm:^9":
-  version: 9.22.0
-  resolution: "@types/react-virtualized@npm:9.22.0"
+  version: 9.22.2
+  resolution: "@types/react-virtualized@npm:9.22.2"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/react": "npm:*"
-  checksum: 10c0/dede58499c90fbc2042e58a3c7192a92b8bc61fed0589a95911d2a0726f202fa0bd87c9fc68e861ce0a6a034a7460a195b291ff49465a3b620e9f630bfdc9246
+  checksum: 10c0/e46ae29ef3187d15c1a6693694e2612da0b6a7f259b12f86b58d150df02e5ca8bb4776cbe6059af5e0e6e48584e5fa10465e951662a3f74e47663a742f4d4d5d
   languageName: node
   linkType: hard
 
@@ -6386,7 +6386,7 @@ __metadata:
     "@craco/craco": "npm:^7.1.0"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
-    "@formatjs/cli": "npm:^6.6.1"
+    "@formatjs/cli": "npm:^6.6.3"
     "@microbit/microbit-universal-hex": "npm:^0.2.2"
     "@playwright/test": "npm:^1.51.1"
     "@sentry/cli": "npm:^2.43.0"
@@ -6404,7 +6404,7 @@ __metadata:
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/lodash.defaultsdeep": "npm:^4"
     "@types/lodash.omit": "npm:^4.5.9"
-    "@types/node": "npm:^22.13.8"
+    "@types/node": "npm:^22.13.15"
     "@types/omggif": "npm:^1"
     "@types/papaparse": "npm:^5"
     "@types/prop-types": "npm:^15"
