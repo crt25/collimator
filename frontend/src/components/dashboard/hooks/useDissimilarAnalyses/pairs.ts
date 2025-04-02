@@ -7,7 +7,7 @@ import { getAstDistance } from "../ast-distance";
 const getDissimilarPairs = async (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfPairs: number,
-  distanceType: DistanceType = DistanceType.pqGrams,
+  distanceType: DistanceType,
 ): Promise<[CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined> => {
   if (!analysesIn) {
     return undefined;
