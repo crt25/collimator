@@ -64,7 +64,7 @@ const getDissimilarPairs = async (
 export const useDissimilarPairs = (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfSolutions: number,
-  distanceType: DistanceType = DistanceType.pqGrams,
+  distanceType: DistanceType = DistanceType.zhangShasha,
 ): [CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined => {
   const [analyses, setAnalyses] = useState<
     [CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined

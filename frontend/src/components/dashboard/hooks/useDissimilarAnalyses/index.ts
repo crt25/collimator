@@ -18,7 +18,7 @@ export class TooManyCombinationsError extends Error {
 const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
   analysesIn: T[] | undefined,
   numberOfAnalyses: number,
-  distanceType: DistanceType = DistanceType.pqGrams,
+  distanceType: DistanceType = DistanceType.zhangShasha,
 ): Promise<T[] | undefined> => {
   if (!analysesIn) {
     return undefined;
@@ -101,7 +101,7 @@ const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
 export const useDissimilarAnalyses = (
   analysesIn: CurrentAnalysis[] | undefined,
   numberOfSolutions: number,
-  distanceType: DistanceType = DistanceType.pqGrams,
+  distanceType: DistanceType = DistanceType.zhangShasha,
 ): {
   tooManyCombinations: boolean;
   analyses: CurrentStudentAnalysis[] | undefined;
