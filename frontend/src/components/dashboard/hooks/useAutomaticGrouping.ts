@@ -27,7 +27,7 @@ export const useAutomaticGrouping = (
       analyses,
       numberOfGroups,
       AutomaticGroupingType.agglomerativeClustering,
-      DistanceType.pq,
+      DistanceType.pqGrams,
     );
 
     const automaticGroups: AutomaticGroup[] = [];

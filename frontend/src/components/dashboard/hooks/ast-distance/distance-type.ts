@@ -1,3 +1,3 @@
 export enum DistanceType {
-  pq = "pq",
+  pqGrams = "pqGrams",
 }

@@ -15,7 +15,7 @@ const getInputForNode = (
   cfn: getAstNodeChildren,
 });
 
-export const computePqDistance = (
+export const computePqGramsDistance = (
   a: AstNode,
   b: AstNode,
   p = 2,
