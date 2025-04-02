@@ -7994,6 +7994,7 @@ __metadata:
     bootstrap: "npm:^5.3.3"
     chart.js: "npm:^4.4.8"
     chartjs-plugin-annotation: "npm:^3.1.0"
+    edit-distance: "npm:^1.0.5"
     eslint: "npm:8.57.0"
     eslint-config-next: "npm:15.2.0"
     eslint-config-prettier: "npm:^10.0.2"
@@ -8898,6 +8899,13 @@ __metadata:
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
   checksum: 10c0/26f364ebcdb6395f95124fda411f63137a4bfb5d3a06453f7f23dfe52502905bd84e0488172e0f9ec295fdc45f05c23d5d91baf16bd26f0fe9acd777a188dc39
+  languageName: node
+  linkType: hard
+
+"edit-distance@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "edit-distance@npm:1.0.5"
+  checksum: 10c0/6c27e472ffeff8831cee73c9afd1800b1df32ad6da4cdee2720dacb9377e3a6ed3a9bb7d080b8a3627ed034321029b76ac3af0f96047d866f6206f742bba6ed3
   languageName: node
   linkType: hard
 
