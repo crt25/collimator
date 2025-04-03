@@ -1,7 +1,8 @@
 import { AstNode } from "@ast/index";
 import { match } from "ts-pattern";
 import { DistanceType } from "./distance-type";
-import { computePqDistance } from "./pq-distance";
+import { computePqGramsDistance } from "./pqgrams-distance";
+import { computeZhangShashaDistance } from "./zhangshasha-distance";
 
 export const getAstDistance = (
   type: DistanceType,
@@ -10,5 +11,6 @@ export const getAstDistance = (
 ): Promise<number> =>
   match(type)
     .returnType<Promise<number>>()
-    .with(DistanceType.pq, () => computePqDistance(a, b))
+    .with(DistanceType.pqGrams, () => computePqGramsDistance(a, b))
+    .with(DistanceType.zhangShasha, () => computeZhangShashaDistance(a, b))
     .exhaustive();
