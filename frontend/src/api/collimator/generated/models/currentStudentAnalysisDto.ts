@@ -33,8 +33,11 @@ export interface CurrentStudentAnalysisDto {
    * The student solutions's unique identifier, a positive integer.
    */
   studentSolutionId: number;
-  /** The pseudonym of the student */
-  studentPseudonym: string;
+  /**
+   * The pseudonym of the student
+   * @nullable
+   */
+  studentPseudonym: string | null;
   /**
    * The sessions's unique identifier, a positive integer.
    */

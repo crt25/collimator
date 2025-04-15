@@ -36,7 +36,7 @@ export default {
                     JSON.stringify({
                       longTermIdentifier: student.pseudonym,
                       name: student.pseudonym,
-                    } as StudentIdentity),
+                    } satisfies StudentIdentity),
                   ),
                 ),
               };

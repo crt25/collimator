@@ -15,7 +15,7 @@ import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 
 const findOrCreatePseudonym = async (
-  longTermIdentifier: string | null,
+  longTermIdentifier: string,
   name: string,
   klass: ExistingClassExtended,
   keyPair: TeacherLongTermKeyPair,
@@ -23,24 +23,22 @@ const findOrCreatePseudonym = async (
   // try to decrypt all students in the class
   let matchingPseudonyms: (string | false)[] = [];
 
-  if (longTermIdentifier !== null) {
-    matchingPseudonyms = await Promise.all(
-      klass.students.map(async (student) => {
-        try {
-          const decryptedIdentity = JSON.parse(
-            await keyPair.decryptString(decodeBase64(student.pseudonym)),
-          ) as StudentIdentity;
+  matchingPseudonyms = await Promise.all(
+    klass.students.map(async (student) => {
+      try {
+        const decryptedIdentity = JSON.parse(
+          await keyPair.decryptString(decodeBase64(student.pseudonym)),
+        ) as StudentIdentity;
 
-          return decryptedIdentity.longTermIdentifier === longTermIdentifier
-            ? student.pseudonym
-            : false;
-        } catch {
-          // we failed to decrypt the student, so we just return false as if the identity did not match
-          return false;
-        }
-      }),
-    );
-  }
+        return decryptedIdentity.longTermIdentifier === longTermIdentifier
+          ? student.pseudonym
+          : false;
+      } catch {
+        // we failed to decrypt the student, so we just return false as if the identity did not match
+        return false;
+      }
+    }),
+  );
 
   // Should multiple students have the same long term identity, we take the first one.
   // In practice, this should never happen as it means that the same long term identity was encrypted
@@ -52,12 +50,13 @@ const findOrCreatePseudonym = async (
 
   return (
     matchingPseudonym ??
+    // If no matching pseudonym was found, we create a new one.
     encodeBase64(
       await keyPair.encryptString(
         JSON.stringify({
           longTermIdentifier,
           name,
-        } as StudentIdentity),
+        } satisfies StudentIdentity),
       ),
     )
   );
@@ -95,35 +94,30 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
 
       // verify the received id token and fetch the class
       const [{ longTermIdentifier, name }, klass] = await Promise.all([
-        authenticationRequest.isAnonymous
-          ? Promise.resolve({
-              longTermIdentifier: null,
-              name: authenticationRequest.pseudonym,
-            })
-          : verifyJwtToken(
-              authenticationRequest.idToken,
-              openIdConnectMicrosoftClientId,
-            ).then((verifiedToken) => {
-              const longTermIdentifier = verifiedToken.payload["sub"];
-              const name = verifiedToken.payload["name"];
+        verifyJwtToken(
+          authenticationRequest.idToken,
+          openIdConnectMicrosoftClientId,
+        ).then((verifiedToken) => {
+          const longTermIdentifier = verifiedToken.payload["sub"];
+          const name = verifiedToken.payload["name"];
 
-              if (!longTermIdentifier) {
-                throw new Error(
-                  "Received student id token does not contain a 'sub' claim",
-                );
-              }
+          if (!longTermIdentifier) {
+            throw new Error(
+              "Received student id token does not contain a 'sub' claim",
+            );
+          }
 
-              if (!name || typeof name !== "string") {
-                throw new Error(
-                  "Received student id token does not contain a 'name' claim",
-                );
-              }
+          if (!name || typeof name !== "string") {
+            throw new Error(
+              "Received student id token does not contain a 'name' claim",
+            );
+          }
 
-              return {
-                longTermIdentifier: longTermIdentifier,
-                name: name,
-              };
-            }),
+          return {
+            longTermIdentifier: longTermIdentifier,
+            name: name,
+          };
+        }),
         fetchClass(authenticationRequest.classId),
       ]);
 

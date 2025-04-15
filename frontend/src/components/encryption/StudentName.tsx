@@ -19,12 +19,14 @@ const messages = defineMessages({
 });
 
 export const StudentName = ({
+  studentId,
   pseudonym,
   keyPairId,
   showActualName,
   testId,
 }: {
-  pseudonym: string;
+  studentId: number;
+  pseudonym: string | null;
   keyPairId: number | null;
   showActualName?: boolean;
   testId?: string;
@@ -32,6 +34,7 @@ export const StudentName = ({
   const intl = useIntl();
 
   const { isAnonymousUser, isDecrypting, name } = useStudentName({
+    studentId,
     keyPairId,
     pseudonym,
     showActualName,
@@ -51,7 +54,7 @@ export const StudentName = ({
   if (name === null) {
     return (
       <NameWrapper data-testid={testId}>
-        {getStudentNickname(pseudonym)}{" "}
+        {getStudentNickname(studentId, pseudonym)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}

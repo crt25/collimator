@@ -19,7 +19,7 @@ SELECT
   test."name" AS "testName",
   test."contextName" AS "testContextName",
   test."passed" AS "testPassed",
-  student.id AS "studentId",
+  studentSolutions."studentId" AS "studentId",
   student.pseudonym AS "studentPseudonym",
   student."keyPairId" AS "studentKeyPairId",
   false AS "isReference",
@@ -32,8 +32,8 @@ FROM studentSolutions
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolutions."taskId"
   AND analysis."solutionHash" = studentSolutions."solutionHash"
-INNER JOIN "Student" student
-  ON student."id" = studentSolutions."studentId"
+LEFT JOIN "AuthenticatedStudent" student
+  ON student."studentId" = studentSolutions."studentId"
 INNER JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolutions.id
   -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
@@ -51,7 +51,7 @@ SELECT
   test."name" AS "testName",
   test."contextName" AS "testContextName",
   test."passed" AS "testPassed",
-  student.id AS "studentId",
+  studentSolution."studentId" AS "studentId",
   student.pseudonym AS "studentPseudonym",
   student."keyPairId" AS "studentKeyPairId",
   true AS "isReference",
@@ -64,8 +64,8 @@ FROM "StudentSolution" studentSolution
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolution."taskId"
   AND analysis."solutionHash" = studentSolution."solutionHash"
-INNER JOIN "Student" student
-  ON student."id" = studentSolution."studentId"
+LEFT JOIN "AuthenticatedStudent" student
+  ON student."studentId" = studentSolution."studentId"
 INNER JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution.id
 WHERE studentSolution."sessionId" = $1

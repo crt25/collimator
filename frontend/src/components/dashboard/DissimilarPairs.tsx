@@ -151,6 +151,7 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
                     <Row key={`${a.solutionId}-${b.solutionId}`}>
                       <CodeViewCol key={a.solutionId} xs={12} lg={6}>
                         <StudentName
+                          studentId={a.studentId}
                           pseudonym={a.studentPseudonym}
                           keyPairId={a.studentKeyPairId}
                         />
@@ -165,6 +166,7 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
                       </CodeViewCol>
                       <CodeViewCol key={b.solutionId} xs={12} lg={6}>
                         <StudentName
+                          studentId={b.studentId}
                           pseudonym={b.studentPseudonym}
                           keyPairId={b.studentKeyPairId}
                         />

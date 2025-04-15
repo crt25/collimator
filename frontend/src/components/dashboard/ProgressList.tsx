@@ -92,6 +92,7 @@ type StudentProgress = {
 const nameTemplate = (progress: StudentProgress) => {
   return (
     <StudentName
+      studentId={progress.student.studentId}
       pseudonym={progress.student.pseudonym}
       keyPairId={progress.student.keyPairId}
     />
@@ -191,13 +192,13 @@ const ProgressList = ({
           taskId: task.id,
           solutions:
             studentSolutions?.filter(
-              (solution) => solution.studentId === student.id,
+              (solution) => solution.studentId === student.studentId,
             ) ?? [],
         };
       });
 
       return {
-        id: student.id,
+        id: student.studentId,
         student,
         taskSolutions: taskSolutions,
       };
@@ -239,7 +240,7 @@ const ProgressList = ({
             loading={klass.students.length !== progress.length}
             onRowClick={(e) =>
               router.push(
-                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.id}`,
+                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.studentId}`,
               )
             }
           >

@@ -45,9 +45,10 @@ const UserSessionProgress = () => {
   } = useClassSession(classId, sessionId);
 
   const studentId = parseInt(studentIdString, 10);
-  const student = klass?.students.find((s) => s.id === studentId);
+  const student = klass?.students.find((s) => s.studentId === studentId);
 
   const { name } = useStudentName({
+    studentId,
     keyPairId: student?.keyPairId,
     pseudonym: student?.pseudonym,
   });

@@ -57,6 +57,7 @@ export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
 };
 
 export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
+  isAnonymous: false;
   idToken: string;
   authenticationToken: undefined;
   name: string;
@@ -77,9 +78,12 @@ export type StudentAuthenticated = Omit<
 
 export type StudentAuthenticatedAnonymous = Omit<
   StudentAuthenticated,
-  "idToken"
+  "idToken" | "ephemeralKey" | "isAnonymous" | "name"
 > & {
+  isAnonymous: true;
+  name: undefined;
   idToken: undefined;
+  ephemeralKey: undefined;
 };
 
 export type AuthenticationContextType =
@@ -208,6 +212,14 @@ export const deserializeAuthenticationContext = async (
   );
 
   if (rest.role === UserRole.student) {
+    if (rest.isAnonymous) {
+      return {
+        ...rest,
+        teacherPublicKey: rest.teacherPublicKey,
+        keyPair: importedKeyPair,
+      } satisfies StudentAuthenticatedAnonymous;
+    }
+
     return {
       ...rest,
       ephemeralKey: await importedKeyPair.deriveSharedEphemeralKey(
@@ -220,7 +232,7 @@ export const deserializeAuthenticationContext = async (
       ),
       teacherPublicKey: rest.teacherPublicKey,
       keyPair: importedKeyPair,
-    };
+    } satisfies StudentAuthenticated;
   }
 
   return {

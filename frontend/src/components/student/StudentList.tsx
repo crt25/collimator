@@ -22,7 +22,7 @@ const nameTemplate = (student: ClassStudent) => {
     <StudentName
       pseudonym={student.pseudonym}
       keyPairId={student.keyPairId}
-      testId={`student-${student.id}-name`}
+      testId={`student-${student.studentId}-name`}
     />
   );
 };
