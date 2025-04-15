@@ -616,7 +616,7 @@ class Blocks extends React.Component<Props, State> {
     if (blockId) {
       workspace.centerOnBlock(blockId);
     } else {
-      workspace.zoomToFit();
+      workspace.scrollCenter();
     }
 
     if (this.blocks && !this.props.canEditTask) {
