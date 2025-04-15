@@ -6,7 +6,6 @@ import { TaskTemplateWithSolutions } from "./tasks/task-template-with-solutions"
 export const createAnonymousSubmission = async (
   browser: Browser,
   sessionLink: string,
-  pseudonym: string,
   task: TaskTemplateWithSolutions,
   solution: () => Promise<Buffer>,
 ): Promise<void> => {
@@ -18,9 +17,6 @@ export const createAnonymousSubmission = async (
     await studentPage.goto(sessionLink);
 
     const joinPage = await JoinAnonymousSessionPageModel.create(studentPage);
-
-    await joinPage.pseudonymInput.fill(pseudonym);
-    await joinPage.submit();
 
     // ensure we start listening for the loadTask event before the page is loaded
     const solvePagePromise = SolveTaskPageModel.create(studentPage);
