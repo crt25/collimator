@@ -15,7 +15,7 @@ const classId = 1;
 const sessionId = 1;
 
 const student: ClassStudentDto = {
-  id: 937281,
+  studentId: 937281,
   pseudonym: "Donald Duck",
   keyPairId: 1,
 };
@@ -53,7 +53,7 @@ export default {
                 studentId:
                   klass.students.find(
                     (_, studentIndex) => solutionIndex % 4 === studentIndex % 4,
-                  )?.id ?? student,
+                  )?.studentId ?? student,
               }) as ExistingStudentSolutionDto,
           ),
       })),
