@@ -2,17 +2,10 @@ import { Socket } from "socket.io-client";
 
 type AuthenticationToken = string;
 
-export type StudentAuthenticationRequestContent =
-  | {
-      isAnonymous: false;
-      classId: number;
-      idToken: string;
-    }
-  | {
-      isAnonymous: true;
-      classId: number;
-      pseudonym: string;
-    };
+export type StudentAuthenticationRequestContent = {
+  classId: number;
+  idToken: string;
+};
 
 export type StudentAuthenticationRequest = {
   // The public key of the student as a JWK

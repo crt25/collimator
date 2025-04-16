@@ -7,11 +7,13 @@ import { getStudentNickname } from "@/utilities/student-name";
 const logModule = "[useStudentName]";
 
 export const useStudentName = ({
+  studentId,
   pseudonym,
   keyPairId,
   showActualName,
 }: {
-  pseudonym?: string;
+  studentId: number;
+  pseudonym?: string | null;
   keyPairId?: number | null;
   showActualName?: boolean;
 }): {
@@ -23,7 +25,6 @@ export const useStudentName = ({
 
   const [isDecrypting, setIsDecrypting] = useState(true);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
-  const [isAnonymousUser, setIsAnonymousUser] = useState<boolean>(false);
 
   useEffect(() => {
     const isCancelled = false;
@@ -37,7 +38,8 @@ export const useStudentName = ({
 
     const decryptName = async (): Promise<void> => {
       if (keyPairId !== authContext.keyPairId || !pseudonym) {
-        // no need trying to decrypt if the key pair is not the same that was used to encrypt
+        // no need trying to decrypt if the key pair is not the same that was used to encrypt OR
+        // if the user is anonymous (no pseudonym).
         setDecryptedName(null);
         setIsDecrypting(false);
 
@@ -53,7 +55,6 @@ export const useStudentName = ({
         return;
       }
 
-      setIsAnonymousUser(decryptedIdentity.longTermIdentifier === null);
       setDecryptedName(decryptedIdentity.name);
       setIsDecrypting(false);
     };
@@ -79,18 +80,14 @@ export const useStudentName = ({
   }, [authContext, pseudonym, keyPairId]);
 
   const name = useMemo(() => {
-    if (!pseudonym) {
-      return null;
-    }
-
-    return !showActualName || isAnonymousUser
-      ? getStudentNickname(pseudonym)
+    return !showActualName || !pseudonym
+      ? getStudentNickname(studentId, pseudonym)
       : decryptedName;
-  }, [showActualName, isAnonymousUser, decryptedName, pseudonym]);
+  }, [showActualName, decryptedName, studentId, pseudonym]);
 
   return {
     name,
     isDecrypting,
-    isAnonymousUser,
+    isAnonymousUser: !pseudonym,
   };
 };

@@ -230,6 +230,7 @@ const TooltipContent = ({
                               }
                             >
                               <StudentName
+                                studentId={analysis.studentId}
                                 pseudonym={analysis.studentPseudonym}
                                 keyPairId={analysis.studentKeyPairId}
                                 showActualName={false}

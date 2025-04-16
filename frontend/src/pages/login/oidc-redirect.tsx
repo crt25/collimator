@@ -95,6 +95,7 @@ const OpenIdConnectRedirect = () => {
             // the (remaining) authentication logic for students is handled on the join session page
             // we do not need to authenticate against the collimator backend
             updateAuthenticationContext({
+              isAnonymous: false,
               version: latestAuthenticationContextVersion,
               idToken: idToken,
               authenticationToken: undefined,

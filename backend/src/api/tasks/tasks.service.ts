@@ -96,43 +96,55 @@ export class TasksService {
     });
   }
 
-  create(
+  async create(
     task: TaskCreateInput,
     mimeType: string,
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
   ): Promise<TaskWithoutData> {
-    return this.prisma.task.create({
-      data: {
-        ...task,
-        mimeType,
-        data,
-        referenceSolutions: {
-          create: referenceSolutions.map((solution, index) => {
-            const file = referenceSolutionFiles[index];
-
-            const fileHash = this.computeSolutionHash(file.buffer);
-
-            return {
-              title: solution.title,
-              description: solution.description,
-              tests: {
-                create: solution.tests,
-              },
-              solutionHash: fileHash,
-              solution: {
-                create: {
-                  data: file.buffer,
-                  mimeType: file.mimetype,
-                  hash: fileHash,
-                },
-              },
-            };
-          }),
+    return this.prisma.$transaction(async (tx) => {
+      const createdTask = await tx.task.create({
+        data: {
+          ...task,
+          mimeType,
+          data,
+          referenceSolutions: {
+            create: [],
+          },
         },
-      },
-      omit: omitData,
+        select: { id: true },
+      });
+
+      return tx.task.update({
+        where: { id: createdTask.id },
+        data: {
+          referenceSolutions: {
+            create: referenceSolutions.map((solution, index) => {
+              const file = referenceSolutionFiles[index];
+
+              const fileHash = this.computeSolutionHash(file.buffer);
+
+              return {
+                title: solution.title,
+                description: solution.description,
+                tests: {
+                  create: solution.tests,
+                },
+                solution: {
+                  create: {
+                    taskId: createdTask.id,
+                    data: file.buffer,
+                    mimeType: file.mimetype,
+                    hash: fileHash,
+                  },
+                },
+              };
+            }),
+          },
+        },
+        omit: omitData,
+      });
     });
   }
 

@@ -30,8 +30,6 @@ const newSessionName = "new session name";
 let sessionId: number = -1;
 let sessionLink = "";
 
-const pseudonym = "I AM GROOT";
-
 test.describe("session analysis", () => {
   test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
@@ -70,16 +68,8 @@ test.describe("session analysis", () => {
     sessionLink = await list.getSessionLink(sessionId);
 
     // create submissions
-    let i = 0;
-
     for (const solution of solutions) {
-      await createAnonymousSubmission(
-        browser,
-        sessionLink,
-        `${pseudonym} #${i++}`,
-        task,
-        solution,
-      );
+      await createAnonymousSubmission(browser, sessionLink, task, solution);
     }
   });
 

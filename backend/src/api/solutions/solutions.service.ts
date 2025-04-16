@@ -74,7 +74,7 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
   studentId: number;
   sessionId: number;
   studentSolutionId: StudentSolutionId;
-  studentPseudonym: Uint8Array;
+  studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
 };
 
@@ -215,7 +215,7 @@ export class SolutionsService {
     taskId: TaskId;
     studentSolutionId: StudentSolutionId;
     studentId: StudentId;
-    studentPseudonym: Uint8Array;
+    studentPseudonym: Uint8Array | null;
     sessionId: SessionId;
     isReference: boolean;
     solutionHash: Uint8Array;
@@ -228,7 +228,6 @@ export class SolutionsService {
       analysis.taskId !== null &&
       analysis.studentSolutionId !== null &&
       analysis.studentId !== null &&
-      analysis.studentPseudonym !== null &&
       analysis.sessionId !== null &&
       analysis.isReference !== null &&
       analysis.solutionHash !== null &&

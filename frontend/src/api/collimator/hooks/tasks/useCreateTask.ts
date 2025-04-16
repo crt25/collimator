@@ -23,7 +23,7 @@ export const tasksControllerCreate = async (
     JSON.stringify(createTaskDto.referenceSolutions),
   );
   createTaskDto.referenceSolutionsFiles.forEach((value) =>
-    formData.append("referenceSolutions", value),
+    formData.append("referenceSolutionsFiles", value),
   );
 
   return fetchApi<ExistingTaskDto>(getTasksControllerCreateV0Url(), {

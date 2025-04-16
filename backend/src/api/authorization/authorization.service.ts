@@ -174,7 +174,14 @@ export class AuthorizationService {
       const session = await this.prisma.session.findUnique({
         where: {
           id: sessionId,
-          class: { students: { some: { id: authenticatedStudent.id } } },
+          OR: [
+            {
+              class: {
+                students: { some: { studentId: authenticatedStudent.id } },
+              },
+            },
+            { isAnonymous: true },
+          ],
         },
         select: { id: true },
       });

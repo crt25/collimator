@@ -8,7 +8,7 @@
 
 export interface ClassStudentDto {
   /** The unique identifier of a student. */
-  id: number;
+  studentId: number;
   /**
    * The unique identifier of the key pair used to encrypt the student's pseudonym.
    * @nullable

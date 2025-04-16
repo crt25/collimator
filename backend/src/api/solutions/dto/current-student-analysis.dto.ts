@@ -11,7 +11,7 @@ export class CurrentStudentAnalysisDto
   implements
     Modify<
       CurrentStudentAnalysis,
-      { solutionHash: string; studentPseudonym: string }
+      { solutionHash: string; studentPseudonym: string | null }
     >
 {
   @ApiProperty({
@@ -35,6 +35,7 @@ export class CurrentStudentAnalysisDto
     example: "John Doe",
     description: "The pseudonym of the student",
     type: "string",
+    nullable: true,
   })
   @Transform(
     ({ obj: { studentPseudonym } }: { obj: CurrentStudentAnalysis }) =>
@@ -46,7 +47,7 @@ export class CurrentStudentAnalysisDto
     },
   )
   @Expose()
-  readonly studentPseudonym!: string;
+  readonly studentPseudonym!: string | null;
 
   @ApiProperty({
     example: 1,

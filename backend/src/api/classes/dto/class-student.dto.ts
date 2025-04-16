@@ -8,7 +8,7 @@ export class ClassStudentDto {
     description: "The unique identifier of a student.",
   })
   @Expose()
-  readonly id!: number;
+  readonly studentId!: number;
 
   @ApiProperty({
     example: 1,

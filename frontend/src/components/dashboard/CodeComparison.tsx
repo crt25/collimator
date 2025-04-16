@@ -124,14 +124,15 @@ const getOptions = async (
     analyses.map(async (analysis) => {
       if (analysis instanceof CurrentStudentAnalysis) {
         const {
+          studentId,
           studentPseudonym,
           isReferenceSolution,
           solutionId: value,
         } = analysis;
 
-        let label = getStudentNickname(studentPseudonym);
+        let label = getStudentNickname(studentId, studentPseudonym);
 
-        if (showStudentName) {
+        if (showStudentName && studentPseudonym) {
           try {
             const decryptedIdentity: StudentIdentity = JSON.parse(
               await authContext.keyPair.decryptString(
