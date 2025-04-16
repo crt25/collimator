@@ -26,8 +26,8 @@ export const StudentName = ({
   testId,
 }: {
   studentId: number;
-  pseudonym: string | null;
-  keyPairId: number | null;
+  pseudonym?: string | null;
+  keyPairId?: number | null;
   showActualName?: boolean;
   testId?: string;
 }) => {

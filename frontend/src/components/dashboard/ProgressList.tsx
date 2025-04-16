@@ -83,21 +83,27 @@ type TaskSolutions = {
   solutions: ExistingStudentSolution[];
 };
 
+type AnonymousStudent = {
+  isAnonymous: true;
+  studentId: number;
+};
+
 type StudentProgress = {
   id: number;
-  student: ClassStudent;
+  student: ClassStudent | AnonymousStudent;
   taskSolutions: TaskSolutions[];
 };
 
-const nameTemplate = (progress: StudentProgress) => {
-  return (
+const nameTemplate = (progress: StudentProgress) =>
+  "isAnonymous" in progress.student ? (
+    <StudentName studentId={progress.student.studentId} />
+  ) : (
     <StudentName
       studentId={progress.student.studentId}
       pseudonym={progress.student.pseudonym}
       keyPairId={progress.student.keyPairId}
     />
   );
-};
 
 const taskTemplate = (classId: number, taskId: number) =>
   function TaskTemplate(rowData: StudentProgress) {
@@ -180,7 +186,24 @@ const ProgressList = ({
       return [];
     }
 
-    return klass.students.map<StudentProgress>((student) => {
+    const studentIds = new Set([
+      ...klass.students.map((student) => student.studentId),
+      ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
+    ]);
+
+    const students = [...studentIds].map((studentId) => {
+      const student = klass.students.find((s) => s.studentId === studentId);
+
+      return (
+        student ??
+        ({
+          isAnonymous: true,
+          studentId,
+        } satisfies AnonymousStudent)
+      );
+    });
+
+    return students.map<StudentProgress>((student) => {
       // group solutions of this student by task
       const taskSolutions = session.tasks.map((task) => {
         // find all solutions for this task and student
@@ -201,7 +224,7 @@ const ProgressList = ({
         id: student.studentId,
         student,
         taskSolutions: taskSolutions,
-      };
+      } satisfies StudentProgress;
     });
   }, [klass, session, solutions]);
 
