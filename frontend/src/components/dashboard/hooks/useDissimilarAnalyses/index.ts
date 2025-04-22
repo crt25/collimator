@@ -15,6 +15,92 @@ export class TooManyCombinationsError extends Error {
   }
 }
 
+const computePairwiseDistance = async (
+  analyses: CurrentAnalysis[],
+  distanceType: DistanceType,
+): Promise<number[][]> => {
+  const distances: number[][] = new Array<undefined>(analyses.length)
+    .fill(undefined)
+    .map(() =>
+      new Array<number>(analyses.length).fill(Number.POSITIVE_INFINITY),
+    );
+
+  const promises: Promise<unknown>[] = [];
+
+  // precompute all distances - will be memoized
+  for (let i = 0; i < analyses.length; i++) {
+    for (let j = i + 1; j < analyses.length; j++) {
+      promises.push(
+        getAstDistance(
+          distanceType,
+          analyses[i].generalAst,
+          analyses[j].generalAst,
+        ).then((distance) => {
+          distances[i][j] = distance;
+          distances[j][i] = distance;
+        }),
+      );
+    }
+  }
+
+  await Promise.all(promises);
+
+  return distances;
+};
+
+const getBestCombination = (
+  numberOfAnalyses: number,
+  distances: number[][],
+  initialDistance: number = 0,
+  combineDistances: (overallDistance: number, distance: number) => number = (
+    d1,
+    d2,
+  ) => d1 + d2,
+  isNewDistanceBetter: (bestDistance: number, newDistance: number) => boolean,
+): number[] => {
+  let bestDistance = 0;
+  // store the "best" combination in the form of indices of the analyses
+  let bestCombination: number[] = new Array<number>(numberOfAnalyses)
+    .fill(0)
+    .map((_, idx) => idx);
+
+  // compute all combinations of k elements from the analysis set
+  for (const combination of getCombinationsUnsafe(
+    distances.length,
+    numberOfAnalyses,
+  )) {
+    let newDistance = initialDistance;
+    // then, for each pair of analyses, add the distance
+    for (const pair of getCombinationsUnsafe(combination.length, 2)) {
+      const [i, j] = pair.map((index) => combination[index]);
+      newDistance = combineDistances(newDistance, distances[i][j]);
+    }
+
+    if (isNewDistanceBetter(bestDistance, newDistance)) {
+      bestDistance = newDistance;
+      // store a copy of the combination with the maximum distance,
+      // because getCombinationsUnsafe will otherwise override combination.
+      bestCombination = [...combination];
+    }
+  }
+
+  return bestCombination;
+};
+
+export const maximizeMinimumDistance = (
+  numberOfAnalyses: number,
+  distances: number[][],
+): number[] =>
+  getBestCombination(
+    numberOfAnalyses,
+    distances,
+    // since we take the minimum distance, we need to start with the maximum possible value
+    Number.POSITIVE_INFINITY,
+    (d1, d2) => Math.min(d1, d2),
+    // the new distance is better if it is greater than the best distance (maximizing)
+    (bestDistance, newDistance) => bestDistance < newDistance,
+  );
+
 const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
   analysesIn: T[] | undefined,
   numberOfAnalyses: number,
@@ -41,61 +127,16 @@ const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
     throw new TooManyCombinationsError();
   }
 
-  const analyses = analysesIn?.map((analysis, index) => ({
+  const distances = await computePairwiseDistance(analysesIn, distanceType);
+
+  const analyses = analysesIn.map((analysis, index) => ({
     analysis,
     index,
   }));
 
-  const distances: number[][] = new Array(analyses.length).fill(
-    new Array(analyses.length).fill(Number.POSITIVE_INFINITY),
+  return maximizeMinimumDistance(numberOfAnalyses, distances).map(
+    (idx) => analyses[idx].analysis,
   );
-  const promises: Promise<unknown>[] = [];
-
-  // precompute all distances - will be memoized
-  for (let i = 0; i < analyses.length; i++) {
-    for (let j = i + 1; j < analyses.length; j++) {
-      promises.push(
-        getAstDistance(
-          distanceType,
-          analyses[i].analysis.generalAst,
-          analyses[j].analysis.generalAst,
-        ).then((distance) => {
-          distances[i][j] = distance;
-          distances[j][i] = distance;
-        }),
-      );
-    }
-  }
-
-  await Promise.all(promises);
-
-  let maxDistance = 0;
-  let bestCombination: number[] = new Array(numberOfAnalyses)
-    .fill(0)
-    .map((_, idx) => idx);
-
-  // compute all combinations of k elements from the analysis set
-  for (const combination of getCombinationsUnsafe(
-    analyses.length,
-    numberOfAnalyses,
-  )) {
-    let overallDistance = 0;
-    // then, for each pair of analyses, add the distance
-    for (const pair of getCombinationsUnsafe(combination.length, 2)) {
-      const [i, j] = pair.map((index) => combination[index]);
-
-      overallDistance += distances[i][j];
-    }
-
-    if (overallDistance > maxDistance) {
-      maxDistance = overallDistance;
-      // store a copy of the combination with the maximum distance,
-      // because getCombinationsUnsafe will otherwise override combination.
-      bestCombination = [...combination];
-    }
-  }
-
-  return bestCombination.map((idx) => analyses[idx].analysis);
 };
 
 export const useDissimilarAnalyses = (
@@ -116,18 +157,20 @@ export const useDissimilarAnalyses = (
   useEffect(() => {
     let isCancelled = false;
 
-    getDissimilarAnalyses(analysesIn, numberOfSolutions, distanceType)
+    getDissimilarAnalyses(
+      analysesIn?.filter(
+        (analysis) => analysis instanceof CurrentStudentAnalysis,
+      ),
+      numberOfSolutions,
+      distanceType,
+    )
       .then((analyses) => {
         if (isCancelled) {
           return;
         }
 
         setTooManyCombinations(false);
-        setAnalyses(
-          analyses?.filter(
-            (analysis) => analysis instanceof CurrentStudentAnalysis,
-          ),
-        );
+        setAnalyses(analyses);
       })
       .catch((e) => {
         if (isCancelled) {
