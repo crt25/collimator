@@ -1,7 +1,7 @@
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 import { AnalysisGroup } from "./types";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 interface AnalysisGroupWithReference extends AnalysisGroup {
   reference: CurrentAnalysis;
@@ -65,8 +65,10 @@ export const referenceSolutionClustering = async (
       );
 
       // find the group with the minimum distance
-      const bestAssignment = distances.reduce((prev, curr) =>
-        prev.distance < curr.distance ? prev : curr,
+      const bestAssignment = distances.reduce(
+        (best, assignment) =>
+          best.distance < assignment.distance ? best : assignment,
+        { distance: Number.POSITIVE_INFINITY, groupIdx: 0 },
       );
 
       return {
