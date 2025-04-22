@@ -1,7 +1,7 @@
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 import { AnalysisGroup } from "./types";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 
 interface AnalysisGroupWithReference extends AnalysisGroup {
   reference: CurrentAnalysis;
