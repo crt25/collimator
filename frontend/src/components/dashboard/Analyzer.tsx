@@ -10,6 +10,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
 import Button, { ButtonVariant } from "../Button";
+import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
@@ -301,6 +302,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     defaultMessage="Computing groups, please be patient."
                   />
                 )}
+
+                <StudentAnonymizationToggle />
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>

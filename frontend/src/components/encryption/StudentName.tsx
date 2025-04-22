@@ -22,22 +22,19 @@ export const StudentName = ({
   studentId,
   pseudonym,
   keyPairId,
-  showActualName,
   testId,
 }: {
   studentId: number;
   pseudonym?: string | null;
   keyPairId?: number | null;
-  showActualName?: boolean;
   testId?: string;
 }) => {
   const intl = useIntl();
 
-  const { isAnonymousUser, isDecrypting, name } = useStudentName({
+  const { isDecrypting, name } = useStudentName({
     studentId,
     keyPairId,
     pseudonym,
-    showActualName,
   });
 
   if (isDecrypting) {
@@ -63,12 +60,5 @@ export const StudentName = ({
     );
   }
 
-  return (
-    <NameWrapper data-testid={testId}>
-      {name}
-      {isAnonymousUser && showActualName
-        ? " (" + intl.formatMessage(messages.anonymous) + ")"
-        : ""}
-    </NameWrapper>
-  );
+  return <NameWrapper data-testid={testId}>{name}</NameWrapper>;
 };

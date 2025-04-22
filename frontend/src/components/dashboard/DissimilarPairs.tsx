@@ -9,6 +9,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import Input from "../form/Input";
 import Select from "../form/Select";
 import { StudentName } from "../encryption/StudentName";
+import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
@@ -143,6 +144,8 @@ const DissimilarPairs = ({ session }: { session: ExistingSessionExtended }) => {
                     setNumberOfSolutions(Math.max(1, parseInt(e.target.value)))
                   }
                 />
+
+                <StudentAnonymizationToggle />
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
