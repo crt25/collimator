@@ -1,3 +1,3 @@
 export enum AutomaticGroupingType {
-  agglomerativeClustering = "agglomerativeClustering",
+  referenceSolutionClustering = "referenceSolutionClustering",
 }

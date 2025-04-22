@@ -13,7 +13,6 @@ import {
 
 export const useGrouping = (
   isAutomaticGrouping: boolean,
-  numberOfGroups: number,
   solutions: FilteredAnalysis[],
   splits: ChartSplit[],
   xAxis: AxesCriterionType,
@@ -40,7 +39,6 @@ export const useGrouping = (
 
   const computeAutomaticGrouping = useAutomaticGrouping(
     isAutomaticGrouping,
-    numberOfGroups,
     solutions,
     xAxis,
     yAxis,

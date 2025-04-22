@@ -17,7 +17,6 @@ export enum AnalyzerStateActionType {
   setXAxis,
   setYAxis,
   setAutomaticGrouping,
-  setNumberOfGroups,
   setSelectedLeft,
   setSelectedRight,
   setSelectedLeftGroup,
@@ -63,11 +62,6 @@ export interface SetAutomaticGroupingAction {
   isAutomaticGrouping: boolean;
 }
 
-export interface SetNumberOfGroupsAction {
-  type: AnalyzerStateActionType.setNumberOfGroups;
-  numberOfGroups: number;
-}
-
 export interface SetSideAction {
   type:
     | AnalyzerStateActionType.setSelectedLeft
@@ -109,7 +103,6 @@ export type AnalyzerStateAction =
   | RemoveSplitAction
   | SetAxisAction
   | SetAutomaticGroupingAction
-  | SetNumberOfGroupsAction
   | SetSideAction
   | SetGroupAction
   | SetAnalysisAction
@@ -120,7 +113,6 @@ export interface AnalyzerState {
   selectedTask: number | undefined;
   selectedSubTaskId: string | undefined;
   isAutomaticGrouping: boolean;
-  numberOfGroups: number;
   xAxis: AxesCriterionType;
   yAxis: AxesCriterionType;
   filters: FilterCriterion[];
@@ -209,8 +201,6 @@ export const analyzerStateReducer = (
       return setAxis(state, "y", action.axis);
     case AnalyzerStateActionType.setAutomaticGrouping:
       return { ...state, isAutomaticGrouping: action.isAutomaticGrouping };
-    case AnalyzerStateActionType.setNumberOfGroups:
-      return { ...state, numberOfGroups: action.numberOfGroups };
     case AnalyzerStateActionType.setSelectedLeft:
       return {
         ...state,
