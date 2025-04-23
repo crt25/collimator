@@ -16,24 +16,22 @@ declare global {
 
 test.describe("/show", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.on("framenavigated", async () =>
-      page.evaluate(() => {
-        window.postedMessages = [];
+    await defineCustomMessageEvent(page);
 
-        // @ts-expect-error - we mock the parent window
-        window.parent = {
-          postMessage: (message, options) => {
-            window.postedMessages.push({ message, options });
-          },
-        };
-      }),
-    );
+    await page.addInitScript(() => {
+      window.postedMessages = [];
+
+      // @ts-expect-error - we mock the parent window
+      window.parent = {
+        postMessage: (message, options) => {
+          window.postedMessages.push({ message, options });
+        },
+      };
+    });
 
     await page.goto(`${baseURL!}/show?showStage`);
 
     await page.waitForSelector("#root");
-
-    await defineCustomMessageEvent(page);
   });
 
   test("can select the stage", async ({ page: pwPage }) => {

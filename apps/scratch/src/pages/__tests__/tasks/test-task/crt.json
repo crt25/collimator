@@ -7,5 +7,6 @@
   "freezeStateByBlockId": {
     "*t~VMcxLD[(lt8Ja;s#-": "frozen",
     "iY}I[=PNCjG}GzJS1G/X": "appendable"
-  }
+  },
+  "maximumExecutionTimeInMs": 5000
 }

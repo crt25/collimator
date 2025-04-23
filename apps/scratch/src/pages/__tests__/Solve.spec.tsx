@@ -18,24 +18,22 @@ declare global {
 
 test.describe("/solve", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.on("framenavigated", async () =>
-      page.evaluate(() => {
-        window.postedMessages = [];
+    await defineCustomMessageEvent(page);
 
-        // @ts-expect-error - we mock the parent window
-        window.parent = {
-          postMessage: (message, options) => {
-            window.postedMessages.push({ message, options });
-          },
-        };
-      }),
-    );
+    await page.addInitScript(() => {
+      window.postedMessages = [];
+
+      // @ts-expect-error - we mock the parent window
+      window.parent = {
+        postMessage: (message, options) => {
+          window.postedMessages.push({ message, options });
+        },
+      };
+    });
 
     await page.goto(`${baseURL!}/solve`);
 
     await page.waitForSelector("#root");
-
-    await defineCustomMessageEvent(page);
   });
 
   test("can select the stage", async ({ page: pwPage }) => {
@@ -85,9 +83,11 @@ test.describe("/solve", () => {
   });
 
   test("can get submission via window.postMessage", async ({ page }) => {
+    await TestTaskPage.load(page);
+
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
-        id: 0,
+        id: 1,
         type: "request",
         procedure: "getSubmission",
       });
@@ -95,14 +95,14 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() => window.postedMessages.length > 0);
+    await page.waitForFunction(() => window.postedMessages.length > 1);
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(1);
+    expect(messages).toHaveLength(2);
 
-    expect(messages[0].message).toEqual({
-      id: 0,
+    expect(messages[1].message).toEqual({
+      id: 1,
       type: "response",
       procedure: "getSubmission",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722

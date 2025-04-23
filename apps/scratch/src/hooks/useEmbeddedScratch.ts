@@ -116,13 +116,17 @@ const getSubmission = async (
       vm.greenFlag();
 
       setTimeout(() => {
-        if (!finishedRunning) {
-          vm.stopAll();
-
-          console.error(`${logModule} Maximum execution time exceeded`);
-
-          toast.error(intl.formatMessage(messages.timeoutExceeded));
+        if (finishedRunning) {
+          return;
         }
+
+        // if the project is still running after the timeout, stop it
+        vm.stopAll();
+        vm.runtime.emit("PROJECT_RUN_STOP");
+
+        console.error(`${logModule} Maximum execution time exceeded`);
+
+        toast.error(intl.formatMessage(messages.timeoutExceeded));
       }, maximumExecutionTimeInMs);
     });
 
