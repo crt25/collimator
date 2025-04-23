@@ -83,6 +83,12 @@ export class TasksController {
       throw new BadRequestException("Task file is required");
     }
 
+    if (referenceSolutions.filter((s) => s.isInitial).length !== 1) {
+      throw new BadRequestException(
+        "There must be exactly one initial solution",
+      );
+    }
+
     if (referenceSolutions.length !== referenceSolutionsFiles.length) {
       throw new BadRequestException(
         "The number of reference solutions must match the number of files",

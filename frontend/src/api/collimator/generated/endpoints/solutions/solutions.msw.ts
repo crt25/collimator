@@ -141,6 +141,7 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
     genericAst: faker.string.alpha(20),
     title: faker.string.alpha(20),
     description: faker.string.alpha(20),
+    isInitialTaskSolution: faker.datatype.boolean(),
     referenceSolutionId: faker.number.int({ min: undefined, max: undefined }),
   })),
   ...overrideResponse,

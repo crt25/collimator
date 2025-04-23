@@ -214,9 +214,11 @@ model Solution {
 }
 
 model ReferenceSolution {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   title       String
   description String
+  // Whether this solution is the initial solution for the task (i.e. the empty one provided to the students)
+  isInitial   Boolean @default(false)
 
   taskId       Int
   solutionHash Bytes

@@ -9,6 +9,7 @@ export class TaskReferenceSolution {
   readonly title: string;
   readonly description: string;
   readonly solution: Blob;
+  readonly isInitial: boolean;
   readonly tests: ExistingSolutionTest[];
 
   protected constructor({
@@ -16,12 +17,14 @@ export class TaskReferenceSolution {
     title,
     description,
     solution,
+    isInitial,
     tests,
   }: ClassProperties<TaskReferenceSolution>) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.solution = solution;
+    this.isInitial = isInitial;
     this.tests = tests;
   }
 

@@ -65,10 +65,7 @@ export class TasksService {
       where: { id },
       include: {
         referenceSolutions: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
+          include: {
             solution: {
               select: {
                 data: true,
@@ -228,6 +225,7 @@ export class TasksService {
               ({ solution, file, fileHash }) => ({
                 title: solution.title,
                 description: solution.description,
+                isInitial: solution.isInitial,
                 tests: {
                   create: solution.tests,
                 },
@@ -255,6 +253,7 @@ export class TasksService {
                 data: {
                   title: solution.title,
                   description: solution.description,
+                  isInitial: solution.isInitial,
                   tests: {
                     // create new tests, the existing ones were deleted above
                     create: solution.tests,

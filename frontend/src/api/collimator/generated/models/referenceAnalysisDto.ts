@@ -29,6 +29,8 @@ export interface ReferenceAnalysisDto {
   title: string;
   /** The description of the reference solution */
   description: string;
+  /** The description of the reference solution */
+  isInitialTaskSolution: boolean;
   /** The reference solutions's unique identifier, a positive integer. */
   referenceSolutionId: number;
 }

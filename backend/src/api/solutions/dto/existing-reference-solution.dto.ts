@@ -38,6 +38,13 @@ export class ExistingReferenceSolutionDto
   @Expose()
   readonly description!: string;
 
+  @ApiProperty({
+    description:
+      "Whether this reference solution is the task's initial solution.",
+  })
+  @Expose()
+  readonly isInitial!: boolean;
+
   @ApiProperty()
   readonly taskId!: number;
 

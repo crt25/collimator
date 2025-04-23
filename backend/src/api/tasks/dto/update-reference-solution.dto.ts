@@ -5,6 +5,7 @@ import {
   IsArray,
   IsNumber,
   IsOptional,
+  IsBoolean,
 } from "class-validator";
 import { Type } from "class-transformer";
 import { ReferenceSolutionId } from "src/api/solutions/dto/existing-reference-solution.dto";
@@ -31,6 +32,11 @@ export class UpdateReferenceSolutionDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly description!: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly isInitial!: boolean;
 
   @Type(() => CreateSolutionTestDto)
   @IsArray()

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsArray } from "class-validator";
+import { IsNotEmpty, IsString, IsArray, IsBoolean } from "class-validator";
 import { Type } from "class-transformer";
 import { CreateSolutionTestDto } from "src/api/solutions/dto/create-solution-test.dto";
 
@@ -13,6 +13,11 @@ export class CreateReferenceSolutionDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly description!: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly isInitial!: boolean;
 
   @Type(() => CreateSolutionTestDto)
   @IsArray()

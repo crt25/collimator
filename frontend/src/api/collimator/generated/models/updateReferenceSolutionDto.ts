@@ -15,6 +15,7 @@ export interface UpdateReferenceSolutionDto {
   id: number | null;
   title: string;
   description: string;
+  isInitial: boolean;
   /** The tests that were run for the solution. */
   tests: CreateSolutionTestDto[];
 }

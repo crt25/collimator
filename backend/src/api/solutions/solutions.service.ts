@@ -81,6 +81,7 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
 export type ReferenceAnalysis = AnalysisWithoutId & {
   title: string;
   description: string;
+  isInitialTaskSolution: boolean;
   referenceSolutionId: ReferenceSolutionId;
 };
 
@@ -265,6 +266,7 @@ export class SolutionsService {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
         isReferenceSolution: true,
+        isInitialTaskSolution: analysis.isInitialTaskSolution,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
         tests: [test],
@@ -284,6 +286,7 @@ export class SolutionsService {
     referenceSolutionId: ReferenceSolutionId;
     referenceSolutionTitle: string;
     referenceSolutionDescription: string;
+    isInitialTaskSolution: boolean;
     taskId: TaskId;
     solutionHash: Uint8Array;
     testName: string;
@@ -295,6 +298,7 @@ export class SolutionsService {
       analysis.referenceSolutionId !== null &&
       analysis.referenceSolutionTitle !== null &&
       analysis.referenceSolutionDescription !== null &&
+      analysis.isInitialTaskSolution !== null &&
       analysis.taskId !== null &&
       analysis.solutionHash !== null &&
       analysis.testName !== null &&
