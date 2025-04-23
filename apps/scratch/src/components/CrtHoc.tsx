@@ -9,6 +9,7 @@ import { basePath } from "..";
 import { setLocales } from "../scratch/scratch-gui/src/reducers/locales";
 import en from "../content/compiled-locales/en.json";
 import fr from "../content/compiled-locales/fr.json";
+import { ExtensionId } from "../extensions";
 
 const customLocales: { [locale: string]: { [key: string]: string } } =
   Object.fromEntries(
@@ -25,6 +26,8 @@ const customLocales: { [locale: string]: { [key: string]: string } } =
       ),
     ]),
   );
+
+const defaultExtensions: ExtensionId[] = [ExtensionId.Assertions];
 
 // This is a function component that can use hooks and receives the intl parameter.
 // This allows us to configure the CRT parameters with the intl parameter available
@@ -64,6 +67,9 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
         onVmInit={(vm: VM) => {
           setVm(vm);
           patchScratchVm(vm);
+          defaultExtensions.forEach((extensionId) =>
+            vm.extensionManager.loadExtensionURL(extensionId),
+          );
         }}
         basePath={`${basePath}/`}
       />
