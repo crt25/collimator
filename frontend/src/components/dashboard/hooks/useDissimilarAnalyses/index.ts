@@ -63,12 +63,9 @@ const computePairwiseDistance = async (
 const getBestCombination = (
   numberOfAnalyses: number,
   distances: number[][],
-  initialBestDistance: number = 0,
-  initialCombinationDistance: number = 0,
-  combineDistances: (overallDistance: number, distance: number) => number = (
-    d1,
-    d2,
-  ) => d1 + d2,
+  initialBestDistance: number,
+  initialCombinationDistance: number,
+  combineDistances: (overallDistance: number, distance: number) => number,
   isNewDistanceBetter: (bestDistance: number, newDistance: number) => boolean,
 ): number[] => {
   let bestDistance = initialBestDistance;
