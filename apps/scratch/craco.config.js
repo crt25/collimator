@@ -67,6 +67,9 @@ module.exports = {
     },
     // https://craco.js.org/docs/configuration/getting-started/#object-literals-and-functions
     configure: (webpackConfig, { env }) => {
+      // https://github.com/facebook/create-react-app/issues/3547#issuecomment-668842318
+      webpackConfig.resolve.symlinks = false;
+
       // supress invalid source map warnings - some dependencies have invalid or inexistent source maps
       // https://stackoverflow.com/a/70975849/2897827
       // https://github.com/facebook/create-react-app/pull/11752
@@ -155,7 +158,7 @@ module.exports = {
         includes: [
           resolvePath("node_modules/scratch-paint"),
           resolvePath("node_modules/app-iframe-message"),
-          resolvePath("node_modules/app-iframe-message-react")
+          resolvePath("node_modules/app-iframe-message-react"),
         ],
       },
     },

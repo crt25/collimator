@@ -6437,21 +6437,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-iframe-message-react@file:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A.":
-  version: 0.0.0
-  resolution: "app-iframe-message-react@file:../../libraries/app-iframe-message-react#../../libraries/app-iframe-message-react::hash=57afd9&locator=app-scratch%40workspace%3A."
+"app-iframe-message-react@portal:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "app-iframe-message-react@portal:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A."
   dependencies:
     app-iframe-message: "file:../app-iframe-message"
   peerDependencies:
     react: ^19.1.0
-  checksum: 10c0/2cc068be7f19ad4ff315e7c55f234164c2dd767b1f2f6eb10ed8432015bd3fcad3fc6dd0380dbc6c873553963cba5cb603db2ea0dbbd5c07159ddac6fa661225
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40file%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%23..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D57afd9%26locator%3Dapp-scratch%2540workspace%253A.":
+"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A.":
   version: 0.0.0
-  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=7d9100&locator=app-iframe-message-react%40file%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%23..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D57afd9%26locator%3Dapp-scratch%2540workspace%253A."
-  checksum: 10c0/bc779504ba70bfa71943e9aaa34be3244699389a1df26b7948932b8a1b17ae471a0acf16a2c0a48df00c2483fbab36e1588ec85d9fcaaaf396408e7364c3b0d1
+  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=9368af&locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A."
+  checksum: 10c0/f28a37fb68a3a87e3a5a891c7de2d7ce61e32cb174433a3e95ac58b44cce48625122e875a97b8b6b8ec1aea93a0987d054ae2f50984af3274da9244a3a56bd7c
   languageName: node
   linkType: hard
 
@@ -6498,7 +6497,7 @@ __metadata:
     "@types/wav-encoder": "npm:^1"
     "@typescript-eslint/eslint-plugin": "npm:^8.29.0"
     "@typescript-eslint/parser": "npm:^8.29.0"
-    app-iframe-message-react: "file:../../libraries/app-iframe-message-react"
+    app-iframe-message-react: "portal:../../libraries/app-iframe-message-react"
     archiver: "npm:^7.0.1"
     arraybuffer-loader: "npm:^1.0.8"
     autoprefixer: "npm:^10.4.21"
@@ -6511,6 +6510,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.0"
     craco-babel-loader: "npm:^1.0.4"
     craco-css-modules: "npm:^1.0.6"
+    cross-env: "npm:^7.0.3"
     dapjs: "npm:^2.3.0"
     eslint: "npm:^8"
     eslint-config-prettier: "npm:^10.1.1"
@@ -8450,6 +8450,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: "npm:^7.0.1"
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 10c0/f3765c25746c69fcca369655c442c6c886e54ccf3ab8c16847d5ad0e91e2f337d36eedc6599c1227904bf2a228d721e690324446876115bc8e7b32a866735ecf
+  languageName: node
+  linkType: hard
+
 "cross-fetch@npm:^3.1.5":
   version: 3.1.8
   resolution: "cross-fetch@npm:3.1.8"
@@ -8480,6 +8492,17 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: 10c0/5738c312387081c98d69c98e105b6327b069197f864a60593245d64c8089c8a0a744e16349281210d56835bb9274130d825a78b2ad6853ca13cfbeffc0c31750
+  languageName: node
+  linkType: hard
+
+"cross-spawn@npm:^7.0.1":
+  version: 7.0.6
+  resolution: "cross-spawn@npm:7.0.6"
+  dependencies:
+    path-key: "npm:^3.1.0"
+    shebang-command: "npm:^2.0.0"
+    which: "npm:^2.0.1"
+  checksum: 10c0/053ea8b2135caff68a9e81470e845613e374e7309a47731e81639de3eaeb90c3d01af0e0b44d2ab9d50b43467223b88567dfeb3262db942dc063b9976718ffc1
   languageName: node
   linkType: hard
 

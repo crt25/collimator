@@ -7132,21 +7132,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-iframe-message-react@file:../libraries/app-iframe-message-react::locator=collimator%40workspace%3A.":
-  version: 0.0.0
-  resolution: "app-iframe-message-react@file:../libraries/app-iframe-message-react#../libraries/app-iframe-message-react::hash=1d4c39&locator=collimator%40workspace%3A."
+"app-iframe-message-react@portal:../libraries/app-iframe-message-react::locator=collimator%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "app-iframe-message-react@portal:../libraries/app-iframe-message-react::locator=collimator%40workspace%3A."
   dependencies:
     app-iframe-message: "file:../app-iframe-message"
   peerDependencies:
     react: ^19.1.0
-  checksum: 10c0/204c17e63dba648fec31e3deaf539a3d36d923e7255bc900f61a26c6f93fae11ef4a5e6c81f4a35259e491dabbb18248fb044334de860f4d6b6019f6ec4e9803
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40file%3A..%2Flibraries%2Fapp-iframe-message-react%23..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D1d4c39%26locator%3Dcollimator%2540workspace%253A.":
+"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dcollimator%2540workspace%253A.":
   version: 0.0.0
-  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=7d9100&locator=app-iframe-message-react%40file%3A..%2Flibraries%2Fapp-iframe-message-react%23..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D1d4c39%26locator%3Dcollimator%2540workspace%253A."
-  checksum: 10c0/bc779504ba70bfa71943e9aaa34be3244699389a1df26b7948932b8a1b17ae471a0acf16a2c0a48df00c2483fbab36e1588ec85d9fcaaaf396408e7364c3b0d1
+  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=9368af&locator=app-iframe-message-react%40portal%3A..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dcollimator%2540workspace%253A."
+  checksum: 10c0/f28a37fb68a3a87e3a5a891c7de2d7ce61e32cb174433a3e95ac58b44cce48625122e875a97b8b6b8ec1aea93a0987d054ae2f50984af3274da9244a3a56bd7c
   languageName: node
   linkType: hard
 
@@ -8258,12 +8257,13 @@ __metadata:
     "@types/node": "npm:^22.13.5"
     "@types/react": "npm:19.1.2"
     "@types/react-dom": "npm:19.1.2"
-    app-iframe-message-react: "file:../libraries/app-iframe-message-react"
+    app-iframe-message-react: "portal:../libraries/app-iframe-message-react"
     babel-plugin-formatjs: "npm:^10.5.35"
     babel-plugin-istanbul: "npm:^7.0.0"
     bootstrap: "npm:^5.3.3"
     chart.js: "npm:^4.4.8"
     chartjs-plugin-annotation: "npm:^3.1.0"
+    cross-env: "npm:^7.0.3"
     edit-distance: "npm:^1.0.5"
     eslint: "npm:8.57.0"
     eslint-config-next: "npm:15.3.1"
@@ -8581,6 +8581,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: "npm:^7.0.1"
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 10c0/f3765c25746c69fcca369655c442c6c886e54ccf3ab8c16847d5ad0e91e2f337d36eedc6599c1227904bf2a228d721e690324446876115bc8e7b32a866735ecf
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^6.0.0":
   version: 6.0.6
   resolution: "cross-spawn@npm:6.0.6"
@@ -8594,7 +8606,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.6":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.6":
   version: 7.0.6
   resolution: "cross-spawn@npm:7.0.6"
   dependencies:
