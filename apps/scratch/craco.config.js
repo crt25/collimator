@@ -152,7 +152,11 @@ module.exports = {
     {
       plugin: cracoBabelLoader,
       options: {
-        includes: [resolvePath("node_modules/scratch-paint")],
+        includes: [
+          resolvePath("node_modules/scratch-paint"),
+          resolvePath("node_modules/app-iframe-message"),
+          resolvePath("node_modules/app-iframe-message-react")
+        ],
       },
     },
     { plugin: cracoCSSModules },

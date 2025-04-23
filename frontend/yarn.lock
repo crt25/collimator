@@ -7132,6 +7132,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"app-iframe-message-react@file:../libraries/app-iframe-message-react::locator=collimator%40workspace%3A.":
+  version: 0.0.0
+  resolution: "app-iframe-message-react@file:../libraries/app-iframe-message-react#../libraries/app-iframe-message-react::hash=1d4c39&locator=collimator%40workspace%3A."
+  dependencies:
+    app-iframe-message: "file:../app-iframe-message"
+  peerDependencies:
+    react: ^19.1.0
+  checksum: 10c0/204c17e63dba648fec31e3deaf539a3d36d923e7255bc900f61a26c6f93fae11ef4a5e6c81f4a35259e491dabbb18248fb044334de860f4d6b6019f6ec4e9803
+  languageName: node
+  linkType: hard
+
+"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40file%3A..%2Flibraries%2Fapp-iframe-message-react%23..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D1d4c39%26locator%3Dcollimator%2540workspace%253A.":
+  version: 0.0.0
+  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=7d9100&locator=app-iframe-message-react%40file%3A..%2Flibraries%2Fapp-iframe-message-react%23..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D1d4c39%26locator%3Dcollimator%2540workspace%253A."
+  checksum: 10c0/bc779504ba70bfa71943e9aaa34be3244699389a1df26b7948932b8a1b17ae471a0acf16a2c0a48df00c2483fbab36e1588ec85d9fcaaaf396408e7364c3b0d1
+  languageName: node
+  linkType: hard
+
 "append-transform@npm:^2.0.0":
   version: 2.0.0
   resolution: "append-transform@npm:2.0.0"
@@ -8240,6 +8258,7 @@ __metadata:
     "@types/node": "npm:^22.13.5"
     "@types/react": "npm:19.1.2"
     "@types/react-dom": "npm:19.1.2"
+    app-iframe-message-react: "file:../libraries/app-iframe-message-react"
     babel-plugin-formatjs: "npm:^10.5.35"
     babel-plugin-istanbul: "npm:^7.0.0"
     bootstrap: "npm:^5.3.3"

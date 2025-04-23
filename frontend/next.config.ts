@@ -8,7 +8,11 @@ let nextConfig: NextConfig = {
 
   reactStrictMode: true,
 
-  transpilePackages: ["../backend"],
+  transpilePackages: [
+    "../backend",
+    "app-iframe-message",
+    "app-iframe-message-react",
+  ],
 
   eslint: {
     // ignore ESLint during compilation - we check it on the CI

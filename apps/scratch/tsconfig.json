@@ -24,7 +24,6 @@
   "include": [
     "src",
     "types/**/*.d.ts",
-    "../../frontend/src/types/app-iframe-message/**/*.d.ts",
     "__tests__"
   ]
 }

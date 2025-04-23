@@ -6437,6 +6437,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"app-iframe-message-react@file:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A.":
+  version: 0.0.0
+  resolution: "app-iframe-message-react@file:../../libraries/app-iframe-message-react#../../libraries/app-iframe-message-react::hash=57afd9&locator=app-scratch%40workspace%3A."
+  dependencies:
+    app-iframe-message: "file:../app-iframe-message"
+  peerDependencies:
+    react: ^19.1.0
+  checksum: 10c0/2cc068be7f19ad4ff315e7c55f234164c2dd767b1f2f6eb10ed8432015bd3fcad3fc6dd0380dbc6c873553963cba5cb603db2ea0dbbd5c07159ddac6fa661225
+  languageName: node
+  linkType: hard
+
+"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40file%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%23..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D57afd9%26locator%3Dapp-scratch%2540workspace%253A.":
+  version: 0.0.0
+  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=7d9100&locator=app-iframe-message-react%40file%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%23..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Ahash%3D57afd9%26locator%3Dapp-scratch%2540workspace%253A."
+  checksum: 10c0/bc779504ba70bfa71943e9aaa34be3244699389a1df26b7948932b8a1b17ae471a0acf16a2c0a48df00c2483fbab36e1588ec85d9fcaaaf396408e7364c3b0d1
+  languageName: node
+  linkType: hard
+
 "app-scratch@workspace:.":
   version: 0.0.0-use.local
   resolution: "app-scratch@workspace:."
@@ -6480,6 +6498,7 @@ __metadata:
     "@types/wav-encoder": "npm:^1"
     "@typescript-eslint/eslint-plugin": "npm:^8.29.0"
     "@typescript-eslint/parser": "npm:^8.29.0"
+    app-iframe-message-react: "file:../../libraries/app-iframe-message-react"
     archiver: "npm:^7.0.1"
     arraybuffer-loader: "npm:^1.0.8"
     autoprefixer: "npm:^10.4.21"
