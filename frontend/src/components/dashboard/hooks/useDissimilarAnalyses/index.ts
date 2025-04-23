@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { match } from "ts-pattern";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { getAstDistance } from "../ast-distance";
 import { DistanceType } from "../ast-distance/distance-type";
 import { choose, getCombinationsUnsafe } from "./combinatorics";
+import { DistanceMaximizationType } from "./distance-maximization-type";
 
 const logModule = `[useDissimilarAnalyses]`;
 
@@ -48,17 +50,28 @@ const computePairwiseDistance = async (
   return distances;
 };
 
+/**
+ * Computes the best combination of analyses.
+ * @param numberOfAnalyses The number of analyses to select.
+ * @param distances The distance matrix of the analyses to choose from
+ * @param initialBestDistance The initial distance to start from for the best combination.
+ * @param initialCombinationDistance The initial distance to start from for each combination.
+ * @param combineDistances A function that aggregates the distances of the analysis within a combination.
+ * @param isNewDistanceBetter A function that checks if a newly aggregated combination distance is better than the best distance.
+ * @returns The indices  of the analysis into the distance matrixthat are the best combination.
+ */
 const getBestCombination = (
   numberOfAnalyses: number,
   distances: number[][],
-  initialDistance: number = 0,
+  initialBestDistance: number = 0,
+  initialCombinationDistance: number = 0,
   combineDistances: (overallDistance: number, distance: number) => number = (
     d1,
     d2,
   ) => d1 + d2,
   isNewDistanceBetter: (bestDistance: number, newDistance: number) => boolean,
 ): number[] => {
-  let bestDistance = 0;
+  let bestDistance = initialBestDistance;
   // store the "best" combination in the form of indices of the analyses
   let bestCombination: number[] = new Array<number>(numberOfAnalyses)
     .fill(0)
@@ -69,7 +82,7 @@ const getBestCombination = (
     distances.length,
     numberOfAnalyses,
   )) {
-    let newDistance = initialDistance;
+    let newDistance = initialCombinationDistance;
     // then, for each pair of analyses, add the distance
     for (const pair of getCombinationsUnsafe(combination.length, 2)) {
       const [i, j] = pair.map((index) => combination[index]);
@@ -94,9 +107,27 @@ export const maximizeMinimumDistance = (
   getBestCombination(
     numberOfAnalyses,
     distances,
+    // the initial best distance is 0, since we want to maximize the minimum distance
+    0,
     // since we take the minimum distance, we need to start with the maximum possible value
     Number.POSITIVE_INFINITY,
     (d1, d2) => Math.min(d1, d2),
+    // the new distance is better if it is greater than the best distance (maximizing)
+    (bestDistance, newDistance) => bestDistance < newDistance,
+  );
+
+export const maximizeDistanceSum = (
+  numberOfAnalyses: number,
+  distances: number[][],
+): number[] =>
+  getBestCombination(
+    numberOfAnalyses,
+    distances,
+    // the initial best distance is 0, since we want to maximize the minimum distance
+    0,
+    // since we take sum the distance, we start with 0
+    0,
+    (d1, d2) => d1 + d2,
     // the new distance is better if it is greater than the best distance (maximizing)
     (bestDistance, newDistance) => bestDistance < newDistance,
   );
@@ -105,6 +136,7 @@ const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
   analysesIn: T[] | undefined,
   numberOfAnalyses: number,
   distanceType: DistanceType = DistanceType.pqGrams,
+  maximizationType: DistanceMaximizationType = DistanceMaximizationType.MinimumDistance,
 ): Promise<T[] | undefined> => {
   if (!analysesIn) {
     return undefined;
@@ -134,9 +166,15 @@ const getDissimilarAnalyses = async <T extends CurrentAnalysis>(
     index,
   }));
 
-  return maximizeMinimumDistance(numberOfAnalyses, distances).map(
-    (idx) => analyses[idx].analysis,
-  );
+  return match(maximizationType)
+    .with(DistanceMaximizationType.MinimumDistance, () =>
+      maximizeMinimumDistance(numberOfAnalyses, distances),
+    )
+    .with(DistanceMaximizationType.DistanceSum, () =>
+      maximizeDistanceSum(numberOfAnalyses, distances),
+    )
+    .exhaustive()
+    .map((idx) => analyses[idx].analysis);
 };
 
 export const useDissimilarAnalyses = (
