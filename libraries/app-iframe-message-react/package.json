@@ -1,0 +1,31 @@
+{
+  "name": "app-iframe-message-react",
+  "packageManager": "yarn@4.9.1",
+  "files": [
+    "src/**/*"
+  ],
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "app-iframe-message": "file:../app-iframe-message"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest-extended": "^3.0.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-extended": "^4.0.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.0"
+  }
+}

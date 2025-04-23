@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Demo Page</title>
+
+    <script>
+      window.sendMessage = (message) => {
+        const iframe = document.querySelector("iframe");
+        iframe.contentWindow.postMessage(message, "*");
+      };
+
+      window.sendRequest = (request) => {
+        sendMessage({ id: 0, type: "request", ...request });
+      };
+    </script>
+  </head>
+  <body>
+    <button id="sendMessage">Send 'getHeight' Message</button>
+    <script>
+      document
+        .getElementById("sendMessage")
+        .addEventListener("click", () =>
+          sendRequest({ procedure: "getHeight" }),
+        );
+    </script>
+
+    <iframe
+      src="http://localhost:3101/scratch/edit"
+      style="width: 100%; min-height: 5rem; margin-top: 1rem"
+    ></iframe>
+
+    <textarea
+      readonly
+      id="log"
+      style="width: 100%; height: 200px; margin-top: 1rem"
+    ></textarea>
+    <script>
+      window.addEventListener("message", function (event) {
+        const log = document.getElementById("log");
+        log.value += `Received message from ${event.origin}: ${JSON.stringify(event.data)}\n`;
+      });
+    </script>
+  </body>
+</html>
