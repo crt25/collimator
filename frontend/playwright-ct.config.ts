@@ -1,8 +1,8 @@
-import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import react from "@vitejs/plugin-react";
 import istanbul from "vite-plugin-istanbul";
-import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = dirname(__filename);
@@ -38,6 +38,7 @@ export default defineConfig({
 
     ctViteConfig: {
       resolve: {
+        preserveSymlinks: true,
         alias: {
           "@": resolve(__dirname, "./src"),
         },
