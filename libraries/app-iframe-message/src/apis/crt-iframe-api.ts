@@ -144,6 +144,7 @@ export abstract class CrtIframeApi<
       };
 
       // send the message to the iframe
+      console.debug("Sending IframeRPC request", request);
       this.sendMessage(
         requestTarget,
         // add a unique id to the message
@@ -171,6 +172,9 @@ export abstract class CrtIframeApi<
 
     if (this.isResponse(message)) {
       const response: TCalleeResponse = message;
+
+      console.debug("Received IframeRPC response", response);
+
       // get the resolve function from the pendingRequests object
       const handleResponse = this.pendingRequests[response.id];
       if (!handleResponse) {
@@ -200,6 +204,8 @@ export abstract class CrtIframeApi<
 
     const request: TCalleeRequest = message;
     const handleRequest = this.onRequest[request.procedure];
+
+    console.debug("Received IframeRPC request", request);
 
     try {
       const response = await handleRequest(message, event);

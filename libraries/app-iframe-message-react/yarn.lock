@@ -1269,7 +1269,7 @@ __metadata:
   dependencies:
     "@types/react": "npm:^19"
     "@typescript-eslint/eslint-plugin": "npm:^8.31.0"
-    app-iframe-message: "file:../app-iframe-message"
+    app-iframe-message: "portal:../app-iframe-message"
     eslint: "npm:8.57.0"
     eslint-config-prettier: "npm:^10.1.2"
     eslint-plugin-import: "npm:^2.31.0"
@@ -1286,12 +1286,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40workspace%3A.":
-  version: 0.0.0
-  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=d01242&locator=app-iframe-message-react%40workspace%3A."
-  checksum: 10c0/a2fc8bf38741a638e111c944eb2df236d65f261bc4fd60c591e287e3e7059282c59107251fa645c6b031ea64fa3594b73d31263e3c770d15bac84f605f5a71b8
+"app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "argparse@npm:^1.0.7":
   version: 1.0.10

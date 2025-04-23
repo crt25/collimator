@@ -6441,18 +6441,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app-iframe-message-react@portal:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A."
   dependencies:
-    app-iframe-message: "file:../app-iframe-message"
+    app-iframe-message: "portal:../app-iframe-message"
   peerDependencies:
     react: ^19.1.0
   languageName: node
   linkType: soft
 
-"app-iframe-message@file:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A.":
-  version: 0.0.0
-  resolution: "app-iframe-message@file:../app-iframe-message#../app-iframe-message::hash=9368af&locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A."
-  checksum: 10c0/f28a37fb68a3a87e3a5a891c7de2d7ce61e32cb174433a3e95ac58b44cce48625122e875a97b8b6b8ec1aea93a0987d054ae2f50984af3274da9244a3a56bd7c
+"app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A.":
+  version: 0.0.0-use.local
+  resolution: "app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "app-scratch@workspace:.":
   version: 0.0.0-use.local
