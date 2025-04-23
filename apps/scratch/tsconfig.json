@@ -16,6 +16,7 @@
     "noEmit": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",
+    "preserveSymlinks": true,
     "paths": {
       // alias
       "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"]
