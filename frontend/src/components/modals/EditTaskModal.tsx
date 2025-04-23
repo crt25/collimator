@@ -1,8 +1,8 @@
 import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Language, Task } from "app-iframe-message-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import { Language } from "@/types/app-iframe-message/languages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -24,13 +24,25 @@ const EditTaskModal = ({
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  onSave: (blob: Blob) => void;
+  onSave: (task: Task) => void;
   taskType: TaskType;
   initialTask?: Blob | null;
 }) => {
   const intl = useIntl();
   const url = useMemo(() => getEditUrl(taskType), [taskType]);
   const wasInitialized = useRef(false);
+
+  const onSaveTask = useCallback(
+    async (embeddedApp: EmbeddedAppRef) => {
+      const task = await embeddedApp.sendRequest({
+        procedure: "getTask",
+        arguments: undefined,
+      });
+
+      onSave(task.result);
+    },
+    [onSave],
+  );
 
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
@@ -70,7 +82,7 @@ const EditTaskModal = ({
       showExportButton
       showImportButton
       showSaveButton
-      onSave={onSave}
+      onSave={onSaveTask}
     />
   );
 };

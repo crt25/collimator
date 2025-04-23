@@ -1,10 +1,10 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
+import { Language } from "app-iframe-message-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { Language } from "@/types/app-iframe-message/languages";
 import MultiSwrContent from "../MultiSwrContent";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";

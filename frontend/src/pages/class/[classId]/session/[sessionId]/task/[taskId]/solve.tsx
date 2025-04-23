@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
+import { Language, Test } from "app-iframe-message-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
@@ -17,8 +18,6 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { Language } from "@/types/app-iframe-message/languages";
-import { Test } from "@/types/app-iframe-message/get-submission";
 
 const messages = defineMessages({
   title: {
@@ -216,7 +215,7 @@ const SolveTaskPage = () => {
       procedure: "getTask",
     });
 
-    downloadBlob(response.result, "task.sb3");
+    downloadBlob(response.result.file, "task.sb3");
   }, []);
 
   if (!sessionId || !taskId) {

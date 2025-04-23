@@ -1,12 +1,12 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
+import { Language } from "app-iframe-message-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
-import { Language } from "@/types/app-iframe-message/languages";
 import MultiSwrContent from "../MultiSwrContent";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 

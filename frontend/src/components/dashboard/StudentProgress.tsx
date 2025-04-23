@@ -1,6 +1,7 @@
 import { Accordion } from "react-bootstrap";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { Language } from "app-iframe-message-react/src";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { SessionTask } from "@/api/collimator/models/sessions/session-task";
@@ -9,7 +10,6 @@ import { scratchAppHostName } from "@/utilities/constants";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useFileHash } from "@/hooks/useFileHash";
-import { Language } from "@/types/app-iframe-message/languages";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";

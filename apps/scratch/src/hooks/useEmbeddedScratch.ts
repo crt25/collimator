@@ -1,17 +1,20 @@
 import VM from "scratch-vm";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
+import {
+  useIframeParent,
+  Language,
+  Submission,
+  Test,
+} from "app-iframe-message-react/src";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
-import { Language } from "../../../../frontend/src/types/app-iframe-message/languages";
 import { Assertion } from "../types/scratch-vm-custom";
-import { Test } from "../../../../frontend/src/types/app-iframe-message/get-submission";
 import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
-import { useIframeParent } from "./useIframeParent";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -31,6 +34,12 @@ const messages = defineMessages({
     defaultMessage: "We stopped the run, it was taking too long.",
   },
 });
+
+class VmUnavailableError extends Error {
+  constructor() {
+    super("VM is not available");
+  }
+}
 
 const areAssertionsEnabled = (vm: VM): boolean => {
   let assertionsEnabled = false;
@@ -54,6 +63,95 @@ const areAssertionsEnabled = (vm: VM): boolean => {
   return assertionsEnabled;
 };
 
+const buildSubmission = (
+  json: string,
+  passedTests: Test[],
+  failedTests: Test[],
+): Submission => ({
+  file: new Blob([json], {
+    type: "application/json",
+  }),
+  passedTests,
+  failedTests,
+});
+
+const getSubmission = async (
+  vm: VM,
+  intl: InjectedIntl,
+): Promise<Submission> => {
+  // first stop the project and reset the state
+  vm.runtime.stopAll();
+
+  // enable assertions if they are not enabled yet
+  const assertionsEnabled = areAssertionsEnabled(vm);
+  if (!assertionsEnabled) {
+    vm.runtime.emit("ENABLE_ASSERTIONS");
+  }
+
+  try {
+    // then save project state
+    const json = vm.toJSON();
+
+    const maximumExecutionTimeInMs =
+      vm.crtConfig?.maximumExecutionTimeInMs ?? defaultMaximumExecutionTimeInMs;
+
+    const waitForAssertions = new Promise<{
+      passedAssertions: Assertion[];
+      failedAssertions: Assertion[];
+    }>((resolve) => {
+      let finishedRunning = false;
+      vm.runtime.once(
+        "ASSERTIONS_CHECKED",
+        (passedAssertions, failedAssertions) => {
+          finishedRunning = true;
+
+          resolve({
+            passedAssertions,
+            failedAssertions,
+          });
+        },
+      );
+
+      // once the project is backed up, run the project
+      vm.greenFlag();
+
+      setTimeout(() => {
+        if (!finishedRunning) {
+          vm.stopAll();
+
+          console.error(`${logModule} Maximum execution time exceeded`);
+
+          toast.error(intl.formatMessage(messages.timeoutExceeded));
+        }
+      }, maximumExecutionTimeInMs);
+    });
+
+    const { passedAssertions, failedAssertions } = await waitForAssertions;
+
+    const mapToTest = (assertion: Assertion): Test => ({
+      identifier: `${assertion.targetName}${scratchIdentifierSeparator}${assertion.blockId}`,
+      name: assertion.assertionName,
+      contextName: assertion.targetName,
+    });
+
+    // wait for project run to finish
+    return buildSubmission(
+      json,
+      passedAssertions.map(mapToTest),
+      failedAssertions.map(mapToTest),
+    );
+  } catch (e) {
+    console.error(`${logModule} RPC: getSubmission failed with error:`, e);
+    toast.error(intl.formatMessage(messages.cannotSaveProject));
+
+    throw e;
+  } finally {
+    if (!assertionsEnabled) {
+      vm.runtime.emit("DISABLE_ASSERTIONS");
+    }
+  }
+};
+
 export const useEmbeddedScratch = (
   vm: VM | null,
   intl: InjectedIntl,
@@ -67,212 +165,145 @@ export const useEmbeddedScratch = (
     [],
   );
 
-  const handleRequest = useCallback<Parameters<typeof useIframeParent>[0]>(
-    async (request, respondToMessageEvent) => {
-      console.debug(`${logModule} VM: ${!!vm}, RPC: ${request.procedure}`);
-      switch (request.procedure) {
-        case "getHeight":
-          respondToMessageEvent({
-            procedure: "getHeight",
-            result: document.body.scrollHeight,
-          });
-          break;
-        case "getSubmission":
-          if (vm) {
-            if (!areAssertionsEnabled(vm)) {
-              respondToMessageEvent({
-                procedure: "getSubmission",
-                result: {
-                  file: new Blob([vm.toJSON()], {
-                    type: "application/json",
-                  }),
-                  passedTests: [],
-                  failedTests: [],
-                },
-              });
+  const handleRequest = useMemo<Parameters<typeof useIframeParent>[0]>(
+    () => ({
+      /* eslint-disable @typescript-eslint/explicit-function-return-type */
+      getHeight: async (_request) => ({
+        procedure: "getHeight",
+        result: document.body.scrollHeight,
+      }),
+      getSubmission: async (_request) => {
+        if (!vm) {
+          throw new VmUnavailableError();
+        }
 
-              return;
-            }
-            // if assertions are enabled, we need to run the tests before submitting
+        const submission = await getSubmission(vm, intl);
 
-            // first stop the project and reset the state
-            vm.runtime.stopAll();
+        return {
+          procedure: "getSubmission",
+          result: submission,
+        };
+      },
+      getTask: async (request) => {
+        if (!vm) {
+          throw new VmUnavailableError();
+        }
 
-            try {
-              // then save project state
-              const json = vm.toJSON();
+        try {
+          const task = await saveCrtProject(vm);
+          const submission = await getSubmission(vm, intl);
 
-              const maximumExecutionTimeInMs =
-                vm.crtConfig?.maximumExecutionTimeInMs ??
-                defaultMaximumExecutionTimeInMs;
+          return {
+            procedure: "getTask",
+            result: {
+              file: task,
+              initialSolution: submission,
+            },
+          };
+        } catch (e) {
+          console.error(
+            `${logModule} RPC: ${request.procedure} failed with error:`,
+            e,
+          );
+          toast.error(intl.formatMessage(messages.cannotSaveProject));
 
-              const waitForAssertions = new Promise<{
-                passedAssertions: Assertion[];
-                failedAssertions: Assertion[];
-              }>((resolve) => {
-                let finishedRunning = false;
-                vm.runtime.once(
-                  "ASSERTIONS_CHECKED",
-                  (passedAssertions, failedAssertions) => {
-                    finishedRunning = true;
+          throw e;
+        }
+      },
+      loadTask: async (request) => {
+        if (!vm) {
+          throw new VmUnavailableError();
+        }
 
-                    resolve({
-                      passedAssertions,
-                      failedAssertions,
-                    });
-                  },
-                );
+        try {
+          setLocale(request.arguments.language);
 
-                // once the project is backed up, run the project
-                vm.greenFlag();
+          console.debug(`${logModule} Loading project`);
+          const sb3Project = await request.arguments.task.arrayBuffer();
+          await loadCrtProject(vm, sb3Project);
 
-                setTimeout(() => {
-                  if (!finishedRunning) {
-                    vm.stopAll();
+          return {
+            procedure: "loadTask",
+          };
+        } catch (e) {
+          console.error(
+            `${logModule} RPC: ${request.procedure} failed with error:`,
+            e,
+          );
+          toast.error(intl.formatMessage(messages.cannotLoadProject));
 
-                    console.error(
-                      `${logModule} Maximum execution time exceeded`,
-                    );
+          throw e;
+        }
+      },
+      loadSubmission: async (request) => {
+        if (!vm) {
+          throw new VmUnavailableError();
+        }
 
-                    toast.error(intl.formatMessage(messages.timeoutExceeded));
-                  }
-                }, maximumExecutionTimeInMs);
-              });
+        setLocale(request.arguments.language);
 
-              const { passedAssertions, failedAssertions } =
-                await waitForAssertions;
+        const sb3Project = await request.arguments.task.arrayBuffer();
+        const submission = await request.arguments.submission.text();
 
-              const mapToTest = (assertion: Assertion): Test => ({
-                identifier: `${assertion.targetName}${scratchIdentifierSeparator}${assertion.blockId}`,
-                name: assertion.assertionName,
-                contextName: assertion.targetName,
-              });
+        const zip = new JSZip();
+        await zip.loadAsync(sb3Project);
 
-              // wait for project run to finish
-              respondToMessageEvent({
-                procedure: "getSubmission",
-                result: {
-                  file: new Blob([json], {
-                    type: "application/json",
-                  }),
-                  passedTests: passedAssertions.map(mapToTest),
-                  failedTests: failedAssertions.map(mapToTest),
-                },
-              });
-            } catch (e) {
-              console.error(
-                `${logModule} RPC: ${request.procedure} failed with error:`,
-                e,
-              );
-              toast.error(intl.formatMessage(messages.cannotSaveProject));
-            }
-          }
-          break;
-        case "getTask":
-          if (vm) {
-            try {
-              const content = await saveCrtProject(vm);
+        zip.remove("project.json");
+        zip.file("project.json", submission);
 
-              respondToMessageEvent({
-                procedure: "getTask",
-                result: content,
-              });
-            } catch (e) {
-              console.error(
-                `${logModule} RPC: ${request.procedure} failed with error:`,
-                e,
-              );
-              toast.error(intl.formatMessage(messages.cannotSaveProject));
+        const taskMergedWithSubmission = await zip
+          .generateAsync({
+            // options consistent with https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/virtual-machine.js#L400C19-L407C12
+            type: "blob",
+            mimeType: "application/x.scratch.sb3",
+            compression: "DEFLATE",
+            compressionOptions: {
+              level: 6,
+            },
+          })
+          .then((blob) => blob.arrayBuffer());
+
+        try {
+          console.debug(`${logModule} Loading project`);
+          await loadCrtProject(vm, taskMergedWithSubmission);
+          const { subTaskId } = request.arguments;
+
+          if (subTaskId) {
+            const target = vm.runtime.targets.find(
+              (target) => target.getName() === subTaskId,
+            );
+
+            if (target) {
+              vm.setEditingTarget(target.id);
             }
           }
-          break;
-        case "loadTask":
-          if (vm) {
-            try {
-              setLocale(request.arguments.language);
 
-              console.debug(`${logModule} Loading project`);
-              const sb3Project = await request.arguments.task.arrayBuffer();
-              await loadCrtProject(vm, sb3Project);
+          return {
+            procedure: "loadSubmission",
+          };
+        } catch (e) {
+          console.error(`${logModule} Project load failure: ${e}`);
+          toast.error(intl.formatMessage(messages.cannotLoadProject));
 
-              respondToMessageEvent({
-                procedure: "loadTask",
-              });
-            } catch (e) {
-              console.error(
-                `${logModule} RPC: ${request.procedure} failed with error:`,
-                e,
-              );
-              toast.error(intl.formatMessage(messages.cannotLoadProject));
-            }
-          }
-          break;
-        case "loadSubmission":
-          if (vm) {
-            setLocale(request.arguments.language);
+          throw e;
+        }
+      },
+      setLocale: async (request) => {
+        if (!vm) {
+          throw new VmUnavailableError();
+        }
+        // save content
+        const sb3Project = await saveCrtProject(vm);
 
-            const sb3Project = await request.arguments.task.arrayBuffer();
-            const submission = await request.arguments.submission.text();
+        // change language - apparently scratch resets the content with this?
+        setLocale(request.arguments);
+        await loadCrtProject(vm, await sb3Project.arrayBuffer());
 
-            const zip = new JSZip();
-            await zip.loadAsync(sb3Project);
-
-            zip.remove("project.json");
-            zip.file("project.json", submission);
-
-            const taskMergedWithSubmission = await zip
-              .generateAsync({
-                // options consistent with https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/virtual-machine.js#L400C19-L407C12
-                type: "blob",
-                mimeType: "application/x.scratch.sb3",
-                compression: "DEFLATE",
-                compressionOptions: {
-                  level: 6,
-                },
-              })
-              .then((blob) => blob.arrayBuffer());
-
-            try {
-              console.debug(`${logModule} Loading project`);
-              await loadCrtProject(vm, taskMergedWithSubmission);
-              const { subTaskId } = request.arguments;
-
-              if (subTaskId) {
-                const target = vm.runtime.targets.find(
-                  (target) => target.getName() === subTaskId,
-                );
-
-                if (target) {
-                  vm.setEditingTarget(target.id);
-                }
-              }
-              respondToMessageEvent({
-                procedure: "loadSubmission",
-              });
-            } catch (e) {
-              console.error(`${logModule} Project load failure: ${e}`);
-              toast.error(intl.formatMessage(messages.cannotLoadProject));
-            }
-          }
-          break;
-        case "setLocale":
-          if (vm) {
-            // save content
-            const sb3Project = await saveCrtProject(vm);
-
-            // change language - apparently scratch resets the content with this?
-            setLocale(request.arguments);
-            await loadCrtProject(vm, await sb3Project.arrayBuffer());
-
-            respondToMessageEvent({
-              procedure: "setLocale",
-            });
-          }
-          break;
-        default:
-          break;
-      }
-    },
+        return {
+          procedure: "setLocale",
+        };
+      },
+    }),
     [vm],
   );
 
