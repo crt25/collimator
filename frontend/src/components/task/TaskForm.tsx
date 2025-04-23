@@ -13,9 +13,11 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Submission } from "app-iframe-message-react/src";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
+  CreateSolutionTestDto,
   TaskType,
   UpdateReferenceSolutionDto,
 } from "@/api/collimator/generated/models";
@@ -123,71 +125,112 @@ type CreateReferenceSolutionDtoWithId = UpdateReferenceSolutionDto & {
   isNew?: boolean;
 };
 
-export type TaskFormValues = {
+type TaskFormValues = {
   title: string;
   description: string;
   type: TaskType;
   referenceSolutions: CreateReferenceSolutionDtoWithId[];
   taskFile: Blob;
+  initialSolution: UpdateReferenceSolutionDto | null;
+  initialSolutionFile: Blob | null;
   referenceSolutionFiles: { [key: number]: Blob };
 };
 
-const getYupSchema = (intl: IntlShape) => ({
-  title: yup.string().required(),
-  description: yup.string().required(),
-  type: yup.string().oneOf(Object.values(TaskType)).required(),
-  referenceSolutions: yup
-    .array(
-      yup
-        .object({
-          id: yup.number().required(),
-          isNew: yup.boolean(),
-          title: yup.string().required(),
-          description: yup.string().required(),
-          tests: yup
-            .array(
-              yup
-                .object({
-                  identifier: yup.string().nullable().defined(),
-                  name: yup.string().required(),
-                  contextName: yup.string().nullable().defined(),
-                  passed: yup.boolean().required(),
-                })
-                .required(),
-            )
-            .required(),
-        })
-        .required(),
-    )
-    .required(),
-  taskFile: yup
-    .mixed<Blob>()
-    .test(
-      "is-blob",
-      intl.formatMessage(messages.blobValidation),
-      (v) => v instanceof Blob,
-    )
-    .required(),
-  referenceSolutionFiles: yup
-    .mixed<{ [key: number]: Blob }>()
-    .test(
-      "is-blob-map",
-      intl.formatMessage(messages.blobValidation),
-      (v) =>
-        typeof v === "object" &&
-        Object.values(v).every((v) => v instanceof Blob),
-    )
-    .required()
-    .test(
-      "length-match",
-      intl.formatMessage(messages.referenceSolutionsLengthValidation),
-      (blobMap, { parent: { referenceSolutions } }) =>
-        Array.isArray(referenceSolutions) &&
-        Object.values(blobMap).length === referenceSolutions.length,
-    )
-    .required(),
-  _fileChanged: yup.boolean().required(),
-});
+export type TaskFormSubmission = {
+  title: string;
+  description: string;
+  type: TaskType;
+  taskFile: Blob;
+  referenceSolutions: UpdateReferenceSolutionDto[];
+  referenceSolutionsFiles: Blob[];
+};
+
+const getYupSchema = (intl: IntlShape) => {
+  const referenceSolutionBase = {
+    title: yup.string().defined(),
+    description: yup.string().defined(),
+    isInitial: yup.boolean().required(),
+    tests: yup
+      .array(
+        yup
+          .object({
+            identifier: yup.string().nullable().defined(),
+            name: yup.string().required(),
+            contextName: yup.string().nullable().defined(),
+            passed: yup.boolean().required(),
+          })
+          .required(),
+      )
+      .required(),
+  };
+
+  const referenceSolution = yup
+    .object({
+      id: yup.number().nullable().defined(),
+      ...referenceSolutionBase,
+    })
+    .nullable()
+    .defined();
+
+  const referenceSolutionWithId = yup
+    .object({
+      id: yup.number().required(),
+      isNew: yup.boolean(),
+      ...referenceSolutionBase,
+    })
+    .required();
+
+  return {
+    title: yup.string().required(),
+    description: yup.string().defined(),
+    type: yup.string().oneOf(Object.values(TaskType)).required(),
+    referenceSolutions: yup.array(referenceSolutionWithId).required(),
+    taskFile: yup
+      .mixed<Blob>()
+      .test(
+        "is-blob",
+        intl.formatMessage(messages.blobValidation),
+        (v) => v instanceof Blob,
+      )
+      .required(),
+    initialSolutionFile: yup
+      .mixed<Blob>()
+      .test(
+        "is-blob",
+        intl.formatMessage(messages.blobValidation),
+        (v) => v instanceof Blob || v === null,
+      )
+      .nullable()
+      .defined(),
+    initialSolution: referenceSolution,
+    referenceSolutionFiles: yup
+      .mixed<{ [key: number]: Blob }>()
+      .test(
+        "is-blob-map",
+        intl.formatMessage(messages.blobValidation),
+        (v) =>
+          typeof v === "object" &&
+          Object.values(v).every((v) => v instanceof Blob),
+      )
+      .required()
+      .test(
+        "length-match",
+        intl.formatMessage(messages.referenceSolutionsLengthValidation),
+        (blobMap, { parent: { referenceSolutions } }) =>
+          Array.isArray(referenceSolutions) &&
+          Object.values(blobMap).length === referenceSolutions.length,
+      )
+      .required(),
+    _fileChanged: yup.boolean().required(),
+  };
+};
+
+const createSubmissionTests = (
+  submission: Submission,
+): CreateSolutionTestDto[] => [
+  ...submission.failedTests.map((t) => ({ ...t, passed: false })),
+  ...submission.passedTests.map((t) => ({ ...t, passed: true })),
+];
 
 const TaskForm = ({
   submitMessage,
@@ -196,7 +239,7 @@ const TaskForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
-  onSubmit: (data: TaskFormValues) => Promise<void>;
+  onSubmit: (data: TaskFormSubmission) => Promise<void>;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
@@ -213,6 +256,8 @@ const TaskForm = ({
     type: TaskType;
     referenceSolutions: CreateReferenceSolutionDtoWithId[];
     taskFile: Blob;
+    initialSolution: UpdateReferenceSolutionDto | null;
+    initialSolutionFile: Blob | null;
     referenceSolutionFiles: { [key: number]: Blob };
     _fileChanged: boolean;
   }>;
@@ -277,6 +322,7 @@ const TaskForm = ({
           // add unique synthetic id that will be removed later
           id: Math.max(...referenceSolutions.map((s) => s.id), 0) + 1,
           isNew: true,
+          isInitial: false,
           title: "",
           description: "",
           tests: [],
@@ -308,7 +354,37 @@ const TaskForm = ({
 
       handleSubmit((v: TaskFormValues) => {
         data = v;
-        return onSubmit(v);
+
+        const referenceSolutions = data.referenceSolutions
+          .toSorted((a, b) => a.id - b.id)
+          .map((solution) => ({
+            ...solution,
+            id: solution.isNew ? null : solution.id,
+          }));
+
+        const referenceSolutionsFiles = Object.entries(
+          data.referenceSolutionFiles,
+        )
+          .toSorted(([a, _], [b, __]) => parseInt(a) - parseInt(b))
+          .map(([_id, file]) => file);
+
+        if (data.initialSolution && data.initialSolutionFile) {
+          referenceSolutions.push({
+            ...data.initialSolution,
+            id: null,
+          });
+
+          referenceSolutionsFiles.push(data.initialSolutionFile);
+        }
+
+        return onSubmit({
+          title: data.title,
+          description: data.description,
+          type: data.type,
+          taskFile: data.taskFile,
+          referenceSolutions,
+          referenceSolutionsFiles,
+        } satisfies TaskFormSubmission);
       })(e)
         .then(() => {
           // allow navigation after the task has been saved
@@ -344,6 +420,7 @@ const TaskForm = ({
   );
 
   const taskFile: Blob | undefined | null = watch("taskFile");
+
   const referenceSolutionFiles: { [key: number]: Blob } = watch(
     "referenceSolutionFiles",
   );
@@ -420,15 +497,42 @@ const TaskForm = ({
           initialTask={taskFile}
           taskType={taskType}
           onSave={(task) => {
-            setValue("taskFile", task, {
+            setValue("taskFile", task.file, {
               shouldDirty: true,
               shouldValidate: true,
             });
+
+            setValue("initialSolutionFile", task.initialSolution.file, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+
+            setValue(
+              "initialSolution",
+              {
+                id: null,
+                title: "",
+                description: "",
+                isInitial: true,
+                tests: createSubmissionTests(task.initialSolution),
+              },
+              {
+                shouldDirty: true,
+                shouldValidate: true,
+              },
+            );
           }}
         />
         <ValidationErrorMessage>
           {errors.taskFile?.message}
         </ValidationErrorMessage>
+        <ValidationErrorMessage>
+          {errors.initialSolution?.message}
+        </ValidationErrorMessage>
+        <ValidationErrorMessage>
+          {errors.initialSolutionFile?.message}
+        </ValidationErrorMessage>
+
         <h2>
           <FormattedMessage
             id="TaskForm.referenceSolutions"
@@ -529,7 +633,7 @@ const TaskForm = ({
           taskType={taskType}
           task={taskFile}
           solution={solutionFile}
-          onSave={(_, solution) => {
+          onSave={(solution) => {
             if (showSolveTaskModalForId === null) {
               throw new Error(
                 `Modal onSave was called while showSolveTaskModalForIndex is ${showSolveTaskModalForId}`,
@@ -542,10 +646,7 @@ const TaskForm = ({
 
             updateReferenceSolution(index, {
               ...referenceSolutions[index],
-              tests: [
-                ...solution.failedTests.map((t) => ({ ...t, passed: false })),
-                ...solution.passedTests.map((t) => ({ ...t, passed: true })),
-              ],
+              tests: createSubmissionTests(solution),
             });
 
             setValue(

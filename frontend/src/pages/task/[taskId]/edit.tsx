@@ -8,7 +8,7 @@ import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import PageHeader from "@/components/PageHeader";
-import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
+import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 
 const messages = defineMessages({
@@ -33,21 +33,9 @@ const EditTask = () => {
   const updateTask = useUpdateTask();
 
   const onSubmit = useCallback(
-    async (formValues: TaskFormValues) => {
+    async (taskSubmission: TaskFormSubmission) => {
       if (task.data && taskFile.data) {
-        await updateTask(task.data.id, {
-          title: formValues.title,
-          description: formValues.description,
-          type: formValues.type,
-          taskFile: formValues.taskFile,
-          referenceSolutions: formValues.referenceSolutions.map((solution) => ({
-            ...solution,
-            id: solution.isNew ? null : solution.id,
-          })),
-          referenceSolutionsFiles: Object.values(
-            formValues.referenceSolutionFiles,
-          ),
-        });
+        await updateTask(task.data.id, taskSubmission);
       }
     },
     [task.data, taskFile.data, updateTask],
@@ -71,23 +59,36 @@ const EditTask = () => {
           isLoading={[task.isLoading, taskFile.isLoading]}
           errors={[task.error, taskFile.error]}
         >
-          {([task, taskFile]) => (
-            <TaskForm
-              initialValues={{
-                ...task,
-                taskFile,
-                referenceSolutionFiles: task.referenceSolutions.reduce(
-                  (acc, solution) => {
-                    acc[solution.id] = solution.solution;
-                    return acc;
-                  },
-                  {} as Record<number, Blob>,
-                ),
-              }}
-              submitMessage={messages.submit}
-              onSubmit={onSubmit}
-            />
-          )}
+          {([task, taskFile]) => {
+            const initialSolution = task.referenceSolutions.find(
+              (s) => s.isInitial,
+            );
+
+            return (
+              <TaskForm
+                initialValues={{
+                  ...task,
+                  taskFile,
+                  initialSolution: initialSolution ?? null,
+                  initialSolutionFile: initialSolution?.solution ?? null,
+                  referenceSolutions: task.referenceSolutions.filter(
+                    (s) => !s.isInitial,
+                  ),
+                  referenceSolutionFiles: task.referenceSolutions
+                    .filter((s) => !s.isInitial)
+                    .reduce(
+                      (acc, solution) => {
+                        acc[solution.id] = solution.solution;
+                        return acc;
+                      },
+                      {} as Record<number, Blob>,
+                    ),
+                }}
+                submitMessage={messages.submit}
+                onSubmit={onSubmit}
+              />
+            );
+          }}
         </MultiSwrContent>
       </Container>
     </>
