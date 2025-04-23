@@ -125,6 +125,7 @@ export class TasksService {
               return {
                 title: solution.title,
                 description: solution.description,
+                isInitial: solution.isInitial,
                 tests: {
                   create: solution.tests,
                 },
