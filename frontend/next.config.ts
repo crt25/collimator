@@ -24,6 +24,11 @@ let nextConfig: NextConfig = {
     // https://sass-lang.com/documentation/breaking-changes/import/
     quietDeps: true,
   },
+
+  webpack: (config) => {
+    config.resolve.symlinks = false;
+    return config;
+  },
 };
 
 if (!process.env.BABEL_ENV || process.env.BABEL_ENV !== "coverage") {
