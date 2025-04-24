@@ -120,7 +120,7 @@ export const maximizeDistanceSum = (
   getBestCombination(
     numberOfAnalyses,
     distances,
-    // the initial best distance is 0, since we want to maximize the minimum distance
+    // the initial best distance is 0, since we want to maximize the total distance
     0,
     // since we take sum the distance, we start with 0
     0,
