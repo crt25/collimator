@@ -80,7 +80,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     selectedTask: session.tasks[0]?.id,
     selectedSubTaskId: undefined,
     isAutomaticGrouping: false,
-    numberOfGroups: 3,
     xAxis: AstCriterionType.statement,
     yAxis: MetaCriterionType.test,
     filters: [],
@@ -158,7 +157,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   const { isGroupingAvailable, categorizedDataPoints, groups, manualGroups } =
     useGrouping(
       state.isAutomaticGrouping,
-      state.numberOfGroups,
       filteredAnalyses,
       state.splits,
       state.xAxis,
@@ -281,20 +279,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     })
                   }
                 />
-
-                {state.isAutomaticGrouping && (
-                  <Input
-                    label={messages.numberOfGroups}
-                    type="number"
-                    value={state.numberOfGroups}
-                    onChange={(e) =>
-                      dispatch({
-                        type: AnalyzerStateActionType.setNumberOfGroups,
-                        numberOfGroups: parseInt(e.target.value),
-                      })
-                    }
-                  />
-                )}
 
                 {!isGroupingAvailable && (
                   <FormattedMessage

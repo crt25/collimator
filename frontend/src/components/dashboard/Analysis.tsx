@@ -123,7 +123,8 @@ const onLeaveLabel = (context: EventContext) => {
   return true;
 };
 
-const customShapeSizeFactor = 3;
+const referenceSolutionSizeFactor = 1;
+const starSizeFactor = 3;
 const customShapeStrokeFactor = 2;
 
 const TooltipContent = ({
@@ -429,6 +430,7 @@ const Analysis = ({
       } else if (isPartOfSelectionGroup) {
         borderColor = Colors.dataPoint.selectedBorderColor;
       }
+
       const starStrokeWidth = isSelected
         ? customShapeStrokeFactor * selectedDataPointBorderWidth
         : 0;
@@ -437,14 +439,14 @@ const Analysis = ({
 
       if (isReferenceSolution) {
         pointStyle = createReferenceSymbol(
-          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          referenceSolutionSizeFactor * (size + selectedDataPointBorderWidth),
           pattern,
           isSelected ? 1 : 0,
           borderColor,
         );
       } else if (isBookmarked) {
         pointStyle = createStar(
-          customShapeSizeFactor * (size + selectedDataPointBorderWidth),
+          starSizeFactor * (size + selectedDataPointBorderWidth),
           pattern,
           starStrokeWidth,
           borderColor,
