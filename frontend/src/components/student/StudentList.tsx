@@ -20,9 +20,10 @@ const messages = defineMessages({
 const nameTemplate = (student: ClassStudent) => {
   return (
     <StudentName
+      studentId={student.studentId}
       pseudonym={student.pseudonym}
       keyPairId={student.keyPairId}
-      testId={`student-${student.id}-name`}
+      testId={`student-${student.studentId}-name`}
     />
   );
 };

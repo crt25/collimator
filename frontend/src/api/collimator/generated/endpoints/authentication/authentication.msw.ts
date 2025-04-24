@@ -61,6 +61,13 @@ export const getAuthenticationControllerLoginStudentV0ResponseMock = (
   ...overrideResponse,
 });
 
+export const getAuthenticationControllerLoginAnonymousStudentV0ResponseMock = (
+  overrideResponse: Partial<StudentAuthenticationResponseDto> = {},
+): StudentAuthenticationResponseDto => ({
+  authenticationToken: faker.string.alpha(20),
+  ...overrideResponse,
+});
+
 export const getAuthenticationControllerFindPublicKeyV0MockHandler = (
   overrideResponse?:
     | PublicKeyDto
@@ -134,8 +141,37 @@ export const getAuthenticationControllerLoginStudentV0MockHandler = (
     );
   });
 };
+
+export const getAuthenticationControllerLoginAnonymousStudentV0MockHandler = (
+  overrideResponse?:
+    | StudentAuthenticationResponseDto
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) =>
+        | Promise<StudentAuthenticationResponseDto>
+        | StudentAuthenticationResponseDto),
+) => {
+  return http.post(
+    "*/api/v0/authentication/login/student/anonymous",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getAuthenticationControllerLoginAnonymousStudentV0ResponseMock(),
+        ),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    },
+  );
+};
 export const getAuthenticationMock = () => [
   getAuthenticationControllerFindPublicKeyV0MockHandler(),
   getAuthenticationControllerLoginV0MockHandler(),
   getAuthenticationControllerLoginStudentV0MockHandler(),
+  getAuthenticationControllerLoginAnonymousStudentV0MockHandler(),
 ];

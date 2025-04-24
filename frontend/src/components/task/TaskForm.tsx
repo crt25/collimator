@@ -186,6 +186,7 @@ const getYupSchema = (intl: IntlShape) => ({
         Object.values(blobMap).length === referenceSolutions.length,
     )
     .required(),
+  _fileChanged: yup.boolean().required(),
 });
 
 const TaskForm = ({
@@ -213,6 +214,7 @@ const TaskForm = ({
     referenceSolutions: CreateReferenceSolutionDtoWithId[];
     taskFile: Blob;
     referenceSolutionFiles: { [key: number]: Blob };
+    _fileChanged: boolean;
   }>;
 
   const resolver = useYupResolver(schema);
@@ -225,6 +227,7 @@ const TaskForm = ({
       referenceSolutionFiles: [],
       referenceSolutions: [],
       ...initialValues,
+      _fileChanged: false,
     }),
     [initialValues],
   );
@@ -236,7 +239,7 @@ const TaskForm = ({
     watch,
     reset,
     setValue,
-  } = useForm<TaskFormValues>({
+  } = useForm<TaskFormValues & { _fileChanged: boolean }>({
     resolver,
     defaultValues,
   });
@@ -551,6 +554,12 @@ const TaskForm = ({
               },
               { shouldDirty: true, shouldValidate: true },
             );
+
+            // react hook form does not detect the file change, so we need to set it manually
+            setValue("_fileChanged", true, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
           }}
         />
 

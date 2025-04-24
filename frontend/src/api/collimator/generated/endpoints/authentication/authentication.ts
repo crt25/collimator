@@ -7,6 +7,7 @@
  */
 import { fetchApi } from "../../../../fetch";
 import type {
+  AnonymousStudentAuthenticationRequestDto,
   AuthenticationRequestDto,
   AuthenticationResponseDto,
   PublicKeyDto,
@@ -67,6 +68,25 @@ export const authenticationControllerLoginStudentV0 = async (
       method: "POST",
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(studentAuthenticationRequestDto),
+    },
+  );
+};
+
+export const getAuthenticationControllerLoginAnonymousStudentV0Url = () => {
+  return `/api/v0/authentication/login/student/anonymous`;
+};
+
+export const authenticationControllerLoginAnonymousStudentV0 = async (
+  anonymousStudentAuthenticationRequestDto: AnonymousStudentAuthenticationRequestDto,
+  options?: RequestInit,
+): Promise<StudentAuthenticationResponseDto> => {
+  return fetchApi<StudentAuthenticationResponseDto>(
+    getAuthenticationControllerLoginAnonymousStudentV0Url(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(anonymousStudentAuthenticationRequestDto),
     },
   );
 };

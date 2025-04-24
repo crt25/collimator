@@ -127,7 +127,7 @@ describe("ClassesController", () => {
           select: { id: true, name: true },
         },
         students: {
-          select: { id: true, keyPairId: true, pseudonym: true },
+          select: { studentId: true, keyPairId: true, pseudonym: true },
         },
       },
       where: { id: 1 },

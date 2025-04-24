@@ -1,8 +1,10 @@
 import { randomBytes } from "crypto";
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import {
+  AnonymousStudent,
+  AuthenticatedStudent,
   AuthenticationProvider,
-  Student,
+  Student as PrismaStudent,
   User,
   UserType,
 } from "@prisma/client";
@@ -57,6 +59,11 @@ export type WithToken = {
 
 export type UserIdentityWithKey = UserIdentity & WithKey;
 export type UserIdentityWithKeyAndToken = UserIdentityWithKey & WithToken;
+
+export type Student = PrismaStudent & {
+  authenticatedStudent: AuthenticatedStudent | null;
+  anonymousStudent: AnonymousStudent | null;
+};
 
 const selectUserIdentityWithKey = {
   id: true,
@@ -337,19 +344,63 @@ export class AuthenticationService {
   ): Promise<AuthToken> {
     const rawPseudonym = Buffer.from(pseudonym, "base64");
 
-    let student = await this.prisma.student.findUnique({
-      where: { pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym } },
-    });
-
-    if (!student) {
-      student = await this.prisma.student.create({
-        data: {
-          pseudonym: rawPseudonym,
-          classId,
-          keyPairId,
+    const authenticatedStudent =
+      await this.prisma.authenticatedStudent.findUnique({
+        where: {
+          pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
         },
       });
-    }
+
+    const student =
+      authenticatedStudent === null
+        ? await this.prisma.student.create({
+            data: {
+              authenticatedStudent: {
+                create: {
+                  pseudonym: rawPseudonym,
+                  classId,
+                  keyPairId,
+                },
+              },
+            },
+          })
+        : await this.prisma.student.findUniqueOrThrow({
+            where: {
+              id: authenticatedStudent.studentId,
+            },
+          });
+
+    const randomToken = generateToken();
+
+    // before signing in, delete all expired tokens
+    await this.deleteExpiredTokens();
+
+    const authToken = await this.prisma.authenticationToken.create({
+      data: {
+        token: randomToken,
+        studentId: student.id,
+        lastUsedAt: new Date(),
+      },
+    });
+
+    return authToken.token;
+  }
+
+  /**
+   * Create a new authentication token for a student with the given pseudonym and class id.
+   * @param sessionId The id of the session the student is signed in to.
+   * @returns A new authentication token.
+   */
+  async signInAnonymousStudent(sessionId: number): Promise<AuthToken> {
+    const student = await this.prisma.student.create({
+      data: {
+        anonymousStudent: {
+          create: {
+            sessionId,
+          },
+        },
+      },
+    });
 
     const randomToken = generateToken();
 
@@ -376,7 +427,12 @@ export class AuthenticationService {
       },
       include: {
         user: true,
-        student: true,
+        student: {
+          include: {
+            authenticatedStudent: true,
+            anonymousStudent: true,
+          },
+        },
       },
     });
 
@@ -400,7 +456,7 @@ export class AuthenticationService {
   }
 
   isStudent(user: User | Student): user is Student {
-    return "pseudonym" in user;
+    return "authenticatedStudent" in user || "anonymousStudent" in user;
   }
 
   static setKeyOnContext<T>(

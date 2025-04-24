@@ -9,6 +9,7 @@ import {
 import { ApiForbiddenResponse, ApiOkResponse } from "@nestjs/swagger";
 import { User } from "@prisma/client";
 import { AuthorizationService } from "../authorization/authorization.service";
+import { SessionsService } from "../sessions/sessions.service";
 import { AuthenticationService } from "./authentication.service";
 import { AuthenticationRequestDto } from "./dto/authentication-request.dto";
 import { AuthenticationResponseDto } from "./dto/authentication-response.dto";
@@ -17,12 +18,14 @@ import { StudentAuthenticationRequestDto } from "./dto/student-authentication-re
 import { StudentAuthenticationResponseDto } from "./dto/student-authentication-response.dto";
 import { AuthenticatedUser } from "./authenticated-user.decorator";
 import { PublicKeyDto } from "./dto/public-key.dto";
+import { AnonymousStudentAuthenticationRequestDto } from "./dto/anonymous-student-authentication-request.dto";
 
 @Controller("authentication")
 export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService,
     private readonly authorizationService: AuthorizationService,
+    private readonly sessionsService: SessionsService,
   ) {}
 
   @Get("/public-key/:fingerprint")
@@ -74,6 +77,32 @@ export class AuthenticationController {
       request.classId,
       request.keyPairId,
     );
+
+    return StudentAuthenticationResponseDto.fromQueryResult({
+      authenticationToken,
+    });
+  }
+
+  @Post("login/student/anonymous")
+  @ApiOkResponse({ type: StudentAuthenticationResponseDto })
+  @ApiForbiddenResponse()
+  @Public()
+  async loginAnonymousStudent(
+    @Body() request: AnonymousStudentAuthenticationRequestDto,
+  ): Promise<StudentAuthenticationResponseDto> {
+    const session = await this.sessionsService.findByIdAndClassOrThrow(
+      request.sessionId,
+      request.classId,
+    );
+
+    if (!session.isAnonymous) {
+      throw new UnauthorizedException();
+    }
+
+    const authenticationToken =
+      await this.authenticationService.signInAnonymousStudent(
+        request.sessionId,
+      );
 
     return StudentAuthenticationResponseDto.fromQueryResult({
       authenticationToken,

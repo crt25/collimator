@@ -9,7 +9,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
   readonly sessionId: number;
   readonly studentId: number;
   readonly studentSolutionId: number;
-  readonly studentPseudonym: string;
+  readonly studentPseudonym: string | null;
   readonly studentKeyPairId: number | null;
 
   protected constructor({

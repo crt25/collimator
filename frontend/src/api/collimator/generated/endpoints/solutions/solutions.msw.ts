@@ -108,7 +108,10 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
     genericAst: faker.string.alpha(20),
     studentId: faker.number.int({ min: undefined, max: undefined }),
     studentSolutionId: faker.number.int({ min: undefined, max: undefined }),
-    studentPseudonym: faker.string.alpha(20),
+    studentPseudonym: faker.helpers.arrayElement([
+      faker.string.alpha(20),
+      null,
+    ]),
     sessionId: faker.number.int({ min: undefined, max: undefined }),
   })),
   referenceAnalyses: Array.from(

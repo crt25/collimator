@@ -4,7 +4,11 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { ClassId } from "./dto";
 
 type Students = {
-  students: { id: number; pseudonym: Uint8Array; keyPairId: number | null }[];
+  students: {
+    studentId: number;
+    pseudonym: Uint8Array;
+    keyPairId: number | null;
+  }[];
 };
 type Teacher = { teacher: { name: string | null } };
 type SessionIds = { sessions: { id: number }[] };
@@ -26,7 +30,9 @@ export class ClassesService {
           },
         },
         teacher: { select: { id: true, name: true } },
-        students: { select: { id: true, pseudonym: true, keyPairId: true } },
+        students: {
+          select: { studentId: true, pseudonym: true, keyPairId: true },
+        },
       },
     });
   }

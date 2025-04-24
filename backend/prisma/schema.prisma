@@ -53,8 +53,8 @@ model KeyPair {
   salt Bytes
 
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
-  teacher     User                  @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  Student     Student[]
+  teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  Student     AuthenticatedStudent[]
 }
 
 model EncryptedPrivateKey {
@@ -71,24 +71,41 @@ model Class {
   name      String
   teacherId Int
 
-  teacher  User      @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  students Student[]
+  teacher  User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students AuthenticatedStudent[]
   sessions Session[]
 }
 
 model Student {
-  id        Int   @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
-  pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
-  classId   Int
-  keyPairId Int? // if null, the respective key is no longer available
+  id Int @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
+
+  authenticatedStudent AuthenticatedStudent?
+  anonymousStudent     AnonymousStudent?
 
   authenticationTokens AuthenticationToken[]
-  class                Class                 @relation(fields: [classId], references: [id], onDelete: Restrict)
   solutions            StudentSolution[]
-  encryptedUsing       KeyPair?              @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
   // studentActivity StudentActivity[]
+}
+
+model AuthenticatedStudent {
+  studentId Int   @id
+  pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
+  classId   Int // authenticated students are assigned to a class,
+  keyPairId Int? // if null, the respective key is no longer available
+
+  student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class          Class    @relation(fields: [classId], references: [id], onDelete: Restrict)
+  encryptedUsing KeyPair? @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
 
   @@unique([pseudonym, classId], name: "pseudonymUniquePerClass")
+}
+
+model AnonymousStudent {
+  studentId Int @id
+  sessionId Int // anonymous students are always assigned to a session
+
+  student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: Restrict)
 }
 
 enum LessonVisibility {
@@ -126,10 +143,11 @@ model Session {
   status          SessionStatus @default(CREATED)
   isAnonymous     Boolean       @default(false)
 
-  lesson    Lesson?           @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
-  class     Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
-  tasks     SessionTask[]
-  solutions StudentSolution[]
+  lesson            Lesson?            @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
+  class             Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  tasks             SessionTask[]
+  solutions         StudentSolution[]
+  anonymousStudents AnonymousStudent[]
   // studentActivity StudentActivity[]
 }
 

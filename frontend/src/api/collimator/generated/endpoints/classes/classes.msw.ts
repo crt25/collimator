@@ -60,7 +60,7 @@ export const getClassesControllerFindOneV0ResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => ({
-    id: faker.number.int({ min: undefined, max: undefined }),
+    studentId: faker.number.int({ min: undefined, max: undefined }),
     keyPairId: faker.helpers.arrayElement([
       faker.number.int({ min: undefined, max: undefined }),
       null,

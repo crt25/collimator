@@ -162,6 +162,7 @@ const DissimilarityAnalysis = ({
                   ? dissimilarAnalyses.map((analysis) => (
                       <CodeViewCol key={analysis.solutionId} xs={12} lg={6}>
                         <StudentName
+                          studentId={analysis.studentId}
                           pseudonym={analysis.studentPseudonym}
                           keyPairId={analysis.studentKeyPairId}
                         />
