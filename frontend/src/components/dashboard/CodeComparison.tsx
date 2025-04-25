@@ -8,12 +8,14 @@ import { decodeBase64 } from "@/utilities/crypto/base64";
 import {
   AuthenticationContext,
   AuthenticationContextType,
+  isFullyAuthenticated,
 } from "@/contexts/AuthenticationContext";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { compareLabels } from "@/utilities/comparisons";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
+import { useStudentAnonymization } from "@/hooks/useStudentAnonymization";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
 import Select from "../form/Select";
@@ -116,10 +118,8 @@ type Option = { label: string; value: string };
 const getOptions = async (
   authContext: AuthenticationContextType,
   analyses: CurrentAnalysis[],
+  showStudentName: boolean,
 ): Promise<Option[]> => {
-  // TODO: && this with a parameter
-  const showStudentName = false && "keyPair" in authContext;
-
   const options = await Promise.all(
     analyses.map(async (analysis) => {
       if (analysis instanceof CurrentStudentAnalysis) {
@@ -132,7 +132,11 @@ const getOptions = async (
 
         let label = getStudentNickname(studentId, studentPseudonym);
 
-        if (showStudentName && studentPseudonym) {
+        if (
+          showStudentName &&
+          studentPseudonym &&
+          isFullyAuthenticated(authContext)
+        ) {
           try {
             const decryptedIdentity: StudentIdentity = JSON.parse(
               await authContext.keyPair.decryptString(
@@ -231,6 +235,7 @@ const CodeComparison = ({
 }) => {
   const intl = useIntl();
   const authContext = useContext(AuthenticationContext);
+  const [anonymizationState] = useStudentAnonymization();
   const [modalSide, setModalSide] = useState<"left" | "right" | null>(null);
 
   const [leftOptions, setLeftOptions] = useState<Option[]>([]);
@@ -296,25 +301,28 @@ const CodeComparison = ({
 
     let isCancelled = false;
 
-    getOptions(authContext, analyses).then((options) => {
-      if (isCancelled) {
-        return;
-      }
+    getOptions(authContext, analyses, anonymizationState.showActualName).then(
+      (options) => {
+        if (isCancelled) {
+          return;
+        }
 
-      setLeftOptions([
-        {
-          label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSolutionIdValue,
-        },
-        ...options,
-      ]);
-    });
+        setLeftOptions([
+          {
+            label: intl.formatMessage(messages.defaultSolutionOption),
+            value: defaultSolutionIdValue,
+          },
+          ...options,
+        ]);
+      },
+    );
 
     return () => {
       isCancelled = true;
     };
   }, [
     intl,
+    anonymizationState.showActualName,
     categorizedDataPoints,
     selectedLeftGroup,
     authContext,
@@ -341,25 +349,28 @@ const CodeComparison = ({
 
     let isCancelled = false;
 
-    getOptions(authContext, analyses).then((options) => {
-      if (isCancelled) {
-        return;
-      }
+    getOptions(authContext, analyses, anonymizationState.showActualName).then(
+      (options) => {
+        if (isCancelled) {
+          return;
+        }
 
-      setRightOptions([
-        {
-          label: intl.formatMessage(messages.defaultSolutionOption),
-          value: defaultSolutionIdValue,
-        },
-        ...options,
-      ]);
+        setRightOptions([
+          {
+            label: intl.formatMessage(messages.defaultSolutionOption),
+            value: defaultSolutionIdValue,
+          },
+          ...options,
+        ]);
 
-      return () => {
-        isCancelled = true;
-      };
-    });
+        return () => {
+          isCancelled = true;
+        };
+      },
+    );
   }, [
     intl,
+    anonymizationState.showActualName,
     categorizedDataPoints,
     selectedRightGroup,
     authContext,

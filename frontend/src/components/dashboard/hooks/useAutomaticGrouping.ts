@@ -9,7 +9,6 @@ import { AutomaticGroupingType } from "./automatic-grouping/grouping-type";
 
 export const useAutomaticGrouping = (
   isAutomaticGrouping: boolean,
-  numberOfGroups: number,
   filteredAnalyses: FilteredAnalysis[],
   xAxis: AxesCriterionType,
   yAxis: AxesCriterionType,
@@ -25,8 +24,7 @@ export const useAutomaticGrouping = (
 
     const groups = await getAutomaticGroups(
       analyses,
-      numberOfGroups,
-      AutomaticGroupingType.agglomerativeClustering,
+      AutomaticGroupingType.referenceSolutionClustering,
       DistanceType.pqGrams,
     );
 
@@ -56,4 +54,4 @@ export const useAutomaticGrouping = (
     }
 
     return automaticGroups;
-  }, [isAutomaticGrouping, numberOfGroups, filteredAnalyses, xAxis, yAxis]);
+  }, [isAutomaticGrouping, filteredAnalyses, xAxis, yAxis]);

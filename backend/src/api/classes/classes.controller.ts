@@ -91,6 +91,14 @@ export class ClassesController {
     }
 
     const klass = await this.classesService.findByIdOrThrow(id);
+
+    // workaround for bug where class-transformer loses the Uint8Array type
+    // see https://github.com/typestack/class-transformer/issues/1815
+    // Buffers do not seem to be affected by this bug
+    klass.students.forEach(
+      (student) => (student.pseudonym = Buffer.from(student.pseudonym)),
+    );
+
     return ExistingClassExtendedDto.fromQueryResult(klass);
   }
 

@@ -3,6 +3,7 @@ import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { decodeBase64 } from "@/utilities/crypto";
 import { getStudentNickname } from "@/utilities/student-name";
+import { useStudentAnonymization } from "./useStudentAnonymization";
 
 const logModule = "[useStudentName]";
 
@@ -10,19 +11,17 @@ export const useStudentName = ({
   studentId,
   pseudonym,
   keyPairId,
-  showActualName,
 }: {
   studentId: number;
   pseudonym?: string | null;
   keyPairId?: number | null;
-  showActualName?: boolean;
 }): {
   name: string | null;
   isDecrypting: boolean;
-  isAnonymousUser: boolean;
 } => {
   const authContext = useContext(AuthenticationContext);
 
+  const [anonymizationState] = useStudentAnonymization();
   const [isDecrypting, setIsDecrypting] = useState(true);
   const [decryptedName, setDecryptedName] = useState<string | null>(null);
 
@@ -80,14 +79,13 @@ export const useStudentName = ({
   }, [authContext, pseudonym, keyPairId]);
 
   const name = useMemo(() => {
-    return !showActualName || !pseudonym
+    return !anonymizationState.showActualName || !pseudonym
       ? getStudentNickname(studentId, pseudonym)
       : decryptedName;
-  }, [showActualName, decryptedName, studentId, pseudonym]);
+  }, [anonymizationState.showActualName, decryptedName, studentId, pseudonym]);
 
   return {
     name,
     isDecrypting,
-    isAnonymousUser: !pseudonym,
   };
 };

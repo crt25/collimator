@@ -1,4 +1,22 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+type CustomStorageEventDetail = {
+  storageKey: string;
+  value: string;
+};
+
+const customStorageEventName = "localStorageEvent";
+
+const createCustomStorageEvent = (
+  storageKey: string,
+  value: string,
+): CustomEvent<CustomStorageEventDetail> =>
+  new CustomEvent<CustomStorageEventDetail>(customStorageEventName, {
+    detail: {
+      storageKey,
+      value,
+    } satisfies CustomStorageEventDetail,
+  });
 
 const getInitialValue = <T extends object>(
   valueOrFunction: T | (() => T),
@@ -23,10 +41,53 @@ export const useLocalStorage = <T extends object>(
   const updateValue = useCallback(
     (value: T) => {
       setStoredValue(value);
-      localStorage.setItem(storageKey, JSON.stringify(value));
+
+      const stringValue = JSON.stringify(value);
+      window.dispatchEvent(createCustomStorageEvent(storageKey, stringValue));
+      localStorage.setItem(storageKey, stringValue);
     },
     [storageKey],
   );
+
+  useEffect(() => {
+    // listen to window storage events to update the state when the localStorage changes
+    const handleStorageChange = (
+      key: string | null,
+      newValue: string | null,
+    ): void => {
+      if (key !== storageKey || newValue === null) {
+        return;
+      }
+
+      setStoredValue(JSON.parse(newValue));
+    };
+
+    const handleOtherWindowStorageChange = (event: StorageEvent): void =>
+      handleStorageChange(event.key, event.newValue);
+
+    const handleOwnWindowStorageChange = (event: Event): void => {
+      if (!(event instanceof CustomEvent)) {
+        return;
+      }
+
+      const { storageKey, value } = event.detail as CustomStorageEventDetail;
+      handleStorageChange(storageKey, value);
+    };
+
+    window.addEventListener("storage", handleOtherWindowStorageChange);
+    window.addEventListener(
+      customStorageEventName,
+      handleOwnWindowStorageChange,
+    );
+
+    return (): void => {
+      window.removeEventListener("storage", handleOtherWindowStorageChange);
+      window.removeEventListener(
+        customStorageEventName,
+        handleOwnWindowStorageChange,
+      );
+    };
+  }, [storageKey]);
 
   return [storedValue, updateValue];
 };
