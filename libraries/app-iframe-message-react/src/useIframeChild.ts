@@ -26,7 +26,7 @@ export const useIframeChild = (
   >;
   iframeRef: (node: HTMLIFrameElement | null) => void;
 } => {
-  const [iframe, setIFrame] = useState<HTMLIFrameElement | null>(null);
+  const [iframe, setIframe] = useState<HTMLIFrameElement | null>(null);
   const isIFrameLoaded = useRef<boolean>(false);
 
   const crtPlatform = useRef<PlatformCrtIframeApi>(
@@ -92,7 +92,7 @@ export const useIframeChild = (
   // and once when it is unmounted due to the empty dependency array
   const getIframeRef = useCallback((node: HTMLIFrameElement | null) => {
     if (node !== null) {
-      setIFrame(node);
+      setIframe(node);
     }
 
     // see https://legacy.reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node

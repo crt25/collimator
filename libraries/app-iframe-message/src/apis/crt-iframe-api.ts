@@ -139,7 +139,7 @@ export abstract class CrtIframeApi<
         },
         reject: (error?: string): void => {
           console.error("Error in response", error, request);
-          reject(error);
+          reject(new Error(error));
         },
       };
 
@@ -183,9 +183,8 @@ export abstract class CrtIframeApi<
 
       // call the resolve function with the message
       if (this.isErrorResponse(response)) {
-        const errorMessage = (
-          "error" in response ? response.error : "Unknown error"
-        ) as string | undefined;
+        const errorMessage =
+          "error" in response ? response.error : "Unknown error";
 
         handleResponse.reject(errorMessage);
       } else {
