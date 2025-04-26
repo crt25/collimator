@@ -226,7 +226,7 @@ model ReferenceSolution {
   tests SolutionTest[]
 
   solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
-  task     Task     @relation(fields: [taskId], references: [id])
+  task     Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@unique([taskId, solutionHash])
 }
