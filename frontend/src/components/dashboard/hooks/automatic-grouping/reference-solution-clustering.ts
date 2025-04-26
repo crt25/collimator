@@ -44,7 +44,7 @@ export const referenceSolutionClustering = async (
   }
 
   // create the groups based on the reference solutions
-  const groups = referenceSolutions.map<AnalysisGroupWithReference>(
+  const referenceGroups = referenceSolutions.map<AnalysisGroupWithReference>(
     (analysis) => ({
       reference: analysis,
       analyses: [analysis],
@@ -52,33 +52,37 @@ export const referenceSolutionClustering = async (
   );
 
   // for each non-reference solution, find the closest group and add it to that group
-  const groupAssignments = await Promise.all(
+  const referenceAssignments = await Promise.all(
     nonReferenceSolutions.map(async (analysis) => {
-      const distances = await Promise.all(
-        groups.map((group, groupIdx) =>
+      const referenceDistances = await Promise.all(
+        referenceGroups.map((group, groupIdx) =>
           getAstDistance(
             distanceType,
             analysis.generalAst,
             group.reference.generalAst,
-          ).then((distance) => ({ distance, groupIdx })),
+          ).then((distance) => ({ distance, referenceGroupIndex: groupIdx })),
         ),
       );
 
       // find the group with the minimum distance
-      const bestAssignment = distances.reduce((prev, curr) =>
-        prev.distance < curr.distance ? prev : curr,
+      const bestReference = referenceDistances.reduce(
+        (best, reference) =>
+          best.distance < reference.distance ? best : reference,
+        { distance: Number.POSITIVE_INFINITY, referenceGroupIndex: 0 },
       );
 
       return {
         analysis,
-        groupIdx: bestAssignment.groupIdx,
+        referenceGroupIndex: bestReference.referenceGroupIndex,
       };
     }),
   );
 
-  for (const assignment of groupAssignments) {
-    groups[assignment.groupIdx].analyses.push(assignment.analysis);
+  for (const referenceAssignment of referenceAssignments) {
+    referenceGroups[referenceAssignment.referenceGroupIndex].analyses.push(
+      referenceAssignment.analysis,
+    );
   }
 
-  return groups;
+  return referenceGroups;
 };

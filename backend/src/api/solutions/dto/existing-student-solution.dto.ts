@@ -49,6 +49,7 @@ export class ExistingStudentSolutionDto
   readonly sessionId!: number;
 
   @ApiProperty()
+  @Expose()
   readonly taskId!: number;
 
   @ApiProperty({

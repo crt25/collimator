@@ -280,7 +280,7 @@ const TaskForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isValid, dirtyFields },
+    formState: { errors, isDirty, isValid },
     watch,
     reset,
     setValue,
@@ -288,8 +288,6 @@ const TaskForm = ({
     resolver,
     defaultValues,
   });
-
-  console.log(dirtyFields);
 
   const referenceSolutions = watch("referenceSolutions");
 

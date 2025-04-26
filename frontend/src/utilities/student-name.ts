@@ -8,7 +8,10 @@ export function getStudentNickname(
   studentId: number,
   pseudonym?: string | null,
 ): string {
-  const seed = pseudonym ? `pseudonym_${pseudonym}` : `anonymous_${studentId}`;
+  // We would prefer prefixing the pseudonym to avoid the two name spaces
+  // from clashing.
+  // However for backwards compatibility we don't, see https://github.com/crt25/collimator/pull/286/files#r2054086764.
+  const seed = pseudonym ? pseudonym : `anonymous_${studentId}`;
 
   return uniqueNamesGenerator({
     dictionaries: [adjectives, animals],
