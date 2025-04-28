@@ -11,6 +11,6 @@ export type GetTask = RemoteProcedureCall<{
   procedure: "getTask";
 
   caller: RemoteProcedureCallCaller.Platform;
-  arguments: undefined;
+  parameters: undefined;
   result: Task;
 }>;

@@ -1,8 +1,8 @@
 import { RemoteProcedureCallCaller } from "./remote-procedure-caller";
 
-type ConditionalArguments<Arguments> = Arguments extends undefined
-  ? { arguments?: Arguments }
-  : { arguments: Arguments };
+type ConditionalParameters<Parameters> = Parameters extends undefined
+  ? { parameters?: Parameters }
+  : { parameters: Parameters };
 
 type ConditionalResult<Result> = Result extends undefined
   ? { result?: Result }
@@ -16,9 +16,9 @@ export type RemoteProcedureCallRequestMessageBase<Procedure extends string> = {
 
 type RemoteProcedureCallRequestMessage<
   Procedure extends string,
-  Arguments,
+  Parameters,
 > = RemoteProcedureCallRequestMessageBase<Procedure> &
-  ConditionalArguments<Arguments>;
+  ConditionalParameters<Parameters>;
 
 export type RemoteProcedureCallResponseMessageBase<Procedure extends string> = {
   type: "response";
@@ -42,13 +42,13 @@ type RemoteProcedureCallResponseMessage<Procedure extends string, Result> =
 export type RemoteProcedureCall<Definition> = Definition extends {
   procedure: infer _Procedure extends string;
   caller: infer _Caller extends RemoteProcedureCallCaller;
-  arguments: infer _Arguments;
+  parameters: infer _Parameters;
   result: infer _Result;
 }
   ? RemoteProcedureCallConcrete<
       Definition["procedure"],
       Definition["caller"],
-      Definition["arguments"],
+      Definition["parameters"],
       Definition["result"]
     >
   : never;
@@ -56,12 +56,12 @@ export type RemoteProcedureCall<Definition> = Definition extends {
 type RemoteProcedureCallConcrete<
   Procedure extends string,
   Caller extends RemoteProcedureCallCaller,
-  Arguments,
+  Parameters,
   Result,
 > = {
   procedure: Procedure;
   caller: Caller;
-  request: RemoteProcedureCallRequestMessage<Procedure, Arguments>;
+  request: RemoteProcedureCallRequestMessage<Procedure, Parameters>;
   response: RemoteProcedureCallResponseMessage<Procedure, Result>;
 };
 
@@ -69,7 +69,7 @@ export type RemoteProcedureCallRequest<Rpc> =
   Rpc extends RemoteProcedureCallConcrete<
     infer _Procedure,
     infer _Caller,
-    infer _Arguments,
+    infer _Parameters,
     infer _Result
   >
     ? Rpc["request"]
@@ -79,7 +79,7 @@ export type RemoteProcedureCallProcedure<Rpc> =
   Rpc extends RemoteProcedureCallConcrete<
     infer Procedure,
     infer _Caller,
-    infer _Arguments,
+    infer _Parameters,
     infer _Result
   >
     ? Procedure
@@ -89,7 +89,7 @@ export type RemoteProcedureCallResponse<Rpc> =
   Rpc extends RemoteProcedureCallConcrete<
     infer _Procedure,
     infer _Caller,
-    infer _Arguments,
+    infer _Parameters,
     infer _Result
   >
     ? Rpc["response"]

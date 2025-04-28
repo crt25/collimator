@@ -5,7 +5,7 @@ import { Language } from "../languages";
 export type LoadTask = RemoteProcedureCall<{
   procedure: "loadTask";
   caller: RemoteProcedureCallCaller.Platform;
-  arguments: {
+  parameters: {
     task: Blob;
     language: Language;
   };

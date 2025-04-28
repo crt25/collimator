@@ -5,6 +5,6 @@ import { Language } from "../languages";
 export type SetLocale = RemoteProcedureCall<{
   procedure: "setLocale";
   caller: RemoteProcedureCallCaller.Platform;
-  arguments: Language;
+  parameters: Language;
   result: undefined;
 }>;

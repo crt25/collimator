@@ -5,6 +5,6 @@ import { Submission } from "./get-submission";
 export type PostSubmission = RemoteProcedureCall<{
   procedure: "postSubmission";
   caller: RemoteProcedureCallCaller.Application;
-  arguments: Submission;
+  parameters: Submission;
   result: undefined;
 }>;
