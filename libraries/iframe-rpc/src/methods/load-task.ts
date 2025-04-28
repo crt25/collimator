@@ -1,10 +1,10 @@
 import { IframeRpcMethod } from "../remote-procedure-call";
-import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
+import { RpcCaller } from "../rpc-caller";
 import { Language } from "../languages";
 
 export type LoadTask = IframeRpcMethod<{
   method: "loadTask";
-  caller: RemoteProcedureCallCaller.Platform;
+  caller: RpcCaller.Platform;
   parameters: {
     task: Blob;
     language: Language;

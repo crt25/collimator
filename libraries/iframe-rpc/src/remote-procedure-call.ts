@@ -1,4 +1,4 @@
-import { RemoteProcedureCallCaller } from "./remote-procedure-caller";
+import { RpcCaller } from "./rpc-caller";
 
 type ConditionalParameters<Parameters> = Parameters extends undefined
   ? { parameters?: unknown }
@@ -29,7 +29,7 @@ export type IframeRpcError<Method extends string> = {
 
 export type IframeRpcMethod<Definition> = Definition extends {
   method: infer _Method extends string;
-  caller: infer _Caller extends RemoteProcedureCallCaller;
+  caller: infer _Caller extends RpcCaller;
   parameters: infer _Parameters;
   result: infer _Result;
 }
@@ -43,7 +43,7 @@ export type IframeRpcMethod<Definition> = Definition extends {
 
 export type IframeRpcDefinition<
   Method extends string,
-  Caller extends RemoteProcedureCallCaller,
+  Caller extends RpcCaller,
   Parameters,
   Result,
 > = {

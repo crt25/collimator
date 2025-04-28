@@ -1,5 +1,5 @@
 import { IframeRpcMethod } from "../remote-procedure-call";
-import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
+import { RpcCaller } from "../rpc-caller";
 import { Submission } from "./get-submission";
 
 export type Task = {
@@ -10,7 +10,7 @@ export type Task = {
 export type GetTask = IframeRpcMethod<{
   method: "getTask";
 
-  caller: RemoteProcedureCallCaller.Platform;
+  caller: RpcCaller.Platform;
   parameters: undefined;
   result: Task;
 }>;

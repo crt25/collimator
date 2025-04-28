@@ -1,4 +1,4 @@
-import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
+import { RpcCaller } from "../rpc-caller";
 import { MethodOf, RequestOf, ResponseOf } from "../utils";
 import { GetHeight } from "./get-height";
 import { GetSubmission } from "./get-submission";
@@ -25,33 +25,32 @@ type Methods =
   | SetLocale
   | PostSubmission;
 
-type IframeRpcDefinitionForCaller<Caller extends RemoteProcedureCallCaller> =
-  Methods & {
-    caller: Caller;
-  };
+type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
+  caller: Caller;
+};
 
 export type IframeRpcPlatformMethods = MethodOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.Platform>
 >;
 
 export type IframeRpcApplicationMethods = MethodOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.Application>
 >;
 
 export type IframeRpcPlatformRequest = RequestOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.Platform>
 >;
 
 export type IframeRpcApplicationRequest = RequestOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.Application>
 >;
 
 export type IframeRpcApplicationResponse = ResponseOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.Platform>
 >;
 
 export type IframeRpcPlatformResponse = ResponseOf<
-  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.Application>
 >;
 
 export type IframeRpcPlatformMessage =
