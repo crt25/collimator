@@ -1,7 +1,7 @@
 import {
-  RemoteProcedureCallRequestMessageBase,
-  RemoteProcedureCallResponseErrorMessage,
-  RemoteProcedureCallResponseMessageBase,
+  IframeRpcRequest,
+  IframeRpcError,
+  IframeRpcResult,
 } from "../remote-procedure-call";
 
 const MAX_COUNTER = 1000000;
@@ -22,19 +22,17 @@ export type HandleRequestMap<Procedures extends string, TRequest, TResponse> = {
 
 export type MessageTarget = Window | MessagePort | ServiceWorker;
 
-export abstract class CrtIframeApi<
+export abstract class IframeRpcApi<
   TCallerProcedures extends string,
   TCalleeProcedures extends string,
-  TCallerRequest extends
-    RemoteProcedureCallRequestMessageBase<TCallerProcedures>,
-  TCalleeRequest extends
-    RemoteProcedureCallRequestMessageBase<TCalleeProcedures>,
+  TCallerRequest extends IframeRpcRequest<TCallerProcedures>,
+  TCalleeRequest extends IframeRpcRequest<TCalleeProcedures>,
   TCallerResponse extends
-    | RemoteProcedureCallResponseMessageBase<TCalleeProcedures>
-    | RemoteProcedureCallResponseErrorMessage<TCalleeProcedures>,
+    | IframeRpcResult<TCalleeProcedures>
+    | IframeRpcError<TCalleeProcedures>,
   TCalleeResponse extends
-    | RemoteProcedureCallResponseMessageBase<TCallerProcedures>
-    | RemoteProcedureCallResponseErrorMessage<TCallerProcedures>,
+    | IframeRpcResult<TCallerProcedures>
+    | IframeRpcError<TCallerProcedures>,
 > {
   private readonly pendingRequests: {
     [key: number]: {
@@ -224,9 +222,9 @@ export abstract class CrtIframeApi<
 
   private isErrorResponse(
     message:
-      | RemoteProcedureCallResponseMessageBase<TCallerProcedures>
-      | RemoteProcedureCallResponseErrorMessage<TCallerProcedures>,
-  ): message is RemoteProcedureCallResponseErrorMessage<TCallerProcedures> {
+      | IframeRpcResult<TCallerProcedures>
+      | IframeRpcError<TCallerProcedures>,
+  ): message is IframeRpcError<TCallerProcedures> {
     return "error" in message;
   }
 

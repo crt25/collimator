@@ -1,49 +1,43 @@
 import { RemoteProcedureCallCaller } from "./remote-procedure-caller";
 
 type ConditionalParameters<Parameters> = Parameters extends undefined
-  ? { parameters?: Parameters }
+  ? { parameters?: unknown }
   : { parameters: Parameters };
 
 type ConditionalResult<Result> = Result extends undefined
-  ? { result?: Result }
+  ? { result?: unknown }
   : { result: Result };
 
-export type RemoteProcedureCallRequestMessageBase<Method extends string> = {
+export type IframeRpcRequest<Method extends string, Parameters = undefined> = {
   jsonrpc: "2.0";
   id: number;
   method: Method;
-};
+} & ConditionalParameters<Parameters>;
 
-type RemoteProcedureCallRequestMessage<
-  Method extends string,
-  Parameters,
-> = RemoteProcedureCallRequestMessageBase<Method> &
-  ConditionalParameters<Parameters>;
-
-export type RemoteProcedureCallResponseMessageBase<Method extends string> = {
+export type IframeRpcResult<Method extends string, Result = undefined> = {
   jsonrpc: "2.0";
   id: number;
   method: Method;
-};
+} & ConditionalResult<Result>;
 
-export type RemoteProcedureCallResponseErrorMessage<Method extends string> = {
+export type IframeRpcError<Method extends string> = {
   jsonrpc: "2.0";
   id: number;
   method: Method;
   error?: string;
 };
 
-type RemoteProcedureCallResponseMessage<Method extends string, Result> =
-  | (RemoteProcedureCallResponseMessageBase<Method> & ConditionalResult<Result>)
-  | RemoteProcedureCallResponseErrorMessage<Method>;
+type IframeRpcResponse<Method extends string, Result = undefined> =
+  | IframeRpcResult<Method, Result>
+  | IframeRpcError<Method>;
 
-export type RemoteProcedureCall<Definition> = Definition extends {
+export type IframeRpcMethod<Definition> = Definition extends {
   method: infer _Method extends string;
   caller: infer _Caller extends RemoteProcedureCallCaller;
   parameters: infer _Parameters;
   result: infer _Result;
 }
-  ? RemoteProcedureCallConcrete<
+  ? IframeRpcDefinition<
       Definition["method"],
       Definition["caller"],
       Definition["parameters"],
@@ -51,7 +45,7 @@ export type RemoteProcedureCall<Definition> = Definition extends {
     >
   : never;
 
-type RemoteProcedureCallConcrete<
+export type IframeRpcDefinition<
   Method extends string,
   Caller extends RemoteProcedureCallCaller,
   Parameters,
@@ -59,36 +53,6 @@ type RemoteProcedureCallConcrete<
 > = {
   method: Method;
   caller: Caller;
-  request: RemoteProcedureCallRequestMessage<Method, Parameters>;
-  response: RemoteProcedureCallResponseMessage<Method, Result>;
+  request: IframeRpcRequest<Method, Parameters>;
+  response: IframeRpcResponse<Method, Result>;
 };
-
-export type RemoteProcedureCallRequest<Rpc> =
-  Rpc extends RemoteProcedureCallConcrete<
-    infer _Procedure,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Rpc["request"]
-    : never;
-
-export type RemoteProcedureCallProcedure<Rpc> =
-  Rpc extends RemoteProcedureCallConcrete<
-    infer Procedure,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Procedure
-    : never;
-
-export type RemoteProcedureCallResponse<Rpc> =
-  Rpc extends RemoteProcedureCallConcrete<
-    infer _Procedure,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Rpc["response"]
-    : never;

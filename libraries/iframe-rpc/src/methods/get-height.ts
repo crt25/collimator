@@ -1,7 +1,7 @@
-import { RemoteProcedureCall } from "../remote-procedure-call";
+import { IframeRpcMethod } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 
-export type GetHeight = RemoteProcedureCall<{
+export type GetHeight = IframeRpcMethod<{
   method: "getHeight";
   caller: RemoteProcedureCallCaller.Platform;
   parameters: undefined;

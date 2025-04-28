@@ -1,11 +1,11 @@
-export { type MessageTarget } from "./crt-iframe-api";
+export { type MessageTarget } from "./iframe-rpc-api";
 
 export {
-  AppCrtIframeApi,
+  AppIframeRpcApi as AppCrtIframeApi,
   type AppHandleRequestMap,
-} from "./app-crt-iframe-api";
+} from "./app-iframe-rpc-api";
 
 export {
-  PlatformCrtIframeApi,
+  PlatformIframeRpcApi as PlatformCrtIframeApi,
   type PlatformHandleRequestMap,
-} from "./platform-crt-iframe-api";
+} from "./platform-iframe-rpc-api";

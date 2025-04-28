@@ -1,4 +1,4 @@
-import { RemoteProcedureCall } from "../remote-procedure-call";
+import { IframeRpcMethod } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 
 export type Test = {
@@ -25,7 +25,7 @@ export type Submission = {
   failedTests: Test[];
 };
 
-export type GetSubmission = RemoteProcedureCall<{
+export type GetSubmission = IframeRpcMethod<{
   method: "getSubmission";
   caller: RemoteProcedureCallCaller.Platform;
   parameters: undefined;

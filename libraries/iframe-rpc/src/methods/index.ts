@@ -1,8 +1,4 @@
-import {
-  RemoteProcedureCallProcedure,
-  RemoteProcedureCallRequest,
-  RemoteProcedureCallResponse,
-} from "../remote-procedure-call";
+import { IframeRpcDefinition } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 import { GetHeight } from "./get-height";
 import { GetSubmission } from "./get-submission";
@@ -15,7 +11,7 @@ import { SetLocale } from "./set-locale";
 export type { Submission, Test } from "./get-submission";
 export type { Task } from "./get-task";
 
-type Procedures =
+type Methods =
   | GetHeight
   | GetSubmission
   | GetTask
@@ -24,39 +20,69 @@ type Procedures =
   | SetLocale
   | PostSubmission;
 
-type AppIFrameMessageWithCaller<Caller extends RemoteProcedureCallCaller> =
-  Procedures & {
+type IframeRpcDefinitionForCaller<Caller extends RemoteProcedureCallCaller> =
+  Methods & {
     caller: Caller;
   };
 
-export type AppIFramePlatformProcedures = RemoteProcedureCallProcedure<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Platform>
+type Request<Rpc> =
+  Rpc extends IframeRpcDefinition<
+    infer _Method,
+    infer _Caller,
+    infer _Parameters,
+    infer _Result
+  >
+    ? Rpc["request"]
+    : never;
+
+type Method<Rpc> =
+  Rpc extends IframeRpcDefinition<
+    infer Method,
+    infer _Caller,
+    infer _Parameters,
+    infer _Result
+  >
+    ? Method
+    : never;
+
+type Response<Rpc> =
+  Rpc extends IframeRpcDefinition<
+    infer _Method,
+    infer _Caller,
+    infer _Parameters,
+    infer _Result
+  >
+    ? Rpc["response"]
+    : never;
+
+export type IframeRpcPlatformMethods = Method<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type AppIFrameApplicationProcedures = RemoteProcedureCallProcedure<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Application>
+export type IframeRpcApplicationMethods = Method<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 
-export type AppIFramePlatformRequest = RemoteProcedureCallRequest<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Platform>
+export type IframeRpcPlatformRequest = Request<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type AppIFrameApplicationRequest = RemoteProcedureCallRequest<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Application>
+export type IframeRpcApplicationRequest = Request<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 
-export type AppIFrameApplicationResponse = RemoteProcedureCallResponse<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Platform>
+export type IframeRpcApplicationResponse = Response<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type AppIFramePlatformResponse = RemoteProcedureCallResponse<
-  AppIFrameMessageWithCaller<RemoteProcedureCallCaller.Application>
+export type IframeRpcPlatformResponse = Response<
+  IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 
-export type AppIFramePlatformMessage =
-  | AppIFramePlatformRequest
-  | AppIFramePlatformResponse;
+export type IframeRpcPlatformMessage =
+  | IframeRpcPlatformRequest
+  | IframeRpcPlatformResponse;
 
-export type AppIFrameApplicationMessage =
-  | AppIFrameApplicationRequest
-  | AppIFrameApplicationResponse;
+export type IframeRpcApplicationMessage =
+  | IframeRpcApplicationRequest
+  | IframeRpcApplicationResponse;
