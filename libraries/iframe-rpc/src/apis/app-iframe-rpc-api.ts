@@ -34,7 +34,8 @@ export class AppIframeRpcApi extends IframeRpcApi<
       id,
       method,
       parameters,
-    };
+      // unfortunately typescript is not capable of performing the inference directly
+    } as IframeRpcApplicationRequest & { method: Method };
   }
 
   protected override createResponse<Method extends IframeRpcPlatformMethods>(
