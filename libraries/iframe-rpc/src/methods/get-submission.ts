@@ -26,7 +26,7 @@ export type Submission = {
 };
 
 export type GetSubmission = RemoteProcedureCall<{
-  procedure: "getSubmission";
+  method: "getSubmission";
   caller: RemoteProcedureCallCaller.Platform;
   parameters: undefined;
   result: Submission;

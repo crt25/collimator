@@ -5,7 +5,7 @@ import {
   AppIFramePlatformProcedures,
   AppIFramePlatformRequest,
   AppIFramePlatformResponse,
-} from "../procedures";
+} from "../methods";
 import { RemoteProcedureCallResponseErrorMessage } from "../remote-procedure-call";
 import { CrtIframeApi, HandleRequestMap } from "./crt-iframe-api";
 
@@ -24,14 +24,14 @@ export class PlatformCrtIframeApi extends CrtIframeApi<
   AppIFrameApplicationResponse
 > {
   protected override createErrorResponse(
-    procedure: AppIFrameApplicationProcedures,
+    method: AppIFrameApplicationProcedures,
     error?: string,
   ): Omit<AppIFramePlatformResponse, "id" | "type"> {
     const response: Omit<
       RemoteProcedureCallResponseErrorMessage<AppIFrameApplicationProcedures>,
       "id" | "type"
     > = {
-      procedure,
+      method: method,
       error,
     };
 

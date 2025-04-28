@@ -8,7 +8,7 @@ export type Task = {
 };
 
 export type GetTask = RemoteProcedureCall<{
-  procedure: "getTask";
+  method: "getTask";
 
   caller: RemoteProcedureCallCaller.Platform;
   parameters: undefined;

@@ -8,45 +8,43 @@ type ConditionalResult<Result> = Result extends undefined
   ? { result?: Result }
   : { result: Result };
 
-export type RemoteProcedureCallRequestMessageBase<Procedure extends string> = {
+export type RemoteProcedureCallRequestMessageBase<Method extends string> = {
   type: "request";
   id: number;
-  procedure: Procedure;
+  method: Method;
 };
 
 type RemoteProcedureCallRequestMessage<
-  Procedure extends string,
+  Method extends string,
   Parameters,
-> = RemoteProcedureCallRequestMessageBase<Procedure> &
+> = RemoteProcedureCallRequestMessageBase<Method> &
   ConditionalParameters<Parameters>;
 
-export type RemoteProcedureCallResponseMessageBase<Procedure extends string> = {
+export type RemoteProcedureCallResponseMessageBase<Method extends string> = {
   type: "response";
   id: number;
-  procedure: Procedure;
+  method: Method;
 };
 
-export type RemoteProcedureCallResponseErrorMessage<Procedure extends string> =
-  {
-    type: "error";
-    id: number;
-    procedure: Procedure;
-    error?: string;
-  };
+export type RemoteProcedureCallResponseErrorMessage<Method extends string> = {
+  type: "error";
+  id: number;
+  method: Method;
+  error?: string;
+};
 
-type RemoteProcedureCallResponseMessage<Procedure extends string, Result> =
-  | (RemoteProcedureCallResponseMessageBase<Procedure> &
-      ConditionalResult<Result>)
-  | RemoteProcedureCallResponseErrorMessage<Procedure>;
+type RemoteProcedureCallResponseMessage<Method extends string, Result> =
+  | (RemoteProcedureCallResponseMessageBase<Method> & ConditionalResult<Result>)
+  | RemoteProcedureCallResponseErrorMessage<Method>;
 
 export type RemoteProcedureCall<Definition> = Definition extends {
-  procedure: infer _Procedure extends string;
+  method: infer _Method extends string;
   caller: infer _Caller extends RemoteProcedureCallCaller;
   parameters: infer _Parameters;
   result: infer _Result;
 }
   ? RemoteProcedureCallConcrete<
-      Definition["procedure"],
+      Definition["method"],
       Definition["caller"],
       Definition["parameters"],
       Definition["result"]
@@ -54,15 +52,15 @@ export type RemoteProcedureCall<Definition> = Definition extends {
   : never;
 
 type RemoteProcedureCallConcrete<
-  Procedure extends string,
+  Method extends string,
   Caller extends RemoteProcedureCallCaller,
   Parameters,
   Result,
 > = {
-  procedure: Procedure;
+  method: Method;
   caller: Caller;
-  request: RemoteProcedureCallRequestMessage<Procedure, Parameters>;
-  response: RemoteProcedureCallResponseMessage<Procedure, Result>;
+  request: RemoteProcedureCallRequestMessage<Method, Parameters>;
+  response: RemoteProcedureCallResponseMessage<Method, Result>;
 };
 
 export type RemoteProcedureCallRequest<Rpc> =

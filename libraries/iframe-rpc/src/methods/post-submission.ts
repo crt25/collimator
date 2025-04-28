@@ -3,7 +3,7 @@ import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 import { Submission } from "./get-submission";
 
 export type PostSubmission = RemoteProcedureCall<{
-  procedure: "postSubmission";
+  method: "postSubmission";
   caller: RemoteProcedureCallCaller.Application;
   parameters: Submission;
   result: undefined;

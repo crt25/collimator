@@ -2,7 +2,7 @@ import { RemoteProcedureCall } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 
 export type GetHeight = RemoteProcedureCall<{
-  procedure: "getHeight";
+  method: "getHeight";
   caller: RemoteProcedureCallCaller.Platform;
   parameters: undefined;
   result: number;

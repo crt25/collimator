@@ -6,15 +6,15 @@ import {
 
 const MAX_COUNTER = 1000000;
 
-export type IframeApiResponse<Procedure extends string, TResponse> = Omit<
-  TResponse & { procedure: Procedure },
+export type IframeApiResponse<Method extends string, TResponse> = Omit<
+  TResponse & { method: Method },
   "id" | "type"
 >;
 
-type HandleRequest<Procedure extends string, TRequest, TResponse> = (
-  request: TRequest & { procedure: Procedure },
+type HandleRequest<Method extends string, TRequest, TResponse> = (
+  request: TRequest & { method: Method },
   event: MessageEvent,
-) => Promise<IframeApiResponse<Procedure, TResponse>>;
+) => Promise<IframeApiResponse<Method, TResponse>>;
 
 export type HandleRequestMap<Procedures extends string, TRequest, TResponse> = {
   [Procedure in Procedures]: HandleRequest<Procedure, TRequest, TResponse>;
@@ -108,9 +108,9 @@ export abstract class CrtIframeApi<
 
   sendRequest<ProcedureName extends TCallerProcedures>(
     request: Omit<TCallerRequest, "id" | "type"> & {
-      procedure: ProcedureName;
+      method: ProcedureName;
     },
-  ): Promise<TCalleeResponse & { type: "response"; procedure: ProcedureName }> {
+  ): Promise<TCalleeResponse & { type: "response"; method: ProcedureName }> {
     const { requestOrigin, requestTarget } = this;
 
     if (requestOrigin === null || requestTarget === null) {
@@ -125,7 +125,7 @@ export abstract class CrtIframeApi<
       // store the resolve function in the pendingRequests object
       this.pendingRequests[this.counter] = {
         resolve: (response: TCalleeResponse & { type: "response" }): void => {
-          if (response.procedure !== request.procedure) {
+          if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
             return;
           }
@@ -133,7 +133,7 @@ export abstract class CrtIframeApi<
           resolve(
             response as TCalleeResponse & {
               type: "response";
-              procedure: ProcedureName;
+              method: ProcedureName;
             },
           );
         },
@@ -202,7 +202,7 @@ export abstract class CrtIframeApi<
     }
 
     const request: TCalleeRequest = message;
-    const handleRequest = this.onRequest[request.procedure];
+    const handleRequest = this.onRequest[request.method];
 
     console.debug("Received IframeRPC request", request);
 
@@ -215,7 +215,7 @@ export abstract class CrtIframeApi<
       this.respondToRequest(
         event,
         this.createErrorResponse(
-          request.procedure,
+          request.method,
           e instanceof Error ? e.message : "Unkown error",
         ),
         true,
@@ -238,7 +238,7 @@ export abstract class CrtIframeApi<
   }
 
   protected abstract createErrorResponse(
-    procedure: TCalleeProcedures,
+    method: TCalleeProcedures,
     error?: string,
   ): Omit<TCallerResponse, "id" | "type">;
 }

@@ -19,9 +19,7 @@
     <script>
       document
         .getElementById("sendMessage")
-        .addEventListener("click", () =>
-          sendRequest({ procedure: "getHeight" }),
-        );
+        .addEventListener("click", () => sendRequest({ method: "getHeight" }));
     </script>
 
     <iframe

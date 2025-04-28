@@ -2,14 +2,9 @@ import { RemoteProcedureCall } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
 import { Language } from "../languages";
 
-export type LoadSubmission = RemoteProcedureCall<{
-  procedure: "loadSubmission";
+export type SetLocale = RemoteProcedureCall<{
+  method: "setLocale";
   caller: RemoteProcedureCallCaller.Platform;
-  parameters: {
-    task: Blob;
-    submission: Blob;
-    subTaskId?: string;
-    language: Language;
-  };
+  parameters: Language;
   result: undefined;
 }>;
