@@ -161,6 +161,12 @@ export abstract class IframeRpcApi<
 
   public async handleWindowMessage(event: MessageEvent): Promise<void> {
     if (event.source !== this.requestTarget) {
+      console.debug(
+        "Received message from unknown source",
+        event.source,
+        "expected",
+        this.requestTarget,
+      );
       return;
     }
 
@@ -169,52 +175,58 @@ export abstract class IframeRpcApi<
       | TCalleeResult
       | TErrorResponse;
 
-    if (this.isResponse(message)) {
-      const response: TCalleeResult | TErrorResponse = message;
+    return this.isResponse(message)
+      ? this.handleReponse(message)
+      : this.handleRequest(message, event);
+  }
 
-      console.debug("Received IframeRPC response", response);
+  private async handleReponse(
+    response: TCalleeResult | TErrorResponse,
+  ): Promise<void> {
+    console.debug("Received IframeRPC response", response);
 
-      // get the resolve function from the pendingRequests object
-      const handleResponse = this.pendingRequests[response.id];
-      if (!handleResponse) {
-        console.error("No resolve function found for message", response);
-      }
-
-      // call the resolve function with the message
-      if (this.isErrorResponse(response)) {
-        const errorMessage =
-          "error" in response ? response.error : "Unknown error";
-
-        handleResponse.reject(errorMessage);
-      } else {
-        handleResponse.resolve(
-          // unfortunately typescript cannot infer the type
-          response as TCalleeResult,
-        );
-      }
-      // remove the resolve function from the pendingRequests object
-      delete this.pendingRequests[message.id];
-
-      return;
+    // get the resolve function from the pendingRequests object
+    const handleResponse = this.pendingRequests[response.id];
+    if (!handleResponse) {
+      console.error("No resolve function found for message", response);
     }
 
-    const request: TCalleeRequest = message;
-    const handleRequest = this.onRequest[request.method];
+    // call the resolve function with the message
+    if (this.isErrorResponse(response)) {
+      const errorMessage =
+        "error" in response ? response.error : "Unknown error";
+
+      handleResponse.reject(errorMessage);
+    } else {
+      handleResponse.resolve(
+        // unfortunately typescript cannot infer the type
+        response as TCalleeResult,
+      );
+    }
+    // remove the resolve function from the pendingRequests object
+    delete this.pendingRequests[response.id];
+  }
+
+  private async handleRequest(
+    request: TCalleeRequest,
+    event: MessageEvent,
+  ): Promise<void> {
+    const fn = this.onRequest[request.method];
 
     console.debug("Received IframeRPC request", request);
 
     try {
-      const response = await handleRequest(message, event);
+      const response = await fn(request, event);
       this.respondToRequest(event, request.id, request.method, response);
     } catch (e) {
-      console.error("Error handling request", e, message);
+      console.error("Error handling request", e, request);
 
       this.respondToRequest(
         event,
         request.id,
         request.method,
         undefined,
-        e instanceof Error ? e.message : "Unkown error",
+        e instanceof Error ? e.message : "Unknown error",
       );
     }
   }

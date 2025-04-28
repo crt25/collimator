@@ -8,7 +8,7 @@ export type Test = {
   identifier: string | null;
 
   /**
-   * The name of the test.
+   * The user-readable name of the test.
    */
   name: string;
 
