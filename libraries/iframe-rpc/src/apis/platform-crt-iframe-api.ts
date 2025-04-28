@@ -26,10 +26,10 @@ export class PlatformCrtIframeApi extends CrtIframeApi<
   protected override createErrorResponse(
     method: AppIFrameApplicationProcedures,
     error?: string,
-  ): Omit<AppIFramePlatformResponse, "id" | "type"> {
+  ): Omit<AppIFramePlatformResponse, "id"> {
     const response: Omit<
       RemoteProcedureCallResponseErrorMessage<AppIFrameApplicationProcedures>,
-      "id" | "type"
+      "id"
     > = {
       method: method,
       error,

@@ -8,7 +8,7 @@ const MAX_COUNTER = 1000000;
 
 export type IframeApiResponse<Method extends string, TResponse> = Omit<
   TResponse & { method: Method },
-  "id" | "type"
+  "id"
 >;
 
 type HandleRequest<Method extends string, TRequest, TResponse> = (
@@ -38,7 +38,7 @@ export abstract class CrtIframeApi<
 > {
   private readonly pendingRequests: {
     [key: number]: {
-      resolve: (response: TCalleeResponse & { type: "response" }) => void;
+      resolve: (response: TCalleeResponse) => void;
       reject: (error?: string) => void;
     };
   } = {};
@@ -85,8 +85,7 @@ export abstract class CrtIframeApi<
 
   private respondToRequest(
     event: MessageEvent,
-    message: Omit<TCallerResponse, "id" | "type">,
-    isError = false,
+    message: Omit<TCallerResponse, "id">,
   ): void {
     if (!event.source) {
       console.error("Cannot respond to event without source:", event);
@@ -97,20 +96,19 @@ export abstract class CrtIframeApi<
       event.source,
       {
         id: (event.data as TCalleeRequest).id,
-        type: isError ? "error" : "response",
         ...message,
         // unfortunately typescript cannot infer the type here but it is
-        // easy to check manually that id and type are now set.
+        // easy to check manually that id is now set.
       } as TCallerResponse,
       event.origin,
     );
   }
 
   sendRequest<ProcedureName extends TCallerProcedures>(
-    request: Omit<TCallerRequest, "id" | "type"> & {
+    request: Omit<TCallerRequest, "id"> & {
       method: ProcedureName;
     },
-  ): Promise<TCalleeResponse & { type: "response"; method: ProcedureName }> {
+  ): Promise<TCalleeResponse & { method: ProcedureName }> {
     const { requestOrigin, requestTarget } = this;
 
     if (requestOrigin === null || requestTarget === null) {
@@ -124,7 +122,7 @@ export abstract class CrtIframeApi<
     return new Promise((resolve, reject) => {
       // store the resolve function in the pendingRequests object
       this.pendingRequests[this.counter] = {
-        resolve: (response: TCalleeResponse & { type: "response" }): void => {
+        resolve: (response: TCalleeResponse): void => {
           if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
             return;
@@ -132,7 +130,6 @@ export abstract class CrtIframeApi<
 
           resolve(
             response as TCalleeResponse & {
-              type: "response";
               method: ProcedureName;
             },
           );
@@ -150,7 +147,6 @@ export abstract class CrtIframeApi<
         // add a unique id to the message
         {
           id: this.counter,
-          type: "request",
           ...request,
           // unfortunately typescript cannot infer the type here but it is
           // easy to check manually that id and type are now set.
@@ -190,9 +186,7 @@ export abstract class CrtIframeApi<
       } else {
         handleResponse.resolve(
           // unfortunately typescript cannot infer the type
-          response as TCalleeResponse & {
-            type: "response";
-          },
+          response as TCalleeResponse,
         );
       }
       // remove the resolve function from the pendingRequests object
@@ -218,7 +212,6 @@ export abstract class CrtIframeApi<
           request.method,
           e instanceof Error ? e.message : "Unkown error",
         ),
-        true,
       );
     }
   }
@@ -226,7 +219,7 @@ export abstract class CrtIframeApi<
   private isResponse(
     message: TCalleeRequest | TCalleeResponse,
   ): message is TCalleeResponse {
-    return message.type === "response" || message.type === "error";
+    return "response" in message || "error" in message;
   }
 
   private isErrorResponse(
@@ -234,11 +227,11 @@ export abstract class CrtIframeApi<
       | RemoteProcedureCallResponseMessageBase<TCallerProcedures>
       | RemoteProcedureCallResponseErrorMessage<TCallerProcedures>,
   ): message is RemoteProcedureCallResponseErrorMessage<TCallerProcedures> {
-    return message.type === "error";
+    return "error" in message;
   }
 
   protected abstract createErrorResponse(
     method: TCalleeProcedures,
     error?: string,
-  ): Omit<TCallerResponse, "id" | "type">;
+  ): Omit<TCallerResponse, "id">;
 }

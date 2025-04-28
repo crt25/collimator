@@ -9,7 +9,6 @@ type ConditionalResult<Result> = Result extends undefined
   : { result: Result };
 
 export type RemoteProcedureCallRequestMessageBase<Method extends string> = {
-  type: "request";
   id: number;
   method: Method;
 };
@@ -21,13 +20,11 @@ type RemoteProcedureCallRequestMessage<
   ConditionalParameters<Parameters>;
 
 export type RemoteProcedureCallResponseMessageBase<Method extends string> = {
-  type: "response";
   id: number;
   method: Method;
 };
 
 export type RemoteProcedureCallResponseErrorMessage<Method extends string> = {
-  type: "error";
   id: number;
   method: Method;
   error?: string;
