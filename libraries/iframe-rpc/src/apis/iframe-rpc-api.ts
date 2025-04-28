@@ -36,18 +36,39 @@ export type HandleRequestMap<
 export type MessageTarget = Window | MessagePort | ServiceWorker;
 
 export abstract class IframeRpcApi<
-  TCallerProcedures extends string,
-  TCalleeProcedures extends string,
-  TCallerRequest extends IframeRpcRequest<TCallerProcedures>,
-  TCalleeRequest extends IframeRpcRequest<TCalleeProcedures>,
-  TCallerResult extends IframeRpcResult<TCalleeProcedures>,
-  TCalleeResult extends IframeRpcResult<TCallerProcedures>,
-  TErrorResponse extends
-    IframeRpcError<TCalleeProcedures> = IframeRpcError<TCalleeProcedures>,
+  /**
+   * The methods this instance can call on the iframe.
+   */
+  TOutgoingMethods extends string,
+  /**
+   * The methods the iframe can call on this instance.
+   */
+  TIncomingMethods extends string,
+  /**
+   * The requests this instance can send to the iframe.
+   */
+  TOutgoingRequests extends IframeRpcRequest<TOutgoingMethods>,
+  /**
+   * The requests the iframe can send to this instance.
+   */
+  TIncomingRequests extends IframeRpcRequest<TIncomingMethods>,
+  /**
+   * The responses this instance may send to the iframe as the response to a request.
+   */
+  TOutgoingResult extends IframeRpcResult<TIncomingMethods>,
+  /**
+   * The responses the iframe may send to this instance as the response to a request.
+   */
+  TIncomingResult extends IframeRpcResult<TOutgoingMethods>,
+  /**
+   * The error response this instance may send to the iframe as the response to a request.
+   */
+  TOutgoingErrorResponse extends
+    IframeRpcError<TIncomingMethods> = IframeRpcError<TIncomingMethods>,
 > {
   private readonly pendingRequests: {
     [key: number]: {
-      resolve: (response: TCalleeResult) => void;
+      resolve: (response: TIncomingResult) => void;
       reject: (error?: string) => void;
     };
   } = {};
@@ -58,17 +79,17 @@ export abstract class IframeRpcApi<
 
   constructor(
     private onRequest: HandleRequestMap<
-      TCalleeProcedures,
-      TCalleeRequest,
-      TCallerResult
+      TIncomingMethods,
+      TIncomingRequests,
+      TOutgoingResult
     >,
   ) {}
 
   setOnRequest(
     onRequest: HandleRequestMap<
-      TCalleeProcedures,
-      TCalleeRequest,
-      TCallerResult
+      TIncomingMethods,
+      TIncomingRequests,
+      TOutgoingResult
     >,
   ): void {
     this.onRequest = onRequest;
@@ -84,7 +105,7 @@ export abstract class IframeRpcApi<
 
   private sendMessage(
     target: MessageTarget,
-    message: TCallerRequest | TCallerResult | TErrorResponse,
+    message: TOutgoingRequests | TOutgoingResult | TOutgoingErrorResponse,
     targetOrigin: string,
   ): void {
     target.postMessage(message, {
@@ -92,11 +113,11 @@ export abstract class IframeRpcApi<
     });
   }
 
-  private respondToRequest<Method extends TCalleeProcedures>(
+  private respondToRequest<Method extends TIncomingMethods>(
     event: MessageEvent,
     id: number,
     method: Method,
-    result: ResultOf<TCallerResult & { method: Method }> | undefined,
+    result: ResultOf<TOutgoingResult & { method: Method }> | undefined,
     error?: string,
   ): void {
     if (!event.source) {
@@ -113,10 +134,10 @@ export abstract class IframeRpcApi<
     );
   }
 
-  sendRequest<Method extends TCallerProcedures>(
+  sendRequest<Method extends TOutgoingMethods>(
     method: Method,
-    parameters: ParametersOf<TCallerRequest & { method: Method }>,
-  ): Promise<TCalleeResult & { method: Method }> {
+    parameters: ParametersOf<TOutgoingRequests & { method: Method }>,
+  ): Promise<TIncomingResult & { method: Method }> {
     const { requestOrigin, requestTarget } = this;
 
     if (requestOrigin === null || requestTarget === null) {
@@ -135,14 +156,14 @@ export abstract class IframeRpcApi<
     return new Promise((resolve, reject) => {
       // store the resolve function in the pendingRequests object
       this.pendingRequests[this.counter] = {
-        resolve: (response: TCalleeResult): void => {
+        resolve: (response: TIncomingResult): void => {
           if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
             return;
           }
 
           resolve(
-            response as TCalleeResult & {
+            response as TIncomingResult & {
               method: Method;
             },
           );
@@ -171,9 +192,9 @@ export abstract class IframeRpcApi<
     }
 
     const message = event.data as
-      | TCalleeRequest
-      | TCalleeResult
-      | TErrorResponse;
+      | TIncomingRequests
+      | TIncomingResult
+      | TOutgoingErrorResponse;
 
     return this.isResponse(message)
       ? this.handleReponse(message)
@@ -181,7 +202,7 @@ export abstract class IframeRpcApi<
   }
 
   private async handleReponse(
-    response: TCalleeResult | TErrorResponse,
+    response: TIncomingResult | TOutgoingErrorResponse,
   ): Promise<void> {
     console.debug("Received IframeRPC response", response);
 
@@ -200,7 +221,7 @@ export abstract class IframeRpcApi<
     } else {
       handleResponse.resolve(
         // unfortunately typescript cannot infer the type
-        response as TCalleeResult,
+        response as TIncomingResult,
       );
     }
     // remove the resolve function from the pendingRequests object
@@ -208,7 +229,7 @@ export abstract class IframeRpcApi<
   }
 
   private async handleRequest(
-    request: TCalleeRequest,
+    request: TIncomingRequests,
     event: MessageEvent,
   ): Promise<void> {
     const fn = this.onRequest[request.method];
@@ -232,32 +253,32 @@ export abstract class IframeRpcApi<
   }
 
   private isResponse(
-    message: TCalleeRequest | TCalleeResult | TErrorResponse,
-  ): message is TCalleeResult | TErrorResponse {
+    message: TIncomingRequests | TIncomingResult | TOutgoingErrorResponse,
+  ): message is TIncomingResult | TOutgoingErrorResponse {
     return "response" in message || "error" in message;
   }
 
   private isErrorResponse(
-    message: TCalleeResult | TErrorResponse,
-  ): message is TErrorResponse {
+    message: TIncomingResult | TOutgoingErrorResponse,
+  ): message is TOutgoingErrorResponse {
     return "error" in message;
   }
 
-  protected abstract createRequest<Method extends TCallerProcedures>(
+  protected abstract createRequest<Method extends TOutgoingMethods>(
     id: number,
     method: Method,
-    parameters: ParametersOf<TCallerRequest & { method: Method }>,
-  ): TCallerRequest & { method: Method };
+    parameters: ParametersOf<TOutgoingRequests & { method: Method }>,
+  ): TOutgoingRequests & { method: Method };
 
-  protected abstract createResponse<Method extends TCalleeProcedures>(
+  protected abstract createResponse<Method extends TIncomingMethods>(
     id: number,
     method: Method,
-    result: ResultOf<TCallerResult & { method: Method }>,
-  ): TCallerResult & { method: Method };
+    result: ResultOf<TOutgoingResult & { method: Method }>,
+  ): TOutgoingResult & { method: Method };
 
   protected abstract createErrorResponse(
     id: number,
-    method: TCalleeProcedures,
+    method: TIncomingMethods,
     error?: string,
-  ): TErrorResponse;
+  ): TOutgoingErrorResponse;
 }
