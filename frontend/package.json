@@ -26,6 +26,7 @@
     "test:jest:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:pre": "shx rm -rf coverage-ct/ .nyc_output/",
     "test:ct": "yarn test:pre && playwright test -c playwright-ct.config.ts && nyc report --report-dir coverage-ct",
+    "test:ct:debug": "yarn test:pre && playwright test -c playwright-ct.config.ts --debug && nyc report --report-dir coverage-ct",
     "test:playwright": "yarn test:ct",
     "test:storybook": "test-storybook --coverage --coverageDirectory coverage-storybook",
     "storybook": "cross-env NODE_OPTIONS=--preserve-symlinks storybook dev -p 6006",

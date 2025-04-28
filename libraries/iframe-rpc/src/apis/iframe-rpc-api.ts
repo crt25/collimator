@@ -155,7 +155,7 @@ export abstract class IframeRpcApi<
 
     return new Promise((resolve, reject) => {
       // store the resolve function in the pendingRequests object
-      this.pendingRequests[this.counter] = {
+      this.pendingRequests[request.id] = {
         resolve: (response: TIncomingResult): void => {
           if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
@@ -234,6 +234,20 @@ export abstract class IframeRpcApi<
   ): Promise<void> {
     const fn = this.onRequest[request.method];
 
+    if (typeof fn !== "function") {
+      console.error("No handler for request", request.method, request);
+
+      this.respondToRequest(
+        event,
+        request.id,
+        request.method,
+        undefined,
+        `No handler for method ${request.method}`,
+      );
+
+      return;
+    }
+
     console.debug("Received IframeRPC request", request);
 
     try {
@@ -255,7 +269,7 @@ export abstract class IframeRpcApi<
   private isResponse(
     message: TIncomingRequests | TIncomingResult | TOutgoingErrorResponse,
   ): message is TIncomingResult | TOutgoingErrorResponse {
-    return "response" in message || "error" in message;
+    return "result" in message || "error" in message;
   }
 
   private isErrorResponse(

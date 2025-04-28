@@ -13,7 +13,7 @@ test("should work", async ({ page, mount, context }) => {
               event => event.source.postMessage(
                 {
                   ...event.data,
-                  type: 'response',
+                  result: 300,
                 },
                 {
                   targetOrigin: event.origin
@@ -35,14 +35,16 @@ test("should work", async ({ page, mount, context }) => {
   );
 
   const response = await page.evaluate(() =>
-    window.sendRequest({ procedure: "getHeight" }),
+    window.sendRequest("getHeight", undefined),
   );
 
   // usually we get an actual response but in this case we just get the request back
   // although with the type changed to 'response'
   expect(response).toEqual({
+    jsonrpc: "2.0",
     id: expect.any(Number),
-    type: "response",
-    procedure: "getHeight",
+    method: "getHeight",
+    parameters: undefined,
+    result: 300,
   });
 });
