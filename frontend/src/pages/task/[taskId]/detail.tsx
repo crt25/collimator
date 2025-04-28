@@ -62,12 +62,9 @@ const TaskDetail = () => {
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadTask",
-        arguments: {
-          task: taskFile,
-          language: intl.locale as Language,
-        },
+      embeddedApp.current.sendRequest("loadTask", {
+        task: taskFile,
+        language: intl.locale as Language,
       });
     }
     // since taskFileHash is a blob, use its hash as a proxy for its content

@@ -57,13 +57,10 @@ const ViewSolutionModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (taskFile && solutionFile) {
-        embeddedApp.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task: taskFile,
-            submission: solutionFile,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadSubmission", {
+          task: taskFile,
+          submission: solutionFile,
+          language: intl.locale as Language,
         });
       }
     },

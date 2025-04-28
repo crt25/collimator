@@ -62,9 +62,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
 
   const onAvailable = useCallback(
     async (iframe: HTMLIFrameElement, api: PlatformCrtIframeApi) => {
-      const response = await api.sendRequest({
-        procedure: "getHeight",
-      });
+      const response = await api.sendRequest("getHeight", undefined);
 
       iframe.style.height = `${response.result}px`;
 
@@ -80,8 +78,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   const { sendRequest, iframeRef } = useIframeChild(
     {
       postSubmission: async (request) => {
-        onReceiveSubmission?.(request.arguments);
-        return { procedure: "postSubmission" };
+        onReceiveSubmission?.(request.parameters);
       },
     },
     onAvailable,

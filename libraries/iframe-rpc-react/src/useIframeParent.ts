@@ -1,10 +1,11 @@
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
-  AppIFrameApplicationProcedures,
-  AppIFrameApplicationRequest,
-  AppIFramePlatformResponse,
+  IframeRpcApplicationMethods,
+  IframeRpcApplicationRequest,
+  IframeRpcPlatformResponse,
 } from "iframe-rpc/src";
+import { ParametersOf } from "iframe-rpc/src/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const useIframeParent = (
@@ -13,13 +14,14 @@ export const useIframeParent = (
   isInIframe: boolean;
   hasLoaded: boolean;
 
-  sendRequest: <ProcedureName extends AppIFrameApplicationProcedures>(
-    request: Omit<AppIFrameApplicationRequest, "id" | "type"> & {
-      procedure: ProcedureName;
-    },
-  ) => Promise<
-    AppIFramePlatformResponse & { procedure: ProcedureName; type: "response" }
-  >;
+  sendRequest: <Method extends IframeRpcApplicationMethods>(
+    method: Method,
+    parameters: ParametersOf<
+      IframeRpcApplicationRequest & {
+        method: Method;
+      }
+    >,
+  ) => Promise<IframeRpcPlatformResponse & { method: Method }>;
 } => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);

@@ -34,10 +34,7 @@ const EditTaskModal = ({
 
   const onSaveTask = useCallback(
     async (embeddedApp: EmbeddedAppRef) => {
-      const task = await embeddedApp.sendRequest({
-        procedure: "getTask",
-        arguments: undefined,
-      });
+      const task = await embeddedApp.sendRequest("getTask", undefined);
 
       onSave(task.result);
     },
@@ -47,21 +44,15 @@ const EditTaskModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (wasInitialized.current) {
-        embeddedApp.sendRequest({
-          procedure: "setLocale",
-          arguments: intl.locale as Language,
-        });
+        embeddedApp.sendRequest("setLocale", intl.locale as Language);
         return;
       }
       wasInitialized.current = true;
 
       if (initialTask) {
-        embeddedApp.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task: initialTask,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadTask", {
+          task: initialTask,
+          language: intl.locale as Language,
         });
       }
     },

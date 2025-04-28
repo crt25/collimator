@@ -90,12 +90,9 @@ const TaskModal = ({
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest({
-      procedure: "loadTask",
-      arguments: {
-        task,
-        language: intl.locale as Language,
-      },
+    await embeddedApp.current.sendRequest("loadTask", {
+      task,
+      language: intl.locale as Language,
     });
 
     setAppLoaded(true);
@@ -106,9 +103,10 @@ const TaskModal = ({
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getTask",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getTask",
+      undefined,
+    );
 
     downloadBlob(response.result.file, "task.sb3");
   }, []);

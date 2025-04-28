@@ -35,10 +35,10 @@ const SolveTaskModal = ({
 
   const onSaveSolution = useCallback(
     async (embeddedApp: EmbeddedAppRef) => {
-      const submission = await embeddedApp.sendRequest({
-        procedure: "getSubmission",
-        arguments: undefined,
-      });
+      const submission = await embeddedApp.sendRequest(
+        "getSubmission",
+        undefined,
+      );
 
       onSave(submission.result);
     },
@@ -48,24 +48,18 @@ const SolveTaskModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (solution && task) {
-        embeddedApp.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task,
-            submission: solution,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadSubmission", {
+          task,
+          submission: solution,
+          language: intl.locale as Language,
         });
         return;
       }
 
       if (task) {
-        embeddedApp.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadTask", {
+          task,
+          language: intl.locale as Language,
         });
       }
     },

@@ -77,13 +77,10 @@ const UserTaskProgress = ({
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile && solutionFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadSubmission",
-        arguments: {
-          task: taskFile,
-          submission: solutionFile,
-          language: intl.locale as Language,
-        },
+      embeddedApp.current.sendRequest("loadSubmission", {
+        task: taskFile,
+        submission: solutionFile,
+        language: intl.locale as Language,
       });
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content

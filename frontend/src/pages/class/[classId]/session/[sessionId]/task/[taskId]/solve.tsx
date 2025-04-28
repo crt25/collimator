@@ -90,9 +90,10 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getSubmission",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getSubmission",
+      undefined,
+    );
 
     const mapTest =
       (passed: boolean) =>
@@ -139,10 +140,7 @@ const SolveTaskPage = () => {
 
   useEffect(() => {
     if (embeddedApp.current && wasInitialized.current) {
-      embeddedApp.current.sendRequest({
-        procedure: "setLocale",
-        arguments: intl.locale as Language,
-      });
+      embeddedApp.current.sendRequest("setLocale", intl.locale as Language);
     }
   }, [intl.locale]);
 
@@ -165,22 +163,16 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        await embeddedApp.current.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task: taskFile,
-            submission: solutionFile,
-            language: intl.locale as Language,
-          },
+        await embeddedApp.current.sendRequest("loadSubmission", {
+          task: taskFile,
+          submission: solutionFile,
+          language: intl.locale as Language,
         });
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
-        await embeddedApp.current.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task: taskFile,
-            language: intl.locale as Language,
-          },
+        await embeddedApp.current.sendRequest("loadTask", {
+          task: taskFile,
+          language: intl.locale as Language,
         });
       } finally {
         isScratchMutexAvailable.current = true;
@@ -197,12 +189,9 @@ const SolveTaskPage = () => {
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest({
-      procedure: "loadTask",
-      arguments: {
-        task,
-        language: intl.locale as Language,
-      },
+    await embeddedApp.current.sendRequest("loadTask", {
+      task,
+      language: intl.locale as Language,
     });
   }, [intl]);
 
@@ -211,9 +200,10 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getTask",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getTask",
+      undefined,
+    );
 
     downloadBlob(response.result.file, "task.sb3");
   }, []);

@@ -1,10 +1,11 @@
 import {
-  AppIFrameApplicationResponse,
-  AppIFramePlatformProcedures,
-  AppIFramePlatformRequest,
+  IframeRpcApplicationResponse,
+  IframeRpcPlatformMethods,
+  IframeRpcPlatformRequest,
   PlatformCrtIframeApi,
   PlatformHandleRequestMap,
 } from "iframe-rpc/src";
+import { ParametersOf } from "iframe-rpc/src/utils";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const useIframeChild = (
@@ -14,14 +15,16 @@ export const useIframeChild = (
     api: PlatformCrtIframeApi,
   ) => Promise<void>,
 ): {
-  sendRequest: <ProcedureName extends AppIFramePlatformProcedures>(
-    request: Omit<AppIFramePlatformRequest, "id" | "type"> & {
-      procedure: ProcedureName;
-    },
+  sendRequest: <Method extends IframeRpcPlatformMethods>(
+    method: Method,
+    parameters: ParametersOf<
+      IframeRpcPlatformRequest & {
+        method: Method;
+      }
+    >,
   ) => Promise<
-    AppIFrameApplicationResponse & {
-      procedure: ProcedureName;
-      type: "response";
+    IframeRpcApplicationResponse & {
+      method: Method;
     }
   >;
   iframeRef: (node: HTMLIFrameElement | null) => void;

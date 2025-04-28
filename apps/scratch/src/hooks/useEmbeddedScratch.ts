@@ -172,21 +172,13 @@ export const useEmbeddedScratch = (
   const handleRequest = useMemo<Parameters<typeof useIframeParent>[0]>(
     () => ({
       /* eslint-disable @typescript-eslint/explicit-function-return-type */
-      getHeight: async (_request) => ({
-        procedure: "getHeight",
-        result: document.body.scrollHeight,
-      }),
+      getHeight: async (_request) => document.body.scrollHeight,
       getSubmission: async (_request) => {
         if (!vm) {
           throw new VmUnavailableError();
         }
 
-        const submission = await getSubmission(vm, intl);
-
-        return {
-          procedure: "getSubmission",
-          result: submission,
-        };
+        return getSubmission(vm, intl);
       },
       getTask: async (request) => {
         if (!vm) {
@@ -198,15 +190,12 @@ export const useEmbeddedScratch = (
           const submission = await getSubmission(vm, intl);
 
           return {
-            procedure: "getTask",
-            result: {
-              file: task,
-              initialSolution: submission,
-            },
+            file: task,
+            initialSolution: submission,
           };
         } catch (e) {
           console.error(
-            `${logModule} RPC: ${request.procedure} failed with error:`,
+            `${logModule} RPC: ${request.method} failed with error:`,
             e,
           );
           toast.error(intl.formatMessage(messages.cannotSaveProject));
@@ -220,18 +209,14 @@ export const useEmbeddedScratch = (
         }
 
         try {
-          setLocale(request.arguments.language);
+          setLocale(request.parameters.language);
 
           console.debug(`${logModule} Loading project`);
-          const sb3Project = await request.arguments.task.arrayBuffer();
+          const sb3Project = await request.parameters.task.arrayBuffer();
           await loadCrtProject(vm, sb3Project);
-
-          return {
-            procedure: "loadTask",
-          };
         } catch (e) {
           console.error(
-            `${logModule} RPC: ${request.procedure} failed with error:`,
+            `${logModule} RPC: ${request.method} failed with error:`,
             e,
           );
           toast.error(intl.formatMessage(messages.cannotLoadProject));
@@ -244,10 +229,10 @@ export const useEmbeddedScratch = (
           throw new VmUnavailableError();
         }
 
-        setLocale(request.arguments.language);
+        setLocale(request.parameters.language);
 
-        const sb3Project = await request.arguments.task.arrayBuffer();
-        const submission = await request.arguments.submission.text();
+        const sb3Project = await request.parameters.task.arrayBuffer();
+        const submission = await request.parameters.submission.text();
 
         const zip = new JSZip();
         await zip.loadAsync(sb3Project);
@@ -270,7 +255,7 @@ export const useEmbeddedScratch = (
         try {
           console.debug(`${logModule} Loading project`);
           await loadCrtProject(vm, taskMergedWithSubmission);
-          const { subTaskId } = request.arguments;
+          const { subTaskId } = request.parameters;
 
           if (subTaskId) {
             const target = vm.runtime.targets.find(
@@ -281,10 +266,6 @@ export const useEmbeddedScratch = (
               vm.setEditingTarget(target.id);
             }
           }
-
-          return {
-            procedure: "loadSubmission",
-          };
         } catch (e) {
           console.error(`${logModule} Project load failure: ${e}`);
           toast.error(intl.formatMessage(messages.cannotLoadProject));
@@ -300,12 +281,8 @@ export const useEmbeddedScratch = (
         const sb3Project = await saveCrtProject(vm);
 
         // change language - apparently scratch resets the content with this?
-        setLocale(request.arguments);
+        setLocale(request.parameters);
         await loadCrtProject(vm, await sb3Project.arrayBuffer());
-
-        return {
-          procedure: "setLocale",
-        };
       },
     }),
     [vm],

@@ -37,7 +37,7 @@ export type ResponseOf<Rpc> =
 export type ParametersOf<Rpc> =
   Rpc extends IframeRpcRequest<infer _Method, infer Parameters>
     ? Parameters
-    : never;
+    : undefined;
 
 export type ResultOf<Rpc> =
-  Rpc extends IframeRpcResult<infer _Method, infer Result> ? Result : never;
+  Rpc extends IframeRpcResult<infer _Method, infer Result> ? Result : undefined;

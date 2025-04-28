@@ -7,10 +7,10 @@ import { ParametersOf, ResultOf } from "../utils";
 
 const MAX_COUNTER = 1000000;
 
-export type IframeApiResponse<
+type IframeApiResponse<
   Method extends string,
   TResult extends IframeRpcResult<Method>,
-> = ResultOf<TResult>;
+> = ResultOf<TResult> extends never ? undefined : ResultOf<TResult>;
 
 type HandleRequest<
   Method extends string,
@@ -113,10 +113,10 @@ export abstract class IframeRpcApi<
     );
   }
 
-  sendRequest<ProcedureName extends TCallerProcedures>(
-    method: ProcedureName,
-    parameters: ParametersOf<TCallerRequest & { method: ProcedureName }>,
-  ): Promise<TCalleeResult & { method: ProcedureName }> {
+  sendRequest<Method extends TCallerProcedures>(
+    method: Method,
+    parameters: ParametersOf<TCallerRequest & { method: Method }>,
+  ): Promise<TCalleeResult & { method: Method }> {
     const { requestOrigin, requestTarget } = this;
 
     if (requestOrigin === null || requestTarget === null) {
@@ -143,7 +143,7 @@ export abstract class IframeRpcApi<
 
           resolve(
             response as TCalleeResult & {
-              method: ProcedureName;
+              method: Method;
             },
           );
         },

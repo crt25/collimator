@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { MutableRefObject } from "react";
+import { RefObject } from "react";
 import { CloseButton, Col } from "react-bootstrap";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
@@ -55,7 +55,7 @@ interface Props {
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
   iframeSrc: string;
-  embeddedApp: MutableRefObject<EmbeddedAppRef | null>;
+  embeddedApp: RefObject<EmbeddedAppRef | null>;
   onAppAvailable?: () => void;
 }
 
