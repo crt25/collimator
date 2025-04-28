@@ -30,27 +30,27 @@ type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
 };
 
 export type IframeRpcPlatformMethods = MethodOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.CrtPlatform>
 >;
 
 export type IframeRpcApplicationMethods = MethodOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.App>
 >;
 
 export type IframeRpcPlatformRequest = RequestOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.CrtPlatform>
 >;
 
 export type IframeRpcApplicationRequest = RequestOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.App>
 >;
 
 export type IframeRpcApplicationResponse = ResponseOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Platform>
+  IframeRpcDefinitionForCaller<RpcCaller.CrtPlatform>
 >;
 
 export type IframeRpcPlatformResponse = ResponseOf<
-  IframeRpcDefinitionForCaller<RpcCaller.Application>
+  IframeRpcDefinitionForCaller<RpcCaller.App>
 >;
 
 export type IframeRpcPlatformMessage =

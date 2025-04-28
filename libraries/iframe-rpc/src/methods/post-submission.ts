@@ -4,7 +4,7 @@ import { Submission } from "./get-submission";
 
 export type PostSubmission = IframeRpcMethod<{
   method: "postSubmission";
-  caller: RpcCaller.Application;
+  caller: RpcCaller.App;
   parameters: Submission;
   result: undefined;
 }>;

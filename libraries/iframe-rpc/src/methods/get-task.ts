@@ -10,7 +10,7 @@ export type Task = {
 export type GetTask = IframeRpcMethod<{
   method: "getTask";
 
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: undefined;
   result: Task;
 }>;

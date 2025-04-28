@@ -4,7 +4,7 @@ import { Language } from "../languages";
 
 export type LoadSubmission = IframeRpcMethod<{
   method: "loadSubmission";
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: {
     task: Blob;
     submission: Blob;

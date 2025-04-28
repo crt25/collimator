@@ -27,7 +27,7 @@ export type Submission = {
 
 export type GetSubmission = IframeRpcMethod<{
   method: "getSubmission";
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: undefined;
   result: Submission;
 }>;

@@ -3,7 +3,7 @@ import { RpcCaller } from "../rpc-caller";
 
 export type GetHeight = IframeRpcMethod<{
   method: "getHeight";
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: undefined;
   result: number;
 }>;

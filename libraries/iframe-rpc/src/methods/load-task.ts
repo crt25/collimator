@@ -4,7 +4,7 @@ import { Language } from "../languages";
 
 export type LoadTask = IframeRpcMethod<{
   method: "loadTask";
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: {
     task: Blob;
     language: Language;

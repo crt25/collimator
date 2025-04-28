@@ -4,7 +4,7 @@ import { Language } from "../languages";
 
 export type SetLocale = IframeRpcMethod<{
   method: "setLocale";
-  caller: RpcCaller.Platform;
+  caller: RpcCaller.CrtPlatform;
   parameters: Language;
   result: undefined;
 }>;
