@@ -1,5 +1,5 @@
 import VM from "scratch-vm";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl } from "react-intl";
 import JSZip from "jszip";
@@ -10,7 +10,13 @@ import {
   Language,
   Submission,
   Test,
+  GetTask,
+  LoadTask,
+  LoadSubmission,
+  SetLocale,
+  Task,
 } from "iframe-rpc-react/src";
+import { AnyAction, Dispatch } from "redux";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
@@ -156,137 +162,160 @@ const getSubmission = async (
   }
 };
 
+export class EmbeddedScratchCallbacks {
+  constructor(
+    private vm: VM,
+    private intl: InjectedIntl,
+    private dispatch: Dispatch<AnyAction>,
+  ) {}
+
+  async getHeight(): Promise<number> {
+    return document.body.scrollHeight;
+  }
+
+  async getSubmission(): Promise<Submission> {
+    return getSubmission(this.vm, this.intl);
+  }
+
+  async getTask(request: GetTask["request"]): Promise<Task> {
+    try {
+      const task = await saveCrtProject(this.vm);
+      const submission = await getSubmission(this.vm, this.intl);
+
+      return {
+        file: task,
+        initialSolution: submission,
+      };
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
+        e,
+      );
+      toast.error(this.intl.formatMessage(messages.cannotSaveProject));
+
+      throw e;
+    }
+  }
+
+  async loadTask(request: LoadTask["request"]): Promise<undefined> {
+    try {
+      this.setScratchLocale(request.parameters.language);
+
+      console.debug(`${logModule} Loading project`);
+      const sb3Project = await request.parameters.task.arrayBuffer();
+      await loadCrtProject(this.vm, sb3Project);
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
+        e,
+      );
+      toast.error(this.intl.formatMessage(messages.cannotLoadProject));
+
+      throw e;
+    }
+  }
+
+  async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
+    this.setScratchLocale(request.parameters.language);
+
+    const sb3Project = await request.parameters.task.arrayBuffer();
+    const submission = await request.parameters.submission.text();
+
+    const zip = new JSZip();
+    await zip.loadAsync(sb3Project);
+
+    zip.remove("project.json");
+    zip.file("project.json", submission);
+
+    const taskMergedWithSubmission = await zip
+      .generateAsync({
+        // options consistent with https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/virtual-machine.js#L400C19-L407C12
+        type: "blob",
+        mimeType: "application/x.scratch.sb3",
+        compression: "DEFLATE",
+        compressionOptions: {
+          level: 6,
+        },
+      })
+      .then((blob) => blob.arrayBuffer());
+
+    try {
+      console.debug(`${logModule} Loading project`);
+      await loadCrtProject(this.vm, taskMergedWithSubmission);
+      const { subTaskId } = request.parameters;
+
+      if (subTaskId) {
+        const target = this.vm.runtime.targets.find(
+          (target) => target.getName() === subTaskId,
+        );
+
+        if (target) {
+          this.vm.setEditingTarget(target.id);
+        }
+      }
+    } catch (e) {
+      console.error(`${logModule} Project load failure: ${e}`);
+      toast.error(this.intl.formatMessage(messages.cannotLoadProject));
+
+      throw e;
+    }
+  }
+
+  async setLocale(request: SetLocale["request"]): Promise<undefined> {
+    // save content
+    const sb3Project = await saveCrtProject(this.vm);
+
+    // change language - apparently scratch resets the content with this?
+    this.setScratchLocale(request.parameters);
+    await loadCrtProject(this.vm, await sb3Project.arrayBuffer());
+  }
+
+  private setScratchLocale(language: Language): void {
+    // ensure that the languages are supported by scratch
+    // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
+    this.dispatch(selectLocale(language));
+  }
+}
+
 export const useEmbeddedScratch = (
   vm: VM | null,
   intl: InjectedIntl,
 ): ReturnType<typeof useIframeParent> => {
   const dispatch = useDispatch();
 
-  const setLocale = useCallback(
-    // ensure that the languages are supported by scratch
-    // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
-    (language: Language) => dispatch(selectLocale(language)),
-    [],
-  );
+  const callbacks = useMemo(() => {
+    if (!vm) {
+      return null;
+    }
 
-  const handleRequest = useMemo<Parameters<typeof useIframeParent>[0]>(
-    () => ({
-      /* eslint-disable @typescript-eslint/explicit-function-return-type */
-      getHeight: async (_request) => document.body.scrollHeight,
-      getSubmission: async (_request) => {
-        if (!vm) {
-          throw new VmUnavailableError();
-        }
+    return new EmbeddedScratchCallbacks(vm, intl, dispatch);
+  }, [vm, intl, dispatch]);
 
-        return getSubmission(vm, intl);
-      },
-      getTask: async (request) => {
-        if (!vm) {
-          throw new VmUnavailableError();
-        }
+  const handleRequest = useMemo<Parameters<typeof useIframeParent>[0]>(() => {
+    if (callbacks) {
+      return {
+        getHeight: callbacks.getHeight.bind(callbacks),
+        getSubmission: callbacks.getSubmission.bind(callbacks),
+        getTask: callbacks.getTask.bind(callbacks),
+        loadTask: callbacks.loadTask.bind(callbacks),
+        loadSubmission: callbacks.loadSubmission.bind(callbacks),
+        setLocale: callbacks.setLocale.bind(callbacks),
+      };
+    }
 
-        try {
-          const task = await saveCrtProject(vm);
-          const submission = await getSubmission(vm, intl);
+    const throwError = (): never => {
+      throw new VmUnavailableError();
+    };
 
-          return {
-            file: task,
-            initialSolution: submission,
-          };
-        } catch (e) {
-          console.error(
-            `${logModule} RPC: ${request.method} failed with error:`,
-            e,
-          );
-          toast.error(intl.formatMessage(messages.cannotSaveProject));
-
-          throw e;
-        }
-      },
-      loadTask: async (request) => {
-        if (!vm) {
-          throw new VmUnavailableError();
-        }
-
-        try {
-          setLocale(request.parameters.language);
-
-          console.debug(`${logModule} Loading project`);
-          const sb3Project = await request.parameters.task.arrayBuffer();
-          await loadCrtProject(vm, sb3Project);
-        } catch (e) {
-          console.error(
-            `${logModule} RPC: ${request.method} failed with error:`,
-            e,
-          );
-          toast.error(intl.formatMessage(messages.cannotLoadProject));
-
-          throw e;
-        }
-      },
-      loadSubmission: async (request) => {
-        if (!vm) {
-          throw new VmUnavailableError();
-        }
-
-        setLocale(request.parameters.language);
-
-        const sb3Project = await request.parameters.task.arrayBuffer();
-        const submission = await request.parameters.submission.text();
-
-        const zip = new JSZip();
-        await zip.loadAsync(sb3Project);
-
-        zip.remove("project.json");
-        zip.file("project.json", submission);
-
-        const taskMergedWithSubmission = await zip
-          .generateAsync({
-            // options consistent with https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/virtual-machine.js#L400C19-L407C12
-            type: "blob",
-            mimeType: "application/x.scratch.sb3",
-            compression: "DEFLATE",
-            compressionOptions: {
-              level: 6,
-            },
-          })
-          .then((blob) => blob.arrayBuffer());
-
-        try {
-          console.debug(`${logModule} Loading project`);
-          await loadCrtProject(vm, taskMergedWithSubmission);
-          const { subTaskId } = request.parameters;
-
-          if (subTaskId) {
-            const target = vm.runtime.targets.find(
-              (target) => target.getName() === subTaskId,
-            );
-
-            if (target) {
-              vm.setEditingTarget(target.id);
-            }
-          }
-        } catch (e) {
-          console.error(`${logModule} Project load failure: ${e}`);
-          toast.error(intl.formatMessage(messages.cannotLoadProject));
-
-          throw e;
-        }
-      },
-      setLocale: async (request) => {
-        if (!vm) {
-          throw new VmUnavailableError();
-        }
-        // save content
-        const sb3Project = await saveCrtProject(vm);
-
-        // change language - apparently scratch resets the content with this?
-        setLocale(request.parameters);
-        await loadCrtProject(vm, await sb3Project.arrayBuffer());
-      },
-    }),
-    [vm],
-  );
+    return {
+      getHeight: throwError,
+      getSubmission: throwError,
+      getTask: throwError,
+      loadTask: throwError,
+      loadSubmission: throwError,
+      setLocale: throwError,
+    };
+  }, [callbacks]);
 
   return useIframeParent(handleRequest);
 };

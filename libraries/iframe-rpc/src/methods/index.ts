@@ -8,8 +8,13 @@ import { LoadTask } from "./load-task";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 
-export type { Submission, Test } from "./get-submission";
-export type { Task } from "./get-task";
+export type { GetHeight } from "./get-height";
+export type { GetSubmission, Submission, Test } from "./get-submission";
+export type { GetTask, Task } from "./get-task";
+export type { LoadSubmission } from "./load-submission";
+export type { LoadTask } from "./load-task";
+export type { PostSubmission } from "./post-submission";
+export type { SetLocale } from "./set-locale";
 
 type Methods =
   | GetHeight
