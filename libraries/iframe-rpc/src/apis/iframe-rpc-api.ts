@@ -3,21 +3,34 @@ import {
   IframeRpcError,
   IframeRpcResult,
 } from "../remote-procedure-call";
+import { ParametersOf, ResultOf } from "../utils";
 
 const MAX_COUNTER = 1000000;
 
-export type IframeApiResponse<Method extends string, TResponse> = Omit<
-  TResponse & { method: Method },
-  "id"
->;
+export type IframeApiResponse<
+  Method extends string,
+  TResult extends IframeRpcResult<Method>,
+> = ResultOf<TResult>;
 
-type HandleRequest<Method extends string, TRequest, TResponse> = (
+type HandleRequest<
+  Method extends string,
+  TRequest,
+  TResult extends IframeRpcResult<Method>,
+> = (
   request: TRequest & { method: Method },
   event: MessageEvent,
-) => Promise<IframeApiResponse<Method, TResponse>>;
+) => Promise<IframeApiResponse<Method, TResult>>;
 
-export type HandleRequestMap<Procedures extends string, TRequest, TResponse> = {
-  [Procedure in Procedures]: HandleRequest<Procedure, TRequest, TResponse>;
+export type HandleRequestMap<
+  Methods extends string,
+  TRequest,
+  TResult extends IframeRpcResult<Methods>,
+> = {
+  [Method in Methods]: HandleRequest<
+    Method,
+    TRequest,
+    TResult & { method: Method }
+  >;
 };
 
 export type MessageTarget = Window | MessagePort | ServiceWorker;
@@ -27,16 +40,14 @@ export abstract class IframeRpcApi<
   TCalleeProcedures extends string,
   TCallerRequest extends IframeRpcRequest<TCallerProcedures>,
   TCalleeRequest extends IframeRpcRequest<TCalleeProcedures>,
-  TCallerResponse extends
-    | IframeRpcResult<TCalleeProcedures>
-    | IframeRpcError<TCalleeProcedures>,
-  TCalleeResponse extends
-    | IframeRpcResult<TCallerProcedures>
-    | IframeRpcError<TCallerProcedures>,
+  TCallerResult extends IframeRpcResult<TCalleeProcedures>,
+  TCalleeResult extends IframeRpcResult<TCallerProcedures>,
+  TErrorResponse extends
+    IframeRpcError<TCalleeProcedures> = IframeRpcError<TCalleeProcedures>,
 > {
   private readonly pendingRequests: {
     [key: number]: {
-      resolve: (response: TCalleeResponse) => void;
+      resolve: (response: TCalleeResult) => void;
       reject: (error?: string) => void;
     };
   } = {};
@@ -49,7 +60,7 @@ export abstract class IframeRpcApi<
     private onRequest: HandleRequestMap<
       TCalleeProcedures,
       TCalleeRequest,
-      TCallerResponse
+      TCallerResult
     >,
   ) {}
 
@@ -57,7 +68,7 @@ export abstract class IframeRpcApi<
     onRequest: HandleRequestMap<
       TCalleeProcedures,
       TCalleeRequest,
-      TCallerResponse
+      TCallerResult
     >,
   ): void {
     this.onRequest = onRequest;
@@ -73,7 +84,7 @@ export abstract class IframeRpcApi<
 
   private sendMessage(
     target: MessageTarget,
-    message: TCallerRequest | TCallerResponse,
+    message: TCallerRequest | TCallerResult | TErrorResponse,
     targetOrigin: string,
   ): void {
     target.postMessage(message, {
@@ -81,9 +92,12 @@ export abstract class IframeRpcApi<
     });
   }
 
-  private respondToRequest(
+  private respondToRequest<Method extends TCalleeProcedures>(
     event: MessageEvent,
-    message: Omit<TCallerResponse, "id">,
+    id: number,
+    method: Method,
+    result: ResultOf<TCallerResult & { method: Method }> | undefined,
+    error?: string,
   ): void {
     if (!event.source) {
       console.error("Cannot respond to event without source:", event);
@@ -92,21 +106,17 @@ export abstract class IframeRpcApi<
 
     return this.sendMessage(
       event.source,
-      {
-        id: (event.data as TCalleeRequest).id,
-        ...message,
-        // unfortunately typescript cannot infer the type here but it is
-        // easy to check manually that id is now set.
-      } as TCallerResponse,
+      result !== undefined
+        ? this.createResponse(id, method, result)
+        : this.createErrorResponse(id, method, error),
       event.origin,
     );
   }
 
   sendRequest<ProcedureName extends TCallerProcedures>(
-    request: Omit<TCallerRequest, "id"> & {
-      method: ProcedureName;
-    },
-  ): Promise<TCalleeResponse & { method: ProcedureName }> {
+    method: ProcedureName,
+    parameters: ParametersOf<TCallerRequest & { method: ProcedureName }>,
+  ): Promise<TCalleeResult & { method: ProcedureName }> {
     const { requestOrigin, requestTarget } = this;
 
     if (requestOrigin === null || requestTarget === null) {
@@ -117,17 +127,22 @@ export abstract class IframeRpcApi<
       );
     }
 
+    const request = this.createRequest(this.counter, method, parameters);
+
+    // increment the counter
+    this.counter = (this.counter + 1) % MAX_COUNTER;
+
     return new Promise((resolve, reject) => {
       // store the resolve function in the pendingRequests object
       this.pendingRequests[this.counter] = {
-        resolve: (response: TCalleeResponse): void => {
+        resolve: (response: TCalleeResult): void => {
           if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
             return;
           }
 
           resolve(
-            response as TCalleeResponse & {
+            response as TCalleeResult & {
               method: ProcedureName;
             },
           );
@@ -140,20 +155,7 @@ export abstract class IframeRpcApi<
 
       // send the message to the iframe
       console.debug("Sending IframeRPC request", request);
-      this.sendMessage(
-        requestTarget,
-        // add a unique id to the message
-        {
-          id: this.counter,
-          ...request,
-          // unfortunately typescript cannot infer the type here but it is
-          // easy to check manually that id and type are now set.
-        } as unknown as TCallerRequest,
-        requestOrigin,
-      );
-
-      // increment the counter
-      this.counter = (this.counter + 1) % MAX_COUNTER;
+      this.sendMessage(requestTarget, request, requestOrigin);
     });
   }
 
@@ -162,10 +164,13 @@ export abstract class IframeRpcApi<
       return;
     }
 
-    const message = event.data as TCalleeRequest | TCalleeResponse;
+    const message = event.data as
+      | TCalleeRequest
+      | TCalleeResult
+      | TErrorResponse;
 
     if (this.isResponse(message)) {
-      const response: TCalleeResponse = message;
+      const response: TCalleeResult | TErrorResponse = message;
 
       console.debug("Received IframeRPC response", response);
 
@@ -184,7 +189,7 @@ export abstract class IframeRpcApi<
       } else {
         handleResponse.resolve(
           // unfortunately typescript cannot infer the type
-          response as TCalleeResponse,
+          response as TCalleeResult,
         );
       }
       // remove the resolve function from the pendingRequests object
@@ -200,36 +205,47 @@ export abstract class IframeRpcApi<
 
     try {
       const response = await handleRequest(message, event);
-      this.respondToRequest(event, response);
+      this.respondToRequest(event, request.id, request.method, response);
     } catch (e) {
       console.error("Error handling request", e, message);
 
       this.respondToRequest(
         event,
-        this.createErrorResponse(
-          request.method,
-          e instanceof Error ? e.message : "Unkown error",
-        ),
+        request.id,
+        request.method,
+        undefined,
+        e instanceof Error ? e.message : "Unkown error",
       );
     }
   }
 
   private isResponse(
-    message: TCalleeRequest | TCalleeResponse,
-  ): message is TCalleeResponse {
+    message: TCalleeRequest | TCalleeResult | TErrorResponse,
+  ): message is TCalleeResult | TErrorResponse {
     return "response" in message || "error" in message;
   }
 
   private isErrorResponse(
-    message:
-      | IframeRpcResult<TCallerProcedures>
-      | IframeRpcError<TCallerProcedures>,
-  ): message is IframeRpcError<TCallerProcedures> {
+    message: TCalleeResult | TErrorResponse,
+  ): message is TErrorResponse {
     return "error" in message;
   }
 
+  protected abstract createRequest<Method extends TCallerProcedures>(
+    id: number,
+    method: Method,
+    parameters: ParametersOf<TCallerRequest & { method: Method }>,
+  ): TCallerRequest & { method: Method };
+
+  protected abstract createResponse<Method extends TCalleeProcedures>(
+    id: number,
+    method: Method,
+    result: ResultOf<TCallerResult & { method: Method }>,
+  ): TCallerResult & { method: Method };
+
   protected abstract createErrorResponse(
+    id: number,
     method: TCalleeProcedures,
     error?: string,
-  ): Omit<TCallerResponse, "id">;
+  ): TErrorResponse;
 }

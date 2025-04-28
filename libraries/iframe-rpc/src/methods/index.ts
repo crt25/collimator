@@ -1,5 +1,5 @@
-import { IframeRpcDefinition } from "../remote-procedure-call";
 import { RemoteProcedureCallCaller } from "../remote-procedure-caller";
+import { MethodOf, RequestOf, ResponseOf } from "../utils";
 import { GetHeight } from "./get-height";
 import { GetSubmission } from "./get-submission";
 import { GetTask } from "./get-task";
@@ -25,57 +25,27 @@ type IframeRpcDefinitionForCaller<Caller extends RemoteProcedureCallCaller> =
     caller: Caller;
   };
 
-type Request<Rpc> =
-  Rpc extends IframeRpcDefinition<
-    infer _Method,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Rpc["request"]
-    : never;
-
-type Method<Rpc> =
-  Rpc extends IframeRpcDefinition<
-    infer Method,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Method
-    : never;
-
-type Response<Rpc> =
-  Rpc extends IframeRpcDefinition<
-    infer _Method,
-    infer _Caller,
-    infer _Parameters,
-    infer _Result
-  >
-    ? Rpc["response"]
-    : never;
-
-export type IframeRpcPlatformMethods = Method<
+export type IframeRpcPlatformMethods = MethodOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type IframeRpcApplicationMethods = Method<
+export type IframeRpcApplicationMethods = MethodOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 
-export type IframeRpcPlatformRequest = Request<
+export type IframeRpcPlatformRequest = RequestOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type IframeRpcApplicationRequest = Request<
+export type IframeRpcApplicationRequest = RequestOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 
-export type IframeRpcApplicationResponse = Response<
+export type IframeRpcApplicationResponse = ResponseOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Platform>
 >;
 
-export type IframeRpcPlatformResponse = Response<
+export type IframeRpcPlatformResponse = ResponseOf<
   IframeRpcDefinitionForCaller<RemoteProcedureCallCaller.Application>
 >;
 

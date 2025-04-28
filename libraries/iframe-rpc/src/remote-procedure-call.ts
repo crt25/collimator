@@ -27,10 +27,6 @@ export type IframeRpcError<Method extends string> = {
   error?: string;
 };
 
-type IframeRpcResponse<Method extends string, Result = undefined> =
-  | IframeRpcResult<Method, Result>
-  | IframeRpcError<Method>;
-
 export type IframeRpcMethod<Definition> = Definition extends {
   method: infer _Method extends string;
   caller: infer _Caller extends RemoteProcedureCallCaller;
@@ -54,5 +50,5 @@ export type IframeRpcDefinition<
   method: Method;
   caller: Caller;
   request: IframeRpcRequest<Method, Parameters>;
-  response: IframeRpcResponse<Method, Result>;
+  response: IframeRpcResult<Method, Result>;
 };
