@@ -31,6 +31,7 @@ export class AppCrtIframeApi extends CrtIframeApi<
       RemoteProcedureCallResponseErrorMessage<AppIFramePlatformProcedures>,
       "id"
     > = {
+      jsonrpc: "2.0",
       method: method,
       error,
     };

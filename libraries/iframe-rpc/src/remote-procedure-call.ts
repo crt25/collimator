@@ -9,6 +9,7 @@ type ConditionalResult<Result> = Result extends undefined
   : { result: Result };
 
 export type RemoteProcedureCallRequestMessageBase<Method extends string> = {
+  jsonrpc: "2.0";
   id: number;
   method: Method;
 };
@@ -20,11 +21,13 @@ type RemoteProcedureCallRequestMessage<
   ConditionalParameters<Parameters>;
 
 export type RemoteProcedureCallResponseMessageBase<Method extends string> = {
+  jsonrpc: "2.0";
   id: number;
   method: Method;
 };
 
 export type RemoteProcedureCallResponseErrorMessage<Method extends string> = {
+  jsonrpc: "2.0";
   id: number;
   method: Method;
   error?: string;
