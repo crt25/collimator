@@ -1,14 +1,14 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
-import { Language } from "app-iframe-message-react/src";
+import { Language } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
-import MultiSwrContent from "../MultiSwrContent";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import MultiSwrContent from "../MultiSwrContent";
 
 export const CodeViewContainer = styled.div`
   /* always take up 100% of the screen (minus some margin for the selects and axis values) */

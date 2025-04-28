@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
-import { AppIFrameMessage } from "../../../frontend/src/types/app-iframe-message";
 import { TaskTemplateWithSolutions } from "./tasks/task-template-with-solutions";
 
 export class SolveTaskPageModel {

@@ -1,6 +1,6 @@
 import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Language, Task } from "app-iframe-message-react/src";
+import { Language, Task } from "iframe-rpc-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { EmbeddedAppRef } from "../EmbeddedApp";

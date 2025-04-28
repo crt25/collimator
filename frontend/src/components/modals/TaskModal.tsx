@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { Language, Submission } from "app-iframe-message-react/src";
+import { Language, Submission } from "iframe-rpc-react/src";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";

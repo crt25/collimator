@@ -10,8 +10,8 @@ let nextConfig: NextConfig = {
 
   transpilePackages: [
     "../backend",
-    "app-iframe-message",
-    "app-iframe-message-react",
+    "iframe-rpc",
+    "iframe-rpc-react",
   ],
 
   eslint: {

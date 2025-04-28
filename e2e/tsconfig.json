@@ -23,8 +23,7 @@
     }
   },
   "include": [
-    "./**/*.ts",
-    "../frontend/src/types/app-iframe-message/**/*.d.ts",
+    "./**/*.ts"
   ],
   "exclude": [
     "node_modules"

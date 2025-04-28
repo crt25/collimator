@@ -1,6 +1,6 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
-import { Language } from "app-iframe-message-react/src";
+import { Language } from "iframe-rpc-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";

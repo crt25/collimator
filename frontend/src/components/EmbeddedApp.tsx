@@ -4,7 +4,7 @@ import {
   useIframeChild,
   PlatformCrtIframeApi,
   Submission,
-} from "app-iframe-message-react/src";
+} from "iframe-rpc-react/src";
 import ProgressSpinner from "./ProgressSpinner";
 
 const LoadingWrapper = styled.div`

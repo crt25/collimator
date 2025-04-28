@@ -1,5 +1,5 @@
 {
-  "name": "app-iframe-message",
+  "name": "iframe-rpc",
   "packageManager": "yarn@4.9.1",
   "files": [
     "src/**/*"

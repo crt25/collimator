@@ -6437,22 +6437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-iframe-message-react@portal:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "app-iframe-message-react@portal:../../libraries/app-iframe-message-react::locator=app-scratch%40workspace%3A."
-  dependencies:
-    app-iframe-message: "portal:../app-iframe-message"
-  peerDependencies:
-    react: ^19.1.0
-  languageName: node
-  linkType: soft
-
-"app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A.":
-  version: 0.0.0-use.local
-  resolution: "app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40portal%3A..%2F..%2Flibraries%2Fapp-iframe-message-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A."
-  languageName: node
-  linkType: soft
-
 "app-scratch@workspace:.":
   version: 0.0.0-use.local
   resolution: "app-scratch@workspace:."
@@ -6496,7 +6480,6 @@ __metadata:
     "@types/wav-encoder": "npm:^1"
     "@typescript-eslint/eslint-plugin": "npm:^8.29.0"
     "@typescript-eslint/parser": "npm:^8.29.0"
-    app-iframe-message-react: "portal:../../libraries/app-iframe-message-react"
     archiver: "npm:^7.0.1"
     arraybuffer-loader: "npm:^1.0.8"
     autoprefixer: "npm:^10.4.21"
@@ -6518,6 +6501,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.2.6"
     get-float-time-domain-data: "npm:^0.1.0"
     get-user-media-promise: "npm:1.1.4"
+    iframe-rpc-react: "portal:../../libraries/iframe-rpc-react"
     immutable: "npm:^5.1.1"
     js-base64: "npm:^3.7.7"
     jszip: "npm:^3.10.1"
@@ -12498,6 +12482,22 @@ __metadata:
   checksum: 10c0/b0782ef5e0935b9f12883a2e2aa37baa75da6e66ce6515c168697b42160807d9330de9a32ec1ed73149aea02e0d822e572bca6f1e22bdcbd2149e13b050b17bb
   languageName: node
   linkType: hard
+
+"iframe-rpc-react@portal:../../libraries/iframe-rpc-react::locator=app-scratch%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc-react@portal:../../libraries/iframe-rpc-react::locator=app-scratch%40workspace%3A."
+  dependencies:
+    iframe-rpc: "portal:../iframe-rpc"
+  peerDependencies:
+    react: ^19.1.0
+  languageName: node
+  linkType: soft
+
+"iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40portal%3A..%2F..%2Flibraries%2Fiframe-rpc-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40portal%3A..%2F..%2Flibraries%2Fiframe-rpc-react%3A%3Alocator%3Dapp-scratch%2540workspace%253A."
+  languageName: node
+  linkType: soft
 
 "ify-loader@npm:^1.0.4":
   version: 1.1.0

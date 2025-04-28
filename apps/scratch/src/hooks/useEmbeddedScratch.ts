@@ -10,7 +10,7 @@ import {
   Language,
   Submission,
   Test,
-} from "app-iframe-message-react/src";
+} from "iframe-rpc-react/src";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";

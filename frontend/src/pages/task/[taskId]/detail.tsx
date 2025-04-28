@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Container } from "react-bootstrap";
-import { Language } from "app-iframe-message-react/src";
+import { Language } from "iframe-rpc-react/src";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
 import TaskNavigation from "@/components/task/TaskNavigation";

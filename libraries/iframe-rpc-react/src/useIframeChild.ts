@@ -4,7 +4,7 @@ import {
   AppIFramePlatformRequest,
   PlatformCrtIframeApi,
   PlatformHandleRequestMap,
-} from "app-iframe-message/src";
+} from "iframe-rpc/src";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const useIframeChild = (

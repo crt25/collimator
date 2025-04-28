@@ -20,8 +20,8 @@ const config: StorybookConfig = {
     // Add the packages you want to transpile here
     const transpileModules = [
       "../backend",
-      "app-iframe-message",
-      "app-iframe-message-react",
+      "iframe-rpc",
+      "iframe-rpc-react",
     ];
 
     const transpileRegex = new RegExp(

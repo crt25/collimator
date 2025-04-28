@@ -13,7 +13,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Submission } from "app-iframe-message-react/src";
+import { Submission } from "iframe-rpc-react/src";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {

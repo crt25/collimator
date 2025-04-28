@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
-import { Language, Test } from "app-iframe-message-react/src";
+import { Language, Test } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";

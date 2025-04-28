@@ -157,8 +157,8 @@ module.exports = {
       options: {
         includes: [
           resolvePath("node_modules/scratch-paint"),
-          resolvePath("node_modules/app-iframe-message"),
-          resolvePath("node_modules/app-iframe-message-react"),
+          resolvePath("node_modules/iframe-rpc"),
+          resolvePath("node_modules/iframe-rpc-react"),
         ],
       },
     },

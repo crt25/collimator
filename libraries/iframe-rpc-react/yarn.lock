@@ -1263,35 +1263,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-iframe-message-react@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "app-iframe-message-react@workspace:."
-  dependencies:
-    "@types/react": "npm:^19"
-    "@typescript-eslint/eslint-plugin": "npm:^8.31.0"
-    app-iframe-message: "portal:../app-iframe-message"
-    eslint: "npm:8.57.0"
-    eslint-config-prettier: "npm:^10.1.2"
-    eslint-plugin-import: "npm:^2.31.0"
-    eslint-plugin-jest-extended: "npm:^3.0.0"
-    eslint-plugin-prettier: "npm:^5.2.6"
-    jest: "npm:^29.7.0"
-    jest-environment-jsdom: "npm:^29.7.0"
-    jest-extended: "npm:^4.0.2"
-    prettier: "npm:^3.5.3"
-    typescript: "npm:^5.8.3"
-    typescript-eslint: "npm:^8.31.0"
-  peerDependencies:
-    react: ^19.1.0
-  languageName: unknown
-  linkType: soft
-
-"app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "app-iframe-message@portal:../app-iframe-message::locator=app-iframe-message-react%40workspace%3A."
-  languageName: node
-  linkType: soft
-
 "argparse@npm:^1.0.7":
   version: 1.0.10
   resolution: "argparse@npm:1.0.10"
@@ -2981,6 +2952,35 @@ __metadata:
   checksum: 10c0/98102bc66b33fcf5ac044099d1257ba0b7ad5e3ccd3221f34dd508ab4070edff183276221684e1e0555b145fce0850c9f7d2b60a9fcac50fbb4ea0d6e845a3b1
   languageName: node
   linkType: hard
+
+"iframe-rpc-react@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc-react@workspace:."
+  dependencies:
+    "@types/react": "npm:^19"
+    "@typescript-eslint/eslint-plugin": "npm:^8.31.0"
+    eslint: "npm:8.57.0"
+    eslint-config-prettier: "npm:^10.1.2"
+    eslint-plugin-import: "npm:^2.31.0"
+    eslint-plugin-jest-extended: "npm:^3.0.0"
+    eslint-plugin-prettier: "npm:^5.2.6"
+    iframe-rpc: "portal:../iframe-rpc"
+    jest: "npm:^29.7.0"
+    jest-environment-jsdom: "npm:^29.7.0"
+    jest-extended: "npm:^4.0.2"
+    prettier: "npm:^3.5.3"
+    typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.0"
+  peerDependencies:
+    react: ^19.1.0
+  languageName: unknown
+  linkType: soft
+
+"iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40workspace%3A."
+  languageName: node
+  linkType: soft
 
 "ignore@npm:^5.2.0, ignore@npm:^5.3.1":
   version: 5.3.2

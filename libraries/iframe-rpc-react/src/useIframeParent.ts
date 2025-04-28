@@ -4,7 +4,7 @@ import {
   AppIFrameApplicationProcedures,
   AppIFrameApplicationRequest,
   AppIFramePlatformResponse,
-} from "app-iframe-message/src";
+} from "iframe-rpc/src";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const useIframeParent = (
