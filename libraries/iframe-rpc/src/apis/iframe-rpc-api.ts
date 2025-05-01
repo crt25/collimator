@@ -127,9 +127,9 @@ export abstract class IframeRpcApi<
 
     return this.sendMessage(
       event.source,
-      result !== undefined
-        ? this.createResponse(id, method, result)
-        : this.createErrorResponse(id, method, error),
+      error !== undefined
+        ? this.createErrorResponse(id, method, error)
+        : this.createResponse(id, method, result),
       event.origin,
     );
   }
@@ -210,12 +210,13 @@ export abstract class IframeRpcApi<
     const handleResponse = this.pendingRequests[response.id];
     if (!handleResponse) {
       console.error("No resolve function found for message", response);
+      throw new Error("No resolve function found for message");
     }
 
     // call the resolve function with the message
     if (this.isErrorResponse(response)) {
       const errorMessage =
-        "error" in response ? response.error : "Unknown error";
+        ("error" in response ? response.error : undefined) ?? "Unknown error";
 
       handleResponse.reject(errorMessage);
     } else {
@@ -287,7 +288,7 @@ export abstract class IframeRpcApi<
   protected abstract createResponse<Method extends TIncomingMethods>(
     id: number,
     method: Method,
-    result: ResultOf<TOutgoingResult & { method: Method }>,
+    result: ResultOf<TOutgoingResult & { method: Method }> | undefined,
   ): TOutgoingResult & { method: Method };
 
   protected abstract createErrorResponse(

@@ -41,7 +41,9 @@ export class AppIframeRpcApi extends IframeRpcApi<
   protected override createResponse<Method extends IframeRpcPlatformMethods>(
     id: number,
     method: Method,
-    result: ResultOf<IframeRpcApplicationResponse & { method: Method }>,
+    result:
+      | ResultOf<IframeRpcApplicationResponse & { method: Method }>
+      | undefined,
   ): IframeRpcApplicationResponse & { method: Method } {
     return {
       jsonrpc: "2.0",
