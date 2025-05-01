@@ -61,8 +61,7 @@ test.describe("/solve", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getHeight",
+        method: "getHeight",
       });
 
       window.dispatchEvent(event);
@@ -75,9 +74,9 @@ test.describe("/solve", () => {
     expect(messages).toHaveLength(1);
 
     expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getHeight",
+      method: "getHeight",
       result: expect.any(Number),
     });
   });
@@ -88,8 +87,7 @@ test.describe("/solve", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 1,
-        type: "request",
-        procedure: "getSubmission",
+        method: "getSubmission",
       });
 
       window.dispatchEvent(event);
@@ -102,9 +100,9 @@ test.describe("/solve", () => {
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
       id: 1,
-      type: "response",
-      procedure: "getSubmission",
+      method: "getSubmission",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
       result: {
         file: {},
@@ -434,8 +432,7 @@ test.describe("/solve", () => {
     await pwPage.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getSubmission",
+        method: "getSubmission",
       });
 
       window.dispatchEvent(event);
@@ -448,9 +445,9 @@ test.describe("/solve", () => {
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getSubmission",
+      method: "getSubmission",
       result: {
         file: {},
         failedTests: [
@@ -488,8 +485,7 @@ test.describe("/solve", () => {
     await pwPage.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getSubmission",
+        method: "getSubmission",
       });
 
       window.dispatchEvent(event);
@@ -502,9 +498,9 @@ test.describe("/solve", () => {
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getSubmission",
+      method: "getSubmission",
       result: {
         file: {},
         passedTests: [

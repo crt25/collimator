@@ -78,7 +78,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   const { sendRequest, iframeRef } = useIframeChild(
     {
       postSubmission: async (request) => {
-        onReceiveSubmission?.(request.parameters);
+        onReceiveSubmission?.(request.params);
       },
     },
     onAvailable,

@@ -33,7 +33,7 @@ export class AppIframeRpcApi extends IframeRpcApi<
       jsonrpc: "2.0",
       id,
       method,
-      parameters,
+      params: parameters,
       // unfortunately typescript is not capable of performing the inference directly
     } as IframeRpcApplicationRequest & { method: Method };
   }

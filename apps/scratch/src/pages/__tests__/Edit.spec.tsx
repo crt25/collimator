@@ -40,8 +40,7 @@ test.describe("/edit", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getHeight",
+        method: "getHeight",
       });
       window.dispatchEvent(event);
     });
@@ -53,9 +52,9 @@ test.describe("/edit", () => {
     expect(messages).toHaveLength(1);
 
     expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getHeight",
+      method: "getHeight",
       result: expect.any(Number),
     });
   });
@@ -66,8 +65,7 @@ test.describe("/edit", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getTask",
+        method: "getTask",
       });
 
       window.dispatchEvent(event);
@@ -80,9 +78,9 @@ test.describe("/edit", () => {
     expect(messages).toHaveLength(2);
 
     expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getTask",
+      method: "getTask",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
       result: {
         file: {},

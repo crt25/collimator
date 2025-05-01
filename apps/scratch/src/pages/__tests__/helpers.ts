@@ -37,9 +37,8 @@ export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
 
     const event = new window.MockMessageEvent(window.parent, {
       id: 0,
-      type: "request",
-      procedure: "loadTask",
-      arguments: {
+      method: "loadTask",
+      params: {
         task,
         language: "en",
       },
@@ -55,9 +54,9 @@ export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
   expect(messages).toHaveLength(1);
 
   expect(messages[0].message).toEqual({
+    jsonrpc: "2.0",
     id: 0,
-    type: "response",
-    procedure: "loadTask",
+    method: "loadTask",
     result: undefined,
   });
 };

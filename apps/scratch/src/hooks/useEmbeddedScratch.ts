@@ -199,10 +199,10 @@ export class EmbeddedScratchCallbacks {
 
   async loadTask(request: LoadTask["request"]): Promise<undefined> {
     try {
-      this.setScratchLocale(request.parameters.language);
+      this.setScratchLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
-      const sb3Project = await request.parameters.task.arrayBuffer();
+      const sb3Project = await request.params.task.arrayBuffer();
       await loadCrtProject(this.vm, sb3Project);
     } catch (e) {
       console.error(
@@ -216,10 +216,10 @@ export class EmbeddedScratchCallbacks {
   }
 
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
-    this.setScratchLocale(request.parameters.language);
+    this.setScratchLocale(request.params.language);
 
-    const sb3Project = await request.parameters.task.arrayBuffer();
-    const submission = await request.parameters.submission.text();
+    const sb3Project = await request.params.task.arrayBuffer();
+    const submission = await request.params.submission.text();
 
     const zip = new JSZip();
     await zip.loadAsync(sb3Project);
@@ -242,7 +242,7 @@ export class EmbeddedScratchCallbacks {
     try {
       console.debug(`${logModule} Loading project`);
       await loadCrtProject(this.vm, taskMergedWithSubmission);
-      const { subTaskId } = request.parameters;
+      const { subTaskId } = request.params;
 
       if (subTaskId) {
         const target = this.vm.runtime.targets.find(
@@ -266,7 +266,7 @@ export class EmbeddedScratchCallbacks {
     const sb3Project = await saveCrtProject(this.vm);
 
     // change language - apparently scratch resets the content with this?
-    this.setScratchLocale(request.parameters);
+    this.setScratchLocale(request.params);
     await loadCrtProject(this.vm, await sb3Project.arrayBuffer());
   }
 

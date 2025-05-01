@@ -59,8 +59,7 @@ test.describe("/show", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getHeight",
+        method: "getHeight",
       });
 
       window.dispatchEvent(event);
@@ -73,9 +72,9 @@ test.describe("/show", () => {
     expect(messages).toHaveLength(1);
 
     expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getHeight",
+      method: "getHeight",
       result: expect.any(Number),
     });
   });

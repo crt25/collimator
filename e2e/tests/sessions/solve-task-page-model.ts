@@ -58,7 +58,7 @@ export class SolveTaskPageModel {
               jsonrpc: "2.0",
               id,
               method: "loadSubmission",
-              parameters: {
+              params: {
                 language: "en" as Language,
                 submission: new Blob([submission]),
                 task,

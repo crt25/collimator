@@ -1,8 +1,8 @@
 import { RpcCaller } from "./rpc-caller";
 
 type ConditionalParameters<Parameters> = Parameters extends undefined
-  ? { parameters?: unknown }
-  : { parameters: Parameters };
+  ? { params?: unknown }
+  : { params: Parameters };
 
 type ConditionalResult<Result> = Result extends undefined
   ? { result?: unknown }
