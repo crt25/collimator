@@ -5,7 +5,7 @@ import { DistanceType } from "../ast-distance/distance-type";
 import { getAstDistance } from "../ast-distance";
 
 const getDissimilarPairs = async (
-  analysesIn: CurrentAnalysis[] | undefined,
+  analysesIn: CurrentStudentAnalysis[] | undefined,
   numberOfPairs: number,
   distanceType: DistanceType,
 ): Promise<[CurrentStudentAnalysis, CurrentStudentAnalysis][] | undefined> => {
@@ -17,12 +17,10 @@ const getDissimilarPairs = async (
     return [];
   }
 
-  const analyses = analysesIn
-    ?.filter((analysis) => analysis instanceof CurrentStudentAnalysis)
-    .map((analysis, index) => ({
-      analysis,
-      index,
-    }));
+  const analyses = analysesIn.map((analysis, index) => ({
+    analysis,
+    index,
+  }));
 
   const distances: {
     from: CurrentStudentAnalysis;
@@ -73,15 +71,19 @@ export const useDissimilarPairs = (
   useEffect(() => {
     let isCancelled = false;
 
-    getDissimilarPairs(analysesIn, numberOfSolutions, distanceType).then(
-      (analyses) => {
-        if (isCancelled) {
-          return;
-        }
+    getDissimilarPairs(
+      analysesIn?.filter(
+        (analysis) => analysis instanceof CurrentStudentAnalysis,
+      ),
+      numberOfSolutions,
+      distanceType,
+    ).then((analyses) => {
+      if (isCancelled) {
+        return;
+      }
 
-        setAnalyses(analyses);
-      },
-    );
+      setAnalyses(analyses);
+    });
 
     return (): void => {
       isCancelled = true;
