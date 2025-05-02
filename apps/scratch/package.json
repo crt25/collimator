@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=3101 craco start",
-    "dev:coverage": "PORT=3101 COVERAGE=true craco start",
-    "build": "craco build",
+    "dev": "cross-env NODE_OPTIONS=--preserve-symlinks PORT=3101 craco start",
+    "dev:coverage": "cross-env NODE_OPTIONS=--preserve-symlinks PORT=3101 COVERAGE=true craco start",
+    "build": "cross-env NODE_OPTIONS=--preserve-symlinks craco build",
     "pretest": "shx rm -rf coverage/ .nyc_output/",
     "test": "yarn pretest && playwright test && yarn posttest",
     "test:local": "yarn pretest && SERVER_ALREADY_RUNS=true playwright test && yarn posttest",
@@ -55,6 +55,7 @@
     "eslint-plugin-prettier": "^5.2.6",
     "get-float-time-domain-data": "^0.1.0",
     "get-user-media-promise": "1.1.4",
+    "iframe-rpc-react": "portal:../../libraries/iframe-rpc-react",
     "immutable": "^5.1.1",
     "js-base64": "^3.7.7",
     "jszip": "^3.10.1",
@@ -216,6 +217,7 @@
     "@types/react-virtualized": "^9",
     "@types/wav-encoder": "^1",
     "archiver": "^7.0.1",
+    "cross-env": "^7.0.3",
     "eslint-plugin-import": "^2.31.0",
     "nyc": "^17.1.0"
   }

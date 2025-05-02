@@ -8,7 +8,11 @@ let nextConfig: NextConfig = {
 
   reactStrictMode: true,
 
-  transpilePackages: ["../backend"],
+  transpilePackages: [
+    "../backend",
+    "iframe-rpc",
+    "iframe-rpc-react",
+  ],
 
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
@@ -19,6 +23,11 @@ let nextConfig: NextConfig = {
     // ignore deprecation warning from sass because of bootstrap
     // https://sass-lang.com/documentation/breaking-changes/import/
     quietDeps: true,
+  },
+
+  webpack: (config) => {
+    config.resolve.symlinks = false;
+    return config;
   },
 };
 

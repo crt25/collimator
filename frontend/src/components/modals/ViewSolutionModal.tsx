@@ -1,10 +1,10 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
+import { Language } from "iframe-rpc-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { Language } from "@/types/app-iframe-message/languages";
 import MultiSwrContent from "../MultiSwrContent";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
@@ -57,13 +57,10 @@ const ViewSolutionModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (taskFile && solutionFile) {
-        embeddedApp.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task: taskFile,
-            submission: solutionFile,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadSubmission", {
+          task: taskFile,
+          submission: solutionFile,
+          language: intl.locale as Language,
         });
       }
     },

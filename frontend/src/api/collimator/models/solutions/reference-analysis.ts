@@ -8,12 +8,14 @@ import { CurrentAnalysis } from "./current-analysis";
 export class ReferenceAnalysis extends CurrentAnalysis {
   readonly referenceSolutionId: number;
   readonly title: string;
+  readonly isInitialTaskSolution: boolean;
   readonly description: string;
 
   protected constructor({
     referenceSolutionId,
     title,
     description,
+    isInitialTaskSolution,
     ...rest
   }: Omit<ClassProperties<ReferenceAnalysis>, "solutionId">) {
     super(rest);
@@ -21,6 +23,7 @@ export class ReferenceAnalysis extends CurrentAnalysis {
     this.referenceSolutionId = referenceSolutionId;
     this.title = title;
     this.description = description;
+    this.isInitialTaskSolution = isInitialTaskSolution;
   }
 
   public override get solutionId(): string {

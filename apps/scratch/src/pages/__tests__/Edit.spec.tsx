@@ -18,34 +18,29 @@ declare global {
 
 test.describe("/edit", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.on(
-      "framenavigated",
-      async () =>
-        await page.evaluate(() => {
-          window.postedMessages = [];
+    await defineCustomMessageEvent(page);
 
-          // @ts-expect-error - we mock the parent window
-          window.parent = {
-            postMessage: (message, options) => {
-              window.postedMessages.push({ message, options });
-            },
-          };
-        }),
-    );
+    await page.addInitScript(() => {
+      window.postedMessages = [];
+
+      // @ts-expect-error - we mock the parent window
+      window.parent = {
+        postMessage: (message, options) => {
+          window.postedMessages.push({ message, options });
+        },
+      };
+    });
 
     await page.goto(`${baseURL!}/edit`);
 
     await page.waitForSelector("#root");
-
-    await defineCustomMessageEvent(page);
   });
 
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getHeight",
+        method: "getHeight",
       });
       window.dispatchEvent(event);
     });
@@ -57,36 +52,44 @@ test.describe("/edit", () => {
     expect(messages).toHaveLength(1);
 
     expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getHeight",
+      method: "getHeight",
       result: expect.any(Number),
     });
   });
 
   test("can get task via window.postMessage", async ({ page }) => {
+    await TestTaskPage.load(page);
+
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getTask",
+        method: "getTask",
       });
 
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() => window.postedMessages.length > 0);
+    await page.waitForFunction(() => window.postedMessages.length > 1);
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(1);
+    expect(messages).toHaveLength(2);
 
-    expect(messages[0].message).toEqual({
+    expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getTask",
+      method: "getTask",
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
-      result: {},
+      result: {
+        file: {},
+        initialSolution: {
+          failedTests: [],
+          passedTests: [],
+          file: {},
+        },
+      },
     });
   });
 

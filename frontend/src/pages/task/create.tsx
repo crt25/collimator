@@ -5,7 +5,7 @@ import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
-import TaskForm, { TaskFormValues } from "@/components/task/TaskForm";
+import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 
 const messages = defineMessages({
   title: {
@@ -22,20 +22,8 @@ const CreateTask = () => {
   const createTask = useCreateTask();
 
   const onSubmit = useCallback(
-    async (formValues: TaskFormValues) => {
-      await createTask({
-        title: formValues.title,
-        description: formValues.description,
-        type: formValues.type,
-        taskFile: formValues.taskFile,
-        referenceSolutions: formValues.referenceSolutions.map((solution) => ({
-          ...solution,
-          id: solution.isNew ? null : solution.id,
-        })),
-        referenceSolutionsFiles: Object.values(
-          formValues.referenceSolutionFiles,
-        ),
-      });
+    async (taskSubmission: TaskFormSubmission) => {
+      await createTask(taskSubmission);
     },
     [createTask],
   );

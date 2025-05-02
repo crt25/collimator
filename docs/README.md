@@ -1,1 +1,1 @@
-# documentation
+# ClassMosaic - A classroom reflection tool

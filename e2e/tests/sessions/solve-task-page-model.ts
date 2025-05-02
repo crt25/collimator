@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
-import { AppIFrameMessage } from "../../../frontend/src/types/app-iframe-message";
 import { TaskTemplateWithSolutions } from "./tasks/task-template-with-solutions";
+import type {
+  Language,
+  LoadSubmission,
+  LoadTask,
+} from "../../../libraries/iframe-rpc/src/index";
 
 export class SolveTaskPageModel {
   protected readonly page: Page;
@@ -42,24 +46,24 @@ export class SolveTaskPageModel {
           window.addEventListener("message", (event) => {
             // wait for the iframe to load the task
 
-            const message = event.data as AppIFrameMessage;
+            const message = event.data as LoadSubmission["response"];
 
-            if (message.type === "response" && message.id === id) {
+            if (message.method === "loadSubmission" && message.id === id) {
               resolve();
             }
           });
 
           iframe?.contentWindow?.postMessage(
             {
+              jsonrpc: "2.0",
               id,
-              type: "request",
-              procedure: "loadSubmission",
-              arguments: {
-                language: "en",
+              method: "loadSubmission",
+              params: {
+                language: "en" as Language,
                 submission: new Blob([submission]),
                 task,
               },
-            } as AppIFrameMessage,
+            } satisfies LoadSubmission["request"],
             "*",
           );
         });
@@ -84,12 +88,9 @@ export class SolveTaskPageModel {
       () =>
         new Promise<void>((resolve) => {
           window.addEventListener("message", (event) => {
-            const message = event.data as AppIFrameMessage;
+            const message = event.data as LoadTask;
 
-            if (
-              message.type === "response" &&
-              message.procedure === "loadTask"
-            ) {
+            if (message.method === "loadTask") {
               resolve();
             }
           });

@@ -16,6 +16,7 @@
     "noEmit": true,
     "strictNullChecks": true,
     "jsx": "react-jsx",
+    "preserveSymlinks": true,
     "paths": {
       // alias
       "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"]
@@ -24,7 +25,6 @@
   "include": [
     "src",
     "types/**/*.d.ts",
-    "../../frontend/src/types/app-iframe-message/**/*.d.ts",
     "__tests__"
   ]
 }

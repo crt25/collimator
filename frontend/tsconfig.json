@@ -16,6 +16,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "preserveSymlinks": true,
     "paths": {
       "@/*": [
         "./src/*"

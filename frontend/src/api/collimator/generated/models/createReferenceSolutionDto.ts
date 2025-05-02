@@ -10,6 +10,7 @@ import type { CreateSolutionTestDto } from "./createSolutionTestDto";
 export interface CreateReferenceSolutionDto {
   title: string;
   description: string;
+  isInitial: boolean;
   /** The tests that were run for the solution. */
   tests: CreateSolutionTestDto[];
 }

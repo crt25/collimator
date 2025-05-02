@@ -1,14 +1,14 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
+import { Language } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
-import { Language } from "@/types/app-iframe-message/languages";
-import MultiSwrContent from "../MultiSwrContent";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import MultiSwrContent from "../MultiSwrContent";
 
 export const CodeViewContainer = styled.div`
   /* always take up 100% of the screen (minus some margin for the selects and axis values) */
@@ -74,14 +74,11 @@ const CodeView = ({
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile && solutionFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadSubmission",
-        arguments: {
-          task: taskFile,
-          submission: solutionFile,
-          subTaskId: subTaskId,
-          language: intl.locale as Language,
-        },
+      embeddedApp.current.sendRequest("loadSubmission", {
+        task: taskFile,
+        submission: solutionFile,
+        subTaskId: subTaskId,
+        language: intl.locale as Language,
       });
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content

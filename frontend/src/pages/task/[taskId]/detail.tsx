@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Container } from "react-bootstrap";
+import { Language } from "iframe-rpc-react/src";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
 import TaskNavigation from "@/components/task/TaskNavigation";
@@ -13,7 +14,6 @@ import CrtNavigation from "@/components/CrtNavigation";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
 import { scratchAppHostName } from "@/utilities/constants";
-import { Language } from "@/types/app-iframe-message/languages";
 
 const messages = defineMessages({
   title: {
@@ -62,12 +62,9 @@ const TaskDetail = () => {
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest({
-        procedure: "loadTask",
-        arguments: {
-          task: taskFile,
-          language: intl.locale as Language,
-        },
+      embeddedApp.current.sendRequest("loadTask", {
+        task: taskFile,
+        language: intl.locale as Language,
       });
     }
     // since taskFileHash is a blob, use its hash as a proxy for its content

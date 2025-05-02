@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
+import { Language, Test } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
@@ -17,8 +18,6 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { Language } from "@/types/app-iframe-message/languages";
-import { Test } from "@/types/app-iframe-message/get-submission";
 
 const messages = defineMessages({
   title: {
@@ -91,9 +90,10 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getSubmission",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getSubmission",
+      undefined,
+    );
 
     const mapTest =
       (passed: boolean) =>
@@ -140,10 +140,7 @@ const SolveTaskPage = () => {
 
   useEffect(() => {
     if (embeddedApp.current && wasInitialized.current) {
-      embeddedApp.current.sendRequest({
-        procedure: "setLocale",
-        arguments: intl.locale as Language,
-      });
+      embeddedApp.current.sendRequest("setLocale", intl.locale as Language);
     }
   }, [intl.locale]);
 
@@ -166,22 +163,16 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        await embeddedApp.current.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task: taskFile,
-            submission: solutionFile,
-            language: intl.locale as Language,
-          },
+        await embeddedApp.current.sendRequest("loadSubmission", {
+          task: taskFile,
+          submission: solutionFile,
+          language: intl.locale as Language,
         });
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
-        await embeddedApp.current.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task: taskFile,
-            language: intl.locale as Language,
-          },
+        await embeddedApp.current.sendRequest("loadTask", {
+          task: taskFile,
+          language: intl.locale as Language,
         });
       } finally {
         isScratchMutexAvailable.current = true;
@@ -198,12 +189,9 @@ const SolveTaskPage = () => {
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest({
-      procedure: "loadTask",
-      arguments: {
-        task,
-        language: intl.locale as Language,
-      },
+    await embeddedApp.current.sendRequest("loadTask", {
+      task,
+      language: intl.locale as Language,
     });
   }, [intl]);
 
@@ -212,11 +200,12 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getTask",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getTask",
+      undefined,
+    );
 
-    downloadBlob(response.result, "task.sb3");
+    downloadBlob(response.result.file, "task.sb3");
   }, []);
 
   if (!sessionId || !taskId) {

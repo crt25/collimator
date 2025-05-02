@@ -25,6 +25,12 @@ export class ReferenceAnalysisDto
   readonly description!: string;
 
   @ApiProperty({
+    description: "The description of the reference solution",
+  })
+  @Expose()
+  readonly isInitialTaskSolution!: boolean;
+
+  @ApiProperty({
     example: 318,
     description:
       "The reference solutions's unique identifier, a positive integer.",

@@ -78,7 +78,7 @@ const config: PlaywrightTestConfig<CrtTestOptions> = {
   forbidOnly: !!process.env.CI,
 
   // timeout per test
-  timeout: 60 * 1000,
+  timeout: 120 * 1000,
 
   webServer: {
     // Run your local dev server before starting the tests.

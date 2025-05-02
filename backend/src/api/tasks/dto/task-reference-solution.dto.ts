@@ -30,6 +30,13 @@ export class TaskReferenceSolutionDto
   readonly description!: string;
 
   @ApiProperty({
+    description:
+      "Whether this reference solution is the task's initial solution.",
+  })
+  @Expose()
+  readonly isInitial!: boolean;
+
+  @ApiProperty({
     description: "The solution's mime type.",
   })
   @Type(() => String)

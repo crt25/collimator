@@ -4,5 +4,6 @@
     "4_e9[GL:|#*oG]X]FdQm": "frozen",
     "HN(hP9y9,$[q0=u7VklJ": "appendable"
   },
-  "taskBlockIds": { "HN(hP9y9,$[q0=u7VklJ": "appendable" }
+  "taskBlockIds": { "HN(hP9y9,$[q0=u7VklJ": "appendable" },
+  "maximumExecutionTimeInMs": 5000
 }

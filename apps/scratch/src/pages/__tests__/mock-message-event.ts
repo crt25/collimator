@@ -17,7 +17,7 @@ export class MockMessageEvent extends Event {
 }
 
 export const defineCustomMessageEvent = (page: Page): Promise<void> =>
-  page.evaluate(() => {
+  page.addInitScript(() => {
     // @ts-expect-error - we add a class to the top level window object
     window.MockMessageEvent = class MockMessageEvent extends Event {
       constructor(source: Window, data: unknown) {

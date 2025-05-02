@@ -16,24 +16,22 @@ declare global {
 
 test.describe("/show", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    page.on("framenavigated", async () =>
-      page.evaluate(() => {
-        window.postedMessages = [];
+    await defineCustomMessageEvent(page);
 
-        // @ts-expect-error - we mock the parent window
-        window.parent = {
-          postMessage: (message, options) => {
-            window.postedMessages.push({ message, options });
-          },
-        };
-      }),
-    );
+    await page.addInitScript(() => {
+      window.postedMessages = [];
+
+      // @ts-expect-error - we mock the parent window
+      window.parent = {
+        postMessage: (message, options) => {
+          window.postedMessages.push({ message, options });
+        },
+      };
+    });
 
     await page.goto(`${baseURL!}/show?showStage`);
 
     await page.waitForSelector("#root");
-
-    await defineCustomMessageEvent(page);
   });
 
   test("can select the stage", async ({ page: pwPage }) => {
@@ -61,8 +59,7 @@ test.describe("/show", () => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
         id: 0,
-        type: "request",
-        procedure: "getHeight",
+        method: "getHeight",
       });
 
       window.dispatchEvent(event);
@@ -75,9 +72,9 @@ test.describe("/show", () => {
     expect(messages).toHaveLength(1);
 
     expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
       id: 0,
-      type: "response",
-      procedure: "getHeight",
+      method: "getHeight",
       result: expect.any(Number),
     });
   });

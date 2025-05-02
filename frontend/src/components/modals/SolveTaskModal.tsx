@@ -1,7 +1,6 @@
 import { useIntl } from "react-intl";
 import { useCallback, useMemo } from "react";
-import { Language } from "@/types/app-iframe-message/languages";
-import { GetSubmissionResponse } from "@/types/app-iframe-message/get-submission";
+import { Language, Submission } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { scratchAppHostName } from "@/utilities/constants";
 import { EmbeddedAppRef } from "../EmbeddedApp";
@@ -26,7 +25,7 @@ const SolveTaskModal = ({
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  onSave: (taskFile: Blob, submission: GetSubmissionResponse["result"]) => void;
+  onSave: (submission: Submission) => void;
   taskType: TaskType;
   task?: Blob | null;
   solution?: Blob | null;
@@ -34,27 +33,33 @@ const SolveTaskModal = ({
   const intl = useIntl();
   const url = useMemo(() => getSolveUrl(taskType), [taskType]);
 
+  const onSaveSolution = useCallback(
+    async (embeddedApp: EmbeddedAppRef) => {
+      const submission = await embeddedApp.sendRequest(
+        "getSubmission",
+        undefined,
+      );
+
+      onSave(submission.result);
+    },
+    [onSave],
+  );
+
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (solution && task) {
-        embeddedApp.sendRequest({
-          procedure: "loadSubmission",
-          arguments: {
-            task,
-            submission: solution,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadSubmission", {
+          task,
+          submission: solution,
+          language: intl.locale as Language,
         });
         return;
       }
 
       if (task) {
-        embeddedApp.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadTask", {
+          task,
+          language: intl.locale as Language,
         });
       }
     },
@@ -70,7 +75,7 @@ const SolveTaskModal = ({
       showExportButton
       showImportButton
       showSaveButton
-      onSave={onSave}
+      onSave={onSaveSolution}
     />
   );
 };

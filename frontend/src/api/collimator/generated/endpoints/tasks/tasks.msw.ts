@@ -87,6 +87,7 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
     id: faker.number.int({ min: undefined, max: undefined }),
     title: faker.string.alpha(20),
     description: faker.string.alpha(20),
+    isInitial: faker.datatype.boolean(),
     mimeType: faker.string.alpha(20),
     solution: faker.string.alpha(20),
     tests: Array.from(

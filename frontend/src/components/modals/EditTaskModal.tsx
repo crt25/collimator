@@ -1,8 +1,8 @@
 import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Language, Task } from "iframe-rpc-react/src";
 import { scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import { Language } from "@/types/app-iframe-message/languages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -24,7 +24,7 @@ const EditTaskModal = ({
 }: {
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  onSave: (blob: Blob) => void;
+  onSave: (task: Task) => void;
   taskType: TaskType;
   initialTask?: Blob | null;
 }) => {
@@ -32,24 +32,27 @@ const EditTaskModal = ({
   const url = useMemo(() => getEditUrl(taskType), [taskType]);
   const wasInitialized = useRef(false);
 
+  const onSaveTask = useCallback(
+    async (embeddedApp: EmbeddedAppRef) => {
+      const task = await embeddedApp.sendRequest("getTask", undefined);
+
+      onSave(task.result);
+    },
+    [onSave],
+  );
+
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (wasInitialized.current) {
-        embeddedApp.sendRequest({
-          procedure: "setLocale",
-          arguments: intl.locale as Language,
-        });
+        embeddedApp.sendRequest("setLocale", intl.locale as Language);
         return;
       }
       wasInitialized.current = true;
 
       if (initialTask) {
-        embeddedApp.sendRequest({
-          procedure: "loadTask",
-          arguments: {
-            task: initialTask,
-            language: intl.locale as Language,
-          },
+        embeddedApp.sendRequest("loadTask", {
+          task: initialTask,
+          language: intl.locale as Language,
         });
       }
     },
@@ -70,7 +73,7 @@ const EditTaskModal = ({
       showExportButton
       showImportButton
       showSaveButton
-      onSave={onSave}
+      onSave={onSaveTask}
     />
   );
 };

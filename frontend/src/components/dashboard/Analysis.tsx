@@ -88,6 +88,10 @@ const messages = defineMessages({
     id: "Analysis.yAxis",
     defaultMessage: "y-Axis",
   },
+  initialTaskSolution: {
+    id: "Analysis.initialTaskSolution",
+    defaultMessage: "Initial Task Solution",
+  },
 });
 
 const AnalysisWrapper = styled.div``;
@@ -205,9 +209,15 @@ const TooltipContent = ({
                     </div>
                     <div>
                       <ul>
-                        {referenceAnalyses.map((analysis) => (
-                          <li key={analysis.solutionId}>{analysis.title}</li>
-                        ))}
+                        {referenceAnalyses.map((analysis) =>
+                          analysis.isInitialTaskSolution ? (
+                            <li key={analysis.solutionId}>
+                              {intl.formatMessage(messages.initialTaskSolution)}
+                            </li>
+                          ) : (
+                            <li key={analysis.solutionId}>{analysis.title}</li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   </>

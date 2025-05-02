@@ -65,10 +65,7 @@ export class TasksService {
       where: { id },
       include: {
         referenceSolutions: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
+          include: {
             solution: {
               select: {
                 data: true,
@@ -128,6 +125,7 @@ export class TasksService {
               return {
                 title: solution.title,
                 description: solution.description,
+                isInitial: solution.isInitial,
                 tests: {
                   create: solution.tests,
                 },
@@ -228,6 +226,7 @@ export class TasksService {
               ({ solution, file, fileHash }) => ({
                 title: solution.title,
                 description: solution.description,
+                isInitial: solution.isInitial,
                 tests: {
                   create: solution.tests,
                 },
@@ -255,6 +254,7 @@ export class TasksService {
                 data: {
                   title: solution.title,
                   description: solution.description,
+                  isInitial: solution.isInitial,
                   tests: {
                     // create new tests, the existing ones were deleted above
                     create: solution.tests,
@@ -288,10 +288,31 @@ export class TasksService {
     return updatedTask;
   }
 
-  deleteById(id: TaskId): Promise<TaskWithoutData> {
-    return this.prisma.task.delete({
-      where: { id },
-      omit: omitData,
-    });
+  async deleteById(id: TaskId): Promise<TaskWithoutData> {
+    const [_, __, deletedTask] = await this.prisma.$transaction([
+      // delete all reference solutions for this task
+      this.prisma.solution.deleteMany({
+        where: {
+          taskId: id,
+          referenceSolutions: {
+            some: {
+              taskId: id,
+            },
+          },
+        },
+      }),
+      this.prisma.referenceSolution.deleteMany({
+        where: {
+          taskId: id,
+        },
+      }),
+      // and the task itself
+      this.prisma.task.delete({
+        where: { id },
+        omit: omitData,
+      }),
+    ]);
+
+    return deletedTask;
   }
 }

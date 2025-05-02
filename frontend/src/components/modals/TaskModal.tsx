@@ -2,11 +2,10 @@ import { ReactNode, useCallback, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
+import { Language, Submission } from "iframe-rpc-react/src";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
-import { Language } from "@/types/app-iframe-message/languages";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { GetSubmissionResponse } from "@/types/app-iframe-message/get-submission";
 import Button, { ButtonVariant } from "../Button";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
@@ -59,6 +58,7 @@ const TaskModal = ({
   onSave,
   header,
   footer,
+  onReceiveSubmission,
 }: {
   title?: ReactNode;
   url: string | null | undefined;
@@ -70,9 +70,11 @@ const TaskModal = ({
   showImportButton?: boolean;
   showExportButton?: boolean;
   showSaveButton?: boolean;
-  onSave?: (blob: Blob, submission: GetSubmissionResponse["result"]) => void;
+  onSave?: (embeddedApp: EmbeddedAppRef) => Promise<void>;
   header?: React.ReactNode;
   footer?: React.ReactNode;
+
+  onReceiveSubmission?: (submission: Submission) => void;
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
@@ -88,12 +90,9 @@ const TaskModal = ({
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest({
-      procedure: "loadTask",
-      arguments: {
-        task,
-        language: intl.locale as Language,
-      },
+    await embeddedApp.current.sendRequest("loadTask", {
+      task,
+      language: intl.locale as Language,
     });
 
     setAppLoaded(true);
@@ -104,11 +103,12 @@ const TaskModal = ({
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest({
-      procedure: "getTask",
-    });
+    const response = await embeddedApp.current.sendRequest(
+      "getTask",
+      undefined,
+    );
 
-    downloadBlob(response.result, "task.sb3");
+    downloadBlob(response.result.file, "task.sb3");
   }, []);
 
   const loadAppData = useCallback(() => {
@@ -147,6 +147,7 @@ const TaskModal = ({
                 src={url}
                 ref={embeddedApp}
                 onAppAvailable={loadAppData}
+                onReceiveSubmission={onReceiveSubmission}
               />
             )}
           </ModalBody>
@@ -200,15 +201,7 @@ const TaskModal = ({
                 disabled={!appLoaded}
                 onClick={async () => {
                   if (embeddedApp.current && onSave) {
-                    const task = await embeddedApp.current.sendRequest({
-                      procedure: "getTask",
-                    });
-
-                    const submission = await embeddedApp.current.sendRequest({
-                      procedure: "getSubmission",
-                    });
-
-                    onSave(task.result, submission.result);
+                    await onSave(embeddedApp.current);
                   }
                   setIsShown(false);
                 }}

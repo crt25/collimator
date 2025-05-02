@@ -8245,6 +8245,7 @@ __metadata:
     bootstrap: "npm:^5.3.3"
     chart.js: "npm:^4.4.8"
     chartjs-plugin-annotation: "npm:^3.1.0"
+    cross-env: "npm:^7.0.3"
     edit-distance: "npm:^1.0.5"
     eslint: "npm:8.57.0"
     eslint-config-next: "npm:15.3.1"
@@ -8253,6 +8254,7 @@ __metadata:
     eslint-plugin-jest-extended: "npm:^3.0.0"
     eslint-plugin-prettier: "npm:^5.2.3"
     eslint-plugin-storybook: "npm:^0.11.3"
+    iframe-rpc-react: "portal:../libraries/iframe-rpc-react"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     jest-extended: "npm:^4.0.2"
@@ -8562,6 +8564,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-env@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "cross-env@npm:7.0.3"
+  dependencies:
+    cross-spawn: "npm:^7.0.1"
+  bin:
+    cross-env: src/bin/cross-env.js
+    cross-env-shell: src/bin/cross-env-shell.js
+  checksum: 10c0/f3765c25746c69fcca369655c442c6c886e54ccf3ab8c16847d5ad0e91e2f337d36eedc6599c1227904bf2a228d721e690324446876115bc8e7b32a866735ecf
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^6.0.0":
   version: 6.0.6
   resolution: "cross-spawn@npm:6.0.6"
@@ -8575,7 +8589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.6":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3, cross-spawn@npm:^7.0.6":
   version: 7.0.6
   resolution: "cross-spawn@npm:7.0.6"
   dependencies:
@@ -11258,6 +11272,22 @@ __metadata:
   checksum: 10c0/b0782ef5e0935b9f12883a2e2aa37baa75da6e66ce6515c168697b42160807d9330de9a32ec1ed73149aea02e0d822e572bca6f1e22bdcbd2149e13b050b17bb
   languageName: node
   linkType: hard
+
+"iframe-rpc-react@portal:../libraries/iframe-rpc-react::locator=collimator%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc-react@portal:../libraries/iframe-rpc-react::locator=collimator%40workspace%3A."
+  dependencies:
+    iframe-rpc: "portal:../iframe-rpc"
+  peerDependencies:
+    react: ^19.1.0
+  languageName: node
+  linkType: soft
+
+"iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40portal%3A..%2Flibraries%2Fiframe-rpc-react%3A%3Alocator%3Dcollimator%2540workspace%253A.":
+  version: 0.0.0-use.local
+  resolution: "iframe-rpc@portal:../iframe-rpc::locator=iframe-rpc-react%40portal%3A..%2Flibraries%2Fiframe-rpc-react%3A%3Alocator%3Dcollimator%2540workspace%253A."
+  languageName: node
+  linkType: soft
 
 "ignore@npm:^5.2.0, ignore@npm:^5.3.1":
   version: 5.3.2
