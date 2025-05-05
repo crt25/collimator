@@ -3547,9 +3547,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/cli@npm:^6.6.3":
-  version: 6.6.3
-  resolution: "@formatjs/cli@npm:6.6.3"
+"@formatjs/cli@npm:^6.7.1":
+  version: 6.7.1
+  resolution: "@formatjs/cli@npm:6.7.1"
   peerDependencies:
     "@glimmer/env": ^0.1.7
     "@glimmer/reference": ^0.94.0
@@ -3578,7 +3578,7 @@ __metadata:
       optional: true
   bin:
     formatjs: bin/formatjs
-  checksum: 10c0/8083088619946b541f1ea3913d7e30c721b810e7ae6149ed7be4403bec44872dee0b78407bee1376328b04346e3cec31df6d0232a57d9d8f6a818e5d9e538ef6
+  checksum: 10c0/9856d37a708b76337fa544ae7aef6677bd5877004464cbbcab3876bd9359d20cc1aa86b05c3568f88d742e95038e42a43a01320fae895360ca1873fcedf27844
   languageName: node
   linkType: hard
 
@@ -5175,12 +5175,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.14.0":
-  version: 22.14.0
-  resolution: "@types/node@npm:22.14.0"
+"@types/node@npm:^22.15.3":
+  version: 22.15.3
+  resolution: "@types/node@npm:22.15.3"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/9d79f3fa1af9c2c869514f419c4a4905b34c10e12915582fd1784868ac4e74c6d306cf5eb47ef889b6750ab85a31be96618227b86739c4a3e0b1c15063f384c6
+  checksum: 10c0/2879f012d1aeba0bfdb5fed80d165f4f2cb3d1f2e1f98a24b18d4a211b4ace7d64bf2622784c78355982ffc1081ba79d0934efc2fb8353913e5871a63609661f
   languageName: node
   linkType: hard
 
@@ -6446,7 +6446,7 @@ __metadata:
     "@craco/craco": "npm:^7.1.0"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
-    "@formatjs/cli": "npm:^6.6.3"
+    "@formatjs/cli": "npm:^6.7.1"
     "@microbit/microbit-universal-hex": "npm:^0.2.2"
     "@playwright/test": "npm:^1.51.1"
     "@sentry/cli": "npm:^2.43.0"
@@ -6464,7 +6464,7 @@ __metadata:
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/lodash.defaultsdeep": "npm:^4"
     "@types/lodash.omit": "npm:^4.5.9"
-    "@types/node": "npm:^22.14.0"
+    "@types/node": "npm:^22.15.3"
     "@types/omggif": "npm:^1"
     "@types/papaparse": "npm:^5"
     "@types/prop-types": "npm:^15"
