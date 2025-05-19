@@ -192,7 +192,7 @@
   },
   "packageManager": "yarn@4.5.0",
   "devDependencies": {
-    "@formatjs/cli": "^6.6.3",
+    "@formatjs/cli": "^6.7.1",
     "@types/archiver": "^6.0.3",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
@@ -202,7 +202,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.defaultsdeep": "^4",
     "@types/lodash.omit": "^4.5.9",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.15.19",
     "@types/omggif": "^1",
     "@types/papaparse": "^5",
     "@types/prop-types": "^15",
