@@ -1,6 +1,9 @@
 import { useSWRConfig } from "swr";
 import { useCallback } from "react";
-import { getTasksControllerFindOneV0Url } from "../../generated/endpoints/tasks/tasks";
+import {
+  getTasksControllerFindOneV0Url,
+  getTasksControllerFindOneWithReferenceSolutionsV0Url,
+} from "../../generated/endpoints/tasks/tasks";
 import { GetTaskReturnType } from "./useTask";
 
 export const useRevalidateTask = (): ((
@@ -12,6 +15,7 @@ export const useRevalidateTask = (): ((
   return useCallback(
     (taskId: number, newTask?: GetTaskReturnType) => {
       mutate(getTasksControllerFindOneV0Url(taskId), newTask);
+      mutate(getTasksControllerFindOneWithReferenceSolutionsV0Url(taskId));
     },
     [mutate],
   );
