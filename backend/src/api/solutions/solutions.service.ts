@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import {
   Solution,
   Prisma,
@@ -346,20 +346,49 @@ export class SolutionsService {
     });
   }
 
-  downloadLatestStudentSolutionOrThrow(
+  async downloadLatestStudentSolutionOrThrow(
     sessionId: number,
     taskId: number,
     studentId: number,
   ): Promise<SolutionDataOnly> {
-    return this.prisma.studentSolution
-      .findFirstOrThrow({
-        select: { solution: { select: { data: true, mimeType: true } } },
+    const latestSubmittedSolution = await this.prisma.studentSolution.findFirst(
+      {
+        select: {
+          solution: { select: { data: true, mimeType: true } },
+          createdAt: true,
+        },
         where: { studentId, taskId, sessionId },
         orderBy: {
           createdAt: "desc",
         },
-      })
-      .then(({ solution }) => solution);
+      },
+    );
+
+    const solutionFromLatestActivity =
+      await this.prisma.studentActivity.findFirst({
+        select: {
+          solution: { select: { data: true, mimeType: true } },
+          createdAt: true,
+        },
+        where: { studentId, taskId, sessionId },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+    if (!latestSubmittedSolution && !solutionFromLatestActivity) {
+      throw new NotFoundException();
+    }
+
+    if (latestSubmittedSolution && solutionFromLatestActivity) {
+      // prefer the most recent solution
+      return latestSubmittedSolution.createdAt >
+        solutionFromLatestActivity.createdAt
+        ? latestSubmittedSolution.solution
+        : solutionFromLatestActivity.solution;
+    }
+
+    return (latestSubmittedSolution || solutionFromLatestActivity)!.solution;
   }
 
   findManyStudentSolutions(
