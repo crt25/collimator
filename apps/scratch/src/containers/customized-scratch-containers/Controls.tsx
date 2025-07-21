@@ -42,7 +42,7 @@ const Controls = ({
         vm.greenFlag();
       }
     },
-    [vm, isStarted, turbo],
+    [vm, isStarted, turbo, sendRequest],
   );
 
   const handleStopAllClick = useCallback(

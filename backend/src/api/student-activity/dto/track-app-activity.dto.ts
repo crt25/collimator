@@ -12,7 +12,6 @@ export class TrackAppStudentActivityDto {
   })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
   readonly type!: string;
 
   @Type(() => String)
@@ -22,6 +21,5 @@ export class TrackAppStudentActivityDto {
   })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
   readonly data!: string;
 }

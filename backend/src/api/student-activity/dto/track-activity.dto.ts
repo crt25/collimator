@@ -18,7 +18,6 @@ export class TrackStudentActivityDto {
   })
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
   readonly type!: StudentActivityType;
 
   @Type(() => Number)
@@ -29,7 +28,6 @@ export class TrackStudentActivityDto {
   })
   @IsInt()
   @IsNotEmpty()
-  @ApiProperty()
   readonly sessionId!: number;
 
   @Type(() => Number)
@@ -39,13 +37,12 @@ export class TrackStudentActivityDto {
   })
   @IsInt()
   @IsNotEmpty()
-  @ApiProperty()
   readonly taskId!: number;
 
   @Type(() => TrackAppStudentActivityDto)
   @ApiProperty({
     description:
-      "Optional app activity object for this activity. Can only be set if the type is set to app activity..",
+      "Optional app activity object for this activity. Can only be set if the type is set to app activity.",
     type: TrackAppStudentActivityDto,
     nullable: true,
   })
