@@ -188,7 +188,7 @@ export class TasksService {
         referenceSolution.solution.id !== null,
     );
 
-    const [_, __, ___, updatedTask] = await this.prisma.$transaction([
+    const [_, __, updatedTask] = await this.prisma.$transaction([
       // delete all reference solutions that are not in the new list
       this.prisma.referenceSolution.deleteMany({
         where: {
@@ -207,14 +207,6 @@ export class TasksService {
           studentSolutions: { none: {} },
         },
       }),
-      // delete all tests for updated reference solutions
-      this.prisma.solutionTest.deleteMany({
-        where: {
-          referenceSolutionId: {
-            in: updatedReferenceSolutions.map((s) => s.solution.id),
-          },
-        },
-      }),
       // update the task
       this.prisma.task.update({
         data: {
@@ -228,7 +220,15 @@ export class TasksService {
                 description: solution.description,
                 isInitial: solution.isInitial,
                 tests: {
-                  create: solution.tests,
+                  connectOrCreate: solution.tests
+                    .filter((t) => t.id !== undefined && t.id !== null)
+                    .map((test) => ({
+                      where: { id: test.id },
+                      create: test,
+                    })),
+                  create: solution.tests.filter(
+                    (t) => t.id === undefined || t.id === null,
+                  ),
                 },
                 solution: {
                   connectOrCreate: {
@@ -256,8 +256,24 @@ export class TasksService {
                   description: solution.description,
                   isInitial: solution.isInitial,
                   tests: {
-                    // create new tests, the existing ones were deleted above
-                    create: solution.tests,
+                    deleteMany: {
+                      id: {
+                        notIn: solution.tests
+                          .map(({ id }) => id)
+                          .filter((id) => id !== undefined && id !== null),
+                      },
+                    },
+                    update: solution.tests
+                      .filter((t) => t.id !== undefined && t.id !== null)
+                      .map((test) => ({
+                        where: {
+                          id: test.id,
+                        },
+                        data: test,
+                      })),
+                    create: solution.tests.filter(
+                      (t) => t.id === undefined || t.id === null,
+                    ),
                   },
                   solution: {
                     connectOrCreate: {

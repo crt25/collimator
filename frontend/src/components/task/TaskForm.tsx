@@ -289,6 +289,7 @@ const TaskForm = ({
     defaultValues,
   });
 
+  const initialSolution = watch("initialSolution");
   const referenceSolutions = watch("referenceSolutions");
 
   // ensure that the selected tasks are always in sync with the form
@@ -508,7 +509,9 @@ const TaskForm = ({
             setValue(
               "initialSolution",
               {
-                id: null,
+                // if possible, use the existing initial solution id,
+                // otherwise set it to null and create a new one
+                id: initialSolution?.id ?? null,
                 title: "",
                 description: "",
                 isInitial: true,
