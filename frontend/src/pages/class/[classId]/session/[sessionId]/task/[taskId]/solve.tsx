@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
-import { Language, Test } from "iframe-rpc-react/src";
+import { Language, Submission, Test } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
@@ -79,6 +79,52 @@ const SolveTaskPage = () => {
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
 
+  const saveSubmission = useCallback(
+    async (
+      classId: number,
+      sessionId: number,
+      taskId: number,
+      submission: Submission,
+    ) => {
+      const mapTest =
+        (passed: boolean) =>
+        ({ identifier, name, contextName }: Test) => ({
+          identifier,
+          name,
+          contextName,
+          passed,
+        });
+
+      await createSolution(classId, sessionId, taskId, {
+        file: submission.file,
+        tests: [
+          ...submission.failedTests.map(mapTest(false)),
+          ...submission.passedTests.map(mapTest(true)),
+        ],
+      });
+
+      if (
+        submission.failedTests.length === 0 &&
+        submission.passedTests.length > 0
+      ) {
+        toast.success(
+          <FormattedMessage
+            id="SolveTask.correctSolutionSubmitted"
+            defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
+          />,
+        );
+      } else {
+        toast.success(
+          <FormattedMessage
+            id="SolveTask.solutionSubmitted"
+            defaultMessage="The solution was submitted successfully."
+          />,
+        );
+      }
+    },
+    [createSolution],
+  );
+
   const onSubmitSolution = useCallback(async () => {
     if (!embeddedApp.current || !isScratchMutexAvailable.current) {
       return;
@@ -95,44 +141,15 @@ const SolveTaskPage = () => {
       undefined,
     );
 
-    const mapTest =
-      (passed: boolean) =>
-      ({ identifier, name, contextName }: Test) => ({
-        identifier,
-        name,
-        contextName,
-        passed,
-      });
-
-    await createSolution(session.klass.id, session.id, task.id, {
-      file: response.result.file,
-      tests: [
-        ...response.result.failedTests.map(mapTest(false)),
-        ...response.result.passedTests.map(mapTest(true)),
-      ],
-    });
-
-    if (
-      response.result.failedTests.length === 0 &&
-      response.result.passedTests.length > 0
-    ) {
-      toast.success(
-        <FormattedMessage
-          id="SolveTask.correctSolutionSubmitted"
-          defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
-        />,
-      );
-    } else {
-      toast.success(
-        <FormattedMessage
-          id="SolveTask.solutionSubmitted"
-          defaultMessage="The solution was submitted successfully."
-        />,
-      );
-    }
+    await saveSubmission(
+      session.klass.id,
+      session.id,
+      task.id,
+      response.result,
+    );
 
     isScratchMutexAvailable.current = true;
-  }, [session, task, createSolution]);
+  }, [session, task, saveSubmission]);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -181,6 +198,17 @@ const SolveTaskPage = () => {
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embeddedApp, taskFileHash]);
+
+  const onReceiveSubmission = useCallback(
+    async (submission: Submission) => {
+      if (!session || !task) {
+        return;
+      }
+
+      await saveSubmission(session.klass.id, session.id, task.id, submission);
+    },
+    [session, task, saveSubmission],
+  );
 
   const onImport = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -275,6 +303,7 @@ const SolveTaskPage = () => {
               embeddedApp={embeddedApp}
               iframeSrc={iframeSrc}
               onAppAvailable={onAppAvailable}
+              onReceiveSubmission={onReceiveSubmission}
             />
           ) : (
             <FormattedMessage

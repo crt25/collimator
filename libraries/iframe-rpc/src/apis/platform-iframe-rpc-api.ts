@@ -48,7 +48,8 @@ export class PlatformIframeRpcApi extends IframeRpcApi<
       id,
       method,
       result,
-    };
+      // unfortunately typescript is not capable of performing the inference directly
+    } as IframeRpcPlatformResponse & { method: Method };
   }
 
   protected override createErrorResponse(

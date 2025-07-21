@@ -23,10 +23,10 @@ import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import Controls from "../../../scratch/scratch-gui/src/containers/controls";
 import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import TaskConfig from "../../TaskConfig";
 import AssertionsState from "../../assertions-state/AssertionsState";
+import Controls from "../../../containers/customized-scratch-containers/Controls";
 import crtStyles from "./stage-wrapper.css";
 
 const messages = defineMessages({

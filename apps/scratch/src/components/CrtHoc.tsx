@@ -10,6 +10,7 @@ import { setLocales } from "../scratch/scratch-gui/src/reducers/locales";
 import en from "../content/compiled-locales/en.json";
 import fr from "../content/compiled-locales/fr.json";
 import { ExtensionId } from "../extensions";
+import { CrtContext } from "../contexts/CrtContext";
 
 const customLocales: { [locale: string]: { [key: string]: string } } =
   Object.fromEntries(
@@ -38,7 +39,7 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
 
     const dispatch = useDispatch();
 
-    const { hasLoaded } = useEmbeddedScratch(vm, props.intl);
+    const { hasLoaded, sendRequest } = useEmbeddedScratch(vm, props.intl);
 
     useEffect(() => {
       // merge our own locales with scratch's
@@ -62,17 +63,19 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
     }
 
     return (
-      <Component
-        {...props}
-        onVmInit={(vm: VM) => {
-          setVm(vm);
-          patchScratchVm(vm);
-          defaultExtensions.forEach((extensionId) =>
-            vm.extensionManager.loadExtensionURL(extensionId),
-          );
-        }}
-        basePath={`${basePath}/`}
-      />
+      <CrtContext.Provider value={{ sendRequest }}>
+        <Component
+          {...props}
+          onVmInit={(vm: VM) => {
+            setVm(vm);
+            patchScratchVm(vm);
+            defaultExtensions.forEach((extensionId) =>
+              vm.extensionManager.loadExtensionURL(extensionId),
+            );
+          }}
+          basePath={`${basePath}/`}
+        />
+      </CrtContext.Provider>
     );
   };
 };
