@@ -46,6 +46,7 @@ const TaskConfig = ({
   const [allowCustomProcedureBlocks, setAllowCustomProcedureBlocks] =
     useState(false);
   const [allowVariableBlocks, setAllowVariableBlocks] = useState(false);
+  const [enableStageInteractions, setEnableStageInteractions] = useState(true);
 
   const updateConfig = useCallback(
     (
@@ -97,11 +98,13 @@ const TaskConfig = ({
       (vm.crtConfig?.maximumExecutionTimeInMs ??
         defaultMaximumExecutionTimeInMs) / 1000,
     );
+    setEnableStageInteractions(vm.crtConfig?.enableStageInteractions ?? true);
   }, [
     vm.crtConfig,
     vm.crtConfig?.allowedBlocks.customBlocks,
     vm.crtConfig?.allowedBlocks.variables,
     vm.crtConfig?.maximumExecutionTimeInMs,
+    vm.crtConfig?.enableStageInteractions,
   ]);
 
   const onAllowNoBlocks = useCallback(
@@ -206,6 +209,21 @@ const TaskConfig = ({
             onChange={(e) => {
               setAllowCustomProcedureBlocks(e.target.checked);
               vm.crtConfig!.allowedBlocks.customBlocks = e.target.checked;
+            }}
+          />
+        </Label>
+        <Label>
+          <FormattedMessage
+            defaultMessage="Enable students to interact with the stage"
+            description="Label for checkbox to enable stage interactions in task"
+            id="crt.taskConfig.enableStageInteractions"
+          />
+          <input
+            checked={enableStageInteractions}
+            type="checkbox"
+            onChange={(e) => {
+              setEnableStageInteractions(e.target.checked);
+              vm.crtConfig!.enableStageInteractions = e.target.checked;
             }}
           />
         </Label>
