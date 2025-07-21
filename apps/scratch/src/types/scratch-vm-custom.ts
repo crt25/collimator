@@ -8,6 +8,7 @@ export interface CrtBlock {
 export interface Assertion {
   assertionName: string;
   blockId: string;
+  targetId: string;
   targetName: string;
 }
 
