@@ -7,7 +7,7 @@ export const useCrtConfig = (vm: VM | null): ScratchCrtConfig => {
   const [crtConfig, setCrtConfig] = useState(vm?.crtConfig ?? defaultCrtConfig);
 
   useEffect(() => {
-    if (crtConfig == defaultCrtConfig && vm?.crtConfig !== undefined) {
+    if (crtConfig === defaultCrtConfig && vm?.crtConfig !== undefined) {
       setCrtConfig(vm.crtConfig);
     }
 
@@ -16,7 +16,7 @@ export const useCrtConfig = (vm: VM | null): ScratchCrtConfig => {
     return (): void => {
       vm?.runtime.off("CRT_CONFIG_CHANGED", setCrtConfig);
     };
-  }, [vm, setCrtConfig]);
+  }, [vm, crtConfig]);
 
   return crtConfig;
 };

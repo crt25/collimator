@@ -81,7 +81,7 @@ export interface ScratchCrtConfig {
   /**
    * The maximum time in milliseconds that the solution is allowed to run.
    */
-  maximumExecutionTimeInMs: number | undefined;
+  maximumExecutionTimeInMs: number;
 
   /**
    * Whether to enable stage interactions.
