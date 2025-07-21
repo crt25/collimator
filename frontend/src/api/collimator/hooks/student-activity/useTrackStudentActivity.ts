@@ -1,8 +1,8 @@
 import { useCallback } from "react";
+import { fetchApi } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { TrackStudentActivityDto } from "../../generated/models";
 import { getStudentActivityControllerTrackV0Url } from "../../generated/endpoints/student-activity/student-activity";
-import { fetchApi } from "@/api/fetch";
 
 type TrackActivityType = (
   trackActivityDto: TrackStudentActivityDto,
