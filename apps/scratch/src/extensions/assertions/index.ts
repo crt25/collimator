@@ -373,11 +373,21 @@ class AssertionExtension {
     );
 
     for (const assertion of failedAssertions) {
-      this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
+      try {
+        this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
+      } catch {
+        // If the block is not found, we ignore the error.
+        // It is possible that the wrong sprite is selected
+      }
     }
 
     for (const assertion of passedAssertions) {
-      this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
+      try {
+        this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
+      } catch {
+        // If the block is not found, we ignore the error.
+        // It is possible that the wrong sprite is selected
+      }
     }
 
     this.runtime.emit("ASSERTIONS_CHECKED", passedAssertions, failedAssertions);
