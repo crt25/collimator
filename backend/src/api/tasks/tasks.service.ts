@@ -220,15 +220,13 @@ export class TasksService {
                 description: solution.description,
                 isInitial: solution.isInitial,
                 tests: {
-                  connectOrCreate: solution.tests
-                    .filter((t) => t.id !== undefined && t.id !== null)
-                    .map((test) => ({
+                  connectOrCreate: this.getExistingTests(solution.tests).map(
+                    (test) => ({
                       where: { id: test.id },
                       create: test,
-                    })),
-                  create: solution.tests.filter(
-                    (t) => t.id === undefined || t.id === null,
+                    }),
                   ),
+                  create: this.getNewTests(solution.tests),
                 },
                 solution: {
                   connectOrCreate: {
@@ -258,22 +256,20 @@ export class TasksService {
                   tests: {
                     deleteMany: {
                       id: {
-                        notIn: solution.tests
-                          .map(({ id }) => id)
-                          .filter((id) => id !== undefined && id !== null),
+                        notIn: this.getExistingTests(solution.tests).map(
+                          ({ id }) => id,
+                        ),
                       },
                     },
-                    update: solution.tests
-                      .filter((t) => t.id !== undefined && t.id !== null)
-                      .map((test) => ({
+                    update: this.getExistingTests(solution.tests).map(
+                      (test) => ({
                         where: {
                           id: test.id,
                         },
                         data: test,
-                      })),
-                    create: solution.tests.filter(
-                      (t) => t.id === undefined || t.id === null,
+                      }),
                     ),
+                    create: this.getNewTests(solution.tests),
                   },
                   solution: {
                     connectOrCreate: {
@@ -302,6 +298,22 @@ export class TasksService {
     ]);
 
     return updatedTask;
+  }
+
+  private getNewTests(
+    tests: Prisma.SolutionTestUncheckedCreateInput[],
+  ): (Prisma.SolutionTestUncheckedCreateInput & { id: undefined })[] {
+    return tests.filter(
+      (test) => test.id === undefined || test.id === null,
+    ) as (Prisma.SolutionTestUncheckedCreateInput & { id: undefined })[];
+  }
+
+  private getExistingTests(
+    tests: Prisma.SolutionTestUncheckedCreateInput[],
+  ): (Prisma.SolutionTestUncheckedCreateInput & { id: number })[] {
+    return tests.filter(
+      (test) => test.id !== undefined && test.id !== null,
+    ) as (Prisma.SolutionTestUncheckedCreateInput & { id: number })[];
   }
 
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
