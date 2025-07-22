@@ -10,8 +10,6 @@ import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
-import { AstHeightCriterionFilter } from "../criteria/ast-height";
-import { IndentationCriterionFilter } from "../criteria/indentation";
 import { CustomFunctionCallCriterionFilter } from "../criteria/custom-function-call";
 import { FilterCriterion, FilterCriterionParameters } from ".";
 
@@ -127,28 +125,28 @@ const CriterionFilterForm = ({
         />
       ),
     )
-    .with(
-      {
-        filter: { criterion: AstCriterionType.height },
-        parameters: { criterion: AstCriterionType.height },
-      },
-      (f) => (
-        <AstHeightCriterionFilter.formComponent
-          {...createProps(f, setFilters)}
-        />
-      ),
-    )
-    .with(
-      {
-        filter: { criterion: AstCriterionType.indentation },
-        parameters: { criterion: AstCriterionType.indentation },
-      },
-      (f) => (
-        <IndentationCriterionFilter.formComponent
-          {...createProps(f, setFilters)}
-        />
-      ),
-    )
+    // .with(
+    //   {
+    //     filter: { criterion: AstCriterionType.height },
+    //     parameters: { criterion: AstCriterionType.height },
+    //   },
+    //   (f) => (
+    //     <AstHeightCriterionFilter.formComponent
+    //       {...createProps(f, setFilters)}
+    //     />
+    //   ),
+    // )
+    // .with(
+    //   {
+    //     filter: { criterion: AstCriterionType.indentation },
+    //     parameters: { criterion: AstCriterionType.indentation },
+    //   },
+    //   (f) => (
+    //     <IndentationCriterionFilter.formComponent
+    //       {...createProps(f, setFilters)}
+    //     />
+    //   ),
+    // )
     .with(
       {
         filter: { criterion: AstCriterionType.loop },

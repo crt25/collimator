@@ -14,8 +14,6 @@ import { LoopCriterionFilter } from "../criteria/loop";
 import { FunctionDeclarationCriterionFilter } from "../criteria/function-declaration";
 import { TestCriterionFilter } from "../criteria/test";
 import { MetaCriterionType } from "../criteria/meta-criterion-type";
-import { AstHeightCriterionFilter } from "../criteria/ast-height";
-import { IndentationCriterionFilter } from "../criteria/indentation";
 import { CustomFunctionCallCriterionFilter } from "../criteria/custom-function-call";
 
 export const filterCriteria = [
@@ -29,8 +27,8 @@ export const filterCriteria = [
   LoopCriterionFilter,
   StatementCriterionFilter,
   TestCriterionFilter,
-  IndentationCriterionFilter,
-  AstHeightCriterionFilter,
+  // IndentationCriterionFilter,
+  // AstHeightCriterionFilter,
 ];
 
 type FilterCriterionDefinition = (typeof filterCriteria)[number];
@@ -73,12 +71,12 @@ export const runFilter = (
     .with({ criterion: AstCriterionType.functionDeclaration }, (criterion) =>
       FunctionDeclarationCriterionFilter.run(criterion, analyses),
     )
-    .with({ criterion: AstCriterionType.height }, (criterion) =>
-      AstHeightCriterionFilter.run(criterion, analyses),
-    )
-    .with({ criterion: AstCriterionType.indentation }, (criterion) =>
-      IndentationCriterionFilter.run(criterion, analyses),
-    )
+    // .with({ criterion: AstCriterionType.height }, (criterion) =>
+    //   AstHeightCriterionFilter.run(criterion, analyses),
+    // )
+    // .with({ criterion: AstCriterionType.indentation }, (criterion) =>
+    //   IndentationCriterionFilter.run(criterion, analyses),
+    // )
     .with({ criterion: AstCriterionType.loop }, (criterion) =>
       LoopCriterionFilter.run(criterion, analyses),
     )
@@ -117,11 +115,11 @@ export const getInitialFilterValues = (
       AstCriterionType.functionDeclaration,
       () => FunctionDeclarationCriterionFilter.initialValues,
     )
-    .with(AstCriterionType.height, () => AstHeightCriterionFilter.initialValues)
-    .with(
-      AstCriterionType.indentation,
-      () => IndentationCriterionFilter.initialValues,
-    )
+    // .with(AstCriterionType.height, () => AstHeightCriterionFilter.initialValues)
+    // .with(
+    //   AstCriterionType.indentation,
+    //   () => IndentationCriterionFilter.initialValues,
+    // )
     .with(AstCriterionType.loop, () => LoopCriterionFilter.initialValues)
     .with(MetaCriterionType.none, () => NoCriterionFilter.initialValues)
     .with(MetaCriterionType.test, () => TestCriterionFilter.initialValues)
