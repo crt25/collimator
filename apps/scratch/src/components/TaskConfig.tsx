@@ -35,6 +35,8 @@ const TaskConfig = ({
   isShown?: boolean;
   hideModal: () => void;
 }) => {
+  // TODO: As this grows it may be worth using react-hook-form analogous to the frontend project.
+  // TODO: Moreover, we should trigger the 'CRT_CONFIG_CHANGED' event on every change to the config.
   const assertionsEnabled = useAssertionsEnabled(vm);
   const [isAssertionsExtensionEnabled, setIsAssertionsExtensionEnabled] =
     useState(false);
