@@ -113,8 +113,6 @@ interface RememberedSpriteState extends RememberedTargetState {
 /**
  * Adds assertions to the Scratch VM.
  * See https://github.com/scratchfoundation/scratch-vm/blob/develop/docs/extensions.md for a documentation of the Scratch VM extensions.
- * @param {Runtime} runtime - the runtime instantiating this block package.
- * @constructor
  */
 class AssertionExtension {
   static readonly STATE_KEY = EXTENSION_ID;
@@ -123,11 +121,11 @@ class AssertionExtension {
     failedAssertions: [],
   };
 
-  /**
-   * The runtime instantiating this block package.
-   * @type {Runtime}
-   */
-  private readonly runtime: VM.RuntimeExtended;
+  private readonly vm: VM;
+
+  private get runtime(): VM.RuntimeExtended {
+    return this.vm.runtime;
+  }
 
   private rememberedStageState: RememberedStageState | null = null;
   private rememberedSpriteState: {
@@ -144,8 +142,11 @@ class AssertionExtension {
    */
   private runningAssertions: boolean = false;
 
-  constructor(runtime: VM.RuntimeExtended) {
-    this.runtime = runtime;
+  private passedAssertions: Assertion[] = [];
+  private failedAssertions: Assertion[] = [];
+
+  constructor(vm: VM) {
+    this.vm = vm;
 
     this.onEnableAssertions = this.onEnableAssertions.bind(this);
     this.onDisableAssertions = this.onDisableAssertions.bind(this);
@@ -181,6 +182,7 @@ class AssertionExtension {
     this.runtime.on("PROJECT_START", this.onProjectStart);
     this.runtime.on("PROJECT_RUN_STOP", this.onProjectStop);
     this.runtime.on("PROJECT_STOP_ALL", this.onProjectStopAll);
+    this.vm.on("workspaceUpdate", this.updateBlockGlow);
 
     this.enabled = true;
     this.runtime.emit("ASSERTIONS_ENABLED");
@@ -204,8 +206,11 @@ class AssertionExtension {
     this.runtime.off("PROJECT_START", this.onProjectStart);
     this.runtime.off("PROJECT_RUN_STOP", this.onProjectStop);
     this.runtime.off("PROJECT_STOP_ALL", this.onProjectStopAll);
+    this.vm.off("workspaceUpdate", this.updateBlockGlow);
 
     this.enabled = false;
+    this.failedAssertions = [];
+    this.passedAssertions = [];
     this.runtime.emit("ASSERTIONS_DISABLED");
   };
 
@@ -281,6 +286,9 @@ class AssertionExtension {
    * Reset all targets to their initial state, i.e. the state they were in when assertions were enabled.
    */
   resetAllTargets = (): void => {
+    this.failedAssertions = [];
+    this.passedAssertions = [];
+
     this.runtime.targets.forEach((target) => {
       // reset the state for each target
 
@@ -356,31 +364,32 @@ class AssertionExtension {
    */
   onProjectAssertionsRan = (): void => {
     const targetStates = this.runtime.targets.map((target) => ({
+      targetId: target.id,
       targetName: target.getName(),
       state: getCustomState(target),
     }));
 
-    const passedAssertions = targetStates.flatMap(({ targetName, state }) =>
-      state.passedAssertions.map(
-        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
-      ),
+    this.passedAssertions = targetStates.flatMap(
+      ({ targetId, targetName, state }) =>
+        state.passedAssertions.map(
+          (a) => ({ targetId, targetName, ...a }) satisfies Assertion,
+        ),
     );
 
-    const failedAssertions = targetStates.flatMap(({ targetName, state }) =>
-      state.failedAssertions.map(
-        (a) => ({ targetName: targetName, ...a }) satisfies Assertion,
-      ),
+    this.failedAssertions = targetStates.flatMap(
+      ({ targetId, targetName, state }) =>
+        state.failedAssertions.map(
+          (a) => ({ targetId, targetName, ...a }) satisfies Assertion,
+        ),
     );
 
-    for (const assertion of failedAssertions) {
-      this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
-    }
+    this.updateBlockGlow();
 
-    for (const assertion of passedAssertions) {
-      this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
-    }
-
-    this.runtime.emit("ASSERTIONS_CHECKED", passedAssertions, failedAssertions);
+    this.runtime.emit(
+      "ASSERTIONS_CHECKED",
+      this.passedAssertions,
+      this.failedAssertions,
+    );
   };
 
   /**
@@ -388,6 +397,38 @@ class AssertionExtension {
    */
   onProjectStopAll = (): void => {
     this.resetAllTargets();
+  };
+
+  updateBlockGlow = (): void => {
+    const currentTargetId = this.vm.editingTarget?.id;
+
+    for (const assertion of this.failedAssertions.filter(
+      (a) => a.targetId === currentTargetId,
+    )) {
+      try {
+        this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
+      } catch (error) {
+        console.error(
+          `Assertion block with id ${assertion.blockId} not found for target ${assertion.targetId}.`,
+          "Original error:",
+          error,
+        );
+      }
+    }
+
+    for (const assertion of this.passedAssertions.filter(
+      (a) => a.targetId === currentTargetId,
+    )) {
+      try {
+        this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
+      } catch (error) {
+        console.error(
+          `Assertion block with id ${assertion.blockId} not found for target ${assertion.targetId}`,
+          "Original error:",
+          error,
+        );
+      }
+    }
   };
 
   /**

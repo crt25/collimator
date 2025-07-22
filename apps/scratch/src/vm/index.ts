@@ -11,7 +11,7 @@ export const patchScratchVm = (vm: VM): void => {
 
     switch (id) {
       case ExtensionId.Assertions: {
-        const extensionInstance = new AssertionExtension(vm.runtime);
+        const extensionInstance = new AssertionExtension(vm);
 
         const serviceName =
           vm.extensionManager._registerInternalExtension(extensionInstance);
