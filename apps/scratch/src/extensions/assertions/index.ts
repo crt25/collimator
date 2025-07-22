@@ -407,9 +407,11 @@ class AssertionExtension {
     )) {
       try {
         this.runtime.emit("BLOCK_GLOW_ON", { id: assertion.blockId });
-      } catch {
+      } catch (error) {
         console.error(
-          `Assertion block with id ${assertion.blockId} not found for target ${assertion.targetId}`,
+          `Assertion block with id ${assertion.blockId} not found for target ${assertion.targetId}.`,
+          "Original error:",
+          error,
         );
       }
     }
@@ -419,9 +421,11 @@ class AssertionExtension {
     )) {
       try {
         this.runtime.emit("BLOCK_GLOW_OFF", { id: assertion.blockId });
-      } catch {
+      } catch (error) {
         console.error(
           `Assertion block with id ${assertion.blockId} not found for target ${assertion.targetId}`,
+          "Original error:",
+          error,
         );
       }
     }
