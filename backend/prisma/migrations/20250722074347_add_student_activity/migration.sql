@@ -6,6 +6,7 @@ CREATE TABLE "StudentActivity" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "type" "StudentActivityType" NOT NULL,
+    "happenedAt" TIMESTAMP(3) NOT NULL,
     "studentId" INTEGER NOT NULL,
     "sessionId" INTEGER NOT NULL,
     "taskId" INTEGER NOT NULL,
@@ -22,6 +23,9 @@ CREATE TABLE "StudentActivityApp" (
 
     CONSTRAINT "StudentActivityApp_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "StudentActivity_studentId_type_happenedAt_key" ON "StudentActivity"("studentId", "type", "happenedAt");
 
 -- AddForeignKey
 ALTER TABLE "StudentActivity" ADD CONSTRAINT "StudentActivity_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -316,7 +316,8 @@ model StudentActivity {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 
-  type StudentActivityType
+  type       StudentActivityType
+  happenedAt DateTime
 
   studentId    Int
   sessionId    Int
@@ -330,6 +331,8 @@ model StudentActivity {
   solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
 
   appActivity StudentActivityApp?
+
+  @@unique([studentId, type, happenedAt], name: "uniqueStudentActivityPerTypeAndTime")
 }
 
 model StudentActivityApp {

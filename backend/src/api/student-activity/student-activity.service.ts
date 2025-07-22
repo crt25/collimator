@@ -29,11 +29,40 @@ export class StudentActivityService {
     private readonly tasksService: TasksService,
   ) {}
 
+  createMany(
+    student: Student,
+    activityWithSolution: {
+      activity: StudentActivityInput;
+      solution: SolutionInput;
+    }[],
+  ): Promise<StudentActivity[]> {
+    const inputs: Prisma.StudentActivityCreateInput[] =
+      activityWithSolution.map(({ activity, solution }) =>
+        this.buildActivityInput(student, activity, solution),
+      );
+
+    return this.prisma.$transaction(
+      inputs.map((input) =>
+        this.prisma.studentActivity.create({ data: input }),
+      ),
+    );
+  }
+
   create(
     student: Student,
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
+    const input = this.buildActivityInput(student, activity, solution);
+
+    return this.prisma.studentActivity.create({ data: input });
+  }
+
+  private buildActivityInput(
+    student: Student,
+    activity: StudentActivityInput,
+    solution: SolutionInput,
+  ): Prisma.StudentActivityCreateInput {
     const appActivityInput:
       | Prisma.StudentActivityAppCreateNestedOneWithoutStudentActivityInput
       | undefined = activity.appActivity
@@ -47,8 +76,9 @@ export class StudentActivityService {
 
     const solutionHash = this.tasksService.computeSolutionHash(solution.data);
 
-    const input: Prisma.StudentActivityCreateInput = {
+    return {
       type: activity.type,
+      happenedAt: activity.happenedAt,
       appActivity: appActivityInput,
       student: {
         connect: { id: student.id },
@@ -83,8 +113,6 @@ export class StudentActivityService {
           },
         },
       },
-    };
-
-    return this.prisma.studentActivity.create({ data: input });
+    } satisfies Prisma.StudentActivityCreateInput;
   }
 }

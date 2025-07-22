@@ -15,11 +15,11 @@ export interface TrackStudentActivityDto {
   sessionId: number;
   /** The identifier of the task related to the activity. */
   taskId: number;
+  /** The time the activity happened at. */
+  happenedAt: string;
   /**
-   * Optional app activity object for this activity. Can only be set if the type is set to app activity..
+   * Optional app activity object for this activity. Can only be set if the type is set to app activity.
    * @nullable
    */
   appActivity: TrackStudentActivityDtoAppActivity;
-  /** The solution file */
-  solution: Blob;
 }

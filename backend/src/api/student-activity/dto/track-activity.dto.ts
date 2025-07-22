@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsInt, IsEnum } from "class-validator";
+import { IsNotEmpty, IsString, IsInt, IsEnum, IsDate } from "class-validator";
 import { Type } from "class-transformer";
 import { StudentActivityType } from "@prisma/client";
 import { TrackAppStudentActivityDto } from "./track-app-activity.dto";
@@ -39,6 +39,14 @@ export class TrackStudentActivityDto {
   @IsNotEmpty()
   readonly taskId!: number;
 
+  @Type(() => Date)
+  @IsDate()
+  @ApiProperty({
+    example: "2025-01-01T12:00:00Z",
+    description: "The time the activity happened at.",
+  })
+  readonly happenedAt!: Date;
+
   @Type(() => TrackAppStudentActivityDto)
   @ApiProperty({
     description:
@@ -47,12 +55,4 @@ export class TrackStudentActivityDto {
     nullable: true,
   })
   readonly appActivity!: TrackAppStudentActivityDto | null;
-
-  // The following property is used for Swagger documentation purposes.
-  @ApiProperty({
-    description: "The solution file",
-    format: "binary",
-    type: "string",
-  })
-  readonly solution!: Express.Multer.File;
 }

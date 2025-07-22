@@ -8,7 +8,7 @@
 import type { TrackAppStudentActivityDto } from "./trackAppStudentActivityDto";
 
 /**
- * Optional app activity object for this activity. Can only be set if the type is set to app activity..
+ * Optional app activity object for this activity. Can only be set if the type is set to app activity.
  * @nullable
  */
 export type TrackStudentActivityDtoAppActivity =

@@ -6,24 +6,25 @@
  * OpenAPI spec version: 1.0.0
  */
 import { fetchApi } from "../../../../fetch";
-import type { TrackStudentActivityDto } from "../../models";
+import type { TrackStudentActivitiesDto } from "../../models";
 
 export const getStudentActivityControllerTrackV0Url = () => {
   return `/api/v0/student-activity`;
 };
 
 export const studentActivityControllerTrackV0 = async (
-  trackStudentActivityDto: TrackStudentActivityDto,
+  trackStudentActivitiesDto: TrackStudentActivitiesDto,
   options?: RequestInit,
 ): Promise<void> => {
   const formData = new FormData();
-  formData.append("type", trackStudentActivityDto.type);
-  formData.append("sessionId", trackStudentActivityDto.sessionId.toString());
-  formData.append("taskId", trackStudentActivityDto.taskId.toString());
-  if (trackStudentActivityDto.appActivity !== null) {
-    formData.append("appActivity", trackStudentActivityDto.appActivity);
+  if (trackStudentActivitiesDto.activities !== null) {
+    trackStudentActivitiesDto.activities.forEach((value) =>
+      formData.append("activities", JSON.stringify(value)),
+    );
   }
-  formData.append("solution", trackStudentActivityDto.solution);
+  trackStudentActivitiesDto.solutions.forEach((value) =>
+    formData.append("solutions", value),
+  );
 
   return fetchApi<void>(getStudentActivityControllerTrackV0Url(), {
     ...options,

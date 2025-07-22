@@ -1,29 +1,42 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+// eslint-disable-next-line import/order
 import { fetchApi } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { TrackStudentActivityDto } from "../../generated/models";
 import { getStudentActivityControllerTrackV0Url } from "../../generated/endpoints/student-activity/student-activity";
 
-type TrackActivityType = (
-  trackActivityDto: TrackStudentActivityDto,
-) => Promise<void>;
+type ActivityDto = Omit<TrackStudentActivityDto, "happenedAt"> & {
+  solution: Blob;
+};
+type ActivityDtoWithDate = ActivityDto & { happenedAt: Date };
+type TrackActivityType = (trackActivityDto: ActivityDto) => Promise<void>;
+
+let activitiesToTrack: ActivityDtoWithDate[] = [];
 
 export const studentActivityControllerTrack = async (
-  trackStudentActivityDto: TrackStudentActivityDto,
+  activities: ActivityDtoWithDate[],
   options?: RequestInit,
 ): Promise<void> => {
   const formData = new FormData();
-  formData.append("type", trackStudentActivityDto.type);
-  formData.append("sessionId", trackStudentActivityDto.sessionId.toString());
-  formData.append("taskId", trackStudentActivityDto.taskId.toString());
-  formData.append("solution", trackStudentActivityDto.solution);
+  formData.append(
+    "activities",
+    JSON.stringify(
+      activities.map(
+        (activity) =>
+          ({
+            type: activity.type,
+            taskId: activity.taskId,
+            sessionId: activity.sessionId,
+            appActivity: activity.appActivity,
+            happenedAt: activity.happenedAt.toISOString(),
+          }) satisfies TrackStudentActivityDto,
+      ),
+    ),
+  );
 
-  if (trackStudentActivityDto.appActivity !== null) {
-    formData.append(
-      "appActivity",
-      JSON.stringify(trackStudentActivityDto.appActivity),
-    );
-  }
+  activities.forEach((activity) =>
+    formData.append("solutions", activity.solution),
+  );
 
   return fetchApi<void>(getStudentActivityControllerTrackV0Url(), {
     ...options,
@@ -32,17 +45,62 @@ export const studentActivityControllerTrack = async (
   });
 };
 
-const createAndTransform = (
+const trackActivity = (
   options: RequestInit,
-  trackActivityDto: TrackStudentActivityDto,
-): ReturnType<TrackActivityType> =>
-  studentActivityControllerTrack(trackActivityDto, options);
+  activities: ActivityDtoWithDate[],
+): ReturnType<TrackActivityType> => {
+  return studentActivityControllerTrack(activities, options);
+};
 
 export const useTrackStudentActivity = (): TrackActivityType => {
   const authOptions = useAuthenticationOptions();
 
+  useEffect(() => {
+    // add event listener for when the application is online
+    // and re-send the activities to track
+    const handleOnline = async (): Promise<void> => {
+      if (activitiesToTrack.length > 0) {
+        // create a copy of the activities to track
+        const activities = [...activitiesToTrack];
+
+        try {
+          activitiesToTrack = [];
+          await trackActivity(authOptions, activitiesToTrack);
+        } catch (error) {
+          // if the request fails, restore the activities to track
+          activitiesToTrack = activities;
+
+          console.error("Failed to track student activities:", error);
+        }
+      }
+    };
+
+    window.addEventListener("online", handleOnline);
+
+    // clean up the event listener on component unmount
+    return (): void => window.removeEventListener("online", handleOnline);
+  }, [authOptions]);
+
   return useCallback<TrackActivityType>(
-    (trackActivityDto) => createAndTransform(authOptions, trackActivityDto),
+    async (newActivity) => {
+      // create new array with activities that should be tracked
+      const activities = [
+        ...activitiesToTrack,
+        { ...newActivity, happenedAt: new Date() },
+      ];
+      // clear the array to avoid duplicate tracking
+      activitiesToTrack = [];
+
+      try {
+        return await trackActivity(authOptions, activities);
+      } catch (error) {
+        // on error, ensure the activities are tracked again the next time
+        // we send a request by appending them
+        activitiesToTrack = [...activitiesToTrack, ...activities];
+
+        throw error;
+      }
+    },
     [authOptions],
   );
 };
