@@ -45,6 +45,7 @@ export const loadCrtProject = async (
       vm.crtConfig = { ...defaultCrtConfig, ...config };
     }
   }
+  vm.runtime.emit("CRT_CONFIG_CHANGED", vm.crtConfig);
 
   await vm.loadProject(input);
 

@@ -20,7 +20,6 @@ import { AnyAction, Dispatch } from "redux";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
-import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -98,8 +97,7 @@ const getSubmission = async (
     // then save project state
     const json = vm.toJSON();
 
-    const maximumExecutionTimeInMs =
-      vm.crtConfig?.maximumExecutionTimeInMs ?? defaultMaximumExecutionTimeInMs;
+    const maximumExecutionTimeInMs = vm.crtConfig?.maximumExecutionTimeInMs;
 
     const waitForAssertions = new Promise<{
       passedAssertions: Assertion[];
