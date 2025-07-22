@@ -31,6 +31,10 @@ const MultiSwrContent = <TData extends readonly unknown[] | []>({
     (error, index) => error !== undefined && !isLoading[index],
   );
 
+  const nonLoadingErrorsWithoutStaleData = nonLoadingErrors.filter(
+    (_error, index) => data[index] === undefined,
+  );
+
   const renderedChildren = useMemo(() => {
     if (areAllElementsDefined(data)) {
       return children(data);
@@ -41,8 +45,10 @@ const MultiSwrContent = <TData extends readonly unknown[] | []>({
 
   if (nonLoadingErrors.length > 0) {
     console.error(`${logModule} Failed to load:`, nonLoadingErrors);
+  }
 
-    return nonLoadingErrors
+  if (nonLoadingErrorsWithoutStaleData.length > 0) {
+    return nonLoadingErrorsWithoutStaleData
       .filter((e) => e !== undefined)
       .map((error, index) => <ErrorMessage key={index} error={error} />);
   }
