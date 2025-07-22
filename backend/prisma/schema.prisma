@@ -317,6 +317,7 @@ model StudentActivity {
   createdAt DateTime @default(now())
 
   type       StudentActivityType
+  // measured by the client and may therefore be completely different from createdAt
   happenedAt DateTime
 
   studentId    Int

@@ -65,7 +65,7 @@ export const useTrackStudentActivity = (): TrackActivityType => {
 
         try {
           activitiesToTrack = [];
-          await trackActivity(authOptions, activitiesToTrack);
+          await trackActivity(authOptions, activities);
         } catch (error) {
           // if the request fails, restore the activities to track
           activitiesToTrack = activities;
