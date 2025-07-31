@@ -286,7 +286,7 @@ export const waitUntilReachable = async (
     path: string;
     protocol?: string;
   }[],
-  maxTries = 60,
+  maxTries = 120,
   timeoutMs = 1000,
 ): Promise<void> => {
   const areReachable = new Array(servers.length).fill(false);
