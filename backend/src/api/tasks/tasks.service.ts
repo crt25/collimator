@@ -188,7 +188,7 @@ export class TasksService {
         referenceSolution.solution.id !== null,
     );
 
-    const [_, __, ___, updatedTask] = await this.prisma.$transaction([
+    const [_, __, updatedTask] = await this.prisma.$transaction([
       // delete all reference solutions that are not in the new list
       this.prisma.referenceSolution.deleteMany({
         where: {
@@ -207,14 +207,6 @@ export class TasksService {
           studentSolutions: { none: {} },
         },
       }),
-      // delete all tests for updated reference solutions
-      this.prisma.solutionTest.deleteMany({
-        where: {
-          referenceSolutionId: {
-            in: updatedReferenceSolutions.map((s) => s.solution.id),
-          },
-        },
-      }),
       // update the task
       this.prisma.task.update({
         data: {
@@ -228,7 +220,13 @@ export class TasksService {
                 description: solution.description,
                 isInitial: solution.isInitial,
                 tests: {
-                  create: solution.tests,
+                  connectOrCreate: this.getExistingTests(solution.tests).map(
+                    (test) => ({
+                      where: { id: test.id },
+                      create: test,
+                    }),
+                  ),
+                  create: this.getNewTests(solution.tests),
                 },
                 solution: {
                   connectOrCreate: {
@@ -256,8 +254,22 @@ export class TasksService {
                   description: solution.description,
                   isInitial: solution.isInitial,
                   tests: {
-                    // create new tests, the existing ones were deleted above
-                    create: solution.tests,
+                    deleteMany: {
+                      id: {
+                        notIn: this.getExistingTests(solution.tests).map(
+                          ({ id }) => id,
+                        ),
+                      },
+                    },
+                    update: this.getExistingTests(solution.tests).map(
+                      (test) => ({
+                        where: {
+                          id: test.id,
+                        },
+                        data: test,
+                      }),
+                    ),
+                    create: this.getNewTests(solution.tests),
                   },
                   solution: {
                     connectOrCreate: {
@@ -286,6 +298,22 @@ export class TasksService {
     ]);
 
     return updatedTask;
+  }
+
+  private getNewTests(
+    tests: Prisma.SolutionTestUncheckedCreateInput[],
+  ): (Prisma.SolutionTestUncheckedCreateInput & { id: undefined })[] {
+    return tests.filter(
+      (test) => test.id === undefined || test.id === null,
+    ) as (Prisma.SolutionTestUncheckedCreateInput & { id: undefined })[];
+  }
+
+  private getExistingTests(
+    tests: Prisma.SolutionTestUncheckedCreateInput[],
+  ): (Prisma.SolutionTestUncheckedCreateInput & { id: number })[] {
+    return tests.filter(
+      (test) => test.id !== undefined && test.id !== null,
+    ) as (Prisma.SolutionTestUncheckedCreateInput & { id: number })[];
   }
 
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
