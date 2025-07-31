@@ -52,6 +52,7 @@ import { useEffect, useMemo } from "react";
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
+import { ScratchCrtConfig } from "../../../types/scratch-vm-custom";
 import crtStyles from "./gui.css";
 
 const messages = defineMessages({
@@ -69,6 +70,7 @@ let isRendererSupported: boolean | null = null;
 const GUIComponent = (props: {
   // required
   vm: VM;
+  crtConfig: ScratchCrtConfig;
   intl: InjectedIntl;
 
   // optional
@@ -162,6 +164,7 @@ const GUIComponent = (props: {
     theme,
     tipsLibraryVisible,
     vm,
+    crtConfig,
     ...componentProps
   } = omit(props, "dispatch");
 
@@ -437,10 +440,12 @@ const GUIComponent = (props: {
                         isFullScreen={isFullScreen}
                         isRendererSupported={isRendererSupported || false}
                         isRtl={isRtl}
-                        isStageInteractive={canEditTask}
                         stageSize={stageSize}
                         vm={vm}
                         canEditTask={canEditTask}
+                        isStageInteractive={
+                          canEditTask || crtConfig.enableStageInteractions
+                        }
                       />
                       <Box className={styles.targetWrapper}>
                         <TargetPane

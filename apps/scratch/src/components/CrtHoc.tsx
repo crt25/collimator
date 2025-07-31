@@ -11,6 +11,7 @@ import en from "../content/compiled-locales/en.json";
 import fr from "../content/compiled-locales/fr.json";
 import { ExtensionId } from "../extensions";
 import { CrtContext } from "../contexts/CrtContext";
+import { useCrtConfig } from "../hooks/useCrtConfig";
 
 const customLocales: { [locale: string]: { [key: string]: string } } =
   Object.fromEntries(
@@ -36,6 +37,7 @@ const defaultExtensions: ExtensionId[] = [ExtensionId.Assertions];
 const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
   return function CrtHoc(props: T & { intl: InjectedIntl }) {
     const [vm, setVm] = useState<VM | null>(null);
+    const crtConfig = useCrtConfig(vm);
 
     const dispatch = useDispatch();
 
@@ -74,6 +76,7 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
             );
           }}
           basePath={`${basePath}/`}
+          crtConfig={crtConfig}
         />
       </CrtContext.Provider>
     );

@@ -38,6 +38,7 @@ import GUIComponent from "../../components/customized-scratch-components/gui/Gui
 import { loadCrtProject } from "../../vm/load-crt-project";
 import CrtHoc from "../../components/CrtHoc";
 import HashParserHOC from "../../components/customized-scratch-components/HashParserHOC";
+import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 
 const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
 
@@ -53,6 +54,7 @@ const setProjectIdMetadata = (projectId: string | number) => {
 
 interface Props {
   vm: VM;
+  crtConfig: ScratchCrtConfig;
   assetHost?: string;
   children?: React.ReactNode;
   cloudHost?: string;

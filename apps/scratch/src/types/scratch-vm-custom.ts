@@ -8,6 +8,7 @@ export interface CrtBlock {
 export interface Assertion {
   assertionName: string;
   blockId: string;
+  targetId: string;
   targetName: string;
 }
 
@@ -60,6 +61,8 @@ export interface CrtEventMap {
     // Failed assertions.
     Assertion[],
   ];
+
+  CRT_CONFIG_CHANGED: [ScratchCrtConfig];
 }
 
 export interface ScratchCrtConfig {
@@ -79,5 +82,10 @@ export interface ScratchCrtConfig {
   /**
    * The maximum time in milliseconds that the solution is allowed to run.
    */
-  maximumExecutionTimeInMs: number | undefined;
+  maximumExecutionTimeInMs: number;
+
+  /**
+   * Whether to enable stage interactions.
+   */
+  enableStageInteractions: boolean;
 }

@@ -96,23 +96,25 @@ const AssertionsModal = ({
         <Fragment key={targetName}>
           <Table>
             <thead>
-              <th>
-                <FormattedMessage
-                  defaultMessage="Assertion on {targetName}"
-                  description="Heading of the assertion name column in the assertions modal."
-                  id="crt.assertionsModal.tableAssertionNameHeading"
-                  values={{
-                    targetName,
-                  }}
-                />
-              </th>
-              <th>
-                <FormattedMessage
-                  defaultMessage="Status"
-                  description="Heading of the assertion status column in the assertions modal."
-                  id="crt.assertionsModal.tableAssertionStatusHeading"
-                />
-              </th>
+              <tr>
+                <th>
+                  <FormattedMessage
+                    defaultMessage="Assertion on {targetName}"
+                    description="Heading of the assertion name column in the assertions modal."
+                    id="crt.assertionsModal.tableAssertionNameHeading"
+                    values={{
+                      targetName,
+                    }}
+                  />
+                </th>
+                <th>
+                  <FormattedMessage
+                    defaultMessage="Status"
+                    description="Heading of the assertion status column in the assertions modal."
+                    id="crt.assertionsModal.tableAssertionStatusHeading"
+                  />
+                </th>
+              </tr>
             </thead>
             <tbody>
               {assertions.map((assertion) => (
