@@ -10,6 +10,7 @@ interface Props {
   projectRunning: boolean;
   turbo: boolean;
   vm: VM;
+  canEditTask?: boolean;
 }
 
 const Controls = ({
@@ -17,6 +18,7 @@ const Controls = ({
   isStarted,
   projectRunning,
   turbo,
+  canEditTask,
   ...props
 }: Props) => {
   const { sendRequest } = useContext(CrtContext);
@@ -31,13 +33,15 @@ const Controls = ({
           vm.start();
         }
 
-        // do not wait for this request to succeed
-        sendRequest(
-          "postSolutionRun",
-          new Blob([vm.toJSON()], {
-            type: "application/json",
-          }),
-        );
+        if (!canEditTask) {
+          // do not wait for this request to succeed
+          sendRequest(
+            "postSolutionRun",
+            new Blob([vm.toJSON()], {
+              type: "application/json",
+            }),
+          );
+        }
 
         vm.greenFlag();
       }
