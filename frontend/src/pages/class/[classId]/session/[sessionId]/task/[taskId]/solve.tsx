@@ -197,7 +197,7 @@ const SolveTaskPage = () => {
     }
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash]);
+  }, [embeddedApp, taskFileHash, session, task]);
 
   const onReceiveSubmission = useCallback(
     async (submission: Submission) => {
