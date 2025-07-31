@@ -52,10 +52,11 @@ export interface Props {
   src: string;
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
+  onSolutionRun?: (solution: Blob) => void;
 }
 
 const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
-  { src, onAppAvailable, onReceiveSubmission },
+  { src, onAppAvailable, onReceiveSubmission, onSolutionRun },
   ref,
 ) {
   const [isAppAvailable, setIsAppAvailable] = useState<boolean>(false);
@@ -79,6 +80,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     {
       postSubmission: async (request) => {
         onReceiveSubmission?.(request.params);
+      },
+      postSolutionRun: async (request) => {
+        onSolutionRun?.(request.params);
       },
     },
     onAvailable,

@@ -8,6 +8,7 @@ import { TasksModule } from "./tasks/tasks.module";
 import { SessionsModule } from "./sessions/sessions.module";
 import { SolutionsModule } from "./solutions/solutions.module";
 import { AuthenticationModule } from "./authentication/authentication.module";
+import { StudentActivityModule } from "./student-activity/student-activity.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthenticationModule } from "./authentication/authentication.module";
     TasksModule,
     SessionsModule,
     SolutionsModule,
+    StudentActivityModule,
   ],
   providers: [
     {

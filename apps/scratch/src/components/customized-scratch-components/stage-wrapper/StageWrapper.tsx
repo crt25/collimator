@@ -23,10 +23,10 @@ import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar
 import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import Controls from "../../../scratch/scratch-gui/src/containers/controls";
 import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import TaskConfig from "../../TaskConfig";
 import AssertionsState from "../../assertions-state/AssertionsState";
+import Controls from "../../../containers/customized-scratch-containers/Controls";
 import crtStyles from "./stage-wrapper.css";
 
 const messages = defineMessages({
@@ -110,7 +110,7 @@ const StageWrapper = function (props: Props) {
             style={{ width: getStageDimensions(null, true).width }}
           >
             <div className="d-contents" data-testid="stage-controls">
-              <Controls vm={vm} />
+              <Controls vm={vm} canEditTask={canEditTask} />
             </div>
             <div className={headerStyles.unselectWrapper}>
               <Button
@@ -136,7 +136,7 @@ const StageWrapper = function (props: Props) {
         <Box className={headerStyles.stageHeaderWrapper}>
           <Box className={headerStyles.stageMenuWrapper}>
             <div className="d-contents" data-testid="stage-controls">
-              <Controls vm={vm} />
+              <Controls vm={vm} canEditTask={canEditTask} />
             </div>
             <div>
               <div className={crtStyles.buttons}>

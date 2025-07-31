@@ -5,6 +5,7 @@ import { GetSubmission } from "./get-submission";
 import { GetTask } from "./get-task";
 import { LoadSubmission } from "./load-submission";
 import { LoadTask } from "./load-task";
+import { PostSolutionRun } from "./post-solution-run";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 
@@ -23,7 +24,8 @@ type Methods =
   | LoadSubmission
   | LoadTask
   | SetLocale
-  | PostSubmission;
+  | PostSubmission
+  | PostSolutionRun;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
   caller: Caller;

@@ -30,6 +30,13 @@ export const useIframeParent = (
   const modifiedHandleRequest = useMemo(
     () => ({
       ...handleRequest,
+      loadSubmission: async (
+        ...args: Parameters<typeof handleRequest.loadSubmission>
+      ): ReturnType<typeof handleRequest.loadSubmission> => {
+        setTaskOrigin(args[1].origin);
+
+        return handleRequest.loadSubmission(...args);
+      },
       loadTask: async (
         ...args: Parameters<typeof handleRequest.loadTask>
       ): ReturnType<typeof handleRequest.loadTask> => {

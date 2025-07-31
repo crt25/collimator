@@ -1,10 +1,13 @@
 import styled from "@emotion/styled";
-import { RefObject } from "react";
+import { RefObject, useCallback } from "react";
 import { CloseButton, Col } from "react-bootstrap";
+import { Submission } from "iframe-rpc-react/src";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
+import { StudentActivityType } from "@/api/collimator/generated/models";
 import TaskList from "./TaskList";
 import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import FullHeightRow from "./layout/FullHeightRow";
@@ -57,6 +60,7 @@ interface Props {
   iframeSrc: string;
   embeddedApp: RefObject<EmbeddedAppRef | null>;
   onAppAvailable?: () => void;
+  onReceiveSubmission?: (submission: Submission) => void;
 }
 
 const Task = ({
@@ -68,39 +72,58 @@ const Task = ({
   iframeSrc,
   embeddedApp,
   onAppAvailable,
-}: Props) => (
-  <TaskWrapper>
-    {showSessionMenu && (
-      <SessionMenu>
-        <SessionMenuWrapper>
-          <CloseSessionMenuButton onClick={() => setShowSessionMenu(false)} />
-          <RemainingHeightContainer>
-            <h1 data-testid="session-name">{session.title}</h1>
-            <FullHeightRow>
-              <Col xs={4}>
-                <TaskList
-                  classId={classId}
-                  session={session}
-                  currentTaskId={task.id}
-                />
-              </Col>
-              <Col xs={8}>
-                <TaskDescription>
-                  <p>{task.description}</p>
-                </TaskDescription>
-              </Col>
-            </FullHeightRow>
-            <VerticalSpacing />
-          </RemainingHeightContainer>
-        </SessionMenuWrapper>
-      </SessionMenu>
-    )}
-    <EmbeddedApp
-      src={iframeSrc}
-      ref={embeddedApp}
-      onAppAvailable={onAppAvailable}
-    />
-  </TaskWrapper>
-);
+  onReceiveSubmission,
+}: Props) => {
+  const trackStudentActivity = useTrackStudentActivity();
+  const onSolutionRun = useCallback(
+    (solution: Blob) => {
+      trackStudentActivity({
+        type: StudentActivityType.TASK_RUN_SOLUTION,
+        sessionId: session.id,
+        taskId: task.id,
+        appActivity: null,
+        solution,
+      });
+    },
+    [trackStudentActivity, session.id, task.id],
+  );
+
+  return (
+    <TaskWrapper>
+      {showSessionMenu && (
+        <SessionMenu>
+          <SessionMenuWrapper>
+            <CloseSessionMenuButton onClick={() => setShowSessionMenu(false)} />
+            <RemainingHeightContainer>
+              <h1 data-testid="session-name">{session.title}</h1>
+              <FullHeightRow>
+                <Col xs={4}>
+                  <TaskList
+                    classId={classId}
+                    session={session}
+                    currentTaskId={task.id}
+                  />
+                </Col>
+                <Col xs={8}>
+                  <TaskDescription>
+                    <p>{task.description}</p>
+                  </TaskDescription>
+                </Col>
+              </FullHeightRow>
+              <VerticalSpacing />
+            </RemainingHeightContainer>
+          </SessionMenuWrapper>
+        </SessionMenu>
+      )}
+      <EmbeddedApp
+        src={iframeSrc}
+        ref={embeddedApp}
+        onAppAvailable={onAppAvailable}
+        onReceiveSubmission={onReceiveSubmission}
+        onSolutionRun={onSolutionRun}
+      />
+    </TaskWrapper>
+  );
+};
 
 export default Task;

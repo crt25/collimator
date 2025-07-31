@@ -84,7 +84,7 @@ model Student {
 
   authenticationTokens AuthenticationToken[]
   solutions            StudentSolution[]
-  // studentActivity StudentActivity[]
+  studentActivities    StudentActivity[]
 }
 
 model AuthenticatedStudent {
@@ -148,7 +148,7 @@ model Session {
   tasks             SessionTask[]
   solutions         StudentSolution[]
   anonymousStudents AnonymousStudent[]
-  // studentActivity StudentActivity[]
+  studentActivities StudentActivity[]
 }
 
 enum TaskType {
@@ -169,7 +169,7 @@ model Task {
   sessions           SessionTask[]
   lessons            LessonTask[]
   creator            User?               @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  // studentActivity StudentActivity[]
+  studentActivities  StudentActivity[]
   solution           Solution[]
 }
 
@@ -189,10 +189,10 @@ model SessionTask {
   taskId    Int
   index     Int
 
-  session   Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  task      Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
-  solutions StudentSolution[]
-  // studentActivity StudentActivity[]
+  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  task              Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  solutions         StudentSolution[]
+  studentActivities StudentActivity[]
 
   @@id([sessionId, taskId])
 }
@@ -209,6 +209,7 @@ model Solution {
   task               Task                @relation(fields: [taskId], references: [id], onDelete: Restrict)
   referenceSolutions ReferenceSolution[]
   studentSolutions   StudentSolution[]
+  studentActivities  StudentActivity[]
 
   @@id([taskId, hash])
 }
@@ -302,38 +303,44 @@ model AuthenticationToken {
 }
 
 // Tables to keep intermediate student activity:
-//
-// enum StudentActivityType {
-//   TASK_STARTED
-//   TASK_RUN_SOLUTION
-//   TASK_TEST_RESULTS
-//   TASK_CLOSED
-//   TASK_APP_ACTIVITY
-// }
-//
-// model StudentActivity {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//
-//   type StudentActivityType
-//
-//   studentId String
-//   sessionId Int
-//   taskId    Int
-//
-//   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-//   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-//   task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
-//   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
-//
-//   appActivity StudentActivityApp?
-// }
-//
-// model StudentActivityApp {
-//   id Int @id
-//
-//   type String
-//   data String
-//
-//   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
-// }
+
+enum StudentActivityType {
+  TASK_STARTED
+  TASK_RUN_SOLUTION
+  TASK_TEST_RESULTS
+  TASK_CLOSED
+  TASK_APP_ACTIVITY
+}
+
+model StudentActivity {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  type       StudentActivityType
+  // measured by the client and may therefore be completely different from createdAt
+  happenedAt DateTime
+
+  studentId    Int
+  sessionId    Int
+  taskId       Int
+  solutionHash Bytes
+
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+
+  appActivity StudentActivityApp?
+
+  @@unique([studentId, type, happenedAt], name: "uniqueStudentActivityPerTypeAndTime")
+}
+
+model StudentActivityApp {
+  id Int @id
+
+  type String
+  data Bytes
+
+  studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
+}
