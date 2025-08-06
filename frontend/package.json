@@ -31,7 +31,7 @@
     "test:storybook": "test-storybook --coverage --coverageDirectory coverage-storybook",
     "storybook": "cross-env NODE_OPTIONS=--preserve-symlinks storybook dev -p 6006",
     "storybook:await": "bash -c \"until curl --output /dev/null --silent --head --fail http://localhost:6006; do printf '.'; sleep 3; done\"",
-    "storybook:build": "storybook build",
+    "storybook:build": "storybook build && cd storybook-static && git init && git remote add origin git@github.com:crt25/collimator-storybook.git && git branch -M main && git add -A && git commit && git push -u origin github-pages/storybook --force",
     "next:upgrade": "npx @next/codemod@canary upgrade latest"
   },
   "nyc": {
