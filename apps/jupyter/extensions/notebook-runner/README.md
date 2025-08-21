@@ -86,6 +86,11 @@ Core utilities for kernel management:
 
 ### Technical Implementation Details
 
+#### `iframe-rpc` symlink
+
+Instead of using a yarn portal like we do in the other projects in the `collimator` repository, we rely on a symlink created by the `scripts/create-symlink.js` script to use the `iframe-rpc` dependency.
+This is necessary because the yarn portal does not seem to be compatible with the jupyter extension build process.
+
 #### Kernel Management
 
 The extension maintains two types of kernels:
