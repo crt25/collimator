@@ -1,3 +1,6 @@
 [submodule "apps/scratch/src/scratch/scratch-gui"]
 	path = apps/scratch/src/scratch/scratch-gui
 	url = https://github.com/scratchfoundation/scratch-gui
+[submodule "frontend/collimator-storybook"]
+	path = frontend/storybook-submodule
+	url = git@github.com:crt25/collimator-storybook.git
