@@ -13,7 +13,7 @@ import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 
 const messages = defineMessages({
   title: {
@@ -26,6 +26,8 @@ const getDisplaySolveUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/solve`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=solve`;
     default:
       return null;
   }
