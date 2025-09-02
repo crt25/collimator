@@ -1,0 +1,114 @@
+import { AstNodeType, GeneralAst } from "src/ast/types/general-ast";
+import { match } from "ts-pattern";
+import { CharStream, CommonTokenStream } from "antlr4";
+import {
+  ActorNode,
+  EventListenerNode,
+  FunctionDeclarationNode,
+  StatementNode,
+  StatementNodeType,
+} from "src/ast/types/general-ast/ast-nodes";
+import { PythonVersion } from "./python-version";
+import PythonLexer from "./generated/PythonLexer";
+import PythonParser from "./generated/PythonParser";
+import { PythonAstVisitor } from "./python-ast-visitor";
+
+const versionRegex = /^(\d+)\.(\d+)\.(\d+)$/;
+
+export const convertPythonToGeneralAst = (
+  input: string,
+  versionString = "3.9.1",
+): GeneralAst => {
+  const version = getPythonVersion(versionString);
+
+  const converter = match(version)
+    .returnType<(input: string) => GeneralAst>()
+    .with(PythonVersion.V3, () => convertPythonV3ToGeneralAst)
+    .exhaustive();
+
+  return converter(input);
+};
+
+export const convertPythonV3ToGeneralAst = (input: string): GeneralAst => {
+  const chars = new CharStream(input);
+  const lexer = new PythonLexer(chars);
+  const tokens = new CommonTokenStream(lexer);
+  const parser = new PythonParser(tokens);
+  parser.buildParseTrees = true;
+
+  // Use the file input entrypoint
+  const tree = parser.file_input();
+
+  const { node, functionDeclarations } = new PythonAstVisitor().visit(tree);
+
+  if (node == undefined) {
+    throw new Error(
+      "Failed to convert Python AST to general AST, received undefined node.",
+    );
+  }
+
+  if (functionDeclarations.length > 0) {
+    // python functions are not hoisted
+    throw new Error(
+      "Python functions are not hoisted but AST translation tries to do so",
+    );
+  }
+
+  if (Array.isArray(node)) {
+    return node;
+  } else if (
+    node.nodeType === AstNodeType.statement &&
+    node.statementType === StatementNodeType.sequence
+  ) {
+    return createTopLevelPythonStatementOutput(
+      node.statements,
+      functionDeclarations,
+    );
+  } else if (node.nodeType === AstNodeType.statement) {
+    return createTopLevelPythonStatementOutput([node], functionDeclarations);
+  } else {
+    throw new Error(`Unexpected AST node: ${node.nodeType}`);
+  }
+};
+
+const getPythonVersion = (versionString: string): PythonVersion => {
+  const match = versionRegex.exec(versionString);
+  if (!match) {
+    throw new Error(`Invalid Python version string: ${versionString}`);
+  }
+
+  const major = parseInt(match[1], 10);
+  const _minor = parseInt(match[2], 10);
+  const _patch = parseInt(match[3], 10);
+
+  if (major === 3) {
+    return PythonVersion.V3;
+  }
+
+  throw new Error(`Unsupported Python version: ${versionString}`);
+};
+
+export const createTopLevelPythonStatementOutput = (
+  statements: StatementNode[],
+  functionDeclarations: FunctionDeclarationNode[],
+): GeneralAst => [
+  {
+    nodeType: AstNodeType.actor,
+    componentId: "executable",
+    eventListeners: [
+      {
+        nodeType: AstNodeType.eventListener,
+        condition: {
+          event: "main",
+          parameters: [],
+        },
+        action: {
+          nodeType: AstNodeType.statement,
+          statementType: StatementNodeType.sequence,
+          statements,
+        },
+      } satisfies EventListenerNode,
+    ],
+    functionDeclarations,
+  } satisfies ActorNode,
+];
