@@ -8,12 +8,34 @@ import {
   StatementNode,
   StatementNodeType,
 } from "src/ast/types/general-ast/ast-nodes";
+import { isExpressionNode } from "src/ast/types/general-ast/helpers/node-type-checks";
+import { ExpressionAsStatementNode } from "src/ast/types/general-ast/ast-nodes/statement-node/expression-as-statement";
+import { StatementWithFunctions } from "../statement-with-functions";
 import { PythonVersion } from "./python-version";
 import PythonLexer from "./generated/PythonLexer";
 import PythonParser from "./generated/PythonParser";
 import { PythonAstVisitor } from "./python-ast-visitor";
 
 const versionRegex = /^(\d+)\.(\d+)\.(\d+)$/;
+
+export const convertPythonToStatement = (
+  input: string,
+  versionString = "3.9.1",
+): StatementWithFunctions => {
+  const version = getPythonVersion(versionString);
+
+  const converter = match(version)
+    .returnType<
+      (input: string) => {
+        node: StatementNode;
+        functionDeclarations: FunctionDeclarationNode[];
+      }
+    >()
+    .with(PythonVersion.V3, () => convertPythonV3ToStatement)
+    .exhaustive();
+
+  return converter(input);
+};
 
 export const convertPythonToGeneralAst = (
   input: string,
@@ -29,7 +51,9 @@ export const convertPythonToGeneralAst = (
   return converter(input);
 };
 
-export const convertPythonV3ToGeneralAst = (input: string): GeneralAst => {
+export const convertPythonV3ToStatement = (
+  input: string,
+): StatementWithFunctions => {
   const chars = new CharStream(input);
   const lexer = new PythonLexer(chars);
   const tokens = new CommonTokenStream(lexer);
@@ -54,9 +78,24 @@ export const convertPythonV3ToGeneralAst = (input: string): GeneralAst => {
     );
   }
 
-  if (Array.isArray(node)) {
-    return node;
-  } else if (
+  if (isExpressionNode(node)) {
+    return {
+      node: {
+        nodeType: AstNodeType.statement,
+        statementType: StatementNodeType.expressionAsStatement,
+        expression: node,
+      } satisfies ExpressionAsStatementNode,
+      functionDeclarations,
+    };
+  }
+
+  return { node, functionDeclarations };
+};
+
+export const convertPythonV3ToGeneralAst = (input: string): GeneralAst => {
+  const { node, functionDeclarations } = convertPythonV3ToStatement(input);
+
+  if (
     node.nodeType === AstNodeType.statement &&
     node.statementType === StatementNodeType.sequence
   ) {
@@ -64,11 +103,9 @@ export const convertPythonV3ToGeneralAst = (input: string): GeneralAst => {
       node.statements,
       functionDeclarations,
     );
-  } else if (node.nodeType === AstNodeType.statement) {
-    return createTopLevelPythonStatementOutput([node], functionDeclarations);
-  } else {
-    throw new Error(`Unexpected AST node: ${node.nodeType}`);
   }
+
+  return createTopLevelPythonStatementOutput([node], functionDeclarations);
 };
 
 const getPythonVersion = (versionString: string): PythonVersion => {

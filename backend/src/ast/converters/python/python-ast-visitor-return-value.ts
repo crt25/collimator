@@ -1,11 +1,14 @@
-import { AstNode } from "src/ast/types/general-ast";
-import { FunctionDeclarationNode } from "src/ast/types/general-ast/ast-nodes";
+import {
+  FunctionDeclarationNode,
+  StatementNode,
+} from "src/ast/types/general-ast/ast-nodes";
+import { ExpressionNode } from "src/ast/types/general-ast/ast-nodes/expression-node";
 
 export type PythonVisitorReturnValue = {
   /**
    * An optional AST node representing the result of the visit.
    */
-  node?: AstNode;
+  node?: StatementNode | ExpressionNode;
 
   /**
    * A list of function declarations found in the Python code
