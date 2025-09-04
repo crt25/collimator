@@ -16,7 +16,7 @@ import PythonLexer from "./generated/PythonLexer";
 import PythonParser from "./generated/PythonParser";
 import { PythonAstVisitor } from "./python-ast-visitor";
 
-const versionRegex = /^(\d+)\.(\d+)\.(\d+)$/;
+const versionRegex = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?$/;
 
 export const convertPythonToStatement = (
   input: string,
@@ -115,8 +115,8 @@ const getPythonVersion = (versionString: string): PythonVersion => {
   }
 
   const major = parseInt(match[1], 10);
-  const _minor = parseInt(match[2], 10);
-  const _patch = parseInt(match[3], 10);
+  const _minor = match.length > 2 ? parseInt(match[2], 10) : null;
+  const _patch = match.length > 3 ? parseInt(match[3], 10) : null;
 
   if (major === 3) {
     return PythonVersion.V3;
