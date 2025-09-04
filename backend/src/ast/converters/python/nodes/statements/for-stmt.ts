@@ -7,7 +7,7 @@ import {
 import {
   ExpressionNode,
   ExpressionNodeType,
-  FunctionCallNode,
+  FunctionCallExpressionNode,
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { StatementSequenceNode } from "src/ast/types/general-ast/ast-nodes/statement-node/statement-sequence-node";
 import {
@@ -58,7 +58,7 @@ export const convertForStmt = (
               expressionType: ExpressionNodeType.functionCall,
               name: "@last-loop-finished",
               arguments: [],
-            } satisfies FunctionCallNode,
+            } satisfies FunctionCallExpressionNode,
             whenTrue: afterLoop.node,
             whenFalse: {
               nodeType: AstNodeType.statement,

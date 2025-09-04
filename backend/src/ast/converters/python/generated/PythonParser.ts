@@ -9,26 +9,17 @@ import {
   FailedPredicateException,
   RecognitionException,
   NoViableAltException,
-  BailErrorStrategy,
   Parser,
   ParserATNSimulator,
   RuleContext,
   ParserRuleContext,
-  PredictionMode,
   PredictionContextCache,
   TerminalNode,
-  RuleNode,
   Token,
   TokenStream,
-  Interval,
-  IntervalSet,
 } from "antlr4";
 import PythonParserListener from "./PythonParserListener.js";
 import PythonParserVisitor from "./PythonParserVisitor.js";
-
-// for running tests with parameters, TODO: discuss strategy for typed parameters in CI
-// eslint-disable-next-line no-unused-vars
-type int = number;
 
 export default class PythonParser extends Parser {
   public static readonly ENCODING = 1;

@@ -34,7 +34,6 @@ import {
   Token,
   CommonToken,
   Lexer,
-  TokenStream,
 } from "antlr4";
 import * as Collections from "typescript-collections";
 import PythonLexer from "./PythonLexer";
@@ -279,7 +278,7 @@ export default abstract class PythonLexerBase extends Lexer {
       // We're in an implicit line joining, ignore the current NEWLINE token
       this.hideAndAddPendingToken(this.curToken!);
     } else {
-      const nlToken: Token = this.curToken?.clone()!; // save the current NEWLINE token
+      const nlToken: Token = this.curToken!.clone(); // save the current NEWLINE token
       const isLookingAhead: boolean = this.ffgToken!.type === PythonLexer.WS;
       if (isLookingAhead) {
         this.setCurrentAndFollowingTokens(); // set the next two tokens
@@ -635,7 +634,7 @@ export default abstract class PythonLexerBase extends Lexer {
     this.curLexerMode = this.lexerModeStack.pop()!;
   }
 
-  private handleFORMAT_SPECIFICATION_MODE() {
+  private handleFORMAT_SPECIFICATION_MODE(): void {
     if (
       this.lexerModeStack.length > 0 &&
       this.ffgToken!.type === PythonLexer.RBRACE
@@ -683,6 +682,7 @@ export default abstract class PythonLexerBase extends Lexer {
     if (parser.syntaxErrorsCount === 0) return true;
 
     parser = new PythonParser(tokenStream);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (tokenStream as any).seek(0); // seek method is not declared in CommonTokenStream.d.ts
     parser.removeErrorListeners();
     parser.setcomp(); // Try parsing as set comprehension
