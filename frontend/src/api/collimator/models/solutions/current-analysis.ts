@@ -2,9 +2,12 @@ import { AstNode, AstNodeBase, AstNodeType, GeneralAst } from "@ast/index";
 import { match, P } from "ts-pattern";
 import {
   ExpressionNodeType,
-  FunctionCallNode as FunctionCallExpressionNode,
+  ExpressionSequenceNode,
+  FunctionCallExpressionNode,
+  LambdaNode,
   LiteralNode,
   OperatorNode,
+  VariableAssignmentExpressionNode,
   VariableNode,
 } from "@ast/ast-nodes/expression-node";
 import {
@@ -17,6 +20,12 @@ import {
   StatementNodeType,
   VariableAssignmentNode,
   VariableDeclarationNode,
+  MultiAssignmentNode,
+  ReturnNode,
+  BreakNode,
+  ContinueNode,
+  ExpressionAsStatementNode,
+  ClassDeclarationNode,
 } from "@ast/ast-nodes";
 import { StatementSequenceNode } from "@ast/ast-nodes/statement-node/statement-sequence-node";
 import { isNonNull } from "@/utilities/is-non-null";
@@ -29,16 +38,25 @@ type FoldFunctions<
   TActor,
   TEventListener,
   TAssignment,
+  TMultiAssignment,
   TCondition,
   TFunctionCallStatement,
   TFunctionDeclaration,
   TLoop,
   TSequence,
+  TReturn,
+  TBreak,
+  TContinue,
+  TExpressionAsStatement,
+  TClassDeclaration,
   TVariableDeclaration,
   TFunctionExpression,
   TOperator,
   TLiteral,
   TVariable,
+  TExpressionAssignment,
+  TExpressionSequence,
+  TLambda,
   TStatement =
     | TCondition
     | TFunctionDeclaration
@@ -46,8 +64,21 @@ type FoldFunctions<
     | TAssignment
     | TVariableDeclaration
     | TFunctionCallStatement
-    | TSequence,
-  TExpression = TLiteral | TVariable | TFunctionExpression | TOperator,
+    | TSequence
+    | TMultiAssignment
+    | TReturn
+    | TBreak
+    | TContinue
+    | TExpressionAsStatement
+    | TClassDeclaration,
+  TExpression =
+    | TLiteral
+    | TVariable
+    | TFunctionExpression
+    | TOperator
+    | TExpressionAssignment
+    | TExpressionSequence
+    | TLambda,
 > = {
   foldAstRoot: (node: GeneralAst, actors: TActor[]) => TRoot;
   foldActorNode: (
@@ -65,6 +96,11 @@ type FoldFunctions<
     variable: () => TVariable,
     value: () => TExpression,
   ) => TAssignment;
+  foldMultiAssignment: (
+    node: MultiAssignmentNode,
+    assignmentExpressions: () => TExpression[],
+    values: () => TExpression[],
+  ) => TMultiAssignment;
   foldCondition: (
     node: ConditionNode,
     condition: () => TExpression | null,
@@ -77,6 +113,7 @@ type FoldFunctions<
   ) => TFunctionCallStatement;
   foldFunctionDeclaration: (
     node: FunctionDeclarationNode,
+    decorators: () => TExpression[] | null,
     body: () => TSequence,
   ) => TFunctionDeclaration;
   foldLoop: (
@@ -92,6 +129,19 @@ type FoldFunctions<
     node: VariableDeclarationNode,
     value: () => TExpression,
   ) => TVariableDeclaration;
+  foldReturn: (node: ReturnNode) => TReturn;
+  foldBreak: (node: BreakNode) => TBreak;
+  foldContinue: (node: ContinueNode) => TContinue;
+  foldExpressionAsStatement: (
+    node: ExpressionAsStatementNode,
+    expression: () => TExpression,
+  ) => TExpressionAsStatement;
+  foldClassDeclaration: (
+    node: ClassDeclarationNode,
+    baseClasses: () => TExpression[],
+    decorators: () => TExpression[] | null,
+    body: () => TSequence,
+  ) => TClassDeclaration;
   foldFunctionExpression: (
     node: FunctionCallExpressionNode,
     args: () => TExpression[],
@@ -102,6 +152,20 @@ type FoldFunctions<
   ) => TOperator;
   foldLiteral: (node: LiteralNode) => TLiteral;
   foldVariable: (node: VariableNode) => TVariable;
+  foldExpressionAssignment: (
+    node: VariableAssignmentExpressionNode,
+    variable: () => TVariable,
+    value: () => TExpression,
+  ) => TExpressionAssignment;
+  foldExpressionSequence: (
+    node: ExpressionSequenceNode,
+    expressions: () => TExpression[],
+  ) => TExpressionSequence;
+  foldLambda: (
+    node: LambdaNode,
+    decorators: () => TExpression[] | null,
+    body: () => TSequence,
+  ) => TLambda;
 };
 
 type FoldReturnType<
@@ -110,16 +174,25 @@ type FoldReturnType<
   TActor,
   TEventListener,
   TAssignment,
+  TMultiAssignment,
   TCondition,
   TFunctionCallStatement,
   TFunctionDeclaration,
   TLoop,
   TSequence,
+  TReturn,
+  TBreak,
+  TContinue,
+  TExpressionAsStatement,
+  TClassDeclaration,
   TVariableDeclaration,
   TFunctionExpression,
   TOperator,
   TLiteral,
   TVariable,
+  TExpressionAssignment,
+  TExpressionSequence,
+  TLambda,
 > = TNode extends GeneralAst
   ? TRoot
   : TNode extends ActorNode
@@ -128,27 +201,45 @@ type FoldReturnType<
       ? TEventListener
       : TNode extends VariableAssignmentNode
         ? TAssignment
-        : TNode extends ConditionNode
-          ? TCondition
-          : TNode extends FunctionCallStatementNode
-            ? TFunctionCallStatement
-            : TNode extends FunctionDeclarationNode
-              ? TFunctionDeclaration
-              : TNode extends LoopNode
-                ? TLoop
-                : TNode extends StatementSequenceNode
-                  ? TSequence
-                  : TNode extends VariableDeclarationNode
-                    ? TVariableDeclaration
-                    : TNode extends FunctionCallExpressionNode
-                      ? TFunctionExpression
-                      : TNode extends OperatorNode
-                        ? TOperator
-                        : TNode extends LiteralNode
-                          ? TLiteral
-                          : TNode extends VariableNode
-                            ? TVariable
-                            : never;
+        : TNode extends MultiAssignmentNode
+          ? TMultiAssignment
+          : TNode extends ConditionNode
+            ? TCondition
+            : TNode extends FunctionCallStatementNode
+              ? TFunctionCallStatement
+              : TNode extends FunctionDeclarationNode
+                ? TFunctionDeclaration
+                : TNode extends LoopNode
+                  ? TLoop
+                  : TNode extends StatementSequenceNode
+                    ? TSequence
+                    : TNode extends VariableDeclarationNode
+                      ? TVariableDeclaration
+                      : TNode extends ReturnNode
+                        ? TReturn
+                        : TNode extends BreakNode
+                          ? TBreak
+                          : TNode extends ContinueNode
+                            ? TContinue
+                            : TNode extends ExpressionAsStatementNode
+                              ? TExpressionAsStatement
+                              : TNode extends ClassDeclarationNode
+                                ? TClassDeclaration
+                                : TNode extends FunctionCallExpressionNode
+                                  ? TFunctionExpression
+                                  : TNode extends OperatorNode
+                                    ? TOperator
+                                    : TNode extends LiteralNode
+                                      ? TLiteral
+                                      : TNode extends VariableNode
+                                        ? TVariable
+                                        : TNode extends VariableAssignmentExpressionNode
+                                          ? TExpressionAssignment
+                                          : TNode extends ExpressionSequenceNode
+                                            ? TExpressionSequence
+                                            : TNode extends LambdaNode
+                                              ? TLambda
+                                              : never;
 
 export const foldAst = <
   TNode extends AstNode,
@@ -156,16 +247,25 @@ export const foldAst = <
   TActor,
   TEventListener,
   TAssignment,
+  TMultiAssignment,
   TCondition,
   TFunctionCallStatement,
   TFunctionDeclaration,
   TLoop,
   TSequence,
+  TReturn,
+  TBreak,
+  TContinue,
+  TExpressionAsStatement,
+  TClassDeclaration,
   TVariableDeclaration,
   TFunctionExpression,
   TOperator,
   TLiteral,
   TVariable,
+  TExpressionAssignment,
+  TExpressionSequence,
+  TLambda,
 >(
   node: TNode,
   fns: FoldFunctions<
@@ -173,16 +273,25 @@ export const foldAst = <
     TActor,
     TEventListener,
     TAssignment,
+    TMultiAssignment,
     TCondition,
     TFunctionCallStatement,
     TFunctionDeclaration,
     TLoop,
     TSequence,
+    TReturn,
+    TBreak,
+    TContinue,
+    TExpressionAsStatement,
+    TClassDeclaration,
     TVariableDeclaration,
     TFunctionExpression,
     TOperator,
     TLiteral,
-    TVariable
+    TVariable,
+    TExpressionAssignment,
+    TExpressionSequence,
+    TLambda
   >,
 ): FoldReturnType<
   TNode,
@@ -190,16 +299,25 @@ export const foldAst = <
   TActor,
   TEventListener,
   TAssignment,
+  TMultiAssignment,
   TCondition,
   TFunctionCallStatement,
   TFunctionDeclaration,
   TLoop,
   TSequence,
+  TReturn,
+  TBreak,
+  TContinue,
+  TExpressionAsStatement,
+  TClassDeclaration,
   TVariableDeclaration,
   TFunctionExpression,
   TOperator,
   TLiteral,
-  TVariable
+  TVariable,
+  TExpressionAssignment,
+  TExpressionSequence,
+  TLambda
 > => {
   type RetType<TNode extends AstNode> = FoldReturnType<
     TNode,
@@ -207,16 +325,25 @@ export const foldAst = <
     TActor,
     TEventListener,
     TAssignment,
+    TMultiAssignment,
     TCondition,
     TFunctionCallStatement,
     TFunctionDeclaration,
     TLoop,
     TSequence,
+    TReturn,
+    TBreak,
+    TContinue,
+    TExpressionAsStatement,
+    TClassDeclaration,
     TVariableDeclaration,
     TFunctionExpression,
     TOperator,
     TLiteral,
-    TVariable
+    TVariable,
+    TExpressionAssignment,
+    TExpressionSequence,
+    TLambda
   >;
 
   const recurse = <TNode extends AstNode>(node: TNode): RetType<TNode> =>
@@ -229,11 +356,17 @@ export const foldAst = <
   const {
     foldActorNode,
     foldAssignment,
+    foldMultiAssignment,
     foldAstRoot,
     foldCondition,
     foldEventListener,
     foldFunctionCallStatement,
     foldFunctionDeclaration,
+    foldReturn,
+    foldBreak,
+    foldContinue,
+    foldExpressionAsStatement,
+    foldClassDeclaration,
     foldFunctionExpression,
     foldLiteral,
     foldLoop,
@@ -241,6 +374,9 @@ export const foldAst = <
     foldSequence,
     foldVariable,
     foldVariableDeclaration,
+    foldExpressionAssignment,
+    foldExpressionSequence,
+    foldLambda,
   } = fns;
 
   // @ts-expect-error Cannot infer the type of the return type correctly
@@ -271,6 +407,13 @@ export const foldAst = <
             () => recurse(node.value),
           ),
         )
+        .with({ statementType: StatementNodeType.multiAssignment }, (node) =>
+          foldMultiAssignment(
+            node,
+            () => recurseMultiple(node.assignmentExpressions),
+            () => recurseMultiple(node.values),
+          ),
+        )
         .with({ statementType: StatementNodeType.condition }, (node) =>
           foldCondition(
             node,
@@ -286,7 +429,12 @@ export const foldAst = <
         )
         .with(
           { statementType: StatementNodeType.functionDeclaration },
-          (node) => foldFunctionDeclaration(node, () => recurse(node.body)),
+          (node) =>
+            foldFunctionDeclaration(
+              node,
+              () => (node.decorators ? recurseMultiple(node.decorators) : null),
+              () => recurse(node.body),
+            ),
         )
         .with({ statementType: StatementNodeType.loop }, (node) =>
           foldLoop(
@@ -301,6 +449,28 @@ export const foldAst = <
         .with(
           { statementType: StatementNodeType.variableDeclaration },
           (node) => foldVariableDeclaration(node, () => recurse(node.value)),
+        )
+        .with({ statementType: StatementNodeType.return }, (node) =>
+          foldReturn(node),
+        )
+        .with({ statementType: StatementNodeType.break }, (node) =>
+          foldBreak(node),
+        )
+        .with({ statementType: StatementNodeType.continue }, (node) =>
+          foldContinue(node),
+        )
+        .with(
+          { statementType: StatementNodeType.expressionAsStatement },
+          (node) =>
+            foldExpressionAsStatement(node, () => recurse(node.expression)),
+        )
+        .with({ statementType: StatementNodeType.classDeclaration }, (node) =>
+          foldClassDeclaration(
+            node,
+            () => recurseMultiple(node.baseClasses),
+            () => (node.decorators ? recurseMultiple(node.decorators) : null),
+            () => recurse(node.body),
+          ),
         )
         .exhaustive(),
     )
@@ -317,6 +487,23 @@ export const foldAst = <
         )
         .with({ expressionType: ExpressionNodeType.variable }, (node) =>
           foldVariable(node),
+        )
+        .with({ expressionType: ExpressionNodeType.sequence }, (node) =>
+          foldExpressionSequence(node, () => recurseMultiple(node.expressions)),
+        )
+        .with({ expressionType: ExpressionNodeType.assignment }, (node) =>
+          foldExpressionAssignment(
+            node,
+            () => recurse(node.variable),
+            () => recurse(node.value),
+          ),
+        )
+        .with({ expressionType: ExpressionNodeType.lambda }, (node) =>
+          foldLambda(
+            node,
+            () => (node.decorators ? recurseMultiple(node.decorators) : null),
+            () => recurse(node.body),
+          ),
         )
         .exhaustive(),
     )
@@ -385,16 +572,25 @@ export abstract class CurrentAnalysis {
       ActorNode | null,
       EventListenerNode | null,
       VariableAssignmentNode | null,
+      MultiAssignmentNode | null,
       ConditionNode | null,
       FunctionCallStatementNode | null,
       FunctionDeclarationNode | null,
       LoopNode | null,
       StatementSequenceNode | null,
+      ReturnNode | null,
+      BreakNode | null,
+      ContinueNode | null,
+      ExpressionAsStatementNode | null,
+      ClassDeclarationNode | null,
       VariableDeclarationNode | null,
       FunctionCallExpressionNode | null,
       OperatorNode | null,
       LiteralNode | null,
-      VariableNode | null
+      VariableNode | null,
+      VariableAssignmentExpressionNode | null,
+      ExpressionSequenceNode | null,
+      LambdaNode | null
     >(ast, {
       foldAstRoot: (_node, actors) => actors.filter(isNonNull),
       foldActorNode: (node, listeners, functionDeclarations) =>
@@ -424,6 +620,30 @@ export abstract class CurrentAnalysis {
           ? { ...node, variable: variableNode, value: valueNode }
           : null;
       },
+      foldMultiAssignment: (node, variables, values) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const variableNodes = variables().filter(isNonNull);
+        const valueNodes = values().filter(isNonNull);
+
+        return { ...node, variables: variableNodes, values: valueNodes };
+      },
+      foldClassDeclaration: (node, baseClasses, decorators) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const baseClassNodes = baseClasses().filter(isNonNull);
+        const decoratorNodes = decorators()?.filter(isNonNull);
+
+        return {
+          ...node,
+          baseClasses: baseClassNodes,
+          decorators: decoratorNodes,
+        };
+      },
       foldCondition: (node, condition, whenTrue, whenFalse) =>
         nodeIfComponentMatches(node, () => ({
           ...node,
@@ -436,11 +656,18 @@ export abstract class CurrentAnalysis {
           ...node,
           arguments: args().filter(isNonNull),
         })),
-      foldFunctionDeclaration: (node, body) =>
-        nodeIfComponentMatches(node, () => ({
-          ...node,
-          body: body() ?? emptySequence,
-        })),
+      foldFunctionDeclaration: (node, decorators, body) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const decoratorNodes = decorators()?.filter(isNonNull);
+        const bodyNode = body();
+
+        return bodyNode
+          ? { ...node, decorators: decoratorNodes, body: bodyNode }
+          : null;
+      },
       foldLoop: (node, condition, body) =>
         nodeIfComponentMatches(node, () => ({
           ...node,
@@ -461,6 +688,18 @@ export abstract class CurrentAnalysis {
 
         return valueNode ? { ...node, value: valueNode } : null;
       },
+      foldReturn: (node) => nodeIfComponentMatches(node, () => ({ ...node })),
+      foldBreak: (node) => nodeIfComponentMatches(node, () => ({ ...node })),
+      foldContinue: (node) => nodeIfComponentMatches(node, () => ({ ...node })),
+      foldExpressionAsStatement: (node, expression) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const valueNode = expression();
+
+        return valueNode ? { ...node, value: valueNode } : null;
+      },
       foldFunctionExpression: (node, args) =>
         nodeIfComponentMatches(node, () => ({
           ...node,
@@ -473,6 +712,41 @@ export abstract class CurrentAnalysis {
         })),
       foldLiteral: (node) => nodeIfComponentMatches(node, () => ({ ...node })),
       foldVariable: (node) => nodeIfComponentMatches(node, () => ({ ...node })),
+      foldExpressionAssignment: (node, variable, value) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const variableNode = variable();
+        const valueNode = value();
+
+        return variableNode && valueNode
+          ? { ...node, variable: variableNode, value: valueNode }
+          : null;
+      },
+      foldExpressionSequence: (node, expressions) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const expressionNodes = expressions().filter(isNonNull);
+
+        return expressionNodes.length > 0
+          ? { ...node, expressions: expressionNodes }
+          : null;
+      },
+      foldLambda: (node, decorators, body) => {
+        if (!shouldIncludeNode(node)) {
+          return null;
+        }
+
+        const decoratorNodes = decorators()?.filter(isNonNull);
+        const bodyNode = body();
+
+        return bodyNode
+          ? { ...node, decorators: decoratorNodes, body: bodyNode }
+          : null;
+      },
     });
   }
 

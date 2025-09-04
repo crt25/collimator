@@ -39,4 +39,11 @@ export type {
   VariableAssignmentNode,
   VariableDeclarationNode,
   FunctionCallNode,
+  StatementSequenceNode,
+  MultiAssignmentNode,
+  ReturnNode,
+  ContinueNode,
+  BreakNode,
+  ExpressionAsStatementNode,
+  ClassDeclarationNode,
 };

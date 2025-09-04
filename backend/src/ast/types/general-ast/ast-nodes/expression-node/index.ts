@@ -18,8 +18,11 @@ export type ExpressionNode =
   | LambdaNode;
 
 export type {
-  FunctionCallExpressionNode as FunctionCallNode,
+  FunctionCallExpressionNode,
   LiteralNode,
   OperatorNode,
   VariableNode,
+  ExpressionSequenceNode,
+  VariableAssignmentExpressionNode,
+  LambdaNode,
 };
