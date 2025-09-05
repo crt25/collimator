@@ -14,6 +14,14 @@ output "scratchapp_bucket_arn" {
   value = module.scratchapp.bucket_arn
 }
 
+output "jupyterapp_bucket_id" {
+  value = aws_s3_bucket.jupyter.id
+}
+
+output "jupyterapp_bucket_arn" {
+  value = aws_s3_bucket.jupyter.arn
+}
+
 output "backend_repository_url" {
   value = module.backend.backend_repository_url
 }

@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - feature/python-application-ast
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -17,6 +18,7 @@ env:
   BACKEND_IMAGE_NAME: collimator-dev-backend
   FRONTEND_BUCKET_ID: collimator-dev-static-frontend
   SCRATCH_APP_BUCKET_ID: collimator-dev-app-scratch
+  JUPYTER_APP_BUCKET_ID: collimator-dev-app-jupyter
   TERRAFORM_STATE_BUCKET: collimator-dev-cd-tf-state
 
   # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
@@ -86,6 +88,16 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn install
 
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install jupyter app dependencies
+        working-directory: ./apps/jupyter
+        run: |
+          make install-deps
+          make build-otter
+          make init-extensions
+
       - name: Install backend dependencies
         working-directory: ./backend
         run: yarn install
@@ -112,6 +124,12 @@ jobs:
         run: yarn sentry:sourcemaps
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
+
+      - name: Build jupyter app
+        working-directory: ./apps/jupyter
+        run: |
+          make build-extensions
+          make build
 
       - name: Install OpenTofu
         uses: opentofu/setup-opentofu@v1
@@ -147,7 +165,7 @@ jobs:
       # Actual deployment
 
       - name: Deploy to S3 buckets
-        run: tofu apply -auto-approve -var="frontend_bucket_id=${{ env.FRONTEND_BUCKET_ID }}" -var="scratchapp_bucket_id=${{ env.SCRATCH_APP_BUCKET_ID }}" -var="region=${{ env.AWS_REGION }}" -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
+        run: tofu apply -auto-approve -var="frontend_bucket_id=${{ env.FRONTEND_BUCKET_ID }}" -var="scratchapp_bucket_id=${{ env.SCRATCH_APP_BUCKET_ID }}" -var="jupyterapp_bucket_id=${{ env.JUPYTER_APP_BUCKET_ID }}" -var="region=${{ env.AWS_REGION }}" -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
         working-directory: ./terraform/deployment
 
       - name: Authenticate to ECR

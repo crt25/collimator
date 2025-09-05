@@ -1,7 +1,7 @@
 EXTENSION?='none'
 
 init:
-	cd ./notebook-runner && jlpm prepare
+	cd ./notebook-runner && node scripts/create-symlink.js
 	cd ./notebook-runner && pip install -e "."
 	cd ./notebook-runner && jupyter labextension develop . --overwrite
 
