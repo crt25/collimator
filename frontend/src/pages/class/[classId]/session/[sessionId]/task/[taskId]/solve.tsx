@@ -13,7 +13,7 @@ import Header from "@/components/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
@@ -30,6 +30,8 @@ const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/solve`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=solve`;
     default:
       return null;
   }

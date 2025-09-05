@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.4.0
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: info@anansi-solutions.net
+author_name: Anansi Solutions SA
+has_binder: false
+has_settings: false
+kind: frontend
+labextension_name: notebook-runner
+project_short_description: A JupyterLab extension to run Jupyter notebooks in Jupyterlite
+    environments with pyodide kernels.
+python_name: notebook_runner
+repository: https://github.com/crt25/collimator/tree/main/apps/jupyter/extensions/notebook-runner
+test: true
+

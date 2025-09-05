@@ -2,7 +2,7 @@ import { useIntl } from "react-intl";
 import { useCallback, useMemo } from "react";
 import { Language, Submission } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -10,6 +10,8 @@ const getSolveUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/solve`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=solve`;
     default:
       return null;
   }

@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
 import { Language } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
@@ -31,6 +31,8 @@ const getSolutionCodeUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/show`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=show`;
     default:
       return null;
   }

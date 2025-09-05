@@ -1,7 +1,7 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
 import { Language } from "iframe-rpc-react/src";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
@@ -13,6 +13,8 @@ const getViewUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/solve`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=solve`;
     default:
       return null;
   }
