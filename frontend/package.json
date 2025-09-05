@@ -32,6 +32,7 @@
     "storybook": "cross-env NODE_OPTIONS=--preserve-symlinks storybook dev -p 6006",
     "storybook:await": "bash -c \"until curl --output /dev/null --silent --head --fail http://localhost:6006; do printf '.'; sleep 3; done\"",
     "storybook:build": "storybook build",
+    "storybook:update": "cd storybook-submodule && git checkout github-pages/storybook && git fetch && git reset --hard origin/github-pages/storybook && git rm -r . && shx cp -r ../storybook-static/. ./ && git add -A && git commit && git push",
     "next:upgrade": "npx @next/codemod@canary upgrade latest"
   },
   "nyc": {
