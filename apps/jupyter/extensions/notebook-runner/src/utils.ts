@@ -1,14 +1,14 @@
 import { ISessionContext } from "@jupyterlab/apputils";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 
-const isPreparedString = "__isPrepared";
-const preparedString = "__prepared";
-const preparedResolveString = "__preparedResolve";
-const preparedRejectString = "__preparedReject";
+const isPreparedKey = "__isPrepared";
+const preparedKey = "__prepared";
+const preparedResolveKey = "__preparedResolve";
+const preparedRejectKey = "__preparedReject";
 
 const isPatched = (kernel: IKernelConnection): boolean => {
   // @ts-expect-error This is a custom property
-  return typeof kernel[isPreparedString] !== "undefined";
+  return typeof kernel[isPreparedKey] !== "undefined";
 };
 
 export const ensureKernelIsPatched = (kernel: IKernelConnection): void => {
@@ -17,21 +17,21 @@ export const ensureKernelIsPatched = (kernel: IKernelConnection): void => {
   }
 
   // @ts-expect-error This is a custom property
-  kernel[isPreparedString] = false;
+  kernel[isPreparedKey] = false;
 
   let resolve: () => void;
   let reject: () => void;
 
   // @ts-expect-error This is a custom property
-  kernel[preparedString] = new Promise<void>((res, rej) => {
+  kernel[preparedKey] = new Promise<void>((res, rej) => {
     resolve = res;
     reject = rej;
   });
 
   // @ts-expect-error This is a custom property
-  kernel[preparedResolveString] = resolve;
+  kernel[preparedResolveKey] = resolve;
   // @ts-expect-error This is a custom property
-  kernel[preparedRejectString] = reject;
+  kernel[preparedRejectKey] = reject;
 };
 
 export const isKernelPrepared = async (
@@ -40,7 +40,7 @@ export const isKernelPrepared = async (
   ensureKernelIsPatched(kernel);
 
   // @ts-expect-error This is a custom property
-  return kernel[isPreparedString];
+  return kernel[isPreparedKey];
 };
 
 export const waitForKernelToBePrepared = async (
@@ -49,7 +49,7 @@ export const waitForKernelToBePrepared = async (
   ensureKernelIsPatched(kernel);
 
   // @ts-expect-error This is a custom property
-  await kernel[preparedString];
+  await kernel[preparedKey];
 };
 
 export const setKernelIsPrepared = (
@@ -59,15 +59,15 @@ export const setKernelIsPrepared = (
   ensureKernelIsPatched(kernel);
 
   // @ts-expect-error This is a custom property
-  kernel[isPreparedString] = isPrepared;
+  kernel[isPreparedKey] = isPrepared;
 
   if (isPrepared) {
     // @ts-expect-error This is a custom property
-    const resolve = kernel[preparedResolveString] as () => void;
+    const resolve = kernel[preparedResolveKey] as () => void;
     resolve();
   } else {
     // @ts-expect-error This is a custom property
-    const reject = kernel[preparedRejectString] as () => void;
+    const reject = kernel[preparedRejectKey] as () => void;
     reject();
   }
 };
@@ -97,7 +97,7 @@ export const addKernelListeners = async (
       return;
     }
 
-    console.log("Kernel changed:", kernel.name);
+    console.debug("Kernel changed:", kernel.name);
     await kernel.info;
 
     return addListeners(kernel);
@@ -118,6 +118,8 @@ export const writeJsonToVirtualFilesystem = async (
   await kernel.requestExecute({
     // it seems as if the encoding here does not allow us to put JSON.stringify directly
     code: `
+import base64
+
 json_content = base64.b64decode("${btoa(binaryString)}")
 
 Path("${path}").parent.mkdir(parents=True, exist_ok=True)
@@ -135,6 +137,8 @@ export const writeBinaryToVirtualFilesystem = async (
 ): Promise<void> => {
   await kernel.requestExecute({
     code: `
+import base64
+
 base64_content = "${bas64Binary}"
 binary_content = base64.b64decode(base64_content)
 

@@ -25,7 +25,7 @@ const createOnNewNotebookListener =
 
       for (const widget of widgets) {
         if (widget instanceof NotebookPanel && widget !== notebookPanel) {
-          console.log("Closing notebook:", widget);
+          console.debug("Closing notebook: ", widget);
           await widget.context.save();
           widget.close();
         }
@@ -47,7 +47,7 @@ export const registerGradeCommand = (
       console.debug(`Waiting for otter session kernel to be available`);
       const kernel = await state.getOtterKernel();
 
-      console.debug(`Transferring autograder to virtual filesystem`);
+      console.debug(`Transferring autograder for grading...`);
 
       let autograder: Contents.IModel | null = null;
       try {
@@ -76,7 +76,7 @@ autograder_path = "${EmbeddedPythonCallbacks.autograderLocation}"
 student_path = "/student"
 
 with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
-    zip_ref.extractall(student_path)
+  zip_ref.extractall(student_path)
 `,
       }).done;
 
@@ -92,47 +92,45 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         binaryResultsPath,
       );
 
-      await kernel.requestExecute({
-        code: `
-          
-          `,
-      }).done;
-
-      // read ran notebook and autograder
-      let ranNotebook: Contents.IModel | null = null;
+      // read the notebook that has been executed and autograder
+      let executedNotebook: Contents.IModel | null = null;
       try {
-        ranNotebook = await contentsManager.get(
+        executedNotebook = await contentsManager.get(
           EmbeddedPythonCallbacks.studentTaskLocation,
           { content: true },
         );
       } catch (error) {
-        throw new Error("Error reading ran notebook:" + error);
+        throw new Error(
+          `Error reading notebook at ${EmbeddedPythonCallbacks.studentTaskLocation} when running otter grade: ${JSON.stringify(error)}`,
+        );
       }
 
-      console.log("Transfering files to virtual filesystem");
+      console.debug(
+        `Transfering executed notebook to virtual filesystem to '${EmbeddedPythonCallbacks.studentTaskLocation}'`,
+      );
 
       await writeJsonToVirtualFilesystem(
         kernel,
         EmbeddedPythonCallbacks.studentTaskLocation,
-        ranNotebook.content,
+        executedNotebook.content,
       );
 
-      console.log(
-        "Running notebook with autograder:",
+      console.debug(
+        "Running notebook with autograder: ",
         EmbeddedPythonCallbacks.autograderLocation,
       );
 
       const run = kernel.requestExecute({
         code: `
-          run(
-            "${EmbeddedPythonCallbacks.studentTaskLocation}",
-            autograder="${EmbeddedPythonCallbacks.autograderLocation}",
-            no_logo=True,
-            debug=True,
-            log_server=False,
-            precomputed_results="${binaryResultsPath}",
-            output_dir="/"
-          )
+run(
+  "${EmbeddedPythonCallbacks.studentTaskLocation}",
+  autograder="${EmbeddedPythonCallbacks.autograderLocation}",
+  no_logo=True,
+  debug=True,
+  log_server=False,
+  precomputed_results="${binaryResultsPath}",
+  output_dir="/"
+)
           `,
       });
 
@@ -142,12 +140,17 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         console.error("Error running notebook:", error);
       }
 
-      console.debug("Transfer results back from the virtual fileystem..");
+      console.debug("Retrieving results...");
 
-      return state.readJsonFromVirtualFilesystem<OtterGradingResults>(
-        kernel,
-        "/results.json",
-      );
+      const results =
+        await state.readJsonFromVirtualFilesystem<OtterGradingResults>(
+          kernel,
+          "/results.json",
+        );
+
+      console.debug("Grading results:", results);
+
+      return results;
     },
   });
 

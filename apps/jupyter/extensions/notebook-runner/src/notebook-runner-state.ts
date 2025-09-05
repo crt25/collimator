@@ -12,15 +12,21 @@ import {
   setKernelIsPrepared,
   waitForKernelToBePrepared,
 } from "./utils";
-import { importBasePackages, installNbConvert, installOtter } from "./packages";
+import { installNbConvert, installOtter } from "./packages";
 
+/**
+ * A listener that is called when a comm message is received from the kernel.
+ */
 export type CommListener = (
   comm: IComm,
   message: KernelMessage.ICommMsgMsg<"shell" | "iopub">,
 ) => Promise<void>;
 
 export class NotebookRunnerState {
-  public static commTargetName = "notebook-runner";
+  /**
+   * The unique name identifying the comm channel ('target').
+   */
+  public static commChannelName = "notebook-runner";
 
   private _resolveOtterSessionContext: (value: SessionContext) => void =
     () => {};
@@ -30,6 +36,10 @@ export class NotebookRunnerState {
       this._resolveOtterSessionContext = resolve;
     });
 
+  /**
+   * List of registered comm listeners that are called when a message is received from the kernel
+   * on the custom comm channel.
+   */
   private commListeners: CommListener[] = [];
 
   constructor(
@@ -41,83 +51,94 @@ export class NotebookRunnerState {
     this.init();
   }
 
+  /**
+   * Adds a comm listener that is called when a message is received from the kernel
+   * @param listener The listener to add
+   */
   public addCommListener(listener: CommListener): void {
     this.commListeners.push(listener);
   }
 
+  /**
+   * Removes a comm listener that is called when a message is received from the kernel
+   * @param listener The listener to remove
+   */
   public removeCommListener(listener: CommListener): void {
     this.commListeners = this.commListeners.filter((l) => l !== listener);
   }
 
   private async init(): Promise<void> {
-    // eslint-disable-next-line no-async-promise-executor
-    const initPromise = new Promise<SessionContext>(async (resolve, reject) => {
-      let sessionContext: SessionContext | undefined = undefined;
-
-      try {
-        const serviceManager = this.app.serviceManager;
-
-        console.log("Initializing Otter session context..");
-        sessionContext = new SessionContext({
-          sessionManager: serviceManager.sessions,
-          specsManager: serviceManager.kernelspecs,
-          name: "otter-session",
-          type: "notebook",
-          kernelPreference: {
-            shouldStart: true,
-            canStart: true,
-            autoStartDefault: true,
-          },
-        });
-
-        // Initialize the session
-        console.debug("Initializing otter context..");
-        await sessionContext.initialize();
-
-        console.log("Adding kernel listeners to otter context..");
-
-        await addKernelListeners(sessionContext, async (kernel) => {
-          console.debug(
-            "Kernel is ready:",
-            kernel.name,
-            "attaching listeners..",
-          );
-          this.registerCommTarget(kernel);
-          await this.prepareOtterKernel(kernel);
-        });
-
-        console.debug("Otter context initialized:", sessionContext);
-        resolve(sessionContext);
-        return;
-      } catch (e) {
-        if (sessionContext) {
-          let disposed: () => void = () => {};
-          const isDisposed = new Promise<void>((resolve) => {
-            disposed = resolve;
-          });
-          sessionContext.disposed.connect(disposed);
-          sessionContext?.dispose();
-
-          await isDisposed;
-        }
-
-        reject(e);
-        return;
-      }
-    });
+    let sessionContext: SessionContext | undefined = undefined;
 
     try {
-      const sessionContext = await initPromise;
+      const serviceManager = this.app.serviceManager;
+
+      console.debug("Initializing Otter session context...");
+      sessionContext = new SessionContext({
+        sessionManager: serviceManager.sessions,
+        specsManager: serviceManager.kernelspecs,
+        name: "otter-session",
+        type: "notebook",
+        kernelPreference: {
+          shouldStart: true,
+          canStart: true,
+          autoStartDefault: true,
+        },
+      });
+
+      // Initialize the session
+      console.debug("Initializing otter context...");
+      await sessionContext.initialize();
+
+      console.debug("Adding kernel listeners to otter context...");
+
+      await addKernelListeners(sessionContext, async (kernel) => {
+        console.debug(
+          "Kernel is ready:",
+          kernel.name,
+          "attaching listeners...",
+        );
+        this.registerCommTarget(kernel);
+        await this.prepareOtterKernel(kernel);
+      });
+
+      console.debug("Otter context initialized:", sessionContext);
+
       this._resolveOtterSessionContext(sessionContext);
+
+      return;
     } catch (e) {
-      console.error("Error initializing otter context:", e, ". Restarting..");
+      if (sessionContext) {
+        let disposed: () => void = () => {};
+        const isDisposed = new Promise<void>((resolve) => {
+          disposed = resolve;
+        });
+        sessionContext.disposed.connect(disposed);
+        sessionContext?.dispose();
+
+        await isDisposed;
+      }
+
+      console.error("Error initializing otter context:", e, ". Restarting...");
       return this.init();
     }
   }
 
+  /**
+   * This function registers a custom comm target on the given kernel
+   * to allow for bidirectional communication between the extension and the kernel.¨
+   * Unfortunately, the communication from the extension to the kernel is not reliable
+   * in the sense that callbacks are only executed **after** the cell execution has finished
+   * meaning you cannot wait for a response from python while a cell is still running.
+   *
+   * This function calls all registered comm listeners when a message is received
+   * through the comm channel with the received message.
+   * If you want to know more about comms in general, see https://jupyter-notebook.readthedocs.io/en/4.x/comms.html.
+   * @param kernel The kernel to register the comm target on
+   */
   private registerCommTarget(kernel: IKernelConnection): void {
     // create a custom comm target, overriding any existing one with the same name
-    kernel.registerCommTarget(NotebookRunnerState.commTargetName, (comm) => {
+    kernel.registerCommTarget(NotebookRunnerState.commChannelName, (comm) => {
       // Handle the comm message
       comm.onMsg = async (msg): Promise<void> => {
         await Promise.all(
@@ -128,35 +149,33 @@ export class NotebookRunnerState {
   }
 
   private async prepareOtterKernel(kernel: IKernelConnection): Promise<void> {
-    console.log("Preparing Otter kernel:", kernel.name);
+    console.debug("Preparing Otter kernel:", kernel.name);
 
-    console.log("Importing basic libraries..");
+    console.debug("Importing basic libraries...");
     await kernel.requestExecute(
       {
         code: `
-        from ipykernel.comm import Comm
-      `,
+from ipykernel.comm import Comm
+`,
       },
       true,
     ).done;
 
-    await importBasePackages(kernel);
     await installOtter(kernel);
     await installNbConvert(kernel);
 
-    console.log("Importing Otter Grader..");
+    console.debug("Importing Otter Grader...");
     await kernel.requestExecute(
       {
         code: `
-      # import otter
-      from otter.assign import main as assign
-      from otter.run import main as run
+from otter.assign import main as assign
+from otter.run import main as run
       `,
       },
       true,
     ).done;
 
-    console.log("Otter Grader is ready to be used!", kernel);
+    console.debug("Otter Grader is ready to be used!", kernel);
     setKernelIsPrepared(kernel);
   }
 
@@ -171,7 +190,7 @@ export class NotebookRunnerState {
 
     while (!sessionContext.session?.kernel) {
       console.debug(
-        "No kernel available in otter session context, restarting the kernel..",
+        "No kernel available in otter session context, restarting the kernel...",
         sessionContext.session,
       );
       await sessionContext.startKernel();
@@ -190,48 +209,46 @@ export class NotebookRunnerState {
     kernel: IKernelConnection,
     path: string,
   ): Promise<T> => {
-    let receiveResults: (results: T) => void = () => {};
-    let rejectResults: (reason?: Error) => void = () => {};
-    const waitForResults = new Promise<T>((resolve, reject) => {
-      receiveResults = resolve;
-      rejectResults = reject;
-    });
-    const resultTimeout = setTimeout(() => {
-      rejectResults(new Error(`Timeout waiting for reading ${path}`));
-    }, 1000 * 5);
-
-    const commListener: CommListener = async (comm, msg) => {
-      clearTimeout(resultTimeout);
-      this.removeCommListener(commListener);
-
-      const { data } = msg.content;
-      if (typeof data.results === "string") {
-        receiveResults(JSON.parse(data.results));
-      }
-
-      rejectResults(
-        new Error("Invalid results message: " + JSON.stringify(data)),
-      );
-    };
-
-    this.addCommListener(commListener);
-
-    await kernel.requestExecute({
-      code: `
+    const results = await this.readFromVirtualFilesystem(
+      kernel,
+      path,
+      `
 with open("${path}", "r", encoding="utf-8") as f:
   json_content = f.read()
 
-comm = Comm(target_name='notebook-runner')
+comm = Comm(target_name='${NotebookRunnerState.commChannelName}')
 comm.send(data={'results': json_content})
 `,
-    }).done;
+    );
 
-    return waitForResults;
+    return JSON.parse(results);
   };
 
   readBinaryFromVirtualFilesystem = async (
     kernel: IKernelConnection,
     path: string,
+  ): Promise<string> => {
+    return this.readFromVirtualFilesystem(
+      kernel,
+      path,
+      `
+import base64
+
+with open("${path}", "rb") as f:
+  binary_content = f.read()
+
+base64_content = base64.b64encode(binary_content).decode("utf-8")
+
+comm = Comm(target_name='${NotebookRunnerState.commChannelName}')
+comm.send(data={'results': base64_content})
+`,
+    );
+  };
+
+  private readFromVirtualFilesystem = async (
+    kernel: IKernelConnection,
+    path: string,
+    code: string,
   ): Promise<string> => {
     let receiveResults: (results: string) => void = () => {};
     let rejectResults: (reason?: Error) => void = () => {};
@@ -260,15 +277,7 @@ comm.send(data={'results': json_content})
     this.addCommListener(commListener);
 
     await kernel.requestExecute({
-      code: `
-with open("${path}", "rb") as f:
-  binary_content = f.read()
-
-base64_content = base64.b64encode(binary_content).decode("utf-8")
-
-comm = Comm(target_name='notebook-runner')
-comm.send(data={'results': base64_content})
-`,
+      code,
     }).done;
 
     return waitForResults;

@@ -21,7 +21,8 @@ export const executeRunNotebookCommand = async (
   notebookPath: string,
   binaryResultsPath: string,
 ): Promise<void> => {
-  console.log("Opening notebook at path:", notebookPath);
+  console.debug("Opening notebook at path:", notebookPath);
+
   state.allowNextNotebookInParallel = true;
   const newNotebookPanel = documentManager.open(
     notebookPath,
@@ -59,7 +60,9 @@ export const executeRunNotebookCommand = async (
   try {
     notebook = await contentsManager.get(notebookPath, { content: true });
   } catch (error) {
-    throw new Error("Error reading ran notebook:" + error);
+    throw new Error(
+      `Error reading notebook at ${notebookPath} before executing all cells: ${JSON.stringify(error)}`,
+    );
   }
 
   await writeJsonToVirtualFilesystem(
@@ -124,7 +127,7 @@ with open("${binaryResultsPath}", "wb") as f:
 
   const waitUntilClosed = new Promise<void>((resolve) => {
     newNotebookPanel.disposed.connect(() => {
-      console.log("Closed notebook that was run");
+      console.debug("Closed notebook that was run");
       resolve();
     });
   });

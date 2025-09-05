@@ -9,7 +9,7 @@ import { writeJsonToVirtualFilesystem } from "../utils";
 export const registerAssignCommand = (
   state: NotebookRunnerState,
   app: JupyterFrontEnd,
-  notebookTracker: INotebookTracker,
+  _notebookTracker: INotebookTracker,
   contentsManager: ContentsManager,
 ): void => {
   app.commands.addCommand(runAssignCommand, {
@@ -18,7 +18,7 @@ export const registerAssignCommand = (
       console.debug(`Waiting for otter session kernel to be available`);
       const kernel = await state.getOtterKernel();
 
-      console.debug(`Generating student task and autograder..`);
+      console.debug(`Generating student task and autograder...`);
 
       // read notebook template
       let template: Contents.IModel | null = null;
@@ -28,7 +28,9 @@ export const registerAssignCommand = (
           { content: true },
         );
       } catch (error) {
-        throw new Error("Error reading ran notebook:" + error);
+        throw new Error(
+          `Error reading notebook at ${EmbeddedPythonCallbacks.taskTemplateLocation} when running otter assign: ${JSON.stringify(error)}`,
+        );
       }
 
       await writeJsonToVirtualFilesystem(
@@ -39,30 +41,28 @@ export const registerAssignCommand = (
 
       await kernel.requestExecute({
         code: `
-          assign(
-              master = "${EmbeddedPythonCallbacks.taskTemplateLocation}",
-              result = "/",
-              no_pdfs = True,
-              debug = True,
-              no_run_tests = True,
-          )
+assign(
+  master = "${EmbeddedPythonCallbacks.taskTemplateLocation}",
+  result = "/",
+  no_pdfs = True,
+  debug = True,
+  no_run_tests = True,
+)
           `,
       }).done;
 
-      console.debug(
-        "Transfering generated files back from the virtual filesystem..",
-      );
+      console.debug("Retrieving generated files...");
 
       await kernel.requestExecute({
         code: `
-        def first_file_with_extension(directory, extension):
-          if not extension.startswith("."):
-              extension = "." + extension
+def first_file_with_extension(directory, extension):
+  if not extension.startswith("."):
+    extension = "." + extension
 
-          for file in Path(directory).iterdir():
-              if file.is_file() and file.suffix == extension:
-                  return str(file)
-          return None  
+  for file in Path(directory).iterdir():
+    if file.is_file() and file.suffix == extension:
+      return str(file)
+  return None  
       `,
       }).done;
 
@@ -73,15 +73,17 @@ export const registerAssignCommand = (
       // there should now be an 'autograder' directory containing a zip file with a random name
       // -> make it deterministic
       await kernel.requestExecute({
-        code: `shutil.move(
-          first_file_with_extension("/autograder", ".zip"),
-          "${EmbeddedPythonCallbacks.autograderLocation}"
-        )`,
+        code: `
+import shutil
+
+shutil.move(
+  first_file_with_extension("/autograder", ".zip"),
+  "${EmbeddedPythonCallbacks.autograderLocation}"
+)
+      `,
       }).done;
 
-      console.debug(
-        "Transferring autograder back from the virtual filesystem..",
-      );
+      console.debug("Retrieving autograder...");
 
       await app.serviceManager.contents.save("/autograder", {
         type: "directory",
@@ -107,9 +109,7 @@ export const registerAssignCommand = (
         },
       );
 
-      console.debug(
-        "Transferring student notebook back from the virtual filesystem..",
-      );
+      console.debug("Retrieving student notebook...");
 
       // and a 'student' directory containing a jupyter notebook.
       const studentNotebook =

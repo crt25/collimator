@@ -1,3 +1,6 @@
+// This script is loaded when the JupyterLite app starts up and before the load event is fired
+// so that we can buffer any incoming iframe messages until the main app is ready to handle them.
+
 const logModule = "[Iframe Message Buffer]";
 
 const bufferIncomingMessages = (e) => {

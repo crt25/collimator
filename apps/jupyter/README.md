@@ -1,6 +1,6 @@
 # ClassMosaic Jupyter Application
 
-A JupyterLite-based interactive Python environment for educational purposes, built as part of the ClassMosaic platform. This application provides a browser-based Jupyter experience using Pyodide kernels, with integrated autograding capabilities through Otter Grader and custom notebook execution extensions.
+A [JupyterLite-based](https://jupyterlite.readthedocs.io/en/stable/) interactive Python environment for educational purposes, built as part of the [ClassMosaic](https://github.com/crt25/collimator) platform. This application provides a browser-based Jupyter experience using Pyodide kernels, with integrated autograding capabilities through [Otter Grader](https://otter-grader.readthedocs.io/en/latest/) and custom notebook execution extensions.
 
 ## Table of Contents
 
@@ -42,33 +42,13 @@ The ClassMosaic Jupyter Application is a customized JupyterLite deployment that 
 
 **Windows:**
 
-- PowerShell is assumed to used as a shell
+- PowerShell 7+ (`pwsh`) is assumed to used as a shell
 
 ## Building and Running
 
 ### Quick Start
 
-1. **Create virtual environment:**
-
-```bash
-make create-env
-```
-
-2. **Activate environment:**
-
-On Windows:
-
-```powershell
-.\pyenv\Scripts\Activate.ps1
-```
-
-On Unix-like systems:
-
-```bash
-source pyenv/bin/activate
-```
-
-3. **Initialize the project** (first time setup):
+1. **Initialize the project** (first time setup):
 
    ```bash
    make init
@@ -81,13 +61,13 @@ source pyenv/bin/activate
    - Initializes JupyterLab extensions
    - Builds the custom otter grader wheel
 
-4. **Build the application**:
+2. **Build the application**:
 
    ```bash
    make build
    ```
 
-5. **Serve the application locally**:
+3. **Serve the application locally**:
    ```bash
    make serve
    ```
@@ -96,51 +76,23 @@ The application will be available at `http://localhost:8000/jupyter/lab/`
 
 ### Step-by-Step Build Process
 
-#### 1. Environment Setup
-
-**Create virtual environment:**
-
-```bash
-make create-env
-```
-
-**Activate environment:**
-
-On Windows:
-
-```powershell
-.\pyenv\Scripts\Activate.ps1
-```
-
-On Unix-like systems:
-
-```bash
-source pyenv/bin/activate
-```
-
-#### 2. Init Submodules
+#### 1. Init Submodules
 
 ```bash
 make init-submodules
 ```
 
-#### 3. Install Dependencies
+This only needs to be run once after cloning the repo.
+
+#### 2. Install Dependencies
 
 ```bash
 make install-deps
 ```
 
-This installs:
+Re-run whenever the `pyproject.toml` / `poetry.lock` dependencies change.
 
-- `jupyterlite-core`: Core JupyterLite functionality
-- `jupyterlite-pyodide-kernel`: Python kernel for browser execution
-- `jupyterlab`: JupyterLab interface components
-- `jupyterlab_server`: Server components
-- `libarchive-c`: Archive handling
-- `copier`: Template copying utility
-- `jinja2-time`: Templating with time functions
-
-#### 4. Build Otter Grader Wheel
+#### 3. Build Otter Grader Wheel
 
 ```bash
 make build-otter
@@ -148,7 +100,9 @@ make build-otter
 
 This creates a custom wheel file (`otter_grader-6.1.3-py3-none-any.whl`) in the `dist/` directory.
 
-#### 5. Initialize and build jupyter extensions
+Re-run this command whenever the otter submodule changes.
+
+#### 4. Initialize and build jupyter extensions
 
 ```bash
 make init-extensions
@@ -157,7 +111,9 @@ make init-extensions
 This runs some initialization scripts for the different extensions.
 For instance, this creates symlinks which are necessary for the `notebook-runner` extension to build and then installs the npm dependencies.
 
-#### 6. Build JupyterLite Application
+This only needs to be run once when setting up the project.
+
+#### 5. Build JupyterLite Application
 
 ```bash
 make build
@@ -171,6 +127,10 @@ The build process:
 4. Injects iframe message buffering JavaScript
 5. Outputs to `./dist/app/` directory
 
+Note that it does **not** re-build the extensions, this must be done manually whenever they change.
+
+Re-run whenever you change an extension or a JupyterLite configuration.
+
 ### Cleaning the Build
 
 ```bash
@@ -183,17 +143,17 @@ This removes:
 - Cache files (`.cache/`)
 - JupyterLite database (`.jupyterlite.doit.db`)
 
+Try this first, if the build process results in weird error messages.
+
 ## Components
 
 ### 1. JupyterLite Core Configuration
 
 **File**: `jupyter-lite.json`
 
-**Key Features**:
-
-- Memory-only storage for enhanced security
+- Memory-only storage, loading and saving is handled by the ClassMosaic platform
 - Custom branding (ClassMosaic)
-- Disabled default JupyterLab logo
+- Disables service worker extension (see the README of the `notebook-runner` extension for more information as to why)
 
 ### 2. Iframe Message Buffering
 
@@ -274,7 +234,7 @@ For Python-related development within the project:
 
 ### JupyterLite Configuration
 
-**Primary file**: `jupyter-lite.json`
+**Primary file**: [`jupyter-lite.json`](https://jupyterlite.readthedocs.io/en/latest/howto/configure/config_files.html#jupyter-lite-json)
 
 Key configuration options:
 
@@ -284,7 +244,7 @@ Key configuration options:
 - `contentsStorageDrivers`: Storage backend configuration
 - `disabledExtensions`: Extensions to disable
 
-### Settings Overrides
+### [Settings Overrides](https://jupyterlite.readthedocs.io/en/latest/howto/configure/settings.html)
 
 **File**: `overrides.json`
 

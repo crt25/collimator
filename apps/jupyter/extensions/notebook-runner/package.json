@@ -2,20 +2,6 @@
   "name": "notebook-runner",
   "version": "0.1.0",
   "description": "A JupyterLab extension to run Jupyter notebooks in Jupyterlite environments with pyodide kernels.",
-  "keywords": [
-    "jupyter",
-    "jupyterlab",
-    "jupyterlab-extension"
-  ],
-  "homepage": "",
-  "bugs": {
-    "url": "/issues"
-  },
-  "license": "UNLICENSED",
-  "author": {
-    "name": "Anansi Solutions SA",
-    "email": "info@anansi-solutions.net"
-  },
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
     "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
@@ -25,11 +11,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "repository": {
-    "type": "git",
-    "url": ".git"
-  },
   "scripts": {
+    "activate-env": "cd ../../ && poetry env activate",
     "prepare": "node scripts/create-symlink.js",
     "build": "jlpm build:lib && jlpm build:labextension:dev",
     "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",

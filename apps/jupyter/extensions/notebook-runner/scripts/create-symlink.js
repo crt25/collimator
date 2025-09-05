@@ -9,6 +9,6 @@ fs.symlink(target, linkPath, "dir", (err) => {
   if (err) {
     console.error('Error creating symlink:', err);
   } else {
-    console.log(`Symlink created: ${linkPath} -> ${target}`);
+    console.debug(`Symlink created: ${linkPath} -> ${target}`);
   }
 });

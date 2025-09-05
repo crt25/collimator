@@ -1,4 +1,7 @@
 export enum KnownWidget {
+  // These values were found by logging the loaded widgets and inspecting their identifiers.
+  // They may change with future versions of JupyterLite / the extensions and there does not seem to be
+  // an official list of them.
   filebrowser = "filebrowser",
   runningSessions = "jp-running-sessions",
   commandPalette = "command-palette",

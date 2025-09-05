@@ -46,7 +46,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     propertyInspectorProvider: IPropertyInspectorProvider,
     factory: IFileBrowserFactory,
   ) => {
-    console.log("JupyterLab extension notebook-runner is activated!");
+    console.debug("JupyterLab extension notebook-runner is activated!");
 
     // The default file browser instance
     const fileBrowser = factory.tracker.find(

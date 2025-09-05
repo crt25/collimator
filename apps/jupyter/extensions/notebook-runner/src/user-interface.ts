@@ -39,14 +39,14 @@ const hideDisallowedWidgets = (mode: Mode, app: JupyterFrontEnd): void => {
 export const simplifyUserInterface = async (
   mode: Mode,
   app: JupyterFrontEnd,
-  _runningSessions: IRunningSessionSidebar,
-  _propertyInspectorProvider: IPropertyInspectorProvider,
+  runningSessions: IRunningSessionSidebar,
+  propertyInspectorProvider: IPropertyInspectorProvider,
 ): Promise<void> => {
   if (mode !== Mode.edit) {
-    // ts-expect-error The exposed type is not complete
-    //propertyInspectorProvider.dispose();
-    // ts-expect-error The exposed type is not complete
-    //runningSessions.dispose();
+    // @ts-expect-error The exposed type is not complete
+    propertyInspectorProvider.dispose();
+    // @ts-expect-error The exposed type is not complete
+    runningSessions.dispose();
   }
 
   // activate simple mode

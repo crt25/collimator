@@ -10,46 +10,46 @@ const autoInstallPackages =
   (contentsManager: ContentsManager, notebookPath: string) =>
   async (kernel: IKernelConnection): Promise<void> => {
     kernel.iopubMessage.connect((_, msg) => {
-      // ignore status messages
       if (KernelMessage.isStatusMsg(msg)) {
-        return;
+        // ignore status messages
       } else if (KernelMessage.isStreamMsg(msg)) {
-        console.log(`[${kernel.id}]`, msg.content.text);
-        return;
+        console.debug(`[${kernel.id}]`, msg.content.text);
       } else if (KernelMessage.isExecuteInputMsg(msg)) {
         console.debug(
           `[${kernel.id}] Executing code (${msg.content.execution_count}):\n`,
           msg.content.code,
         );
-        return;
       } else if (KernelMessage.isExecuteResultMsg(msg)) {
         console.debug(
           `[${kernel.id}] Finished executing code (${msg.content.execution_count}):`,
           msg.content.data,
         );
+      } else {
+        console.debug(`[${kernel.id}] IOPub message:`, msg);
       }
-
-      console.debug(`[${kernel.id}] IOPub message:`, msg);
     });
 
     console.debug("Installing packages...", kernel.id);
-    await importBasePackages(kernel);
     await installOtter(kernel);
     console.debug("Finished installing packages", kernel.id);
 
     if (
+      // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
+      // the two checks here.
       notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
       notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1)
     ) {
       console.debug(
-        "Opened student notebook - copying notebook to the virtual filesystem to make tests available..",
+        "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
       );
 
       let notebook: Contents.IModel | null = null;
       try {
         notebook = await contentsManager.get(notebookPath, { content: true });
       } catch (error) {
-        throw new Error("Error reading ran notebook:" + error);
+        throw new Error(
+          `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
+        );
       }
 
       await writeJsonToVirtualFilesystem(
@@ -60,7 +60,10 @@ const autoInstallPackages =
       console.debug("Finished copying notebook to the virtual filesystem");
 
       await kernel.requestExecute({
-        code: `os.chdir("/student")`,
+        code: `
+import os
+os.chdir("/student")
+`,
       }).done;
     }
   };
@@ -92,29 +95,14 @@ export const preInstallPackages = async (
   });
 };
 
-export const importBasePackages = async (
-  kernel: IKernelConnection,
-): Promise<void> => {
-  console.log("Importing builtin libraries..");
-  await kernel.requestExecute(
-    {
-      code: `
-        import micropip, sys, types, os, tempfile, asyncio, shutil, base64
-        from urllib.parse import unquote
-        from pathlib import Path
-      `,
-    },
-    true,
-  ).done;
-};
-
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.log("Installing Otter Grader..");
+  console.debug("Installing Otter Grade...");
   await kernel.requestExecute(
     {
       code: `
+import micropip
 await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
       `,
     },
@@ -125,25 +113,29 @@ await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
 export const installNbConvert = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing nbconvert..");
+  console.debug("Installing nbconver...");
   await kernel.requestExecute(
     {
+      // Micropip by default installs all dependencies including tornado which is not mandatory,
+      // especially for the codepaths we need. Since trying to install tornado in jupyterlite will fail,
+      // we disable dependency installation and install the required dependencies manually below.
+      // The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
       code: `
-        # Micropip by default installs all dependencies including tornado which is not mandatory,
-        # especially for the codepaths we need.
-        # The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
-        
-        await micropip.install("nbconvert", deps=False)
-        await micropip.install("jupyter_client", deps=False)
+import micropip
+
+await micropip.install("nbconvert", deps=False)
+await micropip.install("jupyter_client", deps=False)
       `,
     },
     true,
   ).done;
 
-  console.debug("Installing remaining dependencies..");
+  console.debug("Installing remaining dependencies...");
   await kernel.requestExecute(
     {
       code: `
+import micropip
+
 await micropip.install([
   "beautifulsoup4",
   "bleach[css]!=5.0.0",
@@ -154,7 +146,6 @@ await micropip.install([
   "jupyterlab_pygments",
   "MarkupSafe>=2.0",
   "mistune>=2.0.3,<4",
-  #"nbclient>=0.5.0",
   "nbformat>=5.7",
   "packaging",
   "pandocfilters>=1.4.1",
@@ -162,23 +153,18 @@ await micropip.install([
   "traitlets>=5.1",
   "tinycss2"
 ])
-
-await micropip.install([
-  #"jupyter_client>=6.1.12",
-  "jupyter_core>=4.12,!=5.0.*",
-  "nbformat>=5.1",
-  "traitlets>=5.4",
-])
 `,
     },
     true,
   ).done;
 
-  console.log("Creating nbclient mock...");
+  console.debug("Creating nbclient mock...");
   await kernel.requestExecute(
+    // make nbclient.exceptions available, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
     {
       code: `
-# make nbclient.exceptions available, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
+import sys, types
+
 noop = lambda *args, **kwargs: dict(args=args, kwargs=kwargs)
 nbclient = types.ModuleType("nbclient")
 nbclient.NotebookClient = nbclient.execute = noop
@@ -191,15 +177,17 @@ sys.modules["nbclient.exceptions"] = nbclient_exceptions
     true,
   ).done;
 
-  console.log("Patching nbclient for JupyterLite..");
+  console.debug("Patching nbclient for JupyterLite...");
   await kernel.requestExecute(
     {
+      // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
+      // this is because we cannot import the execute module in JupyterLite
       code: `
-# make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
-# this is because we cannot import the execute module in JupyterLite
+from pathlib import Path
+
 preprocessors = Path("/lib/python3.12/site-packages/nbconvert/preprocessors/__init__.py")
 preprocessors.write_text(
-    preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
+  preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
 )
 `,
     },
