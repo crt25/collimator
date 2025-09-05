@@ -50,6 +50,18 @@ variable "scratchapp_domain_name" {
   type = string
 }
 
+variable "jupyterapp_bucket" {
+  type = string
+}
+
+variable "jupyterapp_bucket_arn" {
+  type = string
+}
+
+variable "jupyterapp_domain_name" {
+  type = string
+}
+
 variable "backend_domain_name" {
   type = string
 }

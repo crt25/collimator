@@ -3,4 +3,7 @@ export enum ExpressionNodeType {
   variable = "variable",
   operator = "operator",
   functionCall = "functionCall",
+  sequence = "sequence",
+  assignment = "assignment",
+  lambda = "lambda",
 }

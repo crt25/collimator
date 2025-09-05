@@ -1,0 +1,49 @@
+import {
+  ExpressionNodeType,
+  OperatorNode,
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
+import { AstNodeType } from "src/ast/types/general-ast";
+import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
+import { Sequence_patternContext } from "../../generated/PythonParser";
+
+export const convertSequencePattern = (
+  visitor: IPythonAstVisitor,
+  ctx: Sequence_patternContext,
+): PythonVisitorReturnValue => {
+  const sequenceExpressionCtx = ctx.LSQB()
+    ? ctx.maybe_sequence_pattern()
+    : ctx.open_sequence_pattern();
+
+  const sequenceExpression = sequenceExpressionCtx
+    ? visitor.getExpression(sequenceExpressionCtx)
+    : null;
+
+  if (sequenceExpression) {
+    if (
+      sequenceExpression.node.expressionType !== ExpressionNodeType.sequence
+    ) {
+      throw new Error("Expected sequence expression for a sequnce pattern");
+    }
+
+    return {
+      node: {
+        nodeType: AstNodeType.expression,
+        expressionType: ExpressionNodeType.operator,
+        operator: "sequence-pattern-" + (ctx.LSQB() ?? ctx.LPAR()).getText(),
+        operands: sequenceExpression.node.expressions,
+      } satisfies OperatorNode,
+      functionDeclarations: sequenceExpression.functionDeclarations,
+    };
+  }
+
+  return {
+    node: {
+      nodeType: AstNodeType.expression,
+      expressionType: ExpressionNodeType.operator,
+      operator: "sequence-pattern-" + (ctx.LSQB() ?? ctx.LPAR()).getText(),
+      operands: [],
+    } satisfies OperatorNode,
+    functionDeclarations: [],
+  };
+};
