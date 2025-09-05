@@ -89,6 +89,11 @@ module "cloudfront" {
       origin_access_control = "s3_oac"
     }
 
+    jupyterapp = {
+      domain_name           = var.jupyterapp_domain_name
+      origin_access_control = "s3_oac"
+    }
+
     backend = {
       domain_name = var.backend_domain_name
       custom_origin_config = {
@@ -167,6 +172,19 @@ module "cloudfront" {
           lambda_arn = var.scratchapp_lambda_arn
         }
       }
+    },
+    {
+      path_pattern           = "/jupyter*"
+      target_origin_id       = "jupyterapp"
+      viewer_protocol_policy = "redirect-to-https"
+      allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+      cached_methods         = ["GET", "HEAD"]
+
+      use_forwarded_values = false
+
+      # disable caching
+      cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
+      response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
     }
   ]
 
@@ -204,6 +222,31 @@ data "aws_iam_policy_document" "s3_scratchapp_policy" {
 resource "aws_s3_bucket_policy" "scratchapp_bucket_policy" {
   bucket = var.scratchapp_bucket
   policy = data.aws_iam_policy_document.s3_scratchapp_policy.json
+}
+
+data "aws_iam_policy_document" "s3_jupyterapp_policy" {
+  # Origin Access Controls
+  statement {
+    sid       = "AllowCloudFrontServicePrincipalReadOnly"
+    actions   = ["s3:GetObject"]
+    resources = ["${var.jupyterapp_bucket_arn}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = [module.cloudfront.cloudfront_distribution_arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "jupyterapp_bucket_policy" {
+  bucket = var.jupyterapp_bucket
+  policy = data.aws_iam_policy_document.s3_jupyterapp_policy.json
 }
 
 data "aws_iam_policy_document" "s3_frontend_policy" {
