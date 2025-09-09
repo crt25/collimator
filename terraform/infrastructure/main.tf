@@ -109,7 +109,7 @@ module "cdn" {
 
   jupyterapp_bucket      = aws_s3_bucket.jupyter.bucket
   jupyterapp_bucket_arn  = aws_s3_bucket.jupyter.arn
-  jupyterapp_domain_name = aws_s3_bucket.jupyter.bucket_domain_name
+  jupyterapp_domain_name = aws_s3_bucket.jupyter.bucket_regional_domain_name
 
   backend_domain_name = module.backend.backend_dns_name
   certificate_arn     = module.network.certificte_arn
