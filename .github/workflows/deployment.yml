@@ -108,6 +108,7 @@ jobs:
         env:
           NEXT_PUBLIC_BACKEND_HOSTNAME: ${{ env.DEPLOY_URL }}
           NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/scratch
+          NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/jupyter/lab/index.html
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ env.ENTRA_ID_CLIENT_ID }}
           NEXT_PUBLIC_SENTRY_DSN: ${{ env.FRONTEND_SENTRY_DSN }}

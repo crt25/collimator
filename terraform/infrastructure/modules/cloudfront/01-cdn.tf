@@ -185,6 +185,13 @@ module "cloudfront" {
       # disable caching
       cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
+
+      lambda_function_association = {
+        # run the spa rewrite lambda function on the origin request
+        origin-request = {
+          lambda_arn = var.jupyterapp_lambda_arn
+        }
+      }
     }
   ]
 

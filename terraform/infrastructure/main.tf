@@ -37,22 +37,16 @@ module "scratchapp" {
   tags = var.tags
 }
 
-resource "aws_s3_bucket" "jupyter" {
-  bucket = "${var.name}-${var.environment}-app-jupyter"
+module "jupyterapp" {
+  source = "./modules/static-website"
 
-  # delete all objects in the bucket when destroying the bucket
-  force_destroy = true
+  name   = "${var.name}-${var.environment}-app-jupyter"
+  region = var.region
+
+  nodejs_lambda_function_path = "./lambdas/src/spa/index.js"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/spa.zip"
 
   tags = var.tags
-}
-
-# Disallow public access to the S3 bucket
-resource "aws_s3_bucket_public_access_block" "jupyter" {
-  bucket                  = aws_s3_bucket.jupyter.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
 
 module "database" {
@@ -107,9 +101,10 @@ module "cdn" {
   scratchapp_lambda_arn  = module.scratchapp.lambda_arn
   scratchapp_domain_name = module.scratchapp.bucket_domain_name
 
-  jupyterapp_bucket      = aws_s3_bucket.jupyter.bucket
-  jupyterapp_bucket_arn  = aws_s3_bucket.jupyter.arn
-  jupyterapp_domain_name = aws_s3_bucket.jupyter.bucket_regional_domain_name
+  jupyterapp_bucket      = module.jupyterapp.bucket
+  jupyterapp_bucket_arn  = module.jupyterapp.bucket_arn
+  jupyterapp_lambda_arn  = module.jupyterapp.lambda_arn
+  jupyterapp_domain_name = module.jupyterapp.bucket_domain_name
 
   backend_domain_name = module.backend.backend_dns_name
   certificate_arn     = module.network.certificte_arn

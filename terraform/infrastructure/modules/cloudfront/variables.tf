@@ -54,6 +54,10 @@ variable "jupyterapp_bucket" {
   type = string
 }
 
+variable "jupyterapp_lambda_arn" {
+  type = string
+}
+
 variable "jupyterapp_bucket_arn" {
   type = string
 }

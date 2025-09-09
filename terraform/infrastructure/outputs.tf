@@ -15,11 +15,11 @@ output "scratchapp_bucket_arn" {
 }
 
 output "jupyterapp_bucket_id" {
-  value = aws_s3_bucket.jupyter.id
+  value = module.jupyterapp.bucket_id
 }
 
 output "jupyterapp_bucket_arn" {
-  value = aws_s3_bucket.jupyter.arn
+  value = module.jupyterapp.bucket_arn
 }
 
 output "backend_repository_url" {
