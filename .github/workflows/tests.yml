@@ -142,6 +142,8 @@ jobs:
                 env:
                     # use a different database for e2e tests
                     DATABASE_URL: postgresql://postgres:postgres@localhost:5433/collimator-tests?schema=public
+                    # avoid issues with enums: https://github.com/microsoft/playwright/issues/34263
+                    NODE_OPTIONS: --no-experimental-strip-types
 
             -   name: SonarCloud Scan
                 uses: SonarSource/sonarqube-scan-action@v5.3.1
