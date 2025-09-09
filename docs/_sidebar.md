@@ -15,3 +15,6 @@
 - Quality Assurance
 
   - [End-to-End Tests](quality-assurance/e2e.md)
+
+- How to
+  - [Running locally](howto/running-locally.md)
