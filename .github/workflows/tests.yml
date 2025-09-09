@@ -158,6 +158,7 @@ jobs:
         env:
           # use a different database for e2e tests
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/collimator-tests?schema=public
+          NODE_OPTIONS: --no-experimental-strip-types
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5.3.1
