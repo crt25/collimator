@@ -80,8 +80,14 @@ export const addKernelListeners = async (
   await sessionContext.ready;
 
   while (!sessionContext.session?.kernel) {
-    console.debug("Starting kernel...");
-    await sessionContext.startKernel();
+    await new Promise<void>((resolve) => {
+      const listener = (): void => {
+        sessionContext.kernelChanged.disconnect(listener);
+        resolve();
+      };
+
+      sessionContext.kernelChanged.connect(listener);
+    });
   }
 
   const kernel = sessionContext.session?.kernel;

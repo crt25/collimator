@@ -24,6 +24,13 @@ else
 		poetry run bash -c "cd ./extensions && make init"
 endif
 
+link-extensions:
+ifeq ($(OS),Windows_NT)
+		poetry run pwsh -Command "cd ./extensions && make link"
+else
+		poetry run bash -c "cd ./extensions && make link"
+endif
+
 build-extensions:
 ifeq ($(OS),Windows_NT)
 		poetry run pwsh -Command "cd ./extensions && make build"

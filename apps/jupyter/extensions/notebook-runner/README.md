@@ -128,6 +128,7 @@ node scripts/create-symlink.js
 pip install -e "."
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
+jupyter labextension link .
 # Rebuild extension Typescript source after making changes
 jlpm build
 ```

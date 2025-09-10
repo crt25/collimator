@@ -44,6 +44,18 @@ export const registerGradeCommand = (
   app.commands.addCommand(runGradingCommand, {
     label: "Run Grading",
     execute: async () => {
+      console.debug("Saving all open notebooks...");
+      const widgets = app.shell.widgets("main");
+
+      const savePromises: Promise<void>[] = [];
+
+      for (const widget of widgets) {
+        if (widget instanceof NotebookPanel) {
+          savePromises.push(widget.context.save());
+        }
+      }
+      await Promise.all(savePromises);
+
       console.debug(`Waiting for otter session kernel to be available`);
       const kernel = await state.getOtterKernel();
 
