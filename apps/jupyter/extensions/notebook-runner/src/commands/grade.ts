@@ -27,6 +27,7 @@ const createOnNewNotebookListener =
         if (widget instanceof NotebookPanel && widget !== notebookPanel) {
           console.debug("Closing notebook: ", widget);
           await widget.context.save();
+          await widget.sessionContext.shutdown();
           widget.close();
         }
       }
