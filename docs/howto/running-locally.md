@@ -7,7 +7,7 @@ Make sure the following tools are installed:
 - [Yarn](https://yarnpkg.com/) (via corepack)
 - [PostgreSQL](https://www.postgresql.org/)
 
-You need a Microsoft account to login.
+You need a Microsoft account to log in.
 
 ## Clone the Repository
 
@@ -16,7 +16,7 @@ Download the source code and initialize submodules:
 ```sh
 git clone https://github.com/crt25/collimator.git
 cd collimator
-git submodule update --init --recursive
+git submodule update --init --recursive --progress
 ```
 
 ## Backend Setup
@@ -25,14 +25,15 @@ git submodule update --init --recursive
 
 1. Create a PostgreSQL database for ClassMosaic. See the  [official PostgreSQL documentation](https://www.postgresql.org/docs/current/) for details.
 
-2. Copy `.env.sample` to `.env` and set `DATABASE_URL` to match your database.
+2. In the `backend` folder, copy `.env.sample` to `.env` and set `DATABASE_URL` to match your database.
 
 3. Install dependencies:
 ```sh
 $ cd backend
 $ yarn install
 ```
-3. Customize the admin account by edit `prisma/seed/production.ts`:
+
+3. Customize the admin account by editing `prisma/seed/production.ts`:
     ```ts
     export const seedProduction = async (prisma: PrismaClient): Promise<void> => {
       const count = await prisma.user.count({
@@ -79,8 +80,8 @@ In the console, you should see:
   },
   'yourRegistrationToken'
 ]
-```
-Please keep your registration token. You need it later to connect to the frontend.
+```             
+Keep your registration token. You will need it to log in from the frontend.
 
 1. Start the backend in development mode:
 ```sh
@@ -93,37 +94,28 @@ $ yarn dev
 
 2. If you changed the backend URI, copy `.env.development` to `.env` and update it. If not, you can keep `.env.development` as is.
 
-3. Install dependencies:
+3. Install dependencies, then start the frontend:
 ```sh
 $ yarn install
-```
-
-4. Start the frontend:
-```sh
 $ yarn dev
 ```
 
 ## Scratch Setup
 
 1. Move to the `apps/scratch` folder.
-2. Ensure you have activated submodules with:
+2. Ensure submodules are initialized:
     ```sh
     $ git submodule update --init --recursive
     ```
 
-3. Install dependencies:
+3. Install dependencies and start the app:
     ```sh
     $ yarn install
+    $ yarn dev
     ```
-4. Start the scratch app:
-   ```sh
-   $ yarn dev
-   ```
-
 
 ## Visit the frontend
 
-1. In your browser, go to `http://localhost:3000/` to check it works.
-2. Modify the URL to `http://localhost:3000/login?registrationToken=XXXX`, where XXX is your Registration Token.
-3. Now you can click on "Authenticate using Microsoft".
-4. Enjoy!
+1. Open your browser at `http://localhost:3000/`.
+2. Modify the URL to `http://localhost:3000/login?registrationToken=XXXX`, replacing XXXX with your registration token.
+3. Click "Authenticate using Microsoft".
