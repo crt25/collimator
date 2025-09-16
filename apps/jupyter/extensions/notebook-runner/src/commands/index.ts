@@ -5,6 +5,7 @@ import { ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { registerAssignCommand } from "./assign";
 import { registerGradeCommand } from "./grade";
+import { registerRunAllCellsCommand } from "./run-all-cells";
 
 export const registerCommands = (
   app: JupyterFrontEnd,
@@ -22,4 +23,5 @@ export const registerCommands = (
     contentsManager,
     documentManager,
   );
+  registerRunAllCellsCommand(state, app, notebookTracker);
 };

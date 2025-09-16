@@ -6,4 +6,10 @@ export enum StatementNodeType {
   functionCall = "functionCall",
   variableDeclaration = "variableDeclaration",
   assignment = "assignment",
+  multiAssignment = "multiAssignment",
+  return = "return",
+  break = "break",
+  continue = "continue",
+  expressionAsStatement = "expressionAsStatement",
+  classDeclaration = "classDeclaration",
 }

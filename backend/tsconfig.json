@@ -25,7 +25,7 @@
     "paths": {
       "@e2e-data/*": [
         "../e2e/setup/seeding/*"
-      ]
-    }
+      ],
+    },
   }
 }

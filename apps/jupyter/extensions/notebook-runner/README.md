@@ -123,11 +123,12 @@ The `jlpm` command is JupyterLab's pinned version of
 # Activate the python environment by running the output of the following command
 yarn activate-env
 # Initialize the project, creating symlinks necessary for the project to build
-jlpm prepare
+node scripts/create-symlink.js
 # Install package in development mode
 pip install -e "."
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
+jupyter labextension link .
 # Rebuild extension Typescript source after making changes
 jlpm build
 ```

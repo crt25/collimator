@@ -13,7 +13,16 @@ variable "scratchapp_bucket_id" {
 
 variable "scratchapp_build_directory" {
   type    = string
-  default = "../../apps/scratch/build"
+  default = "../../apps/jupyter/build"
+}
+
+variable "jupyterapp_bucket_id" {
+  type = string
+}
+
+variable "jupyterapp_build_directory" {
+  type    = string
+  default = "../../apps/jupyter/dist/app"
 }
 
 variable "region" {

@@ -380,11 +380,11 @@ export class EmbeddedPythonCallbacks {
 
     if (file.format == "text") {
       return new Blob([file.content], {
-        type: file.mimetype || "text/plain",
+        type: "text/plain",
       });
     } else if (file.format == "json") {
       return new Blob([JSON.stringify(file.content)], {
-        type: file.mimetype || "application/json",
+        type: "application/json",
       });
     } else if (file.format == "base64") {
       const byteNumbers = Array.from(atob(file.content)).map((char) =>

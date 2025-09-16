@@ -13,3 +13,10 @@ module "scratchapp" {
   bucket_id = var.scratchapp_bucket_id
   directory = var.scratchapp_build_directory
 }
+
+module "jupyterapp" {
+  source = "./modules/s3-upload-directory"
+
+  bucket_id = var.jupyterapp_bucket_id
+  directory = var.jupyterapp_build_directory
+}

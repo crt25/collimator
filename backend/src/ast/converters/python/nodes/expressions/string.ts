@@ -1,0 +1,21 @@
+import { AstNodeType } from "src/ast/types/general-ast";
+import {
+  ExpressionNodeType,
+  LiteralNode,
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
+import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
+import { StringContext } from "../../generated/PythonParser";
+
+export const convertString = (
+  _visitor: IPythonAstVisitor,
+  ctx: StringContext,
+): PythonVisitorReturnValue => ({
+  node: {
+    nodeType: AstNodeType.expression,
+    expressionType: ExpressionNodeType.literal,
+    type: "string",
+    value: ctx.STRING().getText(),
+  } satisfies LiteralNode,
+  functionDeclarations: [],
+});

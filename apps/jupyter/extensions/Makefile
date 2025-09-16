@@ -1,12 +1,17 @@
 EXTENSION?='none'
 
 init:
-	cd ./notebook-runner && jlpm prepare
+	cd ./notebook-runner && node scripts/create-symlink.js
 	cd ./notebook-runner && pip install -e "."
 	cd ./notebook-runner && jupyter labextension develop . --overwrite
+	cd ./notebook-runner && jupyter labextension link .
 
 build:
 	cd ./notebook-runner && jlpm build
+
+link:
+	cd ./notebook-runner && jupyter labextension develop . --overwrite
+	cd ./notebook-runner && jupyter labextension link .
 
 create-extension:
 ifeq ($(EXTENSION), 'none')

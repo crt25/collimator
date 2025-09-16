@@ -33,7 +33,7 @@ export const getAstNodeChildren = (node: AstNode): AstNode[] =>
         )
         .with(
           { statementType: StatementNodeType.functionDeclaration },
-          (node) => [node.body],
+          (node) => [...(node.decorators ?? []), node.body],
         )
         .with({ statementType: StatementNodeType.loop }, (node) =>
           node.condition ? [node.condition, node.body] : [node.body],
@@ -46,6 +46,22 @@ export const getAstNodeChildren = (node: AstNode): AstNode[] =>
           { statementType: StatementNodeType.variableDeclaration },
           (node) => [node.value],
         )
+        .with({ statementType: StatementNodeType.multiAssignment }, (node) => [
+          ...node.assignmentExpressions,
+          ...node.values,
+        ])
+        .with({ statementType: StatementNodeType.return }, () => [])
+        .with({ statementType: StatementNodeType.continue }, () => [])
+        .with({ statementType: StatementNodeType.break }, () => [])
+        .with(
+          { statementType: StatementNodeType.expressionAsStatement },
+          (node) => [node.expression],
+        )
+        .with({ statementType: StatementNodeType.classDeclaration }, (node) => [
+          ...node.baseClasses,
+          ...(node.decorators ?? []),
+          node.body,
+        ])
         .exhaustive(),
     )
     .with({ nodeType: AstNodeType.expression }, (node) =>
@@ -61,6 +77,18 @@ export const getAstNodeChildren = (node: AstNode): AstNode[] =>
           (node) => node.operands,
         )
         .with({ expressionType: ExpressionNodeType.variable }, () => [])
+        .with(
+          { expressionType: ExpressionNodeType.sequence },
+          (node) => node.expressions,
+        )
+        .with({ expressionType: ExpressionNodeType.assignment }, (node) => [
+          node.variable,
+          node.value,
+        ])
+        .with({ expressionType: ExpressionNodeType.lambda }, (node) => [
+          ...(node.decorators ?? []),
+          node.body,
+        ])
         .exhaustive(),
     )
     .exhaustive();

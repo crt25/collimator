@@ -113,7 +113,17 @@ For instance, this creates symlinks which are necessary for the `notebook-runner
 
 This only needs to be run once when setting up the project.
 
-#### 5. Build JupyterLite Application
+#### 5. Build JupyterLite Extensions
+
+```bash
+make build-extensions
+```
+
+Builds all the custom extensions.
+Needs to be run once initially and whenever you want to re-build all extensions.
+Since this scales with the number of extensions, it is faster to just re-build an extension whenever it is changed.
+
+#### 6. Build JupyterLite Application
 
 ```bash
 make build
