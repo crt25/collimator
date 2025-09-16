@@ -181,15 +181,22 @@ const ProgressList = ({
     isLoading: isLoadingSolutions,
   } = useAllSessionSolutions(classId, sessionId);
 
-  const progress = useMemo(() => {
-    if (!klass || !session || !solutions) {
-      return [];
-    }
+  const studentList = useMemo(() => {
+    if (!klass || !solutions) return new Set<number>();
 
     const studentIds = new Set([
       ...klass.students.map((student) => student.studentId),
       ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
     ]);
+    return studentIds;
+  }, [klass, solutions]);
+
+  const progress = useMemo(() => {
+    if (!klass || !session || !solutions) {
+      return [];
+    }
+
+    const studentIds = studentList;
 
     const students = [...studentIds].map((studentId) => {
       const student = klass.students.find((s) => s.studentId === studentId);
@@ -260,7 +267,7 @@ const ProgressList = ({
             dataKey="id"
             paginator
             rows={10}
-            loading={klass.students.length !== progress.length}
+            loading={studentList.size !== progress.length}
             onRowClick={(e) =>
               router.push(
                 `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.studentId}`,
