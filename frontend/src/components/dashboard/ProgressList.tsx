@@ -196,9 +196,7 @@ const ProgressList = ({
       return [];
     }
 
-    const studentIds = studentList;
-
-    const students = [...studentIds].map((studentId) => {
+    const students = [...studentList].map((studentId) => {
       const student = klass.students.find((s) => s.studentId === studentId);
 
       return (
@@ -233,7 +231,7 @@ const ProgressList = ({
         taskSolutions: taskSolutions,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions]);
+  }, [klass, session, solutions, studentList]);
 
   const timeOnTaskTemplate = useCallback(
     (_rowData: StudentProgress) => (
