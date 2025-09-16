@@ -162,7 +162,7 @@ $ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' po
 7. Select **Object > Register > Server**, then enter a server name (any name).
 8. Under **Connection**, use:
     - Host name/address: (IP address from step 3)
-    - Port: 5432 ((default postgres port))
+    - Port: 5432 (default postgres port)
     - Username: postgres
     - Password: password (value from step 1)
 9. Save. Update the `.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public"`.
