@@ -41,7 +41,7 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
           // only remove the event listener when the cancel is triggered
           window.removeEventListener("focus", handleFocus);
         }
-      }, 0);
+      }, 10);
     };
     window.addEventListener("focus", handleFocus);
 
