@@ -26,17 +26,21 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
         return;
       }
 
+      handled = true;
       resolve(file);
       fileInput.remove();
+      window.removeEventListener("focus", handleFocus);
     });
 
-    const handleFocus = () => {
+    const handleFocus = (): void => {
       setTimeout(() => {
-        if (!handled){
+        if (!handled) {
           reject(new Error("File reading was cancelled"));
+          handled = true;
           fileInput.remove();
+          // only remove the event listener when the cancel is triggered
+          window.removeEventListener("focus", handleFocus);
         }
-        window.removeEventListener("focus", handleFocus);
       }, 0);
     };
     window.addEventListener("focus", handleFocus);
