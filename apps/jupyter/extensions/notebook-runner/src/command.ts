@@ -7,6 +7,7 @@ import { writeJsonToVirtualFilesystem } from "./utils";
 
 export const runAssignCommand = "notebook-runner:run-assign";
 export const runGradingCommand = "notebook-runner:run-grading";
+export const runAllCellsCommand = "notebook-runner:run-all-cells";
 
 export enum CommandType {
   RunNotebook = "run_notebook",
