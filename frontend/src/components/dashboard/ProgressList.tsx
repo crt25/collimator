@@ -181,14 +181,16 @@ const ProgressList = ({
     isLoading: isLoadingSolutions,
   } = useAllSessionSolutions(classId, sessionId);
 
-  const studentList = useMemo(() => {
-    if (!klass || !solutions) return new Set<number>();
+  const studentIdArray = useMemo(() => {
+    if (!klass || !solutions) {
+      return new Array<number>();
+    }
 
     const studentIds = new Set([
       ...klass.students.map((student) => student.studentId),
       ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
     ]);
-    return studentIds;
+    return [...studentIds];
   }, [klass, solutions]);
 
   const progress = useMemo(() => {
@@ -196,7 +198,9 @@ const ProgressList = ({
       return [];
     }
 
-    const students = [...studentList].map((studentId) => {
+    const studentIds = studentIdArray;
+
+    const students = studentIds.map((studentId) => {
       const student = klass.students.find((s) => s.studentId === studentId);
 
       return (
@@ -231,7 +235,7 @@ const ProgressList = ({
         taskSolutions: taskSolutions,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, studentList]);
+  }, [klass, session, solutions, studentIdArray]);
 
   const timeOnTaskTemplate = useCallback(
     (_rowData: StudentProgress) => (
@@ -265,7 +269,7 @@ const ProgressList = ({
             dataKey="id"
             paginator
             rows={10}
-            loading={studentList.size !== progress.length}
+            loading={studentIdArray.length !== progress.length}
             onRowClick={(e) =>
               router.push(
                 `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.studentId}`,
