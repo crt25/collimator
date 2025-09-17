@@ -6,7 +6,17 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
   document.body.appendChild(fileInput);
 
   return new Promise<Blob>((resolve, reject) => {
-    let handled = false;
+    let wasHandled = false;
+
+    const onCancel = (): void => {
+      if (!wasHandled) {
+        reject(new Error("File reading was cancelled"));
+        wasHandled = true;
+        fileInput.removeEventListener("cancel", onCancel);
+      }
+    };
+
+    fileInput.addEventListener("cancel", onCancel);
 
     fileInput.type = "file";
     fileInput.addEventListener("change", () => {
@@ -26,24 +36,10 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
         return;
       }
 
-      handled = true;
+      wasHandled = true;
       resolve(file);
       fileInput.remove();
-      window.removeEventListener("focus", handleFocus);
     });
-
-    const handleFocus = (): void => {
-      setTimeout(() => {
-        if (!handled) {
-          reject(new Error("File reading was cancelled"));
-          handled = true;
-          fileInput.remove();
-          // only remove the event listener when the cancel is triggered
-          window.removeEventListener("focus", handleFocus);
-        }
-      }, 10);
-    };
-    window.addEventListener("focus", handleFocus);
 
     fileInput.click();
   }).catch((error) => {
