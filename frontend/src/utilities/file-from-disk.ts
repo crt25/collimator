@@ -36,6 +36,7 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
         return;
       }
 
+      // Mark as handled before resolving to prevent multiple calls
       wasHandled = true;
       resolve(file);
       fileInput.remove();
