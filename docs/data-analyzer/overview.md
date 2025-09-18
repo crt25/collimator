@@ -12,10 +12,10 @@ By comparing student outputs with the set of expected solutions provided by the 
 
 For example, two students may solve a Scratch task in different ways. Even if the code looks different, ClassMosaic recognizes that the underlying Generalized Abstract Syntax Tree (G-AST) is equivalent, and groups their results together.
 
-## Algorithms used in data-analyzer
+## Algorithms used in the Data Analyzer
 
-ClassMosaic implements two algorithms to compute a distance between trees :
+ClassMosaic implements two algorithms to compute a distances between trees:
 
-- **[pqGrams](https://github.com/hoonto/jqgram)** provides an extremely fast approximate tree edit distance.
-- **[Zangh-Shasha](https://github.com/schulzch/edit-distance-js)** takes multiple parts of a tree, like puzzle pieces and compares it with a set of parts coming for another tree.
+- **[pqGrams](https://github.com/hoonto/jqgram)** provides an very fast approximation of tree edit distance.
+- **[Zangh-Shasha](https://github.com/schulzch/edit-distance-js)** computes the exact tree edit distance by decomposing trees into substructures (like puzzle pieces) and comparing them.
 
