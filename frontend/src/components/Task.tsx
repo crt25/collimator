@@ -88,6 +88,22 @@ const Task = ({
     [trackStudentActivity, session.id, task.id],
   );
 
+  const onStudentActivity = useCallback(
+    (action: string, blockId: string) => {
+      trackStudentActivity({
+        type: StudentActivityType.TASK_APP_ACTIVITY,
+        sessionId: session.id,
+        taskId: task.id,
+        appActivity: {
+          type: "SCRATCH_BLOCK",
+          data: `${action} block with id ${blockId}`,
+        },
+        solution: new Blob([]), // dummy blob here, not used for app activity
+      });
+    },
+    [trackStudentActivity, session.id, task.id],
+  );
+
   return (
     <TaskWrapper>
       {showSessionMenu && (
@@ -121,6 +137,7 @@ const Task = ({
         onAppAvailable={onAppAvailable}
         onReceiveSubmission={onReceiveSubmission}
         onSolutionRun={onSolutionRun}
+        onStudentActivity={onStudentActivity}
       />
     </TaskWrapper>
   );

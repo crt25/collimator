@@ -1094,7 +1094,6 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
     if (event.type === "move" || event.type === "create") {
-      console.log("workspace event", event.type, event.blockId);
       // if a block is moved or created, we should get this block and check the stacksize
       // determining if all stacks are above the minimum required
       if (event.blockId) {

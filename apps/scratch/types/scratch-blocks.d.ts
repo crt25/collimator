@@ -22,13 +22,19 @@ declare namespace ScratchBlocksExtended {
   }
 
   interface Block extends ScratchBlocks.Block {
-    init: (this: BlockThis) => void;
+    // Optional init function are because:
+    // 1. Not all blocks have init functions such as workspace.getTopBlocks, getBlockById
+    // 2. The block definitions from the extended block definition have init
+    // So making it optional makes possible to have one type to describe both blocks with init and without init
+    init?: (this: BlockThis) => void;
 
     inputList?: BlockInput[];
     isMonitored?: boolean;
 
     mutationToDom?: () => HTMLElement;
     domToMutation?: (element: HTMLElement) => void;
+    getNextBlock?: () => Block | null;
+    getParent?: () => Block | null;
   }
 
   class Flyout extends ScratchBlocks.Flyout {
