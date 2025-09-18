@@ -72,24 +72,26 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
+import { isBlockPartOfLargeStack } from "../../utilities/scratch-block-stack-utils";
 import ExtensionLibrary from "./ExtensionLibrary";
+import type { CrtContextValue } from "../../contexts/CrtContext";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
   type:
-    | "create"
-    | "change"
-    | "move"
-    | "dragOutside"
-    | "endDrag"
-    | "delete"
-    | "var_create"
-    | "var_rename"
-    | "var_delete"
-    | "comment_create"
-    | "comment_change"
-    | "comment_move"
-    | "comment_delete";
+  | "create"
+  | "change"
+  | "move"
+  | "dragOutside"
+  | "endDrag"
+  | "delete"
+  | "var_create"
+  | "var_rename"
+  | "var_delete"
+  | "comment_create"
+  | "comment_change"
+  | "comment_move"
+  | "comment_delete";
 
   blockId?: string;
   recordUndo?: boolean;
@@ -188,6 +190,7 @@ interface Props {
   workspaceMetrics: {
     targets: Record<string, Metrics>;
   };
+  sendRequest?: CrtContextValue["sendRequest"];
 }
 
 type PromptCallback = (
@@ -403,9 +406,9 @@ class Blocks extends React.Component<Props, State> {
       this.props.isVisible !== nextProps.isVisible ||
       this._renderedToolboxXML !== nextProps.toolboxXML ||
       this.props.extensionLibraryVisible !==
-        nextProps.extensionLibraryVisible ||
+      nextProps.extensionLibraryVisible ||
       this.props.customProceduresVisible !==
-        nextProps.customProceduresVisible ||
+      nextProps.customProceduresVisible ||
       this.props.locale !== nextProps.locale ||
       this.props.anyModalVisible !== nextProps.anyModalVisible ||
       this.props.stageSize !== nextProps.stageSize
@@ -833,8 +836,8 @@ class Blocks extends React.Component<Props, State> {
     const defineBlocks = (
       blockInfoArray: (
         | {
-            json: Record<string, unknown>;
-          }
+          json: Record<string, unknown>;
+        }
         | ExtensionInfoBlock
       )[],
     ) => {
@@ -1090,6 +1093,29 @@ class Blocks extends React.Component<Props, State> {
       // if the blocks are not yet mounted, ignore the event
       return;
     }
+    if (event.type === "move" || event.type === "create") {
+      console.log("workspace event", event.type, event.blockId);
+      // if a block is moved or created, we should get this block and check the stacksize
+      // determining if all stacks are above the minimum required
+      if (event.blockId) {
+        const block = this.getWorkspace().getBlockById(event.blockId);
+        if (block) {
+          const isLargeStack = isBlockPartOfLargeStack(block, 2);
+          if (isLargeStack) {
+            try {
+              if (this.props.sendRequest) {
+                this.props.sendRequest("postStudentActivity", {
+                  action: event.type,
+                  blockId: event.blockId,
+                });
+              }
+            } catch (err) {
+              console.error("Student activity tracking failed", err);
+            }
+          }
+        }
+      }
+    }
 
     if (["create", "delete"].includes(event.type)) {
       let xml: Element | undefined;
@@ -1162,6 +1188,7 @@ class Blocks extends React.Component<Props, State> {
       updateMetrics: updateMetricsProp,
       useCatBlocks,
       workspaceMetrics,
+      sendRequest,
       ...props
     } = this.props;
     /* eslint-enable @typescript-eslint/no-unused-vars */
