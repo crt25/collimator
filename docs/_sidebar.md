@@ -1,11 +1,15 @@
 - Collimator
 
   - [Home](/)
+  - [Overview](infrastructure/big-picture.md)
   - [Student Identity Management](identity-management/student.md)
 
-- Data Collector
+- Infrastructure
 
-  - [Home](/)
+  - [Database](infrastruce/database.md)
+  - [Iframe RPC]()
+
+
 
 - Data Analyzer
 
@@ -18,3 +22,8 @@
 
 - How to
   - [Running locally](howto/running-locally.md)
+
+- Scratch
+  
+  - [Modifications](scratch/modifications.md)
+  - [Scratch .sb3 Format](scratch/sb3.md)
