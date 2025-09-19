@@ -1093,26 +1093,31 @@ class Blocks extends React.Component<Props, State> {
       // if the blocks are not yet mounted, ignore the event
       return;
     }
+
     if (event.type === "move" || event.type === "create") {
       // if a block is moved or created, we should get this block and check the stacksize
       // determining if all stacks are above the minimum required
-      if (event.blockId) {
-        const block = this.getWorkspace().getBlockById(event.blockId);
-        if (block) {
-          const isLargeStack = isBlockPartOfLargeStack(block, 2);
-          if (isLargeStack) {
-            try {
-              if (this.props.sendRequest) {
-                this.props.sendRequest("postStudentActivity", {
-                  action: event.type,
-                  blockId: event.blockId,
-                });
-              }
-            } catch (err) {
-              console.error("Student activity tracking failed", err);
-            }
-          }
-        }
+      if (!event.blockId) {
+        return;
+      }
+
+      const block = this.getWorkspace().getBlockById(event.blockId);
+
+      if (!block) {
+        return;
+      }
+
+      if (!isBlockPartOfLargeStack(block, 2)) {
+        return;
+      }
+
+      try {
+        this.props.sendRequest?.("postStudentActivity", {
+          action: event.type,
+          blockId: event.blockId,
+        });
+      } catch (err) {
+        console.error("Student activity tracking failed", err);
       }
     }
 

@@ -1,29 +1,26 @@
 import type { Block } from "scratch-blocks";
 
-export function getStackSize(topBlock: Block): number {
-  let size = 0;
-  let current: Block | null = topBlock;
-
-  while (current) {
-    size++;
-    if (current && current.getNextBlock) {
-      current = current.getNextBlock();
-    } else {
-      current = null;
-    }
+export function isBlockPartOfLargeStack(block: Block, minSize = 2): boolean {
+  if (!block) {
+    return false;
   }
 
-  return size;
-}
-
-export function isBlockPartOfLargeStack(block: Block, minSize = 2): boolean {
   let current: Block | null = block;
+
   while (current && current.getParent && current.getParent()) {
     current = current.getParent();
   }
   if (!current) {
     return false;
   }
-  const stacksize = getStackSize(current);
-  return stacksize >= minSize;
+
+  // Need to go top down to count the exact stack size
+  let size = 0;
+  let next: Block | null = current;
+  while (next) {
+    size++;
+    next = next.getNextBlock ? next.getNextBlock() : null;
+  }
+
+  return size >= minSize;
 }
