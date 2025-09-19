@@ -23,12 +23,21 @@ The `/backend` module has three main responsibilities:
 
 ## Libraries : iframe-rpc
 
-- `iframe-rpc` is used by apps to exchange data with the frontend in an platform-agnostic way.
-- Conversely, `iframe-rpc-react` is used by the frontend to communicate with apps.
+- `iframe-rpc` is used to exchange data between apps and the frontend in a platform-agnostic way.
+
+- `iframe-rpc-react` is built on top of `iframe-rpc` to simplify its usage in a React environment, i.e. the frontend.
 
 ## Apps
 
 An app implements a programming language within ClassMosaic.
+
+Each app must:
+
+- implement the `iframe-rpc` interface,
+- provide tools to create, edit, and solve tasks,
+- and support displaying submissions.
+
+For example, the `scratch` app is built on top of the **Scratch GUI**.
 
 Currently supported apps:
 

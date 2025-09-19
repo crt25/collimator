@@ -4,13 +4,23 @@ When a teacher prepares a task in a lesson, students complete the task and submi
 
 How can the teacher compare the different student results with one another or with her own solution?
 
-In the `backend`, ClassMosaic converts each result in a [Generalized Abstract Syntax Tree (G-AST)](./ast.md). This structure makes it possible to calculate similarities and differences between solutions.
+In the `backend`, ClassMosaic converts each result in a Generalized Abstract Syntax Tree (G-AST). This structure makes it possible to calculate similarities and differences between solutions.
 
 The `/frontend` then performs the analysis and displays the results to the teacher.
 
-By comparing student outputs with the set of expected solutions provided by the teacher, ClassMosaic can group similar results together.
+## Introduction of G-AST translation
 
-For example, two students may solve a Scratch task in different ways. Even if the code looks different, ClassMosaic recognizes that the underlying Generalized Abstract Syntax Tree (G-AST) is equivalent, and groups their results together.
+The translation is deterministic: the same code is always translated to the same G-AST.
+
+In addition, **the translation process normalizes certain syntactic constructs**. For example:
+
+- Any kind of loop is represented as a single `loop` node type, with the condition determined by the specific loop construct being translated.
+- Operators are unified under a generalized `operator` node type, which can represent any operator (`+`, `-`, `|`, `||`, etc.) with an arbitrary number of operands.
+
+Each programming language has its own converter, combining both a shared grammar and language-specific rules.
+
+Learn more about [Generalized Abstract Syntax Tree (G-AST)](./ast.md) and the [converters](./converters.md).
+
 
 ## Algorithms used in the Data Analyzer
 

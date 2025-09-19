@@ -8,13 +8,7 @@ Make sure the following tools are installed:
 - [Node.js](https://nodejs.org/fr) `^22.0`
 - [PostgreSQL](https://www.postgresql.org/)
 
-You need a Microsoft account to log in.
-
-### Node version
-
-Some packages are actually incompatible with Node.js >22.0:
-- `"@sentry/nestjs: ^9.12.0"`
-- `"@sentry/profiling-node": "^9.12.0"`
+You need a Microsoft account to log in. It can be either a personal account or an organizational account, provided the organization has allowed its users to access the application.
 
 ## Clone the Repository
 
