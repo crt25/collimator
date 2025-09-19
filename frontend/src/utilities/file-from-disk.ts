@@ -9,17 +9,22 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
     let wasHandled = false;
 
     const onCancel = (): void => {
-      if (!wasHandled) {
-        reject(new Error("File reading was cancelled"));
-        wasHandled = true;
-        fileInput.removeEventListener("cancel", onCancel);
+      if (wasHandled) {
+        return;
       }
+      reject(new Error("File reading was cancelled"));
+      wasHandled = true;
+      fileInput.remove();
     };
 
     fileInput.addEventListener("cancel", onCancel);
 
     fileInput.type = "file";
     fileInput.addEventListener("change", () => {
+      if (wasHandled) {
+        return;
+      }
+
       if (!fileInput.files) {
         reject(new Error("No files found"));
         return;
@@ -36,7 +41,6 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
         return;
       }
 
-      // Mark as handled before resolving to prevent multiple calls
       wasHandled = true;
       resolve(file);
       fileInput.remove();
