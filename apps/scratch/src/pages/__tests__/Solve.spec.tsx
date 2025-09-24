@@ -493,11 +493,19 @@ test.describe("/solve", () => {
 
     await pwPage.waitForFunction(() => window.postedMessages.length > 2);
 
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some(
+        (m) => (m.message as { method?: string }).method === "getSubmission",
+      ),
+    );
+
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(3);
-
-    expect(messages[2].message).toEqual({
+    expect(messages).toHaveLength(8);
+    const submissionIndex = messages.findIndex(
+      (m) => (m.message as { method?: string }).method === "getSubmission",
+    );
+    expect(messages[submissionIndex].message).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",

@@ -1098,6 +1098,10 @@ class Blocks extends React.Component<Props, State> {
     if ((event.type === "move" || event.type === "create") && event.recordUndo) {
       // if a block is moved or created, we should get this block and check the stacksize
       // determining if all stacks are above the minimum required
+      if (this.props.canEditTask) {
+        return;
+      }
+
       if (!event.blockId) {
         return;
       }
