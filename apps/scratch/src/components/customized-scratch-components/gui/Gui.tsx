@@ -211,7 +211,7 @@ const GUIComponent = (props: {
 
     // otherwise we only enable assertions if the user has enabled them
     // return no-op cleanup function
-    return () => { };
+    return () => {};
   }, [vm.runtime, canEditTask]);
 
   const className = useMemo(() => {
@@ -287,7 +287,9 @@ const GUIComponent = (props: {
                           className={tabClassNames.tabs}
                           selectedIndex={activeTabIndex}
                           selectedTabClassName={tabClassNames.tabSelected}
-                          selectedTabPanelClassName={tabClassNames.tabPanelSelected}
+                          selectedTabPanelClassName={
+                            tabClassNames.tabPanelSelected
+                          }
                           onSelect={onActivateTab}
                         >
                           <TabList className={tabClassNames.tabList}>
@@ -423,7 +425,9 @@ const GUIComponent = (props: {
                           )}
                           {isCostumesTabEnabled && (
                             <TabPanel className={tabClassNames.tabPanel}>
-                              {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
+                              {costumesTabVisible ? (
+                                <CostumeTab vm={vm} />
+                              ) : null}
                             </TabPanel>
                           )}
                           {isSoundsTabEnabled && (

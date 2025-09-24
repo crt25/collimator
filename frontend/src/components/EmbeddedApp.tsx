@@ -57,7 +57,13 @@ export interface Props {
 }
 
 const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
-  { src, onAppAvailable, onReceiveSubmission, onSolutionRun, onStudentActivity },
+  {
+    src,
+    onAppAvailable,
+    onReceiveSubmission,
+    onSolutionRun,
+    onStudentActivity,
+  },
   ref,
 ) {
   const [isAppAvailable, setIsAppAvailable] = useState<boolean>(false);

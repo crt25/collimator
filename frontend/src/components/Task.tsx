@@ -98,7 +98,7 @@ const Task = ({
           type: "SCRATCH_BLOCK",
           data: `${action} block with id ${blockId}`,
         },
-        solution: new Blob([]), // dummy blob here, not used for app activity
+        solution: new Blob([], { type: "application/x.scratch.sb3" }), // dummy blob here, not used for user activity
       });
     },
     [trackStudentActivity, session.id, task.id],

@@ -72,26 +72,26 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
-import { isBlockPartOfLargeStack } from "../../utilities/scratch-block-stack-utils";
+import { trackStudentActivity } from "../../utilities/student-activity-tracking";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { CrtContextValue } from "../../contexts/CrtContext";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 interface WorkspaceChangeEvent {
   type:
-  | "create"
-  | "change"
-  | "move"
-  | "dragOutside"
-  | "endDrag"
-  | "delete"
-  | "var_create"
-  | "var_rename"
-  | "var_delete"
-  | "comment_create"
-  | "comment_change"
-  | "comment_move"
-  | "comment_delete";
+    | "create"
+    | "change"
+    | "move"
+    | "dragOutside"
+    | "endDrag"
+    | "delete"
+    | "var_create"
+    | "var_rename"
+    | "var_delete"
+    | "comment_create"
+    | "comment_change"
+    | "comment_move"
+    | "comment_delete";
 
   blockId?: string;
   recordUndo?: boolean;
@@ -406,9 +406,9 @@ class Blocks extends React.Component<Props, State> {
       this.props.isVisible !== nextProps.isVisible ||
       this._renderedToolboxXML !== nextProps.toolboxXML ||
       this.props.extensionLibraryVisible !==
-      nextProps.extensionLibraryVisible ||
+        nextProps.extensionLibraryVisible ||
       this.props.customProceduresVisible !==
-      nextProps.customProceduresVisible ||
+        nextProps.customProceduresVisible ||
       this.props.locale !== nextProps.locale ||
       this.props.anyModalVisible !== nextProps.anyModalVisible ||
       this.props.stageSize !== nextProps.stageSize
@@ -836,8 +836,8 @@ class Blocks extends React.Component<Props, State> {
     const defineBlocks = (
       blockInfoArray: (
         | {
-          json: Record<string, unknown>;
-        }
+            json: Record<string, unknown>;
+          }
         | ExtensionInfoBlock
       )[],
     ) => {
@@ -1094,31 +1094,20 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    if (event.type === "move" || event.type === "create") {
+    // eslint-disable-next-line prettier/prettier
+    if ((event.type === "move" || event.type === "create") && event.recordUndo) {
       // if a block is moved or created, we should get this block and check the stacksize
       // determining if all stacks are above the minimum required
       if (!event.blockId) {
         return;
       }
 
-      const block = this.getWorkspace().getBlockById(event.blockId);
-
-      if (!block) {
-        return;
-      }
-
-      if (!isBlockPartOfLargeStack(block, 2)) {
-        return;
-      }
-
-      try {
-        this.props.sendRequest?.("postStudentActivity", {
-          action: event.type,
-          blockId: event.blockId,
-        });
-      } catch (err) {
-        console.error("Student activity tracking failed", err);
-      }
+      trackStudentActivity({
+        workspace: this.getWorkspace(),
+        blockId: event.blockId,
+        sendRequest: this.props.sendRequest,
+        action: event.type,
+      });
     }
 
     if (["create", "delete"].includes(event.type)) {
