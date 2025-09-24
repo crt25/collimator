@@ -1,10 +1,40 @@
 import VM from "scratch-vm";
 import JSZip from "jszip";
-import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { ScratchCrtConfig, ScratchProject } from "../types/scratch-vm-custom";
 import { defaultCrtConfig } from "./default-crt-config";
 
 let nextProject: ArrayBuffer | undefined = undefined;
 let isLoading = false;
+
+/**
+ * Check if all assets listed in project.json exist in the ZIP
+ * @param zip The JSZip instance representing the loaded ZIP file.
+ * @param project The parsed project.json object.
+ * @return A list of missing asset filenames. Empty if all assets are present.
+ */
+const checkAssets = async (
+  zip: JSZip,
+  project: ScratchProject,
+): Promise<string[]> => {
+  const missing: string[] = [];
+
+  for (const target of project.targets) {
+    for (const costume of target.costumes || []) {
+      const filename = `${costume.assetId}.${costume.dataFormat}`;
+      if (!zip.file(filename)) {
+        missing.push(filename);
+      }
+    }
+    for (const sound of target.sounds || []) {
+      const filename = `${sound.assetId}.${sound.dataFormat}`;
+      if (!zip.file(filename)) {
+        missing.push(filename);
+      }
+    }
+  }
+
+  return missing;
+};
 
 /**
  * Load a Scratch project from a .sb, .sb2, .sb3 or json string.
@@ -32,6 +62,25 @@ export const loadCrtProject = async (
   if (input instanceof ArrayBuffer) {
     const zip = new JSZip();
     await zip.loadAsync(input);
+
+    // always require a project.json
+    const projectFile = zip.file("project.json");
+    if (!projectFile) {
+      throw new Error("Invalid project file: project.json missing");
+    }
+
+    // parse project.json
+    const project: ScratchProject = await projectFile
+      .async("text")
+      .then((text) => JSON.parse(text));
+
+    // check that all costume/sound assets exist in the ZIP
+    const missingAssets = await checkAssets(zip, project);
+    if (missingAssets.length > 0) {
+      throw new Error(
+        `Could not load project: missing assets (${missingAssets.join(", ")})`,
+      );
+    }
 
     const configFile = zip.file("crt.json");
 
