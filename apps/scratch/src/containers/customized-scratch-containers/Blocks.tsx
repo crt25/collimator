@@ -72,32 +72,16 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
-import { trackStudentActivity } from "../../utilities/student-activity-tracking";
+import {
+  shouldTrackActivity,
+  trackStudentActivity,
+} from "../../utilities/student-activity-tracking";
 import ExtensionLibrary from "./ExtensionLibrary";
+import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
+import type { StudentAction } from "../../utilities/student-activity-tracking";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
-interface WorkspaceChangeEvent {
-  type:
-    | "create"
-    | "change"
-    | "move"
-    | "dragOutside"
-    | "endDrag"
-    | "delete"
-    | "var_create"
-    | "var_rename"
-    | "var_delete"
-    | "comment_create"
-    | "comment_change"
-    | "comment_move"
-    | "comment_delete";
-
-  blockId?: string;
-  recordUndo?: boolean;
-  xml?: Element;
-  oldXml?: Element;
-}
 
 const addFunctionListener = (
   object: unknown,
@@ -1095,23 +1079,17 @@ class Blocks extends React.Component<Props, State> {
     }
 
     // eslint-disable-next-line prettier/prettier
-    if ((event.type === "move" || event.type === "create") && event.recordUndo) {
-      // if a block is moved or created, we should get this block and check the stacksize
-      // determining if all stacks are above the minimum required
-      if (this.props.canEditTask) {
-        return;
-      }
+    if (shouldTrackActivity(event, this.props.canEditTask)) {
+      if (["create", "move", "delete"].includes(event.type)) {
+        const eventAction = event.type as StudentAction;
 
-      if (!event.blockId) {
-        return;
+        trackStudentActivity({
+          workspace: this.getWorkspace(),
+          blockId: event.blockId,
+          sendRequest: this.props.sendRequest,
+          action: eventAction,
+        });
       }
-
-      trackStudentActivity({
-        workspace: this.getWorkspace(),
-        blockId: event.blockId,
-        sendRequest: this.props.sendRequest,
-        action: event.type,
-      });
     }
 
     if (["create", "delete"].includes(event.type)) {

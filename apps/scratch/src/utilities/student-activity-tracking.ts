@@ -1,12 +1,26 @@
 import { CrtContextValue } from "../contexts/CrtContext";
 import { isBlockPartOfLargeStack } from "./scratch-block-stack-utils";
 import type { Block, Workspace } from "scratch-blocks";
-
+import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 interface TrackMoveParams {
   workspace: Workspace;
-  blockId: string;
+  blockId?: string;
   sendRequest?: CrtContextValue["sendRequest"];
-  action: "move" | "create";
+  action?: StudentAction;
+}
+
+export type StudentAction = "create" | "move";
+
+export function shouldTrackActivity(
+  event: WorkspaceChangeEvent,
+  canEditTask: boolean | undefined,
+): boolean | undefined {
+  return (
+    (event.type === "move" || event.type === "create") &&
+    event.recordUndo &&
+    !canEditTask &&
+    !!event.blockId
+  );
 }
 
 function shouldTrackMove(block: Block | null | undefined): boolean {
@@ -22,6 +36,10 @@ export const trackStudentActivity = ({
   sendRequest,
   action,
 }: TrackMoveParams): void => {
+  if (!blockId || !action) {
+    return;
+  }
+
   const block = workspace.getBlockById(blockId);
 
   if (!block) {
