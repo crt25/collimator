@@ -6,20 +6,36 @@ interface TrackMoveParams {
   workspace: Workspace;
   blockId?: string;
   sendRequest?: CrtContextValue["sendRequest"];
-  action?: StudentAction;
+  action?: StudentActivityType;
 }
 
-export type StudentAction = "create" | "move";
+export type StudentActivityType = "create" | "move" | "remove";
+export function resolveActivityAction(
+  event: WorkspaceChangeEvent,
+): StudentActivityType | undefined {
+  const oldParentId = event.oldParentId ?? null;
+  const newParentId = event.newParentId ?? null;
+
+  if (oldParentId && oldParentId !== newParentId) {
+    return "remove";
+  }
+
+  if (event.type === "create" || event.type === "move") {
+    return event.type;
+  }
+
+  return undefined;
+}
 
 export function shouldTrackActivity(
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
 ): boolean | undefined {
   return (
-    (event.type === "move" || event.type === "create") &&
-    event.recordUndo &&
     !canEditTask &&
-    !!event.blockId
+    !!event.blockId &&
+    event.recordUndo &&
+    !!resolveActivityAction(event)
   );
 }
 
@@ -46,7 +62,7 @@ export const trackStudentActivity = ({
     return;
   }
 
-  if (!shouldTrackMove(block)) {
+  if (action !== "remove" && !shouldTrackMove(block)) {
     return;
   }
 

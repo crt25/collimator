@@ -73,13 +73,13 @@ import {
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
 import {
+  resolveActivityAction,
   shouldTrackActivity,
   trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
-import type { StudentAction } from "../../utilities/student-activity-tracking";
 
 // reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 
@@ -1080,16 +1080,17 @@ class Blocks extends React.Component<Props, State> {
 
     // eslint-disable-next-line prettier/prettier
     if (shouldTrackActivity(event, this.props.canEditTask)) {
-      if (["create", "move", "delete"].includes(event.type)) {
-        const eventAction = event.type as StudentAction;
-
-        trackStudentActivity({
-          workspace: this.getWorkspace(),
-          blockId: event.blockId,
-          sendRequest: this.props.sendRequest,
-          action: eventAction,
-        });
+      const eventAction = resolveActivityAction(event);
+      if (!eventAction) {
+        return;
       }
+
+      trackStudentActivity({
+        workspace: this.getWorkspace(),
+        blockId: event.blockId,
+        sendRequest: this.props.sendRequest,
+        action: eventAction,
+      });
     }
 
     if (["create", "delete"].includes(event.type)) {
