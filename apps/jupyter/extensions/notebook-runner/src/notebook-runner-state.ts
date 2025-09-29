@@ -12,7 +12,7 @@ import {
   setKernelIsPrepared,
   waitForKernelToBePrepared,
 } from "./utils";
-import { installNbConvert, installOtter } from "./packages";
+import { installNbConvert, installOtter, patchNumpy } from "./packages";
 
 /**
  * A listener that is called when a comm message is received from the kernel.
@@ -163,6 +163,7 @@ from ipykernel.comm import Comm
 
     await installOtter(kernel);
     await installNbConvert(kernel);
+    await patchNumpy(kernel);
 
     console.debug("Importing Otter Grader...");
     await kernel.requestExecute(

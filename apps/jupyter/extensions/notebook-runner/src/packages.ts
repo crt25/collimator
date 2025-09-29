@@ -31,6 +31,7 @@ const autoInstallPackages =
 
     console.debug("Installing packages...", kernel.id);
     await installOtter(kernel);
+    await patchNumpy(kernel);
     console.debug("Finished installing packages", kernel.id);
 
     if (
@@ -189,6 +190,25 @@ preprocessors = Path("/lib/python3.12/site-packages/nbconvert/preprocessors/__in
 preprocessors.write_text(
   preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
 )
+`,
+    },
+    true,
+  ).done;
+};
+
+export const patchNumpy = async (kernel: IKernelConnection): Promise<void> => {
+  console.debug("Patching numpy for JupyterLite...");
+  await kernel.requestExecute(
+    {
+      // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
+      // this is because we cannot import the execute module in JupyterLite
+      code: `
+import numpy as np
+
+def isclose_py(a, b, **kwargs) -> bool:
+    return bool(np.isclose(a, b, **kwargs))
+
+np.isclose_py = isclose_py
 `,
     },
     true,
