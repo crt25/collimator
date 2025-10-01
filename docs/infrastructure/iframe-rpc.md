@@ -2,28 +2,33 @@
 
 This documentation covers both the core library `iframe-rpc` and its React integration `iframe-rpc-react`.
 
-The React package is built on top of the core, providing hooks for integration in React applications.
+The React package builds on top of the core, providing hooks for integration in React applications.
 
 
 ## Introduction
 
-- `iframe-rpc`: A TypeScript library that implements a typed JSON-RPC 2.0 mechanism over the browser's `postMessage` API ([see MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)), enabling secure and structured communication between a parent window and an iframe. It allows calling remote methods (RPC) while handling cross-origin restrictions (Same-Origin Policy).
+- `iframe-rpc`: A TypeScript library that implements a typed JSON-RPC 2.0 mechanism over the browser's [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API. 
+It enables secure and structured communication between two applications across iframe boundaries.
 
-- `iframe-rpc-react`: A React wrapper around `iframe-rpc`, exposing two hooks (`useIframeParent` and `useIframeChild`) to integrate RPC communication in React components.
+- `iframe-rpc-react`: A React wrapper around `iframe-rpc`, exposing two hooks, `useIframeParent` and `useIframeChild`, for seamless integration in React applications.
 
 ## Core Library: `iframe-rpc`
 
 ### Overview
 
-`iframe-rpc` enables communication between a parent window and an iframe using RPC (Remote Procedure Calls).
+`iframe-rpc` facilitates communication between two applications connected via an iframe:
+
+-  the host application (aka the frontend), which embeds the iframe.
+-  the embedded application (like Scratch), which runs inside the iframe.
 
 It defines strict types for requests and responses, ensuring reliability and security.
 
 ### Uses cases
 
 - Exchange data between the frontend ClassMosaic and an iframe hosting an app (like Scratch).
-- Call methods defined inside the iframe from the parent window.
-- Trigger events or actions in the iframe from the parent.
+- Call methods defined inside the iframe from the frontend.
+- Trigger events or actions in the iframe from the frontend.
+- Retrieve data from the app to the frontend.
 - Ensure secure communication across different origins.
 
 ### Installation and Setup
@@ -42,23 +47,23 @@ yarn install
 
 #### Main classes
 
-- `AppIframeRpcApi` (exported as `AppCrtIframeApi`): for use inside the application side (iframe).
-- `PlatformIframeRpcApi` (exported as `PlatformCrtIframeApi`): for use in the parent window (frontend).
+- `AppIframeRpcApi` (exported as `AppCrtIframeApi`): for the embedded application (iframe).
+- `PlatformIframeRpcApi` (exported as `PlatformCrtIframeApi`): for the host application (frontend).
 
 #### Available Methods
 
 Defined in methods/index.ts:
 
-| Method            | Description                      |
-| ----------------- | -------------------------------- |
-| `getHeight`       | Retrieves the iframe height      |
-| `getSubmission`   | Retrieves the current submission |
-| `getTask`         | Retrieves the current task       |
-| `loadSubmission`  | Loads a submission in the iframe |
-| `loadTask`        | Loads a task in the iframe       |
-| `postSolutionRun` | Sends a solution to execute      |
-| `postSubmission`  | Submits a solution               |
-| `setLocale`       | Sets the interface language      |
+| Method            | Description                             |
+| ----------------- | --------------------------------------- |
+| `getHeight`       | Retrieves the the embedded app’s height |
+| `getSubmission`   | Retrieves the current submission        |
+| `getTask`         | Retrieves the current task              |
+| `loadSubmission`  | Loads a submission in the embedded app  |
+| `loadTask`        | Loads a task in the embedded app        |
+| `postSolutionRun` | Sends a solution to execute             |
+| `postSubmission`  | Submits a solution                      |
+| `setLocale`       | Sets the interface language             |
 
 Each method is strongly typed for parameters and return values.
 
@@ -96,7 +101,7 @@ yarn install
 
 #### `useIframeParent`
 
-Used in the app (like Scratch)
+Used in the embedded app
 
 ```ts
 const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
@@ -104,7 +109,7 @@ const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
 
 ##### Parameters
 
-- `handleRequest`: an object exposing RPC methods to the frontend
+- `handleRequest`: function handling incoming requests from the host application (frontend).
 
 ##### Returns
 
@@ -114,7 +119,7 @@ const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
 
 #### `useIframeChild`
 
-Used inside the frontend
+Used inside the host application (frontend)
 
 ```ts
 const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable);
@@ -122,7 +127,7 @@ const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable)
 
 ##### Parameters
 
-- `handleRequest`: function handling incoming requests from the app.
+- `handleRequest`: function handling incoming requests from the embedded app.
 - `onAppAvailable`: callback triggered when the app is ready.
 
 ##### Returns
