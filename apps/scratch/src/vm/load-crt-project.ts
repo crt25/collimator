@@ -7,12 +7,12 @@ let nextProject: ArrayBuffer | undefined = undefined;
 let isLoading = false;
 
 /**
- * Check if all assets listed in project.json exist in the ZIP
+ * Get all assets listed in project.json exist in the ZIP
  * @param zip The JSZip instance representing the loaded ZIP file.
  * @param project The parsed project.json object.
  * @return A list of missing asset filenames. Empty if all assets are present.
  */
-const checkAssets = async (
+export const getMissingFilenames = async (
   zip: JSZip,
   project: ScratchProject,
 ): Promise<string[]> => {
@@ -25,6 +25,7 @@ const checkAssets = async (
         missing.push(filename);
       }
     }
+
     for (const sound of target.sounds || []) {
       const filename = `${sound.assetId}.${sound.dataFormat}`;
       if (!zip.file(filename)) {
@@ -75,7 +76,7 @@ export const loadCrtProject = async (
       .then((text) => JSON.parse(text));
 
     // check that all costume/sound assets exist in the ZIP
-    const missingAssets = await checkAssets(zip, project);
+    const missingAssets = await getMissingFilenames(zip, project);
     if (missingAssets.length > 0) {
       throw new Error(
         `Could not load project: missing assets (${missingAssets.join(", ")})`,
