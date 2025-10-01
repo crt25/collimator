@@ -73,7 +73,7 @@ import {
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
 import {
-  resolveActivityAction,
+  getStudentActivityType,
   shouldTrackActivity,
   trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
@@ -1080,7 +1080,7 @@ class Blocks extends React.Component<Props, State> {
 
     // eslint-disable-next-line prettier/prettier
     if (shouldTrackActivity(event, this.props.canEditTask)) {
-      const eventAction = resolveActivityAction(event);
+      const eventAction = getStudentActivityType(event);
       if (!eventAction) {
         return;
       }

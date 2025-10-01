@@ -9,19 +9,34 @@ interface TrackMoveParams {
   action?: StudentActivityType;
 }
 
-export type StudentActivityType = "create" | "move" | "remove";
-export function resolveActivityAction(
+export enum StudentActivityType {
+  CREATE = "create",
+  MOVE = "move",
+  REMOVE = "remove",
+}
+
+type TrackingRule = (block: Block) => boolean;
+
+const trackingRules: Record<StudentActivityType, TrackingRule> = {
+  [StudentActivityType.CREATE]: shouldTrackMove,
+  [StudentActivityType.MOVE]: shouldTrackMove,
+  [StudentActivityType.REMOVE]: () => true,
+};
+
+export function getStudentActivityType(
   event: WorkspaceChangeEvent,
 ): StudentActivityType | undefined {
   const oldParentId = event.oldParentId ?? null;
   const newParentId = event.newParentId ?? null;
 
   if (oldParentId && oldParentId !== newParentId) {
-    return "remove";
+    return StudentActivityType.REMOVE;
   }
 
   if (event.type === "create" || event.type === "move") {
-    return event.type;
+    return event.type === "create"
+      ? StudentActivityType.CREATE
+      : StudentActivityType.MOVE;
   }
 
   return undefined;
@@ -35,7 +50,7 @@ export function shouldTrackActivity(
     !canEditTask &&
     !!event.blockId &&
     event.recordUndo &&
-    !!resolveActivityAction(event)
+    !!getStudentActivityType(event)
   );
 }
 
@@ -62,7 +77,8 @@ export const trackStudentActivity = ({
     return;
   }
 
-  if (action !== "remove" && !shouldTrackMove(block)) {
+  const rules = trackingRules[action];
+  if (!rules(block)) {
     return;
   }
 
