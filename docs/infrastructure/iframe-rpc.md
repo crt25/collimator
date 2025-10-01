@@ -73,3 +73,59 @@ yarn demo
 
 ## React Integration: `iframe-rpc-react`
 
+### Overview
+
+`iframe-rpc-react` is build on top of `iframe-rpc` to provide React hooks that simplify integration.
+It encapsulates origin validation, lifecycle handling, and communication setup for a React environment.
+
+### Installation and Setup
+
+### Installation and Setup
+
+The library is installed with ClassMosaic parts.
+
+For development purpose on the library, you can install it via yarn:
+
+```sh
+# From: collimator/
+cd /libraries/iframe-rpc-react
+yarn install
+```
+
+### Hooks
+
+#### `useIframeParent`
+
+Used in the app (like Scratch)
+
+```ts
+const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
+```
+
+##### Parameters
+
+- `handleRequest`: an object exposing RPC methods to the frontend
+
+##### Returns
+
+- `isInIframe`: `boolean` - if running inside an iframe.
+- `hasLoaded`: `boolean` - if the iframe has finished loading.
+- `sendRequest`: function - sends requests to the frontend.
+
+#### `useIframeChild`
+
+Used inside the frontend
+
+```ts
+const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable);
+```
+
+##### Parameters
+
+- `handleRequest`: function handling incoming requests from the app.
+- `onAppAvailable`: callback triggered when the app is ready.
+
+##### Returns
+
+- `sendRequest`: function - sends requests to the app.
+- `iframeRef`: ref to attach to the `<iframe>` element
