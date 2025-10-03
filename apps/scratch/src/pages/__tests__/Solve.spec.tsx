@@ -7,7 +7,11 @@ import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
-
+import {
+  missingAssetsTask,
+  noTargetsTask,
+  noCostumesOrSoundsTask,
+} from "./tasks/mock-test-task";
 declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
@@ -382,6 +386,37 @@ test.describe("/solve", () => {
     await expect(page.openTaskConfigButton).toHaveCount(0);
 
     expect(page.taskConfigForm).toHaveCount(0);
+  });
+
+  test("returns missing files when some are not in zip", async ({ page }) => {
+    const { page: taskPage } = await TestTaskPage.load(
+      page,
+      missingAssetsTask,
+      true,
+    );
+
+    // if assets are missing, the project should fail to fully load
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling project with no targets", async ({ page }) => {
+    const { page: taskPage } = await TestTaskPage.load(
+      page,
+      noTargetsTask,
+      true,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling targets with no costumes or sounds", async ({ page }) => {
+    const { page: taskPage } = await TestTaskPage.load(
+      page,
+      noCostumesOrSoundsTask,
+      true,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
   });
 
   test("removing initial blocks does not increase the limit", async ({
