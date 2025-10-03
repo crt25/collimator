@@ -73,15 +73,14 @@ import {
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
 import {
+  mapScratchEventTypeToStudentAction,
   shouldTrackActivity,
+  StudentAction,
   trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
-import type { StudentAction } from "../../utilities/student-activity-tracking";
-
-// reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
 
 const addFunctionListener = (
   object: unknown,
@@ -174,7 +173,7 @@ interface Props {
   workspaceMetrics: {
     targets: Record<string, Metrics>;
   };
-  sendRequest?: CrtContextValue["sendRequest"];
+  sendRequest: CrtContextValue["sendRequest"];
 }
 
 type PromptCallback = (
@@ -1078,26 +1077,34 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    // eslint-disable-next-line prettier/prettier
-    if (shouldTrackActivity(event, this.props.canEditTask)) {
-      if (["create", "move", "delete"].includes(event.type)) {
-        const eventAction = event.type as StudentAction;
-
-        trackStudentActivity({
-          workspace: this.getWorkspace(),
-          blockId: event.blockId,
-          sendRequest: this.props.sendRequest,
-          action: eventAction,
-        });
-      }
+    const eventAction = mapScratchEventTypeToStudentAction(event.type);
+    if (!eventAction) {
+      return;
     }
 
-    if (["create", "delete"].includes(event.type)) {
+    if (shouldTrackActivity(eventAction, event, this.props.canEditTask)) {
+      const block = this.getWorkspace().getBlockById(event.blockId ?? "");
+
+      if (!block) {
+        return;
+      }
+      (async () => {
+        const solution = await this.props.vm.saveProjectSb3();
+        trackStudentActivity({
+          block: block,
+          sendRequest: this.props.sendRequest,
+          action: eventAction,
+          solution: solution,
+        });
+      })();
+    }
+
+    if ([StudentAction.CREATE, StudentAction.DELETE].includes(eventAction)) {
       let xml: Element | undefined;
 
-      if (event.type === "create" && event.xml) {
+      if (eventAction === StudentAction.CREATE && event.xml) {
         xml = event.xml;
-      } else if (event.type === "delete" && event.oldXml) {
+      } else if (eventAction === StudentAction.DELETE && event.oldXml) {
         xml = event.oldXml;
       }
 
@@ -1126,7 +1133,7 @@ class Blocks extends React.Component<Props, State> {
       }
 
       if (
-        event.type === "delete" &&
+        eventAction === StudentAction.DELETE &&
         // when switching sprites, blocks are also deleted but with
         // recordUndo set to false
         event.recordUndo &&

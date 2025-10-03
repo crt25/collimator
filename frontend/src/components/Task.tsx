@@ -89,16 +89,16 @@ const Task = ({
   );
 
   const onStudentActivity = useCallback(
-    (action: string, blockId: string) => {
+    (action: string, data: Record<string, unknown>, solution: Blob) => {
       trackStudentActivity({
         type: StudentActivityType.TASK_APP_ACTIVITY,
         sessionId: session.id,
         taskId: task.id,
         appActivity: {
-          type: "SCRATCH_BLOCK",
-          data: `${action} block with id ${blockId}`,
+          type: action,
+          data: data,
         },
-        solution: new Blob([], { type: "application/x.scratch.sb3" }), // dummy blob here, not used for user activity
+        solution: solution,
       });
     },
     [trackStudentActivity, session.id, task.id],

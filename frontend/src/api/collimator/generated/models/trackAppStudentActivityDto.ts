@@ -10,5 +10,5 @@ export interface TrackAppStudentActivityDto {
   /** The application-internal type of the activity. */
   type: string;
   /** The binary app activity data encoded in base64. */
-  data: string;
+  data: Record<string, unknown>;
 }

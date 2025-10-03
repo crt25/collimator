@@ -1,61 +1,76 @@
 import { CrtContextValue } from "../contexts/CrtContext";
 import { isBlockPartOfLargeStack } from "./scratch-block-stack-utils";
-import type { Block, Workspace } from "scratch-blocks";
+import type { Block } from "scratch-blocks";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 interface TrackMoveParams {
-  workspace: Workspace;
-  blockId?: string;
-  sendRequest?: CrtContextValue["sendRequest"];
-  action?: StudentAction;
+  block: Block;
+  sendRequest: CrtContextValue["sendRequest"];
+  action: StudentAction;
+  solution: Blob;
 }
 
-export type StudentAction = "create" | "move";
+export enum StudentAction {
+  CREATE = "create",
+  MOVE = "move",
+  DELETE = "delete",
+}
 
-export function shouldTrackActivity(
+const scratchToStudentAction: Record<string, StudentAction | null> = {
+  create: StudentAction.CREATE,
+  move: StudentAction.MOVE,
+  delete: StudentAction.DELETE,
+};
+
+export const mapScratchEventTypeToStudentAction = (
+  type: string,
+): StudentAction | null => scratchToStudentAction[type] || null;
+
+export const shouldTrackActivity = (
+  action: StudentAction,
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
-): boolean | undefined {
-  return (
-    (event.type === "move" || event.type === "create") &&
-    event.recordUndo &&
-    !canEditTask &&
-    !!event.blockId
-  );
-}
+): boolean | undefined =>
+  (action === StudentAction.MOVE || action === StudentAction.CREATE) &&
+  event.recordUndo &&
+  !canEditTask &&
+  !!event.blockId;
 
-function shouldTrackMove(block: Block | null | undefined): boolean {
-  if (!block) {
-    return false;
-  }
-  return isBlockPartOfLargeStack(block);
-}
+const shouldTrackMove = (block: Block | null | undefined): boolean =>
+  !block ? false : isBlockPartOfLargeStack(block);
+
+const getBlockData = (block: Block): Record<string, unknown> => ({
+  blockId: block.id ?? "",
+  parentId: block.getParent?.()?.id ?? null,
+  position: block.getRelativeToSurfaceXY?.() ?? { x: 0, y: 0 },
+  childrenIds: block.getChildren?.().map((child) => child.id) ?? [],
+});
 
 export const trackStudentActivity = ({
-  workspace,
-  blockId,
+  block,
   sendRequest,
   action,
+  solution,
 }: TrackMoveParams): void => {
-  if (!blockId || !action) {
-    return;
-  }
-
-  const block = workspace.getBlockById(blockId);
-
-  if (!block) {
-    return;
-  }
-
   if (!shouldTrackMove(block)) {
     return;
   }
 
+  const data = getBlockData(block);
+  sendStudentActivity(data, { block, sendRequest, action, solution });
+};
+
+async function sendStudentActivity(
+  data: Record<string, unknown>,
+  { sendRequest, action, solution }: TrackMoveParams,
+): Promise<void> {
   try {
-    sendRequest?.("postStudentActivity", {
+    await sendRequest("postStudentActivity", {
       action,
-      blockId,
+      data,
+      solution,
+      type: "SCRATCH",
     });
   } catch (error) {
     console.error("Error sending student activity:", error);
   }
-};
+}

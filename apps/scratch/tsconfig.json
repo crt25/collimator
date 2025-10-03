@@ -19,7 +19,8 @@
     "preserveSymlinks": true,
     "paths": {
       // alias
-      "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"]
+      "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"],
+      "@iframe-rpc/*": ["../../libraries/iframe-rpc/src/*"]
     }
   },
   "include": [
