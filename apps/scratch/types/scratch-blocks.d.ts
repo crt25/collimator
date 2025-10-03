@@ -22,13 +22,16 @@ declare namespace ScratchBlocksExtended {
   }
 
   interface Block extends ScratchBlocks.Block {
-    init: (this: BlockThis) => void;
-
     inputList?: BlockInput[];
     isMonitored?: boolean;
 
     mutationToDom?: () => HTMLElement;
     domToMutation?: (element: HTMLElement) => void;
+    getNextBlock?: () => Block | null;
+    getParent?: () => Block | null;
+    getRelativeToSurfaceXY?: () => { x: number; y: number };
+    getChildren?: () => Block[];
+    id?: string;
   }
 
   class Flyout extends ScratchBlocks.Flyout {

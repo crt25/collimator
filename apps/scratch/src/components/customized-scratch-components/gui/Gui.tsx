@@ -48,7 +48,7 @@ import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--co
 import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
 import { useEffect, useMemo } from "react";
-
+import { CrtContext } from "../../../contexts/CrtContext";
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
 import StageWrapper from "../stage-wrapper/StageWrapper";
@@ -280,69 +280,127 @@ const GUIComponent = (props: {
                         : crtStyles.editorWrapper
                     }
                   >
-                    <Tabs
-                      forceRenderTabPanel
-                      className={tabClassNames.tabs}
-                      selectedIndex={activeTabIndex}
-                      selectedTabClassName={tabClassNames.tabSelected}
-                      selectedTabPanelClassName={tabClassNames.tabPanelSelected}
-                      onSelect={onActivateTab}
-                    >
-                      <TabList className={tabClassNames.tabList}>
-                        {isCodeTabEnabled && (
-                          <Tab className={tabClassNames.tab}>
-                            <img draggable={false} src={codeIcon} />
-                            <FormattedMessage
-                              defaultMessage="Code"
-                              description="Button to get to the code panel"
-                              id="gui.gui.codeTab"
-                            />
-                          </Tab>
-                        )}
-                        {isCostumesTabEnabled && (
-                          <Tab
-                            className={tabClassNames.tab}
-                            onClick={onActivateCostumesTab}
-                          >
-                            <img draggable={false} src={costumesIcon} />
-                            {targetIsStage ? (
-                              <FormattedMessage
-                                defaultMessage="Backdrops"
-                                description="Button to get to the backdrops panel"
-                                id="gui.gui.backdropsTab"
-                              />
-                            ) : (
-                              <FormattedMessage
-                                defaultMessage="Costumes"
-                                description="Button to get to the costumes panel"
-                                id="gui.gui.costumesTab"
-                              />
+                    <CrtContext.Consumer>
+                      {({ sendRequest }) => (
+                        <Tabs
+                          forceRenderTabPanel
+                          className={tabClassNames.tabs}
+                          selectedIndex={activeTabIndex}
+                          selectedTabClassName={tabClassNames.tabSelected}
+                          selectedTabPanelClassName={
+                            tabClassNames.tabPanelSelected
+                          }
+                          onSelect={onActivateTab}
+                        >
+                          <TabList className={tabClassNames.tabList}>
+                            {isCodeTabEnabled && (
+                              <Tab className={tabClassNames.tab}>
+                                <img draggable={false} src={codeIcon} />
+                                <FormattedMessage
+                                  defaultMessage="Code"
+                                  description="Button to get to the code panel"
+                                  id="gui.gui.codeTab"
+                                />
+                              </Tab>
                             )}
-                          </Tab>
-                        )}
-                        {isSoundsTabEnabled && (
-                          <Tab
-                            className={tabClassNames.tab}
-                            onClick={onActivateSoundsTab}
-                          >
-                            <img draggable={false} src={soundsIcon} />
-                            <FormattedMessage
-                              defaultMessage="Sounds"
-                              description="Button to get to the sounds panel"
-                              id="gui.gui.soundsTab"
-                            />
-                          </Tab>
-                        )}
-                      </TabList>
-                      {isCodeTabEnabled && (
-                        <TabPanel className={tabClassNames.tabPanel}>
-                          <Box className={styles.blocksWrapper}>
+                            {isCostumesTabEnabled && (
+                              <Tab
+                                className={tabClassNames.tab}
+                                onClick={onActivateCostumesTab}
+                              >
+                                <img draggable={false} src={costumesIcon} />
+                                {targetIsStage ? (
+                                  <FormattedMessage
+                                    defaultMessage="Backdrops"
+                                    description="Button to get to the backdrops panel"
+                                    id="gui.gui.backdropsTab"
+                                  />
+                                ) : (
+                                  <FormattedMessage
+                                    defaultMessage="Costumes"
+                                    description="Button to get to the costumes panel"
+                                    id="gui.gui.costumesTab"
+                                  />
+                                )}
+                              </Tab>
+                            )}
+                            {isSoundsTabEnabled && (
+                              <Tab
+                                className={tabClassNames.tab}
+                                onClick={onActivateSoundsTab}
+                              >
+                                <img draggable={false} src={soundsIcon} />
+                                <FormattedMessage
+                                  defaultMessage="Sounds"
+                                  description="Button to get to the sounds panel"
+                                  id="gui.gui.soundsTab"
+                                />
+                              </Tab>
+                            )}
+                          </TabList>
+                          {isCodeTabEnabled && (
+                            <TabPanel className={tabClassNames.tabPanel}>
+                              <Box className={styles.blocksWrapper}>
+                                <Blocks
+                                  showFlyout={true}
+                                  canEditTask={canEditTask}
+                                  key={`${blocksId}/${theme}`}
+                                  grow={1}
+                                  isVisible={blocksTabVisible}
+                                  options={{
+                                    media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
+                                    zoom: {
+                                      controls: true,
+                                      wheel: true,
+                                      startScale: BLOCKS_DEFAULT_SCALE,
+                                    },
+                                    grid: {
+                                      spacing: 40,
+                                      length: 2,
+                                      colour: "#ddd",
+                                    },
+                                    comments: true,
+                                    collapse: false,
+                                    sounds: false,
+                                  }}
+                                  stageSize={stageSize}
+                                  theme={theme}
+                                  vm={vm}
+                                  sendRequest={sendRequest}
+                                />
+                              </Box>
+                              {canEditTask && (
+                                <Box
+                                  className={styles.extensionButtonContainer}
+                                >
+                                  <button
+                                    className={styles.extensionButton}
+                                    title={intl.formatMessage(
+                                      messages.addExtension,
+                                    )}
+                                    onClick={onExtensionButtonClick}
+                                    data-testid="add-extension-button"
+                                  >
+                                    <img
+                                      className={styles.extensionButtonIcon}
+                                      draggable={false}
+                                      src={addExtensionIcon}
+                                    />
+                                  </button>
+                                </Box>
+                              )}
+                              <Box className={styles.watermark}>
+                                <Watermark />
+                              </Box>
+                            </TabPanel>
+                          )}
+                          {isStandaloneCodeEnabled && (
                             <Blocks
-                              showFlyout={true}
+                              showFlyout={false}
                               canEditTask={canEditTask}
                               key={`${blocksId}/${theme}`}
                               grow={1}
-                              isVisible={blocksTabVisible}
+                              isVisible={true}
                               options={{
                                 media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
                                 zoom: {
@@ -355,77 +413,31 @@ const GUIComponent = (props: {
                                   length: 2,
                                   colour: "#ddd",
                                 },
-                                comments: true,
+                                comments: false,
                                 collapse: false,
                                 sounds: false,
                               }}
                               stageSize={stageSize}
                               theme={theme}
                               vm={vm}
+                              sendRequest={sendRequest}
                             />
-                          </Box>
-                          {canEditTask && (
-                            <Box className={styles.extensionButtonContainer}>
-                              <button
-                                className={styles.extensionButton}
-                                title={intl.formatMessage(
-                                  messages.addExtension,
-                                )}
-                                onClick={onExtensionButtonClick}
-                                data-testid="add-extension-button"
-                              >
-                                <img
-                                  className={styles.extensionButtonIcon}
-                                  draggable={false}
-                                  src={addExtensionIcon}
-                                />
-                              </button>
-                            </Box>
                           )}
-                          <Box className={styles.watermark}>
-                            <Watermark />
-                          </Box>
-                        </TabPanel>
+                          {isCostumesTabEnabled && (
+                            <TabPanel className={tabClassNames.tabPanel}>
+                              {costumesTabVisible ? (
+                                <CostumeTab vm={vm} />
+                              ) : null}
+                            </TabPanel>
+                          )}
+                          {isSoundsTabEnabled && (
+                            <TabPanel className={tabClassNames.tabPanel}>
+                              {soundsTabVisible ? <SoundTab vm={vm} /> : null}
+                            </TabPanel>
+                          )}
+                        </Tabs>
                       )}
-                      {isStandaloneCodeEnabled && (
-                        <Blocks
-                          showFlyout={false}
-                          canEditTask={canEditTask}
-                          key={`${blocksId}/${theme}`}
-                          grow={1}
-                          isVisible={true}
-                          options={{
-                            media: `${basePath}static/${themeMap[theme].blocksMediaFolder}/`,
-                            zoom: {
-                              controls: true,
-                              wheel: true,
-                              startScale: BLOCKS_DEFAULT_SCALE,
-                            },
-                            grid: {
-                              spacing: 40,
-                              length: 2,
-                              colour: "#ddd",
-                            },
-                            comments: false,
-                            collapse: false,
-                            sounds: false,
-                          }}
-                          stageSize={stageSize}
-                          theme={theme}
-                          vm={vm}
-                        />
-                      )}
-                      {isCostumesTabEnabled && (
-                        <TabPanel className={tabClassNames.tabPanel}>
-                          {costumesTabVisible ? <CostumeTab vm={vm} /> : null}
-                        </TabPanel>
-                      )}
-                      {isSoundsTabEnabled && (
-                        <TabPanel className={tabClassNames.tabPanel}>
-                          {soundsTabVisible ? <SoundTab vm={vm} /> : null}
-                        </TabPanel>
-                      )}
-                    </Tabs>
+                    </CrtContext.Consumer>
                     {backpackVisible ? <Backpack host={backpackHost} /> : null}
                   </Box>
 

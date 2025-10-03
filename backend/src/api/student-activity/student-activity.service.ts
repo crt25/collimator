@@ -12,7 +12,7 @@ export type AppActivityInput = Omit<
   Prisma.StudentActivityAppUncheckedCreateInput,
   "id" | "data"
 > & {
-  data: string; // Base64 encoded string
+  data: Prisma.InputJsonValue; // JSON data
 };
 
 export type StudentActivityInput = Omit<
@@ -69,7 +69,7 @@ export class StudentActivityService {
       ? {
           create: {
             type: activity.appActivity.type,
-            data: Buffer.from(activity.appActivity.data, "base64"),
+            data: activity.appActivity.data,
           },
         }
       : undefined;
