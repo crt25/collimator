@@ -6,8 +6,25 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
   document.body.appendChild(fileInput);
 
   return new Promise<Blob>((resolve, reject) => {
+    let wasHandled = false;
+
+    const onCancel = (): void => {
+      if (wasHandled) {
+        return;
+      }
+      reject(new Error("File reading was cancelled"));
+      wasHandled = true;
+      fileInput.remove();
+    };
+
+    fileInput.addEventListener("cancel", onCancel);
+
     fileInput.type = "file";
     fileInput.addEventListener("change", () => {
+      if (wasHandled) {
+        return;
+      }
+
       if (!fileInput.files) {
         reject(new Error("No files found"));
         return;
@@ -24,6 +41,7 @@ export const readSingleFileFromDisk = (): Promise<Blob> => {
         return;
       }
 
+      wasHandled = true;
       resolve(file);
       fileInput.remove();
     });

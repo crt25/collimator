@@ -78,6 +78,7 @@ const TaskModal = ({
 }) => {
   const [appLoaded, setAppLoaded] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const intl = useIntl();
 
@@ -191,6 +192,7 @@ const TaskModal = ({
             )}
             <Button
               onClick={warnBeforeClose}
+              disabled={isSaving}
               variant={ButtonVariant.danger}
               data-testid="cancel-button"
             >
@@ -198,12 +200,17 @@ const TaskModal = ({
             </Button>
             {showSaveButton && (
               <Button
-                disabled={!appLoaded}
+                disabled={!appLoaded || isSaving}
                 onClick={async () => {
                   if (embeddedApp.current && onSave) {
-                    await onSave(embeddedApp.current);
+                    try {
+                      setIsSaving(true);
+                      await onSave(embeddedApp.current);
+                      setIsShown(false);
+                    } finally {
+                      setIsSaving(false);
+                    }
                   }
-                  setIsShown(false);
                 }}
                 variant={ButtonVariant.primary}
                 data-testid="save-button"
