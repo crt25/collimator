@@ -52,16 +52,12 @@ export class TestTaskPage extends ScratchEditorPage {
 
   static async load(
     pwPage: Page,
-    task?: TestTask | null,
-    expectedError = false,
   ): Promise<{ page: TestTaskPage; task: TestTask }> {
-    const chosenTask = task ?? tasks.testTask;
-
-    await loadTask(pwPage, chosenTask, expectedError);
+    await loadTask(pwPage, tasks.testTask);
 
     const page = new TestTaskPage(pwPage);
     await page.resetZoom();
 
-    return { page, task: chosenTask };
+    return { page, task: tasks.testTask };
   }
 }

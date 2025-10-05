@@ -5,13 +5,10 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
+import { TestFailingTaskPage } from "./page-objects/test-failing-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
-import {
-  missingAssetsTask,
-  noTargetsTask,
-  noCostumesOrSoundsTask,
-} from "./tasks/mock-test-task";
+import tasks from "./tasks/index";
 declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
@@ -389,31 +386,30 @@ test.describe("/solve", () => {
   });
 
   test("returns missing files when some are not in zip", async ({ page }) => {
-    const { page: taskPage } = await TestTaskPage.load(
+    const missingAssetsTask = await tasks.createMissingAssetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       missingAssetsTask,
-      true,
     );
-
     // if assets are missing, the project should fail to fully load
     await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
   });
 
   test("handling project with no targets", async ({ page }) => {
-    const { page: taskPage } = await TestTaskPage.load(
+    const noTargetsTask = await tasks.createNoTargetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       noTargetsTask,
-      true,
     );
 
     await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
   });
 
   test("handling targets with no costumes or sounds", async ({ page }) => {
-    const { page: taskPage } = await TestTaskPage.load(
+    const noCostumesOrSoundsTask = await tasks.createNoCostumesOrSoundsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       noCostumesOrSoundsTask,
-      true,
     );
 
     await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
