@@ -8,6 +8,7 @@ export interface WorkspaceChangeEvent {
     | "dragOutside"
     | "endDrag"
     | "delete"
+    | "remove"
     | "var_create"
     | "var_rename"
     | "var_delete"
@@ -20,4 +21,6 @@ export interface WorkspaceChangeEvent {
   recordUndo?: boolean;
   xml?: Element;
   oldXml?: Element;
+  newParentId?: string;
+  oldParentId?: string;
 }

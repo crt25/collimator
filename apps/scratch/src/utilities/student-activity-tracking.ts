@@ -12,12 +12,28 @@ interface TrackMoveParams {
 export enum StudentAction {
   CREATE = "create",
   MOVE = "move",
+  REMOVE = "remove",
   DELETE = "delete",
+}
+
+export function resolveStudentActionFromEvent(
+  event: WorkspaceChangeEvent,
+  baseAction: StudentAction,
+): StudentAction | undefined {
+  const oldParentId = event.oldParentId ?? null;
+  const newParentId = event.newParentId ?? null;
+
+  if (oldParentId && oldParentId !== newParentId) {
+    return StudentAction.REMOVE;
+  }
+
+  return baseAction ?? undefined;
 }
 
 const scratchToStudentAction: Record<string, StudentAction | null> = {
   create: StudentAction.CREATE,
   move: StudentAction.MOVE,
+  remove: StudentAction.REMOVE,
   delete: StudentAction.DELETE,
 };
 
@@ -30,13 +46,29 @@ export const shouldTrackActivity = (
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
 ): boolean | undefined =>
-  (action === StudentAction.MOVE || action === StudentAction.CREATE) &&
+  (action === StudentAction.MOVE ||
+    action === StudentAction.CREATE ||
+    action === StudentAction.REMOVE ||
+    action === StudentAction.DELETE) &&
   event.recordUndo &&
   !canEditTask &&
   !!event.blockId;
 
-const shouldTrackMove = (block: Block | null | undefined): boolean =>
-  !block ? false : isBlockPartOfLargeStack(block);
+const shouldTrackMove = (
+  block: Block | null | undefined,
+  action: StudentAction,
+): boolean => {
+  if (!block) {
+    return false;
+  }
+
+  // Always track removal actions
+  if (action === StudentAction.REMOVE) {
+    return true;
+  }
+
+  return isBlockPartOfLargeStack(block);
+};
 
 const getBlockData = (block: Block): Record<string, unknown> => ({
   blockId: block.id ?? "",
@@ -51,7 +83,7 @@ export const trackStudentActivity = ({
   action,
   solution,
 }: TrackMoveParams): void => {
-  if (!shouldTrackMove(block)) {
+  if (!shouldTrackMove(block, action)) {
     return;
   }
 
