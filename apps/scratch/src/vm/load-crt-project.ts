@@ -1,35 +1,18 @@
 import VM from "scratch-vm";
 import JSZip from "jszip";
 import { ScratchCrtConfig, ScratchProject } from "../types/scratch-vm-custom";
+
+import {
+  CrtConfigParseError,
+  InvalidProjectJsonError,
+  InvalidZipError,
+  MissingAssetsError,
+  MissingProjectJsonError,
+  VmLoadError,
+  ScratchProjectError,
+} from "../errors/scratch/index";
+
 import { defaultCrtConfig } from "./default-crt-config";
-
-export enum ScratchProjectErrorCode {
-  ConcurrentLoadError = "CONCURRENT_LOAD_ERROR",
-  InvalidZip = "INVALID_ZIP",
-  MissingProjectJson = "MISSING_PROJECT_JSON",
-  InvalidProjectJson = "INVALID_PROJECT_JSON",
-  CrtConfigParseError = "CRT_CONFIG_PARSE_ERROR",
-  VmLoadError = "VM_LOAD_ERROR",
-  MissingAssets = "MISSING_ASSETS",
-  InvalidFormat = "INVALID_FORMAT",
-  Unknown = "UNKNOWN",
-}
-
-type ScratchProjectErrorDetails =
-  | { errorMsg: Error | string }
-  | { missingAssets: string[] }
-  | undefined;
-
-export class ScratchProjectError extends Error {
-  constructor(
-    public code: ScratchProjectErrorCode,
-    message: string,
-    public details?: ScratchProjectErrorDetails,
-  ) {
-    super(message);
-    this.name = "ScratchProjectError";
-  }
-}
 
 let nextProject: ArrayBuffer | undefined = undefined;
 let isLoading = false;
@@ -65,66 +48,77 @@ export const getMissingFilenames = async (
   return missing;
 };
 
+/**
+ * Clear the nextProject variable and reset isLoading.
+ */
 const clearNextProject = (): void => {
   isLoading = false;
   nextProject = undefined;
 };
 
+/**
+ * Load and parse a ZIP file from an ArrayBuffer.
+ * @param input The ArrayBuffer representing the ZIP file.
+ * @return A promise that resolves to the JSZip instance.
+ */
 const loadZip = async (input: ArrayBuffer): Promise<JSZip> => {
   const zip = new JSZip();
+
   try {
     await zip.loadAsync(input);
   } catch (e) {
-    clearNextProject();
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.InvalidZip,
-      "Invalid project file: not a valid ZIP archive",
-      { errorMsg: e as Error | string },
-    );
+    throw new InvalidZipError(e as Error);
   }
+
   return zip;
 };
 
+/**
+ * Load and parse project.json from a ZIP file.
+ * @param zip The JSZip instance representing the loaded ZIP file.
+ * @return A promise that resolves to the ScratchProject object.
+ */
 const parseProjectJson = async (zip: JSZip): Promise<ScratchProject> => {
   const projectFile = zip.file("project.json");
+
   if (!projectFile) {
-    clearNextProject();
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.MissingProjectJson,
-      "Invalid project file: project.json missing",
-    );
+    throw new MissingProjectJsonError();
   }
-  // parse project.json
+
   let project: ScratchProject;
+
   try {
     project = await projectFile.async("text").then((text) => JSON.parse(text));
   } catch (e) {
-    clearNextProject();
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.InvalidProjectJson,
-      "Invalid project file: project.json is not valid JSON",
-      { errorMsg: e as Error | string },
-    );
+    throw new InvalidProjectJsonError(e as Error);
   }
+
   return project;
 };
 
+/**
+ * Validate that all assets listed in project.json exist in the ZIP.
+ * @param zip The JSZip instance representing the loaded ZIP file.
+ * @param project The parsed project.json object.
+ */
 const validateAssets = async (
   zip: JSZip,
   project: ScratchProject,
 ): Promise<void> => {
   // check that all costume/sound assets exist in the ZIP
   const missingAssets = await getMissingFilenames(zip, project);
+
   if (missingAssets.length > 0) {
-    clearNextProject();
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.MissingAssets,
-      `Project is missing ${missingAssets.length} assets`,
-      { missingAssets },
-    );
+    throw new MissingAssetsError(missingAssets);
   }
 };
 
+/**
+ * Load and parse crt.json from a ZIP file, if it exists.
+ * @param vm The Scratch VM instance to set the crtConfig on.
+ * @param zip The JSZip instance representing the loaded ZIP file.
+ * @return A promise that resolves when loading is complete.
+ */
 const loadCrtConfig = async (vm: VM, zip: JSZip): Promise<void> => {
   const configFile = zip.file("crt.json");
 
@@ -136,12 +130,7 @@ const loadCrtConfig = async (vm: VM, zip: JSZip): Promise<void> => {
     try {
       config = await configFile.async("text").then((text) => JSON.parse(text));
     } catch (e) {
-      clearNextProject();
-      throw new ScratchProjectError(
-        ScratchProjectErrorCode.CrtConfigParseError,
-        "Invalid project file: crt.json is not valid JSON",
-        { errorMsg: e as Error | string },
-      );
+      throw new CrtConfigParseError(e as Error);
     }
 
     // merge with default config s.t. all keys are always present
@@ -162,10 +151,7 @@ export const loadCrtProject = async (
     // calling loadProject while another project is being loaded causes weird behavior
     // so we queue the next project to load
     nextProject = input;
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.ConcurrentLoadError,
-      "A project is already being loaded. This project has been queued.",
-    );
+    return;
   }
 
   isLoading = true;
@@ -175,27 +161,27 @@ export const loadCrtProject = async (
     ...defaultCrtConfig,
   };
 
-  if (input instanceof ArrayBuffer) {
-    const zip = await loadZip(input);
-    const project = await parseProjectJson(zip);
-    await validateAssets(zip, project);
-    await loadCrtConfig(vm, zip);
-
-    vm.runtime.emit("CRT_CONFIG_CHANGED", vm.crtConfig);
-  }
-
   try {
+    if (input instanceof ArrayBuffer) {
+      const zip = await loadZip(input);
+      const project = await parseProjectJson(zip);
+      await validateAssets(zip, project);
+      await loadCrtConfig(vm, zip);
+
+      vm.runtime.emit("CRT_CONFIG_CHANGED", vm.crtConfig);
+    }
+
     await vm.loadProject(input);
   } catch (e) {
     clearNextProject();
-    throw new ScratchProjectError(
-      ScratchProjectErrorCode.VmLoadError,
-      "The Scratch VM failed to load the project",
-      { errorMsg: e as Error | string },
-    );
-  }
+    if (e instanceof ScratchProjectError) {
+      throw e;
+    }
 
-  isLoading = false;
+    throw new VmLoadError(e as Error);
+  } finally {
+    isLoading = false;
+  }
 
   // if a project was queued while loading, load it now
   if (nextProject !== undefined) {

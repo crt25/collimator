@@ -17,11 +17,14 @@ import {
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
+import { loadCrtProject } from "../vm/load-crt-project";
+
 import {
-  loadCrtProject,
+  MissingAssetsError,
   ScratchProjectError,
   ScratchProjectErrorCode,
-} from "../vm/load-crt-project";
+} from "../errors/scratch/index";
+
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
 
@@ -212,7 +215,6 @@ export class EmbeddedScratchCallbacks {
     ScratchProjectErrorCode,
     FormattedMessage.MessageDescriptor
   > = {
-    [ScratchProjectErrorCode.ConcurrentLoadError]: messages.concurrentLoadError,
     [ScratchProjectErrorCode.InvalidZip]: messages.invalidZip,
     [ScratchProjectErrorCode.MissingProjectJson]: messages.projectJsonMissing,
     [ScratchProjectErrorCode.InvalidProjectJson]: messages.invalidProjectJson,
@@ -223,13 +225,16 @@ export class EmbeddedScratchCallbacks {
     [ScratchProjectErrorCode.Unknown]: messages.unknownError,
   };
 
-  private getErrorMessage(e: ScratchProjectError): string {
+  private getErrorMessage(e: unknown): string {
+    if (!(e instanceof ScratchProjectError)) {
+      return this.intl.formatMessage(messages.unknownError);
+    }
+
     const descriptor =
       EmbeddedScratchCallbacks.errorMessages[e.code] ?? messages.unknownError;
 
-    if (e.code === ScratchProjectErrorCode.MissingAssets) {
-      const details = e.details as { missingAssets?: string[] } | undefined;
-      const assets = details?.missingAssets?.join(", ") ?? "unknown";
+    if (e instanceof MissingAssetsError) {
+      const assets = e.missingAssets.join(", ");
       return this.intl.formatMessage(descriptor, { assets });
     }
 
@@ -269,6 +274,7 @@ export class EmbeddedScratchCallbacks {
       this.setScratchLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
+
       const sb3Project = await request.params.task.arrayBuffer();
       await loadCrtProject(this.vm, sb3Project);
     } catch (e) {
@@ -276,11 +282,8 @@ export class EmbeddedScratchCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      if (e instanceof ScratchProjectError) {
-        toast.error(this.getErrorMessage(e));
-      } else {
-        toast.error(this.intl.formatMessage(messages.unknownError));
-      }
+
+      toast.error(this.getErrorMessage(e));
 
       throw e;
     }
