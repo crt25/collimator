@@ -1,7 +1,7 @@
 import { IframeRpcMethod } from "../remote-procedure-call";
 import { RpcCaller } from "../rpc-caller";
 
-type Action = "create" | "move" | "remove";
+type Action = "create" | "move" | "remove" | "delete";
 
 export type PostStudentActivity = IframeRpcMethod<{
   method: "postStudentActivity";

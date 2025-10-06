@@ -74,6 +74,7 @@ import {
 import { getCrtColorsTheme } from "../../blocks/colors";
 import {
   mapScratchEventTypeToStudentAction,
+  resolveStudentActionFromEvent,
   shouldTrackActivity,
   StudentAction,
   trackStudentActivity,
@@ -1077,12 +1078,25 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    const eventAction = mapScratchEventTypeToStudentAction(event.type);
-    if (!eventAction) {
+    const baseActionFromEventType = mapScratchEventTypeToStudentAction(
+      event.type,
+    );
+    if (!baseActionFromEventType) {
       return;
     }
 
-    if (shouldTrackActivity(eventAction, event, this.props.canEditTask)) {
+    const resolvedStudentAction = resolveStudentActionFromEvent(
+      event,
+      baseActionFromEventType,
+    );
+
+    if (!resolvedStudentAction) {
+      return;
+    }
+
+    if (
+      shouldTrackActivity(resolvedStudentAction, event, this.props.canEditTask)
+    ) {
       const block = this.getWorkspace().getBlockById(event.blockId ?? "");
 
       if (!block) {
@@ -1094,18 +1108,25 @@ class Blocks extends React.Component<Props, State> {
         trackStudentActivity({
           block: block,
           sendRequest: this.props.sendRequest,
-          action: eventAction,
+          action: resolvedStudentAction,
           solution: solution,
         });
       })();
     }
 
-    if ([StudentAction.CREATE, StudentAction.DELETE].includes(eventAction)) {
+    if (
+      [StudentAction.CREATE, StudentAction.DELETE].includes(
+        resolvedStudentAction,
+      )
+    ) {
       let xml: Element | undefined;
 
-      if (eventAction === StudentAction.CREATE && event.xml) {
+      if (resolvedStudentAction === StudentAction.CREATE && event.xml) {
         xml = event.xml;
-      } else if (eventAction === StudentAction.DELETE && event.oldXml) {
+      } else if (
+        resolvedStudentAction === StudentAction.DELETE &&
+        event.oldXml
+      ) {
         xml = event.oldXml;
       }
 
@@ -1134,7 +1155,7 @@ class Blocks extends React.Component<Props, State> {
       }
 
       if (
-        eventAction === StudentAction.DELETE &&
+        resolvedStudentAction === StudentAction.DELETE &&
         // when switching sprites, blocks are also deleted but with
         // recordUndo set to false
         event.recordUndo &&
