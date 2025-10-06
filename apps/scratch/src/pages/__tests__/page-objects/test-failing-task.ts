@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "playwright/test";
 import { loadTask } from "../helpers";
-import tasks, { TestTask } from "../tasks";
+import { TestTask } from "../tasks";
 import { ScratchEditorPage } from "./scratch-editor";
 
 export class TestFailingTaskPage extends ScratchEditorPage {
@@ -29,15 +29,13 @@ export class TestFailingTaskPage extends ScratchEditorPage {
 
   static async load(
     pwPage: Page,
-    task?: TestTask,
+    task: TestTask,
   ): Promise<{ page: TestFailingTaskPage; task: TestTask }> {
-    const chosenTask = task ?? tasks.testFailingTask;
-
-    await loadTask(pwPage, chosenTask, true);
+    await loadTask(pwPage, task, true);
 
     const page = new TestFailingTaskPage(pwPage);
     await page.resetZoom();
 
-    return { page, task: chosenTask };
+    return { page, task };
   }
 }

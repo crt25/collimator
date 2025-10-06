@@ -9,7 +9,11 @@ const defaultCrtConfig: ScratchCrtConfig = {
   enableStageInteractions: true,
 };
 
-export async function createMissingAssetsTask(): Promise<TestTask> {
+/**
+ * Creates a test task where the project is missing some assets.
+ * @return {TestTask} The test task.
+ */
+export const createMissingAssetsTask = (): TestTask => {
   const zip = new JSZip();
 
   const project = {
@@ -33,28 +37,38 @@ export async function createMissingAssetsTask(): Promise<TestTask> {
     crtConfig: defaultCrtConfig,
     file: zip.generateAsync({ type: "nodebuffer" }),
   };
-}
+};
 
-export async function createNoTargetsTask(): Promise<TestTask> {
+/**
+ * Creates a test task where the project has no targets.
+ * @return {TestTask} The test task.
+ */
+export const createNoTargetsTask = (): TestTask => {
   const zip = new JSZip();
   const project = { targets: [] };
   zip.file("project.json", JSON.stringify(project));
+
   return {
     blocksOfMainTarget: 0,
     frozenBlocksOfMainTarget: 0,
     crtConfig: defaultCrtConfig,
     file: zip.generateAsync({ type: "nodebuffer" }),
   };
-}
+};
 
-export async function createNoCostumesOrSoundsTask(): Promise<TestTask> {
+/**
+ * Creates a test task where the project has targets but no costumes or sounds.
+ * @return {TestTask} The test task.
+ */
+export const createNoCostumesOrSoundsTask = (): TestTask => {
   const zip = new JSZip();
   const project = { targets: [{}] };
   zip.file("project.json", JSON.stringify(project));
+
   return {
     blocksOfMainTarget: 0,
     frozenBlocksOfMainTarget: 0,
     crtConfig: defaultCrtConfig,
     file: zip.generateAsync({ type: "nodebuffer" }),
   };
-}
+};
