@@ -1089,7 +1089,8 @@ class Blocks extends React.Component<Props, State> {
         return;
       }
       (async () => {
-        const solution = await this.props.vm.saveProjectSb3();
+        const json = this.props.vm.toJSON();
+        const solution = new Blob([json], { type: "application/json" });
         trackStudentActivity({
           block: block,
           sendRequest: this.props.sendRequest,
