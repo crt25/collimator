@@ -35,13 +35,13 @@ jobs:
                 run: corepack enable
 
             -   name: Check out repository code
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     submodules: 'true'
                     lfs: 'true'
                     fetch-depth: 0
 
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
                 node-version: 22
 
@@ -146,7 +146,7 @@ jobs:
                     NODE_OPTIONS: --no-experimental-strip-types
 
             -   name: SonarCloud Scan
-                uses: SonarSource/sonarqube-scan-action@v5.2.0
+                uses: SonarSource/sonarqube-scan-action@v6.0.0
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
                     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
