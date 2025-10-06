@@ -1,4 +1,44 @@
 {
+  "crt.assertionsModal.close": [
+    {
+      "type": 0,
+      "value": "Close"
+    }
+  ],
+  "crt.assertionsModal.heading": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionNameHeading": [
+    {
+      "type": 0,
+      "value": "Assertion on "
+    },
+    {
+      "type": 1,
+      "value": "targetName"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusFailed": [
+    {
+      "type": 0,
+      "value": "Fail"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusHeading": [
+    {
+      "type": 0,
+      "value": "Status"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusPassed": [
+    {
+      "type": 0,
+      "value": "Pass"
+    }
+  ],
   "crt.blockConfig.blockUsageLimit": [
     {
       "type": 0,
@@ -38,7 +78,13 @@
   "crt.extensions.assertions.assert": [
     {
       "type": 0,
-      "value": "Assert [CONDITION] is true"
+      "value": "[NAME]: Assert [CONDITION] is true"
+    }
+  ],
+  "crt.extensions.assertions.assertDefaultValue": [
+    {
+      "type": 0,
+      "value": "x-Coordinate of final position is correct"
     }
   ],
   "crt.extensions.assertions.categoryName": [
@@ -51,6 +97,12 @@
     {
       "type": 0,
       "value": "when task finished running"
+    }
+  ],
+  "crt.extensions.assertions.unnamedAssertion": [
+    {
+      "type": 0,
+      "value": "Unnamed Assertion"
     }
   ],
   "crt.taskConfig.allowAllStandardBlocks": [
@@ -83,10 +135,22 @@
       "value": "Enable assertions simulating a student solving the task."
     }
   ],
+  "crt.taskConfig.enableStageInteractions": [
+    {
+      "type": 0,
+      "value": "Enable students to interact with the stage"
+    }
+  ],
   "crt.taskConfig.heading": [
     {
       "type": 0,
       "value": "Task Config"
+    }
+  ],
+  "crt.taskConfig.maximumExecutionTime": [
+    {
+      "type": 0,
+      "value": "Maximum execution time in seconds."
     }
   ]
 }

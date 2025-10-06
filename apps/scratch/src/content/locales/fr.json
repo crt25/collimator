@@ -1,4 +1,27 @@
 {
+  "crt.assertionsModal.close": {
+    "message": "Close"
+  },
+  "crt.assertionsModal.heading": {
+    "description": "Heading of the assertions modal.",
+    "message": "Assertions"
+  },
+  "crt.assertionsModal.tableAssertionNameHeading": {
+    "description": "Heading of the assertion name column in the assertions modal.",
+    "message": "Assertion on {targetName}"
+  },
+  "crt.assertionsModal.tableAssertionStatusFailed": {
+    "description": "Indicator that a given assertion failed.",
+    "message": "Fail"
+  },
+  "crt.assertionsModal.tableAssertionStatusHeading": {
+    "description": "Heading of the assertion status column in the assertions modal.",
+    "message": "Status"
+  },
+  "crt.assertionsModal.tableAssertionStatusPassed": {
+    "description": "Indicator that a given assertion passed.",
+    "message": "Pass"
+  },
   "crt.blockConfig.blockUsageLimit": {
     "description": "Label shown next to the input field for configuring how often a block can be used by students.",
     "message": "Combien de fois ce bloc peut-il être utilisé ?"
@@ -26,6 +49,9 @@
   "crt.extensions.assertions.assert": {
     "message": "Affirmer que [CONDITION] est vrai"
   },
+  "crt.extensions.assertions.assertDefaultValue": {
+    "message": "x-Coordinate of final position is correct"
+  },
   "crt.extensions.assertions.categoryName": {
     "description": "Label for the Assertions extension category",
     "message": "Affirmations"
@@ -33,6 +59,9 @@
   "crt.extensions.assertions.event_whenTaskFinishedRunning": {
     "description": "The name displayed on the scratch block that runs after the project has stopped running",
     "message": "lorsque l'exécution de la tâche est terminée"
+  },
+  "crt.extensions.assertions.unnamedAssertion": {
+    "message": "Unnamed Assertion"
   },
   "crt.taskConfig.allowAllStandardBlocks": {
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
@@ -54,8 +83,16 @@
     "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
     "message": "Activer les assertions simulant la résolution de la tâche par un étudiant."
   },
+  "crt.taskConfig.enableStageInteractions": {
+    "description": "Label for checkbox to enable stage interactions in task",
+    "message": "Enable students to interact with the stage"
+  },
   "crt.taskConfig.heading": {
     "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
     "message": "Configuration des tâches"
+  },
+  "crt.taskConfig.maximumExecutionTime": {
+    "description": "Label shown next to the input field for setting the maximum execution time.",
+    "message": "Maximum execution time in seconds."
   }
 }

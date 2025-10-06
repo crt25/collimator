@@ -1,4 +1,44 @@
 {
+  "crt.assertionsModal.close": [
+    {
+      "type": 0,
+      "value": "Close"
+    }
+  ],
+  "crt.assertionsModal.heading": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionNameHeading": [
+    {
+      "type": 0,
+      "value": "Assertion on "
+    },
+    {
+      "type": 1,
+      "value": "targetName"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusFailed": [
+    {
+      "type": 0,
+      "value": "Fail"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusHeading": [
+    {
+      "type": 0,
+      "value": "Status"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusPassed": [
+    {
+      "type": 0,
+      "value": "Pass"
+    }
+  ],
   "crt.blockConfig.blockUsageLimit": [
     {
       "type": 0,
@@ -41,6 +81,12 @@
       "value": "Affirmer que [CONDITION] est vrai"
     }
   ],
+  "crt.extensions.assertions.assertDefaultValue": [
+    {
+      "type": 0,
+      "value": "x-Coordinate of final position is correct"
+    }
+  ],
   "crt.extensions.assertions.categoryName": [
     {
       "type": 0,
@@ -51,6 +97,12 @@
     {
       "type": 0,
       "value": "lorsque l'exécution de la tâche est terminée"
+    }
+  ],
+  "crt.extensions.assertions.unnamedAssertion": [
+    {
+      "type": 0,
+      "value": "Unnamed Assertion"
     }
   ],
   "crt.taskConfig.allowAllStandardBlocks": [
@@ -80,13 +132,25 @@
   "crt.taskConfig.enableAssertions": [
     {
       "type": 0,
-      "value": "Activer les affirmations simulant la résolution de la tâche par un étudiant."
+      "value": "Activer les assertions simulant la résolution de la tâche par un étudiant."
+    }
+  ],
+  "crt.taskConfig.enableStageInteractions": [
+    {
+      "type": 0,
+      "value": "Enable students to interact with the stage"
     }
   ],
   "crt.taskConfig.heading": [
     {
       "type": 0,
       "value": "Configuration des tâches"
+    }
+  ],
+  "crt.taskConfig.maximumExecutionTime": [
+    {
+      "type": 0,
+      "value": "Maximum execution time in seconds."
     }
   ]
 }
