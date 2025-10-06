@@ -192,17 +192,17 @@
   },
   "packageManager": "yarn@4.5.0",
   "devDependencies": {
-    "@formatjs/cli": "^6.6.3",
+    "@formatjs/cli": "^6.7.3",
     "@types/archiver": "^6.0.3",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/keymirror": "^0",
     "@types/lodash.bindall": "^4.4.9",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.defaultsdeep": "^4",
     "@types/lodash.omit": "^4.5.9",
-    "@types/node": "^22.14.0",
+    "@types/node": "^24.7.0",
     "@types/omggif": "^1",
     "@types/papaparse": "^5",
     "@types/prop-types": "^15",
@@ -217,8 +217,8 @@
     "@types/react-virtualized": "^9",
     "@types/wav-encoder": "^1",
     "archiver": "^7.0.1",
-    "cross-env": "^7.0.3",
-    "eslint-plugin-import": "^2.31.0",
+    "cross-env": "^10.1.0",
+    "eslint-plugin-import": "^2.32.0",
     "nyc": "^17.1.0"
   }
 }
