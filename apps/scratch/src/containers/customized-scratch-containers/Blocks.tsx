@@ -74,7 +74,7 @@ import {
 import { getCrtColorsTheme } from "../../blocks/colors";
 import {
   mapScratchEventTypeToStudentAction,
-  shouldTrackActivity,
+  shouldRecordStudentAction,
   StudentAction,
   trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
@@ -1082,30 +1082,28 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    if (shouldTrackActivity(eventAction, event, this.props.canEditTask)) {
+    if (shouldRecordStudentAction(eventAction, event, this.props.canEditTask)) {
       const block = this.getWorkspace().getBlockById(event.blockId ?? "");
 
       if (!block) {
         return;
       }
-      (async () => {
-        const json = this.props.vm.toJSON();
-        const solution = new Blob([json], { type: "application/json" });
-        trackStudentActivity({
-          block: block,
-          sendRequest: this.props.sendRequest,
-          action: eventAction,
-          solution: solution,
-        });
-      })();
+      const json = this.props.vm.toJSON();
+      const solution = new Blob([json], { type: "application/json" });
+      trackStudentActivity({
+        block,
+        sendRequest: this.props.sendRequest,
+        action: eventAction,
+        solution,
+      });
     }
 
-    if ([StudentAction.CREATE, StudentAction.DELETE].includes(eventAction)) {
+    if ([StudentAction.Create, StudentAction.Delete].includes(eventAction)) {
       let xml: Element | undefined;
 
-      if (eventAction === StudentAction.CREATE && event.xml) {
+      if (eventAction === StudentAction.Create && event.xml) {
         xml = event.xml;
-      } else if (eventAction === StudentAction.DELETE && event.oldXml) {
+      } else if (eventAction === StudentAction.Delete && event.oldXml) {
         xml = event.oldXml;
       }
 
@@ -1134,7 +1132,7 @@ class Blocks extends React.Component<Props, State> {
       }
 
       if (
-        eventAction === StudentAction.DELETE &&
+        eventAction === StudentAction.Delete &&
         // when switching sprites, blocks are also deleted but with
         // recordUndo set to false
         event.recordUndo &&

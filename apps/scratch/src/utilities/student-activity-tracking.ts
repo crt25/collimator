@@ -10,33 +10,40 @@ interface TrackMoveParams {
 }
 
 export enum StudentAction {
-  CREATE = "create",
-  MOVE = "move",
-  DELETE = "delete",
+  Create = "create",
+  Move = "move",
+  Delete = "delete",
 }
 
 const scratchToStudentAction: Record<string, StudentAction | null> = {
-  create: StudentAction.CREATE,
-  move: StudentAction.MOVE,
-  delete: StudentAction.DELETE,
+  create: StudentAction.Create,
+  move: StudentAction.Move,
+  delete: StudentAction.Delete,
 };
 
 export const mapScratchEventTypeToStudentAction = (
   type: string,
 ): StudentAction | null => scratchToStudentAction[type] || null;
 
-export const shouldTrackActivity = (
+export const shouldRecordStudentAction = (
   action: StudentAction,
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
 ): boolean | undefined =>
-  (action === StudentAction.MOVE || action === StudentAction.CREATE) &&
+  // This condition ensures that we only track user-initiated block moves or creations
+  // when undo is enabled, the task is not editable, and the block has an ID.
+  (action === StudentAction.Move || action === StudentAction.Create) &&
   event.recordUndo &&
   !canEditTask &&
   !!event.blockId;
 
-const shouldTrackMove = (block: Block | null | undefined): boolean =>
-  !block ? false : isBlockPartOfLargeStack(block);
+const shouldTrackMove = (block: Block | null | undefined): boolean => {
+  if (!block) {
+    return false;
+  }
+
+  return isBlockPartOfLargeStack(block);
+};
 
 const getBlockData = (block: Block): Record<string, unknown> => ({
   blockId: block.id ?? "",

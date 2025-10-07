@@ -98,7 +98,7 @@ const Task = ({
           type: action,
           data: data,
         },
-        solution: solution,
+        solution,
       });
     },
     [trackStudentActivity, session.id, task.id],
