@@ -46,7 +46,7 @@ export const shouldRecordStudentAction = (
   !canEditTask &&
   !!event.blockId;
 
-const shouldTrackMove = (
+const shouldRecordBlockActivity = (
   block: Block | Element | null | undefined,
   action: StudentAction,
 ): boolean => {
@@ -71,7 +71,7 @@ export const trackStudentActivity = ({
   solution,
   event,
 }: TrackMoveParams): void => {
-  if (!shouldTrackMove(block, action)) {
+  if (!shouldRecordBlockActivity(block, action)) {
     return;
   }
 
@@ -89,6 +89,7 @@ async function sendStudentActivity(
       action,
       data,
       solution,
+      type: "SCRATCH",
     });
   } catch (error) {
     console.error("Error sending student activity:", error);

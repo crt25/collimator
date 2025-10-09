@@ -8,6 +8,7 @@ export type PostStudentActivity = IframeRpcMethod<{
     action: string;
     data: Record<string, unknown>;
     solution: Blob;
+    type: string;
   };
   result: undefined;
 }>;
