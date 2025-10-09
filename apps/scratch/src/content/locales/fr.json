@@ -1,26 +1,26 @@
 {
   "crt.assertionsModal.close": {
-    "message": "Close"
+    "message": "Fermer"
   },
   "crt.assertionsModal.heading": {
     "description": "Heading of the assertions modal.",
-    "message": "Assertions"
+    "message": "Affirmations"
   },
   "crt.assertionsModal.tableAssertionNameHeading": {
     "description": "Heading of the assertion name column in the assertions modal.",
-    "message": "Assertion on {targetName}"
+    "message": "Affirmation sur {targetName}"
   },
   "crt.assertionsModal.tableAssertionStatusFailed": {
     "description": "Indicator that a given assertion failed.",
-    "message": "Fail"
+    "message": "Échec"
   },
   "crt.assertionsModal.tableAssertionStatusHeading": {
     "description": "Heading of the assertion status column in the assertions modal.",
-    "message": "Status"
+    "message": "Statut"
   },
   "crt.assertionsModal.tableAssertionStatusPassed": {
     "description": "Indicator that a given assertion passed.",
-    "message": "Pass"
+    "message": "Réussi"
   },
   "crt.blockConfig.blockUsageLimit": {
     "description": "Label shown next to the input field for configuring how often a block can be used by students.",
@@ -50,7 +50,7 @@
     "message": "Affirmer que [CONDITION] est vrai"
   },
   "crt.extensions.assertions.assertDefaultValue": {
-    "message": "x-Coordinate of final position is correct"
+    "message": "La coordonnée X de la position finale est correcte"
   },
   "crt.extensions.assertions.categoryName": {
     "description": "Label for the Assertions extension category",
@@ -58,10 +58,10 @@
   },
   "crt.extensions.assertions.event_whenTaskFinishedRunning": {
     "description": "The name displayed on the scratch block that runs after the project has stopped running",
-    "message": "lorsque l'exécution de la tâche est terminée"
+    "message": "Le nom affiché sur le bloc scratch qui s'exécute après l'arrêt du projet."
   },
   "crt.extensions.assertions.unnamedAssertion": {
-    "message": "Unnamed Assertion"
+    "message": "Affirmation sans nom"
   },
   "crt.taskConfig.allowAllStandardBlocks": {
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
@@ -69,11 +69,11 @@
   },
   "crt.taskConfig.allowCustomProcedureBlocks": {
     "description": "Label for checkbox to allow custom procedures in task",
-    "message": "Allow 'My Blocks' custom procedures"
+    "message": "Autoriser les procédures personnalisées « Mes Blocs »"
   },
   "crt.taskConfig.allowVariableBlocks": {
     "description": "Label for checkbox to allow variables in task",
-    "message": "Allow variable blocks"
+    "message": "Autoriser les blocs de variables"
   },
   "crt.taskConfig.disallowAllBlocks": {
     "description": "Label shown on the button that, when clicked, disallows all blocks from being used by students.",
@@ -85,14 +85,14 @@
   },
   "crt.taskConfig.enableStageInteractions": {
     "description": "Label for checkbox to enable stage interactions in task",
-    "message": "Enable students to interact with the stage"
+    "message": "Autoriser les interactions des étudiants avec la scène"
   },
   "crt.taskConfig.heading": {
     "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
-    "message": "Configuration des tâches"
+    "message": "Configuration des tâches."
   },
   "crt.taskConfig.maximumExecutionTime": {
     "description": "Label shown next to the input field for setting the maximum execution time.",
-    "message": "Maximum execution time in seconds."
+    "message": "Temps d’exécution maximal (en secondes)."
   }
 }
