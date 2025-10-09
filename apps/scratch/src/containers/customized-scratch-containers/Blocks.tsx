@@ -72,30 +72,16 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
+import {
+  mapScratchEventTypeToStudentAction,
+  shouldRecordStudentAction,
+  trackStudentActivity,
+} from "../../utilities/student-activity-tracking";
+import { StudentAction } from "../../types/scratch-student-action";
+import { mapXmlBlockToBlock } from "../../utilities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
-
-// reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
-interface WorkspaceChangeEvent {
-  type:
-    | "create"
-    | "change"
-    | "move"
-    | "dragOutside"
-    | "endDrag"
-    | "delete"
-    | "var_create"
-    | "var_rename"
-    | "var_delete"
-    | "comment_create"
-    | "comment_change"
-    | "comment_move"
-    | "comment_delete";
-
-  blockId?: string;
-  recordUndo?: boolean;
-  xml?: Element;
-  oldXml?: Element;
-}
+import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
+import type { CrtContextValue } from "../../contexts/CrtContext";
 
 const addFunctionListener = (
   object: unknown,
@@ -188,6 +174,7 @@ interface Props {
   workspaceMetrics: {
     targets: Record<string, Metrics>;
   };
+  sendRequest: CrtContextValue["sendRequest"];
 }
 
 type PromptCallback = (
@@ -1091,12 +1078,18 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    if (["create", "delete"].includes(event.type)) {
+    const eventAction = mapScratchEventTypeToStudentAction(event.type);
+
+    if (!eventAction) {
+      return;
+    }
+
+    if ([StudentAction.Create, StudentAction.Delete].includes(eventAction)) {
       let xml: Element | undefined;
 
-      if (event.type === "create" && event.xml) {
+      if (eventAction === StudentAction.Create && event.xml) {
         xml = event.xml;
-      } else if (event.type === "delete" && event.oldXml) {
+      } else if (eventAction === StudentAction.Delete && event.oldXml) {
         xml = event.oldXml;
       }
 
@@ -1125,7 +1118,7 @@ class Blocks extends React.Component<Props, State> {
       }
 
       if (
-        event.type === "delete" &&
+        eventAction === StudentAction.Delete &&
         // when switching sprites, blocks are also deleted but with
         // recordUndo set to false
         event.recordUndo &&
@@ -1135,6 +1128,29 @@ class Blocks extends React.Component<Props, State> {
         // remove the config for this task block
         delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
       }
+    }
+
+    if (shouldRecordStudentAction(eventAction, event, this.props.canEditTask)) {
+      let block =
+        event.oldXml ?? this.getWorkspace().getBlockById(event.blockId ?? "");
+
+      if (block instanceof Element) {
+        block = mapXmlBlockToBlock(block);
+      }
+
+      if (!block) {
+        return;
+      }
+
+      const json = this.props.vm.toJSON();
+      const solution = new Blob([json], { type: "application/json" });
+      trackStudentActivity({
+        block,
+        sendRequest: this.props.sendRequest,
+        action: eventAction,
+        solution,
+        event,
+      });
     }
   }
 
@@ -1162,6 +1178,7 @@ class Blocks extends React.Component<Props, State> {
       updateMetrics: updateMetricsProp,
       useCatBlocks,
       workspaceMetrics,
+      sendRequest,
       ...props
     } = this.props;
     /* eslint-enable @typescript-eslint/no-unused-vars */
