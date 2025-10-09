@@ -89,7 +89,6 @@ async function sendStudentActivity(
       action,
       data,
       solution,
-      type: "SCRATCH",
     });
   } catch (error) {
     console.error("Error sending student activity:", error);
