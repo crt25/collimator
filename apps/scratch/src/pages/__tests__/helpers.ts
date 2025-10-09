@@ -18,7 +18,11 @@ export const getExpectedBlockConfigButtonLabel = (
 
 let idx = 0;
 
-export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
+export const loadTask = async (
+  pwPage: Page,
+  task: TestTask,
+  expectError = false,
+): Promise<void> => {
   const filename = idx + ".sb3";
   idx += 1;
 
@@ -53,10 +57,19 @@ export const loadTask = async (pwPage: Page, task: TestTask): Promise<void> => {
 
   expect(messages).toHaveLength(1);
 
-  expect(messages[0].message).toEqual({
-    jsonrpc: "2.0",
-    id: 0,
-    method: "loadTask",
-    result: undefined,
-  });
+  if (expectError) {
+    expect(messages[0].message).toMatchObject({
+      jsonrpc: "2.0",
+      id: 0,
+      method: "loadTask",
+      error: expect.any(String),
+    });
+  } else {
+    expect(messages[0].message).toEqual({
+      jsonrpc: "2.0",
+      id: 0,
+      method: "loadTask",
+      result: undefined,
+    });
+  }
 };
