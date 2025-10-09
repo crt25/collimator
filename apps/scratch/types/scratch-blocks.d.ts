@@ -21,6 +21,11 @@ declare namespace ScratchBlocksExtended {
     jsonInit: (json: Record<string, unknown>) => void;
   }
 
+  interface LiteBlock {
+    id: string;
+    type: string;
+  }
+
   interface BlockDefinition {
     init: (this: BlockThis) => void;
     mutationToDom?: () => HTMLElement;
@@ -29,11 +34,13 @@ declare namespace ScratchBlocksExtended {
   interface Block extends ScratchBlocks.Block {
     inputList?: BlockInput[];
     isMonitored?: boolean;
-    getNextBlock: () => Block | null;
-    getParent: () => Block | null;
-    getChildren: () => Block[];
-    getRelativeToSurfaceXY: () => { x: number; y: number };
+    getNextBlock?: () => Block | null;
+    getParent?: () => Block | null;
+    getChildren?: () => Block[];
     id: string;
+    type: string;
+    ids?: string[];
+    blockIdArray?: LiteBlock[];
   }
 
   class Flyout extends ScratchBlocks.Flyout {

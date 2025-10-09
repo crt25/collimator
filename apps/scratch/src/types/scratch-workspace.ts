@@ -20,4 +20,6 @@ export interface WorkspaceChangeEvent {
   recordUndo?: boolean;
   xml?: Element;
   oldXml?: Element;
+  oldParentId?: string | null;
+  newParentId?: string | null;
 }

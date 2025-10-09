@@ -1,5 +1,12 @@
 import { CrtContextValue } from "../contexts/CrtContext";
-import { isBlockPartOfLargeStack } from "./scratch-block-stack-utils";
+import { StudentAction } from "../types/scratch-student-action";
+import {
+  ActivityData,
+  getBlockDataByAction,
+  isBlock,
+  isBlockPartOfLargeStack,
+  StudentActionDataMap,
+} from "./scratch-block";
 import type { Block } from "scratch-blocks";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 interface TrackMoveParams {
@@ -7,13 +14,13 @@ interface TrackMoveParams {
   sendRequest: CrtContextValue["sendRequest"];
   action: StudentAction;
   solution: Blob;
+  event: WorkspaceChangeEvent;
 }
 
-export enum StudentAction {
-  Create = "create",
-  Move = "move",
-  Delete = "delete",
-}
+type StudentActivityRequest = Pick<
+  TrackMoveParams,
+  "sendRequest" | "action" | "solution"
+>;
 
 const scratchToStudentAction: Record<string, StudentAction | null> = {
   create: StudentAction.Create,
@@ -32,43 +39,50 @@ export const shouldRecordStudentAction = (
 ): boolean | undefined =>
   // This condition ensures that we only track user-initiated block moves or creations
   // when undo is enabled, the task is not editable, and the block has an ID.
-  (action === StudentAction.Move || action === StudentAction.Create) &&
+  [StudentAction.Create, StudentAction.Move, StudentAction.Delete].includes(
+    action,
+  ) &&
   event.recordUndo &&
   !canEditTask &&
   !!event.blockId;
 
-const shouldTrackMove = (block: Block | null | undefined): boolean => {
+const shouldTrackMove = (
+  block: Block | Element | null | undefined,
+  action: StudentAction,
+): boolean => {
   if (!block) {
     return false;
   }
 
-  return isBlockPartOfLargeStack(block);
+  if (isBlock(block)) {
+    if (action === StudentAction.Move && block) {
+      // For Move actions, we only track if the block is part of a large stack
+      return isBlockPartOfLargeStack(block);
+    }
+  }
+  // For Create and Delete actions, we track all blocks
+  return true;
 };
-
-const getBlockData = (block: Block): Record<string, unknown> => ({
-  blockId: block.id ?? "",
-  parentId: block.getParent?.()?.id ?? null,
-  position: block.getRelativeToSurfaceXY?.() ?? { x: 0, y: 0 },
-  childrenIds: block.getChildren?.().map((child) => child.id) ?? [],
-});
 
 export const trackStudentActivity = ({
   block,
   sendRequest,
   action,
   solution,
+  event,
 }: TrackMoveParams): void => {
-  if (!shouldTrackMove(block)) {
+  if (!shouldTrackMove(block, action)) {
     return;
   }
 
-  const data = getBlockData(block);
-  sendStudentActivity(data, { block, sendRequest, action, solution });
+  const data = getBlockDataByAction(action, block, event);
+
+  sendStudentActivity(data, { sendRequest, action, solution });
 };
 
 async function sendStudentActivity(
-  data: Record<string, unknown>,
-  { sendRequest, action, solution }: TrackMoveParams,
+  data: ActivityData[keyof StudentActionDataMap],
+  { sendRequest, action, solution }: StudentActivityRequest,
 ): Promise<void> {
   try {
     await sendRequest("postStudentActivity", {

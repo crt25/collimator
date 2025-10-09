@@ -75,9 +75,10 @@ import { getCrtColorsTheme } from "../../blocks/colors";
 import {
   mapScratchEventTypeToStudentAction,
   shouldRecordStudentAction,
-  StudentAction,
   trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
+import { StudentAction } from "../../types/scratch-student-action";
+import { mapXmlBlockToBlock } from "../../utilities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -1078,24 +1079,9 @@ class Blocks extends React.Component<Props, State> {
     }
 
     const eventAction = mapScratchEventTypeToStudentAction(event.type);
+
     if (!eventAction) {
       return;
-    }
-
-    if (shouldRecordStudentAction(eventAction, event, this.props.canEditTask)) {
-      const block = this.getWorkspace().getBlockById(event.blockId ?? "");
-
-      if (!block) {
-        return;
-      }
-      const json = this.props.vm.toJSON();
-      const solution = new Blob([json], { type: "application/json" });
-      trackStudentActivity({
-        block,
-        sendRequest: this.props.sendRequest,
-        action: eventAction,
-        solution,
-      });
     }
 
     if ([StudentAction.Create, StudentAction.Delete].includes(eventAction)) {
@@ -1142,6 +1128,29 @@ class Blocks extends React.Component<Props, State> {
         // remove the config for this task block
         delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
       }
+    }
+
+    if (shouldRecordStudentAction(eventAction, event, this.props.canEditTask)) {
+      let block =
+        event.oldXml ?? this.getWorkspace().getBlockById(event.blockId ?? "");
+
+      if (block instanceof Element) {
+        block = mapXmlBlockToBlock(block);
+      }
+
+      if (!block) {
+        return;
+      }
+
+      const json = this.props.vm.toJSON();
+      const solution = new Blob([json], { type: "application/json" });
+      trackStudentActivity({
+        block,
+        sendRequest: this.props.sendRequest,
+        action: eventAction,
+        solution,
+        event,
+      });
     }
   }
 
