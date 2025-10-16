@@ -33,9 +33,9 @@ It defines strict types for requests and responses, ensuring reliability and sec
 
 ### Installation and Setup
 
-The library is installed with ClassMosaic parts.
+The library is installed with ClassMosaic.
 
-For development purpose on the library, you can install it via yarn:
+Only for development purpose, you can install it via yarn:
 
 ```sh
 # From: collimator/
@@ -85,11 +85,9 @@ It encapsulates origin validation, lifecycle handling, and communication setup f
 
 ### Installation and Setup
 
-### Installation and Setup
+The library is installed with ClassMosaic.
 
-The library is installed with ClassMosaic parts.
-
-For development purpose on the library, you can install it via yarn:
+Only for development purpose on the library, you can install it via yarn:
 
 ```sh
 # From: collimator/
