@@ -1,13 +1,14 @@
-import { StudentAction } from "../types/scratch-student-action";
 import { WorkspaceChangeEvent } from "../types/scratch-workspace";
-import {
-  StudentCreateActivity,
-  StudentMoveActivity,
-  StudentDeleteActivity,
-} from "../types/scratch-student-activities/index";
-import type { Block, LiteBlock } from "scratch-blocks";
+import type { Block } from "scratch-blocks";
 
 const minStackSize = 2;
+
+export type DeletedBlockInfo = Array<{ id: string; type: string }>;
+export interface DeletedBlockRecord {
+  id: string;
+  type: string;
+  blockIdArray: DeletedBlockInfo;
+}
 
 function getStackSize(topBlock: Block): number {
   let size = 0;
