@@ -36,7 +36,6 @@ declare namespace ScratchBlocksExtended {
     id: string;
     type: string;
     ids?: string[];
-    blockIdArray?: LiteBlock[];
   }
 
   class Flyout extends ScratchBlocks.Flyout {
