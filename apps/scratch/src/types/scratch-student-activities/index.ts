@@ -1,3 +1,31 @@
-export * from "./student-create";
-export * from "./student-move";
-export * from "./student-delete";
+export type {
+  BaseStudentAppActivity,
+  BaseActivityRequest,
+  BaseStudentAction,
+  BasePipelineParams,
+  StudentActivityHandlerParams,
+} from "./common";
+
+export type {
+  StudentCreateActivity,
+  CreateActivityRequest,
+  GetCreatePayload,
+  CreatePipelineParams,
+} from "./create";
+
+export type {
+  StudentMoveActivity,
+  MoveActivityRequest,
+  GetMovePayload,
+  MovePipelineParams,
+} from "./move";
+
+export type {
+  StudentDeleteActivity,
+  DeleteActivityRequest,
+  DeleteStudentAction,
+  GetDeletePayload,
+  DeletePipelineParams,
+} from "./delete";
+
+export * from "./scratch-student-action";
