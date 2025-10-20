@@ -10,9 +10,15 @@ const scratchToStudentAction: Record<string, StudentAction | null> = {
   delete: StudentAction.Delete,
 };
 
+const TRACKED_ACTIONS = [
+  StudentAction.Create,
+  StudentAction.Move,
+  StudentAction.Delete,
+] as const;
+
 export const mapScratchEventTypeToStudentAction = (
   type: string,
-): StudentAction | null => scratchToStudentAction[type] || null;
+): StudentAction | null => scratchToStudentAction[type];
 
 export const shouldRecordStudentAction = (
   action: StudentAction,
@@ -21,59 +27,61 @@ export const shouldRecordStudentAction = (
 ): boolean | undefined =>
   // This condition ensures that we only track user-initiated block moves or creations
   // when undo is enabled, the task is not editable, and the block has an ID.
-  [StudentAction.Create, StudentAction.Move, StudentAction.Delete].includes(
-    action,
-  ) &&
+  TRACKED_ACTIONS.includes(action) &&
   event.recordUndo &&
   !canEditTask &&
   !!event.blockId;
 
-const shouldRecordBlockActivity = (
-  block: Block | Element | null | undefined,
-  action: StudentAction,
-): boolean => {
-  if (!block) {
-    return false;
-  }
-
-  if (isBlock(block)) {
-    if (action === StudentAction.Move && block) {
-      // For Move actions, we only track if the block is part of a large stack
-      return isBlockPartOfLargeStack(block);
-    }
-  }
-  // For Create and Delete actions, we track all blocks
-  return true;
-};
-
-export const trackStudentActivity = ({
-  block,
-  sendRequest,
-  action,
-  solution,
+export const handleStudentActivityTracking = ({
   event,
-}: TrackMoveParams): void => {
-  if (!shouldRecordBlockActivity(block, action)) {
+  action,
+  canEditTask,
+  sendRequest,
+  getWorkspace,
+  solution,
+}: StudentActivityHandlerParams): void => {
+  if (!shouldRecordStudentAction(action, event, canEditTask)) {
     return;
   }
 
-  const data = getBlockDataByAction(action, block, event);
+  switch (action) {
+    case StudentAction.Delete: {
+      if (!event.oldXml) {
+        console.log("No oldXml found for delete event");
+        return;
+      }
+      const block = mapXmlBlockToBlock(event.oldXml);
+      if (!block) {
+        console.log("No block found for delete action");
+        return;
+      }
+      processStudentActivityPipeline({
+        action,
+        block,
+        event,
+        sendRequest,
+        solution,
+      });
+      break;
+    }
 
-  sendStudentActivity(data, { sendRequest, action, solution });
-};
+    case StudentAction.Create:
+    case StudentAction.Move: {
+      const block = getWorkspace().getBlockById(event.blockId || "");
+      if (!block) {
+        return;
+      }
+      processStudentActivityPipeline({
+        action,
+        block,
+        event,
+        sendRequest,
+        solution,
+      });
+      break;
+    }
 
-async function sendStudentActivity(
-  data: ActivityData[keyof StudentActionDataMap],
-  { sendRequest, action, solution }: StudentActivityRequest,
-): Promise<void> {
-  try {
-    await sendRequest("postStudentActivity", {
-      action,
-      data,
-      solution,
-      type: "SCRATCH",
-    });
-  } catch (error) {
-    console.error("Error sending student activity:", error);
+    default:
+      console.log("Unhandled action:", action);
   }
-}
+};
