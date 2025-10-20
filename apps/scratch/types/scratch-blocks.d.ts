@@ -21,16 +21,12 @@ declare namespace ScratchBlocksExtended {
     jsonInit: (json: Record<string, unknown>) => void;
   }
 
-  interface LiteBlock {
-    id: string;
-    type: string;
-  }
-
   interface BlockDefinition {
     init: (this: BlockThis) => void;
     mutationToDom?: () => HTMLElement;
     domToMutation?: (element: HTMLElement) => void;
   }
+
   interface Block extends ScratchBlocks.Block {
     inputList?: BlockInput[];
     isMonitored?: boolean;
