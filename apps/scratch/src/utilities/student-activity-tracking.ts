@@ -1,26 +1,8 @@
-import { CrtContextValue } from "../contexts/CrtContext";
-import { StudentAction } from "../types/scratch-student-action";
-import {
-  ActivityData,
-  getBlockDataByAction,
-  isBlock,
-  isBlockPartOfLargeStack,
-  StudentActionDataMap,
-} from "./scratch-block";
-import type { Block } from "scratch-blocks";
+import { StudentAction } from "../types/scratch-student-activities";
+import { StudentActivityHandlerParams } from "../types/scratch-student-activities";
+import { processStudentActivityPipeline } from "./scratch-student-activities/pipeline";
+import { mapXmlBlockToBlock } from "./scratch-block";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
-interface TrackMoveParams {
-  block: Block;
-  sendRequest: CrtContextValue["sendRequest"];
-  action: StudentAction;
-  solution: Blob;
-  event: WorkspaceChangeEvent;
-}
-
-type StudentActivityRequest = Pick<
-  TrackMoveParams,
-  "sendRequest" | "action" | "solution"
->;
 
 const scratchToStudentAction: Record<string, StudentAction | null> = {
   create: StudentAction.Create,
