@@ -10,7 +10,7 @@ import type { Block } from "scratch-blocks";
 
 const minStackSize = 2;
 
-function getStackSize(topBlock: Block): number {
+const getStackSize = (topBlock: Block): number => {
   let size = 0;
   let current: Block | null = topBlock;
 
@@ -19,9 +19,9 @@ function getStackSize(topBlock: Block): number {
     current = current.getNextBlock();
   }
   return size;
-}
+};
 
-export function isBlockPartOfLargeStack(block: Block): boolean {
+export const isBlockPartOfLargeStack = (block: Block): boolean => {
   if (!block) {
     return false;
   }
@@ -38,7 +38,7 @@ export function isBlockPartOfLargeStack(block: Block): boolean {
 
   const size = getStackSize(current);
   return size >= minStackSize;
-}
+};
 
 export const wasPartOfLargeStack = (event: WorkspaceChangeEvent): boolean => {
   return event.oldParentId != null;
