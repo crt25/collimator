@@ -1,7 +1,11 @@
 import { StudentActionType } from "../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../types/scratch-student-activities";
-import { processStudentActivityPipeline } from "./scratch-student-activities/pipeline";
 import { mapDeletedBlock } from "./scratch-student-activities/scratch-block";
+import {
+  trackCreateActivity,
+  trackDeleteActivity,
+  trackMoveActivity,
+} from "./scratch-student-activities";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
@@ -57,29 +61,41 @@ export const handleStudentActivityTracking = ({
         return;
       }
 
-      processStudentActivityPipeline({
-        action,
+      trackDeleteActivity({
         block,
-        event,
         sendRequest,
         solution,
+        event,
       });
 
       break;
     }
 
-    case StudentActionType.Create:
+    case StudentActionType.Create: {
+      if (!block) {
+        return;
+      }
+
+      trackCreateActivity({
+        block,
+        sendRequest,
+        solution,
+        event,
+      });
+
+      break;
+    }
+
     case StudentActionType.Move: {
       if (!block) {
         return;
       }
 
-      processStudentActivityPipeline({
-        action,
+      trackMoveActivity({
         block,
-        event,
         sendRequest,
         solution,
+        event,
       });
 
       break;

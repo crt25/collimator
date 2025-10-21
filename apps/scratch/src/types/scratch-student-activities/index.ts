@@ -10,14 +10,12 @@ export type {
   StudentCreateActivity,
   CreateActivityRequest,
   GetCreatePayload,
-  CreatePipelineParams,
 } from "./create";
 
 export type {
   StudentMoveActivity,
   MoveActivityRequest,
   GetMovePayload,
-  MovePipelineParams,
 } from "./move";
 
 export type {
@@ -25,7 +23,6 @@ export type {
   DeleteActivityRequest,
   DeleteStudentAction,
   GetDeletePayload,
-  DeletePipelineParams,
 } from "./delete";
 
 export { StudentActionType } from "./common";

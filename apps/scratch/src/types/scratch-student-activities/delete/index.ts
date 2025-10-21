@@ -6,4 +6,3 @@ export type {
 } from "./types";
 
 export type { GetDeletePayload } from "./payload";
-export type { DeletePipelineParams } from "./pipeline-params";
