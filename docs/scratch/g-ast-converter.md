@@ -1,6 +1,4 @@
-# G-AST Converters
-
-## Scratch G-AST Converter
+# Scratch G-AST Converter
 
 Each scratch block is assigned to one of three categories:
 - [Hat Blocks](https://en.scratch-wiki.info/wiki/Hat_Block) - starting blocks reacting to events.
