@@ -14,10 +14,7 @@ Each of those event listeners consists of a *condition* and an *action* child.
 Such an event listener may represent a scratch hat block, a C program's main function or an endpoint of an API.
 
 The condition of an event listener is described by a string and a list of *expression* children.
-The action of an event listener is described by a *statement* sequence
+The action of an event listener is described by a *statement* sequence.
 
 Expressions  are different from statements in the aspect of having a value.
 For instance a literal is an expression whereas a control structure such as a condition or a variable assignment/declaration is a statement.
-
-
-

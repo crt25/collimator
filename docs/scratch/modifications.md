@@ -56,7 +56,7 @@ This event handler checks whether it is a block create or delete event and if it
 ## Freezing Blocks
 
 In order for teachers to provide some initial task blocks that cannot be edited by students, we extend scratch with a block freeze functionality.
-There are three posible states: editable (default), appendable and frozen, each applying to an entire stack of blocks.
+There are three possible states: editable (default), appendable and frozen, each applying to an entire stack of blocks.
 
 Whenever a block stack is created in the workspace, we show a small button at the top left, analogous to the block config buttons in the toolbox.
 When clicking on the button in Edit mode, it iterates through the different states showing a different symbol for each.
@@ -79,7 +79,7 @@ When the blocks are frozen in Edit mode, we need to change the behavior of the n
 To avoid forking the entire project, we instead use a tiny patch file modifying the installed dependency.
 
 In particular, we modify the `InsertionMarkerManager` responsible for the insertion markers (i.e. the grayed out area showing where a block will be placed).
-Because of how Scratch is implemented, insertions are disabled entierly if we disable the insertion markers under some conditions.
+Because of how Scratch is implemented, insertions are disabled entirely if we disable the insertion markers under some conditions.
 
 We modify [this](https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/insertion_marker_manager.js#L476) check and add the following additional checks using a logical and:
 

@@ -1,6 +1,6 @@
 # End-to-End Tests
 
-The system is covered by end-to-end (e2e) tests where an automated browser instance interacts with the user interface and asserts changes based on those interations.
+The system is covered by end-to-end (e2e) tests where an automated browser instance interacts with the user interface and asserts changes based on those interactions.
 The browser automation is facilitated by [playwright](https://playwright.dev/).
 
 While running the e2e tests, we also collect backend and frontend code coverage.
