@@ -9,6 +9,6 @@
 export interface TrackAppStudentActivityDto {
   /** The application-internal type of the activity. */
   type: string;
-  /** The app activity data stored as a string. */
+  /** The app activity data stored as a JSON object. */
   data: string;
 }

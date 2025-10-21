@@ -1,4 +1,3 @@
-import { activityType } from "../../constants";
 import {
   StudentActionType,
   type StudentCreateActivity,
@@ -11,11 +10,10 @@ export async function sendCreateActivity(
   solution: Blob,
 ): Promise<void> {
   try {
-    await sendRequest("postStudentActivity", {
+    await sendRequest("postStudentAppActivity", {
       action: StudentActionType.Create,
       data,
       solution,
-      type: activityType,
     });
   } catch (error) {
     console.error("Error sending create activity:", error);

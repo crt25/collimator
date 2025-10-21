@@ -53,9 +53,9 @@ export interface Props {
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
-  onStudentActivity?: (
+  onStudentAppActivity?: (
     action: string,
-    data: Record<string, unknown>,
+    data: unknown,
     solution: Blob,
   ) => void;
 }
@@ -66,7 +66,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     onAppAvailable,
     onReceiveSubmission,
     onSolutionRun,
-    onStudentActivity,
+    onStudentAppActivity,
   },
   ref,
 ) {
@@ -95,8 +95,8 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       postSolutionRun: async (request) => {
         onSolutionRun?.(request.params);
       },
-      postStudentActivity: async (request) => {
-        onStudentActivity?.(
+      postStudentAppActivity: async (request) => {
+        onStudentAppActivity?.(
           request.params.action,
           request.params.data,
           request.params.solution,

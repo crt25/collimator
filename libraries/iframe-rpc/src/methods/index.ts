@@ -8,7 +8,7 @@ import { LoadTask } from "./load-task";
 import { PostSolutionRun } from "./post-solution-run";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
-import { PostStudentActivity } from "./post-student-activity";
+import { PostStudentAppActivity } from "./post-student-activity";
 
 export type { GetHeight } from "./get-height";
 export type { GetSubmission, Submission, Test } from "./get-submission";
@@ -17,7 +17,7 @@ export type { LoadSubmission } from "./load-submission";
 export type { LoadTask } from "./load-task";
 export type { PostSubmission } from "./post-submission";
 export type { SetLocale } from "./set-locale";
-export type { PostStudentActivity } from "./post-student-activity";
+export type { PostStudentAppActivity } from "./post-student-activity";
 
 type Methods =
   | GetHeight
@@ -27,7 +27,7 @@ type Methods =
   | LoadTask
   | SetLocale
   | PostSubmission
-  | PostStudentActivity
+  | PostStudentAppActivity
   | PostSolutionRun;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {

@@ -1,4 +1,3 @@
-import { activityType } from "../../constants";
 import { CrtContextValue } from "../../../contexts/CrtContext";
 import {
   StudentActionType,
@@ -11,11 +10,10 @@ export async function sendDeleteActivity(
   solution: Blob,
 ): Promise<void> {
   try {
-    await sendRequest("postStudentActivity", {
+    await sendRequest("postStudentAppActivity", {
       action: StudentActionType.Delete,
       data,
       solution,
-      type: activityType,
     });
   } catch (error) {
     console.error("Error sending delete activity:", error);

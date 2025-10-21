@@ -8,10 +8,10 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
 import { StudentActivityType } from "@/api/collimator/generated/models";
-import TaskList from "./TaskList";
-import RemainingHeightContainer from "./layout/RemainingHeightContainer";
-import FullHeightRow from "./layout/FullHeightRow";
 import VerticalSpacing from "./layout/VerticalSpacing";
+import FullHeightRow from "./layout/FullHeightRow";
+import RemainingHeightContainer from "./layout/RemainingHeightContainer";
+import TaskList from "./TaskList";
 
 const TaskWrapper = styled.div`
   flex-grow: 1;
@@ -88,7 +88,7 @@ const Task = ({
     [trackStudentActivity, session.id, task.id],
   );
 
-  const onStudentActivity = useCallback(
+  const onStudentAppActivity = useCallback(
     (action: string, data: Record<string, unknown>, solution: Blob) => {
       trackStudentActivity({
         type: StudentActivityType.TASK_APP_ACTIVITY,
@@ -96,7 +96,7 @@ const Task = ({
         taskId: task.id,
         appActivity: {
           type: action,
-          data: data,
+          data,
         },
         solution,
       });
@@ -137,7 +137,7 @@ const Task = ({
         onAppAvailable={onAppAvailable}
         onReceiveSubmission={onReceiveSubmission}
         onSolutionRun={onSolutionRun}
-        onStudentActivity={onStudentActivity}
+        onStudentAppActivity={onStudentAppActivity}
       />
     </TaskWrapper>
   );
