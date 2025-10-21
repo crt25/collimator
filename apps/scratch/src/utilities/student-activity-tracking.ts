@@ -25,8 +25,8 @@ export const shouldRecordStudentAction = (
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
 ): boolean | undefined =>
-  // This condition ensures that we only track user-initiated block moves or creations
-  // when undo is enabled, the task is not editable, and the block has an ID.
+  // This condition only tracks student activities (when canEditTask is false), not teacher edits
+  // recordUndo is true only for direct user interactions but false for programmatic changes (e.g., vm.loadProject(projectData))
   TRACKED_ACTIONS.includes(action) &&
   event.recordUndo &&
   !canEditTask &&
