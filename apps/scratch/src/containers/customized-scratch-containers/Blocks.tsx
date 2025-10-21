@@ -72,13 +72,11 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
+import { StudentAction } from "../../types/scratch-student-activities";
 import {
+  handleStudentActivityTracking,
   mapScratchEventTypeToStudentAction,
-  shouldRecordStudentAction,
-  trackStudentActivity,
 } from "../../utilities/student-activity-tracking";
-import { StudentAction } from "../../types/scratch-student-action";
-import { mapXmlBlockToBlock } from "../../utilities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -1130,28 +1128,25 @@ class Blocks extends React.Component<Props, State> {
       }
     }
 
-    if (shouldRecordStudentAction(eventAction, event, this.props.canEditTask)) {
-      let block =
-        event.oldXml ?? this.getWorkspace().getBlockById(event.blockId ?? "");
+    const block = this.getWorkspace().getBlockById(event.blockId || "");
 
-      if (block instanceof Element) {
-        block = mapXmlBlockToBlock(block);
-      }
-
-      if (!block) {
-        return;
-      }
-
-      const json = this.props.vm.toJSON();
-      const solution = new Blob([json], { type: "application/json" });
-      trackStudentActivity({
-        block,
-        sendRequest: this.props.sendRequest,
-        action: eventAction,
-        solution,
-        event,
-      });
+    if (!block || (!block && !eventAction)) {
+      // If the block is not found (e.g. deletion), or the event is not mapped to a StudentAction, ignore the event
+      // If only the block is not found, ignore the event.
+      return;
     }
+
+    const json = this.props.vm.toJSON();
+    const solution = new Blob([json], { type: "application/json" });
+
+    handleStudentActivityTracking({
+      event,
+      action: eventAction,
+      canEditTask: this.props.canEditTask,
+      sendRequest: this.props.sendRequest,
+      getWorkspace: () => this.getWorkspace(),
+      solution,
+    });
   }
 
   render() {
