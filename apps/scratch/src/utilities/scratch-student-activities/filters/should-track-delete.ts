@@ -1,4 +1,3 @@
-export const shouldTrackDeleteBlock = (): boolean => {
+export const shouldTrackDeleteBlock = (): boolean =>
   // Currently, all delete actions are tracked
-  return true;
-};
+  true;

@@ -1,7 +1,6 @@
 import { isBlockPartOfLargeStack } from "../../scratch-block";
 import type { Block } from "scratch-blocks";
 
-export const shouldTrackMoveBlock = (block: Block): boolean => {
+export const shouldTrackMoveBlock = (block: Block): boolean =>
   // Move only tracks blocks in large stacks
-  return isBlockPartOfLargeStack(block);
-};
+  isBlockPartOfLargeStack(block);
