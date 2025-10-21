@@ -1,11 +1,7 @@
-import { StudentActionType } from "../types/scratch-student-activities";
-import { StudentActivityHandlerParams } from "../types/scratch-student-activities";
-import { mapDeletedBlock } from "./scratch-student-activities/scratch-block";
-import {
-  trackCreateActivity,
-  trackDeleteActivity,
-  trackMoveActivity,
-} from "./scratch-student-activities";
+import { StudentActionType } from "../../types/scratch-student-activities";
+import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
+import { mapDeletedBlock } from "./scratch-block";
+import { trackCreateActivity, trackDeleteActivity, trackMoveActivity } from ".";
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
   create: StudentActionType.Create,

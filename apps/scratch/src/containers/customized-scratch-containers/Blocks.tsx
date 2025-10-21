@@ -76,7 +76,7 @@ import { StudentActionType } from "../../types/scratch-student-activities";
 import {
   handleStudentActivityTracking,
   mapScratchEventTypeToStudentActionType,
-} from "../../utilities/student-activity-tracking";
+} from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
