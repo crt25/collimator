@@ -77,6 +77,7 @@ import {
   handleStudentActivityTracking,
   mapScratchEventTypeToStudentActionType,
 } from "../../utilities/student-activity-tracking";
+import { handleBlockLifecycle } from "../../utilities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -1082,53 +1083,15 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    if (
-      [StudentActionType.Create, StudentActionType.Delete].includes(eventAction)
-    ) {
-      let xml: Element | undefined;
-
-      if (eventAction === StudentActionType.Create && event.xml) {
-        xml = event.xml;
-      } else if (eventAction === StudentActionType.Delete && event.oldXml) {
-        xml = event.oldXml;
-      }
-
-      if (!xml) {
-        console.error("Could not find xml in event", event);
-        return;
-      }
-
-      // create a new element to be able to use querySelectorAll on it, otherwise
-      // only the children are matched against the selector
-      const el = document.createElement("div");
-      el.appendChild(xml);
-
-      const opcodes = [...el.querySelectorAll("block[type]")]
-        .map((element) => element.getAttribute("type"))
-        .filter(filterNonNull);
-
-      // update the block config button for the blocks
-      for (const opcode of opcodes) {
-        updateSingleBlockConfigButton(
-          this.props.vm,
-          this.blocks,
-          opcode,
-          this.props.canEditTask,
-        );
-      }
-
-      if (
-        eventAction === StudentActionType.Delete &&
-        // when switching sprites, blocks are also deleted but with
-        // recordUndo set to false
-        event.recordUndo &&
-        event.blockId &&
-        this.props.canEditTask
-      ) {
-        // remove the config for this task block
-        delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
-      }
-    }
+    handleBlockLifecycle({
+      event,
+      eventAction,
+      vm: this.props.vm,
+      canEditTask: this.props.canEditTask,
+      blocks: this.blocks,
+      filterNonNull,
+      updateSingleBlockConfigButton,
+    });
 
     const block = this.getWorkspace().getBlockById(event.blockId || "");
 
