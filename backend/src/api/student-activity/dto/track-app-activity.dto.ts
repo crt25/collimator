@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Prisma } from "@prisma/client";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsString } from "class-validator";
 
@@ -16,10 +17,10 @@ export class TrackAppStudentActivityDto {
 
   @Type(() => String)
   @ApiProperty({
-    example: '{"blockId":"123","blockType":"motion","parentId":null}',
-    description: "The app activity data stored as a JSON object.",
+    example: "{key: 'value'}",
+    description: "The app activity data stored as a JSON.",
   })
   @IsString()
   @IsNotEmpty()
-  readonly data!: string;
+  readonly data!: Prisma.InputJsonValue;
 }

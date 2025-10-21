@@ -55,7 +55,7 @@ export interface Props {
   onSolutionRun?: (solution: Blob) => void;
   onStudentAppActivity?: (
     action: string,
-    data: unknown,
+    data: Record<string, unknown>,
     solution: Blob,
   ) => void;
 }

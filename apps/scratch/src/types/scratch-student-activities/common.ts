@@ -5,6 +5,7 @@ import { WorkspaceChangeEvent } from "../scratch-workspace";
 export interface StudentAppActivity {
   blockId: string;
   blockType: string;
+  [key: string]: unknown;
 }
 
 export interface ActivityRequest {
