@@ -6,7 +6,7 @@ export type PostStudentActivity = IframeRpcMethod<{
   caller: RpcCaller.App;
   parameters: {
     action: string;
-    data: Record<string, unknown>;
+    data: unknown;
     solution: Blob;
     type: string;
   };

@@ -2,7 +2,7 @@ import { Block } from "scratch-blocks";
 import { CrtContextValue } from "../../contexts/CrtContext";
 import { WorkspaceChangeEvent } from "../scratch-workspace";
 
-export interface StudentAppActivity extends Record<string, unknown> {
+export interface StudentAppActivity {
   blockId: string;
   blockType: string;
 }
