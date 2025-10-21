@@ -37,8 +37,8 @@ export const handleStudentActivityTracking = ({
   action,
   canEditTask,
   sendRequest,
-  getWorkspace,
   solution,
+  block,
 }: StudentActivityHandlerParams): void => {
   if (!shouldRecordStudentAction(action, event, canEditTask)) {
     return;
@@ -67,10 +67,6 @@ export const handleStudentActivityTracking = ({
 
     case StudentAction.Create:
     case StudentAction.Move: {
-      const block = getWorkspace().getBlockById(event.blockId || "");
-      if (!block) {
-        return;
-      }
       processStudentActivityPipeline({
         action,
         block,

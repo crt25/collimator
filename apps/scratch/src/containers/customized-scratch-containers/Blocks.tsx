@@ -1144,8 +1144,8 @@ class Blocks extends React.Component<Props, State> {
       action: eventAction,
       canEditTask: this.props.canEditTask,
       sendRequest: this.props.sendRequest,
-      getWorkspace: () => this.getWorkspace(),
       solution,
+      block,
     });
   }
 

@@ -1,4 +1,4 @@
-import { Block, Workspace } from "scratch-blocks";
+import { Block } from "scratch-blocks";
 import { CrtContextValue } from "../../contexts/CrtContext";
 import { WorkspaceChangeEvent } from "../scratch-workspace";
 
@@ -37,5 +37,5 @@ export interface StudentActivityHandlerParams {
   canEditTask: boolean | undefined;
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;
-  getWorkspace: () => Workspace;
+  block: Block;
 }
