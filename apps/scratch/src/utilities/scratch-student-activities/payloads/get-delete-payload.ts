@@ -14,6 +14,6 @@ export const getDeletePayload = (
     blockId: block.id,
     blockType: block.type,
     blockIdArray: block.blockIdArray,
-    sizeOfDeletion: block.blockIdArray.length,
+    sizeOfDeletion: block.blockIdArray.length + 1,
   };
 };
