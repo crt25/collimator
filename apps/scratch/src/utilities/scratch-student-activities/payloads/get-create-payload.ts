@@ -6,9 +6,11 @@ export const getCreatePayload = (
   block: Block,
   event: WorkspaceChangeEvent,
 ): StudentCreateActivity | null => {
-  if (!block || !event.blockId) return null;
+  if (!event.blockId) {
+    return null;
+  }
 
-  const parent = block?.getParent?.();
+  const parent = block.getParent?.();
 
   return {
     blockId: event.blockId,

@@ -6,10 +6,12 @@ export const getMovePayload = (
   block: Block,
   event: WorkspaceChangeEvent,
 ): StudentMoveActivity | null => {
-  if (!block || !event.blockId) return null;
+  if (!event.blockId) {
+    return null;
+  }
 
   const oldParent = event.oldParentId;
-  const newParent = block?.getParent?.();
+  const newParent = block.getParent?.();
 
   return {
     blockId: event.blockId,

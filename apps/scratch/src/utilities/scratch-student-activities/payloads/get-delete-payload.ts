@@ -6,7 +6,9 @@ export const getDeletePayload = (
   block: DeletedBlockRecord,
   event: WorkspaceChangeEvent,
 ): StudentDeleteActivity | null => {
-  if (!block || !event.blockId) return null;
+  if (!event.blockId) {
+    return null;
+  }
 
   return {
     blockId: block.id,

@@ -10,7 +10,7 @@ export const trackCreateActivity = ({
   solution,
   event,
 }: BaseStudentAction): void => {
-  if (!shouldTrackCreateBlock(block)) {
+  if (!shouldTrackCreateBlock()) {
     return;
   }
 

@@ -10,6 +10,7 @@ export const trackMoveActivity = ({
   solution,
   event,
 }: BaseStudentAction): void => {
+  // Specific filtering to determine if the move action should be recorded
   if (!shouldTrackMoveBlock(block, event)) {
     return;
   }

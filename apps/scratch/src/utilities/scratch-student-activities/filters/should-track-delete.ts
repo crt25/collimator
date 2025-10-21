@@ -1,7 +1,4 @@
-import { DeletedBlockRecord } from "../../scratch-block";
-
-export const shouldTrackDeleteBlock = (block: DeletedBlockRecord): boolean => {
-  if (!block) return false;
-
+export const shouldTrackDeleteBlock = (): boolean => {
+  // Currently, all delete actions are tracked
   return true;
 };

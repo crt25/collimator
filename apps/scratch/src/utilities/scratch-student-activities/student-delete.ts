@@ -10,7 +10,8 @@ export const trackDeleteActivity = ({
   solution,
   event,
 }: DeleteStudentAction): void => {
-  if (!shouldTrackDeleteBlock(block)) {
+  // Specific filtering to determine if the delete action should be tracked
+  if (!shouldTrackDeleteBlock()) {
     return;
   }
 

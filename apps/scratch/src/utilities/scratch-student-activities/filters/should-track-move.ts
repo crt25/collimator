@@ -9,8 +9,6 @@ export const shouldTrackMoveBlock = (
   block: Block,
   event: WorkspaceChangeEvent,
 ): boolean => {
-  if (!block) return false;
-
   // Move only tracks blocks in large stacks or blocks that were part of large stacks
   return isBlockPartOfLargeStack(block) || wasPartOfLargeStack(event);
 };
