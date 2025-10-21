@@ -1,4 +1,4 @@
-import { ACTIVITY_TYPE } from "../../constants";
+import { activityType } from "../../constants";
 import type {
   MoveActivityRequest,
   StudentMoveActivity,
@@ -13,7 +13,7 @@ export async function sendMoveActivity(
       action,
       data,
       solution,
-      type: ACTIVITY_TYPE,
+      type: activityType,
     });
   } catch (error) {
     console.error("Error sending move activity:", error);

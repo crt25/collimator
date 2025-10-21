@@ -10,7 +10,7 @@ const scratchToStudentActionType: Record<string, StudentActionType> = {
   delete: StudentActionType.Delete,
 };
 
-const TRACKED_ACTIONS = [
+const trackedActions = [
   StudentActionType.Create,
   StudentActionType.Move,
   StudentActionType.Delete,
@@ -27,7 +27,7 @@ export const shouldRecordStudentActionType = (
 ): boolean | undefined =>
   // This condition only tracks student activities (when canEditTask is false), not teacher edits
   // recordUndo is true only for direct user interactions but false for programmatic changes (e.g., vm.loadProject(projectData))
-  TRACKED_ACTIONS.includes(action) &&
+  trackedActions.includes(action) &&
   event.recordUndo &&
   !canEditTask &&
   !!event.blockId;
