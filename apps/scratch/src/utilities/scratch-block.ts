@@ -76,3 +76,7 @@ export const mapXmlBlockToBlock = (
     deletedBlocks: blockIdArray,
   };
 };
+
+export const hasValidBlockContext = (
+  event: WorkspaceChangeEvent,
+): event is WorkspaceChangeEvent & { blockId: string } => !!event.blockId;
