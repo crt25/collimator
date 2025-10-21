@@ -1,30 +1,45 @@
-- Collimator
+- Overview
+  - [Welcome to ClassMosaic](/)
+  - [Developer setup guide](/overview/developer-setup-guide.md)
 
-  - [Home](/)
-  - [Overview](infrastructure/big-picture.md)
+- Core features
+  - [User and class management⏳]()
+  - 
+  
+
+- System architecture
+  - [Iframe RPC](architecture/iframe-rpc.md)
+
+- Backend systems
   - [Student Identity Management](identity-management/student.md)
 
-- Infrastructure
+- Data management and analysis
+  - [Database schema⏳]()
+  - [AST conversion](data-analyzer/ast-conversion.md)
+  - [Data analysis](data-analyzer/data-analysis.md)
 
-  - [Database](infrastruce/database.md)
-  - [Iframe RPC]()
+- Frontend platform
+  - [Dashboard overview⏳]()
 
-
-
-- Data Analyzer
-
-  - [Overview](data-analyzer/overview.md)
-  - [General AST](data-analyzer/ast.md)
-  - [G-AST Converters](data-analyzer/converters.md)
-
-- Quality Assurance
-
-  - [End-to-End Tests](quality-assurance/e2e.md)
-
-- How to
-  - [Running locally](howto/running-locally.md)
 
 - Scratch
-  
-  - [Modifications](scratch/modifications.md)
+  - [G-AST Converter](scratch/g-ast-converter.md)
   - [Scratch .sb3 Format](scratch/sb3.md)
+  - [Modifications](scratch/modifications.md)
+  
+  
+  
+- Python
+  - [G-AST Converter](python/g-ast-converter.md)
+
+- Deployment and infrastructure
+  - [Database](infrastructure/database.md)
+
+- Development and testing
+  - [Testing strategy⏳]()
+  - [End-to-End Tests](quality-assurance/e2e.md)
+
+- Extensibility and customization
+  - [Adding a new programming language⏳]()
+  - [Adding new analysis criteria⏳]()
+
