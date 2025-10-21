@@ -1,17 +1,18 @@
 import { DeleteStudentAction } from "../../types/scratch-student-activities";
 import { StudentActionType } from "../../types/scratch-student-activities/common";
-import { shouldTrackDeleteBlock } from "./filters";
+import { shouldTrackDeleteBlock } from "./filters/should-track-delete";
 import { getDeletePayload } from "./payloads";
-import { sendDeleteActivity } from "./senders";
+import { sendDeleteActivity } from "./senders/send-delete-activity";
 
 export const trackDeleteActivity = ({
   block,
   sendRequest,
   solution,
   event,
+  canEditTask,
 }: DeleteStudentAction): void => {
   // Specific filtering to determine if the delete action should be tracked
-  if (!shouldTrackDeleteBlock()) {
+  if (!shouldTrackDeleteBlock(event, canEditTask)) {
     return;
   }
 

@@ -17,6 +17,7 @@ export interface StudentActionContext {
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;
   event: WorkspaceChangeEvent;
+  canEditTask: boolean | undefined;
 }
 
 export enum StudentActionType {

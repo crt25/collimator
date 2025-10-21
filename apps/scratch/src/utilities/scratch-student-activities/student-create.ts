@@ -2,17 +2,18 @@ import {
   StudentActionType,
   StudentActionContext,
 } from "../../types/scratch-student-activities";
-import { shouldTrackCreateBlock } from "./filters";
+import { shouldTrackCreateBlock } from "./filters/should-track-create";
 import { getCreatePayload } from "./payloads";
-import { sendCreateActivity } from "./senders";
+import { sendCreateActivity } from "./senders/send-create-activity";
 
 export const trackCreateActivity = ({
   block,
   sendRequest,
   solution,
   event,
+  canEditTask,
 }: StudentActionContext): void => {
-  if (!shouldTrackCreateBlock()) {
+  if (!shouldTrackCreateBlock(event, canEditTask)) {
     return;
   }
 
