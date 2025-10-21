@@ -9,7 +9,6 @@ export async function sendMoveActivity(
   { sendRequest, action, solution }: MoveActivityRequest,
 ): Promise<void> {
   try {
-    console.log("Sending move activity:", data, action, solution);
     await sendRequest("postStudentActivity", {
       action,
       data,
