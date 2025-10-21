@@ -40,6 +40,7 @@ export const handleStudentActivityTracking = ({
   solution,
   block,
 }: StudentActivityHandlerParams): void => {
+  // General filtering to determine if the action should be recorded
   if (!shouldRecordStudentAction(action, event, canEditTask)) {
     return;
   }
@@ -49,10 +50,13 @@ export const handleStudentActivityTracking = ({
       if (!event.oldXml) {
         return;
       }
+
       const block = mapXmlBlockToBlock(event.oldXml);
+
       if (!block) {
         return;
       }
+
       processStudentActivityPipeline({
         action,
         block,
@@ -60,6 +64,7 @@ export const handleStudentActivityTracking = ({
         sendRequest,
         solution,
       });
+
       break;
     }
 
@@ -72,6 +77,7 @@ export const handleStudentActivityTracking = ({
         sendRequest,
         solution,
       });
+
       break;
     }
 

@@ -27,6 +27,7 @@ export const processStudentActivityPipeline = (
         solution: params.solution,
         event: params.event,
       });
+
       break;
 
     case StudentAction.Move:
@@ -36,6 +37,7 @@ export const processStudentActivityPipeline = (
         solution: params.solution,
         event: params.event,
       });
+
       break;
 
     case StudentAction.Delete:
@@ -45,6 +47,7 @@ export const processStudentActivityPipeline = (
         solution: params.solution,
         event: params.event,
       });
+
       break;
   }
 };
