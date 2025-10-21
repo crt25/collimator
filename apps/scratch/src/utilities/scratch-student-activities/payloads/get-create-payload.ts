@@ -10,11 +10,11 @@ export const getCreatePayload = (
     return null;
   }
 
-  const parent = block.getParent?.();
+  const parent = block.getParent();
 
   return {
     blockId: event.blockId,
     blockType: block.type,
-    parentId: parent ? parent.id : null,
+    parentId: parent?.id || null,
   };
 };

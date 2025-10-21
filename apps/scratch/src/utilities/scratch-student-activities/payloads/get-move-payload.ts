@@ -11,7 +11,7 @@ export const getMovePayload = (
   }
 
   const oldParent = event.oldParentId;
-  const newParent = block.getParent?.();
+  const newParent = block.getParent();
 
   return {
     blockId: event.blockId,

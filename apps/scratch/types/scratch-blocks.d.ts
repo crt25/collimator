@@ -30,12 +30,11 @@ declare namespace ScratchBlocksExtended {
   interface Block extends ScratchBlocks.Block {
     inputList?: BlockInput[];
     isMonitored?: boolean;
-    getNextBlock?: () => Block | null;
-    getParent?: () => Block | null;
-    getChildren?: () => Block[];
+    getNextBlock: () => Block | null;
+    getParent: () => Block | null;
+    getChildren: () => Block[];
     id: string;
     type: string;
-    ids?: string[];
   }
 
   class Flyout extends ScratchBlocks.Flyout {

@@ -21,6 +21,7 @@ export interface DeleteActivityRequest extends ActivityRequest {
   action: StudentActionType.Delete;
 }
 
-export interface DeleteStudentActionType extends StudentActionContext {
+export interface DeleteStudentAction
+  extends Omit<StudentActionContext, "block"> {
   block: DeletedBlockRecord;
 }

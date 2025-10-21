@@ -13,7 +13,7 @@ function getStackSize(topBlock: Block): number {
 
   while (current) {
     size++;
-    current = current.getNextBlock?.() ?? null;
+    current = current.getNextBlock();
   }
   return size;
 }
@@ -25,9 +25,10 @@ export function isBlockPartOfLargeStack(block: Block): boolean {
 
   let current: Block | null = block;
 
-  while (current?.getParent?.()) {
-    current = current.getParent?.() ?? null;
+  while (current?.getParent()) {
+    current = current.getParent();
   }
+
   if (!current) {
     return false;
   }
