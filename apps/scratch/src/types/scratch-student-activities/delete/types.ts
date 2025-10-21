@@ -12,7 +12,6 @@ import {
 
 export interface StudentDeleteActivity extends BaseStudentAppActivity {
   blockIdArray: DeletedBlockInfo | null;
-  sizeOfDeletion: number | null;
 }
 
 export interface DeleteActivityRequest extends BaseActivityRequest {
