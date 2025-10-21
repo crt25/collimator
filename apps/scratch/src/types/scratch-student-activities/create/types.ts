@@ -1,13 +1,9 @@
-import {
-  BaseStudentAppActivity,
-  BaseActivityRequest,
-  StudentAction,
-} from "../common";
+import { StudentAppActivity, ActivityRequest, StudentAction } from "../common";
 
-export interface StudentCreateActivity extends BaseStudentAppActivity {
+export interface StudentCreateActivity extends StudentAppActivity {
   parentId: string | null;
 }
 
-export interface CreateActivityRequest extends BaseActivityRequest {
+export interface CreateActivityRequest extends ActivityRequest {
   action: StudentAction.Create;
 }

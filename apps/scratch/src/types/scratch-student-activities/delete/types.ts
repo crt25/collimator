@@ -1,6 +1,6 @@
 import {
-  BaseStudentAppActivity,
-  BaseActivityRequest,
+  StudentAppActivity,
+  ActivityRequest,
   BaseStudentAction,
   StudentAction,
 } from "../common";
@@ -13,11 +13,11 @@ export interface DeletedBlockRecord {
   deletedBlocks: DeletedBlockInfo;
 }
 
-export interface StudentDeleteActivity extends BaseStudentAppActivity {
+export interface StudentDeleteActivity extends StudentAppActivity {
   deletedBlocks: DeletedBlockInfo | null;
 }
 
-export interface DeleteActivityRequest extends BaseActivityRequest {
+export interface DeleteActivityRequest extends ActivityRequest {
   action: StudentAction.Delete;
 }
 

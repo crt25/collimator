@@ -2,12 +2,12 @@ import { Block } from "scratch-blocks";
 import { CrtContextValue } from "../../contexts/CrtContext";
 import { WorkspaceChangeEvent } from "../scratch-workspace";
 
-export interface BaseStudentAppActivity extends Record<string, unknown> {
+export interface StudentAppActivity extends Record<string, unknown> {
   blockId: string;
   blockType: string;
 }
 
-export interface BaseActivityRequest {
+export interface ActivityRequest {
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;
 }

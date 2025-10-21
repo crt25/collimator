@@ -1,6 +1,6 @@
 export type {
-  BaseStudentAppActivity,
-  BaseActivityRequest,
+  StudentAppActivity,
+  ActivityRequest,
   BaseStudentAction,
   BasePipelineParams,
   StudentActivityHandlerParams,
