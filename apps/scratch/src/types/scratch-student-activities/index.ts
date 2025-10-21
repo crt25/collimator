@@ -29,4 +29,3 @@ export type {
 } from "./delete";
 
 export { StudentAction } from "./scratch-student-action";
-export * from "./scratch-student-action";
