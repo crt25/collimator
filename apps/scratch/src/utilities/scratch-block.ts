@@ -1,4 +1,7 @@
-import { DeletedBlockRecord } from "../types/scratch-student-activities/delete/types";
+import {
+  DeletedBlockInfo,
+  DeletedBlockRecord,
+} from "../types/scratch-student-activities/delete/types";
 import { WorkspaceChangeEvent } from "../types/scratch-workspace";
 import type { Block } from "scratch-blocks";
 
@@ -69,6 +72,6 @@ export const mapXmlBlockToBlock = (
   return {
     id: blockId,
     type: blockType,
-    blockIdArray,
+    deletedBlocks: blockIdArray,
   };
 };

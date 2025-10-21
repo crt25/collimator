@@ -10,11 +10,11 @@ export type DeletedBlockInfo = Array<{ id: string; type: string }>;
 export interface DeletedBlockRecord {
   id: string;
   type: string;
-  blockIdArray: DeletedBlockInfo;
+  deletedBlocks: DeletedBlockInfo;
 }
 
 export interface StudentDeleteActivity extends BaseStudentAppActivity {
-  blockIdArray: DeletedBlockInfo | null;
+  deletedBlocks: DeletedBlockInfo | null;
 }
 
 export interface DeleteActivityRequest extends BaseActivityRequest {

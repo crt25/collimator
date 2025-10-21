@@ -13,6 +13,6 @@ export const getDeletePayload = (
   return {
     blockId: block.id,
     blockType: block.type,
-    blockIdArray: block.blockIdArray,
+    deletedBlocks: block.deletedBlocks,
   };
 };
