@@ -5,10 +5,13 @@ import {
   StudentAction,
 } from "../common";
 
-import {
-  DeletedBlockInfo,
-  DeletedBlockRecord,
-} from "../../../utilities/scratch-block";
+export type DeletedBlockInfo = Array<{ id: string; type: string }>;
+
+export interface DeletedBlockRecord {
+  id: string;
+  type: string;
+  blockIdArray: DeletedBlockInfo;
+}
 
 export interface StudentDeleteActivity extends BaseStudentAppActivity {
   blockIdArray: DeletedBlockInfo | null;
