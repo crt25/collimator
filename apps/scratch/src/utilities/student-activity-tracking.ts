@@ -47,12 +47,10 @@ export const handleStudentActivityTracking = ({
   switch (action) {
     case StudentAction.Delete: {
       if (!event.oldXml) {
-        console.log("No oldXml found for delete event");
         return;
       }
       const block = mapXmlBlockToBlock(event.oldXml);
       if (!block) {
-        console.log("No block found for delete action");
         return;
       }
       processStudentActivityPipeline({
@@ -78,6 +76,6 @@ export const handleStudentActivityTracking = ({
     }
 
     default:
-      console.log("Unhandled action:", action);
+      break;
   }
 };
