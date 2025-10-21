@@ -4,7 +4,7 @@ import { processStudentActivityPipeline } from "./scratch-student-activities/pip
 import { mapXmlBlockToBlock } from "./scratch-block";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 
-const scratchToStudentAction: Record<string, StudentAction | null> = {
+const scratchToStudentAction: Record<string, StudentAction> = {
   create: StudentAction.Create,
   move: StudentAction.Move,
   delete: StudentAction.Delete,
