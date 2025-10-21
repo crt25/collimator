@@ -1,6 +1,12 @@
-# Running ClassMosaic locally
+# Developer setup guide
 
-## Prerequisites
+This guide provides instructions for setting up the ClassMosaic project for local development. The project is a monorepo project and uses git submodules too.
+
+The repository is structured into several key directories, including `backend`, `frontend`, `apps` for the applications, `e2e` for end-to-end tests, and `terraform` for infrastructure as code.
+
+## Local development setup (manual)
+
+### Prerequisites
 
 Make sure the following tools are installed:
 
@@ -10,7 +16,7 @@ Make sure the following tools are installed:
 
 You need a Microsoft account to log in. It can be either a personal account or an organizational account, provided the organization has allowed its users to access the application.
 
-## Clone the Repository
+### Clone the Repository
 
 Download the source code and initialize submodules:
 
@@ -20,7 +26,7 @@ cd collimator
 git submodule update --init --recursive --progress
 ```
 
-## Backend Setup
+### Backend Setup
 
 ?> The `docker/` folder and `backend/Dockerfile` are only used for deployment. For local development, use the native setup described below.
 
@@ -91,7 +97,7 @@ Keep your registration token. You will need it to log in from the frontend.
 $ yarn dev
 ```
 
-## Frontend Setup
+### Frontend Setup
 
 1. Move to the `frontend` folder.
 
@@ -103,7 +109,7 @@ $ yarn install
 $ yarn dev
 ```
 
-## Scratch Setup
+### Scratch Setup
 
 1. Move to the `apps/scratch` folder.
 2. Ensure submodules are initialized:
@@ -117,14 +123,14 @@ $ yarn dev
     $ yarn dev
     ```
 
-## Visit the frontend
+### Visit the frontend
 
 1. Open your browser at `http://localhost:3000/`.
 2. Modify the URL to `http://localhost:3000/login?registrationToken=XXXX`, replacing XXXX with your registration token.
 3. Click "Authenticate using Microsoft".
 
-## Appendices
-### Postgres Docker
+### Appendices
+#### Postgres Docker
 
 This process creates two Docker containers:  
 - one for the PostgreSQL server  
@@ -161,3 +167,8 @@ $ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' po
     - Password: password (value from step 1)
 9. Save. Update the `backend/.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public"`.
 
+## Infrastructure and deployment
+
+The project uses Terraform to manage its cloud infrastructure on AWS. The configuration is located in the `terraform/infrastructure` directory. It defines modules for networking, database, backend (Fargate), frontend (S3/CloudFront), and apps (S3/CloudFront).
+
+This setup is intended for deployment and is not required for local development, but it provides context on how the application is hosted in a production-like environment. Files into `.github/workflows` provide another way to understand the project architecture.
