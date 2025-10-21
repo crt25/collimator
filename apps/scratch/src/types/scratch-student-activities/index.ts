@@ -28,4 +28,5 @@ export type {
   DeletePipelineParams,
 } from "./delete";
 
+export { StudentAction } from "./scratch-student-action";
 export * from "./scratch-student-action";
