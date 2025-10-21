@@ -1,7 +1,7 @@
 import { StudentActionType } from "../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../types/scratch-student-activities";
 import { processStudentActivityPipeline } from "./scratch-student-activities/pipeline";
-import { mapXmlBlockToBlock } from "./scratch-block";
+import { mapDeletedBlock } from "./scratch-student-activities/scratch-block";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
@@ -51,7 +51,7 @@ export const handleStudentActivityTracking = ({
         return;
       }
 
-      const block = mapXmlBlockToBlock(event.oldXml);
+      const block = mapDeletedBlock(event.oldXml);
 
       if (!block) {
         return;

@@ -1,6 +1,6 @@
 import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 import { DeletedBlockRecord } from "../../../types/scratch-student-activities/delete/types";
-import { hasValidBlockContext } from "../../scratch-block";
+import { hasValidBlockContext } from "../scratch-block";
 import type { StudentDeleteActivity } from "../../../types/scratch-student-activities";
 
 export const getDeletePayload = (

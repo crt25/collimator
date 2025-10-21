@@ -77,7 +77,7 @@ import {
   handleStudentActivityTracking,
   mapScratchEventTypeToStudentActionType,
 } from "../../utilities/student-activity-tracking";
-import { handleBlockLifecycle } from "../../utilities/scratch-block";
+import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";

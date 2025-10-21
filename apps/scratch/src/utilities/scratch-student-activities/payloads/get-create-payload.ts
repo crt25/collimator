@@ -1,5 +1,5 @@
 import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
-import { hasValidBlockContext } from "../../scratch-block";
+import { hasValidBlockContext } from "../scratch-block";
 import type { Block } from "scratch-blocks";
 import type { StudentCreateActivity } from "../../../types/scratch-student-activities";
 
