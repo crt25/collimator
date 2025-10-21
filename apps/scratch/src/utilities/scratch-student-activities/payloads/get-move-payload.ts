@@ -19,7 +19,7 @@ export const getMovePayload = (
   return {
     blockId: event.blockId,
     blockType: block.type,
-    oldParentId: oldParent || null,
-    newParentId: newParent ? newParent.id : null,
+    oldParentId: oldParent ?? null,
+    newParentId: newParent?.id ?? null,
   };
 };
