@@ -1130,9 +1130,9 @@ class Blocks extends React.Component<Props, State> {
 
     const block = this.getWorkspace().getBlockById(event.blockId || "");
 
-    if (!block || (!block && !eventAction)) {
-      // If the block is not found (e.g. deletion), or the event is not mapped to a StudentAction, ignore the event
-      // If only the block is not found, ignore the event.
+    if (!block && eventAction !== StudentAction.Delete) {
+      // If the block is not found and it's not a delete event, we cannot track it
+      // If the block is not found during a delete event, we can still track it
       return;
     }
 

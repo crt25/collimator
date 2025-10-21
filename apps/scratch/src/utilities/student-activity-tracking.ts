@@ -70,6 +70,10 @@ export const handleStudentActivityTracking = ({
 
     case StudentAction.Create:
     case StudentAction.Move: {
+      if (!block) {
+        return;
+      }
+
       processStudentActivityPipeline({
         action,
         block,
