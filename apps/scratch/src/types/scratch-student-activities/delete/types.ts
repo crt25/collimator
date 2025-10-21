@@ -5,7 +5,7 @@ import {
   StudentActionType,
 } from "../common";
 
-export type DeletedBlockInfo = Array<{ id: string; type: string }>;
+export type DeletedBlockInfo = { id: string; type: string }[];
 
 export interface DeletedBlockRecord {
   id: string;
