@@ -18,7 +18,7 @@ const TRACKED_ACTIONS = [
 
 export const mapScratchEventTypeToStudentAction = (
   type: string,
-): StudentAction | null => scratchToStudentAction[type];
+): StudentAction | null => scratchToStudentAction[type] || null;
 
 export const shouldRecordStudentAction = (
   action: StudentAction,
