@@ -43,17 +43,17 @@ export const mapDeletedBlock = (
   xmlElement: Element,
 ): DeletedBlockRecord | null => {
   // Extract the block ID and type from the XML element
-  const blockId = xmlElement.getAttribute("id");
-  const blockType = xmlElement.getAttribute("type");
+  const id = xmlElement.getAttribute("id");
+  const type = xmlElement.getAttribute("type");
 
-  if (!blockId || !blockType) {
+  if (!id || !type) {
     return null;
   }
 
   const blocks = xmlElement.querySelectorAll("block[id][type]");
 
   // Find all child blocks within the XML element
-  const blockIdArray: DeletedBlockInfo = Array.from(blocks).flatMap(
+  const deletedBlocks: DeletedBlockInfo = Array.from(blocks).flatMap(
     (blockElement) => {
       const id = blockElement.getAttribute("id");
       const type = blockElement.getAttribute("type");
@@ -65,9 +65,9 @@ export const mapDeletedBlock = (
   );
 
   return {
-    id: blockId,
-    type: blockType,
-    deletedBlocks: blockIdArray,
+    id,
+    type,
+    deletedBlocks,
   };
 };
 
