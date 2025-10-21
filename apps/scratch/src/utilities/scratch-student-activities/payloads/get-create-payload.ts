@@ -18,6 +18,6 @@ export const getCreatePayload = (
   return {
     blockId: event.blockId,
     blockType: block.type,
-    parentId: parent?.id || null,
+    parentId: parent?.id ?? null,
   };
 };
