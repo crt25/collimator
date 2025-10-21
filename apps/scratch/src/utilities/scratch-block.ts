@@ -40,7 +40,7 @@ export function isBlockPartOfLargeStack(block: Block): boolean {
 }
 
 export const wasPartOfLargeStack = (event: WorkspaceChangeEvent): boolean => {
-  return event.oldParentId !== null;
+  return event.oldParentId != null;
 };
 
 export const mapXmlBlockToBlock = (
