@@ -17,7 +17,7 @@ export class TrackAppStudentActivityDto {
   @Type(() => String)
   @ApiProperty({
     example: "dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl",
-    description: "The binary app activity data encoded in base64.",
+    description: "The app activity data stored as a string.",
   })
   @IsString()
   @IsNotEmpty()
