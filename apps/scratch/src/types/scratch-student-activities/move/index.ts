@@ -1,2 +1,1 @@
-export type { StudentMoveActivity, MoveActivityRequest } from "./types";
-export type { GetMovePayload } from "./payload";
+export type { StudentMoveActivity } from "./types";

@@ -1,9 +1,4 @@
-import {
-  StudentAppActivity,
-  ActivityRequest,
-  StudentActionContext,
-  StudentActionType,
-} from "../common";
+import { StudentAppActivity, StudentActionContext } from "../common";
 
 export type DeletedBlockInfo = { id: string; type: string }[];
 
@@ -15,10 +10,6 @@ export interface DeletedBlockRecord {
 
 export interface StudentDeleteActivity extends StudentAppActivity {
   deletedBlocks: DeletedBlockInfo | null;
-}
-
-export interface DeleteActivityRequest extends ActivityRequest {
-  action: StudentActionType.Delete;
 }
 
 export interface DeleteStudentAction

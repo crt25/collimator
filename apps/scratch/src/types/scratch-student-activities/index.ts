@@ -6,23 +6,10 @@ export type {
   StudentActionContext,
 } from "./common";
 
-export type {
-  StudentCreateActivity,
-  CreateActivityRequest,
-  GetCreatePayload,
-} from "./create";
+export type { StudentCreateActivity } from "./create";
 
-export type {
-  StudentMoveActivity,
-  MoveActivityRequest,
-  GetMovePayload,
-} from "./move";
+export type { StudentDeleteActivity, DeleteStudentAction } from "./delete";
 
-export type {
-  StudentDeleteActivity,
-  DeleteActivityRequest,
-  DeleteStudentAction,
-  GetDeletePayload,
-} from "./delete";
+export type { StudentMoveActivity } from "./move";
 
 export { StudentActionType } from "./common";
