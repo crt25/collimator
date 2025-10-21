@@ -1,16 +1,18 @@
 import { activityType } from "../../constants";
-import type {
-  CreateActivityRequest,
-  StudentCreateActivity,
+import {
+  StudentActionType,
+  type StudentCreateActivity,
 } from "../../../types/scratch-student-activities";
+import { CrtContextValue } from "../../../contexts/CrtContext";
 
 export async function sendCreateActivity(
   data: StudentCreateActivity,
-  { sendRequest, action, solution }: CreateActivityRequest,
+  sendRequest: CrtContextValue["sendRequest"],
+  solution: Blob,
 ): Promise<void> {
   try {
     await sendRequest("postStudentActivity", {
-      action,
+      action: StudentActionType.Create,
       data,
       solution,
       type: activityType,

@@ -1,5 +1,4 @@
 import { DeleteStudentAction } from "../../types/scratch-student-activities";
-import { StudentActionType } from "../../types/scratch-student-activities/common";
 import { shouldTrackDeleteBlock } from "./filters/should-track-delete";
 import { getDeletePayload } from "./payloads";
 import { sendDeleteActivity } from "./senders/send-delete-activity";
@@ -22,9 +21,5 @@ export const trackDeleteActivity = ({
     return;
   }
 
-  sendDeleteActivity(data, {
-    sendRequest,
-    action: StudentActionType.Delete,
-    solution,
-  });
+  sendDeleteActivity(data, sendRequest, solution);
 };

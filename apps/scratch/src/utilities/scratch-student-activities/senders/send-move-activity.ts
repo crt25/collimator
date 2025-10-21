@@ -1,16 +1,16 @@
 import { activityType } from "../../constants";
-import type {
-  MoveActivityRequest,
-  StudentMoveActivity,
-} from "../../../types/scratch-student-activities";
+import { StudentActionType } from "../../../types/scratch-student-activities";
+import { CrtContextValue } from "../../../contexts/CrtContext";
+import { StudentMoveActivity } from "../../../types/scratch-student-activities/move";
 
 export async function sendMoveActivity(
   data: StudentMoveActivity,
-  { sendRequest, action, solution }: MoveActivityRequest,
+  sendRequest: CrtContextValue["sendRequest"],
+  solution: Blob,
 ): Promise<void> {
   try {
     await sendRequest("postStudentActivity", {
-      action,
+      action: StudentActionType.Move,
       data,
       solution,
       type: activityType,

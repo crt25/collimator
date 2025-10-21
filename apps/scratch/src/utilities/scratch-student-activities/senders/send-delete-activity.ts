@@ -1,16 +1,18 @@
 import { activityType } from "../../constants";
-import type {
-  StudentDeleteActivity,
-  DeleteActivityRequest,
+import { CrtContextValue } from "../../../contexts/CrtContext";
+import {
+  StudentActionType,
+  type StudentDeleteActivity,
 } from "../../../types/scratch-student-activities";
 
 export async function sendDeleteActivity(
   data: StudentDeleteActivity,
-  { sendRequest, action, solution }: DeleteActivityRequest,
+  sendRequest: CrtContextValue["sendRequest"],
+  solution: Blob,
 ): Promise<void> {
   try {
     await sendRequest("postStudentActivity", {
-      action,
+      action: StudentActionType.Delete,
       data,
       solution,
       type: activityType,

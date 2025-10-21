@@ -1,7 +1,4 @@
-import {
-  StudentActionType,
-  StudentActionContext,
-} from "../../types/scratch-student-activities";
+import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackMoveBlock } from "./filters/should-track-move";
 import { getMovePayload } from "./payloads";
 import { sendMoveActivity } from "./senders/send-move-activity";
@@ -24,9 +21,5 @@ export const trackMoveActivity = ({
     return;
   }
 
-  sendMoveActivity(data, {
-    sendRequest,
-    action: StudentActionType.Move,
-    solution,
-  });
+  sendMoveActivity(data, sendRequest, solution);
 };
