@@ -1,8 +1,8 @@
 import {
   StudentAppActivity,
   ActivityRequest,
-  BaseStudentAction,
-  StudentAction,
+  StudentActionContext,
+  StudentActionType,
 } from "../common";
 
 export type DeletedBlockInfo = Array<{ id: string; type: string }>;
@@ -18,9 +18,9 @@ export interface StudentDeleteActivity extends StudentAppActivity {
 }
 
 export interface DeleteActivityRequest extends ActivityRequest {
-  action: StudentAction.Delete;
+  action: StudentActionType.Delete;
 }
 
-export interface DeleteStudentAction extends BaseStudentAction {
+export interface DeleteStudentActionType extends StudentActionContext {
   block: DeletedBlockRecord;
 }

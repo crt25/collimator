@@ -1,7 +1,7 @@
-import { BasePipelineParams, StudentAction } from "../common";
-import { DeletedBlockRecord } from "../../../utilities/scratch-block";
+import { BasePipelineParams, StudentActionType } from "../common";
+import { DeletedBlockRecord } from "./types";
 
 export interface DeletePipelineParams extends BasePipelineParams {
-  action: StudentAction.Delete;
+  action: StudentActionType.Delete;
   block: DeletedBlockRecord;
 }

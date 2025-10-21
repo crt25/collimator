@@ -1,27 +1,27 @@
-import { StudentAction } from "../types/scratch-student-activities";
+import { StudentActionType } from "../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../types/scratch-student-activities";
 import { processStudentActivityPipeline } from "./scratch-student-activities/pipeline";
 import { mapXmlBlockToBlock } from "./scratch-block";
 import type { WorkspaceChangeEvent } from "../types/scratch-workspace";
 
-const scratchToStudentAction: Record<string, StudentAction> = {
-  create: StudentAction.Create,
-  move: StudentAction.Move,
-  delete: StudentAction.Delete,
+const scratchToStudentActionType: Record<string, StudentActionType> = {
+  create: StudentActionType.Create,
+  move: StudentActionType.Move,
+  delete: StudentActionType.Delete,
 };
 
 const TRACKED_ACTIONS = [
-  StudentAction.Create,
-  StudentAction.Move,
-  StudentAction.Delete,
+  StudentActionType.Create,
+  StudentActionType.Move,
+  StudentActionType.Delete,
 ] as const;
 
-export const mapScratchEventTypeToStudentAction = (
+export const mapScratchEventTypeToStudentActionType = (
   type: string,
-): StudentAction | null => scratchToStudentAction[type] || null;
+): StudentActionType | null => scratchToStudentActionType[type] || null;
 
-export const shouldRecordStudentAction = (
-  action: StudentAction,
+export const shouldRecordStudentActionType = (
+  action: StudentActionType,
   event: WorkspaceChangeEvent,
   canEditTask: boolean | undefined,
 ): boolean | undefined =>
@@ -41,12 +41,12 @@ export const handleStudentActivityTracking = ({
   block,
 }: StudentActivityHandlerParams): void => {
   // General filtering to determine if the action should be recorded
-  if (!shouldRecordStudentAction(action, event, canEditTask)) {
+  if (!shouldRecordStudentActionType(action, event, canEditTask)) {
     return;
   }
 
   switch (action) {
-    case StudentAction.Delete: {
+    case StudentActionType.Delete: {
       if (!event.oldXml) {
         return;
       }
@@ -68,8 +68,8 @@ export const handleStudentActivityTracking = ({
       break;
     }
 
-    case StudentAction.Create:
-    case StudentAction.Move: {
+    case StudentActionType.Create:
+    case StudentActionType.Move: {
       if (!block) {
         return;
       }

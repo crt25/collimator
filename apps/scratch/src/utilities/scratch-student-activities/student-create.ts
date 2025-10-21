@@ -1,5 +1,7 @@
-import { BaseStudentAction } from "../../types/scratch-student-activities";
-import { StudentAction } from "../../types/scratch-student-activities/common";
+import {
+  StudentActionType,
+  StudentActionContext,
+} from "../../types/scratch-student-activities";
 import { shouldTrackCreateBlock } from "./filters";
 import { getCreatePayload } from "./payloads";
 import { sendCreateActivity } from "./senders";
@@ -9,7 +11,7 @@ export const trackCreateActivity = ({
   sendRequest,
   solution,
   event,
-}: BaseStudentAction): void => {
+}: StudentActionContext): void => {
   if (!shouldTrackCreateBlock()) {
     return;
   }
@@ -22,7 +24,7 @@ export const trackCreateActivity = ({
 
   sendCreateActivity(data, {
     sendRequest,
-    action: StudentAction.Create,
+    action: StudentActionType.Create,
     solution,
   });
 };

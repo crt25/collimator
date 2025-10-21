@@ -1,8 +1,8 @@
 import { StudentCreateActivity } from "./types";
 import type { Block } from "scratch-blocks";
-import type { StudentAction } from "../common";
+import type { StudentActionType } from "../common";
 
 export type GetCreatePayload = (
   block: Block,
-  event: StudentAction.Create,
+  event: StudentActionType.Create,
 ) => StudentCreateActivity | null;

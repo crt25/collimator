@@ -1,5 +1,7 @@
-import { BaseStudentAction } from "../../types/scratch-student-activities";
-import { StudentAction } from "../../types/scratch-student-activities/common";
+import {
+  StudentActionType,
+  StudentActionContext,
+} from "../../types/scratch-student-activities";
 import { shouldTrackMoveBlock } from "./filters";
 import { getMovePayload } from "./payloads";
 import { sendMoveActivity } from "./senders";
@@ -9,7 +11,7 @@ export const trackMoveActivity = ({
   sendRequest,
   solution,
   event,
-}: BaseStudentAction): void => {
+}: StudentActionContext): void => {
   // Specific filtering to determine if the move action should be recorded
   if (!shouldTrackMoveBlock(block)) {
     return;
@@ -21,5 +23,9 @@ export const trackMoveActivity = ({
     return;
   }
 
-  sendMoveActivity(data, { sendRequest, action: StudentAction.Move, solution });
+  sendMoveActivity(data, {
+    sendRequest,
+    action: StudentActionType.Move,
+    solution,
+  });
 };

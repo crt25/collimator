@@ -12,14 +12,14 @@ export interface ActivityRequest {
   solution: Blob;
 }
 
-export interface BaseStudentAction {
+export interface StudentActionContext {
   block: Block;
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;
   event: WorkspaceChangeEvent;
 }
 
-export enum StudentAction {
+export enum StudentActionType {
   Create = "create",
   Move = "move",
   Delete = "delete",
@@ -33,7 +33,7 @@ export interface BasePipelineParams {
 
 export interface StudentActivityHandlerParams {
   event: WorkspaceChangeEvent;
-  action: StudentAction;
+  action: StudentActionType;
   canEditTask: boolean | undefined;
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;

@@ -1,4 +1,8 @@
-import { StudentAppActivity, ActivityRequest, StudentAction } from "../common";
+import {
+  StudentAppActivity,
+  ActivityRequest,
+  StudentActionType,
+} from "../common";
 
 export interface StudentMoveActivity extends StudentAppActivity {
   // The id of the block's previous parent (null if top-level)
@@ -9,5 +13,5 @@ export interface StudentMoveActivity extends StudentAppActivity {
 }
 
 export interface MoveActivityRequest extends ActivityRequest {
-  action: StudentAction.Move;
+  action: StudentActionType.Move;
 }

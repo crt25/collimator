@@ -2,7 +2,7 @@ import {
   CreatePipelineParams,
   DeletePipelineParams,
   MovePipelineParams,
-  StudentAction,
+  StudentActionType,
 } from "../../types/scratch-student-activities";
 
 import {
@@ -20,7 +20,7 @@ export const processStudentActivityPipeline = (
   params: StudentActivityPipelineParams,
 ): void => {
   switch (params.action) {
-    case StudentAction.Create:
+    case StudentActionType.Create:
       trackCreateActivity({
         block: params.block,
         sendRequest: params.sendRequest,
@@ -30,7 +30,7 @@ export const processStudentActivityPipeline = (
 
       break;
 
-    case StudentAction.Move:
+    case StudentActionType.Move:
       trackMoveActivity({
         block: params.block,
         sendRequest: params.sendRequest,
@@ -40,7 +40,7 @@ export const processStudentActivityPipeline = (
 
       break;
 
-    case StudentAction.Delete:
+    case StudentActionType.Delete:
       trackDeleteActivity({
         block: params.block,
         sendRequest: params.sendRequest,

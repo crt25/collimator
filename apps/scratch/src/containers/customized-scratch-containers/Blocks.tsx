@@ -72,10 +72,10 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
-import { StudentAction } from "../../types/scratch-student-activities";
+import { StudentActionType } from "../../types/scratch-student-activities";
 import {
   handleStudentActivityTracking,
-  mapScratchEventTypeToStudentAction,
+  mapScratchEventTypeToStudentActionType,
 } from "../../utilities/student-activity-tracking";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
@@ -1076,18 +1076,20 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    const eventAction = mapScratchEventTypeToStudentAction(event.type);
+    const eventAction = mapScratchEventTypeToStudentActionType(event.type);
 
     if (!eventAction) {
       return;
     }
 
-    if ([StudentAction.Create, StudentAction.Delete].includes(eventAction)) {
+    if (
+      [StudentActionType.Create, StudentActionType.Delete].includes(eventAction)
+    ) {
       let xml: Element | undefined;
 
-      if (eventAction === StudentAction.Create && event.xml) {
+      if (eventAction === StudentActionType.Create && event.xml) {
         xml = event.xml;
-      } else if (eventAction === StudentAction.Delete && event.oldXml) {
+      } else if (eventAction === StudentActionType.Delete && event.oldXml) {
         xml = event.oldXml;
       }
 
@@ -1116,7 +1118,7 @@ class Blocks extends React.Component<Props, State> {
       }
 
       if (
-        eventAction === StudentAction.Delete &&
+        eventAction === StudentActionType.Delete &&
         // when switching sprites, blocks are also deleted but with
         // recordUndo set to false
         event.recordUndo &&
@@ -1130,7 +1132,7 @@ class Blocks extends React.Component<Props, State> {
 
     const block = this.getWorkspace().getBlockById(event.blockId || "");
 
-    if (!block && eventAction !== StudentAction.Delete) {
+    if (!block && eventAction !== StudentActionType.Delete) {
       // If the block is not found and it's not a delete event, we cannot track it
       // If the block is not found during a delete event, we can still track it
       return;

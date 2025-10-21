@@ -1,7 +1,7 @@
 import { Block } from "scratch-blocks";
-import { BasePipelineParams, StudentAction } from "../common";
+import { BasePipelineParams, StudentActionType } from "../common";
 
 export interface MovePipelineParams extends BasePipelineParams {
-  action: StudentAction.Move;
+  action: StudentActionType.Move;
   block: Block;
 }

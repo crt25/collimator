@@ -1,9 +1,9 @@
 export type {
   StudentAppActivity,
   ActivityRequest,
-  BaseStudentAction,
   BasePipelineParams,
   StudentActivityHandlerParams,
+  StudentActionContext,
 } from "./common";
 
 export type {
@@ -28,4 +28,4 @@ export type {
   DeletePipelineParams,
 } from "./delete";
 
-export { StudentAction } from "./scratch-student-action";
+export { StudentActionType } from "./common";
