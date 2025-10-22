@@ -1080,6 +1080,7 @@ class Blocks extends React.Component<Props, State> {
     const eventAction = mapScratchEventTypeToStudentActionType(event.type);
 
     if (!eventAction) {
+      // The action is unknown in our registry, so we do nothing
       return;
     }
 

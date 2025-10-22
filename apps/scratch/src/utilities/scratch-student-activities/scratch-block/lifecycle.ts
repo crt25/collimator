@@ -16,16 +16,16 @@ export const handleBlockLifecycle = ({
     case StudentActionType.Create:
     case StudentActionType.Delete:
       {
-        // get the xml representing the block change
+        // Get the xml representing the block change
         const xml = getXmlFromEvent(event, eventAction, undefined);
 
         if (!xml) {
-          // no xml found, cannot proceed
+          // No xml found, cannot proceed
           return;
         }
 
-        // create a new element to be able to use querySelectorAll on it, otherwise
-        // only the children are matched against the selector
+        // Create a new element to be able to use querySelectorAll on it, otherwise
+        // Only the children are matched against the selector
         const el = document.createElement("div");
         el.appendChild(xml);
 
@@ -33,7 +33,7 @@ export const handleBlockLifecycle = ({
           .map((element) => element.getAttribute("type"))
           .filter(filterNonNull);
 
-        // update the block config button for the blocks
+        // Update the block config button for the blocks
         for (const opcode of opcodes) {
           updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
         }

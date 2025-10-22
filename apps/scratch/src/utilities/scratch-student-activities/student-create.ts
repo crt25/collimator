@@ -17,6 +17,7 @@ export const trackCreateActivity = ({
   const data = getCreatePayload(block, event);
 
   if (!data) {
+    console.error("Could not create payload for created block", block, event);
     return;
   }
 

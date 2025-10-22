@@ -18,6 +18,7 @@ export const trackDeleteActivity = ({
   const data = getDeletePayload(block, event);
 
   if (!data) {
+    console.error("Could not create payload for deleted block", block, event);
     return;
   }
 

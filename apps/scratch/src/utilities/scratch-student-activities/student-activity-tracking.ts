@@ -24,12 +24,14 @@ export const handleStudentActivityTracking = ({
   switch (action) {
     case StudentActionType.Delete: {
       if (!event.oldXml) {
+        console.error("Could not find xml in event", event);
         return;
       }
 
       const block = mapDeletedBlock(event.oldXml);
 
       if (!block) {
+        console.error("Could not retrieve deleted block");
         return;
       }
 
@@ -77,6 +79,6 @@ export const handleStudentActivityTracking = ({
     }
 
     default:
-      break;
+      throw new Error(`Unhandled student action type: ${action}`);
   }
 };

@@ -47,7 +47,9 @@ export const mapDeletedBlock = (
   const type = xmlElement.getAttribute("type");
 
   if (!id || !type) {
-    return null;
+    throw new Error(
+      "Could not find id or type attributes on deleted block XML",
+    );
   }
 
   const blocks = xmlElement.querySelectorAll("block[id][type]");

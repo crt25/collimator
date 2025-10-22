@@ -18,6 +18,7 @@ export const trackMoveActivity = ({
   const data = getMovePayload(block, event);
 
   if (!data) {
+    console.error("Could not create payload for moved block", block, event);
     return;
   }
 
