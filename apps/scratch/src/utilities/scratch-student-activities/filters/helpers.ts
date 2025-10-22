@@ -17,5 +17,5 @@ export const isTrackableStudentAction = (
   // recordUndo is true only for direct user interactions but false for programmatic changes (e.g., vm.loadProject(projectData))
   trackedActions.includes(action) &&
   event.recordUndo &&
-  !canEditTask &&
+  canEditTask == false &&
   !!event.blockId;
