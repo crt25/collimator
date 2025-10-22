@@ -1,7 +1,22 @@
 import VM from "scratch-vm";
-import { BlockLifecycleParams } from "../../../types/scratch-blocks";
 import { StudentActionType } from "../../../types/scratch-student-activities";
 import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
+import { filterNonNull } from "../../filter-non-null";
+
+interface BlockLifecycleParams {
+  event: WorkspaceChangeEvent;
+  eventAction: StudentActionType;
+  vm: VM;
+  canEditTask: boolean | undefined;
+  blocks: HTMLElement;
+  filterNonNull: typeof filterNonNull;
+  updateSingleBlockConfigButton: (
+    vm: VM,
+    blocks: HTMLElement,
+    opcode: string,
+    canEditTask: boolean | undefined,
+  ) => void;
+}
 
 export const handleBlockLifecycle = ({
   event,
