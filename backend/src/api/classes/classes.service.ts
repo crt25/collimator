@@ -20,18 +20,25 @@ export type ClassWithTeacher = Class & Teacher;
 export class ClassesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findByIdOrThrow(id: ClassId): Promise<ClassExtended> {
+  findByIdOrThrow(
+    id: ClassId,
+    includeSoftDelete = false,
+  ): Promise<ClassExtended> {
+    const classQuery = includeSoftDelete ? { id } : { id, deletedAt: null };
+
     return this.prisma.class.findUniqueOrThrow({
-      where: { id },
+      where: classQuery,
       include: {
         sessions: {
           select: {
             id: true,
           },
+          where: includeSoftDelete ? undefined : { deletedAt: null }, // filter out soft-deleted sessions
         },
         teacher: { select: { id: true, name: true } },
         students: {
           select: { studentId: true, pseudonym: true, keyPairId: true },
+          where: includeSoftDelete ? undefined : { deletedAt: null }, // filter out soft-deleted students
         },
       },
     });
@@ -39,10 +46,18 @@ export class ClassesService {
 
   listClassesWithTeacher(
     args?: Omit<Prisma.ClassFindManyArgs, "select" | "include">,
+    includeSoftDelete = false,
   ): Promise<ClassWithTeacher[]> {
     return this.prisma.class.findMany({
       ...args,
-      include: { teacher: { select: { id: true, name: true } } },
+      where: {
+        deletedAt: includeSoftDelete ? undefined : null,
+      },
+      include: {
+        teacher: {
+          select: { id: true, name: true },
+        },
+      },
     });
   }
 
@@ -54,14 +69,27 @@ export class ClassesService {
     return this.prisma.class.create({ data: checkedClass });
   }
 
-  update(id: ClassId, klass: Prisma.ClassUpdateInput): Promise<Class> {
+  update(
+    id: ClassId,
+    klass: Prisma.ClassUpdateInput,
+    includeSoftDelete = false,
+  ): Promise<Class> {
     return this.prisma.class.update({
       data: klass,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
-  deleteById(id: ClassId): Promise<Class> {
-    return this.prisma.class.delete({ where: { id } });
+  deleteById(id: ClassId, includeSoftDelete = false): Promise<Class> {
+    return this.prisma.class.update({
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  hardDeleteById(id: ClassId): Promise<Class> {
+    return this.prisma.class.delete({
+      where: { id },
+    });
   }
 }
