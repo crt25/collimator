@@ -51,45 +51,60 @@ export class TasksService {
     return createHash("sha256").update(data).digest();
   }
 
-  findByIdOrThrow(id: TaskId): Promise<TaskWithoutData> {
+  findByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData> {
     return this.prisma.task.findUniqueOrThrow({
       omit: omitData,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
   findByIdOrThrowWithReferenceSolutions(
     id: TaskId,
+    includeSoftDelete = false,
   ): Promise<TaskWithReferenceSolutions> {
     return this.prisma.task.findUniqueOrThrow({
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
       include: {
         referenceSolutions: {
+          where: includeSoftDelete ? undefined : { deletedAt: null },
           include: {
             solution: {
               select: {
                 data: true,
                 mimeType: true,
+                deletedAt: true,
               },
             },
-            tests: true,
+            tests: {
+              where: includeSoftDelete ? undefined : { deletedAt: null },
+            },
           },
         },
       },
     });
   }
 
-  downloadByIdOrThrow(id: TaskId): Promise<TaskDataOnly> {
+  downloadByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskDataOnly> {
     return this.prisma.task.findUniqueOrThrow({
       select: { data: true, mimeType: true },
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
-  findMany(args?: Prisma.TaskFindManyArgs): Promise<TaskWithoutData[]> {
+  findMany(
+    args?: Prisma.TaskFindManyArgs,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData[]> {
     return this.prisma.task.findMany({
       ...args,
       omit: omitData,
+      where: includeSoftDelete ? undefined : { deletedAt: null },
     });
   }
 
@@ -153,6 +168,7 @@ export class TasksService {
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
+    includeSoftDelete = false,
   ): Promise<Task> {
     const solutionsWithFile = referenceSolutions.map(
       (referenceSolution, index) => ({
@@ -188,25 +204,47 @@ export class TasksService {
         referenceSolution.solution.id !== null,
     );
 
-    const [_, __, updatedTask] = await this.prisma.$transaction([
-      // delete all reference solutions that are not in the new list
-      this.prisma.referenceSolution.deleteMany({
-        where: {
+    const referenceSolutionWhere = includeSoftDelete
+      ? {
           taskId: id,
           id: {
             notIn: referenceSolutions
               .map(({ id }) => id)
               .filter((id) => id !== undefined && id !== null),
           },
-        },
-      }),
-      // delete all solutions without any reference
-      this.prisma.solution.deleteMany({
-        where: {
+        }
+      : {
+          taskId: id,
+          deletedAt: null,
+          id: {
+            notIn: referenceSolutions
+              .map(({ id }) => id)
+              .filter((id) => id !== undefined && id !== null),
+          },
+        };
+
+    const orphanedSolutionsWhere = includeSoftDelete
+      ? {
           referenceSolutions: { none: {} },
           studentSolutions: { none: {} },
-        },
+        }
+      : {
+          deletedAt: null,
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        };
+
+    const [_, __, updatedTask] = await this.prisma.$transaction([
+      // delete all reference solutions that are not in the new list
+      this.prisma.referenceSolution.deleteMany({
+        where: referenceSolutionWhere,
       }),
+
+      // delete all solutions without any reference
+      this.prisma.solution.deleteMany({
+        where: orphanedSolutionsWhere,
+      }),
+
       // update the task
       this.prisma.task.update({
         data: {
