@@ -2,16 +2,16 @@ import styled from "@emotion/styled";
 import { RefObject, useCallback } from "react";
 import { CloseButton, Col } from "react-bootstrap";
 import { Submission } from "iframe-rpc-react/src";
-import VerticalSpacing from "./layout/VerticalSpacing";
-import FullHeightRow from "./layout/FullHeightRow";
-import RemainingHeightContainer from "./layout/RemainingHeightContainer";
-import TaskList from "./TaskList";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
 import { StudentActivityType } from "@/api/collimator/generated/models";
+import VerticalSpacing from "./layout/VerticalSpacing";
+import FullHeightRow from "./layout/FullHeightRow";
+import RemainingHeightContainer from "./layout/RemainingHeightContainer";
+import TaskList from "./TaskList";
 
 const TaskWrapper = styled.div`
   flex-grow: 1;
