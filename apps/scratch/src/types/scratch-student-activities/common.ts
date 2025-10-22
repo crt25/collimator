@@ -39,6 +39,6 @@ export interface StudentActivityHandlerParams {
   canEditTask: boolean | undefined;
   sendRequest: CrtContextValue["sendRequest"];
   solution: Blob;
-  // For delete actions, the block may not be found in the workspace
+  /** For delete actions, the block may not be found in the workspace */
   block: Block | null;
 }
