@@ -7,6 +7,6 @@
  */
 
 /**
- * The app activity data stored as a JSON.
+ * The app activity data stored as a JSON object.
  */
 export type TrackAppStudentActivityDtoData = { [key: string]: unknown };
