@@ -7,7 +7,8 @@ import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
-import type { RpcMethodName } from "@iframe-rpc/methods/rpc-method-names";
+import type { RpcMethodName } from "../../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
+
 declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
