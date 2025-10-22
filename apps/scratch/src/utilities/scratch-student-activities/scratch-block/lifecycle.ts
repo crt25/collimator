@@ -86,12 +86,12 @@ const cleanupDeletedBlockFreezeState = (
 ): void => {
   if (
     eventAction === StudentActionType.Delete &&
+    // When switching sprites, blocks are deleted with recordUndo set to false
+    // Only remove config for explicitly deleted blocks
     event.recordUndo &&
     event.blockId &&
     canEditTask
   ) {
-    // When switching sprites, blocks are deleted with recordUndo set to false
-    // Only remove config for explicitly deleted blocks
     delete vm.crtConfig?.freezeStateByBlockId[event.blockId];
   }
 };
