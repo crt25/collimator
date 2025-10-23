@@ -80,18 +80,25 @@ export const addKernelListeners = async (
   console.debug("Waiting for session context to be ready...");
   await sessionContext.ready;
 
-  while (!sessionContext.session?.kernel) {
+  let kernel = sessionContext.session?.kernel;
+
+  while (!kernel) {
     await new Promise<void>((resolve) => {
-      const listener = (): void => {
-        sessionContext.kernelChanged.disconnect(listener);
+      const onKernelAvailable = (): void => {
+        sessionContext.kernelChanged.disconnect(onKernelAvailable);
+        kernel = sessionContext.session?.kernel;
+
         resolve();
       };
 
-      sessionContext.kernelChanged.connect(listener);
+      sessionContext.kernelChanged.connect(onKernelAvailable);
+
+      if (sessionContext.session?.kernel) {
+        onKernelAvailable();
+      }
     });
   }
 
-  const kernel = sessionContext.session?.kernel;
   await kernel.info;
   await addListeners(kernel);
 
