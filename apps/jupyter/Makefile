@@ -18,6 +18,8 @@ install-deps:
 	poetry install
 
 init-extensions:
+# We use `poetry run` here to ensure that the commands are run in the correct virtual environment.
+# Unfortunately, doing so from a different working directory (./extensions) does not work as intended.
 ifeq ($(OS),Windows_NT)
 		poetry run pwsh -Command "cd ./extensions && make init"
 else
