@@ -24,3 +24,10 @@ export const awaitOperator = "await";
  *                ^
  */
 export const bitwiseAndOperator = "&";
+
+/**
+ * Matches the '|' operator in a bitwise OR expression
+ *     result = a | b
+ *                ^
+ */
+export const bitwiseOrOperator = "|";

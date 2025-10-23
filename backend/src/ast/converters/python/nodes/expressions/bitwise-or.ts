@@ -6,6 +6,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Bitwise_orContext } from "../../generated/PythonParser";
+import { bitwiseOrOperator } from "../../operators";
 
 export const convertBitwiseOr = (
   visitor: IPythonAstVisitor,
@@ -24,7 +25,7 @@ export const convertBitwiseOr = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "|",
+      operator: bitwiseOrOperator,
       operands: [lhs.node, bitwiseXor.node],
     } satisfies OperatorNode,
     functionDeclarations: [
