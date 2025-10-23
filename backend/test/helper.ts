@@ -116,4 +116,24 @@ export const ensureUserExists = async (
   });
 };
 
+export const ensureSoftDeletedUserExists = async (
+  app: INestApplication,
+  user: User,
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+  const now = new Date();
+
+  await prisma.user.upsert({
+    where: { id: user.id },
+    create: {
+      ...user,
+      deletedAt: now,
+    },
+    update: {
+      ...user,
+      deletedAt: now,
+    },
+  });
+};
+
 export const adminUserToken = "adminUserToken";
