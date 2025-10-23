@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Bitwise_xorContext } from "../../generated/PythonParser";
+import { bitwiseXorOperator } from "../../operators";
 
 export const convertBitwiseXor = (
   visitor: IPythonAstVisitor,
@@ -24,7 +25,7 @@ export const convertBitwiseXor = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "^",
+      operator: bitwiseXorOperator,
       operands: [lhs.node, bitwiseAnd.node],
     } satisfies OperatorNode,
     functionDeclarations: [

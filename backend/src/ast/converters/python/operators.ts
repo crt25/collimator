@@ -31,3 +31,10 @@ export const bitwiseAndOperator = "&";
  *                ^
  */
 export const bitwiseOrOperator = "|";
+
+/**
+ * Matches the '^' operator in a bitwise XOR expression
+ *     result = a ^ b
+ *                ^
+ */
+export const bitwiseXorOperator = "^";
