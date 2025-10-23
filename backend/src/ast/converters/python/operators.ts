@@ -108,3 +108,10 @@ export const isOperator = "is";
  *       ^^
  */
 export const isNotOperator = "is not";
+
+/**
+ * Matches a complex number construction
+ *   z = 3 + 4j
+ *       ^^^^^^
+ */
+export const complexNumberOperator = "complex-number";
