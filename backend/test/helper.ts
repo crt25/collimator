@@ -171,4 +171,48 @@ export const restoreUser = async (
   });
 };
 
+export const softDeleteStudent = async (
+  app: INestApplication,
+  studentId: number,
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+  const now = new Date();
+
+  const student = await prisma.student.findUnique({
+    where: { id: studentId },
+    include: {
+      authenticatedStudent: true,
+      anonymousStudent: true,
+    },
+  });
+
+  if (!student) {
+    throw new Error(`Student with id ${studentId} not found`);
+  }
+
+  if (student.authenticatedStudent) {
+    await prisma.authenticatedStudent.update({
+      where: { studentId: student.authenticatedStudent.studentId },
+      data: { deletedAt: now },
+    });
+  }
+
+  if (student.anonymousStudent) {
+    await prisma.anonymousStudent.update({
+      where: { studentId: student.anonymousStudent.studentId },
+      data: { deletedAt: now },
+    });
+  }
+
+  await prisma.student.update({
+    where: { id: studentId },
+    data: { deletedAt: now },
+  });
+
+  await prisma.authenticationToken.updateMany({
+    where: { studentId },
+    data: { deletedAt: now },
+  });
+};
+
 export const adminUserToken = "adminUserToken";
