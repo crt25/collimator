@@ -18,6 +18,8 @@ export const softDeleteExtension = Prisma.defineExtension({
         "ReferenceSolution",
         "StudentSolution",
         "SolutionAnalysis",
+        "RegistrationToken",
+        "AuthenticationToken",
       ];
 
       if (!hasSoftDelete(model, softDeletableModels)) {
