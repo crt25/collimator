@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Await_primaryContext } from "../../generated/PythonParser";
+import { awaitOperator } from "../../operators";
 
 export const convertAwaitPrimary = (
   visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertAwaitPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "await",
+        operator: awaitOperator,
         operands: [primary.node],
       } satisfies OperatorNode,
       functionDeclarations: primary.functionDeclarations,

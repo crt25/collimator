@@ -7,3 +7,10 @@
  *        ^^^^^^^^^^
  */
 export const createKeyValuePairOperator = "create-key-value-pair";
+
+/**
+ * Matches the 'await' operator in an await expression
+ *     result = await some_async_function()
+ *              ^^^^^
+ */
+export const awaitOperator = "await";
