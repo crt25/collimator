@@ -21,6 +21,18 @@ import {
 } from "../../generated/PythonParser";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import {
+  equalityOperator,
+  greaterThanOperator,
+  greaterThanOrEqualOperator,
+  inequalityOperator,
+  inOperator,
+  isNotOperator,
+  isOperator,
+  lessThanOperator,
+  lessThanOrEqualOperator,
+  notInOperator,
+} from "../../operators";
 
 export const convertComparison = (
   visitor: IPythonAstVisitor,
@@ -73,31 +85,55 @@ const getOperatorAndNode = (
   const ctx = parentContext.children[0] as ParserRuleContext;
 
   if (ctx instanceof Eq_bitwise_orContext) {
-    return { operator: "==", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: equalityOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Noteq_bitwise_orContext) {
-    return { operator: "!=", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: inequalityOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Lte_bitwise_orContext) {
-    return { operator: "<=", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: lessThanOrEqualOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Lt_bitwise_orContext) {
-    return { operator: "<", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: lessThanOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Gte_bitwise_orContext) {
-    return { operator: ">=", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: greaterThanOrEqualOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Gt_bitwise_orContext) {
-    return { operator: ">", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: greaterThanOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Notin_bitwise_orContext) {
     return {
-      operator: "not in",
+      operator: notInOperator,
       value: visitor.getExpression(ctx.bitwise_or()),
     };
   } else if (ctx instanceof In_bitwise_orContext) {
-    return { operator: "in", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: inOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   } else if (ctx instanceof Isnot_bitwise_orContext) {
     return {
-      operator: "is not",
+      operator: isNotOperator,
       value: visitor.getExpression(ctx.bitwise_or()),
     };
   } else if (ctx instanceof Is_bitwise_orContext) {
-    return { operator: "is", value: visitor.getExpression(ctx.bitwise_or()) };
+    return {
+      operator: isOperator,
+      value: visitor.getExpression(ctx.bitwise_or()),
+    };
   }
 
   throw new Error(`Unexpected comparison context: ${ctx.constructor.name}`);

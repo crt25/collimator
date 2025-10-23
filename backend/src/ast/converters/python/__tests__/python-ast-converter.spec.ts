@@ -27,7 +27,12 @@ import {
   createTopLevelPythonStatementOutput,
 } from "../";
 import { syntheticAstFunctionPrefix } from "../constants";
-import { createKeyValuePairOperator } from "../operators";
+import {
+  createKeyValuePairOperator,
+  equalityOperator,
+  greaterThanOperator,
+  lessThanOperator,
+} from "../operators";
 
 describe("Python AST converter", () => {
   describe("declarations and assignments", () => {
@@ -613,7 +618,7 @@ else:
                     condition: {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: ">",
+                      operator: greaterThanOperator,
                       operands: [
                         {
                           nodeType: AstNodeType.expression,
@@ -657,7 +662,7 @@ else:
                           condition: {
                             nodeType: AstNodeType.expression,
                             expressionType: ExpressionNodeType.operator,
-                            operator: ">",
+                            operator: greaterThanOperator,
                             operands: [
                               {
                                 nodeType: AstNodeType.expression,
@@ -848,7 +853,7 @@ filter(lambda num: num % 2 == 0, range(100))
                         value: {
                           nodeType: AstNodeType.expression,
                           expressionType: ExpressionNodeType.operator,
-                          operator: "==",
+                          operator: equalityOperator,
                           operands: [
                             {
                               nodeType: AstNodeType.expression,
@@ -1201,7 +1206,7 @@ filter(lambda num: num % 2 == 0, range(100))
                           {
                             nodeType: AstNodeType.expression,
                             expressionType: ExpressionNodeType.operator,
-                            operator: "<",
+                            operator: lessThanOperator,
                             operands: [
                               {
                                 nodeType: AstNodeType.expression,
@@ -1851,7 +1856,7 @@ match value:
                         {
                           nodeType: AstNodeType.expression,
                           expressionType: ExpressionNodeType.operator,
-                          operator: ">",
+                          operator: greaterThanOperator,
                           operands: [
                             {
                               nodeType: AstNodeType.expression,
