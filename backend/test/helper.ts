@@ -86,8 +86,14 @@ export const ensureUserExists = async (
 
   await prisma.user.upsert({
     where: { id: user.id },
-    create: user,
-    update: user,
+    create: {
+      ...user,
+      deletedAt: null,
+    },
+    update: {
+      ...user,
+      deletedAt: null,
+    },
   });
 
   await prisma.authenticationToken.upsert({
@@ -98,12 +104,14 @@ export const ensureUserExists = async (
       token: userToken,
       userId: user.id,
       lastUsedAt: new Date(),
+      deletedAt: null,
     },
     update: {
       userId: user.id,
       studentId: null,
       createdAt: new Date(),
       lastUsedAt: new Date(),
+      deletedAt: null,
     },
   });
 };
