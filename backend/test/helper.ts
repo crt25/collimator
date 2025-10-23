@@ -136,4 +136,22 @@ export const ensureSoftDeletedUserExists = async (
   });
 };
 
+export const softDeleteUser = async (
+  app: INestApplication,
+  userId: number,
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+  const now = new Date();
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { deletedAt: now },
+  });
+
+  await prisma.authenticationToken.updateMany({
+    where: { userId },
+    data: { deletedAt: now },
+  });
+};
+
 export const adminUserToken = "adminUserToken";
