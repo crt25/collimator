@@ -11,6 +11,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Import_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 import { convertImportName } from "./import-name";
 import { convertImportFrom } from "./import-from";
 
@@ -27,7 +28,7 @@ export const convertImportStmt = (
     node: {
       nodeType: AstNodeType.statement,
       statementType: StatementNodeType.functionCall,
-      name: "@import",
+      name: `${syntheticAstFunctionPrefix}import`,
       arguments: imports.map((i) => {
         const path = {
           nodeType: AstNodeType.expression,

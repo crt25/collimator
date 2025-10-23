@@ -26,6 +26,7 @@ import {
   convertPythonToGeneralAst,
   createTopLevelPythonStatementOutput,
 } from "../";
+import { syntheticAstFunctionPrefix } from "../constants";
 
 describe("Python AST converter", () => {
   describe("declarations and assignments", () => {
@@ -703,7 +704,7 @@ else:
               condition: {
                 nodeType: AstNodeType.expression,
                 expressionType: ExpressionNodeType.functionCall,
-                name: "@last-loop-finished",
+                name: `${syntheticAstFunctionPrefix}last-loop-finished`,
                 arguments: [],
               } satisfies FunctionCallExpressionNode,
               whenTrue: {
@@ -795,7 +796,7 @@ else:
               condition: {
                 nodeType: AstNodeType.expression,
                 expressionType: ExpressionNodeType.functionCall,
-                name: "@last-loop-finished",
+                name: `${syntheticAstFunctionPrefix}last-loop-finished`,
                 arguments: [],
               } satisfies FunctionCallExpressionNode,
               whenFalse: {
@@ -1242,7 +1243,7 @@ import numpy
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@import",
+              name: `${syntheticAstFunctionPrefix}import`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1271,7 +1272,7 @@ import numpy as np
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@import",
+              name: `${syntheticAstFunctionPrefix}import`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1313,7 +1314,7 @@ import my_module.submodule as m
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@import",
+              name: `${syntheticAstFunctionPrefix}import`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1355,7 +1356,7 @@ from .... import my_module as m
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@import",
+              name: `${syntheticAstFunctionPrefix}import`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1397,7 +1398,7 @@ from ....module.submodule import a as b
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@import",
+              name: `${syntheticAstFunctionPrefix}import`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1441,7 +1442,7 @@ assert True, False
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@assert",
+              name: `${syntheticAstFunctionPrefix}assert`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1705,7 +1706,7 @@ match x:
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@match",
+              name: `${syntheticAstFunctionPrefix}match`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1721,7 +1722,7 @@ match x:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1780,7 +1781,7 @@ match value:
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@match",
+              name: `${syntheticAstFunctionPrefix}match`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1796,7 +1797,7 @@ match value:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1834,7 +1835,7 @@ match value:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1896,7 +1897,7 @@ match value:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1953,7 +1954,7 @@ match point:
             {
               nodeType: AstNodeType.statement,
               statementType: StatementNodeType.functionCall,
-              name: "@match",
+              name: `${syntheticAstFunctionPrefix}match`,
               arguments: [
                 {
                   nodeType: AstNodeType.expression,
@@ -1969,7 +1970,7 @@ match point:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,
@@ -2018,7 +2019,7 @@ match point:
                 {
                   nodeType: AstNodeType.statement,
                   statementType: StatementNodeType.functionCall,
-                  name: "@case",
+                  name: `${syntheticAstFunctionPrefix}case`,
                   arguments: [
                     {
                       nodeType: AstNodeType.expression,

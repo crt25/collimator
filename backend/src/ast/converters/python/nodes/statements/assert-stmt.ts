@@ -6,6 +6,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Assert_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertAssertStmt = (
   visitor: IPythonAstVisitor,
@@ -19,7 +20,7 @@ export const convertAssertStmt = (
     node: {
       nodeType: AstNodeType.statement,
       statementType: StatementNodeType.functionCall,
-      name: "@assert",
+      name: `${syntheticAstFunctionPrefix}assert`,
       arguments: nodes,
     } satisfies FunctionCallNode,
     functionDeclarations,

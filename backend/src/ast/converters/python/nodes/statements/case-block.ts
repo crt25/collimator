@@ -8,6 +8,7 @@ import { StatementSequenceNode } from "src/ast/types/general-ast/ast-nodes/state
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Case_blockContext, GuardContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertCaseBlock = (
   visitor: IPythonAstVisitor,
@@ -34,7 +35,7 @@ export const convertCaseBlock = (
         {
           nodeType: AstNodeType.statement,
           statementType: StatementNodeType.functionCall,
-          name: "@case",
+          name: `${syntheticAstFunctionPrefix}case`,
           arguments: args,
         } satisfies FunctionCallNode,
         block.node,

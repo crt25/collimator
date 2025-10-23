@@ -7,6 +7,7 @@ import { StatementSequenceNode } from "src/ast/types/general-ast/ast-nodes/state
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Match_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertMatchStmt = (
   visitor: IPythonAstVisitor,
@@ -23,7 +24,7 @@ export const convertMatchStmt = (
         {
           nodeType: AstNodeType.statement,
           statementType: StatementNodeType.functionCall,
-          name: "@match",
+          name: `${syntheticAstFunctionPrefix}match`,
           arguments: [subject.node],
         } satisfies FunctionCallNode,
         cases.node,

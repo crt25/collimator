@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Del_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertDelStmt = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertDelStmt = (
     node: {
       nodeType: AstNodeType.statement,
       statementType: StatementNodeType.functionCall,
-      name: "@delete",
+      name: `${syntheticAstFunctionPrefix}delete`,
       arguments: [expression.node],
     } satisfies FunctionCallNode,
     functionDeclarations: expression.functionDeclarations,

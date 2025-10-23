@@ -15,6 +15,7 @@ import {
 } from "../../generated/PythonParser";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertWhileStmt = (
   visitor: IPythonAstVisitor,
@@ -46,7 +47,7 @@ export const convertWhileStmt = (
             condition: {
               nodeType: AstNodeType.expression,
               expressionType: ExpressionNodeType.functionCall,
-              name: "@last-loop-finished",
+              name: `${syntheticAstFunctionPrefix}last-loop-finished`,
               arguments: [],
             } satisfies FunctionCallExpressionNode,
             whenTrue: afterLoop.node,

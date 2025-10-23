@@ -11,6 +11,7 @@ import {
 import { With_stmtContext } from "../../generated/PythonParser";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertWithStmt = (
   visitor: IPythonAstVisitor,
@@ -28,7 +29,7 @@ export const convertWithStmt = (
         {
           nodeType: AstNodeType.statement,
           statementType: StatementNodeType.functionCall,
-          name: "@with",
+          name: `${syntheticAstFunctionPrefix}with`,
           arguments: [
             {
               nodeType: AstNodeType.expression,

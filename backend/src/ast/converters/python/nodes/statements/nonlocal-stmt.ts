@@ -10,6 +10,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Nonlocal_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertNonlocalStmt = (
   _visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertNonlocalStmt = (
   node: {
     nodeType: AstNodeType.statement,
     statementType: StatementNodeType.functionCall,
-    name: "@nonlocal",
+    name: `${syntheticAstFunctionPrefix}nonlocal`,
     arguments: ctx.name_list().map(
       (n) =>
         ({

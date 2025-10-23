@@ -10,6 +10,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Global_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertGlobalStmt = (
   _visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertGlobalStmt = (
   node: {
     nodeType: AstNodeType.statement,
     statementType: StatementNodeType.functionCall,
-    name: "@global",
+    name: `${syntheticAstFunctionPrefix}global`,
     arguments: ctx.name_list().map(
       (n) =>
         ({

@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Raise_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertRaiseStmt = (
   visitor: IPythonAstVisitor,
@@ -19,7 +20,7 @@ export const convertRaiseStmt = (
     node: {
       nodeType: AstNodeType.statement,
       statementType: StatementNodeType.functionCall,
-      name: "@raise",
+      name: `${syntheticAstFunctionPrefix}raise`,
       arguments: nodes,
     } satisfies FunctionCallNode,
     functionDeclarations,

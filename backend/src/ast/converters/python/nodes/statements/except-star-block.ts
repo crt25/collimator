@@ -16,6 +16,7 @@ import {
 } from "../../generated/PythonParser";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertExceptStarBlock = (
   visitor: IPythonAstVisitor,
@@ -50,7 +51,7 @@ export const convertExceptStarBlock = (
         {
           nodeType: AstNodeType.statement,
           statementType: StatementNodeType.functionCall,
-          name: "@except-star",
+          name: `${syntheticAstFunctionPrefix}except-star`,
           arguments: args,
         } satisfies FunctionCallNode,
         block.node,

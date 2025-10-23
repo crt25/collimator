@@ -7,6 +7,7 @@ import { StatementSequenceNode } from "src/ast/types/general-ast/ast-nodes/state
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Try_stmtContext } from "../../generated/PythonParser";
+import { syntheticAstFunctionPrefix } from "../../constants";
 
 export const convertTryStmt = (
   visitor: IPythonAstVisitor,
@@ -40,7 +41,7 @@ export const convertTryStmt = (
           {
             nodeType: AstNodeType.statement,
             statementType: StatementNodeType.functionCall,
-            name: "@try",
+            name: `${syntheticAstFunctionPrefix}try`,
             arguments: [],
           } satisfies FunctionCallNode,
           statements.node,
@@ -68,7 +69,7 @@ export const convertTryStmt = (
         {
           nodeType: AstNodeType.statement,
           statementType: StatementNodeType.functionCall,
-          name: "@try",
+          name: `${syntheticAstFunctionPrefix}try`,
           arguments: [],
         } satisfies FunctionCallNode,
         statements.node,
