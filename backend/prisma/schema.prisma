@@ -296,21 +296,23 @@ model SolutionAnalysis {
 }
 
 model RegistrationToken {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  token     String   @unique
-  userId    Int      @unique
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  token     String    @unique
+  userId    Int       @unique
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuthenticationToken {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
   lastUsedAt DateTime
-  token      String   @unique
+  token      String    @unique
   userId     Int?
   studentId  Int?
+  deletedAt  DateTime?
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
