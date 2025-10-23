@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { ConjunctionContext } from "../../generated/PythonParser";
+import { logicalAndOperator } from "../../operators";
 
 export const convertConjunction = (
   visitor: IPythonAstVisitor,
@@ -28,7 +29,7 @@ export const convertConjunction = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "and",
+      operator: logicalAndOperator,
       operands: inversions.nodes,
     } satisfies OperatorNode,
     functionDeclarations: inversions.functionDeclarations,

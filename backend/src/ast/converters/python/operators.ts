@@ -115,3 +115,10 @@ export const isNotOperator = "is not";
  *       ^^^^^^
  */
 export const complexNumberOperator = "complex-number";
+
+/**
+ * Matches a logical AND expression
+ *  if a and b:
+ *     ^^^^^^^
+ */
+export const logicalAndOperator = "and";
