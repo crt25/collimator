@@ -27,6 +27,7 @@ import {
   createTopLevelPythonStatementOutput,
 } from "../";
 import { syntheticAstFunctionPrefix } from "../constants";
+import { createKeyValuePairOperator } from "../operators";
 
 describe("Python AST converter", () => {
   describe("declarations and assignments", () => {
@@ -1151,7 +1152,7 @@ filter(lambda num: num % 2 == 0, range(100))
                   {
                     nodeType: AstNodeType.expression,
                     expressionType: ExpressionNodeType.operator,
-                    operator: "create-key-value-pair",
+                    operator: createKeyValuePairOperator,
                     operands: [
                       {
                         nodeType: AstNodeType.expression,

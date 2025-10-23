@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { KvpairContext } from "../../generated/PythonParser";
+import { createKeyValuePairOperator } from "../../operators";
 
 export const convertKvpair = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertKvpair = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "create-key-value-pair",
+      operator: createKeyValuePairOperator,
       operands: expressions.nodes,
     } satisfies OperatorNode,
     functionDeclarations: expressions.functionDeclarations,
