@@ -15,7 +15,7 @@ export class TrackAppStudentActivityDto {
   @IsNotEmpty()
   readonly type!: string;
 
-  @Type(() => String)
+  @Type(() => Object)
   @ApiProperty({
     example: "{key: 'value'}",
     description: "The app activity data stored as a JSON object.",
