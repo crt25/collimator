@@ -12,100 +12,100 @@
 export const createKeyValuePairOperator = "create-key-value-pair";
 
 /**
- * Matches the 'await' operator in an await expression
+ * Matches an await expression
  *     result = await some_async_function()
- *              ^^^^^
+ *              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const awaitOperator = "await";
 
 /**
- * Matches the '&' operator in a bitwise AND expression
+ * Matches a bitwise AND expression
  *     result = a & b
- *                ^
+ *              ^^^^^
  */
 export const bitwiseAndOperator = "&";
 
 /**
- * Matches the '|' operator in a bitwise OR expression
+ * Matches a bitwise OR expression
  *     result = a | b
- *                ^
+ *              ^^^^^
  */
 export const bitwiseOrOperator = "|";
 
 /**
- * Matches the '^' operator in a bitwise XOR expression
+ * Matches a bitwise XOR expression
  *     result = a ^ b
- *                ^
+ *              ^^^^^
  */
 export const bitwiseXorOperator = "^";
 
 /**
- * Matches the '==' operator in an equality comparison
+ * Matches an equality comparison
  *    if a == b:
- *         ^^
+ *       ^^^^^^
  */
 export const equalityOperator = "==";
 
 /**
- * Matches the '!=' operator in an inequality comparison
+ * Matches an inequality comparison
  *   if a != b:
- *        ^^
+ *      ^^^^^^
  */
 export const inequalityOperator = "!=";
 
 /**
- * Matches the '<' operator in a less-than comparison
+ * Matches a less-than comparison
  *   if a < b:
- *        ^
+ *      ^^^^^
  */
 export const lessThanOperator = "<";
 
 /**
- * Matches the '<=' operator in a less-than-or-equal comparison
+ * Matches a less-than-or-equal comparison
  *   if a <= b:
- *        ^^
+ *      ^^^^^^
  */
 export const lessThanOrEqualOperator = "<=";
 
 /**
- * Matches the '>' operator in a greater-than comparison
+ * Matches a greater-than comparison
  *  if a > b:
- *       ^
+ *     ^^^^^
  */
 export const greaterThanOperator = ">";
 
 /**
- * Matches the '>=' operator in a greater-than-or-equal comparison
+ * Matches a greater-than-or-equal comparison
  *  if a >= b:
- *       ^^
+ *     ^^^^^^
  */
 export const greaterThanOrEqualOperator = ">=";
 
 /**
- * Matches the 'in' operator in membership tests
+ * Matches a membership test
  *   if item in collection:
- *           ^^
+ *      ^^^^^^^^^^^^^^^^^^
  */
 export const inOperator = "in";
 
 /**
- * Matches the 'not in' operator in negated membership tests
+ * Matches a negated membership tests
  *  if item not in collection:
- *              ^^
+ *     ^^^^^^^^^^^^^^^^^^^^^^
  */
 export const notInOperator = "not in";
 
 /**
- * Matches the 'is' operator in identity tests
+ * Matches an identity tests
  *   if a is b:
- *        ^^
+ *      ^^^^^^
  */
 export const isOperator = "is";
 
 /**
- * Matches the 'is not' operator in negated identity tests
+ * Matches a negated identity tests
  *  if a is not b:
- *       ^^
+ *     ^^^^^^^^^^
  */
 export const isNotOperator = "is not";
 
