@@ -1077,22 +1077,21 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    const eventAction = mapScratchEventTypeToStudentActionType(event.type);
-
-    if (!eventAction) {
-      // The action is unknown in our registry, so we do nothing
-      return;
-    }
-
     handleBlockLifecycle({
       event,
-      eventAction,
       vm: this.props.vm,
       canEditTask: this.props.canEditTask,
       blocks: this.blocks,
       filterNonNull,
       updateSingleBlockConfigButton,
     });
+
+    const eventAction = mapScratchEventTypeToStudentActionType(event.type);
+
+    if (!eventAction) {
+      // The action is unknown in our registry, so we do nothing
+      return;
+    }
 
     const block = this.getWorkspace().getBlockById(event.blockId || "");
 

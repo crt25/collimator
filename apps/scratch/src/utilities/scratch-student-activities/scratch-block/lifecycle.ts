@@ -1,11 +1,9 @@
 import VM from "scratch-vm";
-import { StudentActionType } from "../../../types/scratch-student-activities";
-import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 import { filterNonNull } from "../../filter-non-null";
+import type { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 
 interface BlockLifecycleParams {
   event: WorkspaceChangeEvent;
-  eventAction: StudentActionType;
   vm: VM;
   canEditTask: boolean | undefined;
   blocks: HTMLElement;
@@ -20,19 +18,18 @@ interface BlockLifecycleParams {
 
 export const handleBlockLifecycle = ({
   event,
-  eventAction,
   vm,
   canEditTask,
   blocks,
   filterNonNull,
   updateSingleBlockConfigButton,
 }: BlockLifecycleParams): void => {
-  switch (eventAction) {
-    case StudentActionType.Create:
-    case StudentActionType.Delete:
+  switch (event.type) {
+    case "create":
+    case "delete":
       {
         // Get the xml representing the block change
-        const xml = getXmlFromEvent(event, eventAction, undefined);
+        const xml = getXmlFromEvent(event, undefined);
 
         if (!xml) {
           // No xml found, cannot proceed
@@ -54,7 +51,7 @@ export const handleBlockLifecycle = ({
         }
 
         // Cleanup any freeze state associated with deleted blocks
-        cleanupDeletedBlockFreezeState(vm, event, eventAction, canEditTask);
+        cleanupDeletedBlockFreezeState(vm, event, canEditTask);
       }
       break;
   }
@@ -62,14 +59,13 @@ export const handleBlockLifecycle = ({
 
 const getXmlFromEvent = (
   event: WorkspaceChangeEvent,
-  eventAction: StudentActionType,
   xmlElement: Element | undefined,
 ): Element | undefined => {
-  switch (eventAction) {
-    case StudentActionType.Create:
+  switch (event.type) {
+    case "create":
       return event.xml;
 
-    case StudentActionType.Delete:
+    case "delete":
       return event.oldXml;
 
     default:
@@ -81,11 +77,10 @@ const getXmlFromEvent = (
 const cleanupDeletedBlockFreezeState = (
   vm: VM,
   event: WorkspaceChangeEvent,
-  eventAction: StudentActionType,
   canEditTask: boolean | undefined,
 ): void => {
   if (
-    eventAction === StudentActionType.Delete &&
+    event.type === "delete" &&
     // When switching sprites, blocks are deleted with recordUndo set to false
     // Only remove config for explicitly deleted blocks
     event.recordUndo &&
