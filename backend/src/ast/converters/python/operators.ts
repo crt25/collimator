@@ -1,3 +1,6 @@
+// This file contains string constants representing various Python operators.
+// See https://github.com/antlr/grammars-v4/blob/master/python/python3_13/PythonParser.g4 for the grammar.
+
 /**
  * Matches the component highlighted below in a dictionary creation
  *     my_dict = { key: value, another_key: another_value }
@@ -14,3 +17,10 @@ export const createKeyValuePairOperator = "create-key-value-pair";
  *              ^^^^^
  */
 export const awaitOperator = "await";
+
+/**
+ * Matches the '&' operator in a bitwise AND expression
+ *     result = a & b
+ *                ^
+ */
+export const bitwiseAndOperator = "&";
