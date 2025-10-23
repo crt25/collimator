@@ -154,4 +154,21 @@ export const softDeleteUser = async (
   });
 };
 
+export const restoreUser = async (
+  app: INestApplication,
+  userId: number,
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { deletedAt: null },
+  });
+
+  await prisma.authenticationToken.updateMany({
+    where: { userId },
+    data: { deletedAt: null },
+  });
+};
+
 export const adminUserToken = "adminUserToken";
