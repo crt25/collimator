@@ -401,3 +401,10 @@ export const starPatternOperator = "star-pattern";
  *      ^^^^^^^^^^^^^^^^^^^^
  */
 export const withItemOperator = "with-item";
+
+/**
+ * Matches a type parameter bound operator
+ * class MyGenericClass[T : SomeBaseClass]:
+ *                         ^^^^^^^^^^^^^^
+ */
+export const typeParameterBoundOperator = "type-parameter-bound";
