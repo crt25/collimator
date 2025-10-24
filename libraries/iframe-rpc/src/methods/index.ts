@@ -17,6 +17,7 @@ export type { LoadSubmission } from "./load-submission";
 export type { LoadTask } from "./load-task";
 export type { PostSubmission } from "./post-submission";
 export type { SetLocale } from "./set-locale";
+export type { ImportTask } from "./import-task";
 
 type Methods =
   | GetHeight
