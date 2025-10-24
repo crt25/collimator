@@ -156,7 +156,10 @@ export class AuthenticationService {
     );
   }
 
-  async findPublicKeyByFingerprint(fingerprint: string): Promise<PublicKey> {
+  async findPublicKeyByFingerprint(
+    fingerprint: string,
+    includeSoftDelete = false,
+  ): Promise<PublicKey> {
     return await this.prisma.keyPair.findUniqueOrThrow({
       select: {
         id: true,
@@ -164,14 +167,15 @@ export class AuthenticationService {
         publicKey: true,
         createdAt: true,
       },
-      where: { publicKeyFingerprint: fingerprint },
+      where: includeSoftDelete
+        ? { publicKeyFingerprint: fingerprint }
+        : { publicKeyFingerprint: fingerprint, deletedAt: null },
     });
   }
 
   async deleteExpiredTokens(): Promise<void> {
     await this.prisma.authenticationToken.deleteMany({
       where: {
-        deletedAt: null,
         lastUsedAt: { lt: new Date(Date.now() - slidingTokenLifetime) },
       },
     });
