@@ -230,10 +230,10 @@ import { convertTargetWithStarAtom } from "./nodes/misc/target-with-star-atom";
 import { convertStarAtom } from "./nodes/misc/star-atom";
 import { convertSingleTarget } from "./nodes/misc/single-target";
 import { convertSingleSubscriptAttributeTarget } from "./nodes/misc/single-subscript-attribute-target";
-import { convertTPrimary } from "./nodes/misc/t-primary";
+import { convertTargetPrimary } from "./nodes/misc/target-primary";
 import { convertDeleteTargets } from "./nodes/misc/delete-targets";
 import { convertDeleteTarget } from "./nodes/misc/delete-target";
-import { convertDeleteTAtom } from "./nodes/misc/delete-t-atom";
+import { convertDeleteTargetAtom } from "./nodes/misc/delete-target-atom";
 
 // parameters converters
 import { convertDefaultAssignment } from "./nodes/parameters/default-assignment";
@@ -676,13 +676,13 @@ export class PythonAstVisitor
     } else if (ctx instanceof Single_subscript_attribute_targetContext) {
       return convertSingleSubscriptAttributeTarget(this, ctx);
     } else if (ctx instanceof T_primaryContext) {
-      return convertTPrimary(this, ctx);
+      return convertTargetPrimary(this, ctx);
     } else if (ctx instanceof Del_targetsContext) {
       return convertDeleteTargets(this, ctx);
     } else if (ctx instanceof Del_targetContext) {
       return convertDeleteTarget(this, ctx);
     } else if (ctx instanceof Del_t_atomContext) {
-      return convertDeleteTAtom(this, ctx);
+      return convertDeleteTargetAtom(this, ctx);
     } else if (ctx instanceof Type_expressionsContext) {
       return convertTypeExpressions(this, ctx);
     } else if (ctx instanceof Func_type_commentContext) {

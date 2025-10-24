@@ -22,7 +22,7 @@ import {
   sliceOperator,
 } from "../../operators";
 
-export const convertTPrimary = (
+export const convertTargetPrimary = (
   visitor: IPythonAstVisitor,
   ctx: T_primaryContext,
 ): PythonVisitorReturnValue => {
