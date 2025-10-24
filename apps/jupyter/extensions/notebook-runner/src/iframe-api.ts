@@ -19,6 +19,7 @@ import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
 import { Mode } from "./mode";
+import { CrtInternalTask, importCrtInternalTask } from "./task-importer";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -299,39 +300,52 @@ export class EmbeddedPythonCallbacks {
     zip.file(EmbeddedPythonCallbacks.studentTaskInZip, studentTask);
     zip.file(EmbeddedPythonCallbacks.autograderInZip, autograder);
 
+    const data = await this.readFolderContents(
+      EmbeddedPythonCallbacks.dataLocation,
+    );
+
+    const src = await this.readFolderContents(
+      EmbeddedPythonCallbacks.srcLocation,
+    );
+
+    const gradingData = await this.readFolderContents(
+      EmbeddedPythonCallbacks.gradingDataLocation,
+    );
+
+    const gradingSrc = await this.readFolderContents(
+      EmbeddedPythonCallbacks.gradingSrcLocation,
+    );
+
+    for (const [relativePath, blob] of data.entries()) {
+      zip.file(`data/${relativePath}`, blob);
+    }
+
+    for (const [relativePath, blob] of src.entries()) {
+      zip.file(`src/${relativePath}`, blob);
+    }
+
+    for (const [relativePath, blob] of gradingData.entries()) {
+      zip.file(`grading_data/${relativePath}`, blob);
+    }
+
+    for (const [relativePath, blob] of gradingSrc.entries()) {
+      zip.file(`grading_src/${relativePath}`, blob);
+    }
+
     return zip.generateAsync({ type: "blob" });
   }
 
-  private async unpackTask(task: Blob): Promise<{
-    taskTemplate: Blob;
-    studentTask: Blob;
-    autograder: Blob;
-  }> {
-    // unzip task
-    const zip = new JSZip();
-    await zip.loadAsync(task);
-    const [taskTemplate, studentTask, autograder] = await Promise.all([
-      zip.file(EmbeddedPythonCallbacks.taskTemplateInZip)?.async("blob"),
-      zip.file(EmbeddedPythonCallbacks.studentTaskInZip)?.async("blob"),
-      zip.file(EmbeddedPythonCallbacks.autograderInZip)?.async("blob"),
-    ]);
-
-    if (!taskTemplate || !studentTask || !autograder) {
-      console.error(
-        `${logModule} Failed to load task files. Received: ${{
-          taskTemplate,
-          studentTask,
-          autograder,
-        }}`,
-      );
-
-      throw new Error("Failed to load task files, see console for details");
-    }
+  private async unpackTask(task: Blob): Promise<CrtInternalTask> {
+    const importedFiles = await importCrtInternalTask(task);
 
     return {
-      taskTemplate,
-      studentTask,
-      autograder,
+      taskTemplate: importedFiles.taskTemplate,
+      studentTask: importedFiles.studentTask,
+      autograder: importedFiles.autograder,
+      data: importedFiles.data,
+      src: importedFiles.src,
+      gradingData: importedFiles.gradingData,
+      gradingSrc: importedFiles.gradingSrc,
     };
   }
 
