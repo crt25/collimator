@@ -33,6 +33,7 @@ import {
   equalityOperator,
   fStringConversionOperator,
   fStringFormatSpecOperator,
+  fStringOperator,
   fStringReplacementFieldOperator,
   greaterThanOperator,
   lessThanOperator,
@@ -240,7 +241,7 @@ weird_string_syntax = "somehow"f"this""is""allowed"f"in {python} {version=!a:.2f
                     {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "fstring",
+                      operator: fStringOperator,
                       operands: [
                         // beginning of fstring
                         {
@@ -279,7 +280,7 @@ weird_string_syntax = "somehow"f"this""is""allowed"f"in {python} {version=!a:.2f
                     {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "fstring",
+                      operator: fStringOperator,
                       operands: [
                         // start of fstring
                         {

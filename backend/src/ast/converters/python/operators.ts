@@ -159,6 +159,13 @@ export const doubleStarKvPairOperator = "**-kv-pair";
 export const ifThenElseOperator = "if-then-else";
 
 /**
+ * Matches an f-string
+ *  value = f"Hello, {name}!"
+ *          ^^^^^^^^^^^^^^^^^
+ */
+export const fStringOperator = "fstring";
+
+/**
  * Matches an f-string conversion
  *  value = f"{variable!r}"
  *                     ^^
