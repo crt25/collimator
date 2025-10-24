@@ -7,7 +7,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Single_subscript_attribute_targetContext } from "../../generated/PythonParser";
-import { fieldAccessOperator } from "../../operators";
+import { fieldAccessOperator, sliceOperator } from "../../operators";
 
 export const convertSingleSubscriptAttributeTarget = (
   visitor: IPythonAstVisitor,
@@ -41,7 +41,7 @@ export const convertSingleSubscriptAttributeTarget = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "slice",
+      operator: sliceOperator,
       operands: [primary.node, slices.node],
     } satisfies OperatorNode,
     functionDeclarations: [

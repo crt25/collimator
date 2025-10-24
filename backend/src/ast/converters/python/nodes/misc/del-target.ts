@@ -10,7 +10,7 @@ import {
   Del_t_atomContext,
   Del_targetContext,
 } from "../../generated/PythonParser";
-import { fieldAccessOperator } from "../../operators";
+import { fieldAccessOperator, sliceOperator } from "../../operators";
 
 export const convertDelTarget = (
   visitor: IPythonAstVisitor,
@@ -49,7 +49,7 @@ export const convertDelTarget = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "slice",
+      operator: sliceOperator,
       operands: [primary.node, slices.node],
     } satisfies OperatorNode,
     functionDeclarations: [

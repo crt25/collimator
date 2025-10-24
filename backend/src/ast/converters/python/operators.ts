@@ -251,3 +251,10 @@ export const namedParameterOperator = "named-parameter";
  *            ^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const functionInvocationOperator = "function-invocation";
+
+/**
+ * Matches a slice expression
+ *  sublist = my_list[1:5]
+ *            ^^^^^^^^^^^^
+ */
+export const sliceOperator = "slice";

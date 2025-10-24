@@ -39,6 +39,7 @@ import {
   greaterThanOperator,
   lessThanOperator,
   listComprehensionOperator,
+  sliceOperator,
 } from "../operators";
 
 describe("Python AST converter", () => {
@@ -506,7 +507,7 @@ def first[T](seq: Sequence[T]) -> T:
                     value: {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "slice",
+                      operator: sliceOperator,
                       operands: [
                         {
                           nodeType: AstNodeType.expression,

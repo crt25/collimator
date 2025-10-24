@@ -17,6 +17,7 @@ import {
   fieldAccessOperator,
   functionInvocationOperator,
   namedParameterOperator,
+  sliceOperator,
 } from "../../operators";
 import { convertArguments } from "./arguments";
 import { PythonFunctionArguments } from "./args";
@@ -121,7 +122,7 @@ export const convertPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "slice",
+        operator: sliceOperator,
         operands: [primary.node, slices.node],
       } satisfies OperatorNode,
       functionDeclarations: [

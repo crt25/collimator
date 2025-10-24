@@ -19,6 +19,7 @@ import {
   fieldAccessOperator,
   functionInvocationOperator,
   namedParameterOperator,
+  sliceOperator,
 } from "../../operators";
 
 export const convertTPrimary = (
@@ -121,7 +122,7 @@ export const convertTPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "slice",
+        operator: sliceOperator,
         operands: [primary.node, slices.node],
       } satisfies OperatorNode,
       functionDeclarations: [

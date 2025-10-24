@@ -11,7 +11,7 @@ import {
   Star_atomContext,
   Target_with_star_atomContext,
 } from "../../generated/PythonParser";
-import { fieldAccessOperator } from "../../operators";
+import { fieldAccessOperator, sliceOperator } from "../../operators";
 
 export const convertTargetWithStarAtom = (
   visitor: IPythonAstVisitor,
@@ -51,7 +51,7 @@ export const convertTargetWithStarAtom = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "slice",
+      operator: sliceOperator,
       operands: [primaryTarget.node, slices.node],
     } satisfies OperatorNode,
     functionDeclarations: [
