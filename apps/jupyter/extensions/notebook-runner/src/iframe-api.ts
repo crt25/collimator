@@ -19,7 +19,15 @@ import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
 import { Mode } from "./mode";
-import { CrtInternalTask, importCrtInternalTask } from "./task-importer";
+import {
+  CrtInternalTask,
+  ExternalCustomTask,
+  importCrtInternalTask,
+  importExternalCustomTask,
+} from "./task-importer";
+import { detectTaskFormat, validateTaskBlob } from "./format-detector";
+import { ImportTask } from "./iframe-rpc/src/methods/import-task";
+import { TaskFormat } from "./task-format";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -204,6 +212,56 @@ export class EmbeddedPythonCallbacks {
       throw e;
     }
 
+    return undefined;
+  }
+
+  async importTask(request: ImportTask["request"]): Promise<undefined> {
+    try {
+      this.setJupyterLocale(request.params.language);
+
+      console.log("starting import task");
+
+      const validateEror = await validateTaskBlob(request.params.task);
+
+      if (validateEror) {
+        console.debug(`${logModule} Importing task`);
+      }
+
+      const fileFormat = await detectTaskFormat(request.params.task);
+
+      if (fileFormat === TaskFormat.Unknown) {
+        throw new Error("Unsupported task format");
+      }
+
+      await this.closeAllDocuments();
+
+      switch (fileFormat) {
+        case TaskFormat.CrtInternal: {
+          const importedCrtInternalFiles = await importCrtInternalTask(
+            request.params.task,
+          );
+
+          await this.writeCrtInternalTaskOnEditMode(importedCrtInternalFiles);
+
+          break;
+        }
+
+        case TaskFormat.ExternalCustom: {
+          const importedExternalFiles = await importExternalCustomTask(
+            request.params.task,
+          );
+
+          await this.writeExternalCustomTaskOnEditMode(importedExternalFiles);
+
+          break;
+        }
+      }
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
+        e,
+      );
+    }
     return undefined;
   }
 
@@ -522,6 +580,129 @@ export class EmbeddedPythonCallbacks {
     }
     return files;
   }
+
+  private async writeCrtInternalTaskOnEditMode(
+    importedFiles: CrtInternalTask,
+  ): Promise<void> {
+    if (this.mode == Mode.edit) {
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+        importedFiles.taskTemplate,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.dataLocation,
+        importedFiles.data,
+      );
+
+      await this.createFolder(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+        "grading_data",
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+        importedFiles.gradingData,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.srcLocation,
+        importedFiles.src,
+      );
+
+      await this.createFolder(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+        "grading_src",
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+        importedFiles.gradingSrc,
+      );
+
+      this.documentManager.openOrReveal(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+    } else {
+      await this.createFolder("/student", "student");
+      await this.createFolder("/autograder", "autograder");
+
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+        importedFiles.studentTask,
+      );
+
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.autograderLocation,
+        importedFiles.autograder,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.dataLocation,
+        importedFiles.data,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.srcLocation,
+        importedFiles.src,
+      );
+
+      this.documentManager.openOrReveal(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+      );
+    }
+  }
+
+  private async writeExternalCustomTaskOnEditMode(
+    importedFiles: ExternalCustomTask,
+  ): Promise<void> {
+    if (this.mode == Mode.edit) {
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+        importedFiles.taskFile,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.dataLocation,
+        importedFiles.data,
+      );
+
+      await this.createFolder(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+        "grading_data",
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+        importedFiles.gradingData,
+      );
+
+      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.srcLocation,
+        importedFiles.src,
+      );
+
+      await this.createFolder(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+        "grading_src",
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+        importedFiles.gradingSrc,
+      );
+
+      this.documentManager.openOrReveal(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+    } else {
+      throw new Error(
+        "External custom task import is only supported in edit mode",
+      );
+    }
+  }
 }
 
 export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
@@ -532,5 +713,6 @@ export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
     loadTask: callbacks.loadTask.bind(callbacks),
     loadSubmission: callbacks.loadSubmission.bind(callbacks),
     setLocale: callbacks.setLocale.bind(callbacks),
+    importTask: callbacks.importTask.bind(callbacks),
   });
 };
