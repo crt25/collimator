@@ -376,3 +376,12 @@ export const mappingPatternOperator = "mapping-pattern";
  *      ^^^^^^^^^^^^^^^^^^^
  */
 export const orPatternOperator = "or-pattern";
+
+/**
+ * Matches a sequence pattern operator in pattern matching
+ * case [item1, item2, *rest]:
+ *      ^^^^^^^^^^^^^^^^^^^^^
+ * case (item1, item2, *rest):
+ *      ^^^^^^^^^^^^^^^^^^^^^
+ */
+export const sequencePatternOperator = "sequence-pattern";

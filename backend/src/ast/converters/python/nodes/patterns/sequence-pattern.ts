@@ -6,6 +6,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Sequence_patternContext } from "../../generated/PythonParser";
+import { sequencePatternOperator } from "../../operators";
 
 export const convertSequencePattern = (
   visitor: IPythonAstVisitor,
@@ -30,7 +31,7 @@ export const convertSequencePattern = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "sequence-pattern-" + (ctx.LSQB() ?? ctx.LPAR()).getText(),
+        operator: sequencePatternOperator,
         operands: sequenceExpression.node.expressions,
       } satisfies OperatorNode,
       functionDeclarations: sequenceExpression.functionDeclarations,
@@ -41,7 +42,7 @@ export const convertSequencePattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "sequence-pattern-" + (ctx.LSQB() ?? ctx.LPAR()).getText(),
+      operator: sequencePatternOperator,
       operands: [],
     } satisfies OperatorNode,
     functionDeclarations: [],

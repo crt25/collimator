@@ -42,6 +42,7 @@ import {
   listComprehensionOperator,
   patternGuardOperator,
   renameImportOperator,
+  sequencePatternOperator,
   setComprehensionOperator,
   sliceOperator,
 } from "../operators";
@@ -1993,7 +1994,7 @@ match point:
                     {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "sequence-pattern-(",
+                      operator: sequencePatternOperator,
                       operands: [
                         {
                           nodeType: AstNodeType.expression,
@@ -2042,7 +2043,7 @@ match point:
                     {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "sequence-pattern-(",
+                      operator: sequencePatternOperator,
                       operands: [
                         {
                           nodeType: AstNodeType.expression,
