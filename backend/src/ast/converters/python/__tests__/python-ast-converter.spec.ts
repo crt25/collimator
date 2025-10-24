@@ -31,6 +31,7 @@ import {
   createKeyValuePairOperator,
   dictionaryComprehensionOperator,
   equalityOperator,
+  fStringConversionOperator,
   greaterThanOperator,
   lessThanOperator,
 } from "../operators";
@@ -335,7 +336,7 @@ weird_string_syntax = "somehow"f"this""is""allowed"f"in {python} {version=!a:.2f
                             {
                               nodeType: AstNodeType.expression,
                               expressionType: ExpressionNodeType.operator,
-                              operator: "!",
+                              operator: fStringConversionOperator,
                               operands: [
                                 {
                                   nodeType: AstNodeType.expression,

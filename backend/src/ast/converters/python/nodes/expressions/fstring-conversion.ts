@@ -7,6 +7,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Fstring_conversionContext } from "../../generated/PythonParser";
+import { fStringConversionOperator } from "../../operators";
 
 export const convertFstringConversion = (
   _visitor: IPythonAstVisitor,
@@ -15,7 +16,7 @@ export const convertFstringConversion = (
   node: {
     nodeType: AstNodeType.expression,
     expressionType: ExpressionNodeType.operator,
-    operator: "!",
+    operator: fStringConversionOperator,
     operands: [
       {
         nodeType: AstNodeType.expression,
