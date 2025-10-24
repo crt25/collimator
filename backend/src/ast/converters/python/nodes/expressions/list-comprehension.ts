@@ -5,12 +5,12 @@ import {
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
-import { SetcompContext } from "../../generated/PythonParser";
-import { setComprehensionOperator } from "../../operators";
+import { ListcompContext } from "../../generated/PythonParser";
+import { listComprehensionOperator } from "../../operators";
 
-export const convertSetcomp = (
+export const convertListComprehension = (
   visitor: IPythonAstVisitor,
-  ctx: SetcompContext,
+  ctx: ListcompContext,
 ): PythonVisitorReturnValue => {
   const expression = visitor.getExpression(ctx.named_expression());
   const forIfClauses = visitor.getExpression(ctx.for_if_clauses());
@@ -19,7 +19,7 @@ export const convertSetcomp = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: setComprehensionOperator,
+      operator: listComprehensionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [

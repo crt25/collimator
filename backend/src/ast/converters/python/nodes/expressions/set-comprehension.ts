@@ -5,21 +5,21 @@ import {
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
-import { DictcompContext } from "../../generated/PythonParser";
-import { dictionaryComprehensionOperator } from "../../operators";
+import { SetcompContext } from "../../generated/PythonParser";
+import { setComprehensionOperator } from "../../operators";
 
-export const convertDictcomp = (
+export const convertSetComprehension = (
   visitor: IPythonAstVisitor,
-  ctx: DictcompContext,
+  ctx: SetcompContext,
 ): PythonVisitorReturnValue => {
-  const expression = visitor.getExpression(ctx.kvpair());
+  const expression = visitor.getExpression(ctx.named_expression());
   const forIfClauses = visitor.getExpression(ctx.for_if_clauses());
 
   return {
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: dictionaryComprehensionOperator,
+      operator: setComprehensionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [

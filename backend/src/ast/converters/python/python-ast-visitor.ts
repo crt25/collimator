@@ -208,10 +208,10 @@ import { convertDoubleStarredKvpair } from "./nodes/expressions/double-starred-k
 import { convertKvpair } from "./nodes/expressions/kvpair";
 import { convertForIfClauses } from "./nodes/expressions/for-if-clauses";
 import { convertForIfClause } from "./nodes/expressions/for-if-clause";
-import { convertListcomp } from "./nodes/expressions/listcomp";
-import { convertSetcomp } from "./nodes/expressions/setcomp";
+import { convertListComprehension } from "./nodes/expressions/list-comprehension";
+import { convertSetComprehension } from "./nodes/expressions/set-comprehension";
 import { convertGenexp } from "./nodes/expressions/genexp";
-import { convertDictcomp } from "./nodes/expressions/dictcomp";
+import { convertDictComprehension } from "./nodes/expressions/dict-comprehension";
 import { convertStarredExpression } from "./nodes/expressions/starred-expression";
 
 // imports converters
@@ -650,13 +650,13 @@ export class PythonAstVisitor
     } else if (ctx instanceof For_if_clauseContext) {
       return convertForIfClause(this, ctx);
     } else if (ctx instanceof ListcompContext) {
-      return convertListcomp(this, ctx);
+      return convertListComprehension(this, ctx);
     } else if (ctx instanceof SetcompContext) {
-      return convertSetcomp(this, ctx);
+      return convertSetComprehension(this, ctx);
     } else if (ctx instanceof GenexpContext) {
       return convertGenexp(this, ctx);
     } else if (ctx instanceof DictcompContext) {
-      return convertDictcomp(this, ctx);
+      return convertDictComprehension(this, ctx);
     } else if (ctx instanceof Starred_expressionContext) {
       return convertStarredExpression(this, ctx);
     } else if (ctx instanceof Star_targetsContext) {
