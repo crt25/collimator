@@ -80,14 +80,7 @@ export class ClassesService {
     });
   }
 
-  deleteById(id: ClassId, includeSoftDelete = false): Promise<Class> {
-    return this.prisma.class.update({
-      where: includeSoftDelete ? { id } : { id, deletedAt: null },
-      data: { deletedAt: new Date() },
-    });
-  }
-
-  hardDeleteById(id: ClassId): Promise<Class> {
+  deleteById(id: ClassId): Promise<Class> {
     return this.prisma.class.delete({
       where: { id },
     });
