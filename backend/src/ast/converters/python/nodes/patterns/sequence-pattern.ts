@@ -21,21 +21,7 @@ export const convertSequencePattern = (
     : null;
 
   if (sequenceExpression) {
-    if (
-      sequenceExpression.node.expressionType !== ExpressionNodeType.sequence
-    ) {
-      throw new Error("Expected sequence expression for a sequnce pattern");
-    }
-
-    return {
-      node: {
-        nodeType: AstNodeType.expression,
-        expressionType: ExpressionNodeType.operator,
-        operator: sequencePatternOperator,
-        operands: sequenceExpression.node.expressions,
-      } satisfies OperatorNode,
-      functionDeclarations: sequenceExpression.functionDeclarations,
-    };
+    return sequenceExpression;
   }
 
   return {

@@ -1,9 +1,12 @@
-import { ExpressionNodeType } from "src/ast/types/general-ast/ast-nodes/expression-node";
-import { ExpressionSequenceNode } from "src/ast/types/general-ast/ast-nodes/expression-node/expression-sequence-node";
+import {
+  ExpressionNodeType,
+  OperatorNode,
+} from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Open_sequence_patternContext } from "../../generated/PythonParser";
+import { sequencePatternOperator } from "../../operators";
 
 export const convertOpenSequencePattern = (
   visitor: IPythonAstVisitor,
@@ -14,9 +17,10 @@ export const convertOpenSequencePattern = (
     return {
       node: {
         nodeType: AstNodeType.expression,
-        expressionType: ExpressionNodeType.sequence,
-        expressions: [expression.node],
-      } satisfies ExpressionSequenceNode,
+        expressionType: ExpressionNodeType.operator,
+        operator: sequencePatternOperator,
+        operands: [expression.node],
+      } satisfies OperatorNode,
       functionDeclarations: expression.functionDeclarations,
     };
   }
@@ -33,9 +37,10 @@ export const convertOpenSequencePattern = (
   return {
     node: {
       nodeType: AstNodeType.expression,
-      expressionType: ExpressionNodeType.sequence,
-      expressions: [expression.node, ...nodes],
-    } satisfies ExpressionSequenceNode,
+      expressionType: ExpressionNodeType.operator,
+      operator: sequencePatternOperator,
+      operands: [expression.node, ...nodes],
+    } satisfies OperatorNode,
     functionDeclarations: [
       ...expression.functionDeclarations,
       ...maybeSequenceExpression.functionDeclarations,

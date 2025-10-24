@@ -270,12 +270,15 @@ match value:
     });
 
     it("can convert a match with destructuring", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 match point:
     case (0, y):
         result = y
     case (x, 0):
         result = x
+    case x, y:
+        result = x + y
       `);
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
@@ -390,6 +393,66 @@ match point:
                           expressionType: ExpressionNodeType.variable,
                           name: "x",
                         } satisfies VariableNode,
+                      ],
+                    },
+                  ],
+                } satisfies StatementSequenceNode,
+                {
+                  nodeType: AstNodeType.statement,
+                  statementType: StatementNodeType.functionCall,
+                  name: `${syntheticAstFunctionPrefix}case`,
+                  arguments: [
+                    {
+                      nodeType: AstNodeType.expression,
+                      expressionType: ExpressionNodeType.operator,
+                      operator: sequencePatternOperator,
+                      operands: [
+                        {
+                          nodeType: AstNodeType.expression,
+                          expressionType: ExpressionNodeType.variable,
+                          name: "x",
+                        } satisfies VariableNode,
+                        {
+                          nodeType: AstNodeType.expression,
+                          expressionType: ExpressionNodeType.variable,
+                          name: "y",
+                        } satisfies VariableNode,
+                      ],
+                    } satisfies OperatorNode,
+                  ],
+                } satisfies FunctionCallNode,
+                {
+                  nodeType: AstNodeType.statement,
+                  statementType: StatementNodeType.sequence,
+                  statements: [
+                    {
+                      nodeType: AstNodeType.statement,
+                      statementType: StatementNodeType.multiAssignment,
+                      assignmentExpressions: [
+                        {
+                          nodeType: AstNodeType.expression,
+                          expressionType: ExpressionNodeType.variable,
+                          name: "result",
+                        },
+                      ],
+                      values: [
+                        {
+                          nodeType: AstNodeType.expression,
+                          expressionType: ExpressionNodeType.operator,
+                          operator: "+",
+                          operands: [
+                            {
+                              nodeType: AstNodeType.expression,
+                              expressionType: ExpressionNodeType.variable,
+                              name: "x",
+                            } satisfies VariableNode,
+                            {
+                              nodeType: AstNodeType.expression,
+                              expressionType: ExpressionNodeType.variable,
+                              name: "y",
+                            } satisfies VariableNode,
+                          ],
+                        } satisfies OperatorNode,
                       ],
                     },
                   ],
