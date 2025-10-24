@@ -122,16 +122,44 @@ export class EmbeddedPythonCallbacks {
       this.setJupyterLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
-      const { taskTemplate, studentTask, autograder } = await this.unpackTask(
-        request.params.task,
-      );
+      const unpacked = await this.unpackTask(request.params.task);
 
       await this.closeAllDocuments();
 
       if (this.mode == Mode.edit) {
         await this.putFileContents(
           EmbeddedPythonCallbacks.taskTemplateLocation,
-          taskTemplate,
+          unpacked.taskTemplate,
+        );
+
+        await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.dataLocation,
+          unpacked.data,
+        );
+
+        await this.createFolder(
+          EmbeddedPythonCallbacks.gradingDataLocation,
+          "grading_data",
+        );
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.gradingDataLocation,
+          unpacked.gradingData,
+        );
+
+        await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.srcLocation,
+          unpacked.src,
+        );
+
+        await this.createFolder(
+          EmbeddedPythonCallbacks.gradingSrcLocation,
+          "grading_src",
+        );
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.gradingSrcLocation,
+          unpacked.gradingSrc,
         );
 
         this.documentManager.openOrReveal(
@@ -143,12 +171,24 @@ export class EmbeddedPythonCallbacks {
 
         await this.putFileContents(
           EmbeddedPythonCallbacks.studentTaskLocation,
-          studentTask,
+          unpacked.studentTask,
         );
 
         await this.putFileContents(
           EmbeddedPythonCallbacks.autograderLocation,
-          autograder,
+          unpacked.autograder,
+        );
+
+        await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.dataLocation,
+          unpacked.data,
+        );
+
+        await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+        await this.writeFolderContents(
+          EmbeddedPythonCallbacks.srcLocation,
+          unpacked.src,
         );
 
         this.documentManager.openOrReveal(
