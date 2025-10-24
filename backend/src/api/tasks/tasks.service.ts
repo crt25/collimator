@@ -223,16 +223,10 @@ export class TasksService {
           },
         };
 
-    const orphanedSolutionsWhere = includeSoftDelete
-      ? {
-          referenceSolutions: { none: {} },
-          studentSolutions: { none: {} },
-        }
-      : {
-          deletedAt: null,
-          referenceSolutions: { none: {} },
-          studentSolutions: { none: {} },
-        };
+    const orphanedSolutionsWhere = {
+      referenceSolutions: { none: {} },
+      studentSolutions: { none: {} },
+    };
 
     const [_, __, updatedTask] = await this.prisma.$transaction([
       // delete all reference solutions that are not in the new list
