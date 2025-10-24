@@ -348,3 +348,10 @@ export const patternGuardOperator = "guard";
  *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const itemsPatternOperator = "items-pattern";
+
+/**
+ * Matches a key-value pattern operator in pattern matching
+ * case { key: value, **rest }:
+ *        ^^^^^^^^^^
+ */
+export const keyValuePatternOperator = "key-value-pattern";
