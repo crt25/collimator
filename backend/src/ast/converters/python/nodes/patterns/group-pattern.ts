@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Group_patternContext } from "../../generated/PythonParser";
+import { groupPatternOperator } from "../../operators";
 
 export const convertGroupPattern = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertGroupPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "group-pattern",
+      operator: groupPatternOperator,
       operands: [pattern.node],
     } satisfies OperatorNode,
     functionDeclarations: pattern.functionDeclarations,

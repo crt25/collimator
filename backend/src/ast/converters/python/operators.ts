@@ -327,3 +327,10 @@ export const classPatternOperator = "class-pattern";
  *      ^^^^^^^
  */
 export const doubleStarPatternOperator = "double-star-pattern";
+
+/**
+ * Matches a group pattern operator in pattern matching
+ * case (pattern):
+ *      ^^^^^^^^^
+ */
+export const groupPatternOperator = "group-pattern";
