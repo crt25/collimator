@@ -1,8 +1,3 @@
-import { AstNodeType } from "src/ast/types/general-ast";
-import {
-  ExpressionNodeType,
-  OperatorNode,
-} from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { GroupContext } from "../../generated/PythonParser";
@@ -10,18 +5,5 @@ import { GroupContext } from "../../generated/PythonParser";
 export const convertGroup = (
   visitor: IPythonAstVisitor,
   ctx: GroupContext,
-): PythonVisitorReturnValue => {
-  const expression = visitor.getExpression(
-    ctx.yield_expr() ?? ctx.named_expression(),
-  );
-
-  return {
-    node: {
-      nodeType: AstNodeType.expression,
-      expressionType: ExpressionNodeType.operator,
-      operator: "group",
-      operands: [expression.node],
-    } satisfies OperatorNode,
-    functionDeclarations: expression.functionDeclarations,
-  };
-};
+): PythonVisitorReturnValue =>
+  visitor.getExpression(ctx.yield_expr() ?? ctx.named_expression());
