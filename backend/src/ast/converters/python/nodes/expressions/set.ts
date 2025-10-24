@@ -11,6 +11,7 @@ import {
   SetContext,
   Star_named_expressionsContext,
 } from "../../generated/PythonParser";
+import { createSetOperator } from "../../operators";
 
 export const convertSet = (
   visitor: IPythonAstVisitor,
@@ -34,7 +35,7 @@ export const convertSet = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "create-set",
+      operator: createSetOperator,
       operands: elements,
     } satisfies OperatorNode,
     functionDeclarations,

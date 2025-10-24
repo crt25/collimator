@@ -258,3 +258,10 @@ export const functionInvocationOperator = "function-invocation";
  *            ^^^^^^^^^^^^
  */
 export const sliceOperator = "slice";
+
+/**
+ * Matches a set creation expression
+ * my_set = {1, 2, 3, 4}
+ *          ^^^^^^^^^^^^
+ */
+export const createSetOperator = "create-set";
