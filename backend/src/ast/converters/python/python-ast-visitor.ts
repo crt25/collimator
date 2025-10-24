@@ -182,7 +182,7 @@ import {
   convertDeleteTarget,
   convertDeleteTargetAtom,
   convertDeleteTargets,
-  convertDelStmt,
+  convertDeleteStmt,
   convertDict,
   convertDictComprehension,
   convertDisjunction,
@@ -428,7 +428,7 @@ export class PythonAstVisitor
     } else if (ctx instanceof Nonlocal_stmtContext) {
       return convertNonlocalStmt(this, ctx);
     } else if (ctx instanceof Del_stmtContext) {
-      return convertDelStmt(this, ctx);
+      return convertDeleteStmt(this, ctx);
     } else if (ctx instanceof Yield_stmtContext) {
       return convertYieldStmt(this, ctx);
     } else if (ctx instanceof Assert_stmtContext) {

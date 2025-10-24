@@ -5,7 +5,7 @@ export * from "./case-block";
 export * from "./class-def-raw";
 export * from "./class-def";
 export * from "./compound-stmt";
-export * from "./del-stmt";
+export * from "./delete-stmt";
 export * from "./elif-stmt";
 export * from "./else-block";
 export * from "./except-block";

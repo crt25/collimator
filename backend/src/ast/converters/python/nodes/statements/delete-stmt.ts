@@ -8,7 +8,7 @@ import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value"
 import { Del_stmtContext } from "../../generated/PythonParser";
 import { syntheticAstFunctionPrefix } from "../../constants";
 
-export const convertDelStmt = (
+export const convertDeleteStmt = (
   visitor: IPythonAstVisitor,
   ctx: Del_stmtContext,
 ): PythonVisitorReturnValue => {
