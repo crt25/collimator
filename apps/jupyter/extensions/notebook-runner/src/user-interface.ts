@@ -1,6 +1,8 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IRunningSessionSidebar } from "@jupyterlab/running";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
+import { FileBrowser } from "@jupyterlab/filebrowser";
+import { Contents } from "@jupyterlab/services";
 import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
@@ -41,12 +43,15 @@ export const simplifyUserInterface = async (
   app: JupyterFrontEnd,
   runningSessions: IRunningSessionSidebar,
   propertyInspectorProvider: IPropertyInspectorProvider,
+  fileBrowser: FileBrowser,
 ): Promise<void> => {
   if (mode !== Mode.edit) {
     // @ts-expect-error The exposed type is not complete
     propertyInspectorProvider.dispose();
     // @ts-expect-error The exposed type is not complete
     runningSessions.dispose();
+
+    hideGradingFolders(fileBrowser);
   }
 
   // activate simple mode
@@ -55,4 +60,30 @@ export const simplifyUserInterface = async (
   await app.commands.execute("statusbar:toggle");
 
   hideDisallowedWidgets(mode, app);
+};
+
+/**
+ * A function to hide grading folders in the file browser.
+ * A bit hacky because there is no public API to filter items.
+ * @param fileBrowser The file browser instance
+ */
+const hideGradingFolders = (fileBrowser: FileBrowser): void => {
+  let items: Contents.IModel[] = fileBrowser.model["_items"];
+
+  /**
+   * Override the items getter to filter the desired folder.
+   */
+  Object.defineProperty(fileBrowser.model, "_items", {
+    get() {
+      return items.filter(
+        (item) =>
+          !(item.type === "directory" && item.name.startsWith("grading_")),
+      );
+    },
+    set(v) {
+      items = v;
+    },
+  });
+
+  fileBrowser.model.refresh();
 };
