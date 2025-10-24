@@ -11,6 +11,7 @@ import {
   DictContext,
   Double_starred_kvpairsContext,
 } from "../../generated/PythonParser";
+import { createDictionaryOperator } from "../../operators";
 
 export const convertDict = (
   visitor: IPythonAstVisitor,
@@ -34,7 +35,7 @@ export const convertDict = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "create-dictionary",
+      operator: createDictionaryOperator,
       operands: elements,
     } satisfies OperatorNode,
     functionDeclarations,
