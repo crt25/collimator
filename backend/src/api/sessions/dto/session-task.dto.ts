@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
+import { IsDate } from "class-validator";
 
 export class SessionTaskDto {
   @ApiProperty({
@@ -16,4 +17,9 @@ export class SessionTaskDto {
   })
   @Expose()
   readonly title!: string | null;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 }
