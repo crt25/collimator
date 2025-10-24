@@ -172,3 +172,12 @@ export const fStringConversionOperator = "fstring-conversion";
  *                    ^^^^
  */
 export const fStringFormatSpecOperator = "fstring-format-spec";
+
+/**
+ * Matches an f-string replacement field
+ * value = f"{some_var}"
+ *           ^^^^^^^^^
+ * value = f"{some_var=}"
+ *            ^^^^^^^^^
+ */
+export const fStringReplacementFieldOperator = "fstring-replacement-field";

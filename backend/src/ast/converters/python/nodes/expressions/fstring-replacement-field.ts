@@ -13,6 +13,7 @@ import {
   Fstring_full_format_specContext,
   Fstring_replacement_fieldContext,
 } from "../../generated/PythonParser";
+import { fStringReplacementFieldOperator } from "../../operators";
 
 export const convertFstringReplacementField = (
   visitor: IPythonAstVisitor,
@@ -60,7 +61,7 @@ export const convertFstringReplacementField = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "fstring_replacement_field",
+      operator: fStringReplacementFieldOperator,
       operands,
     } satisfies OperatorNode,
     functionDeclarations,
