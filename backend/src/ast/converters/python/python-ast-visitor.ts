@@ -154,162 +154,150 @@ import {
   Yield_exprContext,
   Yield_stmtContext,
 } from "./generated/PythonParser";
-
-// expressions converters
-import { convertSubjectExpr } from "./nodes/expressions/subject-expr";
-import { convertLiteralExpression } from "./nodes/expressions/literal";
-import { convertComplexNumber } from "./nodes/expressions/complex-number";
-import { convertSignedNumber } from "./nodes/expressions/signed-number";
-import { convertSignedRealNumber } from "./nodes/expressions/signed-real-number";
-import { convertRealNumber } from "./nodes/expressions/real-number";
-import { convertImaginaryNumber } from "./nodes/expressions/imaginary-number";
-import { convertExpressions } from "./nodes/expressions/expressions";
-import { convertExpression } from "./nodes/expressions/expression";
-import { convertYieldExpr } from "./nodes/expressions/yield-expr";
-import { convertStarExpressions } from "./nodes/expressions/star-expressions";
-import { convertStarExpression } from "./nodes/expressions/star-expression";
-import { convertStarNamedExpressions } from "./nodes/expressions/star-named-expressions";
-import { convertStarNamedExpression } from "./nodes/expressions/star-named-expression";
-import { convertAssignmentExpression } from "./nodes/expressions/assignment-expression";
-import { convertNamedExpression } from "./nodes/expressions/named-expression";
-import { convertDisjunction } from "./nodes/expressions/disjunction";
-import { convertConjunction } from "./nodes/expressions/conjunction";
-import { convertInversion } from "./nodes/expressions/inversion";
-import { convertComparison } from "./nodes/expressions/comparison";
-import { convertBitwiseOr } from "./nodes/expressions/bitwise-or";
-import { convertBitwiseXor } from "./nodes/expressions/bitwise-xor";
-import { convertBitwiseAnd } from "./nodes/expressions/bitwise-and";
-import { convertShiftExpr } from "./nodes/expressions/shift-expr";
-import { convertSum } from "./nodes/expressions/sum";
-import { convertTerm } from "./nodes/expressions/term";
-import { convertFactor } from "./nodes/expressions/factor";
-import { convertPower } from "./nodes/expressions/power";
-import { convertAwaitPrimary } from "./nodes/expressions/await-primary";
-import { convertPrimary } from "./nodes/expressions/primary";
-import { convertSlices } from "./nodes/expressions/slices";
-import { convertSlice } from "./nodes/expressions/slice";
-import { convertAtom } from "./nodes/expressions/atom";
-import { convertGroup } from "./nodes/expressions/group";
-import { convertLambdef } from "./nodes/expressions/lambdef";
-import { convertFstringMiddle } from "./nodes/expressions/fstring-middle";
-import { convertFstringReplacementField } from "./nodes/expressions/fstring-replacement-field";
-import { convertFstringConversion } from "./nodes/expressions/fstring-conversion";
-import { convertFstringFullFormatSpec } from "./nodes/expressions/fstring-full-format-spec";
-import { convertFstringFormatSpec } from "./nodes/expressions/fstring-format-spec";
-import { convertFstring } from "./nodes/expressions/fstring";
-import { convertString } from "./nodes/expressions/string";
-import { convertStrings } from "./nodes/expressions/strings";
-import { convertList } from "./nodes/expressions/list";
-import { convertTuple } from "./nodes/expressions/tuple";
-import { convertSet } from "./nodes/expressions/set";
-import { convertDict } from "./nodes/expressions/dict";
-import { convertDoubleStarredKvpairs } from "./nodes/expressions/double-starred-kvpairs";
-import { convertDoubleStarredKvpair } from "./nodes/expressions/double-starred-kvpair";
-import { convertKvpair } from "./nodes/expressions/kvpair";
-import { convertForIfClauses } from "./nodes/expressions/for-if-clauses";
-import { convertForIfClause } from "./nodes/expressions/for-if-clause";
-import { convertListComprehension } from "./nodes/expressions/list-comprehension";
-import { convertSetComprehension } from "./nodes/expressions/set-comprehension";
-import { convertGenexp } from "./nodes/expressions/genexp";
-import { convertDictComprehension } from "./nodes/expressions/dict-comprehension";
-import { convertStarredExpression } from "./nodes/expressions/starred-expression";
-
-// imports converters
-import { convertImportStmt } from "./nodes/imports/import-stmt";
-
-// misc converters
-import { convertFileInput } from "./nodes/misc/file-input";
-import { convertInteractive } from "./nodes/misc/interactive";
-import { convertEval } from "./nodes/misc/eval";
-import { convertDecorators } from "./nodes/misc/decorators";
-import { convertStarTargets } from "./nodes/misc/star-targets";
-import { convertStarTargetsListSeq } from "./nodes/misc/star-targets-list-seq";
-import { convertStarTargetsTupleSeq } from "./nodes/misc/star-targets-tuple-seq";
-import { convertStarTarget } from "./nodes/misc/star-target";
-import { convertTargetWithStarAtom } from "./nodes/misc/target-with-star-atom";
-import { convertStarAtom } from "./nodes/misc/star-atom";
-import { convertSingleTarget } from "./nodes/misc/single-target";
-import { convertSingleSubscriptAttributeTarget } from "./nodes/misc/single-subscript-attribute-target";
-import { convertTargetPrimary } from "./nodes/misc/target-primary";
-import { convertDeleteTargets } from "./nodes/misc/delete-targets";
-import { convertDeleteTarget } from "./nodes/misc/delete-target";
-import { convertDeleteTargetAtom } from "./nodes/misc/delete-target-atom";
-
-// parameters converters
-import { convertDefaultAssignment } from "./nodes/parameters/default-assignment";
-
-// patterns converters
-import { convertGuard } from "./nodes/patterns/guard";
-import { convertPatterns } from "./nodes/patterns/patterns";
-import { convertPattern } from "./nodes/patterns/pattern";
-import { convertAsPattern } from "./nodes/patterns/as-pattern";
-import { convertOrPattern } from "./nodes/patterns/or-pattern";
-import { convertClosedPattern } from "./nodes/patterns/closed-pattern";
-import { convertLiteralPattern } from "./nodes/patterns/literal-pattern";
-import { convertCapturePattern } from "./nodes/patterns/capture-pattern";
-import { convertPatternCaptureTarget } from "./nodes/patterns/pattern-capture-target";
-import { convertWildcardPattern } from "./nodes/patterns/wildcard-pattern";
-import { convertValuePattern } from "./nodes/patterns/value-pattern";
-import { convertGroupPattern } from "./nodes/patterns/group-pattern";
-import { convertSequencePattern } from "./nodes/patterns/sequence-pattern";
-import { convertOpenSequencePattern } from "./nodes/patterns/open-sequence-pattern";
-import { convertMaybeSequencePattern } from "./nodes/patterns/maybe-sequence-pattern";
-import { convertMaybeStarPattern } from "./nodes/patterns/maybe-star-pattern";
-import { convertStarPattern } from "./nodes/patterns/star-pattern";
-import { convertMappingPattern } from "./nodes/patterns/mapping-pattern";
-import { convertItemsPattern } from "./nodes/patterns/items-pattern";
-import { convertKeyValuePattern } from "./nodes/patterns/key-value-pattern";
-import { convertDoubleStarPattern } from "./nodes/patterns/double-star-pattern";
-import { convertClassPattern } from "./nodes/patterns/class-pattern";
-import { convertPositionalPatterns } from "./nodes/patterns/positional-patterns";
-import { convertKeywordPatterns } from "./nodes/patterns/keyword-patterns";
-import { convertKeywordPattern } from "./nodes/patterns/keyword-pattern";
-
-// statements converters
-import { convertStatements } from "./nodes/statements/statements";
-import { convertStatement } from "./nodes/statements/statement";
-import { convertStatementNewline } from "./nodes/statements/statement-newline";
-import { convertSimpleStmts } from "./nodes/statements/simple-stmts";
-import { convertSimpleStmt } from "./nodes/statements/simple-stmt";
-import { convertCompoundStmt } from "./nodes/statements/compound-stmt";
-import { convertAssignment } from "./nodes/statements/assignment";
-import { convertAnnotatedRhs } from "./nodes/expressions/annotated-rhs";
-import { convertReturnStmt } from "./nodes/statements/return-stmt";
-import { convertRaiseStmt } from "./nodes/statements/raise-stmt";
-import { convertGlobalStmt } from "./nodes/statements/global-stmt";
-import { convertNonlocalStmt } from "./nodes/statements/nonlocal-stmt";
-import { convertDelStmt } from "./nodes/statements/del-stmt";
-import { convertYieldStmt } from "./nodes/statements/yield-stmt";
-import { convertAssertStmt } from "./nodes/statements/assert-stmt";
-import { convertBlock } from "./nodes/statements/block";
-import { convertClassDef } from "./nodes/statements/class-def";
-import { convertFunctionDef } from "./nodes/statements/function-def";
-import { convertIfStmt } from "./nodes/statements/if-stmt";
-import { convertElifStmt } from "./nodes/statements/elif-stmt";
-import { convertElseBlock } from "./nodes/statements/else-block";
-import { convertWhileStmt } from "./nodes/statements/while-stmt";
-import { convertForStmt } from "./nodes/statements/for-stmt";
-import { convertWithStmt } from "./nodes/statements/with-stmt";
-import { convertWithItem } from "./nodes/statements/with-item";
-import { convertTryStmt } from "./nodes/statements/try-stmt";
-import { convertExceptBlock } from "./nodes/statements/except-block";
-import { convertExceptStarBlock } from "./nodes/statements/except-star-block";
-import { convertFinallyBlock } from "./nodes/statements/finally-block";
-import { convertMatchStmt } from "./nodes/statements/match-stmt";
-import { convertCaseBlock } from "./nodes/statements/case-block";
-
-// types converters
-import { convertFuncType } from "./nodes/types/func-type";
-import { convertAnnotation } from "./nodes/types/annotation";
-import { convertStarAnnotation } from "./nodes/types/star-annotation";
-import { convertTypeAlias } from "./nodes/types/type-alias";
-import { convertTypeParamBound } from "./nodes/types/type-param-bound";
-import { convertTypeParamDefault } from "./nodes/types/type-param-default";
-import { convertTypeParamStarredDefault } from "./nodes/types/type-param-starred-default";
-import { convertTypeExpressions } from "./nodes/types/type-expressions";
-import { convertFuncTypeComment } from "./nodes/types/func-type-comment";
 import { PythonVisitorReturnValue } from "./python-ast-visitor-return-value";
-import { UnexpectedResultError } from "./nodes/unexpected-result-error";
+import {
+  convertAnnotatedRhs,
+  convertAnnotation,
+  convertAsPattern,
+  convertAssertStmt,
+  convertAssignment,
+  convertAssignmentExpression,
+  convertAtom,
+  convertAwaitPrimary,
+  convertBitwiseAnd,
+  convertBitwiseOr,
+  convertBitwiseXor,
+  convertBlock,
+  convertCapturePattern,
+  convertCaseBlock,
+  convertClassDef,
+  convertClassPattern,
+  convertClosedPattern,
+  convertComparison,
+  convertComplexNumber,
+  convertCompoundStmt,
+  convertConjunction,
+  convertDecorators,
+  convertDefaultAssignment,
+  convertDeleteTarget,
+  convertDeleteTargetAtom,
+  convertDeleteTargets,
+  convertDelStmt,
+  convertDict,
+  convertDictComprehension,
+  convertDisjunction,
+  convertDoubleStarPattern,
+  convertDoubleStarredKvpair,
+  convertDoubleStarredKvpairs,
+  convertElifStmt,
+  convertElseBlock,
+  convertEval,
+  convertExceptBlock,
+  convertExceptStarBlock,
+  convertExpression,
+  convertExpressions,
+  convertFactor,
+  convertFileInput,
+  convertFinallyBlock,
+  convertForIfClause,
+  convertForIfClauses,
+  convertForStmt,
+  convertFstring,
+  convertFstringConversion,
+  convertFstringFormatSpec,
+  convertFstringFullFormatSpec,
+  convertFstringMiddle,
+  convertFstringReplacementField,
+  convertFunctionDef,
+  convertFuncType,
+  convertFuncTypeComment,
+  convertGenexp,
+  convertGlobalStmt,
+  convertGroup,
+  convertGroupPattern,
+  convertGuard,
+  convertIfStmt,
+  convertImaginaryNumber,
+  convertImportStmt,
+  convertInteractive,
+  convertInversion,
+  convertItemsPattern,
+  convertKeyValuePattern,
+  convertKeywordPattern,
+  convertKeywordPatterns,
+  convertKvpair,
+  convertLambdef,
+  convertList,
+  convertListComprehension,
+  convertLiteralExpression,
+  convertLiteralPattern,
+  convertMappingPattern,
+  convertMatchStmt,
+  convertMaybeSequencePattern,
+  convertMaybeStarPattern,
+  convertNamedExpression,
+  convertNonlocalStmt,
+  convertOpenSequencePattern,
+  convertOrPattern,
+  convertPattern,
+  convertPatternCaptureTarget,
+  convertPatterns,
+  convertPositionalPatterns,
+  convertPower,
+  convertPrimary,
+  convertRaiseStmt,
+  convertRealNumber,
+  convertReturnStmt,
+  convertSequencePattern,
+  convertSet,
+  convertSetComprehension,
+  convertShiftExpr,
+  convertSignedNumber,
+  convertSignedRealNumber,
+  convertSimpleStmt,
+  convertSimpleStmts,
+  convertSingleSubscriptAttributeTarget,
+  convertSingleTarget,
+  convertSlice,
+  convertSlices,
+  convertStarAnnotation,
+  convertStarAtom,
+  convertStarExpression,
+  convertStarExpressions,
+  convertStarNamedExpression,
+  convertStarNamedExpressions,
+  convertStarPattern,
+  convertStarredExpression,
+  convertStarTarget,
+  convertStarTargets,
+  convertStarTargetsListSeq,
+  convertStarTargetsTupleSeq,
+  convertStatement,
+  convertStatementNewline,
+  convertStatements,
+  convertString,
+  convertStrings,
+  convertSubjectExpr,
+  convertSum,
+  convertTargetPrimary,
+  convertTargetWithStarAtom,
+  convertTerm,
+  convertTryStmt,
+  convertTuple,
+  convertTypeAlias,
+  convertTypeExpressions,
+  convertTypeParamBound,
+  convertTypeParamDefault,
+  convertTypeParamStarredDefault,
+  convertValuePattern,
+  convertWhileStmt,
+  convertWildcardPattern,
+  convertWithItem,
+  convertWithStmt,
+  convertYieldExpr,
+  convertYieldStmt,
+  UnexpectedResultError,
+} from "./nodes";
 import { IPythonAstVisitor } from "./python-ast-visitor-interface";
 
 export class PythonAstVisitor
