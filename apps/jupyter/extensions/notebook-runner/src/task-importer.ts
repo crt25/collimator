@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { CrtInternalFiles } from "./task-format";
+import { CrtInternalFiles, ExternalCustomFiles } from "./task-format";
 
 export interface CrtInternalTask {
   taskTemplate: Blob;
@@ -63,6 +63,34 @@ export const importCrtInternalTask = async (
     taskTemplate,
     studentTask,
     autograder,
+    data,
+    gradingData,
+    src,
+    gradingSrc,
+  };
+};
+
+export const importExternalCustomTask = async (
+  task: Blob,
+): Promise<ExternalCustomTask> => {
+  const zip = new JSZip();
+  await zip.loadAsync(task);
+
+  const taskFile = await zip.file(ExternalCustomFiles.Task)?.async("blob");
+
+  if (!taskFile) {
+    throw new Error("external custom format is missing");
+  }
+
+  const data = await extractFolder(zip, ExternalCustomFiles.Data);
+  const gradingData = await extractFolder(zip, ExternalCustomFiles.GradingData);
+  const src = await extractFolder(zip, ExternalCustomFiles.Src);
+  const gradingSrc = await extractFolder(zip, ExternalCustomFiles.GradingSrc);
+
+  console.log(data, gradingData, src, gradingSrc);
+
+  return {
+    taskFile,
     data,
     gradingData,
     src,
