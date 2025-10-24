@@ -320,3 +320,10 @@ export const asPatternOperator = "as-pattern";
  *      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const classPatternOperator = "class-pattern";
+
+/**
+ * Matches a double-star pattern operator in pattern matching
+ * case **rest:
+ *      ^^^^^^^
+ */
+export const doubleStarPatternOperator = "double-star-pattern";

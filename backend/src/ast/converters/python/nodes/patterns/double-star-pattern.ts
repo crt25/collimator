@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Double_star_patternContext } from "../../generated/PythonParser";
+import { doubleStarPatternOperator } from "../../operators";
 
 export const convertDoubleStarPattern = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertDoubleStarPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "double-star-pattern",
+      operator: doubleStarPatternOperator,
       operands: [pattern.node],
     } satisfies OperatorNode,
     functionDeclarations: pattern.functionDeclarations,
