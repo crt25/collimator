@@ -355,3 +355,10 @@ export const itemsPatternOperator = "items-pattern";
  *        ^^^^^^^^^^
  */
 export const keyValuePatternOperator = "key-value-pattern";
+
+/**
+ * Matches a keyword pattern operator in pattern matching
+ * case ClassName(attr1=value1, attr2=value2):
+ *                ^^^^^^^^^^^^  ^^^^^^^^^^^^
+ */
+export const keywordPatternOperator = "keyword-pattern";

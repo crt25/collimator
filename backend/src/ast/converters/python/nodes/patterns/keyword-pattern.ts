@@ -7,6 +7,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Keyword_patternContext } from "../../generated/PythonParser";
+import { keywordPatternOperator } from "../../operators";
 
 export const convertKeywordPattern = (
   visitor: IPythonAstVisitor,
@@ -19,7 +20,7 @@ export const convertKeywordPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "keyword-pattern",
+      operator: keywordPatternOperator,
       operands: [
         {
           nodeType: AstNodeType.expression,
