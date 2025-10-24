@@ -202,3 +202,10 @@ export const generatorExpressionOperator = "generator-expression";
  *           ^^^^^^^^^^^^^
  */
 export const notOperator = "not";
+
+/**
+ * Matches a double-star kwarg in function calls
+ *   func(**kwargs)
+ *        ^^^^^^^^
+ */
+export const doubleStarKwArgOperator = "double-star-kwarg";
