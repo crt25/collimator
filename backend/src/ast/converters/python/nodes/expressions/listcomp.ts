@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { ListcompContext } from "../../generated/PythonParser";
+import { listComprehensionOperator } from "../../operators";
 
 export const convertListcomp = (
   visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertListcomp = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "list-comprehension",
+      operator: listComprehensionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [

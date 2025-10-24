@@ -37,6 +37,7 @@ import {
   fStringReplacementFieldOperator,
   greaterThanOperator,
   lessThanOperator,
+  listComprehensionOperator,
 } from "../operators";
 
 describe("Python AST converter", () => {
@@ -929,7 +930,7 @@ filter(lambda num: num % 2 == 0, range(100))
               expression: {
                 nodeType: AstNodeType.expression,
                 expressionType: ExpressionNodeType.operator,
-                operator: "list-comprehension",
+                operator: listComprehensionOperator,
                 operands: [
                   {
                     nodeType: AstNodeType.expression,

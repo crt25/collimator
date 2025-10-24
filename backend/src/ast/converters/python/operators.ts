@@ -216,3 +216,10 @@ export const doubleStarKwArgOperator = "double-star-kwarg";
  *        ^^^^^
  */
 export const starKwArgOperator = "star-kwarg";
+
+/**
+ * Matches a list comprehension expression
+ *  my_list = [x * 2 for x in range(10) if x % 2 == 0]
+ *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const listComprehensionOperator = "list-comprehension";
