@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { DictcompContext } from "../../generated/PythonParser";
+import { dictionaryComprehensionOperator } from "../../operators";
 
 export const convertDictcomp = (
   visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertDictcomp = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "dict-comprehension",
+      operator: dictionaryComprehensionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [

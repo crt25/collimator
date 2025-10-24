@@ -29,6 +29,7 @@ import {
 import { syntheticAstFunctionPrefix } from "../constants";
 import {
   createKeyValuePairOperator,
+  dictionaryComprehensionOperator,
   equalityOperator,
   greaterThanOperator,
   lessThanOperator,
@@ -1152,7 +1153,7 @@ filter(lambda num: num % 2 == 0, range(100))
               expression: {
                 nodeType: AstNodeType.expression,
                 expressionType: ExpressionNodeType.operator,
-                operator: "dict-comprehension",
+                operator: dictionaryComprehensionOperator,
                 operands: [
                   {
                     nodeType: AstNodeType.expression,

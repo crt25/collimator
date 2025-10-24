@@ -136,3 +136,10 @@ export const logicalOrOperator = "or";
  *                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const createDictionaryOperator = "create-dictionary";
+
+/**
+ * Matches a dictionary comprehension expression
+ *      { key: value for (k, v) in getData() if value > 3 }
+ *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const dictionaryComprehensionOperator = "dictionary-comprehension";
