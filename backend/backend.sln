@@ -1,0 +1,55 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ast", "ast", "{06E08F0C-67A7-B48B-DF5C-E2A1D416592F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = ".fake", "src\ast\antlr-grammars\.fake.csproj", "{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "antlr-grammars", "antlr-grammars", "{96160701-6065-EA54-B39A-AF96DBB03DCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_scripts", "_scripts", "{7B0EE905-6D5C-8B99-F7D3-3C2774249973}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{FC6C3EF9-143C-743E-2BF3-FE9DA20F606E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "st.Test", "src\ast\antlr-grammars\_scripts\templates\Antlr4cs\st.Test.csproj", "{F37D0791-0378-63A4-B4FF-DE6D5904D219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Other", "src\ast\antlr-grammars\_scripts\templates\CSharp\Other.csproj", "{32E952D5-93E5-6430-23F8-ED1595CD038A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F37D0791-0378-63A4-B4FF-DE6D5904D219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37D0791-0378-63A4-B4FF-DE6D5904D219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F37D0791-0378-63A4-B4FF-DE6D5904D219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F37D0791-0378-63A4-B4FF-DE6D5904D219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E952D5-93E5-6430-23F8-ED1595CD038A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E952D5-93E5-6430-23F8-ED1595CD038A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E952D5-93E5-6430-23F8-ED1595CD038A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E952D5-93E5-6430-23F8-ED1595CD038A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{06E08F0C-67A7-B48B-DF5C-E2A1D416592F} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{4E970BA6-CD56-F8CD-9AAD-7AE5FF2054D7} = {06E08F0C-67A7-B48B-DF5C-E2A1D416592F}
+		{96160701-6065-EA54-B39A-AF96DBB03DCF} = {06E08F0C-67A7-B48B-DF5C-E2A1D416592F}
+		{7B0EE905-6D5C-8B99-F7D3-3C2774249973} = {96160701-6065-EA54-B39A-AF96DBB03DCF}
+		{FC6C3EF9-143C-743E-2BF3-FE9DA20F606E} = {7B0EE905-6D5C-8B99-F7D3-3C2774249973}
+		{F37D0791-0378-63A4-B4FF-DE6D5904D219} = {FC6C3EF9-143C-743E-2BF3-FE9DA20F606E}
+		{32E952D5-93E5-6430-23F8-ED1595CD038A} = {FC6C3EF9-143C-743E-2BF3-FE9DA20F606E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF566394-C9F9-466C-BB9C-C6AC38B26801}
+	EndGlobalSection
+EndGlobal

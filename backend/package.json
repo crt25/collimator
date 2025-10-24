@@ -33,12 +33,10 @@
     "jupyter:download:types:schema": "curl -o .temp/jupyter/nbformat.json https://raw.githubusercontent.com/jupyter/nbformat/refs/heads/main/nbformat/v4/nbformat.v4.schema.json",
     "jupyter:download:types": "yarn mkdirp .temp/jupyter && yarn jupyter:download:types:schema",
     "jupyter:update-types": "yarn jupyter:download:types && cd .temp/jupyter && json2ts -i nbformat.json -o ../../src/ast/types/input/jupyter/generated/nbformat.ts",
-    "antlr:download:grammers": "yarn mkdirp .temp/antlr && cd .temp/antlr && git clone https://github.com/antlr/grammars-v4.git",
-    "antlr:generate:python:parser": "java -cp ./antlr/antlr-4.13.2-complete.jar org.antlr.v4.Tool -Dlanguage=TypeScript ./.temp/antlr/grammars-v4/python/python3_13/PythonLexer.g4 ./.temp/antlr/grammars-v4/python/python3_13/PythonParser.g4 -o ./src/ast/converters/python/generated -visitor",
-    "antlr:generate:python:copy": "shx cp ./.temp/antlr/grammars-v4/python/python3_13/TypeScript/* ./src/ast/converters/python/generated",
+    "antlr:generate:python:parser": "java -cp ./antlr/antlr-4.13.2-complete.jar org.antlr.v4.Tool -Dlanguage=TypeScript ./src/ast/antlr-grammars/python/python3_13/PythonLexer.g4 ./src/ast/antlr-grammars/python/python3_13/PythonParser.g4 -o ./src/ast/converters/python/generated -visitor",
+    "antlr:generate:python:copy": "shx cp ./src/ast/antlr-grammars/python/python3_13/TypeScript/* ./src/ast/converters/python/generated",
     "antlr:generate:python": "yarn antlr:generate:python:parser && yarn antlr:generate:python:copy",
-    "antlr:cleanup": "shx rm -rf .temp/antlr",
-    "antlr:generate": "yarn antlr:download:grammers && yarn antlr:generate:python && yarn antlr:cleanup",
+    "antlr:generate": "yarn antlr:download:grammers && yarn antlr:generate:python",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-backend ./dist && sentry-cli sourcemaps upload --org hep-vaud --project crt-backend ./dist"
   },
   "c8": {
