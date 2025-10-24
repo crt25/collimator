@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Starred_expressionContext } from "../../generated/PythonParser";
+import { unpackOperator } from "../../operators";
 
 export const convertStarredExpression = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertStarredExpression = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "*",
+      operator: unpackOperator,
       operands: [exp.node],
     } satisfies OperatorNode,
     functionDeclarations: exp.functionDeclarations,

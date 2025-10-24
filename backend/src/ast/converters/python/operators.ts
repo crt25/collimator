@@ -205,57 +205,57 @@ export const notOperator = "not";
 
 /**
  * Matches a double-star kwarg in function calls
- *   func(**kwargs)
- *        ^^^^^^^^
+ * def func(**kwargs)
+ *          ^^^^^^^^
  */
 export const doubleStarKwArgOperator = "double-star-kwarg";
 
 /**
  * Matches a star kwarg in function calls
- *   func(*args)
- *        ^^^^^
+ * def func(*args)
+ *          ^^^^^
  */
 export const starKwArgOperator = "star-kwarg";
 
 /**
  * Matches a list comprehension expression
- *  my_list = [x * 2 for x in range(10) if x % 2 == 0]
- *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * my_list = [x * 2 for x in range(10) if x % 2 == 0]
+ *           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const listComprehensionOperator = "list-comprehension";
 
 /**
  * Matches a power expression
- *   result = a ** b
- *            ^^^^^^
+ * result = a ** b
+ *          ^^^^^^
  */
 export const powerOperator = "**";
 
 /**
  * Matches a field access expression
- *   value = obj.field
- *           ^^^^^^^^^
+ * value = obj.field
+ *         ^^^^^^^^^
  */
 export const fieldAccessOperator = ".";
 
 /**
  * Matches a named parameter in function calls
- *   func(param=value)
- *        ^^^^^^^^^^^
+ * func(param=value)
+ *      ^^^^^^^^^^^
  */
 export const namedParameterOperator = "named-parameter";
 
 /**
  * Matches a function invocation expression
- *   result = my_function(arg1, arg2)
- *            ^^^^^^^^^^^^^^^^^^^^^^^
+ * result = my_function(arg1, arg2)
+ *          ^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const functionInvocationOperator = "function-invocation";
 
 /**
  * Matches a slice expression
- *  sublist = my_list[1:5]
- *            ^^^^^^^^^^^^
+ * sublist = my_list[1:5]
+ *           ^^^^^^^^^^^^
  */
 export const sliceOperator = "slice";
 
@@ -268,14 +268,20 @@ export const createSetOperator = "create-set";
 
 /**
  * Matches a set comprehension expression
- *     { x * 2 for x in range(10) if x % 2 == 0 }
- *     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * { x * 2 for x in range(10) if x % 2 == 0 }
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const setComprehensionOperator = "set-comprehension";
 
 /**
  * Matches an additive inverse expression
- *   result = -value
- *            ^^^^^^
+ * result = -value
+ *          ^^^^^^
  */
 export const additiveInverseOperator = "additive-inverse";
+
+/**
+ * Matches a start (unpack) operator
+ * func(*args)
+ */
+export const unpackOperator = "*";
