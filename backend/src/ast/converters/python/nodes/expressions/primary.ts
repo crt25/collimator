@@ -13,7 +13,11 @@ import {
   GenexpContext,
   PrimaryContext,
 } from "../../generated/PythonParser";
-import { fieldAccessOperator, namedParameterOperator } from "../../operators";
+import {
+  fieldAccessOperator,
+  functionInvocationOperator,
+  namedParameterOperator,
+} from "../../operators";
 import { convertArguments } from "./arguments";
 import { PythonFunctionArguments } from "./args";
 
@@ -103,7 +107,7 @@ export const convertPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "invoke",
+        operator: functionInvocationOperator,
         operands: [primary.node, ...fnArguments],
       } satisfies OperatorNode,
       functionDeclarations: primary.functionDeclarations,

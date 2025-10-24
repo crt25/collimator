@@ -15,7 +15,11 @@ import {
 } from "../../generated/PythonParser";
 import { PythonFunctionArguments } from "../expressions/args";
 import { convertArguments } from "../expressions/arguments";
-import { fieldAccessOperator, namedParameterOperator } from "../../operators";
+import {
+  fieldAccessOperator,
+  functionInvocationOperator,
+  namedParameterOperator,
+} from "../../operators";
 
 export const convertTPrimary = (
   visitor: IPythonAstVisitor,
@@ -103,7 +107,7 @@ export const convertTPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "invoke",
+        operator: functionInvocationOperator,
         operands: [primary.node, ...fnArguments],
       } satisfies OperatorNode,
       functionDeclarations: primary.functionDeclarations,

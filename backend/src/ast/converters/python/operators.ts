@@ -244,3 +244,10 @@ export const fieldAccessOperator = ".";
  *        ^^^^^^^^^^^
  */
 export const namedParameterOperator = "named-parameter";
+
+/**
+ * Matches a function invocation expression
+ *   result = my_function(arg1, arg2)
+ *            ^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const functionInvocationOperator = "function-invocation";
