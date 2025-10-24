@@ -306,3 +306,10 @@ export const yieldOperator = "yield";
  *        ^^^^^^^^^^^^^
  */
 export const renameImportOperator = "rename-import";
+
+/**
+ * Matches an "as" pattern operator in pattern matching
+ * case some_value as target:
+ *      ^^^^^^^^^^^^^^^^^^^^
+ */
+export const asPatternOperator = "as-pattern";
