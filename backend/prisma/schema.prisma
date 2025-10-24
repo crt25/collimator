@@ -53,16 +53,19 @@ model KeyPair {
   // and derive a symmetric key using the web crypto API which has its limitations.
   salt Bytes
 
+  deletedAt DateTime?
+
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
   teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   Student     AuthenticatedStudent[]
 }
 
 model EncryptedPrivateKey {
-  id                  Int   @id @default(autoincrement())
+  id                  Int       @id @default(autoincrement())
   publicKeyId         Int // The public key this private key corresponds to
   encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
   salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
+  deletedAt           DateTime?
 
   publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
