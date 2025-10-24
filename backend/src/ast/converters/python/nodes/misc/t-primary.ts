@@ -15,6 +15,7 @@ import {
 } from "../../generated/PythonParser";
 import { PythonFunctionArguments } from "../expressions/args";
 import { convertArguments } from "../expressions/arguments";
+import { fieldAccessOperator } from "../../operators";
 
 export const convertTPrimary = (
   visitor: IPythonAstVisitor,
@@ -33,7 +34,7 @@ export const convertTPrimary = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: ".",
+        operator: fieldAccessOperator,
         operands: [
           primary.node,
           {

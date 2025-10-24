@@ -230,3 +230,10 @@ export const listComprehensionOperator = "list-comprehension";
  *            ^^^^^^
  */
 export const powerOperator = "**";
+
+/**
+ * Matches a field access expression
+ *   value = obj.field
+ *           ^^^^^^^^^
+ */
+export const fieldAccessOperator = ".";

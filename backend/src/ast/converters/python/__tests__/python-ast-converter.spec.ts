@@ -31,6 +31,7 @@ import {
   createKeyValuePairOperator,
   dictionaryComprehensionOperator,
   equalityOperator,
+  fieldAccessOperator,
   fStringConversionOperator,
   fStringFormatSpecOperator,
   fStringOperator,
@@ -1560,7 +1561,7 @@ class Person:
                             {
                               nodeType: AstNodeType.expression,
                               expressionType: ExpressionNodeType.operator,
-                              operator: ".",
+                              operator: fieldAccessOperator,
                               operands: [
                                 {
                                   nodeType: AstNodeType.expression,
