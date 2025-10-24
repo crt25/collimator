@@ -369,3 +369,10 @@ export const keywordPatternOperator = "keyword-pattern";
  *      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const mappingPatternOperator = "mapping-pattern";
+
+/**
+ * Matches an or pattern operator in pattern matching
+ * case pattern1 | pattern2:
+ *      ^^^^^^^^^^^^^^^^^^^
+ */
+export const orPatternOperator = "or-pattern";

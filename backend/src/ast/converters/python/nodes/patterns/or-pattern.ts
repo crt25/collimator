@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Or_patternContext } from "../../generated/PythonParser";
+import { orPatternOperator } from "../../operators";
 
 export const convertOrPattern = (
   visitor: IPythonAstVisitor,
@@ -24,7 +25,7 @@ export const convertOrPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "or-pattern",
+      operator: orPatternOperator,
       operands: patterns.nodes,
     } satisfies OperatorNode,
     functionDeclarations: patterns.functionDeclarations,
