@@ -122,3 +122,10 @@ export const complexNumberOperator = "complex-number";
  *     ^^^^^^^
  */
 export const logicalAndOperator = "and";
+
+/**
+ * Matches a logical OR expression
+ *  if a or b:
+ *     ^^^^^^
+ */
+export const logicalOrOperator = "or";

@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { DisjunctionContext } from "../../generated/PythonParser";
+import { logicalOrOperator } from "../../operators";
 
 export const convertDisjunction = (
   visitor: IPythonAstVisitor,
@@ -28,7 +29,7 @@ export const convertDisjunction = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "or",
+      operator: logicalOrOperator,
       operands: conjunctions.nodes,
     } satisfies OperatorNode,
     functionDeclarations: conjunctions.functionDeclarations,
