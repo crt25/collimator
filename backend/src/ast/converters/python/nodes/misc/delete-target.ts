@@ -16,9 +16,9 @@ export const convertDeleteTarget = (
   visitor: IPythonAstVisitor,
   ctx: Del_targetContext,
 ): PythonVisitorReturnValue => {
-  const delAtom = ctx.del_t_atom() as Del_t_atomContext | undefined;
-  if (delAtom) {
-    return visitor.getExpression(delAtom);
+  const deleteTargetAtom = ctx.del_t_atom() as Del_t_atomContext | undefined;
+  if (deleteTargetAtom) {
+    return visitor.getExpression(deleteTargetAtom);
   }
 
   const primary = visitor.getExpression(ctx.t_primary());
