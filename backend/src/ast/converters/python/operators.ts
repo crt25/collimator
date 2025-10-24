@@ -415,3 +415,11 @@ export const typeParameterBoundOperator = "type-parameter-bound";
  *                        ^^^^^
  */
 export const typeParameterDefaultOperator = "type-parameter-default";
+
+/**
+ * Matches a type parameter starred default operator
+ * class MyGenericClass[*Ts = *tuple[int, bool]]:
+ *                          ^^^^^^^^^^^^^^^^^^^
+ */
+export const typeParameterStarredDefaultOperator =
+  "type-parameter-starred-default";
