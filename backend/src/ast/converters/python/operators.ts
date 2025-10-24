@@ -209,3 +209,10 @@ export const notOperator = "not";
  *        ^^^^^^^^
  */
 export const doubleStarKwArgOperator = "double-star-kwarg";
+
+/**
+ * Matches a star kwarg in function calls
+ *   func(*args)
+ *        ^^^^^
+ */
+export const starKwArgOperator = "star-kwarg";
