@@ -405,6 +405,13 @@ export const withItemOperator = "with-item";
 /**
  * Matches a type parameter bound operator
  * class MyGenericClass[T : SomeBaseClass]:
- *                         ^^^^^^^^^^^^^^
+ *                        ^^^^^^^^^^^^^^^
  */
 export const typeParameterBoundOperator = "type-parameter-bound";
+
+/**
+ * Matches a type parameter default operator
+ * class MyGenericClass[T = int]:
+ *                        ^^^^^
+ */
+export const typeParameterDefaultOperator = "type-parameter-default";

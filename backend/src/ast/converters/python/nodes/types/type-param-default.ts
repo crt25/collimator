@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Type_param_defaultContext } from "../../generated/PythonParser";
+import { typeParameterDefaultOperator } from "../../operators";
 
 export const convertTypeParamDefault = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertTypeParamDefault = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "=",
+      operator: typeParameterDefaultOperator,
       operands: [expression.node],
     } as OperatorNode,
     functionDeclarations: expression.functionDeclarations,
