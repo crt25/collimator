@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { ExpressionContext } from "../../generated/PythonParser";
+import { ifThenElseOperator } from "../../operators";
 
 export const convertExpression = (
   visitor: IPythonAstVisitor,
@@ -30,7 +31,7 @@ export const convertExpression = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "if-then-else",
+        operator: ifThenElseOperator,
         operands: [condition.node, ifTrue.node, ifFalse.node],
       } satisfies OperatorNode,
       functionDeclarations: [

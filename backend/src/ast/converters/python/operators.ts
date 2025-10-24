@@ -150,3 +150,10 @@ export const dictionaryComprehensionOperator = "dictionary-comprehension";
  *               ^^^^^^^^^^^^^
  */
 export const doubleStarKvPairOperator = "**-kv-pair";
+
+/**
+ * Matches an if-then-else expression
+ *  result = a if condition else b
+ *           ^^^^^^^^^^^^^^^^^^^^^
+ */
+export const ifThenElseOperator = "if-then-else";
