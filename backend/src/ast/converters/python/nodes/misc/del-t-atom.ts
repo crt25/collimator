@@ -1,6 +1,6 @@
 import {
   ExpressionNodeType,
-  OperatorNode,
+  ExpressionSequenceNode,
   VariableNode,
 } from "src/ast/types/general-ast/ast-nodes/expression-node";
 import { AstNodeType } from "src/ast/types/general-ast";
@@ -32,12 +32,7 @@ export const convertDelTAtom = (
     const deleteTarget = visitor.getExpression(delTarget);
 
     return {
-      node: {
-        nodeType: AstNodeType.expression,
-        expressionType: ExpressionNodeType.operator,
-        operator: "()",
-        operands: [deleteTarget.node],
-      } satisfies OperatorNode,
+      node: deleteTarget.node,
       functionDeclarations: deleteTarget.functionDeclarations,
     };
   }
@@ -47,13 +42,14 @@ export const convertDelTAtom = (
     ? visitor.getExpression(ctx.del_targets())
     : null;
 
-  return {
-    node: {
-      nodeType: AstNodeType.expression,
-      expressionType: ExpressionNodeType.operator,
-      operator: ctx.LPAR() ? "()" : "[]",
-      operands: deleteTargets ? [deleteTargets.node] : [],
-    } satisfies OperatorNode,
-    functionDeclarations: deleteTargets?.functionDeclarations ?? [],
-  };
+  return (
+    deleteTargets ?? {
+      node: {
+        nodeType: AstNodeType.expression,
+        expressionType: ExpressionNodeType.sequence,
+        expressions: [],
+      } satisfies ExpressionSequenceNode,
+      functionDeclarations: [],
+    }
+  );
 };
