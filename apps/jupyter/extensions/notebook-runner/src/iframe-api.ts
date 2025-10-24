@@ -2,6 +2,7 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
+
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -13,6 +14,7 @@ import {
   Submission,
   Task,
 } from "./iframe-rpc/src";
+
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
@@ -61,6 +63,11 @@ export class EmbeddedPythonCallbacks {
 
   public static readonly autograderName: string = "autograder.zip";
   public static readonly autograderLocation: string = `/autograder/${EmbeddedPythonCallbacks.autograderName}`;
+
+  public static readonly dataLocation: string = "/data";
+  public static readonly gradingDataLocation: string = "/grading_data";
+  public static readonly srcLocation: string = "/src";
+  public static readonly gradingSrcLocation: string = "/grading_src";
 
   private static readonly taskTemplateInZip: string = "template.ipynb";
   private static readonly studentTaskInZip: string = "student.ipynb";
