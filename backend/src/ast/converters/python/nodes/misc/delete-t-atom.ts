@@ -12,7 +12,7 @@ import {
   Del_targetsContext,
 } from "../../generated/PythonParser";
 
-export const convertDelTAtom = (
+export const convertDeleteTAtom = (
   visitor: IPythonAstVisitor,
   ctx: Del_t_atomContext,
 ): PythonVisitorReturnValue => {

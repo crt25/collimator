@@ -12,7 +12,7 @@ import {
 } from "../../generated/PythonParser";
 import { fieldAccessOperator, sliceOperator } from "../../operators";
 
-export const convertDelTarget = (
+export const convertDeleteTarget = (
   visitor: IPythonAstVisitor,
   ctx: Del_targetContext,
 ): PythonVisitorReturnValue => {

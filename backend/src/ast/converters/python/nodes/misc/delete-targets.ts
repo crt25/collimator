@@ -5,7 +5,7 @@ import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Del_targetsContext } from "../../generated/PythonParser";
 
-export const convertDelTargets = (
+export const convertDeleteTargets = (
   visitor: IPythonAstVisitor,
   ctx: Del_targetsContext,
 ): PythonVisitorReturnValue => {
