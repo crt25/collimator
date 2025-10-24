@@ -165,3 +165,10 @@ export const ifThenElseOperator = "if-then-else";
  * See https://stackoverflow.com/a/44800859.
  */
 export const fStringConversionOperator = "fstring-conversion";
+
+/**
+ * Matches an f-string format specification
+ * value = f"{variable:.2f}"
+ *                    ^^^^
+ */
+export const fStringFormatSpecOperator = "fstring-format-spec";

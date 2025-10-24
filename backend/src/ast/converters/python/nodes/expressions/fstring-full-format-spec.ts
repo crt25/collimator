@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Fstring_full_format_specContext } from "../../generated/PythonParser";
+import { fStringFormatSpecOperator } from "../../operators";
 
 export const convertFstringFullFormatSpec = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertFstringFullFormatSpec = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: ":",
+      operator: fStringFormatSpecOperator,
       operands: specs.nodes,
     } satisfies OperatorNode,
     functionDeclarations: specs.functionDeclarations,
