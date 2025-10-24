@@ -223,3 +223,10 @@ export const starKwArgOperator = "star-kwarg";
  *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const listComprehensionOperator = "list-comprehension";
+
+/**
+ * Matches a power expression
+ *   result = a ** b
+ *            ^^^^^^
+ */
+export const powerOperator = "**";

@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { FactorContext, PowerContext } from "../../generated/PythonParser";
+import { powerOperator } from "../../operators";
 
 export const convertPower = (
   visitor: IPythonAstVisitor,
@@ -24,7 +25,7 @@ export const convertPower = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "**",
+      operator: powerOperator,
       operands: [primary.node, node],
     } satisfies OperatorNode,
     functionDeclarations: [
