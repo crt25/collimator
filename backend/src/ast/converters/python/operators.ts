@@ -385,3 +385,12 @@ export const orPatternOperator = "or-pattern";
  *      ^^^^^^^^^^^^^^^^^^^^^
  */
 export const sequencePatternOperator = "sequence-pattern";
+
+/**
+ * Matches a star pattern operator in pattern matching
+ * case [item1, item2, *rest]:
+ *                     ^^^^^
+ * case (item1, item2, *rest):
+ *                     ^^^^^
+ */
+export const starPatternOperator = "star-pattern";
