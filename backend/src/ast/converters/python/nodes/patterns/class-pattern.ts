@@ -7,6 +7,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Class_patternContext } from "../../generated/PythonParser";
+import { classPatternOperator } from "../../operators";
 
 export const convertClassPattern = (
   visitor: IPythonAstVisitor,
@@ -39,7 +40,7 @@ export const convertClassPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "class-pattern",
+      operator: classPatternOperator,
       operands,
     } satisfies OperatorNode,
     functionDeclarations,

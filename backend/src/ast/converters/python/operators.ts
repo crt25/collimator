@@ -313,3 +313,10 @@ export const renameImportOperator = "rename-import";
  *      ^^^^^^^^^^^^^^^^^^^^
  */
 export const asPatternOperator = "as-pattern";
+
+/**
+ * Matches a class pattern operator in pattern matching
+ * case ClassName(attr1=value1, attr2=value2):
+ *      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const classPatternOperator = "class-pattern";
