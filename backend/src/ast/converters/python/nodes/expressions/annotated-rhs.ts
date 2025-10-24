@@ -5,6 +5,10 @@ import {
   Yield_exprContext,
 } from "../../generated/PythonParser";
 
+/**
+ * 'annotated_rhs' is used in variable annotations (PEP 526) to denote the right-hand side of an annotation.
+ * For example, in the annotation `x: int = 5`, the `5` is the annotated_rhs.
+ */
 export const convertAnnotatedRhs = (
   visitor: IPythonAstVisitor,
   ctx: Annotated_rhsContext,
