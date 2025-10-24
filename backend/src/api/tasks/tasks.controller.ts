@@ -7,6 +7,7 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -114,10 +115,12 @@ export class TasksController {
   @Get()
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
-  async findAll(): Promise<ExistingTaskDto[]> {
+  async findAll(
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+  ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
 
-    const tasks = await this.tasksService.findMany({});
+    const tasks = await this.tasksService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingTaskDto, tasks);
   }
 
@@ -128,8 +131,9 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const task = await this.tasksService.findByIdOrThrow(id);
+    const task = await this.tasksService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingTaskDto.fromQueryResult(task);
   }
 
@@ -139,9 +143,13 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
     const [task, isInUse] = await Promise.all([
-      this.tasksService.findByIdOrThrowWithReferenceSolutions(id),
+      this.tasksService.findByIdOrThrowWithReferenceSolutions(
+        id,
+        includeSoftDelete,
+      ),
       this.tasksService.isTaskInUse(id),
     ]);
 
@@ -166,8 +174,12 @@ export class TasksController {
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
-    const task = await this.tasksService.downloadByIdOrThrow(id);
+    const task = await this.tasksService.downloadByIdOrThrow(
+      id,
+      includeSoftDelete,
+    );
     return new StreamableFile(task.data, {
       type: task.mimeType,
     });
@@ -197,6 +209,7 @@ export class TasksController {
       taskFile?: Express.Multer.File[];
       referenceSolutionsFiles?: Express.Multer.File[];
     },
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
     const isAuthorized = await this.authorizationService.canUpdateTask(
       user,
@@ -230,6 +243,7 @@ export class TasksController {
         taskFile.buffer,
         referenceSolutions,
         referenceSolutionsFiles,
+        includeSoftDelete,
       );
 
       return ExistingTaskDto.fromQueryResult(task);

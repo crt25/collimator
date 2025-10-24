@@ -1,6 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from "@prisma/client";
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator";
 import { Expose, plainToInstance } from "class-transformer";
 import { CreateUserDto } from "./create-user.dto";
 
@@ -45,6 +51,11 @@ export class ExistingUserDto extends CreateUserDto implements User {
   })
   @Expose()
   publicKeyId!: number | null;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   static fromQueryResult(data: User): ExistingUserDto {
     return plainToInstance(ExistingUserDto, data, {

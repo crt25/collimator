@@ -230,16 +230,10 @@ export class TasksService {
           },
         };
 
-    const orphanedSolutionsWhere = includeSoftDelete
-      ? {
-          referenceSolutions: { none: {} },
-          studentSolutions: { none: {} },
-        }
-      : {
-          deletedAt: null,
-          referenceSolutions: { none: {} },
-          studentSolutions: { none: {} },
-        };
+    const orphanedSolutionsWhere = {
+      referenceSolutions: { none: {} },
+      studentSolutions: { none: {} },
+    };
 
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
