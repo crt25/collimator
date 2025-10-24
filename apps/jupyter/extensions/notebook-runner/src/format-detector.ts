@@ -35,3 +35,19 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
     return TaskFormat.Unknown;
   }
 };
+
+export const validateTaskBlob = async (
+  taskBlob: Blob,
+): Promise<string | null> => {
+  if (!taskBlob || taskBlob.size === 0) {
+    return "Task file is empty";
+  }
+
+  try {
+    const zip = new JSZip();
+    await zip.loadAsync(taskBlob);
+    return null;
+  } catch (error) {
+    return `Invalid ZIP file: ${error}`;
+  }
+};
