@@ -285,3 +285,10 @@ export const additiveInverseOperator = "additive-inverse";
  * func(*args)
  */
 export const unpackOperator = "*";
+
+/**
+ * Matches an implicit string concatenation operator
+ * full_string = "Hello, " "world!"
+ *               ^^^^^^^^^^^^^^^^^^
+ */
+export const implicitConcatOperator = "implicit-concat";

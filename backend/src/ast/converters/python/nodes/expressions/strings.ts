@@ -7,6 +7,7 @@ import { ParserRuleContext } from "antlr4";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { StringsContext } from "../../generated/PythonParser";
+import { implicitConcatOperator } from "../../operators";
 
 export const convertStrings = (
   visitor: IPythonAstVisitor,
@@ -27,7 +28,7 @@ export const convertStrings = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "concat",
+      operator: implicitConcatOperator,
       operands: strings,
     } satisfies OperatorNode,
     functionDeclarations,

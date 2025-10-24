@@ -37,6 +37,7 @@ import {
   fStringOperator,
   fStringReplacementFieldOperator,
   greaterThanOperator,
+  implicitConcatOperator,
   lessThanOperator,
   listComprehensionOperator,
   setComprehensionOperator,
@@ -234,7 +235,7 @@ weird_string_syntax = "somehow"f"this""is""allowed"f"in {python} {version=!a:.2f
                 {
                   nodeType: AstNodeType.expression,
                   expressionType: ExpressionNodeType.operator,
-                  operator: "concat",
+                  operator: implicitConcatOperator,
                   operands: [
                     {
                       nodeType: AstNodeType.expression,
