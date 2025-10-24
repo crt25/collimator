@@ -40,6 +40,7 @@ import {
   implicitConcatOperator,
   lessThanOperator,
   listComprehensionOperator,
+  renameImportOperator,
   setComprehensionOperator,
   sliceOperator,
 } from "../operators";
@@ -1293,7 +1294,7 @@ import numpy as np
                 {
                   nodeType: AstNodeType.expression,
                   expressionType: ExpressionNodeType.operator,
-                  operator: "as",
+                  operator: renameImportOperator,
                   operands: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1335,7 +1336,7 @@ import my_module.submodule as m
                 {
                   nodeType: AstNodeType.expression,
                   expressionType: ExpressionNodeType.operator,
-                  operator: "as",
+                  operator: renameImportOperator,
                   operands: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1377,7 +1378,7 @@ from .... import my_module as m
                 {
                   nodeType: AstNodeType.expression,
                   expressionType: ExpressionNodeType.operator,
-                  operator: "as",
+                  operator: renameImportOperator,
                   operands: [
                     {
                       nodeType: AstNodeType.expression,
@@ -1419,7 +1420,7 @@ from ....module.submodule import a as b
                 {
                   nodeType: AstNodeType.expression,
                   expressionType: ExpressionNodeType.operator,
-                  operator: "as",
+                  operator: renameImportOperator,
                   operands: [
                     {
                       nodeType: AstNodeType.expression,

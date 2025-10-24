@@ -12,6 +12,7 @@ import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Import_stmtContext } from "../../generated/PythonParser";
 import { syntheticAstFunctionPrefix } from "../../constants";
+import { renameImportOperator } from "../../operators";
 import { convertImportName } from "./import-name";
 import { convertImportFrom } from "./import-from";
 
@@ -44,7 +45,7 @@ export const convertImportStmt = (
         return {
           nodeType: AstNodeType.expression,
           expressionType: ExpressionNodeType.operator,
-          operator: "as",
+          operator: renameImportOperator,
           operands: [
             path,
             {

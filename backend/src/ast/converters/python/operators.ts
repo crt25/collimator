@@ -299,3 +299,10 @@ export const implicitConcatOperator = "implicit-concat";
  *          ^^^^^^^^^^^
  */
 export const yieldOperator = "yield";
+
+/**
+ * Matches a rename import operator
+ * import module as mod
+ *        ^^^^^^^^^^^^^
+ */
+export const renameImportOperator = "rename-import";
