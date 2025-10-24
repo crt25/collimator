@@ -265,3 +265,10 @@ export const sliceOperator = "slice";
  *          ^^^^^^^^^^^^
  */
 export const createSetOperator = "create-set";
+
+/**
+ * Matches a set comprehension expression
+ *     { x * 2 for x in range(10) if x % 2 == 0 }
+ *     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const setComprehensionOperator = "set-comprehension";

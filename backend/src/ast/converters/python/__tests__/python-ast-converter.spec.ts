@@ -39,6 +39,7 @@ import {
   greaterThanOperator,
   lessThanOperator,
   listComprehensionOperator,
+  setComprehensionOperator,
   sliceOperator,
 } from "../operators";
 
@@ -1008,7 +1009,7 @@ filter(lambda num: num % 2 == 0, range(100))
               expression: {
                 nodeType: AstNodeType.expression,
                 expressionType: ExpressionNodeType.operator,
-                operator: "set-comprehension",
+                operator: setComprehensionOperator,
                 operands: [
                   {
                     nodeType: AstNodeType.expression,

@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { SetcompContext } from "../../generated/PythonParser";
+import { setComprehensionOperator } from "../../operators";
 
 export const convertSetcomp = (
   visitor: IPythonAstVisitor,
@@ -18,7 +19,7 @@ export const convertSetcomp = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "set-comprehension",
+      operator: setComprehensionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [
