@@ -40,6 +40,7 @@ import {
   implicitConcatOperator,
   lessThanOperator,
   listComprehensionOperator,
+  patternGuardOperator,
   renameImportOperator,
   setComprehensionOperator,
   sliceOperator,
@@ -1862,7 +1863,7 @@ match value:
                     {
                       nodeType: AstNodeType.expression,
                       expressionType: ExpressionNodeType.operator,
-                      operator: "guard",
+                      operator: patternGuardOperator,
                       operands: [
                         {
                           nodeType: AstNodeType.expression,

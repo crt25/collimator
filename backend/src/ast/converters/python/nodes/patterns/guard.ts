@@ -6,6 +6,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { GuardContext } from "../../generated/PythonParser";
+import { patternGuardOperator } from "../../operators";
 
 export const convertGuard = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertGuard = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "guard",
+      operator: patternGuardOperator,
       operands: [expression.node],
     } satisfies OperatorNode,
     functionDeclarations: expression.functionDeclarations,

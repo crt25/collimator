@@ -334,3 +334,10 @@ export const doubleStarPatternOperator = "double-star-pattern";
  *      ^^^^^^^^^
  */
 export const groupPatternOperator = "group-pattern";
+
+/**
+ * Matches a pattern guard operator in pattern matching
+ * case pattern if condition:
+ *      ^^^^^^^^^^^^^^^^^^^^^
+ */
+export const patternGuardOperator = "guard";
