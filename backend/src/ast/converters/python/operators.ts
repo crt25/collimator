@@ -394,3 +394,10 @@ export const sequencePatternOperator = "sequence-pattern";
  *                     ^^^^^
  */
 export const starPatternOperator = "star-pattern";
+
+/**
+ * Matches a "with item" operator in context managers
+ * with resource as res_item:
+ *      ^^^^^^^^^^^^^^^^^^^^
+ */
+export const withItemOperator = "with-item";

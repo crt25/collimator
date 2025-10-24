@@ -6,6 +6,7 @@ import { AstNodeType } from "src/ast/types/general-ast";
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { With_itemContext } from "../../generated/PythonParser";
+import { withItemOperator } from "../../operators";
 
 export const convertWithItem = (
   visitor: IPythonAstVisitor,
@@ -22,7 +23,7 @@ export const convertWithItem = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "as",
+      operator: withItemOperator,
       operands: [exp.node, target.node],
     } satisfies OperatorNode,
     functionDeclarations: [
