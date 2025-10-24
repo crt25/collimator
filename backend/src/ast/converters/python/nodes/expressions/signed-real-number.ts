@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Signed_real_numberContext } from "../../generated/PythonParser";
+import { additiveInverseOperator } from "../../operators";
 
 export const convertSignedRealNumber = (
   visitor: IPythonAstVisitor,
@@ -21,7 +22,7 @@ export const convertSignedRealNumber = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "-",
+      operator: additiveInverseOperator,
       operands: [number.node],
     } satisfies OperatorNode,
     functionDeclarations: number.functionDeclarations,

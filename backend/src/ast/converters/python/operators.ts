@@ -272,3 +272,10 @@ export const createSetOperator = "create-set";
  *     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const setComprehensionOperator = "set-comprehension";
+
+/**
+ * Matches an additive inverse expression
+ *   result = -value
+ *            ^^^^^^
+ */
+export const additiveInverseOperator = "additive-inverse";
