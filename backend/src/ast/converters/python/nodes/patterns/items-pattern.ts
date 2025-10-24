@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Items_patternContext } from "../../generated/PythonParser";
+import { itemsPatternOperator } from "../../operators";
 
 export const convertItemsPattern = (
   visitor: IPythonAstVisitor,
@@ -17,7 +18,7 @@ export const convertItemsPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "items-pattern",
+      operator: itemsPatternOperator,
       operands: patterns.nodes,
     } satisfies OperatorNode,
     functionDeclarations: patterns.functionDeclarations,

@@ -341,3 +341,10 @@ export const groupPatternOperator = "group-pattern";
  *      ^^^^^^^^^^^^^^^^^^^^^
  */
 export const patternGuardOperator = "guard";
+
+/**
+ * Matches an items pattern operator in pattern matching
+ * case { key1: value1, key2: value2, **rest }:
+ *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const itemsPatternOperator = "items-pattern";
