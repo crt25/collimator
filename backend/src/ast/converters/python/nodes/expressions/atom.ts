@@ -22,6 +22,13 @@ import {
   TupleContext,
 } from "../../generated/PythonParser";
 
+/**
+ * 'atom' is a fundamental building block in Python expressions, representing various types of literals,
+ * variables, and data structures.
+ * For example, in the expression `x + 5`, both `x` and `5` are considered atoms.
+ * See https://github.com/antlr/grammars-v4/blob/master/python/python3_13/PythonParser.g4#L642-L652 for the grammar
+ * and https://docs.python.org/3/reference/expressions.html#atoms for an explanation of atoms in Python.
+ */
 export const convertAtom = (
   visitor: IPythonAstVisitor,
   ctx: AtomContext,
