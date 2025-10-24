@@ -14,6 +14,7 @@ import {
   LoadTask,
   LoadSubmission,
   SetLocale,
+  ImportTask,
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
@@ -213,6 +214,14 @@ export class EmbeddedScratchCallbacks {
     }
   }
 
+  async importTask(request: ImportTask["request"]): Promise<undefined> {
+    // Since the importTask has the same implementation as loadTask, we can reuse it instead of creating a new logic.
+    return this.loadTask({
+      ...request,
+      method: "loadTask",
+    });
+  }
+
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
     this.setScratchLocale(request.params.language);
 
@@ -298,6 +307,7 @@ export const useEmbeddedScratch = (
         loadTask: callbacks.loadTask.bind(callbacks),
         loadSubmission: callbacks.loadSubmission.bind(callbacks),
         setLocale: callbacks.setLocale.bind(callbacks),
+        importTask: callbacks.importTask.bind(callbacks),
       };
     }
 
@@ -312,6 +322,7 @@ export const useEmbeddedScratch = (
       loadTask: throwError,
       loadSubmission: throwError,
       setLocale: throwError,
+      importTask: throwError,
     };
   }, [callbacks]);
 
