@@ -28,7 +28,7 @@ describe("Python AST converter", () => {
     it("can convert list comprehensions", () => {
       const ast = convertPythonToGeneralAst(
         `
-      [i*2 for i in range(10)]
+[i*2 for i in range(10)]
         `,
         version,
       );
@@ -105,7 +105,7 @@ describe("Python AST converter", () => {
     it("can convert set comprehensions", () => {
       const ast = convertPythonToGeneralAst(
         `
-      {i*2 for i in range(10)}
+{i*2 for i in range(10)}
         `,
         version,
       );
@@ -182,7 +182,7 @@ describe("Python AST converter", () => {
     it("can convert generator expression", () => {
       const ast = convertPythonToGeneralAst(
         `
-      (i*2 for i in range(10))
+(i*2 for i in range(10))
         `,
         version,
       );
@@ -259,7 +259,7 @@ describe("Python AST converter", () => {
     it("can convert dictionary comprehension", () => {
       const ast = convertPythonToGeneralAst(
         `
-      {k:v for (k,v) in my_func() if k < 3}
+{k:v for (k,v) in my_func() if k < 3}
         `,
         version,
       );
