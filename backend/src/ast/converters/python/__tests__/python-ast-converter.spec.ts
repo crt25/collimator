@@ -32,6 +32,7 @@ import {
   dictionaryComprehensionOperator,
   equalityOperator,
   fieldAccessOperator,
+  forIfClauseOperator,
   fStringConversionOperator,
   fStringFormatSpecOperator,
   fStringOperator,
@@ -964,7 +965,7 @@ filter(lambda num: num % 2 == 0, range(100))
                       {
                         nodeType: AstNodeType.expression,
                         expressionType: ExpressionNodeType.operator,
-                        operator: "for-if-clause",
+                        operator: forIfClauseOperator,
                         operands: [
                           {
                             nodeType: AstNodeType.expression,
@@ -1040,7 +1041,7 @@ filter(lambda num: num % 2 == 0, range(100))
                       {
                         nodeType: AstNodeType.expression,
                         expressionType: ExpressionNodeType.operator,
-                        operator: "for-if-clause",
+                        operator: forIfClauseOperator,
                         operands: [
                           {
                             nodeType: AstNodeType.expression,
@@ -1116,7 +1117,7 @@ filter(lambda num: num % 2 == 0, range(100))
                       {
                         nodeType: AstNodeType.expression,
                         expressionType: ExpressionNodeType.operator,
-                        operator: "for-if-clause",
+                        operator: forIfClauseOperator,
                         operands: [
                           {
                             nodeType: AstNodeType.expression,
@@ -1191,7 +1192,7 @@ filter(lambda num: num % 2 == 0, range(100))
                       {
                         nodeType: AstNodeType.expression,
                         expressionType: ExpressionNodeType.operator,
-                        operator: "for-if-clause",
+                        operator: forIfClauseOperator,
                         operands: [
                           {
                             nodeType: AstNodeType.expression,

@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { For_if_clauseContext } from "../../generated/PythonParser";
+import { asyncForIfClauseOperator, forIfClauseOperator } from "../../operators";
 
 export const convertForIfClause = (
   visitor: IPythonAstVisitor,
@@ -21,7 +22,7 @@ export const convertForIfClause = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: ctx.ASYNC() ? "async-for-if-clause" : "for-if-clause",
+      operator: ctx.ASYNC() ? asyncForIfClauseOperator : forIfClauseOperator,
       operands: [targets.node, value, ...conditions],
     } satisfies OperatorNode,
     functionDeclarations: disjunctions.functionDeclarations,

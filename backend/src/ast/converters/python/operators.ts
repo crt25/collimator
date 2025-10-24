@@ -159,6 +159,20 @@ export const doubleStarKvPairOperator = "**-kv-pair";
 export const ifThenElseOperator = "if-then-else";
 
 /**
+ * Matches a for-if clause in comprehensions
+ * my_list = [x * 2 for x in range(10) if x % 2 == 0]
+ *           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const forIfClauseOperator = "for-if-clause";
+
+/**
+ * Matches an async for-if clause in comprehensions
+ * my_list = [x * 2 async for x in async_range(10) if x % 2 == 0]
+ *           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const asyncForIfClauseOperator = "async-for-if-clause";
+
+/**
  * Matches an f-string
  *  value = f"Hello, {name}!"
  *          ^^^^^^^^^^^^^^^^^
