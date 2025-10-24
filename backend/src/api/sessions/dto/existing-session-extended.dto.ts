@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
-import { IsEnum, IsNotEmpty } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty } from "class-validator";
 import { SessionClassDto } from "./session-class.dto";
 import { SessionLessonDto } from "./session-lesson.dto";
 import { SessionTaskDto } from "./session-task.dto";
@@ -35,6 +35,11 @@ export class ExistingSessionExtendedDto
   @ApiProperty()
   @Expose()
   readonly isAnonymous!: boolean;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @IsEnum(SessionStatus)
   @IsNotEmpty()
