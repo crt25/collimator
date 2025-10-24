@@ -407,6 +407,67 @@ export class EmbeddedPythonCallbacks {
       throw new Error(`Unsupported content format: ${file.format}`);
     }
   }
+
+  private async writeFolderContents(
+    basePath: string,
+    files: Map<string, Blob>,
+  ): Promise<void> {
+    for (const [relativePath, blob] of files.entries()) {
+      const path = `${basePath}/${relativePath}`;
+      const pathParts = relativePath.split("/");
+
+      if (pathParts.length > 1) {
+        let currentPath = basePath;
+
+        for (let i = 0; i < pathParts.length - 1; i++) {
+          currentPath += `/${pathParts[i]}`;
+
+          try {
+            await this.createFolder(currentPath, pathParts[i]);
+          } catch {
+            // folder may already exist, ignore errors
+          }
+        }
+      }
+      await this.putFileContents(path, blob);
+    }
+  }
+
+  private async readFolderContents(
+    basePath: string,
+  ): Promise<Map<string, Blob>> {
+    const files = new Map<string, Blob>();
+
+    try {
+      const folder = await this.app.serviceManager.contents.get(basePath, {
+        content: true,
+      });
+
+      if (folder.type !== "directory") {
+        return files;
+      }
+
+      for (const item of folder.content || []) {
+        const itemPath = `${basePath}/${item.name}`;
+
+        if (item.type === "directory") {
+          const subFiles = await this.readFolderContents(itemPath);
+
+          for (const [subPath, blob] of subFiles.entries()) {
+            files.set(`${item.name}/${subPath}`, blob);
+          }
+        } else {
+          const blob = await this.getFileContents(itemPath);
+
+          files.set(item.name, blob);
+        }
+      }
+    } catch (e) {
+      // folder may not exist, return empty map
+      console.error(`Error reading folder contents: ${e}`);
+    }
+    return files;
+  }
 }
 
 export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
