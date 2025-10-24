@@ -292,3 +292,10 @@ export const unpackOperator = "*";
  *               ^^^^^^^^^^^^^^^^^^
  */
 export const implicitConcatOperator = "implicit-concat";
+
+/**
+ * Matches a yield expression
+ * result = yield value
+ *          ^^^^^^^^^^^
+ */
+export const yieldOperator = "yield";

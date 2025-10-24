@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { Yield_exprContext } from "../../generated/PythonParser";
+import { yieldOperator } from "../../operators";
 
 export const convertYieldExpr = (
   visitor: IPythonAstVisitor,
@@ -19,7 +20,7 @@ export const convertYieldExpr = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "yield",
+      operator: yieldOperator,
       operands: [expression.node],
     } satisfies OperatorNode,
     functionDeclarations: expression.functionDeclarations,
