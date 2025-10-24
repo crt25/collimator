@@ -237,3 +237,10 @@ export const powerOperator = "**";
  *           ^^^^^^^^^
  */
 export const fieldAccessOperator = ".";
+
+/**
+ * Matches a named parameter in function calls
+ *   func(param=value)
+ *        ^^^^^^^^^^^
+ */
+export const namedParameterOperator = "named-parameter";

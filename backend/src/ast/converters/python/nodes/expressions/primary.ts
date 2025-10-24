@@ -13,7 +13,7 @@ import {
   GenexpContext,
   PrimaryContext,
 } from "../../generated/PythonParser";
-import { fieldAccessOperator } from "../../operators";
+import { fieldAccessOperator, namedParameterOperator } from "../../operators";
 import { convertArguments } from "./arguments";
 import { PythonFunctionArguments } from "./args";
 
@@ -73,7 +73,7 @@ export const convertPrimary = (
           ({
             nodeType: AstNodeType.expression,
             expressionType: ExpressionNodeType.operator,
-            operator: "=",
+            operator: namedParameterOperator,
             operands: [
               {
                 nodeType: AstNodeType.expression,
