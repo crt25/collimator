@@ -3,6 +3,7 @@ import { MethodOf, RequestOf, ResponseOf } from "../utils";
 import { GetHeight } from "./get-height";
 import { GetSubmission } from "./get-submission";
 import { GetTask } from "./get-task";
+import { ImportTask } from "./import-task";
 import { LoadSubmission } from "./load-submission";
 import { LoadTask } from "./load-task";
 import { PostSolutionRun } from "./post-solution-run";
@@ -25,6 +26,7 @@ type Methods =
   | LoadTask
   | SetLocale
   | PostSubmission
+  | ImportTask
   | PostSolutionRun;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
