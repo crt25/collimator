@@ -28,11 +28,14 @@ const extractFolder = async (
   const folderPath = prefix.endsWith("/") ? prefix : `${prefix}/`;
 
   for (const [path, file] of Object.entries(zip.files)) {
-    const relativePath = path.substring(folderPath.length);
-    if (relativePath) {
-      const blob = await file.async("blob");
-      files.set(relativePath, blob);
-      console.log(`extracted from ${relativePath} from ${folderPath}`);
+    // Only process files within the specified folder
+    if (path.startsWith(folderPath) && !file.dir) {
+      const relativePath = path.substring(folderPath.length);
+      if (relativePath) {
+        const blob = await file.async("blob");
+        files.set(relativePath, blob);
+        console.log(`extracted from ${relativePath} from ${folderPath}`);
+      }
     }
   }
   return files;
