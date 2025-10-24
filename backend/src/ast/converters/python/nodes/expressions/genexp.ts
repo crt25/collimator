@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { GenexpContext } from "../../generated/PythonParser";
+import { generatorExpressionOperator } from "../../operators";
 
 export const convertGenexp = (
   visitor: IPythonAstVisitor,
@@ -20,7 +21,7 @@ export const convertGenexp = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "generator-expression",
+      operator: generatorExpressionOperator,
       operands: [expression.node, forIfClauses.node],
     } satisfies OperatorNode,
     functionDeclarations: [

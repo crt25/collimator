@@ -188,3 +188,10 @@ export const fStringFormatSpecOperator = "fstring-format-spec";
  *            ^^^^^^^^^
  */
 export const fStringReplacementFieldOperator = "fstring-replacement-field";
+
+/**
+ * Matches a generator expression
+ *  gen_exp = (x * 2 for x in range(10) if x % 2 == 0)
+ *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const generatorExpressionOperator = "generator-expression";
