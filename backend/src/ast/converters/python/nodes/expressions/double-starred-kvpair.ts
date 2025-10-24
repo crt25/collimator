@@ -9,6 +9,7 @@ import {
   Bitwise_orContext,
   Double_starred_kvpairContext,
 } from "../../generated/PythonParser";
+import { doubleStarKvPairOperator } from "../../operators";
 
 export const convertDoubleStarredKvpair = (
   visitor: IPythonAstVisitor,
@@ -22,7 +23,7 @@ export const convertDoubleStarredKvpair = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "**",
+        operator: doubleStarKvPairOperator,
         operands: [node],
       } satisfies OperatorNode,
       functionDeclarations,

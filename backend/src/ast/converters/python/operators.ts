@@ -143,3 +143,10 @@ export const createDictionaryOperator = "create-dictionary";
  *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const dictionaryComprehensionOperator = "dictionary-comprehension";
+
+/**
+ * Matches a double-star key-value pair in dictionary unpacking
+ *    my_dict = { **other_dict }
+ *               ^^^^^^^^^^^^^
+ */
+export const doubleStarKvPairOperator = "**-kv-pair";
