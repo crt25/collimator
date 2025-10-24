@@ -20,7 +20,7 @@ const versionRegex = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?$/;
 
 export const convertPythonToStatement = (
   input: string,
-  versionString = "3.9.1",
+  versionString: string,
 ): StatementWithFunctions => {
   const version = getPythonVersion(versionString);
 
@@ -39,7 +39,7 @@ export const convertPythonToStatement = (
 
 export const convertPythonToGeneralAst = (
   input: string,
-  versionString = "3.9.1",
+  versionString: string,
 ): GeneralAst => {
   const version = getPythonVersion(versionString);
 

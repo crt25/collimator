@@ -16,6 +16,8 @@ import {
 } from "../";
 import { sliceOperator } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("function definitions", () => {
     it("can convert a simple function declaration", () => {
@@ -24,6 +26,7 @@ describe("Python AST converter", () => {
 def my_function(x, y):
     return x + y
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -74,6 +77,7 @@ def my_function(x, y):
 def my_function(x: int, y: float) -> float:
     return x + y
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -124,6 +128,7 @@ def my_function(x: int, y: float) -> float:
 def first[T](seq: Sequence[T]) -> T:
     return seq[0]
         `,
+        version,
       );
 
       expect(ast).toEqual(

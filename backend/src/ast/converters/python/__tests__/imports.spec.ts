@@ -15,6 +15,8 @@ import {
 import { syntheticAstFunctionPrefix } from "../constants";
 import { renameImportOperator } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("imports", () => {
     it("can convert simple imports", () => {
@@ -22,6 +24,7 @@ describe("Python AST converter", () => {
         `
 import numpy
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -51,6 +54,7 @@ import numpy
         `
 import numpy as np
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -93,6 +97,7 @@ import numpy as np
         `
 import my_module.submodule as m
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -135,6 +140,7 @@ import my_module.submodule as m
         `
 from .... import my_module as m
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -177,6 +183,7 @@ from .... import my_module as m
         `
 from ....module.submodule import a as b
         `,
+        version,
       );
 
       expect(ast).toEqual(

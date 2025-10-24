@@ -22,6 +22,8 @@ import {
   implicitConcatOperator,
 } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("declarations and assignments", () => {
     it("can convert variable declarations", () => {
@@ -29,6 +31,7 @@ describe("Python AST converter", () => {
         `
 x: int
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -56,6 +59,7 @@ x: int
         `
 x = 1
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -91,6 +95,7 @@ x = 1
         `
 x, y, z = 1, "hallo", 3.14
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -156,6 +161,7 @@ language = "python"
 version = 3
 weird_string_syntax = "somehow"f"this""is""allowed"f"in {python} {version=!a:.2f}"
         `,
+        version,
       );
 
       expect(ast).toEqual(

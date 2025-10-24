@@ -13,6 +13,8 @@ import {
 } from "../";
 import { syntheticAstFunctionPrefix } from "../constants";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("python specific statements", () => {
     it("can convert assert statements", () => {
@@ -20,6 +22,7 @@ describe("Python AST converter", () => {
         `
 assert True, False
         `,
+        version,
       );
 
       expect(ast).toEqual(

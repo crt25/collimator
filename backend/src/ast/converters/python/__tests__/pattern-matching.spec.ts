@@ -21,14 +21,19 @@ import {
   sequencePatternOperator,
 } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("pattern matching", () => {
     it("can convert a simple match statement", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 match x:
     case 1:
         y = "one"
-      `);
+      `,
+        version,
+      );
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
           [
@@ -95,7 +100,8 @@ match x:
     });
 
     it("can convert a match with multiple cases and guards", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 match value:
     case 0:
         result = "zero"
@@ -103,7 +109,9 @@ match value:
         result = "positive"
     case _:
         result = "other"
-      `);
+      `,
+        version,
+      );
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
           [
@@ -279,7 +287,9 @@ match point:
         result = x
     case x, y:
         result = x + y
-      `);
+      `,
+        version,
+      );
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
           [

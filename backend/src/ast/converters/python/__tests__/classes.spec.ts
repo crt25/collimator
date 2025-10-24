@@ -14,13 +14,18 @@ import {
 } from "../";
 import { fieldAccessOperator } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("class declarations", () => {
     it("can convert a simple class with no members", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 class Empty:
     pass
-      `);
+      `,
+        version,
+      );
 
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
@@ -43,14 +48,17 @@ class Empty:
     });
 
     it("can convert a class with attributes and methods", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 class Person:
     species = "Homo sapiens"
     def __init__(self, name):
         self.name = name
     def greet(self):
         return "Hello"
-      `);
+      `,
+        version,
+      );
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
           [
@@ -157,11 +165,14 @@ class Person:
     });
 
     it("can convert a class with inheritance", () => {
-      const ast = convertPythonToGeneralAst(`
+      const ast = convertPythonToGeneralAst(
+        `
 class Student(Person):
     def study(self):
         pass
-      `);
+      `,
+        version,
+      );
       expect(ast).toEqual(
         createTopLevelPythonStatementOutput(
           [
@@ -202,11 +213,14 @@ class Student(Person):
   });
 
   it("can convert a class with a decorator", () => {
-    const ast = convertPythonToGeneralAst(`
+    const ast = convertPythonToGeneralAst(
+      `
 @my_decorator("argument")
 class MyClass:
     pass
-      `);
+      `,
+      version,
+    );
 
     expect(ast).toEqual(
       createTopLevelPythonStatementOutput(

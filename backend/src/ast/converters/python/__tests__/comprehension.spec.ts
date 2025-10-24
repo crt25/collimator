@@ -21,6 +21,8 @@ import {
   setComprehensionOperator,
 } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("comprehension expressions", () => {
     it("can convert list comprehensions", () => {
@@ -28,6 +30,7 @@ describe("Python AST converter", () => {
         `
       [i*2 for i in range(10)]
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -104,6 +107,7 @@ describe("Python AST converter", () => {
         `
       {i*2 for i in range(10)}
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -180,6 +184,7 @@ describe("Python AST converter", () => {
         `
       (i*2 for i in range(10))
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -256,6 +261,7 @@ describe("Python AST converter", () => {
         `
       {k:v for (k,v) in my_func() if k < 3}
         `,
+        version,
       );
 
       expect(ast).toEqual(

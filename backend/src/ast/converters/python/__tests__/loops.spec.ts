@@ -24,6 +24,8 @@ import {
 import { syntheticAstFunctionPrefix } from "../constants";
 import { greaterThanOperator } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("loops", () => {
     it("can convert while loops", () => {
@@ -42,6 +44,7 @@ while True:
 else:
   print("loop exited")
         `,
+        version,
       );
 
       expect(ast).toEqual(
@@ -246,6 +249,7 @@ for i in range(5):
 else:
     pass
         `,
+        version,
       );
 
       expect(ast).toEqual(

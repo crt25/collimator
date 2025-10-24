@@ -19,6 +19,8 @@ import {
 } from "../";
 import { equalityOperator } from "../operators";
 
+const version = "3.9.1";
+
 describe("Python AST converter", () => {
   describe("lambda expressions", () => {
     it("can convert lambda expressions", () => {
@@ -26,6 +28,7 @@ describe("Python AST converter", () => {
         `
 filter(lambda num: num % 2 == 0, range(100))
         `,
+        version,
       );
 
       expect(ast).toEqual(
