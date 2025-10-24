@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -59,6 +60,8 @@ export class ClassesController {
     @AuthenticatedUser() user: User,
     @Query("teacherId", new ParseIntPipe({ optional: true }))
     teacherId?: number,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete = false,
   ): Promise<ExistingClassWithTeacherDto[]> {
     const isAuthorized =
       await this.authorizationService.canListClassesOfTeacher(user, teacherId);
@@ -69,9 +72,12 @@ export class ClassesController {
 
     // TODO: add pagination support
 
-    const classes = await this.classesService.listClassesWithTeacher({
-      where: teacherId ? { teacherId } : undefined,
-    });
+    const classes = await this.classesService.listClassesWithTeacher(
+      {
+        where: teacherId ? { teacherId } : undefined,
+      },
+      includeSoftDelete,
+    );
 
     return fromQueryResults(ExistingClassWithTeacherDto, classes);
   }
@@ -83,6 +89,7 @@ export class ClassesController {
   async findOne(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete = false,
   ): Promise<ExistingClassExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewClass(user, id);
 
@@ -90,7 +97,10 @@ export class ClassesController {
       throw new ForbiddenException();
     }
 
-    const klass = await this.classesService.findByIdOrThrow(id);
+    const klass = await this.classesService.findByIdOrThrow(
+      id,
+      includeSoftDelete,
+    );
 
     // workaround for bug where class-transformer loses the Uint8Array type
     // see https://github.com/typestack/class-transformer/issues/1815
@@ -109,7 +119,10 @@ export class ClassesController {
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
-    @Body() updateClassDto: UpdateClassDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete = false,
+    @Body()
+    updateClassDto: UpdateClassDto,
   ): Promise<ExistingClassDto> {
     const isAuthorized = await this.authorizationService.canUpdateClass(
       user,
@@ -120,7 +133,11 @@ export class ClassesController {
       throw new ForbiddenException();
     }
 
-    const klass = await this.classesService.update(id, updateClassDto);
+    const klass = await this.classesService.update(
+      id,
+      updateClassDto,
+      includeSoftDelete,
+    );
     return ExistingClassDto.fromQueryResult(klass);
   }
 
