@@ -12,6 +12,7 @@ import {
   Items_patternContext,
   Mapping_patternContext,
 } from "../../generated/PythonParser";
+import { mappingPatternOperator } from "../../operators";
 
 export const convertMappingPattern = (
   visitor: IPythonAstVisitor,
@@ -44,7 +45,7 @@ export const convertMappingPattern = (
     node: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: "mapping-pattern",
+      operator: mappingPatternOperator,
       operands,
     } satisfies OperatorNode,
     functionDeclarations,

@@ -362,3 +362,10 @@ export const keyValuePatternOperator = "key-value-pattern";
  *                ^^^^^^^^^^^^  ^^^^^^^^^^^^
  */
 export const keywordPatternOperator = "keyword-pattern";
+
+/**
+ * Matches a mapping pattern operator in pattern matching
+ * case { key1: value1, key2: value2, **rest }:
+ *      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ */
+export const mappingPatternOperator = "mapping-pattern";
