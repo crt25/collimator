@@ -10,6 +10,7 @@ import {
   writeBinaryToVirtualFilesystem,
   writeJsonToVirtualFilesystem,
 } from "../utils";
+import { copyFolderToKernel } from "./helper";
 
 const binaryResultsPath = "/results.pkl";
 
@@ -131,6 +132,21 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
       console.debug(
         "Running notebook with autograder: ",
         EmbeddedPythonCallbacks.autograderLocation,
+      );
+
+      await copyFolderToKernel(kernel, contentsManager, "/data", "/data");
+      await copyFolderToKernel(kernel, contentsManager, "/src", "/src");
+      await copyFolderToKernel(
+        kernel,
+        contentsManager,
+        "/grading_data",
+        "/grading_data",
+      );
+      await copyFolderToKernel(
+        kernel,
+        contentsManager,
+        "/grading_src",
+        "/grading_src",
       );
 
       const run = kernel.requestExecute({
