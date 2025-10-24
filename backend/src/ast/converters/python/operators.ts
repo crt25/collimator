@@ -195,3 +195,10 @@ export const fStringReplacementFieldOperator = "fstring-replacement-field";
  *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const generatorExpressionOperator = "generator-expression";
+
+/**
+ * Matches an inversion (logical NOT) expression
+ *  result = not condition
+ *           ^^^^^^^^^^^^^
+ */
+export const notOperator = "not";

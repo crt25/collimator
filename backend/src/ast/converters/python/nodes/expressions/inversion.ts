@@ -6,6 +6,7 @@ import {
 import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 import { PythonVisitorReturnValue } from "../../python-ast-visitor-return-value";
 import { InversionContext } from "../../generated/PythonParser";
+import { notOperator } from "../../operators";
 
 export const convertInversion = (
   visitor: IPythonAstVisitor,
@@ -19,7 +20,7 @@ export const convertInversion = (
       node: {
         nodeType: AstNodeType.expression,
         expressionType: ExpressionNodeType.operator,
-        operator: "not",
+        operator: notOperator,
         operands: [arg.node],
       } satisfies OperatorNode,
       functionDeclarations: arg.functionDeclarations,
