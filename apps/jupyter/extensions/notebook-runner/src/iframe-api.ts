@@ -170,6 +170,18 @@ export class EmbeddedPythonCallbacks {
           unpacked.gradingSrc,
         );
 
+        await this.createFolder("/student", "student");
+        await this.putFileContents(
+          EmbeddedPythonCallbacks.studentTaskLocation,
+          unpacked.studentTask,
+        );
+
+        await this.createFolder("/autograder", "autograder");
+        await this.putFileContents(
+          EmbeddedPythonCallbacks.autograderLocation,
+          unpacked.autograder,
+        );
+
         this.documentManager.openOrReveal(
           EmbeddedPythonCallbacks.taskTemplateLocation,
         );
@@ -605,6 +617,17 @@ export class EmbeddedPythonCallbacks {
         importedFiles.gradingData,
       );
 
+      await this.createFolder("/student", "student");
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+        importedFiles.studentTask,
+      );
+
+      await this.createFolder("/autograder", "autograder");
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.autograderLocation,
+        importedFiles.autograder,
+      );
       await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
