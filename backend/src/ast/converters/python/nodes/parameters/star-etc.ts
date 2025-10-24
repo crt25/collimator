@@ -7,7 +7,7 @@ import {
 } from "../../generated/PythonParser";
 import { convertParamNoDefault } from "./param-no-default";
 import { convertParamMaybeDefault } from "./param-maybe-default";
-import { convertKwds } from "./kwds";
+import { convertKeywords } from "./keywords";
 import { Parameter } from "./param";
 import { convertParamNoDefaultStarAnnotation } from "./param-no-default-star-annotation";
 
@@ -15,8 +15,10 @@ export const convertStarEtc = (
   visitor: IPythonAstVisitor,
   ctx: Star_etcContext,
 ): Parameter[] => {
-  const kwds = ctx.kwds() as KwdsContext | undefined;
-  const keywordParameters = kwds ? convertKwds(visitor, kwds) : null;
+  const keywords = ctx.kwds() as KwdsContext | undefined;
+  const keywordParameters = keywords
+    ? convertKeywords(visitor, keywords)
+    : null;
 
   const maybeDefaultParams = ctx
     .param_maybe_default_list()

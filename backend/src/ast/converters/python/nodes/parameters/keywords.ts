@@ -3,7 +3,7 @@ import { KwdsContext } from "../../generated/PythonParser";
 import { Parameter } from "./param";
 import { convertParamNoDefault } from "./param-no-default";
 
-export const convertKwds = (
+export const convertKeywords = (
   visitor: IPythonAstVisitor,
   ctx: KwdsContext,
 ): Parameter => {

@@ -3,7 +3,7 @@ import { Lambda_kwdsContext } from "../../generated/PythonParser";
 import { Parameter } from "./param";
 import { convertLambdaParamNoDefault } from "./lambda-param-no-default";
 
-export const convertLambdaKwds = (
+export const convertLambdaKeywords = (
   visitor: IPythonAstVisitor,
   ctx: Lambda_kwdsContext,
 ): Parameter => {
