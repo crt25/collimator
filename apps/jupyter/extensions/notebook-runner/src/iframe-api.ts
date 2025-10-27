@@ -25,7 +25,7 @@ import {
   importCrtInternalTask,
   importExternalCustomTask,
 } from "./task-importer";
-import { detectTaskFormat, validateTaskBlob } from "./format-detector";
+import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
 
@@ -230,14 +230,6 @@ export class EmbeddedPythonCallbacks {
   async importTask(request: ImportTask["request"]): Promise<undefined> {
     try {
       this.setJupyterLocale(request.params.language);
-
-      console.log("starting import task");
-
-      const validateEror = await validateTaskBlob(request.params.task);
-
-      if (validateEror) {
-        console.debug(`${logModule} Importing task`);
-      }
 
       const fileFormat = await detectTaskFormat(request.params.task);
 
