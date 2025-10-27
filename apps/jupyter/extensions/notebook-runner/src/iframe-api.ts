@@ -137,7 +137,7 @@ export class EmbeddedPythonCallbacks {
       if (this.mode == Mode.edit) {
         await this.putFileContents(
           EmbeddedPythonCallbacks.taskTemplateLocation,
-          unpacked.taskTemplate,
+          unpacked.taskTemplateFile,
         );
 
         await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
@@ -173,13 +173,13 @@ export class EmbeddedPythonCallbacks {
         await this.createFolder("/student", "student");
         await this.putFileContents(
           EmbeddedPythonCallbacks.studentTaskLocation,
-          unpacked.studentTask,
+          unpacked.studentTaskFile,
         );
 
         await this.createFolder("/autograder", "autograder");
         await this.putFileContents(
           EmbeddedPythonCallbacks.autograderLocation,
-          unpacked.autograder,
+          unpacked.autograderFile,
         );
 
         this.documentManager.openOrReveal(
@@ -191,12 +191,12 @@ export class EmbeddedPythonCallbacks {
 
         await this.putFileContents(
           EmbeddedPythonCallbacks.studentTaskLocation,
-          unpacked.studentTask,
+          unpacked.studentTaskFile,
         );
 
         await this.putFileContents(
           EmbeddedPythonCallbacks.autograderLocation,
-          unpacked.autograder,
+          unpacked.autograderFile,
         );
 
         await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
@@ -287,7 +287,7 @@ export class EmbeddedPythonCallbacks {
     try {
       console.debug(`${logModule} Loading project`);
 
-      const { autograder } = await this.unpackTask(request.params.task);
+      const { autograderFile } = await this.unpackTask(request.params.task);
 
       await this.closeAllDocuments();
 
@@ -296,7 +296,7 @@ export class EmbeddedPythonCallbacks {
 
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        autograder,
+        autograderFile,
       );
 
       await this.putFileContents(
@@ -449,9 +449,9 @@ export class EmbeddedPythonCallbacks {
     const importedFiles = await importCrtInternalTask(task);
 
     return {
-      taskTemplate: importedFiles.taskTemplate,
-      studentTask: importedFiles.studentTask,
-      autograder: importedFiles.autograder,
+      taskTemplateFile: importedFiles.taskTemplateFile,
+      studentTaskFile: importedFiles.studentTaskFile,
+      autograderFile: importedFiles.autograderFile,
       data: importedFiles.data,
       src: importedFiles.src,
       gradingData: importedFiles.gradingData,
@@ -599,7 +599,7 @@ export class EmbeddedPythonCallbacks {
     if (this.mode == Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
-        importedFiles.taskTemplate,
+        importedFiles.taskTemplateFile,
       );
 
       await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
@@ -620,13 +620,13 @@ export class EmbeddedPythonCallbacks {
       await this.createFolder("/student", "student");
       await this.putFileContents(
         EmbeddedPythonCallbacks.studentTaskLocation,
-        importedFiles.studentTask,
+        importedFiles.studentTaskFile,
       );
 
       await this.createFolder("/autograder", "autograder");
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        importedFiles.autograder,
+        importedFiles.autograderFile,
       );
       await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
       await this.writeFolderContents(
@@ -652,12 +652,12 @@ export class EmbeddedPythonCallbacks {
 
       await this.putFileContents(
         EmbeddedPythonCallbacks.studentTaskLocation,
-        importedFiles.studentTask,
+        importedFiles.studentTaskFile,
       );
 
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        importedFiles.autograder,
+        importedFiles.autograderFile,
       );
 
       await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");

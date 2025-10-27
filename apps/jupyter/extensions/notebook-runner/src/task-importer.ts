@@ -1,10 +1,19 @@
 import JSZip from "jszip";
-import { CrtInternalFiles, ExternalCustomFiles } from "./task-format";
+import {
+  FileSystemError,
+  InvalidTaskBlobError,
+  MissingRequiredFilesError,
+} from "./errors/task-errors";
+import {
+  CrtInternalFiles,
+  ExternalCustomFiles,
+  TaskFormat,
+} from "./task-format";
 
 export interface CrtInternalTask {
-  taskTemplate: Blob;
-  studentTask: Blob;
-  autograder: Blob;
+  taskTemplateFile: Blob;
+  studentTaskFile: Blob;
+  autograderFile: Blob;
   data: Map<string, Blob>;
   gradingData: Map<string, Blob>;
   src: Map<string, Blob>;
@@ -60,12 +69,10 @@ export const importCrtInternalTask = async (
   const src = await extractFolder(zip, CrtInternalFiles.Src);
   const gradingSrc = await extractFolder(zip, CrtInternalFiles.GradingSrc);
 
-  console.log(data, gradingData, src, gradingSrc);
-
   return {
-    taskTemplate,
-    studentTask,
-    autograder,
+    taskTemplateFile,
+    studentTaskFile,
+    autograderFile,
     data,
     gradingData,
     src,
