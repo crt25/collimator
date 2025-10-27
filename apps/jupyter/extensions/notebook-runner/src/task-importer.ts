@@ -144,7 +144,7 @@ export const importExternalCustomTask = async (
   };
 };
 
-const loadJSZip = async (task: Blob): Promise<JSZip> => {
+export const loadJSZip = async (task: Blob): Promise<JSZip> => {
   let zip: JSZip;
   try {
     zip = new JSZip();
