@@ -161,7 +161,7 @@ export const ifThenElseOperator = "if-then-else";
 /**
  * Matches a for-if clause in comprehensions
  * my_list = [x * 2 for x in range(10) if x % 2 == 0]
- *           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const forIfClauseOperator = "for-if-clause";
 
@@ -297,6 +297,9 @@ export const additiveInverseOperator = "additive-inverse";
 /**
  * Matches a start (unpack) operator
  * func(*args)
+ *      ^^^^^
+ * a, b, *rest = *args
+ *               ^^^^^
  */
 export const unpackOperator = "*";
 
