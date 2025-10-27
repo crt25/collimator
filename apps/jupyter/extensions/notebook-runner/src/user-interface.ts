@@ -7,6 +7,8 @@ import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
 
+export const hiddenFolders = ["grading_src", "grading_data"];
+
 const allowedWidgets: Record<Mode, KnownWidget[]> = {
   [Mode.edit]: [
     KnownWidget.tableOfContents,
@@ -77,7 +79,7 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
     get() {
       return items.filter(
         (item) =>
-          !(item.type === "directory" && item.name.startsWith("grading_")),
+          !(item.type === "directory" && hiddenFolders.includes(item.name)),
       );
     },
     set(v) {
