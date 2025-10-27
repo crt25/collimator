@@ -20,7 +20,7 @@ export const getMessage = (
 
   if (values) {
     // Replace {variable} placeholders in the message with actual values
-    message = message.replaceAll(/\{(\w+)\}/, (_, varName) => {
+    message = message.replaceAll(/\{(\w+)\}/g, (_, varName) => {
       return String(values[varName] ?? `{${varName}}`);
     });
   }
