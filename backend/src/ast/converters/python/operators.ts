@@ -225,11 +225,11 @@ export const notOperator = "not";
 export const doubleStarKwArgsOperator = "double-star-kwargs";
 
 /**
- * Matches a star kwarg in function calls
- * def func(*args)
- *          ^^^^^
+ * Matches variadic, positional arguments in function calls
+ * func(*args)
+ *      ^^^^^
  */
-export const starKwArgOperator = "star-kwarg";
+export const starArgsOperator = "star-args";
 
 /**
  * Matches a list comprehension expression
