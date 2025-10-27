@@ -1,0 +1,6 @@
+{
+  "useEmbeddedPython.cannotLoadProject": "Impossible de charger le projet: {error}",
+  "useEmbeddedPython.cannotSaveProject": "Impossible de sauvegarder le projet: {error}",
+  "useEmbeddedPython.cannotImportTask": "Impossible d'importer la tâche: {error}",
+  "useEmbeddedPython.cannotGetTask": "Impossible d'obtenir la tâche: {error}"
+}

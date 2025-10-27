@@ -1,0 +1,6 @@
+{
+  "useEmbeddedPython.cannotLoadProject": "Could not load the project: {error}",
+  "useEmbeddedPython.cannotSaveProject": "Could not save the project: {error}",
+  "useEmbeddedPython.cannotImportTask": "Could not import the task: {error}",
+  "useEmbeddedPython.cannotGetTask": "Could not get the task: {error}"
+}
