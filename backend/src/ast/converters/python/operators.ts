@@ -219,10 +219,10 @@ export const notOperator = "not";
 
 /**
  * Matches a double-star kwarg in function calls
- * def func(**kwargs)
- *          ^^^^^^^^
+ * func(**kwargs)
+ *      ^^^^^^^^
  */
-export const doubleStarKwArgOperator = "double-star-kwarg";
+export const doubleStarKwArgsOperator = "double-star-kwargs";
 
 /**
  * Matches a star kwarg in function calls
