@@ -8,6 +8,11 @@ import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
 
 export const hiddenFolders = ["grading_src", "grading_data"];
+export type CustomRename = (
+  oldPath: string,
+  newPath: string,
+  allowHiddenFolders?: boolean,
+) => Promise<Contents.IModel>;
 
 const allowedWidgets: Record<Mode, KnownWidget[]> = {
   [Mode.edit]: [
@@ -53,6 +58,7 @@ export const simplifyUserInterface = async (
     // @ts-expect-error The exposed type is not complete
     runningSessions.dispose();
 
+    throwWhenCreatingGradingFolders(fileBrowser);
     hideGradingFolders(fileBrowser);
   }
 
@@ -62,6 +68,26 @@ export const simplifyUserInterface = async (
   await app.commands.execute("statusbar:toggle");
 
   hideDisallowedWidgets(mode, app);
+};
+
+const throwWhenCreatingGradingFolders = (fileBrowser: FileBrowser): void => {
+  const contents = fileBrowser.model.manager;
+
+  const originalRename = contents.rename.bind(contents);
+  contents.rename = (async (
+    oldPath: string,
+    newPath: string,
+    // this allows internal calls to rename to bypass the check
+    allowHiddenFolders = false,
+  ): Promise<Contents.IModel> => {
+    const newName = newPath.split("/").pop() || "";
+
+    if (!allowHiddenFolders && hiddenFolders.includes(newName)) {
+      throw new HiddenFolderError(newName);
+    }
+
+    return originalRename(oldPath, newPath);
+  }) satisfies CustomRename;
 };
 
 /**
@@ -89,3 +115,16 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
 
   fileBrowser.model.refresh();
 };
+
+class HiddenFolderError extends Error {
+  // Ensure that the error object is compatible with the format expected by JupyterLite.
+  // See https://github.com/jupyterlab/jupyterlab/blob/35e1551dbd31104d76834848ce3c620a82921839/packages/docmanager/src/dialogs.ts#L210.
+  public readonly response = {
+    status: 400,
+    statusText: "Bad Request",
+  };
+
+  constructor(folderName: string) {
+    super(`The folder name ${folderName} is not allowed.`);
+  }
+}
