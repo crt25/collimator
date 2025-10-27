@@ -3,6 +3,9 @@ import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
+import toast from "react-hot-toast";
+import { ITranslator } from "@jupyterlab/translation";
+
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -28,6 +31,8 @@ import {
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
+
+import { getMessage, MessageKeys } from "./translator";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -87,6 +92,7 @@ export class EmbeddedPythonCallbacks {
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
+    private readonly translator: ITranslator,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -119,6 +125,13 @@ export class EmbeddedPythonCallbacks {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
+      );
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(
+        getMessage(this.translator, MessageKeys.CannotGetTask, {
+          error: errorMessage,
+        }),
       );
 
       throw e;
@@ -221,6 +234,14 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      toast.error(
+        getMessage(this.translator, MessageKeys.CannotLoadProject, {
+          error: errorMessage,
+        }),
+      );
+
       throw e;
     }
 
@@ -232,10 +253,6 @@ export class EmbeddedPythonCallbacks {
       this.setJupyterLocale(request.params.language);
 
       const fileFormat = await detectTaskFormat(request.params.task);
-
-      if (fileFormat === TaskFormat.Unknown) {
-        throw new Error("Unsupported task format");
-      }
 
       await this.closeAllDocuments();
 
@@ -265,6 +282,15 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      toast.error(
+        getMessage(this.translator, MessageKeys.CannotImportTask, {
+          error: errorMessage,
+        }),
+      );
+      throw e;
     }
     return undefined;
   }
@@ -301,6 +327,14 @@ export class EmbeddedPythonCallbacks {
       );
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      toast.error(
+        getMessage(this.translator, MessageKeys.CannotLoadProject, {
+          error: errorMessage,
+        }),
+      );
 
       throw e;
     }
