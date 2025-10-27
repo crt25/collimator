@@ -133,7 +133,7 @@ export const logicalOrOperator = "or";
 /**
  * Matches a dictionary creation expression with key-value pairs as operands
  *     my_dict = { key: value, another_key: another_value }
- *                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const createDictionaryOperator = "create-dictionary";
 
