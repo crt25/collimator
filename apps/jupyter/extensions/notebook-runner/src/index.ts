@@ -5,6 +5,7 @@ import {
 import { ICommandPalette } from "@jupyterlab/apputils";
 import { ContentsManager, IContentsManager } from "@jupyterlab/services";
 import { IStatusBar } from "@jupyterlab/statusbar";
+import { ITranslator } from "@jupyterlab/translation";
 import { IRunningSessionSidebar } from "@jupyterlab/running";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
@@ -34,6 +35,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     ICommandPalette,
     IPropertyInspectorProvider,
     IFileBrowserFactory,
+    ITranslator,
   ],
   activate: async (
     app: JupyterFrontEnd,
@@ -45,6 +47,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     _commandPalette: ICommandPalette,
     propertyInspectorProvider: IPropertyInspectorProvider,
     factory: IFileBrowserFactory,
+    translator: ITranslator,
   ) => {
     console.debug("JupyterLab extension notebook-runner is activated!");
 
@@ -62,7 +65,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     preInstallPackages(app, contentsManager, notebookTracker);
     setupIframeApi(
-      new EmbeddedPythonCallbacks(mode, app, documentManager, fileBrowser),
+      new EmbeddedPythonCallbacks(
+        mode,
+        app,
+        documentManager,
+        fileBrowser,
+        translator,
+      ),
     );
 
     simplifyUserInterface(
