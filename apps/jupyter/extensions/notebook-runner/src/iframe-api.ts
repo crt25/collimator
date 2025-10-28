@@ -153,73 +153,7 @@ export class EmbeddedPythonCallbacks {
 
       await this.closeAllDocuments();
 
-      if (this.mode == Mode.edit) {
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.taskTemplateLocation,
-          unpacked.taskTemplateFile,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.dataLocation,
-          unpacked.data,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.gradingDataLocation,
-          unpacked.gradingData,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.srcLocation,
-          unpacked.src,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.gradingSrcLocation,
-          unpacked.gradingSrc,
-        );
-
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.studentTaskLocation,
-          unpacked.studentTaskFile,
-        );
-
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.autograderLocation,
-          unpacked.autograderFile,
-        );
-
-        this.documentManager.openOrReveal(
-          EmbeddedPythonCallbacks.taskTemplateLocation,
-        );
-      } else {
-        await this.createFolder("/student", "student");
-        await this.createFolder("/autograder", "autograder");
-
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.studentTaskLocation,
-          unpacked.studentTaskFile,
-        );
-
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.autograderLocation,
-          unpacked.autograderFile,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.dataLocation,
-          unpacked.data,
-        );
-
-        await this.writeFolderContents(
-          EmbeddedPythonCallbacks.srcLocation,
-          unpacked.src,
-        );
-
-        this.documentManager.openOrReveal(
-          EmbeddedPythonCallbacks.studentTaskLocation,
-        );
-      }
+      await this.writeCrtInternalTask(unpacked);
 
       showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
     } catch (e) {
@@ -256,7 +190,7 @@ export class EmbeddedPythonCallbacks {
             request.params.task,
           );
 
-          await this.writeCrtInternalTaskOnEditMode(importedCrtInternalFiles);
+          await this.writeCrtInternalTask(importedCrtInternalFiles);
 
           break;
         }
@@ -266,7 +200,7 @@ export class EmbeddedPythonCallbacks {
             request.params.task,
           );
 
-          await this.writeExternalCustomTaskOnEditMode(importedExternalFiles);
+          await this.writeExternalCustomTask(importedExternalFiles);
 
           break;
         }
@@ -622,7 +556,7 @@ export class EmbeddedPythonCallbacks {
     return files;
   }
 
-  private async writeCrtInternalTaskOnEditMode(
+  private async writeCrtInternalTask(
     importedFiles: CrtInternalTask,
   ): Promise<void> {
     if (this.mode == Mode.edit) {
@@ -696,7 +630,7 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
-  private async writeExternalCustomTaskOnEditMode(
+  private async writeExternalCustomTask(
     importedFiles: ExternalCustomTask,
   ): Promise<void> {
     if (this.mode == Mode.edit) {
