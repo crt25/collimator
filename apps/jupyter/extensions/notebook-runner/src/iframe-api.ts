@@ -178,6 +178,7 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
+
       throw e;
     }
   }
@@ -273,10 +274,7 @@ export class EmbeddedPythonCallbacks {
         );
       }
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskImported),
-      );
-      
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -327,9 +325,7 @@ export class EmbeddedPythonCallbacks {
         }
       }
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskImported),
-      );
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -379,10 +375,7 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskLoaded),
-      );
-      
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskLoaded));
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
