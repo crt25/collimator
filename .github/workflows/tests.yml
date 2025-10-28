@@ -109,10 +109,6 @@ jobs:
         working-directory: ./apps/jupyter
         run: make build
 
-    -   name: Test jupyter app
-        working-directory: ./apps/jupyter
-        run: make test
-
       - name: Build frontend
         working-directory: ./frontend
         run: yarn build
@@ -136,6 +132,10 @@ jobs:
         run: yarn test:e2e:cov
         env:
           CI: true
+
+    -   name: Test jupyter app
+        working-directory: ./apps/jupyter
+        run: make test
 
       - name: Install playwright dependencies
         working-directory: ./frontend
