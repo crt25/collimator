@@ -333,17 +333,18 @@ export class EmbeddedPythonCallbacks {
     };
   }
 
-  private async packTask(
-    taskTemplate: Blob,
-    studentTask: Blob,
-    autograder: Blob,
-  ): Promise<Blob> {
-    const zip = new JSZip();
-    zip.file(EmbeddedPythonCallbacks.taskTemplateInZip, taskTemplate);
-    zip.file(EmbeddedPythonCallbacks.studentTaskInZip, studentTask);
-    zip.file(EmbeddedPythonCallbacks.autograderInZip, autograder);
+  private async unpackTask(task: Blob): Promise<CrtInternalTask> {
+    const importedFiles = await importCrtInternalTask(task);
 
-    return zip.generateAsync({ type: "blob" });
+    return {
+      taskTemplateFile: importedFiles.taskTemplateFile,
+      studentTaskFile: importedFiles.studentTaskFile,
+      autograderFile: importedFiles.autograderFile,
+      data: importedFiles.data,
+      src: importedFiles.src,
+      gradingData: importedFiles.gradingData,
+      gradingSrc: importedFiles.gradingSrc,
+    };
   }
 
   private async unpackTask(task: Blob): Promise<{
