@@ -13,16 +13,49 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
     />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css"
+    />
   </head>
   <body>
     <div id="app"></div>
-    <script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      let svgCounter = 0;
+
+      mermaid.initialize({ startOnLoad: false});
+
       window.$docsify = {
         name: "ClassMosaic",
         repo: "https://github.com/crt25/collimator/",
+        mermaid: true,
         loadSidebar: true,
         maxLevel: 4,
         subMaxLevel: 2,
+        markdown: {
+          renderer: {
+            code(code, lang) {
+              if (lang === "mermaid") {
+                const svgName = `mermaid-svg-${svgCounter++}`;
+                const MERMAID_CONTAINER_ID = `${svgName}-container`;
+                mermaid.render(svgName, code).then(({ svg }) => {
+                  const containerElement = document.querySelector(
+                    `#${MERMAID_CONTAINER_ID}`
+                  );
+                  if (containerElement) {
+                    containerElement.innerHTML = svg;
+                  } else {
+                    console.error(`Error: #${MERMAID_CONTAINER_ID} not found`);
+                  }
+                });
+                return `<div class="mermaid" id="${MERMAID_CONTAINER_ID}"></div>`;
+              }
+              return this.origin.code.apply(this, arguments);
+            },
+          },
+        },
       };
     </script>
     <!-- LaTeX display engine -->
