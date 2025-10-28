@@ -9,7 +9,11 @@ import {
   ReferenceSolution,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { getCurrentAnalyses, deleteStudentSolutions } from "@prisma/client/sql";
+import {
+  getCurrentAnalyses,
+  deleteStudentSolutions,
+  getSoftDeletedCurrentAnalyses,
+} from "@prisma/client/sql";
 
 import { Cron } from "@nestjs/schedule";
 import { SentryCron } from "@sentry/nestjs";
@@ -103,25 +107,39 @@ export class SolutionsService {
     sessionId: number,
     taskId: number,
     id: StudentSolutionId,
+    includeSoftDelete = false,
   ): Promise<StudentSolutionWithoutData> {
     return this.prisma.studentSolution.findUniqueOrThrow({
       include: {
-        tests: true,
+        tests: {
+          where: includeSoftDelete ? {} : { deletedAt: null },
+        },
         solution: {
           omit: omitData,
         },
       },
-      where: { id, sessionId, taskId },
+      where: includeSoftDelete
+        ? { id, sessionId, taskId }
+        : { id, sessionId, taskId, deletedAt: null },
     });
   }
 
   async findCurrentAnalyses(
     sessionId: number,
     taskId: number,
+    includeSoftDelete = false,
   ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
-    const analyses = await this.prisma.$queryRawTyped(
-      getCurrentAnalyses(sessionId, taskId),
-    );
+    let analyses;
+
+    if (includeSoftDelete) {
+      analyses = await this.prisma.$queryRawTyped(
+        getSoftDeletedCurrentAnalyses(sessionId, taskId),
+      );
+    } else {
+      analyses = await this.prisma.$queryRawTyped(
+        getCurrentAnalyses(sessionId, taskId),
+      );
+    }
 
     const filteredAnalyses = analyses.filter(
       (analysis) => analysis.astVersion === latestAstVersion,
@@ -320,29 +338,44 @@ export class SolutionsService {
   downloadByHashOrThrow(
     taskId: number,
     solutionHash: Uint8Array,
+    includeSoftDelete = false,
   ): Promise<SolutionDataOnly> {
     return this.prisma.solution.findUniqueOrThrow({
       select: { data: true, mimeType: true },
-      where: {
-        taskId_hash: {
-          taskId,
-          hash: solutionHash,
-        },
-      },
+      where: includeSoftDelete
+        ? {
+            taskId_hash: {
+              taskId,
+              hash: solutionHash,
+            },
+          }
+        : {
+            taskId_hash: {
+              taskId,
+              hash: solutionHash,
+            },
+            deletedAt: null,
+          },
     });
   }
 
   async updateStudentSolutionIsReference(
     studentSolutionId: number,
     isReference: boolean,
+    includeSoftDelete = false,
   ): Promise<void> {
     await this.prisma.studentSolution.update({
       data: {
         isReference,
       },
-      where: {
-        id: studentSolutionId,
-      },
+      where: includeSoftDelete
+        ? {
+            id: studentSolutionId,
+          }
+        : {
+            id: studentSolutionId,
+            deletedAt: null,
+          },
     });
   }
 
@@ -350,6 +383,7 @@ export class SolutionsService {
     sessionId: number,
     taskId: number,
     studentId: number,
+    includeSoftDelete = false,
   ): Promise<SolutionDataOnly> {
     const latestSubmittedSolution = await this.prisma.studentSolution.findFirst(
       {
@@ -357,7 +391,9 @@ export class SolutionsService {
           solution: { select: { data: true, mimeType: true } },
           createdAt: true,
         },
-        where: { studentId, taskId, sessionId },
+        where: includeSoftDelete
+          ? { studentId, taskId, sessionId }
+          : { studentId, taskId, sessionId, deletedAt: null },
         orderBy: {
           createdAt: "desc",
         },
@@ -393,21 +429,33 @@ export class SolutionsService {
 
   findManyStudentSolutions(
     args?: Prisma.StudentSolutionFindManyArgs,
+    includeSoftDeleted = false,
   ): Promise<StudentSolutionWithoutData[]> {
+    const where = includeSoftDeleted
+      ? args?.where
+      : { ...args?.where, deletedAt: null };
+
     return this.prisma.studentSolution.findMany({
       ...args,
+      where,
       include: {
         solution: {
           omit: omitData,
         },
-        tests: true,
+        tests: {
+          where: includeSoftDeleted ? {} : { deletedAt: null },
+        },
       },
     });
   }
 
-  findMany(args?: Prisma.SolutionFindManyArgs): Promise<SolutionWithoutData[]> {
+  findMany(
+    args?: Prisma.SolutionFindManyArgs,
+    includeSoftDeleted = false,
+  ): Promise<SolutionWithoutData[]> {
     return this.prisma.solution.findMany({
       ...args,
+      where: includeSoftDeleted ? undefined : { deletedAt: null },
       omit: omitData,
     });
   }
@@ -507,6 +555,9 @@ export class SolutionsService {
               lt: maximumNumberOfAnalysisRetries,
             },
           },
+          {
+            deletedAt: null,
+          },
         ],
       },
     });
@@ -547,7 +598,11 @@ export class SolutionsService {
                 failedAnalyses: {
                   lt: maximumNumberOfAnalysisRetries,
                 },
+                deletedAt: null,
               },
+            },
+            {
+              deletedAt: null,
             },
           ],
         },

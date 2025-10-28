@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -79,6 +80,7 @@ export class SessionsController {
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto[]> {
     const isAuthorized = await this.authorizationService.canListSessions(
       user,
@@ -91,9 +93,12 @@ export class SessionsController {
 
     // TODO: add pagination support
 
-    const sessions = await this.sessionsService.findMany({
-      where: { classId },
-    });
+    const sessions = await this.sessionsService.findMany(
+      {
+        where: { classId },
+      },
+      includeSoftDelete,
+    );
     return fromQueryResults(ExistingSessionDto, sessions);
   }
 
@@ -123,6 +128,7 @@ export class SessionsController {
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewSession(
       user,
@@ -137,6 +143,7 @@ export class SessionsController {
     const session = await this.sessionsService.findByIdAndClassOrThrow(
       id,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionExtendedDto.fromQueryResult(session);
   }
@@ -149,6 +156,7 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
@@ -159,7 +167,13 @@ export class SessionsController {
       throw new ForbiddenException();
     }
 
-    return this.changeStatus(user, classId, id, SessionStatus.ONGOING);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.ONGOING,
+      includeSoftDelete,
+    );
   }
 
   @Post(":id/pause")
@@ -170,8 +184,15 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(user, classId, id, SessionStatus.PAUSED);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.PAUSED,
+      includeSoftDelete,
+    );
   }
 
   @Post(":id/finish")
@@ -182,8 +203,15 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(user, classId, id, SessionStatus.FINISHED);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.FINISHED,
+      includeSoftDelete,
+    );
   }
 
   async changeStatus(
@@ -191,6 +219,7 @@ export class SessionsController {
     classId: number,
     id: SessionId,
     status: SessionStatus,
+    includeSoftDelete = false,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       authenticatedUser,
@@ -205,6 +234,7 @@ export class SessionsController {
       id,
       status,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionDto.fromQueryResult(session);
   }
@@ -218,6 +248,7 @@ export class SessionsController {
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
     @Body() updateSessionDto: UpdateSessionDto,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
@@ -234,6 +265,7 @@ export class SessionsController {
       dto,
       taskIds,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionDto.fromQueryResult(session);
   }

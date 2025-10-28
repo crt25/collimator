@@ -14,7 +14,6 @@ import { APP_GUARD } from "@nestjs/core";
 import { RoleGuard } from "src/api/authentication/role.guard";
 import { AuthenticationGateway } from "src/api/authentication/authentication.gateway";
 import { ConfigModule } from "@nestjs/config";
-import { User } from "@prisma/client";
 
 export const getApp = async (): Promise<INestApplication> => {
   const mockPrismaService = {
@@ -76,36 +75,3 @@ export const getApp = async (): Promise<INestApplication> => {
 
   return app;
 };
-
-export const ensureUserExists = async (
-  app: INestApplication,
-  user: User,
-  userToken: string,
-): Promise<void> => {
-  const prisma = app.get(PrismaService);
-
-  await prisma.user.upsert({
-    where: { id: user.id },
-    create: user,
-    update: user,
-  });
-
-  await prisma.authenticationToken.upsert({
-    where: {
-      token: userToken,
-    },
-    create: {
-      token: userToken,
-      userId: user.id,
-      lastUsedAt: new Date(),
-    },
-    update: {
-      userId: user.id,
-      studentId: null,
-      createdAt: new Date(),
-      lastUsedAt: new Date(),
-    },
-  });
-};
-
-export const adminUserToken = "adminUserToken";
