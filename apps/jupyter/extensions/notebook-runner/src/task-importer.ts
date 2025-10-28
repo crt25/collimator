@@ -124,7 +124,7 @@ export const importCrtInternalTask = async (
     gradingData,
     src,
     gradingSrc,
-  };
+  } satisfies CrtInternalTask;
 };
 
 export const importExternalCustomTask = async (
