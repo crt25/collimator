@@ -578,6 +578,7 @@ export class EmbeddedPythonCallbacks {
       const path = `${basePath}/${relativePath}`;
       const pathParts = relativePath.split("/");
 
+      // Create all folders along the path
       if (pathParts.length > 1) {
         let currentPath = basePath;
 
