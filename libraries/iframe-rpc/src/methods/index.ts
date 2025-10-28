@@ -10,6 +10,7 @@ import { PostSolutionRun } from "./post-solution-run";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 import { PostStudentAppActivity } from "./post-student-activity";
+import { ExportTask } from "./export-task";
 
 export type { GetHeight } from "./get-height";
 export type { GetSubmission, Submission, Test } from "./get-submission";
@@ -28,6 +29,7 @@ type Methods =
   | LoadSubmission
   | LoadTask
   | SetLocale
+  | ExportTask
   | PostSubmission
   | ImportTask
   | PostStudentAppActivity
