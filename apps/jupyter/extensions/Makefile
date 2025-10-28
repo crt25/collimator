@@ -13,6 +13,9 @@ link:
 	cd ./notebook-runner && jupyter labextension develop . --overwrite
 	cd ./notebook-runner && jupyter labextension link .
 
+test: 
+	cd ./notebook-runner && yarn test
+
 create-extension:
 ifeq ($(EXTENSION), 'none')
 		@echo Please set the EXTENSION variable to the name of the extension you want to create.
