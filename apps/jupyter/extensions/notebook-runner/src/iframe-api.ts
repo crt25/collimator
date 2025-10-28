@@ -477,51 +477,6 @@ export class EmbeddedPythonCallbacks {
     };
   }
 
-  private async packTask(
-    taskTemplate: Blob,
-    studentTask: Blob,
-    autograder: Blob,
-  ): Promise<Blob> {
-    const zip = new JSZip();
-    zip.file(EmbeddedPythonCallbacks.taskTemplateInZip, taskTemplate);
-    zip.file(EmbeddedPythonCallbacks.studentTaskInZip, studentTask);
-    zip.file(EmbeddedPythonCallbacks.autograderInZip, autograder);
-
-    const data = await this.readFolderContents(
-      EmbeddedPythonCallbacks.dataLocation,
-    );
-
-    const src = await this.readFolderContents(
-      EmbeddedPythonCallbacks.srcLocation,
-    );
-
-    const gradingData = await this.readFolderContents(
-      EmbeddedPythonCallbacks.gradingDataLocation,
-    );
-
-    const gradingSrc = await this.readFolderContents(
-      EmbeddedPythonCallbacks.gradingSrcLocation,
-    );
-
-    for (const [relativePath, blob] of data.entries()) {
-      zip.file(`data/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of src.entries()) {
-      zip.file(`src/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of gradingData.entries()) {
-      zip.file(`grading_data/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of gradingSrc.entries()) {
-      zip.file(`grading_src/${relativePath}`, blob);
-    }
-
-    return zip.generateAsync({ type: "blob" });
-  }
-
   private async unpackTask(task: Blob): Promise<CrtInternalTask> {
     const importedFiles = await importCrtInternalTask(task);
 
