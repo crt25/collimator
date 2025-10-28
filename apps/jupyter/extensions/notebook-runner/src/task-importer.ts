@@ -37,22 +37,34 @@ const extractFolder = async (
   const folderPath = prefix.endsWith("/") ? prefix : `${prefix}/`;
 
   try {
+    // zip.files is an object where keys are file paths and values are JSZip objects
     for (const [path, file] of Object.entries(zip.files)) {
-      // Only process files within the specified folder
-      if (path.startsWith(folderPath) && !file.dir) {
-        const relativePath = path.substring(folderPath.length);
-        if (relativePath) {
-          try {
-            const blob = await file.async("blob");
-            files.set(relativePath, blob);
-          } catch (error) {
-            throw new FileSystemError(
-              "extract",
-              path,
-              error instanceof Error ? error : undefined,
-            );
-          }
-        }
+      if (!path.startsWith(folderPath)) {
+        // Skip files outside the specified folder
+        continue;
+      }
+
+      if (file.dir) {
+        // Skip directories
+        continue;
+      }
+
+      const relativePath = path.substring(folderPath.length);
+
+      if (!relativePath) {
+        // Only process files within the specified folder
+        continue;
+      }
+
+      try {
+        const blob = await file.async("blob");
+        files.set(relativePath, blob);
+      } catch (error) {
+        throw new FileSystemError(
+          "extract",
+          path,
+          error instanceof Error ? error : undefined,
+        );
       }
     }
   } catch (error) {
