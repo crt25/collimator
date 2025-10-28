@@ -25,17 +25,150 @@ We use standard graph theory terminology when referring to the G-AST with the ca
 A **child** $c$ of a node $p$ is a node with a directed edge from parent $p$ to child $c$: $p \to c$.
 
 At the top level, a generalized G-AST consists of a list of *actor* nodes.
-An actor may be a scratch target (the stage, a cat, etc.), a C program or even a service such as an HTTP service.
+An actor may be a Scratch target (the stage, a cat, etc.), a C program or even a service such as an HTTP service.
 
 On the next level, each actor has an arbitrary set of *event listener* children.
 Each of those event listeners consists of a *condition* and an *action* child.
-Such an event listener may represent a scratch hat block, a C program's main function or an endpoint of an API.
+Such an event listener may represent a Scratch hat block, a C program's main function or an endpoint of an API.
 
 The condition of an event listener is described by a string and a list of *expression* children.
 The action of an event listener is described by a *statement* sequence.
 
-Expressions  are different from statements in the aspect of having a value.
+Expressions are different from statements in the aspect of having a value.
 For instance a literal is an expression whereas a control structure such as a condition or a variable assignment/declaration is a statement.
+
+### Structure
+
+The diagram below shows the main interfaces that constitute the General AST.
+
+```mermaid
+classDiagram
+
+    GeneralAst --> ActorNode : contains
+    ActorNode --> EventListenerNode : has
+    ActorNode --> FunctionDeclarationNode: has
+    EventListenerNode --> SequenceNode: has action
+    SequenceNode --> StatementNode: contains
+    SequenceNode --|> StatementNode
+    FunctionDeclarationNode --|> StatementNode
+    FunctionCallNode --|> StatementNode
+    ConditionNode --|> StatementNode
+    ConditionNode --> SequenceNode: has branches
+    ConditionNode --> ExpressionNode: has condition
+    LoopNode --|> StatementNode
+    LoopNode --> SequenceNode: has body
+    LoopNode --> ExpressionNode: has condition
+
+
+    class GeneralAst{
+      +ActorNode[]
+    }
+
+    <<interface>> ActorNode
+    class ActorNode{
+        +nodeType: AstNodeType.actor
+        +componendId: string
+        +eventListeners: EventListenerNode[]
+        +functionDeclarations: FunctionDeclarationNode[]
+    }
+
+    <<interface>> EventListenerNode
+    class EventListenerNode{
+        +nodeType: AstNodeType.eventListener
+        +condition: EventCondition
+        +action: SequenceNode
+    }
+
+    class SequenceNode{
+        +statementType: StatementNodeType.sequence
+        +statements: StatementNode[]
+    }
+
+    <<interface>> StatementNode
+    class StatementNode{
+        +nodeType: AstNodeType.statement
+        +statementType: StatementNodeType
+    }
+
+    class FunctionDeclarationNode{
+        +statementType: StatementNodeType.functionDeclaration
+        +name: string
+        +parameterNames: string[]
+        +body: SequenceNode
+    }
+
+    class FunctionCallNode{
+        +statementType: StatementNodeType.functionCall
+        +name: string
+        +arguments: ExpressionNode[]
+    }
+
+    class ConditionNode{
+        +statementType: StatementNodeType.condition
+        +condition: ExpressionNode
+        +whenTrue: SequenceNode
+        +whenFalse: SequenceNode
+    }
+
+    class LoopNode{
+        +statementType: StatementNodeType.loop
+        +condition: ExpressionNode
+        +body: SequenceNode
+    }
+
+    <<interface>> ExpressionNode
+    class ExpressionNode{
+        +nodeType: AstNodeType.expression
+        +expressionType: ExpressionNodeType
+    }
+```
+
+### Example
+
+If each programming language has its own features and needs a specific converter, we purpose a simple example to illustrate a conversion.
+
+```c#
+func sum(a, 3):
+    return a+3
+```
+This function will be converted to JSON like this:
+
+```json
+{
+    "nodeType": "statement",
+    "statementType": "functionDeclaration",
+    "name": "sum",
+    "parameterNames": ["a", "3"],
+    "body": {
+        "nodeType": "statement",
+        "statementType": "sequence",
+        "statements": [
+            {
+                "nodeType": "statement",
+                "statementType": "return",
+                "value" : {
+                    "nodeType": "expression",
+                    "expressionType": "operator",
+                    "operator": "+",
+                    "operands": [
+                        {
+                            "nodeType": "expression",
+                            "expressionType": "variable",
+                            "name": "a"
+                        },
+                        {
+                            "nodeType": "expression",
+                            "expressionType": "literal",
+                            "type": "number",
+                            "value": "3"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
 
 ## Backend architecture
 
