@@ -8,7 +8,7 @@ import {
   Kwarg_or_double_starredContext,
   NameContext,
 } from "../../generated/PythonParser";
-import { doubleStarKwArgOperator } from "../../operators";
+import { doubleStarKwArgsOperator } from "../../operators";
 import { PythonFunctionArgument } from "./args";
 
 export const convertKwargOrDoubleStarred = (
@@ -30,7 +30,7 @@ export const convertKwargOrDoubleStarred = (
     expression: {
       nodeType: AstNodeType.expression,
       expressionType: ExpressionNodeType.operator,
-      operator: doubleStarKwArgOperator,
+      operator: doubleStarKwArgsOperator,
       operands: [expression.node],
     } satisfies OperatorNode,
   };

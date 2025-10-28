@@ -133,7 +133,7 @@ export const logicalOrOperator = "or";
 /**
  * Matches a dictionary creation expression with key-value pairs as operands
  *     my_dict = { key: value, another_key: another_value }
- *                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const createDictionaryOperator = "create-dictionary";
 
@@ -161,7 +161,7 @@ export const ifThenElseOperator = "if-then-else";
 /**
  * Matches a for-if clause in comprehensions
  * my_list = [x * 2 for x in range(10) if x % 2 == 0]
- *           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
  */
 export const forIfClauseOperator = "for-if-clause";
 
@@ -218,18 +218,18 @@ export const generatorExpressionOperator = "generator-expression";
 export const notOperator = "not";
 
 /**
- * Matches a double-star kwarg in function calls
- * def func(**kwargs)
- *          ^^^^^^^^
+ * Matches variadic, keyword-accessible parameters (**kwargs) in function calls
+ * func(**kwargs)
+ *      ^^^^^^^^
  */
-export const doubleStarKwArgOperator = "double-star-kwarg";
+export const doubleStarKwArgsOperator = "double-star-kwargs";
 
 /**
- * Matches a star kwarg in function calls
- * def func(*args)
- *          ^^^^^
+ * Matches variadic, positional arguments in function calls
+ * func(*args)
+ *      ^^^^^
  */
-export const starKwArgOperator = "star-kwarg";
+export const starArgsOperator = "star-args";
 
 /**
  * Matches a list comprehension expression
@@ -297,6 +297,9 @@ export const additiveInverseOperator = "additive-inverse";
 /**
  * Matches a start (unpack) operator
  * func(*args)
+ *      ^^^^^
+ * a, b, *rest = *args
+ *               ^^^^^
  */
 export const unpackOperator = "*";
 
@@ -393,9 +396,9 @@ export const orPatternOperator = "or-pattern";
 
 /**
  * Matches a sequence pattern operator in pattern matching
- * case [item1, item2, *rest]:
+ * case [item1, item2, *rest]:  <-- the content without the brackets is a 'maybe_sequence_pattern'
  *      ^^^^^^^^^^^^^^^^^^^^^
- * case (item1, item2, *rest):
+ * case (item1, item2, *rest):  <-- the content without the parentheses is an 'open_sequence_pattern'
  *      ^^^^^^^^^^^^^^^^^^^^^
  */
 export const sequencePatternOperator = "sequence-pattern";

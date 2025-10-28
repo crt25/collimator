@@ -5,10 +5,11 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { TrackAppStudentActivityDtoData } from "./trackAppStudentActivityDtoData";
 
 export interface TrackAppStudentActivityDto {
   /** The application-internal type of the activity. */
   type: string;
-  /** The binary app activity data encoded in base64. */
-  data: string;
+  /** The app activity data stored as a JSON object. */
+  data: TrackAppStudentActivityDtoData;
 }

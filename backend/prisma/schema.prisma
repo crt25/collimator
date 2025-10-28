@@ -341,7 +341,7 @@ model StudentActivityApp {
   id Int @id
 
   type String
-  data Bytes
+  data Json
 
   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
 }
