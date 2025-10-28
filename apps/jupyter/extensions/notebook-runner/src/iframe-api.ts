@@ -556,45 +556,43 @@ export class EmbeddedPythonCallbacks {
     return files;
   }
 
-  private async writeCrtInternalTask(
-    importedFiles: CrtInternalTask,
-  ): Promise<void> {
+  private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
     if (this.mode == Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
-        importedFiles.taskTemplateFile,
+        task.taskTemplateFile,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
-        importedFiles.data,
+        task.data,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingDataLocation,
-        importedFiles.gradingData,
+        task.gradingData,
       );
 
       await this.createFolder("/student", "student");
       await this.putFileContents(
         EmbeddedPythonCallbacks.studentTaskLocation,
-        importedFiles.studentTaskFile,
+        task.studentTaskFile,
       );
 
       await this.createFolder("/autograder", "autograder");
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        importedFiles.autograderFile,
+        task.autograderFile,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
-        importedFiles.src,
+        task.src,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
-        importedFiles.gradingSrc,
+        task.gradingSrc,
       );
 
       this.documentManager.openOrReveal(
@@ -606,22 +604,22 @@ export class EmbeddedPythonCallbacks {
 
       await this.putFileContents(
         EmbeddedPythonCallbacks.studentTaskLocation,
-        importedFiles.studentTaskFile,
+        task.studentTaskFile,
       );
 
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        importedFiles.autograderFile,
+        task.autograderFile,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
-        importedFiles.data,
+        task.data,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
-        importedFiles.src,
+        task.src,
       );
 
       this.documentManager.openOrReveal(
@@ -631,32 +629,32 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async writeExternalCustomTask(
-    importedFiles: ExternalCustomTask,
+    task: ExternalCustomTask,
   ): Promise<void> {
     if (this.mode == Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
-        importedFiles.taskFile,
+        task.taskFile,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
-        importedFiles.data,
+        task.data,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingDataLocation,
-        importedFiles.gradingData,
+        task.gradingData,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
-        importedFiles.src,
+        task.src,
       );
 
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
-        importedFiles.gradingSrc,
+        task.gradingSrc,
       );
 
       this.documentManager.openOrReveal(
