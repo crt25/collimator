@@ -4,7 +4,7 @@ import {
   importCrtInternalTask,
   importExternalCustomTask,
   loadJSZip,
-} from "../task-importer";
+} from "../task-converter";
 import {
   InvalidTaskBlobError,
   MissingRequiredFilesError,

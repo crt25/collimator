@@ -78,3 +78,25 @@ export class FileSystemError extends TaskError {
     Object.setPrototypeOf(this, FileSystemError.prototype);
   }
 }
+
+export class ExportError extends TaskError {
+  constructor(
+    public readonly reason: string,
+    message?: string,
+  ) {
+    super(message || `Failed to export task: ${reason}`);
+    this.name = "ExportError";
+    Object.setPrototypeOf(this, ExportError.prototype);
+  }
+}
+
+export class GetTaskError extends TaskError {
+  constructor(
+    public readonly reason: string,
+    message?: string,
+  ) {
+    super(message || `Failed to get task: ${reason}`);
+    this.name = "ExportError";
+    Object.setPrototypeOf(this, ExportError.prototype);
+  }
+}

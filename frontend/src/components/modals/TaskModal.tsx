@@ -105,11 +105,11 @@ const TaskModal = ({
     }
 
     const response = await embeddedApp.current.sendRequest(
-      "getTask",
+      "exportTask",
       undefined,
     );
 
-    downloadBlob(response.result.file, "task.sb3");
+    downloadBlob(response.result.file, response.result.filename);
   }, []);
 
   const loadAppData = useCallback(() => {

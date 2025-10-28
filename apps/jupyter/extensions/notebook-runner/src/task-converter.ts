@@ -157,3 +157,74 @@ export const loadJSZip = async (task: Blob): Promise<JSZip> => {
   }
   return zip;
 };
+
+export const exportCrtInternalTask = async (
+  task: CrtInternalTask,
+): Promise<Blob> => {
+  const zip = new JSZip();
+
+  zip.file(CrtInternalFiles.Template, task.taskTemplateFile);
+  zip.file(CrtInternalFiles.Student, task.studentTaskFile);
+  zip.file(CrtInternalFiles.Autograder, task.autograderFile);
+
+  if (task.data.size > 0) {
+    for (const [path, blob] of task.data) {
+      zip.file(`${CrtInternalFiles.Data}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingData.size > 0) {
+    for (const [path, blob] of task.gradingData) {
+      zip.file(`${CrtInternalFiles.GradingData}/${path}`, blob);
+    }
+  }
+
+  if (task.src.size > 0) {
+    for (const [path, blob] of task.src) {
+      zip.file(`${CrtInternalFiles.Src}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingSrc.size > 0) {
+    for (const [path, blob] of task.gradingSrc) {
+      zip.file(`${CrtInternalFiles.GradingSrc}/${path}`, blob);
+    }
+  }
+
+  return await zip.generateAsync({ type: "blob" });
+};
+
+export const exportExternalCustomTask = async (
+  task: ExternalCustomTask,
+): Promise<Blob> => {
+  const zip = new JSZip();
+
+  zip.file(ExternalCustomFiles.Task, task.taskFile);
+
+  if (task.data.size > 0) {
+    // Add the data folder if it exists
+    for (const [path, blob] of task.data) {
+      zip.file(`${ExternalCustomFiles.Data}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingData.size > 0) {
+    for (const [path, blob] of task.gradingData) {
+      zip.file(`${ExternalCustomFiles.GradingData}/${path}`, blob);
+    }
+  }
+
+  if (task.src.size > 0) {
+    for (const [path, blob] of task.src) {
+      zip.file(`${ExternalCustomFiles.Src}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingSrc.size > 0) {
+    for (const [path, blob] of task.gradingSrc) {
+      zip.file(`${ExternalCustomFiles.GradingSrc}/${path}`, blob);
+    }
+  }
+
+  return await zip.generateAsync({ type: "blob" });
+};

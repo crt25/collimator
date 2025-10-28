@@ -21,6 +21,10 @@ import { AnyAction, Dispatch } from "redux";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
+import {
+  ExportTask,
+  ExportTaskResult,
+} from "../../../../libraries/iframe-rpc/src/methods/export-task";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -38,6 +42,10 @@ const messages = defineMessages({
   timeoutExceeded: {
     id: "useEmbeddedScratch.timeoutExceeded",
     defaultMessage: "We stopped the run, it was taking too long.",
+  },
+  cannotExportProject: {
+    id: "useEmbeddedScratch.cannotExportProject",
+    defaultMessage: "Could not export the project",
   },
 });
 
@@ -222,6 +230,27 @@ export class EmbeddedScratchCallbacks {
     });
   }
 
+  async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
+    try {
+      const task = await this.getTask({
+        jsonrpc: "2.0",
+        method: "getTask",
+        params: undefined,
+        id: request.id,
+      });
+
+      return {
+        file: task.file,
+        filename: "task.sb3",
+      };
+    } catch (e) {
+      console.error(`Failed to export task:`, e);
+      toast.error(this.intl.formatMessage(messages.cannotExportProject));
+
+      throw e;
+    }
+  }
+
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
     this.setScratchLocale(request.params.language);
 
@@ -308,6 +337,7 @@ export const useEmbeddedScratch = (
         loadSubmission: callbacks.loadSubmission.bind(callbacks),
         setLocale: callbacks.setLocale.bind(callbacks),
         importTask: callbacks.importTask.bind(callbacks),
+        exportTask: callbacks.exportTask.bind(callbacks),
       };
     }
 
@@ -323,6 +353,7 @@ export const useEmbeddedScratch = (
       loadSubmission: throwError,
       setLocale: throwError,
       importTask: throwError,
+      exportTask: throwError,
     };
   }, [callbacks]);
 
