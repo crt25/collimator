@@ -396,9 +396,9 @@ export const orPatternOperator = "or-pattern";
 
 /**
  * Matches a sequence pattern operator in pattern matching
- * case [item1, item2, *rest]:
+ * case [item1, item2, *rest]:  <-- the content without the brackets is a 'maybe_sequence_pattern'
  *      ^^^^^^^^^^^^^^^^^^^^^
- * case (item1, item2, *rest):
+ * case (item1, item2, *rest):  <-- the content without the parentheses is an 'open_sequence_pattern'
  *      ^^^^^^^^^^^^^^^^^^^^^
  */
 export const sequencePatternOperator = "sequence-pattern";
