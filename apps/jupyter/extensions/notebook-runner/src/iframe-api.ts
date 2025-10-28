@@ -119,7 +119,10 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      throw e;
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      throw new GetTaskError(errorMessage);
     }
   }
 
@@ -168,7 +171,7 @@ export class EmbeddedPythonCallbacks {
         }),
       );
 
-      throw e;
+      throw new ExportError(errorMessage);
     }
   }
 
