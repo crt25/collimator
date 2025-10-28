@@ -57,8 +57,13 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn install
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+    -   name: Install jupyter app dependencies
+        working-directory: ./apps/jupyter
+        run: make init
+
+    -   name: Install playwright dependencies
+        working-directory: ./apps/scratch
+        run: yarn playwright install --with-deps
 
       - name: Install jupyter app dependencies
         working-directory: ./apps/jupyter
@@ -96,9 +101,17 @@ jobs:
         working-directory: ./backend
         run: yarn prisma migrate deploy
 
-      - name: Build backend
-        working-directory: ./backend
-        run: yarn prisma:generate && yarn build
+    -   name: Build scratch app
+        working-directory: ./apps/scratch
+        run: yarn build
+        
+    -   name: Build jupyter app
+        working-directory: ./apps/jupyter
+        run: make build
+
+    -   name: Test jupyter app
+        working-directory: ./apps/jupyter
+        run: make test
 
       - name: Build frontend
         working-directory: ./frontend
