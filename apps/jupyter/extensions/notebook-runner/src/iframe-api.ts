@@ -3,7 +3,6 @@ import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
-import toast from "react-hot-toast";
 import { ITranslator } from "@jupyterlab/translation";
 
 import {
@@ -33,6 +32,7 @@ import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
 
 import { getMessage, MessageKeys } from "./translator";
+import { showErrorMessage, showSuccessMessage } from "./notifications";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -128,7 +128,7 @@ export class EmbeddedPythonCallbacks {
       );
 
       const errorMessage = e instanceof Error ? e.message : String(e);
-      toast.error(
+      showErrorMessage(
         getMessage(this.translator, MessageKeys.CannotGetTask, {
           error: errorMessage,
         }),
@@ -228,6 +228,11 @@ export class EmbeddedPythonCallbacks {
           EmbeddedPythonCallbacks.studentTaskLocation,
         );
       }
+
+      showSuccessMessage(
+        getMessage(this.translator, MessageKeys.TaskImported),
+      );
+      
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -236,7 +241,7 @@ export class EmbeddedPythonCallbacks {
 
       const errorMessage = e instanceof Error ? e.message : String(e);
 
-      toast.error(
+      showErrorMessage(
         getMessage(this.translator, MessageKeys.CannotLoadProject, {
           error: errorMessage,
         }),
@@ -277,6 +282,10 @@ export class EmbeddedPythonCallbacks {
           break;
         }
       }
+
+      showSuccessMessage(
+        getMessage(this.translator, MessageKeys.TaskImported),
+      );
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -285,7 +294,7 @@ export class EmbeddedPythonCallbacks {
 
       const errorMessage = e instanceof Error ? e.message : String(e);
 
-      toast.error(
+      showErrorMessage(
         getMessage(this.translator, MessageKeys.CannotImportTask, {
           error: errorMessage,
         }),
@@ -325,12 +334,17 @@ export class EmbeddedPythonCallbacks {
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
+
+      showSuccessMessage(
+        getMessage(this.translator, MessageKeys.TaskLoaded),
+      );
+      
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
       const errorMessage = e instanceof Error ? e.message : String(e);
 
-      toast.error(
+      showErrorMessage(
         getMessage(this.translator, MessageKeys.CannotLoadProject, {
           error: errorMessage,
         }),
