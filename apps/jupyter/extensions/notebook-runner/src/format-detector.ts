@@ -19,6 +19,7 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
     );
   }
 
+  // If the CRT file identifier is present, it's a CRT internal format
   if (zip.file(CrtFileIdentifier)) {
     return TaskFormat.CrtInternal;
   }
@@ -28,6 +29,7 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
     zip.file(CrtInternalFiles.Student) &&
     zip.file(CrtInternalFiles.Autograder);
 
+  // If all CRT internal files are present, it's a CRT internal format
   if (hasCrtInternalFiles) {
     return TaskFormat.CrtInternal;
   }
