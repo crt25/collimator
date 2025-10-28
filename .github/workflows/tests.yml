@@ -57,6 +57,10 @@ jobs:
                 working-directory: ./apps/scratch
                 run: yarn install
 
+            -   name: Install jupyter app dependencies
+                working-directory: ./apps/jupyter
+                run: make init
+
             -   name: Install playwright dependencies
                 working-directory: ./apps/scratch
                 run: yarn playwright install --with-deps
@@ -97,6 +101,14 @@ jobs:
             -   name: Build scratch app
                 working-directory: ./apps/scratch
                 run: yarn build
+                
+            -   name: Build jupyter app
+                working-directory: ./apps/jupyter
+                run: make build
+
+            -   name: Test jupyter app
+                working-directory: ./apps/jupyter
+                run: make test
 
             -   name: Test backend
                 working-directory: ./backend
