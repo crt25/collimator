@@ -33,4 +33,8 @@ export const MessageKeys = {
   CannotSaveProject: "useEmbeddedPython.cannotSaveProject",
   CannotImportTask: "useEmbeddedPython.cannotImportTask",
   CannotGetTask: "useEmbeddedPython.cannotGetTask",
+  SubmissionLoaded: "useEmbeddedPython.submissionLoaded",
+  TaskCreated: "useEmbeddedPython.taskCreated",
+  TaskImported: "useEmbeddedPython.taskImported",
+  TaskLoaded: "useEmbeddedPython.taskLoaded",
 } as const;
