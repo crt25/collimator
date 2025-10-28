@@ -146,6 +146,10 @@ export class EmbeddedPythonCallbacks {
 
       const taskBlob = await exportExternalCustomTask(externalTask);
 
+      showSuccessMessage(
+        getMessage(this.translator, MessageKeys.ExportSuccess),
+      );
+
       return {
         file: taskBlob,
         filename: "task.zip",
@@ -154,6 +158,14 @@ export class EmbeddedPythonCallbacks {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
+      );
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      showErrorMessage(
+        getMessage(this.translator, MessageKeys.ExportError, {
+          error: errorMessage,
+        }),
       );
 
       throw e;
