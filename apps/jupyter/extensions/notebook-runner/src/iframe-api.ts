@@ -27,7 +27,7 @@ import {
   ExternalCustomTask,
   importCrtInternalTask,
   importExternalCustomTask,
-} from "./task-importer";
+} from "./task-converter";
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
