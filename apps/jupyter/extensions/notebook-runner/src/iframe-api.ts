@@ -572,6 +572,30 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
+  private async getFolderContents(path: string): Promise<Map<string, Blob>> {
+    const files = new Map<string, Blob>();
+
+    try {
+      const folder = await this.app.serviceManager.contents.get(path, {
+        content: true,
+      });
+
+      if (folder.type === "directory" && folder.content) {
+        for (const file of folder.content) {
+          if (file.type === "file") {
+            const fileContent = await this.getFileContents(
+              `${path}/${file.name}`,
+            );
+            files.set(file.name, fileContent);
+          }
+        }
+      }
+    } catch {
+      console.debug(`${logModule} Folder ${path} not found, skipping`);
+    }
+
+    return files;
+  }
   private async writeFolderContents(
     basePath: string,
     files: Map<string, Blob>,
@@ -595,42 +619,6 @@ export class EmbeddedPythonCallbacks {
       }
       await this.putFileContents(path, blob);
     }
-  }
-
-  private async readFolderContents(
-    basePath: string,
-  ): Promise<Map<string, Blob>> {
-    const files = new Map<string, Blob>();
-
-    try {
-      const folder = await this.app.serviceManager.contents.get(basePath, {
-        content: true,
-      });
-
-      if (folder.type !== "directory") {
-        return files;
-      }
-
-      for (const item of folder.content || []) {
-        const itemPath = `${basePath}/${item.name}`;
-
-        if (item.type === "directory") {
-          const subFiles = await this.readFolderContents(itemPath);
-
-          for (const [subPath, blob] of subFiles.entries()) {
-            files.set(`${item.name}/${subPath}`, blob);
-          }
-        } else {
-          const blob = await this.getFileContents(itemPath);
-
-          files.set(item.name, blob);
-        }
-      }
-    } catch (e) {
-      // folder may not exist, return empty map
-      console.error(`Error reading folder contents: ${e}`);
-    }
-    return files;
   }
 
   private async writeCrtInternalTaskOnEditMode(
