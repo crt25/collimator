@@ -10,22 +10,24 @@ import {
   TaskFormat,
 } from "./task-format";
 
+export type FileMap = Map<string, Blob>;
+
 export interface CrtInternalTask {
   taskTemplateFile: Blob;
   studentTaskFile: Blob;
   autograderFile: Blob;
-  data: Map<string, Blob>;
-  gradingData: Map<string, Blob>;
-  src: Map<string, Blob>;
-  gradingSrc: Map<string, Blob>;
+  data: FileMap;
+  gradingData: FileMap;
+  src: FileMap;
+  gradingSrc: FileMap;
 }
 
 export interface ExternalCustomTask {
   taskFile: Blob;
-  data: Map<string, Blob>;
-  gradingData: Map<string, Blob>;
-  src: Map<string, Blob>;
-  gradingSrc: Map<string, Blob>;
+  data: FileMap;
+  gradingData: FileMap;
+  src: FileMap;
+  gradingSrc: FileMap;
 }
 
 const extractFolder = async (

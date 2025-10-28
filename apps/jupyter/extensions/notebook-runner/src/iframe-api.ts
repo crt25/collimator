@@ -24,6 +24,7 @@ import { Mode } from "./mode";
 import {
   CrtInternalTask,
   ExternalCustomTask,
+  FileMap,
   importCrtInternalTask,
   importExternalCustomTask,
 } from "./task-importer";
@@ -229,10 +230,7 @@ export class EmbeddedPythonCallbacks {
         );
       }
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskImported),
-      );
-      
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -283,9 +281,7 @@ export class EmbeddedPythonCallbacks {
         }
       }
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskImported),
-      );
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -335,10 +331,7 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.TaskLoaded),
-      );
-      
+      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskLoaded));
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -574,7 +567,7 @@ export class EmbeddedPythonCallbacks {
 
   private async writeFolderContents(
     basePath: string,
-    files: Map<string, Blob>,
+    files: FileMap,
   ): Promise<void> {
     for (const [relativePath, blob] of files.entries()) {
       const path = `${basePath}/${relativePath}`;
