@@ -109,7 +109,7 @@ const TaskModal = ({
       undefined,
     );
 
-    downloadBlob(response.result.file, "task.sb3");
+    downloadBlob(response.result.file, response.result.filename);
   }, []);
 
   const loadAppData = useCallback(() => {

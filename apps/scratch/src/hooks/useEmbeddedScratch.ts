@@ -236,7 +236,7 @@ export class EmbeddedScratchCallbacks {
 
       return {
         file: task.file,
-        filename: "project.sb3",
+        filename: "task.sb3",
       };
     } catch (e) {
       console.error(`Failed to export task:`, e);
