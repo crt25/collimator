@@ -155,6 +155,7 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
+
       throw e;
     }
   }
