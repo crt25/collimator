@@ -43,6 +43,10 @@ const messages = defineMessages({
     id: "useEmbeddedScratch.timeoutExceeded",
     defaultMessage: "We stopped the run, it was taking too long.",
   },
+  cannotExportProject: {
+    id: "useEmbeddedScratch.cannotExportProject",
+    defaultMessage: "Could not export the project",
+  },
 });
 
 class VmUnavailableError extends Error {
@@ -241,6 +245,8 @@ export class EmbeddedScratchCallbacks {
       };
     } catch (e) {
       console.error(`Failed to export task:`, e);
+      toast.error(this.intl.formatMessage(messages.cannotExportProject));
+
       throw e;
     }
   }
