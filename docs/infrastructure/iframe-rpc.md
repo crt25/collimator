@@ -61,7 +61,7 @@ Defined in methods/index.ts:
 | `loadSubmission`  | host app        | Loads a submission in the embedded app in the CRT task format |
 | `loadTask`        | host app        | Loads a task in the embedded app in the CRT task format |
 | `postSolutionRun` | embedded app    | Notifies the host app that the student ran the solution |
-| `postSubmission`  |                 | Sends a solution in the CRT submission format to the host app |
+| `postSubmission`  | embedded app    | Sends a solution in the CRT submission format to the host app |
 | `setLocale`       | host app        | Sets the interface language in the embedded app |
 
 Each method is strongly typed for parameters and return values.
