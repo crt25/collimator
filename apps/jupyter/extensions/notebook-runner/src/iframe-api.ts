@@ -619,12 +619,12 @@ export class EmbeddedPythonCallbacks {
           const subFiles = await this.readFolderContents(itemPath);
 
           for (const [subPath, blob] of subFiles.entries()) {
-            files.set(`${item.name}/${subPath}`, blob);
+            files.set(`${item.path}/${subPath}`, blob);
           }
         } else {
           const blob = await this.getFileContents(itemPath);
 
-          files.set(item.name, blob);
+          files.set(item.path, blob);
         }
       }
     } catch (e) {
