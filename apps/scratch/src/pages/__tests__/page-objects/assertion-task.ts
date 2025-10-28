@@ -54,11 +54,12 @@ export class AssertionTaskPage extends ScratchEditorPage {
   static async load(
     pwPage: Page,
   ): Promise<{ page: AssertionTaskPage; task: TestTask }> {
-    await loadTask(pwPage, tasks.assertionTask);
+    const task = tasks.assertionTask;
+    await loadTask(pwPage, task);
 
     const page = new AssertionTaskPage(pwPage);
     await page.resetZoom();
 
-    return { page, task: tasks.assertionTask };
+    return { page, task };
   }
 }
