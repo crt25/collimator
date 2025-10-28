@@ -101,7 +101,7 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         contentsManager,
         documentManager,
         EmbeddedPythonCallbacks.studentTaskLocation,
-        binaryResultsPath,
+        KernelPaths.results,
       );
 
       // read the notebook that has been executed and autograder
@@ -142,7 +142,7 @@ run(
   no_logo=True,
   debug=True,
   log_server=False,
-  precomputed_results="${binaryResultsPath}",
+  precomputed_results="${KernelPaths.results}",
   output_dir="/"
 )
           `,
