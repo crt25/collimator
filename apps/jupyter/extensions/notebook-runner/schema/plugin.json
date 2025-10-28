@@ -1,0 +1,23 @@
+{
+  "jupyter.lab.toolbars": {
+    "Notebook": [
+      {
+        "name": "run-all-cells",
+        "command": "notebook-runner:run-all-cells"
+      },
+      {
+        "name": "run-grading",
+        "command": "notebook-runner:run-grading"
+      },
+      {
+        "name": "run-assign",
+        "command": "notebook-runner:run-assign"
+      }
+    ]
+  },
+  "title": "@jupyterlab-examples/toolbar-button",
+  "description": "@jupyterlab-examples/toolbar-button settings.",
+  "type": "object",
+  "properties": {},
+  "additionalProperties": false
+}

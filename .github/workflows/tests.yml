@@ -3,159 +3,175 @@ name: Tests
 on: [pull_request, workflow_call, merge_group]
 
 jobs:
-    # Label of the runner job
-    tests:
-        # You must use a Linux environment when using service containers or container jobs
-        runs-on: ubuntu-latest
+  # Label of the runner job
+  tests:
+    # You must use a Linux environment when using service containers or container jobs
+    runs-on: ubuntu-latest
 
-        # Service containers to run with `runner-job`
-        services:
-            # Label used to access the service container
-            postgres:
-                # Docker Hub image
-                image: postgres
-                # Provide the password for postgres
-                env:
-                    POSTGRES_PASSWORD: postgres
-                # Set health checks to wait until postgres has started
-                options: >-
-                    --health-cmd pg_isready
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    # Maps TCP port 5433 on the host to Postgres
-                    - 5433:5432
-                    
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
         env:
-            DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5433 on the host to Postgres
+          - 5433:5432
+                
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
 
-        steps:
-            -   name: Enable Corepack
-                run: corepack enable
+    steps:
+      - name: Enable Corepack
+        run: corepack enable
 
-            -   name: Check out repository code
-                uses: actions/checkout@v4
-                with:
-                    submodules: 'true'
-                    lfs: 'true'
-                    fetch-depth: 0
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          lfs: 'true'
+          fetch-depth: 0
 
-            - uses: actions/setup-node@v4
-              with:
-                node-version: 22
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-            -   name: Install backend dependencies
-                working-directory: ./backend
-                run: yarn install
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: yarn install
 
-            -   name: Install frontend dependencies
-                working-directory: ./frontend
-                run: yarn install
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: yarn install
 
-            -   name: Install scratch app dependencies
-                working-directory: ./apps/scratch
-                run: yarn install
+      - name: Install scratch app dependencies
+        working-directory: ./apps/scratch
+        run: yarn install
 
-            -   name: Install playwright dependencies
-                working-directory: ./apps/scratch
-                run: yarn playwright install --with-deps
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
 
-            -   name: Install E2E test dependencies
-                working-directory: ./e2e
-                run: yarn install
+      - name: Install jupyter app dependencies
+        working-directory: ./apps/jupyter
+        run: |
+            make install-deps
+              make build-otter
+              make init-extensions
 
-            -   name: Install playwright dependencies
-                working-directory: ./e2e
-                run: yarn playwright install --with-deps
+      - name: Install playwright dependencies
+        working-directory: ./apps/scratch
+        run: yarn playwright install --with-deps
 
-            -   name: Lint backend
-                working-directory: ./backend
-                run: yarn lint
+      - name: Install E2E test dependencies
+        working-directory: ./e2e
+        run: yarn install
 
-            -   name: Lint frontend
-                working-directory: ./frontend
-                run: yarn lint
+      - name: Install playwright dependencies
+        working-directory: ./e2e
+        run: yarn playwright install --with-deps
 
-            -   name: Lint scratch app
-                working-directory: ./apps/scratch
-                run: yarn lint
+      - name: Lint backend
+        working-directory: ./backend
+        run: yarn lint
 
-                # the database must be fully migrated before running prisma:generate
-            -   name: Prepare test database
-                working-directory: ./backend
-                run: yarn prisma migrate deploy
+      - name: Lint frontend
+        working-directory: ./frontend
+        run: yarn lint
 
-            -   name: Build backend
-                working-directory: ./backend
-                run: yarn prisma:generate && yarn build
+      - name: Lint scratch app
+        working-directory: ./apps/scratch
+        run: yarn lint
 
-            -   name: Build frontend
-                working-directory: ./frontend
-                run: yarn build
+         # the database must be fully migrated before running prisma:generate
+      - name: Prepare test database
+        working-directory: ./backend
+        run: yarn prisma migrate deploy
 
-            -   name: Build scratch app
-                working-directory: ./apps/scratch
-                run: yarn build
+      - name: Build backend
+        working-directory: ./backend
+        run: yarn prisma:generate && yarn build
 
-            -   name: Test backend
-                working-directory: ./backend
-                run: yarn test:cov
+      - name: Build frontend
+        working-directory: ./frontend
+        run: yarn build
 
-            -   name: End-to-end Test backend
-                working-directory: ./backend
-                run: yarn test:e2e:cov
-                env:
-                    CI: true
+      - name: Build scratch app
+        working-directory: ./apps/scratch
+        run: yarn build
 
-            -   name: Install playwright dependencies
-                working-directory: ./frontend
-                run: yarn playwright install --with-deps
+      - name: Build jupyter app
+        working-directory: ./apps/jupyter
+        run: |
+          make build-extensions
+          make build
 
-            -   name: Test frontend
-                working-directory: ./frontend
-                run: yarn test:cov
+      - name: Test backend
+        working-directory: ./backend
+        run: yarn test:cov
 
-            -   name: Start storybook
-                working-directory: ./frontend
-                run: yarn storybook & PID=$!; echo $PID > storybook.pid
+      - name: End-to-end Test backend
+        working-directory: ./backend
+        run: yarn test:e2e:cov
+        env:
+          CI: true
 
-            -   name: Wait for storybook to be accessible
-                working-directory: ./frontend
-                run: yarn storybook:await
+      - name: Install playwright dependencies
+        working-directory: ./frontend
+        run: yarn playwright install --with-deps
 
-            -   name: Run storybook tests
-                working-directory: ./frontend
-                run: yarn test:storybook
+      - name: Test frontend
+        working-directory: ./frontend
+        run: yarn test:cov
 
-            -   name: Stop storybook
-                working-directory: ./frontend
-                run: kill $(cat storybook.pid)
+      - name: Start storybook
+        working-directory: ./frontend
+        run: yarn storybook & PID=$!; echo $PID > storybook.pid
 
-            -   name: Test scratch app
-                working-directory: ./apps/scratch
-                run: yarn test
+      - name: Wait for storybook to be accessible
+        working-directory: ./frontend
+        run: yarn storybook:await
 
-            -   name: Run e2e tests
-                working-directory: ./e2e
-                run: yarn test
-                env:
-                    # use a different database for e2e tests
-                    DATABASE_URL: postgresql://postgres:postgres@localhost:5433/collimator-tests?schema=public
-                    # avoid issues with enums: https://github.com/microsoft/playwright/issues/34263
-                    NODE_OPTIONS: --no-experimental-strip-types
+      - name: Run storybook tests
+        working-directory: ./frontend
+        run: yarn test:storybook
 
-            -   name: SonarCloud Scan
-                uses: SonarSource/sonarqube-scan-action@v5.2.0
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Stop storybook
+        working-directory: ./frontend
+        run: kill $(cat storybook.pid)
 
-            - name: Archive playwright traces
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                name: playwright-traces
-                # https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
-                path: |
-                    **/test-results/*/trace.zip
+      - name: Test scratch app
+        working-directory: ./apps/scratch
+        run: yarn test
+
+      - name: Run e2e tests
+        working-directory: ./e2e
+        run: yarn test
+        env:
+          # use a different database for e2e tests
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/collimator-tests?schema=public
+          # avoid issues with enums: https://github.com/microsoft/playwright/issues/34263
+          NODE_OPTIONS: --no-experimental-strip-types
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.3.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Archive playwright traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          # https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
+          path: |
+              **/test-results/*/trace.zip

@@ -153,6 +153,7 @@ model Session {
 
 enum TaskType {
   SCRATCH
+  JUPYTER
 }
 
 model Task {

@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import { Injectable, OnModuleDestroy } from "@nestjs/common";
-import { Solution, TaskType } from "@prisma/client";
+import { Solution } from "@prisma/client";
 import { Piscina } from "piscina";
 import { TaskWithoutData } from "src/api/tasks/tasks.service";
 import { getPiscinaPath } from "src/utilities/is-test";
@@ -36,22 +36,9 @@ export class AstConversionService implements OnModuleDestroy {
     task: TaskWithoutData,
     solution: Solution,
   ): Promise<GeneralAst> {
-    let ast: Promise<GeneralAst>;
-
-    if (
-      task.type === TaskType.SCRATCH &&
-      solution.mimeType === "application/json"
-    ) {
-      ast = this.conversionWorker.run({
-        solution,
-        taskType: task.type,
-      });
-    } else {
-      throw new Error(
-        `Unsupported (task, solution mime type) tuple '(${task.type}, ${solution.mimeType})'`,
-      );
-    }
-
-    return ast;
+    return this.conversionWorker.run({
+      solution,
+      taskType: task.type,
+    });
   }
 }
