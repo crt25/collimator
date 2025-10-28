@@ -1,8 +1,8 @@
 # AST conversion
 
-How ClassMosaic analyze task results? When a teacher prepares a task in a lesson, students complete the task and submit their results.
+The Abstract Syntax Tree (AST) conversion is a core backend feature responsible for transforming student-submitted solutions from their original format (e.g., Scratch project JSON) into a standardized, language-agnostic General AST. This unified representation allows for consistent analysis, comparison, and processing of solutions, regardless of the source programming environment.
 
-How can the teacher compare the different student results with one another or with her own solution?
+The process is initiated when a solution is submitted. The resulting General AST is a structured tree of nodes representing the program's logic, including actors, event listeners, control flow, and expressions. This AST serves as the input for further analysis modules within ClassMosaic.
 
 ## Overview
 
@@ -36,6 +36,45 @@ The action of an event listener is described by a *statement* sequence.
 
 Expressions  are different from statements in the aspect of having a value.
 For instance a literal is an expression whereas a control structure such as a condition or a variable assignment/declaration is a statement.
+
+## Backend architecture
+
+The backend conversion process is managed by the AstConversionService and executed by a worker pool. This design offloads CPU-intensive parsing from the main event loop. ClassMosaic uses [Piscina.js](https://piscinajs.dev/) as worker pool library for Node.js.
+
+
+### Components
+
+| Component | Description | Source File |
+| --------- | ----------- | ----------- |
+| `AstConversionService` | A NestJS injectable service that orchestrates the conversion. It receives a task and a solution, determines the correct conversion path, and invokes the worker. | backend/src/ast/ast-conversion.service.ts |
+| `Piscina` Worker Pool | A worker thread pool used by `AstConversionService` to run the conversion logic in a separate process. This prevents blocking the main Node.js event loop. | backend/src/ast/ast-conversion.service.ts |
+| `SolutionConversionWorker` | The script executed by the Piscina worker. It receives the solution data, decodes it, and calls the appropriate language-specific converter (e.g., for Scratch). | backend/src/ast/converters/solution-conversion-worker.piscina.ts` |
+| converter | A specific converter function that transforms the task solution into the General AST format. See [G-AST Converters](#g-ast-converters). | |
+
+### Data flow
+
+The following diagram illustrates the sequence of operations for converting a solution to a General AST on the backend. Each programming language app has a specific converter.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant "API Controller"
+    participant "AstConversionService"
+    participant "Piscina Worker Pool"
+    participant "SolutionConversionWorker"
+    participant converter
+
+    Client->>"API Controller": POST /solutions (Submit Solution)
+    "API Controller"->>"AstConversionService": convertSolutionToAst(task, solution)
+    "AstConversionService"->>"Piscina Worker Pool": run({ solution, taskType })
+    "Piscina Worker Pool"->>"SolutionConversionWorker": Execute with solution data
+    "SolutionConversionWorker"->>converter: convert decoded JSON
+    converter->>"SolutionConversionWorker": GeneralAst
+    "SolutionConversionWorker"->>"Piscina Worker Pool": return GeneralAst
+    "Piscina Worker Pool"->>"AstConversionService": Promise<GeneralAst>
+    "AstConversionService"->>"API Controller": GeneralAst
+    "API Controller"->>Client: Response (e.g., analysis results)
+```
 
 ## G-AST Converters
 
