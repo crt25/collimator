@@ -159,43 +159,31 @@ export class EmbeddedPythonCallbacks {
           unpacked.taskTemplateFile,
         );
 
-        await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.dataLocation,
           unpacked.data,
         );
 
-        await this.createFolder(
-          EmbeddedPythonCallbacks.gradingDataLocation,
-          "grading_data",
-        );
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.gradingDataLocation,
           unpacked.gradingData,
         );
 
-        await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.srcLocation,
           unpacked.src,
         );
 
-        await this.createFolder(
-          EmbeddedPythonCallbacks.gradingSrcLocation,
-          "grading_src",
-        );
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.gradingSrcLocation,
           unpacked.gradingSrc,
         );
 
-        await this.createFolder("/student", "student");
         await this.putFileContents(
           EmbeddedPythonCallbacks.studentTaskLocation,
           unpacked.studentTaskFile,
         );
 
-        await this.createFolder("/autograder", "autograder");
         await this.putFileContents(
           EmbeddedPythonCallbacks.autograderLocation,
           unpacked.autograderFile,
@@ -218,13 +206,11 @@ export class EmbeddedPythonCallbacks {
           unpacked.autograderFile,
         );
 
-        await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.dataLocation,
           unpacked.data,
         );
 
-        await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
         await this.writeFolderContents(
           EmbeddedPythonCallbacks.srcLocation,
           unpacked.src,
@@ -645,16 +631,11 @@ export class EmbeddedPythonCallbacks {
         importedFiles.taskTemplateFile,
       );
 
-      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
         importedFiles.data,
       );
 
-      await this.createFolder(
-        EmbeddedPythonCallbacks.gradingDataLocation,
-        "grading_data",
-      );
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingDataLocation,
         importedFiles.gradingData,
@@ -671,16 +652,12 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.autograderLocation,
         importedFiles.autograderFile,
       );
-      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
+
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
         importedFiles.src,
       );
 
-      await this.createFolder(
-        EmbeddedPythonCallbacks.gradingSrcLocation,
-        "grading_src",
-      );
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
         importedFiles.gradingSrc,
@@ -703,13 +680,11 @@ export class EmbeddedPythonCallbacks {
         importedFiles.autograderFile,
       );
 
-      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
         importedFiles.data,
       );
 
-      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
         importedFiles.src,
@@ -730,31 +705,21 @@ export class EmbeddedPythonCallbacks {
         importedFiles.taskFile,
       );
 
-      await this.createFolder(EmbeddedPythonCallbacks.dataLocation, "data");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.dataLocation,
         importedFiles.data,
       );
 
-      await this.createFolder(
-        EmbeddedPythonCallbacks.gradingDataLocation,
-        "grading_data",
-      );
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingDataLocation,
         importedFiles.gradingData,
       );
 
-      await this.createFolder(EmbeddedPythonCallbacks.srcLocation, "src");
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.srcLocation,
         importedFiles.src,
       );
 
-      await this.createFolder(
-        EmbeddedPythonCallbacks.gradingSrcLocation,
-        "grading_src",
-      );
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
         importedFiles.gradingSrc,
