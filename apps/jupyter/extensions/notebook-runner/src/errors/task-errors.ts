@@ -86,3 +86,11 @@ export class FolderAlreadyExistsError extends TaskError {
     Object.setPrototypeOf(this, FolderAlreadyExistsError.prototype);
   }
 }
+
+export class DirectoryNotFoundError extends TaskError {
+  constructor(public readonly path: string) {
+    super(`Directory not found at path: ${path}`);
+    this.name = "DirectoryNotFoundError";
+    Object.setPrototypeOf(this, DirectoryNotFoundError.prototype);
+  }
+}

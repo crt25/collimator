@@ -34,7 +34,11 @@ import { TaskFormat } from "./task-format";
 
 import { getMessage, MessageKeys } from "./translator";
 import { showErrorMessage, showSuccessMessage } from "./notifications";
-import { FolderAlreadyExistsError } from "./errors/task-errors";
+import {
+  DirectoryNotFoundError,
+  FileSystemError,
+  FolderAlreadyExistsError,
+} from "./errors/task-errors";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -605,7 +609,7 @@ export class EmbeddedPythonCallbacks {
       });
 
       if (folder.type !== "directory") {
-        return files;
+        throw new DirectoryNotFoundError(basePath);
       }
 
       for (const item of folder.content || []) {
@@ -624,8 +628,9 @@ export class EmbeddedPythonCallbacks {
         }
       }
     } catch (e) {
-      // folder may not exist, return empty map
-      console.error(`Error reading folder contents: ${e}`);
+      // Throw FileSystemError for any error encountered during reading
+      const error = e instanceof Error ? e : undefined;
+      throw new FileSystemError("read folder", basePath, error);
     }
     return files;
   }
