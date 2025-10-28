@@ -10,9 +10,7 @@ import {
   writeBinaryToVirtualFilesystem,
   writeJsonToVirtualFilesystem,
 } from "../utils";
-import { copyFolderToKernel } from "./helper";
-
-const binaryResultsPath = "/results.pkl";
+import { copyRequiredFoldersToKernel, KernelPaths } from "./helper";
 
 const createOnNewNotebookListener =
   (app: JupyterFrontEnd, state: NotebookRunnerState) =>
@@ -134,20 +132,7 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         EmbeddedPythonCallbacks.autograderLocation,
       );
 
-      await copyFolderToKernel(kernel, contentsManager, "/data", "/data");
-      await copyFolderToKernel(kernel, contentsManager, "/src", "/src");
-      await copyFolderToKernel(
-        kernel,
-        contentsManager,
-        "/grading_data",
-        "/grading_data",
-      );
-      await copyFolderToKernel(
-        kernel,
-        contentsManager,
-        "/grading_src",
-        "/grading_src",
-      );
+      await copyRequiredFoldersToKernel(kernel, contentsManager);
 
       const run = kernel.requestExecute({
         code: `
