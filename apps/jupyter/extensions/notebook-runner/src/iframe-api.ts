@@ -557,71 +557,42 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
+    await this.createFolder("/student", "student");
+    await this.createFolder("/autograder", "autograder");
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.studentTaskLocation,
+      task.studentTaskFile,
+    );
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.autograderLocation,
+      task.autograderFile,
+    );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.dataLocation,
+      task.data,
+    );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.srcLocation,
+      task.src,
+    );
+
     if (this.mode == Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
         task.taskTemplateFile,
       );
-
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.dataLocation,
-        task.data,
-      );
-
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingDataLocation,
         task.gradingData,
       );
-
-      await this.createFolder("/student", "student");
-      await this.putFileContents(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        task.studentTaskFile,
-      );
-
-      await this.createFolder("/autograder", "autograder");
-      await this.putFileContents(
-        EmbeddedPythonCallbacks.autograderLocation,
-        task.autograderFile,
-      );
-
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.srcLocation,
-        task.src,
-      );
-
       await this.writeFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
         task.gradingSrc,
       );
-
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.taskTemplateLocation,
       );
     } else {
-      await this.createFolder("/student", "student");
-      await this.createFolder("/autograder", "autograder");
-
-      await this.putFileContents(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        task.studentTaskFile,
-      );
-
-      await this.putFileContents(
-        EmbeddedPythonCallbacks.autograderLocation,
-        task.autograderFile,
-      );
-
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.dataLocation,
-        task.data,
-      );
-
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.srcLocation,
-        task.src,
-      );
-
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
