@@ -1,1 +1,10 @@
-{}
+{
+  "@jupyterlab/notebook-extension:panel": {
+    "toolbar": [
+      { "name": "restart", "disabled": true },
+      { "name": "restart-and-run", "disabled": true },
+      { "name": "save", "disabled": true },
+      { "name": "interrupt", "disabled": true }
+    ]
+  }
+}

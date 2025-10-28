@@ -13,7 +13,6 @@
   "style": "style/index.css",
   "scripts": {
     "activate-env": "cd ../../ && poetry env activate",
-    "prepare": "node scripts/create-symlink.js",
     "build": "jlpm build:lib && jlpm build:labextension:dev",
     "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",
     "build:labextension": "jupyter labextension build .",

@@ -37,6 +37,18 @@ module "scratchapp" {
   tags = var.tags
 }
 
+module "jupyterapp" {
+  source = "./modules/static-website"
+
+  name   = "${var.name}-${var.environment}-app-jupyter"
+  region = var.region
+
+  nodejs_lambda_function_path = "./lambdas/src/spa/index.js"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/spa.zip"
+
+  tags = var.tags
+}
+
 module "database" {
   source = "./modules/database"
 
@@ -88,6 +100,11 @@ module "cdn" {
   scratchapp_bucket_arn  = module.scratchapp.bucket_arn
   scratchapp_lambda_arn  = module.scratchapp.lambda_arn
   scratchapp_domain_name = module.scratchapp.bucket_domain_name
+
+  jupyterapp_bucket      = module.jupyterapp.bucket
+  jupyterapp_bucket_arn  = module.jupyterapp.bucket_arn
+  jupyterapp_lambda_arn  = module.jupyterapp.lambda_arn
+  jupyterapp_domain_name = module.jupyterapp.bucket_domain_name
 
   backend_domain_name = module.backend.backend_dns_name
   certificate_arn     = module.network.certificte_arn

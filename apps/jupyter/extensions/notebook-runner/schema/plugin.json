@@ -2,6 +2,10 @@
   "jupyter.lab.toolbars": {
     "Notebook": [
       {
+        "name": "run-all-cells",
+        "command": "notebook-runner:run-all-cells"
+      },
+      {
         "name": "run-grading",
         "command": "notebook-runner:run-grading"
       },

@@ -1,4 +1,5 @@
 import { ISessionContext } from "@jupyterlab/apputils";
+import { IChangedArgs } from "@jupyterlab/coreutils";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 
 const isPreparedKey = "__isPrepared";
@@ -79,29 +80,70 @@ export const addKernelListeners = async (
   console.debug("Waiting for session context to be ready...");
   await sessionContext.ready;
 
-  while (!sessionContext.session?.kernel) {
-    console.debug("Starting kernel...");
-    await sessionContext.startKernel();
+  let kernel = sessionContext.session?.kernel;
+
+  while (!kernel) {
+    await new Promise<void>((resolve) => {
+      const onKernelAvailable = (): void => {
+        sessionContext.kernelChanged.disconnect(onKernelAvailable);
+        kernel = sessionContext.session?.kernel;
+
+        resolve();
+      };
+
+      sessionContext.kernelChanged.connect(onKernelAvailable);
+
+      if (sessionContext.session?.kernel) {
+        onKernelAvailable();
+      }
+    });
   }
 
-  const kernel = sessionContext.session?.kernel;
   await kernel.info;
   await addListeners(kernel);
 
-  sessionContext.kernelChanged.connect(async (sessionCtx) => {
-    const kernel = sessionCtx.session?.kernel;
-    if (!kernel) {
-      console.warn("Kernel is not available in session context");
+  const restartListener = async (
+    sessionCtx: ISessionContext,
+    change: IChangedArgs<
+      IKernelConnection | null,
+      IKernelConnection | null,
+      "kernel"
+    >,
+  ): Promise<void> => {
+    let kernel = change.newValue;
+    if (kernel === null) {
+      console.warn("Kernel is not available in session context, restarting...");
 
-      // simply return, the function will be called again when the kernel is changed
-      return;
+      try {
+        sessionCtx.kernelChanged.disconnect(restartListener);
+
+        await sessionCtx.changeKernel({
+          name: "python",
+        });
+      } catch (error) {
+        console.error("Error restarting kernel:", error);
+        return;
+      } finally {
+        sessionCtx.kernelChanged.connect(restartListener);
+      }
+
+      await sessionCtx.ready;
+      kernel = sessionCtx.session?.kernel || null;
+
+      if (!kernel) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).sessionCtx = sessionCtx;
+        throw new Error("Kernel is still not available after restart");
+      }
     }
 
     console.debug("Kernel changed:", kernel.name);
     await kernel.info;
 
     return addListeners(kernel);
-  });
+  };
+
+  sessionContext.kernelChanged.connect(restartListener);
 };
 
 export const writeJsonToVirtualFilesystem = async (
