@@ -400,6 +400,168 @@ export class EmbeddedPythonCallbacks {
       throw new Error(`Unsupported content format: ${file.format}`);
     }
   }
+
+  private async createDirectoryPath(path: string): Promise<void> {
+    const pathParts = path.split("/").filter((part) => part !== "");
+
+    if (pathParts.length <= 1) {
+      // No need to create folders
+      return;
+    }
+
+    let currentPath = "";
+
+    // Create all folders along the path
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      currentPath = currentPath
+        ? `${currentPath}/${pathParts[i]}`
+        : `/${pathParts[i]}`;
+
+      await this.createFolder(currentPath, pathParts[i]);
+    }
+  }
+
+  private async getFolderContents(path: string): Promise<Map<string, Blob>> {
+    const files = new Map<string, Blob>();
+
+    try {
+      const folder = await this.app.serviceManager.contents.get(path, {
+        content: true,
+      });
+
+      if (folder.type === "directory" && folder.content) {
+        for (const file of folder.content) {
+          if (file.type === "file") {
+            const fileContent = await this.getFileContents(
+              `${path}/${file.name}`,
+            );
+            files.set(file.name, fileContent);
+          }
+        }
+      }
+    } catch {
+      console.debug(`${logModule} Folder ${path} not found, skipping`);
+    }
+
+    return files;
+  }
+  private async writeFolderContents(
+    basePath: string,
+    files: Directory,
+  ): Promise<void> {
+    for (const [relativePath, blob] of files.entries()) {
+      const path = `${basePath}/${relativePath}`;
+      await this.putFileContents(path, blob);
+    }
+  }
+
+  private async readFolderContents(basePath: string): Promise<Directory> {
+    const files = new Map<string, Blob>();
+
+    try {
+      const folder = await this.app.serviceManager.contents.get(basePath, {
+        content: true,
+      });
+
+      if (folder.type !== "directory") {
+        throw new DirectoryNotFoundError(basePath);
+      }
+
+      for (const item of folder.content || []) {
+        const itemPath = `${basePath}/${item.name}`;
+
+        if (item.type === "directory") {
+          const subFiles = await this.readFolderContents(itemPath);
+
+          for (const [subPath, blob] of subFiles.entries()) {
+            files.set(`${item.name}/${subPath}`, blob);
+          }
+        } else {
+          const blob = await this.getFileContents(itemPath);
+
+          files.set(item.name, blob);
+        }
+      }
+    } catch (e) {
+      // Throw FileSystemError for any error encountered during reading
+      throw new FileSystemError(FileSystemOperation.ReadFolder, basePath, e);
+    }
+    return files;
+  }
+
+  private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.studentTaskLocation,
+      task.studentTaskFile,
+    );
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.autograderLocation,
+      task.autograderFile,
+    );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.dataLocation,
+      task.data,
+    );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.srcLocation,
+      task.src,
+    );
+
+    if (this.mode == Mode.edit) {
+      await this.putFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+        task.taskTemplateFile,
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+        task.gradingData,
+      );
+      await this.writeFolderContents(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+        task.gradingSrc,
+      );
+      this.documentManager.openOrReveal(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+    } else {
+      this.documentManager.openOrReveal(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+      );
+    }
+  }
+
+  private async writeGenericNotebookTask(
+    task: GenericNotebookTask,
+  ): Promise<void> {
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+      task.taskFile,
+    );
+
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.dataLocation,
+      task.data,
+    );
+
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.gradingDataLocation,
+      task.gradingData,
+    );
+
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.srcLocation,
+      task.src,
+    );
+
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.gradingSrcLocation,
+      task.gradingSrc,
+    );
+
+    this.documentManager.openOrReveal(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+    );
+  }
 }
 
 export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
