@@ -1,21 +1,32 @@
 # Scratch G-AST Converter
 
-Each scratch block is assigned to one of three categories:
+Each Scratch block is assigned to one of three categories:
 - [Hat Blocks](https://en.scratch-wiki.info/wiki/Hat_Block) - starting blocks reacting to events.
 - Statement Blocks - blocks that will be converted to G-AST statement nodes.
 - Expression Blocks - blocks that will be converted to G-AST expression nodes.
 
-The functions `convertBlockTreeToStatement` and `convertBlockTreeToExpression` first branches depending on the scratch block categories
+The conversion process is handled by two main functions :
+- `convertBlockTreeToStatement`
+- `convertBlockTreeToExpression`
+
+Both functions first branch based on th Scratch block category, such as:
 - Motion
 - Looks
 - Sound
-- Events
+- Event
 - Control
 - Sensing
-- Operators
+- Operator
 - Variables (`data`)
 - My Blocks (`procedures`)
 
-and then calls a function named after the category and the respective node type e.g. `convertMotionBlockTreeToStatement` or `convertSoundBlockTreeToExpression`.
+Then each category is handled by a dedicated converter function. The function name follows the pattern: `convert<category>BlockTreeTo<type>`
 
-Within that function, the opcode of the respective block is checked against a set of [known values](https://en.scratch-wiki.info/wiki/List_of_Block_Opcodes) and is then converted to either a statement or an expression.
+For example: 
+
+- `convertMotionBlockTreeToStatement` handles Motion blocks that produce statements.
+- `convertSoundBlockTreeToExpression` handles Sound blocks that produce expressions.
+
+Inside these category-specific functions, the **opcode** of each Scratch block is checked against a set of [known values](https://en.scratch-wiki.info/wiki/List_of_Block_Opcodes).
+
+Based on this opcode, the block is then converted to either a statement or an expression.
