@@ -38,6 +38,7 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "./iframe-rpc/src/methods/export-task";
+import { ExportError, GetTaskError } from "./errors/task-errors";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -142,7 +143,10 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      throw e;
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      throw new GetTaskError(errorMessage);
     }
   }
 
@@ -191,7 +195,7 @@ export class EmbeddedPythonCallbacks {
         }),
       );
 
-      throw e;
+      throw new ExportError(errorMessage);
     }
   }
 
