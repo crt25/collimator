@@ -231,7 +231,7 @@ const SolveTaskPage = () => {
     }
 
     const response = await embeddedApp.current.sendRequest(
-      "getTask",
+      "exportTask",
       undefined,
     );
 
