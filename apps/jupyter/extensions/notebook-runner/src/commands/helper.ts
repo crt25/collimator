@@ -2,8 +2,50 @@ import { ContentsManager } from "@jupyterlab/services";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { writeBinaryToVirtualFilesystem } from "../utils";
 import { DirectoryNotFoundError } from "../errors/task-errors";
+import { EmbeddedPythonCallbacks } from "../iframe-api";
 
-export const copyFolderToKernel = async (
+export const KernelPaths = {
+  data: "/data",
+  src: "/src",
+  gradingData: "/grading_data",
+  gradingSrc: "/grading_src",
+  student: "/student",
+  autograder: "/autograder",
+  results: "/results.pkl",
+  resultsJson: "/results.json",
+} as const;
+
+export const copyRequiredFoldersToKernel = async (
+  kernel: IKernelConnection,
+  contentsManager: ContentsManager,
+): Promise<void> => {
+  await copyFolderToKernel(
+    kernel,
+    contentsManager,
+    EmbeddedPythonCallbacks.dataLocation,
+    KernelPaths.data,
+  );
+  await copyFolderToKernel(
+    kernel,
+    contentsManager,
+    EmbeddedPythonCallbacks.srcLocation,
+    KernelPaths.src,
+  );
+  await copyFolderToKernel(
+    kernel,
+    contentsManager,
+    EmbeddedPythonCallbacks.gradingDataLocation,
+    KernelPaths.gradingData,
+  );
+  await copyFolderToKernel(
+    kernel,
+    contentsManager,
+    EmbeddedPythonCallbacks.gradingSrcLocation,
+    KernelPaths.gradingSrc,
+  );
+};
+
+const copyFolderToKernel = async (
   kernel: IKernelConnection,
   contents: ContentsManager,
   sourcePath: string,
