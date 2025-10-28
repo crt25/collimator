@@ -78,3 +78,11 @@ export class FileSystemError extends TaskError {
     Object.setPrototypeOf(this, FileSystemError.prototype);
   }
 }
+
+export class FolderAlreadyExistsError extends TaskError {
+  constructor(public readonly path: string) {
+    super(`Folder already exists at path: ${path}`);
+    this.name = "FolderAlreadyExistsError";
+    Object.setPrototypeOf(this, FolderAlreadyExistsError.prototype);
+  }
+}

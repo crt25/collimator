@@ -34,6 +34,7 @@ import { TaskFormat } from "./task-format";
 
 import { getMessage, MessageKeys } from "./translator";
 import { showErrorMessage, showSuccessMessage } from "./notifications";
+import { FolderAlreadyExistsError } from "./errors/task-errors";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -581,8 +582,11 @@ export class EmbeddedPythonCallbacks {
 
           try {
             await this.createFolder(currentPath, pathParts[i]);
-          } catch {
+          } catch (error) {
             // folder may already exist, ignore errors
+            if (!(error instanceof FolderAlreadyExistsError)) {
+              throw error;
+            }
           }
         }
       }
