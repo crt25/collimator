@@ -21,7 +21,7 @@ It enables secure and structured communication between two applications across i
 -  the host application (aka the frontend), which embeds the iframe.
 -  the embedded application (like Scratch), which runs inside the iframe.
 
-It defines strict types for requests and responses, ensuring reliability and security.
+It defines strict types for requests and responses, ensuring reliability and type safety.
 
 ### Uses cases
 
@@ -29,13 +29,12 @@ It defines strict types for requests and responses, ensuring reliability and sec
 - Call methods defined inside the iframe from the frontend.
 - Trigger events or actions in the iframe from the frontend.
 - Retrieve data from the app to the frontend.
-- Ensure secure communication across different origins.
 
 ### Installation and Setup
 
-The library is installed with ClassMosaic.
+The library is installed by default with ClassMosaic.
 
-Only for development purpose, you can install it via yarn:
+Will run the demo? Install it via yarn:
 
 ```sh
 # From: collimator/
@@ -54,16 +53,16 @@ yarn install
 
 Defined in methods/index.ts:
 
-| Method            | Description                             |
-| ----------------- | --------------------------------------- |
-| `getHeight`       | Retrieves the the embedded app’s height |
-| `getSubmission`   | Retrieves the current submission        |
-| `getTask`         | Retrieves the current task              |
-| `loadSubmission`  | Loads a submission in the embedded app  |
-| `loadTask`        | Loads a task in the embedded app        |
-| `postSolutionRun` | Sends a solution to execute             |
-| `postSubmission`  | Submits a solution                      |
-| `setLocale`       | Sets the interface language             |
+| Method            | Message sent by |  Description                             |
+| ----------------- | ------------    | ------------------------------- |
+| `getHeight`       | host app    | Retrieves the embedded app’s height so that the host app can adjust the iframe size | 
+| `getSubmission`   | host app        | Retrieves the current submission in the CRT submission format |
+| `getTask`         | host app        | Retrieves the current task in the CRT task format |
+| `loadSubmission`  | host app        | Loads a submission in the embedded app in the CRT task format |
+| `loadTask`        | host app        | Loads a task in the embedded app in the CRT task format |
+| `postSolutionRun` | embedded app    | Notifies the host app that the student ran the solution |
+| `postSubmission`  |                 | Sends a solution in the CRT submission format to the host app |
+| `setLocale`       | host app        | Sets the interface language in the embedded app |
 
 Each method is strongly typed for parameters and return values.
 
@@ -120,7 +119,7 @@ const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
 Used inside the host application (frontend)
 
 ```ts
-const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable);
+const { sendRequest, iframeRef } = useIframeChild(handleRequest, onAppAvailable);
 ```
 
 ##### Parameters
@@ -130,5 +129,5 @@ const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable)
 
 ##### Returns
 
-- `sendRequest`: function - sends requests to the app.
+- `sendRequest`: function - sends requests to the embedded app.
 - `iframeRef`: ref to attach to the `<iframe>` element
