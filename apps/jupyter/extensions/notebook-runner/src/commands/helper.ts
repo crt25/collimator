@@ -1,5 +1,7 @@
 import { ContentsManager } from "@jupyterlab/services";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
+import { writeBinaryToVirtualFilesystem } from "../utils";
+import { DirectoryNotFoundError } from "../errors/task-errors";
 
 export const copyFolderToKernel = async (
   kernel: IKernelConnection,
@@ -11,7 +13,7 @@ export const copyFolderToKernel = async (
     const folder = await contents.get(sourcePath, { content: true });
 
     if (folder.type !== "directory") {
-      throw new Error(`${sourcePath} is not a directory`);
+      throw new DirectoryNotFoundError(sourcePath);
     }
 
     await kernel.requestExecute({
@@ -26,23 +28,17 @@ export const copyFolderToKernel = async (
       const itemDestPath = `${destPath}/${item.name}`;
 
       if (item.type === "directory") {
+        // Recursively copy subdirectory
         await copyFolderToKernel(kernel, contents, itemPath, itemDestPath);
-      } else {
-        const file = await contents.get(itemPath, {
-          content: true,
-          format: "base64",
-        });
-        await kernel.requestExecute({
-          code: `
-          import base64
-          from pathlib import Path
-
-          Path("${itemDestPath}").parent.mkdir(parents=True, exist_ok=True)
-          with open("${itemDestPath}", "wb") as f:
-              f.write(base64.b64decode("${file.content}"))
-          `,
-        }).done;
+        continue;
       }
+
+      const file = await contents.get(itemPath, {
+        content: true,
+        format: "base64",
+      });
+
+      await writeBinaryToVirtualFilesystem(kernel, itemDestPath, file.content);
     }
   } catch (e) {
     console.error(
