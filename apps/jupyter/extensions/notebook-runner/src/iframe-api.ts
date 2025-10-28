@@ -36,6 +36,7 @@ import { getMessage, MessageKeys } from "./translator";
 import { showErrorMessage, showSuccessMessage } from "./notifications";
 import {
   DirectoryNotFoundError,
+  ExternalCustomTaskImportError,
   FileSystemError,
   FolderAlreadyExistsError,
 } from "./errors/task-errors";
@@ -199,6 +200,18 @@ export class EmbeddedPythonCallbacks {
           const importedExternalFiles = await importExternalCustomTask(
             request.params.task,
           );
+
+          if (this.mode !== Mode.edit) {
+            // cannot import external custom task in non-edit mode
+            showErrorMessage(
+              getMessage(
+                this.translator,
+                MessageKeys.CannotImportExternalInNonEditMode,
+              ),
+            );
+
+            throw new ExternalCustomTaskImportError();
+          }
 
           await this.writeExternalCustomTask(importedExternalFiles);
 
@@ -602,40 +615,34 @@ export class EmbeddedPythonCallbacks {
   private async writeExternalCustomTask(
     task: ExternalCustomTask,
   ): Promise<void> {
-    if (this.mode == Mode.edit) {
-      await this.putFileContents(
-        EmbeddedPythonCallbacks.taskTemplateLocation,
-        task.taskFile,
-      );
+    await this.putFileContents(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+      task.taskFile,
+    );
 
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.dataLocation,
-        task.data,
-      );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.dataLocation,
+      task.data,
+    );
 
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.gradingDataLocation,
-        task.gradingData,
-      );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.gradingDataLocation,
+      task.gradingData,
+    );
 
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.srcLocation,
-        task.src,
-      );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.srcLocation,
+      task.src,
+    );
 
-      await this.writeFolderContents(
-        EmbeddedPythonCallbacks.gradingSrcLocation,
-        task.gradingSrc,
-      );
+    await this.writeFolderContents(
+      EmbeddedPythonCallbacks.gradingSrcLocation,
+      task.gradingSrc,
+    );
 
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.taskTemplateLocation,
-      );
-    } else {
-      throw new Error(
-        "External custom task import is only supported in edit mode",
-      );
-    }
+    this.documentManager.openOrReveal(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+    );
   }
 }
 

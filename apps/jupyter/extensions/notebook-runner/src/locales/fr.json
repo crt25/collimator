@@ -6,5 +6,6 @@
   "useEmbeddedPython.submissionLoaded": "Soumission chargée avec succès!",
   "useEmbeddedPython.taskCreated": "Tâche créée avec succès!",
   "useEmbeddedPython.taskImported": "Tâche importée avec succès!",
-  "useEmbeddedPython.taskLoaded": "Tâche chargée avec succès!"
+  "useEmbeddedPython.taskLoaded": "Tâche chargée avec succès!",
+  "useEmbeddedPython.cannotImportExternalInNonEditMode": "Impossible d'importer une tâche personnalisée externe en mode non-édition."
 }

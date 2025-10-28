@@ -6,5 +6,6 @@
   "useEmbeddedPython.submissionLoaded": "Submission loaded successfully!",
   "useEmbeddedPython.taskCreated": "Task created successfully!",
   "useEmbeddedPython.taskImported": "Task imported successfully!",
-  "useEmbeddedPython.taskLoaded": "Task loaded successfully!"
+  "useEmbeddedPython.taskLoaded": "Task loaded successfully!",
+  "useEmbeddedPython.cannotImportExternalInNonEditMode": "Cannot import an external custom task in non-edit mode."
 }

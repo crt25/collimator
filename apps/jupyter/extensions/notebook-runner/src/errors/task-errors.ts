@@ -94,3 +94,11 @@ export class DirectoryNotFoundError extends TaskError {
     Object.setPrototypeOf(this, DirectoryNotFoundError.prototype);
   }
 }
+
+export class ExternalCustomTaskImportError extends TaskError {
+  constructor() {
+    super(`Cannot import external custom task in solve mode.`);
+    this.name = "CannotImportExternalCustomTaskInSolveModeError";
+    Object.setPrototypeOf(this, ExternalCustomTaskImportError.prototype);
+  }
+}

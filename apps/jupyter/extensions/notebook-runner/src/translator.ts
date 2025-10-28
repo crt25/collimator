@@ -37,4 +37,6 @@ export const MessageKeys = {
   TaskCreated: "useEmbeddedPython.taskCreated",
   TaskImported: "useEmbeddedPython.taskImported",
   TaskLoaded: "useEmbeddedPython.taskLoaded",
+  CannotImportExternalInNonEditMode:
+    "useEmbeddedPython.cannotImportExternalInNonEditMode",
 } as const;
