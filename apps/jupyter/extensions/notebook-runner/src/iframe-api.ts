@@ -1,5 +1,4 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
-import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 import {
@@ -62,9 +61,10 @@ export class EmbeddedPythonCallbacks {
   public static readonly autograderName: string = "autograder.zip";
   public static readonly autograderLocation: string = `/autograder/${EmbeddedPythonCallbacks.autograderName}`;
 
-  private static readonly taskTemplateInZip: string = "template.ipynb";
-  private static readonly studentTaskInZip: string = "student.ipynb";
-  private static readonly autograderInZip: string = "autograder.zip";
+  public static readonly dataLocation: string = "/data";
+  public static readonly gradingDataLocation: string = "/grading_data";
+  public static readonly srcLocation: string = "/src";
+  public static readonly gradingSrcLocation: string = "/grading_src";
 
   constructor(
     private readonly mode: Mode,
@@ -78,25 +78,40 @@ export class EmbeddedPythonCallbacks {
   }
 
   async getTask(request: GetTask["request"]): Promise<Task> {
-    // generate student task and autograder
-    await this.app.commands.execute(runAssignCommand);
-
-    const initialSolution = await this.getJupyterSubmission();
-    const studentTask = initialSolution.file;
-
-    const taskTemplate = await this.getFileContents(
-      EmbeddedPythonCallbacks.taskTemplateLocation,
-    );
-
-    const autograder = await this.getFileContents(
-      EmbeddedPythonCallbacks.autograderLocation,
-    );
-
-    const task = await this.packTask(taskTemplate, studentTask, autograder);
-
     try {
+      // generate student task and autograder
+      await this.app.commands.execute(runAssignCommand);
+
+      const initialSolution = await this.getJupyterSubmission();
+      const studentTaskFile = initialSolution.file;
+
+      const taskTemplateFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+
+      const autograderFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.autograderLocation,
+      );
+
+      const data = await this.getFolderContents("/data");
+      const gradingData = await this.getFolderContents("/grading_data");
+      const src = await this.getFolderContents("/src");
+      const gradingSrc = await this.getFolderContents("/grading_src");
+
+      const crtInternalTask: CrtInternalTask = {
+        taskTemplateFile,
+        studentTaskFile,
+        autograderFile,
+        data,
+        gradingData,
+        src,
+        gradingSrc,
+      };
+
+      const taskBlob = await exportCrtInternalTask(crtInternalTask);
+
       return {
-        file: task,
+        file: taskBlob,
         initialSolution,
       };
     } catch (e) {
