@@ -1,6 +1,5 @@
 import JSZip from "jszip";
 import { UnsupportedTaskFormatError } from "./errors/task-errors";
-
 import {
   CrtFileIdentifier,
   CrtInternalFiles,
@@ -9,34 +8,38 @@ import {
 } from "./task-format";
 
 export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
+  const zip = new JSZip();
+
   try {
-    const zip = new JSZip();
     await zip.loadAsync(taskBlob);
-
-    if (zip.file(CrtFileIdentifier)) {
-      return TaskFormat.CrtInternal;
-    }
-
-    const hasCrtInternalFiles =
-      zip.file(CrtInternalFiles.Template) &&
-      zip.file(CrtInternalFiles.Student) &&
-      zip.file(CrtInternalFiles.Autograder);
-
-    if (hasCrtInternalFiles) {
-      return TaskFormat.CrtInternal;
-    }
-
-    const hasExternalCustomFormat = zip.file(ExternalCustomFiles.Task);
-
-    if (hasExternalCustomFormat) {
-      return TaskFormat.ExternalCustom;
-    }
-
-    return TaskFormat.Unknown;
   } catch {
     throw new UnsupportedTaskFormatError(
       [],
       "Failed to read task file as ZIP archive.",
     );
   }
+
+  if (zip.file(CrtFileIdentifier)) {
+    return TaskFormat.CrtInternal;
+  }
+
+  const hasCrtInternalFiles =
+    zip.file(CrtInternalFiles.Template) &&
+    zip.file(CrtInternalFiles.Student) &&
+    zip.file(CrtInternalFiles.Autograder);
+
+  if (hasCrtInternalFiles) {
+    return TaskFormat.CrtInternal;
+  }
+
+  const hasExternalCustomFormat = zip.file(ExternalCustomFiles.Task);
+
+  if (hasExternalCustomFormat) {
+    return TaskFormat.ExternalCustom;
+  }
+
+  throw new UnsupportedTaskFormatError(
+    [],
+    "The task file does not match any supported format.",
+  );
 };
