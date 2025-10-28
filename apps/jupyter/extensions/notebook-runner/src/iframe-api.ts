@@ -142,14 +142,42 @@ export class EmbeddedPythonCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
+      throw e;
+    }
+  }
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.CannotGetTask, {
-          error: errorMessage,
-        }),
+  async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
+    try {
+      console.debug(`${logModule} Exporting task in external format`);
+
+      const taskFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
       );
 
+      const data = await this.getFolderContents("/data");
+      const gradingData = await this.getFolderContents("/grading_data");
+      const src = await this.getFolderContents("/src");
+      const gradingSrc = await this.getFolderContents("/grading_src");
+
+      const externalTask: ExternalCustomTask = {
+        taskFile,
+        data,
+        gradingData,
+        src,
+        gradingSrc,
+      };
+
+      const taskBlob = await exportExternalCustomTask(externalTask);
+
+      return {
+        file: taskBlob,
+        filename: "task.zip",
+      };
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
+        e,
+      );
       throw e;
     }
   }
@@ -781,5 +809,6 @@ export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
     loadSubmission: callbacks.loadSubmission.bind(callbacks),
     setLocale: callbacks.setLocale.bind(callbacks),
     importTask: callbacks.importTask.bind(callbacks),
+    exportTask: callbacks.exportTask.bind(callbacks),
   });
 };
