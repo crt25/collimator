@@ -231,7 +231,7 @@ describe("detectTaskFormat", () => {
       expect(result).toBe(TaskFormat.ExternalCustom);
     });
 
-    it("should handle nested directories in ZIP", async () => {
+    it("should detect task format in nested directories in ZIP", async () => {
       mockZip.file("nested/folder/task.ipynb", "task");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
