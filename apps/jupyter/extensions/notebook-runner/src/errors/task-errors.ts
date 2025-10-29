@@ -1,10 +1,4 @@
-export class TaskError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TaskError";
-    Object.setPrototypeOf(this, TaskError.prototype);
-  }
-}
+export class TaskError extends Error {}
 
 export class UnsupportedTaskFormatError extends TaskError {
   constructor(
@@ -18,8 +12,6 @@ export class UnsupportedTaskFormatError extends TaskError {
           `2. A custom task package (contains task.ipynb)\n\n` +
           `Files found: ${availableFiles.join(", ")}`,
     );
-    this.name = "UnsupportedTaskFormatError";
-    Object.setPrototypeOf(this, UnsupportedTaskFormatError.prototype);
   }
 }
 
@@ -33,8 +25,6 @@ export class MissingRequiredFilesError extends TaskError {
       `${format} format is missing required files: ${missingFiles.join(", ")}\n` +
         `Files found: ${availableFiles.join(", ")}`,
     );
-    this.name = "MissingRequiredFilesError";
-    Object.setPrototypeOf(this, MissingRequiredFilesError.prototype);
   }
 }
 
@@ -44,8 +34,6 @@ export class InvalidTaskBlobError extends TaskError {
     message?: string,
   ) {
     super(message || `Invalid task file: ${reason}`);
-    this.name = "InvalidTaskBlobError";
-    Object.setPrototypeOf(this, InvalidTaskBlobError.prototype);
   }
 }
 
@@ -59,8 +47,6 @@ export class InvalidModeError extends TaskError {
         `External custom format can only be imported in edit mode. ` +
         `Please generate student task and autograder first by exporting in edit mode.`,
     );
-    this.name = "InvalidModeError";
-    Object.setPrototypeOf(this, InvalidModeError.prototype);
   }
 }
 
@@ -74,31 +60,23 @@ export class FileSystemError extends TaskError {
       `Failed to ${operation} file at ${path}` +
         (originalError ? `: ${originalError.message}` : ""),
     );
-    this.name = "FileSystemError";
-    Object.setPrototypeOf(this, FileSystemError.prototype);
   }
 }
 
 export class FolderAlreadyExistsError extends TaskError {
   constructor(public readonly path: string) {
     super(`Folder already exists at path: ${path}`);
-    this.name = "FolderAlreadyExistsError";
-    Object.setPrototypeOf(this, FolderAlreadyExistsError.prototype);
   }
 }
 
 export class DirectoryNotFoundError extends TaskError {
   constructor(public readonly path: string) {
     super(`Directory not found at path: ${path}`);
-    this.name = "DirectoryNotFoundError";
-    Object.setPrototypeOf(this, DirectoryNotFoundError.prototype);
   }
 }
 
 export class ExternalCustomTaskImportError extends TaskError {
   constructor() {
     super(`Cannot import external custom task in solve mode.`);
-    this.name = "CannotImportExternalCustomTaskInSolveModeError";
-    Object.setPrototypeOf(this, ExternalCustomTaskImportError.prototype);
   }
 }
