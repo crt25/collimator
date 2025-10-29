@@ -21,11 +21,11 @@ import { runAssignCommand, runGradingCommand } from "./command";
 import { Mode } from "./mode";
 import {
   CrtInternalTask,
-  ExternalCustomTask,
+  GenericNotebookTask,
   FileMap,
   FileSystemOperation,
   importCrtInternalTask,
-  importExternalCustomTask,
+  importGenericNotebookTask,
 } from "./task-importer";
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
@@ -35,7 +35,7 @@ import { AppTranslator, MessageKeys } from "./translator";
 
 import {
   DirectoryNotFoundError,
-  ExternalCustomTaskImportError,
+  GenericNotebookTaskImportError,
   FileSystemError,
   FolderAlreadyExistsError,
 } from "./errors/task-errors";
@@ -190,8 +190,8 @@ export class EmbeddedPythonCallbacks {
           break;
         }
 
-        case TaskFormat.ExternalCustom: {
-          const importedExternalFiles = await importExternalCustomTask(
+        case TaskFormat.GenericNotebook: {
+          const importedExternalFiles = await importGenericNotebookTask(
             request.params.task,
           );
 
@@ -202,10 +202,10 @@ export class EmbeddedPythonCallbacks {
               MessageKeys.CannotImportExternalInNonEditMode,
             );
 
-            throw new ExternalCustomTaskImportError();
+            throw new GenericNotebookTaskImportError();
           }
 
-          await this.writeExternalCustomTask(importedExternalFiles);
+          await this.writeGenericNotebookTask(importedExternalFiles);
 
           break;
         }
@@ -606,8 +606,8 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
-  private async writeExternalCustomTask(
-    task: ExternalCustomTask,
+  private async writeGenericNotebookTask(
+    task: GenericNotebookTask,
   ): Promise<void> {
     await this.putFileContents(
       EmbeddedPythonCallbacks.taskTemplateLocation,

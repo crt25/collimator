@@ -6,7 +6,7 @@ import {
 } from "./errors/task-errors";
 import {
   CrtInternalFiles,
-  ExternalCustomFiles,
+  GenericNotebookFiles,
   TaskFormat,
 } from "./task-format";
 
@@ -28,7 +28,7 @@ export interface CrtInternalTask {
   gradingSrc: Directory;
 }
 
-export interface ExternalCustomTask {
+export interface GenericNotebookTask {
   taskFile: File;
   data: Directory;
   gradingData: Directory;
@@ -140,25 +140,28 @@ export const importCrtInternalTask = async (
   } satisfies CrtInternalTask;
 };
 
-export const importExternalCustomTask = async (
+export const importGenericNotebookTask = async (
   task: Blob,
-): Promise<ExternalCustomTask> => {
+): Promise<GenericNotebookTask> => {
   const zip = await loadJSZip(task);
 
-  const taskFile = await zip.file(ExternalCustomFiles.Task)?.async("blob");
+  const taskFile = await zip.file(GenericNotebookFiles.Task)?.async("blob");
 
   if (!taskFile) {
     throw new MissingRequiredFilesError(
-      TaskFormat.ExternalCustom,
-      [ExternalCustomFiles.Task],
+      TaskFormat.GenericNotebook,
+      [GenericNotebookFiles.Task],
       Object.keys(zip.files),
     );
   }
 
-  const data = await extractFolder(zip, ExternalCustomFiles.Data);
-  const gradingData = await extractFolder(zip, ExternalCustomFiles.GradingData);
-  const src = await extractFolder(zip, ExternalCustomFiles.Src);
-  const gradingSrc = await extractFolder(zip, ExternalCustomFiles.GradingSrc);
+  const data = await extractFolder(zip, GenericNotebookFiles.Data);
+  const gradingData = await extractFolder(
+    zip,
+    GenericNotebookFiles.GradingData,
+  );
+  const src = await extractFolder(zip, GenericNotebookFiles.Src);
+  const gradingSrc = await extractFolder(zip, GenericNotebookFiles.GradingSrc);
 
   return {
     taskFile,

@@ -1,8 +1,8 @@
 import JSZip from "jszip";
-import { CrtInternalFiles, ExternalCustomFiles } from "../task-format";
+import { CrtInternalFiles, GenericNotebookFiles } from "../task-format";
 import {
   importCrtInternalTask,
-  importExternalCustomTask,
+  importGenericNotebookTask,
   loadJSZip,
 } from "../task-importer";
 import {
@@ -142,7 +142,7 @@ describe("importCrtInternalTask", () => {
   });
 });
 
-describe("importExternalCustomTask", () => {
+describe("importGenericNotebookTask", () => {
   let mockZip: JSZip;
 
   beforeEach(() => {
@@ -154,12 +154,12 @@ describe("importExternalCustomTask", () => {
       const taskContent = "task content";
       const dataFile = "data.txt";
 
-      mockZip.file(ExternalCustomFiles.Task, taskContent);
-      mockZip.file(`${ExternalCustomFiles.Data}/${dataFile}`, "data content");
+      mockZip.file(GenericNotebookFiles.Task, taskContent);
+      mockZip.file(`${GenericNotebookFiles.Data}/${dataFile}`, "data content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const result = await importExternalCustomTask(blob);
+      const result = await importGenericNotebookTask(blob);
 
       expect(result.taskFile).toBeInstanceOf(Blob);
       expect(result.data).toBeDefined();
@@ -169,15 +169,18 @@ describe("importExternalCustomTask", () => {
     });
 
     it("should handle tasks with all optional folders populated", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task content");
-      mockZip.file(`${ExternalCustomFiles.Data}/data.txt`, "data");
-      mockZip.file(`${ExternalCustomFiles.GradingData}/grading.txt`, "grading");
-      mockZip.file(`${ExternalCustomFiles.Src}/code.py`, "code");
-      mockZip.file(`${ExternalCustomFiles.GradingSrc}/test.py`, "test");
+      mockZip.file(GenericNotebookFiles.Task, "task content");
+      mockZip.file(`${GenericNotebookFiles.Data}/data.txt`, "data");
+      mockZip.file(
+        `${GenericNotebookFiles.GradingData}/grading.txt`,
+        "grading",
+      );
+      mockZip.file(`${GenericNotebookFiles.Src}/code.py`, "code");
+      mockZip.file(`${GenericNotebookFiles.GradingSrc}/test.py`, "test");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const result = await importExternalCustomTask(blob);
+      const result = await importGenericNotebookTask(blob);
 
       expect(result.data.size).toBeGreaterThan(0);
       expect(result.gradingData.size).toBeGreaterThan(0);
@@ -186,11 +189,11 @@ describe("importExternalCustomTask", () => {
     });
 
     it("should handle empty ZIP with only required file", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "minimal task");
+      mockZip.file(GenericNotebookFiles.Task, "minimal task");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const result = await importExternalCustomTask(blob);
+      const result = await importGenericNotebookTask(blob);
 
       expect(result.taskFile).toBeInstanceOf(Blob);
       expect(result.data.size).toBe(0);
@@ -200,26 +203,26 @@ describe("importExternalCustomTask", () => {
     });
 
     it("should preserve file structure with multiple levels", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task");
-      mockZip.file(`${ExternalCustomFiles.Src}/level1/level2/deep.py`, "code");
+      mockZip.file(GenericNotebookFiles.Task, "task");
+      mockZip.file(`${GenericNotebookFiles.Src}/level1/level2/deep.py`, "code");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const result = await importExternalCustomTask(blob);
+      const result = await importGenericNotebookTask(blob);
 
       expect(result.src.get("level1/level2/deep.py")).toBeInstanceOf(Blob);
     });
 
     it("should handle files with special characters in names", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.Task, "task");
       mockZip.file(
-        `${ExternalCustomFiles.Data}/file with spaces & special.txt`,
+        `${GenericNotebookFiles.Data}/file with spaces & special.txt`,
         "content",
       );
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const result = await importExternalCustomTask(blob);
+      const result = await importGenericNotebookTask(blob);
 
       expect(result.data.get("file with spaces & special.txt")).toBeInstanceOf(
         Blob,
@@ -229,11 +232,11 @@ describe("importExternalCustomTask", () => {
 
   describe("missing required files", () => {
     it("should throw MissingRequiredFilesError when task file is missing", async () => {
-      mockZip.file(`${ExternalCustomFiles.Data}/file.txt`, "data content");
+      mockZip.file(`${GenericNotebookFiles.Data}/file.txt`, "data content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      await expect(importExternalCustomTask(blob)).rejects.toThrow(
+      await expect(importGenericNotebookTask(blob)).rejects.toThrow(
         MissingRequiredFilesError,
       );
     });
@@ -243,7 +246,7 @@ describe("importExternalCustomTask", () => {
     it("should throw InvalidTaskBlobError when blob is not a valid ZIP", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      await expect(importExternalCustomTask(invalidBlob)).rejects.toThrow(
+      await expect(importGenericNotebookTask(invalidBlob)).rejects.toThrow(
         InvalidTaskBlobError,
       );
     });
@@ -252,7 +255,7 @@ describe("importExternalCustomTask", () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
       try {
-        await importExternalCustomTask(invalidBlob);
+        await importGenericNotebookTask(invalidBlob);
         expect(true).toBe(false);
       } catch (error) {
         expect(error).toBeInstanceOf(InvalidTaskBlobError);

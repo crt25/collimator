@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import {
   CrtFileIdentifier,
   CrtInternalFiles,
-  ExternalCustomFiles,
+  GenericNotebookFiles,
   TaskFormat,
 } from "../task-format";
 import { UnsupportedTaskFormatError } from "../errors/task-errors";
@@ -18,7 +18,7 @@ describe("detectTaskFormat", () => {
   describe("CRT Internal format detection via identifier file", () => {
     it("should prioritize identifier file over other detection methods", async () => {
       mockZip.file(CrtFileIdentifier, "");
-      mockZip.file(ExternalCustomFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.Task, "task");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -89,17 +89,17 @@ describe("detectTaskFormat", () => {
 
   describe("External Custom format detection", () => {
     it("should detect external custom format with task file", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task content");
+      mockZip.file(GenericNotebookFiles.Task, "task content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
       const result = await detectTaskFormat(blob);
 
-      expect(result).toBe(TaskFormat.ExternalCustom);
+      expect(result).toBe(TaskFormat.GenericNotebook);
     });
 
     it("should not detect external custom when task file is missing", async () => {
-      mockZip.file(`${ExternalCustomFiles.Data}/data.txt`, "data");
+      mockZip.file(`${GenericNotebookFiles.Data}/data.txt`, "data");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -109,13 +109,13 @@ describe("detectTaskFormat", () => {
     });
 
     it("should detect external custom with empty task file", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "");
+      mockZip.file(GenericNotebookFiles.Task, "");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
       const result = await detectTaskFormat(blob);
 
-      expect(result).toBe(TaskFormat.ExternalCustom);
+      expect(result).toBe(TaskFormat.GenericNotebook);
     });
   });
 
@@ -196,21 +196,21 @@ describe("detectTaskFormat", () => {
     });
 
     it("should handle binary files in ZIP", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.Task, "task");
       const binaryData = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
-      mockZip.file(`${ExternalCustomFiles.Data}/image.png`, binaryData);
+      mockZip.file(`${GenericNotebookFiles.Data}/image.png`, binaryData);
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
       const result = await detectTaskFormat(blob);
 
-      expect(result).toBe(TaskFormat.ExternalCustom);
+      expect(result).toBe(TaskFormat.GenericNotebook);
     });
 
     it("should handle files with special characters in names", async () => {
-      mockZip.file(ExternalCustomFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.Task, "task");
       mockZip.file(
-        `${ExternalCustomFiles.Data}/file with spaces & special!.txt`,
+        `${GenericNotebookFiles.Data}/file with spaces & special!.txt`,
         "content",
       );
 
@@ -218,7 +218,7 @@ describe("detectTaskFormat", () => {
 
       const result = await detectTaskFormat(blob);
 
-      expect(result).toBe(TaskFormat.ExternalCustom);
+      expect(result).toBe(TaskFormat.GenericNotebook);
     });
 
     it("should detect task format in nested directories in ZIP", async () => {

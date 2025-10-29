@@ -79,7 +79,7 @@ export class DirectoryNotFoundError extends TaskError {
   }
 }
 
-export class ExternalCustomTaskImportError extends TaskError {
+export class GenericNotebookTaskImportError extends TaskError {
   constructor() {
     super(`Cannot import external custom task in solve mode.`);
   }

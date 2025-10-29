@@ -3,7 +3,7 @@ import { UnsupportedTaskFormatError } from "./errors/task-errors";
 import {
   CrtFileIdentifier,
   CrtInternalFiles,
-  ExternalCustomFiles,
+  GenericNotebookFiles,
   TaskFormat,
 } from "./task-format";
 
@@ -34,10 +34,10 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
     return TaskFormat.CrtInternal;
   }
 
-  const hasExternalCustomFormat = zip.file(ExternalCustomFiles.Task);
+  const hasGenericNotebookFormat = zip.file(GenericNotebookFiles.Task);
 
-  if (hasExternalCustomFormat) {
-    return TaskFormat.ExternalCustom;
+  if (hasGenericNotebookFormat) {
+    return TaskFormat.GenericNotebook;
   }
 
   throw new UnsupportedTaskFormatError(Object.keys(zip.files));

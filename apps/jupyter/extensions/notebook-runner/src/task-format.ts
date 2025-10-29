@@ -1,6 +1,6 @@
 export enum TaskFormat {
   CrtInternal = "CrtInternal",
-  ExternalCustom = "ExternalCustom",
+  GenericNotebook = "GenericNotebook",
 }
 
 export const CrtFileIdentifier = ".crt";
@@ -15,7 +15,7 @@ export const CrtInternalFiles = {
   GradingSrc: "grading_src",
 };
 
-export const ExternalCustomFiles = {
+export const GenericNotebookFiles = {
   Task: "task.ipynb",
   Data: "data",
   GradingData: "grading_data",
