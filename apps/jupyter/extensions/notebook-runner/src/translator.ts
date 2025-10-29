@@ -1,32 +1,11 @@
 import { ITranslator } from "@jupyterlab/translation";
-import enMessages from "./locales/en.json";
-import frMessages from "./locales/fr.json";
+import { showErrorMessage, showSuccessMessage } from "./notifications";
+import { enMessages } from "./locales/en";
+import { frMessages } from "./locales/fr";
 
 const messages: Record<string, Record<string, string>> = {
   en: enMessages,
   fr: frMessages,
-};
-
-export const getMessage = (
-  translator: ITranslator,
-  key: string,
-  values?: Record<string, string>,
-): string => {
-  const locale = translator.languageCode ?? "en";
-
-  const localeMessages = messages[locale] ?? messages.en;
-
-  let message = localeMessages[key] ?? messages.en[key] ?? key;
-
-  if (values) {
-    // Replace {variable} placeholders in the message with actual values
-    message = message.replaceAll(
-      /\{(\w+)\}/g,
-      (_, varName) => values[varName] ?? `{${varName}}`,
-    );
-  }
-
-  return message;
 };
 
 export const MessageKeys = {
@@ -41,3 +20,44 @@ export const MessageKeys = {
   CannotImportExternalInNonEditMode:
     "useEmbeddedPython.cannotImportExternalInNonEditMode",
 } as const;
+
+export class AppTranslator {
+  constructor(private readonly translator: ITranslator) {}
+
+  getMessage(key: string, values?: Record<string, string>): string {
+    const locale = this.translator.languageCode ?? "en";
+    const localeMessages = messages[locale] ?? messages.en;
+
+    let message =
+      localeMessages[key] ??
+      messages.en[key] ??
+      `Untranslated message key: '${key}'`;
+
+    if (values) {
+      // Replace {variable} placeholders in the message with actual values
+      message = message.replaceAll(
+        /\{(\w+)\}/g,
+        (_, varName) => values[varName] ?? `{${varName}}`,
+      );
+    }
+
+    return message;
+  }
+
+  displayError(key: string, values?: Record<string, string>): void {
+    showErrorMessage(this.getMessage(key, values));
+  }
+
+  displaySuccess(key: string, values?: Record<string, string>): void {
+    showSuccessMessage(this.getMessage(key, values));
+  }
+
+  displayErrorFromException(key: string, error: unknown): void {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : (error?.toString() ?? "Unknown error");
+
+    this.displayError(key, { error: errorMessage });
+  }
+}

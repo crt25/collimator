@@ -3,8 +3,6 @@ import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
-import { ITranslator } from "@jupyterlab/translation";
-
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -32,8 +30,8 @@ import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
 
-import { getMessage, MessageKeys } from "./translator";
-import { showErrorMessage, showSuccessMessage } from "./notifications";
+import { AppTranslator, MessageKeys } from "./translator";
+
 import {
   DirectoryNotFoundError,
   ExternalCustomTaskImportError,
@@ -99,7 +97,7 @@ export class EmbeddedPythonCallbacks {
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
-    private readonly translator: ITranslator,
+    private readonly appTranslator: AppTranslator,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -134,11 +132,9 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.CannotGetTask, {
-          error: errorMessage,
-        }),
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotGetTask,
+        e,
       );
 
       throw e;
@@ -156,19 +152,16 @@ export class EmbeddedPythonCallbacks {
 
       await this.writeCrtInternalTask(unpacked);
 
-      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
+      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.CannotLoadProject, {
-          error: errorMessage,
-        }),
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotLoadProject,
+        e,
       );
 
       throw e;
@@ -203,11 +196,9 @@ export class EmbeddedPythonCallbacks {
 
           if (this.mode !== Mode.edit) {
             // cannot import external custom task in non-edit mode
-            showErrorMessage(
-              getMessage(
-                this.translator,
-                MessageKeys.CannotImportExternalInNonEditMode,
-              ),
+
+            this.appTranslator.displayError(
+              MessageKeys.CannotImportExternalInNonEditMode,
             );
 
             throw new ExternalCustomTaskImportError();
@@ -219,20 +210,18 @@ export class EmbeddedPythonCallbacks {
         }
       }
 
-      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskImported));
+      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.CannotImportTask, {
-          error: errorMessage,
-        }),
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotImportTask,
+        e,
       );
+
       throw e;
     }
     return undefined;
@@ -252,9 +241,6 @@ export class EmbeddedPythonCallbacks {
 
       await this.closeAllDocuments();
 
-      await this.createFolder("/student", "student");
-      await this.createFolder("/autograder", "autograder");
-
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
         autograderFile,
@@ -269,17 +255,11 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
 
-      showSuccessMessage(getMessage(this.translator, MessageKeys.TaskLoaded));
+      this.appTranslator.displaySuccess(MessageKeys.TaskLoaded);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.CannotLoadProject, {
-          error: errorMessage,
-        }),
-      );
+      this.appTranslator.displayErrorFromException(MessageKeys.TaskLoaded, e);
 
       throw e;
     }
@@ -570,8 +550,6 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
-    await this.createFolder("/student", "student");
-    await this.createFolder("/autograder", "autograder");
     await this.putFileContents(
       EmbeddedPythonCallbacks.studentTaskLocation,
       task.studentTaskFile,
