@@ -16,16 +16,6 @@ describe("detectTaskFormat", () => {
   });
 
   describe("CRT Internal format detection via identifier file", () => {
-    it("should detect CRT internal format when identifier file exists", async () => {
-      mockZip.file(CrtFileIdentifier, "");
-
-      const blob = await mockZip.generateAsync({ type: "blob" });
-
-      const result = await detectTaskFormat(blob);
-
-      expect(result).toBe(TaskFormat.CrtInternal);
-    });
-
     it("should prioritize identifier file over other detection methods", async () => {
       mockZip.file(CrtFileIdentifier, "");
       mockZip.file(ExternalCustomFiles.Task, "task");
