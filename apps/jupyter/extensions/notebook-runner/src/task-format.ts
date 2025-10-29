@@ -6,19 +6,19 @@ export enum TaskFormat {
 export const CrtFileIdentifier = ".crt";
 
 export const CrtInternalFiles = {
-  Template: "template.ipynb",
-  Student: "student.ipynb",
-  Autograder: "autograder.zip",
-  Data: "data",
-  GradingData: "grading_data",
-  Src: "src",
-  GradingSrc: "grading_src",
+  template: "template.ipynb",
+  student: "student.ipynb",
+  autograder: "autograder.zip",
+  data: "data",
+  gradingData: "grading_data",
+  src: "src",
+  gradingSrc: "grading_src",
 };
 
 export const GenericNotebookFiles = {
-  Task: "task.ipynb",
-  Data: "data",
-  GradingData: "grading_data",
-  Src: "src",
-  GradingSrc: "grading_src",
+  task: "task.ipynb",
+  data: "data",
+  gradingData: "grading_data",
+  src: "src",
+  gradingSrc: "grading_src",
 };

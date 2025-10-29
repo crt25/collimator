@@ -25,16 +25,16 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
   }
 
   const hasCrtInternalFiles =
-    zip.file(CrtInternalFiles.Template) &&
-    zip.file(CrtInternalFiles.Student) &&
-    zip.file(CrtInternalFiles.Autograder);
+    zip.file(CrtInternalFiles.template) &&
+    zip.file(CrtInternalFiles.student) &&
+    zip.file(CrtInternalFiles.autograder);
 
   // If all CRT internal files are present, it's a CRT internal format
   if (hasCrtInternalFiles) {
     return TaskFormat.CrtInternal;
   }
 
-  const hasGenericNotebookFormat = zip.file(GenericNotebookFiles.Task);
+  const hasGenericNotebookFormat = zip.file(GenericNotebookFiles.task);
 
   if (hasGenericNotebookFormat) {
     return TaskFormat.GenericNotebook;

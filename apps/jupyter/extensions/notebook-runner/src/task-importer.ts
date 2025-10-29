@@ -101,33 +101,33 @@ export const importCrtInternalTask = async (
   const zip = await loadJSZip(task);
 
   const taskTemplateFile = await zip
-    .file(CrtInternalFiles.Template)
+    .file(CrtInternalFiles.template)
     ?.async("blob");
 
   const studentTaskFile = await zip
-    .file(CrtInternalFiles.Student)
+    .file(CrtInternalFiles.student)
     ?.async("blob");
 
   const autograderFile = await zip
-    .file(CrtInternalFiles.Autograder)
+    .file(CrtInternalFiles.autograder)
     ?.async("blob");
 
   if (!taskTemplateFile || !studentTaskFile || !autograderFile) {
     throw new MissingRequiredFilesError(
       TaskFormat.CrtInternal,
       [
-        CrtInternalFiles.Template,
-        CrtInternalFiles.Student,
-        CrtInternalFiles.Autograder,
+        CrtInternalFiles.template,
+        CrtInternalFiles.student,
+        CrtInternalFiles.autograder,
       ],
       Object.keys(zip.files),
     );
   }
 
-  const data = await extractFolder(zip, CrtInternalFiles.Data);
-  const gradingData = await extractFolder(zip, CrtInternalFiles.GradingData);
-  const src = await extractFolder(zip, CrtInternalFiles.Src);
-  const gradingSrc = await extractFolder(zip, CrtInternalFiles.GradingSrc);
+  const data = await extractFolder(zip, CrtInternalFiles.data);
+  const gradingData = await extractFolder(zip, CrtInternalFiles.gradingData);
+  const src = await extractFolder(zip, CrtInternalFiles.src);
+  const gradingSrc = await extractFolder(zip, CrtInternalFiles.gradingSrc);
 
   return {
     taskTemplateFile,
@@ -145,23 +145,23 @@ export const importGenericNotebookTask = async (
 ): Promise<GenericNotebookTask> => {
   const zip = await loadJSZip(task);
 
-  const taskFile = await zip.file(GenericNotebookFiles.Task)?.async("blob");
+  const taskFile = await zip.file(GenericNotebookFiles.task)?.async("blob");
 
   if (!taskFile) {
     throw new MissingRequiredFilesError(
       TaskFormat.GenericNotebook,
-      [GenericNotebookFiles.Task],
+      [GenericNotebookFiles.task],
       Object.keys(zip.files),
     );
   }
 
-  const data = await extractFolder(zip, GenericNotebookFiles.Data);
+  const data = await extractFolder(zip, GenericNotebookFiles.data);
   const gradingData = await extractFolder(
     zip,
-    GenericNotebookFiles.GradingData,
+    GenericNotebookFiles.gradingData,
   );
-  const src = await extractFolder(zip, GenericNotebookFiles.Src);
-  const gradingSrc = await extractFolder(zip, GenericNotebookFiles.GradingSrc);
+  const src = await extractFolder(zip, GenericNotebookFiles.src);
+  const gradingSrc = await extractFolder(zip, GenericNotebookFiles.gradingSrc);
 
   return {
     taskFile,

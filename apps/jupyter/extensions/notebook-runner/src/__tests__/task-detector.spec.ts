@@ -18,7 +18,7 @@ describe("detectTaskFormat", () => {
   describe("CRT Internal format detection via identifier file", () => {
     it("should prioritize identifier file over other detection methods", async () => {
       mockZip.file(CrtFileIdentifier, "");
-      mockZip.file(GenericNotebookFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.task, "task");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -30,9 +30,9 @@ describe("detectTaskFormat", () => {
 
   describe("CRT Internal format detection via required files", () => {
     it("should detect CRT internal format with all three required files", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template content");
-      mockZip.file(CrtInternalFiles.Student, "student content");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder content");
+      mockZip.file(CrtInternalFiles.template, "template content");
+      mockZip.file(CrtInternalFiles.student, "student content");
+      mockZip.file(CrtInternalFiles.autograder, "autograder content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -42,8 +42,8 @@ describe("detectTaskFormat", () => {
     });
 
     it("should not detect CRT internal when template is missing", async () => {
-      mockZip.file(CrtInternalFiles.Student, "student");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder");
+      mockZip.file(CrtInternalFiles.student, "student");
+      mockZip.file(CrtInternalFiles.autograder, "autograder");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -53,8 +53,8 @@ describe("detectTaskFormat", () => {
     });
 
     it("should not detect CRT internal when student file is missing", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder");
+      mockZip.file(CrtInternalFiles.template, "template");
+      mockZip.file(CrtInternalFiles.autograder, "autograder");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -64,8 +64,8 @@ describe("detectTaskFormat", () => {
     });
 
     it("should not detect CRT internal when autograder is missing", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template");
-      mockZip.file(CrtInternalFiles.Student, "student");
+      mockZip.file(CrtInternalFiles.template, "template");
+      mockZip.file(CrtInternalFiles.student, "student");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -75,9 +75,9 @@ describe("detectTaskFormat", () => {
     });
 
     it("should detect CRT internal with empty required files", async () => {
-      mockZip.file(CrtInternalFiles.Template, "");
-      mockZip.file(CrtInternalFiles.Student, "");
-      mockZip.file(CrtInternalFiles.Autograder, "");
+      mockZip.file(CrtInternalFiles.template, "");
+      mockZip.file(CrtInternalFiles.student, "");
+      mockZip.file(CrtInternalFiles.autograder, "");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -89,7 +89,7 @@ describe("detectTaskFormat", () => {
 
   describe("External Custom format detection", () => {
     it("should detect external custom format with task file", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task content");
+      mockZip.file(GenericNotebookFiles.task, "task content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -99,7 +99,7 @@ describe("detectTaskFormat", () => {
     });
 
     it("should not detect external custom when task file is missing", async () => {
-      mockZip.file(`${GenericNotebookFiles.Data}/data.txt`, "data");
+      mockZip.file(`${GenericNotebookFiles.data}/data.txt`, "data");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -109,7 +109,7 @@ describe("detectTaskFormat", () => {
     });
 
     it("should detect external custom with empty task file", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "");
+      mockZip.file(GenericNotebookFiles.task, "");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -182,9 +182,9 @@ describe("detectTaskFormat", () => {
 
   describe("edge cases", () => {
     it("should handle ZIP with extra files alongside required files", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template");
-      mockZip.file(CrtInternalFiles.Student, "student");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder");
+      mockZip.file(CrtInternalFiles.template, "template");
+      mockZip.file(CrtInternalFiles.student, "student");
+      mockZip.file(CrtInternalFiles.autograder, "autograder");
       mockZip.file("README.md", "readme");
       mockZip.file("thisisanextrafile.txt", "extra");
 
@@ -196,9 +196,9 @@ describe("detectTaskFormat", () => {
     });
 
     it("should handle binary files in ZIP", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.task, "task");
       const binaryData = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
-      mockZip.file(`${GenericNotebookFiles.Data}/image.png`, binaryData);
+      mockZip.file(`${GenericNotebookFiles.data}/image.png`, binaryData);
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -208,9 +208,9 @@ describe("detectTaskFormat", () => {
     });
 
     it("should handle files with special characters in names", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.task, "task");
       mockZip.file(
-        `${GenericNotebookFiles.Data}/file with spaces & special!.txt`,
+        `${GenericNotebookFiles.data}/file with spaces & special!.txt`,
         "content",
       );
 

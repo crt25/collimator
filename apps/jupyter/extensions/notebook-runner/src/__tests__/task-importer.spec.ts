@@ -25,12 +25,12 @@ describe("importCrtInternalTask", () => {
       const dataFile = "data.txt";
       const gradingDataFile = "grading-data.txt";
 
-      mockZip.file(CrtInternalFiles.Template, templateContent);
-      mockZip.file(CrtInternalFiles.Student, studentContent);
-      mockZip.file(CrtInternalFiles.Autograder, autograderContent);
-      mockZip.file(`${CrtInternalFiles.Data}/${dataFile}`, "data content");
+      mockZip.file(CrtInternalFiles.template, templateContent);
+      mockZip.file(CrtInternalFiles.student, studentContent);
+      mockZip.file(CrtInternalFiles.autograder, autograderContent);
+      mockZip.file(`${CrtInternalFiles.data}/${dataFile}`, "data content");
       mockZip.file(
-        `${CrtInternalFiles.GradingData}/${gradingDataFile}`,
+        `${CrtInternalFiles.gradingData}/${gradingDataFile}`,
         "grading data content",
       );
 
@@ -48,9 +48,9 @@ describe("importCrtInternalTask", () => {
     });
 
     it("should handle tasks with empty optional folders", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template content");
-      mockZip.file(CrtInternalFiles.Student, "student content");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder content");
+      mockZip.file(CrtInternalFiles.template, "template content");
+      mockZip.file(CrtInternalFiles.student, "student content");
+      mockZip.file(CrtInternalFiles.autograder, "autograder content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -63,14 +63,14 @@ describe("importCrtInternalTask", () => {
     });
 
     it("should correctly extract files from nested folders", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template content");
-      mockZip.file(CrtInternalFiles.Student, "student content");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder content");
+      mockZip.file(CrtInternalFiles.template, "template content");
+      mockZip.file(CrtInternalFiles.student, "student content");
+      mockZip.file(CrtInternalFiles.autograder, "autograder content");
       mockZip.file(
-        `${CrtInternalFiles.Data}/nested/file.txt`,
+        `${CrtInternalFiles.data}/nested/file.txt`,
         "nested content",
       );
-      mockZip.file(`${CrtInternalFiles.Src}/code.py`, "print('hello')");
+      mockZip.file(`${CrtInternalFiles.src}/code.py`, "print('hello')");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -81,12 +81,12 @@ describe("importCrtInternalTask", () => {
     });
 
     it("should handle binary files in data folder", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template");
-      mockZip.file(CrtInternalFiles.Student, "student");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder");
+      mockZip.file(CrtInternalFiles.template, "template");
+      mockZip.file(CrtInternalFiles.student, "student");
+      mockZip.file(CrtInternalFiles.autograder, "autograder");
 
       const binaryData = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
-      mockZip.file(`${CrtInternalFiles.Data}/image.png`, binaryData);
+      mockZip.file(`${CrtInternalFiles.data}/image.png`, binaryData);
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -98,8 +98,8 @@ describe("importCrtInternalTask", () => {
 
   describe("missing required files", () => {
     it("should throw MissingRequiredFilesError when template file is missing", async () => {
-      mockZip.file(CrtInternalFiles.Student, "student content");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder content");
+      mockZip.file(CrtInternalFiles.student, "student content");
+      mockZip.file(CrtInternalFiles.autograder, "autograder content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -109,8 +109,8 @@ describe("importCrtInternalTask", () => {
     });
 
     it("should throw MissingRequiredFilesError when student file is missing", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template content");
-      mockZip.file(CrtInternalFiles.Autograder, "autograder content");
+      mockZip.file(CrtInternalFiles.template, "template content");
+      mockZip.file(CrtInternalFiles.autograder, "autograder content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -120,8 +120,8 @@ describe("importCrtInternalTask", () => {
     });
 
     it("should throw MissingRequiredFilesError when autograder file is missing", async () => {
-      mockZip.file(CrtInternalFiles.Template, "template content");
-      mockZip.file(CrtInternalFiles.Student, "student content");
+      mockZip.file(CrtInternalFiles.template, "template content");
+      mockZip.file(CrtInternalFiles.student, "student content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -154,8 +154,8 @@ describe("importGenericNotebookTask", () => {
       const taskContent = "task content";
       const dataFile = "data.txt";
 
-      mockZip.file(GenericNotebookFiles.Task, taskContent);
-      mockZip.file(`${GenericNotebookFiles.Data}/${dataFile}`, "data content");
+      mockZip.file(GenericNotebookFiles.task, taskContent);
+      mockZip.file(`${GenericNotebookFiles.data}/${dataFile}`, "data content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -169,14 +169,14 @@ describe("importGenericNotebookTask", () => {
     });
 
     it("should handle tasks with all optional folders populated", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task content");
-      mockZip.file(`${GenericNotebookFiles.Data}/data.txt`, "data");
+      mockZip.file(GenericNotebookFiles.task, "task content");
+      mockZip.file(`${GenericNotebookFiles.data}/data.txt`, "data");
       mockZip.file(
-        `${GenericNotebookFiles.GradingData}/grading.txt`,
+        `${GenericNotebookFiles.gradingData}/grading.txt`,
         "grading",
       );
-      mockZip.file(`${GenericNotebookFiles.Src}/code.py`, "code");
-      mockZip.file(`${GenericNotebookFiles.GradingSrc}/test.py`, "test");
+      mockZip.file(`${GenericNotebookFiles.src}/code.py`, "code");
+      mockZip.file(`${GenericNotebookFiles.gradingSrc}/test.py`, "test");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -189,7 +189,7 @@ describe("importGenericNotebookTask", () => {
     });
 
     it("should handle empty ZIP with only required file", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "minimal task");
+      mockZip.file(GenericNotebookFiles.task, "minimal task");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -203,8 +203,8 @@ describe("importGenericNotebookTask", () => {
     });
 
     it("should preserve file structure with multiple levels", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task");
-      mockZip.file(`${GenericNotebookFiles.Src}/level1/level2/deep.py`, "code");
+      mockZip.file(GenericNotebookFiles.task, "task");
+      mockZip.file(`${GenericNotebookFiles.src}/level1/level2/deep.py`, "code");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
@@ -214,9 +214,9 @@ describe("importGenericNotebookTask", () => {
     });
 
     it("should handle files with special characters in names", async () => {
-      mockZip.file(GenericNotebookFiles.Task, "task");
+      mockZip.file(GenericNotebookFiles.task, "task");
       mockZip.file(
-        `${GenericNotebookFiles.Data}/file with spaces & special.txt`,
+        `${GenericNotebookFiles.data}/file with spaces & special.txt`,
         "content",
       );
 
@@ -232,7 +232,7 @@ describe("importGenericNotebookTask", () => {
 
   describe("missing required files", () => {
     it("should throw MissingRequiredFilesError when task file is missing", async () => {
-      mockZip.file(`${GenericNotebookFiles.Data}/file.txt`, "data content");
+      mockZip.file(`${GenericNotebookFiles.data}/file.txt`, "data content");
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
