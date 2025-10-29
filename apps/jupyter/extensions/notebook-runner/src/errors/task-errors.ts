@@ -18,12 +18,16 @@ export class UnsupportedTaskFormatError extends TaskError {
 export class MissingRequiredFilesError extends TaskError {
   constructor(
     public readonly format: string,
-    public readonly missingFiles: string[],
-    public readonly availableFiles: string[],
+    public readonly requiredFiles: string[],
+    public readonly actualFiles: string[],
   ) {
+    const missing = requiredFiles.filter(
+      (required) => !actualFiles.includes(required),
+    );
+
     super(
-      `${format} format is missing required files: ${missingFiles.join(", ")}\n` +
-        `Files found: ${availableFiles.join(", ")}`,
+      `${format} format is missing required files: ${missing.join(", ")}\n` +
+        `Files found: ${actualFiles.join(", ")}`,
     );
   }
 }
