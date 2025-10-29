@@ -23,6 +23,7 @@ import {
   CrtInternalTask,
   ExternalCustomTask,
   FileMap,
+  FileSystemOperation,
   importCrtInternalTask,
   importExternalCustomTask,
 } from "./task-importer";
@@ -555,7 +556,11 @@ export class EmbeddedPythonCallbacks {
     } catch (e) {
       // Throw FileSystemError for any error encountered during reading
       const error = e instanceof Error ? e : undefined;
-      throw new FileSystemError("read folder", basePath, error);
+      throw new FileSystemError(
+        FileSystemOperation.ReadFolder,
+        basePath,
+        error,
+      );
     }
     return files;
   }

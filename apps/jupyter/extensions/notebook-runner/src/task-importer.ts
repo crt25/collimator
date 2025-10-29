@@ -36,6 +36,11 @@ export interface ExternalCustomTask {
   gradingSrc: Directory;
 }
 
+export enum FileSystemOperation {
+  ExtractZipFile = "extract zip file",
+  ReadFolder = "read folder",
+}
+
 const extractFolder = async (
   zip: JSZip,
   prefix: string,
@@ -69,7 +74,7 @@ const extractFolder = async (
         files.set(relativePath, blob);
       } catch (error) {
         throw new FileSystemError(
-          "extract",
+          FileSystemOperation.ExtractZipFile,
           path,
           error instanceof Error ? error : undefined,
         );
@@ -81,7 +86,7 @@ const extractFolder = async (
     }
 
     throw new FileSystemError(
-      "read folder",
+      FileSystemOperation.ReadFolder,
       prefix,
       error instanceof Error ? error : undefined,
     );
