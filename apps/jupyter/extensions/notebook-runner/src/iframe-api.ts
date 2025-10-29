@@ -418,6 +418,9 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async putFileContents(path: string, content: Blob): Promise<void> {
+    // create directories if needed
+    await this.createDirectoryPath(path);
+
     if (content.type === "text/plain" || path.endsWith(".txt")) {
       const textContent = await content.text();
       await this.app.serviceManager.contents.save(path, {
@@ -483,31 +486,39 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
+  private async createDirectoryPath(path: string): Promise<void> {
+    const pathParts = path.split("/").filter((part) => part !== "");
+
+    if (pathParts.length <= 1) {
+      // No need to create folders
+      return;
+    }
+
+    let currentPath = "";
+
+    // Create all folders along the path
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      currentPath = currentPath
+        ? `${currentPath}/${pathParts[i]}`
+        : `/${pathParts[i]}`;
+
+      try {
+        await this.createFolder(currentPath, pathParts[i]);
+      } catch (error) {
+        // Folder may already exist, ignore errors
+        if (!(error instanceof FolderAlreadyExistsError)) {
+          throw error;
+        }
+      }
+    }
+  }
+
   private async writeFolderContents(
     basePath: string,
     files: FileMap,
   ): Promise<void> {
     for (const [relativePath, blob] of files.entries()) {
       const path = `${basePath}/${relativePath}`;
-      const pathParts = relativePath.split("/");
-
-      // Create all folders along the path
-      if (pathParts.length > 1) {
-        let currentPath = basePath;
-
-        for (let i = 0; i < pathParts.length - 1; i++) {
-          currentPath += `/${pathParts[i]}`;
-
-          try {
-            await this.createFolder(currentPath, pathParts[i]);
-          } catch (error) {
-            // folder may already exist, ignore errors
-            if (!(error instanceof FolderAlreadyExistsError)) {
-              throw error;
-            }
-          }
-        }
-      }
       await this.putFileContents(path, blob);
     }
   }
