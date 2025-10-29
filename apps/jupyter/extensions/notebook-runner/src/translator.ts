@@ -10,7 +10,7 @@ const messages: Record<string, Record<string, string>> = {
 export const getMessage = (
   translator: ITranslator,
   key: string,
-  values?: Record<string, string | number>,
+  values?: Record<string, string>,
 ): string => {
   const locale = translator.languageCode ?? "en";
 
@@ -20,9 +20,10 @@ export const getMessage = (
 
   if (values) {
     // Replace {variable} placeholders in the message with actual values
-    message = message.replaceAll(/\{(\w+)\}/g, (_, varName) => {
-      return String(values[varName] ?? `{${varName}}`);
-    });
+    message = message.replaceAll(
+      /\{(\w+)\}/g,
+      (_, varName) => values[varName] ?? `{${varName}}`,
+    );
   }
 
   return message;
