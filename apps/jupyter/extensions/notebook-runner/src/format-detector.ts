@@ -15,7 +15,7 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
   } catch {
     throw new UnsupportedTaskFormatError(
       [],
-      "Failed to read task file as ZIP archive.",
+      "Failed to read the project as ZIP archive.",
     );
   }
 
@@ -40,8 +40,5 @@ export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
     return TaskFormat.ExternalCustom;
   }
 
-  throw new UnsupportedTaskFormatError(
-    [],
-    "The task file does not match any supported format.",
-  );
+  throw new UnsupportedTaskFormatError(Object.keys(zip.files));
 };

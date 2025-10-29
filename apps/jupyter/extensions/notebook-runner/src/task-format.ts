@@ -1,7 +1,6 @@
 export enum TaskFormat {
   CrtInternal = "CrtInternal",
   ExternalCustom = "ExternalCustom",
-  Unknown = "Unknown",
 }
 
 export const CrtFileIdentifier = ".crt";
