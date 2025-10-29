@@ -8,6 +8,49 @@ const messages: Record<string, Record<string, string>> = {
   fr: frMessages,
 };
 
+export const getMessage = (
+  translator: ITranslator,
+  key: string,
+  values?: Record<string, string>,
+): string => {
+  const locale = translator.languageCode ?? "en";
+
+  const localeMessages = messages[locale] ?? messages.en;
+
+  let message =
+    localeMessages[key] ??
+    messages.en[key] ??
+    `Untranslated message key: '${key}'`;
+
+  if (!values) {
+    return message;
+  }
+
+  // Replace {variable} placeholders in the message with actual values
+  message = message.replaceAll(
+    /\{(\w+)\}/g,
+    (_, varName) => values[varName] ?? `{${varName}}`,
+  );
+
+  return message;
+};
+
+export const displayErrorMessage = (
+  translator: ITranslator,
+  key: string,
+  values?: Record<string, string>,
+): void => {
+  showErrorMessage(getMessage(translator, key, values));
+};
+
+export const displaySuccessMessage = (
+  translator: ITranslator,
+  key: string,
+  values?: Record<string, string>,
+): void => {
+  showSuccessMessage(getMessage(translator, key, values));
+};
+
 export const MessageKeys = {
   CannotLoadProject: "useEmbeddedPython.cannotLoadProject",
   CannotSaveProject: "useEmbeddedPython.cannotSaveProject",
