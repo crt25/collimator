@@ -12,29 +12,35 @@ import {
 
 export type FileMap = Map<string, Blob>;
 
+type File = Blob;
+type FilePath = string;
+
+/** This represents a flattened directory structure where FilePath may include nested subfolders. */
+type Directory = Map<FilePath, File>;
+
 export interface CrtInternalTask {
-  taskTemplateFile: Blob;
-  studentTaskFile: Blob;
-  autograderFile: Blob;
-  data: FileMap;
-  gradingData: FileMap;
-  src: FileMap;
-  gradingSrc: FileMap;
+  taskTemplateFile: File;
+  studentTaskFile: File;
+  autograderFile: File;
+  data: Directory;
+  gradingData: Directory;
+  src: Directory;
+  gradingSrc: Directory;
 }
 
 export interface ExternalCustomTask {
-  taskFile: Blob;
-  data: FileMap;
-  gradingData: FileMap;
-  src: FileMap;
-  gradingSrc: FileMap;
+  taskFile: File;
+  data: Directory;
+  gradingData: Directory;
+  src: Directory;
+  gradingSrc: Directory;
 }
 
 const extractFolder = async (
   zip: JSZip,
   prefix: string,
-): Promise<Map<string, Blob>> => {
-  const files = new Map<string, Blob>();
+): Promise<Directory> => {
+  const files = new Map<FilePath, File>();
 
   const folderPath = prefix.endsWith("/") ? prefix : `${prefix}/`;
 
