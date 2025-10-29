@@ -30,10 +30,10 @@ export class MissingRequiredFilesError extends TaskError {
 
 export class InvalidTaskBlobError extends TaskError {
   constructor(
-    public readonly reason: string,
+    public readonly originalError?: Error,
     message?: string,
   ) {
-    super(message || `Invalid task file: ${reason}`);
+    super(message || `Invalid task file: ${originalError}`);
   }
 }
 

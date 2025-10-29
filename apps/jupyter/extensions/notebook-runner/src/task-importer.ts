@@ -165,8 +165,8 @@ export const loadJSZip = async (task: Blob): Promise<JSZip> => {
     await zip.loadAsync(task);
   } catch (error) {
     throw new InvalidTaskBlobError(
+      error instanceof Error ? error : undefined,
       "Failed to read ZIP archive",
-      error instanceof Error ? error.message : String(error),
     );
   }
   return zip;
