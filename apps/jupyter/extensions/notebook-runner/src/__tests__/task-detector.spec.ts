@@ -5,14 +5,27 @@ import {
   GenericNotebookFiles,
   TaskFormat,
 } from "../task-format";
-import { UnsupportedTaskFormatError } from "../errors/task-errors";
+import {
+  InvalidTaskBlobError,
+  UnsupportedTaskFormatError,
+} from "../errors/task-errors";
 import { detectTaskFormat } from "../format-detector";
+import { mockTaskImporterLoadJSZip } from "./helpers";
 
 describe("detectTaskFormat", () => {
   let mockZip: JSZip;
+  let cleanup: () => void;
+
+  beforeAll(() => {
+    cleanup = mockTaskImporterLoadJSZip();
+  });
 
   beforeEach(() => {
     mockZip = new JSZip();
+  });
+
+  afterAll(() => {
+    cleanup();
   });
 
   describe("CRT Internal format detection via identifier file", () => {
