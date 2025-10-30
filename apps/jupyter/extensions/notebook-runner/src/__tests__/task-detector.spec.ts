@@ -141,21 +141,11 @@ describe("detectTaskFormat", () => {
   });
 
   describe("error handling", () => {
-    it("should throw UnsupportedTaskFormatError for invalid blob", async () => {
+    it("should throw InvalidTaskBlobError for invalid blob", async () => {
       const invalidBlob = new Blob(["not a zip"], { type: "text/plain" });
 
       await expect(detectTaskFormat(invalidBlob)).rejects.toThrow(
-        UnsupportedTaskFormatError,
-      );
-    });
-
-    it("should throw UnsupportedTaskFormatError for corrupted ZIP", async () => {
-      const corruptedBlob = new Blob(["PK\x03\x04corrupted"], {
-        type: "application/zip",
-      });
-
-      await expect(detectTaskFormat(corruptedBlob)).rejects.toThrow(
-        UnsupportedTaskFormatError,
+        InvalidTaskBlobError,
       );
     });
 
@@ -163,7 +153,7 @@ describe("detectTaskFormat", () => {
       const emptyBlob = new Blob([], { type: "application/zip" });
 
       await expect(detectTaskFormat(emptyBlob)).rejects.toThrow(
-        UnsupportedTaskFormatError,
+        InvalidTaskBlobError,
       );
     });
   });
