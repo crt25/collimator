@@ -100,17 +100,20 @@ export const importCrtInternalTask = async (
 ): Promise<CrtInternalTask> => {
   const zip = await loadJSZip(task);
 
-  const taskTemplateFile = await zip
-    .file(CrtInternalFiles.template)
-    ?.async("blob");
+  const taskTemplateFile = await getFileCaseInsensitive(
+    zip,
+    CrtInternalFiles.template,
+  )?.async("blob");
 
-  const studentTaskFile = await zip
-    .file(CrtInternalFiles.student)
-    ?.async("blob");
+  const studentTaskFile = await getFileCaseInsensitive(
+    zip,
+    CrtInternalFiles.student,
+  )?.async("blob");
 
-  const autograderFile = await zip
-    .file(CrtInternalFiles.autograder)
-    ?.async("blob");
+  const autograderFile = await getFileCaseInsensitive(
+    zip,
+    CrtInternalFiles.autograder,
+  )?.async("blob");
 
   if (!taskTemplateFile || !studentTaskFile || !autograderFile) {
     throw new MissingRequiredFilesError(
@@ -145,7 +148,10 @@ export const importGenericNotebookTask = async (
 ): Promise<GenericNotebookTask> => {
   const zip = await loadJSZip(task);
 
-  const taskFile = await zip.file(GenericNotebookFiles.task)?.async("blob");
+  const taskFile = await getFileCaseInsensitive(
+    zip,
+    GenericNotebookFiles.task,
+  )?.async("blob");
 
   if (!taskFile) {
     throw new MissingRequiredFilesError(
@@ -184,4 +190,22 @@ export const loadJSZip = async (task: Blob): Promise<JSZip> => {
     );
   }
   return zip;
+};
+
+const findFileCaseInsensitive = (
+  zip: JSZip,
+  targetPath: string,
+): string | undefined => {
+  const targetLower = targetPath.toLowerCase();
+  return Object.keys(zip.files).find(
+    (path) => path.toLowerCase() === targetLower,
+  );
+};
+
+const getFileCaseInsensitive = (
+  zip: JSZip,
+  targetPath: string,
+): JSZip.JSZipObject | null => {
+  const actualPath = findFileCaseInsensitive(zip, targetPath);
+  return actualPath ? zip.file(actualPath) : null;
 };
