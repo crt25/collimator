@@ -16,6 +16,30 @@ import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
 import { Mode } from "./mode";
+import {
+  CrtInternalTask,
+  GenericNotebookTask,
+  Directory,
+  FileSystemOperation,
+  importCrtInternalTask,
+  importGenericNotebookTask,
+  exportCrtInternalTask,
+  exportExternalCustomTask,
+  ExportedSharedFiles,
+} from "./task-importer";
+
+import { detectTaskFormat } from "./format-detector";
+import { ImportTask } from "./iframe-rpc/src/methods/import-task";
+import { TaskFormat } from "./task-format";
+
+import { AppTranslator, MessageKeys } from "./translator";
+
+import {
+  GenericNotebookTaskImportError,
+  FileSystemError,
+  UnsupportedTaskFormatError,
+} from "./errors/task-errors";
+import { hasStatus } from "./utils";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -93,20 +117,14 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.autograderLocation,
       );
 
-      const data = await this.getFolderContents("/data");
-      const gradingData = await this.getFolderContents("/grading_data");
-      const src = await this.getFolderContents("/src");
-      const gradingSrc = await this.getFolderContents("/grading_src");
+      const folders = await this.getAllFolderContents();
 
-      const crtInternalTask: CrtInternalTask = {
+      const crtInternalTask = {
         taskTemplateFile,
         studentTaskFile,
         autograderFile,
-        data,
-        gradingData,
-        src,
-        gradingSrc,
-      };
+        ...folders,
+      } satisfies CrtInternalTask;
 
       const taskBlob = await exportCrtInternalTask(crtInternalTask);
 
@@ -134,24 +152,16 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.taskTemplateLocation,
       );
 
-      const data = await this.getFolderContents("/data");
-      const gradingData = await this.getFolderContents("/grading_data");
-      const src = await this.getFolderContents("/src");
-      const gradingSrc = await this.getFolderContents("/grading_src");
+      const folders = await this.getAllFolderContents();
 
-      const externalTask: ExternalCustomTask = {
+      const externalTask = {
         taskFile,
-        data,
-        gradingData,
-        src,
-        gradingSrc,
-      };
+        ...folders,
+      } satisfies GenericNotebookTask;
 
       const taskBlob = await exportExternalCustomTask(externalTask);
 
-      showSuccessMessage(
-        getMessage(this.translator, MessageKeys.ExportSuccess),
-      );
+      this.appTranslator.displaySuccess(MessageKeys.TaskExported);
 
       return {
         file: taskBlob,
@@ -163,15 +173,8 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
-      const errorMessage = e instanceof Error ? e.message : String(e);
-
-      showErrorMessage(
-        getMessage(this.translator, MessageKeys.ExportError, {
-          error: errorMessage,
-        }),
-      );
-
-      throw new ExportError(errorMessage);
+      this.appTranslator.displayErrorFromException(MessageKeys.ExportError, e);
+      throw e;
     }
   }
 
@@ -628,6 +631,24 @@ export class EmbeddedPythonCallbacks {
     this.documentManager.openOrReveal(
       EmbeddedPythonCallbacks.taskTemplateLocation,
     );
+  }
+
+  private async getAllFolderContents(): Promise<{
+    data: FileMap;
+    gradingData: FileMap;
+    src: FileMap;
+    gradingSrc: FileMap;
+  }> {
+    return {
+      data: await this.getFolderContents(EmbeddedPythonCallbacks.dataLocation),
+      gradingData: await this.getFolderContents(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+      ),
+      src: await this.getFolderContents(EmbeddedPythonCallbacks.srcLocation),
+      gradingSrc: await this.getFolderContents(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+      ),
+    } satisfies ExportedSharedFiles;
   }
 }
 
