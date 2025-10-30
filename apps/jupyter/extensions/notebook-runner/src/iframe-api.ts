@@ -484,12 +484,18 @@ export class EmbeddedPythonCallbacks {
       });
 
       if (folder.type === "directory" && folder.content) {
-        for (const file of folder.content) {
-          if (file.type === "file") {
-            const fileContent = await this.getFileContents(
-              `${path}/${file.name}`,
-            );
-            files.set(file.name, fileContent);
+        for (const item of folder.content) {
+          const itemPath = `${path}/${item.name}`;
+
+          if (item.type === "directory") {
+            // Recursively read subdirectories
+            const subFiles = await this.getFolderContents(itemPath);
+            for (const [subPath, blob] of subFiles.entries()) {
+              files.set(`${item.name}/${subPath}`, blob);
+            }
+          } else if (item.type === "file") {
+            const fileContent = await this.getFileContents(itemPath);
+            files.set(item.name, fileContent);
           }
         }
       }
@@ -499,6 +505,7 @@ export class EmbeddedPythonCallbacks {
 
     return files;
   }
+
   private async writeFolderContents(
     basePath: string,
     files: Directory,
