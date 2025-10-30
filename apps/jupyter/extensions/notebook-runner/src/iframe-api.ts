@@ -351,33 +351,17 @@ export class EmbeddedPythonCallbacks {
     };
   }
 
-  private async unpackTask(task: Blob): Promise<CrtInternalTask> {
-    const importedFiles = await importCrtInternalTask(task);
-
-    return {
-      taskTemplateFile: importedFiles.taskTemplateFile,
-      studentTaskFile: importedFiles.studentTaskFile,
-      autograderFile: importedFiles.autograderFile,
-      data: importedFiles.data,
-      src: importedFiles.src,
-      gradingData: importedFiles.gradingData,
-      gradingSrc: importedFiles.gradingSrc,
-    };
-  }
-
-  private async unpackTask(task: Blob): Promise<{
-    taskTemplate: Blob;
-    studentTask: Blob;
-    autograder: Blob;
-  }> {
-    // unzip task
-    const zip = new JSZip();
-    await zip.loadAsync(task);
-    const [taskTemplate, studentTask, autograder] = await Promise.all([
-      zip.file(EmbeddedPythonCallbacks.taskTemplateInZip)?.async("blob"),
-      zip.file(EmbeddedPythonCallbacks.studentTaskInZip)?.async("blob"),
-      zip.file(EmbeddedPythonCallbacks.autograderInZip)?.async("blob"),
-    ]);
+  private async createFolder(path: string, name: string): Promise<void> {
+    try {
+      await this.app.serviceManager.contents.save(path, {
+        type: "directory",
+        name,
+      });
+    } catch (error) {
+      if (hasStatus(error, 409)) {
+        // Folder already exists, we can ignore this error
+        return;
+      }
 
     if (!taskTemplate || !studentTask || !autograder) {
       console.error(
