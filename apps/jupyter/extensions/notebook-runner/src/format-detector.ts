@@ -1,4 +1,3 @@
-import JSZip from "jszip";
 import { UnsupportedTaskFormatError } from "./errors/task-errors";
 import {
   CrtFileIdentifier,
@@ -6,18 +5,10 @@ import {
   GenericNotebookFiles,
   TaskFormat,
 } from "./task-format";
+import { loadJSZip } from "./task-importer";
 
 export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
-  const zip = new JSZip();
-
-  try {
-    await zip.loadAsync(taskBlob);
-  } catch {
-    throw new UnsupportedTaskFormatError(
-      [],
-      "Failed to read the project as ZIP archive.",
-    );
-  }
+  const zip = await loadJSZip(taskBlob);
 
   // If the CRT file identifier is present, it's a CRT internal format
   if (zip.file(CrtFileIdentifier)) {
