@@ -24,6 +24,7 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "../../../../libraries/iframe-rpc/src/methods/export-task";
+import { getTask } from "../utilities/embedded-app";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -231,12 +232,7 @@ export class EmbeddedScratchCallbacks {
 
   async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
     try {
-      const task = await this.getTask({
-        jsonrpc: "2.0",
-        method: "getTask",
-        params: undefined,
-        id: request.id,
-      });
+      const task = await getTask(this.getTask, request.id);
 
       return {
         file: task.file,
