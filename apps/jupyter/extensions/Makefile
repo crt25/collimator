@@ -14,7 +14,7 @@ link:
 	cd ./notebook-runner && jupyter labextension link .
 
 test: 
-	cd ./notebook-runner && yarn test
+	cd ./notebook-runner && jlpm test
 
 create-extension:
 ifeq ($(EXTENSION), 'none')
