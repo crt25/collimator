@@ -1,3 +1,5 @@
+import { FileSystemOperation } from "../task-importer";
+
 export class TaskError extends Error {}
 
 export class UnsupportedTaskFormatError extends TaskError {
@@ -56,7 +58,7 @@ export class InvalidModeError extends TaskError {
 
 export class FileSystemError extends TaskError {
   constructor(
-    public readonly operation: string,
+    public readonly operation: FileSystemOperation,
     public readonly path: string,
     cause: unknown,
   ) {
