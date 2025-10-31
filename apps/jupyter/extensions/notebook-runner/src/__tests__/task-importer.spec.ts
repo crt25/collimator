@@ -326,7 +326,7 @@ describe("importGenericNotebookTask", () => {
     it("should throw MissingRequiredFilesError when task file is missing", async () => {
       mockZip.file(`${GenericNotebookFiles.data}/file.txt`, "data content");
 
-      const arrayBuffer = await mockZip.generateAsync({ type: "uint8array" });
+      const blob = await mockZip.generateAsync({ type: "blob" });
 
       const error = await expectError<MissingRequiredFilesError>(() =>
         TaskImporter.importGenericNotebookTask(blob),
