@@ -1,6 +1,5 @@
 import JSZip from "jszip";
 import {
-  CrtFileIdentifier,
   CrtInternalFiles,
   GenericNotebookFiles,
   TaskFormat,
@@ -26,19 +25,6 @@ describe("detectTaskFormat", () => {
 
   afterAll(() => {
     cleanup();
-  });
-
-  describe("CRT Internal format detection via identifier file", () => {
-    it("should prioritize identifier file over other detection methods", async () => {
-      mockZip.file(CrtFileIdentifier, "");
-      mockZip.file(GenericNotebookFiles.task, "task");
-
-      const blob = await mockZip.generateAsync({ type: "blob" });
-
-      const result = await detectTaskFormat(blob);
-
-      expect(result).toBe(TaskFormat.CrtInternal);
-    });
   });
 
   describe("CRT Internal format detection via required files", () => {

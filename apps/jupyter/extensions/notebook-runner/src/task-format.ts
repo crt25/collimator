@@ -3,8 +3,6 @@ export enum TaskFormat {
   GenericNotebook = "GenericNotebook",
 }
 
-export const CrtFileIdentifier = ".crt";
-
 export const CrtInternalFiles = {
   template: "template.ipynb",
   student: "student.ipynb",

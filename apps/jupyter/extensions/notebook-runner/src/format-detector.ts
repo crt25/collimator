@@ -1,6 +1,5 @@
 import { UnsupportedTaskFormatError } from "./errors/task-errors";
 import {
-  CrtFileIdentifier,
   CrtInternalFiles,
   GenericNotebookFiles,
   TaskFormat,
@@ -9,11 +8,6 @@ import { loadJSZip } from "./task-importer";
 
 export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
   const zip = await loadJSZip(taskBlob);
-
-  // If the CRT file identifier is present, it's a CRT internal format
-  if (zip.file(CrtFileIdentifier)) {
-    return TaskFormat.CrtInternal;
-  }
 
   const hasCrtInternalFiles =
     zip.file(CrtInternalFiles.template) &&
