@@ -5,6 +5,7 @@ import { NotebookRunnerState } from "../notebook-runner-state";
 import { runAssignCommand } from "../command";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
 import { writeJsonToVirtualFilesystem } from "../utils";
+import { copyRequiredFoldersToKernel } from "./helper";
 
 export const registerAssignCommand = (
   state: NotebookRunnerState,
@@ -50,6 +51,8 @@ export const registerAssignCommand = (
         EmbeddedPythonCallbacks.taskTemplateLocation,
         template.content,
       );
+
+      await copyRequiredFoldersToKernel(kernel, contentsManager);
 
       await kernel.requestExecute({
         code: `

@@ -91,7 +91,7 @@ const TaskModal = ({
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("loadTask", {
+    await embeddedApp.current.sendRequest("importTask", {
       task,
       language: intl.locale as Language,
     });

@@ -57,8 +57,9 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn install
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+    -   name: Install playwright dependencies
+        working-directory: ./apps/scratch
+        run: yarn playwright install --with-deps
 
       - name: Install jupyter app dependencies
         working-directory: ./apps/jupyter
@@ -91,14 +92,18 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn lint
 
+        - name: Lint jupyter app
+        working-directory: ./apps/jupyter
+        run: yarn lint
+
          # the database must be fully migrated before running prisma:generate
       - name: Prepare test database
         working-directory: ./backend
         run: yarn prisma migrate deploy
 
-      - name: Build backend
-        working-directory: ./backend
-        run: yarn prisma:generate && yarn build
+    -   name: Build scratch app
+        working-directory: ./apps/scratch
+        run: yarn build
 
       - name: Build frontend
         working-directory: ./frontend
@@ -123,6 +128,10 @@ jobs:
         run: yarn test:e2e:cov
         env:
           CI: true
+
+    -   name: Test jupyter app
+        working-directory: ./apps/jupyter
+        run: make test
 
       - name: Install playwright dependencies
         working-directory: ./frontend

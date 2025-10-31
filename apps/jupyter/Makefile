@@ -9,6 +9,13 @@ all: init build
 init: init-submodules install-deps build-otter init-extensions
 	@echo Initialized the jupyterlite project
 
+test:
+ifeq ($(OS),Windows_NT)
+		poetry run pwsh -Command "cd ./extensions && make test"
+else
+		poetry run bash -c "cd ./extensions && make test"
+endif
+
 init-submodules:
 	@echo Initializing git submodules for the JupyterLite project
 	git submodule update --init --recursive
