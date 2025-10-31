@@ -11,13 +11,11 @@ import {
   TaskFormat,
 } from "./task-format";
 
-export type FileMap = Map<string, Blob>;
-
 type File = Blob;
 type FilePath = string;
 
 /** This represents a flattened directory structure where FilePath may include nested subfolders. */
-type Directory = Map<FilePath, File>;
+export type Directory = Map<FilePath, File>;
 
 export interface CrtInternalTask {
   taskTemplateFile: File;

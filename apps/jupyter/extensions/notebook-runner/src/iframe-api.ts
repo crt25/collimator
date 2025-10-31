@@ -22,7 +22,7 @@ import { Mode } from "./mode";
 import {
   CrtInternalTask,
   GenericNotebookTask,
-  FileMap,
+  Directory,
   FileSystemOperation,
   importCrtInternalTask,
   importGenericNotebookTask,
@@ -508,7 +508,7 @@ export class EmbeddedPythonCallbacks {
 
   private async writeFolderContents(
     basePath: string,
-    files: FileMap,
+    files: Directory,
   ): Promise<void> {
     for (const [relativePath, blob] of files.entries()) {
       const path = `${basePath}/${relativePath}`;
@@ -516,9 +516,7 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
-  private async readFolderContents(
-    basePath: string,
-  ): Promise<Map<string, Blob>> {
+  private async readFolderContents(basePath: string): Promise<Directory> {
     const files = new Map<string, Blob>();
 
     try {
