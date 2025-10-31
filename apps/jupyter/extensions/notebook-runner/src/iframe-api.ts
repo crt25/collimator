@@ -537,22 +537,17 @@ export class EmbeddedPythonCallbacks {
           const subFiles = await this.readFolderContents(itemPath);
 
           for (const [subPath, blob] of subFiles.entries()) {
-            files.set(`${item.path}/${subPath}`, blob);
+            files.set(`${item.name}/${subPath}`, blob);
           }
         } else {
           const blob = await this.getFileContents(itemPath);
 
-          files.set(item.path, blob);
+          files.set(item.name, blob);
         }
       }
     } catch (e) {
       // Throw FileSystemError for any error encountered during reading
-      const error = e instanceof Error ? e : undefined;
-      throw new FileSystemError(
-        FileSystemOperation.ReadFolder,
-        basePath,
-        error,
-      );
+      throw new FileSystemError(FileSystemOperation.ReadFolder, basePath, e);
     }
     return files;
   }
