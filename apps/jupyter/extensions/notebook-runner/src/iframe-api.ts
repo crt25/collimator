@@ -38,6 +38,7 @@ import {
   GenericNotebookTaskImportError,
   FileSystemError,
   UnsupportedTaskFormatError,
+  FolderAlreadyExistsError,
 } from "./errors/task-errors";
 
 const logModule = "[Embedded Jupyter]";
@@ -496,8 +497,11 @@ export class EmbeddedPythonCallbacks {
 
       try {
         await this.createFolder(currentPath, pathParts[i]);
-      } catch {
+      } catch (error) {
         // Folder may already exist, ignore
+        if (!(error instanceof FolderAlreadyExistsError)) {
+          throw error;
+        }
       }
     }
   }

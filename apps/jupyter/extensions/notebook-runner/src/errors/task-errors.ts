@@ -100,3 +100,10 @@ export class UnexpectedFileError extends UnexpectedFileTypeError {
     super(path, "file");
   }
 }
+
+export class FolderAlreadyExistsError extends TaskError {
+  constructor(public readonly path: string) {
+    const message = `Folder already exists at path: ${path}`;
+    super(message);
+  }
+}
