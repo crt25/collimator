@@ -1,5 +1,8 @@
 import JSZip from "jszip";
-import { InvalidTaskBlobError } from "../errors/task-errors";
+import {
+  InvalidTaskBlobError,
+  NoErrorThrownError,
+} from "../errors/task-errors";
 import * as TaskImporter from "../task-importer";
 
 /**
@@ -30,4 +33,18 @@ export const mockTaskImporterLoadJSZip = (): (() => void) => {
   return () => {
     spy.mockRestore();
   };
+};
+
+export const expectError = async <TError extends Error>(
+  call: () => unknown,
+): Promise<TError> => {
+  try {
+    await call();
+    throw new NoErrorThrownError();
+  } catch (error: unknown) {
+    if (error instanceof NoErrorThrownError) {
+      throw error;
+    }
+    return error as TError;
+  }
 };
