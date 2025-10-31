@@ -44,18 +44,20 @@ export class AppTranslator {
     return message;
   }
 
-  displayError = (key: string, values?: Record<string, string>): void =>
+  displayError(key: string, values?: Record<string, string>): void {
     showErrorMessage(this.getMessage(key, values));
+  }
 
-  displaySuccess = (key: string, values?: Record<string, string>): void =>
+  displaySuccess(key: string, values?: Record<string, string>): void {
     showSuccessMessage(this.getMessage(key, values));
+  }
 
-  displayErrorFromException = (key: string, error: unknown): void => {
+  displayErrorFromException(key: string, error: unknown): void {
     const errorMessage =
       error instanceof Error
         ? error.message
         : (error?.toString() ?? "Unknown error");
 
     this.displayError(key, { error: errorMessage });
-  };
+  }
 }
