@@ -152,8 +152,9 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<MissingRequiredFilesError>(() =>
-        TaskImporter.importCrtInternalTask(blob),
+      const error = await expectError(
+        () => TaskImporter.importCrtInternalTask(blob),
+        MissingRequiredFilesError,
       );
 
       expect(error.format).toBe(TaskFormat.CrtInternal);
@@ -171,8 +172,9 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<MissingRequiredFilesError>(() =>
-        TaskImporter.importCrtInternalTask(blob),
+      const error = await expectError(
+        () => TaskImporter.importCrtInternalTask(blob),
+        MissingRequiredFilesError,
       );
 
       expect(error).toBeInstanceOf(MissingRequiredFilesError);
@@ -184,8 +186,9 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<MissingRequiredFilesError>(() =>
-        TaskImporter.importCrtInternalTask(blob),
+      const error = await expectError(
+        () => TaskImporter.importCrtInternalTask(blob),
+        MissingRequiredFilesError,
       );
 
       expect(error).toBeInstanceOf(MissingRequiredFilesError);
@@ -196,8 +199,9 @@ describe("importCrtInternalTask", () => {
     it("should throw InvalidTaskBlobError when blob is not a valid ZIP", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      const error = await expectError<InvalidTaskBlobError>(() =>
-        TaskImporter.importCrtInternalTask(invalidBlob),
+      const error = await expectError(
+        () => TaskImporter.importCrtInternalTask(invalidBlob),
+        InvalidTaskBlobError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -328,8 +332,9 @@ describe("importGenericNotebookTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<MissingRequiredFilesError>(() =>
-        TaskImporter.importGenericNotebookTask(blob),
+      const error = await expectError(
+        () => TaskImporter.importGenericNotebookTask(blob),
+        MissingRequiredFilesError,
       );
 
       expect(error).toBeInstanceOf(MissingRequiredFilesError);
@@ -340,8 +345,9 @@ describe("importGenericNotebookTask", () => {
     it("should throw InvalidTaskBlobError when blob is not a valid ZIP", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      const error = await expectError<InvalidTaskBlobError>(() =>
-        TaskImporter.importGenericNotebookTask(invalidBlob),
+      const error = await expectError(
+        () => TaskImporter.importGenericNotebookTask(invalidBlob),
+        MissingRequiredFilesError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -350,8 +356,9 @@ describe("importGenericNotebookTask", () => {
     it("should throw InvalidTaskBlobError with proper error message", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      const error = await expectError<InvalidTaskBlobError>(() =>
-        TaskImporter.importGenericNotebookTask(invalidBlob),
+      const error = await expectError(
+        () => TaskImporter.importGenericNotebookTask(invalidBlob),
+        MissingRequiredFilesError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -385,8 +392,9 @@ describe("loadJSZip", () => {
   it("should throw InvalidTaskBlobError for invalid blob", async () => {
     const invalidBlob = new Blob(["invalid zip"], { type: "text/plain" });
 
-    const error = await expectError<InvalidTaskBlobError>(() =>
-      TaskImporter.loadJSZip(invalidBlob),
+    const error = await expectError(
+      () => TaskImporter.loadJSZip(invalidBlob),
+      InvalidTaskBlobError,
     );
 
     expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -395,8 +403,9 @@ describe("loadJSZip", () => {
   it("should include error message in InvalidTaskBlobError", async () => {
     const invalidBlob = new Blob(["corrupted data"], { type: "text/plain" });
 
-    const error = await expectError<InvalidTaskBlobError>(() =>
-      TaskImporter.loadJSZip(invalidBlob),
+    const error = await expectError(
+      () => TaskImporter.loadJSZip(invalidBlob),
+      InvalidTaskBlobError,
     );
 
     expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -406,8 +415,9 @@ describe("loadJSZip", () => {
   it("should handle empty blob", async () => {
     const emptyBlob = new Blob([], { type: "application/zip" });
 
-    const error = await expectError<InvalidTaskBlobError>(() =>
-      TaskImporter.loadJSZip(emptyBlob),
+    const error = await expectError(
+      () => TaskImporter.loadJSZip(emptyBlob),
+      InvalidTaskBlobError,
     );
 
     expect(error).toBeInstanceOf(InvalidTaskBlobError);

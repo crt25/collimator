@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { InvalidTaskBlobError } from "../errors/task-errors";
+import { InvalidTaskBlobError, TaskError } from "../errors/task-errors";
 import * as TaskImporter from "../task-importer";
 import { NoErrorThrownError } from "./errors";
 
@@ -34,8 +34,9 @@ export const mockTaskImporterLoadJSZip = (): (() => void) => {
   };
 };
 
-export const expectError = async <TError extends Error>(
+export const expectError = async <TError extends TaskError>(
   call: () => unknown,
+  errorType: new (...args: never[]) => TError,
 ): Promise<TError> => {
   try {
     await call();
@@ -44,6 +45,13 @@ export const expectError = async <TError extends Error>(
     if (error instanceof NoErrorThrownError) {
       throw error;
     }
-    return error as TError;
+    if (!(error instanceof errorType)) {
+      const constructorName =
+        error instanceof Error ? error.constructor.name : typeof error;
+      throw new TypeError(
+        `Expected error of type ${errorType.name}, but got ${constructorName}`,
+      );
+    }
+    return error;
   }
 };

@@ -46,8 +46,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -59,8 +60,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -72,8 +74,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -108,8 +111,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -130,8 +134,9 @@ describe("detectTaskFormat", () => {
     it("should throw error for empty ZIP", async () => {
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -143,8 +148,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -155,8 +161,9 @@ describe("detectTaskFormat", () => {
     it("should throw InvalidTaskBlobError for invalid blob", async () => {
       const invalidBlob = new Blob(["not a zip"], { type: "text/plain" });
 
-      const error = await expectError<InvalidTaskBlobError>(() =>
-        detectTaskFormat(invalidBlob),
+      const error = await expectError(
+        () => detectTaskFormat(invalidBlob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -165,8 +172,9 @@ describe("detectTaskFormat", () => {
     it("should handle empty blob", async () => {
       const emptyBlob = new Blob([], { type: "application/zip" });
 
-      const error = await expectError<InvalidTaskBlobError>(() =>
-        detectTaskFormat(emptyBlob),
+      const error = await expectError(
+        () => detectTaskFormat(emptyBlob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -179,8 +187,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
@@ -233,8 +242,9 @@ describe("detectTaskFormat", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      const error = await expectError<UnsupportedTaskFormatError>(() =>
-        detectTaskFormat(blob),
+      const error = await expectError(
+        () => detectTaskFormat(blob),
+        UnsupportedTaskFormatError,
       );
 
       expect(error).toBeInstanceOf(UnsupportedTaskFormatError);
