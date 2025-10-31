@@ -8,10 +8,11 @@ import * as TaskImporter from "../task-importer";
 /**
  * Mocks TaskImporter.loadJSZip to work around Node.js Blob incompatibility with jsdom.
  *
- * JSZip uses FileReader internally, which in jsdom only accepts jsdom's Blob implementation.
- * Node.js Blob causes: "Failed to execute 'readAsArrayBuffer' on 'FileReader': parameter 1 is not of type 'Blob'"
+ * When global.Blob is set to Node.js Blob, JSZip's internal
+ * The fileReader from jsdom rejects it with: "parameter 1 is not of type 'Blob'"
  *
- * We convert Blob → Uint8Array, which JSZip accepts directly without needing FileReader.
+ * This mock converts Node.js Blob -> ArrayBuffer -> Uint8Array, which JSZip
+ * accepts directly without needing FileReader.
  *
  * See: https://github.com/jsdom/jsdom/issues/2555
  */
