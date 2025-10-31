@@ -4,7 +4,7 @@ import { writeBinaryToVirtualFilesystem } from "../utils";
 import { DirectoryNotFoundError } from "../errors/task-errors";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
 
-export const KernelPaths = {
+export const kernelPaths = {
   data: "/data",
   src: "/src",
   gradingData: "/grading_data",
@@ -23,25 +23,25 @@ export const copyRequiredFoldersToKernel = async (
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.dataLocation,
-    KernelPaths.data,
+    kernelPaths.data,
   );
   await copyFolderToKernel(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.srcLocation,
-    KernelPaths.src,
+    kernelPaths.src,
   );
   await copyFolderToKernel(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.gradingDataLocation,
-    KernelPaths.gradingData,
+    kernelPaths.gradingData,
   );
   await copyFolderToKernel(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.gradingSrcLocation,
-    KernelPaths.gradingSrc,
+    kernelPaths.gradingSrc,
   );
 };
 

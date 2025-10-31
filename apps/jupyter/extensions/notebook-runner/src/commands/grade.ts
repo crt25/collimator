@@ -10,7 +10,7 @@ import {
   writeBinaryToVirtualFilesystem,
   writeJsonToVirtualFilesystem,
 } from "../utils";
-import { copyRequiredFoldersToKernel, KernelPaths } from "./helper";
+import { copyRequiredFoldersToKernel, kernelPaths } from "./helper";
 
 const createOnNewNotebookListener =
   (app: JupyterFrontEnd, state: NotebookRunnerState) =>
@@ -101,7 +101,7 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         contentsManager,
         documentManager,
         EmbeddedPythonCallbacks.studentTaskLocation,
-        KernelPaths.results,
+        kernelPaths.results,
       );
 
       // read the notebook that has been executed and autograder
@@ -142,7 +142,7 @@ run(
   no_logo=True,
   debug=True,
   log_server=False,
-  precomputed_results="${KernelPaths.results}",
+  precomputed_results="${kernelPaths.results}",
   output_dir="/"
 )
           `,
