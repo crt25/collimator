@@ -57,10 +57,6 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn install
 
-    -   name: Install jupyter app dependencies
-        working-directory: ./apps/jupyter
-        run: make init
-
     -   name: Install playwright dependencies
         working-directory: ./apps/scratch
         run: yarn playwright install --with-deps
@@ -96,6 +92,10 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn lint
 
+        - name: Lint jupyter app
+        working-directory: ./apps/jupyter
+        run: yarn lint
+
          # the database must be fully migrated before running prisma:generate
       - name: Prepare test database
         working-directory: ./backend
@@ -104,10 +104,6 @@ jobs:
     -   name: Build scratch app
         working-directory: ./apps/scratch
         run: yarn build
-        
-    -   name: Build jupyter app
-        working-directory: ./apps/jupyter
-        run: make build
 
       - name: Build frontend
         working-directory: ./frontend
