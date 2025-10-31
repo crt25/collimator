@@ -76,7 +76,7 @@ const extractFolder = async (
         throw new FileSystemError(
           FileSystemOperation.ExtractZipFile,
           path,
-          error instanceof Error ? error : undefined,
+          error,
         );
       }
     }
@@ -85,11 +85,7 @@ const extractFolder = async (
       throw error;
     }
 
-    throw new FileSystemError(
-      FileSystemOperation.ReadFolder,
-      prefix,
-      error instanceof Error ? error : undefined,
-    );
+    throw new FileSystemError(FileSystemOperation.ReadFolder, prefix, error);
   }
 
   return files;
@@ -184,10 +180,7 @@ export const loadJSZip = async (task: Blob): Promise<JSZip> => {
     zip = new JSZip();
     await zip.loadAsync(task);
   } catch (error) {
-    throw new InvalidTaskBlobError(
-      error instanceof Error ? error : undefined,
-      "Failed to read ZIP archive",
-    );
+    throw new InvalidTaskBlobError(error);
   }
   return zip;
 };

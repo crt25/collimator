@@ -23,10 +23,7 @@ export const mockTaskImporterLoadJSZip = (): (() => void) => {
         await zip.loadAsync(uint8Array);
         return zip;
       } catch (error) {
-        throw new InvalidTaskBlobError(
-          error instanceof Error ? error : undefined,
-          "Failed to read ZIP archive",
-        );
+        throw new InvalidTaskBlobError(error);
       }
     });
 
