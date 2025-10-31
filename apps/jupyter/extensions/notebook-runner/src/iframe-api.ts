@@ -148,11 +148,11 @@ export class EmbeddedPythonCallbacks {
       this.setJupyterLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
-      const unpacked = await this.unpackTask(request.params.task);
+      const importedFiles = await importCrtInternalTask(request.params.task);
 
       await this.closeAllDocuments();
 
-      await this.writeCrtInternalTask(unpacked);
+      await this.writeCrtInternalTask(importedFiles);
 
       this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
@@ -242,7 +242,9 @@ export class EmbeddedPythonCallbacks {
     try {
       console.debug(`${logModule} Loading project`);
 
-      const { autograderFile } = await this.unpackTask(request.params.task);
+      const { autograderFile } = await importCrtInternalTask(
+        request.params.task,
+      );
 
       await this.closeAllDocuments();
 
@@ -399,20 +401,6 @@ export class EmbeddedPythonCallbacks {
     }
 
     return zip.generateAsync({ type: "blob" });
-  }
-
-  private async unpackTask(task: Blob): Promise<CrtInternalTask> {
-    const importedFiles = await importCrtInternalTask(task);
-
-    return {
-      taskTemplateFile: importedFiles.taskTemplateFile,
-      studentTaskFile: importedFiles.studentTaskFile,
-      autograderFile: importedFiles.autograderFile,
-      data: importedFiles.data,
-      src: importedFiles.src,
-      gradingData: importedFiles.gradingData,
-      gradingSrc: importedFiles.gradingSrc,
-    };
   }
 
   private async createFolder(path: string, name: string): Promise<void> {
