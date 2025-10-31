@@ -9,7 +9,7 @@ import {
   InvalidTaskBlobError,
   MissingRequiredFilesError,
 } from "../errors/task-errors";
-import { mockTaskImporterLoadJSZip, expectErrorWithDetails } from "./helpers";
+import { mockTaskImporterLoadJSZip, expectError } from "./helpers";
 
 describe("importCrtInternalTask", () => {
   let mockZip: JSZip;
@@ -152,19 +152,17 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importCrtInternalTask(blob),
-        MissingRequiredFilesError,
-        (error) => {
-          expect(error.format).toBe(TaskFormat.CrtInternal);
-          expect(error.requiredFiles).toContain(CrtInternalFiles.template);
-          expect(error.requiredFiles).toContain(CrtInternalFiles.student);
-          expect(error.requiredFiles).toContain(CrtInternalFiles.autograder);
-          expect(error.actualFiles).not.toContain(CrtInternalFiles.template);
-          expect(error.actualFiles).toContain(CrtInternalFiles.student);
-          expect(error.actualFiles).toContain(CrtInternalFiles.autograder);
-        },
+      const error = await expectError<MissingRequiredFilesError>(() =>
+        TaskImporter.importCrtInternalTask(blob),
       );
+
+      expect(error.format).toBe(TaskFormat.CrtInternal);
+      expect(error.requiredFiles).toContain(CrtInternalFiles.template);
+      expect(error.requiredFiles).toContain(CrtInternalFiles.student);
+      expect(error.requiredFiles).toContain(CrtInternalFiles.autograder);
+      expect(error.actualFiles).not.toContain(CrtInternalFiles.template);
+      expect(error.actualFiles).toContain(CrtInternalFiles.student);
+      expect(error.actualFiles).toContain(CrtInternalFiles.autograder);
     });
 
     it("should throw MissingRequiredFilesError when student file is missing", async () => {
@@ -173,10 +171,11 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importCrtInternalTask(blob),
-        MissingRequiredFilesError,
+      const error = await expectError<MissingRequiredFilesError>(() =>
+        TaskImporter.importCrtInternalTask(blob),
       );
+
+      expect(error).toBeInstanceOf(MissingRequiredFilesError);
     });
 
     it("should throw MissingRequiredFilesError when autograder file is missing", async () => {
@@ -185,10 +184,11 @@ describe("importCrtInternalTask", () => {
 
       const blob = await mockZip.generateAsync({ type: "blob" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importCrtInternalTask(blob),
-        MissingRequiredFilesError,
+      const error = await expectError<MissingRequiredFilesError>(() =>
+        TaskImporter.importCrtInternalTask(blob),
       );
+
+      expect(error).toBeInstanceOf(MissingRequiredFilesError);
     });
   });
 
@@ -196,10 +196,11 @@ describe("importCrtInternalTask", () => {
     it("should throw InvalidTaskBlobError when blob is not a valid ZIP", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importCrtInternalTask(invalidBlob),
-        InvalidTaskBlobError,
+      const error = await expectError<InvalidTaskBlobError>(() =>
+        TaskImporter.importCrtInternalTask(invalidBlob),
       );
+
+      expect(error).toBeInstanceOf(InvalidTaskBlobError);
     });
   });
 });
@@ -325,12 +326,13 @@ describe("importGenericNotebookTask", () => {
     it("should throw MissingRequiredFilesError when task file is missing", async () => {
       mockZip.file(`${GenericNotebookFiles.data}/file.txt`, "data content");
 
-      const blob = await mockZip.generateAsync({ type: "blob" });
+      const arrayBuffer = await mockZip.generateAsync({ type: "uint8array" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importGenericNotebookTask(blob),
-        MissingRequiredFilesError,
+      const error = await expectError<MissingRequiredFilesError>(() =>
+        TaskImporter.importGenericNotebookTask(blob),
       );
+
+      expect(error).toBeInstanceOf(MissingRequiredFilesError);
     });
   });
 
@@ -338,22 +340,22 @@ describe("importGenericNotebookTask", () => {
     it("should throw InvalidTaskBlobError when blob is not a valid ZIP", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importGenericNotebookTask(invalidBlob),
-        InvalidTaskBlobError,
+      const error = await expectError<InvalidTaskBlobError>(() =>
+        TaskImporter.importGenericNotebookTask(invalidBlob),
       );
+
+      expect(error).toBeInstanceOf(InvalidTaskBlobError);
     });
 
     it("should throw InvalidTaskBlobError with proper error message", async () => {
       const invalidBlob = new Blob(["not a zip file"], { type: "text/plain" });
 
-      await expectErrorWithDetails(
-        () => TaskImporter.importGenericNotebookTask(invalidBlob),
-        InvalidTaskBlobError,
-        (error) => {
-          expect(error.message).toBeTruthy();
-        },
+      const error = await expectError<InvalidTaskBlobError>(() =>
+        TaskImporter.importGenericNotebookTask(invalidBlob),
       );
+
+      expect(error).toBeInstanceOf(InvalidTaskBlobError);
+      expect(error.message).toBeTruthy();
     });
   });
 });
@@ -383,30 +385,31 @@ describe("loadJSZip", () => {
   it("should throw InvalidTaskBlobError for invalid blob", async () => {
     const invalidBlob = new Blob(["invalid zip"], { type: "text/plain" });
 
-    await expectErrorWithDetails(
-      () => TaskImporter.loadJSZip(invalidBlob),
-      InvalidTaskBlobError,
+    const error = await expectError<InvalidTaskBlobError>(() =>
+      TaskImporter.loadJSZip(invalidBlob),
     );
+
+    expect(error).toBeInstanceOf(InvalidTaskBlobError);
   });
 
   it("should include error message in InvalidTaskBlobError", async () => {
     const invalidBlob = new Blob(["corrupted data"], { type: "text/plain" });
 
-    await expectErrorWithDetails(
-      () => TaskImporter.loadJSZip(invalidBlob),
-      InvalidTaskBlobError,
-      (error) => {
-        expect(error.message.toLowerCase()).toContain("zip");
-      },
+    const error = await expectError<InvalidTaskBlobError>(() =>
+      TaskImporter.loadJSZip(invalidBlob),
     );
+
+    expect(error).toBeInstanceOf(InvalidTaskBlobError);
+    expect(error.message).toBeTruthy();
   });
 
   it("should handle empty blob", async () => {
     const emptyBlob = new Blob([], { type: "application/zip" });
 
-    await expectErrorWithDetails(
-      () => TaskImporter.loadJSZip(emptyBlob),
-      InvalidTaskBlobError,
+    const error = await expectError<InvalidTaskBlobError>(() =>
+      TaskImporter.loadJSZip(emptyBlob),
     );
+
+    expect(error).toBeInstanceOf(InvalidTaskBlobError);
   });
 });

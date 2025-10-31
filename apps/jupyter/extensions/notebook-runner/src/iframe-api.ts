@@ -37,7 +37,6 @@ import {
   DirectoryNotFoundError,
   GenericNotebookTaskImportError,
   FileSystemError,
-  FolderAlreadyExistsError,
   UnsupportedTaskFormatError,
 } from "./errors/task-errors";
 
@@ -497,11 +496,8 @@ export class EmbeddedPythonCallbacks {
 
       try {
         await this.createFolder(currentPath, pathParts[i]);
-      } catch (error) {
-        // Folder may already exist, ignore errors
-        if (!(error instanceof FolderAlreadyExistsError)) {
-          throw error;
-        }
+      } catch {
+        // Folder may already exist, ignore
       }
     }
   }

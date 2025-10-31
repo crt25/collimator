@@ -71,13 +71,6 @@ export class FileSystemError extends TaskError {
   }
 }
 
-export class FolderAlreadyExistsError extends TaskError {
-  constructor(public readonly path: string) {
-    const message = `Folder already exists at path: ${path}`;
-    super(message);
-  }
-}
-
 export class DirectoryNotFoundError extends TaskError {
   constructor(public readonly path: string) {
     const message = `Directory not found at path: ${path}`;
