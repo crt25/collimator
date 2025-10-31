@@ -38,6 +38,7 @@ import {
   GenericNotebookTaskImportError,
   FileSystemError,
   FolderAlreadyExistsError,
+  UnsupportedTaskFormatError,
 } from "./errors/task-errors";
 
 const logModule = "[Embedded Jupyter]";
@@ -209,6 +210,9 @@ export class EmbeddedPythonCallbacks {
 
           break;
         }
+
+        default:
+          throw new UnsupportedTaskFormatError(Object.values(TaskFormat));
       }
 
       this.appTranslator.displaySuccess(MessageKeys.TaskImported);
