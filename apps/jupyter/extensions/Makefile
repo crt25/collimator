@@ -44,5 +44,5 @@ endif
 	cd $(EXTENSION)
 	jupyter labextension develop . --overwrite
 
-.PHONY: init build create-extension install-extension-deps link-extension
+.PHONY: init build link test create-extension install-extension-deps link-extension 
 .DEFAULT_GOAL := build
