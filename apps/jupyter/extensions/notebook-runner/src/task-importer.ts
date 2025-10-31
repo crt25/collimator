@@ -3,6 +3,7 @@ import {
   FileSystemError,
   InvalidTaskBlobError,
   MissingRequiredFilesError,
+  UnexpectedFileError,
 } from "./errors/task-errors";
 import {
   CrtInternalFiles,
@@ -66,7 +67,7 @@ const extractFolder = async (
 
       if (!relativePath) {
         // Only process files within the specified folder
-        continue;
+        throw new UnexpectedFileError(path);
       }
 
       try {

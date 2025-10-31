@@ -89,3 +89,19 @@ export class GenericNotebookTaskImportError extends TaskError {
     super(message);
   }
 }
+
+export class UnexpectedFileTypeError extends TaskError {
+  constructor(
+    public readonly path: string,
+    public readonly expectedType: string,
+  ) {
+    const message = `Unexpected file type at path: ${path}. Expected type: ${expectedType}.`;
+    super(message);
+  }
+}
+
+export class UnexpectedFileError extends UnexpectedFileTypeError {
+  constructor(public readonly path: string) {
+    super(path, "file");
+  }
+}
