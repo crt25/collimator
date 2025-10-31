@@ -1,9 +1,7 @@
 import JSZip from "jszip";
-import {
-  InvalidTaskBlobError,
-  NoErrorThrownError,
-} from "../errors/task-errors";
+import { InvalidTaskBlobError } from "../errors/task-errors";
 import * as TaskImporter from "../task-importer";
+import { NoErrorThrownError } from "./errors";
 
 /**
  * Mocks TaskImporter.loadJSZip to work around Node.js Blob incompatibility with jsdom.
