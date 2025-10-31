@@ -6,7 +6,8 @@ type Messages = {
 };
 
 export const frMessages: Messages = {
-  "useEmbeddedPython.cannotLoadProject": ": {error}",
+  "useEmbeddedPython.cannotLoadProject":
+    ": Impossible de charger le projet : {error}",
   "useEmbeddedPython.cannotSaveProject":
     "Impossible d'enregistrer le projet : {error}",
   "useEmbeddedPython.cannotImportTask":
