@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import React from "react";
-import { Container, Dropdown } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import {
   defineMessages,
   FormattedMessage,
@@ -12,8 +12,8 @@ import {
 import Head from "next/head";
 import { useUserName } from "@/hooks/useUserName";
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
-import DropdownLinkItem from "./dropdown/DropdownLinkItem";
 import LanguageChooser from "./LanguageChooser";
+import Dropdown, { DropdownItem } from "./Dropdown";
 
 const messages = defineMessages({
   applicationName: {
@@ -102,19 +102,13 @@ const Header = ({
             </li>
             <li>
               {isAuthenticated ? (
-                <Dropdown>
-                  <Dropdown.Toggle data-testid="current-user">
-                    {name}
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <DropdownLinkItem href="/logout">
-                      <FormattedMessage
-                        id="Header.signOut"
-                        defaultMessage="Sign Out"
-                      />
-                    </DropdownLinkItem>
-                  </Dropdown.Menu>
+                <Dropdown trigger={name}>
+                  <DropdownItem href="/logout">
+                    <FormattedMessage
+                      id="Header.signOut"
+                      defaultMessage="Sign Out"
+                    />
+                  </DropdownItem>
                 </Dropdown>
               ) : (
                 <Link href="/login" data-testid="sign-in-button">
