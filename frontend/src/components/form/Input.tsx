@@ -1,40 +1,66 @@
-import styled from "@emotion/styled";
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
-
-const StyledInput = styled.input`
-  padding: 0.25rem 0.5rem;
-
-  max-width: 100%;
-`;
+import { Field, Input as ChakraInput } from "@chakra-ui/react";
+import styled from "@emotion/styled";
 
 const InputWrapper = styled.label`
   display: block;
-  margin-bottom: 1rem;
 `;
 
-const Label = styled.span`
-  display: block;
-  margin-bottom: 0.25rem;
+const styledInputStyles = {
+  padding: "0.25rem 0.5rem",
+  maxWidth: "100%",
+};
+
+const ErrorMessage = styled.div`
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 `;
 
 interface Props {
-  label: MessageDescriptor;
-  children?: React.ReactNode;
+  label?: MessageDescriptor;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
+  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  placeholder?: string;
 }
 
+type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
+  Props;
+
 const Input = forwardRef(function Input(
-  props: React.InputHTMLAttributes<HTMLInputElement> & Props,
+  props: InputProps,
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const { label, children, ...inputProps } = props;
+  const {
+    label,
+    helperText,
+    errorText,
+    invalid,
+    size,
+    placeholder,
+    ...inputProps
+  } = props;
 
   return (
     <InputWrapper>
-      <Label>{intl.formatMessage(label)}</Label>
-      <StyledInput {...inputProps} ref={ref} />
-      {children}
+      <Field.Root invalid={invalid}>
+        {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
+        <ChakraInput
+          css={styledInputStyles}
+          size={size}
+          ref={ref}
+          placeholder={placeholder}
+          {...inputProps}
+        />
+        {errorText && <ErrorMessage>{errorText}</ErrorMessage>}
+        {helperText && !invalid && (
+          <Field.HelperText>{helperText}</Field.HelperText>
+        )}
+      </Field.Root>
     </InputWrapper>
   );
 });
