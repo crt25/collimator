@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { RefObject, useCallback } from "react";
-import { CloseButton, Col } from "react-bootstrap";
+import { Col } from "react-bootstrap";
+import { CloseButton } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
@@ -42,10 +43,9 @@ const SessionMenuWrapper = styled.div`
   flex-direction: column;
 `;
 
-const CloseSessionMenuButton = styled(CloseButton)`
-  padding: 1rem;
-`;
-
+const CloseSessionMenuButtonProps = {
+  padding: "1rem",
+};
 export interface TaskRef {
   showTaskMenu: boolean;
   setShowTaskMenu: (show: boolean) => void;
@@ -109,7 +109,10 @@ const Task = ({
       {showSessionMenu && (
         <SessionMenu>
           <SessionMenuWrapper>
-            <CloseSessionMenuButton onClick={() => setShowSessionMenu(false)} />
+            <CloseButton
+              css={{ ...CloseSessionMenuButtonProps }}
+              onClick={() => setShowSessionMenu(false)}
+            />
             <RemainingHeightContainer>
               <h1 data-testid="session-name">{session.title}</h1>
               <FullHeightRow>
