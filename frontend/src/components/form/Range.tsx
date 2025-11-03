@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
-import PrimeRange from "./PrimeRange";
+import ChakraRange from "./ChakraRange";
 
 const Label = styled.span`
   display: block;
@@ -41,14 +41,12 @@ const Range = ({
       <Label>{intl.formatMessage(label)}</Label>
       <InputWrapper>
         <CurrentValue>{value}</CurrentValue>
-        <PrimeRange
+        <ChakraRange
           min={min}
           max={max}
           step={step ?? 1}
-          value={value}
-          onChange={(e) => {
-            onChange(e.value as number);
-          }}
+          value={value === undefined ? undefined : [value]}
+          onChange={(values) => onChange(values[0])}
         />
       </InputWrapper>
       {children}
