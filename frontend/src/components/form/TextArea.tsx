@@ -1,41 +1,62 @@
-import styled from "@emotion/styled";
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
-
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  min-height: 10rem;
-
-  padding: 0.25rem 0.5rem;
-`;
+import { Field, Textarea as ChakraTextarea } from "@chakra-ui/react";
+import styled from "@emotion/styled";
 
 const InputWrapper = styled.label`
   display: block;
   margin-bottom: 1rem;
 `;
 
-const Label = styled.span`
-  display: block;
-  margin-bottom: 0.25rem;
+const styledTextareaStyles = {
+  padding: "0.25rem 0.5rem",
+  minHeight: "10rem",
+  width: "100%",
+};
+
+const ErrorMessage = styled.div`
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 `;
 
 interface Props {
   label: MessageDescriptor;
-  children: React.ReactNode;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
 }
 
-const TextArea = forwardRef(function Input(
-  props: React.InputHTMLAttributes<HTMLTextAreaElement> & Props,
+type TextAreaProps = Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "size"
+> &
+  Props;
+
+const TextArea = forwardRef(function TextArea(
+  props: TextAreaProps,
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, children, ...inputProps } = props;
+  const { label, helperText, errorText, invalid, size, ...textareaProps } =
+    props;
 
   return (
     <InputWrapper>
-      <Label>{intl.formatMessage(label)}</Label>
-      <StyledTextarea {...inputProps} ref={ref} />
-      {children}
+      <Field.Root invalid={invalid}>
+        <Field.Label>{intl.formatMessage(label)}</Field.Label>
+        <ChakraTextarea
+          css={styledTextareaStyles}
+          size={size}
+          ref={ref}
+          {...textareaProps}
+        />
+        {errorText && <ErrorMessage>{errorText}</ErrorMessage>}
+        {helperText && !invalid && (
+          <Field.HelperText>{helperText}</Field.HelperText>
+        )}
+      </Field.Root>
     </InputWrapper>
   );
 });
