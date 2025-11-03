@@ -12,38 +12,43 @@ import {
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
-import { ListGroup } from "react-bootstrap";
+import { createListCollection, Listbox } from "@chakra-ui/react";
 import { CSS } from "@dnd-kit/utilities";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import styled from "@emotion/styled";
 
 const SortableListWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const SortableItem = (props: {
+const SortableItem = <T extends { id: number }>(props: {
   id: number;
   testId?: string;
+  item: {
+    value: string;
+    label: string;
+    originalItem: T;
+    index: number;
+  };
   children: React.ReactNode;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.id });
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
   return (
-    <ListGroup.Item
+    <Listbox.Item
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
       data-testid={props.testId}
+      item={props.item}
     >
       {props.children}
-    </ListGroup.Item>
+    </Listbox.Item>
   );
 };
 
@@ -63,6 +68,20 @@ const SortableListInput = <TItem extends { id: number }>({
       // add a constraint so that elements within are still clickable, see https://github.com/clauderic/dnd-kit/issues/800#issuecomment-2426989739
       activationConstraint: { distance: 5 },
     }),
+  );
+
+  const collection = useMemo(
+    () =>
+      // Create a collection for the Listbox component
+      createListCollection({
+        items: items.map((item, index) => ({
+          value: item.id.toString(),
+          label: item.id.toString(),
+          originalItem: item,
+          index: index,
+        })),
+      }),
+    [items],
   );
 
   const handleDragEnd = useCallback(
@@ -87,17 +106,25 @@ const SortableListInput = <TItem extends { id: number }>({
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <ListGroup>
-            {items.map((item, index) => (
-              <SortableItem
-                key={`${item.id}`}
-                id={item.id}
-                testId={`${testId}-item-${item.id}`}
-              >
-                {renderItemContent(item, index)}
-              </SortableItem>
-            ))}
-          </ListGroup>
+          <Listbox.Root collection={collection}>
+            <Listbox.Content>
+              {collection.items.map((collectionItem) => (
+                <SortableItem
+                  key={`${collectionItem.originalItem.id}`}
+                  id={collectionItem.originalItem.id}
+                  testId={`${testId}-item-${collectionItem.originalItem.id}`}
+                  item={collectionItem}
+                >
+                  <Listbox.ItemText>
+                    {renderItemContent(
+                      collectionItem.originalItem,
+                      collectionItem.index,
+                    )}
+                  </Listbox.ItemText>
+                </SortableItem>
+              ))}
+            </Listbox.Content>
+          </Listbox.Root>
         </SortableContext>
       </DndContext>
     </SortableListWrapper>
