@@ -25,6 +25,7 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
+import { Provider } from "../components/ui/provider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";
@@ -121,35 +122,37 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <CacheProvider value={cache}>
-      <IntlProvider locale={localizationState.locale} messages={messages}>
-        <YupLocalization>
-          <PrimeReactProvider>
-            <AuthenticationContext.Provider value={authenticationState}>
-              <UpdateAuthenticationContext.Provider
-                value={updateAuthenticationState}
-              >
-                <UpdateLocalizationContext.Provider
-                  value={updateLocalizationState}
+      <Provider>
+        <IntlProvider locale={localizationState.locale} messages={messages}>
+          <YupLocalization>
+            <PrimeReactProvider>
+              <AuthenticationContext.Provider value={authenticationState}>
+                <UpdateAuthenticationContext.Provider
+                  value={updateAuthenticationState}
                 >
-                  <AuthenticationBarrier
-                    authenticationStateLoaded={authenticationStateLoaded}
+                  <UpdateLocalizationContext.Provider
+                    value={updateLocalizationState}
                   >
-                    <WebSocketProvider>
-                      <Component {...pageProps} />
-                      <Toaster
-                        toastOptions={{
-                          position: "bottom-right",
-                          duration: 5000,
-                        }}
-                      />
-                    </WebSocketProvider>
-                  </AuthenticationBarrier>
-                </UpdateLocalizationContext.Provider>
-              </UpdateAuthenticationContext.Provider>
-            </AuthenticationContext.Provider>
-          </PrimeReactProvider>
-        </YupLocalization>
-      </IntlProvider>
+                    <AuthenticationBarrier
+                      authenticationStateLoaded={authenticationStateLoaded}
+                    >
+                      <WebSocketProvider>
+                        <Component {...pageProps} />
+                        <Toaster
+                          toastOptions={{
+                            position: "bottom-right",
+                            duration: 5000,
+                          }}
+                        />
+                      </WebSocketProvider>
+                    </AuthenticationBarrier>
+                  </UpdateLocalizationContext.Provider>
+                </UpdateAuthenticationContext.Provider>
+              </AuthenticationContext.Provider>
+            </PrimeReactProvider>
+          </YupLocalization>
+        </IntlProvider>
+      </Provider>
     </CacheProvider>
   );
 };
