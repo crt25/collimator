@@ -27,6 +27,7 @@ interface Props {
   placeholder?: string;
 }
 
+// Omit the native size attribute to avoid confusion with Chakra UI's size prop
 type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
   Props;
 
