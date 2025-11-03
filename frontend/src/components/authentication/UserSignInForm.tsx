@@ -3,7 +3,6 @@ import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 
@@ -64,11 +63,8 @@ const UserSignInForm = ({
         {...register("password")}
         data-testid="password"
         type="password"
-      >
-        <ValidationErrorMessage>
-          {errors.password?.message}
-        </ValidationErrorMessage>
-      </Input>
+        errorText={errors.password?.message}
+      />
 
       {showBackupPassword && (
         <Input
@@ -76,11 +72,8 @@ const UserSignInForm = ({
           {...register("backupPassword")}
           data-testid="backupPassword"
           type="password"
-        >
-          <ValidationErrorMessage>
-            {errors.backupPassword?.message}
-          </ValidationErrorMessage>
-        </Input>
+          errorText={errors.backupPassword?.message}
+        />
       )}
 
       <SubmitFormButton label={submitMessage} />

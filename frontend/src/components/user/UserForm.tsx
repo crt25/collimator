@@ -75,13 +75,19 @@ const UserForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="user-form">
-      <Input label={messages.name} {...register("name")} data-testid="name">
-        <ValidationErrorMessage>{errors.name?.message}</ValidationErrorMessage>
-      </Input>
+      <Input
+        label={messages.name}
+        {...register("name")}
+        data-testid="name"
+        errorText={errors.name?.message}
+      ></Input>
 
-      <Input label={messages.email} {...register("email")} data-testid="email">
-        <ValidationErrorMessage>{errors.email?.message}</ValidationErrorMessage>
-      </Input>
+      <Input
+        label={messages.email}
+        {...register("email")}
+        data-testid="email"
+        errorText={errors.email?.message}
+      ></Input>
 
       <Select
         label={messages.type}

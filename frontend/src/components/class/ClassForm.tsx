@@ -57,11 +57,12 @@ const ClassForm = ({
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(users) => (
         <form onSubmit={handleSubmit(onSubmit)} data-testid="class-form">
-          <Input label={messages.name} {...register("name")} data-testid="name">
-            <ValidationErrorMessage>
-              {errors.name?.message}
-            </ValidationErrorMessage>
-          </Input>
+          <Input
+            label={messages.name}
+            {...register("name")}
+            data-testid="name"
+            errorText={errors.name?.message}
+          ></Input>
 
           <Select
             label={messages.teacher}

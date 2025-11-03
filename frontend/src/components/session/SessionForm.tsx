@@ -172,11 +172,8 @@ const SessionForm = ({
             label={messages.title}
             {...register("title")}
             data-testid="title"
-          >
-            <ValidationErrorMessage>
-              {errors.title?.message}
-            </ValidationErrorMessage>
-          </Input>
+            errorText={errors.title?.message}
+          ></Input>
 
           <TextArea
             label={messages.description}
@@ -235,11 +232,8 @@ const SessionForm = ({
             {...register("isAnonymous")}
             data-testid="is-anonymous"
             type="checkbox"
-          >
-            <ValidationErrorMessage>
-              {errors.isAnonymous?.message}
-            </ValidationErrorMessage>
-          </Input>
+            errorText={errors.isAnonymous?.message}
+          ></Input>
 
           <SubmitFormButton label={submitMessage} />
         </form>
