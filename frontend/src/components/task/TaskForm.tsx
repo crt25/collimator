@@ -444,20 +444,14 @@ const TaskForm = ({
           label={messages.title}
           {...register("title")}
           data-testid="title"
-        >
-          <ValidationErrorMessage>
-            {errors.title?.message}
-          </ValidationErrorMessage>
-        </Input>
+          errorText={errors.title?.message}
+        ></Input>
         <TextArea
           label={messages.description}
           {...register("description")}
           data-testid="description"
-        >
-          <ValidationErrorMessage>
-            {errors.description?.message}
-          </ValidationErrorMessage>
-        </TextArea>
+          errorText={errors.description?.message}
+        ></TextArea>
         <Select
           alwaysShow
           label={messages.type}

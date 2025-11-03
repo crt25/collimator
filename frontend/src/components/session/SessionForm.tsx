@@ -15,7 +15,6 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
@@ -179,11 +178,8 @@ const SessionForm = ({
             label={messages.description}
             {...register("description")}
             data-testid="description"
-          >
-            <ValidationErrorMessage>
-              {errors.description?.message}
-            </ValidationErrorMessage>
-          </TextArea>
+            errorText={errors.description?.message}
+          ></TextArea>
 
           <SortableListInput
             items={selectedTasks}

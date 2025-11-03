@@ -5,7 +5,6 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
@@ -21,6 +20,7 @@ import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllCla
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
+import Dropdown, { DropdownItem } from "../Dropdown";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -124,37 +124,29 @@ const ClassList = () => {
   const actionsTemplate = useCallback(
     (rowData: ExistingClassWithTeacher) => (
       <div data-testid={`class-${rowData.id}-actions`}>
-        <Dropdown as={ButtonGroup}>
-          <Button
-            variant={ButtonVariant.secondary}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/class/${rowData.id}/edit`);
-            }}
-            data-testid={`class-${rowData.id}-edit-button`}
-          >
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-
-          <Dropdown.Toggle
-            variant="secondary"
-            split
-            data-testid={`class-${rowData.id}-actions-dropdown-button`}
-          />
-
-          <Dropdown.Menu>
-            <Dropdown.Item
+        <Dropdown
+          trigger={
+            <Button
+              variant={ButtonVariant.secondary}
               onClick={(e) => {
                 e.stopPropagation();
-
-                setClassIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
+                router.push(`/class/${rowData.id}/edit`);
               }}
-              data-testid={`class-${rowData.id}-delete-button`}
+              data-testid={`class-${rowData.id}-edit-button`}
             >
-              {intl.formatMessage(TableMessages.delete)}
-            </Dropdown.Item>
-          </Dropdown.Menu>
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          }
+        >
+          <DropdownItem
+            onClick={() => {
+              setClassIdToDelete(rowData.id);
+              setShowDeleteConfirmationModal(true);
+            }}
+            data-testid={`class-${rowData.id}-delete-button`}
+          >
+            {intl.formatMessage(TableMessages.delete)}
+          </DropdownItem>
         </Dropdown>
       </div>
     ),
@@ -212,15 +204,17 @@ const ClassList = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => router.push("class/create")}
-                    data-testid="class-create-button"
-                  >
-                    <FontAwesomeIcon icon={faAdd} />
-                  </Button>
-                </Dropdown>
+                <Dropdown
+                  trigger={
+                    <Button
+                      variant={ButtonVariant.secondary}
+                      onClick={() => router.push("class/create")}
+                      data-testid="class-create-button"
+                    >
+                      <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                  }
+                ></Dropdown>
               }
             />
           </DataTable>

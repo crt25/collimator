@@ -5,7 +5,6 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useEffect, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
@@ -17,6 +16,7 @@ import Tag from "@/components/Tag";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
+import Dropdown, { DropdownItem } from "../Dropdown";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -133,25 +133,32 @@ const LessonList = ({
   const actionsTemplate = useCallback(
     (rowData: Lesson) => (
       <div>
-        <Dropdown as={ButtonGroup}>
-          <Button variant={ButtonVariant.secondary}>
-            <FontAwesomeIcon
-              icon={faEdit}
+        <Dropdown
+          trigger={
+            <Button
+              variant={ButtonVariant.secondary}
               onClick={(e) => {
                 e.stopPropagation();
-
                 router.push(`/lesson/${rowData.id}/edit`);
               }}
-            />
-          </Button>
-
-          <Dropdown.Toggle variant="secondary" split />
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-          </Dropdown.Menu>
+            >
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          }
+        >
+          <DropdownItem
+            onClick={() => {
+              router.push(`/lesson/${rowData.id}/edit`);
+            }}
+          >
+            Edit
+          </DropdownItem>
+          <DropdownItem onClick={() => console.log("Action 2")}>
+            Action 2
+          </DropdownItem>
+          <DropdownItem onClick={() => console.log("Action 3")}>
+            Action 3
+          </DropdownItem>
         </Dropdown>
       </div>
     ),
@@ -211,21 +218,25 @@ const LessonList = ({
           body={actionsTemplate}
           filter
           filterElement={
-            <Dropdown as={ButtonGroup}>
-              <Button
-                variant={ButtonVariant.secondary}
-                onClick={() => router.push("lesson/create")}
-              >
-                <FontAwesomeIcon icon={faAdd} />
-              </Button>
-
-              <Dropdown.Toggle variant="secondary" split />
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
+            <Dropdown
+              trigger={
+                <Button
+                  variant={ButtonVariant.secondary}
+                  onClick={() => router.push("lesson/create")}
+                >
+                  <FontAwesomeIcon icon={faAdd} />
+                </Button>
+              }
+            >
+              <DropdownItem onClick={() => console.log("Action 1")}>
+                Action
+              </DropdownItem>
+              <DropdownItem onClick={() => console.log("Action 2")}>
+                Another action
+              </DropdownItem>
+              <DropdownItem onClick={() => console.log("Action 3")}>
+                Something else
+              </DropdownItem>
             </Dropdown>
           }
         />

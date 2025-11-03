@@ -1,6 +1,5 @@
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
@@ -17,6 +16,7 @@ import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGe
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
+import Dropdown, { DropdownItem } from "../Dropdown";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -82,59 +82,44 @@ const UserList = () => {
 
   const actionsTemplate = useCallback(
     (rowData: ExistingUser) => (
-      <div data-testid={`user-${rowData.id}-actions`}>
-        <Dropdown as={ButtonGroup}>
+      <Dropdown
+        trigger={
           <Button
             variant={ButtonVariant.secondary}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/user/${rowData.id}/edit`);
+            }}
             data-testid={`user-${rowData.id}-edit-button`}
           >
-            <FontAwesomeIcon
-              icon={faEdit}
-              onClick={(e) => {
-                e.stopPropagation();
-
-                router.push(`/user/${rowData.id}/edit`);
-              }}
-            />
+            <FontAwesomeIcon icon={faEdit} />
           </Button>
+        }
+      >
+        <DropdownItem
+          onClick={() => {
+            setUserIdToDelete(rowData.id);
+            setShowDeleteConfirmationModal(true);
+          }}
+          data-testid={`user-${rowData.id}-delete-button`}
+        >
+          {intl.formatMessage(TableMessages.delete)}
+        </DropdownItem>
+        {rowData.oidcSub === null && (
+          <DropdownItem
+            onClick={async () => {
+              const token = await generateRegistrationToken(rowData.id);
 
-          <Dropdown.Toggle
-            variant="secondary"
-            split
-            data-testid={`user-${rowData.id}-actions-dropdown-button`}
-          />
-
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={(e) => {
-                e.stopPropagation();
-
-                setUserIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
-              }}
-              data-testid={`user-${rowData.id}-delete-button`}
-            >
-              {intl.formatMessage(TableMessages.delete)}
-            </Dropdown.Item>
-            {rowData.oidcSub === null && (
-              <Dropdown.Item
-                onClick={async (e) => {
-                  e.stopPropagation();
-
-                  const token = await generateRegistrationToken(rowData.id);
-
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/login?registrationToken=${token}`,
-                  );
-                }}
-                data-testid={`user-${rowData.id}-generate-registration-token-button`}
-              >
-                {intl.formatMessage(messages.generateRegistrationToken)}
-              </Dropdown.Item>
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+              navigator.clipboard.writeText(
+                `${window.location.origin}/login?registrationToken=${token}`,
+              );
+            }}
+            data-testid={`user-${rowData.id}-generate-registration-token-button`}
+          >
+            {intl.formatMessage(messages.generateRegistrationToken)}
+          </DropdownItem>
+        )}
+      </Dropdown>
     ),
     [router, intl, generateRegistrationToken],
   );
@@ -183,15 +168,17 @@ const UserList = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => router.push("user/create")}
-                    data-testid="user-create-button"
-                  >
-                    <FontAwesomeIcon icon={faAdd} />
-                  </Button>
-                </Dropdown>
+                <Dropdown
+                  trigger={
+                    <Button
+                      variant={ButtonVariant.secondary}
+                      onClick={() => router.push("user/create")}
+                      data-testid="user-create-button"
+                    >
+                      <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                  }
+                />
               }
             />
           </DataTable>

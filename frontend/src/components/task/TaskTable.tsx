@@ -5,7 +5,6 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
@@ -20,6 +19,7 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
+import Dropdown, { DropdownItem } from "../Dropdown";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -96,38 +96,29 @@ const TaskTable = () => {
   const actionsTemplate = useCallback(
     (rowData: ExistingTask) => (
       <div data-testid={`task-${rowData.id}-actions`}>
-        <Dropdown as={ButtonGroup}>
-          <Button
-            variant={ButtonVariant.secondary}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              router.push(`/task/${rowData.id}/edit`);
-            }}
-            data-testid={`task-${rowData.id}-edit-button`}
-          >
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-
-          <Dropdown.Toggle
-            variant="secondary"
-            split
-            data-testid={`task-${rowData.id}-actions-dropdown-button`}
-          />
-
-          <Dropdown.Menu>
-            <Dropdown.Item
+        <Dropdown
+          trigger={
+            <Button
+              variant={ButtonVariant.secondary}
               onClick={(e) => {
                 e.stopPropagation();
-
-                setTaskIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
+                router.push(`/task/${rowData.id}/edit`);
               }}
-              data-testid={`task-${rowData.id}-delete-button`}
+              data-testid={`task-${rowData.id}-edit-button`}
             >
-              {intl.formatMessage(TableMessages.delete)}
-            </Dropdown.Item>
-          </Dropdown.Menu>
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          }
+        >
+          <DropdownItem
+            onClick={() => {
+              setTaskIdToDelete(rowData.id);
+              setShowDeleteConfirmationModal(true);
+            }}
+            data-testid={`task-${rowData.id}-delete-button`}
+          >
+            {intl.formatMessage(TableMessages.delete)}
+          </DropdownItem>
         </Dropdown>
       </div>
     ),
@@ -175,15 +166,17 @@ const TaskTable = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => router.push("task/create")}
-                    data-testid="task-create-button"
-                  >
-                    <FontAwesomeIcon icon={faAdd} />
-                  </Button>
-                </Dropdown>
+                <Dropdown
+                  trigger={
+                    <Button
+                      variant={ButtonVariant.secondary}
+                      onClick={() => router.push("task/create")}
+                      data-testid="task-create-button"
+                    >
+                      <FontAwesomeIcon icon={faAdd} />
+                    </Button>
+                  }
+                />
               }
             />
           </DataTable>
