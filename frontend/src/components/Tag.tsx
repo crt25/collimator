@@ -1,13 +1,22 @@
-import styled from "@emotion/styled";
+import { Tag as ChakraTag } from "@chakra-ui/react";
 
-const colorCount = 8;
+const colorPalettes = [
+  "gray",
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "teal",
+  "blue",
+  "cyan",
+];
 
 /**
  * Deterministically get a color for an id.
  */
-const getColor = (id: string | number) => {
+const getColorPalette = (id: string | number) => {
   if (typeof id === "number") {
-    return id % colorCount;
+    return colorPalettes[id % colorPalettes.length];
   }
 
   // compute some deterministic number from the string id
@@ -16,48 +25,8 @@ const getColor = (id: string | number) => {
     sum += id.charCodeAt(i);
   }
 
-  return sum % colorCount;
+  return colorPalettes[sum % colorPalettes.length];
 };
-
-const TagWrapper = styled.span`
-  color: var(--background-color);
-  background-color: var(--foreground-color);
-  border-radius: var(--border-radius);
-
-  padding: 0.5rem 1rem;
-
-  &.color-0 {
-    background-color: #333;
-  }
-
-  &.color-1 {
-    background-color: #444;
-  }
-
-  &.color-2 {
-    background-color: #555;
-  }
-
-  &.color-3 {
-    background-color: #666;
-  }
-
-  &.color-4 {
-    background-color: #777;
-  }
-
-  &.color-5 {
-    background-color: #888;
-  }
-
-  &.color-6 {
-    background-color: #999;
-  }
-
-  &.color-7 {
-    background-color: #aaa;
-  }
-`;
 
 const Tag = ({
   id,
@@ -66,8 +35,13 @@ const Tag = ({
   id: string | number;
   children: React.ReactNode;
 }) => {
-  const color = getColor(id);
-  return <TagWrapper className={`color-${color}`}>{children}</TagWrapper>;
+  const colorScheme = getColorPalette(id);
+
+  return (
+    <ChakraTag.Root colorPalette={colorScheme} variant="solid">
+      <ChakraTag.Label>{children}</ChakraTag.Label>
+    </ChakraTag.Root>
+  );
 };
 
 export default Tag;
