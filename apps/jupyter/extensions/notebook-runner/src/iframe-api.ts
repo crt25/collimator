@@ -20,13 +20,12 @@ import {
   CrtInternalTask,
   GenericNotebookTask,
   Directory,
-  FileSystemOperation,
   importCrtInternalTask,
   importGenericNotebookTask,
   exportCrtInternalTask,
   exportExternalCustomTask,
   ExportedSharedFiles,
-} from "./task-importer";
+} from "./task-converter";
 
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
@@ -36,7 +35,6 @@ import { AppTranslator, MessageKeys } from "./translator";
 
 import {
   GenericNotebookTaskImportError,
-  FileSystemError,
   UnsupportedTaskFormatError,
 } from "./errors/task-errors";
 import { hasStatus } from "./utils";
@@ -160,8 +158,6 @@ export class EmbeddedPythonCallbacks {
       } satisfies GenericNotebookTask;
 
       const taskBlob = await exportExternalCustomTask(externalTask);
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskExported);
 
       return {
         file: taskBlob,
@@ -516,40 +512,6 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
-  private async readFolderContents(basePath: string): Promise<Directory> {
-    const files = new Map<string, Blob>();
-
-    try {
-      const folder = await this.app.serviceManager.contents.get(basePath, {
-        content: true,
-      });
-
-      if (folder.type !== "directory") {
-        throw new DirectoryNotFoundError(basePath);
-      }
-
-      for (const item of folder.content || []) {
-        const itemPath = `${basePath}/${item.name}`;
-
-        if (item.type === "directory") {
-          const subFiles = await this.readFolderContents(itemPath);
-
-          for (const [subPath, blob] of subFiles.entries()) {
-            files.set(`${item.name}/${subPath}`, blob);
-          }
-        } else {
-          const blob = await this.getFileContents(itemPath);
-
-          files.set(item.name, blob);
-        }
-      }
-    } catch (e) {
-      // Throw FileSystemError for any error encountered during reading
-      throw new FileSystemError(FileSystemOperation.ReadFolder, basePath, e);
-    }
-    return files;
-  }
-
   private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
     await this.putFileContents(
       EmbeddedPythonCallbacks.studentTaskLocation,
@@ -625,10 +587,10 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async getAllFolderContents(): Promise<{
-    data: FileMap;
-    gradingData: FileMap;
-    src: FileMap;
-    gradingSrc: FileMap;
+    data: Directory;
+    gradingData: Directory;
+    src: Directory;
+    gradingSrc: Directory;
   }> {
     return {
       data: await this.getFolderContents(EmbeddedPythonCallbacks.dataLocation),

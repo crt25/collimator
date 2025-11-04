@@ -4,7 +4,7 @@ import {
   GenericNotebookFiles,
   TaskFormat,
 } from "../task-format";
-import * as TaskImporter from "../task-importer";
+import * as TaskImporter from "../task-converter";
 import {
   InvalidTaskBlobError,
   MissingRequiredFilesError,

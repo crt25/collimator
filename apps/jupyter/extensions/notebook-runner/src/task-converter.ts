@@ -40,6 +40,13 @@ export enum FileSystemOperation {
   ReadFolder = "read folder",
 }
 
+export interface ExportedSharedFiles {
+  data: Directory;
+  gradingData: Directory;
+  src: Directory;
+  gradingSrc: Directory;
+}
+
 const extractFolder = async (
   zip: JSZip,
   prefix: string,
@@ -207,31 +214,31 @@ export const exportCrtInternalTask = async (
 ): Promise<Blob> => {
   const zip = new JSZip();
 
-  zip.file(CrtInternalFiles.Template, task.taskTemplateFile);
-  zip.file(CrtInternalFiles.Student, task.studentTaskFile);
-  zip.file(CrtInternalFiles.Autograder, task.autograderFile);
+  zip.file(CrtInternalFiles.template, task.taskTemplateFile);
+  zip.file(CrtInternalFiles.student, task.studentTaskFile);
+  zip.file(CrtInternalFiles.autograder, task.autograderFile);
 
   if (task.data.size > 0) {
     for (const [path, blob] of task.data) {
-      zip.file(`${CrtInternalFiles.Data}/${path}`, blob);
+      zip.file(`${CrtInternalFiles.data}/${path}`, blob);
     }
   }
 
   if (task.gradingData.size > 0) {
     for (const [path, blob] of task.gradingData) {
-      zip.file(`${CrtInternalFiles.GradingData}/${path}`, blob);
+      zip.file(`${CrtInternalFiles.gradingData}/${path}`, blob);
     }
   }
 
   if (task.src.size > 0) {
     for (const [path, blob] of task.src) {
-      zip.file(`${CrtInternalFiles.Src}/${path}`, blob);
+      zip.file(`${CrtInternalFiles.src}/${path}`, blob);
     }
   }
 
   if (task.gradingSrc.size > 0) {
     for (const [path, blob] of task.gradingSrc) {
-      zip.file(`${CrtInternalFiles.GradingSrc}/${path}`, blob);
+      zip.file(`${CrtInternalFiles.gradingSrc}/${path}`, blob);
     }
   }
 
@@ -239,34 +246,34 @@ export const exportCrtInternalTask = async (
 };
 
 export const exportExternalCustomTask = async (
-  task: ExternalCustomTask,
+  task: GenericNotebookTask,
 ): Promise<Blob> => {
   const zip = new JSZip();
 
-  zip.file(ExternalCustomFiles.Task, task.taskFile);
+  zip.file(GenericNotebookFiles.task, task.taskFile);
 
   if (task.data.size > 0) {
     // Add the data folder if it exists
     for (const [path, blob] of task.data) {
-      zip.file(`${ExternalCustomFiles.Data}/${path}`, blob);
+      zip.file(`${GenericNotebookFiles.data}/${path}`, blob);
     }
   }
 
   if (task.gradingData.size > 0) {
     for (const [path, blob] of task.gradingData) {
-      zip.file(`${ExternalCustomFiles.GradingData}/${path}`, blob);
+      zip.file(`${GenericNotebookFiles.gradingData}/${path}`, blob);
     }
   }
 
   if (task.src.size > 0) {
     for (const [path, blob] of task.src) {
-      zip.file(`${ExternalCustomFiles.Src}/${path}`, blob);
+      zip.file(`${GenericNotebookFiles.src}/${path}`, blob);
     }
   }
 
   if (task.gradingSrc.size > 0) {
     for (const [path, blob] of task.gradingSrc) {
-      zip.file(`${ExternalCustomFiles.GradingSrc}/${path}`, blob);
+      zip.file(`${GenericNotebookFiles.gradingSrc}/${path}`, blob);
     }
   }
 
