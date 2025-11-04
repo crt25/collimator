@@ -14,14 +14,23 @@
   "DEPRECATED: DEPRECATED: criteria.functionCall.name": {
     "message": "Function Call"
   },
+  "DEPRECATED: Analysis.selected": {
+    "message": "Selected"
+  },
+  "DEPRECATED: JoinSession.anonymousSessionDescription": {
+    "message": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
+  },
   "Analysis.groupName": {
     "message": "Group"
   },
+  "Analysis.initialTaskSolution": {
+    "message": "Initial Task Solution"
+  },
+  "Analysis.numberOfReferenceSolutions": {
+    "message": "Number of Reference Solutions"
+  },
   "Analysis.numberOfStudents": {
     "message": "Number of Students"
-  },
-  "Analysis.selected": {
-    "message": "Selected"
   },
   "Analysis.xAxis": {
     "message": "x-Axis"
@@ -377,9 +386,6 @@
   "IndentationCriterionFilterForm.level": {
     "message": "Level of code indentation"
   },
-  "JoinSession.anonymousSessionDescription": {
-    "message": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
-  },
   "JoinSession.choosePseudonym": {
     "message": "Enter a pseudonym"
   },
@@ -597,6 +603,9 @@
   "StatementCriterionFilterForm.count": {
     "message": "Number of statements"
   },
+  "StudentAnonymizationToggle.showActualStudentNames": {
+    "message": "Show actual student names"
+  },
   "StudentList.columns.name": {
     "message": "Name"
   },
@@ -633,6 +642,9 @@
   "TaskForm.SaveSuccess": {
     "message": "The task was saved successfully."
   },
+  "TaskForm.addReferenceSolution": {
+    "message": "Add"
+  },
   "TaskForm.blob.create": {
     "message": "Create task in external application"
   },
@@ -654,11 +666,26 @@
   "TaskForm.description": {
     "message": "Description"
   },
+  "TaskForm.referenceSolutions": {
+    "message": "Reference Solutions"
+  },
+  "TaskForm.referenceSolutionsLengthValidation": {
+    "message": "The number of reference solutions must match the number of reference solution files"
+  },
+  "TaskForm.solution.create": {
+    "message": "Create solution in external application"
+  },
+  "TaskForm.solution.edit": {
+    "message": "Edit solution in external application"
+  },
   "TaskForm.title": {
     "message": "Title"
   },
   "TaskForm.type": {
     "message": "Type"
+  },
+  "TaskModal.cancel": {
+    "message": "Cancel"
   },
   "TaskModal.closeConfirmation": {
     "message": "Are you sure you want to close without saving?"
@@ -791,6 +818,30 @@
   },
   "criteria.test.name": {
     "message": "Passed Tests"
+  },
+  "datatable.button.next": {
+    "message": "Next"
+  },
+  "datatable.button.previous": {
+    "message": "Previous"
+  },
+  "datatable.label.filterBy": {
+    "message": "Filter by..."
+  },
+  "datatable.label.pageInfo": {
+    "message": "Page {pageIndex} of {pageCount}"
+  },
+  "datatable.label.search": {
+    "message": "Search"
+  },
+  "datatable.placeholder.filterBy": {
+    "message": "Search..."
+  },
+  "datatable.placeholder.search": {
+    "message": "Search..."
+  },
+  "datatable.state.loading": {
+    "message": "Loading..."
   },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"

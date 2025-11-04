@@ -5,16 +5,22 @@
       "value": "Group"
     }
   ],
+  "Analysis.initialTaskSolution": [
+    {
+      "type": 0,
+      "value": "Initial Task Solution"
+    }
+  ],
+  "Analysis.numberOfReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "Number of Reference Solutions"
+    }
+  ],
   "Analysis.numberOfStudents": [
     {
       "type": 0,
       "value": "Number of Students"
-    }
-  ],
-  "Analysis.selected": [
-    {
-      "type": 0,
-      "value": "Selected"
     }
   ],
   "Analysis.xAxis": [
@@ -308,13 +314,13 @@
   "CodeComparison.defaultSolutionOption": [
     {
       "type": 0,
-      "value": "Select a solution"
+      "value": "Select a solutions"
     }
   ],
   "CodeComparison.groupPrefix": [
     {
       "type": 0,
-      "value": "Group: "
+      "value": "Group:"
     }
   ],
   "CodeComparison.heading": [
@@ -781,12 +787,6 @@
       "value": "Level of code indentation"
     }
   ],
-  "JoinSession.anonymousSessionDescription": [
-    {
-      "type": 0,
-      "value": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
-    }
-  ],
   "JoinSession.choosePseudonym": [
     {
       "type": 0,
@@ -1251,6 +1251,12 @@
       "value": "Number of statements"
     }
   ],
+  "StudentAnonymizationToggle.showActualStudentNames": [
+    {
+      "type": 0,
+      "value": "Show actual student names"
+    }
+  ],
   "StudentList.columns.name": [
     {
       "type": 0,
@@ -1343,6 +1349,12 @@
       "value": "The task was saved successfully."
     }
   ],
+  "TaskForm.addReferenceSolution": [
+    {
+      "type": 0,
+      "value": "Add"
+    }
+  ],
   "TaskForm.blob.create": [
     {
       "type": 0,
@@ -1385,6 +1397,30 @@
       "value": "Description"
     }
   ],
+  "TaskForm.referenceSolutions": [
+    {
+      "type": 0,
+      "value": "Reference Solutions"
+    }
+  ],
+  "TaskForm.referenceSolutionsLengthValidation": [
+    {
+      "type": 0,
+      "value": "The number of reference solutions must match the number of reference solution files"
+    }
+  ],
+  "TaskForm.solution.create": [
+    {
+      "type": 0,
+      "value": "Create solution in external application"
+    }
+  ],
+  "TaskForm.solution.edit": [
+    {
+      "type": 0,
+      "value": "Edit solution in external application"
+    }
+  ],
   "TaskForm.title": [
     {
       "type": 0,
@@ -1395,6 +1431,12 @@
     {
       "type": 0,
       "value": "Type"
+    }
+  ],
+  "TaskModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
     }
   ],
   "TaskModal.closeConfirmation": [
@@ -1683,6 +1725,66 @@
     {
       "type": 0,
       "value": "Passed Tests"
+    }
+  ],
+  "datatable.button.next": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
+  "datatable.button.previous": [
+    {
+      "type": 0,
+      "value": "Previous"
+    }
+  ],
+  "datatable.label.filterBy": [
+    {
+      "type": 0,
+      "value": "Filter by..."
+    }
+  ],
+  "datatable.label.pageInfo": [
+    {
+      "type": 0,
+      "value": "Page "
+    },
+    {
+      "type": 1,
+      "value": "pageIndex"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "type": 1,
+      "value": "pageCount"
+    }
+  ],
+  "datatable.label.search": [
+    {
+      "type": 0,
+      "value": "Search"
+    }
+  ],
+  "datatable.placeholder.filterBy": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
+  "datatable.placeholder.search": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
+  "datatable.state.loading": [
+    {
+      "type": 0,
+      "value": "Loading..."
     }
   ],
   "forms.arrayLength": [

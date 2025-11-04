@@ -5,16 +5,22 @@
       "value": "Group"
     }
   ],
+  "Analysis.initialTaskSolution": [
+    {
+      "type": 0,
+      "value": "Initial Task Solution"
+    }
+  ],
+  "Analysis.numberOfReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "Number of Reference Solutions"
+    }
+  ],
   "Analysis.numberOfStudents": [
     {
       "type": 0,
       "value": "Number of Students"
-    }
-  ],
-  "Analysis.selected": [
-    {
-      "type": 0,
-      "value": "Selected"
     }
   ],
   "Analysis.xAxis": [
@@ -531,34 +537,46 @@
       "value": "Number of custom function callss"
     }
   ],
-  "DEPRECATED: Category.filteredOut": [
+  "DEPRECATED: Analysis.selected": [
+    {
+      "type": 0,
+      "value": "Selected"
+    }
+  ],
+  "DEPRECATED: DEPRECATED: Category.filteredOut": [
     {
       "type": 0,
       "value": "filtered out"
     }
   ],
-  "DEPRECATED: FunctionCallCriterionFilterForm.count": [
+  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.count": [
     {
       "type": 0,
       "value": "Number of function calls"
     }
   ],
-  "DEPRECATED: FunctionCallCriterionFilterForm.functionName": [
+  "DEPRECATED: DEPRECATED: FunctionCallCriterionFilterForm.functionName": [
     {
       "type": 0,
       "value": "Function Name"
     }
   ],
-  "DEPRECATED: SessionGrouping.header": [
+  "DEPRECATED: DEPRECATED: SessionGrouping.header": [
     {
       "type": 0,
       "value": "Analysis"
     }
   ],
-  "DEPRECATED: criteria.functionCall.name": [
+  "DEPRECATED: DEPRECATED: criteria.functionCall.name": [
     {
       "type": 0,
       "value": "Function Call"
+    }
+  ],
+  "DEPRECATED: JoinSession.anonymousSessionDescription": [
+    {
+      "type": 0,
+      "value": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
     }
   ],
   "DissimilarAnalysisPairs.header": [
@@ -809,12 +827,6 @@
     {
       "type": 0,
       "value": "Level of code indentation"
-    }
-  ],
-  "JoinSession.anonymousSessionDescription": [
-    {
-      "type": 0,
-      "value": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
     }
   ],
   "JoinSession.choosePseudonym": [
@@ -1281,6 +1293,12 @@
       "value": "Number of statements"
     }
   ],
+  "StudentAnonymizationToggle.showActualStudentNames": [
+    {
+      "type": 0,
+      "value": "Show actual student names"
+    }
+  ],
   "StudentList.columns.name": [
     {
       "type": 0,
@@ -1373,6 +1391,12 @@
       "value": "The task was saved successfully."
     }
   ],
+  "TaskForm.addReferenceSolution": [
+    {
+      "type": 0,
+      "value": "Add"
+    }
+  ],
   "TaskForm.blob.create": [
     {
       "type": 0,
@@ -1415,6 +1439,30 @@
       "value": "Description"
     }
   ],
+  "TaskForm.referenceSolutions": [
+    {
+      "type": 0,
+      "value": "Reference Solutions"
+    }
+  ],
+  "TaskForm.referenceSolutionsLengthValidation": [
+    {
+      "type": 0,
+      "value": "The number of reference solutions must match the number of reference solution files"
+    }
+  ],
+  "TaskForm.solution.create": [
+    {
+      "type": 0,
+      "value": "Create solution in external application"
+    }
+  ],
+  "TaskForm.solution.edit": [
+    {
+      "type": 0,
+      "value": "Edit solution in external application"
+    }
+  ],
   "TaskForm.title": [
     {
       "type": 0,
@@ -1425,6 +1473,12 @@
     {
       "type": 0,
       "value": "Type"
+    }
+  ],
+  "TaskModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
     }
   ],
   "TaskModal.closeConfirmation": [
@@ -1713,6 +1767,66 @@
     {
       "type": 0,
       "value": "Passed Tests"
+    }
+  ],
+  "datatable.button.next": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
+  "datatable.button.previous": [
+    {
+      "type": 0,
+      "value": "Previous"
+    }
+  ],
+  "datatable.label.filterBy": [
+    {
+      "type": 0,
+      "value": "Filter by..."
+    }
+  ],
+  "datatable.label.pageInfo": [
+    {
+      "type": 0,
+      "value": "Page "
+    },
+    {
+      "type": 1,
+      "value": "pageIndex"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "type": 1,
+      "value": "pageCount"
+    }
+  ],
+  "datatable.label.search": [
+    {
+      "type": 0,
+      "value": "Search"
+    }
+  ],
+  "datatable.placeholder.filterBy": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
+  "datatable.placeholder.search": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
+  "datatable.state.loading": [
+    {
+      "type": 0,
+      "value": "Loading..."
     }
   ],
   "forms.arrayLength": [
