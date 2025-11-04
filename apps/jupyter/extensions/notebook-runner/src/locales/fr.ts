@@ -1,4 +1,3 @@
-// locales/en.ts
 import { MessageKeys } from "../translator";
 
 type Messages = {
@@ -7,7 +6,7 @@ type Messages = {
 
 export const frMessages: Messages = {
   "useEmbeddedPython.cannotLoadProject":
-    ": Impossible de charger le projet : {error}",
+    "Impossible de charger le projet : {error}",
   "useEmbeddedPython.cannotSaveProject":
     "Impossible d'enregistrer le projet : {error}",
   "useEmbeddedPython.cannotImportTask":

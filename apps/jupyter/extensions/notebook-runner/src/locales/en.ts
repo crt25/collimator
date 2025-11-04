@@ -1,4 +1,3 @@
-// locales/en.ts
 import { MessageKeys } from "../translator";
 
 type Messages = {
