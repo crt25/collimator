@@ -163,7 +163,7 @@ describe("detectTaskFormat", () => {
 
       const error = await expectError(
         () => detectTaskFormat(invalidBlob),
-        UnsupportedTaskFormatError,
+        InvalidTaskBlobError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -174,7 +174,7 @@ describe("detectTaskFormat", () => {
 
       const error = await expectError(
         () => detectTaskFormat(emptyBlob),
-        UnsupportedTaskFormatError,
+        InvalidTaskBlobError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);

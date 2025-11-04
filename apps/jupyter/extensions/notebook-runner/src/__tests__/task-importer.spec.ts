@@ -347,7 +347,7 @@ describe("importGenericNotebookTask", () => {
 
       const error = await expectError(
         () => TaskImporter.importGenericNotebookTask(invalidBlob),
-        MissingRequiredFilesError,
+        InvalidTaskBlobError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
@@ -358,7 +358,7 @@ describe("importGenericNotebookTask", () => {
 
       const error = await expectError(
         () => TaskImporter.importGenericNotebookTask(invalidBlob),
-        MissingRequiredFilesError,
+        InvalidTaskBlobError,
       );
 
       expect(error).toBeInstanceOf(InvalidTaskBlobError);
