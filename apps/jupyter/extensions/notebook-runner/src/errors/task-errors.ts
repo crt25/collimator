@@ -1,4 +1,4 @@
-import { FileSystemOperation } from "../task-importer";
+import { FileSystemOperation } from "../task-converter";
 
 export class TaskError extends Error {}
 
@@ -102,45 +102,13 @@ export class UnexpectedFileError extends UnexpectedFileTypeError {
 }
 
 export class ExportError extends TaskError {
-  constructor(
-    public readonly reason: string,
-    message?: string,
-  ) {
-    super(message || `Failed to export task: ${reason}`);
-    this.name = "ExportError";
-    Object.setPrototypeOf(this, ExportError.prototype);
+  constructor(public readonly reason: string) {
+    super(`Failed to export task: ${reason}`);
   }
 }
 
 export class GetTaskError extends TaskError {
-  constructor(
-    public readonly reason: string,
-    message?: string,
-  ) {
-    super(message || `Failed to get task: ${reason}`);
-    this.name = "ExportError";
-    Object.setPrototypeOf(this, ExportError.prototype);
-  }
-}
-
-export class ExportError extends TaskError {
-  constructor(
-    public readonly reason: string,
-    message?: string,
-  ) {
-    super(message || `Failed to export task: ${reason}`);
-    this.name = "ExportError";
-    Object.setPrototypeOf(this, ExportError.prototype);
-  }
-}
-
-export class GetTaskError extends TaskError {
-  constructor(
-    public readonly reason: string,
-    message?: string,
-  ) {
-    super(message || `Failed to get task: ${reason}`);
-    this.name = "ExportError";
-    Object.setPrototypeOf(this, ExportError.prototype);
+  constructor(public readonly reason: string) {
+    super(`Failed to get task: ${reason}`);
   }
 }
