@@ -14,12 +14,6 @@ const styledTextareaStyles = {
   width: "100%",
 };
 
-const ErrorMessage = styled.div`
-  color: var(--error-color);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-`;
-
 interface Props {
   label: MessageDescriptor;
   helperText?: React.ReactNode;
@@ -51,7 +45,7 @@ const TextArea = forwardRef(function TextArea(
           ref={ref}
           {...textareaProps}
         />
-        {errorText && <ErrorMessage>{errorText}</ErrorMessage>}
+        {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && !invalid && (
           <Field.HelperText>{helperText}</Field.HelperText>
         )}
