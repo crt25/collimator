@@ -1,6 +1,7 @@
 import { Menu, Portal, Icon } from "@chakra-ui/react";
 import React, { useState, MouseEvent as MouseEventReact } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import Link from "next/link";
 
 type ClickHandler = () => void;
 
@@ -35,7 +36,7 @@ const DropdownMenuItem = ({ href, onClick, children, icon }: DropdownItemProps) 
 
   let element;
   if (href) {
-    element = <a href={href}>{content}</a>;
+    element = <Link href={href}>{content}</Link>;
   } else {
     element = <span>{content}</span>;
   }
