@@ -22,7 +22,7 @@ const DropdownItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
   const handleClick = (e: MouseEventReact<HTMLElement>) => {
     e.stopPropagation();
     if (onClick) {
-      onClick(e);
+      onClick();
     }
   };
 
