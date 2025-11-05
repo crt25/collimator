@@ -127,8 +127,7 @@ const ClassList = () => {
           trigger={
             <Button
               variant={ButtonVariant.secondary}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 router.push(`/class/${rowData.id}/edit`);
               }}
               data-testid={`class-${rowData.id}-edit-button`}
@@ -138,8 +137,7 @@ const ClassList = () => {
           }
         >
           <DropdownItem
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
               setClassIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
             }}

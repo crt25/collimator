@@ -137,8 +137,7 @@ const LessonList = ({
           trigger={
             <Button
               variant={ButtonVariant.secondary}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 router.push(`/lesson/${rowData.id}/edit`);
               }}
             >

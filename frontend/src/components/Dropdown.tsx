@@ -2,7 +2,7 @@ import { Menu, Portal, Icon } from "@chakra-ui/react";
 import React, { useState, MouseEvent as MouseEventReact } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
-type ClickHandler = (e: MouseEventReact<HTMLElement>) => void | Promise<void>;
+type ClickHandler = () => void;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;
@@ -20,6 +20,7 @@ export type DropdownItemProps = {
 
 const DropdownItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
   const handleClick = (e: MouseEventReact<HTMLElement>) => {
+    e.stopPropagation();
     if (onClick) {
       onClick(e);
     }

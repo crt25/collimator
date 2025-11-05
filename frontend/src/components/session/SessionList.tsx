@@ -170,8 +170,7 @@ const SessionList = ({ classId }: { classId: number }) => {
           trigger={
             <Button
               variant={ButtonVariant.secondary}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 router.push(`/class/${classId}/session/${rowData.id}/edit`);
               }}
               data-testid={`session-${rowData.id}-edit-button`}

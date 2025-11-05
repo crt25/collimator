@@ -100,8 +100,7 @@ const TaskTable = () => {
           trigger={
             <Button
               variant={ButtonVariant.secondary}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={() => {
                 router.push(`/task/${rowData.id}/edit`);
               }}
               data-testid={`task-${rowData.id}-edit-button`}

@@ -86,8 +86,7 @@ const UserList = () => {
         trigger={
           <Button
             variant={ButtonVariant.secondary}
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
               router.push(`/user/${rowData.id}/edit`);
             }}
             data-testid={`user-${rowData.id}-edit-button`}
