@@ -20,7 +20,7 @@ import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllCla
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
-import Dropdown, { DropdownItem } from "../Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
 
@@ -123,7 +123,7 @@ const ClassList = () => {
   const actionsTemplate = useCallback(
     (rowData: ExistingClassWithTeacher) => (
       <div data-testid={`class-${rowData.id}-actions`}>
-        <Dropdown
+        <DropdownMenu
           trigger={
             <Button
               variant={ButtonVariant.secondary}
@@ -136,7 +136,7 @@ const ClassList = () => {
             </Button>
           }
         >
-          <DropdownItem
+          <DropdownMenuItem
             onClick={() => {
               setClassIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -144,8 +144,8 @@ const ClassList = () => {
             data-testid={`class-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownItem>
-        </Dropdown>
+          </DropdownMenuItem>
+        </DropdownMenu>
       </div>
     ),
     [router, intl],
@@ -202,7 +202,7 @@ const ClassList = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown
+                <DropdownMenu
                   trigger={
                     <Button
                       variant={ButtonVariant.secondary}
@@ -212,7 +212,7 @@ const ClassList = () => {
                       <FontAwesomeIcon icon={faAdd} />
                     </Button>
                   }
-                ></Dropdown>
+                ></DropdownMenu>
               }
             />
           </DataTable>

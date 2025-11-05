@@ -16,7 +16,7 @@ import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGe
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
-import Dropdown, { DropdownItem } from "../Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -82,7 +82,7 @@ const UserList = () => {
 
   const actionsTemplate = useCallback(
     (rowData: ExistingUser) => (
-      <Dropdown
+      <DropdownMenu
         trigger={
           <Button
             variant={ButtonVariant.secondary}
@@ -95,7 +95,7 @@ const UserList = () => {
           </Button>
         }
       >
-        <DropdownItem
+        <DropdownMenuItem
           onClick={() => {
             setUserIdToDelete(rowData.id);
             setShowDeleteConfirmationModal(true);
@@ -103,9 +103,9 @@ const UserList = () => {
           data-testid={`user-${rowData.id}-delete-button`}
         >
           {intl.formatMessage(TableMessages.delete)}
-        </DropdownItem>
+        </DropdownMenuItem>
         {rowData.oidcSub === null && (
-          <DropdownItem
+          <DropdownMenuItem
             onClick={async () => {
               const token = await generateRegistrationToken(rowData.id);
 
@@ -116,9 +116,9 @@ const UserList = () => {
             data-testid={`user-${rowData.id}-generate-registration-token-button`}
           >
             {intl.formatMessage(messages.generateRegistrationToken)}
-          </DropdownItem>
+          </DropdownMenuItem>
         )}
-      </Dropdown>
+      </DropdownMenu>
     ),
     [router, intl, generateRegistrationToken],
   );
@@ -167,7 +167,7 @@ const UserList = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown
+                <DropdownMenu
                   trigger={
                     <Button
                       variant={ButtonVariant.secondary}

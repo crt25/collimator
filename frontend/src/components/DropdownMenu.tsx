@@ -18,7 +18,7 @@ export type DropdownItemProps = {
     }
 );
 
-const DropdownItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
+const DropdownMenuItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
   const handleClick = (e: MouseEventReact<HTMLElement>) => {
     e.stopPropagation();
     if (onClick) {
@@ -52,7 +52,7 @@ export type DropdownProps = {
   children?: React.ReactNode;
 };
 
-const Dropdown = ({ trigger, children }: DropdownProps) => {
+const DropdownMenu = ({ trigger, children }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const triggerStyleProp = {
@@ -95,5 +95,5 @@ const Dropdown = ({ trigger, children }: DropdownProps) => {
   );
 };
 
-export default Dropdown;
-export { DropdownItem };
+export default DropdownMenu;
+export { DropdownMenuItem };

@@ -5,7 +5,7 @@ import {
   SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
-import Dropdown, { DropdownItem } from "./Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "./DropdownMenu";
 
 const messages = defineMessages({
   english: {
@@ -37,20 +37,20 @@ const LanguageChooser = () => {
   );
 
   return (
-    <Dropdown
+    <DropdownMenu
       trigger={intl.formatMessage(
         languageMessageByLocale[intl.locale as SupportedLocale],
       )}
     >
       {availableLocales.map((locale) => (
-        <DropdownItem
+        <DropdownMenuItem
           key={locale}
           onClick={() => setLocalizationState({ locale })}
         >
           {intl.formatMessage(languageMessageByLocale[locale])}
-        </DropdownItem>
+        </DropdownMenuItem>
       ))}
-    </Dropdown>
+    </DropdownMenu>
   );
 };
 

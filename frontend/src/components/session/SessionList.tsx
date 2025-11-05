@@ -23,7 +23,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import MultiSwrContent from "../MultiSwrContent";
 import Button, { ButtonVariant } from "../Button";
-import Dropdown, { DropdownItem } from "../Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -166,7 +166,7 @@ const SessionList = ({ classId }: { classId: number }) => {
   const actionsTemplate = useCallback(
     (rowData: ExistingSession) => (
       <div>
-        <Dropdown
+        <DropdownMenu
           trigger={
             <Button
               variant={ButtonVariant.secondary}
@@ -179,7 +179,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             </Button>
           }
         >
-          <DropdownItem
+          <DropdownMenuItem
             onClick={() => {
               setSessionIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -187,11 +187,11 @@ const SessionList = ({ classId }: { classId: number }) => {
             data-testid={`session-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownItem>
+          </DropdownMenuItem>
           {klass &&
             "userId" in authenticationContext &&
             klass.teacher.id === authenticationContext.userId && (
-              <DropdownItem
+              <DropdownMenuItem
                 onClick={async () => {
                   const fingerprint =
                     await authenticationContext.keyPair.getPublicKeyFingerprint();
@@ -203,9 +203,9 @@ const SessionList = ({ classId }: { classId: number }) => {
                 data-testid={`session-${rowData.id}-copy-session-link-button`}
               >
                 {intl.formatMessage(messages.copySessionLink)}
-              </DropdownItem>
+              </DropdownMenuItem>
             )}
-        </Dropdown>
+        </DropdownMenu>
       </div>
     ),
     [classId, intl, router, authenticationContext, klass],
@@ -280,7 +280,7 @@ const SessionList = ({ classId }: { classId: number }) => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown
+                <DropdownMenu
                   trigger={
                     <Button
                       variant={ButtonVariant.secondary}

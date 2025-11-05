@@ -19,7 +19,7 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
-import Dropdown, { DropdownItem } from "../Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -96,7 +96,7 @@ const TaskTable = () => {
   const actionsTemplate = useCallback(
     (rowData: ExistingTask) => (
       <div data-testid={`task-${rowData.id}-actions`}>
-        <Dropdown
+        <DropdownMenu
           trigger={
             <Button
               variant={ButtonVariant.secondary}
@@ -109,7 +109,7 @@ const TaskTable = () => {
             </Button>
           }
         >
-          <DropdownItem
+          <DropdownMenuItem
             onClick={() => {
               setTaskIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -117,8 +117,8 @@ const TaskTable = () => {
             data-testid={`task-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownItem>
-        </Dropdown>
+          </DropdownMenuItem>
+        </DropdownMenu>
       </div>
     ),
     [router, intl],
@@ -165,7 +165,7 @@ const TaskTable = () => {
               body={actionsTemplate}
               filter
               filterElement={
-                <Dropdown
+                <DropdownMenu
                   trigger={
                     <Button
                       variant={ButtonVariant.secondary}

@@ -16,7 +16,7 @@ import Tag from "@/components/Tag";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
-import Dropdown, { DropdownItem } from "../Dropdown";
+import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -133,7 +133,7 @@ const LessonList = ({
   const actionsTemplate = useCallback(
     (rowData: Lesson) => (
       <div>
-        <Dropdown
+        <DropdownMenu
           trigger={
             <Button
               variant={ButtonVariant.secondary}
@@ -145,20 +145,20 @@ const LessonList = ({
             </Button>
           }
         >
-          <DropdownItem
+          <DropdownMenuItem
             onClick={() => {
               router.push(`/lesson/${rowData.id}/edit`);
             }}
           >
             Edit
-          </DropdownItem>
-          <DropdownItem onClick={() => console.log("Action 2")}>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => console.log("Action 2")}>
             Action 2
-          </DropdownItem>
-          <DropdownItem onClick={() => console.log("Action 3")}>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => console.log("Action 3")}>
             Action 3
-          </DropdownItem>
-        </Dropdown>
+          </DropdownMenuItem>
+        </DropdownMenu>
       </div>
     ),
     [router],
@@ -217,7 +217,7 @@ const LessonList = ({
           body={actionsTemplate}
           filter
           filterElement={
-            <Dropdown
+            <DropdownMenu
               trigger={
                 <Button
                   variant={ButtonVariant.secondary}
@@ -227,16 +227,16 @@ const LessonList = ({
                 </Button>
               }
             >
-              <DropdownItem onClick={() => console.log("Action 1")}>
+              <DropdownMenuItem onClick={() => console.log("Action 1")}>
                 Action
-              </DropdownItem>
-              <DropdownItem onClick={() => console.log("Action 2")}>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log("Action 2")}>
                 Another action
-              </DropdownItem>
-              <DropdownItem onClick={() => console.log("Action 3")}>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log("Action 3")}>
                 Something else
-              </DropdownItem>
-            </Dropdown>
+              </DropdownMenuItem>
+            </DropdownMenu>
           }
         />
       </DataTable>
