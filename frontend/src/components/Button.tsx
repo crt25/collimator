@@ -100,9 +100,8 @@ const Button = ({
     [buttonProps.className, active],
   );
 
-  const cssProps = colorsByVariant[variant ?? ButtonVariant.primary];
-
-  const { bgColor, fgColor } = cssProps;
+  const { bgColor, fgColor } =
+    colorsByVariant[variant ?? ButtonVariant.primary];
 
   const buttonCssProps = {
     borderRadius: "var(--border-radius)",
