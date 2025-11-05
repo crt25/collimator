@@ -39,6 +39,7 @@ import {
   FileSystemError,
   UnsupportedTaskFormatError,
 } from "./errors/task-errors";
+import { hasStatus } from "./utils";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -403,10 +404,19 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async createFolder(path: string, name: string): Promise<void> {
-    await this.app.serviceManager.contents.save(path, {
-      type: "directory",
-      name,
-    });
+    try {
+      await this.app.serviceManager.contents.save(path, {
+        type: "directory",
+        name,
+      });
+    } catch (error) {
+      if (hasStatus(error, 409)) {
+        // Folder already exists, we can ignore this error
+        return;
+      }
+
+      throw error;
+    }
   }
 
   private async putFileContents(path: string, content: Blob): Promise<void> {
@@ -494,11 +504,7 @@ export class EmbeddedPythonCallbacks {
         ? `${currentPath}/${pathParts[i]}`
         : `/${pathParts[i]}`;
 
-      try {
-        await this.createFolder(currentPath, pathParts[i]);
-      } catch {
-        // Folder may already exist, ignore
-      }
+      await this.createFolder(currentPath, pathParts[i]);
     }
   }
 
