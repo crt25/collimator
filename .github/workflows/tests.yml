@@ -1,6 +1,12 @@
 name: Tests
 
-on: [pull_request, workflow_call, merge_group]
+on:
+  pull_request:
+  workflow_call:
+  merge_group:
+  push:
+    branches:
+      - main
 
 jobs:
   # Label of the runner job
@@ -26,7 +32,7 @@ jobs:
         ports:
           # Maps TCP port 5433 on the host to Postgres
           - 5433:5432
-                
+
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
 
@@ -37,8 +43,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
-          submodules: 'true'
-          lfs: 'true'
+          submodules: "true"
+          lfs: "true"
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -63,9 +69,9 @@ jobs:
       - name: Install jupyter app dependencies
         working-directory: ./apps/jupyter
         run: |
-            make install-deps
-              make build-otter
-              make init-extensions
+          make install-deps
+            make build-otter
+            make init-extensions
 
       - name: Install playwright dependencies
         working-directory: ./apps/scratch
@@ -89,9 +95,10 @@ jobs:
 
       - name: Lint scratch app
         working-directory: ./apps/scratch
-        run: yarn lint
+        run:
+          yarn lint
 
-         # the database must be fully migrated before running prisma:generate
+          # the database must be fully migrated before running prisma:generate
       - name: Prepare test database
         working-directory: ./backend
         run: yarn prisma migrate deploy
@@ -164,7 +171,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Archive playwright traces
@@ -174,4 +181,4 @@ jobs:
           name: playwright-traces
           # https://playwright.dev/docs/trace-viewer#recording-a-trace-on-ci
           path: |
-              **/test-results/*/trace.zip
+            **/test-results/*/trace.zip
