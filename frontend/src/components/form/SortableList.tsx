@@ -113,7 +113,7 @@ const SortableListInput = <TItem extends { id: number }>({
                   testId={`${testId}-item-${collectionItem.item.id}`}
                   item={collectionItem}
                 >
-                  <Listbox.ItemText>
+                  <Listbox.ItemText as="div">
                     {renderItemContent(
                       collectionItem.item,
                       collectionItem.index,
