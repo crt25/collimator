@@ -16,6 +16,10 @@
         "caughtErrorsIgnorePattern": "^_"
       }
     ],
+    "@typescript-eslint/no-restricted-imports": ["error", {
+      "name": "@fortawesome",
+      "message": "Use icons from react-icons instead."
+    }],
     "import/no-duplicates": ["error", {"prefer-inline": true}],
     "import/order": ["error", {
       "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
