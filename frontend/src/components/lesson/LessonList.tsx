@@ -17,6 +17,8 @@ import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
+import { ButtonGroup, ButtonGroupProps, IconButton } from "@chakra-ui/react";
+import { LuChevronDown } from "react-icons/lu";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -133,32 +135,39 @@ const LessonList = ({
   const actionsTemplate = useCallback(
     (rowData: Lesson) => (
       <div>
-        <DropdownMenu
-          trigger={
-            <Button
-              variant={ButtonVariant.secondary}
+        <ButtonGroup attached>
+          <Button
+            variant={ButtonVariant.secondary}
+            onClick={() => {
+              router.push(`/lesson/${rowData.id}/edit`);
+            }}
+            data-testid={`lesson-${rowData.id}-edit-button`}
+          >
+            <FontAwesomeIcon icon={faEdit} />
+          </Button>
+          <DropdownMenu
+            trigger={
+              <IconButton aria-label="More options">
+                <LuChevronDown />
+              </IconButton>
+            }
+            testId={`lesson-${rowData.id}-actions-dropdown-button`}
+          >
+            <DropdownMenu.Item
               onClick={() => {
                 router.push(`/lesson/${rowData.id}/edit`);
               }}
             >
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
-          }
-        >
-          <DropdownMenu.Item
-            onClick={() => {
-              router.push(`/lesson/${rowData.id}/edit`);
-            }}
-          >
-            Edit
-          </DropdownMenu.Item>
-          <DropdownMenu.Item onClick={() => console.log("Action 2")}>
-            Action 2
-          </DropdownMenu.Item>
-          <DropdownMenu.Item onClick={() => console.log("Action 3")}>
-            Action 3
-          </DropdownMenu.Item>
-        </DropdownMenu>
+              Edit
+            </DropdownMenu.Item>
+            <DropdownMenu.Item onClick={() => console.log("Action 2")}>
+              Action 2
+            </DropdownMenu.Item>
+            <DropdownMenu.Item onClick={() => console.log("Action 3")}>
+              Action 3
+            </DropdownMenu.Item>
+          </DropdownMenu>
+        </ButtonGroup>
       </div>
     ),
     [router],
@@ -233,7 +242,7 @@ const LessonList = ({
               <DropdownMenu.Item onClick={() => console.log("Action 2")}>
                 Another action
               </DropdownMenu.Item>
-              <DropdownMenuItem onClick={() => console.log("Action 3")}>
+              <DropdownMenu.Item onClick={() => console.log("Action 3")}>
                 Something else
               </DropdownMenu.Item>
             </DropdownMenu>
