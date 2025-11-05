@@ -52,9 +52,7 @@ const Input = forwardRef(function Input(
           {...inputProps}
         />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
-        {helperText && !invalid && (
-          <Field.HelperText>{helperText}</Field.HelperText>
-        )}
+        {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>
     </InputWrapper>
   );
