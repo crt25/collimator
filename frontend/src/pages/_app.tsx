@@ -25,7 +25,7 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
-import { Provider } from "../components/ui/provider";
+import { ChakraProvider } ../components/ui/ChakraProviderakraProvider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";
@@ -122,7 +122,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <CacheProvider value={cache}>
-      <Provider>
+      <ChakraProvider>
         <IntlProvider locale={localizationState.locale} messages={messages}>
           <YupLocalization>
             <PrimeReactProvider>
@@ -152,7 +152,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             </PrimeReactProvider>
           </YupLocalization>
         </IntlProvider>
-      </Provider>
+      </ChakraProvider>
     </CacheProvider>
   );
 };
