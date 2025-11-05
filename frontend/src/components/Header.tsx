@@ -10,10 +10,10 @@ import {
   useIntl,
 } from "react-intl";
 import Head from "next/head";
-import { useUserName } from "@/hooks/useUserName";
-import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 import LanguageChooser from "./LanguageChooser";
 import Dropdown, { DropdownItem } from "./Dropdown";
+import { useUserName } from "@/hooks/useUserName";
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 
 const messages = defineMessages({
   applicationName: {
@@ -102,7 +102,9 @@ const Header = ({
             </li>
             <li>
               {isAuthenticated ? (
-                <Dropdown trigger={name}>
+                <Dropdown
+                  trigger={<div data-testid="current-user">{name}</div>}
+                >
                   <DropdownItem href="/logout">
                     <FormattedMessage
                       id="Header.signOut"

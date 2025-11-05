@@ -1,16 +1,30 @@
 import { Menu, Portal, Icon } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, MouseEvent as MouseEventReact } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+
+type ClickHandler = (e: MouseEventReact<HTMLElement>) => void | Promise<void>;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;
   icon?: React.ReactNode;
 } & (
-  | { href: string; onClick?: () => void }
-  | { href?: undefined; onClick: () => void }
+  | {
+      href: string;
+      onClick?: ClickHandler;
+    }
+  | {
+      href?: undefined;
+      onClick: ClickHandler;
+    }
 );
 
 const DropdownItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
+  const handleClick = (e: MouseEventReact<HTMLElement>) => {
+    if (onClick) {
+      onClick(e);
+    }
+  };
+
   const content = (
     <>
       {icon && <span>{icon}</span>}
@@ -26,7 +40,7 @@ const DropdownItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
   }
 
   return (
-    <Menu.Item asChild value={children?.toString() ?? ""} onClick={onClick}>
+    <Menu.Item asChild value={children?.toString() ?? ""} onClick={handleClick}>
       {element}
     </Menu.Item>
   );

@@ -21,7 +21,6 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
 import Dropdown, { DropdownItem } from "../Dropdown";
-
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
 
@@ -139,7 +138,8 @@ const ClassList = () => {
           }
         >
           <DropdownItem
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setClassIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
             }}
