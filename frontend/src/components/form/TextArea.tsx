@@ -25,22 +25,22 @@ interface Props {
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
 }
 
 type TextAreaProps = Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   "size"
 > &
-  Props;
+  Props & {
+    size?: "xs" | "sm" | "md" | "lg" | "xl";
+  };
 
 const TextArea = forwardRef(function TextArea(
   props: TextAreaProps,
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, size, ...textareaProps } =
-    props;
+  const { label, helperText, errorText, invalid, ...textareaProps } = props;
 
   return (
     <InputWrapper>
@@ -48,7 +48,6 @@ const TextArea = forwardRef(function TextArea(
         <Field.Label>{intl.formatMessage(label)}</Field.Label>
         <ChakraTextarea
           css={styledTextareaStyles}
-          size={size}
           ref={ref}
           {...textareaProps}
         />
