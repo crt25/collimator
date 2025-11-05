@@ -35,9 +35,14 @@ import { AppTranslator, MessageKeys } from "./translator";
 
 import {
   GenericNotebookTaskImportError,
+  GetTaskError,
   UnsupportedTaskFormatError,
 } from "./errors/task-errors";
 import { hasStatus } from "./utils";
+import {
+  ExportTask,
+  ExportTaskResult,
+} from "./iframe-rpc/src/methods/export-task";
 
 const logModule = "[Embedded Jupyter]";
 
