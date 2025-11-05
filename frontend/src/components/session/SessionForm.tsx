@@ -172,14 +172,14 @@ const SessionForm = ({
             {...register("title")}
             data-testid="title"
             errorText={errors.title?.message}
-          ></Input>
+          />
 
           <TextArea
             label={messages.description}
             {...register("description")}
             data-testid="description"
             errorText={errors.description?.message}
-          ></TextArea>
+          />
 
           <SortableListInput
             items={selectedTasks}
@@ -229,7 +229,7 @@ const SessionForm = ({
             data-testid="is-anonymous"
             type="checkbox"
             errorText={errors.isAnonymous?.message}
-          ></Input>
+          />
 
           <SubmitFormButton label={submitMessage} />
         </form>
