@@ -1,6 +1,10 @@
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
-import { Field, Input as ChakraInput } from "@chakra-ui/react";
+import {
+  Field,
+  Input as ChakraInput,
+  InputProps as ChakraInputProps,
+} from "@chakra-ui/react";
 import styled from "@emotion/styled";
 
 const InputWrapper = styled.label`
@@ -22,7 +26,7 @@ interface Props {
 // Omit the native size attribute to avoid confusion with Chakra UI's size prop
 type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
   Props & {
-    size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+    size?: ChakraInputProps["size"];
   };
 
 const Input = forwardRef(function Input(

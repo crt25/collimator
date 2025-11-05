@@ -1,6 +1,11 @@
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
-import { Field, Textarea as ChakraTextarea } from "@chakra-ui/react";
+import {
+  Field,
+  Textarea as ChakraTextarea,
+  TextareaProps as ChakraTextareaProps,
+} from "@chakra-ui/react";
+
 import styled from "@emotion/styled";
 
 const InputWrapper = styled.label`
@@ -21,12 +26,9 @@ interface Props {
   invalid?: boolean;
 }
 
-type TextAreaProps = Omit<
-  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "size"
-> &
+type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
   Props & {
-    size?: "xs" | "sm" | "md" | "lg" | "xl";
+    size?: ChakraTextareaProps["size"];
   };
 
 const TextArea = forwardRef(function TextArea(
