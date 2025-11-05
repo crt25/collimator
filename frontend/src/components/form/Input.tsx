@@ -17,40 +17,26 @@ interface Props {
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
-  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
-  placeholder?: string;
 }
 
 // Omit the native size attribute to avoid confusion with Chakra UI's size prop
 type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
-  Props;
+  Props & {
+    size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  };
 
 const Input = forwardRef(function Input(
   props: InputProps,
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const {
-    label,
-    helperText,
-    errorText,
-    invalid,
-    size,
-    placeholder,
-    ...inputProps
-  } = props;
+  const { label, helperText, errorText, invalid, ...inputProps } = props;
 
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
-        <ChakraInput
-          css={styledInputStyles}
-          size={size}
-          ref={ref}
-          placeholder={placeholder}
-          {...inputProps}
-        />
+        <ChakraInput css={styledInputStyles} ref={ref} {...inputProps} />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>
