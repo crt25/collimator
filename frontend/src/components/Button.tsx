@@ -12,7 +12,6 @@ import {
   ButtonHTMLAttributes,
 } from "react";
 import { isNonNull } from "@/utilities/is-non-null";
-import ProgressSpinner from "./ProgressSpinner";
 
 export enum ButtonVariant {
   primary = "primary",
@@ -120,7 +119,6 @@ const Button = ({
     <ChakraButton
       onClick={onClick}
       loading={isLoading}
-      spinner={<ProgressSpinner />}
       className={className}
       css={buttonCssProps}
       {...buttonProps}
