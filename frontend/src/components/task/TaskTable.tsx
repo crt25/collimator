@@ -108,6 +108,7 @@ const TaskTable = () => {
               <FontAwesomeIcon icon={faEdit} />
             </Button>
           }
+          testId={`task-${rowData.id}-actions-dropdown-button`}
         >
           <DropdownMenu.Item
             onClick={() => {

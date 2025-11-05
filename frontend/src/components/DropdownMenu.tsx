@@ -51,9 +51,10 @@ const DropdownMenuItem = ({ href, onClick, children, icon }: DropdownItemProps) 
 export type DropdownProps = {
   trigger?: React.ReactNode;
   children?: React.ReactNode;
+  testId?: string;
 };
 
-const DropdownMenu = ({ trigger, children }: DropdownProps) => {
+const DropdownMenu = ({ trigger, children, testId }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const triggerStyleProp = {
@@ -83,7 +84,7 @@ const DropdownMenu = ({ trigger, children }: DropdownProps) => {
       open={isOpen}
       onOpenChange={(details) => setIsOpen(details.open)}
     >
-      <Menu.Trigger css={triggerStyleProp}>
+      <Menu.Trigger css={triggerStyleProp} data-testid={testId}>
         {trigger}
         <Icon as={isOpen ? LuChevronUp : LuChevronDown} />
       </Menu.Trigger>

@@ -94,6 +94,7 @@ const UserList = () => {
             <FontAwesomeIcon icon={faEdit} />
           </Button>
         }
+        data-testid={`user-${rowData.id}-actions`}
       >
         <DropdownMenu.Item
           onClick={() => {
