@@ -61,8 +61,9 @@ const ClassForm = ({
             label={messages.name}
             {...register("name")}
             data-testid="name"
+            invalid={!!errors.name}
             errorText={errors.name?.message}
-          ></Input>
+          />
 
           <Select
             label={messages.teacher}

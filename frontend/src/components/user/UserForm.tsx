@@ -79,15 +79,17 @@ const UserForm = ({
         label={messages.name}
         {...register("name")}
         data-testid="name"
+        invalid={!!errors.name}
         errorText={errors.name?.message}
-      ></Input>
+      />
 
       <Input
         label={messages.email}
         {...register("email")}
         data-testid="email"
+        invalid={!!errors.email}
         errorText={errors.email?.message}
-      ></Input>
+      />
 
       <Select
         label={messages.type}
