@@ -23,7 +23,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import MultiSwrContent from "../MultiSwrContent";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
+import DropdownMenu from "../DropdownMenu";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -179,7 +179,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             </Button>
           }
         >
-          <DropdownMenuItem
+          <DropdownMenu.Item
             onClick={() => {
               setSessionIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -187,11 +187,11 @@ const SessionList = ({ classId }: { classId: number }) => {
             data-testid={`session-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownMenuItem>
+          </DropdownMenu.Item>
           {klass &&
             "userId" in authenticationContext &&
             klass.teacher.id === authenticationContext.userId && (
-              <DropdownMenuItem
+              <DropdownMenu.Item
                 onClick={async () => {
                   const fingerprint =
                     await authenticationContext.keyPair.getPublicKeyFingerprint();
@@ -203,7 +203,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                 data-testid={`session-${rowData.id}-copy-session-link-button`}
               >
                 {intl.formatMessage(messages.copySessionLink)}
-              </DropdownMenuItem>
+              </DropdownMenu.Item>
             )}
         </DropdownMenu>
       </div>

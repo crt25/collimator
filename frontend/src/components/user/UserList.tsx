@@ -16,7 +16,7 @@ import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGe
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
+import DropdownMenu from "../DropdownMenu";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -95,7 +95,7 @@ const UserList = () => {
           </Button>
         }
       >
-        <DropdownMenuItem
+        <DropdownMenu.Item
           onClick={() => {
             setUserIdToDelete(rowData.id);
             setShowDeleteConfirmationModal(true);
@@ -103,9 +103,9 @@ const UserList = () => {
           data-testid={`user-${rowData.id}-delete-button`}
         >
           {intl.formatMessage(TableMessages.delete)}
-        </DropdownMenuItem>
+        </DropdownMenu.Item>
         {rowData.oidcSub === null && (
-          <DropdownMenuItem
+          <DropdownMenu.Item
             onClick={async () => {
               const token = await generateRegistrationToken(rowData.id);
 
@@ -116,7 +116,7 @@ const UserList = () => {
             data-testid={`user-${rowData.id}-generate-registration-token-button`}
           >
             {intl.formatMessage(messages.generateRegistrationToken)}
-          </DropdownMenuItem>
+          </DropdownMenu.Item>
         )}
       </DropdownMenu>
     ),

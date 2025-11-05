@@ -11,7 +11,7 @@ import {
 } from "react-intl";
 import Head from "next/head";
 import LanguageChooser from "./LanguageChooser";
-import DropdownMenu, { DropdownMenuItem } from "./DropdownMenu";
+import DropdownMenu from "./DropdownMenu";
 import { useUserName } from "@/hooks/useUserName";
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 
@@ -105,12 +105,12 @@ const Header = ({
                 <DropdownMenu
                   trigger={<div data-testid="current-user">{name}</div>}
                 >
-                  <DropdownMenuItem href="/logout">
+                  <DropdownMenu.Item href="/logout">
                     <FormattedMessage
                       id="Header.signOut"
                       defaultMessage="Sign Out"
                     />
-                  </DropdownMenuItem>
+                  </DropdownMenu.Item>
                 </DropdownMenu>
               ) : (
                 <Link href="/login" data-testid="sign-in-button">

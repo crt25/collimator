@@ -20,7 +20,8 @@ import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllCla
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
+import DropdownMenu from "../DropdownMenu";
+
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
 
@@ -136,7 +137,7 @@ const ClassList = () => {
             </Button>
           }
         >
-          <DropdownMenuItem
+          <DropdownMenu.Item
             onClick={() => {
               setClassIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -144,7 +145,7 @@ const ClassList = () => {
             data-testid={`class-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownMenuItem>
+          </DropdownMenu.Item>
         </DropdownMenu>
       </div>
     ),

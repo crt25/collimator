@@ -5,7 +5,7 @@ import {
   SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
-import DropdownMenu, { DropdownMenuItem } from "./DropdownMenu";
+import DropdownMenu from "./DropdownMenu";
 
 const messages = defineMessages({
   english: {
@@ -43,12 +43,12 @@ const LanguageChooser = () => {
       )}
     >
       {availableLocales.map((locale) => (
-        <DropdownMenuItem
+        <DropdownMenu.Item
           key={locale}
           onClick={() => setLocalizationState({ locale })}
         >
           {intl.formatMessage(languageMessageByLocale[locale])}
-        </DropdownMenuItem>
+        </DropdownMenu.Item>
       ))}
     </DropdownMenu>
   );

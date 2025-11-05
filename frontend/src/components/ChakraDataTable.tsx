@@ -30,7 +30,7 @@ import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Input from "./form/Input";
 import Button from "./Button";
-import DropdownMenu, { DropdownMenuItem } from "./DropdownMenu";
+import DropdownMenu from "./DropdownMenu";
 
 const TableWrapper = styled.div`
   margin: 1rem 0;
@@ -476,12 +476,12 @@ export const ChakraDataTable = <T extends { id: number }>({
 
             <DropdownMenu trigger={currentColumnLabel}>
               {features.columnFiltering.columns.map((col) => (
-                <DropdownMenuItem
+                <DropdownMenu.Item
                   key={col.accessorKey}
                   onClick={() => setFilterColumn(col.accessorKey)}
                 >
                   {col.label}
-                </DropdownMenuItem>
+                </DropdownMenu.Item>
               ))}
             </DropdownMenu>
           </HStack>

@@ -16,7 +16,7 @@ import Tag from "@/components/Tag";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
+import DropdownMenu from "../DropdownMenu";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -145,19 +145,19 @@ const LessonList = ({
             </Button>
           }
         >
-          <DropdownMenuItem
+          <DropdownMenu.Item
             onClick={() => {
               router.push(`/lesson/${rowData.id}/edit`);
             }}
           >
             Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log("Action 2")}>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => console.log("Action 2")}>
             Action 2
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log("Action 3")}>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => console.log("Action 3")}>
             Action 3
-          </DropdownMenuItem>
+          </DropdownMenu.Item>
         </DropdownMenu>
       </div>
     ),
@@ -227,15 +227,15 @@ const LessonList = ({
                 </Button>
               }
             >
-              <DropdownMenuItem onClick={() => console.log("Action 1")}>
+              <DropdownMenu.Item onClick={() => console.log("Action 1")}>
                 Action
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log("Action 2")}>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => console.log("Action 2")}>
                 Another action
-              </DropdownMenuItem>
+              </DropdownMenu.Item>
               <DropdownMenuItem onClick={() => console.log("Action 3")}>
                 Something else
-              </DropdownMenuItem>
+              </DropdownMenu.Item>
             </DropdownMenu>
           }
         />

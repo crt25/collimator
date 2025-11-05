@@ -96,5 +96,6 @@ const DropdownMenu = ({ trigger, children }: DropdownProps) => {
   );
 };
 
+DropdownMenu.Item = DropdownMenuItem;
+
 export default DropdownMenu;
-export { DropdownMenuItem };

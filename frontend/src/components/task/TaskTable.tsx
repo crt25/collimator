@@ -19,7 +19,7 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu, { DropdownMenuItem } from "../DropdownMenu";
+import DropdownMenu from "../DropdownMenu";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -109,7 +109,7 @@ const TaskTable = () => {
             </Button>
           }
         >
-          <DropdownMenuItem
+          <DropdownMenu.Item
             onClick={() => {
               setTaskIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
@@ -117,7 +117,7 @@ const TaskTable = () => {
             data-testid={`task-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
-          </DropdownMenuItem>
+          </DropdownMenu.Item>
         </DropdownMenu>
       </div>
     ),
