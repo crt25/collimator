@@ -1,9 +1,6 @@
 import { Button as ChakraButton, HStack, Icon, Box } from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+
+import { LuCircleCheck, LuCircleX } from "react-icons/lu";
 
 import {
   useCallback,
@@ -132,24 +129,14 @@ const Button = ({
       <HStack gap={3}>
         <Box>{children}</Box>
         {isSuccessful === true && (
-          <Icon
-            as={() => (
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                data-testid="success-icon"
-              />
-            )}
-          />
+          <Icon data-testid="success-icon">
+            <LuCircleCheck />
+          </Icon>
         )}
         {isSuccessful === false && (
-          <Icon
-            as={() => (
-              <FontAwesomeIcon
-                icon={faTimesCircle}
-                data-testid="failure-icon"
-              />
-            )}
-          />
+          <Icon data-testid="failure-icon">
+            <LuCircleX />
+          </Icon>
         )}
       </HStack>
     </ChakraButton>
