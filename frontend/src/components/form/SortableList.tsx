@@ -22,18 +22,17 @@ const SortableListWrapper = styled.div`
 `;
 
 const SortableItem = <T extends { id: number }>(props: {
-  id: number;
   testId?: string;
   item: {
     value: string;
     label: string;
-    originalItem: T;
+    item: T;
     index: number;
   };
   children: React.ReactNode;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+    useSortable({ id: props.item.item.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -77,8 +76,8 @@ const SortableListInput = <TItem extends { id: number }>({
         items: items.map((item, index) => ({
           value: item.id.toString(),
           label: item.id.toString(),
-          originalItem: item,
-          index: index,
+          item,
+          index,
         })),
       }),
     [items],
@@ -110,14 +109,13 @@ const SortableListInput = <TItem extends { id: number }>({
             <Listbox.Content>
               {collection.items.map((collectionItem) => (
                 <SortableItem
-                  key={`${collectionItem.originalItem.id}`}
-                  id={collectionItem.originalItem.id}
-                  testId={`${testId}-item-${collectionItem.originalItem.id}`}
+                  key={collectionItem.item.id}
+                  testId={`${testId}-item-${collectionItem.item.id}`}
                   item={collectionItem}
                 >
                   <Listbox.ItemText>
                     {renderItemContent(
-                      collectionItem.originalItem,
+                      collectionItem.item,
                       collectionItem.index,
                     )}
                   </Listbox.ItemText>
