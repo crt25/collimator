@@ -21,16 +21,19 @@ import {
   TableOptions,
   ColumnOrderState,
   ColumnPinningState,
+  Cell,
 } from "@tanstack/react-table";
 
-import { Table, HStack, Stack } from "@chakra-ui/react";
+import { Table, HStack, Stack, Icon } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import { LuArrowUp, LuArrowDown } from "react-icons/lu";
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Input from "./form/Input";
+import Tag from "./Tag";
 import Button from "./Button";
 import DropdownMenu from "./DropdownMenu";
+import { ColumnType } from "@/types/tanstack";
 
 const TableWrapper = styled.div`
   margin: 1rem 0;
@@ -459,6 +462,28 @@ export const ChakraDataTable = <T extends { id: number }>({
     return typeof value === "string" ? value : "";
   };
 
+  const cellWrapper = ({ cell }: { cell: Cell<T, unknown> }) => {
+    const wrapperType = cell.column.columnDef.meta?.columnType ?? "default";
+    const renderedContent = flexRender(
+      cell.column.columnDef.cell,
+      cell.getContext(),
+    );
+
+    switch (wrapperType) {
+      case ColumnType.tags:
+        return <Tag id={cell.id}>{renderedContent}</Tag>;
+
+      case ColumnType.icon:
+        return <Icon>{renderedContent}</Icon>;
+
+      case ColumnType.text:
+        return <>{renderedContent}</>;
+
+      default:
+        return <>{renderedContent}</>;
+    }
+  };
+
   return (
     <TableWrapper>
       <Stack gap={4}>
@@ -530,9 +555,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                 style={{ cursor: onRowClick ? "pointer" : "default" }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <Table.Cell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Table.Cell>
+                  <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
                 ))}
               </Table.Row>
             ))}
