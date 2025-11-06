@@ -463,24 +463,34 @@ export const ChakraDataTable = <T extends { id: number }>({
   };
 
   const cellWrapper = ({ cell }: { cell: Cell<T, unknown> }) => {
-    const wrapperType = cell.column.columnDef.meta?.columnType ?? "default";
+    const columnType =
+      cell.column.columnDef.meta?.columnType ?? ColumnType.text;
+    const icon = cell.column.columnDef.meta?.icon;
     const renderedContent = flexRender(
       cell.column.columnDef.cell,
       cell.getContext(),
     );
 
-    switch (wrapperType) {
+    // If the icon is defined in the column meta, wrap the content with the icon
+    const content = icon ? (
+      <HStack gap={2}>
+        <Icon>{icon}</Icon>
+        <span>{renderedContent}</span>
+      </HStack>
+    ) : (
+      renderedContent
+    );
+
+    switch (columnType) {
       case ColumnType.tags:
-        return <Tag id={cell.id}>{renderedContent}</Tag>;
+        return <Tag id={cell.id}>{content}</Tag>;
 
       case ColumnType.icon:
-        return <Icon>{renderedContent}</Icon>;
+        return <Icon>{content}</Icon>;
 
       case ColumnType.text:
-        return <>{renderedContent}</>;
-
       default:
-        return <>{renderedContent}</>;
+        return <>{content}</>;
     }
   };
 
