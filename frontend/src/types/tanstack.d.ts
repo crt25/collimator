@@ -1,12 +1,5 @@
-import "@tanstack/react-table";
-
-enum ColumnType {
-  text = "text",
-  icon = "icon",
-  link = "link",
-  tags = "tags",
-}
-
+import { RowData } from "@tanstack/react-table";
+import { ColumnType } from "./tanstack-types";
 declare module "@tanstack/react-table" {
   interface ColumnMeta {
     columnType?: ColumnType;
