@@ -29,6 +29,7 @@ import { useState, useMemo } from "react";
 import { LuArrowUp, LuArrowDown } from "react-icons/lu";
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
+import Link from "next/link";
 import Input from "./form/Input";
 import Tag from "./Tag";
 import Button from "./Button";
@@ -462,35 +463,46 @@ export const ChakraDataTable = <T extends { id: number }>({
     return typeof value === "string" ? value : "";
   };
 
+  const wrapWithIcon = (content: React.ReactNode, icon?: React.ReactNode) => {
+    return icon ? (
+      <HStack gap={2}>
+        <Icon>{icon}</Icon>
+        <span>{content}</span>
+      </HStack>
+    ) : (
+      content
+    );
+  };
+
   const cellWrapper = ({ cell }: { cell: Cell<T, unknown> }) => {
     const columnType =
       cell.column.columnDef.meta?.columnType ?? ColumnType.text;
+
     const icon = cell.column.columnDef.meta?.icon;
+    const linkHref = cell.column.columnDef.meta?.linkHref;
+
     const renderedContent = flexRender(
       cell.column.columnDef.cell,
       cell.getContext(),
     );
 
-    // If the icon is defined in the column meta, wrap the content with the icon
-    const content = icon ? (
-      <HStack gap={2}>
-        <Icon>{icon}</Icon>
-        <span>{renderedContent}</span>
-      </HStack>
-    ) : (
-      renderedContent
-    );
-
     switch (columnType) {
       case ColumnType.tags:
-        return <Tag id={cell.id}>{content}</Tag>;
+        return <Tag id={cell.id}>{wrapWithIcon(renderedContent, icon)}</Tag>;
 
       case ColumnType.icon:
-        return <Icon>{content}</Icon>;
+        return <Icon>{renderedContent}</Icon>;
+
+      case ColumnType.link:
+        return (
+          <Link href={linkHref || "#"}>
+            {wrapWithIcon(renderedContent, icon)}
+          </Link>
+        );
 
       case ColumnType.text:
       default:
-        return <>{content}</>;
+        return <>{wrapWithIcon(renderedContent, icon)}</>;
     }
   };
 
