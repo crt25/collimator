@@ -19,7 +19,12 @@ export type DropdownItemProps = {
     }
 );
 
-const DropdownMenuItem = ({ href, onClick, children, icon }: DropdownItemProps) => {
+const DropdownMenuItem = ({
+  href,
+  onClick,
+  children,
+  icon,
+}: DropdownItemProps) => {
   const handleClick = (e: MouseEventReact<HTMLElement>) => {
     e.stopPropagation();
     if (onClick) {

@@ -10,10 +10,10 @@ import {
   useIntl,
 } from "react-intl";
 import Head from "next/head";
-import LanguageChooser from "./LanguageChooser";
-import DropdownMenu from "./DropdownMenu";
 import { useUserName } from "@/hooks/useUserName";
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
+import LanguageChooser from "./LanguageChooser";
+import DropdownMenu from "./DropdownMenu";
 
 const messages = defineMessages({
   applicationName: {

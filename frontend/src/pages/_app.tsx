@@ -25,7 +25,7 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
-import { ChakraProvider } ../components/ui/ChakraProviderakraProvider";
+import { ChakraProvider } from "../components/ui/ChakraProvider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";

@@ -3,8 +3,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { LuClock, LuUser } from "react-icons/lu";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiXCircle } from "react-icons/fi";
-import ChakraDataTable from "./ChakraDataTable";
 import { ColumnType } from "@/types/tanstack-types";
+import ChakraDataTable from "./ChakraDataTable";
 
 type TaskData = {
   id: number;

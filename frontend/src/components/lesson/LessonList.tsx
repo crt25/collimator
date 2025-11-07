@@ -11,14 +11,14 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { ButtonGroup, IconButton } from "@chakra-ui/react";
+import { LuChevronDown } from "react-icons/lu";
 import Tags from "@/components/Tags";
 import Tag from "@/components/Tag";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
-import { ButtonGroup, ButtonGroupProps, IconButton } from "@chakra-ui/react";
-import { LuChevronDown } from "react-icons/lu";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;

@@ -10,6 +10,9 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { ButtonGroup, Icon, IconButton } from "@chakra-ui/react";
+import { LuChevronDown } from "react-icons/lu";
+import { MdModeEdit } from "react-icons/md";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -19,9 +22,6 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
-import { ButtonGroup, Icon, IconButton } from "@chakra-ui/react";
-import { LuChevronDown } from "react-icons/lu";
-import { MdModeEdit } from "react-icons/md";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
