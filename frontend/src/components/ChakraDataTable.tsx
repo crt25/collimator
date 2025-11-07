@@ -489,12 +489,15 @@ export const ChakraDataTable = <T extends { id: number }>({
                   <Table.ColumnHeader
                     key={header.id}
                     onClick={
-                      features?.sorting
+                      features?.sorting && header.column.getCanSort()
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
                     style={{
-                      cursor: features?.sorting ? "pointer" : "default",
+                      cursor:
+                        features?.sorting && header.column.getCanSort()
+                          ? "pointer"
+                          : "default",
                     }}
                   >
                     <HStack gap={2}>
@@ -506,7 +509,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                               header.getContext(),
                             )}
                       </div>
-                      {features?.sorting && (
+                      {features?.sorting && header.column.getCanSort() && (
                         <SortIcon isSorted={header.column.getIsSorted()} />
                       )}
                     </HStack>
