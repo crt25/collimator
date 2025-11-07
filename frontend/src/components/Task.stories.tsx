@@ -1,4 +1,4 @@
-import { Meta as MetaType } from "@storybook/react/*";
+import { Meta as MetaType } from "@storybook/react";
 import { useState, useRef } from "@storybook/preview-api";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
