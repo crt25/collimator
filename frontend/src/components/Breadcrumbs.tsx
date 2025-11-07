@@ -16,13 +16,15 @@ const Breadcrumbs = ({
         <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
       </BreadcrumbItem>
 
-      {Children.map(children, (child) => {
+      {Children.map(children, (child, index) => {
         if (!isValidElement(child)) {
           return null;
         }
 
+        const childKey = child.key ?? `breadcrumb-${index}`;
+
         return (
-          <Fragment key={child.key}>
+          <Fragment key={childKey}>
             <Breadcrumb.Separator />
             {child}
           </Fragment>
