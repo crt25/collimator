@@ -13,10 +13,6 @@ import { LuChevronDown } from "react-icons/lu";
 import { Icon } from "@chakra-ui/react";
 import { MdAdd } from "react-icons/md";
 import DataTable, { LazyTableState } from "@/components/DataTable";
-import { getClassStatusMessage } from "@/i18n/class-status-messages";
-import { TableMessages } from "@/i18n/table-messages";
-import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
-import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
@@ -27,10 +23,6 @@ import { IconButton } from "../IconButton";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
-
-  tr {
-    cursor: pointer;
-  }
 `;
 
 const messages = defineMessages({
@@ -38,9 +30,21 @@ const messages = defineMessages({
     id: "ClassList.columns.name",
     defaultMessage: "Name",
   },
-  lastSessionColumn: {
-    id: "ClassList.columns.lastSession",
-    defaultMessage: "Last Session",
+  degreeColumn: {
+    id: "ClassList.columns.degree",
+    defaultMessage: "Degree",
+  },
+  createClass: {
+    id: "ClassList.createClass",
+    defaultMessage: "Create Class",
+  },
+  schoolYearColumn: {
+    id: "ClassList.columns.schoolYear",
+    defaultMessage: "School Year",
+  },
+  teacherColumn: {
+    id: "ClassList.columns.teacher",
+    defaultMessage: "Teacher",
   },
   statusColumn: {
     id: "ClassList.columns.status",
@@ -49,6 +53,10 @@ const messages = defineMessages({
   actionsColumn: {
     id: "ClassList.columns.actions",
     defaultMessage: "Actions",
+  },
+  activeStatus: {
+    id: "ClassList.status.active",
+    defaultMessage: "Active",
   },
   deleteConfirmationTitle: {
     id: "ClassList.deleteConfirmation.title",
