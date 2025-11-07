@@ -8,21 +8,29 @@ import { useCallback, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { FaEdit } from "react-icons/fa";
-import { LuChevronDown } from "react-icons/lu";
 import { Icon } from "@chakra-ui/react";
 import { MdAdd } from "react-icons/md";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
+import DropdownMenu from "../DropdownMenu";
+import { ColumnDef } from "@tanstack/react-table";
+import { FaCircle } from "react-icons/fa";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu from "../DropdownMenu";
-import { ButtonGroup } from "../ButtonGroup";
-import { IconButton } from "../IconButton";
+import { getClassStatusMessage } from "@/i18n/class-status-messages";
+import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
+import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
+import { ColumnType } from "@/types/tanstack-types";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
+`;
+
+const StatusWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const messages = defineMessages({
@@ -69,6 +77,14 @@ const messages = defineMessages({
   deleteConfirmationConfirm: {
     id: "ClassList.deleteConfirmation.confirm",
     defaultMessage: "Delete Class",
+  },
+  current: {
+    id: "ClassStatus.current",
+    defaultMessage: "Current",
+  },
+  past: {
+    id: "ClassStatus.past",
+    defaultMessage: "Past",
   },
 });
 
@@ -132,49 +148,81 @@ const ClassList = () => {
     [intl],
   );
 
-  const actionsTemplate = useCallback(
-    (rowData: ExistingClassWithTeacher) => (
-      <div data-testid={`class-${rowData.id}-actions`}>
-        <ButtonGroup>
-          <Button
-            variant={ButtonVariant.primary}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/class/${rowData.id}/edit`);
-            }}
-            data-testid={`class-${rowData.id}-edit-button`}
-          >
-            <Icon>
-              <FaEdit />
-            </Icon>
-          </Button>
-          <DropdownMenu
-            trigger={
-              <IconButton
-                aria-label="More actions"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <LuChevronDown />
-              </IconButton>
-            }
-            data-testid={`class-${rowData.id}-actions-dropdown-button`}
-            isButton={true}
-          >
-            <DropdownMenu.Item
-              onClick={() => {
-                setClassIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
-              }}
-              data-testid={`class-${rowData.id}-delete-button`}
-            >
-              {intl.formatMessage(TableMessages.delete)}
-            </DropdownMenu.Item>
-          </DropdownMenu>
-        </ButtonGroup>
-      </div>
-    ),
-    [router, intl],
-  );
+  const dataWithMockFields = data?.map((classItem) => ({
+    ...classItem,
+    degree: classItem.degree || "12th grade",
+    schoolYear: classItem.schoolYear || "2024-2025",
+    status: classItem.status || "current",
+  }));
+
+  const columns: ColumnDef<ExistingClassWithTeacher>[] = [
+    {
+      accessorKey: "name",
+      header: intl.formatMessage(messages.nameColumn),
+      cell: (info) => (
+        <span data-testid={`class-${info.row.original.id}-name`}>
+          {info.row.original.name}
+        </span>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "degree",
+      header: intl.formatMessage(messages.degreeColumn),
+      enableSorting: false,
+      cell: (info) => {
+        const degree = info.row.original.degree;
+        return <span>{degree}</span>;
+      },
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "schoolYear",
+      header: intl.formatMessage(messages.schoolYearColumn),
+      enableSorting: false,
+      cell: (info) => {
+        const schoolYear = info.row.original.schoolYear;
+        return <span>{schoolYear}</span>;
+      },
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "teacher",
+      header: intl.formatMessage(messages.teacherColumn),
+      enableSorting: false,
+      cell: (info) => {
+        const teacher = info.row.original.teacher;
+        return <span>{teacher?.name || "Mr. Bumbacher"}</span>;
+      },
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "status",
+      header: intl.formatMessage(messages.statusColumn),
+      enableSorting: false,
+      cell: (info) => {
+        const status = info.row.original.status;
+        const isActive = status === "current";
+        return (
+          <StatusWrapper>
+            <FaCircle color={isActive ? "#22c55e" : "#6b7280"} size={10} />
+            <span>{intl.formatMessage(getClassStatusMessage(status))}</span>
+          </StatusWrapper>
+        );
+      },
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+  ];
 
   return (
     <ClassListWrapper data-testid="class-list">
