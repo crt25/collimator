@@ -1,7 +1,6 @@
-import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Nav } from "react-bootstrap";
+import { Tabs } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
 import { useContext } from "react";
 import {
@@ -10,18 +9,6 @@ import {
 } from "@/contexts/AuthenticationContext";
 import { isNonNull } from "@/utilities/is-non-null";
 import BreadcrumbItem from "./BreadcrumbItem";
-
-const StyledNav = styled(Nav)`
-  margin: 1rem 0;
-
-  .nav-item {
-  }
-
-  .nav-link {
-    &.active {
-    }
-  }
-`;
 
 export interface NavigationTab<T = undefined> {
   url: string;
@@ -73,8 +60,9 @@ const TabNavigation = <T extends unknown = undefined>({
     })
     .filter(isNonNull);
 
+  const activeItems = navigationTabs.filter((tab) => tab.isActive);
+
   if (breadcrumb) {
-    const activeItems = navigationTabs.filter((tab) => tab.isActive);
     return (
       <>
         {activeItems.map((item) => (
@@ -86,22 +74,26 @@ const TabNavigation = <T extends unknown = undefined>({
     );
   }
 
+  const activeValue = activeItems[0]?.url || navigationTabs[0]?.url || "";
+
   return (
-    <StyledNav variant="tabs">
-      {navigationTabs.map((tab) => (
-        <Nav.Item key={tab.url}>
-          <Link
-            className={tab.isActive ? "nav-link active" : "nav-link"}
-            role="button"
-            tabIndex={0}
-            href={tab.url}
-            data-testid={tab.testId}
-          >
-            {tab.title(intl, tabTitleArguments as T)}
-          </Link>
-        </Nav.Item>
-      ))}
-    </StyledNav>
+    <Tabs.Root
+      value={activeValue}
+      my="4"
+      navigate={({ value }) => {
+        router.push(value);
+      }}
+    >
+      <Tabs.List>
+        {navigationTabs.map((tab) => (
+          <Tabs.Trigger key={tab.url} value={tab.url} asChild>
+            <Link href={tab.url} data-testid={tab.testId}>
+              {tab.title(intl, tabTitleArguments as T)}
+            </Link>
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
+    </Tabs.Root>
   );
 };
 
