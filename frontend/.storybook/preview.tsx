@@ -7,6 +7,7 @@ import {
   getLocallyAuthenticatedStudentContext,
   getUnauthenticatedContext,
 } from "../src/contexts/__tests__/mock-contexts";
+import { ChakraProvider } from "../src/components/ui/ChakraProvider";
 import { UserRole } from "../src/types/user/user-role";
 
 import "../src/styles/globals.scss";
@@ -44,6 +45,9 @@ const preview: Preview = {
       authenticationContextUnauthenticated: await getUnauthenticatedContext(),
     }),
   ],
+  decorators: [
+    (Story, { args }) => (<ChakraProvider><Story {...args} /></ChakraProvider>)
+  ]
 };
 
 export default preview;
