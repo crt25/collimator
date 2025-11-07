@@ -102,9 +102,9 @@ const ClassList = () => {
 
   const dataWithMockFields = data?.map((classItem) => ({
     ...classItem,
-    degree: classItem.degree || "12th grade",
-    schoolYear: classItem.schoolYear || "2024-2025",
-    status: classItem.status || "current",
+    degree: "12th grade",
+    schoolYear: "2024-2025",
+    status: "current",
   }));
 
   const columns: ColumnDef<ExistingClassWithTeacher>[] = [
