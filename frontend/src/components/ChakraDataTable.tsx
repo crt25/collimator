@@ -89,7 +89,15 @@ interface ChakraDataTableProps<T> {
 }
 
 const TableWrapper = styled.div`
-  margin: 1rem 0;
+  margin-bottom: 3rem;
+`;
+
+const InputWrapper = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const PaginationButtonWrapper = styled.div`
+  margin-top: 4rem;
 `;
 
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
@@ -446,15 +454,17 @@ export const ChakraDataTable = <T extends { id: number }>({
       <Stack gap={4}>
         {features?.columnFiltering && (
           <HStack gap={4}>
-            <Input
-              value={getFilterValueAsString(
-                table.getColumn(filterColumn)?.getFilterValue(),
-              )}
-              onChange={(e) =>
-                table.getColumn(filterColumn)?.setFilterValue(e.target.value)
-              }
-              placeholder={intl.formatMessage(messages.filterByPlaceholder)}
-            />
+            <InputWrapper>
+              <Input
+                value={getFilterValueAsString(
+                  table.getColumn(filterColumn)?.getFilterValue(),
+                )}
+                onChange={(e) =>
+                  table.getColumn(filterColumn)?.setFilterValue(e.target.value)
+                }
+                placeholder={intl.formatMessage(messages.filterByPlaceholder)}
+              />
+            </InputWrapper>
 
             <DropdownMenu trigger={currentColumnLabel}>
               {features.columnFiltering.columns.map((col) => (
@@ -519,24 +529,26 @@ export const ChakraDataTable = <T extends { id: number }>({
           </Table.Body>
         </Table.Root>
 
-        {features?.pagination && (
+        {features?.pagination && table.getPageCount() > 1 && (
           <HStack justify="center" gap={2}>
-            <Button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {intl.formatMessage(messages.previousButton)}
-            </Button>
-            <span>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </span>
-            <Button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {intl.formatMessage(messages.nextButton)}
-            </Button>
+            <PaginationButtonWrapper>
+              <Button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {intl.formatMessage(messages.previousButton)}
+              </Button>
+              <span>
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </span>
+              <Button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                {intl.formatMessage(messages.nextButton)}
+              </Button>
+            </PaginationButtonWrapper>
           </HStack>
         )}
       </Stack>
