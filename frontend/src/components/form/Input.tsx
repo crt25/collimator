@@ -23,8 +23,11 @@ interface Props {
   invalid?: boolean;
 }
 
-// Omit the native size attribute to avoid confusion with Chakra UI's size prop
-type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
+// Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
+type InputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "children"
+> &
   Props & {
     size?: ChakraInputProps["size"];
   };
