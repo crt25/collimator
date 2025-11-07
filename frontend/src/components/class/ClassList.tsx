@@ -180,70 +180,28 @@ const ClassList = () => {
     <ClassListWrapper data-testid="class-list">
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
-          <DataTable
-            value={data.items}
-            lazy
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            first={lazyState.first}
-            rows={10}
-            totalRecords={data.totalCount}
-            onPage={onPage}
-            onSort={onSort}
-            sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder}
-            onFilter={onFilter}
-            filters={lazyState.filters}
-            loading={isLoading}
-            onRowClick={(e) =>
-              router.push(
-                `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
-              )
-            }
-          >
-            <Column
-              field="name"
-              header={intl.formatMessage(messages.nameColumn)}
-              sortable
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={classNameTemplate}
+          <>
+            <ChakraDataTable
+              data={dataWithMockFields || data || []}
+              columns={columns}
+              isLoading={isLoading}
+              onRowClick={(row) => router.push(`/class/${row.id}/detail`)}
+              features={{
+                sorting: true,
+                columnFiltering: {
+                  columns: [
+                    {
+                      accessorKey: "name",
+                      label: intl.formatMessage(messages.nameColumn),
+                    },
+                  ],
+                },
+                pagination: {
+                  pageSize: 10,
+                },
+              }}
             />
-            <Column
-              header={intl.formatMessage(messages.lastSessionColumn)}
-              body={lastSessionTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.statusColumn)}
-              body={statusTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.actionsColumn)}
-              body={actionsTemplate}
-              filter
-              filterElement={
-                <DropdownMenu
-                  trigger={
-                    <Button
-                      variant={ButtonVariant.secondary}
-                      onClick={() => router.push("class/create")}
-                      data-testid="class-create-button"
-                    >
-                      <Icon>
-                        <MdAdd />
-                      </Icon>
-                    </Button>
-                  }
-                  isButton={true}
-                />
-              }
-            />
-          </DataTable>
+          </>
         )}
       </SwrContent>
       <ConfirmationModal
