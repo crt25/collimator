@@ -19,7 +19,7 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
-import { ButtonGroup, Icon, IconButton } from "@chakra-ui/react/";
+import { ButtonGroup, Icon, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
 import { MdModeEdit } from "react-icons/md";
 
