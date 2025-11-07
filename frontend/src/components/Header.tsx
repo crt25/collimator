@@ -26,13 +26,14 @@ const StyledHeader = styled.header`
   padding: 1rem 0;
   background-color: var(--header-background-color);
   color: var(--header-foreground-color);
-
-  border-bottom: 1px solid var(--header-border-color);
 `;
 
 const HeaderInner = styled(Container)`
   display: flex;
   flex-direction: row;
+  height: 3rem;
+  align-items: center;
+  padding: 0;
 `;
 
 const Logo = styled.div`
@@ -53,12 +54,10 @@ const Logo = styled.div`
 
 const Menu = styled.menu`
   flex-grow: 1;
-
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 1rem;
-
   list-style: none;
 `;
 
