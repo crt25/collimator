@@ -1,17 +1,7 @@
-import styled from "@emotion/styled";
+import { Breadcrumb } from "@chakra-ui/react";
 import { FormattedMessage } from "react-intl";
+import { Children, Fragment, isValidElement } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
-
-const StyledNav = styled.nav`
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
-`;
-
-const StyledOl = styled.ol`
-  margin: 0;
-`;
 
 const Breadcrumbs = ({
   homeHref,
@@ -20,14 +10,26 @@ const Breadcrumbs = ({
   homeHref?: string;
   children?: React.ReactNode;
 }) => (
-  <StyledNav aria-label="breadcrumb">
-    <StyledOl className="breadcrumb">
+  <Breadcrumb.Root mt="4" p="2" fontWeight="bold">
+    <Breadcrumb.List gap="3">
       <BreadcrumbItem href={homeHref ?? "/"}>
         <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
       </BreadcrumbItem>
-      {children}
-    </StyledOl>
-  </StyledNav>
+
+      {Children.map(children, (child) => {
+        if (!isValidElement(child)) {
+          return null;
+        }
+
+        return (
+          <Fragment key={child.key}>
+            <Breadcrumb.Separator />
+            {child}
+          </Fragment>
+        );
+      })}
+    </Breadcrumb.List>
+  </Breadcrumb.Root>
 );
 
 export default Breadcrumbs;
