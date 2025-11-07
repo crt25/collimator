@@ -217,6 +217,14 @@ const ClassList = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
+      <Button
+        variant={ButtonVariant.secondary}
+        onClick={() => router.push("class/create")}
+        data-testid="class-create-button"
+      >
+        {intl.formatMessage(messages.createClass)}
+        <FontAwesomeIcon icon={faAdd} />
+      </Button>
     </ClassListWrapper>
   );
 };
