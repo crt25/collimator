@@ -106,10 +106,11 @@ const TaskTable = () => {
               router.push(`/task/${rowData.id}/edit`);
             }}
             data-testid={`task-${rowData.id}-edit-button`}
-          />
-          <Icon>
-            <MdModeEdit />
-          </Icon>
+          >
+            <Icon>
+              <MdModeEdit />
+            </Icon>
+          </Button>
           <DropdownMenu
             testId={`task-${rowData.id}-actions-dropdown-button`}
             trigger={
