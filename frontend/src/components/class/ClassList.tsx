@@ -88,65 +88,17 @@ const messages = defineMessages({
   },
 });
 
-const classNameTemplate = (rowData: ExistingClassWithTeacher) => (
-  <span data-testid={`class-${rowData.id}-name`}>{rowData.name}</span>
-);
-
 const ClassList = () => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
-
-  const { data, isLoading, error } = useAllClassesLazyTable(lazyState);
-
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
+  const { data, isLoading, error } = useAllClasses();
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
-  const [classIdToDelete, setClassIdToDelete] = useState<number | null>(null);
+
+  const [classIdToDelete] = useState<number | null>(null);
   const deleteClass = useDeleteClass();
-
-  const lastSessionTemplate = useCallback(
-    (_rowData: ExistingClassWithTeacher) => (
-      <span>
-        <FormattedMessage
-          id="ClassList.column.lastSession.none"
-          defaultMessage="None"
-        />
-      </span>
-    ),
-    [],
-  );
-
-  const statusTemplate = useCallback(
-    (_rowData: ExistingClassWithTeacher) => (
-      <span>{intl.formatMessage(getClassStatusMessage("current"))}</span>
-    ),
-    [intl],
-  );
 
   const dataWithMockFields = data?.map((classItem) => ({
     ...classItem,
