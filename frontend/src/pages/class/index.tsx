@@ -18,8 +18,9 @@ const ListClasses = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <Breadcrumbs />
-        <CrtNavigation />
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb />
+        </Breadcrumbs>
         <PageHeader>
           <FormattedMessage
             id="ListClasses.header"
