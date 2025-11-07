@@ -466,16 +466,18 @@ export const ChakraDataTable = <T extends { id: number }>({
               />
             </InputWrapper>
 
-            <DropdownMenu trigger={currentColumnLabel}>
-              {features.columnFiltering.columns.map((col) => (
-                <DropdownMenu.Item
-                  key={col.accessorKey}
-                  onClick={() => setFilterColumn(col.accessorKey)}
-                >
-                  {col.label}
-                </DropdownMenu.Item>
-              ))}
-            </DropdownMenu>
+            {features.columnFiltering.columns.length > 1 && (
+              <DropdownMenu trigger={currentColumnLabel}>
+                {features.columnFiltering.columns.map((col) => (
+                  <DropdownMenu.Item
+                    key={col.accessorKey}
+                    onClick={() => setFilterColumn(col.accessorKey)}
+                  >
+                    {col.label}
+                  </DropdownMenu.Item>
+                ))}
+              </DropdownMenu>
+            )}
           </HStack>
         )}
 
