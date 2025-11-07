@@ -124,10 +124,7 @@ const ClassList = () => {
       accessorKey: "degree",
       header: intl.formatMessage(messages.degreeColumn),
       enableSorting: false,
-      cell: (info) => {
-        const degree = info.row.original.degree;
-        return <span>{degree}</span>;
-      },
+      cell: () => <span>12th grade</span>,
       meta: {
         columnType: ColumnType.text,
       },
@@ -136,10 +133,7 @@ const ClassList = () => {
       accessorKey: "schoolYear",
       header: intl.formatMessage(messages.schoolYearColumn),
       enableSorting: false,
-      cell: (info) => {
-        const schoolYear = info.row.original.schoolYear;
-        return <span>{schoolYear}</span>;
-      },
+      cell: () => <span>2024-2025</span>,
       meta: {
         columnType: ColumnType.text,
       },
@@ -150,7 +144,7 @@ const ClassList = () => {
       enableSorting: false,
       cell: (info) => {
         const teacher = info.row.original.teacher;
-        return <span>{teacher?.name || "Mr. Bumbacher"}</span>;
+        return <span>{teacher?.name}</span>;
       },
       meta: {
         columnType: ColumnType.text,
@@ -160,8 +154,8 @@ const ClassList = () => {
       accessorKey: "status",
       header: intl.formatMessage(messages.statusColumn),
       enableSorting: false,
-      cell: (info) => {
-        const status = info.row.original.status;
+      cell: () => {
+        const status = "current";
         const isActive = status === "current";
         return (
           <StatusWrapper>
