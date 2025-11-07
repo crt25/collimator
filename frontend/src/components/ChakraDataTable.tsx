@@ -22,7 +22,7 @@ import {
   flexRender,
   useReactTable,
 } from "@tanstack/react-table";
-import { Table, HStack, Stack, Icon } from "@chakra-ui/react";
+import { Table, HStack, Stack, Icon, Spinner } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import { LuArrowUp, LuArrowDown } from "react-icons/lu";
 import styled from "@emotion/styled";
@@ -283,8 +283,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   const table = useReactTable(buildTableConfig());
 
   if (isLoading) {
-    // TODO: Add a better loading state
-    return <div>Loading...</div>;
+    return <Spinner size="xl" />;
   }
   const currentColumnLabel =
     features?.columnFiltering?.columns?.find(
