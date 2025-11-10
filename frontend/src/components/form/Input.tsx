@@ -11,10 +11,11 @@ const InputWrapper = styled.div`
   display: block;
 `;
 
-const styledInputStyles = {
-  padding: "0.25rem 1rem",
-  width: "lg",
-};
+const StyledInput = styled(ChakraInput)`
+  padding: 0.25rem 0.5rem;
+  max-width: 100%;
+  width: 25rem;
+`;
 
 interface Props {
   label?: MessageDescriptor;
