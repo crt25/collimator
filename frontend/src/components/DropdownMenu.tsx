@@ -20,7 +20,6 @@ export type DropdownItemProps = {
     }
 );
 
-
 const StyledMenuContent = styled(Menu.Content)`
   background-color: var(--background-color);
   border-color: var(--header-border-color);
@@ -93,13 +92,13 @@ const DropdownMenu = ({
       open={isOpen}
       onOpenChange={(details) => setIsOpen(details.open)}
     >
-      <Menu.Trigger css={triggerStyleProp} data-testid={testId}>
+      <Menu.Trigger data-testid={testId}>
         {trigger}
         <Icon as={isOpen ? LuChevronUp : LuChevronDown} />
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content css={contentStyleProp}>{children}</Menu.Content>
+          <StyledMenuContent>{children}</StyledMenuContent>
         </Menu.Positioner>
       </Portal>
     </Menu.Root>
