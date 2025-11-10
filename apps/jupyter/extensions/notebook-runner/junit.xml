@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="37" failures="37" errors="0" time="59.882">
+  <testsuite name="detectTaskFormat" errors="0" failures="17" skipped="0" timestamp="2025-11-05T11:51:27" time="15.338" tests="17">
+    <testcase classname="detectTaskFormat CRT Internal format detection via required files should detect CRT internal format with all three required files" name="detectTaskFormat CRT Internal format detection via required files should detect CRT internal format with all three required files" time="0.009">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when template is missing" name="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when template is missing" time="0.001">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when student file is missing" name="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when student file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when autograder is missing" name="detectTaskFormat CRT Internal format detection via required files should not detect CRT internal when autograder is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat CRT Internal format detection via required files should detect CRT internal with empty required files" name="detectTaskFormat CRT Internal format detection via required files should detect CRT internal with empty required files" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat External Custom format detection should detect external custom format with task file" name="detectTaskFormat External Custom format detection should detect external custom format with task file" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat External Custom format detection should not detect external custom when task file is missing" name="detectTaskFormat External Custom format detection should not detect external custom when task file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat External Custom format detection should detect external custom with empty task file" name="detectTaskFormat External Custom format detection should detect external custom with empty task file" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat Unknown format detection should throw error for empty ZIP" name="detectTaskFormat Unknown format detection should throw error for empty ZIP" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat Unknown format detection should throw error for ZIP with unrecognized structure" name="detectTaskFormat Unknown format detection should throw error for ZIP with unrecognized structure" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat error handling should throw InvalidTaskBlobError for invalid blob" name="detectTaskFormat error handling should throw InvalidTaskBlobError for invalid blob" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat error handling should handle empty blob" name="detectTaskFormat error handling should handle empty blob" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat ambiguity resolution should handle case-sensitive file names" name="detectTaskFormat ambiguity resolution should handle case-sensitive file names" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat edge cases should handle ZIP with extra files alongside required files" name="detectTaskFormat edge cases should handle ZIP with extra files alongside required files" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat edge cases should handle binary files in ZIP" name="detectTaskFormat edge cases should handle binary files in ZIP" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat edge cases should handle files with special characters in names" name="detectTaskFormat edge cases should handle files with special characters in names" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="detectTaskFormat edge cases should detect task format in nested directories in ZIP" name="detectTaskFormat edge cases should detect task format in nested directories in ZIP" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-detector.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname=" Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." name=" Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." time="0">
+      <failure>{&quot;message&quot;:&quot;&quot;,&quot;stack&quot;:&quot;TypeError: cleanup is not a function\n    at Object.&lt;anonymous&gt; (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\src\\__tests__\\task-detector.spec.ts:27:5)\n    at Promise.then.completed (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:154:7)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\testWorker.js:106:12)&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="importCrtInternalTask" errors="0" failures="20" skipped="0" timestamp="2025-11-05T11:51:27" time="15.341" tests="20">
+    <testcase classname="importCrtInternalTask valid tasks should successfully import a task with all files" name="importCrtInternalTask valid tasks should successfully import a task with all files" time="0.01">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask valid tasks should handle tasks with empty optional folders" name="importCrtInternalTask valid tasks should handle tasks with empty optional folders" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask valid tasks should correctly extract files from nested folders" name="importCrtInternalTask valid tasks should correctly extract files from nested folders" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask valid tasks should handle binary files in data folder" name="importCrtInternalTask valid tasks should handle binary files in data folder" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask missing required files should throw MissingRequiredFilesError when template file is missing" name="importCrtInternalTask missing required files should throw MissingRequiredFilesError when template file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask missing required files should throw MissingRequiredFilesError when student file is missing" name="importCrtInternalTask missing required files should throw MissingRequiredFilesError when student file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask missing required files should throw MissingRequiredFilesError when autograder file is missing" name="importCrtInternalTask missing required files should throw MissingRequiredFilesError when autograder file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importCrtInternalTask invalid input should throw InvalidTaskBlobError when blob is not a valid ZIP" name="importCrtInternalTask invalid input should throw InvalidTaskBlobError when blob is not a valid ZIP" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:19:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask valid tasks should successfully import a task with required file and data" name="importGenericNotebookTask valid tasks should successfully import a task with required file and data" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask valid tasks should handle tasks with all optional folders populated" name="importGenericNotebookTask valid tasks should handle tasks with all optional folders populated" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask valid tasks should handle empty ZIP with only required file" name="importGenericNotebookTask valid tasks should handle empty ZIP with only required file" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask valid tasks should preserve file structure with multiple levels" name="importGenericNotebookTask valid tasks should preserve file structure with multiple levels" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask valid tasks should handle files with special characters in names" name="importGenericNotebookTask valid tasks should handle files with special characters in names" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask missing required files should throw MissingRequiredFilesError when task file is missing" name="importGenericNotebookTask missing required files should throw MissingRequiredFilesError when task file is missing" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask invalid input should throw InvalidTaskBlobError when blob is not a valid ZIP" name="importGenericNotebookTask invalid input should throw InvalidTaskBlobError when blob is not a valid ZIP" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="importGenericNotebookTask invalid input should throw InvalidTaskBlobError with proper error message" name="importGenericNotebookTask invalid input should throw InvalidTaskBlobError with proper error message" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:217:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="loadJSZip should successfully load a valid ZIP blob" name="loadJSZip should successfully load a valid ZIP blob" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:374:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="loadJSZip should throw InvalidTaskBlobError for invalid blob" name="loadJSZip should throw InvalidTaskBlobError for invalid blob" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:374:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="loadJSZip should include error message in InvalidTaskBlobError" name="loadJSZip should include error message in InvalidTaskBlobError" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:374:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="loadJSZip should handle empty blob" name="loadJSZip should handle empty blob" time="0">
+      <failure>Error: Property `loadJSZip` does not exist in the provided object
+    at ModuleMocker.spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-mock\build\index.js:731:13)
+    at spyOn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\helpers.ts:19:6)
+    at Object.&lt;anonymous&gt; (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\src\__tests__\task-importer.spec.ts:374:40)
+    at Promise.then.completed (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:95:7)
+    at _runTestsForDescribeBlock (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\BurakKose\repositories\collimator\apps\jupyter\extensions\notebook-runner\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname=" Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." name=" Test execution failure: could be caused by test hooks like &apos;afterAll&apos;." time="0">
+      <failure>{&quot;message&quot;:&quot;&quot;,&quot;stack&quot;:&quot;TypeError: cleanup is not a function\n    at Object.&lt;anonymous&gt; (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\src\\__tests__\\task-importer.spec.ts:27:5)\n    at Promise.then.completed (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:154:7)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\testWorker.js:106:12)\nTypeError: cleanup is not a function\n    at Object.&lt;anonymous&gt; (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\src\\__tests__\\task-importer.spec.ts:225:5)\n    at Promise.then.completed (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:154:7)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\testWorker.js:106:12)\nTypeError: cleanup is not a function\n    at Object.&lt;anonymous&gt; (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\src\\__tests__\\task-importer.spec.ts:378:5)\n    at Promise.then.completed (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (&lt;anonymous&gt;)\n    at callAsyncCircusFn (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusHook (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:281:40)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:154:7)\n    at _runTestsForDescribeBlock (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\runTest.js:444:34)\n    at Object.worker (C:\\Users\\BurakKose\\repositories\\collimator\\apps\\jupyter\\extensions\\notebook-runner\\node_modules\\jest-runner\\build\\testWorker.js:106:12)&quot;}</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
