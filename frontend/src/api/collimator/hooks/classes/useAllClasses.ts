@@ -50,23 +50,3 @@ export const useAllClasses = (
     () => fetchAndTransform(authOptions, parameters),
   );
 };
-
-export const useAllClassesLazyTable = (
-  _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetClassesReturnType[0]>, Error> => {
-  const { data, isLoading, error } = useAllClasses();
-
-  const transformedData = useMemo(() => {
-    if (!data) {
-      return undefined;
-    }
-
-    return transformToLazyTableResult(data);
-  }, [data]);
-
-  return {
-    data: transformedData,
-    isLoading,
-    error,
-  };
-};
