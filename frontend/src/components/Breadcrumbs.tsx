@@ -12,6 +12,11 @@ const BreadcrumbRoot = styled(Breadcrumb.Root)`
 
 const BreadcrumbList = styled(Breadcrumb.List)`
   gap: 0.25rem;
+
+  && {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const Breadcrumbs = ({
