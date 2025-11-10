@@ -23,16 +23,28 @@ import {
   useReactTable,
   ColumnDef,
 } from "@tanstack/react-table";
-import { Table, HStack, Stack, Icon, Spinner } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
-import { LuArrowUp, LuArrowDown } from "react-icons/lu";
+import {
+  LuArrowUp,
+  LuArrowDown,
+  LuChevronLeft,
+  LuChevronRight,
+} from "react-icons/lu";
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
+import {
+  Table,
+  HStack,
+  Stack,
+  Icon,
+  Spinner,
+  IconButton,
+} from "@chakra-ui/react";
 
 import Input from "./form/Input";
 import Tag from "./Tag";
-import Button from "./Button";
+import Button, { ButtonVariant } from "./Button";
 import DropdownMenu from "./DropdownMenu";
 
 enum ColumnType {
@@ -96,8 +108,73 @@ const InputWrapper = styled.div`
   margin-bottom: 2rem;
 `;
 
-const PaginationButtonWrapper = styled.div`
-  margin-top: 4rem;
+const ColumnHeader = styled(Table.ColumnHeader)`
+  &.sortable {
+    cursor: pointer;
+  }
+
+  &.not-sortable {
+    cursor: default;
+  }
+`;
+
+const TableRow = styled(Table.Row)`
+  &.clickable {
+    cursor: pointer;
+  }
+
+  &.not-clickable {
+    cursor: default;
+  }
+`;
+
+
+const PaginationButton = styled(Button)`
+  background-color: #000;
+  color: #fff;
+`;
+
+const PaginationIconButton = styled(IconButton)`
+  background-color: transparent !important;
+
+  &:hover:not(:disabled) {
+    background-color: transparent !important;
+  }
+
+  &:active:not(:disabled) {
+    background-color: transparent !important;
+  }
+`;
+
+const HeaderContent = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const PaginationContentWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+`;
+
+const TableContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
@@ -109,14 +186,6 @@ const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
 };
 
 const messages = defineMessages({
-  searchPlaceholder: {
-    id: "datatable.placeholder.search",
-    defaultMessage: "Search...",
-  },
-  inputLabel: {
-    id: "datatable.label.search",
-    defaultMessage: "Search",
-  },
   filterByPlaceholder: {
     id: "datatable.placeholder.filterBy",
     defaultMessage: "Search...",
@@ -124,22 +193,6 @@ const messages = defineMessages({
   filterDropdownTrigger: {
     id: "datatable.label.filterBy",
     defaultMessage: "Filter by...",
-  },
-  previousButton: {
-    id: "datatable.button.previous",
-    defaultMessage: "Previous",
-  },
-  nextButton: {
-    id: "datatable.button.next",
-    defaultMessage: "Next",
-  },
-  pageInfo: {
-    id: "datatable.label.pageInfo",
-    defaultMessage: "Page {pageIndex} of {pageCount}",
-  },
-  loadingState: {
-    id: "datatable.state.loading",
-    defaultMessage: "Loading...",
   },
 });
 
@@ -152,6 +205,9 @@ export const ChakraDataTable = <T extends { id: number }>({
   variant = "outline",
 }: ChakraDataTableProps<T>) => {
   const intl = useIntl();
+
+  const headerClassName = features?.sorting ? "sortable" : "not-sortable";
+  const rowClassName = onRowClick ? "clickable" : "not-clickable";
 
   const [grouping, setGrouping] = useState<GroupingState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -397,6 +453,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   if (isLoading) {
     return <Spinner size="xl" />;
   }
+
   const currentColumnLabel =
     features?.columnFiltering?.columns?.find(
       (col) => col.accessorKey === filterColumn,
@@ -451,9 +508,9 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   return (
     <TableWrapper>
-      <Stack gap={4}>
+      <TableContainer>
         {features?.columnFiltering && (
-          <HStack gap={4}>
+          <FilterContainer>
             <InputWrapper>
               <Input
                 value={getFilterValueAsString(
@@ -478,29 +535,24 @@ export const ChakraDataTable = <T extends { id: number }>({
                 ))}
               </DropdownMenu>
             )}
-          </HStack>
+          </FilterContainer>
         )}
 
         <Table.Root size="md" interactive={!!onRowClick} variant={variant}>
           <Table.Header>
             {table.getHeaderGroups().map((headerGroup) => (
-              <Table.Row key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <Table.ColumnHeader
+                  <ColumnHeader
                     key={header.id}
                     onClick={
                       features?.sorting && header.column.getCanSort()
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
-                    style={{
-                      cursor:
-                        features?.sorting && header.column.getCanSort()
-                          ? "pointer"
-                          : "default",
-                    }}
+                    className={headerClassName}
                   >
-                    <HStack gap={2}>
+                    <HeaderContent>
                       <div>
                         {header.isPlaceholder
                           ? null
@@ -512,24 +564,24 @@ export const ChakraDataTable = <T extends { id: number }>({
                       {features?.sorting && header.column.getCanSort() && (
                         <SortIcon isSorted={header.column.getIsSorted()} />
                       )}
-                    </HStack>
-                  </Table.ColumnHeader>
+                    </HeaderContent>
+                  </ColumnHeader>
                 ))}
-              </Table.Row>
+              </TableRow>
             ))}
           </Table.Header>
 
           <Table.Body>
             {table.getRowModel().rows.map((row) => (
-              <Table.Row
+              <TableRow
                 key={row.id}
                 onClick={() => onRowClick?.(row.original)}
-                style={{ cursor: onRowClick ? "pointer" : "default" }}
+                className={rowClassName}
               >
                 {row.getVisibleCells().map((cell) => (
                   <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
                 ))}
-              </Table.Row>
+              </TableRow>
             ))}
           </Table.Body>
         </Table.Root>
@@ -556,7 +608,7 @@ export const ChakraDataTable = <T extends { id: number }>({
             </PaginationButtonWrapper>
           </HStack>
         )}
-      </Stack>
+      </TableContainer>
     </TableWrapper>
   );
 };
