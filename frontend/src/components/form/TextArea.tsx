@@ -8,7 +8,7 @@ import {
 
 import styled from "@emotion/styled";
 
-const InputWrapper = styled.label`
+const InputWrapper = styled.div`
   display: block;
   margin-bottom: 1rem;
 `;
