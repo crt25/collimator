@@ -7,11 +7,6 @@ const ChakraSliderWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const Label = styled.span`
-  display: block;
-  margin-bottom: 0.25rem;
-`;
-
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;

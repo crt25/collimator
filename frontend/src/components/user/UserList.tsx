@@ -2,7 +2,6 @@ import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import { Icon, ButtonGroup, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";

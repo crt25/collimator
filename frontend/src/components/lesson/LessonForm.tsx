@@ -3,7 +3,6 @@ import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 
