@@ -19,12 +19,7 @@ import {
   ChartEvent,
   ChartDataset,
 } from "chart.js";
-import { _DeepPartialObject } from "chart.js/dist/types/utils";
-import {
-  AnnotationOptions,
-  AnnotationPluginOptions,
-  EventContext,
-} from "chartjs-plugin-annotation";
+import { AnnotationOptions, EventContext } from "chartjs-plugin-annotation";
 import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { StudentName } from "@/components/encryption/StudentName";
@@ -51,6 +46,11 @@ import {
 } from "./Analyzer.state";
 import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
 import { createReferenceSymbol } from "./shapes/reference";
+
+type AnnotationOptionsType = Exclude<
+  Exclude<ChartConfiguration<"bubble">["options"], undefined>["plugins"],
+  undefined
+>["annotation"];
 
 type AdditionalChartData = {
   groups: {
@@ -564,7 +564,7 @@ const Analysis = ({
     [],
   );
 
-  const annotations = useMemo<_DeepPartialObject<AnnotationPluginOptions>>(
+  const annotations = useMemo<AnnotationOptionsType>(
     () => ({
       // allow annotations in axes
       clip: false,
@@ -737,6 +737,8 @@ const Analysis = ({
                   (
                     dataset.data as unknown as PointWithAdditionalData[]
                   ).flatMap((dataPoint) =>
+                    dataPoint.x !== null &&
+                    dataPoint.y !== null &&
                     dataPoint.x >= selection.minX &&
                     dataPoint.x <= selection.maxX &&
                     dataPoint.y >= selection.minY &&
