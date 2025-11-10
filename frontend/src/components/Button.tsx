@@ -18,6 +18,7 @@ import {
   ButtonHTMLAttributes,
 } from "react";
 import { isNonNull } from "@/utilities/is-non-null";
+import styled from "@emotion/styled";
 
 export enum ButtonVariant {
   primary = "primary",
@@ -47,6 +48,26 @@ const colorsByVariant = {
     fgColor: "var(--button-danger-foreground-color)",
   },
 };
+
+const StyledButton = styled(ChakraButton)<{ bgColor: string; fgColor: string }>`
+  border-radius: var(--border-radius);
+  background-color: ${(props) => props.bgColor};
+  color: ${(props) => props.fgColor};
+  padding: 0.5rem 1rem;
+
+  &:hover {
+    background-color: var(--accent-color-highlight);
+  }
+
+  &.active {
+    background-color: var(--accent-color-highlight);
+  }
+`;
+
+const ButtonContent = styled(HStack)`
+  gap: 0.75rem;
+`;
+
 
 const Button = ({
   onClick: onClickFn,
@@ -108,28 +129,16 @@ const Button = ({
   const { bgColor, fgColor } =
     colorsByVariant[variant ?? ButtonVariant.primary];
 
-  const buttonCssProps = {
-    borderRadius: "var(--border-radius)",
-    backgroundColor: bgColor,
-    color: fgColor,
-    "&:hover": {
-      backgroundColor: "var(--accent-color-highlight)",
-    },
-    "&.active": {
-      backgroundColor: "var(--accent-color-highlight)",
-    },
-    padding: "0.5rem 1rem",
-  };
-
   return (
-    <ChakraButton
+    <StyledButton
       onClick={onClick}
       loading={isLoading}
       className={className}
-      css={buttonCssProps}
+      bgColor={bgColor}
+      fgColor={fgColor}
       {...buttonProps}
     >
-      <HStack gap={3}>
+      <ButtonContent>
         <Box>{children}</Box>
         {isSuccessful === true && (
           <Icon data-testid="success-icon">
@@ -141,8 +150,8 @@ const Button = ({
             <LuCircleX />
           </Icon>
         )}
-      </HStack>
-    </ChakraButton>
+      </ButtonContent>
+    </StyledButton>
   );
 };
 
