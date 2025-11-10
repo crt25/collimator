@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import { Tabs } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
 import { useContext } from "react";
+import styled from "@emotion/styled";
 import {
   AuthenticationContext,
   AuthenticationContextType,
 } from "@/contexts/AuthenticationContext";
 import { isNonNull } from "@/utilities/is-non-null";
 import BreadcrumbItem from "./BreadcrumbItem";
-import styled from "@emotion/styled";
 
 const TabsRoot = styled(Tabs.Root)`
   margin-top: 1rem;

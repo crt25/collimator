@@ -21,6 +21,7 @@ import {
   ColumnPinningState,
   flexRender,
   useReactTable,
+  ColumnDef,
 } from "@tanstack/react-table";
 import { Table, HStack, Stack, Icon, Spinner } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
@@ -28,7 +29,7 @@ import { LuArrowUp, LuArrowDown } from "react-icons/lu";
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
-import { ColumnDef } from "@tanstack/react-table";
+
 import Input from "./form/Input";
 import Tag from "./Tag";
 import Button from "./Button";
@@ -275,15 +276,41 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const callbacks = useMemo(() => {
     const callbacksObject: {
-      onSortingChange?: (updater: SortingState | ((old: SortingState) => SortingState)) => void;
-      onColumnFiltersChange?: (updater: ColumnFiltersState | ((old: ColumnFiltersState) => ColumnFiltersState)) => void;
-      onPaginationChange?: (updater: PaginationState | ((old: PaginationState) => PaginationState)) => void;
-      onRowSelectionChange?: (updater: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => void;
-      onColumnVisibilityChange?: (updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => void;
-      onGroupingChange?: (updater: GroupingState | ((old: GroupingState) => GroupingState)) => void;
-      onExpandedChange?: (updater: ExpandedState | ((old: ExpandedState) => ExpandedState)) => void;
-      onColumnPinningChange?: (updater: ColumnPinningState | ((old: ColumnPinningState) => ColumnPinningState)) => void;
-      onColumnOrderChange?: (updater: ColumnOrderState | ((old: ColumnOrderState) => ColumnOrderState)) => void;
+      onSortingChange?: (
+        updater: SortingState | ((old: SortingState) => SortingState),
+      ) => void;
+      onColumnFiltersChange?: (
+        updater:
+          | ColumnFiltersState
+          | ((old: ColumnFiltersState) => ColumnFiltersState),
+      ) => void;
+      onPaginationChange?: (
+        updater: PaginationState | ((old: PaginationState) => PaginationState),
+      ) => void;
+      onRowSelectionChange?: (
+        updater:
+          | RowSelectionState
+          | ((old: RowSelectionState) => RowSelectionState),
+      ) => void;
+      onColumnVisibilityChange?: (
+        updater: VisibilityState | ((old: VisibilityState) => VisibilityState),
+      ) => void;
+      onGroupingChange?: (
+        updater: GroupingState | ((old: GroupingState) => GroupingState),
+      ) => void;
+      onExpandedChange?: (
+        updater: ExpandedState | ((old: ExpandedState) => ExpandedState),
+      ) => void;
+      onColumnPinningChange?: (
+        updater:
+          | ColumnPinningState
+          | ((old: ColumnPinningState) => ColumnPinningState),
+      ) => void;
+      onColumnOrderChange?: (
+        updater:
+          | ColumnOrderState
+          | ((old: ColumnOrderState) => ColumnOrderState),
+      ) => void;
     } = {};
 
     if (features?.sorting) {

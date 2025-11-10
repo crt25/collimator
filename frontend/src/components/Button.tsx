@@ -17,8 +17,8 @@ import {
   DetailedHTMLProps,
   ButtonHTMLAttributes,
 } from "react";
-import { isNonNull } from "@/utilities/is-non-null";
 import styled from "@emotion/styled";
+import { isNonNull } from "@/utilities/is-non-null";
 
 export enum ButtonVariant {
   primary = "primary",
@@ -67,7 +67,6 @@ const StyledButton = styled(ChakraButton)<{ bgColor: string; fgColor: string }>`
 const ButtonContent = styled(HStack)`
   gap: 0.75rem;
 `;
-
 
 const Button = ({
   onClick: onClickFn,

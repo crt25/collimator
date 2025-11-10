@@ -1,8 +1,8 @@
 import { Breadcrumb } from "@chakra-ui/react";
 import { FormattedMessage } from "react-intl";
 import { Children, Fragment, isValidElement } from "react";
-import BreadcrumbItem from "./BreadcrumbItem";
 import styled from "@emotion/styled";
+import BreadcrumbItem from "./BreadcrumbItem";
 
 const BreadcrumbRoot = styled(Breadcrumb.Root)`
   margin-top: 1rem;

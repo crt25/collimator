@@ -110,9 +110,7 @@ const Task = ({
       {showSessionMenu && (
         <SessionMenu>
           <SessionMenuWrapper>
-            <StyledCloseButton
-              onClick={() => setShowSessionMenu(false)}
-            />
+            <StyledCloseButton onClick={() => setShowSessionMenu(false)} />
             <RemainingHeightContainer>
               <h1 data-testid="session-name">{session.title}</h1>
               <FullHeightRow>

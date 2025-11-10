@@ -42,10 +42,7 @@ const TextArea = forwardRef(function TextArea(
     <InputWrapper>
       <Field.Root invalid={invalid}>
         <Field.Label>{intl.formatMessage(label)}</Field.Label>
-        <StyledTextarea
-          ref={ref}
-          {...textareaProps}
-        />
+        <StyledTextarea ref={ref} {...textareaProps} />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>
