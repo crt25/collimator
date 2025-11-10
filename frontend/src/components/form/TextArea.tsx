@@ -13,11 +13,11 @@ const InputWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
-const styledTextareaStyles = {
-  padding: "0.25rem 0.5rem",
-  minHeight: "10rem",
-  width: "100%",
-};
+const StyledTextarea = styled(ChakraTextarea)`
+  padding: 0.25rem 0.5rem;
+  min-height: 10rem;
+  width: 100%;
+`;
 
 interface Props {
   label: MessageDescriptor;
@@ -42,8 +42,7 @@ const TextArea = forwardRef(function TextArea(
     <InputWrapper>
       <Field.Root invalid={invalid}>
         <Field.Label>{intl.formatMessage(label)}</Field.Label>
-        <ChakraTextarea
-          css={styledTextareaStyles}
+        <StyledTextarea
           ref={ref}
           {...textareaProps}
         />
