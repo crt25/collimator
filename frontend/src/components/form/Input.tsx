@@ -11,10 +11,10 @@ const InputWrapper = styled.div`
   display: block;
 `;
 
-const styledInputStyles = {
-  padding: "0.25rem 0.5rem",
-  maxWidth: "100%",
-};
+const StyledInput = styled(ChakraInput)`
+  padding: 0.25rem 0.5rem;
+  max-width: 100%;
+`;
 
 interface Props {
   label?: MessageDescriptor;
@@ -43,7 +43,7 @@ const Input = forwardRef(function Input(
     <InputWrapper>
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
-        <ChakraInput css={styledInputStyles} ref={ref} {...inputProps} />
+        <StyledInput ref={ref} {...inputProps} />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>
