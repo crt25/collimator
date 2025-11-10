@@ -103,6 +103,7 @@ const Header = ({
               {isAuthenticated ? (
                 <DropdownMenu
                   trigger={<div data-testid="current-user">{name}</div>}
+                  isButton={true}
                 >
                   <DropdownMenu.Item href="/logout">
                     <FormattedMessage
