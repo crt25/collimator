@@ -80,7 +80,7 @@ const TabNavigation = <T extends unknown = undefined>({
     );
   }
 
-  const activeValue = activeItems[0]?.url || navigationTabs[0]?.url || "";
+  const activeValue = activeItems[0]?.url || "";
 
   return (
     <TabsRoot
