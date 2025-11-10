@@ -43,11 +43,11 @@ const Range = ({
 
   return (
     <>
-      <Label>{intl.formatMessage(label)}</Label>
       <InputWrapper>
         <CurrentValue>{value}</CurrentValue>
         <ChakraRange
           min={min}
+          label={intl.formatMessage(label)}
           max={max}
           step={step ?? 1}
           value={value === undefined ? undefined : [value]}
