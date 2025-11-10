@@ -10,7 +10,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { FaEdit } from "react-icons/fa";
 import { LuChevronDown } from "react-icons/lu";
-import { ButtonGroup, IconButton, Icon } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/react";
 import { MdAdd } from "react-icons/md";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { getClassStatusMessage } from "@/i18n/class-status-messages";
@@ -22,6 +22,8 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
+import { ButtonGroup } from "../ButtonGroup";
+import { IconButton } from "../IconButton";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
