@@ -1,36 +1,35 @@
-import {
-  DataTablePageEvent,
-  DataTableSortEvent,
-  DataTableFilterEvent,
-} from "primereact/datatable";
-import { Column } from "primereact/column";
-import { useCallback, useState } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { useState } from "react";
+import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { Icon } from "@chakra-ui/react";
-import { MdAdd } from "react-icons/md";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
-import DropdownMenu from "../DropdownMenu";
 import { ColumnDef } from "@tanstack/react-table";
-import { FaCircle } from "react-icons/fa";
-import ConfirmationModal from "../modals/ConfirmationModal";
-import SwrContent from "../SwrContent";
-import Button, { ButtonVariant } from "../Button";
-import { getClassStatusMessage } from "@/i18n/class-status-messages";
+import { MdAdd } from "react-icons/md";
+import { Icon, HStack } from "@chakra-ui/react";
+import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { ColumnType } from "@/types/tanstack-types";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import SwrContent from "../SwrContent";
+import { ChakraDataTable } from "../ChakraDataTable";
+import Button, { ButtonVariant } from "../Button";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
 `;
 
-const StatusWrapper = styled.span`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+const StyledButton = styled(Button)`
+  && {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+`;
+
+const Stack = styled(HStack)`
+  && {
+    gap: 1rem;
+  }
 `;
 
 const messages = defineMessages({
@@ -211,14 +210,18 @@ const ClassList = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
-      <Button
-        variant={ButtonVariant.secondary}
+      <StyledButton
+        variant={ButtonVariant.primary}
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
       >
-        {intl.formatMessage(messages.createClass)}
-        <FontAwesomeIcon icon={faAdd} />
-      </Button>
+        <Stack>
+          <Icon>
+            <MdAdd />
+          </Icon>
+          {intl.formatMessage(messages.createClass)}
+        </Stack>
+      </StyledButton>
     </ClassListWrapper>
   );
 };
