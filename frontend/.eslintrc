@@ -17,7 +17,7 @@
       }
     ],
     "@typescript-eslint/no-restricted-imports": ["error", {
-      "name": "@fortawesome",
+      "name": "@fontawesome",
       "message": "Use icons from react-icons instead."
     }],
     "import/no-duplicates": ["error", {"prefer-inline": true}],
