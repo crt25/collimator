@@ -445,7 +445,7 @@ const TaskForm = ({
           {...register("title")}
           data-testid="title"
           errorText={errors.title?.message}
-        ></Input>
+        />
         <TextArea
           label={messages.description}
           {...register("description")}
