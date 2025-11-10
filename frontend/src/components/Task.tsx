@@ -43,9 +43,10 @@ const SessionMenuWrapper = styled.div`
   flex-direction: column;
 `;
 
-const CloseSessionMenuButtonProps = {
-  padding: "1rem",
-};
+const StyledCloseButton = styled(CloseButton)`
+  padding: 1rem;
+`;
+
 export interface TaskRef {
   showTaskMenu: boolean;
   setShowTaskMenu: (show: boolean) => void;
@@ -109,8 +110,7 @@ const Task = ({
       {showSessionMenu && (
         <SessionMenu>
           <SessionMenuWrapper>
-            <CloseButton
-              css={{ ...CloseSessionMenuButtonProps }}
+            <StyledCloseButton
               onClick={() => setShowSessionMenu(false)}
             />
             <RemainingHeightContainer>
