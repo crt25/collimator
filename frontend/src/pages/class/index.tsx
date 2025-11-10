@@ -8,8 +8,8 @@ import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 const messages = defineMessages({
-  title: {
-    id: "ListClasses.title",
+  header: {
+    id: "ListClasses.header",
     defaultMessage: "Classes",
   },
 });
@@ -29,7 +29,7 @@ const PageDescription = styled.p`
 const ListClasses = () => {
   return (
     <>
-      <Header title={messages.title} />
+      <Header title={messages.header} />
       <StyledContainer>
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
@@ -37,13 +37,13 @@ const ListClasses = () => {
         <Heading mt="10" mb="2">
           <FormattedMessage
             id="ListClasses.pageTitle"
-            defaultMessage="Classes Page Title"
+            defaultMessage="Class Manager"
           />
         </Heading>
         <PageDescription>
           <FormattedMessage
             id="ListClasses.pageDescription"
-            defaultMessage="Lorem ipsum dolor sit amet consectetur. Aliquam cursus risus augue quis est."
+            defaultMessage=""
           />
         </PageDescription>
         <ClassList />
