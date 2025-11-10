@@ -156,7 +156,10 @@ export class AuthenticationService {
     );
   }
 
-  async findPublicKeyByFingerprint(fingerprint: string): Promise<PublicKey> {
+  async findPublicKeyByFingerprint(
+    fingerprint: string,
+    includeSoftDelete = false,
+  ): Promise<PublicKey> {
     return await this.prisma.keyPair.findUniqueOrThrow({
       select: {
         id: true,
@@ -164,7 +167,9 @@ export class AuthenticationService {
         publicKey: true,
         createdAt: true,
       },
-      where: { publicKeyFingerprint: fingerprint },
+      where: includeSoftDelete
+        ? { publicKeyFingerprint: fingerprint }
+        : { publicKeyFingerprint: fingerprint, deletedAt: null },
     });
   }
 
@@ -204,15 +209,24 @@ export class AuthenticationService {
   protected findUserByOidcSubOrThrow(
     oidcSub: string,
     authenticationProvider: AuthenticationProvider,
+    includeSoftDeleted = false,
   ): Promise<UserIdentityWithKey> {
     return this.prisma.user.findUniqueOrThrow({
       select: selectUserIdentityWithKey,
-      where: {
-        uniqueOidcSubPerProvider: {
-          oidcSub,
-          authenticationProvider,
-        },
-      },
+      where: includeSoftDeleted
+        ? {
+            uniqueOidcSubPerProvider: {
+              oidcSub,
+              authenticationProvider,
+            },
+          }
+        : {
+            uniqueOidcSubPerProvider: {
+              oidcSub,
+              authenticationProvider,
+            },
+            deletedAt: null,
+          },
     });
   }
 
@@ -220,19 +234,37 @@ export class AuthenticationService {
     email: string,
     authenticationProvider: AuthenticationProvider,
     registrationToken: string,
+    includeSoftDeleted = false,
   ): Promise<UserIdentityWithKey> {
     return this.prisma.user.findUniqueOrThrow({
       select: selectUserIdentityWithKey,
-      where: {
-        uniqueEmailPerProvider: {
-          email,
-          authenticationProvider,
-        },
-        registrationToken: {
-          token: registrationToken,
-          createdAt: { gte: new Date(Date.now() - registrationTokenLifetime) },
-        },
-      },
+      where: includeSoftDeleted
+        ? {
+            uniqueEmailPerProvider: {
+              email,
+              authenticationProvider,
+            },
+            registrationToken: {
+              token: registrationToken,
+              createdAt: {
+                gte: new Date(Date.now() - registrationTokenLifetime),
+              },
+            },
+          }
+        : {
+            uniqueEmailPerProvider: {
+              email,
+              authenticationProvider,
+            },
+            registrationToken: {
+              token: registrationToken,
+              createdAt: {
+                gte: new Date(Date.now() - registrationTokenLifetime),
+              },
+              deletedAt: null,
+            },
+            deletedAt: null,
+          },
     });
   }
 
@@ -348,6 +380,7 @@ export class AuthenticationService {
       await this.prisma.authenticatedStudent.findUnique({
         where: {
           pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
+          deletedAt: null,
         },
       });
 
@@ -367,6 +400,7 @@ export class AuthenticationService {
         : await this.prisma.student.findUniqueOrThrow({
             where: {
               id: authenticatedStudent.studentId,
+              deletedAt: null,
             },
           });
 
@@ -418,21 +452,33 @@ export class AuthenticationService {
     return authToken.token;
   }
 
-  async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {
+  async findUserByAuthTokenOrThrow(
+    token: AuthToken,
+    includeSoftDeleted = false,
+  ): Promise<User | Student> {
     const authToken = await this.prisma.authenticationToken.findUniqueOrThrow({
       where: {
         token,
         // the token must not have expired
         lastUsedAt: { gte: new Date(Date.now() - slidingTokenLifetime) },
+        ...(includeSoftDeleted ? {} : { deletedAt: null }),
       },
       include: {
-        user: true,
-        student: {
-          include: {
-            authenticatedStudent: true,
-            anonymousStudent: true,
-          },
-        },
+        user: includeSoftDeleted ? true : { where: { deletedAt: null } },
+        student: includeSoftDeleted
+          ? {
+              include: {
+                authenticatedStudent: true,
+                anonymousStudent: true,
+              },
+            }
+          : {
+              where: { deletedAt: null },
+              include: {
+                authenticatedStudent: { where: { deletedAt: null } },
+                anonymousStudent: { where: { deletedAt: null } },
+              },
+            },
       },
     });
 

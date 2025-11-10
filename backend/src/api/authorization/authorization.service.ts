@@ -10,21 +10,30 @@ export class AuthorizationService {
   protected async isUserTeacherOfClass(
     userId: number,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: classId, teacherId: userId }
+      : { id: classId, teacherId: userId, deletedAt: null };
+
     const klass = await this.prisma.class.findUnique({
-      where: { id: classId, teacherId: userId },
+      where: whereWithSoftDelete,
       select: { id: true },
     });
 
     return klass !== null;
   }
 
-  canSignInStudent(teacher: User, classId: number): Promise<boolean> {
+  canSignInStudent(
+    teacher: User,
+    classId: number,
+    includeSoftDeleted = false,
+  ): Promise<boolean> {
     if (teacher.type !== UserType.ADMIN && teacher.type !== UserType.TEACHER) {
       return Promise.resolve(false);
     }
 
-    return this.isUserTeacherOfClass(teacher.id, classId);
+    return this.isUserTeacherOfClass(teacher.id, classId, includeSoftDeleted);
   }
 
   async canUpdateUser(
@@ -56,13 +65,18 @@ export class AuthorizationService {
   protected async isAdminOrCreatorOfTask(
     authenticatedUser: User,
     taskId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser.type === UserType.ADMIN) {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: taskId, creatorId: authenticatedUser.id }
+      : { id: taskId, creatorId: authenticatedUser.id, deletedAt: null };
+
     const task = await this.prisma.task.findUnique({
-      where: { id: taskId, creatorId: authenticatedUser.id },
+      where: whereWithSoftDelete,
       select: { id: true },
     });
 
@@ -72,26 +86,41 @@ export class AuthorizationService {
   async canUpdateTask(
     authenticatedUser: User,
     taskId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrCreatorOfTask(authenticatedUser, taskId);
+    return this.isAdminOrCreatorOfTask(
+      authenticatedUser,
+      taskId,
+      includeSoftDeleted,
+    );
   }
 
   async canDeleteTask(
     authenticatedUser: User,
     taskId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrCreatorOfTask(authenticatedUser, taskId);
+    return this.isAdminOrCreatorOfTask(
+      authenticatedUser,
+      taskId,
+      includeSoftDeleted,
+    );
   }
 
   protected async isAdminOrTeacherOfClass(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser.type === UserType.ADMIN) {
       return true;
     }
 
-    return this.isUserTeacherOfClass(authenticatedUser.id, classId);
+    return this.isUserTeacherOfClass(
+      authenticatedUser.id,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   async canListClassesOfTeacher(
@@ -113,48 +142,82 @@ export class AuthorizationService {
   async canViewClass(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    return this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   async canUpdateClass(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    return this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   async canDeleteClass(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    return this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   async canCreateSession(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    return this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   async canListSessions(
     authenticatedUser: User,
     classId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    return this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+      includeSoftDeleted,
+    );
   }
 
   protected async isAdminOrTeacherOfSession(
     authenticatedUser: User,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser.type === UserType.ADMIN) {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: sessionId, class: { teacherId: authenticatedUser.id } }
+      : {
+          id: sessionId,
+          class: { teacherId: authenticatedUser.id },
+          deletedAt: null,
+        };
+
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: whereWithSoftDelete,
       select: { id: true },
     });
 
@@ -165,24 +228,35 @@ export class AuthorizationService {
     authenticatedUser: User | null,
     authenticatedStudent: Student | null,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser) {
-      return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+      return this.isAdminOrTeacherOfSession(
+        authenticatedUser,
+        sessionId,
+        includeSoftDeleted,
+      );
     }
 
     if (authenticatedStudent) {
-      const session = await this.prisma.session.findUnique({
-        where: {
-          id: sessionId,
-          OR: [
-            {
-              class: {
-                students: { some: { studentId: authenticatedStudent.id } },
-              },
+      const authenticatedStudents = {
+        id: sessionId,
+        OR: [
+          {
+            class: {
+              students: { some: { studentId: authenticatedStudent.id } },
             },
-            { isAnonymous: true },
-          ],
-        },
+          },
+          { isAnonymous: true },
+        ],
+      };
+
+      const whereWithSoftDelete = includeSoftDeleted
+        ? authenticatedStudents
+        : { ...authenticatedStudents, deletedAt: null };
+
+      const session = await this.prisma.session.findUnique({
+        where: whereWithSoftDelete,
         select: { id: true },
       });
 
@@ -195,27 +269,46 @@ export class AuthorizationService {
   async canUpdateSession(
     authenticatedUser: User,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+    return this.isAdminOrTeacherOfSession(
+      authenticatedUser,
+      sessionId,
+      includeSoftDeleted,
+    );
   }
 
   async canDeleteSession(
     authenticatedUser: User,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+    return this.isAdminOrTeacherOfSession(
+      authenticatedUser,
+      sessionId,
+      includeSoftDeleted,
+    );
   }
 
   async canListSolutions(
     authenticatedUser: User,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser.type === UserType.ADMIN) {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: sessionId, class: { teacherId: authenticatedUser.id } }
+      : {
+          id: sessionId,
+          class: { teacherId: authenticatedUser.id },
+          deletedAt: null,
+        };
+
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: whereWithSoftDelete,
       select: { id: true },
     });
 
@@ -225,13 +318,22 @@ export class AuthorizationService {
   async canListCurrentAnalyses(
     authenticatedUser: User,
     sessionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser.type === UserType.ADMIN) {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: sessionId, class: { teacherId: authenticatedUser.id } }
+      : {
+          id: sessionId,
+          class: { teacherId: authenticatedUser.id },
+          deletedAt: null,
+        };
+
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: whereWithSoftDelete,
       select: { id: true },
     });
 
@@ -242,6 +344,7 @@ export class AuthorizationService {
     authenticatedUser: User | null,
     authenticatedStudent: Student | null,
     studentSolutionId: number,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser === null && authenticatedStudent === null) {
       return false;
@@ -251,8 +354,12 @@ export class AuthorizationService {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? { id: studentSolutionId }
+      : { id: studentSolutionId, deletedAt: null };
+
     const solution = await this.prisma.studentSolution.findUniqueOrThrow({
-      where: { id: studentSolutionId },
+      where: whereWithSoftDelete,
       include: {
         student: { select: { id: true } },
         session: { select: { class: { select: { teacherId: true } } } },
@@ -279,6 +386,7 @@ export class AuthorizationService {
     authenticatedStudent: Student | null,
     taskId: number,
     solutionHash: Uint8Array,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser === null && authenticatedStudent === null) {
       return false;
@@ -288,18 +396,35 @@ export class AuthorizationService {
       return true;
     }
 
+    const baseWhere = {
+      taskId_hash: { taskId, hash: solutionHash },
+    };
+
     if (authenticatedStudent) {
+      const whereWithSoftDelete = includeSoftDeleted
+        ? {
+            ...baseWhere,
+            studentSolutions: {
+              some: {
+                student: { id: authenticatedStudent.id },
+              },
+            },
+          }
+        : {
+            ...baseWhere,
+            deletedAt: null,
+            studentSolutions: {
+              some: {
+                student: { id: authenticatedStudent.id },
+                deletedAt: null,
+              },
+            },
+          };
+
       // students may only view solutions they submitted
       const solution = await this.prisma.solution.findUnique({
         select: {},
-        where: {
-          taskId_hash: { taskId, hash: solutionHash },
-          studentSolutions: {
-            some: {
-              student: { id: authenticatedStudent.id },
-            },
-          },
-        },
+        where: whereWithSoftDelete,
       });
 
       return solution !== null;
@@ -309,29 +434,57 @@ export class AuthorizationService {
       // users may view solutions submitted by students in their class
       // and reference solutions.
 
-      const solution = await this.prisma.solution.findUnique({
-        select: {},
-        where: {
-          taskId_hash: { taskId, hash: solutionHash },
-          OR: [
-            {
-              studentSolutions: {
-                some: {
-                  session: {
-                    class: {
-                      teacherId: authenticatedUser.id,
+      const whereWithSoftDelete = includeSoftDeleted
+        ? {
+            ...baseWhere,
+            OR: [
+              {
+                studentSolutions: {
+                  some: {
+                    session: {
+                      class: {
+                        teacherId: authenticatedUser.id,
+                      },
                     },
                   },
                 },
               },
-            },
-            {
-              referenceSolutions: {
-                some: {},
+              {
+                referenceSolutions: {
+                  some: {},
+                },
               },
-            },
-          ],
-        },
+            ],
+          }
+        : {
+            ...baseWhere,
+            deletedAt: null,
+            OR: [
+              {
+                studentSolutions: {
+                  some: {
+                    deletedAt: null,
+                    session: {
+                      deletedAt: null,
+                      class: {
+                        teacherId: authenticatedUser.id,
+                        deletedAt: null,
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                referenceSolutions: {
+                  some: { deletedAt: null },
+                },
+              },
+            ],
+          };
+
+      const solution = await this.prisma.solution.findUnique({
+        select: {},
+        where: whereWithSoftDelete,
       });
 
       return solution !== null;
@@ -345,6 +498,7 @@ export class AuthorizationService {
   async canUpdateStudentSolutionIsReference(
     authenticatedUser: User | null,
     studentSolutionId: StudentSolutionId,
+    includeSoftDeleted = false,
   ): Promise<boolean> {
     if (authenticatedUser === null) {
       return false;
@@ -354,17 +508,31 @@ export class AuthorizationService {
       return true;
     }
 
+    const whereWithSoftDelete = includeSoftDeleted
+      ? {
+          id: studentSolutionId,
+          session: {
+            class: {
+              teacherId: authenticatedUser.id,
+            },
+          },
+        }
+      : {
+          id: studentSolutionId,
+          deletedAt: null,
+          session: {
+            deletedAt: null,
+            class: {
+              teacherId: authenticatedUser.id,
+              deletedAt: null,
+            },
+          },
+        };
+
     // teachers may updated the field for solutions submitted by students in their class
     const solution = await this.prisma.studentSolution.findUnique({
       select: {},
-      where: {
-        id: studentSolutionId,
-        session: {
-          class: {
-            teacherId: authenticatedUser.id,
-          },
-        },
-      },
+      where: whereWithSoftDelete,
     });
 
     return authenticatedUser.type === UserType.TEACHER && solution !== null;

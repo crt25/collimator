@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform } from "class-transformer";
 import { AstVersion, SolutionTest } from "@prisma/client";
 import { Modify } from "src/utilities/modify";
+import { IsDate } from "class-validator";
 import { AnalysisWithoutId } from "../solutions.service";
 import { ExistingSolutionTestDto } from "./existing-solution-test.dto";
 
@@ -36,6 +37,11 @@ export abstract class CurrentAnalysisDto
   })
   @Expose()
   readonly isReferenceSolution!: boolean;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @ApiProperty({
     name: "tests",

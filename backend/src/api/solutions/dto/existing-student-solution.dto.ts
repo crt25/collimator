@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { SolutionTest } from "@prisma/client";
 import { Modify } from "src/utilities/modify";
+import { IsDate } from "class-validator";
 import { StudentSolutionWithoutData } from "../solutions.service";
 import { ExistingSolutionTestDto } from "./existing-solution-test.dto";
 import { ExistingSolutionDto } from "./existing-solution.dto";
@@ -51,6 +52,11 @@ export class ExistingStudentSolutionDto
   @ApiProperty()
   @Expose()
   readonly taskId!: number;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @ApiProperty({
     example: "dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl",

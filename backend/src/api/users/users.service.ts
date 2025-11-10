@@ -9,22 +9,34 @@ import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findByIdOrThrow(id: UserId): Promise<User> {
-    return this.prisma.user.findUniqueOrThrow({ where: { id } });
+  findByIdOrThrow(id: UserId, includeSoftDelete?: boolean): Promise<User> {
+    return this.prisma.user.findUniqueOrThrow({
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
+    });
   }
 
-  findMany(args?: Prisma.UserFindManyArgs): Promise<User[]> {
-    return this.prisma.user.findMany(args);
+  findMany(
+    args?: Prisma.UserFindManyArgs,
+    includeSoftDelete?: boolean,
+  ): Promise<User[]> {
+    return this.prisma.user.findMany({
+      ...args,
+      where: includeSoftDelete ? undefined : { deletedAt: null },
+    });
   }
 
   create(user: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({ data: user });
   }
 
-  update(id: UserId, user: Prisma.UserUpdateInput): Promise<User> {
+  update(
+    id: UserId,
+    user: Prisma.UserUpdateInput,
+    includeSoftDelete,
+  ): Promise<User> {
     return this.prisma.user.update({
       data: user,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
@@ -47,6 +59,7 @@ export class UsersService {
     // Delete the current key pair
     // Note that this makes all non re-encrypted pseudonyms unreadabe (which may be intentional)
     await this.prisma.keyPair.deleteMany({
+      // delete only non-deleted keys
       where: { teacherId: userId },
     });
 
