@@ -139,6 +139,7 @@ const Button = ({
     >
       <ButtonContent>
         <Box>{children}</Box>
+        {isLoading && <Spinner data-testid="loading-spinner" size="sm" />}
         {isSuccessful === true && (
           <Icon data-testid="success-icon">
             <LuCircleCheck />
