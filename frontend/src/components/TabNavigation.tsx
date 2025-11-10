@@ -9,6 +9,12 @@ import {
 } from "@/contexts/AuthenticationContext";
 import { isNonNull } from "@/utilities/is-non-null";
 import BreadcrumbItem from "./BreadcrumbItem";
+import styled from "@emotion/styled";
+
+const TabsRoot = styled(Tabs.Root)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
 
 export interface NavigationTab<T = undefined> {
   url: string;
@@ -77,9 +83,8 @@ const TabNavigation = <T extends unknown = undefined>({
   const activeValue = activeItems[0]?.url || navigationTabs[0]?.url || "";
 
   return (
-    <Tabs.Root
+    <TabsRoot
       value={activeValue}
-      my="4"
       navigate={({ value }) => {
         router.push(value);
       }}
@@ -93,7 +98,7 @@ const TabNavigation = <T extends unknown = undefined>({
           </Tabs.Trigger>
         ))}
       </Tabs.List>
-    </Tabs.Root>
+    </TabsRoot>
   );
 };
 
