@@ -11,7 +11,6 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import { ButtonGroup, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
 import Tags from "@/components/Tags";
 import Tag from "@/components/Tag";
@@ -19,6 +18,8 @@ import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
+import { ButtonGroup } from "../ButtonGroup";
+import { IconButton } from "../IconButton";
 
 const LessonListWrapper = styled.div`
   margin: 1rem 0;
@@ -137,8 +138,9 @@ const LessonList = ({
       <div>
         <ButtonGroup attached>
           <Button
-            variant={ButtonVariant.secondary}
-            onClick={() => {
+            variant={ButtonVariant.primary}
+            onClick={(e) => {
+              e.stopPropagation();
               router.push(`/lesson/${rowData.id}/edit`);
             }}
             data-testid={`lesson-${rowData.id}-edit-button`}
@@ -147,10 +149,14 @@ const LessonList = ({
           </Button>
           <DropdownMenu
             trigger={
-              <IconButton aria-label="More options">
+              <IconButton
+                aria-label="More options"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <LuChevronDown />
               </IconButton>
             }
+            isButton={true}
             testId={`lesson-${rowData.id}-actions-dropdown-button`}
           >
             <DropdownMenu.Item
@@ -235,6 +241,7 @@ const LessonList = ({
                   <FontAwesomeIcon icon={faAdd} />
                 </Button>
               }
+              isButton={true}
             >
               <DropdownMenu.Item onClick={() => console.log("Action 1")}>
                 Action

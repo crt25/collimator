@@ -1,11 +1,13 @@
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { Icon, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { LuChevronDown } from "react-icons/lu";
+import { MdAdd } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import DataTable from "@/components/DataTable";
 import { getUserTypeMessage } from "@/i18n/user-type-messages";
 import { TableMessages } from "@/i18n/table-messages";
@@ -82,44 +84,58 @@ const UserList = () => {
 
   const actionsTemplate = useCallback(
     (rowData: ExistingUser) => (
-      <DropdownMenu
-        trigger={
-          <Button
-            variant={ButtonVariant.secondary}
-            onClick={() => {
-              router.push(`/user/${rowData.id}/edit`);
-            }}
-            data-testid={`user-${rowData.id}-edit-button`}
-          >
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-        }
-        data-testid={`user-${rowData.id}-actions`}
-      >
-        <DropdownMenu.Item
-          onClick={() => {
-            setUserIdToDelete(rowData.id);
-            setShowDeleteConfirmationModal(true);
+      <ButtonGroup>
+        <Button
+          variant={ButtonVariant.primary}
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/user/${rowData.id}/edit`);
           }}
-          data-testid={`user-${rowData.id}-delete-button`}
+          data-testid={`user-${rowData.id}-edit-button`}
         >
-          {intl.formatMessage(TableMessages.delete)}
-        </DropdownMenu.Item>
-        {rowData.oidcSub === null && (
+          <Icon>
+            <FaEdit />
+          </Icon>
+        </Button>
+        <DropdownMenu
+          trigger={
+            <IconButton
+              aria-label="Actions"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <LuChevronDown />
+            </IconButton>
+          }
+          isButton={true}
+          data-testid={`user-${rowData.id}-actions-dropdown-button`}
+        >
           <DropdownMenu.Item
-            onClick={async () => {
-              const token = await generateRegistrationToken(rowData.id);
-
-              navigator.clipboard.writeText(
-                `${window.location.origin}/login?registrationToken=${token}`,
-              );
+            onClick={() => {
+              setUserIdToDelete(rowData.id);
+              setShowDeleteConfirmationModal(true);
             }}
-            data-testid={`user-${rowData.id}-generate-registration-token-button`}
+            data-testid={`user-${rowData.id}-delete-button`}
           >
-            {intl.formatMessage(messages.generateRegistrationToken)}
+            {intl.formatMessage(TableMessages.delete)}
           </DropdownMenu.Item>
-        )}
-      </DropdownMenu>
+          {rowData.oidcSub === null && (
+            <DropdownMenu.Item
+              onClick={async () => {
+                const token = await generateRegistrationToken(rowData.id);
+
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/login?registrationToken=${token}`,
+                );
+              }}
+              data-testid={`user-${rowData.id}-generate-registration-token-button`}
+            >
+              {intl.formatMessage(messages.generateRegistrationToken)}
+            </DropdownMenu.Item>
+          )}
+        </DropdownMenu>
+      </ButtonGroup>
     ),
     [router, intl, generateRegistrationToken],
   );
@@ -172,12 +188,18 @@ const UserList = () => {
                   trigger={
                     <Button
                       variant={ButtonVariant.secondary}
-                      onClick={() => router.push("user/create")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push("user/create");
+                      }}
                       data-testid="user-create-button"
                     >
-                      <FontAwesomeIcon icon={faAdd} />
+                      <Icon>
+                        <MdAdd />
+                      </Icon>
                     </Button>
                   }
+                  isButton={true}
                 />
               }
             />

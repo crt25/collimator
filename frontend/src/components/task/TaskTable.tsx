@@ -10,9 +10,9 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import { ButtonGroup, Icon, IconButton } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
-import { MdModeEdit } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
 import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -22,6 +22,8 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
+import { ButtonGroup } from "../ButtonGroup";
+import { IconButton } from "../IconButton";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -100,7 +102,7 @@ const TaskTable = () => {
       <div data-testid={`task-${rowData.id}-actions`}>
         <ButtonGroup>
           <Button
-            variant={ButtonVariant.secondary}
+            variant={ButtonVariant.primary}
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/task/${rowData.id}/edit`);
@@ -108,16 +110,20 @@ const TaskTable = () => {
             data-testid={`task-${rowData.id}-edit-button`}
           >
             <Icon>
-              <MdModeEdit />
+              <FaEdit />
             </Icon>
           </Button>
           <DropdownMenu
             testId={`task-${rowData.id}-actions-dropdown-button`}
             trigger={
-              <IconButton aria-label="More actions">
+              <IconButton
+                aria-label="More actions"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <LuChevronDown />
               </IconButton>
             }
+            isButton={true}
           >
             <DropdownMenu.Item
               onClick={() => {
@@ -186,6 +192,7 @@ const TaskTable = () => {
                       <FontAwesomeIcon icon={faAdd} />
                     </Button>
                   }
+                  isButton={true}
                 />
               }
             />

@@ -1,4 +1,10 @@
-import { Button as ChakraButton, HStack, Icon, Box } from "@chakra-ui/react";
+import {
+  Button as ChakraButton,
+  HStack,
+  Icon,
+  Box,
+  Spinner,
+} from "@chakra-ui/react";
 
 import { LuCircleCheck, LuCircleX } from "react-icons/lu";
 

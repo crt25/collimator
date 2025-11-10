@@ -5,12 +5,13 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { FaEdit } from "react-icons/fa";
+import { LuChevronDown } from "react-icons/lu";
+import { ButtonGroup, IconButton, Icon } from "@chakra-ui/react";
+import { MdAdd } from "react-icons/md";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { getClassStatusMessage } from "@/i18n/class-status-messages";
 import { TableMessages } from "@/i18n/table-messages";
@@ -124,29 +125,42 @@ const ClassList = () => {
   const actionsTemplate = useCallback(
     (rowData: ExistingClassWithTeacher) => (
       <div data-testid={`class-${rowData.id}-actions`}>
-        <DropdownMenu
-          trigger={
-            <Button
-              variant={ButtonVariant.secondary}
-              onClick={() => {
-                router.push(`/class/${rowData.id}/edit`);
-              }}
-              data-testid={`class-${rowData.id}-edit-button`}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
-          }
-        >
-          <DropdownMenu.Item
-            onClick={() => {
-              setClassIdToDelete(rowData.id);
-              setShowDeleteConfirmationModal(true);
+        <ButtonGroup>
+          <Button
+            variant={ButtonVariant.primary}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/class/${rowData.id}/edit`);
             }}
-            data-testid={`class-${rowData.id}-delete-button`}
+            data-testid={`class-${rowData.id}-edit-button`}
           >
-            {intl.formatMessage(TableMessages.delete)}
-          </DropdownMenu.Item>
-        </DropdownMenu>
+            <Icon>
+              <FaEdit />
+            </Icon>
+          </Button>
+          <DropdownMenu
+            trigger={
+              <IconButton
+                aria-label="More actions"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <LuChevronDown />
+              </IconButton>
+            }
+            data-testid={`class-${rowData.id}-actions-dropdown-button`}
+            isButton={true}
+          >
+            <DropdownMenu.Item
+              onClick={() => {
+                setClassIdToDelete(rowData.id);
+                setShowDeleteConfirmationModal(true);
+              }}
+              data-testid={`class-${rowData.id}-delete-button`}
+            >
+              {intl.formatMessage(TableMessages.delete)}
+            </DropdownMenu.Item>
+          </DropdownMenu>
+        </ButtonGroup>
       </div>
     ),
     [router, intl],
@@ -210,10 +224,13 @@ const ClassList = () => {
                       onClick={() => router.push("class/create")}
                       data-testid="class-create-button"
                     >
-                      <FontAwesomeIcon icon={faAdd} />
+                      <Icon>
+                        <MdAdd />
+                      </Icon>
                     </Button>
                   }
-                ></DropdownMenu>
+                  isButton={true}
+                />
               }
             />
           </DataTable>

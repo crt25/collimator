@@ -2,6 +2,7 @@ import { Menu, Portal, Icon } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Link from "next/link";
+import styled from "@emotion/styled";
 
 type ClickHandler = () => void;
 
@@ -19,13 +20,18 @@ export type DropdownItemProps = {
     }
 );
 
+
+const StyledMenuContent = styled(Menu.Content)`
+  background-color: var(--background-color);
+  border-color: var(--header-border-color);
+`;
+
 const DropdownMenuItem = ({
   href,
   onClick,
   children,
   icon,
 }: DropdownItemProps) => {
-
   const content = (
     <>
       {icon && <span>{icon}</span>}
@@ -51,32 +57,36 @@ export type DropdownProps = {
   trigger?: React.ReactNode;
   children?: React.ReactNode;
   testId?: string;
+  isButton?: boolean;
 };
 
-const DropdownMenu = ({ trigger, children, testId }: DropdownProps) => {
+const DropdownMenu = ({
+  trigger,
+  children,
+  testId,
+  isButton = false,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const triggerStyleProp = {
-    backgroundColor: "var(--button-background-color)",
-    color: "var(--button-foreground-color)",
-    borderRadius: "var(--border-radius)",
-    padding: "0.5rem 1rem",
-    border: "none",
-    cursor: "pointer",
-    fontWeight: "500",
-    fontSize: "1rem",
-    display: "flex",
-    alignItems: "center",
-    gap: "0.5rem",
-    "&:hover": {
-      backgroundColor: "var(--accent-color-highlight)",
-    },
-  };
-
-  const contentStyleProp = {
-    backgroundColor: "var(--background-color)",
-    borderColor: "var(--header-border-color)",
-  };
+  if (isButton) {
+    return (
+      <Menu.Root
+        open={isOpen}
+        onOpenChange={(details) => setIsOpen(details.open)}
+      >
+        <Menu.Trigger asChild data-testid={testId}>
+          {trigger}
+        </Menu.Trigger>
+        {children && (
+          <Portal>
+            <Menu.Positioner>
+              <StyledMenuContent>{children}</StyledMenuContent>
+            </Menu.Positioner>
+          </Portal>
+        )}
+      </Menu.Root>
+    );
+  }
 
   return (
     <Menu.Root

@@ -5,12 +5,13 @@ import {
 } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useContext, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import { Icon, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { LuChevronDown } from "react-icons/lu";
+import { MdAdd } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import { TableMessages } from "@/i18n/table-messages";
 import Tags from "@/components/Tags";
 import Tag from "@/components/Tag";
@@ -166,46 +167,60 @@ const SessionList = ({ classId }: { classId: number }) => {
   const actionsTemplate = useCallback(
     (rowData: ExistingSession) => (
       <div>
-        <DropdownMenu
-          trigger={
-            <Button
-              variant={ButtonVariant.secondary}
-              onClick={() => {
-                router.push(`/class/${classId}/session/${rowData.id}/edit`);
-              }}
-              data-testid={`session-${rowData.id}-edit-button`}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
-          }
-        >
-          <DropdownMenu.Item
-            onClick={() => {
-              setSessionIdToDelete(rowData.id);
-              setShowDeleteConfirmationModal(true);
+        <ButtonGroup>
+          <Button
+            variant={ButtonVariant.primary}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/class/${classId}/session/${rowData.id}/edit`);
             }}
-            data-testid={`session-${rowData.id}-delete-button`}
+            data-testid={`session-${rowData.id}-edit-button`}
           >
-            {intl.formatMessage(TableMessages.delete)}
-          </DropdownMenu.Item>
-          {klass &&
-            "userId" in authenticationContext &&
-            klass.teacher.id === authenticationContext.userId && (
-              <DropdownMenu.Item
-                onClick={async () => {
-                  const fingerprint =
-                    await authenticationContext.keyPair.getPublicKeyFingerprint();
-
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
-                  );
-                }}
-                data-testid={`session-${rowData.id}-copy-session-link-button`}
+            <Icon>
+              <FaEdit />
+            </Icon>
+          </Button>
+          <DropdownMenu
+            trigger={
+              <IconButton
+                aria-label="More actions"
+                onClick={(e) => e.stopPropagation()}
               >
-                {intl.formatMessage(messages.copySessionLink)}
-              </DropdownMenu.Item>
-            )}
-        </DropdownMenu>
+                <Icon>
+                  <LuChevronDown />
+                </Icon>
+              </IconButton>
+            }
+            isButton={true}
+          >
+            <DropdownMenu.Item
+              onClick={() => {
+                setSessionIdToDelete(rowData.id);
+                setShowDeleteConfirmationModal(true);
+              }}
+              data-testid={`session-${rowData.id}-delete-button`}
+            >
+              {intl.formatMessage(TableMessages.delete)}
+            </DropdownMenu.Item>
+            {klass &&
+              "userId" in authenticationContext &&
+              klass.teacher.id === authenticationContext.userId && (
+                <DropdownMenu.Item
+                  onClick={async () => {
+                    const fingerprint =
+                      await authenticationContext.keyPair.getPublicKeyFingerprint();
+
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
+                    );
+                  }}
+                  data-testid={`session-${rowData.id}-copy-session-link-button`}
+                >
+                  {intl.formatMessage(messages.copySessionLink)}
+                </DropdownMenu.Item>
+              )}
+          </DropdownMenu>
+        </ButtonGroup>
       </div>
     ),
     [classId, intl, router, authenticationContext, klass],
@@ -289,9 +304,12 @@ const SessionList = ({ classId }: { classId: number }) => {
                       }
                       data-testid="session-create-button"
                     >
-                      <FontAwesomeIcon icon={faAdd} />
+                      <Icon>
+                        <MdAdd />
+                      </Icon>
                     </Button>
                   }
+                  isButton={true}
                 />
               }
             />

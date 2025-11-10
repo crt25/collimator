@@ -44,7 +44,11 @@ const LessonForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Input label={messages.name} errorText={errors.name?.message} {...register("name")} />
+      <Input
+        label={messages.name}
+        errorText={errors.name?.message}
+        {...register("name")}
+      />
       <SubmitFormButton label={submitMessage} />
     </form>
   );
