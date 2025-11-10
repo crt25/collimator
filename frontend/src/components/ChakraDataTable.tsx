@@ -28,17 +28,64 @@ import { LuArrowUp, LuArrowDown } from "react-icons/lu";
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
-import {
-  DataTableCallbacks,
-  RowModels,
-  DataTableState,
-  DatatableProps,
-  ColumnType,
-} from "@/types/tanstack-types";
+import { ColumnDef } from "@tanstack/react-table";
 import Input from "./form/Input";
 import Tag from "./Tag";
 import Button from "./Button";
 import DropdownMenu from "./DropdownMenu";
+
+enum ColumnType {
+  text = "text",
+  icon = "icon",
+  link = "link",
+  tags = "tags",
+}
+
+type DataTableColumn = {
+  accessorKey: string;
+  label: string;
+};
+
+interface DataTableFeatures {
+  columnOrdering?: boolean;
+  columnPinning?: {
+    left?: string[];
+    right?: string[];
+  };
+  columnSizing?: boolean;
+  columnVisibility?: boolean;
+  columnFiltering?: {
+    columns: DataTableColumn[];
+  };
+  fuzzyFiltering?: boolean;
+  columnFaceting?: {
+    columns: DataTableColumn[];
+  };
+  globalFaceting?: boolean;
+  grouping?: {
+    columns: DataTableColumn[];
+  };
+  expanding?: boolean;
+  pagination?: {
+    pageSize: number;
+  };
+  rowPinning?: {
+    top?: number[];
+    bottom?: number[];
+  };
+  rowSelection?: boolean;
+  sorting?: boolean;
+  virtualization?: boolean;
+}
+
+interface ChakraDataTableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  isLoading?: boolean;
+  onRowClick?: (row: T) => void;
+  features?: DataTableFeatures;
+  variant?: "outline" | "line";
+}
 
 const TableWrapper = styled.div`
   margin: 1rem 0;
@@ -94,7 +141,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   onRowClick,
   features,
   variant = "outline",
-}: DatatableProps<T>) => {
+}: ChakraDataTableProps<T>) => {
   const intl = useIntl();
 
   const [grouping, setGrouping] = useState<GroupingState>([]);
@@ -119,8 +166,18 @@ export const ChakraDataTable = <T extends { id: number }>({
     pageSize: features?.pagination?.pageSize || 10,
   });
 
-  const rowModels = useMemo((): Partial<RowModels<T>> => {
-    const models: Partial<RowModels<T>> = {
+  const rowModels = useMemo(() => {
+    const models: {
+      getCoreRowModel: ReturnType<typeof getCoreRowModel<T>>;
+      getSortedRowModel?: ReturnType<typeof getSortedRowModel<T>>;
+      getFilteredRowModel?: ReturnType<typeof getFilteredRowModel<T>>;
+      getPaginationRowModel?: ReturnType<typeof getPaginationRowModel<T>>;
+      getExpandedRowModel?: ReturnType<typeof getExpandedRowModel<T>>;
+      getGroupedRowModel?: ReturnType<typeof getGroupedRowModel<T>>;
+      getFacetedRowModel?: ReturnType<typeof getFacetedRowModel<T>>;
+      getFacetedUniqueValues?: ReturnType<typeof getFacetedUniqueValues<T>>;
+      getFacetedMinMaxValues?: ReturnType<typeof getFacetedMinMaxValues<T>>;
+    } = {
       getCoreRowModel: getCoreRowModel(),
     };
 
@@ -153,8 +210,18 @@ export const ChakraDataTable = <T extends { id: number }>({
     return models;
   }, [features]);
 
-  const state = useMemo((): DataTableState => {
-    const stateObject: DataTableState = {};
+  const state = useMemo(() => {
+    const stateObject: {
+      sorting?: SortingState;
+      columnFilters?: ColumnFiltersState;
+      pagination?: PaginationState;
+      rowSelection?: RowSelectionState;
+      columnVisibility?: VisibilityState;
+      columnOrder?: ColumnOrderState;
+      columnPinning?: ColumnPinningState;
+      grouping?: GroupingState;
+      expanded?: ExpandedState;
+    } = {};
 
     if (features?.sorting) {
       stateObject.sorting = sorting;
@@ -206,8 +273,18 @@ export const ChakraDataTable = <T extends { id: number }>({
     expanding,
   ]);
 
-  const callbacks = useMemo((): DataTableCallbacks => {
-    const callbacksObject: DataTableCallbacks = {};
+  const callbacks = useMemo(() => {
+    const callbacksObject: {
+      onSortingChange?: (updater: SortingState | ((old: SortingState) => SortingState)) => void;
+      onColumnFiltersChange?: (updater: ColumnFiltersState | ((old: ColumnFiltersState) => ColumnFiltersState)) => void;
+      onPaginationChange?: (updater: PaginationState | ((old: PaginationState) => PaginationState)) => void;
+      onRowSelectionChange?: (updater: RowSelectionState | ((old: RowSelectionState) => RowSelectionState)) => void;
+      onColumnVisibilityChange?: (updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => void;
+      onGroupingChange?: (updater: GroupingState | ((old: GroupingState) => GroupingState)) => void;
+      onExpandedChange?: (updater: ExpandedState | ((old: ExpandedState) => ExpandedState)) => void;
+      onColumnPinningChange?: (updater: ColumnPinningState | ((old: ColumnPinningState) => ColumnPinningState)) => void;
+      onColumnOrderChange?: (updater: ColumnOrderState | ((old: ColumnOrderState) => ColumnOrderState)) => void;
+    } = {};
 
     if (features?.sorting) {
       callbacksObject.onSortingChange = setSorting;
