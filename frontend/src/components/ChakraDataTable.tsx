@@ -128,7 +128,6 @@ const TableRow = styled(Table.Row)`
   }
 `;
 
-
 const PaginationButton = styled(Button)`
   background-color: #000;
   color: #fff;
