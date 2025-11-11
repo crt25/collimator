@@ -48,13 +48,17 @@ const StyledIconButton = styled(Icon)`
 `;
 
 const messages = defineMessages({
-  titleColumn: {
-    id: "TaskTable.columns.title",
-    defaultMessage: "Title",
+  idColumn: {
+    id: "TaskTable.columns.id",
+    defaultMessage: "ID",
   },
-  actionsColumn: {
-    id: "TaskTable.columns.actions",
-    defaultMessage: "Actions",
+  nameColumn: {
+    id: "TaskTable.columns.name",
+    defaultMessage: "Name",
+  },
+  taskTypeColumn: {
+    id: "TaskTable.columns.taskType",
+    defaultMessage: "Task Type",
   },
   deleteConfirmationTitle: {
     id: "TaskTable.deleteConfirmation.title",
