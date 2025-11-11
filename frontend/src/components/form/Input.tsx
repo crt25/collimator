@@ -4,18 +4,22 @@ import {
   Field,
   Input as ChakraInput,
   InputProps as ChakraInputProps,
+  chakra,
 } from "@chakra-ui/react";
-import styled from "@emotion/styled";
 
-const InputWrapper = styled.div`
-  display: block;
-`;
+const InputWrapper = chakra("div", {
+  base: {
+    display: "block",
+  },
+});
 
-const StyledInput = styled(ChakraInput)`
-  padding: 0.25rem 0.5rem;
-  max-width: 100%;
-  width: 25rem;
-`;
+const StyledInput = chakra(ChakraInput, {
+  base: {
+    width: "100%",
+    maxWidth: "100%",
+    padding: "sm",
+  },
+});
 
 interface Props {
   label?: MessageDescriptor;
