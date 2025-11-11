@@ -16,23 +16,21 @@ const BreadcrumbItem = ({
     return (
       <Breadcrumb.Item>
         <Breadcrumb.CurrentLink>
-          {icon}
+          {icon && <span>{icon}</span>}
           {children}
         </Breadcrumb.CurrentLink>
       </Breadcrumb.Item>
     );
   }
-
   return (
     <Breadcrumb.Item>
       <Breadcrumb.Link asChild>
         <Link href={href}>
-          {icon}
+          {icon && <span>{icon}</span>}
           {children}
         </Link>
       </Breadcrumb.Link>
     </Breadcrumb.Item>
   );
 };
-
 export default BreadcrumbItem;
