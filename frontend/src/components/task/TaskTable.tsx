@@ -16,6 +16,7 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
+import { DetailButton } from "../DetailButton";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -130,7 +131,7 @@ const TaskTable = () => {
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
-          <StyledIconButton
+          <DetailButton
             aria-label="Delete task"
             onClick={(e) => {
               e.stopPropagation();
@@ -140,7 +141,7 @@ const TaskTable = () => {
             data-testid={`task-${info.row.original.id}-delete-button`}
           >
             <FaRegTrashAlt />
-          </StyledIconButton>
+          </DetailButton>
         </div>
       ),
       meta: {
