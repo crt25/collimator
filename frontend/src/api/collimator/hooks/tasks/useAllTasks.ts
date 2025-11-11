@@ -1,12 +1,5 @@
 import useSWR from "swr";
-import { useMemo } from "react";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
-import {
-  ApiResponse,
-  fromDtos,
-  getSwrParamererizedKey,
-  transformToLazyTableResult,
-} from "../helpers";
+import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
 import {
   getTasksControllerFindAllV0Url,
   tasksControllerFindAllV0,
@@ -28,24 +21,4 @@ export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> => {
   return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
     fetchAndTransform(authOptions),
   );
-};
-
-export const useAllTasksLazyTable = (
-  _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetTasksReturnType[0]>, Error> => {
-  const { data, isLoading, error } = useAllTasks();
-
-  const transformedData = useMemo(() => {
-    if (!data) {
-      return undefined;
-    }
-
-    return transformToLazyTableResult(data);
-  }, [data]);
-
-  return {
-    data: transformedData,
-    isLoading,
-    error,
-  };
 };
