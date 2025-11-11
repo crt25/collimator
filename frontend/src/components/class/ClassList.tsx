@@ -13,6 +13,8 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
+import { DetailButton } from "../DetailButton";
+import { LuChevronRight } from "react-icons/lu";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
@@ -96,6 +98,28 @@ const ClassList = () => {
         columnType: ColumnType.text,
       },
     },
+    {
+      id: "details",
+      header: "",
+      enableSorting: false,
+      cell: (info) => (
+        <DetailButton
+          aria-label="View class details"
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/class/${info.row.original.id}/detail`);
+          }}
+          data-testid={`class-${info.row.original.id}-details-button`}
+        >
+          <Icon>
+            <LuChevronRight />
+          </Icon>
+        </DetailButton>
+      ),
+      meta: {
+        columnType: ColumnType.icon,
+      },
+    },
   ];
 
   return (
@@ -106,7 +130,6 @@ const ClassList = () => {
             data={data}
             columns={columns}
             isLoading={isLoading}
-            onRowClick={(row) => router.push(`/class/${row.id}/detail`)}
             features={{
               sorting: true,
               columnFiltering: {
