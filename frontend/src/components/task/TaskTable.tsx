@@ -1,35 +1,49 @@
-import {
-  DataTablePageEvent,
-  DataTableSortEvent,
-  DataTableFilterEvent,
-} from "primereact/datatable";
-import { Column } from "primereact/column";
-import { useCallback, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import { Icon, IconButton } from "@chakra-ui/react";
-import { LuChevronDown } from "react-icons/lu";
-import { FaEdit } from "react-icons/fa";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { TableMessages } from "@/i18n/table-messages";
-import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
+import { ColumnDef } from "@tanstack/react-table";
+import { MdAdd } from "react-icons/md";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { Icon, HStack } from "@chakra-ui/react";
+import { LuChevronRight } from "react-icons/lu";
+import { ColumnType } from "@/types/tanstack-types";
+import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
-import { isClickOnRow } from "@/utilities/table";
+import { capitalizeString } from "@/utilities/strings";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
+import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
-import DropdownMenu from "../DropdownMenu";
-import { ButtonGroup } from "../ButtonGroup";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
+`;
 
-  tr {
-    cursor: pointer;
+const StyledButton = styled(Button)`
+  && {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+`;
+
+const Stack = styled(HStack)`
+  && {
+    gap: 1rem;
+  }
+`;
+
+const StyledIconButton = styled(Icon)`
+  background-color: var(--icon-button-background-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  && {
+    &:hover {
+      color: var(--icon-button-hover-color);
+    }
   }
 `;
 
@@ -56,145 +70,128 @@ const messages = defineMessages({
   },
 });
 
-const taskTitleTemplate = (rowData: ExistingTask) => (
-  <span data-testid={`task-${rowData.id}-title`}>{rowData.title}</span>
-);
-
-export const TaskTable = () => {
+const TaskTable = () => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
-
-  const { data, isLoading, error } = useAllTasksLazyTable(lazyState);
-
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
+  const { data, isLoading, error } = useAllTasks();
+  const deleteTask = useDeleteTask();
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<number | null>(null);
-  const deleteTask = useDeleteTask();
 
-  const actionsTemplate = useCallback(
-    (rowData: ExistingTask) => (
-      <div data-testid={`task-${rowData.id}-actions`}>
-        <ButtonGroup>
-          <Button
-            variant={ButtonVariant.primary}
+  const columns: ColumnDef<ExistingTask>[] = [
+    {
+      accessorKey: "id",
+      header: intl.formatMessage(messages.idColumn),
+      enableSorting: false,
+      cell: (info) => (
+        <span data-testid={`task-${info.row.original.id}-id`}>
+          {info.row.original.id}
+        </span>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "name",
+      header: intl.formatMessage(messages.nameColumn),
+      cell: (info) => (
+        <span data-testid={`task-${info.row.original.id}-name`}>
+          {info.row.original.title}
+        </span>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "taskType",
+      header: intl.formatMessage(messages.taskTypeColumn),
+      enableSorting: false,
+      cell: (info) => (
+        <span data-testid={`task-${info.row.original.id}-taskType`}>
+          {capitalizeString(info.row.original.type)}
+        </span>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      id: "actions",
+      header: "Quick Actions",
+      enableSorting: false,
+      cell: (info) => (
+        <div data-testid={`task-${info.row.original.id}-actions`}>
+          <StyledIconButton
+            aria-label="Delete task"
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/task/${rowData.id}/edit`);
+              setTaskIdToDelete(info.row.original.id);
+              setShowDeleteConfirmationModal(true);
             }}
-            data-testid={`task-${rowData.id}-edit-button`}
+            data-testid={`task-${info.row.original.id}-delete-button`}
           >
-            <Icon>
-              <FaEdit />
-            </Icon>
-          </Button>
-          <DropdownMenu
-            testId={`task-${rowData.id}-actions-dropdown-button`}
-            trigger={
-              <IconButton aria-label="More actions">
-                <LuChevronDown />
-              </IconButton>
-            }
+            <FaRegTrashAlt />
+          </StyledIconButton>
+        </div>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      id: "details",
+      header: "",
+      enableSorting: false,
+      cell: (info) => (
+        <div data-testid={`task-${info.row.original.id}-actions`}>
+          <StyledIconButton
+            aria-label="View task details"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/task/${info.row.original.id}/detail`);
+            }}
+            data-testid={`task-${info.row.original.id}-details-button`}
           >
-            <DropdownMenu.Item
-              onClick={(e) => {
-                e.stopPropagation();
-                setTaskIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
-              }}
-              testId={`task-${rowData.id}-delete-button`}
-            >
-              {intl.formatMessage(TableMessages.delete)}
-            </DropdownMenu.Item>
-          </DropdownMenu>
-        </ButtonGroup>
-      </div>
-    ),
-    [router, intl],
-  );
+            <LuChevronRight />
+          </StyledIconButton>
+        </div>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+  ];
 
   return (
     <TaskTableWrapper data-testid="task-list">
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
-          <DataTable
-            value={data.items}
-            lazy
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            first={lazyState.first}
-            rows={10}
-            totalRecords={data.totalCount}
-            onPage={onPage}
-            onSort={onSort}
-            sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder}
-            onFilter={onFilter}
-            filters={lazyState.filters}
-            loading={isLoading}
-            onRowClick={(e) => {
-              if (isClickOnRow(e)) {
-                router.push(`/task/${(e.data as ExistingTask).id}/detail`);
-              }
+          <ChakraDataTable
+            data={data}
+            columns={columns}
+            isLoading={isLoading}
+            // onRowClick={(row) => router.push(`/task/${row.id}/detail`)}
+            features={{
+              sorting: true,
+              columnFiltering: {
+                columns: [
+                  {
+                    accessorKey: "name",
+                    label: intl.formatMessage(messages.nameColumn),
+                  },
+                ],
+              },
+              pagination: {
+                pageSize: 10,
+              },
             }}
-          >
-            <Column
-              field="title"
-              header={intl.formatMessage(messages.titleColumn)}
-              sortable
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={taskTitleTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.actionsColumn)}
-              body={actionsTemplate}
-              filter
-              filterElement={
-                <DropdownMenu
-                  trigger={
-                    <Button
-                      variant={ButtonVariant.secondary}
-                      onClick={() => router.push("task/create")}
-                      data-testid="task-create-button"
-                    >
-                      <FontAwesomeIcon icon={faAdd} />
-                    </Button>
-                  }
-                />
-              }
-            />
-          </DataTable>
+            includeSearchBar={false}
+          />
         )}
       </SwrContent>
       <ConfirmationModal
@@ -210,6 +207,18 @@ export const TaskTable = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
+      <StyledButton
+        variant={ButtonVariant.Primary}
+        onClick={() => router.push("task/create")}
+        data-testid="task-create-button"
+      >
+        <Stack>
+          <Icon>
+            <MdAdd />
+          </Icon>
+          Create Task
+        </Stack>
+      </StyledButton>
     </TaskTableWrapper>
   );
 };
