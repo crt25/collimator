@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import { useContext, useMemo } from "react";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
 import {
@@ -8,12 +7,7 @@ import {
   getClassesControllerFindAllV0Url,
 } from "../../generated/endpoints/classes/classes";
 import { ClassesControllerFindAllV0Params } from "../../generated/models";
-import {
-  ApiResponse,
-  fromDtos,
-  getSwrParamererizedKey,
-  transformToLazyTableResult,
-} from "../helpers";
+import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 

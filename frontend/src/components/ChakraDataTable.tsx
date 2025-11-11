@@ -33,14 +33,7 @@ import {
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
-import {
-  Table,
-  HStack,
-  Stack,
-  Icon,
-  Spinner,
-  IconButton,
-} from "@chakra-ui/react";
+import { Table, HStack, Icon, Spinner, IconButton } from "@chakra-ui/react";
 
 import Input from "./form/Input";
 import Tag from "./Tag";
