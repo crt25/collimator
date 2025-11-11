@@ -169,6 +169,10 @@ const TableContainer = styled.div`
   gap: 1rem;
 `;
 
+const StyledTableCell = styled(Table.Cell)`
+  border-bottom: 1px solid var(--border-color);
+`;
+
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
     return <LuArrowUp size={16} />;
@@ -571,7 +575,9 @@ export const ChakraDataTable = <T extends { id: number }>({
                 className={rowClassName}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
+                  <StyledTableCell key={cell.id}>
+                    {cellWrapper({ cell })}
+                  </StyledTableCell>
                 ))}
               </TableRow>
             ))}
