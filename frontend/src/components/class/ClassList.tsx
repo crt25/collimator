@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { Icon, HStack } from "@chakra-ui/react";
+import { LuChevronRight } from "react-icons/lu";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
@@ -14,7 +15,6 @@ import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
 import { DetailButton } from "../DetailButton";
-import { LuChevronRight } from "react-icons/lu";
 
 const ClassListWrapper = styled.div`
   margin: 1rem 0;
