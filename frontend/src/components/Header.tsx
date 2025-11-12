@@ -1,7 +1,5 @@
-import styled from "@emotion/styled";
 import Link from "next/link";
 import React from "react";
-import { Container } from "react-bootstrap";
 import {
   defineMessages,
   FormattedMessage,
@@ -10,10 +8,11 @@ import {
   useIntl,
 } from "react-intl";
 import Head from "next/head";
-import { useUserName } from "@/hooks/useUserName";
-import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
+import { FaRegUser } from "react-icons/fa6";
+import { chakra, Container } from "@chakra-ui/react";
+import AvatarMenu from "./Avatar";
 import LanguageChooser from "./LanguageChooser";
-import DropdownMenu from "./DropdownMenu";
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 
 const messages = defineMessages({
   applicationName: {
@@ -22,44 +21,51 @@ const messages = defineMessages({
   },
 });
 
-const StyledHeader = styled.header`
-  padding: 1rem 0;
-  background-color: var(--header-background-color);
-  color: var(--header-foreground-color);
-`;
+const StyledHeader = chakra("header", {
+  base: {
+    padding: "{padding.md} 0",
+    backgroundColor: "headerBackground",
+    color: "headerForeground",
+  },
+});
 
-const HeaderInner = styled(Container)`
-  display: flex;
-  flex-direction: row;
-  height: 3rem;
-  align-items: center;
-  padding: 0;
-`;
+const HeaderInner = chakra("div", {
+  base: {
+    display: "flex",
+    flexDirection: "row",
+    height: "{lineHeights.md}",
+    alignItems: "center",
+    padding: "0",
+  },
+});
 
-const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const Logo = chakra("div", {
+  base: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
 
-  font-size: 1.5rem;
-  font-weight: bold;
+    fontSize: "2xl",
+    fontWeight: "bold",
 
-  img,
-  svg {
-    max-height: 4rem;
-    height: 100%;
-    width: auto;
-  }
-`;
+    "& img, & svg": {
+      maxHeight: "{spacing.xl}",
+      height: "100%",
+      width: "auto",
+    },
+  },
+});
 
-const Menu = styled.menu`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  list-style: none;
-`;
+const Menu = chakra("menu", {
+  base: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: "4xl",
+    listStyle: "none",
+  },
+});
 
 const Header = ({
   title,
@@ -73,7 +79,6 @@ const Header = ({
   children?: React.ReactNode;
 }) => {
   const isAuthenticated = useIsAuthenticated();
-  const name = useUserName();
   const intl = useIntl();
 
   return (
@@ -92,37 +97,36 @@ const Header = ({
       </Head>
 
       <StyledHeader>
-        <HeaderInner>
-          <Logo>{intl.formatMessage(messages.applicationName)}</Logo>
-          <Menu>
-            {children ?? null}
-            <li>
-              <LanguageChooser />
-            </li>
-            <li>
-              {isAuthenticated ? (
-                <DropdownMenu
-                  trigger={<div data-testid="current-user">{name}</div>}
-                  isButton={true}
-                >
-                  <DropdownMenu.Item href="/logout">
+        <Container>
+          <HeaderInner>
+            <Logo>{intl.formatMessage(messages.applicationName)}</Logo>
+            <Menu>
+              {children ?? null}
+              <li>
+                <LanguageChooser />
+              </li>
+              <li>
+                {isAuthenticated ? (
+                  <AvatarMenu icon={<FaRegUser />} testId="current-user">
+                    <AvatarMenu.Item href="/logout">
+                      <FormattedMessage
+                        id="Header.signOut"
+                        defaultMessage="Sign Out"
+                      />
+                    </AvatarMenu.Item>
+                  </AvatarMenu>
+                ) : (
+                  <Link href="/login" data-testid="sign-in-button">
                     <FormattedMessage
-                      id="Header.signOut"
-                      defaultMessage="Sign Out"
+                      id="Header.signIn"
+                      defaultMessage="Sign In"
                     />
-                  </DropdownMenu.Item>
-                </DropdownMenu>
-              ) : (
-                <Link href="/login" data-testid="sign-in-button">
-                  <FormattedMessage
-                    id="Header.signIn"
-                    defaultMessage="Sign In"
-                  />
-                </Link>
-              )}
-            </li>
-          </Menu>
-        </HeaderInner>
+                  </Link>
+                )}
+              </li>
+            </Menu>
+          </HeaderInner>
+        </Container>
       </StyledHeader>
     </>
   );
