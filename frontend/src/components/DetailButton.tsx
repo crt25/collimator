@@ -1,8 +1,14 @@
-import styled from "@emotion/styled";
+import { chakra } from "@chakra-ui/react";
 import Button from "./Button";
 
-export const DetailButton = styled(Button)`
-  && {
-    background-color: var(--background-color);
-    color: var(--text-secondary-color);
-`;
+export const DetailButton = chakra(Button, {
+  base: {
+    "&&": {
+      backgroundColor: "transparent",
+      color: "black",
+      _hover: {
+        backgroundColor: "transparent",
+      },
+    },
+  },
+});
