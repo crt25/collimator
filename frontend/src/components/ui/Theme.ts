@@ -4,9 +4,29 @@ import {
   defineConfig,
   defineTokens,
 } from "@chakra-ui/react";
+import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
+import { IconButtonRecipe } from "./recipes/IconButton.recipe";
+import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
+import { InputRecipe } from "./recipes/form/Input.recipe";
+import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
+import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
+import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
+import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 
 const config = defineConfig({
   theme: {
+    slotRecipes: {
+      dropdownMenu: DropdownMenuRecipe,
+      breadcrumb: BreadcrumbsRecipe,
+    },
+    recipes: {
+      button: ButtonRecipe,
+      iconButton: IconButtonRecipe,
+      pageHeading: PageHeadingRecipe,
+      input: InputRecipe,
+      closeButton: CloseButtonRecipe,
+      textArea: TextAreaRecipe,
+    },
     tokens: defineTokens({
       colors: {
         white: { value: "var(--background-color)" },
@@ -110,9 +130,6 @@ const config = defineConfig({
       _hover: {
         textDecoration: "underline !important",
       },
-    },
-    HStack: {
-      gap: "sm",
     },
     ".p-tooltip": {
       backgroundColor: "var(--chakra-colors-bg)",
