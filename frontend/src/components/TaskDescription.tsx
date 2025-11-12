@@ -1,8 +1,10 @@
-import styled from "@emotion/styled";
+import { chakra } from "@chakra-ui/react";
 
-const TaskDescription = styled.div`
-  flex-grow: 1;
-  overflow-y: scroll;
-`;
+const TaskDescription = chakra("div", {
+  base: {
+    flexGrow: 1,
+    overflowY: "scroll",
+  },
+});
 
 export default TaskDescription;
