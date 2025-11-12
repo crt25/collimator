@@ -4,8 +4,7 @@ import ClassList from "@/components/class/ClassList";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeader from "@/components/PageHeader";
-import PageDescription from "@/components/PageDescription";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 
 const messages = defineMessages({
   header: {
@@ -26,18 +25,18 @@ const ListClasses = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeader>
+        <PageHeading variant={PageHeadingVariant.title}>
           <FormattedMessage
             id="ListClasses.pageTitle"
             defaultMessage="Class Manager"
           />
-        </PageHeader>
-        <PageDescription>
+        </PageHeading>
+        <PageHeading variant={PageHeadingVariant.description}>
           <FormattedMessage
             id="ListClasses.pageDescription"
             defaultMessage=""
           />
-        </PageDescription>
+        </PageHeading>
         <ClassList />
       </Container>
     </>
