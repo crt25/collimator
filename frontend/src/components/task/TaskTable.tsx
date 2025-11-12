@@ -46,6 +46,18 @@ const messages = defineMessages({
     id: "TaskTable.deleteConfirmation.confirm",
     defaultMessage: "Delete Task",
   },
+  viewDetails: {
+    id: "TaskTable.viewDetails",
+    defaultMessage: "View Task Details",
+  },
+  deleteTask: {
+    id: "TaskTable.deleteTask",
+    defaultMessage: "Delete Task",
+  },
+  createTask: {
+    id: "TaskTable.createTask",
+    defaultMessage: "Create Task",
+  },
 });
 
 const TaskTable = () => {
