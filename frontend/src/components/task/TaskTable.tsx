@@ -26,9 +26,9 @@ const messages = defineMessages({
     id: "TaskTable.columns.id",
     defaultMessage: "ID",
   },
-  nameColumn: {
-    id: "TaskTable.columns.name",
-    defaultMessage: "Name",
+  titleColumn: {
+    id: "TaskTable.columns.title",
+    defaultMessage: "Title",
   },
   taskTypeColumn: {
     id: "TaskTable.columns.taskType",
@@ -74,10 +74,10 @@ const TaskTable = () => {
       },
     },
     {
-      accessorKey: "name",
-      header: intl.formatMessage(messages.nameColumn),
+      accessorKey: "title",
+      header: intl.formatMessage(messages.titleColumn),
       cell: (info) => (
-        <span data-testid={`task-${info.row.original.id}-name`}>
+        <span data-testid={`task-${info.row.original.id}-title`}>
           {info.row.original.title}
         </span>
       ),
@@ -163,8 +163,8 @@ const TaskTable = () => {
               columnFiltering: {
                 columns: [
                   {
-                    accessorKey: "name",
-                    label: intl.formatMessage(messages.nameColumn),
+                    accessorKey: "title",
+                    label: intl.formatMessage(messages.titleColumn),
                   },
                 ],
               },
