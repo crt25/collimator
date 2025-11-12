@@ -15,18 +15,7 @@ const InputWrapper = chakra("div", {
   },
 });
 
-const StyledInput = chakra(ChakraInput, {
-  base: {
-    width: "100%",
-    maxWidth: "100%",
-    padding: "sm",
-    _placeholder: {
-      color: "inputPlaceholderColor",
-    },
-  },
-});
-
-export enum InputType {
+export enum InputVariety {
   Search = "search",
 }
 
@@ -35,7 +24,7 @@ interface Props {
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
-  type?: InputType;
+  variety?: InputVariety;
 }
 
 // Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
@@ -54,14 +43,14 @@ const Input = forwardRef(function Input(
   const intl = useIntl();
   const { label, helperText, errorText, invalid, type, ...inputProps } = props;
 
-  const showSearchIcon = type === InputType.Search;
+  const showSearchIcon = type === InputVariety.Search;
 
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
-          <StyledInput ref={ref} {...inputProps} />
+          <ChakraInput ref={ref} {...inputProps} />
         </InputGroup>
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}

@@ -29,7 +29,7 @@ import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
 import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
 import { DataTablePagination } from "./Pagination";
-import Input, { InputType } from "./form/Input";
+import Input, { InputVariety } from "./form/Input";
 import Tag from "./Tag";
 import DropdownMenu from "./DropdownMenu";
 
@@ -524,7 +524,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                   table.getColumn(filterColumn)?.setFilterValue(e.target.value)
                 }
                 placeholder={intl.formatMessage(messages.filterByPlaceholder)}
-                type={InputType.Search}
+                type={InputVariety.Search}
               />
             </InputWrapper>
 
