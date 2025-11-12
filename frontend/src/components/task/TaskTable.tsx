@@ -16,36 +16,9 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
-import { DetailButton } from "../DetailButton";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
-`;
-
-const StyledButton = styled(Button)`
-  && {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-`;
-
-const Stack = styled(HStack)`
-  && {
-    gap: 1rem;
-  }
-`;
-
-const StyledIconButton = styled(Icon)`
-  background-color: var(--icon-button-background-color);
-  cursor: pointer;
-  transition: color 0.2s ease;
-
-  && {
-    &:hover {
-      color: var(--icon-button-hover-color);
-    }
-  }
 `;
 
 const messages = defineMessages({
@@ -131,17 +104,18 @@ const TaskTable = () => {
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
-          <DetailButton
-            aria-label="Delete task"
+          <Button
+            aria-label={intl.formatMessage(messages.deleteTask)}
             onClick={(e) => {
               e.stopPropagation();
               setTaskIdToDelete(info.row.original.id);
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
+            variant={ButtonVariant.Detail}
           >
             <FaRegTrashAlt />
-          </DetailButton>
+          </Button>
         </div>
       ),
       meta: {
@@ -154,16 +128,19 @@ const TaskTable = () => {
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
-          <StyledIconButton
-            aria-label="View task details"
+          <Button
+            aria-label={intl.formatMessage(messages.viewDetails)}
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/task/${info.row.original.id}/detail`);
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
+            variant={ButtonVariant.Detail}
           >
-            <LuChevronRight />
-          </StyledIconButton>
+            <Icon>
+              <LuChevronRight />
+            </Icon>
+          </Button>
         </div>
       ),
       meta: {
@@ -212,18 +189,18 @@ const TaskTable = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
-      <StyledButton
+      <Button
         variant={ButtonVariant.Primary}
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
       >
-        <Stack>
+        <HStack>
           <Icon>
             <MdAdd />
           </Icon>
-          Create Task
-        </Stack>
-      </StyledButton>
+          {intl.formatMessage(messages.createTask)}
+        </HStack>
+      </Button>
     </TaskTableWrapper>
   );
 };
