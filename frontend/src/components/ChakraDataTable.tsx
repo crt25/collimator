@@ -178,12 +178,6 @@ const TableCell = chakra(Table.Cell, {
   },
 });
 
-const StyledHStack = chakra(HStack, {
-  base: {
-    gap: "sm",
-  },
-});
-
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
     return <LuArrowUpNarrowWide size={16} />;
@@ -469,10 +463,10 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const wrapWithIcon = (content: React.ReactNode, icon?: React.ReactNode) => {
     return icon ? (
-      <StyledHStack>
+      <HStack>
         <Icon>{icon}</Icon>
         <span>{content}</span>
-      </StyledHStack>
+      </HStack>
     ) : (
       content
     );
