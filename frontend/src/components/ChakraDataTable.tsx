@@ -86,85 +86,103 @@ interface ChakraDataTableProps<T> {
   variant?: "outline" | "line";
 }
 
-const TableWrapper = styled.div`
-  margin-bottom: 3rem;
-`;
+const TableWrapper = chakra("div", {
+  base: {
+    marginBottom: "lg",
+    marginTop: "4xl",
+  },
+});
 
-const InputWrapper = styled.div`
-  margin-bottom: 2rem;
-`;
+const InputWrapper = chakra("div", {
+  base: {
+    marginBottom: "lg",
+    width: "{inputWidths.md}",
+  },
+});
 
-const ColumnHeader = styled(Table.ColumnHeader)`
-  &.sortable {
-    cursor: pointer;
-  }
+const ColumnHeader = chakra(Table.ColumnHeader, {
+  base: {
+    fontWeight: "semiBold",
+    color: "fgTertiary",
+    _hover: {
+      cursor: "pointer",
+    },
+    "&:last-child": {
+      width: "auto",
+      textAlign: "right",
+    },
+  },
+});
 
-  &.not-sortable {
-    cursor: default;
-  }
-`;
+const TableRow = chakra(Table.Row, {
+  base: {
+    _hover: {
+      cursor: "pointer",
+    },
+  },
+});
 
-const TableRow = styled(Table.Row)`
-  &.clickable {
-    cursor: pointer;
-  }
+const TableHeader = chakra(Table.Header, {
+  base: {
+    backgroundColor: "gray.200",
+  },
+});
 
-  &.not-clickable {
-    cursor: default;
-  }
-`;
+const TableRoot = chakra(Table.Root, {
+  base: {
+    width: "100%",
+    tableLayout: "fixed",
+    fontSize: "lg",
+  },
+});
 
-const PaginationButton = styled(Button)`
-  background-color: #000;
-  color: #fff;
-`;
+const HeaderContent = chakra("div", {
+  base: {
+    display: "flex",
+    gap: "sm",
+    alignItems: "center",
+  },
+});
 
-const PaginationIconButton = styled(IconButton)`
-  background-color: transparent !important;
+const FilterContainer = chakra("div", {
+  base: {
+    display: "flex",
+    gap: "md",
+    alignItems: "center",
+  },
+});
 
-  &:hover:not(:disabled) {
-    background-color: transparent !important;
-  }
+const TableContainer = chakra("div", {
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "md",
+  },
+});
 
-  &:active:not(:disabled) {
-    background-color: transparent !important;
-  }
-`;
+const TableCell = chakra(Table.Cell, {
+  base: {
+    borderBottomWidth: "thin !important",
+    borderBottomStyle: "solid",
+    borderBottomColor: "gray.600",
 
-const HeaderContent = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-`;
+    "&:first-child": {
+      fontWeight: "semiBold",
+    },
 
-const PaginationContentWrapper = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
+    "&:last-child": {
+      width: "auto",
+      textAlign: "right",
+      whiteSpace: "nowrap",
+    },
+  },
+});
 
-const PaginationWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-`;
-
-const TableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const StyledTableCell = styled(Table.Cell)`
-  border-bottom: 1px solid var(--border-color);
-`;
+const StyledHStack = chakra(HStack, {
+  base: {
+    gap: "sm",
+  },
+});
 
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
@@ -451,10 +469,10 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const wrapWithIcon = (content: React.ReactNode, icon?: React.ReactNode) => {
     return icon ? (
-      <HStack gap={2}>
+      <StyledHStack>
         <Icon>{icon}</Icon>
         <span>{content}</span>
-      </HStack>
+      </StyledHStack>
     ) : (
       content
     );
@@ -525,8 +543,8 @@ export const ChakraDataTable = <T extends { id: number }>({
           </FilterContainer>
         )}
 
-        <Table.Root size="md" interactive={!!onRowClick} variant={variant}>
-          <Table.Header>
+        <TableRoot interactive={!!onRowClick} variant={variant}>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -555,7 +573,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                 ))}
               </TableRow>
             ))}
-          </Table.Header>
+          </TableHeader>
 
           <Table.Body>
             {table.getRowModel().rows.map((row) => (
