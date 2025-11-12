@@ -102,6 +102,9 @@ const config = defineConfig({
         textDecoration: "underline !important",
       },
     },
+    HStack: {
+      gap: "sm",
+    },
     ".p-tooltip": {
       backgroundColor: "var(--chakra-colors-bg)",
       color: "var(--chakra-colors-fg)",
