@@ -56,6 +56,10 @@ const messages = defineMessages({
     id: "ClassList.deleteConfirmation.confirm",
     defaultMessage: "Delete Class",
   },
+  viewDetails: {
+    id: "ClassList.viewDetails",
+    defaultMessage: "View Class Details",
+  },
 });
 
 const ClassList = () => {
@@ -101,7 +105,7 @@ const ClassList = () => {
       enableSorting: false,
       cell: (info) => (
         <DetailButton
-          aria-label="View class details"
+          aria-label={intl.formatMessage(messages.viewDetails)}
           onClick={(e) => {
             e.stopPropagation();
             router.push(`/class/${info.row.original.id}/detail`);
