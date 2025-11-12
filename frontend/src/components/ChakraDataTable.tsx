@@ -33,9 +33,9 @@ import {
 import styled from "@emotion/styled";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
-import { Table, HStack, Icon, Spinner, IconButton } from "@chakra-ui/react";
-
-import Input from "./form/Input";
+import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
+import { DataTablePagination } from "./Pagination";
+import Input, { InputType } from "./form/Input";
 import Tag from "./Tag";
 import Button, { ButtonVariant } from "./Button";
 import DropdownMenu from "./DropdownMenu";
@@ -516,6 +516,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                   table.getColumn(filterColumn)?.setFilterValue(e.target.value)
                 }
                 placeholder={intl.formatMessage(messages.filterByPlaceholder)}
+                type={InputType.Search}
               />
             </InputWrapper>
 
