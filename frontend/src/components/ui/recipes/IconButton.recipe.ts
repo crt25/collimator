@@ -4,10 +4,12 @@ export const IconButtonRecipe = defineRecipe({
   variants: {
     variant: {
       primary: {
-        backgroundColor: "buttonBg",
+        backgroundColor: "iconButtonBackgroundColor",
         color: "buttonFg",
         borderRadius: "sm !important",
         padding: "sm",
+        cursor: "pointer",
+        transition: "background-color 0.2s ease",
 
         _hover: {
           backgroundColor: "accentHighlight",

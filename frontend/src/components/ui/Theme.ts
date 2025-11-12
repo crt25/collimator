@@ -102,6 +102,9 @@ const config = defineConfig({
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
         buttonDisabledBg: { value: "{colors.gray.600}" },
+        iconButtonBackgroundColor: {
+          value: "var(--icon-button-background-color)",
+        },
         headerBg: { value: "{colors.white}" },
         headerBorder: { value: "{colors.black}" },
         headerFg: { value: "{colors.neutral}" },
