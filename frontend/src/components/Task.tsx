@@ -44,12 +44,6 @@ const SessionMenuWrapper = chakra("div", {
   },
 });
 
-const StyledCloseButton = chakra(CloseButton, {
-  base: {
-    padding: "sm",
-  },
-});
-
 export interface TaskRef {
   showTaskMenu: boolean;
   setShowTaskMenu: (show: boolean) => void;
@@ -113,7 +107,7 @@ const Task = ({
       {showSessionMenu && (
         <SessionMenu>
           <SessionMenuWrapper>
-            <StyledCloseButton onClick={() => setShowSessionMenu(false)} />
+            <CloseButton onClick={() => setShowSessionMenu(false)} />
             <RemainingHeightContainer>
               <h1 data-testid="session-name">{session.title}</h1>
               <FullHeightRow>
