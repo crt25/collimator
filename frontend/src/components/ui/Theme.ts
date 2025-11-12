@@ -13,6 +13,7 @@ const config = defineConfig({
         black: { value: "#000000" },
         gray: {
           50: { value: "#ddd" },
+          100: { value: "#A1A1AA" },
           200: { value: "#E4E4E7" },
           600: { value: "#999999" },
         },
@@ -77,6 +78,7 @@ const config = defineConfig({
         headerFg: { value: "{colors.neutral}" },
         pageDescriptionColor: { value: "{colors.black}" },
         inputColor: { value: "{colors.neutral}" },
+        inputPlaceholderColor: { value: "{colors.gray.100}" },
         errorColor: { value: "{colors.error}" },
         buttonBackgroundColor: { value: "{colors.dark}" },
         buttonSecondaryBorderColor: { value: "{colors.gray.200}" },

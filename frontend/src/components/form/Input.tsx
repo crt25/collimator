@@ -20,6 +20,9 @@ const StyledInput = chakra(ChakraInput, {
     width: "100%",
     maxWidth: "100%",
     padding: "sm",
+    _placeholder: {
+      color: "inputPlaceholderColor",
+    },
   },
 });
 
