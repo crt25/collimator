@@ -100,7 +100,7 @@ const ClassList = () => {
             router.push(`/class/${info.row.original.id}/detail`);
           }}
           data-testid={`class-${info.row.original.id}-details-button`}
-          variant={ButtonVariant.Detail}
+          variant={ButtonVariant.detail}
         >
           <Icon>
             <LuChevronRight />
@@ -152,7 +152,7 @@ const ClassList = () => {
         }}
       />
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.primary}
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
       >

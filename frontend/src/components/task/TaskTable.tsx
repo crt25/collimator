@@ -183,7 +183,7 @@ const TaskTable = () => {
                 <DropdownMenu
                   trigger={
                     <Button
-                      variant={ButtonVariant.Secondary}
+                      variant={ButtonVariant.secondary}
                       onClick={() => router.push("task/create")}
                       data-testid="task-create-button"
                     >
