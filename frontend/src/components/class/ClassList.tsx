@@ -132,7 +132,7 @@ const ClassList = () => {
                 ],
               },
               pagination: {
-                pageSize: 5,
+                pageSize: 4,
               },
             }}
           />
