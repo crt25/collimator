@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { Icon } from "@chakra-ui/react";
+import { Icon, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
 import { MdAdd } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -19,7 +19,6 @@ import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
-import { IconButton } from "../IconButton";
 
 const UserListWrapper = styled.div`
   margin: 1rem 0;
@@ -109,7 +108,6 @@ const UserList = () => {
               <LuChevronDown />
             </IconButton>
           }
-          isButton={true}
           data-testid={`user-${rowData.id}-actions-dropdown-button`}
         >
           <DropdownMenu.Item
@@ -200,7 +198,6 @@ const UserList = () => {
                       </Icon>
                     </Button>
                   }
-                  isButton={true}
                 />
               }
             />

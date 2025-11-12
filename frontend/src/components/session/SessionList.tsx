@@ -8,7 +8,7 @@ import { useCallback, useContext, useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { Icon } from "@chakra-ui/react";
+import { Icon, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
 import { MdAdd } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -26,7 +26,6 @@ import MultiSwrContent from "../MultiSwrContent";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
-import { IconButton } from "../IconButton";
 
 const SessionListWrapper = styled.div`
   margin: 1rem 0;
@@ -193,7 +192,6 @@ const SessionList = ({ classId }: { classId: number }) => {
                 </Icon>
               </IconButton>
             }
-            isButton={true}
           >
             <DropdownMenu.Item
               onClick={() => {
@@ -311,7 +309,6 @@ const SessionList = ({ classId }: { classId: number }) => {
                       </Icon>
                     </Button>
                   }
-                  isButton={true}
                 />
               }
             />
