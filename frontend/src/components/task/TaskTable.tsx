@@ -124,7 +124,7 @@ const TaskTable = () => {
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
-            variant={ButtonVariant.Detail}
+            variant={ButtonVariant.detail}
           >
             <FaRegTrashAlt />
           </Button>
@@ -147,7 +147,7 @@ const TaskTable = () => {
               router.push(`/task/${info.row.original.id}/detail`);
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
-            variant={ButtonVariant.Detail}
+            variant={ButtonVariant.detail}
           >
             <Icon>
               <LuChevronRight />
@@ -201,7 +201,7 @@ const TaskTable = () => {
         }}
       />
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.primary}
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
       >
