@@ -16,6 +16,7 @@ const config = defineConfig({
           100: { value: "#A1A1AA" },
           200: { value: "#E4E4E7" },
           600: { value: "#999999" },
+          1000: { value: "#27272A" },
         },
         neutral: { value: "#171717" },
         dark: { value: "#2d2d2d" },
@@ -28,6 +29,7 @@ const config = defineConfig({
         md: { value: "1rem" },
         lg: { value: "1.5rem" },
         xl: { value: "2rem" },
+        "4xl": { value: "5rem" },
       },
       padding: {
         sm: { value: "0.5rem" },
@@ -35,7 +37,7 @@ const config = defineConfig({
         lg: { value: "1.5rem" },
       },
       inputWidths: {
-        md: { value: "25rem" },
+        md: { value: "30rem" },
       },
       borders: {
         thin: { value: "1px solid" },
@@ -47,6 +49,13 @@ const config = defineConfig({
         xl: { value: "1.25rem" },
         "2xl": { value: "1.5rem" },
         "3xl": { value: "1.875rem" },
+        "4xl": { value: "2.25rem" },
+      },
+      lineHeights: {
+        md: { value: "10rem" },
+      },
+      fontWeights: {
+        semiBold: { value: "600" },
       },
       radius: {
         sm: { value: "0.25rem" },
@@ -61,6 +70,7 @@ const config = defineConfig({
         bgSecondary: { value: "{colors.gray.50}" },
         fg: { value: "{colors.neutral}" },
         fgSecondary: { value: "{colors.black}" },
+        fgTertiary: { value: "{colors.gray.1000}" },
         accent: { value: "{colors.dark}" },
         accentHighlight: { value: "{colors.dark}" },
         border: { value: "{colors.gray.200}" },
