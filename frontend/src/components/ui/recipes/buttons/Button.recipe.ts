@@ -10,7 +10,8 @@ export const ButtonRecipe = defineRecipe({
         backgroundColor: "buttonBg",
         color: "buttonFg",
         _hover: {
-          backgroundColor: "accentHighlight !important",
+          backgroundColor: "accent !important",
+          opacity: 0.8,
         },
       },
       secondary: {
@@ -27,7 +28,8 @@ export const ButtonRecipe = defineRecipe({
         backgroundColor: "transparent",
         color: "fgSecondary",
         _hover: {
-          backgroundColor: "transparent",
+          color: "accentHighlight",
+          opacity: 0.8,
         },
       },
     },
