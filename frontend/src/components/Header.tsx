@@ -23,7 +23,7 @@ const messages = defineMessages({
 
 const StyledHeader = chakra("header", {
   base: {
-    padding: "{padding.md} 0",
+    padding: "{padding.sm} 0",
     backgroundColor: "headerBackground",
     color: "headerForeground",
   },
