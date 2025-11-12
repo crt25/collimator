@@ -4,6 +4,7 @@ import {
   Icon,
   Box,
   Spinner,
+  chakra,
 } from "@chakra-ui/react";
 
 import { LuCircleCheck, LuCircleX } from "react-icons/lu";
@@ -17,7 +18,6 @@ import {
   DetailedHTMLProps,
   ButtonHTMLAttributes,
 } from "react";
-import styled from "@emotion/styled";
 import { isNonNull } from "@/utilities/is-non-null";
 
 export enum ButtonVariant {
@@ -36,37 +36,34 @@ export type ButtonProps = DetailedHTMLProps<
 
 const colorsByVariant = {
   [ButtonVariant.primary]: {
-    bgColor: "var(--button-background-color)",
-    fgColor: "var(--button-foreground-color)",
+    bgColor: "buttonBg",
+    fgColor: "buttonFg",
   },
   [ButtonVariant.secondary]: {
-    bgColor: "var(--button-secondary-background-color)",
-    fgColor: "var(--button-secondary-foreground-color)",
+    bgColor: "buttonSecondaryBg",
+    fgColor: "buttonSecondaryFg",
   },
   [ButtonVariant.danger]: {
-    bgColor: "var(--button-danger-background-color)",
-    fgColor: "var(--button-danger-foreground-color)",
+    bgColor: "buttonDangerBg",
+    fgColor: "buttonDangerFg",
   },
 };
 
-const StyledButton = styled(ChakraButton)<{ bgColor: string; fgColor: string }>`
-  border-radius: var(--border-radius);
-  background-color: ${(props) => props.bgColor};
-  color: ${(props) => props.fgColor};
-  padding: 0.5rem 1rem;
+const StyledButton = chakra(ChakraButton, {
+  base: {
+    borderRadius: "sm !important",
+    padding: "sm",
+    _hover: {
+      backgroundColor: "accentHighlight",
+    },
+  },
+});
 
-  &:hover {
-    background-color: var(--accent-color-highlight);
-  }
-
-  &.active {
-    background-color: var(--accent-color-highlight);
-  }
-`;
-
-const ButtonContent = styled(HStack)`
-  gap: 0.75rem;
-`;
+const ButtonContent = chakra(HStack, {
+  base: {
+    gap: "sm",
+  },
+});
 
 const Button = ({
   onClick: onClickFn,
@@ -133,8 +130,10 @@ const Button = ({
       onClick={onClick}
       loading={isLoading}
       className={className}
-      bgColor={bgColor}
-      fgColor={fgColor}
+      sx={{
+        backgroundColor: bgColor,
+        color: fgColor,
+      }}
       {...buttonProps}
     >
       <ButtonContent>
