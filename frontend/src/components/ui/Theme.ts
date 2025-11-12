@@ -9,19 +9,18 @@ const config = defineConfig({
   theme: {
     tokens: defineTokens({
       colors: {
-        white: { value: "#ffffff" },
-        black: { value: "#000000" },
+        white: { value: "var(--background-color)" },
+        black: { value: "var(--foreground-color)" },
         gray: {
-          50: { value: "#ddd" },
-          100: { value: "#A1A1AA" },
-          200: { value: "#E4E4E7" },
-          600: { value: "#999999" },
-          1000: { value: "#27272A" },
+          50: { value: "var(--background-color-secondary)" },
+          100: { value: "var(--border-color-secondary)" },
+          200: { value: "var(--border-color-tertiary)" },
+          600: { value: "var(--button-disabled-background-color)" },
+          1000: { value: "var(--foreground-color-tertiary)" },
         },
-        neutral: { value: "#171717" },
-        dark: { value: "#2d2d2d" },
-        success: { value: "#2ecc71" },
-        error: { value: "#dc3545" },
+        dark: { value: "var(--accent-color)" },
+        success: { value: "var(--success-color)" },
+        error: { value: "var(--error-color)" },
       },
       spacing: {
         xs: { value: "0.25rem" },

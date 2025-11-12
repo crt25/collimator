@@ -23,7 +23,6 @@ interface AvatarMenuProps {
 
 const MenuContent = chakra(Menu.Content, {
   base: {
-    backgroundColor: "accent",
     borderColor: "headerBorder",
   },
 });
