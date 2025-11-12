@@ -232,7 +232,7 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: features?.pagination?.pageSize || 10,
+    pageSize: features?.pagination?.pageSize || 5,
   });
 
   const rowModels = useMemo(() => {
