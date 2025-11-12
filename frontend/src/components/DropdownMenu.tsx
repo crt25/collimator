@@ -1,8 +1,7 @@
-import { Menu, Portal, Icon } from "@chakra-ui/react";
+import { Menu, Portal, Icon, chakra, HStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Link from "next/link";
-import styled from "@emotion/styled";
 
 type ClickHandler = () => void;
 
@@ -20,10 +19,29 @@ export type DropdownItemProps = {
     }
 );
 
-const StyledMenuContent = styled(Menu.Content)`
-  background-color: var(--background-color);
-  border-color: var(--header-border-color);
-`;
+const MenuTrigger = chakra(Menu.Trigger, {
+  base: {
+    borderWidth: "thin",
+    borderStyle: "solid",
+    borderRadius: "sm !important",
+    borderColor: "gray.200",
+    padding: "sm",
+    fontWeight: "semibold",
+  },
+});
+
+const MenuContent = chakra(Menu.Content, {
+  base: {
+    backgroundColor: "bg",
+    borderColor: "headerBorder",
+  },
+});
+
+export type DropdownProps = {
+  trigger?: React.ReactNode;
+  children?: React.ReactNode;
+  testId?: string;
+};
 
 const DropdownMenuItem = ({
   href,
@@ -92,13 +110,15 @@ const DropdownMenu = ({
       open={isOpen}
       onOpenChange={(details) => setIsOpen(details.open)}
     >
-      <Menu.Trigger data-testid={testId}>
-        {trigger}
-        <Icon as={isOpen ? LuChevronUp : LuChevronDown} />
-      </Menu.Trigger>
+      <MenuTrigger data-testid={testId}>
+        <HStack>
+          {trigger}
+          <Icon as={isOpen ? LuChevronUp : LuChevronDown} />
+        </HStack>
+      </MenuTrigger>
       <Portal>
         <Menu.Positioner>
-          <StyledMenuContent>{children}</StyledMenuContent>
+          <MenuContent>{children}</MenuContent>
         </Menu.Positioner>
       </Portal>
     </Menu.Root>
