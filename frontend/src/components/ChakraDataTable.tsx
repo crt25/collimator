@@ -189,7 +189,7 @@ const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
 const messages = defineMessages({
   filterByPlaceholder: {
     id: "datatable.placeholder.filterBy",
-    defaultMessage: "Search...",
+    defaultMessage: "Search",
   },
   filterDropdownTrigger: {
     id: "datatable.label.filterBy",
@@ -226,7 +226,7 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: features?.pagination?.pageSize || 5,
+    pageSize: features?.pagination?.pageSize || 4,
   });
 
   const rowModels = useMemo(() => {
