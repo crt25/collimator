@@ -19,45 +19,15 @@ import {
   ButtonHTMLAttributes,
 } from "react";
 import { isNonNull } from "@/utilities/is-non-null";
+import { ButtonVariant } from "@/components/ui/recipes/buttons/Button.recipe";
 
-export enum ButtonVariant {
-  primary = "primary",
-  secondary = "secondary",
-  danger = "danger",
-}
-
-export type ButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
+export type ButtonProps = Omit<
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
+  "variant"
 > & {
   variant?: ButtonVariant;
   active?: boolean;
 };
-
-const colorsByVariant = {
-  [ButtonVariant.primary]: {
-    bgColor: "buttonBg",
-    fgColor: "buttonFg",
-  },
-  [ButtonVariant.secondary]: {
-    bgColor: "buttonSecondaryBg",
-    fgColor: "buttonSecondaryFg",
-  },
-  [ButtonVariant.danger]: {
-    bgColor: "buttonDangerBg",
-    fgColor: "buttonDangerFg",
-  },
-};
-
-const StyledButton = chakra(ChakraButton, {
-  base: {
-    borderRadius: "sm !important",
-    padding: "sm",
-    _hover: {
-      backgroundColor: "accentHighlight",
-    },
-  },
-});
 
 const ButtonContent = chakra(HStack, {
   base: {
@@ -122,18 +92,12 @@ const Button = ({
     [buttonProps.className, active],
   );
 
-  const { bgColor, fgColor } =
-    colorsByVariant[variant ?? ButtonVariant.primary];
-
   return (
-    <StyledButton
+    <ChakraButton
       onClick={onClick}
       loading={isLoading}
       className={className}
-      sx={{
-        backgroundColor: bgColor,
-        color: fgColor,
-      }}
+      variant={variant}
       {...buttonProps}
     >
       <ButtonContent>
@@ -150,8 +114,9 @@ const Button = ({
           </Icon>
         )}
       </ButtonContent>
-    </StyledButton>
+    </ChakraButton>
   );
 };
 
+export { ButtonVariant };
 export default Button;
