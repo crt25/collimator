@@ -55,7 +55,7 @@ const Input = forwardRef(function Input(
   const { label, helperText, errorText, invalid, type, ...inputProps } = props;
 
   const showSearchIcon = type === InputType.Search;
-  
+
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>

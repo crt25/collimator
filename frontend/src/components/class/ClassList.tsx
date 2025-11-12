@@ -5,14 +5,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { Icon, HStack, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
+import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
+import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
+import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
 import { DetailButton } from "../DetailButton";
-import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
-import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
-import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { ColumnType } from "@/types/tanstack-types";
 
 const ClassListWrapper = chakra("div", {
