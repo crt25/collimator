@@ -1,23 +1,25 @@
-import { Breadcrumb } from "@chakra-ui/react";
+import { Breadcrumb, chakra } from "@chakra-ui/react";
 import { FormattedMessage } from "react-intl";
 import { Children, Fragment, isValidElement } from "react";
-import styled from "@emotion/styled";
 import BreadcrumbItem from "./BreadcrumbItem";
 
-const BreadcrumbRoot = styled(Breadcrumb.Root)`
-  margin-top: 1rem;
-  padding: 0.5rem;
-  font-weight: bold;
-`;
+const BreadcrumbRoot = chakra(Breadcrumb.Root, {
+  base: {
+    marginTop: "xl !important",
+    padding: "sm",
+    fontWeight: "semiBold",
+  },
+});
 
-const BreadcrumbList = styled(Breadcrumb.List)`
-  gap: 0.25rem;
-
-  && {
-    margin: 0;
-    padding: 0;
-  }
-`;
+const BreadcrumbList = chakra(Breadcrumb.List, {
+  base: {
+    gap: "md !important",
+    margin: "0 !important",
+    padding: "0 !important",
+    fontSize: "xl",
+    color: "fgTertiary",
+  },
+});
 
 const Breadcrumbs = ({
   homeHref,
