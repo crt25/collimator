@@ -70,41 +70,8 @@ const DropdownMenuItem = ({
   );
 };
 
-export type DropdownProps = {
-  trigger?: React.ReactNode;
-  children?: React.ReactNode;
-  testId?: string;
-  isButton?: boolean;
-};
-
-const DropdownMenu = ({
-  trigger,
-  children,
-  testId,
-  isButton = false,
-}: DropdownProps) => {
+const DropdownMenu = ({ trigger, children, testId }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  if (isButton) {
-    return (
-      <Menu.Root
-        open={isOpen}
-        onOpenChange={(details) => setIsOpen(details.open)}
-      >
-        <Menu.Trigger asChild data-testid={testId}>
-          {trigger}
-        </Menu.Trigger>
-        {children && (
-          <Portal>
-            <Menu.Positioner>
-              <StyledMenuContent>{children}</StyledMenuContent>
-            </Menu.Positioner>
-          </Portal>
-        )}
-      </Menu.Root>
-    );
-  }
-
   return (
     <Menu.Root
       open={isOpen}
