@@ -570,64 +570,23 @@ export const ChakraDataTable = <T extends { id: number }>({
 
           <Table.Body>
             {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={() => onRowClick?.(row.original)}
-                className={rowClassName}
-              >
+              <TableRow key={row.id} onClick={() => onRowClick?.(row.original)}>
                 {row.getVisibleCells().map((cell) => (
-                  <StyledTableCell key={cell.id}>
-                    {cellWrapper({ cell })}
-                  </StyledTableCell>
+                  <TableCell key={cell.id}>{cellWrapper({ cell })}</TableCell>
                 ))}
               </TableRow>
             ))}
           </Table.Body>
-        </Table.Root>
+        </TableRoot>
 
         {features?.pagination && table.getPageCount() > 1 && (
-          <PaginationWrapper>
-            <PaginationIconButton
-              aria-label="Previous page"
-              onClick={(e) => {
-                e.stopPropagation();
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage()}
-              variant="ghost"
-            >
-              <LuChevronLeft />
-            </PaginationIconButton>
-
-            <PaginationContentWrapper>
-              {Array.from({ length: table.getPageCount() }, (_, i) => i)
-                .filter(
-                  (i) =>
-                    Math.abs(i - table.getState().pagination.pageIndex) <= 1,
-                )
-                .map((i) => (
-                  <PaginationButton
-                    key={i}
-                    onClick={() => table.setPageIndex(i)}
-                    variant={ButtonVariant.primary}
-                  >
-                    {i + 1}
-                  </PaginationButton>
-                ))}
-            </PaginationContentWrapper>
-
-            <PaginationIconButton
-              aria-label="Next page"
-              onClick={(e) => {
-                e.stopPropagation();
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage()}
-              variant="ghost"
-            >
-              <LuChevronRight />
-            </PaginationIconButton>
-          </PaginationWrapper>
+          <DataTablePagination
+            pageIndex={table.getState().pagination.pageIndex}
+            pageCount={table.getPageCount()}
+            canPreviousPage={table.getCanPreviousPage()}
+            canNextPage={table.getCanNextPage()}
+            onPageChange={(pageIndex) => table.setPageIndex(pageIndex)}
+          />
         )}
       </TableContainer>
     </TableWrapper>
