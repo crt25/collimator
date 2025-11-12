@@ -1,7 +1,6 @@
-import styled from "@emotion/styled";
 import { RefObject, useCallback } from "react";
 import { Col } from "react-bootstrap";
-import { CloseButton } from "@chakra-ui/react";
+import { CloseButton, chakra } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
@@ -14,38 +13,42 @@ import FullHeightRow from "./layout/FullHeightRow";
 import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import TaskList from "./TaskList";
 
-const TaskWrapper = styled.div`
-  flex-grow: 1;
-  position: relative;
+const TaskWrapper = chakra("div", {
+  base: {
+    flexGrow: 1,
+    position: "relative",
+    display: "flex",
+  },
+});
 
-  display: flex;
-`;
+const SessionMenu = chakra("div", {
+  base: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "bg",
+    opacity: 0.9,
+    overflow: "hidden",
+    paddingTop: "sm",
+    zIndex: 1000,
+  },
+});
 
-const SessionMenu = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+const SessionMenuWrapper = chakra("div", {
+  base: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+});
 
-  background-color: rgba(255, 255, 255, 0.9);
-
-  overflow: hidden;
-
-  padding-top: 1rem;
-
-  z-index: 1000;
-`;
-
-const SessionMenuWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledCloseButton = styled(CloseButton)`
-  padding: 1rem;
-`;
+const StyledCloseButton = chakra(CloseButton, {
+  base: {
+    padding: "sm",
+  },
+});
 
 export interface TaskRef {
   showTaskMenu: boolean;
