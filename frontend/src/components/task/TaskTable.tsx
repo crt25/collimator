@@ -169,7 +169,6 @@ const TaskTable = () => {
             data={data}
             columns={columns}
             isLoading={isLoading}
-            // onRowClick={(row) => router.push(`/task/${row.id}/detail`)}
             features={{
               sorting: true,
               columnFiltering: {
