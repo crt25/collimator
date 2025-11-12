@@ -195,9 +195,6 @@ export const ChakraDataTable = <T extends { id: number }>({
 }: ChakraDataTableProps<T>) => {
   const intl = useIntl();
 
-  const headerClassName = features?.sorting ? "sortable" : "not-sortable";
-  const rowClassName = onRowClick ? "clickable" : "not-clickable";
-
   const [grouping, setGrouping] = useState<GroupingState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [expanding, setExpanding] = useState<ExpandedState>({});
@@ -540,7 +537,6 @@ export const ChakraDataTable = <T extends { id: number }>({
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
-                    className={headerClassName}
                   >
                     <HeaderContent>
                       <div>
