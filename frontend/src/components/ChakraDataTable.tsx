@@ -24,20 +24,13 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
-import {
-  LuArrowUp,
-  LuArrowDown,
-  LuChevronLeft,
-  LuChevronRight,
-} from "react-icons/lu";
-import styled from "@emotion/styled";
+import { LuArrowDownNarrowWide, LuArrowUpNarrowWide } from "react-icons/lu";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
 import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
 import { DataTablePagination } from "./Pagination";
 import Input, { InputType } from "./form/Input";
 import Tag from "./Tag";
-import Button, { ButtonVariant } from "./Button";
 import DropdownMenu from "./DropdownMenu";
 
 enum ColumnType {
@@ -175,10 +168,10 @@ const StyledTableCell = styled(Table.Cell)`
 
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
-    return <LuArrowUp size={16} />;
+    return <LuArrowUpNarrowWide size={16} />;
   }
 
-  return <LuArrowDown size={16} />;
+  return <LuArrowDownNarrowWide size={16} />;
 };
 
 const messages = defineMessages({
