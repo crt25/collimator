@@ -1,16 +1,10 @@
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { Heading } from "@chakra-ui/react";
-import styled from "@emotion/styled";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { TaskTable } from "@/components/task/TaskTable";
-
-const StyledHeading = styled(Heading)`
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-`;
+import TaskTable from "@/components/task/TaskTable";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -23,13 +17,6 @@ const messages = defineMessages({
   },
 });
 
-const PageDescription = styled.p`
-  font-size: 1.5rem;
-  color: var(--page-description-color);
-  margin-top: 1rem;
-  margin-bottom: 3rem;
-`;
-
 const ListTasks = () => {
   return (
     <>
@@ -38,12 +25,12 @@ const ListTasks = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <StyledHeading>
+        <PageHeading variant={PageHeadingVariant.Title}>
           <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
-        </StyledHeading>
-        <PageDescription>
+        </PageHeading>
+        <PageHeading variant={PageHeadingVariant.Description}>
           <FormattedMessage id="ListTasks.pageDescription" defaultMessage="" />
-        </PageDescription>
+        </PageHeading>
         <TaskTable />
       </Container>
     </>
