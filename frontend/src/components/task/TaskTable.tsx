@@ -180,7 +180,7 @@ const TaskTable = () => {
                 ],
               },
               pagination: {
-                pageSize: 10,
+                pageSize: 4,
               },
             }}
             includeSearchBar={false}
