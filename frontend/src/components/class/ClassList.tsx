@@ -1,38 +1,35 @@
 import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
-import { Icon, HStack } from "@chakra-ui/react";
+import { Icon, HStack, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
-import { ColumnType } from "@/types/tanstack-types";
-import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
-import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
-import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
 import { DetailButton } from "../DetailButton";
+import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
+import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
+import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
+import { ColumnType } from "@/types/tanstack-types";
 
-const ClassListWrapper = styled.div`
-  margin: 1rem 0;
-`;
+const ClassListWrapper = chakra("div", {
+  base: {
+    marginTop: "2xl",
+  },
+});
 
-const StyledButton = styled(Button)`
-  && {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-`;
-
-const Stack = styled(HStack)`
-  && {
-    gap: 1rem;
-  }
-`;
+const StyledButton = chakra(Button, {
+  base: {
+    "&&": {
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+    },
+  },
+});
 
 const messages = defineMessages({
   nameColumn: {
@@ -165,12 +162,12 @@ const ClassList = () => {
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
       >
-        <Stack>
+        <HStack>
           <Icon>
             <MdAdd />
           </Icon>
           {intl.formatMessage(messages.createClass)}
-        </Stack>
+        </HStack>
       </StyledButton>
     </ClassListWrapper>
   );
