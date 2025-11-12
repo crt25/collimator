@@ -1,11 +1,11 @@
 import { useContext, useMemo } from "react";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
+import DropdownMenu from "./DropdownMenu";
 import {
   allSupportedLocales,
   SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
-import DropdownMenu from "./DropdownMenu";
 
 const messages = defineMessages({
   english: {
