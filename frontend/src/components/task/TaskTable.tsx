@@ -120,17 +120,18 @@ const TaskTable = () => {
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
-          <StyledIconButton
-            aria-label="Delete task"
+          <Button
+            aria-label={intl.formatMessage(messages.deleteTask)}
             onClick={(e) => {
               e.stopPropagation();
               setTaskIdToDelete(info.row.original.id);
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
+            variant={ButtonVariant.detail}
           >
             <FaRegTrashAlt />
-          </StyledIconButton>
+          </Button>
         </div>
       ),
       meta: {
@@ -150,7 +151,7 @@ const TaskTable = () => {
               router.push(`/task/${info.row.original.id}/detail`);
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
-            variant={ButtonVariant.Detail}
+            variant={ButtonVariant.detail}
           >
             <Icon>
               <LuChevronRight />
@@ -204,7 +205,7 @@ const TaskTable = () => {
         }}
       />
       <Button
-        variant={ButtonVariant.Primary}
+        variant={ButtonVariant.primary}
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
       >
