@@ -13,21 +13,10 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
-import { DetailButton } from "../DetailButton";
 
 const ClassListWrapper = chakra("div", {
   base: {
     marginTop: "2xl",
-  },
-});
-
-const StyledButton = chakra(Button, {
-  base: {
-    "&&": {
-      display: "flex",
-      justifyContent: "flex-end",
-      alignItems: "center",
-    },
   },
 });
 
@@ -104,18 +93,19 @@ const ClassList = () => {
       header: "",
       enableSorting: false,
       cell: (info) => (
-        <DetailButton
+        <Button
           aria-label={intl.formatMessage(messages.viewDetails)}
           onClick={(e) => {
             e.stopPropagation();
             router.push(`/class/${info.row.original.id}/detail`);
           }}
           data-testid={`class-${info.row.original.id}-details-button`}
+          variant={ButtonVariant.Detail}
         >
           <Icon>
             <LuChevronRight />
           </Icon>
-        </DetailButton>
+        </Button>
       ),
       meta: {
         columnType: ColumnType.icon,
@@ -161,8 +151,8 @@ const ClassList = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
-      <StyledButton
-        variant={ButtonVariant.primary}
+      <Button
+        variant={ButtonVariant.Primary}
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
       >
@@ -172,7 +162,7 @@ const ClassList = () => {
           </Icon>
           {intl.formatMessage(messages.createClass)}
         </HStack>
-      </StyledButton>
+      </Button>
     </ClassListWrapper>
   );
 };
