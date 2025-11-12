@@ -1,6 +1,6 @@
 import { defineRecipe } from "@chakra-ui/react";
 
-export const hstackRecipe = defineRecipe({
+export const HStackRecipe = defineRecipe({
   variants: {
     variant: {
       primary: {
@@ -10,4 +10,4 @@ export const hstackRecipe = defineRecipe({
   },
 });
 
-export default hstackRecipe;
+export default HStackRecipe;
