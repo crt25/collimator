@@ -2,16 +2,29 @@ import { defineRecipe } from "@chakra-ui/react";
 
 export const InputRecipe = defineRecipe({
   base: {
-    borderWidth: "thin",
+    width: "100%",
+    maxWidth: "100%",
+    padding: "sm",
+    borderRadius: "sm",
   },
   variants: {
     variant: {
       primary: {
-        width: "100%",
-        maxWidth: "100%",
-        padding: "sm",
+        backgroundColor: "inputBg !important",
         _placeholder: {
           color: "inputPlaceHolderColor",
+        },
+      },
+      buttonForm: {
+        padding: "{space.sm space.md}",
+        backgroundColor: "buttonBg",
+        color: "buttonFg",
+        _disabled: {
+          backgroundColor: "buttonDisabledBg",
+        },
+        _hover: {
+          backgroundColor: "accent !important",
+          opacity: 0.8,
         },
       },
     },
