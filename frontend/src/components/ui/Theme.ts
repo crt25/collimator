@@ -13,12 +13,14 @@ import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 import { hstackRecipe } from "./recipes/HStack.recipe";
+import { SelectRecipe } from "./recipes/Select.recipe";
 
 const config = defineConfig({
   theme: {
     slotRecipes: {
       dropdownMenu: DropdownMenuRecipe,
       breadcrumb: BreadcrumbsRecipe,
+      select: SelectRecipe,
     },
     recipes: {
       button: ButtonRecipe,
