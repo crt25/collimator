@@ -95,7 +95,7 @@ const config = defineConfig({
       colors: {
         bg: { value: "{colors.white}" },
         bgSecondary: { value: "{colors.gray.50}" },
-        fg: { value: "{colors.neutral}" },
+        fg: { value: "{colors.black}" },
         fgSecondary: { value: "{colors.black}" },
         fgTertiary: { value: "{colors.gray.1000}" },
         accent: { value: "{colors.dark}" },
