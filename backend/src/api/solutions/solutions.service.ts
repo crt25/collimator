@@ -486,8 +486,8 @@ export class SolutionsService {
   }
 
   // check every minute (with seconds = 0) whether there are analyses that were not performed
-  @Cron("0 * * * * *", { name: "runUnperformedAnalyes" })
-  @SentryCron("runUnperformedAnalyes", {
+  @Cron("0 * * * * *", { name: "runUnperformedAnalyses" })
+  @SentryCron("runUnperformedAnalyses", {
     schedule: {
       type: "crontab",
       value: "0 * * * * *",
@@ -495,7 +495,7 @@ export class SolutionsService {
     checkinMargin: 1, // In minutes.
     maxRuntime: 5, // In minutes.
   })
-  async runUnperformedAnalyes(): Promise<void> {
+  async runUnperformedAnalyses(): Promise<void> {
     const solutionsWithoutAnalysis = await this.prisma.solution.findMany({
       where: {
         AND: [
@@ -523,8 +523,8 @@ export class SolutionsService {
   }
 
   // check every minute (with seconds = 30) whether there are analyses that were not upgraded
-  @Cron("30 * * * * *", { name: "runUpgradeAnalyes" })
-  @SentryCron("runUpgradeAnalyes", {
+  @Cron("30 * * * * *", { name: "runUpgradeAnalyses" })
+  @SentryCron("runUpgradeAnalyses", {
     schedule: {
       type: "crontab",
       value: "30 * * * * *",
@@ -532,7 +532,7 @@ export class SolutionsService {
     checkinMargin: 5, // In minutes.
     maxRuntime: 30, // In minutes.
   })
-  async runUpgradeAnalyes(): Promise<void> {
+  async runUpgradeAnalyses(): Promise<void> {
     const solutionsWithoutAnalysis =
       await this.prisma.solutionAnalysis.findMany({
         where: {
