@@ -20,3 +20,13 @@ export const InputRecipe = defineRecipe({
     variant: "primary",
   },
 });
+
+export const InputVariant = {
+  primary: "primary",
+  inputForm: "inputForm",
+  buttonForm: "buttonForm",
+} as const;
+
+export type InputVariant = keyof NonNullable<
+  (typeof InputRecipe)["variants"]
+>["variant"];

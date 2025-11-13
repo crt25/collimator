@@ -8,6 +8,7 @@ import {
   chakra,
   InputGroup,
 } from "@chakra-ui/react";
+import { InputVariant } from "../ui/recipes/form/Input.recipe";
 
 const InputWrapper = chakra("div", {
   base: {
@@ -25,6 +26,7 @@ interface Props {
   errorText?: React.ReactNode;
   invalid?: boolean;
   variety?: InputVariety;
+  variant?: InputVariant;
 }
 
 // Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
@@ -51,7 +53,7 @@ const Input = forwardRef(function Input(
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
-          <ChakraInput ref={ref} {...inputProps} />
+          <ChakraInput ref={ref} type={type} {...inputProps} />
         </InputGroup>
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
@@ -60,4 +62,5 @@ const Input = forwardRef(function Input(
   );
 });
 
+export { InputVariant };
 export default Input;
