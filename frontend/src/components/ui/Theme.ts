@@ -109,6 +109,8 @@ const config = defineConfig({
         buttonSecondaryBorder: { value: "{colors.gray.200}" },
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
+        inputBg: { value: "var(--input-background-color)" },
+        selectBg: { value: "var(--select-background-color)" },
         buttonDisabledBg: { value: "{colors.gray.600}" },
         iconButtonBackgroundColor: {
           value: "var(--icon-button-background-color)",
