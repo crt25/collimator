@@ -13,7 +13,11 @@ import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 const messages = defineMessages({
   title: {
     id: "CreateClass.title",
-    defaultMessage: "Create Class",
+    defaultMessage: "Create new Class",
+  },
+  description: {
+    id: "CreateClass.pageDescription",
+    defaultMessage: "",
   },
   submit: {
     id: "CreateClass.submit",
@@ -58,7 +62,13 @@ const CreateClass = () => {
             id="CreateClass.header"
             defaultMessage="Create Class"
           />
-        </PageHeader>
+        </PageHeading>
+        <PageHeading variant={PageHeadingVariant.Description}>
+          <FormattedMessage
+            id="CreateClass.pageDescription"
+            defaultMessage=""
+          />
+        </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
     </>
