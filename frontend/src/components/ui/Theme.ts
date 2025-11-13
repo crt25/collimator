@@ -80,7 +80,7 @@ const config = defineConfig({
       fontWeights: {
         semiBold: { value: "600" },
       },
-      radius: {
+      radii: {
         sm: { value: "0.25rem" },
       },
       fonts: {
