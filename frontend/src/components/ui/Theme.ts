@@ -86,6 +86,10 @@ const config = defineConfig({
       fonts: {
         body: { value: "Inter, Helvetica, sans-serif" },
       },
+      zIndex: {
+        // view here for more detail about xIndex token values: https://chakra-ui.com/docs/theming/z-index
+        overlay: { value: "1300" },
+      },
     }),
     semanticTokens: defineTokens({
       colors: {
@@ -118,6 +122,9 @@ const config = defineConfig({
         errorColor: { value: "{colors.error}" },
         buttonBackgroundColor: { value: "{colors.dark}" },
         buttonSecondaryBorderColor: { value: "{colors.gray.200}" },
+      },
+      zIndex: {
+        overlay: { value: "{zIndex.overlay}" },
       },
     }),
   },
