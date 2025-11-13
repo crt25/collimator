@@ -19,6 +19,18 @@ const messages = defineMessages({
     id: "ClassForm.teacher",
     defaultMessage: "Teacher",
   },
+  placeholderSelectTeacher: {
+    id: "ClassForm.placeholder.selectTeacher",
+    defaultMessage: "Select Teacher",
+  },
+  nameRequired: {
+    id: "ClassForm.error.nameRequired",
+    defaultMessage: "Name is required",
+  },
+  teacherRequired: {
+    id: "ClassForm.error.teacherRequired",
+    defaultMessage: "Teacher is required",
+  },
 });
 
 export type ClassFormValues = {
@@ -36,8 +48,8 @@ const ClassForm = ({
   onSubmit: (data: ClassFormValues) => void;
 }) => {
   const schema = useYupSchema({
-    name: yup.string().required(),
-    teacherId: yup.number().required(),
+    name: yup.string().required(messages.nameRequired.defaultMessage),
+    teacherId: yup.number().required(messages.teacherRequired.defaultMessage),
   });
 
   const resolver = useYupResolver(schema);
