@@ -451,7 +451,7 @@ const TaskForm = ({
           {...register("description")}
           data-testid="description"
           errorText={errors.description?.message}
-        ></TextArea>
+        />
         <Select
           alwaysShow
           label={messages.type}
