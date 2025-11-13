@@ -144,6 +144,7 @@ const ClassList = () => {
             trigger={
               <IconButton
                 aria-label="More actions"
+                data-testid={`class-${rowData.id}-actions-dropdown-button`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <LuChevronDown />

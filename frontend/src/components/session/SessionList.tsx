@@ -186,6 +186,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             trigger={
               <IconButton
                 aria-label="More actions"
+                data-testid={`session-${rowData.id}-actions-dropdown-button`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Icon>

@@ -102,6 +102,7 @@ const UserList = () => {
           trigger={
             <IconButton
               aria-label="Actions"
+              data-testid={`user-${rowData.id}-actions-dropdown-button`}
               onClick={(e) => {
                 e.stopPropagation();
               }}

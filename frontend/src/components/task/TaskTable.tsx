@@ -114,10 +114,10 @@ const TaskTable = () => {
             </Icon>
           </Button>
           <DropdownMenu
-            testId={`task-${rowData.id}-actions-dropdown-button`}
             trigger={
               <IconButton
                 aria-label="More actions"
+                data-testId={`task-${rowData.id}-actions-dropdown-button`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <LuChevronDown />
