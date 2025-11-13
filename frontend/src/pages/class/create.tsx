@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import { useRouter } from "next/router";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 
@@ -39,8 +38,10 @@ const CreateClass = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <CrtNavigation />
-        <PageHeader>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb breadcrumbItems={breadcrumbItems} />
+        </Breadcrumbs>
+        <PageHeading>
           <FormattedMessage
             id="CreateClass.header"
             defaultMessage="Create Class"
