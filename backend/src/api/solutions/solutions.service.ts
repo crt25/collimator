@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  OnApplicationShutdown,
+} from "@nestjs/common";
 import {
   Solution,
   Prisma,
@@ -92,12 +96,18 @@ const omitData = { data: true };
 const latestAstVersion = AstVersion.v1;
 
 @Injectable()
-export class SolutionsService {
+export class SolutionsService implements OnApplicationShutdown {
+  private shuttingDown = false;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
     private readonly analysisService: SolutionAnalysisService,
   ) {}
+
+  onApplicationShutdown(_signal?: string): void {
+    this.shuttingDown = true;
+  }
 
   findByStudentIdOrThrow(
     sessionId: number,
@@ -496,6 +506,13 @@ export class SolutionsService {
     maxRuntime: 5, // In minutes.
   })
   async runUnperformedAnalyses(): Promise<void> {
+    if (this.shuttingDown) {
+      console.debug(
+        "Skipping runUnperformedAnalyses — system is shutting down.",
+      );
+      return;
+    }
+
     const solutionsWithoutAnalysis = await this.prisma.solution.findMany({
       where: {
         AND: [
@@ -533,6 +550,11 @@ export class SolutionsService {
     maxRuntime: 30, // In minutes.
   })
   async runUpgradeAnalyses(): Promise<void> {
+    if (this.shuttingDown) {
+      console.debug("Skipping runUpgradeAnalyses — system is shutting down.");
+      return;
+    }
+
     const solutionsWithoutAnalysis =
       await this.prisma.solutionAnalysis.findMany({
         where: {
