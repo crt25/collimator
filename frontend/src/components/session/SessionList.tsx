@@ -182,14 +182,10 @@ const SessionList = ({ classId }: { classId: number }) => {
             </Icon>
           </Button>
           <DropdownMenu
+            testId={`session-${rowData.id}-actions-dropdown-button`}
             trigger={
-              <IconButton
-                aria-label="More actions"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Icon>
-                  <LuChevronDown />
-                </Icon>
+              <IconButton aria-label="More actions">
+                <LuChevronDown />
               </IconButton>
             }
           >
@@ -198,7 +194,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                 setSessionIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
-              data-testid={`session-${rowData.id}-delete-button`}
+              testId={`session-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </DropdownMenu.Item>
@@ -214,7 +210,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                       `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
                     );
                   }}
-                  data-testid={`session-${rowData.id}-copy-session-link-button`}
+                  testId={`session-${rowData.id}-copy-session-link-button`}
                 >
                   {intl.formatMessage(messages.copySessionLink)}
                 </DropdownMenu.Item>
@@ -250,11 +246,15 @@ const SessionList = ({ classId }: { classId: number }) => {
             onFilter={onFilter}
             filters={lazyState.filters}
             loading={isLoading}
-            onRowClick={(e) =>
-              router.push(
-                `/class/${classId}/session/${(e.data as ExistingSession).id}/progress`,
+            onRowClick={(e) => {
+              if (
+                e.originalEvent.target instanceof Element &&
+                e.originalEvent.target.tagName === "TD"
               )
-            }
+                router.push(
+                  `/class/${classId}/session/${(e.data as ExistingSession).id}/progress`,
+                );
+            }}
           >
             <Column
               field="title"

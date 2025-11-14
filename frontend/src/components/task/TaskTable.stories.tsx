@@ -4,7 +4,7 @@ import {
   getTasksControllerFindAllV0Url,
   getTasksControllerRemoveV0Url,
 } from "@/api/collimator/generated/endpoints/tasks/tasks";
-import TaskTable from "./TaskTable";
+import { TaskTable } from "./TaskTable";
 
 const tasks = getTasksControllerFindAllV0ResponseMock();
 

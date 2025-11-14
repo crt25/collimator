@@ -59,7 +59,7 @@ const taskTitleTemplate = (rowData: ExistingTask) => (
   <span data-testid={`task-${rowData.id}-title`}>{rowData.title}</span>
 );
 
-const TaskTable = () => {
+export const TaskTable = () => {
   const intl = useIntl();
   const router = useRouter();
 
@@ -115,10 +115,7 @@ const TaskTable = () => {
           <DropdownMenu
             testId={`task-${rowData.id}-actions-dropdown-button`}
             trigger={
-              <IconButton
-                aria-label="More actions"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <IconButton aria-label="More actions">
                 <LuChevronDown />
               </IconButton>
             }
@@ -128,7 +125,7 @@ const TaskTable = () => {
                 setTaskIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
-              data-testid={`task-${rowData.id}-delete-button`}
+              testId={`task-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </DropdownMenu.Item>
@@ -159,9 +156,14 @@ const TaskTable = () => {
             onFilter={onFilter}
             filters={lazyState.filters}
             loading={isLoading}
-            onRowClick={(e) =>
-              router.push(`/task/${(e.data as ExistingTask).id}/detail`)
-            }
+            onRowClick={(e) => {
+              if (
+                e.originalEvent.target instanceof Element &&
+                e.originalEvent.target.tagName === "TD"
+              ) {
+                router.push(`/task/${(e.data as ExistingTask).id}/detail`);
+              }
+            }}
           >
             <Column
               field="title"

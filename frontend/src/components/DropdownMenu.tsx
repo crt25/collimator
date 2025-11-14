@@ -7,6 +7,7 @@ type ClickHandler = () => void;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;
+  testId?: string;
   icon?: React.ReactNode;
 } & (
   | {
@@ -37,17 +38,12 @@ const MenuContent = chakra(Menu.Content, {
   },
 });
 
-export type DropdownProps = {
-  trigger?: React.ReactNode;
-  children?: React.ReactNode;
-  testId?: string;
-};
-
 const DropdownMenuItem = ({
   href,
   onClick,
   children,
   icon,
+  testId,
 }: DropdownItemProps) => {
   const content = (
     <>
@@ -64,14 +60,50 @@ const DropdownMenuItem = ({
   }
 
   return (
-    <Menu.Item asChild value={children?.toString() ?? ""} onClick={onClick}>
+    <Menu.Item
+      data-testid={testId}
+      asChild
+      value={children?.toString() ?? ""}
+      onClick={onClick}
+    >
       {element}
     </Menu.Item>
   );
 };
 
-const DropdownMenu = ({ trigger, children, testId }: DropdownProps) => {
+export type DropdownProps = {
+  trigger?: React.ReactNode;
+  children?: React.ReactNode;
+  testId?: string;
+  isButton?: boolean;
+};
+
+const DropdownMenu = ({
+  trigger,
+  children,
+  testId,
+  isButton = false,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  if (isButton) {
+    return (
+      <Menu.Root
+        open={isOpen}
+        onOpenChange={(details) => setIsOpen(details.open)}
+      >
+        <Menu.Trigger data-testid={testId}>{trigger}</Menu.Trigger>
+        {children && (
+          <Portal>
+            <Menu.Positioner>
+              <MenuContent>{children}</MenuContent>
+            </Menu.Positioner>
+          </Portal>
+        )}
+      </Menu.Root>
+    );
+  }
+
   return (
     <Menu.Root
       open={isOpen}
