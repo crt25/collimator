@@ -8,6 +8,7 @@ type ClickHandler = () => void;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;
+  testId?: string;
   icon?: React.ReactNode;
 } & (
   | {
@@ -30,6 +31,7 @@ const DropdownMenuItem = ({
   onClick,
   children,
   icon,
+  testId,
 }: DropdownItemProps) => {
   const content = (
     <>
@@ -46,7 +48,12 @@ const DropdownMenuItem = ({
   }
 
   return (
-    <Menu.Item asChild value={children?.toString() ?? ""} onClick={onClick}>
+    <Menu.Item
+      data-testid={testId}
+      asChild
+      value={children?.toString() ?? ""}
+      onClick={onClick}
+    >
       {element}
     </Menu.Item>
   );
@@ -73,9 +80,7 @@ const DropdownMenu = ({
         open={isOpen}
         onOpenChange={(details) => setIsOpen(details.open)}
       >
-        <Menu.Trigger asChild data-testid={testId}>
-          {trigger}
-        </Menu.Trigger>
+        <Menu.Trigger data-testid={testId}>{trigger}</Menu.Trigger>
         {children && (
           <Portal>
             <Menu.Positioner>

@@ -141,16 +141,12 @@ const ClassList = () => {
             </Icon>
           </Button>
           <DropdownMenu
+            testId={`class-${rowData.id}-actions-dropdown-button`}
             trigger={
-              <IconButton
-                aria-label="More actions"
-                data-testid={`class-${rowData.id}-actions-dropdown-button`}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <IconButton aria-label="More actions">
                 <LuChevronDown />
               </IconButton>
             }
-            data-testid={`class-${rowData.id}-actions-dropdown-button`}
             isButton={true}
           >
             <DropdownMenu.Item
@@ -158,7 +154,7 @@ const ClassList = () => {
                 setClassIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
-              data-testid={`class-${rowData.id}-delete-button`}
+              testId={`class-${rowData.id}-delete-button`}
             >
               {intl.formatMessage(TableMessages.delete)}
             </DropdownMenu.Item>
@@ -189,11 +185,16 @@ const ClassList = () => {
             onFilter={onFilter}
             filters={lazyState.filters}
             loading={isLoading}
-            onRowClick={(e) =>
-              router.push(
-                `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
-              )
-            }
+            onRowClick={(e) => {
+              if (
+                e.originalEvent.target instanceof Element &&
+                e.originalEvent.target.tagName === "TD"
+              ) {
+                router.push(
+                  `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
+                );
+              }
+            }}
           >
             <Column
               field="name"

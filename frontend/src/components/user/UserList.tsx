@@ -99,26 +99,23 @@ const UserList = () => {
           </Icon>
         </Button>
         <DropdownMenu
+          testId={`user-${rowData.id}-actions-dropdown-button`}
           trigger={
             <IconButton
               aria-label="Actions"
-              data-testid={`user-${rowData.id}-actions-dropdown-button`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
+              onClick={(e) => e.stopPropagation()}
             >
               <LuChevronDown />
             </IconButton>
           }
           isButton={true}
-          data-testid={`user-${rowData.id}-actions-dropdown-button`}
         >
           <DropdownMenu.Item
             onClick={() => {
               setUserIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
             }}
-            data-testid={`user-${rowData.id}-delete-button`}
+            testId={`user-${rowData.id}-delete-button`}
           >
             {intl.formatMessage(TableMessages.delete)}
           </DropdownMenu.Item>
@@ -131,7 +128,7 @@ const UserList = () => {
                   `${window.location.origin}/login?registrationToken=${token}`,
                 );
               }}
-              data-testid={`user-${rowData.id}-generate-registration-token-button`}
+              testId={`user-${rowData.id}-generate-registration-token-button`}
             >
               {intl.formatMessage(messages.generateRegistrationToken)}
             </DropdownMenu.Item>
@@ -154,9 +151,14 @@ const UserList = () => {
             rows={10}
             totalRecords={data.totalCount}
             loading={isLoading}
-            onRowClick={(e) =>
-              router.push(`/user/${(e.data as ExistingUser).id}/detail`)
-            }
+            onRowClick={(e) => {
+              if (
+                e.originalEvent.target instanceof Element &&
+                e.originalEvent.target.tagName === "TD"
+              ) {
+                router.push(`/user/${(e.data as ExistingUser).id}/detail`);
+              }
+            }}
           >
             <Column
               field="name"

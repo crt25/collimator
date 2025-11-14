@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import TaskTable from "@/components/task/TaskTable";
+import { TaskTable } from "@/components/task/TaskTable";
 
 const messages = defineMessages({
   title: {
