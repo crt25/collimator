@@ -112,6 +112,9 @@ const ClassList = () => {
             data={data}
             columns={columns}
             isLoading={isLoading}
+            onRowClick={(row) => {
+              router.push(`/class/${row.id}/detail`);
+            }}
             features={{
               sorting: true,
               columnFiltering: {
