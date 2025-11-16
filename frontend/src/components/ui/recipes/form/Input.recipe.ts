@@ -1,4 +1,4 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineRecipe, defineSlotRecipe } from "@chakra-ui/react";
 
 export const InputRecipe = defineRecipe({
   base: {
@@ -27,6 +27,24 @@ export const InputRecipe = defineRecipe({
           opacity: 0.8,
         },
       },
+      inputForm: {
+        backgroundColor: "inputFormBg !important",
+        _placeholder: {
+          color: "inputPlaceHolderColor",
+        },
+      },
+    },
+  },
+});
+
+export const FieldRecipe = defineSlotRecipe({
+  slots: ["label"],
+  base: {
+    label: {
+      fontSize: "sm",
+      fontWeight: "semibold",
+      marginBottom: "xs",
+      display: "block",
     },
   },
   defaultVariants: {

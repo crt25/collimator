@@ -7,7 +7,7 @@ import {
 import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
 import { IconButtonRecipe } from "./recipes/IconButton.recipe";
 import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
-import { InputRecipe } from "./recipes/form/Input.recipe";
+import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
 import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
 import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
@@ -21,6 +21,7 @@ const config = defineConfig({
       dropdownMenu: DropdownMenuRecipe,
       breadcrumb: BreadcrumbsRecipe,
       select: SelectRecipe,
+      field: FieldRecipe,
     },
     recipes: {
       button: ButtonRecipe,
