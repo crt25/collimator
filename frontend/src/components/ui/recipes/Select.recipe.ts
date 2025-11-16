@@ -5,6 +5,7 @@ export const SelectRecipe = defineSlotRecipe({
   base: {
     label: {
       fontSize: "sm",
+      fontWeight: "semibold",
     },
     content: {
       zIndex: "overlay",
@@ -12,6 +13,7 @@ export const SelectRecipe = defineSlotRecipe({
     },
     trigger: {
       borderRadius: "sm !important",
+      borderStyle: "none !important",
       backgroundColor: "selectBg !important",
     },
   },
