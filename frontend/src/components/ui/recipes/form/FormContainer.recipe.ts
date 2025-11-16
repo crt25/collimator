@@ -6,6 +6,7 @@ export const FormContainerRecipe = defineRecipe({
     flexDirection: "column",
     gap: "md",
     marginTop: "4xl",
+    padding: "0",
   },
 });
 
