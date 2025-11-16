@@ -120,6 +120,7 @@ const config = defineConfig({
         headerFg: { value: "{colors.neutral}" },
         pageDescriptionColor: { value: "{colors.black}" },
         inputColor: { value: "{colors.neutral}" },
+        inputFormBg: { value: "var(--input-form-background-color)" },
         inputPlaceholderColor: { value: "{colors.gray.100}" },
         errorColor: { value: "{colors.error}" },
         buttonBackgroundColor: { value: "{colors.dark}" },
