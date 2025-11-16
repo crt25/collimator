@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
@@ -7,9 +6,7 @@ import { Icon, HStack, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
-import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { ColumnType } from "@/types/tanstack-types";
-import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button, { ButtonVariant } from "../Button";
@@ -56,12 +53,6 @@ const ClassList = () => {
   const router = useRouter();
 
   const { data, isLoading, error } = useAllClasses();
-
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
-
-  const [classIdToDelete] = useState<number | null>(null);
-  const deleteClass = useDeleteClass();
 
   const columns: ColumnDef<ExistingClassWithTeacher>[] = [
     {
@@ -138,19 +129,6 @@ const ClassList = () => {
           />
         )}
       </SwrContent>
-      <ConfirmationModal
-        isShown={showDeleteConfirmationModal}
-        setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={
-          classIdToDelete ? () => deleteClass(classIdToDelete) : undefined
-        }
-        isDangerous
-        messages={{
-          title: messages.deleteConfirmationTitle,
-          body: messages.deleteConfirmationBody,
-          confirmButton: messages.deleteConfirmationConfirm,
-        }}
-      />
       <Button
         variant={ButtonVariant.primary}
         onClick={() => router.push("class/create")}
