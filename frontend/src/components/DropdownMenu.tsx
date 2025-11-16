@@ -4,7 +4,7 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Link from "next/link";
 import styled from "@emotion/styled";
 
-type ClickHandler = () => void;
+type ClickHandler = (e: React.MouseEvent) => void;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;

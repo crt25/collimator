@@ -18,6 +18,7 @@ import { TableMessages } from "@/i18n/table-messages";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { useAllClassesLazyTable } from "@/api/collimator/hooks/classes/useAllClasses";
+import { isClickOnRow } from "@/utilities/table";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
@@ -150,7 +151,8 @@ const ClassList = () => {
             isButton={true}
           >
             <DropdownMenu.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setClassIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
@@ -186,10 +188,7 @@ const ClassList = () => {
             filters={lazyState.filters}
             loading={isLoading}
             onRowClick={(e) => {
-              if (
-                e.originalEvent.target instanceof Element &&
-                e.originalEvent.target.tagName === "TD"
-              ) {
+              if (isClickOnRow(e)) {
                 router.push(
                   `/class/${(e.data as ExistingClassWithTeacher).id}/detail`,
                 );

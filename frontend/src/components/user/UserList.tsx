@@ -14,6 +14,7 @@ import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { useAllUsersLazyTable } from "@/api/collimator/hooks/users/useAllUsers";
 import { useDeleteUser } from "@/api/collimator/hooks/users/useDeleteUser";
 import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGenerateRegistrationToken";
+import { isClickOnRow } from "@/utilities/table";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
 import Button, { ButtonVariant } from "../Button";
@@ -101,17 +102,15 @@ const UserList = () => {
         <DropdownMenu
           testId={`user-${rowData.id}-actions-dropdown-button`}
           trigger={
-            <IconButton
-              aria-label="Actions"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <IconButton aria-label="Actions">
               <LuChevronDown />
             </IconButton>
           }
           isButton={true}
         >
           <DropdownMenu.Item
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setUserIdToDelete(rowData.id);
               setShowDeleteConfirmationModal(true);
             }}
@@ -152,10 +151,7 @@ const UserList = () => {
             totalRecords={data.totalCount}
             loading={isLoading}
             onRowClick={(e) => {
-              if (
-                e.originalEvent.target instanceof Element &&
-                e.originalEvent.target.tagName === "TD"
-              ) {
+              if (isClickOnRow(e)) {
                 router.push(`/user/${(e.data as ExistingUser).id}/detail`);
               }
             }}
