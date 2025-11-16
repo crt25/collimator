@@ -21,6 +21,7 @@ import { ExistingSession } from "@/api/collimator/models/sessions/existing-sessi
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { isClickOnRow } from "@/utilities/table";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import MultiSwrContent from "../MultiSwrContent";
 import Button, { ButtonVariant } from "../Button";
@@ -190,7 +191,8 @@ const SessionList = ({ classId }: { classId: number }) => {
             }
           >
             <DropdownMenu.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSessionIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
@@ -247,10 +249,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             filters={lazyState.filters}
             loading={isLoading}
             onRowClick={(e) => {
-              if (
-                e.originalEvent.target instanceof Element &&
-                e.originalEvent.target.tagName === "TD"
-              )
+              if (isClickOnRow(e))
                 router.push(
                   `/class/${classId}/session/${(e.data as ExistingSession).id}/progress`,
                 );

@@ -18,6 +18,7 @@ import { TableMessages } from "@/i18n/table-messages";
 import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
@@ -121,7 +122,8 @@ export const TaskTable = () => {
             }
           >
             <DropdownMenu.Item
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setTaskIdToDelete(rowData.id);
                 setShowDeleteConfirmationModal(true);
               }}
@@ -157,10 +159,7 @@ export const TaskTable = () => {
             filters={lazyState.filters}
             loading={isLoading}
             onRowClick={(e) => {
-              if (
-                e.originalEvent.target instanceof Element &&
-                e.originalEvent.target.tagName === "TD"
-              ) {
+              if (isClickOnRow(e)) {
                 router.push(`/task/${(e.data as ExistingTask).id}/detail`);
               }
             }}

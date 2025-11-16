@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import Link from "next/link";
 
-type ClickHandler = () => void;
+type ClickHandler = (e: React.MouseEvent) => void;
 
 export type DropdownItemProps = {
   children?: React.ReactNode;
