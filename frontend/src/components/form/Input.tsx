@@ -41,9 +41,10 @@ const Input = forwardRef(function Input(
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, type, ...inputProps } = props;
+  const { label, helperText, errorText, invalid, variety, ...inputProps } =
+    props;
 
-  const showSearchIcon = type === InputVariety.Search;
+  const showSearchIcon = variety === InputVariety.Search;
 
   return (
     <InputWrapper>
