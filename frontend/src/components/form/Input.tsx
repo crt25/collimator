@@ -43,8 +43,16 @@ const Input = forwardRef(function Input(
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, variety, ...inputProps } =
-    props;
+  const {
+    label,
+    helperText,
+    errorText,
+    invalid,
+    variety,
+    variant,
+    type,
+    ...inputProps
+  } = props;
 
   const showSearchIcon = variety === InputVariety.Search;
 
@@ -53,7 +61,12 @@ const Input = forwardRef(function Input(
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
-          <ChakraInput ref={ref} type={type} {...inputProps} />
+          <ChakraInput
+            ref={ref}
+            type={type}
+            variant={variant}
+            {...inputProps}
+          />
         </InputGroup>
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
