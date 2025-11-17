@@ -15,6 +15,14 @@ export const PageHeadingRecipe = defineRecipe({
         fontWeight: "normal",
         color: "pageDescriptionColor",
       },
+      subHeading: {
+        marginTop: "md",
+        fontSize: "3xl",
+        fontWeight: "semiBold",
+        wordBreak: "keep-all",
+        whiteSpace: "nowrap",
+        color: "fg",
+      },
     },
     size: {
       sm: {
@@ -59,4 +67,5 @@ export const PageHeadingRecipe = defineRecipe({
 export const PageHeadingVariant = {
   title: "title",
   description: "description",
+  subHeading: "subHeading",
 } as const;
