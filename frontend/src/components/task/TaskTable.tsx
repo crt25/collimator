@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack } from "@chakra-ui/react";
+import { Icon, HStack, Text } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -89,9 +89,14 @@ const TaskTable = () => {
       accessorKey: "title",
       header: intl.formatMessage(messages.titleColumn),
       cell: (info) => (
-        <span data-testid={`task-${info.row.original.id}-title`}>
+        <Text
+          fontWeight="semibold"
+          fontSize="lg"
+          data-testid={`task-${info.row.original.id}-title`}
+          margin={0}
+        >
           {info.row.original.title}
-        </span>
+        </Text>
       ),
       meta: {
         columnType: ColumnType.text,

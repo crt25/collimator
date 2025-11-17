@@ -117,7 +117,7 @@ const TableContainer = chakra("div", {
   base: {
     display: "flex",
     flexDirection: "column",
-    gap: "md",
+    gap: "sm",
   },
 });
 

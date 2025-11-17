@@ -2,11 +2,12 @@ import { defineMessages, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
-import { Icon, HStack, chakra } from "@chakra-ui/react";
+import { Icon, HStack, chakra, Text } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existing-class-with-teacher";
 import { ColumnType } from "@/types/tanstack-types";
+import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button from "../Button";
@@ -59,9 +60,14 @@ const ClassList = () => {
       accessorKey: "name",
       header: intl.formatMessage(messages.nameColumn),
       cell: (info) => (
-        <span data-testid={`class-${info.row.original.id}-name`}>
+        <Text
+          fontWeight="semibold"
+          fontSize="lg"
+          data-testid={`class-${info.row.original.id}-name`}
+          margin={0}
+        >
           {info.row.original.name}
-        </span>
+        </Text>
       ),
       meta: {
         columnType: ColumnType.text,
