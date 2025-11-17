@@ -47,9 +47,6 @@ export const FieldRecipe = defineSlotRecipe({
       display: "block",
     },
   },
-  defaultVariants: {
-    variant: "primary",
-  },
 });
 
 export const InputVariant = {
