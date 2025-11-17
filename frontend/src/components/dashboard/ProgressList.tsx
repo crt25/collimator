@@ -12,6 +12,7 @@ import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { ColumnType } from "@/types/tanstack-types";
 import { isClickOnRow } from "@/utilities/table";
+import { ProgressMessages } from "@/i18n/progress-messages";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
@@ -37,18 +38,6 @@ const messages = defineMessages({
   actionsColumn: {
     id: "ProgressList.columns.actions",
     defaultMessage: "Actions",
-  },
-  notStartedStatus: {
-    id: "ProgressList.notStartedStatus",
-    defaultMessage: "Not Started",
-  },
-  incompleteStatus: {
-    id: "ProgressList.incompleteStatus",
-    defaultMessage: "Incomplete",
-  },
-  completeStatus: {
-    id: "ProgressList.completedStatus",
-    defaultMessage: "Complete",
   },
 });
 
@@ -133,12 +122,12 @@ const TaskTemplate = ({
   const statusText = useMemo(() => {
     switch (status) {
       case TaskStatus.complete:
-        return intl.formatMessage(messages.completeStatus);
+        return intl.formatMessage(ProgressMessages.completeStatus);
       case TaskStatus.incomplete:
-        return intl.formatMessage(messages.incompleteStatus);
+        return intl.formatMessage(ProgressMessages.incompleteStatus);
       case TaskStatus.notStarted:
       default:
-        return intl.formatMessage(messages.notStartedStatus);
+        return intl.formatMessage(ProgressMessages.notStartedStatus);
     }
   }, [intl, status]);
 
