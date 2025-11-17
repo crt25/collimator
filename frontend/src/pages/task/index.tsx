@@ -25,10 +25,10 @@ const ListTasks = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeading variant={PageHeadingVariant.Title}>
+        <PageHeading variant={PageHeadingVariant.title}>
           <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.Description}>
+        <PageHeading variant={PageHeadingVariant.description}>
           <FormattedMessage id="ListTasks.pageDescription" defaultMessage="" />
         </PageHeading>
         <TaskTable />

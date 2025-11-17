@@ -63,7 +63,7 @@ const CreateClass = () => {
             defaultMessage="Create Class"
           />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.Description}>
+        <PageHeading variant={PageHeadingVariant.description}>
           <FormattedMessage
             id="CreateClass.pageDescription"
             defaultMessage=""
