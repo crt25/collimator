@@ -1,4 +1,5 @@
 import { defineMessages } from "react-intl";
+import { LuSettings2, LuSignpost, LuUsers } from "react-icons/lu";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
@@ -13,9 +14,9 @@ const messages = defineMessages({
     id: "ClassNavigation.studentsTab",
     defaultMessage: "Students",
   },
-  sesstionsTab: {
+  sessionsTab: {
     id: "ClassNavigation.sessionsTab",
-    defaultMessage: "Sessions",
+    defaultMessage: "Lessons",
   },
 });
 
@@ -23,17 +24,20 @@ const tabs: NavigationTab[] = [
   {
     url: "detail",
     title: (intl) => intl.formatMessage(messages.classTab),
+    icon: <LuSettings2 />,
     testId: "class-details-tab",
+  },
+  {
+    url: "session",
+    title: (intl) => intl.formatMessage(messages.sessionsTab),
+    icon: <LuSignpost />,
+    testId: "class-sessions-tab",
   },
   {
     url: "students",
     title: (intl) => intl.formatMessage(messages.studentsTab),
+    icon: <LuUsers />,
     testId: "class-students-tab",
-  },
-  {
-    url: "session",
-    title: (intl) => intl.formatMessage(messages.sesstionsTab),
-    testId: "class-sessions-tab",
   },
 ];
 
