@@ -28,6 +28,7 @@ const config = defineConfig({
     },
     recipes: {
       button: ButtonRecipe,
+      container: ContainerRecipe,
       iconButton: IconButtonRecipe,
       pageHeading: PageHeadingRecipe,
       input: InputRecipe,
