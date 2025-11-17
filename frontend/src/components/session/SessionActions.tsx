@@ -1,11 +1,11 @@
 import { defineMessages, useIntl } from "react-intl";
 import { LuSend, LuTrash } from "react-icons/lu";
 import { useContext } from "react";
-import DropdownMenu from "../DropdownMenu";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import DropdownMenu from "../DropdownMenu";
 
 const messages = defineMessages({
   copySessionLink: {
