@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
@@ -68,10 +68,7 @@ const SessionProgress = () => {
                   <SessionActions klass={klass} sessionId={session.id} />
                 }
               >
-                <FormattedMessage
-                  id="SessionProgress.header"
-                  defaultMessage="Session Progress"
-                />
+                {session.title}
               </PageHeading>
               <SessionNavigation classId={klass.id} sessionId={session.id} />
               <ProgressList classId={klass.id} sessionId={session.id} />
