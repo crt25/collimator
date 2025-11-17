@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -11,6 +11,11 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import DissimilarPairs from "@/components/dashboard/DissimilarPairs";
+import { useTask } from "@/api/collimator/hooks/tasks/useTask";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
+import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
+import AnonymizationToggle from "@/components/AnonymizationToggle";
 
 const messages = defineMessages({
   title: {
@@ -21,9 +26,10 @@ const messages = defineMessages({
 
 const DissimilarAnalysisPairs = () => {
   const router = useRouter();
-  const { classId, sessionId } = router.query as {
+  const { classId, sessionId, taskId } = router.query as {
     classId: string;
     sessionId: string;
+    taskId: string;
   };
 
   const {
@@ -38,20 +44,32 @@ const DissimilarAnalysisPairs = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
+  const {
+    data: task,
+    error: taskError,
+    isLoading: isLoadingTask,
+  } = useTask(taskId);
+
   return (
     <>
       <Header
         title={messages.title}
         titleParameters={{
-          title: session?.title ?? "",
+          title: task?.title ?? "",
         }}
-      />
+      >
+        <AnonymizationToggle />
+      </Header>
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
           <ClassNavigation breadcrumb classId={klass?.id} session={session} />
+          <SessionNavigation
+            breadcrumb
+            classId={klass?.id}
+            sessionId={session?.id}
+          />
         </Breadcrumbs>
-        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeader>
           <FormattedMessage
             id="DissimilarAnalysisPairs.header"
@@ -59,11 +77,32 @@ const DissimilarAnalysisPairs = () => {
           />
         </PageHeader>
         <MultiSwrContent
-          errors={[klassError, sessionError]}
-          isLoading={[isLoadingKlass, isLoadingSession]}
-          data={[klass, session]}
+          errors={[klassError, sessionError, taskError]}
+          isLoading={[isLoadingKlass, isLoadingSession, isLoadingTask]}
+          data={[klass, session, task]}
         >
-          {([_klass, session]) => <DissimilarPairs session={session} />}
+          {([klass, session, task]) => (
+            <>
+              <PageHeading
+                variant={PageHeadingVariant.title}
+                actions={
+                  <TaskSessionActions
+                    classId={klass.id}
+                    sessionId={session.id}
+                    taskId={task.id}
+                  />
+                }
+              >
+                {task.title}
+              </PageHeading>
+              <TaskInstanceNavigation
+                classId={klass.id}
+                sessionId={session.id}
+                taskId={task.id}
+              />
+              <DissimilarPairs session={session} />
+            </>
+          )}
         </MultiSwrContent>
       </Container>
     </>
