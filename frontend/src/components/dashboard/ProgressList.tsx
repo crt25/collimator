@@ -1,58 +1,24 @@
-import { Column } from "primereact/column";
-import { useCallback, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHand, faStar } from "@fortawesome/free-regular-svg-icons";
+import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import DataTable from "@/components/DataTable";
-import { TableMessages } from "@/i18n/table-messages";
+import { HStack, Icon, Status } from "@chakra-ui/react";
+import { LuChevronRight, LuHand } from "react-icons/lu";
+import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
-import { useDeleteSolution } from "@/api/collimator/hooks/solutions/useDeleteSolution";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { ColumnType } from "@/types/tanstack-types";
+import { isClickOnRow } from "@/utilities/table";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
+import ChakraDataTable from "../ChakraDataTable";
+import Button from "../Button";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
-
-  tr {
-    cursor: pointer;
-  }
-`;
-
-const CenterContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const RightAlignContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-`;
-
-const TaskState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  * {
-    text-align: center;
-  }
-`;
-
-const TimeOnTask = styled.div``;
-
-const SpacedIcon = styled.div`
-  svg {
-    margin-left: 0.5rem;
-  }
 `;
 
 const messages = defineMessages({
@@ -64,10 +30,6 @@ const messages = defineMessages({
     id: "ProgressList.columns.taskColumn",
     defaultMessage: "Task",
   },
-  timeOnTaskColumn: {
-    id: "ProgressList.columns.timeOnTask",
-    defaultMessage: "Time on Task",
-  },
   helpColumn: {
     id: "ProgressList.columns.help",
     defaultMessage: "Help",
@@ -75,6 +37,18 @@ const messages = defineMessages({
   actionsColumn: {
     id: "ProgressList.columns.actions",
     defaultMessage: "Actions",
+  },
+  notStartedStatus: {
+    id: "ProgressList.notStartedStatus",
+    defaultMessage: "Not Started",
+  },
+  incompleteStatus: {
+    id: "ProgressList.incompleteStatus",
+    defaultMessage: "Incomplete",
+  },
+  completeStatus: {
+    id: "ProgressList.completedStatus",
+    defaultMessage: "Complete",
   },
 });
 
@@ -94,6 +68,14 @@ type StudentProgress = {
   taskSolutions: TaskSolutions[];
 };
 
+enum TaskStatus {
+  notStarted,
+  incomplete,
+  complete,
+}
+
+type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
+
 const nameTemplate = (progress: StudentProgress) =>
   "isAnonymous" in progress.student ? (
     <StudentName studentId={progress.student.studentId} />
@@ -105,53 +87,76 @@ const nameTemplate = (progress: StudentProgress) =>
     />
   );
 
-const taskTemplate = (classId: number, taskId: number) =>
-  function TaskTemplate(rowData: StudentProgress) {
-    const intl = useIntl();
+const TaskTemplate = ({
+  classId: _classId,
+  taskId,
+  rowData,
+}: {
+  classId: number;
+  taskId: number;
+  rowData: StudentProgress;
+}) => {
+  const intl = useIntl();
 
-    const solutionToDisplay = useMemo(() => {
-      const solutions = rowData.taskSolutions.find(
-        (s) => s.taskId === taskId,
-      )?.solutions;
+  const solutionToDisplay = useMemo(() => {
+    const solutions = rowData.taskSolutions.find(
+      (s) => s.taskId === taskId,
+    )?.solutions;
 
-      return ExistingStudentSolution.findSolutionToDisplay(solutions);
-    }, [rowData]);
+    return ExistingStudentSolution.findSolutionToDisplay(solutions);
+  }, [taskId, rowData]);
 
-    const deleteSolution = useDeleteSolution();
+  const status = useMemo(() => {
+    if (!solutionToDisplay) {
+      return TaskStatus.notStarted;
+    }
 
-    return (
-      <CenterContent>
-        <TaskState>
-          {!solutionToDisplay ? null : (
-            <>
-              <div>
-                <SpacedIcon>
-                  <FontAwesomeIcon icon={faStar} />
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteSolution(
-                        classId,
-                        solutionToDisplay?.sessionId,
-                        solutionToDisplay?.taskId,
-                        solutionToDisplay?.id,
-                      )
-                        .then(() => console.info("Solution deleted"))
-                        .catch((error) =>
-                          console.error("Solution deletion failed", error),
-                        );
-                    }}
-                  />
-                </SpacedIcon>
-              </div>
-              <time>{intl.formatTime(solutionToDisplay.createdAt)}</time>
-            </>
-          )}
-        </TaskState>
-      </CenterContent>
-    );
-  };
+    if (solutionToDisplay.tests.every((test) => test.passed)) {
+      return TaskStatus.complete;
+    }
+
+    return TaskStatus.incomplete;
+  }, [solutionToDisplay]);
+
+  const color = useMemo((): StatusColor => {
+    if (!solutionToDisplay) {
+      return "neutral";
+    }
+
+    if (solutionToDisplay.tests.every((test) => test.passed)) {
+      return "success";
+    }
+
+    return "error";
+  }, [solutionToDisplay]);
+
+  const statusText = useMemo(() => {
+    switch (status) {
+      case TaskStatus.complete:
+        return intl.formatMessage(messages.completeStatus);
+      case TaskStatus.incomplete:
+        return intl.formatMessage(messages.incompleteStatus);
+      case TaskStatus.notStarted:
+      default:
+        return intl.formatMessage(messages.notStartedStatus);
+    }
+  }, [intl, status]);
+
+  return (
+    <HStack>
+      <Status.Root>
+        <Status.Indicator backgroundColor={color} />
+      </Status.Root>
+      {statusText}
+    </HStack>
+  );
+};
+
+const helpTemplate = (_rowData: StudentProgress) => (
+  <Icon>
+    <LuHand />
+  </Icon>
+);
 
 const ProgressList = ({
   classId,
@@ -235,23 +240,79 @@ const ProgressList = ({
     });
   }, [klass, session, solutions, studentIds]);
 
-  const timeOnTaskTemplate = useCallback(
-    (_rowData: StudentProgress) => (
-      <RightAlignContent>
-        <TimeOnTask>00:00</TimeOnTask>
-      </RightAlignContent>
-    ),
-    [],
-  );
+  const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
+    const firstColumns: ColumnDef<StudentProgress>[] = [
+      {
+        id: "name",
+        header: intl.formatMessage(messages.nameColumn),
+        enableSorting: false,
+        cell: (info) => nameTemplate(info.row.original),
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+      {
+        id: "helpNeeded",
+        header: intl.formatMessage(messages.helpColumn),
+        enableSorting: false,
+        cell: (info) => helpTemplate(info.row.original),
+        size: 32,
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+    ];
 
-  const helpTemplate = useCallback(
-    (_rowData: StudentProgress) => (
-      <CenterContent>
-        <FontAwesomeIcon icon={faHand} />
-      </CenterContent>
-    ),
-    [],
-  );
+    const lastColumns: ColumnDef<StudentProgress>[] = [
+      {
+        id: "details",
+        header: "",
+        enableSorting: false,
+        cell: (info) => (
+          <Button
+            aria-label={intl.formatMessage(messages.actionsColumn)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(
+                `/class/${classId}/session/${info.row.original.id}/progress/student/${info.row.original.student.studentId}`,
+              );
+            }}
+            variant="detail"
+          >
+            <Icon>
+              <LuChevronRight />
+            </Icon>
+          </Button>
+        ),
+        meta: {
+          columnType: ColumnType.icon,
+        },
+      },
+    ];
+
+    const taskColumns: ColumnDef<StudentProgress>[] = (
+      session?.tasks ?? []
+    ).map(
+      (task, i) =>
+        ({
+          id: "task-" + task.id,
+          header: `${intl.formatMessage(messages.taskColumn)} ${i + 1}`,
+          enableSorting: false,
+          cell: (info) => (
+            <TaskTemplate
+              classId={classId}
+              taskId={task.id}
+              rowData={info.row.original}
+            />
+          ),
+          meta: {
+            columnType: ColumnType.icon,
+          },
+        }) satisfies ColumnDef<StudentProgress>,
+    );
+
+    return [...firstColumns, ...taskColumns, ...lastColumns];
+  }, [intl, session, router, classId]);
 
   return (
     <ProgressListWrapper data-testid="progress-list">
@@ -261,57 +322,23 @@ const ProgressList = ({
         isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
       >
         {([klass, session]) => (
-          <DataTable
-            value={progress}
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            rows={10}
-            loading={studentIds.length !== progress.length}
-            onRowClick={(e) =>
-              router.push(
-                `/class/${klass.id}/session/${session.id}/progress/student/${(e.data as StudentProgress).student.studentId}`,
-              )
-            }
-          >
-            <Column
-              field="name"
-              header={intl.formatMessage(messages.nameColumn)}
-              sortable
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={nameTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.helpColumn)}
-              alignHeader={"center"}
-              body={helpTemplate}
-            />
-            {session.tasks.map((task, i) => (
-              <Column
-                key={task.id}
-                header={
-                  <>
-                    {`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}{" "}
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                  </>
-                }
-                headerTooltip={task.title}
-                headerTooltipOptions={{ position: "bottom" }}
-                alignHeader={"center"}
-                body={taskTemplate(classId, task.id)}
-              />
-            ))}
-            <Column
-              header={intl.formatMessage(messages.timeOnTaskColumn)}
-              alignHeader={"right"}
-              body={timeOnTaskTemplate}
-            />
-          </DataTable>
+          <ChakraDataTable
+            data={progress}
+            columns={columns}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(
+                  `/class/${klass.id}/session/${session.id}/progress/student/${row.student.studentId}`,
+                );
+              }
+            }}
+            features={{
+              sorting: true,
+              pagination: {
+                pageSize: 10,
+              },
+            }}
+          />
         )}
       </MultiSwrContent>
     </ProgressListWrapper>

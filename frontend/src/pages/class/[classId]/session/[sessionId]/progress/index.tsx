@@ -1,16 +1,16 @@
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import CrtNavigation from "@/components/CrtNavigation";
 import ProgressList from "@/components/dashboard/ProgressList";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -51,13 +51,13 @@ const SessionProgress = () => {
           <CrtNavigation breadcrumb klass={klass} />
           <ClassNavigation classId={klass?.id} breadcrumb session={session} />
         </Breadcrumbs>
-        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
-        <PageHeader>
+        <PageHeading variant={PageHeadingVariant.title}>
           <FormattedMessage
             id="SessionProgress.header"
             defaultMessage="Session Progress"
           />
-        </PageHeader>
+        </PageHeading>
+        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <MultiSwrContent
           errors={[klassError, sessionError]}
           isLoading={[isLoadingKlass, isLoadingSession]}
