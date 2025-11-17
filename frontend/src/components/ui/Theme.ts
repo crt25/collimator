@@ -14,6 +14,8 @@ import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 import { hstackRecipe } from "./recipes/HStack.recipe";
 import { SelectRecipe } from "./recipes/Select.recipe";
+import { ContainerRecipe } from "./recipes/Container.recipe";
+import { CardRecipe } from "./recipes/Card.recipe";
 
 const config = defineConfig({
   theme: {
@@ -22,6 +24,7 @@ const config = defineConfig({
       breadcrumb: BreadcrumbsRecipe,
       select: SelectRecipe,
       field: FieldRecipe,
+      card: CardRecipe,
     },
     recipes: {
       button: ButtonRecipe,

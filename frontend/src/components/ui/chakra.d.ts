@@ -1,5 +1,6 @@
 import { ButtonVariant } from "@/components/ui/recipes/buttons/Button.recipe";
 import { InputVariant } from "@/components/ui/recipes/form/Input.recipe";
+import { CardVariant } from "@/components/ui/recipes/Card.recipe";
 
 declare module "@chakra-ui/react" {
   // Chakra's type system does not recognize custom variant types defined via recipes and theming system.
@@ -10,5 +11,9 @@ declare module "@chakra-ui/react" {
 
   interface InputProps {
     variant?: InputVariant;
+  }
+
+  interface CardRootProps {
+    variant?: CardVariant;
   }
 }
