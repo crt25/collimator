@@ -503,6 +503,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                       ? header.column.getToggleSortingHandler()
                       : undefined
                   }
+                  width={`${header.getSize()}px`}
                 >
                   <HeaderContent>
                     <div>
