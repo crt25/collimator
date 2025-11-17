@@ -147,7 +147,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   onRowClick,
   features,
   variant = "outline",
-  includeSearchBar = true,
+  includeSearchBar = false,
 }: ChakraDataTableProps<T>) => {
   const intl = useIntl();
 
