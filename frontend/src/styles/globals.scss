@@ -5,27 +5,27 @@
   --background-color-secondary: #ddd;
   --foreground-color: #000000;
   --foreground-color-secondary: #171717;
-  --foreground-color-tertiary: #27272A;
+  --foreground-color-tertiary: #27272a;
 
   --accent-color: #2d2d2d;
   --accent-color-highlight: #2d2d2d;
 
   --border-radius: 0.25rem;
-  --border-color: #E4E4E7;
-  --border-color-secondary: #A1A1AA;
-  --button-background-color: #18181B;
+  --border-color: #e4e4e7;
+  --border-color-secondary: #a1a1aa;
+  --button-background-color: #18181b;
   --button-foreground-color: #ffffff;
   --button-secondary-background-color: #ffffff;
   --button-secondary-foreground-color: #000000;
 
-  --border-color-tertiary: #E4E4E7;
+  --border-color-tertiary: #e4e4e7;
   --button-danger-background-color: var(--error-color);
   --button-danger-foreground-color: #ffffff;
 
   --button-disabled-background-color: #999999;
 
-  --input-background-color: #F4F4F5;
-  --select-background-color: #F4F4F5;
+  --input-background-color: #f4f4f5;
+  --select-background-color: #f4f4f5;
   --icon-button-background-color: #ffffff;
   --header-background-color: #ffffff;
   --header-border-color: #000;
@@ -34,10 +34,9 @@
   --page-description-color: #000;
   --success-color: #2ecc71;
   --error-color: #dc3545;
-  
-  --input-form-background-color: #F4F4F5;
-}
 
+  --input-form-background-color: #f4f4f5;
+}
 
 body {
   -webkit-font-smoothing: antialiased;
