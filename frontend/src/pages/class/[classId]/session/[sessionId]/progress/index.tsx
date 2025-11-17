@@ -11,6 +11,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import AnonymizationToggle from "@/components/AnonymizationToggle";
 
 const messages = defineMessages({
   title: {
@@ -45,7 +46,9 @@ const SessionProgress = () => {
         titleParameters={{
           title: session?.title ?? "",
         }}
-      />
+      >
+        <AnonymizationToggle />
+      </Header>
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

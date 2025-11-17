@@ -102,7 +102,10 @@ const config = defineConfig({
     }),
     semanticTokens: defineTokens({
       colors: {
-        bg: { value: "{colors.white}" },
+        bg: {
+          DEFAULT: { value: "{colors.white}" },
+          emphasized: { value: "{colors.gray.200}" },
+        },
         bgSecondary: { value: "{colors.gray.50}" },
         fg: { value: "{colors.black}" },
         fgSecondary: { value: "{colors.black}" },
