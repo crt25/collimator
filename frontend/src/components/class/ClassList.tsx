@@ -14,7 +14,8 @@ import Button from "../Button";
 
 const ClassListWrapper = chakra("div", {
   base: {
-    marginTop: "2xl",
+    marginTop: "md",
+    marginBottom: "md",
   },
 });
 
