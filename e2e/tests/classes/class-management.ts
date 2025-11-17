@@ -28,7 +28,8 @@ export const createClass = async (
 
   const newClassTeacherId = klass.teacherId ?? teacherIds[0];
 
-  await form.inputs.teacherId.selectOption(newClassTeacherId.toString());
+  await form.inputs.teacherId.click();
+  await pwPage.locator(`[data-value="${newClassTeacherId}"]`).click();
   await form.submitButton.click();
 
   await pwPage.waitForURL(`${baseUrl}/class`);

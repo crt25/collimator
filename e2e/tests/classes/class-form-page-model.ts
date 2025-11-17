@@ -26,9 +26,9 @@ export class ClassFormPageModel {
   }
 
   getTeacherIds() {
-    return this.inputs.teacherId.evaluate((el) =>
-      [...el.querySelectorAll("option")].map((option) =>
-        parseInt(option.value),
+    return this.inputs.teacherId.evaluate(() =>
+      [...document.querySelectorAll('[role="option"]')].map((option) =>
+        parseInt(option.getAttribute("data-value") || "0"),
       ),
     );
   }
