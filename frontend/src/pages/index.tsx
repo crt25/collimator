@@ -1,10 +1,12 @@
 import { defineMessages, FormattedMessage } from "react-intl";
 import { Grid, GridItem, Card, Container, chakra } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 import Header from "@/components/Header";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
-import { CardVariant } from "@/components/ui/recipes/Card.recipe";
+import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
+import { UserRole } from "@/types/user/user-role";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 
 const messages = defineMessages({
   header: {
@@ -22,10 +24,10 @@ const GridLayout = chakra(Grid, {
     marginTop: "4xl",
     gridTemplateColumns: {
       base: "1fr",
-      md: "repeat(2, 1fr)",
+      md: "repeat(3, 1fr)",
     },
 
-    gap: "4xl",
+    gap: "xl",
     padding: "0",
 
     "& > *:nth-child(even)": {
@@ -36,6 +38,9 @@ const GridLayout = chakra(Grid, {
 
 const Home = () => {
   const router = useRouter();
+  const authContext = useContext(AuthenticationContext);
+
+  const isAdmin = authContext.role === UserRole.admin || undefined;
 
   return (
     <>
@@ -44,20 +49,15 @@ const Home = () => {
         <PageHeading>
           <FormattedMessage {...messages.header} />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.description}>
+        <PageHeading variant="description">
           <FormattedMessage {...messages.description} />
         </PageHeading>
 
         <GridLayout>
           <GridItem>
-            <Card.Root
-              variant={CardVariant.medium}
-              onClick={() => router.push("/class")}
-            >
+            <Card.Root variant="full" onClick={() => router.push("/class")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Classes
-                </PageHeading>
+                <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.
@@ -66,29 +66,30 @@ const Home = () => {
             </Card.Root>
           </GridItem>
 
+          {isAdmin && (
+            <GridItem>
+              <Card.Root variant="full" onClick={() => router.push("/user")}>
+                <Card.Body>
+                  <PageHeading variant="subHeading">Users</PageHeading>
+                  <Text>Manage user accounts and permissions.</Text>
+                </Card.Body>
+              </Card.Root>
+            </GridItem>
+          )}
+
           <GridItem>
-            <Card.Root
-              variant={CardVariant.full}
-              onClick={() => router.push("/lesson")}
-            >
+            <Card.Root variant="full" onClick={() => router.push("/lesson")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Task Templates
-                </PageHeading>
+                <PageHeading variant="subHeading">Task Templates</PageHeading>
                 <Text>Copy template tasks to your classes lesson.</Text>
               </Card.Body>
             </Card.Root>
           </GridItem>
 
           <GridItem>
-            <Card.Root
-              variant={CardVariant.large}
-              onClick={() => router.push("/task")}
-            >
+            <Card.Root variant="full" onClick={() => router.push("/task")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Create new Tasks
-                </PageHeading>
+                <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.
@@ -99,13 +100,11 @@ const Home = () => {
 
           <GridItem>
             <Card.Root
-              variant={CardVariant.full}
+              variant="full"
               onClick={() => router.push("/some-other-page")}
             >
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Some other Page
-                </PageHeading>
+                <PageHeading variant="subHeading">Some other Page</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.
