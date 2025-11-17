@@ -156,7 +156,9 @@ const config = defineConfig({
       fontFamily: "Inter, sans-serif",
     },
     a: {
+      // These are necessary as long as we still have the bootstrap styles imported
       color: "inherit !important",
+      textDecoration: "none !important",
       _hover: {
         textDecoration: "underline",
       },
