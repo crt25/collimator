@@ -50,6 +50,7 @@ const config = defineConfig({
           1000: { value: "var(--foreground-color-tertiary)" },
         },
         dark: { value: "var(--accent-color)" },
+        neutral: { value: "var(--neutral-color)" },
         success: { value: "var(--success-color)" },
         error: { value: "var(--error-color)" },
       },
