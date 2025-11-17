@@ -8,9 +8,9 @@ import {
   chakra,
   Field,
 } from "@chakra-ui/react";
-import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
-import { useYupResolver } from "@/hooks/useYupResolver";
 import { useYupSchema } from "@/hooks/useYupSchema";
+import { useYupResolver } from "@/hooks/useYupResolver";
+import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
 import Input, { InputVariant } from "../form/Input";
 import SwrContent from "../SwrContent";
 import FormContainer from "../form/FormContainer";
