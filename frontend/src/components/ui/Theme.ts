@@ -155,9 +155,8 @@ const config = defineConfig({
     },
     a: {
       color: "inherit !important",
-      textDecoration: "none !important",
       _hover: {
-        textDecoration: "underline !important",
+        textDecoration: "underline",
       },
     },
     ".p-tooltip": {

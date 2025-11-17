@@ -2,7 +2,7 @@ import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { HStack, Icon, Status } from "@chakra-ui/react";
+import { HStack, Icon, Link, Status } from "@chakra-ui/react";
 import { LuChevronRight, LuHand } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
@@ -296,7 +296,12 @@ const ProgressList = ({
       (task, i) =>
         ({
           id: "task-" + task.id,
-          header: `${intl.formatMessage(messages.taskColumn)} ${i + 1}`,
+          header: () => (
+            <Link
+              href={`/class/${classId}/session/${session?.id}/task/${task.id}/detail`}
+              variant="underline"
+            >{`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}</Link>
+          ),
           enableSorting: false,
           cell: (info) => (
             <TaskTemplate
