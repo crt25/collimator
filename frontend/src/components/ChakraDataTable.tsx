@@ -81,59 +81,19 @@ interface ChakraDataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
   isLoading?: boolean;
-  onRowClick?: (row: T) => void;
+  onRowClick?: (
+    row: T,
+    e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
+  ) => void;
   features?: DataTableFeatures;
   variant?: "outline" | "line";
   includeSearchBar?: boolean;
 }
 
-const TableWrapper = chakra("div", {
-  base: {
-    marginBottom: "lg",
-    marginTop: "4xl",
-  },
-});
-
 const InputWrapper = chakra("div", {
   base: {
     marginBottom: "lg",
     width: "{inputWidths.md}",
-  },
-});
-
-const ColumnHeader = chakra(Table.ColumnHeader, {
-  base: {
-    fontWeight: "semiBold",
-    color: "fgTertiary",
-    _hover: {
-      cursor: "pointer",
-    },
-    "&:last-child": {
-      width: "auto",
-      textAlign: "right",
-    },
-  },
-});
-
-const TableRow = chakra(Table.Row, {
-  base: {
-    _hover: {
-      cursor: "pointer",
-    },
-  },
-});
-
-const TableHeader = chakra(Table.Header, {
-  base: {
-    backgroundColor: "gray.200",
-  },
-});
-
-const TableRoot = chakra(Table.Root, {
-  base: {
-    width: "100%",
-    tableLayout: "fixed",
-    fontSize: "lg",
   },
 });
 
@@ -163,15 +123,7 @@ const TableContainer = chakra("div", {
 
 const TableCell = chakra(Table.Cell, {
   base: {
-    borderBottomWidth: "thin !important",
-    borderBottomStyle: "solid",
-    borderBottomColor: "gray.600",
-
     // @ts-expect-error Chakra typeings issue
-    "td#{&}:first-of-type": {
-      fontWeight: "semiBold",
-    },
-
     "td#{&}:last-of-type": {
       width: "auto",
       textAlign: "right",
@@ -508,92 +460,93 @@ export const ChakraDataTable = <T extends { id: number }>({
   };
 
   return (
-    <TableWrapper>
-      <TableContainer>
-        {features?.columnFiltering && includeSearchBar && (
-          <FilterContainer>
-            <InputWrapper>
-              <Input
-                value={getFilterValueAsString(
-                  table.getColumn(filterColumn)?.getFilterValue(),
-                )}
-                onChange={(e) =>
-                  table.getColumn(filterColumn)?.setFilterValue(e.target.value)
-                }
-                placeholder={intl.formatMessage(messages.filterByPlaceholder)}
-                variety={InputVariety.Search}
-              />
-            </InputWrapper>
+    <TableContainer>
+      {features?.columnFiltering && includeSearchBar && (
+        <FilterContainer>
+          <InputWrapper>
+            <Input
+              value={getFilterValueAsString(
+                table.getColumn(filterColumn)?.getFilterValue(),
+              )}
+              onChange={(e) =>
+                table.getColumn(filterColumn)?.setFilterValue(e.target.value)
+              }
+              placeholder={intl.formatMessage(messages.filterByPlaceholder)}
+              variety={InputVariety.Search}
+            />
+          </InputWrapper>
 
-            {features.columnFiltering.columns.length > 1 && (
-              <DropdownMenu trigger={currentColumnLabel}>
-                {features.columnFiltering.columns.map((col) => (
-                  <DropdownMenu.Item
-                    key={col.accessorKey}
-                    onClick={() => setFilterColumn(col.accessorKey)}
-                  >
-                    {col.label}
-                  </DropdownMenu.Item>
-                ))}
-              </DropdownMenu>
-            )}
-          </FilterContainer>
-        )}
+          {features.columnFiltering.columns.length > 1 && (
+            <DropdownMenu trigger={currentColumnLabel}>
+              {features.columnFiltering.columns.map((col) => (
+                <DropdownMenu.Item
+                  key={col.accessorKey}
+                  onClick={() => setFilterColumn(col.accessorKey)}
+                >
+                  {col.label}
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu>
+          )}
+        </FilterContainer>
+      )}
 
-        <TableRoot interactive={!!onRowClick} variant={variant}>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <ColumnHeader
-                    key={header.id}
-                    onClick={
-                      features?.sorting && header.column.getCanSort()
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                  >
-                    <HeaderContent>
-                      <div>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </div>
-                      {features?.sorting && header.column.getCanSort() && (
-                        <SortIcon isSorted={header.column.getIsSorted()} />
-                      )}
-                    </HeaderContent>
-                  </ColumnHeader>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
+      <Table.Root interactive={!!onRowClick} variant={variant}>
+        <Table.Header>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <Table.Row key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <Table.ColumnHeader
+                  key={header.id}
+                  onClick={
+                    features?.sorting && header.column.getCanSort()
+                      ? header.column.getToggleSortingHandler()
+                      : undefined
+                  }
+                >
+                  <HeaderContent>
+                    <div>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </div>
+                    {features?.sorting && header.column.getCanSort() && (
+                      <SortIcon isSorted={header.column.getIsSorted()} />
+                    )}
+                  </HeaderContent>
+                </Table.ColumnHeader>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Header>
 
-          <Table.Body>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} onClick={() => onRowClick?.(row.original)}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{cellWrapper({ cell })}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </Table.Body>
-        </TableRoot>
+        <Table.Body>
+          {table.getRowModel().rows.map((row) => (
+            <Table.Row
+              key={row.id}
+              onClick={(e) => onRowClick?.(row.original, e)}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>{cellWrapper({ cell })}</TableCell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
 
-        {features?.pagination && table.getPageCount() > 1 && (
-          <DataTablePagination
-            pageIndex={table.getState().pagination.pageIndex}
-            pageCount={table.getPageCount()}
-            canPreviousPage={table.getCanPreviousPage()}
-            canNextPage={table.getCanNextPage()}
-            onPageChange={(pageIndex) => table.setPageIndex(pageIndex)}
-          />
-        )}
-      </TableContainer>
-    </TableWrapper>
+      {features?.pagination && table.getPageCount() > 1 && (
+        <DataTablePagination
+          pageIndex={table.getState().pagination.pageIndex}
+          pageCount={table.getPageCount()}
+          canPreviousPage={table.getCanPreviousPage()}
+          canNextPage={table.getCanNextPage()}
+          onPageChange={(pageIndex) => table.setPageIndex(pageIndex)}
+        />
+      )}
+    </TableContainer>
   );
 };
 
