@@ -150,7 +150,7 @@ const UserList = () => {
             totalRecords={data.totalCount}
             loading={isLoading}
             onRowClick={(e) => {
-              if (isClickOnRow(e)) {
+              if (isClickOnRow(e.originalEvent)) {
                 router.push(`/user/${(e.data as ExistingUser).id}/detail`);
               }
             }}

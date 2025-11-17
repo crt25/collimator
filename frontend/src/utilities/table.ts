@@ -1,10 +1,7 @@
-import { DataTableRowClickEvent } from "primereact/datatable";
-
-export const isClickOnRow = (e: DataTableRowClickEvent): boolean => {
+export const isClickOnRow = (e: React.MouseEvent<HTMLElement>): boolean => {
   if (
-    e.originalEvent.target instanceof Element &&
-    (e.originalEvent.target.tagName === "TD" ||
-      e.originalEvent.target.tagName === "SPAN")
+    e.target instanceof Element &&
+    (e.target.tagName === "TD" || e.target.tagName === "SPAN")
   ) {
     return true;
   }
