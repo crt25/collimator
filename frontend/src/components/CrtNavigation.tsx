@@ -4,8 +4,8 @@ import {
   LuGraduationCap,
   LuListTodo,
   LuUsers,
-  LuBook,
-  LuBookMarked,
+  LuBookUser,
+  LuMap,
 } from "react-icons/lu";
 import { Breadcrumb } from "@chakra-ui/react";
 import { Fragment } from "react";
@@ -102,7 +102,7 @@ const CrtNavigation = ({
               <Breadcrumb.Separator />
               <BreadcrumbItem
                 href={`/class/${klass.id}/detail`}
-                icon={<LuBookMarked />}
+                icon={<LuBookUser />}
               >
                 {klass.name}
               </BreadcrumbItem>
@@ -122,7 +122,7 @@ const CrtNavigation = ({
           {lessonId && (
             <>
               <Breadcrumb.Separator />
-              <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuBook />}>
+              <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuMap />}>
                 {lessonName}
               </BreadcrumbItem>
             </>
