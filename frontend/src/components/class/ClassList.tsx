@@ -9,7 +9,7 @@ import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existi
 import { ColumnType } from "@/types/tanstack-types";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 
 const ClassListWrapper = chakra("div", {
   base: {
@@ -91,7 +91,7 @@ const ClassList = () => {
             router.push(`/class/${info.row.original.id}/detail`);
           }}
           data-testid={`class-${info.row.original.id}-details-button`}
-          variant={ButtonVariant.detail}
+          variant="detail"
         >
           <Icon>
             <LuChevronRight />
@@ -133,7 +133,7 @@ const ClassList = () => {
         )}
       </SwrContent>
       <Button
-        variant={ButtonVariant.primary}
+        variant="primary"
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
       >

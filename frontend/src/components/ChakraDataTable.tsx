@@ -167,11 +167,12 @@ const TableCell = chakra(Table.Cell, {
     borderBottomStyle: "solid",
     borderBottomColor: "gray.600",
 
-    "&:first-child": {
+    // @ts-expect-error Chakra typeings issue
+    "td#{&}:first-of-type": {
       fontWeight: "semiBold",
     },
 
-    "&:last-child": {
+    "td#{&}:last-of-type": {
       width: "auto",
       textAlign: "right",
       whiteSpace: "nowrap",
