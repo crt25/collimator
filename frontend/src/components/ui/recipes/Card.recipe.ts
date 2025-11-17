@@ -55,16 +55,4 @@ export const CardRecipe = defineSlotRecipe({
   },
 });
 
-export const CardVariant = {
-  full: "full",
-  large: "large",
-  medium: "medium",
-  small: "small",
-  compact: "compact",
-} as const;
-
-export type CardVariant = keyof NonNullable<
-  (typeof CardRecipe)["variants"]
->["variant"];
-
 export default CardRecipe;
