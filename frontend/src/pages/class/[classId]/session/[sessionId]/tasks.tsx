@@ -1,0 +1,79 @@
+import { defineMessages } from "react-intl";
+import { Container } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import Header from "@/components/Header";
+import CrtNavigation from "@/components/CrtNavigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import ClassNavigation from "@/components/class/ClassNavigation";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import MultiSwrContent from "@/components/MultiSwrContent";
+import SessionActions from "@/components/session/SessionActions";
+import SessionNavigation from "@/components/session/SessionNavigation";
+import TaskInstanceTable from "@/components/task-instance/TaskInstanceTable";
+
+const messages = defineMessages({
+  title: {
+    id: "TaskInstanceList.title",
+    defaultMessage: "Tasks",
+  },
+  description: {
+    id: "TaskInstanceList.description",
+    defaultMessage: "",
+  },
+});
+
+const TaskInstanceList = () => {
+  const router = useRouter();
+  const { classId, sessionId } = router.query as {
+    classId: string;
+    sessionId: string;
+  };
+
+  const {
+    data: klass,
+    error: klassError,
+    isLoading: isLoadingKlass,
+  } = useClass(classId);
+
+  const {
+    data: session,
+    error: sessionError,
+    isLoading: isLoadingSession,
+  } = useClassSession(classId, sessionId);
+
+  return (
+    <>
+      <Header title={messages.title} />
+      <Container>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb klass={klass} />
+          <ClassNavigation classId={klass?.id} breadcrumb session={session} />
+        </Breadcrumbs>
+        <MultiSwrContent
+          errors={[klassError, sessionError]}
+          isLoading={[isLoadingKlass, isLoadingSession]}
+          data={[klass, session]}
+        >
+          {([klass, session]) => (
+            <>
+              <PageHeading
+                variant={PageHeadingVariant.title}
+                actions={
+                  <SessionActions klass={klass} sessionId={session.id} />
+                }
+              >
+                {session.title}
+              </PageHeading>
+              <SessionNavigation classId={klass.id} sessionId={session.id} />
+              <TaskInstanceTable klass={klass} session={session} />
+            </>
+          )}
+        </MultiSwrContent>
+      </Container>
+    </>
+  );
+};
+
+export default TaskInstanceList;
