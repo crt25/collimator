@@ -121,17 +121,6 @@ const TableContainer = chakra("div", {
   },
 });
 
-const TableCell = chakra(Table.Cell, {
-  base: {
-    // @ts-expect-error Chakra typeings issue
-    "td#{&}:last-of-type": {
-      width: "auto",
-      textAlign: "right",
-      whiteSpace: "nowrap",
-    },
-  },
-});
-
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
     return <LuArrowUpNarrowWide size={16} />;
@@ -531,7 +520,7 @@ export const ChakraDataTable = <T extends { id: number }>({
               onClick={(e) => onRowClick?.(row.original, e)}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>{cellWrapper({ cell })}</TableCell>
+                <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
               ))}
             </Table.Row>
           ))}
