@@ -22,7 +22,7 @@ const messages = defineMessages({
 
 const tabs: NavigationTab[] = [
   {
-    url: "detail",
+    url: "edit",
     title: (intl) => intl.formatMessage(messages.lessonDetailsTab),
     icon: <LuSettings2 />,
     testId: "session-lesson-details-tab",

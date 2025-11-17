@@ -16,7 +16,8 @@ import { SelectRecipe } from "./recipes/Select.recipe";
 import { ContainerRecipe } from "./recipes/Container.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
-import TableRootRecipe from "./recipes/table/TableRoot.recipe";
+import { TableRecipe } from "./recipes/table/TableRoot.recipe";
+import { MenuRecipe } from "./recipes/Menu.recipe";
 
 const config = defineConfig({
   theme: {
@@ -26,7 +27,8 @@ const config = defineConfig({
       select: SelectRecipe,
       field: FieldRecipe,
       card: CardRecipe,
-      table: TableRootRecipe,
+      table: TableRecipe,
+      menu: MenuRecipe,
     },
     recipes: {
       button: ButtonRecipe,

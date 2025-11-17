@@ -12,6 +12,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
+import SessionActions from "@/components/session/SessionActions";
 
 const messages = defineMessages({
   title: {
@@ -54,20 +55,27 @@ const SessionProgress = () => {
           <CrtNavigation breadcrumb klass={klass} />
           <ClassNavigation classId={klass?.id} breadcrumb session={session} />
         </Breadcrumbs>
-        <PageHeading variant={PageHeadingVariant.title}>
-          <FormattedMessage
-            id="SessionProgress.header"
-            defaultMessage="Session Progress"
-          />
-        </PageHeading>
-        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <MultiSwrContent
           errors={[klassError, sessionError]}
           isLoading={[isLoadingKlass, isLoadingSession]}
           data={[klass, session]}
         >
           {([klass, session]) => (
-            <ProgressList classId={klass.id} sessionId={session.id} />
+            <>
+              <PageHeading
+                variant={PageHeadingVariant.title}
+                actions={
+                  <SessionActions klass={klass} sessionId={session.id} />
+                }
+              >
+                <FormattedMessage
+                  id="SessionProgress.header"
+                  defaultMessage="Session Progress"
+                />
+              </PageHeading>
+              <SessionNavigation classId={klass.id} sessionId={session.id} />
+              <ProgressList classId={klass.id} sessionId={session.id} />
+            </>
           )}
         </MultiSwrContent>
       </Container>
