@@ -93,7 +93,7 @@ const DissimilarSolutions = () => {
                 sessionId={session.id}
                 taskId={task.id}
               />
-              <DissimilarityAnalysis session={session} />
+              <DissimilarityAnalysis session={session} task={task} />
             </>
           )}
         </MultiSwrContent>

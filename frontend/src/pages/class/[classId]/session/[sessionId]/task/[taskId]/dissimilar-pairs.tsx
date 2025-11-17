@@ -100,7 +100,7 @@ const DissimilarAnalysisPairs = () => {
                 sessionId={session.id}
                 taskId={task.id}
               />
-              <DissimilarPairs session={session} />
+              <DissimilarPairs session={session} task={task} />
             </>
           )}
         </MultiSwrContent>
