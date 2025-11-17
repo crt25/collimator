@@ -12,10 +12,10 @@ import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
 import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
-import { hstackRecipe } from "./recipes/HStack.recipe";
 import { SelectRecipe } from "./recipes/Select.recipe";
 import { ContainerRecipe } from "./recipes/Container.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
+import { HStackRecipe } from "./recipes/HStack.recipe";
 
 const config = defineConfig({
   theme: {
@@ -34,7 +34,7 @@ const config = defineConfig({
       input: InputRecipe,
       closeButton: CloseButtonRecipe,
       textArea: TextAreaRecipe,
-      hstack: hstackRecipe,
+      hstack: HStackRecipe,
     },
     tokens: defineTokens({
       colors: {

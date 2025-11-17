@@ -35,5 +35,4 @@ const BreadcrumbItem = ({
     </Breadcrumb.Item>
   );
 };
-
 export default BreadcrumbItem;
