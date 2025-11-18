@@ -7,6 +7,7 @@ import {
   createListCollection,
   chakra,
   Field,
+  Flex,
 } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
@@ -14,6 +15,7 @@ import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
 import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import FormContainer from "../form/FormContainer";
+import { EditedBadge } from "../EditedBadge";
 import FormGrid from "../form/FormGrid";
 import SubmitFormButton from "../form/SubmitFormButton";
 
@@ -72,7 +74,7 @@ const ClassForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields },
     control,
   } = useForm<ClassFormValues>({
     resolver,
@@ -80,6 +82,9 @@ const ClassForm = ({
   });
 
   const { isLoading, data, error } = useAllUsers();
+
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
 
   type TeacherOption = {
     value: string;
@@ -110,6 +115,9 @@ const ClassForm = ({
                 variant="inputForm"
                 invalid={!!errors.name}
                 errorText={errors.name?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.name && <EditedBadge />
+                }
               />
 
               <Controller
@@ -126,9 +134,14 @@ const ClassForm = ({
                       data-testid="teacherId"
                     >
                       <Select.HiddenSelect />
-                      <Select.Label>
-                        {messages.teacher.defaultMessage}
-                      </Select.Label>
+                      <Flex>
+                        <Select.Label>
+                          {messages.teacher.defaultMessage}
+                        </Select.Label>
+                        {showEditedBadges && dirtyFields.teacherId && (
+                          <EditedBadge />
+                        )}
+                      </Flex>
                       <Select.Control>
                         <Select.Trigger>
                           <Select.ValueText
