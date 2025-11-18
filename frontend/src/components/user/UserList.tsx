@@ -17,7 +17,7 @@ import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGe
 import { isClickOnRow } from "@/utilities/table";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import SwrContent from "../SwrContent";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
 
@@ -87,7 +87,7 @@ const UserList = () => {
     (rowData: ExistingUser) => (
       <ButtonGroup>
         <Button
-          variant={ButtonVariant.primary}
+          variant="primary"
           onClick={(e) => {
             e.stopPropagation();
             router.push(`/user/${rowData.id}/edit`);
@@ -186,7 +186,7 @@ const UserList = () => {
                 <DropdownMenu
                   trigger={
                     <Button
-                      variant={ButtonVariant.secondary}
+                      variant="secondary"
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push("user/create");

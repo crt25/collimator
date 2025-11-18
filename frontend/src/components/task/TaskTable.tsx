@@ -15,7 +15,7 @@ import { capitalizeString } from "@/utilities/strings";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -124,7 +124,7 @@ const TaskTable = () => {
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
-            variant={ButtonVariant.detail}
+            variant="detail"
           >
             <FaRegTrashAlt />
           </Button>
@@ -147,7 +147,7 @@ const TaskTable = () => {
               router.push(`/task/${info.row.original.id}/detail`);
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
-            variant={ButtonVariant.detail}
+            variant="detail"
           >
             <Icon>
               <LuChevronRight />
@@ -201,7 +201,7 @@ const TaskTable = () => {
         }}
       />
       <Button
-        variant={ButtonVariant.primary}
+        variant="primary"
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
       >

@@ -8,7 +8,7 @@ import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -63,7 +63,7 @@ const CreateClass = () => {
             defaultMessage="Create Class"
           />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.description}>
+        <PageHeading variant="description">
           <FormattedMessage
             id="CreateClass.pageDescription"
             defaultMessage=""

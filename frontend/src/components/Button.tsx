@@ -1,5 +1,6 @@
 import {
   Button as ChakraButton,
+  ButtonProps as ChakraButtonProps,
   HStack,
   Icon,
   Box,
@@ -19,13 +20,12 @@ import {
   ButtonHTMLAttributes,
 } from "react";
 import { isNonNull } from "@/utilities/is-non-null";
-import { ButtonVariant } from "@/components/ui/recipes/buttons/Button.recipe";
 
 export type ButtonProps = Omit<
   DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   "variant"
 > & {
-  variant?: ButtonVariant;
+  variant?: ChakraButtonProps["variant"];
   active?: boolean;
 };
 
@@ -118,5 +118,4 @@ const Button = ({
   );
 };
 
-export { ButtonVariant };
 export default Button;

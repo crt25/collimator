@@ -8,7 +8,6 @@ import {
   chakra,
   InputGroup,
 } from "@chakra-ui/react";
-import { InputVariant } from "../ui/recipes/form/Input.recipe";
 
 const InputWrapper = chakra("div", {
   base: {
@@ -26,7 +25,7 @@ interface Props {
   errorText?: React.ReactNode;
   invalid?: boolean;
   variety?: InputVariety;
-  variant?: InputVariant;
+  variant?: ChakraInputProps["variant"];
 }
 
 // Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
@@ -75,5 +74,4 @@ const Input = forwardRef(function Input(
   );
 });
 
-export { InputVariant };
 export default Input;

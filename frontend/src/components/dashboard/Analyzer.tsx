@@ -9,7 +9,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
@@ -351,7 +351,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 });
               }
             }}
-            variant={ButtonVariant.primary}
+            variant="primary"
             data-testid="cancel-button"
           >
             {intl.formatMessage(messages.selectSolutionForComparisonLeft)}
@@ -371,7 +371,7 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 });
               }
             }}
-            variant={ButtonVariant.primary}
+            variant="primary"
             data-testid="cancel-button"
           >
             {intl.formatMessage(messages.selectSolutionForComparisonRight)}

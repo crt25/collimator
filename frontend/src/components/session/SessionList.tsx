@@ -24,7 +24,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { isClickOnRow } from "@/utilities/table";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import MultiSwrContent from "../MultiSwrContent";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
 
@@ -171,7 +171,7 @@ const SessionList = ({ classId }: { classId: number }) => {
       <div>
         <ButtonGroup>
           <Button
-            variant={ButtonVariant.primary}
+            variant="primary"
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/class/${classId}/session/${rowData.id}/edit`);
@@ -297,7 +297,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                 <DropdownMenu
                   trigger={
                     <Button
-                      variant={ButtonVariant.secondary}
+                      variant="secondary"
                       onClick={() =>
                         router.push(`/class/${classId}/session/create`)
                       }

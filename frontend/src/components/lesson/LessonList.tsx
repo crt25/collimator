@@ -17,7 +17,7 @@ import Tags from "@/components/Tags";
 import Tag from "@/components/Tag";
 import DataTable, { LazyTableState } from "@/components/DataTable";
 import { TableMessages } from "@/i18n/table-messages";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
 
@@ -138,7 +138,7 @@ const LessonList = ({
       <div>
         <ButtonGroup attached>
           <Button
-            variant={ButtonVariant.primary}
+            variant="primary"
             onClick={(e) => {
               e.stopPropagation();
               router.push(`/lesson/${rowData.id}/edit`);
@@ -234,7 +234,7 @@ const LessonList = ({
             <DropdownMenu
               trigger={
                 <Button
-                  variant={ButtonVariant.secondary}
+                  variant="secondary"
                   onClick={() => router.push("lesson/create")}
                 >
                   <FontAwesomeIcon icon={faAdd} />

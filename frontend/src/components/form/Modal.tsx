@@ -1,5 +1,5 @@
-import { Button, Dialog, Portal, Text, chakra } from "@chakra-ui/react";
-import { ButtonVariant } from "@/components/ui/recipes/buttons/Button.recipe";
+import { Button, Dialog, Icon, Portal, Text } from "@chakra-ui/react";
+import { IoMdClose } from "react-icons/io";
 
 interface ModalProps {
   title: string;
@@ -58,9 +58,7 @@ export const Modal = ({
 
             <DialogFooter>
               <Dialog.ActionTrigger asChild>
-                <Button variant={ButtonVariant.secondary}>
-                  {cancelButtonText}
-                </Button>
+                <Button variant="secondary">{cancelButtonText}</Button>
               </Dialog.ActionTrigger>
               <Button
                 variant={
