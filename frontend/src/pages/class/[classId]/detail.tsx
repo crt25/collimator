@@ -125,42 +125,45 @@ const ClassDetail = () => {
     <>
       <Header
         title={messages.title}
-        titleParameters={{
-          name: klass?.name ?? "",
-        }}
+        titleParameters={{ name: klass?.name ?? "" }}
       />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={klass?.id} />
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
-            <div>
-              <PageHeader>{klass.name}</PageHeader>
-              <Table bordered role="presentation" data-testid="class-details">
-                <tbody>
-                  <tr>
-                    <td>
-                      <FormattedMessage
-                        id="ClassDetail.table.teacher"
-                        defaultMessage="Teacher"
-                      />
-                    </td>
-                    <td>{klass.teacher.name}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <FormattedMessage
-                        id="ClassDetail.table.numberOfStudents"
-                        defaultMessage="Number of Students"
-                      />
-                    </td>
-                    <td>{klass.students.length}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </div>
+            <>
+              <FlexContainer>
+                <PageHeading>{klass.name}</PageHeading>
+
+                <DropdownMenu
+                  testId="class-actions-dropdown"
+                  trigger={intl.formatMessage(messages.actions)}
+                  variant="secondary"
+                >
+                  <DropdownMenu.Item
+                    onClick={() => {
+                      setClassIdToDelete(klass.id);
+                      setShowDeleteModal(true);
+                    }}
+                    testId="class-delete-button"
+                  >
+                    {intl.formatMessage(messages.deleteAction)}
+                  </DropdownMenu.Item>
+                </DropdownMenu>
+              </FlexContainer>
+              <ClassNavigation classId={klass?.id} />
+
+              <ClassForm
+                submitMessage={messages.submit}
+                initialValues={{
+                  name: klass.name,
+                  teacherId: klass.teacher.id,
+                }}
+                onSubmit={onSubmit}
+              />
+            </>
           )}
         </SwrContent>
       </Container>
