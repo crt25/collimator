@@ -2,7 +2,7 @@ import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { HStack, Icon, Link, Status } from "@chakra-ui/react";
+import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
 import { LuChevronRight, LuHand } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
@@ -65,16 +65,19 @@ enum TaskStatus {
 
 type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
 
-const nameTemplate = (progress: StudentProgress) =>
-  "isAnonymous" in progress.student ? (
-    <StudentName studentId={progress.student.studentId} />
-  ) : (
-    <StudentName
-      studentId={progress.student.studentId}
-      pseudonym={progress.student.pseudonym}
-      keyPairId={progress.student.keyPairId}
-    />
-  );
+const nameTemplate = (progress: StudentProgress) => (
+  <Text fontWeight="semibold" fontSize="lg" margin={0}>
+    {"isAnonymous" in progress.student ? (
+      <StudentName studentId={progress.student.studentId} />
+    ) : (
+      <StudentName
+        studentId={progress.student.studentId}
+        pseudonym={progress.student.pseudonym}
+        keyPairId={progress.student.keyPairId}
+      />
+    )}
+  </Text>
+);
 
 const TaskTemplate = ({
   classId: _classId,
