@@ -51,15 +51,4 @@ export const ButtonRecipe = defineRecipe({
   },
 });
 
-export const ButtonVariant = {
-  primary: "primary",
-  secondary: "secondary",
-  danger: "danger",
-  detail: "detail",
-} as const;
-
-export type ButtonVariant = keyof NonNullable<
-  (typeof ButtonRecipe)["variants"]
->["variant"];
-
 export default ButtonRecipe;

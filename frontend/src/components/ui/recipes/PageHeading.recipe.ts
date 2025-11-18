@@ -62,9 +62,3 @@ export const PageHeadingRecipe = defineRecipe({
     variant: "title",
   },
 });
-
-export const PageHeadingVariant = {
-  title: "title",
-  description: "description",
-  subHeading: "subHeading",
-} as const;
