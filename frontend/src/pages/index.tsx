@@ -75,7 +75,11 @@ const Home = () => {
 
         <GridLayout>
           <GridItem>
-            <Card.Root size="lg" onClick={() => router.push("/class")}>
+            <Card.Root
+              variant="dashboard"
+              size="lg"
+              onClick={() => router.push("/class")}
+            >
               <Card.Body>
                 <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
@@ -87,7 +91,11 @@ const Home = () => {
 
           {isAdmin && (
             <GridItem>
-              <Card.Root size="lg" onClick={() => router.push("/user")}>
+              <Card.Root
+                variant="dashboard"
+                size="lg"
+                onClick={() => router.push("/user")}
+              >
                 <Card.Body>
                   <PageHeading variant="subHeading">Users</PageHeading>
                   <Text>
@@ -99,7 +107,11 @@ const Home = () => {
           )}
 
           <GridItem>
-            <Card.Root size="lg" onClick={() => router.push("/task")}>
+            <Card.Root
+              variant="dashboard"
+              size="lg"
+              onClick={() => router.push("/task")}
+            >
               <Card.Body>
                 <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
