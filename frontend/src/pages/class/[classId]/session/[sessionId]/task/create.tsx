@@ -48,7 +48,17 @@ const CreateTaskInstance = () => {
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
-      await createTask(taskSubmission);
+      await createTask({
+        ...taskSubmission,
+        referenceSolutions:
+          taskSubmission.initialSolution !== null
+            ? [taskSubmission.initialSolution]
+            : [],
+        referenceSolutionsFiles:
+          taskSubmission.initialSolutionFile !== null
+            ? [taskSubmission.initialSolutionFile]
+            : [],
+      });
     },
     [createTask],
   );
