@@ -29,6 +29,7 @@ import TextArea from "../form/TextArea";
 import Select from "../form/Select";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
+import { EditedBadge } from "../EditedBadge";
 
 const EditTaskButton = styled(Button)`
   margin-top: 1rem;
@@ -181,7 +182,7 @@ const TaskForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty, isValid, dirtyFields },
     watch,
     reset,
     setValue,
@@ -262,6 +263,9 @@ const TaskForm = ({
 
   const taskType = watch("type");
 
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
+
   return (
     <>
       <form onSubmit={onSubmitWrapper} data-testid="task-form">
@@ -272,12 +276,18 @@ const TaskForm = ({
               {...register("title")}
               data-testid="title"
               errorText={errors.title?.message}
+              labelBadge={
+                showEditedBadges && dirtyFields.title && <EditedBadge />
+              }
             />
             <TextArea
               label={messages.description}
               {...register("description")}
               data-testid="description"
               errorText={errors.description?.message}
+              labelBadge={
+                showEditedBadges && dirtyFields.description && <EditedBadge />
+              }
             />
 
             <Field.Root>

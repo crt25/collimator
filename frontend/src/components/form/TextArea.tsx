@@ -14,6 +14,7 @@ const InputWrapper = styled.div`
 
 interface Props {
   label?: MessageDescriptor;
+  labelBadge?: React.ReactNode;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
@@ -26,13 +27,25 @@ const TextArea = forwardRef(function TextArea(
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, variant, ...textareaProps } =
-    props;
+  const {
+    label,
+    labelBadge,
+    helperText,
+    errorText,
+    invalid,
+    variant,
+    ...textareaProps
+  } = props;
 
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
-        {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
+        {label && (
+          <Field.Label>
+            {intl.formatMessage(label)}
+            {labelBadge || null}
+          </Field.Label>
+        )}
         <ChakraTextarea
           ref={ref}
           variant={variant ?? "subtle"}

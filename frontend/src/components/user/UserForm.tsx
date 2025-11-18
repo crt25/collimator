@@ -11,6 +11,7 @@ import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import Select from "../form/Select";
+import { EditedBadge } from "../EditedBadge";
 
 const messages = defineMessages({
   name: {
@@ -68,11 +69,14 @@ const UserForm = ({
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<UserFormValues>({
     resolver,
     defaultValues,
   });
+
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="user-form">
@@ -82,6 +86,7 @@ const UserForm = ({
         data-testid="name"
         invalid={!!errors.name}
         errorText={errors.name?.message}
+        labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
       />
 
       <Input
@@ -90,6 +95,7 @@ const UserForm = ({
         data-testid="email"
         invalid={!!errors.email}
         errorText={errors.email?.message}
+        labelBadge={showEditedBadges && dirtyFields.email && <EditedBadge />}
       />
 
       <Select

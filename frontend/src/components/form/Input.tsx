@@ -64,7 +64,7 @@ const Input = forwardRef(function Input(
         {label && (
           <Field.Label>
             {intl.formatMessage(label)}
-            {labelBadge}
+            {labelBadge || null}
           </Field.Label>
         )}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
