@@ -1,5 +1,6 @@
 import { defineMessages, useIntl } from "react-intl";
 import { LuTrash } from "react-icons/lu";
+import { useRouter } from "next/router";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
@@ -14,6 +15,8 @@ const messages = defineMessages({
 
 const ClassActions = ({ klass }: { klass: ExistingClassExtended }) => {
   const intl = useIntl();
+
+  const router = useRouter();
   const deleteClass = useDeleteClass();
 
   return (
@@ -22,7 +25,10 @@ const ClassActions = ({ klass }: { klass: ExistingClassExtended }) => {
       variant="emphasized"
     >
       <DropdownMenu.Item
-        onClick={() => deleteClass(klass.id)}
+        onClick={async () => {
+          await deleteClass(klass.id);
+          router.push("/class");
+        }}
         icon={<LuTrash />}
       >
         {intl.formatMessage(messages.deleteSession)}
