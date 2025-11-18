@@ -93,16 +93,16 @@ const ClassDetail = () => {
             teacherId: formValues.teacherId,
           });
           toaster.success({
-            title: messages.successMessage.defaultMessage,
+            title: intl.formatMessage(messages.successMessage),
           });
         } catch {
           toaster.error({
-            title: messages.errorMessage.defaultMessage,
+            title: intl.formatMessage(messages.errorMessage),
           });
         }
       }
     },
-    [klass, updateClass],
+    [intl, klass, updateClass],
   );
 
   const handleDeleteConfirm = useCallback(async () => {

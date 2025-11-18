@@ -51,7 +51,7 @@ const CreateClass = () => {
           teacherId: formValues.teacherId,
         });
         toaster.success({
-          title: messages.successMessage.defaultMessage,
+          title: intl.formatMessage(messages.successMessage),
           action: {
             label: intl.formatMessage(messages.returnToClassList),
             onClick: () => router.back(),
