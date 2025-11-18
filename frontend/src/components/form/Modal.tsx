@@ -10,7 +10,6 @@ interface ModalProps {
   onConfirm: () => void;
   open: boolean;
   onOpenChange: (details: { open: boolean }) => void;
-  variant?: "danger" | "primary";
 }
 
 export const Modal = ({
@@ -22,24 +21,11 @@ export const Modal = ({
   onConfirm,
   open,
   onOpenChange,
-  variant = "danger",
 }: ModalProps) => {
   const handleConfirm = () => {
     onConfirm();
     onOpenChange({ open: false });
   };
-
-  const WarningText = chakra(Text, {
-    base: {
-      color: "fgTertiary",
-    },
-  });
-
-  const DialogFooter = chakra(Dialog.Footer, {
-    base: {
-      gap: "md",
-    },
-  });
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange} placement="center">
@@ -52,28 +38,18 @@ export const Modal = ({
             </Dialog.Header>
             <Dialog.Body>
               <Text>{description}</Text>
-
-              {warningText && <WarningText>{warningText}</WarningText>}
+              {warningText && <Text>{warningText}</Text>}
             </Dialog.Body>
-
-            <DialogFooter>
+            <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
                 <Button variant="secondary">{cancelButtonText}</Button>
               </Dialog.ActionTrigger>
-              <Button
-                variant={
-                  variant === "danger"
-                    ? ButtonVariant.danger
-                    : ButtonVariant.primary
-                }
-                onClick={handleConfirm}
-              >
-                {confirmButtonText}
-              </Button>
-            </DialogFooter>
-
-            <Dialog.CloseTrigger asChild>
-              <Button variant={ButtonVariant.secondary}></Button>
+              <Button onClick={handleConfirm}>{confirmButtonText}</Button>
+            </Dialog.Footer>
+            <Dialog.CloseTrigger>
+              <Icon fontSize="2xl" margin="sm">
+                <IoMdClose />
+              </Icon>
             </Dialog.CloseTrigger>
           </Dialog.Content>
         </Dialog.Positioner>
