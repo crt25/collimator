@@ -78,23 +78,30 @@ const SessionActions = ({
   };
 
   return (
-    <DropdownMenu
-      trigger={intl.formatMessage(ButtonMessages.actions)}
-      variant="emphasized"
-    >
-      {canGetSessionLink && (
+    <>
+      <DropdownMenu
+        trigger={intl.formatMessage(ButtonMessages.actions)}
+        variant="emphasized"
+      >
+        {canGetSessionLink && (
+          <DropdownMenu.Item
+            onClick={async () => {
+              const fingerprint =
+                await authenticationContext.keyPair.getPublicKeyFingerprint();
+              navigator.clipboard.writeText(
+                `${window.location.origin}/class/${klass.id}/session/${sessionId}/join?key=${fingerprint}`,
+              );
+            }}
+            icon={<LuSend />}
+          >
+            {intl.formatMessage(messages.copySessionLink)}
+          </DropdownMenu.Item>
+        )}
         <DropdownMenu.Item
-          onClick={async () => {
-            const fingerprint =
-              await authenticationContext.keyPair.getPublicKeyFingerprint();
-
-            navigator.clipboard.writeText(
-              `${window.location.origin}/class/${klass.id}/session/${sessionId}/join?key=${fingerprint}`,
-            );
-          }}
-          icon={<LuSend />}
+          onClick={() => setIsDeleteModalOpen(true)}
+          icon={<LuTrash />}
         >
-          {intl.formatMessage(messages.copySessionLink)}
+          {intl.formatMessage(messages.deleteSession)}
         </DropdownMenu.Item>
       </DropdownMenu>
 
