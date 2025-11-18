@@ -2,49 +2,42 @@ import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import { HStack, Icon, Link, Status } from "@chakra-ui/react";
-import { LuChevronRight, LuHand } from "react-icons/lu";
+import { HStack, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
+import MultiSwrContent from "../MultiSwrContent";
+import { StudentName } from "../encryption/StudentName";
+import ChakraDataTable from "../ChakraDataTable";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { ColumnType } from "@/types/tanstack-types";
 import { isClickOnRow } from "@/utilities/table";
+import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { ProgressMessages } from "@/i18n/progress-messages";
-import MultiSwrContent from "../MultiSwrContent";
-import { StudentName } from "../encryption/StudentName";
-import ChakraDataTable from "../ChakraDataTable";
-import Button from "../Button";
 
-const ProgressListWrapper = styled.div`
+const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
 `;
 
 const messages = defineMessages({
   nameColumn: {
-    id: "ProgressList.columns.name",
+    id: "TaskInstanceProgressList.columns.name",
     defaultMessage: "Name",
   },
-  taskColumn: {
-    id: "ProgressList.columns.taskColumn",
-    defaultMessage: "Task",
+  progressColumn: {
+    id: "TaskInstanceProgressList.columns.progressColumn",
+    defaultMessage: "Student Progress",
   },
-  helpColumn: {
-    id: "ProgressList.columns.help",
-    defaultMessage: "Help",
+  lastLoginDateColumn: {
+    id: "TaskInstanceProgressList.columns.lastLoginDateColumn",
+    defaultMessage: "Last Login Date",
   },
-  actionsColumn: {
-    id: "ProgressList.columns.actions",
-    defaultMessage: "Actions",
+  inShowcaseColumn: {
+    id: "TaskInstanceProgressList.columns.inShowcaseColumn",
+    defaultMessage: "In Showcase",
   },
 });
-
-type TaskSolutions = {
-  taskId: number;
-  solutions: ExistingStudentSolution[];
-};
 
 type AnonymousStudent = {
   isAnonymous: true;
@@ -54,7 +47,7 @@ type AnonymousStudent = {
 type StudentProgress = {
   id: number;
   student: ClassStudent | AnonymousStudent;
-  taskSolutions: TaskSolutions[];
+  taskSolutions: ExistingStudentSolution[];
 };
 
 enum TaskStatus {
@@ -78,7 +71,6 @@ const nameTemplate = (progress: StudentProgress) =>
 
 const TaskTemplate = ({
   classId: _classId,
-  taskId,
   rowData,
 }: {
   classId: number;
@@ -87,13 +79,10 @@ const TaskTemplate = ({
 }) => {
   const intl = useIntl();
 
-  const solutionToDisplay = useMemo(() => {
-    const solutions = rowData.taskSolutions.find(
-      (s) => s.taskId === taskId,
-    )?.solutions;
-
-    return ExistingStudentSolution.findSolutionToDisplay(solutions);
-  }, [taskId, rowData]);
+  const solutionToDisplay = useMemo(
+    () => ExistingStudentSolution.findSolutionToDisplay(rowData.taskSolutions),
+    [rowData],
+  );
 
   const status = useMemo(() => {
     if (!solutionToDisplay) {
@@ -141,18 +130,14 @@ const TaskTemplate = ({
   );
 };
 
-const helpTemplate = (_rowData: StudentProgress) => (
-  <Icon>
-    <LuHand />
-  </Icon>
-);
-
-const ProgressList = ({
+const TaskInstanceProgressList = ({
   classId,
   sessionId,
+  taskId,
 }: {
   classId: number;
   sessionId: number;
+  taskId: number;
 }) => {
   const intl = useIntl();
   const router = useRouter();
@@ -173,7 +158,7 @@ const ProgressList = ({
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionSolutions(classId, sessionId);
+  } = useAllSessionTaskSolutions(classId, sessionId, taskId);
 
   const studentIds = useMemo(() => {
     if (!klass || !solutions) {
@@ -182,7 +167,7 @@ const ProgressList = ({
 
     const studentIdsSet = new Set([
       ...klass.students.map((student) => student.studentId),
-      ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
+      ...solutions.map((s) => s.studentId),
     ]);
     return [...studentIdsSet];
   }, [klass, solutions]);
@@ -205,21 +190,9 @@ const ProgressList = ({
     });
 
     return students.map<StudentProgress>((student) => {
-      // group solutions of this student by task
-      const taskSolutions = session.tasks.map((task) => {
-        // find all solutions for this task and student
-        const studentSolutions = solutions.find(
-          (s) => s.taskId === task.id,
-        )?.solutions;
-
-        return {
-          taskId: task.id,
-          solutions:
-            studentSolutions?.filter(
-              (solution) => solution.studentId === student.studentId,
-            ) ?? [],
-        };
-      });
+      const taskSolutions = solutions.filter(
+        (solution) => solution.studentId === student.studentId,
+      );
 
       return {
         id: student.studentId,
@@ -230,7 +203,7 @@ const ProgressList = ({
   }, [klass, session, solutions, studentIds]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
-    const firstColumns: ColumnDef<StudentProgress>[] = [
+    return [
       {
         id: "name",
         header: intl.formatMessage(messages.nameColumn),
@@ -240,76 +213,50 @@ const ProgressList = ({
           columnType: ColumnType.text,
         },
       },
+      /*
+        This data is already stored with the student activities but no endpoint to fetch it exist at the moment.
       {
-        id: "helpNeeded",
-        header: intl.formatMessage(messages.helpColumn),
+        id: "lastLoginDate",
+        header: intl.formatMessage(messages.lastLoginDateColumn),
         enableSorting: false,
-        cell: (info) => helpTemplate(info.row.original),
-        size: 32,
+        cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
         },
-      },
-    ];
-
-    const lastColumns: ColumnDef<StudentProgress>[] = [
+      },*/
       {
-        id: "details",
-        header: "",
+        id: "progress",
+        header: intl.formatMessage(messages.progressColumn),
         enableSorting: false,
         cell: (info) => (
-          <Button
-            aria-label={intl.formatMessage(messages.actionsColumn)}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(
-                `/class/${classId}/session/${info.row.original.id}/progress/student/${info.row.original.student.studentId}`,
-              );
-            }}
-            variant="detail"
-          >
-            <Icon>
-              <LuChevronRight />
-            </Icon>
-          </Button>
+          <TaskTemplate
+            classId={classId}
+            taskId={taskId}
+            rowData={info.row.original}
+          />
         ),
         meta: {
           columnType: ColumnType.icon,
         },
       },
+      /*
+        For this to properly work, we should probably move the 'isReference' boolean
+        from the analysis to the solution model.
+        
+      {
+        id: "inShowcase",
+        header: intl.formatMessage(messages.inShowcaseColumn),
+        enableSorting: false,
+        cell: (info) => nameTemplate(info.row.original),
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },*/
     ];
-
-    const taskColumns: ColumnDef<StudentProgress>[] = (
-      session?.tasks ?? []
-    ).map(
-      (task, i) =>
-        ({
-          id: "task-" + task.id,
-          header: () => (
-            <Link
-              href={`/class/${classId}/session/${session?.id}/task/${task.id}/progress`}
-              variant="underline"
-            >{`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}</Link>
-          ),
-          enableSorting: false,
-          cell: (info) => (
-            <TaskTemplate
-              classId={classId}
-              taskId={task.id}
-              rowData={info.row.original}
-            />
-          ),
-          meta: {
-            columnType: ColumnType.icon,
-          },
-        }) satisfies ColumnDef<StudentProgress>,
-    );
-
-    return [...firstColumns, ...taskColumns, ...lastColumns];
-  }, [intl, session, router, classId]);
+  }, [intl, classId, taskId]);
 
   return (
-    <ProgressListWrapper data-testid="progress-list">
+    <TaskInstanceProgressListWrapper data-testid="progress-list">
       <MultiSwrContent
         data={[klass, session, solutions]}
         errors={[klassError, sessionError, solutionsError]}
@@ -335,8 +282,8 @@ const ProgressList = ({
           />
         )}
       </MultiSwrContent>
-    </ProgressListWrapper>
+    </TaskInstanceProgressListWrapper>
   );
 };
 
-export default ProgressList;
+export default TaskInstanceProgressList;
