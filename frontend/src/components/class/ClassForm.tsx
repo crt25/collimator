@@ -24,6 +24,7 @@ const ButtonWrapper = chakra("div", {
   base: {
     display: "flex",
     justifyContent: "flex-end",
+    marginTop: "4xl",
   },
 });
 
