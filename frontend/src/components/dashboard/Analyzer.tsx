@@ -8,8 +8,8 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
-import Input from "../form/Input";
 import Button from "../Button";
+import Checkbox from "../form/Checkbox";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
@@ -22,7 +22,6 @@ import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
 import { FilteredAnalysis } from "./hooks/types";
 import {
-  allSubtasks,
   AnalyzerState,
   AnalyzerStateActionType,
   analyzerStateReducer,
@@ -210,24 +209,16 @@ const Analyzer = ({
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
-                  options={[
-                    {
-                      label: intl.formatMessage(messages.allSubTasks),
-                      value: allSubtasks,
-                    },
-                    ...subtasks.map((subtask) => ({
-                      label: subtask.toString(),
-                      value: subtask,
-                    })),
-                  ]}
+                  placeholder={messages.allSubTasks}
+                  options={subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  }))}
                   data-testid="select-subtask"
-                  onChange={(e) =>
+                  onValueChange={(value) =>
                     dispatch({
                       type: AnalyzerStateActionType.setSelectedSubTask,
-                      selectedSubTaskId:
-                        e.target.value !== allSubtasks
-                          ? e.target.value
-                          : undefined,
+                      selectedSubTaskId: value,
                     })
                   }
                   value={state.selectedSubTaskId}
@@ -246,14 +237,13 @@ const Analyzer = ({
                   parametersByCriterion={parametersByCriterion}
                 />
 
-                <Input
+                <Checkbox
                   label={messages.automaticGrouping}
-                  type="checkbox"
                   checked={state.isAutomaticGrouping}
-                  onChange={(e) =>
+                  onCheckedChange={(checked) =>
                     dispatch({
                       type: AnalyzerStateActionType.setAutomaticGrouping,
-                      isAutomaticGrouping: e.target.checked,
+                      isAutomaticGrouping: checked,
                     })
                   }
                 />

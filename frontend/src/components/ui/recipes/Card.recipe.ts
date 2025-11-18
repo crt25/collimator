@@ -1,57 +1,23 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
+import { cardAnatomy } from "@chakra-ui/react/anatomy";
 
 export const CardRecipe = defineSlotRecipe({
-  slots: ["root"],
-  base: {
-    root: {
-      borderRadius: "sm",
-      padding: "lg",
-      backgroundColor: "bg",
-      borderWidth: "thin",
-      borderStyle: "solid",
-      borderColor: "border",
-      cursor: "pointer",
-      _hover: {
-        opacity: 0.8,
-      },
-    },
-  },
+  slots: cardAnatomy.keys(),
   variants: {
     variant: {
-      full: {
+      dashboard: {
         root: {
-          width: "100%",
-          maxWidth: "100%",
-        },
-      },
-      large: {
-        root: {
-          width: "75%",
-          maxWidth: "75%",
-        },
-      },
-      medium: {
-        root: {
-          width: "50%",
-          maxWidth: "50%",
-        },
-      },
-      small: {
-        root: {
-          width: "35%",
-          maxWidth: "35%",
-        },
-      },
-      compact: {
-        root: {
-          width: "20%",
-          maxWidth: "20%",
+          cursor: "pointer",
+          padding: "lg",
+          maxHeight: "3xs",
+          borderWidth: "thin",
+          height: "3xs",
+          _hover: {
+            opacity: 0.8,
+          },
         },
       },
     },
-  },
-  defaultVariants: {
-    variant: "large",
   },
 });
 

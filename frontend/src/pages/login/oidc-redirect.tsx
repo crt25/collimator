@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
-import { Container } from "@chakra-ui/react";
+import { AbsoluteCenter, Container } from "@chakra-ui/react";
 import { authenticate } from "@/utilities/authentication/openid-connect";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
@@ -159,19 +159,13 @@ const OpenIdConnectRedirect = () => {
     return (
       <>
         <Header title={messages.title} />
-        <Container>
-          <PageHeading>
-            <FormattedMessage
-              id="OpenIdConnectRedirect.userSignInHeading"
-              defaultMessage="User Sign In"
-            />
-          </PageHeading>
+        <AbsoluteCenter>
           <UserSignIn
             authResponse={userSignInState.authResponse}
             idToken={userSignInState.idToken}
             redirectPath={userSignInState.redirectPath}
           />
-        </Container>
+        </AbsoluteCenter>
       </>
     );
   }

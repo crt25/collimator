@@ -25,16 +25,17 @@ const ListClasses = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeading variant="title">
+        <PageHeading
+          description={
+            <FormattedMessage
+              id="ListClasses.pageDescription"
+              defaultMessage=""
+            />
+          }
+        >
           <FormattedMessage
             id="ListClasses.pageTitle"
             defaultMessage="Class Manager"
-          />
-        </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage
-            id="ListClasses.pageDescription"
-            defaultMessage=""
           />
         </PageHeading>
         <ClassList />

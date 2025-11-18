@@ -12,6 +12,7 @@ import {
 const InputWrapper = chakra("div", {
   base: {
     display: "block",
+    marginBottom: "1rem",
   },
 });
 
@@ -49,9 +50,10 @@ const Input = forwardRef(function Input(
     errorText,
     invalid,
     variety,
-    variant,
+    variant = "subtle",
     type,
     labelBadge,
+    size,
     ...inputProps
   } = props;
 
@@ -63,7 +65,7 @@ const Input = forwardRef(function Input(
         {label && (
           <Field.Label>
             {intl.formatMessage(label)}
-            {labelBadge}
+            {labelBadge || null}
           </Field.Label>
         )}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
@@ -71,6 +73,7 @@ const Input = forwardRef(function Input(
             ref={ref}
             type={type}
             variant={variant}
+            size={size}
             {...inputProps}
           />
         </InputGroup>
