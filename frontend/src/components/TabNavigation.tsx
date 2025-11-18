@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Tabs } from "@chakra-ui/react";
+import { Tabs, HStack } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
 import { ReactNode, useContext } from "react";
 import styled from "@emotion/styled";
+
 import {
   AuthenticationContext,
   AuthenticationContextType,
@@ -13,6 +14,7 @@ import BreadcrumbItem from "./BreadcrumbItem";
 
 const TabsRoot = styled(Tabs.Root)`
   margin-top: 1rem;
+  width: fit-content;
   margin-bottom: 1rem;
 `;
 
@@ -94,7 +96,10 @@ const TabNavigation = <T extends unknown = undefined>({
         {navigationTabs.map((tab) => (
           <Tabs.Trigger key={tab.url} value={tab.url} asChild>
             <Link href={tab.url} data-testid={tab.testId}>
-              {tab.title(intl, tabTitleArguments as T)}
+              <HStack gap="sm" align="center">
+                {tab.icon}
+                <span>{tab.title(intl, tabTitleArguments as T)}</span>
+              </HStack>
             </Link>
           </Tabs.Trigger>
         ))}
