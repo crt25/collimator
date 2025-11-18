@@ -1,7 +1,8 @@
-import { ButtonGroup, Col, Row } from "react-bootstrap";
+import { ButtonGroup } from "react-bootstrap";
 import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { getStudentNickname } from "@/utilities/student-name";
 import { TaskType } from "@/api/collimator/generated/models";
 import { decodeBase64 } from "@/utilities/crypto/base64";
@@ -536,8 +537,8 @@ const CodeComparison = ({
           />
         </h2>
 
-        <Row>
-          <Col xs={6}>
+        <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+          <GridItem colSpan={6}>
             <SelectionMenu>
               <Select
                 options={groupOptions}
@@ -612,8 +613,8 @@ const CodeComparison = ({
             ) : (
               <CodeViewContainer />
             )}
-          </Col>
-          <Col xs={6}>
+          </GridItem>
+          <GridItem colSpan={6}>
             <SelectionMenu>
               <Select
                 options={groupOptions}
@@ -690,8 +691,8 @@ const CodeComparison = ({
             ) : (
               <CodeViewContainer />
             )}
-          </Col>
-        </Row>
+          </GridItem>
+        </Grid>
       </CodeComparisonWrapper>
     </>
   );

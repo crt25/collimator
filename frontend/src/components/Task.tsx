@@ -1,6 +1,5 @@
 import { RefObject, useCallback } from "react";
-import { Col } from "react-bootstrap";
-import { CloseButton, chakra } from "@chakra-ui/react";
+import { CloseButton, chakra, GridItem } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import TaskDescription from "@/components/TaskDescription";
@@ -111,18 +110,18 @@ const Task = ({
             <RemainingHeightContainer>
               <h1 data-testid="session-name">{session.title}</h1>
               <FullHeightRow>
-                <Col xs={4}>
+                <GridItem colSpan={4}>
                   <TaskList
                     classId={classId}
                     session={session}
                     currentTaskId={task.id}
                   />
-                </Col>
-                <Col xs={8}>
+                </GridItem>
+                <GridItem colSpan={8}>
                   <TaskDescription>
                     <p>{task.description}</p>
                   </TaskDescription>
-                </Col>
+                </GridItem>
               </FullHeightRow>
               <VerticalSpacing />
             </RemainingHeightContainer>

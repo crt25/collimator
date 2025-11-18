@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
-import { Col, Row } from "react-bootstrap";
-import styled from "@emotion/styled";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
@@ -30,10 +29,6 @@ const messages = defineMessages({
     defaultMessage: "Number of dissimilar pairs",
   },
 });
-
-const CodeViewCol = styled(Col)`
-  margin-bottom: 1rem;
-`;
 
 const DissimilarPairs = ({
   session,
@@ -71,8 +66,8 @@ const DissimilarPairs = ({
         errors={[analysesErrors]}
       >
         {([_analyses]) => (
-          <Row>
-            <Col xs={12} lg={3}>
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, lg: 3 }}>
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
@@ -109,12 +104,20 @@ const DissimilarPairs = ({
                   }
                 />
               </AnalysisParameters>
-            </Col>
-            <Col xs={12} lg={9}>
+            </GridItem>
+            <GridItem colSpan={{ base: 12, lg: 9 }}>
               {dissimilarPairs
                 ? dissimilarPairs.map(([a, b]) => (
-                    <Row key={`${a.solutionId}-${b.solutionId}`}>
-                      <CodeViewCol key={a.solutionId} xs={12} lg={6}>
+                    <Grid
+                      templateColumns="repeat(12, 1fr)"
+                      gap={4}
+                      key={`${a.solutionId}-${b.solutionId}`}
+                    >
+                      <GridItem
+                        key={a.solutionId}
+                        colSpan={{ base: 12, lg: 6 }}
+                        marginBottom="md"
+                      >
                         <StudentName
                           studentId={a.studentId}
                           pseudonym={a.studentPseudonym}
@@ -128,8 +131,12 @@ const DissimilarPairs = ({
                           taskType={task.type}
                           solutionHash={a.solutionHash}
                         />
-                      </CodeViewCol>
-                      <CodeViewCol key={b.solutionId} xs={12} lg={6}>
+                      </GridItem>
+                      <GridItem
+                        key={b.solutionId}
+                        colSpan={{ base: 12, lg: 6 }}
+                        marginBottom="md"
+                      >
                         <StudentName
                           studentId={b.studentId}
                           pseudonym={b.studentPseudonym}
@@ -143,12 +150,12 @@ const DissimilarPairs = ({
                           taskType={task.type}
                           solutionHash={b.solutionHash}
                         />
-                      </CodeViewCol>
-                    </Row>
+                      </GridItem>
+                    </Grid>
                   ))
                 : null}
-            </Col>
-          </Row>
+            </GridItem>
+          </Grid>
         )}
       </MultiSwrContent>
     </>

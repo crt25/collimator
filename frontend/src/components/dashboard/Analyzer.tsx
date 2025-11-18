@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useReducer } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Col, Modal, Row } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
@@ -205,8 +206,8 @@ const Analyzer = ({
         errors={[analysesErrors]}
       >
         {([_analyses]) => (
-          <Row>
-            <Col xs={12} lg={3}>
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, lg: 3 }}>
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
@@ -265,8 +266,8 @@ const Analyzer = ({
                   />
                 )}
               </AnalysisParameters>
-            </Col>
-            <Col xs={12} lg={9}>
+            </GridItem>
+            <GridItem colSpan={{ base: 12, lg: 9 }}>
               <Analysis
                 taskType={task.type}
                 state={state}
@@ -275,8 +276,8 @@ const Analyzer = ({
                 manualGroups={manualGroups}
                 onSelectAnalysis={onSelectSolution}
               />
-            </Col>
-            <Col xs={12}>
+            </GridItem>
+            <GridItem colSpan={{ base: 12 }}>
               {task && (
                 <CodeComparison
                   classId={session.klass.id}
@@ -289,8 +290,8 @@ const Analyzer = ({
                   groups={groups}
                 />
               )}
-            </Col>
-          </Row>
+            </GridItem>
+          </Grid>
         )}
       </MultiSwrContent>
       <Modal
