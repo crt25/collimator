@@ -61,7 +61,7 @@ const Input = forwardRef(function Input(
 
   return (
     <InputWrapper>
-      <Field.Root invalid={invalid}>
+      <Field.Root invalid={invalid || !!errorText}>
         {label && (
           <Field.Label>
             {intl.formatMessage(label)}

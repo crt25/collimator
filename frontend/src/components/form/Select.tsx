@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import {
   Select as ChakraSelect,
   createListCollection,
+  Field,
   ListCollection,
   Portal,
 } from "@chakra-ui/react";
@@ -39,6 +40,8 @@ type InternalSelectProps = {
   onValueChange?: (value: string) => void;
   onInteractOutside?: () => void;
   isDirty?: boolean;
+  showEditedBadge?: boolean;
+  errorMessage?: string;
 };
 
 type SharedSelectProps = InternalSelectProps & {
@@ -74,12 +77,14 @@ const InternalSelect = (
     placeholder,
     collection,
     variant,
+    showEditedBadge,
     isDirty,
+    errorMessage,
     children,
   } = props;
 
   return (
-    <>
+    <Field.Root invalid={!!errorMessage}>
       <ChakraSelect.Root
         name={name}
         value={value !== undefined ? [value.toString()] : []}
@@ -92,7 +97,7 @@ const InternalSelect = (
         {label && (
           <ChakraSelect.Label>
             {intl.formatMessage(label)}
-            {isDirty && <EditedBadge />}
+            {showEditedBadge && isDirty && <EditedBadge />}
           </ChakraSelect.Label>
         )}
 
@@ -110,6 +115,8 @@ const InternalSelect = (
           </ChakraSelect.IndicatorGroup>
         </ChakraSelect.Control>
 
+        {errorMessage && <Field.ErrorText>{errorMessage}</Field.ErrorText>}
+
         {children}
 
         <Portal>
@@ -124,7 +131,7 @@ const InternalSelect = (
           </ChakraSelect.Positioner>
         </Portal>
       </ChakraSelect.Root>
-    </>
+    </Field.Root>
   );
 };
 
@@ -170,11 +177,13 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               value={field.value}
               onValueChange={field.onChange}
               isDirty={fieldState.isDirty}
+              errorMessage={fieldState.error?.message}
               onInteractOutside={() => field.onBlur()}
               collection={collection}
               variant={variant}
               label={label}
               placeholder={placeholder}
+              showEditedBadge={props.showEditedBadge}
             >
               {children}
             </InternalSelect>

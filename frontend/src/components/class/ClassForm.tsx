@@ -114,6 +114,7 @@ const ClassForm = ({
                   name="teacherId"
                   control={control}
                   label={messages.teacher}
+                  showEditedBadge={showEditedBadges}
                   options={users.map((u) => ({
                     value: u.id.toString(),
                     label: u.name ?? u.email,

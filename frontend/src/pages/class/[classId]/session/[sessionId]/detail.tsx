@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
-import { useCallback } from "react";
+import { defineMessages, useIntl } from "react-intl";
+import { useCallback, useRef } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
+import PageHeading from "@/components/PageHeading";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -13,21 +14,33 @@ import SessionNavigation from "@/components/session/SessionNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionForm, {
   SessionFormValues,
+  SharingType,
 } from "@/components/session/SessionForm";
-import PageHeading from "@/components/PageHeading";
+import { toaster } from "@/components/Toaster";
+import SessionActions from "@/components/session/SessionActions";
 
 const messages = defineMessages({
   title: {
-    id: "EditSession.title",
-    defaultMessage: "Edit Session - {title}",
+    id: "SessionDetail.title",
+    defaultMessage: "Session - {title}",
   },
   submit: {
-    id: "EditSession.submit",
+    id: "SessionDetail.submit",
     defaultMessage: "Save Session",
+  },
+  successMessage: {
+    id: "SessionDetail.successMessage",
+    defaultMessage: "Successfully saved changes",
+  },
+  errorMessage: {
+    id: "SessionDetail.errorMessage",
+    defaultMessage:
+      "There was an error saving the changes. Please try to save again!",
   },
 });
 
-const EditSession = () => {
+const SessionDetail = () => {
+  const intl = useIntl();
   const router = useRouter();
   const { classId, sessionId } = router.query as {
     classId: string;
@@ -51,18 +64,26 @@ const EditSession = () => {
   const onSubmit = useCallback(
     async (formValues: SessionFormValues) => {
       if (klass && session) {
-        await updateSession(klass.id, session.id, {
-          title: formValues.title,
-          description: formValues.description,
-          taskIds: formValues.taskIds,
-          isAnonymous: formValues.isAnonymous,
-        });
-
-        router.back();
+        try {
+          await updateSession(klass.id, session.id, {
+            title: formValues.title,
+            description: formValues.description,
+            taskIds: formValues.taskIds,
+            isAnonymous: formValues.sharingType === SharingType.anonymous,
+          });
+          toaster.success({
+            title: intl.formatMessage(messages.successMessage),
+          });
+        } catch {
+          toaster.error({
+            title: intl.formatMessage(messages.errorMessage),
+          });
+        }
       }
     },
-    [klass, session, updateSession, router],
+    [intl, klass, session, updateSession],
   );
+
 
   return (
     <>
@@ -77,13 +98,6 @@ const EditSession = () => {
           <CrtNavigation breadcrumb klass={klass} />
           <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
-        <PageHeading>
-          <FormattedMessage
-            id="EditSession.header"
-            defaultMessage="Edit Session"
-          />
-        </PageHeading>
-        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <MultiSwrContent
           data={[klass, session]}
           errors={[klassError, sessionError]}
@@ -94,16 +108,26 @@ const EditSession = () => {
             _klass,
             session,
           ]) => (
-            <SessionForm
-              submitMessage={messages.submit}
-              initialValues={{
-                title: session.title,
-                description: session.description,
-                taskIds: session.tasks.map((t) => t.id),
-                isAnonymous: session.isAnonymous,
-              }}
-              onSubmit={onSubmit}
-            />
+            <>
+              <PageHeading
+                actions={
+                  <SessionActions klass={_klass} sessionId={session.id} />
+                }
+              >
+                {session.title}
+              </PageHeading>
+              <SessionNavigation classId={klass?.id} sessionId={session?.id} />
+              <SessionForm
+                submitMessage={messages.submit}
+                initialValues={{
+                  title: session.title,
+                  description: session.description,
+                  taskIds: session.tasks.map((t) => t.id),
+                  sharingType: session.isAnonymous ? SharingType.anonymous : SharingType.public,
+                }}
+                onSubmit={onSubmit}
+              />
+            </>
           )}
         </MultiSwrContent>
       </Container>
@@ -111,4 +135,4 @@ const EditSession = () => {
   );
 };
 
-export default EditSession;
+export default SessionDetail;
