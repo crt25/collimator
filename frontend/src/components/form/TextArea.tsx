@@ -14,28 +14,43 @@ const InputWrapper = styled.div`
 
 interface Props {
   label?: MessageDescriptor;
+  labelBadge?: React.ReactNode;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
 }
 
-type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
-  Props & {
-    size?: ChakraTextareaProps["size"];
-  };
+type TextAreaProps = ChakraTextareaProps & Props;
 
 const TextArea = forwardRef(function TextArea(
   props: TextAreaProps,
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, ...textareaProps } = props;
+  const {
+    label,
+    labelBadge,
+    helperText,
+    errorText,
+    invalid,
+    variant,
+    ...textareaProps
+  } = props;
 
   return (
     <InputWrapper>
-      <Field.Root invalid={invalid}>
-        {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
-        <ChakraTextarea ref={ref} {...textareaProps} />
+      <Field.Root invalid={invalid || !!errorText}>
+        {label && (
+          <Field.Label>
+            {intl.formatMessage(label)}
+            {labelBadge || null}
+          </Field.Label>
+        )}
+        <ChakraTextarea
+          ref={ref}
+          variant={variant ?? "subtle"}
+          {...textareaProps}
+        />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>

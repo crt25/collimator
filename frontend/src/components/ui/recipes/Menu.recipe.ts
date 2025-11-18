@@ -15,9 +15,12 @@ export const MenuRecipe = defineSlotRecipe({
     variant: {
       emphasized: {
         trigger: {
-          backgroundColor: "fg",
+          cursor: "pointer",
+          backgroundColor: "buttonBg",
+          padding: "0.5rem 0.75rem !important",
           color: "bg",
-          fontWeight: "normal",
+          fontWeight: "normal !important",
+          fontSize: "sm",
         },
       },
     },

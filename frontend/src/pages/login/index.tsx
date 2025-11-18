@@ -1,17 +1,30 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Container } from "@chakra-ui/react";
+import { AbsoluteCenter, Card, Stack, Container } from "@chakra-ui/react";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import { WarningMessages } from "@/i18n/warning-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+import { TextComponent as Text } from "@/components/Text";
 import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
     id: "LoginPage.title",
     defaultMessage: "Teacher Login",
+  },
+  header: {
+    id: "LoginPage.header",
+    defaultMessage: "Login",
+  },
+  description: {
+    id: "LoginPage.description",
+    defaultMessage: "Log in to access your account",
+  },
+  authenticateMicrosoft: {
+    id: "LoginPage.authenticate.microsoft",
+    defaultMessage: "Authenticate using Microsoft",
   },
 });
 
@@ -38,19 +51,40 @@ const LoginPage = () => {
       <Header title={messages.title} />
       <Container>
         <PageHeading>
-          <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
+          <FormattedMessage {...messages.title} />
         </PageHeading>
-        <p>{intl.formatMessage(WarningMessages.authenticationTracking)}</p>
-        <Button
-          onClick={onAuthenticateWithMicrosoft}
-          data-testid="signin-button"
-        >
-          <FormattedMessage
-            id="LoginPage.authenticate.microsoft"
-            defaultMessage="Authenticate using Microsoft"
-          />
-        </Button>
+        <PageHeading variant="description">
+          <FormattedMessage {...messages.description} />
+        </PageHeading>
       </Container>
+      <AbsoluteCenter>
+        <Stack gap="sm" width="full" maxWidth="md">
+          <Card.Root width="full">
+            <Card.Header gap="sm">
+              <Card.Title>
+                <FormattedMessage {...messages.header} />
+              </Card.Title>
+              <Card.Description>
+                <FormattedMessage {...messages.description} />
+              </Card.Description>
+              <Stack width="full">
+                <Text fontSize="sm" color="gray.600">
+                  {intl.formatMessage(WarningMessages.authenticationTracking)}
+                </Text>
+              </Stack>
+            </Card.Header>
+            <Card.Body />
+            <Card.Footer justifyContent="flex-end">
+              <Button
+                onClick={onAuthenticateWithMicrosoft}
+                data-testid="signin-button"
+              >
+                <FormattedMessage {...messages.authenticateMicrosoft} />
+              </Button>
+            </Card.Footer>
+          </Card.Root>
+        </Stack>
+      </AbsoluteCenter>
     </>
   );
 };

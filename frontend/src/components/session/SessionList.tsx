@@ -250,7 +250,7 @@ const SessionList = ({ classId }: { classId: number }) => {
                 ],
               },
               pagination: {
-                pageSize: 4,
+                pageSize: 10,
               },
             }}
           />

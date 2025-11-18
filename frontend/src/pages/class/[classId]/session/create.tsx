@@ -52,7 +52,7 @@ const CreateSession = () => {
     async (formValues: SessionFormValues) => {
       if (klass) {
         try {
-          await createSession(klass.id, {
+          const session = await createSession(klass.id, {
             title: formValues.title,
             description: formValues.description,
             taskIds: formValues.taskIds,
@@ -66,6 +66,7 @@ const CreateSession = () => {
             },
             closable: true,
           });
+          router.push(`/class/${klass.id}/session/${session.id}/detail`);
         } catch {
           toaster.error({
             title: intl.formatMessage(messages.errorMessage),

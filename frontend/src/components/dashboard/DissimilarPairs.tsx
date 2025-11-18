@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages } from "react-intl";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
@@ -11,7 +11,6 @@ import { StudentName } from "../encryption/StudentName";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
-import { allSubtasks } from "./Analyzer.state";
 import CodeView from "./CodeView";
 import { useDissimilarPairs } from "./hooks/useDissimilarAnalyses/pairs";
 
@@ -37,8 +36,6 @@ const DissimilarPairs = ({
   session: ExistingSessionExtended;
   task: ExistingTask;
 }) => {
-  const intl = useIntl();
-
   const [selectedSubTaskId, setSelectedSubTaskId] = useState<
     string | undefined
   >();
@@ -71,24 +68,13 @@ const DissimilarPairs = ({
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
-                  options={[
-                    {
-                      label: intl.formatMessage(messages.allSubTasks),
-                      value: allSubtasks,
-                    },
-                    ...subtasks.map((subtask) => ({
-                      label: subtask.toString(),
-                      value: subtask,
-                    })),
-                  ]}
+                  placeholder={messages.allSubTasks}
+                  options={subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  }))}
                   data-testid="select-subtask"
-                  onChange={(e) =>
-                    setSelectedSubTaskId(
-                      e.target.value !== allSubtasks
-                        ? e.target.value
-                        : undefined,
-                    )
-                  }
+                  onValueChange={(v) => setSelectedSubTaskId(v)}
                   value={selectedSubTaskId}
                   alwaysShow
                 />
