@@ -110,7 +110,6 @@ const config = defineConfig({
     body: {
       color: "var(--chakra-colors-fg)",
       backgroundColor: "var(--chakra-colors-bg)",
-      fontFamily: "Inter, sans-serif",
     },
     ".p-tooltip": {
       backgroundColor: "var(--chakra-colors-bg)",

@@ -74,16 +74,17 @@ const CreateClass = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeading>
+        <PageHeading
+          description={
+            <FormattedMessage
+              id="CreateClass.pageDescription"
+              defaultMessage=""
+            />
+          }
+        >
           <FormattedMessage
             id="CreateClass.header"
             defaultMessage="Create Class"
-          />
-        </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage
-            id="CreateClass.pageDescription"
-            defaultMessage=""
           />
         </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />

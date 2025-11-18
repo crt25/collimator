@@ -12,7 +12,6 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
-import SessionNavigation from "@/components/session/SessionNavigation";
 
 const messages = defineMessages({
   title: {
@@ -77,15 +76,21 @@ const CreateTaskInstance = () => {
           isLoading={[isLoadingKlass, isLoadingSession]}
           data={[klass, session]}
         >
-          {([klass, session]) => (
+          {([_klass, _session]) => (
             <>
-              <PageHeading>
+              <PageHeading
+                description={
+                  <FormattedMessage
+                    id="CreateTaskInstance.description"
+                    defaultMessage=""
+                  />
+                }
+              >
                 <FormattedMessage
                   id="CreateTaskInstance.header"
                   defaultMessage="Create Task"
                 />
               </PageHeading>
-              <SessionNavigation classId={klass.id} sessionId={session.id} />
               <TaskForm submitMessage={messages.submit} onSubmit={onSubmit} />
             </>
           )}

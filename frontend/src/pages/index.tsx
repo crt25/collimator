@@ -46,11 +46,10 @@ const Home = () => {
     <>
       <Header title={messages.header} />
       <Container>
-        <PageHeading>
+        <PageHeading
+          description={<FormattedMessage {...messages.description} />}
+        >
           <FormattedMessage {...messages.header} />
-        </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage {...messages.description} />
         </PageHeading>
 
         <GridLayout>
