@@ -1,15 +1,19 @@
 import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { TaskTable } from "@/components/task/TaskTable";
+import TaskTable from "@/components/task/TaskTable";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
     id: "ListTasks.title",
     defaultMessage: "Tasks",
+  },
+  description: {
+    id: "ListTasks.description",
+    defaultMessage: "",
   },
 });
 
@@ -18,14 +22,15 @@ const ListTasks = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <Breadcrumbs />
-        <CrtNavigation />
-        <PageHeader>
-          <FormattedMessage
-            id="ListTasks.header"
-            defaultMessage="Task Manager"
-          />
-        </PageHeader>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb />
+        </Breadcrumbs>
+        <PageHeading variant={PageHeadingVariant.title}>
+          <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
+        </PageHeading>
+        <PageHeading variant={PageHeadingVariant.description}>
+          <FormattedMessage id="ListTasks.pageDescription" defaultMessage="" />
+        </PageHeading>
         <TaskTable />
       </Container>
     </>

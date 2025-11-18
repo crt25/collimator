@@ -84,6 +84,7 @@ interface ChakraDataTableProps<T> {
   onRowClick?: (row: T) => void;
   features?: DataTableFeatures;
   variant?: "outline" | "line";
+  includeSearchBar?: boolean;
 }
 
 const TableWrapper = chakra("div", {
@@ -204,6 +205,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   onRowClick,
   features,
   variant = "outline",
+  includeSearchBar = true,
 }: ChakraDataTableProps<T>) => {
   const intl = useIntl();
 
@@ -507,7 +509,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   return (
     <TableWrapper>
       <TableContainer>
-        {features?.columnFiltering && (
+        {features?.columnFiltering && includeSearchBar && (
           <FilterContainer>
             <InputWrapper>
               <Input

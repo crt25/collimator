@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Tabs } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
-import { useContext } from "react";
+import { ReactNode, useContext } from "react";
 import styled from "@emotion/styled";
 import {
   AuthenticationContext,
@@ -21,6 +21,7 @@ export interface NavigationTab<T = undefined> {
   title: (intl: IntlShape, args: T) => string;
   isShown?: (authContext: AuthenticationContextType) => boolean;
   testId?: string;
+  icon?: ReactNode;
 }
 
 // regex to remove both leading & trailing slashes
@@ -72,7 +73,7 @@ const TabNavigation = <T extends unknown = undefined>({
     return (
       <>
         {activeItems.map((item) => (
-          <BreadcrumbItem key={item.url} href={item.url}>
+          <BreadcrumbItem key={item.url} href={item.url} icon={item.icon}>
             {item.title(intl, tabTitleArguments as T)}
           </BreadcrumbItem>
         ))}
