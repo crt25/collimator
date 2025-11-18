@@ -9,13 +9,33 @@ import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 
 const messages = defineMessages({
-  header: {
+  teacherHeader: {
     id: "Home.header",
     defaultMessage: "Teacher Dashboard",
   },
-  description: {
+  teacherDescription: {
     id: "Home.description",
     defaultMessage: "Welcome to the Teacher Dashboard of Collimator.",
+  },
+  adminHeader: {
+    id: "Home.header",
+    defaultMessage: "Admin Dashboard",
+  },
+  adminDescription: {
+    id: "Home.description",
+    defaultMessage: "Welcome to the Admin Dashboard of Collimator.",
+  },
+  classesDescription: {
+    id: "Home.classesDescription",
+    defaultMessage: "Manage your classes and students.",
+  },
+  usersDescription: {
+    id: "Home.usersDescription",
+    defaultMessage: "Manage user accounts and permissions.",
+  },
+  tasksDescription: {
+    id: "Home.tasksDescription",
+    defaultMessage: "Create and manage tasks for your classes.",
   },
 });
 
@@ -41,16 +61,20 @@ const Home = () => {
   const authContext = useContext(AuthenticationContext);
 
   const isAdmin = authContext.role === UserRole.admin || undefined;
+  const header = isAdmin ? messages.adminHeader : messages.teacherHeader;
+  const description = isAdmin
+    ? messages.adminDescription
+    : messages.teacherDescription;
 
   return (
     <>
-      <Header title={messages.header} />
+      <Header title={header} />
       <Container>
         <PageHeading>
-          <FormattedMessage {...messages.header} />
+          <FormattedMessage {...header} />
         </PageHeading>
         <PageHeading variant="description">
-          <FormattedMessage {...messages.description} />
+          <FormattedMessage {...description} />
         </PageHeading>
 
         <GridLayout>
@@ -59,8 +83,7 @@ const Home = () => {
               <Card.Body>
                 <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
+                  <FormattedMessage {...messages.classesDescription} />
                 </Text>
               </Card.Body>
             </Card.Root>
@@ -71,7 +94,9 @@ const Home = () => {
               <Card.Root variant="full" onClick={() => router.push("/user")}>
                 <Card.Body>
                   <PageHeading variant="subHeading">Users</PageHeading>
-                  <Text>Manage user accounts and permissions.</Text>
+                  <Text>
+                    <FormattedMessage {...messages.usersDescription} />
+                  </Text>
                 </Card.Body>
               </Card.Root>
             </GridItem>
@@ -91,23 +116,7 @@ const Home = () => {
               <Card.Body>
                 <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
-                </Text>
-              </Card.Body>
-            </Card.Root>
-          </GridItem>
-
-          <GridItem>
-            <Card.Root
-              variant="full"
-              onClick={() => router.push("/some-other-page")}
-            >
-              <Card.Body>
-                <PageHeading variant="subHeading">Some other Page</PageHeading>
-                <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
+                  <FormattedMessage {...messages.tasksDescription} />
                 </Text>
               </Card.Body>
             </Card.Root>
