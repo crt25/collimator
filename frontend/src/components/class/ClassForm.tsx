@@ -1,14 +1,7 @@
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
-import {
-  Portal,
-  Select,
-  createListCollection,
-  chakra,
-  Field,
-  Flex,
-} from "@chakra-ui/react";
+import { chakra, Field, Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
@@ -16,8 +9,8 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import FormContainer from "../form/FormContainer";
 import { EditedBadge } from "../EditedBadge";
-import FormGrid from "../form/FormGrid";
 import SubmitFormButton from "../form/SubmitFormButton";
+import Select from "../form/Select";
 
 const ButtonWrapper = chakra("div", {
   base: {
@@ -89,103 +82,51 @@ const ClassForm = ({
   // If the intiialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
-  type TeacherOption = {
-    value: string;
-    label: string;
-  };
-
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
-      {(users) => {
-        const collection = createListCollection<TeacherOption>({
-          items: users.map((u) => ({
-            value: u.id.toString(),
-            label: u.name ?? u.email,
-          })),
-        });
-
-        return (
-          <FormContainer
-            as="form"
-            onSubmit={handleSubmit(onSubmit)}
-            data-testid="class-form"
-          >
-            <FormGrid>
+      {(users) => (
+        <FormContainer
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
+          data-testid="class-form"
+        >
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
               <Input
                 label={messages.name}
                 {...register("name")}
                 data-testid="name"
-                variant="inputForm"
                 invalid={!!errors.name}
                 errorText={errors.name?.message}
                 labelBadge={
                   showEditedBadges && dirtyFields.name && <EditedBadge />
                 }
               />
+            </GridItem>
 
-              <Controller
-                control={control}
-                name="teacherId"
-                render={({ field }) => (
-                  <Field.Root invalid={!!errors.teacherId}>
-                    <Select.Root<TeacherOption>
-                      collection={collection}
-                      value={field.value ? [field.value.toString()] : []}
-                      onValueChange={(details) =>
-                        field.onChange(Number.parseInt(details.value[0]))
-                      }
-                      data-testid="teacherId"
-                    >
-                      <Select.HiddenSelect />
-                      <Flex>
-                        <Select.Label>
-                          {intl.formatMessage(messages.teacher)}
-                        </Select.Label>
-                        {showEditedBadges && dirtyFields.teacherId && (
-                          <EditedBadge />
-                        )}
-                      </Flex>
-                      <Select.Control>
-                        <Select.Trigger>
-                          <Select.ValueText
-                            placeholder={intl.formatMessage(
-                              messages.placeholderSelectTeacher,
-                            )}
-                          />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                          <Select.Indicator />
-                        </Select.IndicatorGroup>
-                      </Select.Control>
-                      <Portal>
-                        <Select.Positioner>
-                          <Select.Content>
-                            {collection.items.map((item) => (
-                              <Select.Item item={item} key={item.value}>
-                                {item.label}
-                                <Select.ItemIndicator />
-                              </Select.Item>
-                            ))}
-                          </Select.Content>
-                        </Select.Positioner>
-                      </Portal>
-                    </Select.Root>
-                    {errors.teacherId && (
-                      <Field.ErrorText>
-                        {errors.teacherId.message}
-                      </Field.ErrorText>
-                    )}
-                  </Field.Root>
-                )}
-              />
-            </FormGrid>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <Field.Root>
+                <Select
+                  name="teacherId"
+                  control={control}
+                  label={messages.teacher}
+                  options={users.map((u) => ({
+                    value: u.id.toString(),
+                    label: u.name ?? u.email,
+                  }))}
+                  data-testid="teacherId"
+                >
+                  <Field.ErrorText>{errors.teacherId?.message}</Field.ErrorText>
+                </Select>
+              </Field.Root>
+            </GridItem>
+          </Grid>
 
-            <ButtonWrapper>
-              <SubmitFormButton label={submitMessage} />
-            </ButtonWrapper>
-          </FormContainer>
-        );
-      }}
+          <ButtonWrapper>
+            <SubmitFormButton label={submitMessage} />
+          </ButtonWrapper>
+        </FormContainer>
+      )}
     </SwrContent>
   );
 };

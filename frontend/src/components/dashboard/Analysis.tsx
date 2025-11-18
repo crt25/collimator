@@ -850,8 +850,8 @@ const Analysis = ({
       <YAxisSelector>
         <Select
           options={axisOptions}
-          onChange={(e) => {
-            setYAxis(e.target.value as AxesCriterionType);
+          onValueChange={(v) => {
+            setYAxis(v as AxesCriterionType);
           }}
           value={state.yAxis}
           alwaysShow
@@ -880,8 +880,8 @@ const Analysis = ({
       <XAxisSelector>
         <Select
           options={axisOptions}
-          onChange={(e) => {
-            setXAxis(e.target.value as AxesCriterionType);
+          onValueChange={(v) => {
+            setXAxis(v as AxesCriterionType);
           }}
           value={state.xAxis}
           alwaysShow

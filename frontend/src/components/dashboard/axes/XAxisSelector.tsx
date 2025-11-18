@@ -8,6 +8,10 @@ const XAxisSelector = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+
+  & > * {
+    flex-grow: 1;
+  }
 `;
 
 export default XAxisSelector;

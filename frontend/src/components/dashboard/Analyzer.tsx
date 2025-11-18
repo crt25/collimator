@@ -22,7 +22,6 @@ import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
 import { FilteredAnalysis } from "./hooks/types";
 import {
-  allSubtasks,
   AnalyzerState,
   AnalyzerStateActionType,
   analyzerStateReducer,
@@ -210,24 +209,16 @@ const Analyzer = ({
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
-                  options={[
-                    {
-                      label: intl.formatMessage(messages.allSubTasks),
-                      value: allSubtasks,
-                    },
-                    ...subtasks.map((subtask) => ({
-                      label: subtask.toString(),
-                      value: subtask,
-                    })),
-                  ]}
+                  placeholder={messages.allSubTasks}
+                  options={subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  }))}
                   data-testid="select-subtask"
-                  onChange={(e) =>
+                  onValueChange={(value) =>
                     dispatch({
                       type: AnalyzerStateActionType.setSelectedSubTask,
-                      selectedSubTaskId:
-                        e.target.value !== allSubtasks
-                          ? e.target.value
-                          : undefined,
+                      selectedSubTaskId: value,
                     })
                   }
                   value={state.selectedSubTaskId}
