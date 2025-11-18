@@ -9,13 +9,33 @@ import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 
 const messages = defineMessages({
-  header: {
+  teacherHeader: {
     id: "Home.header",
     defaultMessage: "Teacher Dashboard",
   },
-  description: {
+  teacherDescription: {
     id: "Home.description",
     defaultMessage: "Welcome to the Teacher Dashboard of Collimator.",
+  },
+  adminHeader: {
+    id: "Home.adminHeader",
+    defaultMessage: "Admin Dashboard",
+  },
+  adminDescription: {
+    id: "Home.adminDescription",
+    defaultMessage: "Welcome to the Admin Dashboard of Collimator.",
+  },
+  classesDescription: {
+    id: "Home.classesDescription",
+    defaultMessage: "Manage your classes and students.",
+  },
+  usersDescription: {
+    id: "Home.usersDescription",
+    defaultMessage: "Manage user accounts and permissions.",
+  },
+  tasksDescription: {
+    id: "Home.tasksDescription",
+    defaultMessage: "Create and manage tasks for your classes.",
   },
 });
 
@@ -24,15 +44,11 @@ const GridLayout = chakra(Grid, {
     marginTop: "4xl",
     gridTemplateColumns: {
       base: "1fr",
-      md: "repeat(3, 1fr)",
+      md: "repeat(2, 1fr)",
     },
 
     gap: "xl",
     padding: "0",
-
-    "& > *:nth-child(even)": {
-      justifySelf: "end",
-    },
   },
 });
 
@@ -41,25 +57,30 @@ const Home = () => {
   const authContext = useContext(AuthenticationContext);
 
   const isAdmin = authContext.role === UserRole.admin || undefined;
+  const header = isAdmin ? messages.adminHeader : messages.teacherHeader;
+  const description = isAdmin
+    ? messages.adminDescription
+    : messages.teacherDescription;
 
   return (
     <>
-      <Header title={messages.header} />
+      <Header title={header} />
       <Container>
-        <PageHeading
-          description={<FormattedMessage {...messages.description} />}
-        >
-          <FormattedMessage {...messages.header} />
+        <PageHeading description={<FormattedMessage {...description} />}>
+          <FormattedMessage {...header} />
         </PageHeading>
 
         <GridLayout>
           <GridItem>
-            <Card.Root variant="full" onClick={() => router.push("/class")}>
+            <Card.Root
+              variant="dashboard"
+              size="lg"
+              onClick={() => router.push("/class")}
+            >
               <Card.Body>
                 <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
+                  <FormattedMessage {...messages.classesDescription} />
                 </Text>
               </Card.Body>
             </Card.Root>
@@ -67,46 +88,31 @@ const Home = () => {
 
           {isAdmin && (
             <GridItem>
-              <Card.Root variant="full" onClick={() => router.push("/user")}>
+              <Card.Root
+                variant="dashboard"
+                size="lg"
+                onClick={() => router.push("/user")}
+              >
                 <Card.Body>
                   <PageHeading variant="subHeading">Users</PageHeading>
-                  <Text>Manage user accounts and permissions.</Text>
+                  <Text>
+                    <FormattedMessage {...messages.usersDescription} />
+                  </Text>
                 </Card.Body>
               </Card.Root>
             </GridItem>
           )}
 
           <GridItem>
-            <Card.Root variant="full" onClick={() => router.push("/lesson")}>
-              <Card.Body>
-                <PageHeading variant="subHeading">Task Templates</PageHeading>
-                <Text>Copy template tasks to your classes lesson.</Text>
-              </Card.Body>
-            </Card.Root>
-          </GridItem>
-
-          <GridItem>
-            <Card.Root variant="full" onClick={() => router.push("/task")}>
+            <Card.Root
+              variant="dashboard"
+              size="lg"
+              onClick={() => router.push("/task")}
+            >
               <Card.Body>
                 <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
-                </Text>
-              </Card.Body>
-            </Card.Root>
-          </GridItem>
-
-          <GridItem>
-            <Card.Root
-              variant="full"
-              onClick={() => router.push("/some-other-page")}
-            >
-              <Card.Body>
-                <PageHeading variant="subHeading">Some other Page</PageHeading>
-                <Text>
-                  Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
-                  amet consectetur. Aliquam cursus risus augue quis est.
+                  <FormattedMessage {...messages.tasksDescription} />
                 </Text>
               </Card.Body>
             </Card.Root>
