@@ -9,7 +9,7 @@ import {
   Field,
   Flex,
 } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import Input from "../form/Input";
@@ -110,7 +110,7 @@ const SessionForm = ({
     defaultValues,
   });
 
-  useMemo(() => {
+  useEffect(() => {
     if (onFormReady) {
       onFormReady(reset);
     }
