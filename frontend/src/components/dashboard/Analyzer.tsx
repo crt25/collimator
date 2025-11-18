@@ -3,14 +3,13 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Col, Modal, Row } from "react-bootstrap";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
 import Input from "../form/Input";
 import Button from "../Button";
-import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
@@ -35,10 +34,6 @@ import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
 
 const messages = defineMessages({
-  taskSelection: {
-    id: "Analyzer.taskSelection",
-    defaultMessage: "Task Selection",
-  },
   subTaskSelection: {
     id: "Analyzer.subTaskSelection",
     defaultMessage: "Sub-task Selection",
@@ -73,7 +68,13 @@ const messages = defineMessages({
   },
 });
 
-const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
+const Analyzer = ({
+  session,
+  task,
+}: {
+  session: ExistingSessionExtended;
+  task: ExistingTask;
+}) => {
   const intl = useIntl();
 
   const [state, dispatch] = useReducer(analyzerStateReducer, {
@@ -93,12 +94,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
       selectedLeftSolutionId: defaultSolutionIdValue,
     },
   } satisfies AnalyzerState);
-
-  const {
-    data: task,
-    isLoading: isLoadingTask,
-    error: taskError,
-  } = useTask(state.selectedTask);
 
   const {
     data: analyses,
@@ -205,31 +200,14 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   return (
     <>
       <MultiSwrContent
-        data={[task, analyses]}
-        isLoading={[isLoadingTask, isLoadingAnalyses]}
-        errors={[taskError, analysesErrors]}
+        data={[analyses]}
+        isLoading={[isLoadingAnalyses]}
+        errors={[analysesErrors]}
       >
-        {([task]) => (
+        {([_analyses]) => (
           <Row>
             <Col xs={12} lg={3}>
               <AnalysisParameters>
-                <Select
-                  label={messages.taskSelection}
-                  options={session.tasks.map((task) => ({
-                    label: task.title,
-                    value: task.id,
-                  }))}
-                  data-testid="select-task"
-                  onChange={(e) =>
-                    dispatch({
-                      type: AnalyzerStateActionType.setSelectedTask,
-                      selectedTaskId: parseInt(e.target.value),
-                    })
-                  }
-                  value={state.selectedTask}
-                  alwaysShow
-                />
-
                 <Select
                   label={messages.subTaskSelection}
                   options={[
@@ -286,8 +264,6 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     defaultMessage="Computing groups, please be patient."
                   />
                 )}
-
-                <StudentAnonymizationToggle />
               </AnalysisParameters>
             </Col>
             <Col xs={12} lg={9}>
