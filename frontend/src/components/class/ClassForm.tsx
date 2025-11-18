@@ -9,6 +9,7 @@ import {
   Field,
   Flex,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
@@ -77,8 +78,16 @@ const ClassForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: {
+      errors,
+      dirtyFields,
+      isDirty,
+      isSubmitSuccessful,
+      isSubmitting,
+    },
     control,
+    reset,
+    clearErrors,
   } = useForm<ClassFormValues>({
     resolver,
     defaultValues: initialValues,
@@ -86,8 +95,19 @@ const ClassForm = ({
 
   const { isLoading, data, error } = useAllUsers();
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      if (showEditedBadges) {
+        reset(undefined, { keepValues: true });
+      }
+    }
+  }, [clearErrors, isSubmitSuccessful, reset, showEditedBadges]);
+
+  // Disable the button if in edit mode with no changes, or if the form is submitting or has been successfully submitted
+  const isButtonDisabled =
+    (showEditedBadges && !isDirty) || isSubmitSuccessful || isSubmitting;
 
   type TeacherOption = {
     value: string;
@@ -181,7 +201,15 @@ const ClassForm = ({
             </FormGrid>
 
             <ButtonWrapper>
-              <SubmitFormButton label={submitMessage} />
+              <SubmitFormButton
+                label={submitMessage}
+                disabled={isButtonDisabled}
+                title={
+                  isDirty
+                    ? undefined
+                    : intl.formatMessage(messages.disabledSaveButtonTooltip)
+                }
+              />
             </ButtonWrapper>
           </FormContainer>
         );
