@@ -27,6 +27,7 @@ const config = defineConfig({
       select: SelectRecipe,
       toaster: ToasterRecipe,
       field: FieldRecipe,
+      dialog: ModalRecipe,
       card: CardRecipe,
     },
     recipes: {
