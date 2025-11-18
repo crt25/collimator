@@ -72,10 +72,12 @@ const SessionForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  onFormReady,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
+  onFormReady?: (reset: UseFormReset<SessionFormValues>) => void;
 }) => {
   const schema = useYupSchema({
     title: yup.string().required(messages.titleRequired.defaultMessage),
