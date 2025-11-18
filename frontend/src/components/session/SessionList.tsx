@@ -234,7 +234,6 @@ const SessionList = ({ classId }: { classId: number }) => {
             data={data}
             columns={columns}
             isLoading={isLoading}
-            includeSearchBar={false}
             onRowClick={(row, e) => {
               if (isClickOnRow(e)) {
                 router.push(`/class/${classId}/session/${row.id}/progress`);

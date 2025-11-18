@@ -119,6 +119,7 @@ const ClassList = () => {
             data={data}
             columns={columns}
             isLoading={isLoading}
+            includeSearchBar
             onRowClick={(row, e) => {
               if (isClickOnRow(e)) {
                 router.push(`/class/${row.id}/detail`);

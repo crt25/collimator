@@ -1,5 +1,6 @@
 import { defineMessages } from "react-intl";
-import { LuSettings2, LuSignpost, LuUsers } from "react-icons/lu";
+import { LuSettings2, LuMap, LuUsers, LuSignpost } from "react-icons/lu";
+import { Breadcrumb, Icon } from "@chakra-ui/react";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
@@ -58,9 +59,15 @@ const ClassNavigation = ({
       {breadcrumb && (
         <>
           {session && (
-            <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
-              {session.title}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
+                <Icon>
+                  <LuMap />
+                </Icon>
+                {session.title}
+              </BreadcrumbItem>
+            </>
           )}
         </>
       )}

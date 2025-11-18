@@ -188,7 +188,6 @@ const TaskTable = () => {
                 pageSize: 4,
               },
             }}
-            includeSearchBar={false}
           />
         )}
       </SwrContent>

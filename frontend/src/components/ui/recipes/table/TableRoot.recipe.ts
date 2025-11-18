@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 import { tableAnatomy } from "@chakra-ui/react/anatomy";
 
-export const TableRootRecipe = defineSlotRecipe({
+export const TableRecipe = defineSlotRecipe({
   slots: tableAnatomy.keys(),
   base: {
     root: { tableLayout: "fixed" },
@@ -27,5 +27,3 @@ export const TableRootRecipe = defineSlotRecipe({
     },
   },
 });
-
-export default TableRootRecipe;
