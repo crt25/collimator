@@ -24,28 +24,36 @@ import SortableListInput from "../form/SortableList";
 
 const messages = defineMessages({
   title: {
-    id: "CreateSessionForm.title",
+    id: "SessionForm.title",
     defaultMessage: "Title",
   },
-  description: {
-    id: "CreateSessionForm.description",
-    defaultMessage: "Description",
+  sharingType: {
+    id: "SessionForm.sharingType",
+    defaultMessage: "Sharing Type",
   },
-  tasks: {
-    id: "CreateSessionForm.tasks",
-    defaultMessage: "Tasks",
+  placeholderSelectSharingType: {
+    id: "SessionForm.placeholder.selectSharingType",
+    defaultMessage: "Select Sharing Type",
   },
-  addTask: {
-    id: "CreateSessionForm.addTask",
-    defaultMessage: "Add Task",
+  titleRequired: {
+    id: "SessionForm.error.titleRequired",
+    defaultMessage: "Title is required",
   },
-  selectTaskToAdd: {
-    id: "CreateSessionForm.selectTaskToAdd",
-    defaultMessage: "Select a task to add",
+  sharingTypeRequired: {
+    id: "SessionForm.error.sharingTypeRequired",
+    defaultMessage: "Sharing Type is required",
   },
-  isAnonymous: {
-    id: "CreateSessionForm.isAnonymous",
-    defaultMessage: "Whether students are anonymous when working on tasks.",
+  sharingTypeAnonymous: {
+    id: "SessionForm.sharingType.anonymous",
+    defaultMessage: "Anonymous",
+  },
+  sharingTypePublic: {
+    id: "SessionForm.sharingType.public",
+    defaultMessage: "Public",
+  },
+  disabledSaveButtonTooltip: {
+    id: "SessionForm.tooltip.disabledSaveButton",
+    defaultMessage: "No changes to save",
   },
 });
 
