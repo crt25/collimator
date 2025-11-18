@@ -99,144 +99,123 @@ const SessionForm = ({
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
+    formState: { errors, dirtyFields, isDirty },
+    control,
+    reset,
   } = useForm<SessionFormValues>({
     resolver,
     defaultValues,
   });
 
-  const { isLoading, data, error } = useAllTasks();
-
-  const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
-  const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
-  const selectedTaskIds = watch("taskIds");
-
-  // ensure that the selected tasks are always in sync with the form
-  const setSelectedTasks = useCallback(
-    (tasks: ExistingTask[]) => {
-      _setSelectedTasks(tasks);
-      setValue(
-        "taskIds",
-        tasks.map((t) => t.id),
-      );
-    },
-    [setValue],
-  );
-
-  const onAddTask = useCallback(
-    (event: SyntheticEvent<HTMLSelectElement, Event>) => {
-      const taskId = parseInt(event.currentTarget.value, 10);
-
-      if (taskId === addTaskEmptyId) {
-        return;
-      }
-
-      if (!data) {
-        return;
-      }
-
-      const newTask = data.find((t) => t.id === taskId);
-
-      if (!newTask) {
-        return;
-      }
-
-      setSelectedTasks([...selectedTasks, newTask]);
-
-      // reset the select
-      setAddTaskId(addTaskEmptyId);
-
-      return selectedTaskIds;
-    },
-    [selectedTaskIds, data, selectedTasks, setSelectedTasks],
-  );
-
-  useEffect(() => {
-    // initialize the selected tasks if we have data and the form is empty
-    if (data && selectedTasks.length === 0 && selectedTaskIds.length > 0) {
-      _setSelectedTasks(
-        // map the taskIds to the actual tasks (correct order is provided by the backend)
-        selectedTaskIds
-          .map((taskId) => data.find((t) => t.id === taskId))
-          .filter((t) => t !== undefined),
-      );
+  useMemo(() => {
+    if (onFormReady) {
+      onFormReady(reset);
     }
-  }, [data, selectedTaskIds, selectedTasks, setSelectedTasks]);
+  }, [onFormReady, reset]);
+
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
+
+  type SharingTypeOption = {
+    value: string;
+    label: string;
+  };
+
+  const collection = createListCollection<SharingTypeOption>({
+    items: [
+      {
+        value: "anonymous",
+        label: messages.sharingTypeAnonymous.defaultMessage,
+      },
+      {
+        value: "public",
+        label: messages.sharingTypePublic.defaultMessage,
+      },
+    ],
+  });
 
   return (
-    <SwrContent isLoading={isLoading} error={error} data={data}>
-      {(tasks) => (
-        <form onSubmit={handleSubmit(onSubmit)} data-testid="session-form">
-          <Input
-            label={messages.title}
-            {...register("title")}
-            data-testid="title"
-            errorText={errors.title?.message}
-          />
+    <FormContainer
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      data-testid="session-form"
+    >
+      <FormGrid>
+        <Input
+          label={messages.title}
+          {...register("title")}
+          data-testid="title"
+          variant="inputForm"
+          invalid={!!errors.title}
+          errorText={errors.title?.message}
+          labelBadge={showEditedBadges && dirtyFields.title && <EditedBadge />}
+        />
 
-          <TextArea
-            label={messages.description}
-            {...register("description")}
-            data-testid="description"
-            errorText={errors.description?.message}
-          />
+        <Controller
+          control={control}
+          name="sharingType"
+          render={({ field }) => (
+            <Field.Root invalid={!!errors.sharingType}>
+              <Select.Root<SharingTypeOption>
+                collection={collection}
+                value={field.value ? [field.value] : []}
+                onValueChange={(details) => field.onChange(details.value[0])}
+                data-testid="sharingType"
+              >
+                <Select.HiddenSelect />
+                <Flex>
+                  <Select.Label>
+                    {messages.sharingType.defaultMessage}
+                  </Select.Label>
+                  {showEditedBadges && dirtyFields.sharingType && (
+                    <EditedBadge />
+                  )}
+                </Flex>
+                <Select.Control>
+                  <Select.Trigger>
+                    <Select.ValueText
+                      placeholder={
+                        messages.placeholderSelectSharingType.defaultMessage
+                      }
+                    />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content>
+                      {collection.items.map((item) => (
+                        <Select.Item item={item} key={item.value}>
+                          {item.label}
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
+              {errors.sharingType && (
+                <Field.ErrorText>{errors.sharingType.message}</Field.ErrorText>
+              )}
+            </Field.Root>
+          )}
+        />
+      </FormGrid>
 
-          <SortableListInput
-            items={selectedTasks}
-            updateItems={setSelectedTasks}
-            testId="selected-tasks"
-          >
-            {(task) => (
-              <TaskListElement>
-                <span>{task.title}</span>
-                <RemoveTask
-                  data-testid="remove-task"
-                  onClick={() =>
-                    setSelectedTasks(selectedTasks.filter((t) => t !== task))
-                  }
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </RemoveTask>
-              </TaskListElement>
-            )}
-          </SortableListInput>
-
-          <Select
-            label={messages.addTask}
-            options={[
-              {
-                value: addTaskEmptyId,
-                label: messages.selectTaskToAdd,
-              },
-              // in theory tasks should never be undefined, but it seems to happen sometimes??
-              // TODO: investigate why this happens
-              ...(Array.isArray(tasks) ? tasks : [])
-                // don't list again tasks that are already selected
-                .filter((t) => !selectedTaskIds.includes(t.id))
-                .map((t) => ({
-                  value: t.id,
-                  label: t.title,
-                })),
-            ]}
-            data-testid="add-task"
-            onChange={onAddTask}
-            value={addTaskId}
-          />
-
-          <Input
-            label={messages.isAnonymous}
-            {...register("isAnonymous")}
-            data-testid="is-anonymous"
-            type="checkbox"
-            errorText={errors.isAnonymous?.message}
-          />
-
-          <SubmitFormButton label={submitMessage} />
-        </form>
-      )}
-    </SwrContent>
+      <ButtonWrapper>
+        <SubmitFormButton
+          label={submitMessage}
+          disabled={showEditedBadges && !isDirty}
+          title={
+            isDirty
+              ? undefined
+              : messages.disabledSaveButtonTooltip.defaultMessage
+          }
+        />
+      </ButtonWrapper>
+    </FormContainer>
   );
 };
 
