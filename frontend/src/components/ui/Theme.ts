@@ -46,16 +46,6 @@ const config = defineConfig({
     },
     tokens: defineTokens({
       colors: {
-        white: { value: "var(--background-color)" },
-        black: { value: "var(--foreground-color)" },
-        gray: {
-          50: { value: "#dedede" },
-          100: { value: "var(--background-color-secondary)" },
-          200: { value: "var(--border-color-tertiary)" },
-          600: { value: "var(--button-disabled-background-color)" },
-          1000: { value: "var(--foreground-color-tertiary)" },
-          subtle: { value: "var(--foreground-color-tertiary)" },
-        },
         dark: { value: "var(--accent-color)" },
         neutral: { value: "var(--neutral-color)" },
         success: { value: "var(--success-color)" },
@@ -101,51 +91,14 @@ const config = defineConfig({
       fonts: {
         body: { value: "Inter, Helvetica, sans-serif" },
       },
-      zIndex: {
-        // view here for more detail about xIndex token values: https://chakra-ui.com/docs/theming/z-index
-        overlay: { value: "1300" },
-      },
     }),
     semanticTokens: defineTokens({
       colors: {
-        bg: {
-          DEFAULT: { value: "{colors.white}" },
-          emphasized: { value: "{colors.gray.200}" },
-        },
-        bgSecondary: { value: "{colors.gray.50}" },
-        fg: { value: "{colors.black}" },
-        fgSecondary: { value: "{colors.black}" },
-        fgTertiary: { value: "{colors.gray.1000}" },
-        accent: { value: "{colors.dark}" },
-        accentHighlight: { value: "{colors.dark}" },
-        border: { value: "{colors.gray.200}" },
-        borderDark: { value: "{colors.black}" },
         buttonBg: { value: "{colors.dark}" },
         buttonFg: { value: "{colors.white}" },
-        buttonSecondaryBg: { value: "{colors.white}" },
-        buttonSecondaryFg: { value: "{colors.black}" },
-        buttonSecondaryBorder: { value: "{colors.gray.200}" },
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
-        inputBg: { value: "var(--input-background-color)" },
-        selectBg: { value: "var(--select-background-color)" },
-        buttonDisabledBg: { value: "{colors.gray.600}" },
-        iconButtonBackgroundColor: {
-          value: "var(--icon-button-background-color)",
-        },
-        headerBg: { value: "{colors.white}" },
-        headerBorder: { value: "{colors.black}" },
-        headerFg: { value: "{colors.black}" },
-        pageDescriptionColor: { value: "{colors.black}" },
-        inputColor: { value: "{colors.black}" },
-        inputFormBg: { value: "var(--input-form-background-color)" },
-        inputPlaceholderColor: { value: "{colors.gray.100}" },
         errorColor: { value: "{colors.error}" },
-        buttonBackgroundColor: { value: "{colors.dark}" },
-        buttonSecondaryBorderColor: { value: "{colors.gray.200}" },
-      },
-      zIndex: {
-        overlay: { value: "{zIndex.overlay}" },
       },
     }),
   },
@@ -165,11 +118,6 @@ const config = defineConfig({
       border: "1px solid var(--chakra-colors-fg)",
       borderRadius: "var(--chakra-radii-sm)",
       padding: "1rem",
-    },
-    ".modal": {
-      // set the z-index to the same value s.t. we can stack modals (although this is not recommended)
-      "--bs-backdrop-zindex": "1050",
-      "--bs-modal-zindex": "1050",
     },
   },
 });
