@@ -2,13 +2,13 @@ import { defineMessages, useIntl } from "react-intl";
 import { LuSend, LuTrash } from "react-icons/lu";
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
-import DropdownMenu from "../DropdownMenu";
-import { Modal } from "../form/Modal";
-import { toaster } from "../Toaster";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { toaster } from "../Toaster";
+import { Modal } from "../form/Modal";
+import DropdownMenu from "../DropdownMenu";
 
 const messages = defineMessages({
   copySessionLink: {

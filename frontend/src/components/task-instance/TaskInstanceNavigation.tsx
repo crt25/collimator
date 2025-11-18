@@ -7,8 +7,8 @@ import {
   LuFilePenLine,
   LuSettings2,
 } from "react-icons/lu";
-import TabNavigation, { NavigationTab } from "../TabNavigation";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
+import TabNavigation, { NavigationTab } from "../TabNavigation";
 
 const messages = defineMessages({
   taskDetailsTab: {

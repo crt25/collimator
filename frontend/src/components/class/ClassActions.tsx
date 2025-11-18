@@ -1,10 +1,10 @@
 import { defineMessages, useIntl } from "react-intl";
 import { LuTrash } from "react-icons/lu";
 import { useRouter } from "next/router";
-import DropdownMenu from "../DropdownMenu";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
+import DropdownMenu from "../DropdownMenu";
 
 const messages = defineMessages({
   deleteSession: {

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -16,7 +17,6 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
-import { Grid, GridItem } from "@chakra-ui/react";
 
 export enum SharingType {
   anonymous = "anonymous",
