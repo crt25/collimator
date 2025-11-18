@@ -167,6 +167,24 @@ const ClassDetail = () => {
           )}
         </SwrContent>
       </Container>
+
+      {klass && (
+        <Modal
+          open={showDeleteModal}
+          onOpenChange={({ open }) => setShowDeleteModal(open)}
+          title={intl.formatMessage(messages.deleteConfirmationTitle, {
+            name: klass.name,
+          })}
+          description={intl.formatMessage(messages.deleteConfirmationBody)}
+          confirmButtonText={intl.formatMessage(
+            messages.deleteConfirmationConfirm,
+          )}
+          cancelButtonText={intl.formatMessage(
+            messages.deleteConfirmationCancel,
+          )}
+          onConfirm={handleDeleteConfirm}
+        />
+      )}
     </>
   );
 };
