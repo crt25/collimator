@@ -75,6 +75,7 @@ export type DropdownProps = {
   trigger?: React.ReactNode;
   children?: React.ReactNode;
   testId?: string;
+  variant?: "primary" | "secondary";
   isButton?: boolean;
 };
 
@@ -83,6 +84,7 @@ const DropdownMenu = ({
   children,
   testId,
   isButton = false,
+  variant = "primary",
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -109,7 +111,7 @@ const DropdownMenu = ({
       open={isOpen}
       onOpenChange={(details) => setIsOpen(details.open)}
     >
-      <MenuTrigger data-testid={testId}>
+      <MenuTrigger data-testid={testId} variant={variant}>
         <HStack>
           {trigger}
           <Icon as={isOpen ? LuChevronUp : LuChevronDown} />
