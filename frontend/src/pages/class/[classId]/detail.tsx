@@ -5,10 +5,17 @@ import { useCallback, useState } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import PageHeading from "@/components/PageHeading";
 import CrtNavigation from "@/components/CrtNavigation";
+import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
+import { useUpdateClass } from "@/api/collimator/hooks/classes/useUpdateClass";
+import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
+import { toaster } from "@/components/Toaster";
+import DropdownMenu from "@/components/DropdownMenu";
+import { Modal } from "@/components/form/Modal";
+import { FlexContainer } from "@/components/Flex";
 
 const messages = defineMessages({
   title: {
@@ -69,11 +76,50 @@ const messages = defineMessages({
 const ClassDetail = () => {
   const intl = useIntl();
   const router = useRouter();
-  const { classId } = router.query as {
-    classId: string;
-  };
-
+  const { classId } = router.query as { classId: string };
   const { data: klass, error, isLoading } = useClass(classId);
+  const updateClass = useUpdateClass();
+  const deleteClass = useDeleteClass();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [classIdToDelete, setClassIdToDelete] = useState<number | null>(null);
+
+  const onSubmit = useCallback(
+    async (formValues: ClassFormValues) => {
+      if (klass) {
+        try {
+          await updateClass(klass.id, {
+            name: formValues.name,
+            teacherId: formValues.teacherId,
+          });
+          toaster.success({
+            title: messages.successMessage.defaultMessage,
+          });
+        } catch {
+          toaster.error({
+            title: messages.errorMessage.defaultMessage,
+          });
+        }
+      }
+    },
+    [klass, updateClass],
+  );
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (classIdToDelete) {
+      try {
+        await deleteClass(classIdToDelete);
+        toaster.success({
+          title: intl.formatMessage(messages.deleteSuccessMessage),
+        });
+        router.push("/class");
+      } catch {
+        toaster.error({
+          title: intl.formatMessage(messages.deleteErrorMessage),
+        });
+      }
+    }
+  }, [classIdToDelete, deleteClass, router, intl]);
 
   return (
     <>
