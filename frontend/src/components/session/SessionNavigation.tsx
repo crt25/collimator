@@ -22,13 +22,13 @@ const messages = defineMessages({
 
 const tabs: NavigationTab[] = [
   {
-    url: "edit",
+    url: "detail",
     title: (intl) => intl.formatMessage(messages.lessonDetailsTab),
     icon: <LuSettings2 />,
     testId: "session-lesson-details-tab",
   },
   {
-    url: "task",
+    url: "tasks",
     title: (intl) => intl.formatMessage(messages.tasksTab),
     icon: <LuListTodo />,
     testId: "session-tasks-tab",
