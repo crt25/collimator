@@ -1,9 +1,12 @@
 import { defineMessages, FormattedMessage } from "react-intl";
 import { Grid, GridItem, Card, Container, chakra } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useContext } from "react";
 import Header from "@/components/Header";
 import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
+import { UserRole } from "@/types/user/user-role";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 
 const messages = defineMessages({
   header: {
@@ -21,10 +24,10 @@ const GridLayout = chakra(Grid, {
     marginTop: "4xl",
     gridTemplateColumns: {
       base: "1fr",
-      md: "repeat(2, 1fr)",
+      md: "repeat(3, 1fr)",
     },
 
-    gap: "4xl",
+    gap: "xl",
     padding: "0",
 
     "& > *:nth-child(even)": {
@@ -35,6 +38,9 @@ const GridLayout = chakra(Grid, {
 
 const Home = () => {
   const router = useRouter();
+  const authContext = useContext(AuthenticationContext);
+
+  const isAdmin = authContext.role === UserRole.admin || undefined;
 
   return (
     <>
@@ -49,7 +55,7 @@ const Home = () => {
 
         <GridLayout>
           <GridItem>
-            <Card.Root variant="medium" onClick={() => router.push("/class")}>
+            <Card.Root variant="full" onClick={() => router.push("/class")}>
               <Card.Body>
                 <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
@@ -59,6 +65,17 @@ const Home = () => {
               </Card.Body>
             </Card.Root>
           </GridItem>
+
+          {isAdmin && (
+            <GridItem>
+              <Card.Root variant="full" onClick={() => router.push("/user")}>
+                <Card.Body>
+                  <PageHeading variant="subHeading">Users</PageHeading>
+                  <Text>Manage user accounts and permissions.</Text>
+                </Card.Body>
+              </Card.Root>
+            </GridItem>
+          )}
 
           <GridItem>
             <Card.Root variant="full" onClick={() => router.push("/lesson")}>
@@ -70,7 +87,7 @@ const Home = () => {
           </GridItem>
 
           <GridItem>
-            <Card.Root variant="large" onClick={() => router.push("/task")}>
+            <Card.Root variant="full" onClick={() => router.push("/task")}>
               <Card.Body>
                 <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
