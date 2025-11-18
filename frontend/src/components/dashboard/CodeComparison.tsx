@@ -1,4 +1,3 @@
-import { ButtonGroup } from "react-bootstrap";
 import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
@@ -493,7 +492,7 @@ const CodeComparison = ({
               <ModalHeaderLeft>
                 {selectedLeftSolutionId !== defaultSolutionIdValue &&
                 selectedRightSolutionId !== defaultSolutionIdValue ? (
-                  <ButtonGroup>
+                  <div>
                     <Button
                       onClick={() => {
                         setModalSide("left");
@@ -508,7 +507,7 @@ const CodeComparison = ({
                     >
                       {rightStudentName}
                     </Button>
-                  </ButtonGroup>
+                  </div>
                 ) : null}
                 <AxisValues>
                   {xAxisLabel && (
