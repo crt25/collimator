@@ -13,7 +13,7 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-  label: MessageDescriptor;
+  label?: MessageDescriptor;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
@@ -34,7 +34,7 @@ const TextArea = forwardRef(function TextArea(
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
-        <Field.Label>{intl.formatMessage(label)}</Field.Label>
+        {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
         <ChakraTextarea ref={ref} {...textareaProps} />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}

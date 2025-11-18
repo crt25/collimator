@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Col, Row } from "react-bootstrap";
-import styled from "@emotion/styled";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
@@ -30,10 +29,6 @@ const messages = defineMessages({
     defaultMessage: "Number of dissimilar solutions",
   },
 });
-
-const CodeViewCol = styled(Col)`
-  margin-bottom: 1rem;
-`;
 
 const DissimilarityAnalysis = ({
   session,
@@ -78,8 +73,8 @@ const DissimilarityAnalysis = ({
         errors={[analysesErrors]}
       >
         {([_analyses]) => (
-          <Row>
-            <Col xs={12} lg={3}>
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, lg: 3 }}>
               <AnalysisParameters>
                 <Select
                   label={messages.subTaskSelection}
@@ -116,12 +111,16 @@ const DissimilarityAnalysis = ({
                   }
                 />
               </AnalysisParameters>
-            </Col>
-            <Col xs={12} lg={9}>
-              <Row>
+            </GridItem>
+            <GridItem colSpan={{ base: 12, lg: 9 }}>
+              <Grid templateColumns="repeat(12, 1fr)" gap={4}>
                 {dissimilarAnalyses
                   ? dissimilarAnalyses.map((analysis) => (
-                      <CodeViewCol key={analysis.solutionId} xs={12} lg={6}>
+                      <GridItem
+                        key={analysis.solutionId}
+                        colSpan={{ base: 12, lg: 6 }}
+                        marginBottom="md"
+                      >
                         <StudentName
                           studentId={analysis.studentId}
                           pseudonym={analysis.studentPseudonym}
@@ -135,12 +134,12 @@ const DissimilarityAnalysis = ({
                           taskType={task.type}
                           solutionHash={analysis.solutionHash}
                         />
-                      </CodeViewCol>
+                      </GridItem>
                     ))
                   : null}
-              </Row>
-            </Col>
-          </Row>
+              </Grid>
+            </GridItem>
+          </Grid>
         )}
       </MultiSwrContent>
     </>

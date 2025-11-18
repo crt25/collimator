@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -15,6 +14,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionForm, {
   SessionFormValues,
 } from "@/components/session/SessionForm";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -78,12 +78,12 @@ const EditSession = () => {
           <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
         <SessionNavigation classId={klass?.id} sessionId={session?.id} />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="EditSession.header"
             defaultMessage="Edit Session"
           />
-        </PageHeader>
+        </PageHeading>
         <MultiSwrContent
           data={[klass, session]}
           errors={[klassError, sessionError]}

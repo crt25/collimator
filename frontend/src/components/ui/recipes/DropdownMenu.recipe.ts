@@ -8,12 +8,28 @@ export const DropdownMenuRecipe = defineSlotRecipe({
       borderStyle: "solid",
       borderRadius: "sm !important",
       borderColor: "gray.200",
-      padding: "sm",
+      padding: "md",
       fontWeight: "semibold",
     },
     content: {
       backgroundColor: "bg",
       borderColor: "headerBorder",
+      cursor: "pointer",
     },
+  },
+  variants: {
+    variant: {
+      primary: {},
+      secondary: {
+        trigger: {
+          color: "fgSecondary",
+          backgroundColor: "buttonBg !important",
+          borderColor: "black",
+        },
+      },
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
   },
 });

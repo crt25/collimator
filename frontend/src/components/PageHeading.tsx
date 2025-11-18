@@ -1,9 +1,6 @@
 import { chakra, HStack } from "@chakra-ui/react";
 import { ComponentProps } from "react";
-import {
-  PageHeadingRecipe,
-  PageHeadingVariant,
-} from "./ui/recipes/PageHeading.recipe";
+import { PageHeadingRecipe } from "./ui/recipes/PageHeading.recipe";
 
 const StyledPageHeading = chakra("p", PageHeadingRecipe);
 
@@ -27,5 +24,4 @@ const PageHeading = ({
   return <StyledPageHeading {...props} />;
 };
 
-export { PageHeadingVariant };
 export default PageHeading;

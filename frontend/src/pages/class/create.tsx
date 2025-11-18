@@ -1,14 +1,14 @@
 import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
-import { LuSticker } from "react-icons/lu";
+import { toaster } from "@/components/Toaster";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -23,39 +23,56 @@ const messages = defineMessages({
     id: "CreateClass.submit",
     defaultMessage: "Create Class",
   },
+  successMessage: {
+    id: "CreateClass.successMessage",
+    defaultMessage: "Class created successfully",
+  },
+  errorMessage: {
+    id: "CreateClass.errorMessage",
+    defaultMessage:
+      "There was an error creating the new Class. Please try to save again!",
+  },
+  returnToClassList: {
+    id: "CreateClass.returnToClassList",
+    defaultMessage: "Return to Class List",
+  },
 });
 
 const CreateClass = () => {
+  const intl = useIntl();
   const router = useRouter();
   const createClass = useCreateClass();
 
   const onSubmit = useCallback(
     async (formValues: ClassFormValues) => {
-      await createClass({
-        name: formValues.name,
-        teacherId: formValues.teacherId,
-      });
-
-      router.back();
+      try {
+        await createClass({
+          name: formValues.name,
+          teacherId: formValues.teacherId,
+        });
+        toaster.success({
+          title: intl.formatMessage(messages.successMessage),
+          action: {
+            label: intl.formatMessage(messages.returnToClassList),
+            onClick: () => router.back(),
+          },
+          closable: true,
+        });
+      } catch {
+        toaster.error({
+          title: intl.formatMessage(messages.errorMessage),
+        });
+      }
     },
-    [createClass, router],
+    [createClass, router, intl],
   );
-
-  const breadcrumbItems = [
-    {
-      label: "Create Class",
-      children: "Create Class",
-      href: "/class/create",
-      icon: <LuSticker />,
-    },
-  ];
 
   return (
     <>
       <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb breadcrumbItems={breadcrumbItems} />
+          <CrtNavigation breadcrumb />
         </Breadcrumbs>
         <PageHeading>
           <FormattedMessage
@@ -63,7 +80,7 @@ const CreateClass = () => {
             defaultMessage="Create Class"
           />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.description}>
+        <PageHeading variant="description">
           <FormattedMessage
             id="CreateClass.pageDescription"
             defaultMessage=""

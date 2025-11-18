@@ -21,6 +21,7 @@ export enum InputVariety {
 
 interface Props {
   label?: MessageDescriptor;
+  labelBadge?: React.ReactNode;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
@@ -50,6 +51,7 @@ const Input = forwardRef(function Input(
     variety,
     variant,
     type,
+    labelBadge,
     ...inputProps
   } = props;
 
@@ -58,7 +60,12 @@ const Input = forwardRef(function Input(
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
-        {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
+        {label && (
+          <Field.Label>
+            {intl.formatMessage(label)}
+            {labelBadge}
+          </Field.Label>
+        )}
         <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
           <ChakraInput
             ref={ref}

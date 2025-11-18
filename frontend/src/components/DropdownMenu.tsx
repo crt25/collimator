@@ -113,7 +113,7 @@ const DropdownMenu = ({
       onOpenChange={(details) => setIsOpen(details.open)}
       variant={variant}
     >
-      <MenuTrigger data-testid={testId}>
+      <MenuTrigger data-testid={testId} variant={variant}>
         <HStack>
           {trigger}
           <Icon as={isOpen ? LuChevronUp : LuChevronDown} />

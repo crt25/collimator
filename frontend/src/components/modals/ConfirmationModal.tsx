@@ -1,5 +1,5 @@
-import { Modal } from "react-bootstrap";
 import { MessageDescriptor, useIntl } from "react-intl";
+import { Dialog, Portal } from "@chakra-ui/react";
 import { ModalMessages } from "@/i18n/modal-messages";
 import Button from "../Button";
 
@@ -23,40 +23,47 @@ const ConfirmationModal = ({
   const intl = useIntl();
 
   return (
-    <Modal
-      show={isShown}
-      onHide={() => setIsShown(false)}
+    <Dialog.Root
+      open={isShown}
+      onOpenChange={() => setIsShown(false)}
       data-testid="confirmation-modal"
     >
-      <Modal.Header closeButton>
-        <Modal.Title>{intl.formatMessage(messages.title)}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <p>{intl.formatMessage(messages.body)}</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          onClick={() => setIsShown(false)}
-          variant="secondary"
-          data-testid="cancel-button"
-        >
-          {intl.formatMessage(ModalMessages.cancel)}
-        </Button>
-        <Button
-          onClick={() => {
-            if (onConfirm) {
-              onConfirm();
-            }
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>{intl.formatMessage(messages.title)}</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body>
+              <p>{intl.formatMessage(messages.body)}</p>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Button
+                onClick={() => setIsShown(false)}
+                variant="secondary"
+                data-testid="cancel-button"
+              >
+                {intl.formatMessage(ModalMessages.cancel)}
+              </Button>
+              <Button
+                onClick={() => {
+                  if (onConfirm) {
+                    onConfirm();
+                  }
 
-            setIsShown(false);
-          }}
-          variant={isDangerous ? "danger" : "primary"}
-          data-testid="confirm-button"
-        >
-          {intl.formatMessage(messages.confirmButton)}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+                  setIsShown(false);
+                }}
+                variant={isDangerous ? "danger" : "primary"}
+                data-testid="confirm-button"
+              >
+                {intl.formatMessage(messages.confirmButton)}
+              </Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 };
 

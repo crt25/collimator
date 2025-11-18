@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -33,12 +33,12 @@ const CreateTask = () => {
       <Header title={messages.title} />
       <Container>
         <CrtNavigation />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="CreateTask.header"
             defaultMessage="Create Task"
           />
-        </PageHeader>
+        </PageHeading>
         <TaskForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
     </>

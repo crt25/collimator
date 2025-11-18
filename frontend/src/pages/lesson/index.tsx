@@ -1,10 +1,10 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import LessonList, { Lesson } from "@/components/lesson/LessonList";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
+import PageHeading from "@/components/PageHeading";
 
 const lessons: Lesson[] = [
   {
@@ -89,12 +89,12 @@ const ListLessons = () => {
       <Container>
         <Breadcrumbs />
         <CrtNavigation />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="ListLessons.header"
             defaultMessage="Lesson Manager"
           />
-        </PageHeader>
+        </PageHeading>
         <LessonList
           fetchData={() =>
             Promise.resolve({ items: lessons, totalCount: lessons.length })

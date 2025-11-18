@@ -1,9 +1,8 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageHeader from "@/components/PageHeader";
 import Header from "@/components/Header";
 import SessionForm, {
   SessionFormValues,
@@ -13,6 +12,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -59,12 +59,12 @@ const CreateSession = () => {
           <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
         <ClassNavigation classId={klass?.id} />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="CreateSession.header"
             defaultMessage="Create Session"
           />
-        </PageHeader>
+        </PageHeading>
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(
             // we need the class to submit the form

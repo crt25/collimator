@@ -1,12 +1,13 @@
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import {
   Portal,
   Select,
   createListCollection,
   chakra,
   Field,
+  Flex,
 } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
@@ -14,6 +15,7 @@ import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
 import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import FormContainer from "../form/FormContainer";
+import { EditedBadge } from "../EditedBadge";
 import FormGrid from "../form/FormGrid";
 import SubmitFormButton from "../form/SubmitFormButton";
 
@@ -21,7 +23,6 @@ const ButtonWrapper = chakra("div", {
   base: {
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: "4xl",
   },
 });
 
@@ -62,9 +63,13 @@ const ClassForm = ({
   initialValues?: ClassFormValues;
   onSubmit: (data: ClassFormValues) => void;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
-    name: yup.string().required(messages.nameRequired.defaultMessage),
-    teacherId: yup.number().required(messages.teacherRequired.defaultMessage),
+    name: yup.string().required(intl.formatMessage(messages.nameRequired)),
+    teacherId: yup
+      .number()
+      .required(intl.formatMessage(messages.teacherRequired)),
   });
 
   const resolver = useYupResolver(schema);
@@ -72,7 +77,7 @@ const ClassForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields },
     control,
   } = useForm<ClassFormValues>({
     resolver,
@@ -80,6 +85,9 @@ const ClassForm = ({
   });
 
   const { isLoading, data, error } = useAllUsers();
+
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
 
   type TeacherOption = {
     value: string;
@@ -110,6 +118,9 @@ const ClassForm = ({
                 variant="inputForm"
                 invalid={!!errors.name}
                 errorText={errors.name?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.name && <EditedBadge />
+                }
               />
 
               <Controller
@@ -126,15 +137,20 @@ const ClassForm = ({
                       data-testid="teacherId"
                     >
                       <Select.HiddenSelect />
-                      <Select.Label>
-                        {messages.teacher.defaultMessage}
-                      </Select.Label>
+                      <Flex>
+                        <Select.Label>
+                          {intl.formatMessage(messages.teacher)}
+                        </Select.Label>
+                        {showEditedBadges && dirtyFields.teacherId && (
+                          <EditedBadge />
+                        )}
+                      </Flex>
                       <Select.Control>
                         <Select.Trigger>
                           <Select.ValueText
-                            placeholder={
-                              messages.placeholderSelectTeacher.defaultMessage
-                            }
+                            placeholder={intl.formatMessage(
+                              messages.placeholderSelectTeacher,
+                            )}
                           />
                         </Select.Trigger>
                         <Select.IndicatorGroup>

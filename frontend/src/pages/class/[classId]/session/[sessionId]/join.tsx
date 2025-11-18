@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useRef } from "react";
-import { Col, Container } from "react-bootstrap";
+import { Container, GridItem } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -94,7 +94,7 @@ const JoinSessionContent = ({
     >
       {([session]) => (
         <FullHeightRow>
-          <Col xs={4}>
+          <GridItem colSpan={4}>
             <SubHeader>
               <FormattedMessage
                 id="JoinSession.taskList"
@@ -102,8 +102,8 @@ const JoinSessionContent = ({
               />
             </SubHeader>
             <TaskList classId={classId} session={session} />
-          </Col>
-          <Col xs={8}>
+          </GridItem>
+          <GridItem colSpan={8}>
             <SubHeader>{session.title}</SubHeader>
             <TaskDescription>
               <p>{session.description}</p>
@@ -114,7 +114,7 @@ const JoinSessionContent = ({
                 defaultMessage="Join Session"
               />
             </Button>
-          </Col>
+          </GridItem>
         </FullHeightRow>
       )}
     </MultiSwrContent>

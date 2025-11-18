@@ -11,7 +11,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import Analyzer from "@/components/dashboard/Analyzer";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
@@ -78,7 +78,7 @@ const TaskInstanceAnalysis = () => {
           {([klass, session, task]) => (
             <>
               <PageHeading
-                variant={PageHeadingVariant.title}
+                variant="title"
                 actions={
                   <TaskSessionActions
                     classId={klass.id}

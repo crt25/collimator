@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import { Container, Table } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { Container, Table } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import UserNavigation from "@/components/user/UserNavigation";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import SwrContent from "@/components/SwrContent";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -40,29 +40,29 @@ const UserDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <div>
-              <PageHeader>{user.name ?? user.oidcSub}</PageHeader>
-              <Table bordered role="presentation" data-testid="user-details">
-                <tbody>
-                  <tr>
-                    <td>
+              <PageHeading>{user.name ?? user.oidcSub}</PageHeading>
+              <Table.Root role="presentation" data-testid="user-details">
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell>
                       <FormattedMessage
                         id="UserDetail.table.oidcSub"
                         defaultMessage="OpenId Connect Identifier"
                       />
-                    </td>
-                    <td>{user.oidcSub}</td>
-                  </tr>
-                  <tr>
-                    <td>
+                    </Table.Cell>
+                    <Table.Cell>{user.oidcSub}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
+                    <Table.Cell>
                       <FormattedMessage
                         id="UserDetail.table.type"
                         defaultMessage="Type"
                       />
-                    </td>
-                    <td>{user.type}</td>
-                  </tr>
-                </tbody>
-              </Table>
+                    </Table.Cell>
+                    <Table.Cell>{user.type}</Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table.Root>
             </div>
           )}
         </SwrContent>

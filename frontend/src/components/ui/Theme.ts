@@ -16,6 +16,8 @@ import { SelectRecipe } from "./recipes/Select.recipe";
 import { ContainerRecipe } from "./recipes/Container.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
+import { ToasterRecipe } from "./recipes/Toaster.recipe";
+import { ModalRecipe } from "./recipes/Modal.recipe";
 import { TableRecipe } from "./recipes/table/TableRoot.recipe";
 import { MenuRecipe } from "./recipes/Menu.recipe";
 
@@ -25,7 +27,9 @@ const config = defineConfig({
       dropdownMenu: DropdownMenuRecipe,
       breadcrumb: BreadcrumbsRecipe,
       select: SelectRecipe,
+      toaster: ToasterRecipe,
       field: FieldRecipe,
+      dialog: ModalRecipe,
       card: CardRecipe,
       table: TableRecipe,
       menu: MenuRecipe,
@@ -131,9 +135,9 @@ const config = defineConfig({
         },
         headerBg: { value: "{colors.white}" },
         headerBorder: { value: "{colors.black}" },
-        headerFg: { value: "{colors.neutral}" },
+        headerFg: { value: "{colors.black}" },
         pageDescriptionColor: { value: "{colors.black}" },
-        inputColor: { value: "{colors.neutral}" },
+        inputColor: { value: "{colors.black}" },
         inputFormBg: { value: "var(--input-form-background-color)" },
         inputPlaceholderColor: { value: "{colors.gray.100}" },
         errorColor: { value: "{colors.error}" },
@@ -154,14 +158,6 @@ const config = defineConfig({
       color: "var(--chakra-colors-fg)",
       backgroundColor: "var(--chakra-colors-bg)",
       fontFamily: "Inter, sans-serif",
-    },
-    a: {
-      // These are necessary as long as we still have the bootstrap styles imported
-      color: "inherit !important",
-      textDecoration: "none !important",
-      _hover: {
-        textDecoration: "underline",
-      },
     },
     ".p-tooltip": {
       backgroundColor: "var(--chakra-colors-bg)",

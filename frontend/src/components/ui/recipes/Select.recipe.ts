@@ -1,7 +1,7 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
 export const SelectRecipe = defineSlotRecipe({
-  slots: ["content", "root", "trigger", "label"],
+  slots: ["content", "root", "trigger", "label", "control"],
   base: {
     label: {
       fontSize: "sm",
@@ -15,6 +15,14 @@ export const SelectRecipe = defineSlotRecipe({
       borderRadius: "sm !important",
       borderStyle: "none !important",
       backgroundColor: "selectBg !important",
+    },
+    control: {
+      borderWidth: "thin",
+      borderColor: "border",
+      borderRadius: "sm !important",
+      _invalid: {
+        borderColor: "error",
+      },
     },
   },
 });

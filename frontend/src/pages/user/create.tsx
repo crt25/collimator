@@ -1,13 +1,13 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageHeader from "@/components/PageHeader";
 import Header from "@/components/Header";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -43,12 +43,12 @@ const CreateUser = () => {
       <Header title={messages.title} />
       <Container>
         <CrtNavigation />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="CreateUser.header"
             defaultMessage="Create User"
           />
-        </PageHeader>
+        </PageHeading>
         <UserForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
     </>

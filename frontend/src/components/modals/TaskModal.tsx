@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useRef, useState } from "react";
-import { Modal } from "react-bootstrap";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { Language, Submission } from "iframe-rpc-react/src";
+import { Dialog, Portal } from "@chakra-ui/react";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
@@ -31,13 +31,14 @@ const messages = defineMessages({
   },
 });
 
-const LargeModal = styled(Modal)`
-  & > .modal-dialog {
-    max-width: calc(100% - 2 * var(--bs-modal-margin));
+const LargeModal = styled(Dialog.Positioner)`
+  & > * {
+    margin: 1rem 0;
+    max-width: calc(100% - 2rem);
   }
 `;
 
-const ModalBody = styled(Modal.Body)`
+const ModalBody = styled(Dialog.Body)`
   display: flex;
 
   & > {
@@ -130,97 +131,113 @@ const TaskModal = ({
 
   return (
     <>
-      <LargeModal
-        show={isShown}
-        onHide={warnBeforeClose}
+      <Dialog.Root
+        open={isShown}
+        onOpenChange={warnBeforeClose}
         data-testid="task-modal"
       >
-        <MaxScreenHeightInModal>
-          {(title || header) && (
-            <Modal.Header closeButton>
-              <Modal.Title>{title}</Modal.Title>
-              {header}
-            </Modal.Header>
-          )}
-          <ModalBody>
-            {url && (
-              <EmbeddedApp
-                src={url}
-                ref={embeddedApp}
-                onAppAvailable={loadAppData}
-                onReceiveSubmission={onReceiveSubmission}
-              />
-            )}
-          </ModalBody>
-          <Modal.Footer>
-            {footer}
-            {showResetButton && (
-              <Button
-                disabled={!appLoaded}
-                onClick={loadAppData}
-                variant="secondary"
-                data-testid="reset-button"
-              >
-                <FormattedMessage id="TaskModal.reset" defaultMessage="Reset" />
-              </Button>
-            )}
-            {showImportButton && (
-              <Button
-                disabled={!appLoaded}
-                onClick={onImportTask}
-                variant="secondary"
-                data-testid="import-button"
-              >
-                <FormattedMessage
-                  id="TaskModal.import"
-                  defaultMessage="Import"
-                />
-              </Button>
-            )}
-            {showExportButton && (
-              <Button
-                disabled={!appLoaded}
-                onClick={onExportTask}
-                variant="secondary"
-                data-testid="export-button"
-              >
-                <FormattedMessage
-                  id="TaskModal.export"
-                  defaultMessage="Export"
-                />
-              </Button>
-            )}
-            <Button
-              onClick={warnBeforeClose}
-              disabled={isSaving}
-              variant="danger"
-              data-testid="cancel-button"
-            >
-              <FormattedMessage id="TaskModal.cancel" defaultMessage="Cancel" />
-            </Button>
-            {showSaveButton && (
-              <Button
-                disabled={!appLoaded || isSaving}
-                onClick={async () => {
-                  if (embeddedApp.current && onSave) {
-                    try {
-                      setIsSaving(true);
-                      await onSave(embeddedApp.current);
-                      setIsShown(false);
-                    } finally {
-                      setIsSaving(false);
-                    }
-                  }
-                }}
-                variant="primary"
-                data-testid="save-button"
-              >
-                <FormattedMessage id="TaskModal.save" defaultMessage="Save" />
-              </Button>
-            )}
-          </Modal.Footer>
-        </MaxScreenHeightInModal>
-      </LargeModal>
+        <Portal>
+          <Dialog.Backdrop />
+          <LargeModal>
+            <Dialog.Content>
+              <MaxScreenHeightInModal>
+                {(title || header) && (
+                  <Dialog.Header>
+                    <Dialog.Title>{title}</Dialog.Title>
+                    {header}
+                  </Dialog.Header>
+                )}
+                <ModalBody>
+                  {url && (
+                    <EmbeddedApp
+                      src={url}
+                      ref={embeddedApp}
+                      onAppAvailable={loadAppData}
+                      onReceiveSubmission={onReceiveSubmission}
+                    />
+                  )}
+                </ModalBody>
+                <Dialog.Footer>
+                  {footer}
+                  {showResetButton && (
+                    <Button
+                      disabled={!appLoaded}
+                      onClick={loadAppData}
+                      variant="secondary"
+                      data-testid="reset-button"
+                    >
+                      <FormattedMessage
+                        id="TaskModal.reset"
+                        defaultMessage="Reset"
+                      />
+                    </Button>
+                  )}
+                  {showImportButton && (
+                    <Button
+                      disabled={!appLoaded}
+                      onClick={onImportTask}
+                      variant="secondary"
+                      data-testid="import-button"
+                    >
+                      <FormattedMessage
+                        id="TaskModal.import"
+                        defaultMessage="Import"
+                      />
+                    </Button>
+                  )}
+                  {showExportButton && (
+                    <Button
+                      disabled={!appLoaded}
+                      onClick={onExportTask}
+                      variant="secondary"
+                      data-testid="export-button"
+                    >
+                      <FormattedMessage
+                        id="TaskModal.export"
+                        defaultMessage="Export"
+                      />
+                    </Button>
+                  )}
+                  <Button
+                    onClick={warnBeforeClose}
+                    disabled={isSaving}
+                    variant="danger"
+                    data-testid="cancel-button"
+                  >
+                    <FormattedMessage
+                      id="TaskModal.cancel"
+                      defaultMessage="Cancel"
+                    />
+                  </Button>
+                  {showSaveButton && (
+                    <Button
+                      disabled={!appLoaded || isSaving}
+                      onClick={async () => {
+                        if (embeddedApp.current && onSave) {
+                          try {
+                            setIsSaving(true);
+                            await onSave(embeddedApp.current);
+                            setIsShown(false);
+                          } finally {
+                            setIsSaving(false);
+                          }
+                        }
+                      }}
+                      variant="primary"
+                      data-testid="save-button"
+                    >
+                      <FormattedMessage
+                        id="TaskModal.save"
+                        defaultMessage="Save"
+                      />
+                    </Button>
+                  )}
+                </Dialog.Footer>
+              </MaxScreenHeightInModal>
+            </Dialog.Content>
+          </LargeModal>
+        </Portal>
+      </Dialog.Root>
       <ConfirmationModal
         isShown={showQuitNoSaveModal}
         setIsShown={setShowQuitNoSaveModal}

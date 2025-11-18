@@ -6,6 +6,10 @@ export const InputRecipe = defineRecipe({
     maxWidth: "100%",
     padding: "sm",
     borderRadius: "sm",
+    borderWidth: "thin",
+    _invalid: {
+      borderColor: "error",
+    },
   },
   variants: {
     variant: {

@@ -9,7 +9,7 @@ import Header from "@/components/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -98,7 +98,7 @@ const TaskInstanceDetails = () => {
             return (
               <>
                 <PageHeading
-                  variant={PageHeadingVariant.title}
+                  variant="title"
                   actions={
                     <TaskSessionActions
                       classId={klass.id}

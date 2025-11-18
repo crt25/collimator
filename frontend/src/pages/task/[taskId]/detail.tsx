@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useRef } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { Language } from "iframe-rpc-react/src";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -9,11 +9,11 @@ import TaskNavigation from "@/components/task/TaskNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -94,7 +94,7 @@ const TaskDetail = () => {
           {([task, _taskFile]) => (
             <>
               <div>
-                <PageHeader>{task.title}</PageHeader>
+                <PageHeading>{task.title}</PageHeading>
                 <p>{task.description}</p>
               </div>
               {(!!iframeSrc && (

@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { Container } from "@chakra-ui/react";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import { WarningMessages } from "@/i18n/warning-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -37,9 +37,9 @@ const LoginPage = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
-        </PageHeader>
+        </PageHeading>
         <p>{intl.formatMessage(WarningMessages.authenticationTracking)}</p>
         <Button
           onClick={onAuthenticateWithMicrosoft}

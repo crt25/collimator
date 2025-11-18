@@ -1,10 +1,10 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TaskTable from "@/components/task/TaskTable";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -25,10 +25,10 @@ const ListTasks = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeading variant={PageHeadingVariant.title}>
+        <PageHeading variant="title">
           <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.description}>
+        <PageHeading variant="description">
           <FormattedMessage id="ListTasks.pageDescription" defaultMessage="" />
         </PageHeading>
         <TaskTable />

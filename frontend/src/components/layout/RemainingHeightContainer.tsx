@@ -1,5 +1,5 @@
+import { Container } from "@chakra-ui/react";
 import styled from "@emotion/styled";
-import { Container } from "react-bootstrap";
 
 const RemainingHeightContainer = styled(Container)`
   flex-grow: 1;
