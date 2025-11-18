@@ -102,6 +102,7 @@ const UserForm = ({
         name="type"
         control={control}
         label={messages.type}
+        showEditedBadge={showEditedBadges}
         options={Object.values(UserType).map((userType) => ({
           value: userType,
           label: getUserTypeMessage(userType as UserType),

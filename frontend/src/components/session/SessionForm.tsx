@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,12 +16,21 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
-import Checkbox from "../form/Checkbox";
+import { Grid, GridItem } from "@chakra-ui/react";
+
+export enum SharingType {
+  anonymous = "anonymous",
+  public = "public",
+}
 
 const messages = defineMessages({
   title: {
     id: "CreateSessionForm.title",
     defaultMessage: "Title",
+  },
+  titleRequired: {
+    id: "SessionForm.error.titleRequired",
+    defaultMessage: "Title is required",
   },
   description: {
     id: "CreateSessionForm.description",
@@ -39,9 +48,21 @@ const messages = defineMessages({
     id: "CreateSessionForm.selectTaskToAdd",
     defaultMessage: "Select a task to add",
   },
-  isAnonymous: {
-    id: "CreateSessionForm.isAnonymous",
-    defaultMessage: "Whether students are anonymous when working on tasks.",
+  sharingType: {
+    id: "CreateSessionForm.sharingType",
+    defaultMessage: "Sharing Type",
+  },
+  sharingTypeRequired: {
+    id: "SessionForm.error.sharingTypeRequired",
+    defaultMessage: "Sharing Type is required",
+  },
+  sharingTypeAnonymous: {
+    id: "SessionForm.sharingType.anonymous",
+    defaultMessage: "Anonymous",
+  },
+  sharingTypePublic: {
+    id: "SessionForm.sharingType.public",
+    defaultMessage: "Public",
   },
 });
 
@@ -49,7 +70,7 @@ export interface SessionFormValues {
   title: string;
   description: string;
   taskIds: number[];
-  isAnonymous: boolean;
+  sharingType: SharingType;
 }
 
 const TaskListElement = styled.div`
@@ -73,11 +94,16 @@ const SessionForm = ({
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
-    title: yup.string().required(),
+    title: yup.string().required(intl.formatMessage(messages.titleRequired)),
     description: yup.string().required(),
     taskIds: yup.array().of(yup.number().required()).required(),
-    isAnonymous: yup.boolean().required(),
+    sharingType: yup
+      .mixed<SharingType>()
+      .oneOf(Object.values(SharingType))
+      .required(intl.formatMessage(messages.sharingTypeRequired)),
   });
 
   const resolver = useYupResolver(schema);
@@ -174,25 +200,49 @@ const SessionForm = ({
           })}
           data-testid="session-form"
         >
-          <Input
-            label={messages.title}
-            {...register("title")}
-            data-testid="title"
-            errorText={errors.title?.message}
-            labelBadge={
-              showEditedBadges && dirtyFields.title && <EditedBadge />
-            }
-          />
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <Input
+                label={messages.title}
+                {...register("title")}
+                data-testid="title"
+                errorText={errors.title?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.title && <EditedBadge />
+                }
+              />
 
-          <TextArea
-            label={messages.description}
-            {...register("description")}
-            data-testid="description"
-            errorText={errors.description?.message}
-            labelBadge={
-              showEditedBadges && dirtyFields.description && <EditedBadge />
-            }
-          />
+              <TextArea
+                label={messages.description}
+                {...register("description")}
+                data-testid="description"
+                errorText={errors.description?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.description && <EditedBadge />
+                }
+              />
+            </GridItem>
+
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <Select
+                name="sharingType"
+                control={control}
+                showEditedBadge={showEditedBadges}
+                label={messages.sharingType}
+                data-testid="sharing-type"
+                options={[
+                  {
+                    value: SharingType.anonymous,
+                    label: messages.sharingTypeAnonymous,
+                  },
+                  {
+                    value: SharingType.public,
+                    label: messages.sharingTypePublic,
+                  },
+                ]}
+              />
+            </GridItem>
+          </Grid>
 
           <SortableListInput
             items={selectedTasks}
@@ -234,13 +284,6 @@ const SessionForm = ({
             data-testid="add-task"
             onValueChange={onAddTask}
             value={addTaskId.toString()}
-          />
-
-          <Checkbox
-            name="isAnonymous"
-            control={control}
-            label={messages.isAnonymous}
-            data-testid="is-anonymous"
           />
 
           <SubmitFormButton label={submitMessage} />

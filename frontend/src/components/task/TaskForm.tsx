@@ -325,6 +325,7 @@ const TaskForm = ({
                 control={control}
                 alwaysShow
                 label={messages.type}
+                showEditedBadge={showEditedBadges}
                 options={Object.values(TaskType).map((taskType) => ({
                   value: taskType,
                   label: getTaskTypeMessage(taskType as TaskType),

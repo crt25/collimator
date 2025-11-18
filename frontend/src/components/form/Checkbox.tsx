@@ -31,6 +31,7 @@ type InternalProps = {
   children?: React.ReactNode;
   onCheckedChange?: (checked: boolean) => void;
   isDirty?: boolean;
+  showEditedBadge?: boolean;
 };
 
 type SharedProps = InternalProps;
@@ -48,7 +49,15 @@ const InternalCheckbox = (
   },
 ) => {
   const intl = useIntl();
-  const { name, checked, label, onCheckedChange, variant, isDirty } = props;
+  const {
+    name,
+    checked,
+    label,
+    onCheckedChange,
+    variant,
+    isDirty,
+    showEditedBadge,
+  } = props;
 
   return (
     <ChakraCheckbox.Root
@@ -62,7 +71,7 @@ const InternalCheckbox = (
       {label && (
         <ChakraCheckbox.Label>
           {intl.formatMessage(label)}
-          {isDirty && <EditedBadge />}
+          {showEditedBadge && isDirty && <EditedBadge />}
         </ChakraCheckbox.Label>
       )}
     </ChakraCheckbox.Root>
@@ -90,6 +99,7 @@ const Checkbox = <TValues extends FieldValues, TField extends Path<TValues>>(
                 variant={variant}
                 label={label}
                 placeholder={placeholder}
+                showEditedBadge={props.showEditedBadge}
               >
                 {children}
               </InternalCheckbox>

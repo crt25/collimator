@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { Container } from "@chakra-ui/react";
 import { defineMessages, useIntl } from "react-intl";
 import { useCallback, useRef } from "react";
-import { UseFormReset } from "react-hook-form";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -15,6 +14,7 @@ import SessionNavigation from "@/components/session/SessionNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionForm, {
   SessionFormValues,
+  SharingType,
 } from "@/components/session/SessionForm";
 import { toaster } from "@/components/Toaster";
 import SessionActions from "@/components/session/SessionActions";
@@ -60,7 +60,6 @@ const SessionDetail = () => {
   } = useClassSession(classId, sessionId);
 
   const updateSession = useUpdateClassSession();
-  const formResetRef = useRef<UseFormReset<SessionFormValues> | null>(null);
 
   const onSubmit = useCallback(
     async (formValues: SessionFormValues) => {
@@ -70,14 +69,11 @@ const SessionDetail = () => {
             title: formValues.title,
             description: formValues.description,
             taskIds: formValues.taskIds,
-            isAnonymous: formValues.sharingType === "anonymous",
+            isAnonymous: formValues.sharingType === SharingType.anonymous,
           });
           toaster.success({
             title: intl.formatMessage(messages.successMessage),
           });
-          if (formResetRef.current) {
-            formResetRef.current(formValues);
-          }
         } catch {
           toaster.error({
             title: intl.formatMessage(messages.errorMessage),
@@ -88,12 +84,6 @@ const SessionDetail = () => {
     [intl, klass, session, updateSession],
   );
 
-  const handleFormReady = useCallback(
-    (reset: UseFormReset<SessionFormValues>) => {
-      formResetRef.current = reset;
-    },
-    [],
-  );
 
   return (
     <>
@@ -133,10 +123,9 @@ const SessionDetail = () => {
                   title: session.title,
                   description: session.description,
                   taskIds: session.tasks.map((t) => t.id),
-                  sharingType: session.isAnonymous ? "anonymous" : "public",
+                  sharingType: session.isAnonymous ? SharingType.anonymous : SharingType.public,
                 }}
                 onSubmit={onSubmit}
-                onFormReady={handleFormReady}
               />
             </>
           )}
