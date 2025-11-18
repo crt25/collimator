@@ -202,7 +202,7 @@ const TaskInstanceTable = ({
                 ],
               },
               pagination: {
-                pageSize: 4,
+                pageSize: 10,
               },
             }}
           />

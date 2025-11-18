@@ -185,7 +185,7 @@ const TaskTable = () => {
                 ],
               },
               pagination: {
-                pageSize: 4,
+                pageSize: 10,
               },
             }}
           />
