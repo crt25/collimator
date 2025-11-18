@@ -4,11 +4,11 @@ import { defineMessages } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import SwrContent from "@/components/SwrContent";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import StudentList from "@/components/student/StudentList";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -41,7 +41,7 @@ const ClassUserList = () => {
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <PageHeader>{klass.name}</PageHeader>
+              <PageHeading>{klass.name}</PageHeading>
               <StudentList klass={klass} />
             </>
           )}

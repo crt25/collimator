@@ -9,7 +9,7 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
@@ -77,7 +77,7 @@ const TaskInstanceProgress = () => {
           {([klass, session, task]) => (
             <>
               <PageHeading
-                variant={PageHeadingVariant.title}
+                variant="title"
                 actions={
                   <TaskSessionActions
                     classId={klass.id}

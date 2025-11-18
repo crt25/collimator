@@ -10,6 +10,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import PageHeader from "@/components/PageHeader";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -51,9 +52,9 @@ const EditTask = () => {
       />
       <Container>
         <CrtNavigation task={task.data} />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage id="EditTask.header" defaultMessage="Edit Task" />
-        </PageHeader>
+        </PageHeading>
         <MultiSwrContent
           data={[task.data, taskFile.data]}
           isLoading={[task.isLoading, taskFile.isLoading]}

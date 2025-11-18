@@ -2,8 +2,7 @@ import { defineMessages, FormattedMessage } from "react-intl";
 import { Grid, GridItem, Card, Container, chakra } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
-import { CardVariant } from "@/components/ui/recipes/Card.recipe";
+import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
 
 const messages = defineMessages({
@@ -44,20 +43,15 @@ const Home = () => {
         <PageHeading>
           <FormattedMessage {...messages.header} />
         </PageHeading>
-        <PageHeading variant={PageHeadingVariant.description}>
+        <PageHeading variant="description">
           <FormattedMessage {...messages.description} />
         </PageHeading>
 
         <GridLayout>
           <GridItem>
-            <Card.Root
-              variant={CardVariant.medium}
-              onClick={() => router.push("/class")}
-            >
+            <Card.Root variant="medium" onClick={() => router.push("/class")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Classes
-                </PageHeading>
+                <PageHeading variant="subHeading">Classes</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.
@@ -67,28 +61,18 @@ const Home = () => {
           </GridItem>
 
           <GridItem>
-            <Card.Root
-              variant={CardVariant.full}
-              onClick={() => router.push("/lesson")}
-            >
+            <Card.Root variant="full" onClick={() => router.push("/lesson")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Task Templates
-                </PageHeading>
+                <PageHeading variant="subHeading">Task Templates</PageHeading>
                 <Text>Copy template tasks to your classes lesson.</Text>
               </Card.Body>
             </Card.Root>
           </GridItem>
 
           <GridItem>
-            <Card.Root
-              variant={CardVariant.large}
-              onClick={() => router.push("/task")}
-            >
+            <Card.Root variant="large" onClick={() => router.push("/task")}>
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Create new Tasks
-                </PageHeading>
+                <PageHeading variant="subHeading">Create new Tasks</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.
@@ -99,13 +83,11 @@ const Home = () => {
 
           <GridItem>
             <Card.Root
-              variant={CardVariant.full}
+              variant="full"
               onClick={() => router.push("/some-other-page")}
             >
               <Card.Body>
-                <PageHeading variant={PageHeadingVariant.subHeading}>
-                  Some other Page
-                </PageHeading>
+                <PageHeading variant="subHeading">Some other Page</PageHeading>
                 <Text>
                   Aliquam cursus risus augue quis est. Lorem ipsum dolor sit
                   amet consectetur. Aliquam cursus risus augue quis est.

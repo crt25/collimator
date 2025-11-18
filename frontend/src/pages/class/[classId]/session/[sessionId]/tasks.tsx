@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -59,7 +59,7 @@ const TaskInstanceList = () => {
           {([klass, session]) => (
             <>
               <PageHeading
-                variant={PageHeadingVariant.title}
+                variant="title"
                 actions={
                   <SessionActions klass={klass} sessionId={session.id} />
                 }

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { Container } from "@chakra-ui/react";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { useLogout } from "@/hooks/useLogout";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -24,12 +24,12 @@ const LogoutPage = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="LogoutPage.loggingOut"
             defaultMessage="You are being logged out..."
           />
-        </PageHeader>
+        </PageHeading>
         <ProgressSpinner />
       </Container>
     </>

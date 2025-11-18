@@ -10,7 +10,7 @@ import ProgressList from "@/components/dashboard/ProgressList";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import SessionActions from "@/components/session/SessionActions";
 
@@ -63,7 +63,7 @@ const SessionProgress = () => {
           {([klass, session]) => (
             <>
               <PageHeading
-                variant={PageHeadingVariant.title}
+                variant="title"
                 actions={
                   <SessionActions klass={klass} sessionId={session.id} />
                 }

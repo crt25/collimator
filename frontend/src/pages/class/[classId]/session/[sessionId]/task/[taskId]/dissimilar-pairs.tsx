@@ -4,7 +4,6 @@ import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
@@ -12,7 +11,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import DissimilarPairs from "@/components/dashboard/DissimilarPairs";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
@@ -70,12 +69,12 @@ const DissimilarAnalysisPairs = () => {
             sessionId={session?.id}
           />
         </Breadcrumbs>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="DissimilarAnalysisPairs.header"
             defaultMessage="Dissimilar Solutions"
           />
-        </PageHeader>
+        </PageHeading>
         <MultiSwrContent
           errors={[klassError, sessionError, taskError]}
           isLoading={[isLoadingKlass, isLoadingSession, isLoadingTask]}
@@ -84,7 +83,7 @@ const DissimilarAnalysisPairs = () => {
           {([klass, session, task]) => (
             <>
               <PageHeading
-                variant={PageHeadingVariant.title}
+                variant="title"
                 actions={
                   <TaskSessionActions
                     classId={klass.id}

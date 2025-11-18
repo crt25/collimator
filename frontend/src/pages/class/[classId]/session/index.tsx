@@ -8,7 +8,7 @@ import SessionList from "@/components/session/SessionList";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
-import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -40,9 +40,7 @@ const ClassSessionList = () => {
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <PageHeading variant={PageHeadingVariant.title}>
-                {klass.name}
-              </PageHeading>
+              <PageHeading variant="title">{klass.name}</PageHeading>
               <ClassNavigation classId={klass?.id} />
               <SessionList classId={klass.id} />
             </>

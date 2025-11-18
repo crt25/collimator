@@ -3,11 +3,11 @@ import { Container, Table } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import UserNavigation from "@/components/user/UserNavigation";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import SwrContent from "@/components/SwrContent";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -40,7 +40,7 @@ const UserDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <div>
-              <PageHeader>{user.name ?? user.oidcSub}</PageHeader>
+              <PageHeading>{user.name ?? user.oidcSub}</PageHeading>
               <Table bordered role="presentation" data-testid="user-details">
                 <tbody>
                   <tr>

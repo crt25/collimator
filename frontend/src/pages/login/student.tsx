@@ -4,8 +4,8 @@ import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -61,12 +61,12 @@ const StudentLoginPage = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="StudentLoginPage.header"
             defaultMessage="Student Login"
           />
-        </PageHeader>
+        </PageHeading>
         <Button
           onClick={onAuthenticateWithMicrosoft}
           data-testid="signin-student-button"

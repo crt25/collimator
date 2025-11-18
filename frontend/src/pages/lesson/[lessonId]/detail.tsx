@@ -3,9 +3,9 @@ import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
+import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -35,9 +35,9 @@ const LessonDetail = () => {
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
         <LessonNavigation lessonId={lessonId} />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage id="LessonDetail.header" defaultMessage="Lesson" />
-        </PageHeader>
+        </PageHeading>
       </Container>
     </>
   );
