@@ -61,24 +61,12 @@ const messages = defineMessages({
   },
 });
 
-export interface SessionFormValues {
+export type SessionFormValues = {
   title: string;
+  sharingType: string;
   description: string;
   taskIds: number[];
-  isAnonymous: boolean;
-}
-
-const TaskListElement = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const RemoveTask = styled.span`
-  cursor: pointer;
-`;
-
-const addTaskEmptyId = -1;
+};
 
 const SessionForm = ({
   submitMessage,
