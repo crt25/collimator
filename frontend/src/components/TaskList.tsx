@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import { chakra } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
 import { StudentSessionProgress } from "@/api/collimator/models/sessions/student-session-progress";
@@ -8,17 +8,16 @@ import { TaskProgress } from "@/api/collimator/generated/models";
 import SwrContent from "./SwrContent";
 import TaskListItem from "./TaskListItem";
 
-const TaskListWrapper = styled.menu`
-  flex-grow: 1;
-
-  list-style: none;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  overflow-y: scroll;
-`;
+const TaskListWrapper = chakra("menu", {
+  base: {
+    flexGrow: 1,
+    listStyle: "none",
+    display: "flex",
+    flexDirection: "column",
+    gap: "sm",
+    overflowY: "scroll",
+  },
+});
 
 const TaskListInner = ({
   classId,

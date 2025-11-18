@@ -23,16 +23,14 @@ import {
   useReactTable,
   ColumnDef,
 } from "@tanstack/react-table";
-import { Table, HStack, Stack, Icon, Spinner } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
-import { LuArrowUp, LuArrowDown } from "react-icons/lu";
-import styled from "@emotion/styled";
+import { LuArrowDownNarrowWide, LuArrowUpNarrowWide } from "react-icons/lu";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
-
-import Input from "./form/Input";
+import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
+import { DataTablePagination } from "./Pagination";
+import Input, { InputVariety } from "./form/Input";
 import Tag from "./Tag";
-import Button from "./Button";
 import DropdownMenu from "./DropdownMenu";
 
 enum ColumnType {
@@ -88,50 +86,114 @@ interface ChakraDataTableProps<T> {
   variant?: "outline" | "line";
 }
 
-const TableWrapper = styled.div`
-  margin: 1rem 0;
-`;
+const TableWrapper = chakra("div", {
+  base: {
+    marginBottom: "lg",
+    marginTop: "4xl",
+  },
+});
+
+const InputWrapper = chakra("div", {
+  base: {
+    marginBottom: "lg",
+    width: "{inputWidths.md}",
+  },
+});
+
+const ColumnHeader = chakra(Table.ColumnHeader, {
+  base: {
+    fontWeight: "semiBold",
+    color: "fgTertiary",
+    _hover: {
+      cursor: "pointer",
+    },
+    "&:last-child": {
+      width: "auto",
+      textAlign: "right",
+    },
+  },
+});
+
+const TableRow = chakra(Table.Row, {
+  base: {
+    _hover: {
+      cursor: "pointer",
+    },
+  },
+});
+
+const TableHeader = chakra(Table.Header, {
+  base: {
+    backgroundColor: "gray.200",
+  },
+});
+
+const TableRoot = chakra(Table.Root, {
+  base: {
+    width: "100%",
+    tableLayout: "fixed",
+    fontSize: "lg",
+  },
+});
+
+const HeaderContent = chakra("div", {
+  base: {
+    display: "flex",
+    gap: "sm",
+    alignItems: "center",
+  },
+});
+
+const FilterContainer = chakra("div", {
+  base: {
+    display: "flex",
+    gap: "md",
+    alignItems: "center",
+  },
+});
+
+const TableContainer = chakra("div", {
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "md",
+  },
+});
+
+const TableCell = chakra(Table.Cell, {
+  base: {
+    borderBottomWidth: "thin !important",
+    borderBottomStyle: "solid",
+    borderBottomColor: "gray.600",
+
+    "&:first-child": {
+      fontWeight: "semiBold",
+    },
+
+    "&:last-child": {
+      width: "auto",
+      textAlign: "right",
+      whiteSpace: "nowrap",
+    },
+  },
+});
 
 const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
   if (isSorted === "asc") {
-    return <LuArrowUp size={16} />;
+    return <LuArrowUpNarrowWide size={16} />;
   }
 
-  return <LuArrowDown size={16} />;
+  return <LuArrowDownNarrowWide size={16} />;
 };
 
 const messages = defineMessages({
-  searchPlaceholder: {
-    id: "datatable.placeholder.search",
-    defaultMessage: "Search...",
-  },
-  inputLabel: {
-    id: "datatable.label.search",
-    defaultMessage: "Search",
-  },
   filterByPlaceholder: {
     id: "datatable.placeholder.filterBy",
-    defaultMessage: "Search...",
+    defaultMessage: "Search",
   },
   filterDropdownTrigger: {
     id: "datatable.label.filterBy",
     defaultMessage: "Filter by...",
-  },
-  previousButton: {
-    id: "datatable.button.previous",
-    defaultMessage: "Previous",
-  },
-  nextButton: {
-    id: "datatable.button.next",
-    defaultMessage: "Next",
-  },
-  pageInfo: {
-    id: "datatable.label.pageInfo",
-    defaultMessage: "Page {pageIndex} of {pageCount}",
-  },
-  loadingState: {
-    id: "datatable.state.loading",
-    defaultMessage: "Loading...",
   },
 });
 
@@ -164,7 +226,7 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: features?.pagination?.pageSize || 10,
+    pageSize: features?.pagination?.pageSize || 4,
   });
 
   const rowModels = useMemo(() => {
@@ -389,6 +451,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   if (isLoading) {
     return <Spinner size="xl" />;
   }
+
   const currentColumnLabel =
     features?.columnFiltering?.columns?.find(
       (col) => col.accessorKey === filterColumn,
@@ -400,7 +463,7 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const wrapWithIcon = (content: React.ReactNode, icon?: React.ReactNode) => {
     return icon ? (
-      <HStack gap={2}>
+      <HStack>
         <Icon>{icon}</Icon>
         <span>{content}</span>
       </HStack>
@@ -443,49 +506,51 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   return (
     <TableWrapper>
-      <Stack gap={4}>
+      <TableContainer>
         {features?.columnFiltering && (
-          <HStack gap={4}>
-            <Input
-              value={getFilterValueAsString(
-                table.getColumn(filterColumn)?.getFilterValue(),
-              )}
-              onChange={(e) =>
-                table.getColumn(filterColumn)?.setFilterValue(e.target.value)
-              }
-              placeholder={intl.formatMessage(messages.filterByPlaceholder)}
-            />
+          <FilterContainer>
+            <InputWrapper>
+              <Input
+                value={getFilterValueAsString(
+                  table.getColumn(filterColumn)?.getFilterValue(),
+                )}
+                onChange={(e) =>
+                  table.getColumn(filterColumn)?.setFilterValue(e.target.value)
+                }
+                placeholder={intl.formatMessage(messages.filterByPlaceholder)}
+                type={InputVariety.Search}
+              />
+            </InputWrapper>
 
-            <DropdownMenu trigger={currentColumnLabel}>
-              {features.columnFiltering.columns.map((col) => (
-                <DropdownMenu.Item
-                  key={col.accessorKey}
-                  onClick={() => setFilterColumn(col.accessorKey)}
-                >
-                  {col.label}
-                </DropdownMenu.Item>
-              ))}
-            </DropdownMenu>
-          </HStack>
+            {features.columnFiltering.columns.length > 1 && (
+              <DropdownMenu trigger={currentColumnLabel}>
+                {features.columnFiltering.columns.map((col) => (
+                  <DropdownMenu.Item
+                    key={col.accessorKey}
+                    onClick={() => setFilterColumn(col.accessorKey)}
+                  >
+                    {col.label}
+                  </DropdownMenu.Item>
+                ))}
+              </DropdownMenu>
+            )}
+          </FilterContainer>
         )}
 
-        <Table.Root size="md" interactive={!!onRowClick} variant={variant}>
-          <Table.Header>
+        <TableRoot interactive={!!onRowClick} variant={variant}>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <Table.Row key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <Table.ColumnHeader
+                  <ColumnHeader
                     key={header.id}
                     onClick={
-                      features?.sorting
+                      features?.sorting && header.column.getCanSort()
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
-                    style={{
-                      cursor: features?.sorting ? "pointer" : "default",
-                    }}
                   >
-                    <HStack gap={2}>
+                    <HeaderContent>
                       <div>
                         {header.isPlaceholder
                           ? null
@@ -494,52 +559,37 @@ export const ChakraDataTable = <T extends { id: number }>({
                               header.getContext(),
                             )}
                       </div>
-                      {features?.sorting && (
+                      {features?.sorting && header.column.getCanSort() && (
                         <SortIcon isSorted={header.column.getIsSorted()} />
                       )}
-                    </HStack>
-                  </Table.ColumnHeader>
+                    </HeaderContent>
+                  </ColumnHeader>
                 ))}
-              </Table.Row>
+              </TableRow>
             ))}
-          </Table.Header>
+          </TableHeader>
 
           <Table.Body>
             {table.getRowModel().rows.map((row) => (
-              <Table.Row
-                key={row.id}
-                onClick={() => onRowClick?.(row.original)}
-                style={{ cursor: onRowClick ? "pointer" : "default" }}
-              >
+              <TableRow key={row.id} onClick={() => onRowClick?.(row.original)}>
                 {row.getVisibleCells().map((cell) => (
-                  <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
+                  <TableCell key={cell.id}>{cellWrapper({ cell })}</TableCell>
                 ))}
-              </Table.Row>
+              </TableRow>
             ))}
           </Table.Body>
-        </Table.Root>
+        </TableRoot>
 
-        {features?.pagination && (
-          <HStack justify="center" gap={2}>
-            <Button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              {intl.formatMessage(messages.previousButton)}
-            </Button>
-            <span>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </span>
-            <Button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              {intl.formatMessage(messages.nextButton)}
-            </Button>
-          </HStack>
+        {features?.pagination && table.getPageCount() > 1 && (
+          <DataTablePagination
+            pageIndex={table.getState().pagination.pageIndex}
+            pageCount={table.getPageCount()}
+            canPreviousPage={table.getCanPreviousPage()}
+            canNextPage={table.getCanNextPage()}
+            onPageChange={(pageIndex) => table.setPageIndex(pageIndex)}
+          />
         )}
-      </Stack>
+      </TableContainer>
     </TableWrapper>
   );
 };

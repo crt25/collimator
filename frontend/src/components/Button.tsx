@@ -4,6 +4,7 @@ import {
   Icon,
   Box,
   Spinner,
+  chakra,
 } from "@chakra-ui/react";
 
 import { LuCircleCheck, LuCircleX } from "react-icons/lu";
@@ -17,56 +18,22 @@ import {
   DetailedHTMLProps,
   ButtonHTMLAttributes,
 } from "react";
-import styled from "@emotion/styled";
 import { isNonNull } from "@/utilities/is-non-null";
+import { ButtonVariant } from "@/components/ui/recipes/buttons/Button.recipe";
 
-export enum ButtonVariant {
-  primary = "primary",
-  secondary = "secondary",
-  danger = "danger",
-}
-
-export type ButtonProps = DetailedHTMLProps<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
+export type ButtonProps = Omit<
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
+  "variant"
 > & {
   variant?: ButtonVariant;
   active?: boolean;
 };
 
-const colorsByVariant = {
-  [ButtonVariant.primary]: {
-    bgColor: "var(--button-background-color)",
-    fgColor: "var(--button-foreground-color)",
+const ButtonContent = chakra(HStack, {
+  base: {
+    gap: "sm",
   },
-  [ButtonVariant.secondary]: {
-    bgColor: "var(--button-secondary-background-color)",
-    fgColor: "var(--button-secondary-foreground-color)",
-  },
-  [ButtonVariant.danger]: {
-    bgColor: "var(--button-danger-background-color)",
-    fgColor: "var(--button-danger-foreground-color)",
-  },
-};
-
-const StyledButton = styled(ChakraButton)<{ bgColor: string; fgColor: string }>`
-  border-radius: var(--border-radius);
-  background-color: ${(props) => props.bgColor};
-  color: ${(props) => props.fgColor};
-  padding: 0.5rem 1rem;
-
-  &:hover {
-    background-color: var(--accent-color-highlight);
-  }
-
-  &.active {
-    background-color: var(--accent-color-highlight);
-  }
-`;
-
-const ButtonContent = styled(HStack)`
-  gap: 0.75rem;
-`;
+});
 
 const Button = ({
   onClick: onClickFn,
@@ -125,16 +92,12 @@ const Button = ({
     [buttonProps.className, active],
   );
 
-  const { bgColor, fgColor } =
-    colorsByVariant[variant ?? ButtonVariant.primary];
-
   return (
-    <StyledButton
+    <ChakraButton
       onClick={onClick}
       loading={isLoading}
       className={className}
-      bgColor={bgColor}
-      fgColor={fgColor}
+      variant={variant}
       {...buttonProps}
     >
       <ButtonContent>
@@ -151,8 +114,9 @@ const Button = ({
           </Icon>
         )}
       </ButtonContent>
-    </StyledButton>
+    </ChakraButton>
   );
 };
 
+export { ButtonVariant };
 export default Button;

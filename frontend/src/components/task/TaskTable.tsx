@@ -10,7 +10,7 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import { Icon } from "@chakra-ui/react";
+import { Icon, IconButton } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
 import { FaEdit } from "react-icons/fa";
 import DataTable, { LazyTableState } from "@/components/DataTable";
@@ -24,7 +24,6 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import Button, { ButtonVariant } from "../Button";
 import DropdownMenu from "../DropdownMenu";
 import { ButtonGroup } from "../ButtonGroup";
-import { IconButton } from "../IconButton";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -121,7 +120,6 @@ export const TaskTable = () => {
                 <LuChevronDown />
               </IconButton>
             }
-            isButton={true}
           >
             <DropdownMenu.Item
               onClick={(e) => {
@@ -193,7 +191,6 @@ export const TaskTable = () => {
                       <FontAwesomeIcon icon={faAdd} />
                     </Button>
                   }
-                  isButton={true}
                 />
               }
             />

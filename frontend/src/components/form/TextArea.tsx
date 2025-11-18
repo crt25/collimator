@@ -5,18 +5,11 @@ import {
   Textarea as ChakraTextarea,
   TextareaProps as ChakraTextareaProps,
 } from "@chakra-ui/react";
-
 import styled from "@emotion/styled";
 
 const InputWrapper = styled.div`
   display: block;
   margin-bottom: 1rem;
-`;
-
-const StyledTextarea = styled(ChakraTextarea)`
-  padding: 0.25rem 0.5rem;
-  min-height: 10rem;
-  width: 100%;
 `;
 
 interface Props {
@@ -42,7 +35,7 @@ const TextArea = forwardRef(function TextArea(
     <InputWrapper>
       <Field.Root invalid={invalid}>
         <Field.Label>{intl.formatMessage(label)}</Field.Label>
-        <StyledTextarea ref={ref} {...textareaProps} />
+        <ChakraTextarea ref={ref} {...textareaProps} />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>

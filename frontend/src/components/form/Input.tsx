@@ -1,26 +1,30 @@
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
+import { CiSearch } from "react-icons/ci";
 import {
   Field,
   Input as ChakraInput,
   InputProps as ChakraInputProps,
+  chakra,
+  InputGroup,
 } from "@chakra-ui/react";
-import styled from "@emotion/styled";
 
-const InputWrapper = styled.div`
-  display: block;
-`;
+const InputWrapper = chakra("div", {
+  base: {
+    display: "block",
+  },
+});
 
-const StyledInput = styled(ChakraInput)`
-  padding: 0.25rem 0.5rem;
-  max-width: 100%;
-`;
+export enum InputVariety {
+  Search = "search",
+}
 
 interface Props {
   label?: MessageDescriptor;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   invalid?: boolean;
+  variety?: InputVariety;
 }
 
 // Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
@@ -37,13 +41,18 @@ const Input = forwardRef(function Input(
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, ...inputProps } = props;
+  const { label, helperText, errorText, invalid, variety, ...inputProps } =
+    props;
+
+  const showSearchIcon = variety === InputVariety.Search;
 
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
-        <StyledInput ref={ref} {...inputProps} />
+        <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
+          <ChakraInput ref={ref} {...inputProps} />
+        </InputGroup>
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>
