@@ -27,6 +27,8 @@ export const ButtonRecipe = defineRecipe({
       detail: {
         backgroundColor: "transparent",
         color: "fgSecondary",
+        width: "full",
+        justifyContent: "flex-end",
         _hover: {
           color: "accentHighlight",
           opacity: 0.8,
@@ -38,16 +40,5 @@ export const ButtonRecipe = defineRecipe({
     variant: "primary",
   },
 });
-
-export const ButtonVariant = {
-  primary: "primary",
-  secondary: "secondary",
-  danger: "danger",
-  detail: "detail",
-} as const;
-
-export type ButtonVariant = keyof NonNullable<
-  (typeof ButtonRecipe)["variants"]
->["variant"];
 
 export default ButtonRecipe;

@@ -11,7 +11,7 @@ import {
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
-import Input, { InputVariant } from "../form/Input";
+import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import FormContainer from "../form/FormContainer";
 import FormGrid from "../form/FormGrid";
@@ -107,7 +107,7 @@ const ClassForm = ({
                 label={messages.name}
                 {...register("name")}
                 data-testid="name"
-                variant={InputVariant.inputForm}
+                variant="inputForm"
                 invalid={!!errors.name}
                 errorText={errors.name?.message}
               />

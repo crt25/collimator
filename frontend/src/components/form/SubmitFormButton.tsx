@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
-import Input, { InputVariant } from "./Input";
+import Input from "./Input";
 
 const InputWrapper = styled.label`
   display: block;
@@ -31,7 +31,7 @@ const SubmitFormButton = (
         type="submit"
         value={intl.formatMessage(label)}
         disabled={disabled}
-        variant={InputVariant.buttonForm}
+        variant="buttonForm"
       />
       {children}
     </InputWrapper>

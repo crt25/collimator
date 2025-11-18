@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack } from "@chakra-ui/react";
+import { Icon, HStack, Text } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -15,7 +15,7 @@ import { capitalizeString } from "@/utilities/strings";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -89,9 +89,14 @@ const TaskTable = () => {
       accessorKey: "title",
       header: intl.formatMessage(messages.titleColumn),
       cell: (info) => (
-        <span data-testid={`task-${info.row.original.id}-title`}>
+        <Text
+          fontWeight="semibold"
+          fontSize="lg"
+          data-testid={`task-${info.row.original.id}-title`}
+          margin={0}
+        >
           {info.row.original.title}
-        </span>
+        </Text>
       ),
       meta: {
         columnType: ColumnType.text,
@@ -124,7 +129,7 @@ const TaskTable = () => {
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
-            variant={ButtonVariant.detail}
+            variant="detail"
           >
             <FaRegTrashAlt />
           </Button>
@@ -147,7 +152,7 @@ const TaskTable = () => {
               router.push(`/task/${info.row.original.id}/detail`);
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
-            variant={ButtonVariant.detail}
+            variant="detail"
           >
             <Icon>
               <LuChevronRight />
@@ -201,7 +206,7 @@ const TaskTable = () => {
         }}
       />
       <Button
-        variant={ButtonVariant.primary}
+        variant="primary"
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
       >

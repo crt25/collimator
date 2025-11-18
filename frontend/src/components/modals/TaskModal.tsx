@@ -6,7 +6,7 @@ import { Language, Submission } from "iframe-rpc-react/src";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 
@@ -158,7 +158,7 @@ const TaskModal = ({
               <Button
                 disabled={!appLoaded}
                 onClick={loadAppData}
-                variant={ButtonVariant.secondary}
+                variant="secondary"
                 data-testid="reset-button"
               >
                 <FormattedMessage id="TaskModal.reset" defaultMessage="Reset" />
@@ -168,7 +168,7 @@ const TaskModal = ({
               <Button
                 disabled={!appLoaded}
                 onClick={onImportTask}
-                variant={ButtonVariant.secondary}
+                variant="secondary"
                 data-testid="import-button"
               >
                 <FormattedMessage
@@ -181,7 +181,7 @@ const TaskModal = ({
               <Button
                 disabled={!appLoaded}
                 onClick={onExportTask}
-                variant={ButtonVariant.secondary}
+                variant="secondary"
                 data-testid="export-button"
               >
                 <FormattedMessage
@@ -193,7 +193,7 @@ const TaskModal = ({
             <Button
               onClick={warnBeforeClose}
               disabled={isSaving}
-              variant={ButtonVariant.danger}
+              variant="danger"
               data-testid="cancel-button"
             >
               <FormattedMessage id="TaskModal.cancel" defaultMessage="Cancel" />
@@ -212,7 +212,7 @@ const TaskModal = ({
                     }
                   }
                 }}
-                variant={ButtonVariant.primary}
+                variant="primary"
                 data-testid="save-button"
               >
                 <FormattedMessage id="TaskModal.save" defaultMessage="Save" />
