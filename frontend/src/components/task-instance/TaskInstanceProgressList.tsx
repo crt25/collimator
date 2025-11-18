@@ -1,20 +1,18 @@
 import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { HStack, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
-import MultiSwrContent from "../MultiSwrContent";
-import { StudentName } from "../encryption/StudentName";
-import ChakraDataTable from "../ChakraDataTable";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { ColumnType } from "@/types/tanstack-types";
-import { isClickOnRow } from "@/utilities/table";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { ProgressMessages } from "@/i18n/progress-messages";
+import ChakraDataTable from "../ChakraDataTable";
+import { StudentName } from "../encryption/StudentName";
+import MultiSwrContent from "../MultiSwrContent";
 
 const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -140,7 +138,6 @@ const TaskInstanceProgressList = ({
   taskId: number;
 }) => {
   const intl = useIntl();
-  const router = useRouter();
 
   const {
     data: klass,
@@ -262,17 +259,10 @@ const TaskInstanceProgressList = ({
         errors={[klassError, sessionError, solutionsError]}
         isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
       >
-        {([klass, session]) => (
+        {([_klass, _session]) => (
           <ChakraDataTable
             data={progress}
             columns={columns}
-            onRowClick={(row, e) => {
-              if (isClickOnRow(e)) {
-                router.push(
-                  `/class/${klass.id}/session/${session.id}/progress/student/${row.student.studentId}`,
-                );
-              }
-            }}
             features={{
               sorting: true,
               pagination: {
