@@ -44,15 +44,11 @@ const GridLayout = chakra(Grid, {
     marginTop: "4xl",
     gridTemplateColumns: {
       base: "1fr",
-      md: "repeat(3, 1fr)",
+      md: "repeat(2, 1fr)",
     },
 
     gap: "xl",
     padding: "0",
-
-    "& > *:nth-child(even)": {
-      justifySelf: "end",
-    },
   },
 });
 
