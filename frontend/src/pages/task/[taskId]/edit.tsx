@@ -10,6 +10,7 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 import PageHeading from "@/components/PageHeading";
+import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
   title: {
@@ -35,7 +36,27 @@ const EditTask = () => {
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       if (task.data && taskFile.data) {
-        await updateTask(task.data.id, taskSubmission);
+        const referenceSolutions: UpdateReferenceSolutionDto[] = [
+          ...task.data.referenceSolutions,
+        ];
+
+        const referenceSolutionsFiles = task.data.referenceSolutions.map(
+          (s) => s.solution,
+        );
+
+        if (
+          taskSubmission.initialSolution &&
+          taskSubmission.initialSolutionFile
+        ) {
+          referenceSolutions.push(taskSubmission.initialSolution);
+          referenceSolutionsFiles.push(taskSubmission.initialSolutionFile);
+        }
+
+        await updateTask(task.data.id, {
+          ...taskSubmission,
+          referenceSolutions,
+          referenceSolutionsFiles,
+        });
       }
     },
     [task.data, taskFile.data, updateTask],
@@ -71,18 +92,6 @@ const EditTask = () => {
                   taskFile,
                   initialSolution: initialSolution ?? null,
                   initialSolutionFile: initialSolution?.solution ?? null,
-                  referenceSolutions: task.referenceSolutions.filter(
-                    (s) => !s.isInitial,
-                  ),
-                  referenceSolutionFiles: task.referenceSolutions
-                    .filter((s) => !s.isInitial)
-                    .reduce(
-                      (acc, solution) => {
-                        acc[solution.id] = solution.solution;
-                        return acc;
-                      },
-                      {} as Record<number, Blob>,
-                    ),
                 }}
                 submitMessage={messages.submit}
                 onSubmit={onSubmit}

@@ -16,11 +16,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Submission } from "iframe-rpc-react/src";
 import { Box, Field, HStack, Icon, Input } from "@chakra-ui/react";
 import { LuPlus } from "react-icons/lu";
-import SubmitFormButton from "../form/SubmitFormButton";
-import Button from "../Button";
-import SortableListInput from "../form/SortableList";
-import SolveTaskModal from "../modals/SolveTaskModal";
-import TextArea from "../form/TextArea";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
@@ -30,6 +25,11 @@ import {
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import SubmitFormButton from "../form/SubmitFormButton";
+import Button from "../Button";
+import SortableListInput from "../form/SortableList";
+import SolveTaskModal from "../modals/SolveTaskModal";
+import TextArea from "../form/TextArea";
 
 const AddReferenceSolutionButton = styled(Button)`
   margin-bottom: 1rem;

@@ -1,15 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
-import {
-  Portal,
-  createListCollection,
-  chakra,
-  Field,
-  Flex,
-  Grid,
-  GridItem,
-} from "@chakra-ui/react";
+import { chakra, Field, Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
@@ -104,11 +96,6 @@ const ClassForm = ({
   // Disable the button if in edit mode with no changes, or if the form is submitting or has been successfully submitted
   const isButtonDisabled =
     (showEditedBadges && !isDirty) || isSubmitSuccessful || isSubmitting;
-
-  type TeacherOption = {
-    value: string;
-    label: string;
-  };
 
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>

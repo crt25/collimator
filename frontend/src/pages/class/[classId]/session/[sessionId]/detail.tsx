@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Container } from "@chakra-ui/react";
 import { defineMessages, useIntl } from "react-intl";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -84,7 +84,6 @@ const SessionDetail = () => {
     [intl, klass, session, updateSession],
   );
 
-
   return (
     <>
       <Header
@@ -123,7 +122,9 @@ const SessionDetail = () => {
                   title: session.title,
                   description: session.description,
                   taskIds: session.tasks.map((t) => t.id),
-                  sharingType: session.isAnonymous ? SharingType.anonymous : SharingType.public,
+                  sharingType: session.isAnonymous
+                    ? SharingType.anonymous
+                    : SharingType.public,
                 }}
                 onSubmit={onSubmit}
               />
