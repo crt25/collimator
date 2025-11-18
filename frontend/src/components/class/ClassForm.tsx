@@ -49,6 +49,10 @@ const messages = defineMessages({
     id: "ClassForm.error.teacherRequired",
     defaultMessage: "Teacher is required",
   },
+  disabledSaveButtonTooltip: {
+    id: "ClassForm.tooltip.disabledSaveButton",
+    defaultMessage: "No changes to save",
+  },
 });
 
 export type ClassFormValues = {
