@@ -1,6 +1,6 @@
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import {
   Portal,
   Select,
@@ -23,7 +23,6 @@ const ButtonWrapper = chakra("div", {
   base: {
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: "4xl",
   },
 });
 
@@ -64,9 +63,13 @@ const ClassForm = ({
   initialValues?: ClassFormValues;
   onSubmit: (data: ClassFormValues) => void;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
-    name: yup.string().required(messages.nameRequired.defaultMessage),
-    teacherId: yup.number().required(messages.teacherRequired.defaultMessage),
+    name: yup.string().required(intl.formatMessage(messages.nameRequired)),
+    teacherId: yup
+      .number()
+      .required(intl.formatMessage(messages.teacherRequired)),
   });
 
   const resolver = useYupResolver(schema);
@@ -136,7 +139,7 @@ const ClassForm = ({
                       <Select.HiddenSelect />
                       <Flex>
                         <Select.Label>
-                          {messages.teacher.defaultMessage}
+                          {intl.formatMessage(messages.teacher)}
                         </Select.Label>
                         {showEditedBadges && dirtyFields.teacherId && (
                           <EditedBadge />
@@ -145,9 +148,9 @@ const ClassForm = ({
                       <Select.Control>
                         <Select.Trigger>
                           <Select.ValueText
-                            placeholder={
-                              messages.placeholderSelectTeacher.defaultMessage
-                            }
+                            placeholder={intl.formatMessage(
+                              messages.placeholderSelectTeacher,
+                            )}
                           />
                         </Select.Trigger>
                         <Select.IndicatorGroup>

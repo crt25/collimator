@@ -10,6 +10,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import StudentList from "@/components/student/StudentList";
 import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
+import ClassActions from "@/components/class/ClassActions";
 
 const messages = defineMessages({
   title: {
@@ -40,11 +41,13 @@ const ClassUserList = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={klass?.id} />
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <PageHeading>{klass.name}</PageHeading>
+              <PageHeading actions={<ClassActions klass={klass} />}>
+                {klass.name}
+              </PageHeading>
+              <ClassNavigation classId={klass.id} />
               <StudentList klass={klass} />
             </>
           )}

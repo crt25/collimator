@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Container } from "@chakra-ui/react";
 import { defineMessages, useIntl } from "react-intl";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -9,13 +9,10 @@ import PageHeading from "@/components/PageHeading";
 import CrtNavigation from "@/components/CrtNavigation";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
 import { useUpdateClass } from "@/api/collimator/hooks/classes/useUpdateClass";
-import { useDeleteClass } from "@/api/collimator/hooks/classes/useDeleteClass";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import { toaster } from "@/components/Toaster";
-import DropdownMenu from "@/components/DropdownMenu";
-import { Modal } from "@/components/form/Modal";
-import { FlexContainer } from "@/components/Flex";
+import ClassActions from "@/components/class/ClassActions";
 
 const messages = defineMessages({
   title: {
@@ -79,10 +76,6 @@ const ClassDetail = () => {
   const { classId } = router.query as { classId: string };
   const { data: klass, error, isLoading } = useClass(classId);
   const updateClass = useUpdateClass();
-  const deleteClass = useDeleteClass();
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [classIdToDelete, setClassIdToDelete] = useState<number | null>(null);
 
   const onSubmit = useCallback(
     async (formValues: ClassFormValues) => {
@@ -105,22 +98,6 @@ const ClassDetail = () => {
     [intl, klass, updateClass],
   );
 
-  const handleDeleteConfirm = useCallback(async () => {
-    if (classIdToDelete) {
-      try {
-        await deleteClass(classIdToDelete);
-        toaster.success({
-          title: intl.formatMessage(messages.deleteSuccessMessage),
-        });
-        router.push("/class");
-      } catch {
-        toaster.error({
-          title: intl.formatMessage(messages.deleteErrorMessage),
-        });
-      }
-    }
-  }, [classIdToDelete, deleteClass, router, intl]);
-
   return (
     <>
       <Header
@@ -134,27 +111,10 @@ const ClassDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <FlexContainer>
-                <PageHeading>{klass.name}</PageHeading>
-
-                <DropdownMenu
-                  testId="class-actions-dropdown"
-                  trigger={intl.formatMessage(messages.actions)}
-                  variant="secondary"
-                >
-                  <DropdownMenu.Item
-                    onClick={() => {
-                      setClassIdToDelete(klass.id);
-                      setShowDeleteModal(true);
-                    }}
-                    testId="class-delete-button"
-                  >
-                    {intl.formatMessage(messages.deleteAction)}
-                  </DropdownMenu.Item>
-                </DropdownMenu>
-              </FlexContainer>
+              <PageHeading actions={<ClassActions klass={klass} />}>
+                {klass.name}
+              </PageHeading>{" "}
               <ClassNavigation classId={klass?.id} />
-
               <ClassForm
                 submitMessage={messages.submit}
                 initialValues={{
@@ -167,24 +127,6 @@ const ClassDetail = () => {
           )}
         </SwrContent>
       </Container>
-
-      {klass && (
-        <Modal
-          open={showDeleteModal}
-          onOpenChange={({ open }) => setShowDeleteModal(open)}
-          title={intl.formatMessage(messages.deleteConfirmationTitle, {
-            name: klass.name,
-          })}
-          description={intl.formatMessage(messages.deleteConfirmationBody)}
-          confirmButtonText={intl.formatMessage(
-            messages.deleteConfirmationConfirm,
-          )}
-          cancelButtonText={intl.formatMessage(
-            messages.deleteConfirmationCancel,
-          )}
-          onConfirm={handleDeleteConfirm}
-        />
-      )}
     </>
   );
 };
