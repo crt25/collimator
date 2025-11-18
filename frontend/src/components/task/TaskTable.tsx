@@ -12,6 +12,7 @@ import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
+import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
@@ -33,6 +34,10 @@ const messages = defineMessages({
   taskTypeColumn: {
     id: "TaskTable.columns.taskType",
     defaultMessage: "Task Type",
+  },
+  actionsColumn: {
+    id: "TaskTable.columns.actionsColumn",
+    defaultMessage: "Quick Actions",
   },
   deleteConfirmationTitle: {
     id: "TaskTable.deleteConfirmation.title",
@@ -81,6 +86,7 @@ const TaskTable = () => {
           {info.row.original.id}
         </span>
       ),
+      size: 32,
       meta: {
         columnType: ColumnType.text,
       },
@@ -117,7 +123,7 @@ const TaskTable = () => {
     },
     {
       id: "actions",
-      header: "Quick Actions",
+      header: intl.formatMessage(messages.actionsColumn),
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
@@ -129,7 +135,7 @@ const TaskTable = () => {
               setShowDeleteConfirmationModal(true);
             }}
             data-testid={`task-${info.row.original.id}-delete-button`}
-            variant="detail"
+            variant="ghost"
           >
             <FaRegTrashAlt />
           </Button>
@@ -174,6 +180,11 @@ const TaskTable = () => {
             data={data}
             columns={columns}
             isLoading={isLoading}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(`/task/${row.id}/detail`);
+              }
+            }}
             features={{
               sorting: true,
               columnFiltering: {
