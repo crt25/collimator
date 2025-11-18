@@ -93,6 +93,7 @@ const SessionForm = ({
   const defaultValues = useMemo(
     () => ({
       ...initialValues,
+      description: initialValues?.description ?? " ",
       taskIds: initialValues?.taskIds ?? [],
     }),
     [initialValues],
