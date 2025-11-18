@@ -1,13 +1,12 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
-import PageHeader from "@/components/PageHeader";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 import PageHeading from "@/components/PageHeading";
