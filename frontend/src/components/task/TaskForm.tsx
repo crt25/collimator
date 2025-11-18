@@ -290,7 +290,13 @@ const TaskForm = ({
               }
             />
 
-            <Field.Root>
+            <Field.Root
+              invalid={
+                !!errors.taskFile ||
+                !!errors.initialSolution ||
+                !!errors.initialSolutionFile
+              }
+            >
               <EditTaskButton
                 data-testid="edit-task-button"
                 type="button"
@@ -309,11 +315,9 @@ const TaskForm = ({
                 )}
               </EditTaskButton>
 
-              <Field.ErrorText>{errors.taskFile?.message}</Field.ErrorText>
               <Field.ErrorText>
+                {errors.taskFile?.message}
                 {errors.initialSolution?.message}
-              </Field.ErrorText>
-              <Field.ErrorText>
                 {errors.initialSolutionFile?.message}
               </Field.ErrorText>
             </Field.Root>
