@@ -1,17 +1,23 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
+import { LuSticker } from "react-icons/lu";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
 import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
     id: "CreateClass.title",
-    defaultMessage: "Create Class",
+    defaultMessage: "Create new Class",
+  },
+  description: {
+    id: "CreateClass.pageDescription",
+    defaultMessage: "",
   },
   submit: {
     id: "CreateClass.submit",
@@ -35,17 +41,34 @@ const CreateClass = () => {
     [createClass, router],
   );
 
+  const breadcrumbItems = [
+    {
+      label: "Create Class",
+      children: "Create Class",
+      href: "/class/create",
+      icon: <LuSticker />,
+    },
+  ];
+
   return (
     <>
       <Header title={messages.title} />
       <Container>
-        <CrtNavigation />
-        <PageHeader>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb breadcrumbItems={breadcrumbItems} />
+        </Breadcrumbs>
+        <PageHeading>
           <FormattedMessage
             id="CreateClass.header"
             defaultMessage="Create Class"
           />
-        </PageHeader>
+        </PageHeading>
+        <PageHeading variant={PageHeadingVariant.description}>
+          <FormattedMessage
+            id="CreateClass.pageDescription"
+            defaultMessage=""
+          />
+        </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
     </>

@@ -520,7 +520,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                   table.getColumn(filterColumn)?.setFilterValue(e.target.value)
                 }
                 placeholder={intl.formatMessage(messages.filterByPlaceholder)}
-                type={InputVariety.Search}
+                variety={InputVariety.Search}
               />
             </InputWrapper>
 

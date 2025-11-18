@@ -7,11 +7,14 @@ import {
 import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
 import { IconButtonRecipe } from "./recipes/IconButton.recipe";
 import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
-import { InputRecipe } from "./recipes/form/Input.recipe";
+import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
 import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
 import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
+import { SelectRecipe } from "./recipes/Select.recipe";
+import { ContainerRecipe } from "./recipes/Container.recipe";
+import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
 
 const config = defineConfig({
@@ -19,9 +22,13 @@ const config = defineConfig({
     slotRecipes: {
       dropdownMenu: DropdownMenuRecipe,
       breadcrumb: BreadcrumbsRecipe,
+      select: SelectRecipe,
+      field: FieldRecipe,
+      card: CardRecipe,
     },
     recipes: {
       button: ButtonRecipe,
+      container: ContainerRecipe,
       iconButton: IconButtonRecipe,
       pageHeading: PageHeadingRecipe,
       input: InputRecipe,
@@ -78,18 +85,22 @@ const config = defineConfig({
       fontWeights: {
         semiBold: { value: "600" },
       },
-      radius: {
+      radii: {
         sm: { value: "0.25rem" },
       },
       fonts: {
         body: { value: "Inter, Helvetica, sans-serif" },
+      },
+      zIndex: {
+        // view here for more detail about xIndex token values: https://chakra-ui.com/docs/theming/z-index
+        overlay: { value: "1300" },
       },
     }),
     semanticTokens: defineTokens({
       colors: {
         bg: { value: "{colors.white}" },
         bgSecondary: { value: "{colors.gray.50}" },
-        fg: { value: "{colors.neutral}" },
+        fg: { value: "{colors.black}" },
         fgSecondary: { value: "{colors.black}" },
         fgTertiary: { value: "{colors.gray.1000}" },
         accent: { value: "{colors.dark}" },
@@ -103,6 +114,8 @@ const config = defineConfig({
         buttonSecondaryBorder: { value: "{colors.gray.200}" },
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
+        inputBg: { value: "var(--input-background-color)" },
+        selectBg: { value: "var(--select-background-color)" },
         buttonDisabledBg: { value: "{colors.gray.600}" },
         iconButtonBackgroundColor: {
           value: "var(--icon-button-background-color)",
@@ -112,10 +125,14 @@ const config = defineConfig({
         headerFg: { value: "{colors.neutral}" },
         pageDescriptionColor: { value: "{colors.black}" },
         inputColor: { value: "{colors.neutral}" },
+        inputFormBg: { value: "var(--input-form-background-color)" },
         inputPlaceholderColor: { value: "{colors.gray.100}" },
         errorColor: { value: "{colors.error}" },
         buttonBackgroundColor: { value: "{colors.dark}" },
         buttonSecondaryBorderColor: { value: "{colors.gray.200}" },
+      },
+      zIndex: {
+        overlay: { value: "{zIndex.overlay}" },
       },
     }),
   },

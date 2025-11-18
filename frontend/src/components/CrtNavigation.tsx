@@ -11,7 +11,7 @@ import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { UserRole } from "@/types/user/user-role";
-import BreadcrumbItem from "./BreadcrumbItem";
+import BreadcrumbItem, { BreadcrumbItemData } from "./BreadcrumbItem";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 
 const messages = defineMessages({
@@ -71,12 +71,14 @@ const CrtNavigation = ({
   klass,
   task,
   lessonId,
+  breadcrumbItems,
 }: {
   breadcrumb?: boolean;
   user?: ExistingUser;
   klass?: ExistingClass | ExistingClassExtended;
   task?: ExistingTask;
   lessonId?: number;
+  breadcrumbItems?: BreadcrumbItemData[];
 }) => {
   const lessonName = "Introduction to React";
   return (
@@ -110,6 +112,11 @@ const CrtNavigation = ({
               {lessonName}
             </BreadcrumbItem>
           )}
+          {breadcrumbItems?.map((item, index) => (
+            <BreadcrumbItem key={index} {...item}>
+              {item.children}
+            </BreadcrumbItem>
+          ))}
         </>
       )}
     </>

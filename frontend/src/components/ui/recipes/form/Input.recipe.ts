@@ -1,22 +1,60 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { defineRecipe, defineSlotRecipe } from "@chakra-ui/react";
 
 export const InputRecipe = defineRecipe({
   base: {
-    borderWidth: "thin",
+    width: "100%",
+    maxWidth: "100%",
+    padding: "sm",
+    borderRadius: "sm",
   },
   variants: {
     variant: {
       primary: {
-        width: "100%",
-        maxWidth: "100%",
-        padding: "sm",
+        backgroundColor: "inputBg !important",
+        _placeholder: {
+          color: "inputPlaceHolderColor",
+        },
+      },
+      buttonForm: {
+        padding: "{space.sm space.md}",
+        backgroundColor: "buttonBg",
+        color: "buttonFg",
+        _disabled: {
+          backgroundColor: "buttonDisabledBg",
+        },
+        _hover: {
+          backgroundColor: "accent !important",
+          opacity: 0.8,
+        },
+      },
+      inputForm: {
+        backgroundColor: "inputFormBg !important",
         _placeholder: {
           color: "inputPlaceHolderColor",
         },
       },
     },
   },
-  defaultVariants: {
-    variant: "primary",
+});
+
+export const FieldRecipe = defineSlotRecipe({
+  slots: ["label"],
+  base: {
+    label: {
+      fontSize: "sm",
+      fontWeight: "semibold",
+      marginBottom: "xs",
+      display: "block",
+    },
   },
 });
+
+export const InputVariant = {
+  primary: "primary",
+  inputForm: "inputForm",
+  buttonForm: "buttonForm",
+} as const;
+
+export type InputVariant = keyof NonNullable<
+  (typeof InputRecipe)["variants"]
+>["variant"];

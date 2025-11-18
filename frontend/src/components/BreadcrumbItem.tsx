@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { Breadcrumb } from "@chakra-ui/react";
 
+export type BreadcrumbItemData = {
+  href?: string;
+  children: React.ReactNode;
+  isCurrentPage?: boolean;
+  icon?: React.ReactNode;
+};
+
 const BreadcrumbItem = ({
   href,
   children,
   isCurrentPage,
   icon,
-}: {
-  href?: string;
-  children: React.ReactNode;
-  isCurrentPage?: boolean;
-  icon?: React.ReactNode;
-}) => {
+}: BreadcrumbItemData) => {
   if (isCurrentPage || !href) {
     return (
       <Breadcrumb.Item>
