@@ -53,6 +53,7 @@ const Input = forwardRef(function Input(
     variant = "subtle",
     type,
     labelBadge,
+    size,
     ...inputProps
   } = props;
 
@@ -72,6 +73,7 @@ const Input = forwardRef(function Input(
             ref={ref}
             type={type}
             variant={variant}
+            size={size}
             {...inputProps}
           />
         </InputGroup>

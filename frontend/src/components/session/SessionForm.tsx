@@ -16,6 +16,7 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
+import Checkbox from "../form/Checkbox";
 
 const messages = defineMessages({
   title: {
@@ -96,6 +97,7 @@ const SessionForm = ({
     setValue,
     reset,
     formState: { errors, dirtyFields },
+    control,
   } = useForm<SessionFormValues>({
     resolver,
     defaultValues,
@@ -234,15 +236,11 @@ const SessionForm = ({
             value={addTaskId.toString()}
           />
 
-          <Input
+          <Checkbox
+            name="isAnonymous"
+            control={control}
             label={messages.isAnonymous}
-            {...register("isAnonymous")}
             data-testid="is-anonymous"
-            type="checkbox"
-            errorText={errors.isAnonymous?.message}
-            labelBadge={
-              showEditedBadges && dirtyFields.isAnonymous && <EditedBadge />
-            }
           />
 
           <SubmitFormButton label={submitMessage} />
