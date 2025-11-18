@@ -4,7 +4,6 @@ export const PageHeadingRecipe = defineRecipe({
   variants: {
     variant: {
       title: {
-        marginTop: "4xl",
         fontSize: "4xl",
         fontWeight: "semiBold",
         color: "fg",
