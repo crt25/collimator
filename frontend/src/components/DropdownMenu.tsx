@@ -75,7 +75,6 @@ export type DropdownProps = {
   trigger?: React.ReactNode;
   children?: React.ReactNode;
   testId?: string;
-  variant?: "primary" | "secondary";
   isButton?: boolean;
   variant?: React.ComponentProps<typeof Menu.Root>["variant"];
 };
@@ -86,7 +85,6 @@ const DropdownMenu = ({
   testId,
   variant,
   isButton = false,
-  variant = "primary",
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
