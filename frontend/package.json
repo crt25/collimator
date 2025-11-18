@@ -16,6 +16,7 @@
     "i18n:compile": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
     "i18n:fill": "node ./scripts/fill-locales.mjs",
     "i18n:update": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
+    "chakra:update": "npx @chakra-ui/cli typegen ./src/components/ui/Theme.ts",
     "test": "yarn test:jest && yarn test:playwright",
     "test:cov:enable": "shx cp .babelrc.disabled .babelrc",
     "test:cov:disable": "shx rm .babelrc",

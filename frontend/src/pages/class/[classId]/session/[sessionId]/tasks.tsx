@@ -1,27 +1,30 @@
-import { useRouter } from "next/router";
 import { defineMessages } from "react-intl";
 import { Container } from "@chakra-ui/react";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ClassNavigation from "@/components/class/ClassNavigation";
+import { useRouter } from "next/router";
 import Header from "@/components/Header";
-import SessionNavigation from "@/components/session/SessionNavigation";
 import CrtNavigation from "@/components/CrtNavigation";
-import ProgressList from "@/components/dashboard/ProgressList";
-import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import MultiSwrContent from "@/components/MultiSwrContent";
-import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+import ClassNavigation from "@/components/class/ClassNavigation";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionActions from "@/components/session/SessionActions";
+import SessionNavigation from "@/components/session/SessionNavigation";
+import TaskInstanceTable from "@/components/task-instance/TaskInstanceTable";
 
 const messages = defineMessages({
   title: {
-    id: "SessionProgress.title",
-    defaultMessage: "Progress - {title}",
+    id: "TaskInstanceList.title",
+    defaultMessage: "Tasks",
+  },
+  description: {
+    id: "TaskInstanceList.description",
+    defaultMessage: "",
   },
 });
 
-const SessionProgress = () => {
+const TaskInstanceList = () => {
   const router = useRouter();
   const { classId, sessionId } = router.query as {
     classId: string;
@@ -42,14 +45,7 @@ const SessionProgress = () => {
 
   return (
     <>
-      <Header
-        title={messages.title}
-        titleParameters={{
-          title: session?.title ?? "",
-        }}
-      >
-        <AnonymizationToggle />
-      </Header>
+      <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
@@ -71,7 +67,7 @@ const SessionProgress = () => {
                 {session.title}
               </PageHeading>
               <SessionNavigation classId={klass.id} sessionId={session.id} />
-              <ProgressList classId={klass.id} sessionId={session.id} />
+              <TaskInstanceTable klass={klass} session={session} />
             </>
           )}
         </MultiSwrContent>
@@ -80,4 +76,4 @@ const SessionProgress = () => {
   );
 };
 
-export default SessionProgress;
+export default TaskInstanceList;

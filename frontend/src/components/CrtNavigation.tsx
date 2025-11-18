@@ -4,8 +4,11 @@ import {
   LuGraduationCap,
   LuListTodo,
   LuUsers,
-  LuBook,
+  LuBookUser,
+  LuMap,
 } from "react-icons/lu";
+import { Breadcrumb } from "@chakra-ui/react";
+import { Fragment } from "react";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
@@ -87,35 +90,48 @@ const CrtNavigation = ({
       {breadcrumb && (
         <>
           {user && (
-            <BreadcrumbItem href={`/user/${user.id}`} icon={<LuUsers />}>
-              {user.name ?? user.email}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`/user/${user.id}`} icon={<LuUsers />}>
+                {user.name ?? user.email}
+              </BreadcrumbItem>
+            </>
           )}
           {klass && (
-            <BreadcrumbItem
-              href={`/class/${klass.id}/detail`}
-              icon={<LuGraduationCap />}
-            >
-              {klass.name}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem
+                href={`/class/${klass.id}/detail`}
+                icon={<LuBookUser />}
+              >
+                {klass.name}
+              </BreadcrumbItem>
+            </>
           )}
           {task && (
-            <BreadcrumbItem
-              href={`/task/${task.id}/detail`}
-              icon={<LuListTodo />}
-            >
-              {task.title}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem
+                href={`/task/${task.id}/detail`}
+                icon={<LuListTodo />}
+              >
+                {task.title}
+              </BreadcrumbItem>
+            </>
           )}
           {lessonId && (
-            <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuBook />}>
-              {lessonName}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuMap />}>
+                {lessonName}
+              </BreadcrumbItem>
+            </>
           )}
           {breadcrumbItems?.map((item, index) => (
-            <BreadcrumbItem key={index} {...item}>
-              {item.children}
-            </BreadcrumbItem>
+            <Fragment key={index}>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem {...item}>{item.children}</BreadcrumbItem>
+            </Fragment>
           ))}
         </>
       )}

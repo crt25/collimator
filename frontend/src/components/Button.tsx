@@ -1,6 +1,5 @@
 import {
   Button as ChakraButton,
-  ButtonProps as ChakraButtonProps,
   HStack,
   Icon,
   Box,
@@ -14,20 +13,11 @@ import {
   useCallback,
   useState,
   useRef,
-  useMemo,
   MouseEvent as MouseEventReact,
-  DetailedHTMLProps,
-  ButtonHTMLAttributes,
+  ComponentProps,
 } from "react";
-import { isNonNull } from "@/utilities/is-non-null";
 
-export type ButtonProps = Omit<
-  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  "variant"
-> & {
-  variant?: ChakraButtonProps["variant"];
-  active?: boolean;
-};
+export type ButtonProps = ComponentProps<typeof ChakraButton>;
 
 const ButtonContent = chakra(HStack, {
   base: {
@@ -38,8 +28,6 @@ const ButtonContent = chakra(HStack, {
 const Button = ({
   onClick: onClickFn,
   children,
-  variant,
-  active,
   ...buttonProps
 }: ButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -84,22 +72,8 @@ const Button = ({
     [onClickFn, showPromiseResult],
   );
 
-  const className = useMemo(
-    () =>
-      [active ? "active" : null, buttonProps.className ?? null]
-        .filter(isNonNull)
-        .join(" "),
-    [buttonProps.className, active],
-  );
-
   return (
-    <ChakraButton
-      onClick={onClick}
-      loading={isLoading}
-      className={className}
-      variant={variant}
-      {...buttonProps}
-    >
+    <ChakraButton onClick={onClick} loading={isLoading} {...buttonProps}>
       <ButtonContent>
         <Box>{children}</Box>
         {isLoading && <Spinner data-testid="loading-spinner" size="sm" />}

@@ -135,7 +135,7 @@
     "message": "Class Details"
   },
   "ClassNavigation.sessionsTab": {
-    "message": "Sessions"
+    "message": "Lessons"
   },
   "ClassNavigation.studentsTab": {
     "message": "Students"
@@ -508,13 +508,13 @@
     "message": "Analysis - {title}"
   },
   "SessionList.columns.actions": {
-    "message": "Actions"
+    "message": "Quick Action"
   },
   "SessionList.columns.finishedAt": {
-    "message": "Finished at"
+    "message": "End Date"
   },
   "SessionList.columns.startedAt": {
-    "message": "Started at"
+    "message": "Start Date"
   },
   "SessionList.columns.tags": {
     "message": "Tags"
@@ -523,7 +523,7 @@
     "message": "Title"
   },
   "SessionList.copySessionLink": {
-    "message": "Copy Session Link"
+    "message": "Share"
   },
   "SessionList.deleteConfirmation.body": {
     "message": "Are you sure you want to delete this session?"

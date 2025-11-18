@@ -276,7 +276,7 @@
   "ClassNavigation.sessionsTab": [
     {
       "type": 0,
-      "value": "Sessions"
+      "value": "Lessons"
     }
   ],
   "ClassNavigation.studentsTab": [
@@ -1080,19 +1080,19 @@
   "SessionList.columns.actions": [
     {
       "type": 0,
-      "value": "Actions"
+      "value": "Quick Action"
     }
   ],
   "SessionList.columns.finishedAt": [
     {
       "type": 0,
-      "value": "Finished at"
+      "value": "End Date"
     }
   ],
   "SessionList.columns.startedAt": [
     {
       "type": 0,
-      "value": "Started at"
+      "value": "Start Date"
     }
   ],
   "SessionList.columns.tags": [
@@ -1110,7 +1110,7 @@
   "SessionList.copySessionLink": [
     {
       "type": 0,
-      "value": "Copy Session Link"
+      "value": "Share"
     }
   ],
   "SessionList.deleteConfirmation.body": [

@@ -1,6 +1,6 @@
 import { defineMessages } from "react-intl";
-import { LuSettings2, LuMilestone } from "react-icons/lu";
-import { TbUsers } from "react-icons/tb";
+import { LuSettings2, LuMap, LuUsers, LuSignpost } from "react-icons/lu";
+import { Breadcrumb, Icon } from "@chakra-ui/react";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
@@ -15,8 +15,8 @@ const messages = defineMessages({
     id: "ClassNavigation.studentsTab",
     defaultMessage: "Students",
   },
-  lessonsTab: {
-    id: "ClassNavigation.lessonsTab",
+  sessionsTab: {
+    id: "ClassNavigation.sessionsTab",
     defaultMessage: "Lessons",
   },
 });
@@ -25,20 +25,20 @@ const tabs: NavigationTab[] = [
   {
     url: "detail",
     title: (intl) => intl.formatMessage(messages.classTab),
-    testId: "class-details-tab",
     icon: <LuSettings2 />,
+    testId: "class-details-tab",
   },
   {
     url: "session",
-    title: (intl) => intl.formatMessage(messages.lessonsTab),
+    title: (intl) => intl.formatMessage(messages.sessionsTab),
+    icon: <LuSignpost />,
     testId: "class-sessions-tab",
-    icon: <TbUsers />,
   },
   {
     url: "students",
     title: (intl) => intl.formatMessage(messages.studentsTab),
+    icon: <LuUsers />,
     testId: "class-students-tab",
-    icon: <LuMilestone />,
   },
 ];
 
@@ -59,9 +59,15 @@ const ClassNavigation = ({
       {breadcrumb && (
         <>
           {session && (
-            <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
-              {session.title}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`${prefix}session/${session.id}/progress`}>
+                <Icon>
+                  <LuMap />
+                </Icon>
+                {session.title}
+              </BreadcrumbItem>
+            </>
           )}
         </>
       )}

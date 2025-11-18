@@ -1,4 +1,4 @@
-import { ButtonGroup, IconButton, Pagination, chakra } from "@chakra-ui/react";
+import { ButtonGroup, Pagination, chakra, IconButton } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useIntl, defineMessages } from "react-intl";
 
@@ -16,48 +16,6 @@ const PaginationWrapper = chakra("div", {
     justifyContent: "center",
     alignItems: "center",
     marginTop: "sm",
-  },
-});
-
-const PageButton = chakra(IconButton, {
-  base: {
-    borderRadius: "sm",
-    _hover: {
-      backgroundColor: "gray.300",
-    },
-  },
-  variants: {
-    state: {
-      inactive: {
-        backgroundColor: "gray.200",
-        color: "black",
-        _hover: {
-          backgroundColor: "black",
-          color: "white",
-        },
-      },
-      active: {
-        backgroundColor: "black",
-        color: "white",
-        _hover: {
-          backgroundColor: "gray.600",
-        },
-      },
-    },
-  },
-  defaultVariants: {
-    state: "inactive",
-  },
-});
-
-const NavigationButton = chakra(IconButton, {
-  base: {
-    backgroundColor: "transparent",
-    color: "gray.600",
-    _hover: {
-      color: "black",
-      backgroundColor: "transparent",
-    },
   },
 });
 
@@ -94,32 +52,31 @@ export const DataTablePagination = ({
       >
         <ButtonGroup>
           <Pagination.PrevTrigger asChild>
-            <NavigationButton
+            <IconButton
               aria-label={intl.formatMessage(messages.paginationPrevious)}
               disabled={!canPreviousPage}
+              variant="ghost"
             >
               <LuChevronLeft />
-            </NavigationButton>
+            </IconButton>
           </Pagination.PrevTrigger>
 
           <Pagination.Items
-            render={(page) => {
-              const isCurrentPage = page.value === currentPage;
-              return (
-                <PageButton state={isCurrentPage ? "active" : "inactive"}>
-                  {page.value}
-                </PageButton>
-              );
-            }}
+            render={(page) => (
+              <IconButton variant={{ base: "outline", _selected: "solid" }}>
+                {page.value}
+              </IconButton>
+            )}
           />
 
           <Pagination.NextTrigger asChild>
-            <NavigationButton
+            <IconButton
               aria-label={intl.formatMessage(messages.paginationNext)}
               disabled={!canNextPage}
+              variant="ghost"
             >
               <LuChevronRight />
-            </NavigationButton>
+            </IconButton>
           </Pagination.NextTrigger>
         </ButtonGroup>
       </Pagination.Root>

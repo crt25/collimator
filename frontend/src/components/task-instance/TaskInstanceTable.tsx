@@ -1,81 +1,84 @@
-import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack, Text } from "@chakra-ui/react";
+import { Icon, HStack, Text, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
-import { ColumnType } from "@/types/tanstack-types";
-import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
-import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
-import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
-import { capitalizeString } from "@/utilities/strings";
 import SwrContent from "../SwrContent";
-import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button from "../Button";
+import { ColumnType } from "@/types/tanstack-types";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { capitalizeString } from "@/utilities/strings";
+import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { useTaskInstances } from "@/api/collimator/hooks/tasks/useTaskInstances";
+import { isClickOnRow } from "@/utilities/table";
 
-const TaskTableWrapper = styled.div`
-  margin: 1rem 0;
-`;
+const TaskInstanceTableWrapper = chakra("div", {
+  base: {
+    marginTop: "md",
+    marginBottom: "md",
+  },
+});
 
 const messages = defineMessages({
   idColumn: {
-    id: "TaskTable.columns.id",
+    id: "TaskInstanceTable.columns.id",
     defaultMessage: "ID",
   },
-  titleColumn: {
-    id: "TaskTable.columns.title",
-    defaultMessage: "Title",
+  nameColumn: {
+    id: "TaskInstanceTable.columns.name",
+    defaultMessage: "Name",
   },
   taskTypeColumn: {
-    id: "TaskTable.columns.taskType",
+    id: "TaskInstanceTable.columns.taskType",
     defaultMessage: "Task Type",
   },
   deleteConfirmationTitle: {
-    id: "TaskTable.deleteConfirmation.title",
+    id: "TaskInstanceTable.deleteConfirmation.title",
     defaultMessage: "Delete Task",
   },
   deleteConfirmationBody: {
-    id: "TaskTable.deleteConfirmation.body",
+    id: "TaskInstanceTable.deleteConfirmation.body",
     defaultMessage: "Are you sure you want to delete this task?",
   },
   deleteConfirmationConfirm: {
-    id: "TaskTable.deleteConfirmation.confirm",
+    id: "TaskInstanceTable.deleteConfirmation.confirm",
     defaultMessage: "Delete Task",
   },
   viewDetails: {
-    id: "TaskTable.viewDetails",
+    id: "TaskInstanceTable.viewDetails",
     defaultMessage: "View Task Details",
   },
   deleteTask: {
-    id: "TaskTable.deleteTask",
+    id: "TaskInstanceTable.deleteTask",
     defaultMessage: "Delete Task",
   },
   createTask: {
-    id: "TaskTable.createTask",
+    id: "TaskInstanceTable.createTask",
     defaultMessage: "Create Task",
   },
 });
 
-const TaskTable = () => {
+const TaskInstanceTable = ({
+  klass,
+  session,
+}: {
+  klass: ExistingClassExtended;
+  session: ExistingSessionExtended;
+}) => {
   const intl = useIntl();
   const router = useRouter();
 
-  const { data, isLoading, error } = useAllTasks();
-  const deleteTask = useDeleteTask();
-
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
-  const [taskIdToDelete, setTaskIdToDelete] = useState<number | null>(null);
+  const { data, isLoading, error } = useTaskInstances(session);
 
   const columns: ColumnDef<ExistingTask>[] = [
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
       enableSorting: false,
+      size: 32,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
           {info.row.original.id}
@@ -87,7 +90,7 @@ const TaskTable = () => {
     },
     {
       accessorKey: "title",
-      header: intl.formatMessage(messages.titleColumn),
+      header: intl.formatMessage(messages.nameColumn),
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -115,12 +118,16 @@ const TaskTable = () => {
         columnType: ColumnType.text,
       },
     },
+    /*
+          This will later only be a task instance and should only delete the instance, not the task itself.
     {
       id: "actions",
       header: "Quick Actions",
       enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
+          {
+
           <Button
             aria-label={intl.formatMessage(messages.deleteTask)}
             onClick={(e) => {
@@ -132,13 +139,14 @@ const TaskTable = () => {
             variant="detail"
           >
             <FaRegTrashAlt />
-          </Button>
+          </Button>}
         </div>
       ),
       meta: {
         columnType: ColumnType.text,
       },
     },
+     */
     {
       id: "details",
       header: "",
@@ -149,7 +157,9 @@ const TaskTable = () => {
             aria-label={intl.formatMessage(messages.viewDetails)}
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/task/${info.row.original.id}/detail`);
+              router.push(
+                `/class/${klass.id}/session/${session.id}/task/${info.row.original.id}/detail`,
+              );
             }}
             data-testid={`task-${info.row.original.id}-details-button`}
             variant="detail"
@@ -167,20 +177,27 @@ const TaskTable = () => {
   ];
 
   return (
-    <TaskTableWrapper data-testid="task-list">
+    <TaskInstanceTableWrapper data-testid="session-task-list">
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
           <ChakraDataTable
             data={data}
             columns={columns}
             isLoading={isLoading}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(
+                  `/class/${klass.id}/session/${session.id}/task/${row.id}/detail`,
+                );
+              }
+            }}
             features={{
               sorting: true,
               columnFiltering: {
                 columns: [
                   {
                     accessorKey: "title",
-                    label: intl.formatMessage(messages.titleColumn),
+                    label: intl.formatMessage(messages.nameColumn),
                   },
                 ],
               },
@@ -191,23 +208,11 @@ const TaskTable = () => {
           />
         )}
       </SwrContent>
-      <ConfirmationModal
-        isShown={showDeleteConfirmationModal}
-        setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={
-          taskIdToDelete ? () => deleteTask(taskIdToDelete) : undefined
-        }
-        isDangerous
-        messages={{
-          title: messages.deleteConfirmationTitle,
-          body: messages.deleteConfirmationBody,
-          confirmButton: messages.deleteConfirmationConfirm,
-        }}
-      />
       <Button
         variant="primary"
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
+        marginTop="md"
       >
         <HStack>
           <Icon>
@@ -216,8 +221,8 @@ const TaskTable = () => {
           {intl.formatMessage(messages.createTask)}
         </HStack>
       </Button>
-    </TaskTableWrapper>
+    </TaskInstanceTableWrapper>
   );
 };
 
-export default TaskTable;
+export default TaskInstanceTable;

@@ -18,6 +18,8 @@ import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
 import { ToasterRecipe } from "./recipes/Toaster.recipe";
 import { ModalRecipe } from "./recipes/Modal.recipe";
+import { TableRecipe } from "./recipes/table/TableRoot.recipe";
+import { MenuRecipe } from "./recipes/Menu.recipe";
 
 const config = defineConfig({
   theme: {
@@ -29,6 +31,8 @@ const config = defineConfig({
       field: FieldRecipe,
       dialog: ModalRecipe,
       card: CardRecipe,
+      table: TableRecipe,
+      menu: MenuRecipe,
     },
     recipes: {
       button: ButtonRecipe,
@@ -45,13 +49,15 @@ const config = defineConfig({
         white: { value: "var(--background-color)" },
         black: { value: "var(--foreground-color)" },
         gray: {
-          50: { value: "var(--background-color-secondary)" },
-          100: { value: "var(--border-color-secondary)" },
+          50: { value: "#dedede" },
+          100: { value: "var(--background-color-secondary)" },
           200: { value: "var(--border-color-tertiary)" },
           600: { value: "var(--button-disabled-background-color)" },
           1000: { value: "var(--foreground-color-tertiary)" },
+          subtle: { value: "var(--foreground-color-tertiary)" },
         },
         dark: { value: "var(--accent-color)" },
+        neutral: { value: "var(--neutral-color)" },
         success: { value: "var(--success-color)" },
         error: { value: "var(--error-color)" },
       },
@@ -102,7 +108,10 @@ const config = defineConfig({
     }),
     semanticTokens: defineTokens({
       colors: {
-        bg: { value: "{colors.white}" },
+        bg: {
+          DEFAULT: { value: "{colors.white}" },
+          emphasized: { value: "{colors.gray.200}" },
+        },
         bgSecondary: { value: "{colors.gray.50}" },
         fg: { value: "{colors.black}" },
         fgSecondary: { value: "{colors.black}" },
@@ -151,10 +160,11 @@ const config = defineConfig({
       fontFamily: "Inter, sans-serif",
     },
     a: {
+      // These are necessary as long as we still have the bootstrap styles imported
       color: "inherit !important",
       textDecoration: "none !important",
       _hover: {
-        textDecoration: "underline !important",
+        textDecoration: "underline",
       },
     },
     ".p-tooltip": {

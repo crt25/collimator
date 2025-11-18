@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Tabs, HStack } from "@chakra-ui/react";
+import { Breadcrumb, HStack, Icon, Tabs } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
-import { ReactNode, useContext } from "react";
+import { Fragment, ReactNode, useContext } from "react";
 import styled from "@emotion/styled";
 
 import {
@@ -72,15 +72,14 @@ const TabNavigation = <T extends unknown = undefined>({
   const activeItems = navigationTabs.filter((tab) => tab.isActive);
 
   if (breadcrumb) {
-    return (
-      <>
-        {activeItems.map((item) => (
-          <BreadcrumbItem key={item.url} href={item.url} icon={item.icon}>
-            {item.title(intl, tabTitleArguments as T)}
-          </BreadcrumbItem>
-        ))}
-      </>
-    );
+    return activeItems.map((item) => (
+      <Fragment key={item.url}>
+        <Breadcrumb.Separator />
+        <BreadcrumbItem href={item.url} icon={item.icon}>
+          {item.title(intl, tabTitleArguments as T)}
+        </BreadcrumbItem>
+      </Fragment>
+    ));
   }
 
   const activeValue = activeItems[0]?.url || "";
@@ -97,7 +96,7 @@ const TabNavigation = <T extends unknown = undefined>({
           <Tabs.Trigger key={tab.url} value={tab.url} asChild>
             <Link href={tab.url} data-testid={tab.testId}>
               <HStack gap="sm" align="center">
-                {tab.icon}
+                {tab.icon && <Icon>{tab.icon}</Icon>}
                 <span>{tab.title(intl, tabTitleArguments as T)}</span>
               </HStack>
             </Link>

@@ -17,7 +17,6 @@ export const BreadcrumbsRecipe = defineSlotRecipe({
       fontWeight: "semiBold",
     },
     link: {
-      fontSize: "lg !important",
       fontWeight: "semiBold",
       color: "fgTertiary",
       _hover: {
@@ -26,7 +25,8 @@ export const BreadcrumbsRecipe = defineSlotRecipe({
     },
     separator: {
       fontSize: "sm !important",
-      margin: "0 sm",
+      marginLeft: "sm",
+      marginRight: "sm",
       color: "fgTertiary",
     },
   },

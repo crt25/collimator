@@ -25,7 +25,6 @@ const StyledHeader = chakra("header", {
   base: {
     padding: "{padding.sm} 0",
     backgroundColor: "headerBackground",
-    color: "headerForeground",
   },
 });
 

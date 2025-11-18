@@ -6,26 +6,29 @@ import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import CrtNavigation from "@/components/CrtNavigation";
-import ProgressList from "@/components/dashboard/ProgressList";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import PageHeading, { PageHeadingVariant } from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
-import SessionActions from "@/components/session/SessionActions";
+import { useTask } from "@/api/collimator/hooks/tasks/useTask";
+import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
+import TaskInstanceProgressList from "@/components/task-instance/TaskInstanceProgressList";
+import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 
 const messages = defineMessages({
   title: {
-    id: "SessionProgress.title",
+    id: "TaskInstanceProgress.title",
     defaultMessage: "Progress - {title}",
   },
 });
 
-const SessionProgress = () => {
+const TaskInstanceProgress = () => {
   const router = useRouter();
-  const { classId, sessionId } = router.query as {
+  const { classId, sessionId, taskId } = router.query as {
     classId: string;
     sessionId: string;
+    taskId: string;
   };
 
   const {
@@ -40,12 +43,18 @@ const SessionProgress = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
+  const {
+    data: task,
+    error: taskError,
+    isLoading: isLoadingTask,
+  } = useTask(taskId);
+
   return (
     <>
       <Header
         title={messages.title}
         titleParameters={{
-          title: session?.title ?? "",
+          title: task?.title ?? "",
         }}
       >
         <AnonymizationToggle />
@@ -53,25 +62,42 @@ const SessionProgress = () => {
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation classId={klass?.id} breadcrumb session={session} />
+          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
+          <SessionNavigation
+            breadcrumb
+            classId={klass?.id}
+            sessionId={session?.id}
+          />
         </Breadcrumbs>
         <MultiSwrContent
-          errors={[klassError, sessionError]}
-          isLoading={[isLoadingKlass, isLoadingSession]}
-          data={[klass, session]}
+          errors={[klassError, sessionError, taskError]}
+          isLoading={[isLoadingKlass, isLoadingSession, isLoadingTask]}
+          data={[klass, session, task]}
         >
-          {([klass, session]) => (
+          {([klass, session, task]) => (
             <>
               <PageHeading
                 variant={PageHeadingVariant.title}
                 actions={
-                  <SessionActions klass={klass} sessionId={session.id} />
+                  <TaskSessionActions
+                    classId={klass.id}
+                    sessionId={session.id}
+                    taskId={task.id}
+                  />
                 }
               >
-                {session.title}
+                {task.title}
               </PageHeading>
-              <SessionNavigation classId={klass.id} sessionId={session.id} />
-              <ProgressList classId={klass.id} sessionId={session.id} />
+              <TaskInstanceNavigation
+                classId={klass.id}
+                sessionId={session.id}
+                taskId={task.id}
+              />
+              <TaskInstanceProgressList
+                classId={klass.id}
+                sessionId={session.id}
+                taskId={task.id}
+              />
             </>
           )}
         </MultiSwrContent>
@@ -80,4 +106,4 @@ const SessionProgress = () => {
   );
 };
 
-export default SessionProgress;
+export default TaskInstanceProgress;

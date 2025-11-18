@@ -77,12 +77,14 @@ export type DropdownProps = {
   testId?: string;
   variant?: "primary" | "secondary";
   isButton?: boolean;
+  variant?: React.ComponentProps<typeof Menu.Root>["variant"];
 };
 
 const DropdownMenu = ({
   trigger,
   children,
   testId,
+  variant,
   isButton = false,
   variant = "primary",
 }: DropdownProps) => {
@@ -93,6 +95,7 @@ const DropdownMenu = ({
       <Menu.Root
         open={isOpen}
         onOpenChange={(details) => setIsOpen(details.open)}
+        variant={variant}
       >
         <Menu.Trigger data-testid={testId}>{trigger}</Menu.Trigger>
         {children && (
@@ -110,6 +113,7 @@ const DropdownMenu = ({
     <Menu.Root
       open={isOpen}
       onOpenChange={(details) => setIsOpen(details.open)}
+      variant={variant}
     >
       <MenuTrigger data-testid={testId} variant={variant}>
         <HStack>

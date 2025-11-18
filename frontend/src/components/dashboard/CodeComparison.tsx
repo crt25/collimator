@@ -494,7 +494,6 @@ const CodeComparison = ({
                 selectedRightSolutionId !== defaultSolutionIdValue ? (
                   <ButtonGroup>
                     <Button
-                      active={modalSide === "left"}
                       onClick={() => {
                         setModalSide("left");
                       }}
@@ -502,7 +501,6 @@ const CodeComparison = ({
                       {leftStudentName}
                     </Button>
                     <Button
-                      active={modalSide === "right"}
                       onClick={() => {
                         setModalSide("right");
                       }}

@@ -4,9 +4,10 @@ export const PageHeadingRecipe = defineRecipe({
   variants: {
     variant: {
       title: {
-        fontSize: "4xl",
-        fontWeight: "semiBold",
-        color: "fg",
+        // We need to use !important until bootstrap is removed
+        marginTop: "lg !important",
+        marginBottom: "lg !important",
+        fontSize: "3xl",
       },
       description: {
         marginTop: "md",
