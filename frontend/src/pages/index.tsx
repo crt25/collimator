@@ -18,11 +18,11 @@ const messages = defineMessages({
     defaultMessage: "Welcome to the Teacher Dashboard of Collimator.",
   },
   adminHeader: {
-    id: "Home.header",
+    id: "Home.adminHeader",
     defaultMessage: "Admin Dashboard",
   },
   adminDescription: {
-    id: "Home.description",
+    id: "Home.adminDescription",
     defaultMessage: "Welcome to the Admin Dashboard of Collimator.",
   },
   classesDescription: {
