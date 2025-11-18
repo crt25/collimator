@@ -16,6 +16,8 @@ import { SelectRecipe } from "./recipes/Select.recipe";
 import { ContainerRecipe } from "./recipes/Container.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
+import { ToasterRecipe } from "./recipes/Toaster.recipe";
+import { ModalRecipe } from "./recipes/Modal.recipe";
 
 const config = defineConfig({
   theme: {
@@ -23,6 +25,7 @@ const config = defineConfig({
       dropdownMenu: DropdownMenuRecipe,
       breadcrumb: BreadcrumbsRecipe,
       select: SelectRecipe,
+      toaster: ToasterRecipe,
       field: FieldRecipe,
       card: CardRecipe,
     },

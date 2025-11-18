@@ -5,8 +5,8 @@ import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PrimeReactProvider } from "primereact/api";
-import { Toaster } from "react-hot-toast";
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core";
+import { Toaster } from "@/components/Toaster";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -123,6 +123,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <CacheProvider value={cache}>
       <ChakraProvider>
+        <Toaster />
         <IntlProvider locale={localizationState.locale} messages={messages}>
           <YupLocalization>
             <PrimeReactProvider>
@@ -138,12 +139,6 @@ const App = ({ Component, pageProps }: AppProps) => {
                     >
                       <WebSocketProvider>
                         <Component {...pageProps} />
-                        <Toaster
-                          toastOptions={{
-                            position: "bottom-right",
-                            duration: 5000,
-                          }}
-                        />
                       </WebSocketProvider>
                     </AuthenticationBarrier>
                   </UpdateLocalizationContext.Provider>
