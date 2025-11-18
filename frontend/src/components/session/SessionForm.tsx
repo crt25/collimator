@@ -78,10 +78,12 @@ const SessionForm = ({
   onSubmit: (data: SessionFormValues) => void;
 }) => {
   const schema = useYupSchema({
-    title: yup.string().required(),
-    description: yup.string().required(),
-    taskIds: yup.array().of(yup.number().required()).required(),
-    isAnonymous: yup.boolean().required(),
+    title: yup.string().required(messages.titleRequired.defaultMessage),
+    sharingType: yup
+      .string()
+      .required(messages.sharingTypeRequired.defaultMessage),
+    description: yup.string().default(""),
+    taskIds: yup.array().of(yup.number().required()).default([]),
   });
 
   const resolver = useYupResolver(schema);
