@@ -75,6 +75,7 @@ const InternalSelect = (
     collection,
     variant,
     isDirty,
+    children,
   } = props;
 
   return (
@@ -108,6 +109,8 @@ const InternalSelect = (
             <ChakraSelect.Indicator />
           </ChakraSelect.IndicatorGroup>
         </ChakraSelect.Control>
+
+        {children}
 
         <Portal>
           <ChakraSelect.Positioner>
