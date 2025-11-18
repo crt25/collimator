@@ -19,23 +19,25 @@ interface Props {
   invalid?: boolean;
 }
 
-type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
-  Props & {
-    size?: ChakraTextareaProps["size"];
-  };
+type TextAreaProps = ChakraTextareaProps & Props;
 
 const TextArea = forwardRef(function TextArea(
   props: TextAreaProps,
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, helperText, errorText, invalid, ...textareaProps } = props;
+  const { label, helperText, errorText, invalid, variant, ...textareaProps } =
+    props;
 
   return (
     <InputWrapper>
       <Field.Root invalid={invalid}>
         {label && <Field.Label>{intl.formatMessage(label)}</Field.Label>}
-        <ChakraTextarea ref={ref} {...textareaProps} />
+        <ChakraTextarea
+          ref={ref}
+          variant={variant ?? "subtle"}
+          {...textareaProps}
+        />
         {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
         {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
       </Field.Root>

@@ -12,6 +12,7 @@ import {
 const InputWrapper = chakra("div", {
   base: {
     display: "block",
+    marginBottom: "1rem",
   },
 });
 
@@ -49,7 +50,7 @@ const Input = forwardRef(function Input(
     errorText,
     invalid,
     variety,
-    variant,
+    variant = "subtle",
     type,
     labelBadge,
     ...inputProps

@@ -67,6 +67,7 @@ const UserForm = ({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<UserFormValues>({
     resolver,
@@ -92,12 +93,13 @@ const UserForm = ({
       />
 
       <Select
+        name="type"
+        control={control}
         label={messages.type}
         options={Object.values(UserType).map((userType) => ({
           value: userType,
           label: getUserTypeMessage(userType as UserType),
         }))}
-        {...register("type")}
         data-testid="type"
       >
         <ValidationErrorMessage>{errors.type?.message}</ValidationErrorMessage>

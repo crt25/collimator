@@ -90,10 +90,7 @@ const ChakraRange = ({
     >
       {label && <Slider.Label>{label}</Slider.Label>}
       <Slider.Control>
-        <Slider.Track
-          bg="var(--background-color-secondary)"
-          borderColor="var(--foreground-color)"
-        >
+        <Slider.Track borderColor="var(--foreground-color)">
           <Slider.Range bg="var(--accent-color)" />
         </Slider.Track>
         <Slider.Thumbs />

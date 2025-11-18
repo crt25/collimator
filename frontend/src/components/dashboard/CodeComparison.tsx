@@ -47,7 +47,7 @@ const messages = defineMessages({
   },
   defaultSolutionOption: {
     id: "CodeComparison.defaultSolutionOption",
-    defaultMessage: "Select a solutions",
+    defaultMessage: "Select a solution",
   },
 });
 
@@ -307,13 +307,7 @@ const CodeComparison = ({
           return;
         }
 
-        setLeftOptions([
-          {
-            label: intl.formatMessage(messages.defaultSolutionOption),
-            value: defaultSolutionIdValue,
-          },
-          ...options,
-        ]);
+        setLeftOptions(options);
       },
     );
 
@@ -355,13 +349,7 @@ const CodeComparison = ({
           return;
         }
 
-        setRightOptions([
-          {
-            label: intl.formatMessage(messages.defaultSolutionOption),
-            value: defaultSolutionIdValue,
-          },
-          ...options,
-        ]);
+        setRightOptions(options);
 
         return () => {
           isCancelled = true;
@@ -542,10 +530,10 @@ const CodeComparison = ({
               <Select
                 options={groupOptions}
                 value={selectedLeftGroup}
-                onChange={(e) =>
+                onValueChange={(v) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedLeftGroup,
-                    groupKey: e.target.value,
+                    groupKey: v,
                   })
                 }
                 alwaysShow
@@ -553,11 +541,12 @@ const CodeComparison = ({
               />
               <Select
                 options={leftOptions}
+                placeholder={messages.defaultSolutionOption}
                 value={selectedLeftSolutionId}
-                onChange={(e) =>
+                onValueChange={(v) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedLeftAnalysis,
-                    solutionId: e.target.value,
+                    solutionId: v,
                   })
                 }
                 alwaysShow
@@ -618,10 +607,10 @@ const CodeComparison = ({
               <Select
                 options={groupOptions}
                 value={selectedRightGroup}
-                onChange={(e) =>
+                onValueChange={(v) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedRightGroup,
-                    groupKey: e.target.value,
+                    groupKey: v,
                   })
                 }
                 alwaysShow
@@ -629,11 +618,12 @@ const CodeComparison = ({
               />
               <Select
                 options={rightOptions}
+                placeholder={messages.defaultSolutionOption}
                 value={selectedRightSolutionId}
-                onChange={(e) =>
+                onValueChange={(v) =>
                   dispatch({
                     type: AnalyzerStateActionType.setSelectedRightAnalysis,
-                    solutionId: e.target.value,
+                    solutionId: v,
                   })
                 }
                 alwaysShow

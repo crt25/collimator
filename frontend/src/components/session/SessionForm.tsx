@@ -205,7 +205,7 @@ const SessionForm = ({
             label={messages.addTask}
             options={[
               {
-                value: addTaskEmptyId,
+                value: addTaskEmptyId.toString(),
                 label: messages.selectTaskToAdd,
               },
               // in theory tasks should never be undefined, but it seems to happen sometimes??
@@ -214,13 +214,13 @@ const SessionForm = ({
                 // don't list again tasks that are already selected
                 .filter((t) => !selectedTaskIds.includes(t.id))
                 .map((t) => ({
-                  value: t.id,
+                  value: t.id.toString(),
                   label: t.title,
                 })),
             ]}
             data-testid="add-task"
             onChange={onAddTask}
-            value={addTaskId}
+            value={addTaskId.toString()}
           />
 
           <Input
