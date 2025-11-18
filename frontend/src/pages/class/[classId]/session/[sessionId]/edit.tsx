@@ -77,13 +77,13 @@ const EditSession = () => {
           <CrtNavigation breadcrumb klass={klass} />
           <ClassNavigation breadcrumb classId={klass?.id} session={session} />
         </Breadcrumbs>
-        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <PageHeading>
           <FormattedMessage
             id="EditSession.header"
             defaultMessage="Edit Session"
           />
         </PageHeading>
+        <SessionNavigation classId={klass?.id} sessionId={session?.id} />
         <MultiSwrContent
           data={[klass, session]}
           errors={[klassError, sessionError]}

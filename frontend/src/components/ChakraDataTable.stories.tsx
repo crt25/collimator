@@ -156,7 +156,7 @@ export const WithAllFeatures: Story = {
     features: {
       sorting: true,
       pagination: {
-        pageSize: 4,
+        pageSize: 10,
       },
       columnFiltering: {
         columns: [

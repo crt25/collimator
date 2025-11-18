@@ -1,13 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
-import {
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +15,8 @@ import TextArea from "../form/TextArea";
 import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
+import { EditedBadge } from "../EditedBadge";
+import Checkbox from "../form/Checkbox";
 
 const messages = defineMessages({
   title: {
@@ -99,7 +95,9 @@ const SessionForm = ({
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    reset,
+    formState: { errors, dirtyFields },
+    control,
   } = useForm<SessionFormValues>({
     resolver,
     defaultValues,
@@ -110,6 +108,9 @@ const SessionForm = ({
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
+
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
 
   // ensure that the selected tasks are always in sync with the form
   const setSelectedTasks = useCallback(
@@ -124,8 +125,8 @@ const SessionForm = ({
   );
 
   const onAddTask = useCallback(
-    (event: SyntheticEvent<HTMLSelectElement, Event>) => {
-      const taskId = parseInt(event.currentTarget.value, 10);
+    (taskIdString: string) => {
+      const taskId = parseInt(taskIdString, 10);
 
       if (taskId === addTaskEmptyId) {
         return;
@@ -166,12 +167,21 @@ const SessionForm = ({
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
-        <form onSubmit={handleSubmit(onSubmit)} data-testid="session-form">
+        <form
+          onSubmit={handleSubmit((values) => {
+            onSubmit(values);
+            reset(values);
+          })}
+          data-testid="session-form"
+        >
           <Input
             label={messages.title}
             {...register("title")}
             data-testid="title"
             errorText={errors.title?.message}
+            labelBadge={
+              showEditedBadges && dirtyFields.title && <EditedBadge />
+            }
           />
 
           <TextArea
@@ -179,6 +189,9 @@ const SessionForm = ({
             {...register("description")}
             data-testid="description"
             errorText={errors.description?.message}
+            labelBadge={
+              showEditedBadges && dirtyFields.description && <EditedBadge />
+            }
           />
 
           <SortableListInput
@@ -219,16 +232,15 @@ const SessionForm = ({
                 })),
             ]}
             data-testid="add-task"
-            onChange={onAddTask}
+            onValueChange={onAddTask}
             value={addTaskId.toString()}
           />
 
-          <Input
+          <Checkbox
+            name="isAnonymous"
+            control={control}
             label={messages.isAnonymous}
-            {...register("isAnonymous")}
             data-testid="is-anonymous"
-            type="checkbox"
-            errorText={errors.isAnonymous?.message}
           />
 
           <SubmitFormButton label={submitMessage} />

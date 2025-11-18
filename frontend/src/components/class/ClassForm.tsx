@@ -69,6 +69,7 @@ const ClassForm = ({
 
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, dirtyFields },
     control,
@@ -87,7 +88,10 @@ const ClassForm = ({
       {(users) => (
         <FormContainer
           as="form"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((values) => {
+            onSubmit(values);
+            reset(values);
+          })}
           data-testid="class-form"
         >
           <Grid templateColumns="repeat(12, 1fr)" gap={4}>

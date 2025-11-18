@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { EditedBadge } from "../EditedBadge";
 
 const InputWrapper = styled.label<{ isShown?: boolean; noMargin?: boolean }>`
   display: block;
@@ -37,6 +38,7 @@ type InternalSelectProps = {
   children?: React.ReactNode;
   onValueChange?: (value: string) => void;
   onInteractOutside?: () => void;
+  isDirty?: boolean;
 };
 
 type SharedSelectProps = InternalSelectProps & {
@@ -72,13 +74,15 @@ const InternalSelect = (
     placeholder,
     collection,
     variant,
+    isDirty,
+    children,
   } = props;
 
   return (
     <>
       <ChakraSelect.Root
         name={name}
-        value={value !== undefined ? [value] : []}
+        value={value !== undefined ? [value.toString()] : []}
         onValueChange={(v) => onValueChange?.(v.value[0])}
         onInteractOutside={onInteractOutside}
         variant={variant ?? "subtle"}
@@ -86,7 +90,10 @@ const InternalSelect = (
       >
         <ChakraSelect.HiddenSelect />
         {label && (
-          <ChakraSelect.Label>{intl.formatMessage(label)}</ChakraSelect.Label>
+          <ChakraSelect.Label>
+            {intl.formatMessage(label)}
+            {isDirty && <EditedBadge />}
+          </ChakraSelect.Label>
         )}
 
         <ChakraSelect.Control>
@@ -102,6 +109,8 @@ const InternalSelect = (
             <ChakraSelect.Indicator />
           </ChakraSelect.IndicatorGroup>
         </ChakraSelect.Control>
+
+        {children}
 
         <Portal>
           <ChakraSelect.Positioner>
@@ -155,11 +164,12 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
         <Controller
           control={props.control}
           name={props.name}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <InternalSelect
               name={field.name}
               value={field.value}
               onValueChange={field.onChange}
+              isDirty={fieldState.isDirty}
               onInteractOutside={() => field.onBlur()}
               collection={collection}
               variant={variant}

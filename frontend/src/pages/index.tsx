@@ -66,11 +66,8 @@ const Home = () => {
     <>
       <Header title={header} />
       <Container>
-        <PageHeading>
+        <PageHeading description={<FormattedMessage {...description} />}>
           <FormattedMessage {...header} />
-        </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage {...description} />
         </PageHeading>
 
         <GridLayout>

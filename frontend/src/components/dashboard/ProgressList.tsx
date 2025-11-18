@@ -3,7 +3,7 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
-import { LuChevronRight, LuHand } from "react-icons/lu";
+import { LuHand } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -11,12 +11,10 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { ColumnType } from "@/types/tanstack-types";
-import { isClickOnRow } from "@/utilities/table";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
-import Button from "../Button";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -255,32 +253,7 @@ const ProgressList = ({
       },
     ];
 
-    const lastColumns: ColumnDef<StudentProgress>[] = [
-      {
-        id: "details",
-        header: "",
-        enableSorting: false,
-        cell: (info) => (
-          <Button
-            aria-label={intl.formatMessage(messages.actionsColumn)}
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(
-                `/class/${classId}/session/${info.row.original.id}/progress/student/${info.row.original.student.studentId}`,
-              );
-            }}
-            variant="detail"
-          >
-            <Icon>
-              <LuChevronRight />
-            </Icon>
-          </Button>
-        ),
-        meta: {
-          columnType: ColumnType.icon,
-        },
-      },
-    ];
+    const lastColumns: ColumnDef<StudentProgress>[] = [];
 
     const taskColumns: ColumnDef<StudentProgress>[] = (
       session?.tasks ?? []
@@ -318,17 +291,10 @@ const ProgressList = ({
         errors={[klassError, sessionError, solutionsError]}
         isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
       >
-        {([klass, session]) => (
+        {([_klass, _session]) => (
           <ChakraDataTable
             data={progress}
             columns={columns}
-            onRowClick={(row, e) => {
-              if (isClickOnRow(e)) {
-                router.push(
-                  `/class/${klass.id}/session/${session.id}/progress/student/${row.student.studentId}`,
-                );
-              }
-            }}
             features={{
               sorting: true,
               pagination: {

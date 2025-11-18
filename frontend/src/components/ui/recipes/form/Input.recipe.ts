@@ -28,7 +28,8 @@ export const FieldRecipe = defineSlotRecipe({
     label: {
       fontSize: "sm",
       fontWeight: "semibold",
-      marginBottom: "xs",
+      // Use the same value as the select
+      marginBottom: "var(--chakra-spacing-1\\.5)",
       display: "block",
     },
   },
