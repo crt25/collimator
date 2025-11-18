@@ -46,10 +46,11 @@ const CreateClass = () => {
   const onSubmit = useCallback(
     async (formValues: ClassFormValues) => {
       try {
-        await createClass({
+        const response = await createClass({
           name: formValues.name,
           teacherId: formValues.teacherId,
         });
+
         toaster.success({
           title: intl.formatMessage(messages.successMessage),
           action: {
@@ -58,6 +59,8 @@ const CreateClass = () => {
           },
           closable: true,
         });
+
+        router.push(`/class/${response.id}/detail`);
       } catch {
         toaster.error({
           title: intl.formatMessage(messages.errorMessage),
