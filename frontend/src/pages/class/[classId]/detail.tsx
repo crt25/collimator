@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { Container, Table } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { Container } from "@chakra-ui/react";
+import { defineMessages, useIntl } from "react-intl";
+import { useCallback, useState } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import Header from "@/components/Header";
@@ -14,9 +15,59 @@ const messages = defineMessages({
     id: "ClassDetail.title",
     defaultMessage: "Class - {name}",
   },
+  submit: {
+    id: "ClassDetail.submit",
+    defaultMessage: "Save Class",
+  },
+  actions: {
+    id: "ClassDetail.actions",
+    defaultMessage: "Actions",
+  },
+  successMessage: {
+    id: "ClassDetail.successMessage",
+    defaultMessage: "Successfully saved changes",
+  },
+  errorMessage: {
+    id: "ClassDetail.errorMessage",
+    defaultMessage:
+      "There was an error saving the changes. Please try to save again!",
+  },
+  deleteAction: {
+    id: "ClassDetail.deleteAction",
+    defaultMessage: "Delete Class",
+  },
+  deleteConfirmationTitle: {
+    id: "ClassDetail.deleteConfirmation.title",
+    defaultMessage: 'Delete Class: "{name}"',
+  },
+  deleteConfirmationBody: {
+    id: "ClassDetail.deleteConfirmation.body",
+    defaultMessage: "Are you sure? You can't undo this action afterwards.",
+  },
+  deleteConfirmationConfirm: {
+    id: "ClassDetail.deleteConfirmation.confirm",
+    defaultMessage: "Delete Class",
+  },
+  deleteConfirmationCancel: {
+    id: "ClassDetail.deleteConfirmation.cancel",
+    defaultMessage: "Cancel",
+  },
+  deleteSuccessMessage: {
+    id: "ClassDetail.deleteSuccessMessage",
+    defaultMessage: "Class deleted successfully",
+  },
+  deleteErrorMessage: {
+    id: "ClassDetail.deleteErrorMessage",
+    defaultMessage: "There was an error deleting the class. Please try again!",
+  },
+  returnToClassList: {
+    id: "ClassDetail.returnToClassList",
+    defaultMessage: "Return to Class List",
+  },
 });
 
 const ClassDetail = () => {
+  const intl = useIntl();
   const router = useRouter();
   const { classId } = router.query as {
     classId: string;
