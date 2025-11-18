@@ -108,7 +108,7 @@ const ClassForm = ({
         reset(undefined, { keepValues: true });
       }
     }
-  }, [clearErrors, isSubmitSuccessful, reset, showEditedBadges]);
+  }, [isSubmitSuccessful, reset, showEditedBadges]);
 
   // Disable the button if in edit mode with no changes, or if the form is submitting or has been successfully submitted
   const isButtonDisabled =
