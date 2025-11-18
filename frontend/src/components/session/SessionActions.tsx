@@ -1,11 +1,14 @@
 import { defineMessages, useIntl } from "react-intl";
 import { LuSend, LuTrash } from "react-icons/lu";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { useRouter } from "next/router";
+import DropdownMenu from "../DropdownMenu";
+import { Modal } from "../form/Modal";
+import { toaster } from "../Toaster";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
-import DropdownMenu from "../DropdownMenu";
 
 const messages = defineMessages({
   copySessionLink: {
@@ -15,6 +18,31 @@ const messages = defineMessages({
   deleteSession: {
     id: "SessionActions.deleteSession",
     defaultMessage: "Delete Lesson",
+  },
+  deleteConfirmationTitle: {
+    id: "SessionActions.deleteConfirmation.title",
+    defaultMessage: "Delete Session",
+  },
+  deleteConfirmationBody: {
+    id: "SessionActions.deleteConfirmation.body",
+    defaultMessage: "Are you sure? You can't undo this action afterwards.",
+  },
+  deleteConfirmationConfirm: {
+    id: "SessionActions.deleteConfirmation.confirm",
+    defaultMessage: "Delete Session",
+  },
+  deleteConfirmationCancel: {
+    id: "SessionActions.deleteConfirmation.cancel",
+    defaultMessage: "Cancel",
+  },
+  deleteSuccessMessage: {
+    id: "SessionActions.deleteSuccessMessage",
+    defaultMessage: "Session deleted successfully",
+  },
+  deleteErrorMessage: {
+    id: "SessionActions.deleteErrorMessage",
+    defaultMessage:
+      "There was an error deleting the session. Please try again!",
   },
 });
 
