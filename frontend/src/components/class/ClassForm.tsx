@@ -1,7 +1,15 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
-import { chakra, Field, Grid, GridItem } from "@chakra-ui/react";
+import {
+  Portal,
+  createListCollection,
+  chakra,
+  Field,
+  Flex,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllUsers } from "@/api/collimator/hooks/users/useAllUsers";
@@ -16,6 +24,7 @@ const ButtonWrapper = chakra("div", {
   base: {
     display: "flex",
     justifyContent: "flex-end",
+    marginTop: "4xl",
   },
 });
 
@@ -39,6 +48,10 @@ const messages = defineMessages({
   teacherRequired: {
     id: "ClassForm.error.teacherRequired",
     defaultMessage: "Teacher is required",
+  },
+  disabledSaveButtonTooltip: {
+    id: "ClassForm.tooltip.disabledSaveButton",
+    defaultMessage: "No changes to save",
   },
 });
 
@@ -71,7 +84,13 @@ const ClassForm = ({
     register,
     reset,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: {
+      errors,
+      dirtyFields,
+      isDirty,
+      isSubmitSuccessful,
+      isSubmitting,
+    },
     control,
   } = useForm<ClassFormValues>({
     resolver,
@@ -80,8 +99,16 @@ const ClassForm = ({
 
   const { isLoading, data, error } = useAllUsers();
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
+
+  // Disable the button if in edit mode with no changes, or if the form is submitting or has been successfully submitted
+  const isButtonDisabled =
+    (showEditedBadges && !isDirty) || isSubmitSuccessful || isSubmitting;
+
+  type TeacherOption = {
+    value: string;
+    label: string;
+  };
 
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
@@ -120,15 +147,21 @@ const ClassForm = ({
                     label: u.name ?? u.email,
                   }))}
                   data-testid="teacherId"
-                >
-                  <Field.ErrorText>{errors.teacherId?.message}</Field.ErrorText>
-                </Select>
+                />
               </Field.Root>
             </GridItem>
           </Grid>
 
           <ButtonWrapper>
-            <SubmitFormButton label={submitMessage} />
+            <SubmitFormButton
+              label={submitMessage}
+              disabled={isButtonDisabled}
+              title={
+                isDirty
+                  ? undefined
+                  : intl.formatMessage(messages.disabledSaveButtonTooltip)
+              }
+            />
           </ButtonWrapper>
         </FormContainer>
       )}
