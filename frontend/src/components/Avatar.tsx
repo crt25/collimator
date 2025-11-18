@@ -7,7 +7,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import Link from "next/link";
-
+import { useRouter } from "next/router";
+import { useUserName } from "@/hooks/useUserName";
 interface AvatarMenuItemProps {
   href?: string;
   onClick?: () => void;
@@ -24,6 +25,16 @@ interface AvatarMenuProps {
 const MenuContent = chakra(Menu.Content, {
   base: {
     borderColor: "headerBorder",
+  },
+});
+
+const UsernameItem = chakra(Menu.Item, {
+  base: {
+    fontWeight: "semibold",
+    cursor: "pointer",
+    _hover: {
+      bg: "gray.100",
+    },
   },
 });
 
@@ -56,6 +67,13 @@ const AvatarMenuItem = ({
 
 const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const username = useUserName();
+  const router = useRouter();
+
+  const handleUsernameClick = () => {
+    router.push("/");
+    setIsOpen(false);
+  };
 
   return (
     <Menu.Root
@@ -69,7 +87,17 @@ const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <MenuContent>{children}</MenuContent>
+          <MenuContent>
+            <UsernameItem
+              value="username"
+              onClick={handleUsernameClick}
+              data-testid="current-user"
+            >
+              {username}
+            </UsernameItem>
+            <Menu.Separator />
+            {children}
+          </MenuContent>
         </Menu.Positioner>
       </Portal>
     </Menu.Root>
