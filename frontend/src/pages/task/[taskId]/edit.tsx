@@ -36,8 +36,9 @@ const EditTask = () => {
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       if (task.data && taskFile.data) {
-        const referenceSolutions: UpdateReferenceSolutionDto[] =
-          task.data.referenceSolutions;
+        const referenceSolutions: UpdateReferenceSolutionDto[] = [
+          ...task.data.referenceSolutions,
+        ];
 
         const referenceSolutionsFiles = task.data.referenceSolutions.map(
           (s) => s.solution,
