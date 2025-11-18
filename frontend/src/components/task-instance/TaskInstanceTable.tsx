@@ -4,9 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { Icon, HStack, Text, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
-import SwrContent from "../SwrContent";
-import { ChakraDataTable } from "../ChakraDataTable";
-import Button from "../Button";
 import { ColumnType } from "@/types/tanstack-types";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
@@ -14,6 +11,9 @@ import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useTaskInstances } from "@/api/collimator/hooks/tasks/useTaskInstances";
 import { isClickOnRow } from "@/utilities/table";
+import Button from "../Button";
+import { ChakraDataTable } from "../ChakraDataTable";
+import SwrContent from "../SwrContent";
 
 const TaskInstanceTableWrapper = chakra("div", {
   base: {
@@ -210,7 +210,9 @@ const TaskInstanceTable = ({
       </SwrContent>
       <Button
         variant="primary"
-        onClick={() => router.push("task/create")}
+        onClick={() =>
+          router.push(`/class/${klass.id}/session/${session.id}/task/create`)
+        }
         data-testid="task-create-button"
         marginTop="md"
       >
