@@ -9,6 +9,7 @@ import SwrContent from "@/components/SwrContent";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import StudentList from "@/components/student/StudentList";
 import PageHeading from "@/components/PageHeading";
+import AnonymizationToggle from "@/components/AnonymizationToggle";
 
 const messages = defineMessages({
   title: {
@@ -32,7 +33,9 @@ const ClassUserList = () => {
         titleParameters={{
           name: klass?.name ?? "",
         }}
-      />
+      >
+        <AnonymizationToggle />
+      </Header>
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
