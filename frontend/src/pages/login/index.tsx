@@ -73,6 +73,7 @@ const LoginPage = () => {
                 </Text>
               </Stack>
             </Card.Header>
+            <Card.Body />
             <Card.Footer justifyContent="flex-end">
               <Button
                 onClick={onAuthenticateWithMicrosoft}
