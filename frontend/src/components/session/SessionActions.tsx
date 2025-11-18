@@ -54,12 +54,28 @@ const SessionActions = ({
   sessionId: number;
 }) => {
   const intl = useIntl();
+  const router = useRouter();
   const deleteSession = useDeleteClassSession();
   const authenticationContext = useContext(AuthenticationContext);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const canGetSessionLink =
     "userId" in authenticationContext &&
     klass.teacher.id === authenticationContext.userId;
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteSession(klass.id, sessionId);
+      toaster.success({
+        title: intl.formatMessage(messages.deleteSuccessMessage),
+      });
+      router.push(`/class/${klass.id}/session`);
+    } catch {
+      toaster.error({
+        title: intl.formatMessage(messages.deleteErrorMessage),
+      });
+    }
+  };
 
   return (
     <DropdownMenu
@@ -80,14 +96,20 @@ const SessionActions = ({
         >
           {intl.formatMessage(messages.copySessionLink)}
         </DropdownMenu.Item>
-      )}
-      <DropdownMenu.Item
-        onClick={() => deleteSession(klass.id, sessionId)}
-        icon={<LuTrash />}
-      >
-        {intl.formatMessage(messages.deleteSession)}
-      </DropdownMenu.Item>
-    </DropdownMenu>
+      </DropdownMenu>
+
+      <Modal
+        title={intl.formatMessage(messages.deleteConfirmationTitle)}
+        description={intl.formatMessage(messages.deleteConfirmationBody)}
+        confirmButtonText={intl.formatMessage(
+          messages.deleteConfirmationConfirm,
+        )}
+        cancelButtonText={intl.formatMessage(messages.deleteConfirmationCancel)}
+        onConfirm={handleDeleteConfirm}
+        open={isDeleteModalOpen}
+        onOpenChange={(details) => setIsDeleteModalOpen(details.open)}
+      />
+    </>
   );
 };
 
