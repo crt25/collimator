@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
   teacherDescription: {
     id: "Home.description",
-    defaultMessage: "Welcome to the Teacher Dashboard of Collimator.",
+    defaultMessage: "Welcome to the Teacher Dashboard of ClassMosaic.",
   },
   adminHeader: {
     id: "Home.adminHeader",
@@ -22,7 +22,9 @@ const messages = defineMessages({
   },
   adminDescription: {
     id: "Home.adminDescription",
-    defaultMessage: "Welcome to the Admin Dashboard of Collimator.",
+    defaultMessage:
+      "Welcome to the Admin Dashboard of ClassMosaic. " +
+      "Edit classes, tasks, or manage user profiles.",
   },
   classesDescription: {
     id: "Home.classesDescription",
@@ -117,10 +119,7 @@ const Home = () => {
                     wordBreak="keep-all"
                     whiteSpace="nowrap"
                   >
-                    <FormattedMessage
-                      id="Home.tasks"
-                      defaultMessage="Create new tasks"
-                    />
+                    <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
                   </Text>
                   <Text>
                     <FormattedMessage {...messages.tasksDescription} />

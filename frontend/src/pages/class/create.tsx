@@ -13,7 +13,11 @@ import PageHeading from "@/components/PageHeading";
 const messages = defineMessages({
   title: {
     id: "CreateClass.title",
-    defaultMessage: "Create new Class",
+    defaultMessage: "Create Class",
+  },
+  header: {
+    id: "CreateClass.header",
+    defaultMessage: "Create Class",
   },
   description: {
     id: "CreateClass.pageDescription",
@@ -77,18 +81,8 @@ const CreateClass = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <PageHeading
-          description={
-            <FormattedMessage
-              id="CreateClass.pageDescription"
-              defaultMessage=""
-            />
-          }
-        >
-          <FormattedMessage
-            id="CreateClass.header"
-            defaultMessage="Create Class"
-          />
+        <PageHeading description={"" /* no description */}>
+          <FormattedMessage {...messages.header} />
         </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>

@@ -28,10 +28,6 @@ const messages = defineMessages({
     id: "CreateSessionForm.title",
     defaultMessage: "Title",
   },
-  titleRequired: {
-    id: "SessionForm.error.titleRequired",
-    defaultMessage: "Title is required",
-  },
   description: {
     id: "CreateSessionForm.description",
     defaultMessage: "Description",
@@ -51,10 +47,6 @@ const messages = defineMessages({
   sharingType: {
     id: "CreateSessionForm.sharingType",
     defaultMessage: "Sharing Type",
-  },
-  sharingTypeRequired: {
-    id: "SessionForm.error.sharingTypeRequired",
-    defaultMessage: "Sharing Type is required",
   },
   sharingTypeAnonymous: {
     id: "SessionForm.sharingType.anonymous",
@@ -97,13 +89,13 @@ const SessionForm = ({
   const intl = useIntl();
 
   const schema = useYupSchema({
-    title: yup.string().required(intl.formatMessage(messages.titleRequired)),
+    title: yup.string().required(),
     description: yup.string().required(),
     taskIds: yup.array().of(yup.number().required()).required(),
     sharingType: yup
       .mixed<SharingType>()
       .oneOf(Object.values(SharingType))
-      .required(intl.formatMessage(messages.sharingTypeRequired)),
+      .required(),
   });
 
   const resolver = useYupResolver(schema);
