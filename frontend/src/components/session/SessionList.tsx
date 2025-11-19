@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
 import { chakra, HStack, Icon, Text } from "@chakra-ui/react";
 import { LuChevronRight, LuSend } from "react-icons/lu";
@@ -260,7 +260,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             }}
             emptyStateElement={
               <EmptyState
-                title={intl.formatMessage(messages.emptyStateTitle)}
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
               />
             }
           />
