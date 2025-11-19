@@ -71,11 +71,13 @@ const Header = ({
   titleParameters,
   description,
   children,
+  hideSignIn = false,
 }: {
   title: MessageDescriptor;
   titleParameters?: Record<string, PrimitiveType>;
   description?: MessageDescriptor;
   children?: React.ReactNode;
+  hideSignIn?: boolean;
 }) => {
   const isAuthenticated = useIsAuthenticated();
   const intl = useIntl();
@@ -105,22 +107,26 @@ const Header = ({
                 <LanguageChooser />
               </li>
               <li>
-                {isAuthenticated ? (
-                  <AvatarMenu icon={<FaRegUser />} testId="current-user">
-                    <AvatarMenu.Item href="/logout">
-                      <FormattedMessage
-                        id="Header.signOut"
-                        defaultMessage="Sign Out"
-                      />
-                    </AvatarMenu.Item>
-                  </AvatarMenu>
-                ) : (
-                  <Link href="/login" data-testid="sign-in-button">
-                    <FormattedMessage
-                      id="Header.signIn"
-                      defaultMessage="Sign In"
-                    />
-                  </Link>
+                {!hideSignIn && (
+                  <li>
+                    {isAuthenticated ? (
+                      <AvatarMenu icon={<FaRegUser />} testId="current-user">
+                        <AvatarMenu.Item href="/logout">
+                          <FormattedMessage
+                            id="Header.signOut"
+                            defaultMessage="Sign Out"
+                          />
+                        </AvatarMenu.Item>
+                      </AvatarMenu>
+                    ) : (
+                      <Link href="/login" data-testid="sign-in-button">
+                        <FormattedMessage
+                          id="Header.signIn"
+                          defaultMessage="Sign In"
+                        />
+                      </Link>
+                    )}
+                  </li>
                 )}
               </li>
             </Menu>
