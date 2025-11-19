@@ -115,7 +115,7 @@ const AxisValues = styled.div`
 
 type Option = { label: string; value: string };
 
-const getOptions = async (
+export const getOptions = async (
   authContext: AuthenticationContextType,
   analyses: CurrentAnalysis[],
   showStudentName: boolean,
