@@ -1,5 +1,5 @@
 import { ComponentProps, useMemo } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
 import { LuHand } from "react-icons/lu";
@@ -14,6 +14,7 @@ import { ProgressMessages } from "@/i18n/progress-messages";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
+import { EmptyState } from "../EmptyState";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -35,6 +36,10 @@ const messages = defineMessages({
   actionsColumn: {
     id: "ProgressList.columns.actions",
     defaultMessage: "Actions",
+  },
+  emptyStateTitle: {
+    id: "ProgressList.emptyState.title",
+    defaultMessage: "There is no progress data available.",
   },
 });
 
@@ -299,6 +304,11 @@ const ProgressList = ({
                 pageSize: 10,
               },
             }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
           />
         )}
       </MultiSwrContent>
