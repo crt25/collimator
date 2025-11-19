@@ -18,24 +18,24 @@ import { toaster } from "@/components/Toaster";
 const messages = defineMessages({
   title: {
     id: "CreateSession.title",
-    defaultMessage: "Create Session",
+    defaultMessage: "Create Lesson",
   },
   submit: {
     id: "CreateSession.submit",
-    defaultMessage: "Create Session",
+    defaultMessage: "Create Lesson",
   },
   successMessage: {
     id: "CreateSession.successMessage",
-    defaultMessage: "Session created successfully",
+    defaultMessage: "Lesson created successfully",
   },
   errorMessage: {
     id: "CreateSession.errorMessage",
     defaultMessage:
-      "There was an error creating the new Session. Please try to save again!",
+      "There was an error creating the new Lesson. Please try to save again!",
   },
   returnToSessionList: {
     id: "CreateSession.returnToSessionList",
-    defaultMessage: "Return to Session List",
+    defaultMessage: "Return to Lesson List",
   },
 });
 
@@ -88,7 +88,7 @@ const CreateSession = () => {
         <PageHeading>
           <FormattedMessage
             id="CreateSession.header"
-            defaultMessage="Create Session"
+            defaultMessage="Create Lesson"
           />
         </PageHeading>
         <SwrContent error={error} isLoading={isLoading} data={klass}>

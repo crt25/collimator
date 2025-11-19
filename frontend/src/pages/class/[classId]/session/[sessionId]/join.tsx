@@ -38,7 +38,7 @@ const logModule = "[JoinSession]";
 const messages = defineMessages({
   title: {
     id: "JoinSession.title",
-    defaultMessage: "Join Session",
+    defaultMessage: "Join Lesson",
   },
   choosePseudonym: {
     id: "JoinSession.choosePseudonym",
@@ -111,7 +111,7 @@ const JoinSessionContent = ({
             <Button onClick={onJoinSession} data-testid="join-session-button">
               <FormattedMessage
                 id="JoinSession.joinSession"
-                defaultMessage="Join Session"
+                defaultMessage="Join Lesson"
               />
             </Button>
           </GridItem>
@@ -335,7 +335,7 @@ const JoinSession = () => {
         <Container>
           <FormattedMessage
             id="JoinSession.invalidJoinLink"
-            defaultMessage="This session link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
+            defaultMessage="This lesson link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
           />
         </Container>
       </>
@@ -354,7 +354,7 @@ const JoinSession = () => {
           <>
             <FormattedMessage
               id="JoinSession.waitingForTeacher"
-              defaultMessage="Waiting for the teacher's machine to admit you to the session..."
+              defaultMessage="Waiting for the teacher's machine to admit you to the lesson..."
               description="Displayed when the student is waiting for the teacher's machine to admit them to the session"
             />
             <ProgressSpinner />

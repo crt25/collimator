@@ -191,7 +191,7 @@ const Analyzer = ({
     return (
       <FormattedMessage
         id="Analyzer.noTasksInSession"
-        defaultMessage="There are no tasks in this session."
+        defaultMessage="There are no tasks in this lesson."
       />
     );
   }
