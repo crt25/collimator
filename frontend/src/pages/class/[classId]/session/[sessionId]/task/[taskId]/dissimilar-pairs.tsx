@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
@@ -69,12 +69,6 @@ const DissimilarAnalysisPairs = () => {
             sessionId={session?.id}
           />
         </Breadcrumbs>
-        <PageHeading>
-          <FormattedMessage
-            id="DissimilarAnalysisPairs.header"
-            defaultMessage="Dissimilar Solutions"
-          />
-        </PageHeading>
         <MultiSwrContent
           errors={[klassError, sessionError, taskError]}
           isLoading={[isLoadingKlass, isLoadingSession, isLoadingTask]}
