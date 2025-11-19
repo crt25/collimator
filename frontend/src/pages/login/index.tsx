@@ -45,7 +45,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <Header title={messages.title} />
+      <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading>
           <FormattedMessage {...messages.title} />
