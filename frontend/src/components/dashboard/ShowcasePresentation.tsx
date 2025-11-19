@@ -23,6 +23,8 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 
+const surroundingNameCountPerSide = 2;
+
 const getNameOfAnalysis = (analysis: CurrentAnalysis) =>
   analysis instanceof CurrentStudentAnalysis ? (
     <StudentName
@@ -56,7 +58,7 @@ const ShowcasePresentationInternal = ({
 
   const selectedAnalyses = useMemo(
     () =>
-      analyses //[...analyses, ...analyses, ...analyses, ...analyses]
+      analyses
         .map((analysis) => ({
           analysis,
           index: selectedSolutionIds.indexOf(analysis.solutionId),
@@ -87,83 +89,130 @@ const ShowcasePresentationInternal = ({
         justifyContent="space-between"
         gap="md"
       >
-        <Carousel.RootProvider value={carousel} height="full" width="full">
-          <Box
-            display="flex"
-            width="full"
-            overflow="hidden"
-            justifyContent="space-between"
-            justifyItems="center"
-            alignItems="center"
-            gap="md"
-          >
-            <Button onClick={() => carousel.scrollPrev()}>
-              <HStack>
-                <Icon>
-                  <LuArrowLeft />
-                </Icon>
-                <FormattedMessage
-                  id="ShowcasePresentation.previous"
-                  defaultMessage="Previous"
-                />
-              </HStack>
-            </Button>
-            <Carousel.IndicatorGroup
-              flexGrow={1}
-              flexShrink={1}
-              overflow="hidden"
-            >
-              {selectedAnalyses.map((analysis, index) => (
-                <Carousel.Indicator
-                  key={index}
-                  index={index}
-                  unstyled
-                  cursor="pointer"
-                  position="relative"
-                >
-                  {carousel.page !== index && (
-                    <Box
-                      background="linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.5) 100%);"
-                      position="absolute"
-                      top="0"
-                      right="0"
-                      bottom="0"
-                      left="0"
-                    />
-                  )}
-                  <HStack gap="sm">
-                    <span>{index + 1}.</span>
-                    {getNameOfAnalysis(analysis)}
-                  </HStack>
-                </Carousel.Indicator>
-              ))}
-            </Carousel.IndicatorGroup>
-            <Button onClick={() => carousel.scrollNext()}>
-              <HStack>
-                <FormattedMessage
-                  id="ShowcasePresentation.previous"
-                  defaultMessage="Next"
-                />
-                <Icon>
-                  <LuArrowRight />
-                </Icon>
-              </HStack>
-            </Button>
-          </Box>
-          <Carousel.ItemGroup>
-            {selectedAnalyses.map((analysis, index) => (
-              <Carousel.Item key={index} index={index}>
-                <CodeView
-                  classId={klass.id}
-                  sessionId={session.id}
-                  taskId={task.id}
-                  taskType={task.type}
-                  solutionHash={selectedSolution.solutionHash}
-                />
-              </Carousel.Item>
-            ))}
-          </Carousel.ItemGroup>
-        </Carousel.RootProvider>
+        <Button onClick={() => carousel.scrollPrev()}>
+          <HStack>
+            <Icon>
+              <LuArrowLeft />
+            </Icon>
+            <FormattedMessage
+              id="ShowcasePresentation.previous"
+              defaultMessage="Previous"
+            />
+          </HStack>
+        </Button>
+        <Box flexGrow={1}>
+          <Carousel.RootProvider value={carousel} height="full">
+            <Carousel.ItemGroup height="full">
+              {selectedAnalyses.map((analysis, index) => {
+                const previousIndices = Array(surroundingNameCountPerSide)
+                  .keys()
+                  .map((i) => index - i - 1)
+                  .map((i) => (i < 0 ? selectedAnalyses.length + i : i));
+
+                const nextIndices = Array(surroundingNameCountPerSide)
+                  .keys()
+                  .map((i) => index + i + 1)
+                  .map((i) =>
+                    i >= selectedAnalyses.length
+                      ? i - selectedAnalyses.length
+                      : i,
+                  );
+
+                return (
+                  <Carousel.Item
+                    key={index}
+                    index={index}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    fontWeight="semiBold"
+                    height="full"
+                    overflow="hidden"
+                  >
+                    <HStack position="relative">
+                      <Box
+                        position="absolute"
+                        right="100%"
+                        width="fit-content"
+                        whiteSpace="nowrap"
+                        display="flex"
+                        justifyContent="flex-end"
+                        marginRight="md"
+                        gap="md"
+                      >
+                        <Box
+                          background="linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.5) 100%);"
+                          position="absolute"
+                          top="0"
+                          right="0"
+                          bottom="0"
+                          left="0"
+                        />
+                        {previousIndices.map((i) => (
+                          <HStack gap="sm" key={i}>
+                            <span>{i + 1}.</span>
+                            {getNameOfAnalysis(selectedAnalyses[i])}
+                          </HStack>
+                        ))}
+                      </Box>
+                      <Box>
+                        <HStack gap="sm">
+                          <span>{index + 1}.</span>
+                          {getNameOfAnalysis(analysis)}
+                        </HStack>
+                      </Box>
+                      <Box
+                        position="absolute"
+                        left="100%"
+                        width="fit-content"
+                        whiteSpace="nowrap"
+                        display="flex"
+                        justifyContent="flex-start"
+                        marginLeft="md"
+                        gap="md"
+                      >
+                        <Box
+                          background="linear-gradient(90deg,rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 1) 100%);"
+                          position="absolute"
+                          top="0"
+                          right="0"
+                          bottom="0"
+                          left="0"
+                        />
+                        {nextIndices.map((i) => (
+                          <HStack gap="sm" key={i}>
+                            <span>{i + 1}.</span>
+                            {getNameOfAnalysis(selectedAnalyses[i])}
+                          </HStack>
+                        ))}
+                      </Box>
+                    </HStack>
+                  </Carousel.Item>
+                );
+              })}
+            </Carousel.ItemGroup>
+          </Carousel.RootProvider>
+        </Box>
+        <Button onClick={() => carousel.scrollNext()}>
+          <HStack>
+            <FormattedMessage
+              id="ShowcasePresentation.previous"
+              defaultMessage="Next"
+            />
+            <Icon>
+              <LuArrowRight />
+            </Icon>
+          </HStack>
+        </Button>
+      </GridItem>
+      <GridItem colSpan={12}>
+        <CodeView
+          classId={klass.id}
+          sessionId={session.id}
+          taskId={task.id}
+          taskType={task.type}
+          solutionHash={selectedSolution.solutionHash}
+        />
       </GridItem>
     </Grid>
   );
