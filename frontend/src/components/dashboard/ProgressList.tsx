@@ -1,7 +1,6 @@
 import { ComponentProps, useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
 import { LuHand } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
@@ -156,7 +155,6 @@ const ProgressList = ({
   sessionId: number;
 }) => {
   const intl = useIntl();
-  const router = useRouter();
 
   const {
     data: klass,
@@ -282,7 +280,7 @@ const ProgressList = ({
     );
 
     return [...firstColumns, ...taskColumns, ...lastColumns];
-  }, [intl, session, router, classId]);
+  }, [intl, session, classId]);
 
   return (
     <ProgressListWrapper data-testid="progress-list">

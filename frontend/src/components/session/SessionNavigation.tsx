@@ -28,7 +28,7 @@ const tabs: NavigationTab[] = [
     testId: "session-lesson-details-tab",
   },
   {
-    url: "tasks",
+    url: "task",
     title: (intl) => intl.formatMessage(messages.tasksTab),
     icon: <LuListTodo />,
     testId: "session-tasks-tab",
