@@ -5,8 +5,8 @@ interface ModalProps {
   title: string;
   description: string;
   warningText?: string;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
+  confirmButtonText: string;
+  cancelButtonText: string;
   onConfirm: () => void;
   open: boolean;
   onOpenChange: (details: { open: boolean }) => void;
@@ -16,8 +16,8 @@ export const Modal = ({
   title,
   description,
   warningText,
-  confirmButtonText = "Confirm",
-  cancelButtonText = "Cancel",
+  confirmButtonText,
+  cancelButtonText,
   onConfirm,
   open,
   onOpenChange,
