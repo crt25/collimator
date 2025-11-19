@@ -56,7 +56,7 @@
   "Analyzer.noTasksInSession": [
     {
       "type": 0,
-      "value": "There are no tasks in this session."
+      "value": "There are no tasks in this lesson."
     }
   ],
   "Analyzer.numberOfGroups": [
@@ -384,7 +384,7 @@
     },
     {
       "type": 0,
-      "value": " - Sessions"
+      "value": " - Lessons"
     }
   ],
   "ClassUserList.title": [
@@ -526,37 +526,37 @@
   "CreateSession.errorMessage": [
     {
       "type": 0,
-      "value": "There was an error creating the new Session. Please try to save again!"
+      "value": "There was an error creating the new Lesson. Please try to save again!"
     }
   ],
   "CreateSession.header": [
     {
       "type": 0,
-      "value": "Create Session"
+      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
     {
       "type": 0,
-      "value": "Return to Session List"
+      "value": "Return to Lesson List"
     }
   ],
   "CreateSession.submit": [
     {
       "type": 0,
-      "value": "Create Session"
+      "value": "Create Lesson"
     }
   ],
   "CreateSession.successMessage": [
     {
       "type": 0,
-      "value": "Session created successfully"
+      "value": "Lesson created successfully"
     }
   ],
   "CreateSession.title": [
     {
       "type": 0,
-      "value": "Create Session"
+      "value": "Create Lesson"
     }
   ],
   "CreateSessionForm.addTask": [
@@ -848,7 +848,7 @@
   "Home.adminDescription": [
     {
       "type": 0,
-      "value": "Welcome to the Admin Dashboard of Collimator."
+      "value": "Welcome to the Admin Dashboard of ClassMosaic."
     }
   ],
   "Home.adminHeader": [
@@ -872,7 +872,7 @@
   "Home.description": [
     {
       "type": 0,
-      "value": "Welcome to the Teacher Dashboard of Collimator."
+      "value": "Welcome to the Teacher Dashboard of ClassMosaic."
     }
   ],
   "Home.header": [
@@ -920,13 +920,13 @@
   "JoinSession.invalidJoinLink": [
     {
       "type": 0,
-      "value": "This session link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
+      "value": "This lesson link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
     }
   ],
   "JoinSession.joinSession": [
     {
       "type": 0,
-      "value": "Join Session"
+      "value": "Join Lesson"
     }
   ],
   "JoinSession.savePseudonym": [
@@ -944,13 +944,13 @@
   "JoinSession.title": [
     {
       "type": 0,
-      "value": "Join Session"
+      "value": "Join Lesson"
     }
   ],
   "JoinSession.waitingForTeacher": [
     {
       "type": 0,
-      "value": "Waiting for the teacher's machine to admit you to the session..."
+      "value": "Waiting for the teacher's machine to admit you to the lesson..."
     }
   ],
   "LanguageChooser.english": [
@@ -1208,19 +1208,19 @@
   "SessionActions.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Delete Session"
+      "value": "Delete Lesson"
     }
   ],
   "SessionActions.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Delete Session"
+      "value": "Delete Lesson"
     }
   ],
   "SessionActions.deleteErrorMessage": [
     {
       "type": 0,
-      "value": "There was an error deleting the session. Please try again!"
+      "value": "There was an error deleting the lesson. Please try again!"
     }
   ],
   "SessionActions.deleteSession": [
@@ -1232,7 +1232,7 @@
   "SessionActions.deleteSuccessMessage": [
     {
       "type": 0,
-      "value": "Session deleted successfully"
+      "value": "Lesson deleted successfully"
     }
   ],
   "SessionDetail.errorMessage": [
@@ -1244,7 +1244,7 @@
   "SessionDetail.submit": [
     {
       "type": 0,
-      "value": "Save Session"
+      "value": "Save Lesson"
     }
   ],
   "SessionDetail.successMessage": [
@@ -1256,7 +1256,7 @@
   "SessionDetail.title": [
     {
       "type": 0,
-      "value": "Session - "
+      "value": "Lesson - "
     },
     {
       "type": 1,
@@ -1302,7 +1302,7 @@
   "SessionList.columns.createSession": [
     {
       "type": 0,
-      "value": "Create Session"
+      "value": "Create Lesson"
     }
   ],
   "SessionList.columns.finishedAt": [
@@ -1384,7 +1384,7 @@
   "SolveTask.correctSolutionSubmitted": [
     {
       "type": 0,
-      "value": "Your successfully solved this task. You can check if there are more tasks in the session menu."
+      "value": "Your successfully solved this task. You can check if there are more tasks in the lesson menu."
     }
   ],
   "SolveTask.export": [
@@ -1396,7 +1396,7 @@
   "SolveTask.hideSession": [
     {
       "type": 0,
-      "value": "Hide Session"
+      "value": "Hide Lesson"
     }
   ],
   "SolveTask.import": [
@@ -1408,7 +1408,7 @@
   "SolveTask.showSession": [
     {
       "type": 0,
-      "value": "Show Session"
+      "value": "Show Lesson"
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -1482,7 +1482,7 @@
   "StudentLoginPage.invalidParameters": [
     {
       "type": 0,
-      "value": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
+      "value": "You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
     }
   ],
   "StudentLoginPage.title": [

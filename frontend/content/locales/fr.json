@@ -312,58 +312,58 @@
     "message": "Nombre de conditions"
   },
   "CreateClass.errorMessage": {
-    "message": "Une erreur est survenue lors de la création de la nouvelle Leçon. Veuillez essayer de sauvegarder à nouveau !"
+    "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
   "CreateClass.header": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateClass.pageDescription": {
     "message": ""
   },
   "CreateClass.returnToClassList": {
-    "message": "Retourner à la liste des Leçons"
+    "message": "Retourner à la liste des leçons"
   },
   "CreateClass.submit": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateClass.successMessage": {
     "message": "Leçon créée avec succès"
   },
   "CreateClass.title": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateLesson.header": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateLesson.submit": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateLesson.title": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateLessonForm.name": {
     "message": "Nom"
   },
   "CreateSession.errorMessage": {
-    "message": "Une erreur est survenue lors de la création de la nouvelle Leçon. Veuillez essayer de sauvegarder à nouveau !"
+    "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
   "CreateSession.header": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateSession.returnToSessionList": {
-    "message": "Retourner à la liste des Leçons"
+    "message": "Retourner à la liste des leçons"
   },
   "CreateSession.submit": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateSession.successMessage": {
     "message": "Leçon créée avec succès"
   },
   "CreateSession.title": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "CreateSessionForm.addTask": {
-    "message": "Ajouter une Activité"
+    "message": "Ajouter une activité"
   },
   "CreateSessionForm.description": {
     "message": "Description"
@@ -381,25 +381,25 @@
     "message": "Titre"
   },
   "CreateTask.header": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateTask.submit": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateTask.title": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateTaskInstance.description": {
     "message": ""
   },
   "CreateTaskInstance.header": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateTaskInstance.submit": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateTaskInstance.title": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "CreateUser.header": {
     "message": "Créer un Utilisateur"
@@ -456,19 +456,19 @@
     "message": "Trop de combinaisons pour calculer les paires dissemblables."
   },
   "EditLesson.header": {
-    "message": "Modifier la Leçon"
+    "message": "Modifier la leçon"
   },
   "EditLesson.submit": {
-    "message": "Sauvegarder la Leçon"
+    "message": "Sauvegarder la leçon"
   },
   "EditLesson.title": {
-    "message": "Modifier la Leçon - {name}"
+    "message": "Modifier la leçon - {name}"
   },
   "EditTask.submit": {
-    "message": "Sauvegarder l'Activité"
+    "message": "Sauvegarder l'activité"
   },
   "EditTask.title": {
-    "message": "Modifier l'Activité - {title}"
+    "message": "Modifier l'activité - {title}"
   },
   "EditUser.header": {
     "message": "Modifier l'Utilisateur"
@@ -498,7 +498,7 @@
     "message": "Se déconnecter"
   },
   "Home.adminDescription": {
-    "message": "Bienvenue sur le tableau de bord administrateur de Collimator."
+    "message": "Bienvenue sur le tableau de bord administrateur de ClassMosaic."
   },
   "Home.adminHeader": {
     "message": "Tableau de bord administrateur"
@@ -510,7 +510,7 @@
     "message": "Gérez vos leçons et étudiants."
   },
   "Home.description": {
-    "message": "Bienvenue sur le tableau de bord des enseignants de Collimator."
+    "message": "Bienvenue sur le tableau de bord des enseignants de ClassMosaic."
   },
   "Home.header": {
     "message": "Accueil"
@@ -534,10 +534,10 @@
     "message": "Entrez un pseudonyme"
   },
   "JoinSession.invalidJoinLink": {
-    "message": "Ce lien de session est invalide. Assurez-vous d'avoir ouvert le bon et demandez à votre enseignant de vous l'envoyer à nouveau si nécessaire."
+    "message": "Ce lien de leçon est invalide. Assurez-vous d'avoir ouvert le bon et demandez à votre enseignant de vous l'envoyer à nouveau si nécessaire."
   },
   "JoinSession.joinSession": {
-    "message": "Rejoindre la Leçon"
+    "message": "Rejoindre la leçon"
   },
   "JoinSession.savePseudonym": {
     "message": "Confirmer"
@@ -546,7 +546,7 @@
     "message": "Activités"
   },
   "JoinSession.title": {
-    "message": "Rejoindre la Leçon"
+    "message": "Rejoindre la leçon"
   },
   "JoinSession.waitingForTeacher": {
     "description": "Affiché lorsque l'étudiant attend que la machine de l'enseignant l'admette dans la leçon",
@@ -577,22 +577,22 @@
     "message": "Utilisé par"
   },
   "LessonNavigation.lessonTab": {
-    "message": "Détails de la Leçon"
+    "message": "Détails de la leçon"
   },
   "ListClasses.description": {
     "message": ""
   },
   "ListClasses.header": {
-    "message": "Gestion des Leçons"
+    "message": "Gestion des leçons"
   },
   "ListClasses.pageDescription": {
     "message": ""
   },
   "ListClasses.pageTitle": {
-    "message": "Gestion des Leçons"
+    "message": "Gestion des leçons"
   },
   "ListLessons.header": {
-    "message": "Gestion des Leçons"
+    "message": "Gestion des leçons"
   },
   "ListLessons.title": {
     "message": "Leçons"
@@ -601,7 +601,7 @@
     "message": ""
   },
   "ListTasks.header": {
-    "message": "Gestion des Activités"
+    "message": "Gestion des activités"
   },
   "ListTasks.pageDescription": {
     "message": ""
@@ -685,16 +685,16 @@
     "message": "Annuler"
   },
   "SessionActions.deleteConfirmation.confirm": {
-    "message": "Supprimer la Leçon"
+    "message": "Supprimer la leçon"
   },
   "SessionActions.deleteConfirmation.title": {
-    "message": "Supprimer la Leçon"
+    "message": "Supprimer la leçon"
   },
   "SessionActions.deleteErrorMessage": {
     "message": "Une erreur s'est produite lors de la suppression de la leçon. Veuillez réessayer !"
   },
   "SessionActions.deleteSession": {
-    "message": "Supprimer la Leçon"
+    "message": "Supprimer la leçon"
   },
   "SessionActions.deleteSuccessMessage": {
     "message": "Leçon supprimée avec succès"
@@ -703,7 +703,7 @@
     "message": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
   },
   "SessionDetail.submit": {
-    "message": "Sauvegarder la Leçon"
+    "message": "Sauvegarder la leçon"
   },
   "SessionDetail.successMessage": {
     "message": "Modifications sauvegardées avec succès"
@@ -730,7 +730,7 @@
     "message": "Actions"
   },
   "SessionList.columns.createSession": {
-    "message": "Créer une Leçon"
+    "message": "Créer une leçon"
   },
   "SessionList.columns.finishedAt": {
     "message": "Terminé à"
@@ -754,10 +754,10 @@
     "message": "Titre"
   },
   "SessionList.copySessionLink": {
-    "message": "Copier le lien de la Leçon"
+    "message": "Copier le lien de la leçon"
   },
   "SessionNavigation.lessonDetails": {
-    "message": "Détails de la Leçon"
+    "message": "Détails de la leçon"
   },
   "SessionNavigation.progress": {
     "message": "Progression"
@@ -775,13 +775,13 @@
     "message": "Exporter"
   },
   "SolveTask.hideSession": {
-    "message": "Cacher la Leçon"
+    "message": "Cacher la leçon"
   },
   "SolveTask.import": {
     "message": "Importer"
   },
   "SolveTask.showSession": {
-    "message": "Afficher la Leçon"
+    "message": "Afficher la leçon"
   },
   "SolveTask.solutionSubmitted": {
     "message": "La solution a été soumise avec succès."
@@ -823,7 +823,7 @@
     "message": "Déchiffrement..."
   },
   "TaskActions.deleteTask": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskDetail.title": {
     "message": "Activité - {title}"
@@ -928,7 +928,7 @@
     "message": "Résultats des Étudiants"
   },
   "TaskInstanceNavigation.taskDetails": {
-    "message": "Détails de l'Activité"
+    "message": "Détails de l'activité"
   },
   "TaskInstanceProgress.title": {
     "message": "Progrès - {title}"
@@ -946,10 +946,10 @@
     "message": "Progrès de l'élève"
   },
   "TaskInstanceReferenceSolutions.submit": {
-    "message": "Enregistrer l'Activité"
+    "message": "Enregistrer l'activité"
   },
   "TaskInstanceReferenceSolutions.title": {
-    "message": "Modifier l'Activité - {title}"
+    "message": "Modifier l'activité - {title}"
   },
   "TaskInstanceTable.columns.id": {
     "message": "ID"
@@ -958,25 +958,25 @@
     "message": "Nom"
   },
   "TaskInstanceTable.columns.taskType": {
-    "message": "Type d'Activité"
+    "message": "Type d'activité"
   },
   "TaskInstanceTable.createTask": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "TaskInstanceTable.deleteConfirmation.body": {
     "message": "Êtes-vous sûr de vouloir supprimer cette activité ?"
   },
   "TaskInstanceTable.deleteConfirmation.confirm": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskInstanceTable.deleteConfirmation.title": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskInstanceTable.deleteTask": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskInstanceTable.viewDetails": {
-    "message": "Voir les détails de l'Activité"
+    "message": "Voir les détails de l'activité"
   },
   "TaskModal.cancel": {
     "message": "Annuler"
@@ -997,22 +997,22 @@
     "message": "Enregistrer"
   },
   "TaskNavigation.classTab": {
-    "message": "Détails de l'Activité"
+    "message": "Détails de l'activité"
   },
   "TaskNavigation.referenceSolutions": {
     "message": "Solutions de référence"
   },
   "TaskNavigation.viewTaskTab": {
-    "message": "Voir l'Activité"
+    "message": "Voir l'activité"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Enregistrer l'Activité"
+    "message": "Enregistrer l'activité"
   },
   "TaskReferenceSolutions.title": {
-    "message": "Modifier l'Activité - {title}"
+    "message": "Modifier l'activité - {title}"
   },
   "TaskSessionActions.deleteTask": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Actions rapides"
@@ -1021,28 +1021,28 @@
     "message": "ID"
   },
   "TaskTable.columns.taskType": {
-    "message": "Type d'Activité"
+    "message": "Type d'activité"
   },
   "TaskTable.columns.title": {
     "message": "Titre"
   },
   "TaskTable.createTask": {
-    "message": "Créer une Activité"
+    "message": "Créer une activité"
   },
   "TaskTable.deleteConfirmation.body": {
     "message": "Êtes-vous sûr de vouloir supprimer cette activité ?"
   },
   "TaskTable.deleteConfirmation.confirm": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskTable.deleteConfirmation.title": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskTable.deleteTask": {
-    "message": "Supprimer l'Activité"
+    "message": "Supprimer l'activité"
   },
   "TaskTable.viewDetails": {
-    "message": "Voir les détails de l'Activité"
+    "message": "Voir les détails de l'activité"
   },
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"

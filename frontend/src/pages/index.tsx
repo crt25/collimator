@@ -14,7 +14,7 @@ const messages = defineMessages({
   },
   teacherDescription: {
     id: "Home.description",
-    defaultMessage: "Welcome to the Teacher Dashboard of Collimator.",
+    defaultMessage: "Welcome to the Teacher Dashboard of ClassMosaic.",
   },
   adminHeader: {
     id: "Home.adminHeader",
@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   adminDescription: {
     id: "Home.adminDescription",
-    defaultMessage: "Welcome to the Admin Dashboard of Collimator.",
+    defaultMessage: "Welcome to the Admin Dashboard of ClassMosaic.",
   },
   classesDescription: {
     id: "Home.classesDescription",

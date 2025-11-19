@@ -27,7 +27,7 @@
     "message": "Computing groups, please be patient."
   },
   "Analyzer.noTasksInSession": {
-    "message": "There are no tasks in this session."
+    "message": "There are no tasks in this lesson."
   },
   "Analyzer.numberOfGroups": {
     "message": "Number of groups"
@@ -183,7 +183,7 @@
     "message": "Students"
   },
   "ClassSessionList.title": {
-    "message": "{name} - Sessions"
+    "message": "{name} - Lessons"
   },
   "ClassUserList.title": {
     "message": "{name} - Students"
@@ -246,22 +246,22 @@
     "message": "Name"
   },
   "CreateSession.errorMessage": {
-    "message": "There was an error creating the new Session. Please try to save again!"
+    "message": "There was an error creating the new Lesson. Please try to save again!"
   },
   "CreateSession.header": {
-    "message": "Create Session"
+    "message": "Create Lesson"
   },
   "CreateSession.returnToSessionList": {
-    "message": "Return to Session List"
+    "message": "Return to Lesson List"
   },
   "CreateSession.submit": {
-    "message": "Create Session"
+    "message": "Create Lesson"
   },
   "CreateSession.successMessage": {
-    "message": "Session created successfully"
+    "message": "Lesson created successfully"
   },
   "CreateSession.title": {
-    "message": "Create Session"
+    "message": "Create Lesson"
   },
   "CreateSessionForm.addTask": {
     "message": "Add Task"
@@ -399,7 +399,7 @@
     "message": "Sign Out"
   },
   "Home.adminDescription": {
-    "message": "Welcome to the Admin Dashboard of Collimator."
+    "message": "Welcome to the Admin Dashboard of ClassMosaic."
   },
   "Home.adminHeader": {
     "message": "Admin Dashboard"
@@ -411,7 +411,7 @@
     "message": "Manage your classes and students."
   },
   "Home.description": {
-    "message": "Welcome to the Teacher Dashboard of Collimator."
+    "message": "Welcome to the Teacher Dashboard of ClassMosaic."
   },
   "Home.header": {
     "message": "Teacher Dashboard"
@@ -435,10 +435,10 @@
     "message": "Enter a pseudonym"
   },
   "JoinSession.invalidJoinLink": {
-    "message": "This session link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
+    "message": "This lesson link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
   },
   "JoinSession.joinSession": {
-    "message": "Join Session"
+    "message": "Join Lesson"
   },
   "JoinSession.savePseudonym": {
     "message": "Confirm"
@@ -447,11 +447,11 @@
     "message": "Tasks"
   },
   "JoinSession.title": {
-    "message": "Join Session"
+    "message": "Join Lesson"
   },
   "JoinSession.waitingForTeacher": {
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the session",
-    "message": "Waiting for the teacher's machine to admit you to the session..."
+    "message": "Waiting for the teacher's machine to admit you to the lesson..."
   },
   "LanguageChooser.english": {
     "message": "English"
@@ -586,31 +586,31 @@
     "message": "Cancel"
   },
   "SessionActions.deleteConfirmation.confirm": {
-    "message": "Delete Session"
+    "message": "Delete Lesson"
   },
   "SessionActions.deleteConfirmation.title": {
-    "message": "Delete Session"
+    "message": "Delete Lesson"
   },
   "SessionActions.deleteErrorMessage": {
-    "message": "There was an error deleting the session. Please try again!"
+    "message": "There was an error deleting the lesson. Please try again!"
   },
   "SessionActions.deleteSession": {
     "message": "Delete Lesson"
   },
   "SessionActions.deleteSuccessMessage": {
-    "message": "Session deleted successfully"
+    "message": "Lesson deleted successfully"
   },
   "SessionDetail.errorMessage": {
     "message": "There was an error saving the changes. Please try to save again!"
   },
   "SessionDetail.submit": {
-    "message": "Save Session"
+    "message": "Save Lesson"
   },
   "SessionDetail.successMessage": {
     "message": "Successfully saved changes"
   },
   "SessionDetail.title": {
-    "message": "Session - {title}"
+    "message": "Lesson - {title}"
   },
   "SessionForm.error.sharingTypeRequired": {
     "message": "Sharing Type is required"
@@ -631,7 +631,7 @@
     "message": "Quick Action"
   },
   "SessionList.columns.createSession": {
-    "message": "Create Session"
+    "message": "Create Lesson"
   },
   "SessionList.columns.finishedAt": {
     "message": "End Date"
@@ -670,19 +670,19 @@
     "message": "Progress - {title}"
   },
   "SolveTask.correctSolutionSubmitted": {
-    "message": "Your successfully solved this task. You can check if there are more tasks in the session menu."
+    "message": "Your successfully solved this task. You can check if there are more tasks in the lesson menu."
   },
   "SolveTask.export": {
     "message": "Export"
   },
   "SolveTask.hideSession": {
-    "message": "Hide Session"
+    "message": "Hide Lesson"
   },
   "SolveTask.import": {
     "message": "Import"
   },
   "SolveTask.showSession": {
-    "message": "Show Session"
+    "message": "Show Lesson"
   },
   "SolveTask.solutionSubmitted": {
     "message": "The solution was submitted successfully."
@@ -709,7 +709,7 @@
     "message": "Student Login"
   },
   "StudentLoginPage.invalidParameters": {
-    "message": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
+    "message": "You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
   },
   "StudentLoginPage.title": {
     "message": "Student Login"

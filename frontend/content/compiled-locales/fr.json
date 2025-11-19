@@ -464,13 +464,13 @@
   "CreateClass.errorMessage": [
     {
       "type": 0,
-      "value": "Une erreur est survenue lors de la création de la nouvelle Leçon. Veuillez essayer de sauvegarder à nouveau !"
+      "value": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
     }
   ],
   "CreateClass.header": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateClass.pageDescription": [
@@ -478,13 +478,13 @@
   "CreateClass.returnToClassList": [
     {
       "type": 0,
-      "value": "Retourner à la liste des Leçons"
+      "value": "Retourner à la liste des leçons"
     }
   ],
   "CreateClass.submit": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateClass.successMessage": [
@@ -496,25 +496,25 @@
   "CreateClass.title": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateLesson.header": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateLesson.submit": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateLesson.title": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateLessonForm.name": [
@@ -526,25 +526,25 @@
   "CreateSession.errorMessage": [
     {
       "type": 0,
-      "value": "Une erreur est survenue lors de la création de la nouvelle Leçon. Veuillez essayer de sauvegarder à nouveau !"
+      "value": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
     }
   ],
   "CreateSession.header": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateSession.returnToSessionList": [
     {
       "type": 0,
-      "value": "Retourner à la liste des Leçons"
+      "value": "Retourner à la liste des leçons"
     }
   ],
   "CreateSession.submit": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateSession.successMessage": [
@@ -556,13 +556,13 @@
   "CreateSession.title": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "CreateSessionForm.addTask": [
     {
       "type": 0,
-      "value": "Ajouter une Activité"
+      "value": "Ajouter une activité"
     }
   ],
   "CreateSessionForm.description": [
@@ -598,19 +598,19 @@
   "CreateTask.header": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateTask.submit": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateTask.title": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateTaskInstance.description": [
@@ -618,19 +618,19 @@
   "CreateTaskInstance.header": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateTaskInstance.submit": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateTaskInstance.title": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "CreateUser.header": [
@@ -962,19 +962,19 @@
   "EditLesson.header": [
     {
       "type": 0,
-      "value": "Modifier la Leçon"
+      "value": "Modifier la leçon"
     }
   ],
   "EditLesson.submit": [
     {
       "type": 0,
-      "value": "Sauvegarder la Leçon"
+      "value": "Sauvegarder la leçon"
     }
   ],
   "EditLesson.title": [
     {
       "type": 0,
-      "value": "Modifier la Leçon - "
+      "value": "Modifier la leçon - "
     },
     {
       "type": 1,
@@ -984,13 +984,13 @@
   "EditTask.submit": [
     {
       "type": 0,
-      "value": "Sauvegarder l'Activité"
+      "value": "Sauvegarder l'activité"
     }
   ],
   "EditTask.title": [
     {
       "type": 0,
-      "value": "Modifier l'Activité - "
+      "value": "Modifier l'activité - "
     },
     {
       "type": 1,
@@ -1058,7 +1058,7 @@
   "Home.adminDescription": [
     {
       "type": 0,
-      "value": "Bienvenue sur le tableau de bord administrateur de Collimator."
+      "value": "Bienvenue sur le tableau de bord administrateur de ClassMosaic."
     }
   ],
   "Home.adminHeader": [
@@ -1082,7 +1082,7 @@
   "Home.description": [
     {
       "type": 0,
-      "value": "Bienvenue sur le tableau de bord des enseignants de Collimator."
+      "value": "Bienvenue sur le tableau de bord des enseignants de ClassMosaic."
     }
   ],
   "Home.header": [
@@ -1130,13 +1130,13 @@
   "JoinSession.invalidJoinLink": [
     {
       "type": 0,
-      "value": "Ce lien de session est invalide. Assurez-vous d'avoir ouvert le bon et demandez à votre enseignant de vous l'envoyer à nouveau si nécessaire."
+      "value": "Ce lien de leçon est invalide. Assurez-vous d'avoir ouvert le bon et demandez à votre enseignant de vous l'envoyer à nouveau si nécessaire."
     }
   ],
   "JoinSession.joinSession": [
     {
       "type": 0,
-      "value": "Rejoindre la Leçon"
+      "value": "Rejoindre la leçon"
     }
   ],
   "JoinSession.savePseudonym": [
@@ -1154,7 +1154,7 @@
   "JoinSession.title": [
     {
       "type": 0,
-      "value": "Rejoindre la Leçon"
+      "value": "Rejoindre la leçon"
     }
   ],
   "JoinSession.waitingForTeacher": [
@@ -1218,7 +1218,7 @@
   "LessonNavigation.lessonTab": [
     {
       "type": 0,
-      "value": "Détails de la Leçon"
+      "value": "Détails de la leçon"
     }
   ],
   "ListClasses.description": [
@@ -1226,7 +1226,7 @@
   "ListClasses.header": [
     {
       "type": 0,
-      "value": "Gestion des Leçons"
+      "value": "Gestion des leçons"
     }
   ],
   "ListClasses.pageDescription": [
@@ -1234,13 +1234,13 @@
   "ListClasses.pageTitle": [
     {
       "type": 0,
-      "value": "Gestion des Leçons"
+      "value": "Gestion des leçons"
     }
   ],
   "ListLessons.header": [
     {
       "type": 0,
-      "value": "Gestion des Leçons"
+      "value": "Gestion des leçons"
     }
   ],
   "ListLessons.title": [
@@ -1254,7 +1254,7 @@
   "ListTasks.header": [
     {
       "type": 0,
-      "value": "Gestion des Activités"
+      "value": "Gestion des activités"
     }
   ],
   "ListTasks.pageDescription": [
@@ -1418,13 +1418,13 @@
   "SessionActions.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la Leçon"
+      "value": "Supprimer la leçon"
     }
   ],
   "SessionActions.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer la Leçon"
+      "value": "Supprimer la leçon"
     }
   ],
   "SessionActions.deleteErrorMessage": [
@@ -1436,7 +1436,7 @@
   "SessionActions.deleteSession": [
     {
       "type": 0,
-      "value": "Supprimer la Leçon"
+      "value": "Supprimer la leçon"
     }
   ],
   "SessionActions.deleteSuccessMessage": [
@@ -1454,7 +1454,7 @@
   "SessionDetail.submit": [
     {
       "type": 0,
-      "value": "Sauvegarder la Leçon"
+      "value": "Sauvegarder la leçon"
     }
   ],
   "SessionDetail.successMessage": [
@@ -1512,7 +1512,7 @@
   "SessionList.columns.createSession": [
     {
       "type": 0,
-      "value": "Créer une Leçon"
+      "value": "Créer une leçon"
     }
   ],
   "SessionList.columns.finishedAt": [
@@ -1560,13 +1560,13 @@
   "SessionList.copySessionLink": [
     {
       "type": 0,
-      "value": "Copier le lien de la Leçon"
+      "value": "Copier le lien de la leçon"
     }
   ],
   "SessionNavigation.lessonDetails": [
     {
       "type": 0,
-      "value": "Détails de la Leçon"
+      "value": "Détails de la leçon"
     }
   ],
   "SessionNavigation.progress": [
@@ -1606,7 +1606,7 @@
   "SolveTask.hideSession": [
     {
       "type": 0,
-      "value": "Cacher la Leçon"
+      "value": "Cacher la leçon"
     }
   ],
   "SolveTask.import": [
@@ -1618,7 +1618,7 @@
   "SolveTask.showSession": [
     {
       "type": 0,
-      "value": "Afficher la Leçon"
+      "value": "Afficher la leçon"
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -1722,7 +1722,7 @@
   "TaskActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskDetail.title": [
@@ -1956,7 +1956,7 @@
   "TaskInstanceNavigation.taskDetails": [
     {
       "type": 0,
-      "value": "Détails de l'Activité"
+      "value": "Détails de l'activité"
     }
   ],
   "TaskInstanceProgress.title": [
@@ -1996,13 +1996,13 @@
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Enregistrer l'Activité"
+      "value": "Enregistrer l'activité"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Modifier l'Activité - "
+      "value": "Modifier l'activité - "
     },
     {
       "type": 1,
@@ -2024,13 +2024,13 @@
   "TaskInstanceTable.columns.taskType": [
     {
       "type": 0,
-      "value": "Type d'Activité"
+      "value": "Type d'activité"
     }
   ],
   "TaskInstanceTable.createTask": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.body": [
@@ -2042,25 +2042,25 @@
   "TaskInstanceTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskInstanceTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskInstanceTable.viewDetails": [
     {
       "type": 0,
-      "value": "Voir les détails de l'Activité"
+      "value": "Voir les détails de l'activité"
     }
   ],
   "TaskModal.cancel": [
@@ -2102,7 +2102,7 @@
   "TaskNavigation.classTab": [
     {
       "type": 0,
-      "value": "Détails de l'Activité"
+      "value": "Détails de l'activité"
     }
   ],
   "TaskNavigation.referenceSolutions": [
@@ -2114,19 +2114,19 @@
   "TaskNavigation.viewTaskTab": [
     {
       "type": 0,
-      "value": "Voir l'Activité"
+      "value": "Voir l'activité"
     }
   ],
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Enregistrer l'Activité"
+      "value": "Enregistrer l'activité"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Modifier l'Activité - "
+      "value": "Modifier l'activité - "
     },
     {
       "type": 1,
@@ -2136,7 +2136,7 @@
   "TaskSessionActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskTable.columns.actionsColumn": [
@@ -2154,7 +2154,7 @@
   "TaskTable.columns.taskType": [
     {
       "type": 0,
-      "value": "Type d'Activité"
+      "value": "Type d'activité"
     }
   ],
   "TaskTable.columns.title": [
@@ -2166,7 +2166,7 @@
   "TaskTable.createTask": [
     {
       "type": 0,
-      "value": "Créer une Activité"
+      "value": "Créer une activité"
     }
   ],
   "TaskTable.deleteConfirmation.body": [
@@ -2178,25 +2178,25 @@
   "TaskTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'Activité"
+      "value": "Supprimer l'activité"
     }
   ],
   "TaskTable.viewDetails": [
     {
       "type": 0,
-      "value": "Voir les détails de l'Activité"
+      "value": "Voir les détails de l'activité"
     }
   ],
   "TestCriterionFilterForm.count": [

@@ -57,7 +57,7 @@ const messages = defineMessages({
   },
   createSession: {
     id: "SessionList.columns.createSession",
-    defaultMessage: "Create Session",
+    defaultMessage: "Create Lesson",
   },
   copySessionLink: {
     id: "SessionList.copySessionLink",

@@ -112,7 +112,7 @@ const SolveTaskPage = () => {
         toast.success(
           <FormattedMessage
             id="SolveTask.correctSolutionSubmitted"
-            defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
+            defaultMessage="Your successfully solved this task. You can check if there are more tasks in the lesson menu."
           />,
         );
       } else {
@@ -254,14 +254,14 @@ const SolveTaskPage = () => {
               <span>
                 <FormattedMessage
                   id="SolveTask.hideSession"
-                  defaultMessage="Hide Session"
+                  defaultMessage="Hide Lesson"
                 />
               </span>
             ) : (
               <span>
                 <FormattedMessage
                   id="SolveTask.showSession"
-                  defaultMessage="Show Session"
+                  defaultMessage="Show Lesson"
                 />
               </span>
             )}
