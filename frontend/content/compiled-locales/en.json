@@ -95,16 +95,16 @@
       "value": "Sub-task Selection"
     }
   ],
-  "Analyzer.taskSelection": [
-    {
-      "type": 0,
-      "value": "Task Selection"
-    }
-  ],
   "AnalyzerFilterForm.filterCriteria": [
     {
       "type": 0,
       "value": "Filtering Criteria"
+    }
+  ],
+  "AnonymizationToggle.label": [
+    {
+      "type": 0,
+      "value": "Anonymize Names"
     }
   ],
   "AstHeightCriterionFilterForm.count": [
@@ -185,16 +185,90 @@
       "value": "y-Axis"
     }
   ],
-  "ClassDetail.table.numberOfStudents": [
+  "ClassActions.deleteSession": [
     {
       "type": 0,
-      "value": "Number of Students"
+      "value": "Delete Class"
     }
   ],
-  "ClassDetail.table.teacher": [
+  "ClassDetail.actions": [
     {
       "type": 0,
-      "value": "Teacher"
+      "value": "Actions"
+    }
+  ],
+  "ClassDetail.deleteAction": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDetail.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "ClassDetail.deleteConfirmation.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "ClassDetail.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDetail.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete Class: \""
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "\""
+    }
+  ],
+  "ClassDetail.deleteErrorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the class. Please try again!"
+    }
+  ],
+  "ClassDetail.deleteSuccessMessage": [
+    {
+      "type": 0,
+      "value": "Class deleted successfully"
+    }
+  ],
+  "ClassDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error saving the changes. Please try to save again!"
+    }
+  ],
+  "ClassDetail.returnToClassList": [
+    {
+      "type": 0,
+      "value": "Return to Class List"
+    }
+  ],
+  "ClassDetail.submit": [
+    {
+      "type": 0,
+      "value": "Save Class"
+    }
+  ],
+  "ClassDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully saved changes"
     }
   ],
   "ClassDetail.title": [
@@ -207,10 +281,28 @@
       "value": "name"
     }
   ],
+  "ClassForm.error.nameRequired": [
+    {
+      "type": 0,
+      "value": "Name is required"
+    }
+  ],
+  "ClassForm.error.teacherRequired": [
+    {
+      "type": 0,
+      "value": "Teacher is required"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
       "value": "Name"
+    }
+  ],
+  "ClassForm.placeholder.selectTeacher": [
+    {
+      "type": 0,
+      "value": "Select Teacher"
     }
   ],
   "ClassForm.teacher": [
@@ -219,22 +311,10 @@
       "value": "Teacher"
     }
   ],
-  "ClassList.column.lastSession.none": [
+  "ClassForm.tooltip.disabledSaveButton": [
     {
       "type": 0,
-      "value": "None"
-    }
-  ],
-  "ClassList.columns.actions": [
-    {
-      "type": 0,
-      "value": "Actions"
-    }
-  ],
-  "ClassList.columns.lastSession": [
-    {
-      "type": 0,
-      "value": "Last Session"
+      "value": "No changes to save"
     }
   ],
   "ClassList.columns.name": [
@@ -243,10 +323,16 @@
       "value": "Name"
     }
   ],
-  "ClassList.columns.status": [
+  "ClassList.columns.teacher": [
     {
       "type": 0,
-      "value": "Status"
+      "value": "Teacher"
+    }
+  ],
+  "ClassList.createClass": [
+    {
+      "type": 0,
+      "value": "Create Class"
     }
   ],
   "ClassList.deleteConfirmation.body": [
@@ -265,6 +351,12 @@
     {
       "type": 0,
       "value": "Delete Class"
+    }
+  ],
+  "ClassList.viewDetails": [
+    {
+      "type": 0,
+      "value": "View Class Details"
     }
   ],
   "ClassNavigation.classTab": [
@@ -369,10 +461,24 @@
       "value": "Number of conditions"
     }
   ],
+  "CreateClass.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error creating the new Class. Please try to save again!"
+    }
+  ],
   "CreateClass.header": [
     {
       "type": 0,
       "value": "Create Class"
+    }
+  ],
+  "CreateClass.pageDescription": [
+  ],
+  "CreateClass.returnToClassList": [
+    {
+      "type": 0,
+      "value": "Return to Class List"
     }
   ],
   "CreateClass.submit": [
@@ -381,10 +487,16 @@
       "value": "Create Class"
     }
   ],
+  "CreateClass.successMessage": [
+    {
+      "type": 0,
+      "value": "Class created successfully"
+    }
+  ],
   "CreateClass.title": [
     {
       "type": 0,
-      "value": "Create Class"
+      "value": "Create new Class"
     }
   ],
   "CreateLesson.header": [
@@ -411,16 +523,34 @@
       "value": "Name"
     }
   ],
+  "CreateSession.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error creating the new Session. Please try to save again!"
+    }
+  ],
   "CreateSession.header": [
     {
       "type": 0,
       "value": "Create Session"
     }
   ],
+  "CreateSession.returnToSessionList": [
+    {
+      "type": 0,
+      "value": "Return to Session List"
+    }
+  ],
   "CreateSession.submit": [
     {
       "type": 0,
       "value": "Create Session"
+    }
+  ],
+  "CreateSession.successMessage": [
+    {
+      "type": 0,
+      "value": "Session created successfully"
     }
   ],
   "CreateSession.title": [
@@ -441,16 +571,16 @@
       "value": "Description"
     }
   ],
-  "CreateSessionForm.isAnonymous": [
-    {
-      "type": 0,
-      "value": "Whether students are anonymous when working on tasks."
-    }
-  ],
   "CreateSessionForm.selectTaskToAdd": [
     {
       "type": 0,
       "value": "Select a task to add"
+    }
+  ],
+  "CreateSessionForm.sharingType": [
+    {
+      "type": 0,
+      "value": "Sharing Type"
     }
   ],
   "CreateSessionForm.tasks": [
@@ -478,6 +608,26 @@
     }
   ],
   "CreateTask.title": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
+  "CreateTaskInstance.description": [
+  ],
+  "CreateTaskInstance.header": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
+  "CreateTaskInstance.submit": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
+  "CreateTaskInstance.title": [
     {
       "type": 0,
       "value": "Create Task"
@@ -537,12 +687,6 @@
       "value": "Number of custom function callss"
     }
   ],
-  "DissimilarAnalysisPairs.header": [
-    {
-      "type": 0,
-      "value": "Dissimilar Solutions"
-    }
-  ],
   "DissimilarAnalysisPairs.title": [
     {
       "type": 0,
@@ -571,18 +715,6 @@
       "value": "Sub-task Selection"
     }
   ],
-  "DissimilarPairs.taskSelection": [
-    {
-      "type": 0,
-      "value": "Task Selection"
-    }
-  ],
-  "DissimilarSolutions.header": [
-    {
-      "type": 0,
-      "value": "Dissimilar Solutions"
-    }
-  ],
   "DissimilarSolutions.title": [
     {
       "type": 0,
@@ -599,12 +731,6 @@
       "value": "All sub-tasks"
     }
   ],
-  "DissimilarityAnalysis.noTasksInSession": [
-    {
-      "type": 0,
-      "value": "There are no tasks in this session."
-    }
-  ],
   "DissimilarityAnalysis.numberOfDissimilarSolutions": [
     {
       "type": 0,
@@ -617,38 +743,10 @@
       "value": "Sub-task Selection"
     }
   ],
-  "DissimilarityAnalysis.taskSelection": [
-    {
-      "type": 0,
-      "value": "Task Selection"
-    }
-  ],
   "DissimilarityAnalysis.tooManyCombinations": [
     {
       "type": 0,
       "value": "Too many combinations to calculate dissimilar pairs."
-    }
-  ],
-  "EditClass.header": [
-    {
-      "type": 0,
-      "value": "Edit Class"
-    }
-  ],
-  "EditClass.submit": [
-    {
-      "type": 0,
-      "value": "Save Class"
-    }
-  ],
-  "EditClass.title": [
-    {
-      "type": 0,
-      "value": "Edit Class - "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "EditLesson.header": [
@@ -671,34 +769,6 @@
     {
       "type": 1,
       "value": "name"
-    }
-  ],
-  "EditSession.header": [
-    {
-      "type": 0,
-      "value": "Edit Session"
-    }
-  ],
-  "EditSession.submit": [
-    {
-      "type": 0,
-      "value": "Save Session"
-    }
-  ],
-  "EditSession.title": [
-    {
-      "type": 0,
-      "value": "Edit Session - "
-    },
-    {
-      "type": 1,
-      "value": "title"
-    }
-  ],
-  "EditTask.header": [
-    {
-      "type": 0,
-      "value": "Edit Task"
     }
   ],
   "EditTask.submit": [
@@ -739,6 +809,12 @@
       "value": "name"
     }
   ],
+  "EditedBadge.edited": [
+    {
+      "type": 0,
+      "value": "Edited"
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,
@@ -769,16 +845,64 @@
       "value": "Sign Out"
     }
   ],
+  "Home.adminDescription": [
+    {
+      "type": 0,
+      "value": "Welcome to the Admin Dashboard of Collimator."
+    }
+  ],
+  "Home.adminHeader": [
+    {
+      "type": 0,
+      "value": "Admin Dashboard"
+    }
+  ],
+  "Home.classes": [
+    {
+      "type": 0,
+      "value": "Classes"
+    }
+  ],
+  "Home.classesDescription": [
+    {
+      "type": 0,
+      "value": "Manage your classes and students."
+    }
+  ],
+  "Home.description": [
+    {
+      "type": 0,
+      "value": "Welcome to the Teacher Dashboard of Collimator."
+    }
+  ],
   "Home.header": [
     {
       "type": 0,
-      "value": "Home"
+      "value": "Teacher Dashboard"
     }
   ],
-  "Home.title": [
+  "Home.tasks": [
     {
       "type": 0,
-      "value": "Home"
+      "value": "Create new tasks"
+    }
+  ],
+  "Home.tasksDescription": [
+    {
+      "type": 0,
+      "value": "Create and manage tasks for your classes."
+    }
+  ],
+  "Home.users": [
+    {
+      "type": 0,
+      "value": "Users"
+    }
+  ],
+  "Home.usersDescription": [
+    {
+      "type": 0,
+      "value": "Manage user accounts and permissions."
     }
   ],
   "IndentationCriterionFilterForm.level": [
@@ -887,16 +1011,20 @@
       "value": "Lesson Details"
     }
   ],
+  "ListClasses.description": [
+  ],
   "ListClasses.header": [
     {
       "type": 0,
-      "value": "Class Manager"
+      "value": "Classes"
     }
   ],
-  "ListClasses.title": [
+  "ListClasses.pageDescription": [
+  ],
+  "ListClasses.pageTitle": [
     {
       "type": 0,
-      "value": "Classes"
+      "value": "Class Manager"
     }
   ],
   "ListLessons.header": [
@@ -911,11 +1039,15 @@
       "value": "Lessons"
     }
   ],
+  "ListTasks.description": [
+  ],
   "ListTasks.header": [
     {
       "type": 0,
-      "value": "Task Manager"
+      "value": "Task Bank"
     }
+  ],
+  "ListTasks.pageDescription": [
   ],
   "ListTasks.title": [
     {
@@ -939,6 +1071,12 @@
     {
       "type": 0,
       "value": "Authenticate using Microsoft"
+    }
+  ],
+  "LoginPage.description": [
+    {
+      "type": 0,
+      "value": "Log in to access your account"
     }
   ],
   "LoginPage.header": [
@@ -1025,12 +1163,6 @@
       "value": "The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
     }
   ],
-  "OpenIdConnectRedirect.userSignInHeading": [
-    {
-      "type": 0,
-      "value": "User Sign In"
-    }
-  ],
   "ProgressList.columns.actions": [
     {
       "type": 0,
@@ -1055,26 +1187,110 @@
       "value": "Task"
     }
   ],
-  "ProgressList.columns.timeOnTask": [
+  "SessionActions.copySessionLink": [
     {
       "type": 0,
-      "value": "Time on Task"
+      "value": "Copy Lesson Link"
     }
   ],
-  "SessionAnalysis.header": [
+  "SessionActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Analysis"
+      "value": "Are you sure? You can't undo this action afterwards."
     }
   ],
-  "SessionAnalysis.title": [
+  "SessionActions.deleteConfirmation.cancel": [
     {
       "type": 0,
-      "value": "Analysis - "
+      "value": "Cancel"
+    }
+  ],
+  "SessionActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Session"
+    }
+  ],
+  "SessionActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete Session"
+    }
+  ],
+  "SessionActions.deleteErrorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the session. Please try again!"
+    }
+  ],
+  "SessionActions.deleteSession": [
+    {
+      "type": 0,
+      "value": "Delete Lesson"
+    }
+  ],
+  "SessionActions.deleteSuccessMessage": [
+    {
+      "type": 0,
+      "value": "Session deleted successfully"
+    }
+  ],
+  "SessionDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error saving the changes. Please try to save again!"
+    }
+  ],
+  "SessionDetail.submit": [
+    {
+      "type": 0,
+      "value": "Save Session"
+    }
+  ],
+  "SessionDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully saved changes"
+    }
+  ],
+  "SessionDetail.title": [
+    {
+      "type": 0,
+      "value": "Session - "
     },
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.error.sharingTypeRequired": [
+    {
+      "type": 0,
+      "value": "Sharing Type is required"
+    }
+  ],
+  "SessionForm.error.titleRequired": [
+    {
+      "type": 0,
+      "value": "Title is required"
+    }
+  ],
+  "SessionForm.sharingType.anonymous": [
+    {
+      "type": 0,
+      "value": "Anonymous"
+    }
+  ],
+  "SessionForm.sharingType.public": [
+    {
+      "type": 0,
+      "value": "Public"
+    }
+  ],
+  "SessionList.canOnlyShareOwnSessions": [
+    {
+      "type": 0,
+      "value": "You can only share lessons belonging to your classes."
     }
   ],
   "SessionList.columns.actions": [
@@ -1083,22 +1299,46 @@
       "value": "Quick Action"
     }
   ],
+  "SessionList.columns.createSession": [
+    {
+      "type": 0,
+      "value": "Create Session"
+    }
+  ],
   "SessionList.columns.finishedAt": [
     {
       "type": 0,
       "value": "End Date"
     }
   ],
+  "SessionList.columns.id": [
+    {
+      "type": 0,
+      "value": "ID"
+    }
+  ],
+  "SessionList.columns.sharingType": [
+    {
+      "type": 0,
+      "value": "Sharing Type"
+    }
+  ],
+  "SessionList.columns.sharingTypeAnonymous": [
+    {
+      "type": 0,
+      "value": "Anonymous"
+    }
+  ],
+  "SessionList.columns.sharingTypePrivate": [
+    {
+      "type": 0,
+      "value": "Private"
+    }
+  ],
   "SessionList.columns.startedAt": [
     {
       "type": 0,
       "value": "Start Date"
-    }
-  ],
-  "SessionList.columns.tags": [
-    {
-      "type": 0,
-      "value": "Tags"
     }
   ],
   "SessionList.columns.title": [
@@ -1113,40 +1353,10 @@
       "value": "Share"
     }
   ],
-  "SessionList.deleteConfirmation.body": [
+  "SessionNavigation.lessonDetails": [
     {
       "type": 0,
-      "value": "Are you sure you want to delete this session?"
-    }
-  ],
-  "SessionList.deleteConfirmation.confirm": [
-    {
-      "type": 0,
-      "value": "Delete Session"
-    }
-  ],
-  "SessionList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Delete Session"
-    }
-  ],
-  "SessionNavigation.analysisTab": [
-    {
-      "type": 0,
-      "value": "Analysis"
-    }
-  ],
-  "SessionNavigation.dissimilarPairsTab": [
-    {
-      "type": 0,
-      "value": "Dissimilar Pairs"
-    }
-  ],
-  "SessionNavigation.dissimilarSolutionsTab": [
-    {
-      "type": 0,
-      "value": "Dissimilar Solutions"
+      "value": "Lesson Details"
     }
   ],
   "SessionNavigation.progress": [
@@ -1155,10 +1365,10 @@
       "value": "Progress"
     }
   ],
-  "SessionProgress.header": [
+  "SessionNavigation.tasks": [
     {
       "type": 0,
-      "value": "Session Progress"
+      "value": "Tasks"
     }
   ],
   "SessionProgress.title": [
@@ -1251,12 +1461,6 @@
       "value": "Number of statements"
     }
   ],
-  "StudentAnonymizationToggle.showActualStudentNames": [
-    {
-      "type": 0,
-      "value": "Show actual student names"
-    }
-  ],
   "StudentList.columns.name": [
     {
       "type": 0,
@@ -1305,6 +1509,12 @@
       "value": "Decrypting..."
     }
   ],
+  "TaskActions.deleteTask": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
   "TaskDetail.title": [
     {
       "type": 0,
@@ -1349,12 +1559,6 @@
       "value": "The task was saved successfully."
     }
   ],
-  "TaskForm.addReferenceSolution": [
-    {
-      "type": 0,
-      "value": "Add"
-    }
-  ],
   "TaskForm.blob.create": [
     {
       "type": 0,
@@ -1397,28 +1601,10 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutions": [
-    {
-      "type": 0,
-      "value": "Reference Solutions"
-    }
-  ],
   "TaskForm.referenceSolutionsLengthValidation": [
     {
       "type": 0,
       "value": "The number of reference solutions must match the number of reference solution files"
-    }
-  ],
-  "TaskForm.solution.create": [
-    {
-      "type": 0,
-      "value": "Create solution in external application"
-    }
-  ],
-  "TaskForm.solution.edit": [
-    {
-      "type": 0,
-      "value": "Edit solution in external application"
     }
   ],
   "TaskForm.title": [
@@ -1431,6 +1617,240 @@
     {
       "type": 0,
       "value": "Type"
+    }
+  ],
+  "TaskFormReferenceSolutions.SaveError": [
+    {
+      "type": 0,
+      "value": "An error occurred while saving the task. Try again later."
+    }
+  ],
+  "TaskFormReferenceSolutions.SaveSuccess": [
+    {
+      "type": 0,
+      "value": "The task was saved successfully."
+    }
+  ],
+  "TaskFormReferenceSolutions.addReferenceSolution": [
+    {
+      "type": 0,
+      "value": "Add reference solution"
+    }
+  ],
+  "TaskFormReferenceSolutions.blobValidation": [
+    {
+      "type": 0,
+      "value": "The provided file data is invalid"
+    }
+  ],
+  "TaskFormReferenceSolutions.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
+    }
+  ],
+  "TaskFormReferenceSolutions.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, I don't need to save."
+    }
+  ],
+  "TaskFormReferenceSolutions.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
+    }
+  ],
+  "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": [
+    {
+      "type": 0,
+      "value": "The number of reference solutions must match the number of reference solution files"
+    }
+  ],
+  "TaskFormReferenceSolutions.solution.create": [
+    {
+      "type": 0,
+      "value": "Create reference solution in external application"
+    }
+  ],
+  "TaskFormReferenceSolutions.solution.edit": [
+    {
+      "type": 0,
+      "value": "Edit reference solution in external application"
+    }
+  ],
+  "TaskInstanceAnalysis.title": [
+    {
+      "type": 0,
+      "value": "Analysis - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.submit": [
+    {
+      "type": 0,
+      "value": "Save Task"
+    }
+  ],
+  "TaskInstanceDetails.title": [
+    {
+      "type": 0,
+      "value": "Edit Task - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceList.description": [
+  ],
+  "TaskInstanceList.title": [
+    {
+      "type": 0,
+      "value": "Tasks"
+    }
+  ],
+  "TaskInstanceNavigation.analysisTab": [
+    {
+      "type": 0,
+      "value": "Analysis"
+    }
+  ],
+  "TaskInstanceNavigation.dissimilarPairsTab": [
+    {
+      "type": 0,
+      "value": "Dissimilar Pairs"
+    }
+  ],
+  "TaskInstanceNavigation.dissimilarSolutionsTab": [
+    {
+      "type": 0,
+      "value": "Dissimilar Solutions"
+    }
+  ],
+  "TaskInstanceNavigation.referenceSolutions": [
+    {
+      "type": 0,
+      "value": "Reference Solutions"
+    }
+  ],
+  "TaskInstanceNavigation.studentResults": [
+    {
+      "type": 0,
+      "value": "Students' Results"
+    }
+  ],
+  "TaskInstanceNavigation.taskDetails": [
+    {
+      "type": 0,
+      "value": "Task Details"
+    }
+  ],
+  "TaskInstanceProgress.title": [
+    {
+      "type": 0,
+      "value": "Progress - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceProgressList.columns.inShowcaseColumn": [
+    {
+      "type": 0,
+      "value": "In Showcase"
+    }
+  ],
+  "TaskInstanceProgressList.columns.lastLoginDateColumn": [
+    {
+      "type": 0,
+      "value": "Last Login Date"
+    }
+  ],
+  "TaskInstanceProgressList.columns.name": [
+    {
+      "type": 0,
+      "value": "Name"
+    }
+  ],
+  "TaskInstanceProgressList.columns.progressColumn": [
+    {
+      "type": 0,
+      "value": "Student Progress"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.submit": [
+    {
+      "type": 0,
+      "value": "Save Task"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.title": [
+    {
+      "type": 0,
+      "value": "Edit Task - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceTable.columns.id": [
+    {
+      "type": 0,
+      "value": "ID"
+    }
+  ],
+  "TaskInstanceTable.columns.name": [
+    {
+      "type": 0,
+      "value": "Name"
+    }
+  ],
+  "TaskInstanceTable.columns.taskType": [
+    {
+      "type": 0,
+      "value": "Task Type"
+    }
+  ],
+  "TaskInstanceTable.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
+  "TaskInstanceTable.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to delete this task?"
+    }
+  ],
+  "TaskInstanceTable.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskInstanceTable.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskInstanceTable.deleteTask": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskInstanceTable.viewDetails": [
+    {
+      "type": 0,
+      "value": "View Task Details"
     }
   ],
   "TaskModal.cancel": [
@@ -1475,16 +1895,68 @@
       "value": "Task Details"
     }
   ],
-  "TaskTable.columns.actions": [
+  "TaskNavigation.referenceSolutions": [
     {
       "type": 0,
-      "value": "Actions"
+      "value": "Reference Solutions"
+    }
+  ],
+  "TaskNavigation.viewTaskTab": [
+    {
+      "type": 0,
+      "value": "View Task"
+    }
+  ],
+  "TaskReferenceSolutions.submit": [
+    {
+      "type": 0,
+      "value": "Save Task"
+    }
+  ],
+  "TaskReferenceSolutions.title": [
+    {
+      "type": 0,
+      "value": "Edit Task - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskSessionActions.deleteTask": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskTable.columns.actionsColumn": [
+    {
+      "type": 0,
+      "value": "Quick Actions"
+    }
+  ],
+  "TaskTable.columns.id": [
+    {
+      "type": 0,
+      "value": "ID"
+    }
+  ],
+  "TaskTable.columns.taskType": [
+    {
+      "type": 0,
+      "value": "Task Type"
     }
   ],
   "TaskTable.columns.title": [
     {
       "type": 0,
       "value": "Title"
+    }
+  ],
+  "TaskTable.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
     }
   ],
   "TaskTable.deleteConfirmation.body": [
@@ -1503,6 +1975,18 @@
     {
       "type": 0,
       "value": "Delete Task"
+    }
+  ],
+  "TaskTable.deleteTask": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskTable.viewDetails": [
+    {
+      "type": 0,
+      "value": "View Task Details"
     }
   ],
   "TestCriterionFilterForm.count": [
@@ -1599,26 +2083,28 @@
       "value": "User Details"
     }
   ],
-  "UserSessionProgress.header": [
+  "UserSignIn.newUserDescription": [
     {
       "type": 0,
-      "value": "User Progress"
+      "value": "Set up encryption for student identities"
     }
   ],
-  "UserSessionProgress.title": [
+  "UserSignIn.returningUserDescription": [
     {
       "type": 0,
-      "value": "Student Progress - "
-    },
-    {
-      "type": 1,
-      "value": "name"
+      "value": "Enter your password to access encrypted student identities"
     }
   ],
   "UserSignIn.submit": [
     {
       "type": 0,
       "value": "Sign In"
+    }
+  ],
+  "UserSignIn.title": [
+    {
+      "type": 0,
+      "value": "Complete Sign In"
     }
   ],
   "UserSignInForm.backupPassword": [
@@ -1631,28 +2117,6 @@
     {
       "type": 0,
       "value": "Password"
-    }
-  ],
-  "UserTaskProgress.unsupportedApp": [
-    {
-      "type": 0,
-      "value": "The unsupported application type "
-    },
-    {
-      "type": 1,
-      "value": "type"
-    },
-    {
-      "type": 0,
-      "value": " was selected (Task id "
-    },
-    {
-      "type": 1,
-      "value": "taskId"
-    },
-    {
-      "type": 0,
-      "value": "). Please report this issue."
     }
   ],
   "ViewSolutionModal.title": [
@@ -1727,64 +2191,28 @@
       "value": "Passed Tests"
     }
   ],
-  "datatable.button.next": [
-    {
-      "type": 0,
-      "value": "Next"
-    }
-  ],
-  "datatable.button.previous": [
-    {
-      "type": 0,
-      "value": "Previous"
-    }
-  ],
   "datatable.label.filterBy": [
     {
       "type": 0,
       "value": "Filter by..."
     }
   ],
-  "datatable.label.pageInfo": [
+  "datatable.pagination.next": [
     {
       "type": 0,
-      "value": "Page "
-    },
-    {
-      "type": 1,
-      "value": "pageIndex"
-    },
-    {
-      "type": 0,
-      "value": " of "
-    },
-    {
-      "type": 1,
-      "value": "pageCount"
+      "value": "Next"
     }
   ],
-  "datatable.label.search": [
+  "datatable.pagination.previous": [
     {
       "type": 0,
-      "value": "Search"
+      "value": "Previous"
     }
   ],
   "datatable.placeholder.filterBy": [
     {
       "type": 0,
-      "value": "Search..."
-    }
-  ],
-  "datatable.placeholder.search": [
-    {
-      "type": 0,
-      "value": "Search..."
-    }
-  ],
-  "datatable.state.loading": [
-    {
-      "type": 0,
-      "value": "Loading..."
+      "value": "Search"
     }
   ],
   "forms.arrayLength": [
