@@ -372,12 +372,6 @@ const TaskFormReferenceSolutions = ({
         onSubmit={onSubmitWrapper}
         data-testid="task-reference-solutions-form"
       >
-        <h2>
-          <FormattedMessage
-            id="TaskFormReferenceSolutions.referenceSolutions"
-            defaultMessage="Reference Solutions"
-          />
-        </h2>
         <Field.Root
           invalid={
             !!errors.referenceSolutions || !!errors.referenceSolutionFiles
