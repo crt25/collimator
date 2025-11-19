@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   deleteConfirmationTitle: {
     id: "SessionActions.deleteConfirmation.title",
-    defaultMessage: "Delete Session",
+    defaultMessage: "Delete Lesson",
   },
   deleteConfirmationBody: {
     id: "SessionActions.deleteConfirmation.body",
@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   deleteConfirmationConfirm: {
     id: "SessionActions.deleteConfirmation.confirm",
-    defaultMessage: "Delete Session",
+    defaultMessage: "Delete Lesson",
   },
   deleteConfirmationCancel: {
     id: "SessionActions.deleteConfirmation.cancel",
@@ -37,12 +37,11 @@ const messages = defineMessages({
   },
   deleteSuccessMessage: {
     id: "SessionActions.deleteSuccessMessage",
-    defaultMessage: "Session deleted successfully",
+    defaultMessage: "Lesson deleted successfully",
   },
   deleteErrorMessage: {
     id: "SessionActions.deleteErrorMessage",
-    defaultMessage:
-      "There was an error deleting the session. Please try again!",
+    defaultMessage: "There was an error deleting the lesson. Please try again!",
   },
 });
 

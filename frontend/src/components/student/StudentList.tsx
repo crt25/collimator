@@ -1,4 +1,4 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { ColumnDef } from "@tanstack/react-table";
 import { Text } from "@chakra-ui/react";
@@ -8,6 +8,7 @@ import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ColumnType } from "@/types/tanstack-types";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
+import { EmptyState } from "../EmptyState";
 
 const StudentListWrapper = styled.div`
   margin: 1rem 0;
@@ -17,6 +18,10 @@ const messages = defineMessages({
   nameColumn: {
     id: "StudentList.columns.name",
     defaultMessage: "Name",
+  },
+  emptyStateTitle: {
+    id: "StudentList.emptyState.title",
+    defaultMessage: "There are no students yet.",
   },
 });
 
@@ -75,6 +80,11 @@ const StudentList = ({ klass }: { klass: ExistingClassExtended }) => {
         features={{
           sorting: true,
         }}
+        emptyStateElement={
+          <EmptyState
+            title={<FormattedMessage {...messages.emptyStateTitle} />}
+          />
+        }
       />
     </StudentListWrapper>
   );

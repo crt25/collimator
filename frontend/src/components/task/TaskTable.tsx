@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,6 +17,7 @@ import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button from "../Button";
+import { EmptyState } from "../EmptyState";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -62,6 +63,10 @@ const messages = defineMessages({
   createTask: {
     id: "TaskTable.createTask",
     defaultMessage: "Create Task",
+  },
+  emptyStateTitle: {
+    id: "TaskTable.emptyState.title",
+    defaultMessage: "There are no tasks yet. Let's create some!",
   },
 });
 
@@ -199,6 +204,11 @@ const TaskTable = () => {
                 pageSize: 10,
               },
             }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
           />
         )}
       </SwrContent>

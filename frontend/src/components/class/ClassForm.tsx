@@ -33,14 +33,6 @@ const messages = defineMessages({
     id: "ClassForm.placeholder.selectTeacher",
     defaultMessage: "Select Teacher",
   },
-  nameRequired: {
-    id: "ClassForm.error.nameRequired",
-    defaultMessage: "Name is required",
-  },
-  teacherRequired: {
-    id: "ClassForm.error.teacherRequired",
-    defaultMessage: "Teacher is required",
-  },
   disabledSaveButtonTooltip: {
     id: "ClassForm.tooltip.disabledSaveButton",
     defaultMessage: "No changes to save",
@@ -64,10 +56,8 @@ const ClassForm = ({
   const intl = useIntl();
 
   const schema = useYupSchema({
-    name: yup.string().required(intl.formatMessage(messages.nameRequired)),
-    teacherId: yup
-      .number()
-      .required(intl.formatMessage(messages.teacherRequired)),
+    name: yup.string().required(),
+    teacherId: yup.number().required(),
   });
 
   const resolver = useYupResolver(schema);
@@ -127,6 +117,7 @@ const ClassForm = ({
                 <Select
                   name="teacherId"
                   control={control}
+                  alwaysShow
                   label={messages.teacher}
                   showEditedBadge={showEditedBadges}
                   options={users.map((u) => ({

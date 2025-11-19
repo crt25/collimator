@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
 import { chakra, HStack, Icon, Text } from "@chakra-ui/react";
 import { LuChevronRight, LuSend } from "react-icons/lu";
@@ -14,6 +14,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable from "../ChakraDataTable";
+import { EmptyState } from "../EmptyState";
 
 const SessionListWrapper = chakra("div", {
   base: {
@@ -57,7 +58,7 @@ const messages = defineMessages({
   },
   createSession: {
     id: "SessionList.columns.createSession",
-    defaultMessage: "Create Session",
+    defaultMessage: "Create Lesson",
   },
   copySessionLink: {
     id: "SessionList.copySessionLink",
@@ -66,6 +67,10 @@ const messages = defineMessages({
   canOnlyShareOwnSessions: {
     id: "SessionList.canOnlyShareOwnSessions",
     defaultMessage: "You can only share lessons belonging to your classes.",
+  },
+  emptyStateTitle: {
+    id: "SessionList.emptyState.title",
+    defaultMessage: "There are no lessons yet. Let's create some!",
   },
 });
 
@@ -253,6 +258,11 @@ const SessionList = ({ classId }: { classId: number }) => {
                 pageSize: 10,
               },
             }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
           />
         )}
       </MultiSwrContent>

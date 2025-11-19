@@ -1,4 +1,4 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
@@ -11,6 +11,7 @@ import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import { ChakraDataTable } from "../ChakraDataTable";
 import Button from "../Button";
+import { EmptyState } from "../EmptyState";
 
 const ClassListWrapper = chakra("div", {
   base: {
@@ -47,6 +48,10 @@ const messages = defineMessages({
   viewDetails: {
     id: "ClassList.viewDetails",
     defaultMessage: "View Class Details",
+  },
+  emptyStateTitle: {
+    id: "ClassList.emptyState.title",
+    defaultMessage: "There are no classes yet. Let's create some!",
   },
 });
 
@@ -139,6 +144,11 @@ const ClassList = () => {
                 pageSize: 10,
               },
             }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
           />
         )}
       </SwrContent>

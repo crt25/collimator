@@ -18,10 +18,6 @@ const messages = defineMessages({
     id: "TaskInstanceList.title",
     defaultMessage: "Tasks",
   },
-  description: {
-    id: "TaskInstanceList.description",
-    defaultMessage: "",
-  },
 });
 
 const TaskInstanceList = () => {
