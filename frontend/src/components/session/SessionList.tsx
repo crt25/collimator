@@ -1,7 +1,7 @@
-import { useCallback, useContext } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { useCallback, useContext, useState } from "react";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
-import { chakra, HStack, Icon, Text } from "@chakra-ui/react";
+import { chakra, HStack, Icon, Text, Link } from "@chakra-ui/react";
 import { LuChevronRight, LuSend } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
@@ -14,6 +14,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable from "../ChakraDataTable";
+import { ShareModal } from "../form/ShareModal";
 
 const SessionListWrapper = chakra("div", {
   base: {
@@ -67,12 +68,40 @@ const messages = defineMessages({
     id: "SessionList.canOnlyShareOwnSessions",
     defaultMessage: "You can only share lessons belonging to your classes.",
   },
+  shareModalTitle: {
+    id: "SessionList.shareModalTitle",
+    defaultMessage: "Invite Student",
+  },
+  shareModalSubtitle: {
+    id: "SessionList.shareModalSubtitle",
+    defaultMessage: "Share Link",
+  },
+  shareModalAnonymousLessonInfo: {
+    id: "SessionList.shareModalAnonymousLessonInfo",
+    defaultMessage: `This Lesson will be shared anonymously (based on <link>Class settings</link>). Everybody with this link can join the Lesson.`,
+  },
+  shareModalPrivateLessonInfo: {
+    id: "SessionList.shareModalPrivateLessonInfo",
+    defaultMessage: `This Lesson will be shared privately (based on <link>Class settings</link>). Only students who are registered in your Class can join the Lesson.`,
+  },
+  shareModalCopyButton: {
+    id: "SessionList.shareModalCopyButton",
+    defaultMessage: "Copy Link",
+  },
+  shareModalCloseButton: {
+    id: "SessionList.shareModalCloseButton",
+    defaultMessage: "Close",
+  },
 });
 
 const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
   const authenticationContext = useContext(AuthenticationContext);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [selectedSession, setSelectedSession] =
+    useState<ExistingSession | null>(null);
+  const [sessionLink, setSessionLink] = useState("");
 
   const {
     data: klass,
@@ -81,6 +110,15 @@ const SessionList = ({ classId }: { classId: number }) => {
   } = useClass(classId);
 
   const { data, isLoading, error } = useAllClassSessions(classId);
+
+  const handleShareClick = useCallback(
+    (session: ExistingSession, link: string) => {
+      setSessionLink(link);
+      setSelectedSession(session);
+      setIsShareModalOpen(true);
+    },
+    [],
+  );
 
   const startedAtTemplate = useCallback(
     (rowData: ExistingSession) =>
@@ -110,9 +148,8 @@ const SessionList = ({ classId }: { classId: number }) => {
             const fingerprint =
               await authenticationContext.keyPair.getPublicKeyFingerprint();
 
-            navigator.clipboard.writeText(
-              `${window.location.origin}/class/${klass.id}/session/${rowData.id}/join?key=${fingerprint}`,
-            );
+            const link = `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`;
+            handleShareClick(rowData, link);
           }}
           data-test-id={`session-${rowData.id}-copy-session-link-button`}
         >
@@ -133,7 +170,7 @@ const SessionList = ({ classId }: { classId: number }) => {
         </Button>
       );
     },
-    [intl, authenticationContext, klass],
+    [intl, authenticationContext, klass, handleShareClick, classId],
   );
 
   const sharingTypeTemplate = useCallback(
@@ -269,6 +306,51 @@ const SessionList = ({ classId }: { classId: number }) => {
           {intl.formatMessage(messages.createSession)}
         </HStack>
       </Button>
+
+      <ShareModal
+        title={<FormattedMessage {...messages.shareModalTitle} />}
+        subtitle={<FormattedMessage {...messages.shareModalSubtitle} />}
+        description={
+          selectedSession?.isAnonymous ? (
+            <FormattedMessage
+              {...messages.shareModalAnonymousLessonInfo}
+              values={{
+                link: (chunks) => (
+                  <Link
+                    textDecoration="underline"
+                    href={`/class/${classId}/session/${selectedSession?.id}/detail`}
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              }}
+            />
+          ) : (
+            <FormattedMessage
+              {...messages.shareModalPrivateLessonInfo}
+              values={{
+                link: (chunks) => (
+                  <Link
+                    textDecoration="underline"
+                    href={`/class/${classId}/session/${selectedSession?.id}/detail`}
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              }}
+            />
+          )
+        }
+        confirmButtonText={
+          <FormattedMessage {...messages.shareModalCopyButton} />
+        }
+        cancelButtonText={
+          <FormattedMessage {...messages.shareModalCloseButton} />
+        }
+        open={isShareModalOpen}
+        shareLink={sessionLink}
+        onOpenChange={(details) => setIsShareModalOpen(details.open)}
+      />
     </SessionListWrapper>
   );
 };
