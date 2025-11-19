@@ -20,7 +20,8 @@ const messages = defineMessages({
   },
   description: {
     id: "LoginPage.description",
-    defaultMessage: "Log in to access your account",
+    defaultMessage:
+      "Log in to access your classes, tasks, and learning resources.",
   },
   authenticateMicrosoft: {
     id: "LoginPage.authenticate.microsoft",

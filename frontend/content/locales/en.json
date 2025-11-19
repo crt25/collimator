@@ -808,7 +808,7 @@
     "message": "Edit Task - {title}"
   },
   "TaskInstanceList.description": {
-    "message": ""
+    "message": "This page displays all the existing ClassMosaic tasks that you can include in your lessons."
   },
   "TaskInstanceList.title": {
     "message": "Tasks"

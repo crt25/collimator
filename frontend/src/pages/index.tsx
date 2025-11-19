@@ -22,7 +22,9 @@ const messages = defineMessages({
   },
   adminDescription: {
     id: "Home.adminDescription",
-    defaultMessage: "Welcome to the Admin Dashboard of ClassMosaic.",
+    defaultMessage:
+      "Welcome to the Admin Dashboard of ClassMosaic. " +
+      "Edit classes, tasks, or manage user profiles.",
   },
   classesDescription: {
     id: "Home.classesDescription",
