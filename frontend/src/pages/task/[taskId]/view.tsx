@@ -3,17 +3,18 @@ import { useCallback, useMemo, useRef } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import { Language } from "iframe-rpc-react/src";
+import TaskActions from "@/components/task/TaskActions";
+import TaskNavigation from "@/components/task/TaskNavigation";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
-import TaskNavigation from "@/components/task/TaskNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
+import PageHeading from "@/components/PageHeading";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
-import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
   title: {
@@ -81,11 +82,10 @@ const TaskDetail = () => {
           title: task?.title ?? "",
         }}
       />
-      <Container>
+      <Container marginBottom="md">
         <Breadcrumbs>
           <CrtNavigation breadcrumb task={task} />
         </Breadcrumbs>
-        <TaskNavigation taskId={task?.id} />
         <MultiSwrContent
           data={[task, taskFile]}
           errors={[taskError, taskFileError]}
@@ -93,10 +93,13 @@ const TaskDetail = () => {
         >
           {([task, _taskFile]) => (
             <>
-              <div>
-                <PageHeading>{task.title}</PageHeading>
-                <p>{task.description}</p>
-              </div>
+              <PageHeading
+                actions={<TaskActions taskId={task.id} />}
+                description={task.description}
+              >
+                {task.title}
+              </PageHeading>
+              <TaskNavigation taskId={task?.id} />
               {(!!iframeSrc && (
                 <EmbeddedApp
                   src={iframeSrc}

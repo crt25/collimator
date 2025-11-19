@@ -10,7 +10,6 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Submission } from "iframe-rpc-react/src";
@@ -290,8 +289,6 @@ const TaskFormReferenceSolutions = ({
     cannotNavigate.current = isDirty;
   }, [isDirty]);
 
-  const router = useRouter();
-
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       let data: TaskFormReferenceSolutionsValues;
@@ -333,8 +330,6 @@ const TaskFormReferenceSolutions = ({
             />,
             { position: "top-center" },
           );
-
-          router.back();
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
@@ -347,7 +342,7 @@ const TaskFormReferenceSolutions = ({
           );
         });
     },
-    [handleSubmit, onSubmit, reset, router],
+    [handleSubmit, onSubmit, reset],
   );
 
   const referenceSolutionFiles: { [key: number]: Blob } = watch(

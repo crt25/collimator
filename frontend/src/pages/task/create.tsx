@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import Header from "@/components/Header";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -20,10 +21,11 @@ const messages = defineMessages({
 
 const CreateTask = () => {
   const createTask = useCreateTask();
+  const router = useRouter();
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
-      await createTask({
+      const createdTask = await createTask({
         ...taskSubmission,
         referenceSolutions:
           taskSubmission.initialSolution !== null
@@ -34,8 +36,9 @@ const CreateTask = () => {
             ? [taskSubmission.initialSolutionFile]
             : [],
       });
+      router.push(`/task/${createdTask.id}/detail`);
     },
-    [createTask],
+    [createTask, router],
   );
 
   return (

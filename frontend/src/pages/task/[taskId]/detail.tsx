@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages } from "react-intl";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -11,6 +11,9 @@ import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 import PageHeading from "@/components/PageHeading";
 import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
+import TaskNavigation from "@/components/task/TaskNavigation";
+import TaskActions from "@/components/task/TaskActions";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const messages = defineMessages({
   title: {
@@ -70,10 +73,9 @@ const EditTask = () => {
         }}
       />
       <Container>
-        <CrtNavigation task={task.data} />
-        <PageHeading>
-          <FormattedMessage id="EditTask.header" defaultMessage="Edit Task" />
-        </PageHeading>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb task={task.data} />
+        </Breadcrumbs>
         <MultiSwrContent
           data={[task.data, taskFile.data]}
           isLoading={[task.isLoading, taskFile.isLoading]}
@@ -85,16 +87,25 @@ const EditTask = () => {
             );
 
             return (
-              <TaskForm
-                initialValues={{
-                  ...task,
-                  taskFile,
-                  initialSolution: initialSolution ?? null,
-                  initialSolutionFile: initialSolution?.solution ?? null,
-                }}
-                submitMessage={messages.submit}
-                onSubmit={onSubmit}
-              />
+              <>
+                <PageHeading
+                  actions={<TaskActions taskId={task?.id} />}
+                  description={task.description}
+                >
+                  {task.title}
+                </PageHeading>
+                <TaskNavigation taskId={task?.id} />
+                <TaskForm
+                  initialValues={{
+                    ...task,
+                    taskFile,
+                    initialSolution: initialSolution ?? null,
+                    initialSolutionFile: initialSolution?.solution ?? null,
+                  }}
+                  submitMessage={messages.submit}
+                  onSubmit={onSubmit}
+                />
+              </>
             );
           }}
         </MultiSwrContent>
