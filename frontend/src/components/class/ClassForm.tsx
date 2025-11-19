@@ -127,6 +127,7 @@ const ClassForm = ({
                 <Select
                   name="teacherId"
                   control={control}
+                  alwaysShow
                   label={messages.teacher}
                   showEditedBadge={showEditedBadges}
                   options={users.map((u) => ({
