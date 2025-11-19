@@ -70,7 +70,7 @@ const messages = defineMessages({
   },
   emptyStateTitle: {
     id: "SessionList.emptyState.title",
-    defaultMessage: "There are no sessions yet. Let's create some!",
+    defaultMessage: "There are no lessons yet. Let's create some!",
   },
 });
 

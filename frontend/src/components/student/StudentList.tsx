@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   emptyStateTitle: {
     id: "StudentList.emptyState.title",
-    defaultMessage: "There are no students yet. Let's invite some!",
+    defaultMessage: "There are no students yet.",
   },
 });
 
