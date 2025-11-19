@@ -1,6 +1,5 @@
 import { defineMessages, FormattedMessage } from "react-intl";
-import { Grid, GridItem, Card, Container, chakra } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { Grid, GridItem, Card, Container, Link } from "@chakra-ui/react";
 import { useContext } from "react";
 import Header from "@/components/Header";
 import PageHeading from "@/components/PageHeading";
@@ -39,21 +38,7 @@ const messages = defineMessages({
   },
 });
 
-const GridLayout = chakra(Grid, {
-  base: {
-    marginTop: "4xl",
-    gridTemplateColumns: {
-      base: "1fr",
-      md: "repeat(2, 1fr)",
-    },
-
-    gap: "xl",
-    padding: "0",
-  },
-});
-
 const Home = () => {
-  const router = useRouter();
   const authContext = useContext(AuthenticationContext);
 
   const isAdmin = authContext.role === UserRole.admin || undefined;
@@ -70,54 +55,81 @@ const Home = () => {
           <FormattedMessage {...header} />
         </PageHeading>
 
-        <GridLayout>
-          <GridItem>
-            <Card.Root
-              variant="dashboard"
-              size="lg"
-              onClick={() => router.push("/class")}
-            >
-              <Card.Body>
-                <PageHeading variant="subHeading">Classes</PageHeading>
-                <Text>
-                  <FormattedMessage {...messages.classesDescription} />
-                </Text>
-              </Card.Body>
-            </Card.Root>
-          </GridItem>
-
-          {isAdmin && (
-            <GridItem>
-              <Card.Root
-                variant="dashboard"
-                size="lg"
-                onClick={() => router.push("/user")}
-              >
+        <Grid marginBottom="lg" templateColumns="repeat(12, 1fr)" gap="md">
+          <GridItem colSpan={{ base: 12, lg: 6 }}>
+            <Link display="block" href="/class">
+              <Card.Root variant="dashboard" size="lg">
                 <Card.Body>
-                  <PageHeading variant="subHeading">Users</PageHeading>
+                  <Text
+                    marginTop="md"
+                    fontSize="3xl"
+                    fontWeight="semiBold"
+                    wordBreak="keep-all"
+                    whiteSpace="nowrap"
+                  >
+                    <FormattedMessage
+                      id="Home.classes"
+                      defaultMessage="Classes"
+                    />
+                  </Text>
                   <Text>
-                    <FormattedMessage {...messages.usersDescription} />
+                    <FormattedMessage {...messages.classesDescription} />
                   </Text>
                 </Card.Body>
               </Card.Root>
+            </Link>
+          </GridItem>
+
+          {isAdmin && (
+            <GridItem colSpan={{ base: 12, lg: 6 }}>
+              <Link display="block" href="/user">
+                <Card.Root variant="dashboard" size="lg">
+                  <Card.Body>
+                    <Text
+                      marginTop="md"
+                      fontSize="3xl"
+                      fontWeight="semiBold"
+                      wordBreak="keep-all"
+                      whiteSpace="nowrap"
+                    >
+                      <FormattedMessage
+                        id="Home.users"
+                        defaultMessage="Users"
+                      />
+                    </Text>
+                    <Text>
+                      <FormattedMessage {...messages.usersDescription} />
+                    </Text>
+                  </Card.Body>
+                </Card.Root>
+              </Link>
             </GridItem>
           )}
 
-          <GridItem>
-            <Card.Root
-              variant="dashboard"
-              size="lg"
-              onClick={() => router.push("/task")}
-            >
-              <Card.Body>
-                <PageHeading variant="subHeading">Create new Tasks</PageHeading>
-                <Text>
-                  <FormattedMessage {...messages.tasksDescription} />
-                </Text>
-              </Card.Body>
-            </Card.Root>
+          <GridItem colSpan={{ base: 12, lg: 6 }}>
+            <Link display="block" href="/task">
+              <Card.Root variant="dashboard" size="lg">
+                <Card.Body>
+                  <Text
+                    marginTop="md"
+                    fontSize="3xl"
+                    fontWeight="semiBold"
+                    wordBreak="keep-all"
+                    whiteSpace="nowrap"
+                  >
+                    <FormattedMessage
+                      id="Home.tasks"
+                      defaultMessage="Create new tasks"
+                    />
+                  </Text>
+                  <Text>
+                    <FormattedMessage {...messages.tasksDescription} />
+                  </Text>
+                </Card.Body>
+              </Card.Root>
+            </Link>
           </GridItem>
-        </GridLayout>
+        </Grid>
       </Container>
     </>
   );
