@@ -281,18 +281,6 @@
       "value": "name"
     }
   ],
-  "ClassForm.error.nameRequired": [
-    {
-      "type": 0,
-      "value": "Name is required"
-    }
-  ],
-  "ClassForm.error.teacherRequired": [
-    {
-      "type": 0,
-      "value": "Teacher is required"
-    }
-  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -1265,18 +1253,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "SessionForm.error.sharingTypeRequired": [
-    {
-      "type": 0,
-      "value": "Sharing Type is required"
-    }
-  ],
-  "SessionForm.error.titleRequired": [
-    {
-      "type": 0,
-      "value": "Title is required"
     }
   ],
   "SessionForm.sharingType.anonymous": [

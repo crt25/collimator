@@ -281,18 +281,6 @@
       "value": "name"
     }
   ],
-  "ClassForm.error.nameRequired": [
-    {
-      "type": 0,
-      "value": "Le nom est requis"
-    }
-  ],
-  "ClassForm.error.teacherRequired": [
-    {
-      "type": 0,
-      "value": "L’enseignant est requis"
-    }
-  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -717,6 +705,18 @@
       "value": "Teacher"
     }
   ],
+  "DEPRECATED: ClassForm.error.nameRequired": [
+    {
+      "type": 0,
+      "value": "Le nom est requis"
+    }
+  ],
+  "DEPRECATED: ClassForm.error.teacherRequired": [
+    {
+      "type": 0,
+      "value": "L’enseignant est requis"
+    }
+  ],
   "DEPRECATED: ClassList.column.lastSession.none": [
     {
       "type": 0,
@@ -885,6 +885,18 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "DEPRECATED: SessionForm.error.sharingTypeRequired": [
+    {
+      "type": 0,
+      "value": "Le type de partage est requis"
+    }
+  ],
+  "DEPRECATED: SessionForm.error.titleRequired": [
+    {
+      "type": 0,
+      "value": "Le titre est requis"
     }
   ],
   "DEPRECATED: SessionGrouping.header": [
@@ -1475,18 +1487,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "SessionForm.error.sharingTypeRequired": [
-    {
-      "type": 0,
-      "value": "Le type de partage est requis"
-    }
-  ],
-  "SessionForm.error.titleRequired": [
-    {
-      "type": 0,
-      "value": "Le titre est requis"
     }
   ],
   "SessionForm.sharingType.anonymous": [

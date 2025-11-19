@@ -104,6 +104,18 @@
   "DEPRECATED: TaskInstanceList.description": {
     "message": ""
   },
+  "DEPRECATED: ClassForm.error.nameRequired": {
+    "message": "Le nom est requis"
+  },
+  "DEPRECATED: ClassForm.error.teacherRequired": {
+    "message": "L’enseignant est requis"
+  },
+  "DEPRECATED: SessionForm.error.sharingTypeRequired": {
+    "message": "Le type de partage est requis"
+  },
+  "DEPRECATED: SessionForm.error.titleRequired": {
+    "message": "Le titre est requis"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -238,12 +250,6 @@
   },
   "ClassDetail.title": {
     "message": "Classe – {name}"
-  },
-  "ClassForm.error.nameRequired": {
-    "message": "Le nom est requis"
-  },
-  "ClassForm.error.teacherRequired": {
-    "message": "L’enseignant est requis"
   },
   "ClassForm.name": {
     "message": "Nom"
@@ -710,12 +716,6 @@
   },
   "SessionDetail.title": {
     "message": "Leçon - {title}"
-  },
-  "SessionForm.error.sharingTypeRequired": {
-    "message": "Le type de partage est requis"
-  },
-  "SessionForm.error.titleRequired": {
-    "message": "Le titre est requis"
   },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonyme"

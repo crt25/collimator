@@ -134,12 +134,6 @@
   "ClassDetail.title": {
     "message": "Class - {name}"
   },
-  "ClassForm.error.nameRequired": {
-    "message": "Name is required"
-  },
-  "ClassForm.error.teacherRequired": {
-    "message": "Teacher is required"
-  },
   "ClassForm.name": {
     "message": "Name"
   },
@@ -605,12 +599,6 @@
   },
   "SessionDetail.title": {
     "message": "Lesson - {title}"
-  },
-  "SessionForm.error.sharingTypeRequired": {
-    "message": "Sharing Type is required"
-  },
-  "SessionForm.error.titleRequired": {
-    "message": "Title is required"
   },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
