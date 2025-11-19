@@ -5,6 +5,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FiXCircle } from "react-icons/fi";
 import { ColumnType } from "@/types/tanstack-types";
 import ChakraDataTable from "./ChakraDataTable";
+import { EmptyState } from "./EmptyState";
 
 type TaskData = {
   id: number;
@@ -144,6 +145,15 @@ export const Default: Story = {
   args: {
     data: sampleData,
     columns,
+    emptyStateElement: <EmptyState title={<></>} />,
+  },
+};
+
+export const Empty: Story = {
+  args: {
+    data: new Array<TaskData>(),
+    columns,
+    emptyStateElement: <EmptyState title={<>This is an empty table</>} />,
   },
 };
 
@@ -185,5 +195,6 @@ export const WithAllFeatures: Story = {
     onRowClick: (row) => {
       alert(`Clicked on ${row.name}`);
     },
+    emptyStateElement: <EmptyState title={<></>} />,
   },
 };

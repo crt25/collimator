@@ -297,7 +297,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             }}
             emptyStateElement={
               <EmptyState
-                title={intl.formatMessage(messages.emptyStateTitle)}
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
               />
             }
           />
