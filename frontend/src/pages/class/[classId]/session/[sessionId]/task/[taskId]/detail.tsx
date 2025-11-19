@@ -57,19 +57,29 @@ const TaskInstanceDetails = () => {
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       if (task.data && taskFile.data) {
-        const referenceSolutions: UpdateReferenceSolutionDto[] =
-          task.data.referenceSolutions.filter((s) => !s.isInitial);
-
-        const referenceSolutionsFiles = task.data.referenceSolutions
-          .filter((s) => !s.isInitial)
-          .map((s) => s.solution);
+        let referenceSolutions: UpdateReferenceSolutionDto[];
+        let referenceSolutionsFiles: Blob[];
 
         if (
           taskSubmission.initialSolution &&
           taskSubmission.initialSolutionFile
         ) {
-          referenceSolutions.push(taskSubmission.initialSolution);
-          referenceSolutionsFiles.push(taskSubmission.initialSolutionFile);
+          referenceSolutions = [
+            ...task.data.referenceSolutions.filter((s) => !s.isInitial),
+            taskSubmission.initialSolution,
+          ];
+
+          referenceSolutionsFiles = [
+            ...task.data.referenceSolutions
+              .filter((s) => !s.isInitial)
+              .map((s) => s.solution),
+            taskSubmission.initialSolutionFile,
+          ];
+        } else {
+          referenceSolutions = [...task.data.referenceSolutions];
+          referenceSolutionsFiles = [
+            ...task.data.referenceSolutions.map((s) => s.solution),
+          ];
         }
 
         await updateTask(task.data.id, {

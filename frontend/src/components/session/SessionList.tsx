@@ -15,6 +15,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable from "../ChakraDataTable";
 import { ShareModal } from "../form/ShareModal";
+import { EmptyState } from "../EmptyState";
 
 const SessionListWrapper = chakra("div", {
   base: {
@@ -91,6 +92,10 @@ const messages = defineMessages({
   shareModalCloseButton: {
     id: "SessionList.shareModalCloseButton",
     defaultMessage: "Close",
+  },
+  emptyStateTitle: {
+    id: "SessionList.emptyState.title",
+    defaultMessage: "There are no lessons yet. Let's create some!",
   },
 });
 
@@ -290,6 +295,11 @@ const SessionList = ({ classId }: { classId: number }) => {
                 pageSize: 10,
               },
             }}
+            emptyStateElement={
+              <EmptyState
+                title={intl.formatMessage(messages.emptyStateTitle)}
+              />
+            }
           />
         )}
       </MultiSwrContent>

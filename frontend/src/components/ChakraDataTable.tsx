@@ -88,6 +88,7 @@ interface ChakraDataTableProps<T> {
   features?: DataTableFeatures;
   variant?: "outline" | "line";
   includeSearchBar?: boolean;
+  emptyStateElement: React.ReactNode;
 }
 
 const InputWrapper = chakra("div", {
@@ -146,6 +147,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   isLoading,
   onRowClick,
   features,
+  emptyStateElement,
   variant = "outline",
   includeSearchBar = false,
 }: ChakraDataTableProps<T>) => {
@@ -394,6 +396,10 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   if (isLoading) {
     return <Spinner size="xl" />;
+  }
+
+  if (data.length === 0) {
+    return emptyStateElement;
   }
 
   const currentColumnLabel =

@@ -4,6 +4,7 @@ import {
   defineConfig,
   defineTokens,
 } from "@chakra-ui/react";
+import { EmptyStateRecipe } from "./recipes/EmptyState.recipe";
 import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
 import { IconButtonRecipe } from "./recipes/IconButton.recipe";
 import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
@@ -31,6 +32,7 @@ const config = defineConfig({
       field: FieldRecipe,
       dialog: ModalRecipe,
       card: CardRecipe,
+      emptyState: EmptyStateRecipe,
       table: TableRecipe,
       menu: MenuRecipe,
     },

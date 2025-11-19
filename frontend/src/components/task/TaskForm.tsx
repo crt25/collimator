@@ -10,7 +10,6 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { Submission } from "iframe-rpc-react/src";
 import { Box, Field, Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
@@ -208,8 +207,6 @@ const TaskForm = ({
     cannotNavigate.current = isDirty;
   }, [isDirty]);
 
-  const router = useRouter();
-
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       let data: TaskFormValues;
@@ -242,8 +239,6 @@ const TaskForm = ({
             />,
             { position: "top-center" },
           );
-
-          router.back();
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
@@ -256,7 +251,7 @@ const TaskForm = ({
           );
         });
     },
-    [handleSubmit, onSubmit, reset, router],
+    [handleSubmit, onSubmit, reset],
   );
 
   const taskFile: Blob | undefined | null = watch("taskFile");
