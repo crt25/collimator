@@ -36,13 +36,12 @@ const EditTask = () => {
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       if (task.data && taskFile.data) {
-        const referenceSolutions: UpdateReferenceSolutionDto[] = [
-          ...task.data.referenceSolutions,
-        ];
+        const referenceSolutions: UpdateReferenceSolutionDto[] =
+          task.data.referenceSolutions.filter((s) => !s.isInitial);
 
-        const referenceSolutionsFiles = task.data.referenceSolutions.map(
-          (s) => s.solution,
-        );
+        const referenceSolutionsFiles = task.data.referenceSolutions
+          .filter((s) => !s.isInitial)
+          .map((s) => s.solution);
 
         if (
           taskSubmission.initialSolution &&
