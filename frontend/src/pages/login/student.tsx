@@ -1,16 +1,21 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "@chakra-ui/react";
+import { AbsoluteCenter, Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import Button from "@/components/Button";
 import Header from "@/components/Header";
-import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
+import { TextComponent as Text } from "@/components/Text";
+import LoginCard from "@/components/login/LoginCard";
+import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 
 const messages = defineMessages({
   title: {
     id: "StudentLoginPage.title",
-    defaultMessage: "Student Login",
+    defaultMessage: "Please Authenticate to Register",
+  },
+  subtitle: {
+    id: "StudentLoginPage.subtitle",
+    defaultMessage: "Welcome on board.",
   },
 });
 
@@ -62,21 +67,37 @@ const StudentLoginPage = () => {
       <Header title={messages.title} />
       <Container>
         <PageHeading>
-          <FormattedMessage
-            id="StudentLoginPage.header"
-            defaultMessage="Student Login"
-          />
+          <FormattedMessage {...messages.title} />
         </PageHeading>
-        <Button
-          onClick={onAuthenticateWithMicrosoft}
-          data-testid="signin-student-button"
-        >
-          <FormattedMessage
-            id="StudentLoginPage.authenticate.microsoft"
-            defaultMessage="Authenticate using Microsoft"
-          />
-        </Button>
+        <Text fontSize="lg" color="gray.600" marginBottom="4">
+          <FormattedMessage {...messages.subtitle} />
+        </Text>
       </Container>
+
+      <AbsoluteCenter>
+        <LoginCard
+          title={
+            <FormattedMessage
+              id="StudentLoginPage.cardTitle"
+              defaultMessage="Student Login"
+            />
+          }
+          description={
+            <FormattedMessage
+              id="StudentLoginPage.cardDescription"
+              defaultMessage="Log in to access your account"
+            />
+          }
+          buttonLabel={
+            <FormattedMessage
+              id="StudentLoginPage.authenticate.microsoft"
+              defaultMessage="Authenticate using Microsoft"
+            />
+          }
+          onAuthenticate={onAuthenticateWithMicrosoft}
+          isStudent
+        />
+      </AbsoluteCenter>
     </>
   );
 };
