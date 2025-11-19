@@ -146,6 +146,7 @@ const ClassList = () => {
         variant="primary"
         onClick={() => router.push("class/create")}
         data-testid="class-create-button"
+        marginTop="md"
       >
         <HStack>
           <Icon>

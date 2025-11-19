@@ -219,6 +219,7 @@ const TaskTable = () => {
         variant="primary"
         onClick={() => router.push("task/create")}
         data-testid="task-create-button"
+        marginTop="md"
       >
         <HStack>
           <Icon>
