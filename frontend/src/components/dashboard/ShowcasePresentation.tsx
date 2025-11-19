@@ -1,24 +1,42 @@
-import { Box, Grid, GridItem, HStack, Icon } from "@chakra-ui/react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import {
+  Box,
+  Carousel,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  useCarousel,
+} from "@chakra-ui/react";
+import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import Button from "../Button";
 import SwrContent from "../SwrContent";
-import Select from "../form/Select";
+import { StudentName } from "../encryption/StudentName";
 import CodeView from "./CodeView";
-import { getOptions } from "./CodeComparison";
-import { useStudentAnonymization } from "@/hooks/useStudentAnonymization";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 
-type Option = {
-  label: string;
-  value: string;
-};
+const getNameOfAnalysis = (analysis: CurrentAnalysis) =>
+  analysis instanceof CurrentStudentAnalysis ? (
+    <StudentName
+      studentId={analysis.studentId}
+      keyPairId={analysis.studentKeyPairId}
+      pseudonym={analysis.studentPseudonym}
+    />
+  ) : analysis instanceof ReferenceAnalysis ? (
+    analysis.title
+  ) : (
+    <FormattedMessage
+      id="ShowcasePresentation.unknownAnalysisType"
+      defaultMessage="Unknown analysis type"
+    />
+  );
 
 const ShowcasePresentationInternal = ({
   klass,
@@ -33,9 +51,6 @@ const ShowcasePresentationInternal = ({
   analyses: CurrentAnalysis[];
   selectedSolutionIds: string[];
 }) => {
-  const authContext = useContext(AuthenticationContext);
-  const [anonymizationState] = useStudentAnonymization();
-
   const selectedAnalyses = useMemo(
     () =>
       analyses
@@ -49,32 +64,16 @@ const ShowcasePresentationInternal = ({
     [analyses, selectedSolutionIds],
   );
 
-  const [selectedSolutionId, setSelectedSolutionId] = useState(
-    analyses[0].solutionId,
-  );
-  const [analysesOptions, setAnalysesOptions] = useState<Option[]>([]);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    getOptions(authContext, analyses, anonymizationState.showActualName).then(
-      (options) => {
-        if (isCancelled) {
-          return;
-        }
-
-        setAnalysesOptions(options);
-      },
-    );
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [analyses, anonymizationState.showActualName, authContext]);
+  const carousel = useCarousel({
+    slideCount: selectedAnalyses.length,
+    allowMouseDrag: true,
+    slidesPerPage: 1,
+    loop: true,
+  });
 
   const selectedSolution = useMemo(
-    () => selectedAnalyses.find((a) => a.solutionId === selectedSolutionId)!,
-    [selectedAnalyses, selectedSolutionId],
+    () => selectedAnalyses[carousel.page],
+    [selectedAnalyses, carousel.page],
   );
 
   return (
@@ -85,7 +84,7 @@ const ShowcasePresentationInternal = ({
         justifyContent="space-between"
         gap="md"
       >
-        <Button onClick={() => {}}>
+        <Button onClick={() => carousel.scrollPrev()}>
           <HStack>
             <Icon>
               <LuArrowLeft />
@@ -97,18 +96,29 @@ const ShowcasePresentationInternal = ({
           </HStack>
         </Button>
         <Box flexGrow={1}>
-          <Select
-            options={analysesOptions}
-            onValueChange={(v) => {
-              setSelectedSolutionId(v);
-            }}
-            value={selectedSolutionId}
-            alwaysShow
-            noMargin
-            data-testid="analysis-y-axis"
-          />
+          <Carousel.RootProvider value={carousel} height="full">
+            <Carousel.ItemGroup height="full">
+              {selectedAnalyses.map((analysis, index) => (
+                <Carousel.Item
+                  key={index}
+                  index={index}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  fontWeight="semiBold"
+                  height="full"
+                  overflow="hidden"
+                >
+                  <HStack gap="sm">
+                    <span>{index + 1}.</span>
+                    {getNameOfAnalysis(analysis)}
+                  </HStack>
+                </Carousel.Item>
+              ))}
+            </Carousel.ItemGroup>
+          </Carousel.RootProvider>
         </Box>
-        <Button onClick={() => setSelectedSolutionId((i) => {})}>
+        <Button onClick={() => carousel.scrollNext()}>
           <HStack>
             <FormattedMessage
               id="ShowcasePresentation.previous"

@@ -1,19 +1,14 @@
 import { useRouter } from "next/router";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { Container } from "@chakra-ui/react";
+import { Button, Container, HStack, Icon, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ClassNavigation from "@/components/class/ClassNavigation";
+import { LuCornerUpLeft } from "react-icons/lu";
 import Header from "@/components/Header";
-import SessionNavigation from "@/components/session/SessionNavigation";
-import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
-import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
-import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import ShowcasePresentation from "@/components/dashboard/ShowcasePresentation";
 
@@ -74,15 +69,17 @@ const TaskInstanceShowcasePresent = () => {
         <AnonymizationToggle />
       </Header>
       <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb klass={klass} />
-          <ClassNavigation breadcrumb classId={klass?.id} session={session} />
-          <SessionNavigation
-            breadcrumb
-            classId={klass?.id}
-            sessionId={session?.id}
-          />
-        </Breadcrumbs>
+        <Button variant="subtle" onClick={() => router.back()}>
+          <HStack>
+            <Icon>
+              <LuCornerUpLeft />
+            </Icon>
+            <FormattedMessage
+              id="TaskInstanceShowcasePresent.back"
+              defaultMessage="Back to task details"
+            />
+          </HStack>
+        </Button>
 
         <MultiSwrContent
           errors={[klassError, sessionError, taskError]}
@@ -91,23 +88,12 @@ const TaskInstanceShowcasePresent = () => {
         >
           {([klass, session, task]) => (
             <>
-              <PageHeading
-                variant="title"
-                actions={
-                  <TaskSessionActions
-                    classId={klass.id}
-                    sessionId={session.id}
-                    taskId={task.id}
-                  />
-                }
-              >
-                {task.title}
-              </PageHeading>
-              <TaskInstanceNavigation
-                classId={klass.id}
-                sessionId={session.id}
-                taskId={task.id}
-              />
+              <Text fontSize="2xl" marginTop="xl" marginBottom="xl">
+                <FormattedMessage
+                  id="TaskInstanceShowcasePresent.heading"
+                  defaultMessage="Showcase"
+                />
+              </Text>
               {Array.isArray(selectedSolutionIds) &&
               selectedSolutionIds.length > 0 ? (
                 <ShowcasePresentation
