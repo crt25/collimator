@@ -119,10 +119,7 @@ const Home = () => {
                     wordBreak="keep-all"
                     whiteSpace="nowrap"
                   >
-                    <FormattedMessage
-                      id="Home.tasks"
-                      defaultMessage="Create new tasks"
-                    />
+                    <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
                   </Text>
                   <Text>
                     <FormattedMessage {...messages.tasksDescription} />
