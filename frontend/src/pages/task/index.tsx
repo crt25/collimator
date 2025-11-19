@@ -12,8 +12,10 @@ const messages = defineMessages({
     defaultMessage: "Tasks",
   },
   description: {
-    id: "ListTasks.description",
-    defaultMessage: "",
+    id: "ListTasks.pageDescription",
+    defaultMessage:
+      "This page displays all the existing ClassMosaic tasks " +
+      "that you can include in your lessons.",
   },
 });
 
@@ -26,12 +28,7 @@ const ListTasks = () => {
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
         <PageHeading
-          description={
-            <FormattedMessage
-              id="ListTasks.pageDescription"
-              defaultMessage=""
-            />
-          }
+          description={<FormattedMessage {...messages.description} />}
         >
           <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
         </PageHeading>

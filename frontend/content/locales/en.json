@@ -231,7 +231,7 @@
     "message": "Class created successfully"
   },
   "CreateClass.title": {
-    "message": "Create new Class"
+    "message": "Create Class"
   },
   "CreateLesson.header": {
     "message": "Create Lesson"
@@ -399,7 +399,7 @@
     "message": "Sign Out"
   },
   "Home.adminDescription": {
-    "message": "Welcome to the Admin Dashboard of ClassMosaic."
+    "message": "Welcome to the Admin Dashboard of ClassMosaic. Edit classes, tasks, or manage user profiles."
   },
   "Home.adminHeader": {
     "message": "Admin Dashboard"
@@ -480,14 +480,11 @@
   "LessonNavigation.lessonTab": {
     "message": "Lesson Details"
   },
-  "ListClasses.description": {
-    "message": ""
-  },
   "ListClasses.header": {
     "message": "Classes"
   },
   "ListClasses.pageDescription": {
-    "message": ""
+    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
   },
   "ListClasses.pageTitle": {
     "message": "Class Manager"
@@ -498,14 +495,11 @@
   "ListLessons.title": {
     "message": "Lessons"
   },
-  "ListTasks.description": {
-    "message": ""
-  },
   "ListTasks.header": {
     "message": "Task Bank"
   },
   "ListTasks.pageDescription": {
-    "message": ""
+    "message": "This page displays all the existing ClassMosaic tasks that you can include in your lessons."
   },
   "ListTasks.title": {
     "message": "Tasks"
@@ -520,7 +514,7 @@
     "message": "Authenticate using Microsoft"
   },
   "LoginPage.description": {
-    "message": "Log in to access your account"
+    "message": "Log in to access your classes, tasks, and learning resources."
   },
   "LoginPage.header": {
     "message": "Login"
@@ -806,9 +800,6 @@
   },
   "TaskInstanceDetails.title": {
     "message": "Edit Task - {title}"
-  },
-  "TaskInstanceList.description": {
-    "message": "This page displays all the existing ClassMosaic tasks that you can include in your lessons."
   },
   "TaskInstanceList.title": {
     "message": "Tasks"

@@ -98,6 +98,12 @@
   "DEPRECATED: SessionAnalysis.title": {
     "message": "Analysis - {title}"
   },
+  "DEPRECATED: ListClasses.description": {
+    "message": ""
+  },
+  "DEPRECATED: TaskInstanceList.description": {
+    "message": ""
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -579,9 +585,6 @@
   "LessonNavigation.lessonTab": {
     "message": "Détails de la leçon"
   },
-  "ListClasses.description": {
-    "message": ""
-  },
   "ListClasses.header": {
     "message": "Gestion des leçons"
   },
@@ -597,14 +600,11 @@
   "ListLessons.title": {
     "message": "Leçons"
   },
-  "ListTasks.description": {
-    "message": ""
-  },
   "ListTasks.header": {
     "message": "Gestion des activités"
   },
   "ListTasks.pageDescription": {
-    "message": ""
+    "message": "Cette page répertorie toutes les activités ClassMosaic que vous pouvez inclure dans vos leçons."
   },
   "ListTasks.title": {
     "message": "Activités"
@@ -905,9 +905,6 @@
   },
   "TaskInstanceDetails.title": {
     "message": "Modifier l'activité - {title}"
-  },
-  "TaskInstanceList.description": {
-    "message": ""
   },
   "TaskInstanceList.title": {
     "message": "Activités"

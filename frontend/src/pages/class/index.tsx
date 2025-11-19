@@ -12,8 +12,10 @@ const messages = defineMessages({
     defaultMessage: "Classes",
   },
   description: {
-    id: "ListClasses.description",
-    defaultMessage: "",
+    id: "ListClasses.pageDescription",
+    defaultMessage:
+      "This page displays the classes you have created. " +
+      "Click on a given class to edit the lessons and see your students’ progress.",
   },
 });
 
@@ -26,12 +28,7 @@ const ListClasses = () => {
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
         <PageHeading
-          description={
-            <FormattedMessage
-              id="ListClasses.pageDescription"
-              defaultMessage=""
-            />
-          }
+          description={<FormattedMessage {...messages.description} />}
         >
           <FormattedMessage
             id="ListClasses.pageTitle"

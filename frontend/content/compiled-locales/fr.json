@@ -851,6 +851,8 @@
       "value": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
     }
   ],
+  "DEPRECATED: ListClasses.description": [
+  ],
   "DEPRECATED: ListClasses.title": [
     {
       "type": 0,
@@ -890,6 +892,8 @@
       "type": 0,
       "value": "Analysis"
     }
+  ],
+  "DEPRECATED: TaskInstanceList.description": [
   ],
   "DEPRECATED: criteria.functionCall.name": [
     {
@@ -1221,8 +1225,6 @@
       "value": "Détails de la leçon"
     }
   ],
-  "ListClasses.description": [
-  ],
   "ListClasses.header": [
     {
       "type": 0,
@@ -1249,8 +1251,6 @@
       "value": "Leçons"
     }
   ],
-  "ListTasks.description": [
-  ],
   "ListTasks.header": [
     {
       "type": 0,
@@ -1258,6 +1258,10 @@
     }
   ],
   "ListTasks.pageDescription": [
+    {
+      "type": 0,
+      "value": "Cette page répertorie toutes les activités ClassMosaic que vous pouvez inclure dans vos leçons."
+    }
   ],
   "ListTasks.title": [
     {
@@ -1286,7 +1290,7 @@
   "LoginPage.description": [
     {
       "type": 0,
-      "value": "Connectez-vous pour accéder à votre compte"
+      "value": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
     }
   ],
   "LoginPage.header": [
@@ -1914,8 +1918,6 @@
       "type": 1,
       "value": "title"
     }
-  ],
-  "TaskInstanceList.description": [
   ],
   "TaskInstanceList.title": [
     {

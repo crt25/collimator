@@ -496,7 +496,7 @@
   "CreateClass.title": [
     {
       "type": 0,
-      "value": "Create new Class"
+      "value": "Create Class"
     }
   ],
   "CreateLesson.header": [
@@ -848,7 +848,7 @@
   "Home.adminDescription": [
     {
       "type": 0,
-      "value": "Welcome to the Admin Dashboard of ClassMosaic."
+      "value": "Welcome to the Admin Dashboard of ClassMosaic. Edit classes, tasks, or manage user profiles."
     }
   ],
   "Home.adminHeader": [
@@ -1011,8 +1011,6 @@
       "value": "Lesson Details"
     }
   ],
-  "ListClasses.description": [
-  ],
   "ListClasses.header": [
     {
       "type": 0,
@@ -1020,6 +1018,10 @@
     }
   ],
   "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
+    }
   ],
   "ListClasses.pageTitle": [
     {
@@ -1039,8 +1041,6 @@
       "value": "Lessons"
     }
   ],
-  "ListTasks.description": [
-  ],
   "ListTasks.header": [
     {
       "type": 0,
@@ -1048,6 +1048,10 @@
     }
   ],
   "ListTasks.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays all the existing ClassMosaic tasks that you can include in your lessons."
+    }
   ],
   "ListTasks.title": [
     {
@@ -1076,7 +1080,7 @@
   "LoginPage.description": [
     {
       "type": 0,
-      "value": "Log in to access your account"
+      "value": "Log in to access your classes, tasks, and learning resources."
     }
   ],
   "LoginPage.header": [
@@ -1704,8 +1708,6 @@
       "type": 1,
       "value": "title"
     }
-  ],
-  "TaskInstanceList.description": [
   ],
   "TaskInstanceList.title": [
     {
