@@ -1,5 +1,5 @@
 import { ComponentProps, useMemo } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
 import { LuHand } from "react-icons/lu";
@@ -306,7 +306,7 @@ const ProgressList = ({
             }}
             emptyStateElement={
               <EmptyState
-                title={intl.formatMessage(messages.emptyStateTitle)}
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
               />
             }
           />

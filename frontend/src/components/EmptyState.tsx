@@ -1,6 +1,7 @@
 import { EmptyState as ChakraEmptyState, VStack } from "@chakra-ui/react";
+import { JSX } from "react";
 
-export const EmptyState = ({ title }: { title: string }) => {
+export const EmptyState = ({ title }: { title: JSX.Element }) => {
   return (
     <ChakraEmptyState.Root>
       <ChakraEmptyState.Content>

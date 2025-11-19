@@ -1,4 +1,4 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { ColumnDef } from "@tanstack/react-table";
 import { Text } from "@chakra-ui/react";
@@ -81,7 +81,9 @@ const StudentList = ({ klass }: { klass: ExistingClassExtended }) => {
           sorting: true,
         }}
         emptyStateElement={
-          <EmptyState title={intl.formatMessage(messages.emptyStateTitle)} />
+          <EmptyState
+            title={<FormattedMessage {...messages.emptyStateTitle} />}
+          />
         }
       />
     </StudentListWrapper>

@@ -1,4 +1,4 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
@@ -146,7 +146,7 @@ const ClassList = () => {
             }}
             emptyStateElement={
               <EmptyState
-                title={intl.formatMessage(messages.emptyStateTitle)}
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
               />
             }
           />
