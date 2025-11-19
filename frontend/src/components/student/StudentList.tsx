@@ -8,6 +8,7 @@ import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ColumnType } from "@/types/tanstack-types";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
+import { EmptyState } from "../EmptyState";
 
 const StudentListWrapper = styled.div`
   margin: 1rem 0;
@@ -17,6 +18,10 @@ const messages = defineMessages({
   nameColumn: {
     id: "StudentList.columns.name",
     defaultMessage: "Name",
+  },
+  emptyStateTitle: {
+    id: "StudentList.emptyState.title",
+    defaultMessage: "There are no students yet. Let's invite some!",
   },
 });
 
@@ -75,6 +80,9 @@ const StudentList = ({ klass }: { klass: ExistingClassExtended }) => {
         features={{
           sorting: true,
         }}
+        emptyStateElement={
+          <EmptyState title={intl.formatMessage(messages.emptyStateTitle)} />
+        }
       />
     </StudentListWrapper>
   );
