@@ -6,4 +6,8 @@ export const WarningMessages = defineMessages({
     defaultMessage:
       "Please be aware of the privacy implications when trying to authenticate here. Doing so as a student will fail but slightly increases the risk of the student's identity being tracked.",
   },
+  studentAuthenticationTracking: {
+    id: "WarningMessages.studentAuthenticationTracking",
+    defaultMessage: "",
+  },
 });
