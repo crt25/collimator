@@ -12,18 +12,6 @@ const messages = defineMessages({
     id: "LoginPage.title",
     defaultMessage: "Teacher Login",
   },
-  header: {
-    id: "LoginPage.header",
-    defaultMessage: "Login",
-  },
-  description: {
-    id: "LoginPage.description",
-    defaultMessage: "Log in to access your account",
-  },
-  authenticateMicrosoft: {
-    id: "LoginPage.authenticate.microsoft",
-    defaultMessage: "Authenticate using Microsoft",
-  },
 });
 
 const LoginPage = () => {
@@ -48,17 +36,35 @@ const LoginPage = () => {
       <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading>
-          <FormattedMessage {...messages.title} />
+          <FormattedMessage
+            id="LoginPage.title"
+            defaultMessage="Teacher Login"
+          />
         </PageHeading>
         <PageHeading variant="description">
-          <FormattedMessage {...messages.description} />
+          <FormattedMessage
+            id="LoginPage.description"
+            defaultMessage="Log in to access your account"
+          />
         </PageHeading>
       </Container>
       <AbsoluteCenter>
         <LoginCard
-          title={<FormattedMessage {...messages.header} />}
-          description={<FormattedMessage {...messages.description} />}
-          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
+          title={
+            <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
+          }
+          description={
+            <FormattedMessage
+              id="LoginPage.description"
+              defaultMessage="Log in to access your account"
+            />
+          }
+          buttonLabel={
+            <FormattedMessage
+              id="LoginPage.authenticate.microsoft"
+              defaultMessage="Authenticate using Microsoft"
+            />
+          }
           onAuthenticate={onAuthenticateWithMicrosoft}
         />
       </AbsoluteCenter>

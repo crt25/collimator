@@ -13,10 +13,6 @@ const messages = defineMessages({
     id: "StudentLoginPage.title",
     defaultMessage: "Please Authenticate to Register",
   },
-  subtitle: {
-    id: "StudentLoginPage.subtitle",
-    defaultMessage: "Welcome on board.",
-  },
 });
 
 const StudentLoginPage = () => {
@@ -51,7 +47,7 @@ const StudentLoginPage = () => {
   if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (
       <>
-        <Header title={messages.title} />
+        <Header title={messages.title} hideSignIn />
         <Container>
           <FormattedMessage
             id="StudentLoginPage.invalidParameters"
@@ -67,10 +63,16 @@ const StudentLoginPage = () => {
       <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading>
-          <FormattedMessage {...messages.title} />
+          <FormattedMessage
+            id="StudentLoginPage.title"
+            defaultMessage="Please Authenticate to Register"
+          />
         </PageHeading>
-        <Text fontSize="lg" color="gray.600" marginBottom="4">
-          <FormattedMessage {...messages.subtitle} />
+        <Text fontSize="lg" marginBottom="sm">
+          <FormattedMessage
+            id="StudentLoginPage.subtitle"
+            defaultMessage="Welcome on board."
+          />
         </Text>
       </Container>
 
@@ -79,23 +81,23 @@ const StudentLoginPage = () => {
           title={
             <FormattedMessage
               id="StudentLoginPage.cardTitle"
-              defaultMessage="Student Login"
+              defaultMessage="Welcome"
             />
           }
           description={
             <FormattedMessage
               id="StudentLoginPage.cardDescription"
-              defaultMessage="Log in to access your account"
+              defaultMessage="The invitation link is valid. Authenticate now to complete registration."
             />
           }
           buttonLabel={
             <FormattedMessage
               id="StudentLoginPage.authenticate.microsoft"
-              defaultMessage="Authenticate using Microsoft"
+              defaultMessage="Authenticate to join"
             />
           }
           onAuthenticate={onAuthenticateWithMicrosoft}
-          isStudent
+          isStudent={true}
         />
       </AbsoluteCenter>
     </>
