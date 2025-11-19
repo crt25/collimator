@@ -15,10 +15,7 @@ import { LuClipboardCopy } from "react-icons/lu";
 interface ShareModalProps {
   title: JSX.Element;
   subtitle: JSX.Element;
-  description: React.ReactNode;
-  warningText?: string;
-  confirmButtonText: JSX.Element;
-  cancelButtonText: JSX.Element;
+  description: JSX.Element;
   open: boolean;
   onOpenChange: (details: { open: boolean }) => void;
   shareLink?: string;
@@ -26,9 +23,9 @@ interface ShareModalProps {
 
 export const ShareModal = ({
   title,
+  subtitle,
   description,
   open,
-  subtitle,
   onOpenChange,
   shareLink,
 }: ShareModalProps) => {

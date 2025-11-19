@@ -79,19 +79,14 @@ const messages = defineMessages({
   },
   shareModalAnonymousLessonInfo: {
     id: "SessionList.shareModalAnonymousLessonInfo",
-    defaultMessage: `This Lesson will be shared anonymously (based on <link>Class settings</link>). Everybody with this link can join the Lesson.`,
+    defaultMessage:
+      "This Lesson will be shared anonymously. Anyone with this link can join the lesson.",
   },
   shareModalPrivateLessonInfo: {
     id: "SessionList.shareModalPrivateLessonInfo",
-    defaultMessage: `This Lesson will be shared privately (based on <link>Class settings</link>). Only students who are registered in your Class can join the Lesson.`,
-  },
-  shareModalCopyButton: {
-    id: "SessionList.shareModalCopyButton",
-    defaultMessage: "Copy Link",
-  },
-  shareModalCloseButton: {
-    id: "SessionList.shareModalCloseButton",
-    defaultMessage: "Close",
+    defaultMessage:
+      "This Lesson will be shared privately. " +
+      "Students will need to login to join the lesson.",
   },
   emptyStateTitle: {
     id: "SessionList.emptyState.title",
@@ -321,41 +316,21 @@ const SessionList = ({ classId }: { classId: number }) => {
         title={<FormattedMessage {...messages.shareModalTitle} />}
         subtitle={<FormattedMessage {...messages.shareModalSubtitle} />}
         description={
-          selectedSession?.isAnonymous ? (
-            <FormattedMessage
-              {...messages.shareModalAnonymousLessonInfo}
-              values={{
-                link: (chunks) => (
-                  <Link
-                    textDecoration="underline"
-                    href={`/class/${classId}/session/${selectedSession?.id}/detail`}
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              }}
-            />
-          ) : (
-            <FormattedMessage
-              {...messages.shareModalPrivateLessonInfo}
-              values={{
-                link: (chunks) => (
-                  <Link
-                    textDecoration="underline"
-                    href={`/class/${classId}/session/${selectedSession?.id}/detail`}
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              }}
-            />
-          )
-        }
-        confirmButtonText={
-          <FormattedMessage {...messages.shareModalCopyButton} />
-        }
-        cancelButtonText={
-          <FormattedMessage {...messages.shareModalCloseButton} />
+          <FormattedMessage
+            {...(selectedSession?.isAnonymous
+              ? messages.shareModalAnonymousLessonInfo
+              : messages.shareModalPrivateLessonInfo)}
+            values={{
+              link: (chunks) => (
+                <Link
+                  textDecoration="underline"
+                  href={`/class/${classId}/session/${selectedSession?.id}/detail`}
+                >
+                  {chunks}
+                </Link>
+              ),
+            }}
+          />
         }
         open={isShareModalOpen}
         shareLink={sessionLink}
