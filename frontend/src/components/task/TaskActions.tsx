@@ -13,10 +13,6 @@ const messages = defineMessages({
     id: "TaskActions.deleteTask",
     defaultMessage: "Delete Task",
   },
-  deleteSession: {
-    id: "TaskActions.deleteSession",
-    defaultMessage: "Delete Session",
-  },
   deleteConfirmationTitle: {
     id: "TaskActions.deleteConfirmation.title",
     defaultMessage: "Delete Task",
