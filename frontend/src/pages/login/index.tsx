@@ -4,9 +4,7 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { AbsoluteCenter, Card, Stack, Container } from "@chakra-ui/react";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import { WarningMessages } from "@/i18n/warning-messages";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
-import { TextComponent as Text } from "@/components/Text";
 import PageHeading from "@/components/PageHeading";
 
 const messages = defineMessages({
@@ -68,11 +66,6 @@ const LoginPage = () => {
               <Card.Description>
                 <FormattedMessage {...messages.description} />
               </Card.Description>
-              <Stack width="full">
-                <Text fontSize="sm" color="gray.600">
-                  {intl.formatMessage(WarningMessages.authenticationTracking)}
-                </Text>
-              </Stack>
             </Card.Header>
             <Card.Body />
             <Card.Footer justifyContent="flex-end">
