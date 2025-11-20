@@ -17,6 +17,12 @@
   "Analysis.yAxis": {
     "message": "y-Axis"
   },
+  "AnalysisName.initialTaskSolution": {
+    "message": "Initial task solution"
+  },
+  "AnalysisName.unknownAnalysisType": {
+    "message": "Unknown analysis type"
+  },
   "Analyzer.allSubTasks": {
     "message": "All sub-tasks"
   },
@@ -31,18 +37,6 @@
   },
   "Analyzer.numberOfGroups": {
     "message": "Number of groups"
-  },
-  "Analyzer.selectSolutionForComparisonDescription": {
-    "message": "Where should the selected solution be placed?"
-  },
-  "Analyzer.selectSolutionForComparisonLeft": {
-    "message": "Left"
-  },
-  "Analyzer.selectSolutionForComparisonRight": {
-    "message": "Right"
-  },
-  "Analyzer.selectSolutionForComparisonTitle": {
-    "message": "Selecting Solution for Comparison"
   },
   "Analyzer.subTaskSelection": {
     "message": "Sub-task Selection"
@@ -212,11 +206,8 @@
   "ClassUserList.title": {
     "message": "{name} - Students"
   },
-  "CodeComparison.defaultOption": {
-    "message": "Group: All solutions"
-  },
-  "CodeComparison.defaultSolutionOption": {
-    "message": "Select a solution"
+  "CodeComparison.addToShowcase": {
+    "message": "Add to showcase"
   },
   "CodeComparison.groupPrefix": {
     "message": "Group:"
@@ -224,11 +215,14 @@
   "CodeComparison.heading": {
     "message": "Comparison"
   },
-  "CodeComparison.selectedSolutions": {
-    "message": "Group: Selected solutions"
+  "CodeComparison.referenceSolutions": {
+    "message": "Reference solutions"
   },
-  "CodeComparison.view": {
-    "message": "View"
+  "CodeComparison.removeFromShowcase": {
+    "message": "Remove from showcase"
+  },
+  "CodeComparison.studentSolutions": {
+    "message": "Student solutions"
   },
   "CodeView.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
@@ -431,6 +425,9 @@
   "Header.signOut": {
     "message": "Sign Out"
   },
+  "HeaderLogo.logoName": {
+    "message": "ClassMosaic"
+  },
   "Home.adminDescription": {
     "message": "Welcome to the Admin Dashboard of ClassMosaic. Edit classes, tasks, or manage user profiles."
   },
@@ -481,9 +478,6 @@
   },
   "JoinSession.savePseudonym": {
     "message": "Confirm"
-  },
-  "JoinSession.taskList": {
-    "message": "Tasks"
   },
   "JoinSession.title": {
     "message": "Join Lesson"
@@ -756,17 +750,11 @@
   "Showcase.openShowCasePage": {
     "message": "Open Showcase Page"
   },
-  "Showcase.unknownAnalysisType": {
-    "message": "Unknown analysis type"
-  },
   "ShowcasePresentation.next": {
     "message": "Next"
   },
   "ShowcasePresentation.previous": {
     "message": "Previous"
-  },
-  "ShowcasePresentation.unknownAnalysisType": {
-    "message": "Unknown analysis type"
   },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Your successfully solved this task. You can check if there are more tasks in the lesson menu."
@@ -774,14 +762,11 @@
   "SolveTask.export": {
     "message": "Export"
   },
-  "SolveTask.hideSession": {
-    "message": "Hide Lesson"
-  },
   "SolveTask.import": {
     "message": "Import"
   },
-  "SolveTask.showSession": {
-    "message": "Show Lesson"
+  "SolveTask.openTaskList": {
+    "message": "Open Task List"
   },
   "SolveTask.solutionSubmitted": {
     "message": "The solution was submitted successfully."
@@ -839,6 +824,9 @@
   },
   "StudentTaskInstance.title": {
     "message": "Student Solution - {name}"
+  },
+  "Task.sessionMenu.heading.title": {
+    "message": "{sessionName} - Tasks"
   },
   "TaskActions.deleteConfirmation.body": {
     "message": "Are you sure? You can't undo this action afterwards."
@@ -1064,6 +1052,18 @@
   },
   "TaskNavigation.viewTaskTab": {
     "message": "View Task"
+  },
+  "TaskProgressList.columns.progress": {
+    "message": "Progress"
+  },
+  "TaskProgressList.columns.title": {
+    "message": "Task"
+  },
+  "TaskProgressList.emptyState.title": {
+    "message": "No tasks found."
+  },
+  "TaskProgressList.status.opened": {
+    "message": "Opened"
   },
   "TaskReferenceSolutions.submit": {
     "message": "Save Task"
@@ -1328,5 +1328,23 @@
   },
   "forms.stringUuid": {
     "message": "$'{path}' must be a valid UUID"
+  },
+  "impressum.generalInformation": {
+    "message": "General Information"
+  },
+  "impressum.hosting": {
+    "message": "Hosting"
+  },
+  "impressum.hostingProvider": {
+    "message": "Amazon Web Services, Inc. - Zurich Region"
+  },
+  "impressum.projectSponsor": {
+    "message": "Project Sponsor"
+  },
+  "impressum.softwareDevelopment": {
+    "message": "Software Development"
+  },
+  "impressum.switzerland": {
+    "message": "Switzerland"
   }
 }

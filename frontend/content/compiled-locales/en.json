@@ -35,6 +35,18 @@
       "value": "y-Axis"
     }
   ],
+  "AnalysisName.initialTaskSolution": [
+    {
+      "type": 0,
+      "value": "Initial task solution"
+    }
+  ],
+  "AnalysisName.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Unknown analysis type"
+    }
+  ],
   "Analyzer.allSubTasks": [
     {
       "type": 0,
@@ -63,30 +75,6 @@
     {
       "type": 0,
       "value": "Number of groups"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonDescription": [
-    {
-      "type": 0,
-      "value": "Where should the selected solution be placed?"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonLeft": [
-    {
-      "type": 0,
-      "value": "Left"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonRight": [
-    {
-      "type": 0,
-      "value": "Right"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonTitle": [
-    {
-      "type": 0,
-      "value": "Selecting Solution for Comparison"
     }
   ],
   "Analyzer.subTaskSelection": [
@@ -445,16 +433,10 @@
       "value": " - Students"
     }
   ],
-  "CodeComparison.defaultOption": [
+  "CodeComparison.addToShowcase": [
     {
       "type": 0,
-      "value": "Group: All solutions"
-    }
-  ],
-  "CodeComparison.defaultSolutionOption": [
-    {
-      "type": 0,
-      "value": "Select a solution"
+      "value": "Add to showcase"
     }
   ],
   "CodeComparison.groupPrefix": [
@@ -469,16 +451,22 @@
       "value": "Comparison"
     }
   ],
-  "CodeComparison.selectedSolutions": [
+  "CodeComparison.referenceSolutions": [
     {
       "type": 0,
-      "value": "Group: Selected solutions"
+      "value": "Reference solutions"
     }
   ],
-  "CodeComparison.view": [
+  "CodeComparison.removeFromShowcase": [
     {
       "type": 0,
-      "value": "View"
+      "value": "Remove from showcase"
+    }
+  ],
+  "CodeComparison.studentSolutions": [
+    {
+      "type": 0,
+      "value": "Student solutions"
     }
   ],
   "CodeView.unsupportedApp": [
@@ -911,6 +899,12 @@
       "value": "Sign Out"
     }
   ],
+  "HeaderLogo.logoName": [
+    {
+      "type": 0,
+      "value": "ClassMosaic"
+    }
+  ],
   "Home.adminDescription": [
     {
       "type": 0,
@@ -1011,12 +1005,6 @@
     {
       "type": 0,
       "value": "Confirm"
-    }
-  ],
-  "JoinSession.taskList": [
-    {
-      "type": 0,
-      "value": "Tasks"
     }
   ],
   "JoinSession.title": [
@@ -1571,12 +1559,6 @@
       "value": "Open Showcase Page"
     }
   ],
-  "Showcase.unknownAnalysisType": [
-    {
-      "type": 0,
-      "value": "Unknown analysis type"
-    }
-  ],
   "ShowcasePresentation.next": [
     {
       "type": 0,
@@ -1587,12 +1569,6 @@
     {
       "type": 0,
       "value": "Previous"
-    }
-  ],
-  "ShowcasePresentation.unknownAnalysisType": [
-    {
-      "type": 0,
-      "value": "Unknown analysis type"
     }
   ],
   "SolveTask.correctSolutionSubmitted": [
@@ -1607,22 +1583,16 @@
       "value": "Export"
     }
   ],
-  "SolveTask.hideSession": [
-    {
-      "type": 0,
-      "value": "Hide Lesson"
-    }
-  ],
   "SolveTask.import": [
     {
       "type": 0,
       "value": "Import"
     }
   ],
-  "SolveTask.showSession": [
+  "SolveTask.openTaskList": [
     {
       "type": 0,
-      "value": "Show Lesson"
+      "value": "Open Task List"
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -1761,6 +1731,16 @@
     {
       "type": 1,
       "value": "name"
+    }
+  ],
+  "Task.sessionMenu.heading.title": [
+    {
+      "type": 1,
+      "value": "sessionName"
+    },
+    {
+      "type": 0,
+      "value": " - Tasks"
     }
   ],
   "TaskActions.deleteConfirmation.body": [
@@ -2255,6 +2235,30 @@
     {
       "type": 0,
       "value": "View Task"
+    }
+  ],
+  "TaskProgressList.columns.progress": [
+    {
+      "type": 0,
+      "value": "Progress"
+    }
+  ],
+  "TaskProgressList.columns.title": [
+    {
+      "type": 0,
+      "value": "Task"
+    }
+  ],
+  "TaskProgressList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "No tasks found."
+    }
+  ],
+  "TaskProgressList.status.opened": [
+    {
+      "type": 0,
+      "value": "Opened"
     }
   ],
   "TaskReferenceSolutions.submit": [
@@ -2791,6 +2795,42 @@
     {
       "type": 0,
       "value": "${path} must be a valid UUID"
+    }
+  ],
+  "impressum.generalInformation": [
+    {
+      "type": 0,
+      "value": "General Information"
+    }
+  ],
+  "impressum.hosting": [
+    {
+      "type": 0,
+      "value": "Hosting"
+    }
+  ],
+  "impressum.hostingProvider": [
+    {
+      "type": 0,
+      "value": "Amazon Web Services, Inc. - Zurich Region"
+    }
+  ],
+  "impressum.projectSponsor": [
+    {
+      "type": 0,
+      "value": "Project Sponsor"
+    }
+  ],
+  "impressum.softwareDevelopment": [
+    {
+      "type": 0,
+      "value": "Software Development"
+    }
+  ],
+  "impressum.switzerland": [
+    {
+      "type": 0,
+      "value": "Switzerland"
     }
   ]
 }

@@ -35,6 +35,18 @@
       "value": "Axe y"
     }
   ],
+  "AnalysisName.initialTaskSolution": [
+    {
+      "type": 0,
+      "value": "Initial task solution"
+    }
+  ],
+  "AnalysisName.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Unknown analysis type"
+    }
+  ],
   "Analyzer.allSubTasks": [
     {
       "type": 0,
@@ -63,30 +75,6 @@
     {
       "type": 0,
       "value": "Nombre de groupes"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonDescription": [
-    {
-      "type": 0,
-      "value": "Où la solution sélectionnée doit-elle être placée ?"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonLeft": [
-    {
-      "type": 0,
-      "value": "Gauche"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonRight": [
-    {
-      "type": 0,
-      "value": "Droite"
-    }
-  ],
-  "Analyzer.selectSolutionForComparisonTitle": [
-    {
-      "type": 0,
-      "value": "Sélection de la solution pour comparaison"
     }
   ],
   "Analyzer.subTaskSelection": [
@@ -445,16 +433,10 @@
       "value": " - Élèves"
     }
   ],
-  "CodeComparison.defaultOption": [
+  "CodeComparison.addToShowcase": [
     {
       "type": 0,
-      "value": "Groupe : Toutes les solutions"
-    }
-  ],
-  "CodeComparison.defaultSolutionOption": [
-    {
-      "type": 0,
-      "value": "Sélectionner une solution"
+      "value": "Ajouter à la vitrine"
     }
   ],
   "CodeComparison.groupPrefix": [
@@ -469,16 +451,22 @@
       "value": "Comparaison"
     }
   ],
-  "CodeComparison.selectedSolutions": [
+  "CodeComparison.referenceSolutions": [
     {
       "type": 0,
-      "value": "Groupe : Solutions sélectionnées"
+      "value": "Solutions de référence"
     }
   ],
-  "CodeComparison.view": [
+  "CodeComparison.removeFromShowcase": [
     {
       "type": 0,
-      "value": "Voir"
+      "value": "Retirer de la vitrine"
+    }
+  ],
+  "CodeComparison.studentSolutions": [
+    {
+      "type": 0,
+      "value": "Solutions des élèves"
     }
   ],
   "CodeView.unsupportedApp": [
@@ -741,6 +729,30 @@
       "value": "Selected"
     }
   ],
+  "DEPRECATED: Analyzer.selectSolutionForComparisonDescription": [
+    {
+      "type": 0,
+      "value": "Où la solution sélectionnée doit-elle être placée ?"
+    }
+  ],
+  "DEPRECATED: Analyzer.selectSolutionForComparisonLeft": [
+    {
+      "type": 0,
+      "value": "Gauche"
+    }
+  ],
+  "DEPRECATED: Analyzer.selectSolutionForComparisonRight": [
+    {
+      "type": 0,
+      "value": "Droite"
+    }
+  ],
+  "DEPRECATED: Analyzer.selectSolutionForComparisonTitle": [
+    {
+      "type": 0,
+      "value": "Sélection de la solution pour comparaison"
+    }
+  ],
   "DEPRECATED: Analyzer.taskSelection": [
     {
       "type": 0,
@@ -805,6 +817,30 @@
     {
       "type": 0,
       "value": "Status"
+    }
+  ],
+  "DEPRECATED: CodeComparison.defaultOption": [
+    {
+      "type": 0,
+      "value": "Groupe : Toutes les solutions"
+    }
+  ],
+  "DEPRECATED: CodeComparison.defaultSolutionOption": [
+    {
+      "type": 0,
+      "value": "Sélectionner une solution"
+    }
+  ],
+  "DEPRECATED: CodeComparison.selectedSolutions": [
+    {
+      "type": 0,
+      "value": "Groupe : Solutions sélectionnées"
+    }
+  ],
+  "DEPRECATED: CodeComparison.view": [
+    {
+      "type": 0,
+      "value": "Voir"
     }
   ],
   "DEPRECATED: CreateSessionForm.isAnonymous": [
@@ -917,6 +953,12 @@
       "value": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
     }
   ],
+  "DEPRECATED: JoinSession.taskList": [
+    {
+      "type": 0,
+      "value": "Activités"
+    }
+  ],
   "DEPRECATED: ListClasses.description": [
   ],
   "DEPRECATED: ListClasses.title": [
@@ -1018,6 +1060,32 @@
       "type": 0,
       "value": "Analysis"
     }
+  ],
+  "DEPRECATED: Showcase.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Type d'analyse inconnu"
+    }
+  ],
+  "DEPRECATED: ShowcasePresentation.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Type d'analyse inconnu"
+    }
+  ],
+  "DEPRECATED: SolveTask.hideSession": [
+    {
+      "type": 0,
+      "value": "Cacher la leçon"
+    }
+  ],
+  "DEPRECATED: SolveTask.showSession": [
+    {
+      "type": 0,
+      "value": "Afficher la leçon"
+    }
+  ],
+  "DEPRECATED: Task.sessionMenu.heading.description": [
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
@@ -1203,6 +1271,12 @@
       "value": "Se déconnecter"
     }
   ],
+  "HeaderLogo.logoName": [
+    {
+      "type": 0,
+      "value": "ClassMosaic"
+    }
+  ],
   "Home.adminDescription": [
     {
       "type": 0,
@@ -1303,12 +1377,6 @@
     {
       "type": 0,
       "value": "Confirmer"
-    }
-  ],
-  "JoinSession.taskList": [
-    {
-      "type": 0,
-      "value": "Activités"
     }
   ],
   "JoinSession.title": [
@@ -1863,12 +1931,6 @@
       "value": "Ouvrir la vitrine"
     }
   ],
-  "Showcase.unknownAnalysisType": [
-    {
-      "type": 0,
-      "value": "Type d'analyse inconnu"
-    }
-  ],
   "ShowcasePresentation.next": [
     {
       "type": 0,
@@ -1879,12 +1941,6 @@
     {
       "type": 0,
       "value": "Précédent"
-    }
-  ],
-  "ShowcasePresentation.unknownAnalysisType": [
-    {
-      "type": 0,
-      "value": "Type d'analyse inconnu"
     }
   ],
   "SolveTask.correctSolutionSubmitted": [
@@ -1899,22 +1955,16 @@
       "value": "Exporter"
     }
   ],
-  "SolveTask.hideSession": [
-    {
-      "type": 0,
-      "value": "Cacher la leçon"
-    }
-  ],
   "SolveTask.import": [
     {
       "type": 0,
       "value": "Importer"
     }
   ],
-  "SolveTask.showSession": [
+  "SolveTask.openTaskList": [
     {
       "type": 0,
-      "value": "Afficher la leçon"
+      "value": "Ouvrir la liste des activités"
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -2053,6 +2103,16 @@
     {
       "type": 1,
       "value": "name"
+    }
+  ],
+  "Task.sessionMenu.heading.title": [
+    {
+      "type": 1,
+      "value": "sessionName"
+    },
+    {
+      "type": 0,
+      "value": " - Activités"
     }
   ],
   "TaskActions.deleteConfirmation.body": [
@@ -2547,6 +2607,30 @@
     {
       "type": 0,
       "value": "Voir l'activité"
+    }
+  ],
+  "TaskProgressList.columns.progress": [
+    {
+      "type": 0,
+      "value": "Progrès"
+    }
+  ],
+  "TaskProgressList.columns.title": [
+    {
+      "type": 0,
+      "value": "Activité"
+    }
+  ],
+  "TaskProgressList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "Aucune activité trouvée."
+    }
+  ],
+  "TaskProgressList.status.opened": [
+    {
+      "type": 0,
+      "value": "Ouvert"
     }
   ],
   "TaskReferenceSolutions.submit": [
@@ -3083,6 +3167,42 @@
     {
       "type": 0,
       "value": "${path} doit être un UUID valide"
+    }
+  ],
+  "impressum.generalInformation": [
+    {
+      "type": 0,
+      "value": "Informations générales"
+    }
+  ],
+  "impressum.hosting": [
+    {
+      "type": 0,
+      "value": "Hébergement"
+    }
+  ],
+  "impressum.hostingProvider": [
+    {
+      "type": 0,
+      "value": "Amazon Web Services, Inc. - Région Zurich"
+    }
+  ],
+  "impressum.projectSponsor": [
+    {
+      "type": 0,
+      "value": "Direction de projet"
+    }
+  ],
+  "impressum.softwareDevelopment": [
+    {
+      "type": 0,
+      "value": "Développement logiciel"
+    }
+  ],
+  "impressum.switzerland": [
+    {
+      "type": 0,
+      "value": "Suisse"
     }
   ]
 }

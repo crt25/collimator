@@ -97,14 +97,7 @@ const Task = ({
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body>
-                <PageHeading
-                  description={
-                    <FormattedMessage
-                      id="Task.sessionMenu.heading.description"
-                      defaultMessage={session.description}
-                    />
-                  }
-                >
+                <PageHeading description={session.description}>
                   <FormattedMessage
                     id="Task.sessionMenu.heading.title"
                     defaultMessage="{sessionName} - Tasks"

@@ -143,6 +143,48 @@
   "DEPRECATED: SessionActions.deleteSuccessMessage": {
     "message": "Leçon effacée avec succès"
   },
+  "DEPRECATED: Analyzer.selectSolutionForComparisonDescription": {
+    "message": "Où la solution sélectionnée doit-elle être placée ?"
+  },
+  "DEPRECATED: Analyzer.selectSolutionForComparisonLeft": {
+    "message": "Gauche"
+  },
+  "DEPRECATED: Analyzer.selectSolutionForComparisonRight": {
+    "message": "Droite"
+  },
+  "DEPRECATED: Analyzer.selectSolutionForComparisonTitle": {
+    "message": "Sélection de la solution pour comparaison"
+  },
+  "DEPRECATED: CodeComparison.defaultOption": {
+    "message": "Groupe : Toutes les solutions"
+  },
+  "DEPRECATED: CodeComparison.defaultSolutionOption": {
+    "message": "Sélectionner une solution"
+  },
+  "DEPRECATED: CodeComparison.selectedSolutions": {
+    "message": "Groupe : Solutions sélectionnées"
+  },
+  "DEPRECATED: CodeComparison.view": {
+    "message": "Voir"
+  },
+  "DEPRECATED: JoinSession.taskList": {
+    "message": "Activités"
+  },
+  "DEPRECATED: Showcase.unknownAnalysisType": {
+    "message": "Type d'analyse inconnu"
+  },
+  "DEPRECATED: ShowcasePresentation.unknownAnalysisType": {
+    "message": "Type d'analyse inconnu"
+  },
+  "DEPRECATED: SolveTask.hideSession": {
+    "message": "Cacher la leçon"
+  },
+  "DEPRECATED: SolveTask.showSession": {
+    "message": "Afficher la leçon"
+  },
+  "DEPRECATED: Task.sessionMenu.heading.description": {
+    "message": ""
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -161,6 +203,12 @@
   "Analysis.yAxis": {
     "message": "Axe y"
   },
+  "AnalysisName.initialTaskSolution": {
+    "message": "Initial task solution"
+  },
+  "AnalysisName.unknownAnalysisType": {
+    "message": "Unknown analysis type"
+  },
   "Analyzer.allSubTasks": {
     "message": "Toutes les sous-activités"
   },
@@ -175,18 +223,6 @@
   },
   "Analyzer.numberOfGroups": {
     "message": "Nombre de groupes"
-  },
-  "Analyzer.selectSolutionForComparisonDescription": {
-    "message": "Où la solution sélectionnée doit-elle être placée ?"
-  },
-  "Analyzer.selectSolutionForComparisonLeft": {
-    "message": "Gauche"
-  },
-  "Analyzer.selectSolutionForComparisonRight": {
-    "message": "Droite"
-  },
-  "Analyzer.selectSolutionForComparisonTitle": {
-    "message": "Sélection de la solution pour comparaison"
   },
   "Analyzer.subTaskSelection": {
     "message": "Sélection de la sous-activité"
@@ -356,11 +392,8 @@
   "ClassUserList.title": {
     "message": "{name} - Élèves"
   },
-  "CodeComparison.defaultOption": {
-    "message": "Groupe : Toutes les solutions"
-  },
-  "CodeComparison.defaultSolutionOption": {
-    "message": "Sélectionner une solution"
+  "CodeComparison.addToShowcase": {
+    "message": "Ajouter à la vitrine"
   },
   "CodeComparison.groupPrefix": {
     "message": "Groupe : "
@@ -368,11 +401,14 @@
   "CodeComparison.heading": {
     "message": "Comparaison"
   },
-  "CodeComparison.selectedSolutions": {
-    "message": "Groupe : Solutions sélectionnées"
+  "CodeComparison.referenceSolutions": {
+    "message": "Solutions de référence"
   },
-  "CodeComparison.view": {
-    "message": "Voir"
+  "CodeComparison.removeFromShowcase": {
+    "message": "Retirer de la vitrine"
+  },
+  "CodeComparison.studentSolutions": {
+    "message": "Solutions des élèves"
   },
   "CodeView.unsupportedApp": {
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
@@ -575,6 +611,9 @@
   "Header.signOut": {
     "message": "Se déconnecter"
   },
+  "HeaderLogo.logoName": {
+    "message": "ClassMosaic"
+  },
   "Home.adminDescription": {
     "message": "Bienvenue sur le tableau de bord administrateur de ClassMosaic."
   },
@@ -625,9 +664,6 @@
   },
   "JoinSession.savePseudonym": {
     "message": "Confirmer"
-  },
-  "JoinSession.taskList": {
-    "message": "Activités"
   },
   "JoinSession.title": {
     "message": "Rejoindre la leçon"
@@ -900,17 +936,11 @@
   "Showcase.openShowCasePage": {
     "message": "Ouvrir la vitrine"
   },
-  "Showcase.unknownAnalysisType": {
-    "message": "Type d'analyse inconnu"
-  },
   "ShowcasePresentation.next": {
     "message": "Suivant"
   },
   "ShowcasePresentation.previous": {
     "message": "Précédent"
-  },
-  "ShowcasePresentation.unknownAnalysisType": {
-    "message": "Type d'analyse inconnu"
   },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Vous avez résolu cette activité avec succès. Vous pouvez vérifier s'il y a d'autres activités dans le menu de la leçon."
@@ -918,14 +948,11 @@
   "SolveTask.export": {
     "message": "Exporter"
   },
-  "SolveTask.hideSession": {
-    "message": "Cacher la leçon"
-  },
   "SolveTask.import": {
     "message": "Importer"
   },
-  "SolveTask.showSession": {
-    "message": "Afficher la leçon"
+  "SolveTask.openTaskList": {
+    "message": "Ouvrir la liste des activités"
   },
   "SolveTask.solutionSubmitted": {
     "message": "La solution a été soumise avec succès."
@@ -983,6 +1010,9 @@
   },
   "StudentTaskInstance.title": {
     "message": "Student Solution - {name}"
+  },
+  "Task.sessionMenu.heading.title": {
+    "message": "{sessionName} - Activités"
   },
   "TaskActions.deleteConfirmation.body": {
     "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
@@ -1208,6 +1238,18 @@
   },
   "TaskNavigation.viewTaskTab": {
     "message": "Voir l'activité"
+  },
+  "TaskProgressList.columns.progress": {
+    "message": "Progrès"
+  },
+  "TaskProgressList.columns.title": {
+    "message": "Activité"
+  },
+  "TaskProgressList.emptyState.title": {
+    "message": "Aucune activité trouvée."
+  },
+  "TaskProgressList.status.opened": {
+    "message": "Ouvert"
   },
   "TaskReferenceSolutions.submit": {
     "message": "Enregistrer l'activité"
@@ -1472,5 +1514,23 @@
   },
   "forms.stringUuid": {
     "message": "$'{path}' doit être un UUID valide"
+  },
+  "impressum.generalInformation": {
+    "message": "Informations générales"
+  },
+  "impressum.hosting": {
+    "message": "Hébergement"
+  },
+  "impressum.hostingProvider": {
+    "message": "Amazon Web Services, Inc. - Région Zurich"
+  },
+  "impressum.projectSponsor": {
+    "message": "Direction de projet"
+  },
+  "impressum.softwareDevelopment": {
+    "message": "Développement logiciel"
+  },
+  "impressum.switzerland": {
+    "message": "Suisse"
   }
 }
