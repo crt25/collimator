@@ -65,13 +65,8 @@ const SelectionMenu = styled.div`
 
   margin-bottom: 1rem;
 
-  & > label:first-of-type {
-    /* the group select should not shrink */
+  & > label {
     flex-shrink: 0;
-  }
-
-  & > label:nth-of-type(2) {
-    /* make student select take up remaining space */
     flex-grow: 1;
   }
 
