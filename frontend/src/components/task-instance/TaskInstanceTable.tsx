@@ -1,4 +1,4 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
@@ -11,6 +11,7 @@ import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useTaskInstances } from "@/api/collimator/hooks/tasks/useTaskInstances";
 import { isClickOnRow } from "@/utilities/table";
+import { EmptyState } from "@/components/EmptyState";
 import Button from "../Button";
 import { ChakraDataTable } from "../ChakraDataTable";
 import SwrContent from "../SwrContent";
@@ -58,6 +59,10 @@ const messages = defineMessages({
   createTask: {
     id: "TaskInstanceTable.createTask",
     defaultMessage: "Create Task",
+  },
+  emptyStateTitle: {
+    id: "TaskInstanceTable.emptyState.title",
+    defaultMessage: "There are no tasks yet.",
   },
 });
 
@@ -181,6 +186,11 @@ const TaskInstanceTable = ({
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
           <ChakraDataTable
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
             data={data}
             columns={columns}
             isLoading={isLoading}
