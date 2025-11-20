@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { Center } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import toast from "react-hot-toast";
