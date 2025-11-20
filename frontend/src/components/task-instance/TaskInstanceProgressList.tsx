@@ -1,8 +1,10 @@
 import { ComponentProps, useMemo } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { HStack, Status } from "@chakra-ui/react";
+import { Button, HStack, Icon, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/router";
+import { LuChevronRight } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
@@ -11,6 +13,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
+import { isClickOnRow } from "@/utilities/table";
 import ChakraDataTable from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
@@ -39,6 +42,10 @@ const messages = defineMessages({
   emptyStateTitle: {
     id: "TaskInstanceProgressList.emptyState.title",
     defaultMessage: "There are no students yet.",
+  },
+  viewDetails: {
+    id: "TaskInstanceProgressList.viewDetails",
+    defaultMessage: "View student solution",
   },
 });
 
@@ -143,6 +150,7 @@ const TaskInstanceProgressList = ({
   taskId: number;
 }) => {
   const intl = useIntl();
+  const router = useRouter();
 
   const {
     data: klass,
@@ -254,17 +262,43 @@ const TaskInstanceProgressList = ({
           columnType: ColumnType.text,
         },
       },*/
+      {
+        id: "details",
+        header: "",
+        enableSorting: false,
+        cell: (info) => (
+          <Button
+            aria-label={intl.formatMessage(messages.viewDetails)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(
+                `/class/${classId}/session/${sessionId}/task/${taskId}/progress/${info.row.original.id}`,
+              );
+            }}
+            data-testid={`class-${info.row.original.id}-details-button`}
+            variant="detail"
+          >
+            <Icon>
+              <LuChevronRight />
+            </Icon>
+          </Button>
+        ),
+        size: 32,
+        meta: {
+          columnType: ColumnType.icon,
+        },
+      },
     ];
-  }, [intl, classId, taskId]);
+  }, [intl, classId, sessionId, taskId, router]);
 
   return (
-    <TaskInstanceProgressListWrapper data-testid="progress-list">
+    <TaskInstanceProgressListWrapper data-testid="task-instance-progress-list">
       <MultiSwrContent
         data={[klass, session, solutions]}
         errors={[klassError, sessionError, solutionsError]}
         isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
       >
-        {([_klass, _session]) => (
+        {([klass, session]) => (
           <ChakraDataTable
             emptyStateElement={
               <EmptyState
@@ -273,6 +307,13 @@ const TaskInstanceProgressList = ({
             }
             data={progress}
             columns={columns}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(
+                  `/class/${klass.id}/session/${session.id}/task/${taskId}/progress/${row.id}`,
+                );
+              }
+            }}
             features={{
               sorting: true,
               pagination: {
