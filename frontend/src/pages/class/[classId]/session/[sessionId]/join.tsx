@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import { Container, GridItem } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
@@ -32,6 +32,10 @@ import { StudentAuthenticationRequestContent } from "@/types/websocket-events";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import CrtNavigation from "@/components/CrtNavigation";
+import PageHeading from "@/components/PageHeading";
+import TaskTable from "@/components/task/TaskTable";
 
 const logModule = "[JoinSession]";
 
@@ -93,29 +97,32 @@ const JoinSessionContent = ({
       isLoading={[isLoadingSession]}
     >
       {([session]) => (
-        <FullHeightRow>
-          <GridItem colSpan={4}>
-            <SubHeader>
-              <FormattedMessage
-                id="JoinSession.taskList"
-                defaultMessage="Tasks"
-              />
-            </SubHeader>
+        <>
+          <Container>
+            <PageHeading
+              description={
+                <FormattedMessage
+                  id="JoinSession.taskList"
+                  defaultMessage="Tasks"
+                />
+              }
+            >
+              {session.title}
+            </PageHeading>
+            {/* TODO(CRT-219): replace TaskList with the student's task list  */}
             <TaskList classId={classId} session={session} />
-          </GridItem>
-          <GridItem colSpan={8}>
-            <SubHeader>{session.title}</SubHeader>
-            <TaskDescription>
-              <p>{session.description}</p>
-            </TaskDescription>
-            <Button onClick={onJoinSession} data-testid="join-session-button">
+            <Button
+              onClick={onJoinSession}
+              data-testid="join-session-button"
+              marginTop="1rem"
+            >
               <FormattedMessage
                 id="JoinSession.joinSession"
                 defaultMessage="Join Lesson"
               />
             </Button>
-          </GridItem>
-        </FullHeightRow>
+          </Container>
+        </>
       )}
     </MultiSwrContent>
   );
