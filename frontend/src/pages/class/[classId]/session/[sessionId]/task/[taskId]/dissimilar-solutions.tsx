@@ -15,6 +15,8 @@ import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
+import PageFooter from "@/components/PageFooter";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 
 const messages = defineMessages({
   title: {
@@ -50,7 +52,7 @@ const DissimilarSolutions = () => {
   } = useTask(taskId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -98,7 +100,8 @@ const DissimilarSolutions = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 
