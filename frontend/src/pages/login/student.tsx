@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { AbsoluteCenter, Container } from "@chakra-ui/react";
+import { Center, Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Header from "@/components/Header";
 import PageHeading from "@/components/PageHeading";
@@ -89,14 +89,14 @@ const StudentLoginPage = () => {
         </Text>
       </Container>
 
-      <AbsoluteCenter>
+      <Center>
         <LoginCard
           title={<FormattedMessage {...messages.cardTitle} />}
           description={<FormattedMessage {...messages.cardDescription} />}
           buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
         />
-      </AbsoluteCenter>
+      </Center>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { AbsoluteCenter, Container } from "@chakra-ui/react";
+import { Center, Container } from "@chakra-ui/react";
 import Header from "@/components/Header";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
@@ -63,14 +63,14 @@ const LoginPage = () => {
           <FormattedMessage {...messages.pageDescription} />
         </PageHeading>
       </Container>
-      <AbsoluteCenter>
+      <Center>
         <LoginCard
           title={<FormattedMessage {...messages.cardTitle} />}
           description={<FormattedMessage {...messages.cardDescription} />}
           buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
         />
-      </AbsoluteCenter>
+      </Center>
     </>
   );
 };
