@@ -44,8 +44,10 @@ const links: FooterLink[] = [
 
 const FooterRoot = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box bg="footerBg" height={{ sm: "6rem" }} mt="auto" py="4">
-      <Container height="100%">{children}</Container>
+    <Box mt="auto">
+      <Box bg="footerBg" height={{ sm: "6rem" }} mt="4" py="4">
+        <Container height="100%">{children}</Container>
+      </Box>
     </Box>
   );
 };
