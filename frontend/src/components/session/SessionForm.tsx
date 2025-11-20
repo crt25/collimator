@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
+import { defineMessages, MessageDescriptor } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -86,8 +86,6 @@ const SessionForm = ({
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
 }) => {
-  const intl = useIntl();
-
   const schema = useYupSchema({
     title: yup.string().required(),
     description: yup.string().required(),

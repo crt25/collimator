@@ -10,11 +10,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { LuPlus } from "react-icons/lu";
 import { useRouter } from "next/router";
-import SortableListInput from "../form/SortableList";
-import Button from "../Button";
-import SwrContent from "../SwrContent";
-import { StudentName } from "../encryption/StudentName";
-import CodeView, { CodeViewContainer } from "./CodeView";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
@@ -23,6 +18,11 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
+import { StudentName } from "../encryption/StudentName";
+import SwrContent from "../SwrContent";
+import Button from "../Button";
+import SortableListInput from "../form/SortableList";
+import CodeView, { CodeViewContainer } from "./CodeView";
 
 type CurrentAnalysisWithId = {
   id: string;

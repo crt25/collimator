@@ -2,11 +2,11 @@ import { defineMessages, useIntl } from "react-intl";
 import { LuTrash } from "react-icons/lu";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
+import { ButtonMessages } from "@/i18n/button-messages";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
-import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
-import { ButtonMessages } from "@/i18n/button-messages";
 
 const messages = defineMessages({
   deleteTask: {
