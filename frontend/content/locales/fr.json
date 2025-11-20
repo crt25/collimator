@@ -618,11 +618,11 @@
     "message": "Rejoindre la leçon"
   },
   "JoinSession.waitingForTeacher": {
-    "description": "Affiché lorsque l'étudiant attend que la machine de l'enseignant l'admette dans la leçon",
-    "message": "En attente que la machine de l'enseignant vous admette dans la leçon..."
+    "description": "Affiché lorsque l'étudiant attend que l'ordinateur de l'enseignant l'admette dans la leçon",
+    "message": "En attente que l'ordinateur de l'enseignant vous admette dans la leçon..."
   },
   "LanguageChooser.english": {
-    "message": "Anglais"
+    "message": "English"
   },
   "LanguageChooser.french": {
     "message": "Français"
