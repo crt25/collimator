@@ -40,6 +40,7 @@ const LargeModal = styled(Dialog.Positioner)`
 
 const ModalBody = styled(Dialog.Body)`
   display: flex;
+  padding: 0 1rem;
 
   & > {
     min-height: 0;
@@ -142,7 +143,7 @@ const TaskModal = ({
             <Dialog.Content>
               <MaxScreenHeightInModal>
                 {(title || header) && (
-                  <Dialog.Header>
+                  <Dialog.Header paddingBottom="0">
                     <Dialog.Title>{title}</Dialog.Title>
                     {header}
                   </Dialog.Header>

@@ -1,5 +1,10 @@
-import { Dispatch, useCallback, useContext, useMemo, useState } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { Dispatch, useCallback, useMemo } from "react";
+import {
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+  useIntl,
+} from "react-intl";
 import styled from "@emotion/styled";
 import {
   Box,
@@ -14,11 +19,9 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronRight, LuX } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
-import { useStudentAnonymization } from "@/hooks/useStudentAnonymization";
 import Button from "../Button";
 import { Group, CategorizedDataPoint } from "./hooks/types";
 import CodeView from "./CodeView";
@@ -190,18 +193,26 @@ const GroupedDataPoint = ({
 
 const SelectedAnalysis = ({
   analysis,
+  point,
   classId,
   sessionId,
   taskId,
   taskType,
+  xAxisLabel,
+  yAxisLabel,
   removeAnalysisFromComparison,
 }: {
   analysis: CurrentAnalysis;
+  point: CategorizedDataPoint;
   classId: number;
   sessionId: number;
   taskId: number;
   taskType: TaskType;
+  xAxisLabel?: MessageDescriptor;
+  yAxisLabel?: MessageDescriptor;
 } & UpdateSelectionProps) => {
+  const intl = useIntl();
+
   return (
     <GridItem colSpan={{ base: 12, md: 6 }}>
       <HStack marginBottom="sm" justifyContent="space-between">
@@ -232,6 +243,20 @@ const SelectedAnalysis = ({
         taskId={taskId}
         taskType={taskType}
         solutionHash={analysis.solutionHash}
+        modalFooter={
+          <HStack>
+            {xAxisLabel && (
+              <div>
+                {intl.formatMessage(xAxisLabel)}: {point.x}
+              </div>
+            )}
+            {yAxisLabel && (
+              <div>
+                {intl.formatMessage(yAxisLabel)}: {point.y}
+              </div>
+            )}
+          </HStack>
+        }
       />
     </GridItem>
   );
@@ -317,8 +342,19 @@ const CodeComparison = ({
   const selectedAnalyses = useMemo(
     () =>
       categorizedDataPoints
-        .flatMap((point) => point.analyses)
-        .filter((analysis) => selectedSolutionIds.has(analysis.solutionId)),
+        .map((point) => ({
+          ...point,
+          analyses: point.analyses.filter((analysis) =>
+            selectedSolutionIds.has(analysis.solutionId),
+          ),
+        }))
+        .filter((point) => point.analyses.length > 0)
+        .flatMap((point) =>
+          point.analyses.map((analysis) => ({
+            analysis,
+            point,
+          })),
+        ),
     [categorizedDataPoints, selectedSolutionIds],
   );
 
@@ -345,14 +381,17 @@ const CodeComparison = ({
           ))}
         </Grid>
         <Grid templateColumns="repeat(12, 1fr)" gap="xl" marginTop="lg">
-          {selectedAnalyses.map((selectedAnalysis) => (
+          {selectedAnalyses.map(({ analysis, point }) => (
             <SelectedAnalysis
-              key={selectedAnalysis.solutionId}
-              analysis={selectedAnalysis}
+              key={analysis.solutionId}
+              analysis={analysis}
+              point={point}
               classId={classId}
               sessionId={sessionId}
               taskId={taskId}
               taskType={taskType}
+              xAxisLabel={xAxisLabel}
+              yAxisLabel={yAxisLabel}
               addAnalysisToComparison={addAnalysisToComparison}
               removeAnalysisFromComparison={removeAnalysisFromComparison}
             />
