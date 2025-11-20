@@ -554,6 +554,15 @@
   "ExpressionCriterionFilterForm.count": {
     "message": "Nombre d'expressions"
   },
+  "FooterLink.hepLink": {
+    "message": "HEP Vaud"
+  },
+  "FooterLink.impressumLink": {
+    "message": "Impressum"
+  },
+  "FooterLink.termsLink": {
+    "message": "Mentions légales"
+  },
   "FunctionDeclarationCriterionFilterForm.count": {
     "message": "Nombre de déclarations de fonctions"
   },
@@ -595,6 +604,12 @@
   },
   "Home.usersDescription": {
     "message": "Gérer les comptes et les permissions des utilisateurs."
+  },
+  "Impressum.header": {
+    "message": "Impressum"
+  },
+  "Impressum.title": {
+    "message": "Impressum"
   },
   "IndentationCriterionFilterForm.level": {
     "message": "Niveau d'indentation du code"
@@ -852,6 +867,12 @@
   "SessionNavigation.tasks": {
     "message": "Activités"
   },
+  "SessionProgress.canOnlyShareOwnSessions": {
+    "message": "You can only share lessons belonging to your classes."
+  },
+  "SessionProgress.shareLesson": {
+    "message": "Invite Student"
+  },
   "SessionProgress.title": {
     "message": "Progression - {title}"
   },
@@ -956,6 +977,12 @@
   },
   "StudentName.decrypting": {
     "message": "Déchiffrement..."
+  },
+  "StudentTaskInstance.solutionNotFound": {
+    "message": "No solution found."
+  },
+  "StudentTaskInstance.title": {
+    "message": "Student Solution - {name}"
   },
   "TaskActions.deleteConfirmation.body": {
     "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
@@ -1100,6 +1127,9 @@
   },
   "TaskInstanceProgressList.emptyState.title": {
     "message": "Il n'y a pas encore d'élèves."
+  },
+  "TaskInstanceProgressList.viewDetails": {
+    "message": "View student solution"
   },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Enregistrer l'activité"

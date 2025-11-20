@@ -1161,6 +1161,24 @@
       "value": "Nombre d'expressions"
     }
   ],
+  "FooterLink.hepLink": [
+    {
+      "type": 0,
+      "value": "HEP Vaud"
+    }
+  ],
+  "FooterLink.impressumLink": [
+    {
+      "type": 0,
+      "value": "Impressum"
+    }
+  ],
+  "FooterLink.termsLink": [
+    {
+      "type": 0,
+      "value": "Mentions légales"
+    }
+  ],
   "FunctionDeclarationCriterionFilterForm.count": [
     {
       "type": 0,
@@ -1243,6 +1261,18 @@
     {
       "type": 0,
       "value": "Gérer les comptes et les permissions des utilisateurs."
+    }
+  ],
+  "Impressum.header": [
+    {
+      "type": 0,
+      "value": "Impressum"
+    }
+  ],
+  "Impressum.title": [
+    {
+      "type": 0,
+      "value": "Impressum"
     }
   ],
   "IndentationCriterionFilterForm.level": [
@@ -1763,6 +1793,18 @@
       "value": "Activités"
     }
   ],
+  "SessionProgress.canOnlyShareOwnSessions": [
+    {
+      "type": 0,
+      "value": "You can only share lessons belonging to your classes."
+    }
+  ],
+  "SessionProgress.shareLesson": [
+    {
+      "type": 0,
+      "value": "Invite Student"
+    }
+  ],
   "SessionProgress.title": [
     {
       "type": 0,
@@ -1995,6 +2037,22 @@
     {
       "type": 0,
       "value": "Déchiffrement..."
+    }
+  ],
+  "StudentTaskInstance.solutionNotFound": [
+    {
+      "type": 0,
+      "value": "No solution found."
+    }
+  ],
+  "StudentTaskInstance.title": [
+    {
+      "type": 0,
+      "value": "Student Solution - "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "TaskActions.deleteConfirmation.body": [
@@ -2315,6 +2373,12 @@
     {
       "type": 0,
       "value": "Il n'y a pas encore d'élèves."
+    }
+  ],
+  "TaskInstanceProgressList.viewDetails": [
+    {
+      "type": 0,
+      "value": "View student solution"
     }
   ],
   "TaskInstanceReferenceSolutions.submit": [
