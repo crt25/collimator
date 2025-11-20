@@ -94,7 +94,9 @@ const messages = defineMessages({
   },
 });
 
-const AnalysisWrapper = styled.div``;
+const AnalysisWrapper = styled.div`
+  overflow: hidden;
+`;
 
 const ChartWrapper = styled.div`
   position: relative;
