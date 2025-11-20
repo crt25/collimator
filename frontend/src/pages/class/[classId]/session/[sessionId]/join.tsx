@@ -30,6 +30,7 @@ import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
 import PageHeading from "@/components/PageHeading";
+import PageFooter from "@/components/PageFooter";
 
 const logModule = "[JoinSession]";
 
@@ -359,6 +360,7 @@ const JoinSession = () => {
         )}
       </RemainingHeightContainer>
       <VerticalSpacing />
+      <PageFooter />
     </MaxScreenHeight>
   );
 };

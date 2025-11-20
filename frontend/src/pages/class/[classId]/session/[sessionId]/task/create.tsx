@@ -12,6 +12,8 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -63,7 +65,7 @@ const CreateTaskInstance = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
@@ -96,7 +98,8 @@ const CreateTaskInstance = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 
