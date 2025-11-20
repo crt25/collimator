@@ -94,9 +94,11 @@ const ProgressTemplate = ({
 const TaskList = ({
   classId,
   session,
+  currentTaskId,
 }: {
   classId: number;
   session: ExistingSessionExtended;
+  currentTaskId?: number;
 }) => {
   const intl = useIntl();
   const router = useRouter();
@@ -183,6 +185,7 @@ const TaskList = ({
                 `/class/${classId}/session/${session.id}/task/${row.id}/solve`,
               );
             }}
+            highlightedRowId={currentTaskId}
           />
         );
       }}
