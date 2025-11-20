@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
+import { ApiResponse, fromDtos } from "../helpers";
 import {
   getSessionsControllerFindAllV0Url,
   sessionsControllerFindAllV0,
@@ -24,11 +24,7 @@ export const useAllClassSessions = (
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) => getSessionsControllerFindAllV0Url(classId),
-      undefined,
-    ),
-    () => fetchByClassIdAndTransform(authOptions, classId, params),
+  return useSWR(getSessionsControllerFindAllV0Url(classId), () =>
+    fetchByClassIdAndTransform(authOptions, classId, params),
   );
 };

@@ -17,6 +17,7 @@ import { isClickOnRow } from "@/utilities/table";
 import ChakraDataTable from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
+import StarSolutionButton from "../solution/StarSolutionButton";
 
 const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -78,6 +79,25 @@ const nameTemplate = (progress: StudentProgress) =>
       keyPairId={progress.student.keyPairId}
     />
   );
+
+const InShowCaseTemplate = ({
+  classId,
+  progress,
+}: {
+  classId: number;
+  progress: StudentProgress;
+}) => {
+  const solutionToDisplay = useMemo(
+    () => ExistingStudentSolution.findSolutionToDisplay(progress.taskSolutions),
+    [progress],
+  );
+
+  if (!solutionToDisplay) {
+    return null;
+  }
+
+  return <StarSolutionButton classId={classId} solution={solutionToDisplay} />;
+};
 
 const TaskTemplate = ({
   classId: _classId,
@@ -249,19 +269,17 @@ const TaskInstanceProgressList = ({
           columnType: ColumnType.icon,
         },
       },
-      /*
-        For this to properly work, we should probably move the 'isReference' boolean
-        from the analysis to the solution model.
-        
       {
         id: "inShowcase",
         header: intl.formatMessage(messages.inShowcaseColumn),
         enableSorting: false,
-        cell: (info) => nameTemplate(info.row.original),
+        cell: (info) => (
+          <InShowCaseTemplate classId={classId} progress={info.row.original} />
+        ),
         meta: {
           columnType: ColumnType.text,
         },
-      },*/
+      },
       {
         id: "details",
         header: "",

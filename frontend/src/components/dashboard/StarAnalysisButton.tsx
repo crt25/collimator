@@ -12,7 +12,7 @@ const StarAnalysisButton = ({
 }: {
   classId: number;
   analysis: CurrentAnalysis;
-  testId: string;
+  testId?: string;
 }) => {
   const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
 
