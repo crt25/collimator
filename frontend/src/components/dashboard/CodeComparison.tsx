@@ -368,7 +368,7 @@ const CodeComparison = ({
           />
         </Heading>
 
-        <Grid templateColumns="repeat(12, 1fr)" gap="xl">
+        <Grid templateColumns="repeat(12, 1fr)">
           {groupedDataPoints.map(({ group, points }) => (
             <GroupedDataPoint
               key={group.groupKey}
