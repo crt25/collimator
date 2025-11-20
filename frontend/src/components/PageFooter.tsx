@@ -40,7 +40,7 @@ const links: FooterLink[] = [
 
 const FooterRoot = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box bg="footerBg" height="6rem" mt="12">
+    <Box bg="footerBg" height={{ sm: "6rem" }} mt="12" py="4">
       <Container height="100%">{children}</Container>
     </Box>
   );
@@ -53,9 +53,9 @@ const FooterList = () => {
     <Stack
       direction={{ smDown: "column", md: "row" }}
       gap="10"
-      justifyContent={"flex-end"}
-      alignContent={"center"}
-      height={"100%"}
+      justifyContent="flex-end"
+      alignContent="center"
+      height="100%"
     >
       {links.map((item, index) => {
         const title = item.title(intl);
