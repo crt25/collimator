@@ -178,8 +178,10 @@ const ShowcaseInternal = ({
                   }}
                 >
                   <Listbox.ItemText fontWeight="semiBold">
-                    {item.index + 1}.{" "}
-                    {<AnalysisName analysis={item.analysis} />}
+                    <HStack>
+                      {item.index + 1}.{" "}
+                      <AnalysisName analysis={item.analysis} />
+                    </HStack>
                   </Listbox.ItemText>
                   <Listbox.ItemIndicator />
                 </Listbox.Item>
