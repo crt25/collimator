@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { chakra } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
-import { StudentSessionProgress } from "@/api/collimator/models/sessions/student-session-progress";
+import { ColumnType } from "@/types/tanstack-types";
 import { TaskProgress } from "@/api/collimator/generated/models";
 import SwrContent from "./SwrContent";
 import TaskListItem from "./TaskListItem";
@@ -74,11 +74,47 @@ const TaskList = ({
   session: ExistingSessionExtended;
   currentTaskId?: number;
 }) => {
+  const intl = useIntl();
+  const router = useRouter();
+
   const {
     data: progress,
     isLoading: isLoadingProgress,
     error: progressError,
   } = useSessionProgress(classId, session.id);
+
+  const columns: ColumnDef<TaskRow>[] = useMemo(() => {
+    return [
+      {
+        accessorKey: "title",
+        enableSorting: false,
+        header: intl.formatMessage(messages.titleColumn),
+        cell: (info) => (
+          <Text
+            fontWeight="semibold"
+            fontSize="lg"
+            data-testid={`task-${info.row.original.task.id}-title`}
+            margin={0}
+          >
+            {info.row.original.task.title}
+          </Text>
+        ),
+        size: 32,
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+      {
+        accessorKey: "progress",
+        header: intl.formatMessage(messages.progressColumn),
+        enableSorting: false,
+        cell: (info) => (
+          <ProgressTemplate progress={info.row.original.progress} intl={intl} />
+        ),
+        meta: { columnType: ColumnType.icon },
+      },
+    ];
+  }, [intl]);
 
   return (
     <SwrContent
