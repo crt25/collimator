@@ -1,45 +1,22 @@
 import { RefObject, useCallback } from "react";
-import { CloseButton, chakra, GridItem } from "@chakra-ui/react";
+import { chakra, Container, Dialog, Icon } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
+import { FormattedMessage } from "react-intl";
+import { IoMdClose } from "react-icons/io";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import TaskDescription from "@/components/TaskDescription";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
 import { StudentActivityType } from "@/api/collimator/generated/models";
 import VerticalSpacing from "./layout/VerticalSpacing";
-import FullHeightRow from "./layout/FullHeightRow";
-import RemainingHeightContainer from "./layout/RemainingHeightContainer";
 import TaskList from "./TaskList";
+import PageHeading from "./PageHeading";
 
 const TaskWrapper = chakra("div", {
   base: {
     flexGrow: 1,
     position: "relative",
     display: "flex",
-  },
-});
-
-const SessionMenu = chakra("div", {
-  base: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "bg",
-    opacity: 0.9,
-    overflow: "hidden",
-    paddingTop: "sm",
-    zIndex: 1000,
-  },
-});
-
-const SessionMenuWrapper = chakra("div", {
-  base: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
   },
 });
 
@@ -104,29 +81,46 @@ const Task = ({
   return (
     <TaskWrapper>
       {showSessionMenu && (
-        <SessionMenu>
-          <SessionMenuWrapper>
-            <CloseButton onClick={() => setShowSessionMenu(false)} />
-            <RemainingHeightContainer>
-              <h1 data-testid="session-name">{session.title}</h1>
-              <FullHeightRow>
-                <GridItem colSpan={4}>
-                  <TaskList
-                    classId={classId}
-                    session={session}
-                    currentTaskId={task.id}
+        <Dialog.Root
+          open={showSessionMenu}
+          onOpenChange={(e) => setShowSessionMenu(e.open)}
+          size="md"
+        >
+          <Dialog.Backdrop bg="blackAlpha.600" />
+          <Dialog.Positioner>
+            <Dialog.Content marginLeft="4xl" marginTop="5xl">
+              <Dialog.Header>
+                <Dialog.CloseTrigger _hover={{ cursor: "pointer" }}>
+                  <Icon>
+                    <IoMdClose />
+                  </Icon>
+                </Dialog.CloseTrigger>
+              </Dialog.Header>
+              <Dialog.Body>
+                <PageHeading
+                  description={
+                    <FormattedMessage
+                      id="Task.sessionMenu.heading.description"
+                      defaultMessage={session.description}
+                    />
+                  }
+                >
+                  <FormattedMessage
+                    id="Task.sessionMenu.heading.title"
+                    defaultMessage="{sessionName} - Tasks"
+                    values={{ sessionName: session.title }}
                   />
-                </GridItem>
-                <GridItem colSpan={8}>
-                  <TaskDescription>
-                    <p>{task.description}</p>
-                  </TaskDescription>
-                </GridItem>
-              </FullHeightRow>
-              <VerticalSpacing />
-            </RemainingHeightContainer>
-          </SessionMenuWrapper>
-        </SessionMenu>
+                </PageHeading>
+                <TaskList
+                  classId={classId}
+                  session={session}
+                  currentTaskId={task.id}
+                />
+                <VerticalSpacing />
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Dialog.Root>
       )}
       <EmbeddedApp
         src={iframeSrc}
