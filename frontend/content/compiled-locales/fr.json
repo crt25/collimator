@@ -514,7 +514,7 @@
   "CreateClass.returnToClassList": [
     {
       "type": 0,
-      "value": "Retourner à la liste des leçons"
+      "value": "Retourner à la liste des classes"
     }
   ],
   "CreateClass.submit": [
