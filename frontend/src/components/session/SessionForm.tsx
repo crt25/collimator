@@ -125,7 +125,7 @@ const SessionForm = ({
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
   // ensure that the selected tasks are always in sync with the form
