@@ -8,7 +8,16 @@ import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionPr
 import { ColumnType } from "@/types/tanstack-types";
 import { TaskProgress } from "@/api/collimator/generated/models";
 import SwrContent from "./SwrContent";
-import TaskListItem from "./TaskListItem";
+import ChakraDataTable from "./ChakraDataTable";
+import { EmptyState } from "./EmptyState";
+
+type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
+
+export type TaskRow = {
+  id: number;
+  task: ExistingSessionExtended["tasks"][number];
+  progress: TaskProgress;
+};
 
 const messages = defineMessages({
   titleColumn: {
@@ -85,11 +94,9 @@ const ProgressTemplate = ({
 const TaskList = ({
   classId,
   session,
-  currentTaskId,
 }: {
   classId: number;
   session: ExistingSessionExtended;
-  currentTaskId?: number;
 }) => {
   const intl = useIntl();
   const router = useRouter();
@@ -139,14 +146,46 @@ const TaskList = ({
       isLoading={isLoadingProgress}
       error={progressError}
     >
-      {(progress) => (
-        <TaskListInner
-          classId={classId}
-          session={session}
-          currentTaskId={currentTaskId}
-          progress={progress}
-        />
-      )}
+      {(progress) => {
+        const progressByTaskId = progress.taskProgress.reduce(
+          (byId, taskProgress) => {
+            byId[taskProgress.id] = taskProgress.taskProgress;
+            return byId;
+          },
+          {} as { [key: number]: TaskProgress },
+        );
+
+        const taskRows: TaskRow[] = session.tasks.map((task) => ({
+          id: task.id,
+          task,
+          progress: progressByTaskId[task.id],
+        }));
+
+        return (
+          <ChakraDataTable
+            data={taskRows}
+            columns={columns}
+            features={{
+              sorting: false,
+            }}
+            emptyStateElement={
+              <EmptyState
+                title={
+                  <FormattedMessage
+                    id="TaskProgressList.emptyState.title"
+                    defaultMessage="No tasks found."
+                  />
+                }
+              />
+            }
+            onRowClick={(row) => {
+              router.push(
+                `/class/${classId}/session/${session.id}/task/${row.id}/solve`,
+              );
+            }}
+          />
+        );
+      }}
     </SwrContent>
   );
 };
