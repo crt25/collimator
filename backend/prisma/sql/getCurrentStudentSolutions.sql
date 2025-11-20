@@ -10,7 +10,7 @@ SELECT
 FROM "SessionTask" sessionTask
 LEFT JOIN "StudentSolution" studentSolution
   ON sessionTask."taskId" = studentSolution."taskId"
-INNER JOIN "SolutionTest" test
+LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution."id"
 WHERE sessionTask."sessionId" = $1
 AND studentSolution."studentId" = $2
