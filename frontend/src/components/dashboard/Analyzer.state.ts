@@ -3,10 +3,6 @@ import { AxesCriterionType } from "./axes";
 import { FilterCriterion } from "./filter";
 import { ChartSplit, SplitType } from "./chartjs-plugins";
 
-export const defaultGroupValue = "__ALL_STUDENTS__";
-export const selectedGroupValue = "__SELECTED_SOLUTIONS__";
-export const defaultSolutionIdValue = "";
-
 export enum AnalyzerStateActionType {
   setSelectedTask,
   setSelectedSubTask,
@@ -16,13 +12,7 @@ export enum AnalyzerStateActionType {
   setXAxis,
   setYAxis,
   setAutomaticGrouping,
-  setSelectedLeft,
-  setSelectedRight,
-  setSelectedLeftGroup,
-  setSelectedRightGroup,
-  setSelectedLeftAnalysis,
-  setSelectedRightAnalysis,
-  setClickedAnalysis,
+  setAnalysesSelectedForComparison,
   setSelectedAnalyses,
 }
 
@@ -61,31 +51,10 @@ export interface SetAutomaticGroupingAction {
   isAutomaticGrouping: boolean;
 }
 
-export interface SetSideAction {
-  type:
-    | AnalyzerStateActionType.setSelectedLeft
-    | AnalyzerStateActionType.setSelectedRight;
-  groupKey: string;
-  solutionId: string;
-}
-
-export interface SetGroupAction {
-  type:
-    | AnalyzerStateActionType.setSelectedLeftGroup
-    | AnalyzerStateActionType.setSelectedRightGroup;
-  groupKey: string;
-}
-
-export interface SetAnalysisAction {
-  type:
-    | AnalyzerStateActionType.setSelectedLeftAnalysis
-    | AnalyzerStateActionType.setSelectedRightAnalysis;
-  solutionId: string;
-}
-
-export interface SetClickedAnalysisAction {
-  type: AnalyzerStateActionType.setClickedAnalysis;
-  clickedAnalysis: { groupKey: string; solutionId: string } | undefined;
+export interface SetAnalysesSelectedForComparisonAction {
+  type: AnalyzerStateActionType.setAnalysesSelectedForComparison;
+  solutionIds: string[];
+  unionWithPrevious?: boolean;
 }
 
 export interface SetSelectedAnalysesAction {
@@ -102,10 +71,7 @@ export type AnalyzerStateAction =
   | RemoveSplitAction
   | SetAxisAction
   | SetAutomaticGroupingAction
-  | SetSideAction
-  | SetGroupAction
-  | SetAnalysisAction
-  | SetClickedAnalysisAction
+  | SetAnalysesSelectedForComparisonAction
   | SetSelectedAnalysesAction;
 
 export interface AnalyzerState {
@@ -117,18 +83,8 @@ export interface AnalyzerState {
   filters: FilterCriterion[];
   splits: ChartSplit[];
   selectedSolutionIds: Set<string>;
-
   comparison: {
-    clickedAnalysis:
-      | {
-          groupKey: string;
-          solutionId: string;
-        }
-      | undefined;
-    selectedLeftGroup: string;
-    selectedRightGroup: string;
-    selectedRightSolutionId: string;
-    selectedLeftSolutionId: string;
+    selectedSolutionIds: Set<string>;
   };
 }
 
@@ -200,61 +156,18 @@ export const analyzerStateReducer = (
       return setAxis(state, "y", action.axis);
     case AnalyzerStateActionType.setAutomaticGrouping:
       return { ...state, isAutomaticGrouping: action.isAutomaticGrouping };
-    case AnalyzerStateActionType.setSelectedLeft:
+    case AnalyzerStateActionType.setAnalysesSelectedForComparison: {
+      const newSelection = new Set<string>(action.solutionIds);
+
       return {
         ...state,
         comparison: {
-          ...state.comparison,
-          selectedLeftGroup: action.groupKey,
-          selectedLeftSolutionId: action.solutionId,
+          selectedSolutionIds: action.unionWithPrevious
+            ? state.comparison.selectedSolutionIds.union(newSelection)
+            : newSelection,
         },
       };
-    case AnalyzerStateActionType.setSelectedRight:
-      return {
-        ...state,
-        comparison: {
-          ...state.comparison,
-          selectedRightGroup: action.groupKey,
-          selectedRightSolutionId: action.solutionId,
-        },
-      };
-    case AnalyzerStateActionType.setSelectedLeftGroup:
-      return {
-        ...state,
-        comparison: { ...state.comparison, selectedLeftGroup: action.groupKey },
-      };
-    case AnalyzerStateActionType.setSelectedRightGroup:
-      return {
-        ...state,
-        comparison: {
-          ...state.comparison,
-          selectedRightGroup: action.groupKey,
-        },
-      };
-    case AnalyzerStateActionType.setSelectedLeftAnalysis:
-      return {
-        ...state,
-        comparison: {
-          ...state.comparison,
-          selectedLeftSolutionId: action.solutionId,
-        },
-      };
-    case AnalyzerStateActionType.setSelectedRightAnalysis:
-      return {
-        ...state,
-        comparison: {
-          ...state.comparison,
-          selectedRightSolutionId: action.solutionId,
-        },
-      };
-    case AnalyzerStateActionType.setClickedAnalysis:
-      return {
-        ...state,
-        comparison: {
-          ...state.comparison,
-          clickedAnalysis: action.clickedAnalysis,
-        },
-      };
+    }
     case AnalyzerStateActionType.setSelectedAnalyses: {
       const newSelection = new Set<string>(action.solutionId);
 

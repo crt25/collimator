@@ -104,7 +104,7 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
-const StudentNameWrapper = styled.span`
+const AnalysisNameWrapper = styled.span`
   text-decoration: underline;
   cursor: pointer;
 `;
@@ -209,15 +209,21 @@ const TooltipContent = ({
                     </div>
                     <div>
                       <ul>
-                        {referenceAnalyses.map((analysis) =>
-                          analysis.isInitialTaskSolution ? (
-                            <li key={analysis.solutionId}>
-                              {intl.formatMessage(messages.initialTaskSolution)}
-                            </li>
-                          ) : (
-                            <li key={analysis.solutionId}>{analysis.title}</li>
-                          ),
-                        )}
+                        {referenceAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>
+                            <AnalysisNameWrapper
+                              onClick={() =>
+                                onSelectAnalysis(group.key, analysis)
+                              }
+                            >
+                              {analysis.isInitialTaskSolution
+                                ? intl.formatMessage(
+                                    messages.initialTaskSolution,
+                                  )
+                                : analysis.title}
+                            </AnalysisNameWrapper>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </>
@@ -235,7 +241,7 @@ const TooltipContent = ({
                       <ul>
                         {studentAnalyses.map((analysis) => (
                           <li key={analysis.solutionId}>
-                            <StudentNameWrapper
+                            <AnalysisNameWrapper
                               onClick={() =>
                                 onSelectAnalysis(group.key, analysis)
                               }
@@ -245,7 +251,7 @@ const TooltipContent = ({
                                 pseudonym={analysis.studentPseudonym}
                                 keyPairId={analysis.studentKeyPairId}
                               />
-                            </StudentNameWrapper>
+                            </AnalysisNameWrapper>
                           </li>
                         ))}
                       </ul>
@@ -363,16 +369,6 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const analysisSolutionIdsSelectedForComparison = useMemo(
-    () => [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
-    [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
-  );
 
   const chartRef = useRef<ChartJsChart | null>(null);
   const initialChartDataRef = useRef<{
@@ -407,7 +403,7 @@ const Analysis = ({
       // check if any of the data points is selected or bookmarked
       const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          analysisSolutionIdsSelectedForComparison.includes(s.solutionId),
+          state.comparison.selectedSolutionIds.has(s.solutionId),
         ),
       );
 
@@ -515,7 +511,7 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    analysisSolutionIdsSelectedForComparison,
+    state.comparison.selectedSolutionIds,
     state.selectedSolutionIds,
   ]);
 
