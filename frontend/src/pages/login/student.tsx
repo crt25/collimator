@@ -11,7 +11,29 @@ import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/open
 const messages = defineMessages({
   title: {
     id: "StudentLoginPage.title",
-    defaultMessage: "Please Authenticate to Register",
+    defaultMessage: "Student Login",
+  },
+  subtitle: {
+    id: "StudentLoginPage.subtitle",
+    defaultMessage: "Welcome to ClassMosaic.",
+  },
+  invalidParameters: {
+    id: "StudentLoginPage.invalidParameters",
+    defaultMessage:
+      "The link you followed is invalid. You can only log in as a student to join a lesson. " +
+      "Please open the link given you received from your teacher.",
+  },
+  cardTitle: {
+    id: "StudentLoginPage.cardTitle",
+    defaultMessage: "Student Login",
+  },
+  cardDescription: {
+    id: "StudentLoginPage.cardDescription",
+    defaultMessage: "Please authenticate below to access your lesson.",
+  },
+  authenticateMicrosoft: {
+    id: "StudentLoginPage.authenticate.microsoft",
+    defaultMessage: "Authenticate using Microsoft",
   },
 });
 
@@ -49,10 +71,7 @@ const StudentLoginPage = () => {
       <>
         <Header title={messages.title} hideSignIn />
         <Container>
-          <FormattedMessage
-            id="StudentLoginPage.invalidParameters"
-            defaultMessage="You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
-          />
+          <FormattedMessage {...messages.invalidParameters} />
         </Container>
       </>
     );
@@ -63,41 +82,19 @@ const StudentLoginPage = () => {
       <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading>
-          <FormattedMessage
-            id="StudentLoginPage.title"
-            defaultMessage="Please Authenticate to Register"
-          />
+          <FormattedMessage {...messages.title} />
         </PageHeading>
         <Text fontSize="lg" marginBottom="sm">
-          <FormattedMessage
-            id="StudentLoginPage.subtitle"
-            defaultMessage="Welcome on board."
-          />
+          <FormattedMessage {...messages.subtitle} />
         </Text>
       </Container>
 
       <AbsoluteCenter>
         <LoginCard
-          title={
-            <FormattedMessage
-              id="StudentLoginPage.cardTitle"
-              defaultMessage="Welcome"
-            />
-          }
-          description={
-            <FormattedMessage
-              id="StudentLoginPage.cardDescription"
-              defaultMessage="The invitation link is valid. Authenticate now to complete registration."
-            />
-          }
-          buttonLabel={
-            <FormattedMessage
-              id="StudentLoginPage.authenticate.microsoft"
-              defaultMessage="Authenticate to join"
-            />
-          }
+          title={<FormattedMessage {...messages.cardTitle} />}
+          description={<FormattedMessage {...messages.cardDescription} />}
+          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
-          isStudent={true}
         />
       </AbsoluteCenter>
     </>

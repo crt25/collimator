@@ -106,29 +106,27 @@ const Header = ({
               <li>
                 <LanguageChooser />
               </li>
-              <li>
-                {!hideSignIn && (
-                  <li>
-                    {isAuthenticated ? (
-                      <AvatarMenu icon={<FaRegUser />} testId="current-user">
-                        <AvatarMenu.Item href="/logout">
-                          <FormattedMessage
-                            id="Header.signOut"
-                            defaultMessage="Sign Out"
-                          />
-                        </AvatarMenu.Item>
-                      </AvatarMenu>
-                    ) : (
-                      <Link href="/login" data-testid="sign-in-button">
+              {!hideSignIn && (
+                <li>
+                  {isAuthenticated ? (
+                    <AvatarMenu icon={<FaRegUser />} testId="current-user">
+                      <AvatarMenu.Item href="/logout">
                         <FormattedMessage
-                          id="Header.signIn"
-                          defaultMessage="Sign In"
+                          id="Header.signOut"
+                          defaultMessage="Sign Out"
                         />
-                      </Link>
-                    )}
-                  </li>
-                )}
-              </li>
+                      </AvatarMenu.Item>
+                    </AvatarMenu>
+                  ) : (
+                    <Link href="/login" data-testid="sign-in-button">
+                      <FormattedMessage
+                        id="Header.signIn"
+                        defaultMessage="Sign In"
+                      />
+                    </Link>
+                  )}
+                </li>
+              )}
             </Menu>
           </HeaderInner>
         </Container>
