@@ -205,6 +205,19 @@ const ShowcaseInternal = ({
             />
           </HStack>
         </Button>
+        <Button
+          marginTop="1rem"
+          onClick={() =>
+            router.push(
+              `/class/${klass.id}/session/${session.id}/task/${task.id}/showcase/present?selected=${solutionIdsToPresent}`,
+            )
+          }
+        >
+          <FormattedMessage
+            id="Showcase.openShowCasePage"
+            defaultMessage="Open Showcase Page"
+          />
+        </Button>
       </GridItem>
       <GridItem colSpan={{ base: 12, md: 9 }}>
         {selectedSolutionHash ? (
@@ -223,21 +236,6 @@ const ShowcaseInternal = ({
             />
           </CodeViewContainer>
         )}
-      </GridItem>
-      <GridItem colSpan={12} display="flex" justifyContent="flex-end">
-        <Button
-          marginTop="1rem"
-          onClick={() =>
-            router.push(
-              `/class/${klass.id}/session/${session.id}/task/${task.id}/showcase/present?selected=${solutionIdsToPresent}`,
-            )
-          }
-        >
-          <FormattedMessage
-            id="Showcase.openShowCasePage"
-            defaultMessage="Open Showcase Page"
-          />
-        </Button>
       </GridItem>
     </Grid>
   );
