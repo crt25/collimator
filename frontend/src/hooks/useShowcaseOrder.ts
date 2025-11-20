@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 
 type ShowcaseOrderBySolutionId = {
@@ -22,8 +23,12 @@ export const useShowcaseOrder = (
     },
   );
 
-  return [
-    state.orderIndexByTaskAndSolutionId[taskId] || {},
+  const taskState = useMemo(
+    () => state.orderIndexByTaskAndSolutionId[taskId] || {},
+    [state, taskId],
+  );
+
+  const setTaskState = useCallback(
     (newState: ShowcaseOrderBySolutionId): void =>
       setState({
         orderIndexByTaskAndSolutionId: {
@@ -31,5 +36,8 @@ export const useShowcaseOrder = (
           [taskId]: newState,
         },
       }),
-  ];
+    [setState, state, taskId],
+  );
+
+  return [taskState, setTaskState];
 };

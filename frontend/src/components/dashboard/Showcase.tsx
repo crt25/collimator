@@ -163,10 +163,7 @@ const ShowcaseInternal = ({
           <Listbox.Content padding="0" borderRadius="0" border="0">
             <SortableListInput
               items={listCollection.items}
-              updateItems={(items) => {
-                setItems(items);
-                updateOrder(items);
-              }}
+              updateItems={updateOrder}
               noGap
             >
               {(item) => {
