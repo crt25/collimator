@@ -6,7 +6,7 @@ import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicK
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
 import Button from "@/components/Button";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import RemainingHeightContainer from "@/components/layout/RemainingHeightContainer";
 import VerticalSpacing from "@/components/layout/VerticalSpacing";
@@ -90,17 +90,9 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
-            <PageHeading
-              description={
-                <FormattedMessage
-                  id="JoinSession.taskList"
-                  defaultMessage="Tasks"
-                />
-              }
-            >
+            <PageHeading description={session.description}>
               {session.title}
             </PageHeading>
-            {/* TODO(CRT-219): replace TaskList with the student's task list  */}
             <TaskList classId={classId} session={session} />
             <Button
               onClick={onJoinSession}

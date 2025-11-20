@@ -18,11 +18,11 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
-import { StudentName } from "../encryption/StudentName";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
 import CodeView, { CodeViewContainer } from "./CodeView";
+import AnalysisName from "./AnalysisName";
 
 type CurrentAnalysisWithId = {
   id: string;
@@ -166,41 +166,24 @@ const ShowcaseInternal = ({
               updateItems={updateOrder}
               noGap
             >
-              {(item) => {
-                const name =
-                  item.analysis instanceof CurrentStudentAnalysis ? (
-                    <StudentName
-                      studentId={item.analysis.studentId}
-                      keyPairId={item.analysis.studentKeyPairId}
-                      pseudonym={item.analysis.studentPseudonym}
-                    />
-                  ) : item.analysis instanceof ReferenceAnalysis ? (
-                    item.analysis.title
-                  ) : (
-                    <FormattedMessage
-                      id="Showcase.unknownAnalysisType"
-                      defaultMessage="Unknown analysis type"
-                    />
-                  );
-
-                return (
-                  <Listbox.Item
-                    item={item}
-                    key={item.value}
-                    padding="md"
-                    borderRadius="0"
-                    backgroundColor={{
-                      base: "gray.100",
-                      _selected: "gray.300",
-                    }}
-                  >
-                    <Listbox.ItemText fontWeight="semiBold">
-                      {item.index + 1}. {name}
-                    </Listbox.ItemText>
-                    <Listbox.ItemIndicator />
-                  </Listbox.Item>
-                );
-              }}
+              {(item) => (
+                <Listbox.Item
+                  item={item}
+                  key={item.value}
+                  padding="md"
+                  borderRadius="0"
+                  backgroundColor={{
+                    base: "gray.100",
+                    _selected: "gray.300",
+                  }}
+                >
+                  <Listbox.ItemText fontWeight="semiBold">
+                    {item.index + 1}.{" "}
+                    {<AnalysisName analysis={item.analysis} />}
+                  </Listbox.ItemText>
+                  <Listbox.ItemIndicator />
+                </Listbox.Item>
+              )}
             </SortableListInput>
           </Listbox.Content>
         </Listbox.Root>
@@ -208,7 +191,7 @@ const ShowcaseInternal = ({
           marginTop="1rem"
           onClick={() =>
             router.push(
-              `/class/${klass.id}/session/${session.id}/task/${task.id}/progress`,
+              `/class/${klass.id}/session/${session.id}/task/${task.id}/student`,
             )
           }
         >
@@ -221,6 +204,19 @@ const ShowcaseInternal = ({
               defaultMessage="Add Result to Showcase"
             />
           </HStack>
+        </Button>
+        <Button
+          marginTop="1rem"
+          onClick={() =>
+            router.push(
+              `/class/${klass.id}/session/${session.id}/task/${task.id}/showcase/present?selected=${solutionIdsToPresent}`,
+            )
+          }
+        >
+          <FormattedMessage
+            id="Showcase.openShowCasePage"
+            defaultMessage="Open Showcase Page"
+          />
         </Button>
       </GridItem>
       <GridItem colSpan={{ base: 12, md: 9 }}>
@@ -240,21 +236,6 @@ const ShowcaseInternal = ({
             />
           </CodeViewContainer>
         )}
-      </GridItem>
-      <GridItem colSpan={12} display="flex" justifyContent="flex-end">
-        <Button
-          marginTop="1rem"
-          onClick={() =>
-            router.push(
-              `/class/${klass.id}/session/${session.id}/task/${task.id}/showcase/present?selected=${solutionIdsToPresent}`,
-            )
-          }
-        >
-          <FormattedMessage
-            id="Showcase.openShowCasePage"
-            defaultMessage="Open Showcase Page"
-          />
-        </Button>
       </GridItem>
     </Grid>
   );

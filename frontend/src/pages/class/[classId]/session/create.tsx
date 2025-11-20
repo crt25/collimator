@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import SessionForm, {
   SessionFormValues,
 } from "@/components/session/SessionForm";

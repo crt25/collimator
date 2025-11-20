@@ -3,7 +3,7 @@ import { defineMessages } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import SessionList from "@/components/session/SessionList";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";

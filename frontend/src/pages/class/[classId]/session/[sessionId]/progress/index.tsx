@@ -4,7 +4,7 @@ import { useState, useCallback, useContext } from "react";
 import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import CrtNavigation from "@/components/CrtNavigation";
 import ProgressList from "@/components/dashboard/ProgressList";

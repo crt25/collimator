@@ -1,6 +1,6 @@
 import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TaskTable from "@/components/task/TaskTable";

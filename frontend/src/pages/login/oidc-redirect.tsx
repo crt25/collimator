@@ -7,7 +7,7 @@ import { AbsoluteCenter, Container } from "@chakra-ui/react";
 import { authenticate } from "@/utilities/authentication/openid-connect";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { UserRole } from "@/types/user/user-role";
 import { useAuthenticateUser } from "@/api/collimator/hooks/authentication/useAuthenticateUser";

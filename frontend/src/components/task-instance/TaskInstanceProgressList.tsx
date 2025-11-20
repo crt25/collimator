@@ -272,7 +272,7 @@ const TaskInstanceProgressList = ({
             onClick={(e) => {
               e.stopPropagation();
               router.push(
-                `/class/${classId}/session/${sessionId}/task/${taskId}/progress/${info.row.original.id}`,
+                `/class/${classId}/session/${sessionId}/task/${taskId}/student/${info.row.original.id}`,
               );
             }}
             data-testid={`class-${info.row.original.id}-details-button`}
@@ -310,7 +310,7 @@ const TaskInstanceProgressList = ({
             onRowClick={(row, e) => {
               if (isClickOnRow(e)) {
                 router.push(
-                  `/class/${klass.id}/session/${session.id}/task/${taskId}/progress/${row.id}`,
+                  `/class/${klass.id}/session/${session.id}/task/${taskId}/student/${row.id}`,
                 );
               }
             }}

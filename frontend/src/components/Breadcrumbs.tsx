@@ -1,21 +1,24 @@
 import { Breadcrumb, HStack, Icon } from "@chakra-ui/react";
 import { FormattedMessage } from "react-intl";
-import React from "react";
+import React, { ComponentProps } from "react";
 import { LuHouse } from "react-icons/lu";
 import BreadcrumbItem from "./BreadcrumbItem";
 
-interface BreadcrumbsProps {
+type BreadcrumbsProps = ComponentProps<typeof Breadcrumb.Root> & {
+  topLevel?: React.ReactNode;
   children?: React.ReactNode;
-}
+};
 
-const Breadcrumbs = ({ children }: BreadcrumbsProps) => (
-  <Breadcrumb.Root>
+const Breadcrumbs = ({ topLevel, children, ...rest }: BreadcrumbsProps) => (
+  <Breadcrumb.Root {...rest}>
     <Breadcrumb.List>
       <HStack>
-        <BreadcrumbItem href="/">
-          <Icon as={LuHouse} />
-          <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
-        </BreadcrumbItem>
+        {topLevel ?? (
+          <BreadcrumbItem href="/">
+            <Icon as={LuHouse} />
+            <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
+          </BreadcrumbItem>
+        )}
         {children}
       </HStack>
     </Breadcrumb.List>

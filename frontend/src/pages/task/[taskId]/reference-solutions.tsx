@@ -5,7 +5,7 @@ import { Container } from "@chakra-ui/react";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
 import PageHeading from "@/components/PageHeading";

@@ -7,7 +7,6 @@ import {
   useIntl,
 } from "react-intl";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import * as yup from "yup";
 import styled from "@emotion/styled";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -29,9 +28,10 @@ import Button from "../Button";
 import SortableListInput from "../form/SortableList";
 import SolveTaskModal from "../modals/SolveTaskModal";
 import TextArea from "../form/TextArea";
+import { toaster } from "../Toaster";
 
 const AddReferenceSolutionButton = styled(Button)`
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `;
 
 const ReferenceSolutionListElement = styled.div`
@@ -103,6 +103,15 @@ const messages = defineMessages({
   closeConfirmationButton: {
     id: "TaskFormReferenceSolutions.closeConfirmation.button",
     defaultMessage: "Yes, I don't need to save.",
+  },
+
+  saveSuccess: {
+    id: "TaskFormReferenceSolutions.SaveSuccess",
+    defaultMessage: "The task was saved successfully.",
+  },
+  saveError: {
+    id: "TaskFormReferenceSolutions.SaveError",
+    defaultMessage: "An error occurred while saving the task. Try again later.",
   },
 });
 
@@ -323,26 +332,20 @@ const TaskFormReferenceSolutions = ({
           // so the user can navigate without confirmation
           reset(data);
 
-          toast.success(
-            <FormattedMessage
-              id="TaskFormReferenceSolutions.SaveSuccess"
-              defaultMessage="The task was saved successfully."
-            />,
-            { position: "top-center" },
-          );
+          toaster.success({
+            title: intl.formatMessage(messages.saveSuccess),
+            closable: true,
+          });
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
-          toast.error(
-            <FormattedMessage
-              id="TaskFormReferenceSolutions.SaveError"
-              defaultMessage="An error occurred while saving the task. Try again later."
-            />,
-            { position: "top-center" },
-          );
+          toaster.error({
+            title: intl.formatMessage(messages.saveError),
+            closable: true,
+          });
         });
     },
-    [handleSubmit, onSubmit, reset],
+    [handleSubmit, onSubmit, reset, intl],
   );
 
   const referenceSolutionFiles: { [key: number]: Blob } = watch(

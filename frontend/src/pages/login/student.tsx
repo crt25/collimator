@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Center, Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import PageHeading from "@/components/PageHeading";
 import LoginCard from "@/components/login/LoginCard";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
