@@ -25,7 +25,7 @@ type FooterLink = {
 
 const links: FooterLink[] = [
   {
-    url: "#",
+    url: "/impressum",
     title: (intl) => intl.formatMessage(messages.impressumLink),
   },
   {
@@ -40,8 +40,8 @@ const links: FooterLink[] = [
 
 const FooterRoot = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box bg={"footerBg"} height={"6rem"}>
-      <Container height={"100%"}>{children}</Container>
+    <Box bg="footerBg" height="6rem" mt="12">
+      <Container height="100%">{children}</Container>
     </Box>
   );
 };

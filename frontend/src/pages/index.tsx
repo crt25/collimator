@@ -6,6 +6,7 @@ import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
 import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   teacherHeader: {
@@ -130,6 +131,7 @@ const Home = () => {
           )}
         </Grid>
       </Container>
+      <PageFooter />
     </>
   );
 };
