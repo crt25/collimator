@@ -341,6 +341,12 @@
       "value": "Supprimer la classe"
     }
   ],
+  "ClassList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no classes yet. Let's create some!"
+    }
+  ],
   "ClassList.viewDetails": [
     {
       "type": 0,
@@ -859,6 +865,12 @@
       "value": "Classes"
     }
   ],
+  "DEPRECATED: LoginPage.description": [
+    {
+      "type": 0,
+      "value": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
+    }
+  ],
   "DEPRECATED: OpenIdConnectRedirect.userSignInHeading": [
     {
       "type": 0,
@@ -1299,16 +1311,28 @@
       "value": "Authentifier avec Microsoft"
     }
   ],
-  "LoginPage.description": [
+  "LoginPage.cardDescription": [
     {
       "type": 0,
-      "value": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
+      "value": "Log in to access your classes, tasks, and learning resources."
+    }
+  ],
+  "LoginPage.cardTitle": [
+    {
+      "type": 0,
+      "value": "Teacher Login"
     }
   ],
   "LoginPage.header": [
     {
       "type": 0,
       "value": "Connexion"
+    }
+  ],
+  "LoginPage.pageDescription": [
+    {
+      "type": 0,
+      "value": "You're about to access the teacher portal."
     }
   ],
   "LoginPage.title": [
@@ -1411,6 +1435,12 @@
     {
       "type": 0,
       "value": "Activité"
+    }
+  ],
+  "ProgressList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There is no progress data available."
     }
   ],
   "SessionActions.copySessionLink": [
@@ -1567,6 +1597,12 @@
       "value": "Copier le lien de la leçon"
     }
   ],
+  "SessionList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no lessons yet. Let's create some!"
+    }
+  ],
   "SessionNavigation.lessonDetails": [
     {
       "type": 0,
@@ -1593,6 +1629,54 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "Showcase.addResult": [
+    {
+      "type": 0,
+      "value": "Add Result to Showcase"
+    }
+  ],
+  "Showcase.instructions": [
+    {
+      "type": 0,
+      "value": "Sort and preview the showcased solutions."
+    }
+  ],
+  "Showcase.noStudentSelectedHelp": [
+    {
+      "type": 0,
+      "value": "Click on a student name to view their solution."
+    }
+  ],
+  "Showcase.openShowCasePage": [
+    {
+      "type": 0,
+      "value": "Open Showcase Page"
+    }
+  ],
+  "Showcase.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Unknown analysis type"
+    }
+  ],
+  "ShowcasePresentation.next": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
+  "ShowcasePresentation.previous": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
+  "ShowcasePresentation.unknownAnalysisType": [
+    {
+      "type": 0,
+      "value": "Unknown analysis type"
     }
   ],
   "SolveTask.correctSolutionSubmitted": [
@@ -1681,10 +1765,28 @@
       "value": "Nom"
     }
   ],
+  "StudentList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no students yet."
+    }
+  ],
   "StudentLoginPage.authenticate.microsoft": [
     {
       "type": 0,
       "value": "S'authentifier avec Microsoft"
+    }
+  ],
+  "StudentLoginPage.cardDescription": [
+    {
+      "type": 0,
+      "value": "Please authenticate below to access your lesson."
+    }
+  ],
+  "StudentLoginPage.cardTitle": [
+    {
+      "type": 0,
+      "value": "Student Login"
     }
   ],
   "StudentLoginPage.header": [
@@ -1697,6 +1799,12 @@
     {
       "type": 0,
       "value": "Vous ne pouvez vous connecter en tant qu'étudiant que pour rejoindre une leçon. Veuillez ouvrir le lien que vous avez reçu de votre professeur."
+    }
+  ],
+  "StudentLoginPage.subtitle": [
+    {
+      "type": 0,
+      "value": "You're about to join your lesson as a student."
     }
   ],
   "StudentLoginPage.title": [
@@ -1721,6 +1829,42 @@
     {
       "type": 0,
       "value": "Déchiffrement..."
+    }
+  ],
+  "TaskActions.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "TaskActions.deleteConfirmation.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "TaskActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete Task"
+    }
+  ],
+  "TaskActions.deleteErrorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskActions.deleteSuccessMessage": [
+    {
+      "type": 0,
+      "value": "Task deleted successfully"
     }
   ],
   "TaskActions.deleteTask": [
@@ -1949,6 +2093,12 @@
       "value": "Solutions de référence"
     }
   ],
+  "TaskInstanceNavigation.showcaseTab": [
+    {
+      "type": 0,
+      "value": "Showcase"
+    }
+  ],
   "TaskInstanceNavigation.studentResults": [
     {
       "type": 0,
@@ -1995,6 +2145,12 @@
       "value": "Progrès de l'élève"
     }
   ],
+  "TaskInstanceProgressList.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no students yet."
+    }
+  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
@@ -2005,6 +2161,44 @@
     {
       "type": 0,
       "value": "Modifier l'activité - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceShowcase.title": [
+    {
+      "type": 0,
+      "value": "Showcase - "
+    },
+    {
+      "type": 1,
+      "value": "title"
+    }
+  ],
+  "TaskInstanceShowcasePresent.back": [
+    {
+      "type": 0,
+      "value": "Back to task details"
+    }
+  ],
+  "TaskInstanceShowcasePresent.heading": [
+    {
+      "type": 0,
+      "value": "Showcase"
+    }
+  ],
+  "TaskInstanceShowcasePresent.noSolutionsSelected": [
+    {
+      "type": 0,
+      "value": "No solutions selected for showcase presentation."
+    }
+  ],
+  "TaskInstanceShowcasePresent.title": [
+    {
+      "type": 0,
+      "value": "Showcase - "
     },
     {
       "type": 1,
@@ -2057,6 +2251,12 @@
     {
       "type": 0,
       "value": "Supprimer l'activité"
+    }
+  ],
+  "TaskInstanceTable.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no tasks yet."
     }
   ],
   "TaskInstanceTable.viewDetails": [
@@ -2193,6 +2393,12 @@
     {
       "type": 0,
       "value": "Supprimer l'activité"
+    }
+  ],
+  "TaskTable.emptyState.title": [
+    {
+      "type": 0,
+      "value": "There are no tasks yet. Let's create some!"
     }
   ],
   "TaskTable.viewDetails": [

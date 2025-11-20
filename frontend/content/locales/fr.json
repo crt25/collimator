@@ -116,6 +116,9 @@
   "DEPRECATED: SessionForm.error.titleRequired": {
     "message": "Le titre est requis"
   },
+  "DEPRECATED: LoginPage.description": {
+    "message": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -281,6 +284,9 @@
   "ClassList.deleteConfirmation.title": {
     "message": "Supprimer la classe"
   },
+  "ClassList.emptyState.title": {
+    "message": "Il n'y a pas encore de classes. Créez-en quelques unes!"
+  },
   "ClassList.viewDetails": {
     "message": "Voir les détails de la classe"
   },
@@ -297,7 +303,7 @@
     "message": "{name} - Leçons"
   },
   "ClassUserList.title": {
-    "message": "{name} - Étudiants"
+    "message": "{name} - Élèves"
   },
   "CodeComparison.defaultOption": {
     "message": "Groupe : Toutes les solutions"
@@ -519,7 +525,7 @@
     "message": "Leçons"
   },
   "Home.classesDescription": {
-    "message": "Gérez vos leçons et étudiants."
+    "message": "Gérez vos leçons et élèves."
   },
   "Home.description": {
     "message": "Bienvenue sur le tableau de bord des enseignants de ClassMosaic."
@@ -622,13 +628,19 @@
     "message": "Utilisateurs"
   },
   "LoginPage.authenticate.microsoft": {
-    "message": "Authentifier avec Microsoft"
+    "message": "S'authentifier avec Microsoft"
   },
-  "LoginPage.description": {
+  "LoginPage.cardDescription": {
     "message": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
+  },
+  "LoginPage.cardTitle": {
+    "message": "Connexion Enseignant"
   },
   "LoginPage.header": {
     "message": "Connexion"
+  },
+  "LoginPage.pageDescription": {
+    "message": "Vous êtes sur le point d'accéder au portail des enseignants."
   },
   "LoginPage.title": {
     "message": "Connexion Enseignant"
@@ -664,10 +676,10 @@
     "message": "Traitement de l'authentification"
   },
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": {
-    "message": "Les identités des étudiants seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des étudiants."
+    "message": "Les identités des élèves seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des élèves."
   },
   "OpenIdConnectRedirect.userSignInDescription": {
-    "message": "Les identités des étudiants sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
+    "message": "Les identités des élèves sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
   },
   "ProgressList.columns.actions": {
     "message": "Actions"
@@ -680,6 +692,9 @@
   },
   "ProgressList.columns.taskColumn": {
     "message": "Activité"
+  },
+  "ProgressList.emptyState.title": {
+    "message": "Il n'y a pas encore de données sur le travail des élèves."
   },
   "SessionActions.copySessionLink": {
     "message": "Copier le lien de la leçon"
@@ -756,6 +771,9 @@
   "SessionList.copySessionLink": {
     "message": "Copier le lien de la leçon"
   },
+  "SessionList.emptyState.title": {
+    "message": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
+  },
   "SessionNavigation.lessonDetails": {
     "message": "Détails de la leçon"
   },
@@ -767,6 +785,30 @@
   },
   "SessionProgress.title": {
     "message": "Progression - {title}"
+  },
+  "Showcase.addResult": {
+    "message": "Ajouter une solution à la vitrine"
+  },
+  "Showcase.instructions": {
+    "message": "Tri et aperçu des solutions en vitrine."
+  },
+  "Showcase.noStudentSelectedHelp": {
+    "message": "Cliquez sur le nom d'un élève pour voir sa solution."
+  },
+  "Showcase.openShowCasePage": {
+    "message": "Ouvrir la vitrine"
+  },
+  "Showcase.unknownAnalysisType": {
+    "message": "Type d'analyse inconnu"
+  },
+  "ShowcasePresentation.next": {
+    "message": "Suivant"
+  },
+  "ShowcasePresentation.previous": {
+    "message": "Précédent"
+  },
+  "ShowcasePresentation.unknownAnalysisType": {
+    "message": "Type d'analyse inconnu"
   },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Vous avez résolu cette activité avec succès. Vous pouvez vérifier s'il y a d'autres activités dans le menu de la leçon."
@@ -801,14 +843,26 @@
   "StudentList.columns.name": {
     "message": "Nom"
   },
+  "StudentList.emptyState.title": {
+    "message": "Il n'y a pas encore d'élèves."
+  },
   "StudentLoginPage.authenticate.microsoft": {
     "message": "S'authentifier avec Microsoft"
+  },
+  "StudentLoginPage.cardDescription": {
+    "message": "Authentifies-toi ci-dessous pour accéder à la leçon."
+  },
+  "StudentLoginPage.cardTitle": {
+    "message": "Connexion Étudiant"
   },
   "StudentLoginPage.header": {
     "message": "Connexion Étudiant"
   },
   "StudentLoginPage.invalidParameters": {
     "message": "Vous ne pouvez vous connecter en tant qu'étudiant que pour rejoindre une leçon. Veuillez ouvrir le lien que vous avez reçu de votre professeur."
+  },
+  "StudentLoginPage.subtitle": {
+    "message": "You're about to join your lesson as a student."
   },
   "StudentLoginPage.title": {
     "message": "Connexion Étudiant"
@@ -821,6 +875,24 @@
   },
   "StudentName.decrypting": {
     "message": "Déchiffrement..."
+  },
+  "TaskActions.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+  },
+  "TaskActions.deleteConfirmation.cancel": {
+    "message": "Annuler"
+  },
+  "TaskActions.deleteConfirmation.confirm": {
+    "message": "Effacer l'activité"
+  },
+  "TaskActions.deleteConfirmation.title": {
+    "message": "Effacer l'activité"
+  },
+  "TaskActions.deleteErrorMessage": {
+    "message": "Une erreur est survenue lors de l'effacement de l'activité. Merci de re-essayer!"
+  },
+  "TaskActions.deleteSuccessMessage": {
+    "message": "L'activité a été effacée avec succès"
   },
   "TaskActions.deleteTask": {
     "message": "Supprimer l'activité"
@@ -921,8 +993,11 @@
   "TaskInstanceNavigation.referenceSolutions": {
     "message": "Solutions de référence"
   },
+  "TaskInstanceNavigation.showcaseTab": {
+    "message": "Vitrine"
+  },
   "TaskInstanceNavigation.studentResults": {
-    "message": "Résultats des Étudiants"
+    "message": "Résultats des Élèves"
   },
   "TaskInstanceNavigation.taskDetails": {
     "message": "Détails de l'activité"
@@ -942,11 +1017,29 @@
   "TaskInstanceProgressList.columns.progressColumn": {
     "message": "Progrès de l'élève"
   },
+  "TaskInstanceProgressList.emptyState.title": {
+    "message": "Il n'y a pas encore d'élèves."
+  },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Enregistrer l'activité"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
+  },
+  "TaskInstanceShowcase.title": {
+    "message": "Vitrine - {title}"
+  },
+  "TaskInstanceShowcasePresent.back": {
+    "message": "Retourner aux détails de l'activité"
+  },
+  "TaskInstanceShowcasePresent.heading": {
+    "message": "Vitrine"
+  },
+  "TaskInstanceShowcasePresent.noSolutionsSelected": {
+    "message": "Aucune solution sélectionnée pour la présentation en vitrine."
+  },
+  "TaskInstanceShowcasePresent.title": {
+    "message": "Vitrine - {title}"
   },
   "TaskInstanceTable.columns.id": {
     "message": "ID"
@@ -971,6 +1064,9 @@
   },
   "TaskInstanceTable.deleteTask": {
     "message": "Supprimer l'activité"
+  },
+  "TaskInstanceTable.emptyState.title": {
+    "message": "Il n'y a pas encore d'activités."
   },
   "TaskInstanceTable.viewDetails": {
     "message": "Voir les détails de l'activité"
@@ -1037,6 +1133,9 @@
   },
   "TaskTable.deleteTask": {
     "message": "Supprimer l'activité"
+  },
+  "TaskTable.emptyState.title": {
+    "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
   },
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"

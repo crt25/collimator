@@ -164,6 +164,9 @@
   "ClassList.deleteConfirmation.title": {
     "message": "Delete Class"
   },
+  "ClassList.emptyState.title": {
+    "message": "There are no classes yet. Let's create some!"
+  },
   "ClassList.viewDetails": {
     "message": "View Class Details"
   },
@@ -507,11 +510,17 @@
   "LoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
   },
-  "LoginPage.description": {
+  "LoginPage.cardDescription": {
     "message": "Log in to access your classes, tasks, and learning resources."
   },
+  "LoginPage.cardTitle": {
+    "message": "Teacher Login"
+  },
   "LoginPage.header": {
-    "message": "Login"
+    "message": "Welcome to ClassMosaic!"
+  },
+  "LoginPage.pageDescription": {
+    "message": "You're about to access the teacher portal."
   },
   "LoginPage.title": {
     "message": "Teacher Login"
@@ -563,6 +572,9 @@
   },
   "ProgressList.columns.taskColumn": {
     "message": "Task"
+  },
+  "ProgressList.emptyState.title": {
+    "message": "There is no progress data available."
   },
   "SessionActions.copySessionLink": {
     "message": "Copy Lesson Link"
@@ -639,6 +651,9 @@
   "SessionList.copySessionLink": {
     "message": "Share"
   },
+  "SessionList.emptyState.title": {
+    "message": "There are no lessons yet. Let's create some!"
+  },
   "SessionNavigation.lessonDetails": {
     "message": "Lesson Details"
   },
@@ -650,6 +665,30 @@
   },
   "SessionProgress.title": {
     "message": "Progress - {title}"
+  },
+  "Showcase.addResult": {
+    "message": "Add Result to Showcase"
+  },
+  "Showcase.instructions": {
+    "message": "Sort and preview the showcased solutions."
+  },
+  "Showcase.noStudentSelectedHelp": {
+    "message": "Click on a student name to view their solution."
+  },
+  "Showcase.openShowCasePage": {
+    "message": "Open Showcase Page"
+  },
+  "Showcase.unknownAnalysisType": {
+    "message": "Unknown analysis type"
+  },
+  "ShowcasePresentation.next": {
+    "message": "Next"
+  },
+  "ShowcasePresentation.previous": {
+    "message": "Previous"
+  },
+  "ShowcasePresentation.unknownAnalysisType": {
+    "message": "Unknown analysis type"
   },
   "SolveTask.correctSolutionSubmitted": {
     "message": "Your successfully solved this task. You can check if there are more tasks in the lesson menu."
@@ -684,14 +723,26 @@
   "StudentList.columns.name": {
     "message": "Name"
   },
+  "StudentList.emptyState.title": {
+    "message": "There are no students yet."
+  },
   "StudentLoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
   },
-  "StudentLoginPage.header": {
+  "StudentLoginPage.cardDescription": {
+    "message": "Please authenticate below to access your lesson."
+  },
+  "StudentLoginPage.cardTitle": {
     "message": "Student Login"
   },
+  "StudentLoginPage.header": {
+    "message": "Welcome to ClassMosaic!"
+  },
   "StudentLoginPage.invalidParameters": {
-    "message": "You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
+    "message": "The link you followed is invalid. You can only log in as a student to join a lesson. Please open the link given you received from your teacher."
+  },
+  "StudentLoginPage.subtitle": {
+    "message": "You're about to join your lesson as a student."
   },
   "StudentLoginPage.title": {
     "message": "Student Login"
@@ -704,6 +755,24 @@
   },
   "StudentName.decrypting": {
     "message": "Decrypting..."
+  },
+  "TaskActions.deleteConfirmation.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "TaskActions.deleteConfirmation.cancel": {
+    "message": "Cancel"
+  },
+  "TaskActions.deleteConfirmation.confirm": {
+    "message": "Delete Task"
+  },
+  "TaskActions.deleteConfirmation.title": {
+    "message": "Delete Task"
+  },
+  "TaskActions.deleteErrorMessage": {
+    "message": "There was an error deleting the task. Please try again!"
+  },
+  "TaskActions.deleteSuccessMessage": {
+    "message": "Task deleted successfully"
   },
   "TaskActions.deleteTask": {
     "message": "Delete Task"
@@ -804,6 +873,9 @@
   "TaskInstanceNavigation.referenceSolutions": {
     "message": "Reference Solutions"
   },
+  "TaskInstanceNavigation.showcaseTab": {
+    "message": "Showcase"
+  },
   "TaskInstanceNavigation.studentResults": {
     "message": "Students' Results"
   },
@@ -825,11 +897,29 @@
   "TaskInstanceProgressList.columns.progressColumn": {
     "message": "Student Progress"
   },
+  "TaskInstanceProgressList.emptyState.title": {
+    "message": "There are no students yet."
+  },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Save Task"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Edit Task - {title}"
+  },
+  "TaskInstanceShowcase.title": {
+    "message": "Showcase - {title}"
+  },
+  "TaskInstanceShowcasePresent.back": {
+    "message": "Back to task details"
+  },
+  "TaskInstanceShowcasePresent.heading": {
+    "message": "Showcase"
+  },
+  "TaskInstanceShowcasePresent.noSolutionsSelected": {
+    "message": "No solutions selected for showcase presentation."
+  },
+  "TaskInstanceShowcasePresent.title": {
+    "message": "Showcase - {title}"
   },
   "TaskInstanceTable.columns.id": {
     "message": "ID"
@@ -854,6 +944,9 @@
   },
   "TaskInstanceTable.deleteTask": {
     "message": "Delete Task"
+  },
+  "TaskInstanceTable.emptyState.title": {
+    "message": "There are no tasks yet."
   },
   "TaskInstanceTable.viewDetails": {
     "message": "View Task Details"
@@ -920,6 +1013,9 @@
   },
   "TaskTable.deleteTask": {
     "message": "Delete Task"
+  },
+  "TaskTable.emptyState.title": {
+    "message": "There are no tasks yet. Let's create some!"
   },
   "TaskTable.viewDetails": {
     "message": "View Task Details"
