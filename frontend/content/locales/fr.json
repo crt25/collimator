@@ -601,7 +601,7 @@
     "message": "Gestion des leçons"
   },
   "ListClasses.pageDescription": {
-    "message": ""
+    "message": "Cette page affiche les cours que vous avez créés. Cliquez sur un cours donné pour modifier les leçons et voir les progrès de vos élèves."
   },
   "ListClasses.pageTitle": {
     "message": "Gestion des leçons"

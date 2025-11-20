@@ -344,7 +344,7 @@
   "ClassList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no classes yet. Let's create some!"
+      "value": "Il n'y a pas encore de classes. Créez-en quelques unes!"
     }
   ],
   "ClassList.viewDetails": [
@@ -388,7 +388,7 @@
     },
     {
       "type": 0,
-      "value": " - Étudiants"
+      "value": " - Élèves"
     }
   ],
   "CodeComparison.defaultOption": [
@@ -1104,7 +1104,7 @@
   "Home.classesDescription": [
     {
       "type": 0,
-      "value": "Gérez vos leçons et étudiants."
+      "value": "Gérez vos leçons et élèves."
     }
   ],
   "Home.description": [
@@ -1256,6 +1256,10 @@
     }
   ],
   "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "Cette page affiche les cours que vous avez créés. Cliquez sur un cours donné pour modifier les leçons et voir les progrès de vos élèves."
+    }
   ],
   "ListClasses.pageTitle": [
     {
@@ -1308,19 +1312,19 @@
   "LoginPage.authenticate.microsoft": [
     {
       "type": 0,
-      "value": "Authentifier avec Microsoft"
+      "value": "S'authentifier avec Microsoft"
     }
   ],
   "LoginPage.cardDescription": [
     {
       "type": 0,
-      "value": "Log in to access your classes, tasks, and learning resources."
+      "value": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
     }
   ],
   "LoginPage.cardTitle": [
     {
       "type": 0,
-      "value": "Teacher Login"
+      "value": "Connexion Enseignant"
     }
   ],
   "LoginPage.header": [
@@ -1332,7 +1336,7 @@
   "LoginPage.pageDescription": [
     {
       "type": 0,
-      "value": "You're about to access the teacher portal."
+      "value": "Vous êtes sur le point d'accéder au portail des enseignants."
     }
   ],
   "LoginPage.title": [
@@ -1404,13 +1408,13 @@
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": [
     {
       "type": 0,
-      "value": "Les identités des étudiants seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des étudiants."
+      "value": "Les identités des élèves seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des élèves."
     }
   ],
   "OpenIdConnectRedirect.userSignInDescription": [
     {
       "type": 0,
-      "value": "Les identités des étudiants sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
+      "value": "Les identités des élèves sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
     }
   ],
   "ProgressList.columns.actions": [
@@ -1440,7 +1444,7 @@
   "ProgressList.emptyState.title": [
     {
       "type": 0,
-      "value": "There is no progress data available."
+      "value": "Il n'y a pas encore de données sur le travail des élèves."
     }
   ],
   "SessionActions.copySessionLink": [
@@ -1600,7 +1604,7 @@
   "SessionList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no lessons yet. Let's create some!"
+      "value": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
     }
   ],
   "SessionNavigation.lessonDetails": [
@@ -1634,49 +1638,49 @@
   "Showcase.addResult": [
     {
       "type": 0,
-      "value": "Add Result to Showcase"
+      "value": "Ajouter une solution à la vitrine"
     }
   ],
   "Showcase.instructions": [
     {
       "type": 0,
-      "value": "Sort and preview the showcased solutions."
+      "value": "Tri et aperçu des solutions en vitrine."
     }
   ],
   "Showcase.noStudentSelectedHelp": [
     {
       "type": 0,
-      "value": "Click on a student name to view their solution."
+      "value": "Cliquez sur le nom d'un élève pour voir sa solution."
     }
   ],
   "Showcase.openShowCasePage": [
     {
       "type": 0,
-      "value": "Open Showcase Page"
+      "value": "Ouvrir la vitrine"
     }
   ],
   "Showcase.unknownAnalysisType": [
     {
       "type": 0,
-      "value": "Unknown analysis type"
+      "value": "Type d'analyse inconnu"
     }
   ],
   "ShowcasePresentation.next": [
     {
       "type": 0,
-      "value": "Next"
+      "value": "Suivant"
     }
   ],
   "ShowcasePresentation.previous": [
     {
       "type": 0,
-      "value": "Next"
+      "value": "Précédent"
     }
   ],
   "ShowcasePresentation.unknownAnalysisType": [
     {
       "type": 0,
-      "value": "Unknown analysis type"
+      "value": "Type d'analyse inconnu"
     }
   ],
   "SolveTask.correctSolutionSubmitted": [
@@ -1768,7 +1772,7 @@
   "StudentList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no students yet."
+      "value": "Il n'y a pas encore d'élèves."
     }
   ],
   "StudentLoginPage.authenticate.microsoft": [
@@ -1780,13 +1784,13 @@
   "StudentLoginPage.cardDescription": [
     {
       "type": 0,
-      "value": "Please authenticate below to access your lesson."
+      "value": "Authentifies-toi ci-dessous pour accéder à la leçon."
     }
   ],
   "StudentLoginPage.cardTitle": [
     {
       "type": 0,
-      "value": "Student Login"
+      "value": "Connexion Étudiant"
     }
   ],
   "StudentLoginPage.header": [
@@ -1834,37 +1838,37 @@
   "TaskActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Are you sure? You can't undo this action afterwards."
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
     }
   ],
   "TaskActions.deleteConfirmation.cancel": [
     {
       "type": 0,
-      "value": "Cancel"
+      "value": "Annuler"
     }
   ],
   "TaskActions.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Delete Task"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskActions.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Delete Task"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskActions.deleteErrorMessage": [
     {
       "type": 0,
-      "value": "There was an error deleting the task. Please try again!"
+      "value": "Une erreur est survenue lors de l'effacement de l'activité. Merci de re-essayer!"
     }
   ],
   "TaskActions.deleteSuccessMessage": [
     {
       "type": 0,
-      "value": "Task deleted successfully"
+      "value": "L'activité a été effacée avec succès"
     }
   ],
   "TaskActions.deleteTask": [
@@ -2096,13 +2100,13 @@
   "TaskInstanceNavigation.showcaseTab": [
     {
       "type": 0,
-      "value": "Showcase"
+      "value": "Vitrine"
     }
   ],
   "TaskInstanceNavigation.studentResults": [
     {
       "type": 0,
-      "value": "Résultats des Étudiants"
+      "value": "Résultats des Élèves"
     }
   ],
   "TaskInstanceNavigation.taskDetails": [
@@ -2148,7 +2152,7 @@
   "TaskInstanceProgressList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no students yet."
+      "value": "Il n'y a pas encore d'élèves."
     }
   ],
   "TaskInstanceReferenceSolutions.submit": [
@@ -2170,7 +2174,7 @@
   "TaskInstanceShowcase.title": [
     {
       "type": 0,
-      "value": "Showcase - "
+      "value": "Vitrine - "
     },
     {
       "type": 1,
@@ -2180,25 +2184,25 @@
   "TaskInstanceShowcasePresent.back": [
     {
       "type": 0,
-      "value": "Back to task details"
+      "value": "Retourner aux détails de l'activité"
     }
   ],
   "TaskInstanceShowcasePresent.heading": [
     {
       "type": 0,
-      "value": "Showcase"
+      "value": "Vitrine"
     }
   ],
   "TaskInstanceShowcasePresent.noSolutionsSelected": [
     {
       "type": 0,
-      "value": "No solutions selected for showcase presentation."
+      "value": "Aucune solution sélectionnée pour la présentation en vitrine."
     }
   ],
   "TaskInstanceShowcasePresent.title": [
     {
       "type": 0,
-      "value": "Showcase - "
+      "value": "Vitrine - "
     },
     {
       "type": 1,
@@ -2256,7 +2260,7 @@
   "TaskInstanceTable.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no tasks yet."
+      "value": "Il n'y a pas encore d'activités."
     }
   ],
   "TaskInstanceTable.viewDetails": [
@@ -2398,7 +2402,7 @@
   "TaskTable.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no tasks yet. Let's create some!"
+      "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
   "TaskTable.viewDetails": [
