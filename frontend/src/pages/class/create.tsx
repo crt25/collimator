@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { toaster } from "@/components/Toaster";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 import Breadcrumbs from "@/components/Breadcrumbs";

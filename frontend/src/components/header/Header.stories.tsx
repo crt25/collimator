@@ -1,8 +1,8 @@
+import Header from "./Header";
 import {
   AuthenticatedTeacher,
   Unauthenticated,
 } from "@/contexts/__tests__/decorators/authentication";
-import Header from "./Header";
 
 export default {
   component: Header,

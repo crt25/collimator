@@ -10,9 +10,9 @@ import {
 import Head from "next/head";
 import { FaRegUser } from "react-icons/fa6";
 import { chakra, Container } from "@chakra-ui/react";
+import AvatarMenu from "../Avatar";
+import LanguageChooser from "../LanguageChooser";
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
-import AvatarMenu from "./Avatar";
-import LanguageChooser from "./LanguageChooser";
 
 const messages = defineMessages({
   applicationName: {

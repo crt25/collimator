@@ -9,7 +9,7 @@ import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSol
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";

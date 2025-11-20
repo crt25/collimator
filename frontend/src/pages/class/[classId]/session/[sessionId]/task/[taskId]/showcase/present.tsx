@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from "react-intl";
 import { Button, Container, HStack, Icon, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { LuCornerUpLeft } from "react-icons/lu";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";

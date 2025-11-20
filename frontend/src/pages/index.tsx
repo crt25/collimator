@@ -1,7 +1,7 @@
 import { defineMessages, FormattedMessage } from "react-intl";
 import { Grid, GridItem, Card, Container, Link } from "@chakra-ui/react";
 import { useContext } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
 import { UserRole } from "@/types/user/user-role";
