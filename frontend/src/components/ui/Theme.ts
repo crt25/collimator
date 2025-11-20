@@ -58,6 +58,7 @@ const config = defineConfig({
         lg: { value: "1.5rem" },
         xl: { value: "2rem" },
         "4xl": { value: "5rem" },
+        "5xl": { value: "10rem" },
       },
       padding: {
         sm: { value: "0.5rem" },
