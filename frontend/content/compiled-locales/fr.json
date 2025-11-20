@@ -137,6 +137,12 @@
       "value": "Nom de la fonction"
     }
   ],
+  "ButtonMessages.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
   "Category.allTestsPass": [
     {
       "type": 0,
@@ -379,6 +385,18 @@
     {
       "type": 0,
       "value": " - Leçons"
+    }
+  ],
+  "ClassStatus.current": [
+    {
+      "type": 0,
+      "value": "Courant"
+    }
+  ],
+  "ClassStatus.past": [
+    {
+      "type": 0,
+      "value": "Passé"
     }
   ],
   "ClassUserList.title": [
@@ -1255,6 +1273,18 @@
       "value": "Détails de la leçon"
     }
   ],
+  "List.delete": [
+    {
+      "type": 0,
+      "value": "Effacer"
+    }
+  ],
+  "List.filters.search.placeholder": [
+    {
+      "type": 0,
+      "value": "Chercher..."
+    }
+  ],
   "ListClasses.header": [
     {
       "type": 0,
@@ -1369,6 +1399,12 @@
       "value": "Nombre de boucles"
     }
   ],
+  "Modal.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
   "OpenIdConnectRedirect.authenticating": [
     {
       "type": 0,
@@ -1447,10 +1483,28 @@
       "value": "Activité"
     }
   ],
+  "ProgressList.completedStatus": [
+    {
+      "type": 0,
+      "value": "Complété"
+    }
+  ],
   "ProgressList.emptyState.title": [
     {
       "type": 0,
       "value": "Il n'y a pas encore de données sur le travail des élèves."
+    }
+  ],
+  "ProgressList.incompleteStatus": [
+    {
+      "type": 0,
+      "value": "Incomplet"
+    }
+  ],
+  "ProgressList.notStartedStatus": [
+    {
+      "type": 0,
+      "value": "Pas commencé"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -2533,6 +2587,30 @@
     {
       "type": 0,
       "value": "Détails de l'utilisateur"
+    }
+  ],
+  "UserRole.admin": [
+    {
+      "type": 0,
+      "value": "Administrateur"
+    }
+  ],
+  "UserRole.jupyter": [
+    {
+      "type": 0,
+      "value": "Jupyter"
+    }
+  ],
+  "UserRole.scratch": [
+    {
+      "type": 0,
+      "value": "Scratch"
+    }
+  ],
+  "UserRole.teacher": [
+    {
+      "type": 0,
+      "value": "Enseignant"
     }
   ],
   "UserSignIn.newUserDescription": [

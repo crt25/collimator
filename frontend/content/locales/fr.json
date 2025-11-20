@@ -191,6 +191,9 @@
   "BuiltInFunctionCallCriterionFilterForm.functionName": {
     "message": "Nom de la fonction"
   },
+  "ButtonMessages.actions": {
+    "message": "Actions"
+  },
   "Category.allTestsPass": {
     "message": "Tous les tests réussissent"
   },
@@ -304,6 +307,12 @@
   },
   "ClassSessionList.title": {
     "message": "{name} - Leçons"
+  },
+  "ClassStatus.current": {
+    "message": "Courant"
+  },
+  "ClassStatus.past": {
+    "message": "Passé"
   },
   "ClassUserList.title": {
     "message": "{name} - Élèves"
@@ -600,6 +609,12 @@
   "LessonNavigation.lessonTab": {
     "message": "Détails de la leçon"
   },
+  "List.delete": {
+    "message": "Effacer"
+  },
+  "List.filters.search.placeholder": {
+    "message": "Chercher..."
+  },
   "ListClasses.header": {
     "message": "Gestion des leçons"
   },
@@ -657,6 +672,9 @@
   "LoopCriterionFilterForm.count": {
     "message": "Nombre de boucles"
   },
+  "Modal.cancel": {
+    "message": "Annuler"
+  },
   "OpenIdConnectRedirect.authenticating": {
     "message": "Vous êtes en train de vous authentifier..."
   },
@@ -696,8 +714,17 @@
   "ProgressList.columns.taskColumn": {
     "message": "Activité"
   },
+  "ProgressList.completedStatus": {
+    "message": "Complété"
+  },
   "ProgressList.emptyState.title": {
     "message": "Il n'y a pas encore de données sur le travail des élèves."
+  },
+  "ProgressList.incompleteStatus": {
+    "message": "Incomplet"
+  },
+  "ProgressList.notStartedStatus": {
+    "message": "Pas commencé"
   },
   "SessionActions.copySessionLink": {
     "message": "Copier le lien de la leçon"
@@ -1199,6 +1226,18 @@
   },
   "UserNavigation.userTab": {
     "message": "Détails de l'utilisateur"
+  },
+  "UserRole.admin": {
+    "message": "Administrateur"
+  },
+  "UserRole.jupyter": {
+    "message": "Jupyter"
+  },
+  "UserRole.scratch": {
+    "message": "Scratch"
+  },
+  "UserRole.teacher": {
+    "message": "Enseignant"
   },
   "UserSignIn.newUserDescription": {
     "message": "Configurer le chiffrement pour les identités des élèves"

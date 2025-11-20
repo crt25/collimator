@@ -137,6 +137,12 @@
       "value": "Function Name"
     }
   ],
+  "ButtonMessages.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
   "Category.allTestsPass": [
     {
       "type": 0,
@@ -379,6 +385,18 @@
     {
       "type": 0,
       "value": " - Lessons"
+    }
+  ],
+  "ClassStatus.current": [
+    {
+      "type": 0,
+      "value": "Current"
+    }
+  ],
+  "ClassStatus.past": [
+    {
+      "type": 0,
+      "value": "Past"
     }
   ],
   "ClassUserList.title": [
@@ -1005,6 +1023,18 @@
       "value": "Lesson Details"
     }
   ],
+  "List.delete": [
+    {
+      "type": 0,
+      "value": "Delete"
+    }
+  ],
+  "List.filters.search.placeholder": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
   "ListClasses.header": [
     {
       "type": 0,
@@ -1119,6 +1149,12 @@
       "value": "Number of loops"
     }
   ],
+  "Modal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
   "OpenIdConnectRedirect.authenticating": [
     {
       "type": 0,
@@ -1197,10 +1233,28 @@
       "value": "Task"
     }
   ],
+  "ProgressList.completedStatus": [
+    {
+      "type": 0,
+      "value": "Complete"
+    }
+  ],
   "ProgressList.emptyState.title": [
     {
       "type": 0,
       "value": "There is no progress data available."
+    }
+  ],
+  "ProgressList.incompleteStatus": [
+    {
+      "type": 0,
+      "value": "Incomplete"
+    }
+  ],
+  "ProgressList.notStartedStatus": [
+    {
+      "type": 0,
+      "value": "Not Started"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -2283,6 +2337,30 @@
     {
       "type": 0,
       "value": "User Details"
+    }
+  ],
+  "UserRole.admin": [
+    {
+      "type": 0,
+      "value": "Admin"
+    }
+  ],
+  "UserRole.jupyter": [
+    {
+      "type": 0,
+      "value": "Jupyter"
+    }
+  ],
+  "UserRole.scratch": [
+    {
+      "type": 0,
+      "value": "Scratch"
+    }
+  ],
+  "UserRole.teacher": [
+    {
+      "type": 0,
+      "value": "Teacher"
     }
   ],
   "UserSignIn.newUserDescription": [

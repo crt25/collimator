@@ -9,6 +9,7 @@ import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClass
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
@@ -16,7 +17,6 @@ import Button from "../Button";
 import ChakraDataTable from "../ChakraDataTable";
 import { ShareModal } from "../form/ShareModal";
 import { EmptyState } from "../EmptyState";
-import SessionShareMessages from "./SessionShareMessages";
 
 const SessionListWrapper = chakra("div", {
   base: {

@@ -68,6 +68,9 @@
   "BuiltInFunctionCallCriterionFilterForm.functionName": {
     "message": "Function Name"
   },
+  "ButtonMessages.actions": {
+    "message": "Actions"
+  },
   "Category.allTestsPass": {
     "message": "All tests pass"
   },
@@ -181,6 +184,12 @@
   },
   "ClassSessionList.title": {
     "message": "{name} - Lessons"
+  },
+  "ClassStatus.current": {
+    "message": "Current"
+  },
+  "ClassStatus.past": {
+    "message": "Past"
   },
   "ClassUserList.title": {
     "message": "{name} - Students"
@@ -477,6 +486,12 @@
   "LessonNavigation.lessonTab": {
     "message": "Lesson Details"
   },
+  "List.delete": {
+    "message": "Delete"
+  },
+  "List.filters.search.placeholder": {
+    "message": "Search..."
+  },
   "ListClasses.header": {
     "message": "Classes"
   },
@@ -534,6 +549,9 @@
   "LoopCriterionFilterForm.count": {
     "message": "Number of loops"
   },
+  "Modal.cancel": {
+    "message": "Cancel"
+  },
   "OpenIdConnectRedirect.authenticating": {
     "message": "You are being authenticated..."
   },
@@ -573,8 +591,17 @@
   "ProgressList.columns.taskColumn": {
     "message": "Task"
   },
+  "ProgressList.completedStatus": {
+    "message": "Complete"
+  },
   "ProgressList.emptyState.title": {
     "message": "There is no progress data available."
+  },
+  "ProgressList.incompleteStatus": {
+    "message": "Incomplete"
+  },
+  "ProgressList.notStartedStatus": {
+    "message": "Not Started"
   },
   "SessionActions.copySessionLink": {
     "message": "Copy Lesson Link"
@@ -1076,6 +1103,18 @@
   },
   "UserNavigation.userTab": {
     "message": "User Details"
+  },
+  "UserRole.admin": {
+    "message": "Admin"
+  },
+  "UserRole.jupyter": {
+    "message": "Jupyter"
+  },
+  "UserRole.scratch": {
+    "message": "Scratch"
+  },
+  "UserRole.teacher": {
+    "message": "Teacher"
   },
   "UserSignIn.newUserDescription": {
     "message": "Set up encryption for student identities"

@@ -12,7 +12,7 @@
     "start": "cross-env NODE_OPTIONS=--preserve-symlinks next start -p 3000",
     "lint": "next lint",
     "update:api": "shx rm -rf src/api/collimator/generated && orval",
-    "i18n:extract": "formatjs extract 'src/{pages,components,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
+    "i18n:extract": "formatjs extract 'src/{pages,components,i18n,sections}/**/*.{js,ts,tsx}' --format crowdin --out-file content/locales/en.json",
     "i18n:compile": "formatjs compile-folder --ast --format crowdin content/locales content/compiled-locales",
     "i18n:fill": "node ./scripts/fill-locales.mjs",
     "i18n:update": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",

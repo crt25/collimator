@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { Link } from "@chakra-ui/react";
 import { ButtonMessages } from "@/i18n/button-messages";
+import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
@@ -12,7 +13,6 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
 import DropdownMenu from "../DropdownMenu";
-import SessionShareMessages from "./SessionShareMessages";
 
 const messages = defineMessages({
   copySessionLink: {
