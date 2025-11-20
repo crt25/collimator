@@ -81,11 +81,13 @@ const InternalSelect = (
     isDirty,
     errorMessage,
     children,
+    ...rest
   } = props;
 
   return (
     <Field.Root invalid={!!errorMessage}>
       <ChakraSelect.Root
+        {...rest}
         name={name}
         value={value !== undefined ? [value.toString()] : []}
         onValueChange={(v) => onValueChange?.(v.value[0])}
@@ -173,6 +175,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
           name={props.name}
           render={({ field, fieldState }) => (
             <InternalSelect
+              {...rest}
               name={field.name}
               value={field.value}
               onValueChange={field.onChange}
@@ -183,7 +186,6 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               variant={variant}
               label={label}
               placeholder={placeholder}
-              showEditedBadge={props.showEditedBadge}
             >
               {children}
             </InternalSelect>
@@ -199,11 +201,11 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
       noMargin={noMargin}
     >
       <InternalSelect
+        {...rest}
         collection={collection}
         variant={variant}
         label={label}
         placeholder={placeholder}
-        {...rest}
       >
         {children}
       </InternalSelect>

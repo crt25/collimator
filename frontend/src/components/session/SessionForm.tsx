@@ -211,6 +211,51 @@ const SessionForm = ({
                   showEditedBadges && dirtyFields.description && <EditedBadge />
                 }
               />
+
+              <SortableListInput
+                items={selectedTasks}
+                updateItems={setSelectedTasks}
+                testId="selected-tasks"
+              >
+                {(task) => (
+                  <TaskListElement>
+                    <span>{task.title}</span>
+                    <RemoveTask
+                      data-testid="remove-task"
+                      onClick={() =>
+                        setSelectedTasks(
+                          selectedTasks.filter((t) => t !== task),
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </RemoveTask>
+                  </TaskListElement>
+                )}
+              </SortableListInput>
+
+              <Select
+                label={messages.addTask}
+                options={[
+                  {
+                    value: addTaskEmptyId.toString(),
+                    label: messages.selectTaskToAdd,
+                  },
+                  // in theory tasks should never be undefined, but it seems to happen sometimes??
+                  // TODO: investigate why this happens
+                  ...(Array.isArray(tasks) ? tasks : [])
+                    // don't list again tasks that are already selected
+                    .filter((t) => !selectedTaskIds.includes(t.id))
+                    .map((t) => ({
+                      value: t.id.toString(),
+                      label: t.title,
+                    })),
+                ]}
+                data-testid="add-task"
+                onValueChange={onAddTask}
+                value={addTaskId.toString()}
+                marginTop="lg"
+              />
             </GridItem>
 
             <GridItem colSpan={{ base: 12, md: 6 }}>
@@ -233,48 +278,6 @@ const SessionForm = ({
               />
             </GridItem>
           </Grid>
-
-          <SortableListInput
-            items={selectedTasks}
-            updateItems={setSelectedTasks}
-            testId="selected-tasks"
-          >
-            {(task) => (
-              <TaskListElement>
-                <span>{task.title}</span>
-                <RemoveTask
-                  data-testid="remove-task"
-                  onClick={() =>
-                    setSelectedTasks(selectedTasks.filter((t) => t !== task))
-                  }
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </RemoveTask>
-              </TaskListElement>
-            )}
-          </SortableListInput>
-
-          <Select
-            label={messages.addTask}
-            options={[
-              {
-                value: addTaskEmptyId.toString(),
-                label: messages.selectTaskToAdd,
-              },
-              // in theory tasks should never be undefined, but it seems to happen sometimes??
-              // TODO: investigate why this happens
-              ...(Array.isArray(tasks) ? tasks : [])
-                // don't list again tasks that are already selected
-                .filter((t) => !selectedTaskIds.includes(t.id))
-                .map((t) => ({
-                  value: t.id.toString(),
-                  label: t.title,
-                })),
-            ]}
-            data-testid="add-task"
-            onValueChange={onAddTask}
-            value={addTaskId.toString()}
-          />
 
           <SubmitFormButton label={submitMessage} />
         </form>
