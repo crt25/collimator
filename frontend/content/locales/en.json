@@ -95,7 +95,25 @@
   "Category.yAxis": {
     "message": "y-Axis"
   },
-  "ClassActions.deleteSession": {
+  "ClassActions.deleteClass": {
+    "message": "Delete Class"
+  },
+  "ClassDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "ClassDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "ClassDeleteModal.confirm": {
+    "message": "Delete Class"
+  },
+  "ClassDeleteModal.error": {
+    "message": "There was an error deleting the class. Please try again!"
+  },
+  "ClassDeleteModal.success": {
+    "message": "Class deleted successfully"
+  },
+  "ClassDeleteModal.title": {
     "message": "Delete Class"
   },
   "ClassDetail.actions": {
@@ -606,26 +624,26 @@
   "SessionActions.copySessionLink": {
     "message": "Copy Lesson Link"
   },
-  "SessionActions.deleteConfirmation.body": {
-    "message": "Are you sure? You can't undo this action afterwards."
-  },
-  "SessionActions.deleteConfirmation.cancel": {
-    "message": "Cancel"
-  },
-  "SessionActions.deleteConfirmation.confirm": {
-    "message": "Delete Lesson"
-  },
-  "SessionActions.deleteConfirmation.title": {
-    "message": "Delete Lesson"
-  },
-  "SessionActions.deleteErrorMessage": {
-    "message": "There was an error deleting the lesson. Please try again!"
-  },
   "SessionActions.deleteSession": {
     "message": "Delete Lesson"
   },
-  "SessionActions.deleteSuccessMessage": {
+  "SessionDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "SessionDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "SessionDeleteModal.confirm": {
+    "message": "Delete Lesson"
+  },
+  "SessionDeleteModal.error": {
+    "message": "There was an error deleting the lesson. Please try again!"
+  },
+  "SessionDeleteModal.success": {
     "message": "Lesson deleted successfully"
+  },
+  "SessionDeleteModal.title": {
+    "message": "Delete Lesson"
   },
   "SessionDetail.errorMessage": {
     "message": "There was an error saving the changes. Please try to save again!"

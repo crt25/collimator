@@ -10,6 +10,7 @@ import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ShareModal } from "@/components/form/ShareModal";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { SessionDeleteModalMessages } from "@/i18n/session-delete-modal-messages";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
 import DropdownMenu from "../DropdownMenu";
@@ -22,30 +23,6 @@ const messages = defineMessages({
   deleteSession: {
     id: "SessionActions.deleteSession",
     defaultMessage: "Delete Lesson",
-  },
-  deleteConfirmationTitle: {
-    id: "SessionActions.deleteConfirmation.title",
-    defaultMessage: "Delete Lesson",
-  },
-  deleteConfirmationBody: {
-    id: "SessionActions.deleteConfirmation.body",
-    defaultMessage: "Are you sure? You can't undo this action afterwards.",
-  },
-  deleteConfirmationConfirm: {
-    id: "SessionActions.deleteConfirmation.confirm",
-    defaultMessage: "Delete Lesson",
-  },
-  deleteConfirmationCancel: {
-    id: "SessionActions.deleteConfirmation.cancel",
-    defaultMessage: "Cancel",
-  },
-  deleteSuccessMessage: {
-    id: "SessionActions.deleteSuccessMessage",
-    defaultMessage: "Lesson deleted successfully",
-  },
-  deleteErrorMessage: {
-    id: "SessionActions.deleteErrorMessage",
-    defaultMessage: "There was an error deleting the lesson. Please try again!",
   },
 });
 
@@ -72,12 +49,12 @@ const SessionActions = ({
     try {
       await deleteSession(klass.id, session.id);
       toaster.success({
-        title: intl.formatMessage(messages.deleteSuccessMessage),
+        title: intl.formatMessage(SessionDeleteModalMessages.success),
       });
       router.push(`/class/${klass.id}/session`);
     } catch {
       toaster.error({
-        title: intl.formatMessage(messages.deleteErrorMessage),
+        title: intl.formatMessage(SessionDeleteModalMessages.error),
       });
     }
   };
@@ -111,12 +88,12 @@ const SessionActions = ({
       </DropdownMenu>
 
       <Modal
-        title={intl.formatMessage(messages.deleteConfirmationTitle)}
-        description={intl.formatMessage(messages.deleteConfirmationBody)}
+        title={intl.formatMessage(SessionDeleteModalMessages.title)}
+        description={intl.formatMessage(SessionDeleteModalMessages.body)}
         confirmButtonText={intl.formatMessage(
-          messages.deleteConfirmationConfirm,
+          SessionDeleteModalMessages.confirm,
         )}
-        cancelButtonText={intl.formatMessage(messages.deleteConfirmationCancel)}
+        cancelButtonText={intl.formatMessage(SessionDeleteModalMessages.cancel)}
         onConfirm={handleDeleteConfirm}
         open={isDeleteModalOpen}
         onOpenChange={(details) => setIsDeleteModalOpen(details.open)}

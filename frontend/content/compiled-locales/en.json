@@ -191,7 +191,43 @@
       "value": "y-Axis"
     }
   ],
-  "ClassActions.deleteSession": [
+  "ClassActions.deleteClass": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "ClassDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "ClassDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the class. Please try again!"
+    }
+  ],
+  "ClassDeleteModal.success": [
+    {
+      "type": 0,
+      "value": "Class deleted successfully"
+    }
+  ],
+  "ClassDeleteModal.title": [
     {
       "type": 0,
       "value": "Delete Class"
@@ -1263,46 +1299,46 @@
       "value": "Copy Lesson Link"
     }
   ],
-  "SessionActions.deleteConfirmation.body": [
-    {
-      "type": 0,
-      "value": "Are you sure? You can't undo this action afterwards."
-    }
-  ],
-  "SessionActions.deleteConfirmation.cancel": [
-    {
-      "type": 0,
-      "value": "Cancel"
-    }
-  ],
-  "SessionActions.deleteConfirmation.confirm": [
-    {
-      "type": 0,
-      "value": "Delete Lesson"
-    }
-  ],
-  "SessionActions.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Delete Lesson"
-    }
-  ],
-  "SessionActions.deleteErrorMessage": [
-    {
-      "type": 0,
-      "value": "There was an error deleting the lesson. Please try again!"
-    }
-  ],
   "SessionActions.deleteSession": [
     {
       "type": 0,
       "value": "Delete Lesson"
     }
   ],
-  "SessionActions.deleteSuccessMessage": [
+  "SessionDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "SessionDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "SessionDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Lesson"
+    }
+  ],
+  "SessionDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the lesson. Please try again!"
+    }
+  ],
+  "SessionDeleteModal.success": [
     {
       "type": 0,
       "value": "Lesson deleted successfully"
+    }
+  ],
+  "SessionDeleteModal.title": [
+    {
+      "type": 0,
+      "value": "Delete Lesson"
     }
   ],
   "SessionDetail.errorMessage": [

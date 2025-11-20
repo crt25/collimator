@@ -191,10 +191,46 @@
       "value": "Axe y"
     }
   ],
-  "ClassActions.deleteSession": [
+  "ClassActions.deleteClass": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacement de la classe"
+    }
+  ],
+  "ClassDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action ensuite."
+    }
+  ],
+  "ClassDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "ClassDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
+    }
+  ],
+  "ClassDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de l'effacement de la classe. Veuillez re-essayer."
+    }
+  ],
+  "ClassDeleteModal.success": [
+    {
+      "type": 0,
+      "value": "La classe a été effacée."
+    }
+  ],
+  "ClassDeleteModal.title": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.actions": [
@@ -206,7 +242,7 @@
   "ClassDetail.deleteAction": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.deleteConfirmation.body": [
@@ -224,13 +260,13 @@
   "ClassDetail.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer la classe : \""
+      "value": "Effacer la classe : \""
     },
     {
       "type": 1,
@@ -244,13 +280,13 @@
   "ClassDetail.deleteErrorMessage": [
     {
       "type": 0,
-      "value": "Une erreur est survenue lors de la suppression de la classe. Veuillez réessayer !"
+      "value": "Une erreur est survenue lors de l'effacement de la classe. Veuillez réessayer !"
     }
   ],
   "ClassDetail.deleteSuccessMessage": [
     {
       "type": 0,
-      "value": "Classe supprimée avec succès"
+      "value": "Classe effacée avec succès"
     }
   ],
   "ClassDetail.errorMessage": [
@@ -332,19 +368,19 @@
   "ClassList.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette classe ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette classe ?"
     }
   ],
   "ClassList.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassList.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassList.emptyState.title": [
@@ -717,6 +753,12 @@
       "value": "filtered out"
     }
   ],
+  "DEPRECATED: ClassActions.deleteSession": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
+    }
+  ],
   "DEPRECATED: ClassDetail.table.numberOfStudents": [
     {
       "type": 0,
@@ -899,6 +941,42 @@
     {
       "type": 0,
       "value": "Time on Task"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer la leçon"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Effacer la leçon"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteErrorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de l'effacement de la leçon. Veuillez réessayer !"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteSuccessMessage": [
+    {
+      "type": 0,
+      "value": "Leçon effacée avec succès"
     }
   ],
   "DEPRECATED: SessionAnalysis.header": [
@@ -1513,46 +1591,46 @@
       "value": "Copier le lien de la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.body": [
+  "SessionActions.deleteSession": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+      "value": "Effacer la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.cancel": [
+  "SessionDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+    }
+  ],
+  "SessionDeleteModal.cancel": [
     {
       "type": 0,
       "value": "Annuler"
     }
   ],
-  "SessionActions.deleteConfirmation.confirm": [
+  "SessionDeleteModal.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
+      "value": "Effacer la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.title": [
+  "SessionDeleteModal.error": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
+      "value": "Une erreur est survenue lors de l'effacement de la leçon. Veuillez re-essayer."
     }
   ],
-  "SessionActions.deleteErrorMessage": [
+  "SessionDeleteModal.success": [
     {
       "type": 0,
-      "value": "Une erreur s'est produite lors de la suppression de la leçon. Veuillez réessayer !"
+      "value": "La leçon a été effacée avec succès"
     }
   ],
-  "SessionActions.deleteSession": [
+  "SessionDeleteModal.title": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
-    }
-  ],
-  "SessionActions.deleteSuccessMessage": [
-    {
-      "type": 0,
-      "value": "Leçon supprimée avec succès"
+      "value": "Effacer la leçon"
     }
   ],
   "SessionDetail.errorMessage": [
@@ -1958,7 +2036,7 @@
   "TaskActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskDetail.title": [
@@ -2320,25 +2398,25 @@
   "TaskInstanceTable.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette activité ?"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.emptyState.title": [
@@ -2426,7 +2504,7 @@
   "TaskSessionActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.columns.actionsColumn": [
@@ -2462,25 +2540,25 @@
   "TaskTable.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette activité ?"
     }
   ],
   "TaskTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.emptyState.title": [
@@ -2562,19 +2640,19 @@
   "UserList.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
     }
   ],
   "UserList.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'utilisateur"
+      "value": "Effacer l'utilisateur"
     }
   ],
   "UserList.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'utilisateur"
+      "value": "Effacer l'utilisateur"
     }
   ],
   "UserList.generateRegistrationToken": [

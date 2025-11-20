@@ -122,6 +122,27 @@
   "DEPRECATED: SessionForm.sharingType.public": {
     "message": "Public"
   },
+  "DEPRECATED: ClassActions.deleteSession": {
+    "message": "Effacer la classe"
+  },
+  "DEPRECATED: SessionActions.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+  },
+  "DEPRECATED: SessionActions.deleteConfirmation.cancel": {
+    "message": "Annuler"
+  },
+  "DEPRECATED: SessionActions.deleteConfirmation.confirm": {
+    "message": "Effacer la leçon"
+  },
+  "DEPRECATED: SessionActions.deleteConfirmation.title": {
+    "message": "Effacer la leçon"
+  },
+  "DEPRECATED: SessionActions.deleteErrorMessage": {
+    "message": "Une erreur s'est produite lors de l'effacement de la leçon. Veuillez réessayer !"
+  },
+  "DEPRECATED: SessionActions.deleteSuccessMessage": {
+    "message": "Leçon effacée avec succès"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -218,14 +239,32 @@
   "Category.yAxis": {
     "message": "Axe y"
   },
-  "ClassActions.deleteSession": {
-    "message": "Supprimer la classe"
+  "ClassActions.deleteClass": {
+    "message": "Effacement de la classe"
+  },
+  "ClassDeleteModal.body": {
+    "message": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action ensuite."
+  },
+  "ClassDeleteModal.cancel": {
+    "message": "Annuler"
+  },
+  "ClassDeleteModal.confirm": {
+    "message": "Effacer la classe"
+  },
+  "ClassDeleteModal.error": {
+    "message": "Une erreur est survenue lors de l'effacement de la classe. Veuillez re-essayer."
+  },
+  "ClassDeleteModal.success": {
+    "message": "La classe a été effacée."
+  },
+  "ClassDeleteModal.title": {
+    "message": "Effacer la classe"
   },
   "ClassDetail.actions": {
     "message": "Actions"
   },
   "ClassDetail.deleteAction": {
-    "message": "Supprimer la classe"
+    "message": "Effacer la classe"
   },
   "ClassDetail.deleteConfirmation.body": {
     "message": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action ensuite."
@@ -234,16 +273,16 @@
     "message": "Annuler"
   },
   "ClassDetail.deleteConfirmation.confirm": {
-    "message": "Supprimer la classe"
+    "message": "Effacer la classe"
   },
   "ClassDetail.deleteConfirmation.title": {
-    "message": "Supprimer la classe : \"{name}\""
+    "message": "Effacer la classe : \"{name}\""
   },
   "ClassDetail.deleteErrorMessage": {
-    "message": "Une erreur est survenue lors de la suppression de la classe. Veuillez réessayer !"
+    "message": "Une erreur est survenue lors de l'effacement de la classe. Veuillez réessayer !"
   },
   "ClassDetail.deleteSuccessMessage": {
-    "message": "Classe supprimée avec succès"
+    "message": "Classe effacée avec succès"
   },
   "ClassDetail.errorMessage": {
     "message": "Une erreur est survenue lors de l’enregistrement des modifications. Veuillez réessayer d’enregistrer !"
@@ -282,13 +321,13 @@
     "message": "Créer une classe"
   },
   "ClassList.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir supprimer cette classe ?"
+    "message": "Êtes-vous sûr de vouloir effacer cette classe ?"
   },
   "ClassList.deleteConfirmation.confirm": {
-    "message": "Supprimer la classe"
+    "message": "Effacer la classe"
   },
   "ClassList.deleteConfirmation.title": {
-    "message": "Supprimer la classe"
+    "message": "Effacer la classe"
   },
   "ClassList.emptyState.title": {
     "message": "Il n'y a pas encore de classes. Créez-en quelques unes!"
@@ -729,26 +768,26 @@
   "SessionActions.copySessionLink": {
     "message": "Copier le lien de la leçon"
   },
-  "SessionActions.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+  "SessionActions.deleteSession": {
+    "message": "Effacer la leçon"
   },
-  "SessionActions.deleteConfirmation.cancel": {
+  "SessionDeleteModal.body": {
+    "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+  },
+  "SessionDeleteModal.cancel": {
     "message": "Annuler"
   },
-  "SessionActions.deleteConfirmation.confirm": {
-    "message": "Supprimer la leçon"
+  "SessionDeleteModal.confirm": {
+    "message": "Effacer la leçon"
   },
-  "SessionActions.deleteConfirmation.title": {
-    "message": "Supprimer la leçon"
+  "SessionDeleteModal.error": {
+    "message": "Une erreur est survenue lors de l'effacement de la leçon. Veuillez re-essayer."
   },
-  "SessionActions.deleteErrorMessage": {
-    "message": "Une erreur s'est produite lors de la suppression de la leçon. Veuillez réessayer !"
+  "SessionDeleteModal.success": {
+    "message": "La leçon a été effacée avec succès"
   },
-  "SessionActions.deleteSession": {
-    "message": "Supprimer la leçon"
-  },
-  "SessionActions.deleteSuccessMessage": {
-    "message": "Leçon supprimée avec succès"
+  "SessionDeleteModal.title": {
+    "message": "Effacer la leçon"
   },
   "SessionDetail.errorMessage": {
     "message": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
@@ -937,7 +976,7 @@
     "message": "L'activité a été effacée avec succès"
   },
   "TaskActions.deleteTask": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskDetail.title": {
     "message": "Activité - {title}"
@@ -1096,16 +1135,16 @@
     "message": "Créer une activité"
   },
   "TaskInstanceTable.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+    "message": "Êtes-vous sûr de vouloir effacer cette activité ?"
   },
   "TaskInstanceTable.deleteConfirmation.confirm": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskInstanceTable.deleteConfirmation.title": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskInstanceTable.deleteTask": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskInstanceTable.emptyState.title": {
     "message": "Il n'y a pas encore d'activités."
@@ -1147,7 +1186,7 @@
     "message": "Modifier l'activité - {title}"
   },
   "TaskSessionActions.deleteTask": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Actions rapides"
@@ -1165,16 +1204,16 @@
     "message": "Créer une activité"
   },
   "TaskTable.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+    "message": "Êtes-vous sûr de vouloir effacer cette activité ?"
   },
   "TaskTable.deleteConfirmation.confirm": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskTable.deleteConfirmation.title": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskTable.deleteTask": {
-    "message": "Supprimer l'activité"
+    "message": "Effacer l'activité"
   },
   "TaskTable.emptyState.title": {
     "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
@@ -1213,13 +1252,13 @@
     "message": "Rôle"
   },
   "UserList.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+    "message": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
   },
   "UserList.deleteConfirmation.confirm": {
-    "message": "Supprimer l'utilisateur"
+    "message": "Effacer l'utilisateur"
   },
   "UserList.deleteConfirmation.title": {
-    "message": "Supprimer l'utilisateur"
+    "message": "Effacer l'utilisateur"
   },
   "UserList.generateRegistrationToken": {
     "message": "Obtenir le lien d'inscription"
