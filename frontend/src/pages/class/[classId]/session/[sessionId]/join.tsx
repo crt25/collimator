@@ -89,17 +89,9 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
-            <PageHeading
-              description={
-                <FormattedMessage
-                  id="JoinSession.taskList"
-                  defaultMessage="Tasks"
-                />
-              }
-            >
+            <PageHeading description={session.description}>
               {session.title}
             </PageHeading>
-            {/* TODO(CRT-219): replace TaskList with the student's task list  */}
             <TaskList classId={classId} session={session} />
             <Button
               onClick={onJoinSession}
