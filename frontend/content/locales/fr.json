@@ -441,7 +441,7 @@
     "message": "Créer un Utilisateur"
   },
   "CrtNavigation.classesTab": {
-    "message": "Leçons"
+    "message": "Classes"
   },
   "CrtNavigation.homeTab": {
     "message": "Accueil"
@@ -534,10 +534,10 @@
     "message": "Tableau de bord administrateur"
   },
   "Home.classes": {
-    "message": "Leçons"
+    "message": "Classes"
   },
   "Home.classesDescription": {
-    "message": "Gérez vos leçons et élèves."
+    "message": "Gérez vos classes, leçons et élèves."
   },
   "Home.description": {
     "message": "Bienvenue sur le tableau de bord des enseignants de ClassMosaic."
@@ -616,13 +616,13 @@
     "message": "Chercher..."
   },
   "ListClasses.header": {
-    "message": "Gestion des leçons"
+    "message": "Gestion des classes"
   },
   "ListClasses.pageDescription": {
-    "message": "Cette page affiche les cours que vous avez créés. Cliquez sur un cours donné pour modifier les leçons et voir les progrès de vos élèves."
+    "message": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
   },
   "ListClasses.pageTitle": {
-    "message": "Gestion des leçons"
+    "message": "Gestion des classes"
   },
   "ListLessons.header": {
     "message": "Gestion des leçons"

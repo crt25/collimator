@@ -666,7 +666,7 @@
   "CrtNavigation.classesTab": [
     {
       "type": 0,
-      "value": "Leçons"
+      "value": "Classes"
     }
   ],
   "CrtNavigation.homeTab": [
@@ -1122,13 +1122,13 @@
   "Home.classes": [
     {
       "type": 0,
-      "value": "Leçons"
+      "value": "Classes"
     }
   ],
   "Home.classesDescription": [
     {
       "type": 0,
-      "value": "Gérez vos leçons et élèves."
+      "value": "Gérez vos classes, leçons et élèves."
     }
   ],
   "Home.description": [
@@ -1288,19 +1288,19 @@
   "ListClasses.header": [
     {
       "type": 0,
-      "value": "Gestion des leçons"
+      "value": "Gestion des classes"
     }
   ],
   "ListClasses.pageDescription": [
     {
       "type": 0,
-      "value": "Cette page affiche les cours que vous avez créés. Cliquez sur un cours donné pour modifier les leçons et voir les progrès de vos élèves."
+      "value": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
     }
   ],
   "ListClasses.pageTitle": [
     {
       "type": 0,
-      "value": "Gestion des leçons"
+      "value": "Gestion des classes"
     }
   ],
   "ListLessons.header": [
