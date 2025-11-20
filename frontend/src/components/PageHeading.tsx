@@ -15,7 +15,7 @@ const PageHeading = ({
   children: React.ReactNode;
 }) => {
   const heading = (
-    <Box marginTop="4rem" marginBottom="4rem">
+    <Box marginTop="lg" marginBottom="lg">
       {description ? (
         <>
           <StyledPageHeading variant={variant} marginBottom="md">

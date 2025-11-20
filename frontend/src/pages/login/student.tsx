@@ -4,7 +4,6 @@ import { Center, Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import Header from "@/components/Header";
 import PageHeading from "@/components/PageHeading";
-import { TextComponent as Text } from "@/components/Text";
 import LoginCard from "@/components/login/LoginCard";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 
@@ -13,9 +12,13 @@ const messages = defineMessages({
     id: "StudentLoginPage.title",
     defaultMessage: "Student Login",
   },
+  header: {
+    id: "StudentLoginPage.header",
+    defaultMessage: "Welcome to ClassMosaic!",
+  },
   subtitle: {
     id: "StudentLoginPage.subtitle",
-    defaultMessage: "Welcome to ClassMosaic.",
+    defaultMessage: "You're about to join your lesson as a student.",
   },
   invalidParameters: {
     id: "StudentLoginPage.invalidParameters",
@@ -81,15 +84,11 @@ const StudentLoginPage = () => {
     <>
       <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeading>
-          <FormattedMessage {...messages.title} />
+        <PageHeading description={<FormattedMessage {...messages.subtitle} />}>
+          <FormattedMessage {...messages.header} />
         </PageHeading>
-        <Text fontSize="lg" marginBottom="sm">
-          <FormattedMessage {...messages.subtitle} />
-        </Text>
       </Container>
-
-      <Center>
+      <Center marginTop="xl">
         <LoginCard
           title={<FormattedMessage {...messages.cardTitle} />}
           description={<FormattedMessage {...messages.cardDescription} />}

@@ -14,11 +14,11 @@ const messages = defineMessages({
   },
   header: {
     id: "LoginPage.header",
-    defaultMessage: "Teacher Login",
+    defaultMessage: "Welcome to ClassMosaic!",
   },
   pageDescription: {
     id: "LoginPage.pageDescription",
-    defaultMessage: "Welcome to the ClassMosaic Teacher Portal.",
+    defaultMessage: "You're about to access the teacher portal.",
   },
   cardTitle: {
     id: "LoginPage.cardTitle",
@@ -56,14 +56,13 @@ const LoginPage = () => {
     <>
       <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeading>
+        <PageHeading
+          description={<FormattedMessage {...messages.pageDescription} />}
+        >
           <FormattedMessage {...messages.header} />
         </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage {...messages.pageDescription} />
-        </PageHeading>
       </Container>
-      <Center>
+      <Center marginTop="xl">
         <LoginCard
           title={<FormattedMessage {...messages.cardTitle} />}
           description={<FormattedMessage {...messages.cardDescription} />}
