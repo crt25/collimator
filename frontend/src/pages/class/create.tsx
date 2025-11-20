@@ -9,6 +9,8 @@ import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -75,7 +77,7 @@ const CreateClass = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
@@ -86,7 +88,8 @@ const CreateClass = () => {
         </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

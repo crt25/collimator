@@ -14,6 +14,8 @@ import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
 import TaskNavigation from "@/components/task/TaskNavigation";
 import TaskActions from "@/components/task/TaskActions";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -75,7 +77,7 @@ const EditTask = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -120,7 +122,8 @@ const EditTask = () => {
           }}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

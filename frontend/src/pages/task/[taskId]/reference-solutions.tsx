@@ -15,6 +15,8 @@ import TaskActions from "@/components/task/TaskActions";
 import TaskFormReferenceSolutions, {
   TaskFormReferenceSolutionsSubmission,
 } from "@/components/task/TaskFormReferenceSolutions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -64,7 +66,7 @@ const TaskReferenceSolutions = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -114,7 +116,8 @@ const TaskReferenceSolutions = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

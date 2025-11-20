@@ -10,6 +10,8 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import PageHeading from "@/components/PageHeading";
 import ClassActions from "@/components/class/ClassActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -27,7 +29,7 @@ const ClassSessionList = () => {
   const { data: klass, error, isLoading } = useClass(classId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -53,7 +55,8 @@ const ClassSessionList = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

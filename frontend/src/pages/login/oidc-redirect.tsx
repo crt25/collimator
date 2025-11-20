@@ -18,6 +18,8 @@ import {
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -135,7 +137,7 @@ const OpenIdConnectRedirect = () => {
 
   if (authenticationFailed) {
     return (
-      <>
+      <MaxScreenHeight>
         <Header title={messages.title} />
         <Container>
           <PageHeading>
@@ -151,7 +153,8 @@ const OpenIdConnectRedirect = () => {
             />
           </Link>
         </Container>
-      </>
+        <PageFooter />
+      </MaxScreenHeight>
     );
   }
 

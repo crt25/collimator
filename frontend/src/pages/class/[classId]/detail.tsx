@@ -13,6 +13,8 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import { toaster } from "@/components/Toaster";
 import ClassActions from "@/components/class/ClassActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -99,7 +101,7 @@ const ClassDetail = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{ name: klass?.name ?? "" }}
@@ -127,7 +129,8 @@ const ClassDetail = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

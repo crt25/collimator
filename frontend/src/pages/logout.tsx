@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { useLogout } from "@/hooks/useLogout";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -21,7 +23,7 @@ const LogoutPage = () => {
   }, [logout]);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <PageHeading>
@@ -32,7 +34,8 @@ const LogoutPage = () => {
         </PageHeading>
         <ProgressSpinner />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 
