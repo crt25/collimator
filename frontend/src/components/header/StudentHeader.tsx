@@ -16,7 +16,7 @@ const HeaderInner = chakra("div", {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    padding: "{padding.md} 0",
+    padding: "{padding.md} {padding.md}",
   },
 });
 
@@ -46,13 +46,11 @@ const StudentHeader = ({
       />
 
       <StyledHeader>
-        <Container>
-          <HeaderInner>
-            {logo ?? <HeaderLogo variant="small" />}
-            <HeaderMenu hideSignIn={hideSignIn}>{children}</HeaderMenu>
-          </HeaderInner>
-          {belowHeader}
-        </Container>
+        <HeaderInner>
+          {logo ?? <HeaderLogo variant="small" />}
+          <HeaderMenu hideSignIn={hideSignIn}>{children}</HeaderMenu>
+        </HeaderInner>
+        {belowHeader}
       </StyledHeader>
     </>
   );

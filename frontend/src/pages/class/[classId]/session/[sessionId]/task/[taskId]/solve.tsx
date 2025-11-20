@@ -299,7 +299,13 @@ const SolveTaskPage = () => {
             </Box>
           )
         }
-        belowHeader={task && <Text marginBottom="md">{task.description}</Text>}
+        belowHeader={
+          task && (
+            <Text marginBottom="md" marginX={"lg"}>
+              {task.description}
+            </Text>
+          )
+        }
       >
         <li></li>
         <li>
