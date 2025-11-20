@@ -1,7 +1,11 @@
 import { Box, Container, Link, Stack } from "@chakra-ui/react";
 import { Fragment } from "react";
 
-import { defineMessages, IntlShape, useIntl } from "react-intl";
+import {
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+} from "react-intl";
 
 const messages = defineMessages({
   hepLink: {
@@ -20,35 +24,33 @@ const messages = defineMessages({
 
 type FooterLink = {
   url: string;
-  title: (intl: IntlShape, args: T) => string;
+  title: MessageDescriptor;
 };
 
 const links: FooterLink[] = [
   {
     url: "/impressum",
-    title: (intl) => intl.formatMessage(messages.impressumLink),
+    title: messages.impressumLink,
   },
   {
     url: "https://www.hepl.ch/accueil/mentions/mentions-legales.html",
-    title: (intl) => intl.formatMessage(messages.termsLink),
+    title: messages.termsLink,
   },
   {
     url: "https://www.hepl.ch",
-    title: (intl) => intl.formatMessage(messages.hepLink),
+    title: messages.hepLink,
   },
 ];
 
 const FooterRoot = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box bg="footerBg" height={{ sm: "6rem" }} mt="12" py="4">
+    <Box bg="footerBg" height={{ sm: "6rem" }} mt="auto" py="4">
       <Container height="100%">{children}</Container>
     </Box>
   );
 };
 
 const FooterList = () => {
-  const intl = useIntl();
-
   return (
     <Stack
       direction={{ smDown: "column", md: "row" }}
@@ -58,12 +60,10 @@ const FooterList = () => {
       height="100%"
     >
       {links.map((item, index) => {
-        const title = item.title(intl);
-
         return (
           <Fragment key={index}>
             <Link href={item.url} variant="plain" fontWeight="bold">
-              {title}
+              <FormattedMessage {...item.title} />
             </Link>
           </Fragment>
         );
