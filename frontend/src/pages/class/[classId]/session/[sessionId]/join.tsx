@@ -1,20 +1,17 @@
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useRef } from "react";
-import { Container, GridItem } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { Container } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage } from "react-intl";
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
 import Button from "@/components/Button";
 import Header from "@/components/Header";
-import FullHeightRow from "@/components/layout/FullHeightRow";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import RemainingHeightContainer from "@/components/layout/RemainingHeightContainer";
 import VerticalSpacing from "@/components/layout/VerticalSpacing";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import ProgressSpinner from "@/components/ProgressSpinner";
-import TaskDescription from "@/components/TaskDescription";
 import TaskList from "@/components/TaskList";
 import {
   AuthenticationContext,
@@ -32,10 +29,7 @@ import { StudentAuthenticationRequestContent } from "@/types/websocket-events";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import CrtNavigation from "@/components/CrtNavigation";
 import PageHeading from "@/components/PageHeading";
-import TaskTable from "@/components/task/TaskTable";
 
 const logModule = "[JoinSession]";
 
@@ -53,10 +47,6 @@ const messages = defineMessages({
     defaultMessage: "Confirm",
   },
 });
-
-const SubHeader = styled.h2`
-  margin-bottom: 1rem;
-`;
 
 const JoinSessionContent = ({
   classId,
