@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
+import { ApiResponse, fromDtos } from "../helpers";
 import {
   getTasksControllerFindAllV0Url,
   tasksControllerFindAllV0,
@@ -18,7 +18,7 @@ export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
   // use the URL with the params as the first entry in the key for easier invalidation
-  return useSWR(getSwrParamererizedKey(getTasksControllerFindAllV0Url), () =>
+  return useSWR(getTasksControllerFindAllV0Url(), () =>
     fetchAndTransform(authOptions),
   );
 };

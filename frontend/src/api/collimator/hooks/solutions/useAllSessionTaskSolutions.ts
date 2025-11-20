@@ -1,10 +1,5 @@
 import useSWR from "swr";
-import {
-  ApiResponse,
-  fromDtos,
-  getIdOrNaN,
-  getSwrParamererizedKey,
-} from "../helpers";
+import { ApiResponse, fromDtos, getIdOrNaN } from "../helpers";
 import {
   getSolutionsControllerFindAllStudentSolutionsV0Url,
   solutionsControllerFindAllStudentSolutionsV0,
@@ -41,14 +36,10 @@ export const useAllSessionTaskSolutions = (
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) =>
-        getSolutionsControllerFindAllStudentSolutionsV0Url(
-          numericClassId,
-          numericSessionId,
-          numericTaskId,
-        ),
-      undefined,
+    getSolutionsControllerFindAllStudentSolutionsV0Url(
+      numericClassId,
+      numericSessionId,
+      numericTaskId,
     ),
     () =>
       isNaN(numericClassId) || isNaN(numericSessionId) || isNaN(numericTaskId)
