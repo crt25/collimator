@@ -16,6 +16,7 @@ import Button from "../Button";
 import ChakraDataTable from "../ChakraDataTable";
 import { ShareModal } from "../form/ShareModal";
 import { EmptyState } from "../EmptyState";
+import SessionShareMessages from "./SessionShareMessages";
 
 const SessionListWrapper = chakra("div", {
   base: {
@@ -68,25 +69,6 @@ const messages = defineMessages({
   canOnlyShareOwnSessions: {
     id: "SessionList.canOnlyShareOwnSessions",
     defaultMessage: "You can only share lessons belonging to your classes.",
-  },
-  shareModalTitle: {
-    id: "SessionList.shareModalTitle",
-    defaultMessage: "Invite Student",
-  },
-  shareModalSubtitle: {
-    id: "SessionList.shareModalSubtitle",
-    defaultMessage: "Share Link",
-  },
-  shareModalAnonymousLessonInfo: {
-    id: "SessionList.shareModalAnonymousLessonInfo",
-    defaultMessage:
-      "This Lesson will be shared anonymously. Anyone with this link can join the lesson.",
-  },
-  shareModalPrivateLessonInfo: {
-    id: "SessionList.shareModalPrivateLessonInfo",
-    defaultMessage:
-      "This Lesson will be shared privately. " +
-      "Students will need to login to join the lesson.",
   },
   emptyStateTitle: {
     id: "SessionList.emptyState.title",
@@ -314,13 +296,15 @@ const SessionList = ({ classId }: { classId: number }) => {
       </Button>
 
       <ShareModal
-        title={<FormattedMessage {...messages.shareModalTitle} />}
-        subtitle={<FormattedMessage {...messages.shareModalSubtitle} />}
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
+        subtitle={
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
+        }
         description={
           <FormattedMessage
             {...(selectedSession?.isAnonymous
-              ? messages.shareModalAnonymousLessonInfo
-              : messages.shareModalPrivateLessonInfo)}
+              ? SessionShareMessages.shareModalAnonymousLessonInfo
+              : SessionShareMessages.shareModalPrivateLessonInfo)}
             values={{
               link: (chunks) => (
                 <Link

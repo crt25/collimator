@@ -109,9 +109,7 @@ const SessionDetail = () => {
           ]) => (
             <>
               <PageHeading
-                actions={
-                  <SessionActions klass={_klass} sessionId={session.id} />
-                }
+                actions={<SessionActions klass={_klass} session={session} />}
               >
                 {session.title}
               </PageHeading>

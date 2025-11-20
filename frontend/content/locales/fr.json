@@ -777,18 +777,6 @@
   "SessionList.emptyState.title": {
     "message": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
   },
-  "SessionList.shareModalAnonymousLessonInfo": {
-    "message": "Cette leçon va être accessible anonymement. Quiconque avec le lien pourra rejoindre la leçon."
-  },
-  "SessionList.shareModalPrivateLessonInfo": {
-    "message": "Cette leçon va être accessible de manière privée. Les étudiants devront s'authentifier pour rejoindre la leçon."
-  },
-  "SessionList.shareModalSubtitle": {
-    "message": "Lien à partager"
-  },
-  "SessionList.shareModalTitle": {
-    "message": "Inviter les élèves"
-  },
   "SessionNavigation.lessonDetails": {
     "message": "Détails de la leçon"
   },
@@ -800,6 +788,18 @@
   },
   "SessionProgress.title": {
     "message": "Progression - {title}"
+  },
+  "SessionShareModal.anonymousLessonInfo": {
+    "message": "Cette leçon va être accessible anonymement. Quiconque avec le lien pourra rejoindre la leçon."
+  },
+  "SessionShareModal.privateLessonInfo": {
+    "message": "Cette leçon va être accessible de manière privée. Les étudiants devront s'authentifier pour rejoindre la leçon."
+  },
+  "SessionShareModal.subtitle": {
+    "message": "Lien à partager"
+  },
+  "SessionShareModal.title": {
+    "message": "Inviter les élèves"
   },
   "Showcase.addResult": {
     "message": "Ajouter une solution à la vitrine"

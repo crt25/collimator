@@ -654,18 +654,6 @@
   "SessionList.emptyState.title": {
     "message": "There are no lessons yet. Let's create some!"
   },
-  "SessionList.shareModalAnonymousLessonInfo": {
-    "message": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
-  },
-  "SessionList.shareModalPrivateLessonInfo": {
-    "message": "This Lesson will be shared privately. Students will need to login to join the lesson."
-  },
-  "SessionList.shareModalSubtitle": {
-    "message": "Share Link"
-  },
-  "SessionList.shareModalTitle": {
-    "message": "Invite Student"
-  },
   "SessionNavigation.lessonDetails": {
     "message": "Lesson Details"
   },
@@ -677,6 +665,18 @@
   },
   "SessionProgress.title": {
     "message": "Progress - {title}"
+  },
+  "SessionShareModal.anonymousLessonInfo": {
+    "message": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+  },
+  "SessionShareModal.privateLessonInfo": {
+    "message": "This Lesson will be shared privately. Students will need to login to join the lesson."
+  },
+  "SessionShareModal.subtitle": {
+    "message": "Share Link"
+  },
+  "SessionShareModal.title": {
+    "message": "Invite Student"
   },
   "Showcase.addResult": {
     "message": "Add Result to Showcase"

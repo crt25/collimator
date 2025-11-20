@@ -64,9 +64,7 @@ const SessionProgress = () => {
             <>
               <PageHeading
                 variant="title"
-                actions={
-                  <SessionActions klass={klass} sessionId={session.id} />
-                }
+                actions={<SessionActions klass={klass} session={session} />}
               >
                 {session.title}
               </PageHeading>

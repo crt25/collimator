@@ -1363,30 +1363,6 @@
       "value": "There are no lessons yet. Let's create some!"
     }
   ],
-  "SessionList.shareModalAnonymousLessonInfo": [
-    {
-      "type": 0,
-      "value": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
-    }
-  ],
-  "SessionList.shareModalPrivateLessonInfo": [
-    {
-      "type": 0,
-      "value": "This Lesson will be shared privately. Students will need to login to join the lesson."
-    }
-  ],
-  "SessionList.shareModalSubtitle": [
-    {
-      "type": 0,
-      "value": "Share Link"
-    }
-  ],
-  "SessionList.shareModalTitle": [
-    {
-      "type": 0,
-      "value": "Invite Student"
-    }
-  ],
   "SessionNavigation.lessonDetails": [
     {
       "type": 0,
@@ -1413,6 +1389,30 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionShareModal.anonymousLessonInfo": [
+    {
+      "type": 0,
+      "value": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+    }
+  ],
+  "SessionShareModal.privateLessonInfo": [
+    {
+      "type": 0,
+      "value": "This Lesson will be shared privately. Students will need to login to join the lesson."
+    }
+  ],
+  "SessionShareModal.subtitle": [
+    {
+      "type": 0,
+      "value": "Share Link"
+    }
+  ],
+  "SessionShareModal.title": [
+    {
+      "type": 0,
+      "value": "Invite Student"
     }
   ],
   "Showcase.addResult": [
