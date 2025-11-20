@@ -8,13 +8,7 @@ import {
 import Head from "next/head";
 import { chakra, Container } from "@chakra-ui/react";
 import HeaderMenu from "./HeaderMenu";
-
-const messages = defineMessages({
-  applicationName: {
-    id: "Header.applicationName",
-    defaultMessage: "ClassMosaic",
-  },
-});
+import HeaderLogo from "./HeaderLogo";
 
 const StyledHeader = chakra("header", {
   base: {
@@ -33,20 +27,10 @@ const HeaderInner = chakra("div", {
   },
 });
 
-const Logo = chakra("div", {
-  base: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-
-    fontSize: "2xl",
-    fontWeight: "bold",
-
-    "& img, & svg": {
-      maxHeight: "{spacing.xl}",
-      height: "100%",
-      width: "auto",
-    },
+const messages = defineMessages({
+  applicationName: {
+    id: "Header.applicationName",
+    defaultMessage: "ClassMosaic",
   },
 });
 
@@ -83,7 +67,7 @@ const Header = ({
       <StyledHeader>
         <Container>
           <HeaderInner>
-            <Logo>{intl.formatMessage(messages.applicationName)}</Logo>
+            <HeaderLogo />
             <HeaderMenu hideSignIn={hideSignIn}>{children}</HeaderMenu>
           </HeaderInner>
         </Container>
