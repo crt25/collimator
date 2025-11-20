@@ -18,11 +18,11 @@ export const toaster = createToaster({
 const StyledCloseTrigger = chakra(Toast.CloseTrigger, {
   base: {
     position: "static",
-    color: "white",
     borderWidth: "thin",
     padding: "sm",
     borderRadius: "sm !important",
     borderColor: "buttonSecondaryBorder",
+    cursor: "pointer",
     _hover: {
       opacity: 0.8,
     },

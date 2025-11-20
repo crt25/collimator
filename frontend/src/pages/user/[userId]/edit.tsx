@@ -3,7 +3,7 @@ import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import SwrContent from "@/components/SwrContent";
 import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";

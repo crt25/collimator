@@ -8,7 +8,7 @@ import TaskNavigation from "@/components/task/TaskNavigation";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { TaskType } from "@/api/collimator/generated/models";
 import MultiSwrContent from "@/components/MultiSwrContent";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import PageHeading from "@/components/PageHeading";
 import Breadcrumbs from "@/components/Breadcrumbs";

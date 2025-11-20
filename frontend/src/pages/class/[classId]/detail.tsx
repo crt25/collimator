@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from "react-intl";
 import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import PageHeading from "@/components/PageHeading";
 import CrtNavigation from "@/components/CrtNavigation";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";

@@ -6,7 +6,7 @@ import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicK
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
 import Button from "@/components/Button";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import RemainingHeightContainer from "@/components/layout/RemainingHeightContainer";
 import VerticalSpacing from "@/components/layout/VerticalSpacing";

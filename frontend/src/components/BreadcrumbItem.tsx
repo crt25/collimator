@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Breadcrumb } from "@chakra-ui/react";
+import { Breadcrumb, HStack } from "@chakra-ui/react";
 
 export type BreadcrumbItemData = {
   href?: string;
+  onClick?: () => void;
   children: React.ReactNode;
   isCurrentPage?: boolean;
   icon?: React.ReactNode;
@@ -10,28 +11,58 @@ export type BreadcrumbItemData = {
 
 const BreadcrumbItem = ({
   href,
+  onClick,
   children,
   isCurrentPage,
   icon,
 }: BreadcrumbItemData) => {
-  if (isCurrentPage || !href) {
+  if (isCurrentPage || (!href && !onClick)) {
     return (
       <Breadcrumb.Item>
         <Breadcrumb.CurrentLink>
-          {icon && <span>{icon}</span>}
-          {children}
+          <HStack>
+            {icon && <span>{icon}</span>}
+            {children}
+          </HStack>
         </Breadcrumb.CurrentLink>
       </Breadcrumb.Item>
     );
   }
+
+  if (href) {
+    return (
+      <Breadcrumb.Item>
+        <Breadcrumb.Link asChild>
+          <Link href={href}>
+            <HStack>
+              {icon && <span>{icon}</span>}
+              {children}
+            </HStack>
+          </Link>
+        </Breadcrumb.Link>
+      </Breadcrumb.Item>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <Breadcrumb.Item>
+        <Breadcrumb.Link as="button" type="button" onClick={onClick}>
+          <HStack>
+            {icon && <span>{icon}</span>}
+            {children}
+          </HStack>
+        </Breadcrumb.Link>
+      </Breadcrumb.Item>
+    );
+  }
+
   return (
     <Breadcrumb.Item>
-      <Breadcrumb.Link asChild>
-        <Link href={href}>
-          {icon && <span>{icon}</span>}
-          {children}
-        </Link>
-      </Breadcrumb.Link>
+      <HStack>
+        {icon && <span>{icon}</span>}
+        {children}
+      </HStack>
     </Breadcrumb.Item>
   );
 };
