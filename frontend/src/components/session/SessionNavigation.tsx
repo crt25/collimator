@@ -1,9 +1,6 @@
 import { defineMessages } from "react-intl";
 import { LuListTodo, LuSettings2, LuTrendingUp } from "react-icons/lu";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
-import BreadcrumbItem from "../BreadcrumbItem";
-import { StudentName } from "../encryption/StudentName";
 
 const messages = defineMessages({
   lessonDetailsTab: {
@@ -44,12 +41,10 @@ const tabs: NavigationTab[] = [
 const SessionNavigation = ({
   classId,
   sessionId,
-  student,
   breadcrumb,
 }: {
   classId?: number;
   sessionId?: number;
-  student?: ClassStudent;
   breadcrumb?: boolean;
 }) => (
   <>
@@ -58,15 +53,6 @@ const SessionNavigation = ({
       prefix={`/class/${classId}/session/${sessionId}/`}
       breadcrumb={breadcrumb}
     />
-    {breadcrumb && student && (
-      <BreadcrumbItem>
-        <StudentName
-          studentId={student.studentId}
-          pseudonym={student.pseudonym}
-          keyPairId={student.keyPairId}
-        />
-      </BreadcrumbItem>
-    )}
   </>
 );
 

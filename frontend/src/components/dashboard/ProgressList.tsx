@@ -82,11 +82,13 @@ const nameTemplate = (progress: StudentProgress) => (
 );
 
 const TaskTemplate = ({
-  classId: _classId,
+  classId,
+  sessionId,
   taskId,
   rowData,
 }: {
   classId: number;
+  sessionId: number;
   taskId: number;
   rowData: StudentProgress;
 }) => {
@@ -136,13 +138,27 @@ const TaskTemplate = ({
     }
   }, [intl, status]);
 
-  return (
+  const statusContent = (
     <HStack>
       <Status.Root>
         <Status.Indicator backgroundColor={color} />
       </Status.Root>
       {statusText}
     </HStack>
+  );
+
+  if (status === TaskStatus.notStarted) {
+    return statusContent;
+  }
+
+  return (
+    <Link
+      href={`/class/${classId}/session/${sessionId}/task/${taskId}/progress/${rowData.id}`}
+      variant="underline"
+      display="block"
+    >
+      {statusContent}
+    </Link>
   );
 };
 
@@ -274,6 +290,7 @@ const ProgressList = ({
           cell: (info) => (
             <TaskTemplate
               classId={classId}
+              sessionId={sessionId}
               taskId={task.id}
               rowData={info.row.original}
             />
@@ -285,7 +302,7 @@ const ProgressList = ({
     );
 
     return [...firstColumns, ...taskColumns, ...lastColumns];
-  }, [intl, session, classId]);
+  }, [intl, session, classId, sessionId]);
 
   return (
     <ProgressListWrapper data-testid="progress-list">

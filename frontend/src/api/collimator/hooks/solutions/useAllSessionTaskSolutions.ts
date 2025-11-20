@@ -1,5 +1,10 @@
 import useSWR from "swr";
-import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
+import {
+  ApiResponse,
+  fromDtos,
+  getIdOrNaN,
+  getSwrParamererizedKey,
+} from "../helpers";
 import {
   getSolutionsControllerFindAllStudentSolutionsV0Url,
   solutionsControllerFindAllStudentSolutionsV0,
@@ -24,30 +29,37 @@ export const fetchSolutionsAndTransform = (
   ).then((data) => fromDtos(ExistingStudentSolution, data));
 
 export const useAllSessionTaskSolutions = (
-  classId: number,
-  sessionId: number,
-  taskId: number,
+  classId?: number | string,
+  sessionId?: number | string,
+  taskId?: number | string,
   params?: undefined,
 ): ApiResponse<GetSolutionsReturnType, Error> => {
+  const numericClassId = getIdOrNaN(classId);
+  const numericSessionId = getIdOrNaN(sessionId);
+  const numericTaskId = getIdOrNaN(taskId);
+
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
     getSwrParamererizedKey(
       (_params?: undefined) =>
         getSolutionsControllerFindAllStudentSolutionsV0Url(
-          classId,
-          sessionId,
-          taskId,
+          numericClassId,
+          numericSessionId,
+          numericTaskId,
         ),
       undefined,
     ),
     () =>
-      fetchSolutionsAndTransform(
-        authOptions,
-        classId,
-        sessionId,
-        taskId,
-        params,
-      ),
+      isNaN(numericClassId) || isNaN(numericSessionId) || isNaN(numericTaskId)
+        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+          new Promise<GetSolutionsReturnType>(() => {})
+        : fetchSolutionsAndTransform(
+            authOptions,
+            numericClassId,
+            numericSessionId,
+            numericTaskId,
+            params,
+          ),
   );
 };
