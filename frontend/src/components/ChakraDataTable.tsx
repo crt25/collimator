@@ -364,6 +364,7 @@ export const ChakraDataTable = <T extends { id: number }>({
     data,
     columns,
     state,
+    enableSortingRemoval: false,
     getCoreRowModel: getCoreRowModel<T>(),
     ...(rowModels.getSortedRowModel && {
       getSortedRowModel: rowModels.getSortedRowModel,
