@@ -1,10 +1,10 @@
 import { FormattedMessage } from "react-intl";
 import { HStack, Icon } from "@chakra-ui/react";
 import { LuStar } from "react-icons/lu";
-import { StudentName } from "../encryption/StudentName";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
+import { StudentName } from "../encryption/StudentName";
 
 const AnalysisPlainName = ({ analysis }: { analysis: CurrentAnalysis }) => {
   if (analysis instanceof CurrentStudentAnalysis) {
