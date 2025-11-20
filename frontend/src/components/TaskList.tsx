@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
-import { useMemo } from "react";
-import { chakra } from "@chakra-ui/react";
+import { useMemo, ComponentProps } from "react";
+import { HStack, Status, Text } from "@chakra-ui/react";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
+import { ColumnDef } from "@tanstack/react-table";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
 import { ColumnType } from "@/types/tanstack-types";
@@ -8,60 +10,75 @@ import { TaskProgress } from "@/api/collimator/generated/models";
 import SwrContent from "./SwrContent";
 import TaskListItem from "./TaskListItem";
 
-const TaskListWrapper = chakra("menu", {
-  base: {
-    flexGrow: 1,
-    listStyle: "none",
-    display: "flex",
-    flexDirection: "column",
-    gap: "sm",
-    overflowY: "scroll",
+const messages = defineMessages({
+  titleColumn: {
+    id: "TaskProgressList.columns.title",
+    defaultMessage: "Task",
+  },
+  progressColumn: {
+    id: "TaskProgressList.columns.progress",
+    defaultMessage: "Progress",
+  },
+  doneStatus: {
+    id: "TaskProgressList.status.done",
+    defaultMessage: "Done",
+  },
+  partiallyDoneStatus: {
+    id: "TaskProgressList.status.partiallyDone",
+    defaultMessage: "Partially Done",
+  },
+  openedStatus: {
+    id: "TaskProgressList.status.opened",
+    defaultMessage: "Opened",
+  },
+  unOpenedStatus: {
+    id: "TaskProgressList.status.unOpened",
+    defaultMessage: "Not Started",
   },
 });
 
-const TaskListInner = ({
-  classId,
-  session,
-  currentTaskId,
+const ProgressTemplate = ({
   progress,
+  intl,
 }: {
-  classId: number;
-  session: ExistingSessionExtended;
-  currentTaskId?: number;
-  progress: StudentSessionProgress;
+  progress: TaskProgress;
+  intl: ReturnType<typeof useIntl>;
 }) => {
-  const router = useRouter();
+  const color = useMemo((): StatusColor => {
+    switch (progress) {
+      case TaskProgress.done:
+        return "success";
+      case TaskProgress.partiallyDone:
+        return "warning";
+      case TaskProgress.opened:
+        return "info";
+      case TaskProgress.unOpened:
+      default:
+        return "neutral";
+    }
+  }, [progress]);
 
-  const progressByTaskId = useMemo(
-    () =>
-      progress.taskProgress.reduce(
-        (byId, taskProgress) => {
-          byId[taskProgress.id] = taskProgress.taskProgress;
-
-          return byId;
-        },
-        {} as { [key: number]: TaskProgress },
-      ),
-    [progress],
-  );
+  const statusText = useMemo(() => {
+    switch (progress) {
+      case TaskProgress.done:
+        return intl.formatMessage(messages.doneStatus);
+      case TaskProgress.partiallyDone:
+        return intl.formatMessage(messages.partiallyDoneStatus);
+      case TaskProgress.opened:
+        return intl.formatMessage(messages.openedStatus);
+      case TaskProgress.unOpened:
+      default:
+        return intl.formatMessage(messages.unOpenedStatus);
+    }
+  }, [progress, intl]);
 
   return (
-    <TaskListWrapper>
-      {session.tasks.map((task) => (
-        <TaskListItem
-          key={task.id}
-          progress={progressByTaskId[task.id]}
-          active={currentTaskId === task.id}
-          onClick={() =>
-            router.push(
-              `/class/${classId}/session/${session.id}/task/${task.id}/solve`,
-            )
-          }
-        >
-          {task.title}
-        </TaskListItem>
-      ))}
-    </TaskListWrapper>
+    <HStack>
+      <Status.Root>
+        <Status.Indicator backgroundColor={color} />
+      </Status.Root>
+      {statusText}
+    </HStack>
   );
 };
 
