@@ -7,7 +7,6 @@ import {
   useIntl,
 } from "react-intl";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import * as yup from "yup";
 import styled from "@emotion/styled";
 import { Submission } from "iframe-rpc-react/src";
@@ -29,6 +28,7 @@ import Select from "../form/Select";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
 import { EditedBadge } from "../EditedBadge";
+import { toaster } from "../Toaster";
 
 const EditTaskButton = styled(Button)`
   margin-top: 1rem;
@@ -71,6 +71,14 @@ const messages = defineMessages({
   closeConfirmationButton: {
     id: "TaskForm.closeConfirmation.button",
     defaultMessage: "Yes, I don't need to save.",
+  },
+  saveSuccess: {
+    id: "TaskForm.SaveSuccess",
+    defaultMessage: "The task was saved successfully.",
+  },
+  saveError: {
+    id: "TaskForm.SaveError",
+    defaultMessage: "An error occurred while saving the task. Try again later.",
   },
 });
 
@@ -232,26 +240,21 @@ const TaskForm = ({
           // so the user can navigate without confirmation
           reset(data);
 
-          toast.success(
-            <FormattedMessage
-              id="TaskForm.SaveSuccess"
-              defaultMessage="The task was saved successfully."
-            />,
-            { position: "top-center" },
-          );
+          toaster.success({
+            title: intl.formatMessage(messages.saveSuccess),
+            closable: true,
+          });
         })
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
-          toast.error(
-            <FormattedMessage
-              id="TaskForm.SaveError"
-              defaultMessage="An error occurred while saving the task. Try again later."
-            />,
-            { position: "top-center" },
-          );
+
+          toaster.error({
+            title: intl.formatMessage(messages.saveError),
+            closable: true,
+          });
         });
     },
-    [handleSubmit, onSubmit, reset],
+    [handleSubmit, onSubmit, reset, intl],
   );
 
   const taskFile: Blob | undefined | null = watch("taskFile");

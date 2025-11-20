@@ -1,4 +1,5 @@
 import { chakra } from "@chakra-ui/react";
+import { ComponentProps } from "react";
 import { defineMessages, useIntl } from "react-intl";
 
 const messages = defineMessages({
@@ -23,12 +24,21 @@ const Logo = chakra("div", {
       width: "auto",
     },
   },
+  variants: {
+    variant: {
+      small: {
+        fontSize: "lg",
+      },
+    },
+  },
 });
 
-const HeaderLogo = () => {
+type Variants = ComponentProps<typeof Logo>["variant"];
+
+const HeaderLogo = ({ variant }: { variant?: Variants }) => {
   const intl = useIntl();
 
-  return <Logo>{intl.formatMessage(messages.logoName)}</Logo>;
+  return <Logo variant={variant}>{intl.formatMessage(messages.logoName)}</Logo>;
 };
 
 export default HeaderLogo;
