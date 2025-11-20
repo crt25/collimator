@@ -14,7 +14,6 @@ import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 import { SelectRecipe } from "./recipes/Select.recipe";
-import { ContainerRecipe } from "./recipes/Container.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
 import { ToasterRecipe } from "./recipes/Toaster.recipe";
@@ -38,7 +37,6 @@ const config = defineConfig({
     },
     recipes: {
       button: ButtonRecipe,
-      container: ContainerRecipe,
       iconButton: IconButtonRecipe,
       pageHeading: PageHeadingRecipe,
       input: InputRecipe,
