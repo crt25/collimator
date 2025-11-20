@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - feature/CRT-197_ChakraUIIntegration
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
