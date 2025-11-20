@@ -153,7 +153,7 @@ const TaskTemplate = ({
 
   return (
     <Link
-      href={`/class/${classId}/session/${sessionId}/task/${taskId}/progress/${rowData.id}`}
+      href={`/class/${classId}/session/${sessionId}/task/${taskId}/student/${rowData.id}`}
       variant="underline"
       display="block"
     >
@@ -282,7 +282,7 @@ const ProgressList = ({
           id: "task-" + task.id,
           header: () => (
             <Link
-              href={`/class/${classId}/session/${session?.id}/task/${task.id}/progress`}
+              href={`/class/${classId}/session/${session?.id}/task/${task.id}/student`}
               variant="underline"
             >{`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}</Link>
           ),

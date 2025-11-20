@@ -208,7 +208,7 @@ const ShowcaseInternal = ({
           marginTop="1rem"
           onClick={() =>
             router.push(
-              `/class/${klass.id}/session/${session.id}/task/${task.id}/progress`,
+              `/class/${klass.id}/session/${session.id}/task/${task.id}/student`,
             )
           }
         >
