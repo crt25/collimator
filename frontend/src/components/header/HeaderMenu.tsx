@@ -3,9 +3,9 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { FaRegUser } from "react-icons/fa6";
 import { chakra } from "@chakra-ui/react";
+import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 import AvatarMenu from "../Avatar";
 import LanguageChooser from "../LanguageChooser";
-import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 
 const Menu = chakra("menu", {
   base: {
