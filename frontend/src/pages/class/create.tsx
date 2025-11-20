@@ -61,7 +61,7 @@ const CreateClass = () => {
           title: intl.formatMessage(messages.successMessage),
           action: {
             label: intl.formatMessage(messages.returnToClassList),
-            onClick: () => router.back(),
+            onClick: () => router.push(`/class`),
           },
           closable: true,
         });
