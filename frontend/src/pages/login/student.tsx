@@ -6,6 +6,8 @@ import Header from "@/components/header/Header";
 import PageHeading from "@/components/PageHeading";
 import LoginCard from "@/components/login/LoginCard";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -81,7 +83,7 @@ const StudentLoginPage = () => {
   }
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading description={<FormattedMessage {...messages.subtitle} />}>
@@ -96,7 +98,8 @@ const StudentLoginPage = () => {
           onAuthenticate={onAuthenticateWithMicrosoft}
         />
       </Center>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

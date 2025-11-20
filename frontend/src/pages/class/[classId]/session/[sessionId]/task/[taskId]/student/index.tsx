@@ -15,6 +15,8 @@ import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import TaskInstanceProgressList from "@/components/task-instance/TaskInstanceProgressList";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -50,7 +52,7 @@ const TaskInstanceProgress = () => {
   } = useTask(taskId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -102,7 +104,8 @@ const TaskInstanceProgress = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

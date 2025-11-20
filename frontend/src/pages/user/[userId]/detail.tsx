@@ -8,6 +8,8 @@ import UserNavigation from "@/components/user/UserNavigation";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import SwrContent from "@/components/SwrContent";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -25,7 +27,7 @@ const UserDetail = () => {
   const { data: user, isLoading, error } = useUser(userId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -67,7 +69,8 @@ const UserDetail = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

@@ -5,6 +5,8 @@ import Header from "@/components/header/Header";
 import LessonList, { Lesson } from "@/components/lesson/LessonList";
 import CrtNavigation from "@/components/CrtNavigation";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const lessons: Lesson[] = [
   {
@@ -84,7 +86,7 @@ const messages = defineMessages({
 
 const ListLessons = () => {
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <Breadcrumbs />
@@ -101,7 +103,8 @@ const ListLessons = () => {
           }
         />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

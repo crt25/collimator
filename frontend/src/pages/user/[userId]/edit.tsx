@@ -11,6 +11,8 @@ import { useUser } from "@/api/collimator/hooks/users/useUser";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -50,7 +52,7 @@ const EditUser = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -74,7 +76,8 @@ const EditUser = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

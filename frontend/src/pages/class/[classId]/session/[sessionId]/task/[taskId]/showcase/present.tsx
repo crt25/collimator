@@ -10,6 +10,8 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import ShowcasePresentation from "@/components/dashboard/ShowcasePresentation";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -58,7 +60,7 @@ const TaskInstanceShowcasePresent = () => {
   }, [selected]);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -111,7 +113,8 @@ const TaskInstanceShowcasePresent = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

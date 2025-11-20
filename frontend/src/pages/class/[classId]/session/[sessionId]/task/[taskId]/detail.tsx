@@ -18,6 +18,8 @@ import SessionNavigation from "@/components/session/SessionNavigation";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -93,7 +95,7 @@ const TaskInstanceDetails = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -159,7 +161,8 @@ const TaskInstanceDetails = () => {
           }}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

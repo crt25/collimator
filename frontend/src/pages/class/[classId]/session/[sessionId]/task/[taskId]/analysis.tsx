@@ -15,6 +15,8 @@ import PageHeading from "@/components/PageHeading";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -50,7 +52,7 @@ const TaskInstanceAnalysis = () => {
   } = useTask(taskId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -99,7 +101,8 @@ const TaskInstanceAnalysis = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

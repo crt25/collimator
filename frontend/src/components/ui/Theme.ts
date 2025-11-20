@@ -5,21 +5,21 @@ import {
   defineTokens,
 } from "@chakra-ui/react";
 import { EmptyStateRecipe } from "./recipes/EmptyState.recipe";
-import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
-import { IconButtonRecipe } from "./recipes/IconButton.recipe";
-import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
-import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
-import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
-import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
-import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
-import { SelectRecipe } from "./recipes/Select.recipe";
+import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
+import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
+import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
+import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
+import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 import { HStackRecipe } from "./recipes/HStack.recipe";
-import { ToasterRecipe } from "./recipes/Toaster.recipe";
-import { ModalRecipe } from "./recipes/Modal.recipe";
-import { TableRecipe } from "./recipes/table/TableRoot.recipe";
+import { IconButtonRecipe } from "./recipes/IconButton.recipe";
 import { MenuRecipe } from "./recipes/Menu.recipe";
+import { ModalRecipe } from "./recipes/Modal.recipe";
+import { PageHeadingRecipe } from "./recipes/PageHeading.recipe";
+import { SelectRecipe } from "./recipes/Select.recipe";
+import { TableRecipe } from "./recipes/table/TableRoot.recipe";
+import { ToasterRecipe } from "./recipes/Toaster.recipe";
 
 const config = defineConfig({
   theme: {
@@ -100,6 +100,7 @@ const config = defineConfig({
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
         errorColor: { value: "{colors.error}" },
+        footerBg: { value: "{colors.bg.emphasized}" },
       },
     }),
   },

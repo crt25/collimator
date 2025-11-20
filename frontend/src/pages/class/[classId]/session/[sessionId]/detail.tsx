@@ -18,6 +18,8 @@ import SessionForm, {
 } from "@/components/session/SessionForm";
 import { toaster } from "@/components/Toaster";
 import SessionActions from "@/components/session/SessionActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -85,7 +87,7 @@ const SessionDetail = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -130,7 +132,8 @@ const SessionDetail = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

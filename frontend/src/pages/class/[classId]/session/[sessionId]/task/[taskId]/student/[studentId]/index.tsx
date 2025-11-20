@@ -17,6 +17,8 @@ import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavig
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -73,7 +75,7 @@ const StudentTaskInstance = () => {
   });
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -144,7 +146,8 @@ const StudentTaskInstance = () => {
           }}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

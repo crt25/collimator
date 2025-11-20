@@ -6,6 +6,8 @@ import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -23,7 +25,7 @@ const LessonDetail = () => {
   const lessonId = parseInt(lessonIdString, 10);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -39,7 +41,8 @@ const LessonDetail = () => {
           <FormattedMessage id="LessonDetail.header" defaultMessage="Lesson" />
         </PageHeading>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

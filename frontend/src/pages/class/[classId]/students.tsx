@@ -11,6 +11,8 @@ import StudentList from "@/components/student/StudentList";
 import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import ClassActions from "@/components/class/ClassActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -28,7 +30,7 @@ const ClassUserList = () => {
   const { data: klass, error, isLoading } = useClass(classId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -53,7 +55,8 @@ const ClassUserList = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

@@ -8,6 +8,8 @@ import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -39,7 +41,7 @@ const CreateUser = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <CrtNavigation />
@@ -51,7 +53,8 @@ const CreateUser = () => {
         </PageHeading>
         <UserForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

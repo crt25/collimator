@@ -6,6 +6,8 @@ import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
 import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import PageFooter from "@/components/PageFooter";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 
 const messages = defineMessages({
   teacherHeader: {
@@ -50,7 +52,7 @@ const Home = () => {
     : messages.teacherDescription;
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={header} />
       <Container>
         <PageHeading description={<FormattedMessage {...description} />}>
@@ -130,7 +132,8 @@ const Home = () => {
           )}
         </Grid>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

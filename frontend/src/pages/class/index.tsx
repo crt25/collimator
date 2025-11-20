@@ -5,6 +5,8 @@ import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   header: {
@@ -21,7 +23,7 @@ const messages = defineMessages({
 
 const ListClasses = () => {
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.header} />
       <Container>
         <Breadcrumbs>
@@ -37,7 +39,8 @@ const ListClasses = () => {
         </PageHeading>
         <ClassList />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

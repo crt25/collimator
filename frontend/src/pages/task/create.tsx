@@ -7,6 +7,8 @@ import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -42,7 +44,7 @@ const CreateTask = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <CrtNavigation />
@@ -54,7 +56,8 @@ const CreateTask = () => {
         </PageHeading>
         <TaskForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

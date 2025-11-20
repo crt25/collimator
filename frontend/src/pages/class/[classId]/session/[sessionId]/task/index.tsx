@@ -12,6 +12,8 @@ import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionActions from "@/components/session/SessionActions";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import TaskInstanceTable from "@/components/task-instance/TaskInstanceTable";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -40,7 +42,7 @@ const TaskInstanceList = () => {
   } = useClassSession(classId, sessionId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <Breadcrumbs>
@@ -66,7 +68,8 @@ const TaskInstanceList = () => {
           )}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

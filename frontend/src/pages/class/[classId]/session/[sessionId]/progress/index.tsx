@@ -18,6 +18,8 @@ import { ShareModal } from "@/components/form/ShareModal";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import Button from "@/components/Button";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -79,7 +81,7 @@ const SessionProgress = () => {
     : SessionShareMessages.shareModalPrivateLessonInfo;
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -150,7 +152,8 @@ const SessionProgress = () => {
         shareLink={sessionLink}
         onOpenChange={(details) => setIsShareModalOpen(details.open)}
       />
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 
