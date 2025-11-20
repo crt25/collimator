@@ -84,7 +84,7 @@ const Task = ({
         <Dialog.Root
           open={showSessionMenu}
           onOpenChange={(e) => setShowSessionMenu(e.open)}
-          size="md"
+          size="xl"
         >
           <Dialog.Backdrop bg="blackAlpha.600" />
           <Dialog.Positioner>

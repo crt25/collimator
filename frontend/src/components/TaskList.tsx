@@ -7,6 +7,7 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { useSessionProgress } from "@/api/collimator/hooks/sessions/useSessionProgress";
 import { ColumnType } from "@/types/tanstack-types";
 import { TaskProgress } from "@/api/collimator/generated/models";
+import { ProgressMessages } from "@/i18n/progress-messages";
 import SwrContent from "./SwrContent";
 import ChakraDataTable from "./ChakraDataTable";
 import { EmptyState } from "./EmptyState";
@@ -28,21 +29,9 @@ const messages = defineMessages({
     id: "TaskProgressList.columns.progress",
     defaultMessage: "Progress",
   },
-  doneStatus: {
-    id: "TaskProgressList.status.done",
-    defaultMessage: "Done",
-  },
-  partiallyDoneStatus: {
-    id: "TaskProgressList.status.partiallyDone",
-    defaultMessage: "Partially Done",
-  },
   openedStatus: {
     id: "TaskProgressList.status.opened",
     defaultMessage: "Opened",
-  },
-  unOpenedStatus: {
-    id: "TaskProgressList.status.unOpened",
-    defaultMessage: "Not Started",
   },
 });
 
@@ -70,14 +59,14 @@ const ProgressTemplate = ({
   const statusText = useMemo(() => {
     switch (progress) {
       case TaskProgress.done:
-        return intl.formatMessage(messages.doneStatus);
+        return intl.formatMessage(ProgressMessages.completeStatus);
       case TaskProgress.partiallyDone:
-        return intl.formatMessage(messages.partiallyDoneStatus);
+        return intl.formatMessage(ProgressMessages.incompleteStatus);
       case TaskProgress.opened:
         return intl.formatMessage(messages.openedStatus);
       case TaskProgress.unOpened:
       default:
-        return intl.formatMessage(messages.unOpenedStatus);
+        return intl.formatMessage(ProgressMessages.notStartedStatus);
     }
   }, [progress, intl]);
 
@@ -125,7 +114,6 @@ const TaskList = ({
             {info.row.original.task.title}
           </Text>
         ),
-        size: 32,
         meta: {
           columnType: ColumnType.text,
         },
