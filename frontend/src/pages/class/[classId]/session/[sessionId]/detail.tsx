@@ -109,9 +109,7 @@ const SessionDetail = () => {
           ]) => (
             <>
               <PageHeading
-                actions={
-                  <SessionActions klass={_klass} sessionId={session.id} />
-                }
+                actions={<SessionActions klass={_klass} session={session} />}
               >
                 {session.title}
               </PageHeading>
@@ -124,7 +122,7 @@ const SessionDetail = () => {
                   taskIds: session.tasks.map((t) => t.id),
                   sharingType: session.isAnonymous
                     ? SharingType.anonymous
-                    : SharingType.public,
+                    : SharingType.private,
                 }}
                 onSubmit={onSubmit}
               />

@@ -137,6 +137,12 @@
       "value": "Function Name"
     }
   ],
+  "ButtonMessages.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
   "Category.allTestsPass": [
     {
       "type": 0,
@@ -185,7 +191,43 @@
       "value": "y-Axis"
     }
   ],
-  "ClassActions.deleteSession": [
+  "ClassActions.deleteClass": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "ClassDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "ClassDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Class"
+    }
+  ],
+  "ClassDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the class. Please try again!"
+    }
+  ],
+  "ClassDeleteModal.success": [
+    {
+      "type": 0,
+      "value": "Class deleted successfully"
+    }
+  ],
+  "ClassDeleteModal.title": [
     {
       "type": 0,
       "value": "Delete Class"
@@ -379,6 +421,18 @@
     {
       "type": 0,
       "value": " - Lessons"
+    }
+  ],
+  "ClassStatus.current": [
+    {
+      "type": 0,
+      "value": "Current"
+    }
+  ],
+  "ClassStatus.past": [
+    {
+      "type": 0,
+      "value": "Past"
     }
   ],
   "ClassUserList.title": [
@@ -1005,6 +1059,18 @@
       "value": "Lesson Details"
     }
   ],
+  "List.delete": [
+    {
+      "type": 0,
+      "value": "Delete"
+    }
+  ],
+  "List.filters.search.placeholder": [
+    {
+      "type": 0,
+      "value": "Search..."
+    }
+  ],
   "ListClasses.header": [
     {
       "type": 0,
@@ -1119,6 +1185,12 @@
       "value": "Number of loops"
     }
   ],
+  "Modal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
   "OpenIdConnectRedirect.authenticating": [
     {
       "type": 0,
@@ -1197,10 +1269,28 @@
       "value": "Task"
     }
   ],
+  "ProgressList.completedStatus": [
+    {
+      "type": 0,
+      "value": "Complete"
+    }
+  ],
   "ProgressList.emptyState.title": [
     {
       "type": 0,
       "value": "There is no progress data available."
+    }
+  ],
+  "ProgressList.incompleteStatus": [
+    {
+      "type": 0,
+      "value": "Incomplete"
+    }
+  ],
+  "ProgressList.notStartedStatus": [
+    {
+      "type": 0,
+      "value": "Not Started"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -1209,46 +1299,46 @@
       "value": "Copy Lesson Link"
     }
   ],
-  "SessionActions.deleteConfirmation.body": [
-    {
-      "type": 0,
-      "value": "Are you sure? You can't undo this action afterwards."
-    }
-  ],
-  "SessionActions.deleteConfirmation.cancel": [
-    {
-      "type": 0,
-      "value": "Cancel"
-    }
-  ],
-  "SessionActions.deleteConfirmation.confirm": [
-    {
-      "type": 0,
-      "value": "Delete Lesson"
-    }
-  ],
-  "SessionActions.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Delete Lesson"
-    }
-  ],
-  "SessionActions.deleteErrorMessage": [
-    {
-      "type": 0,
-      "value": "There was an error deleting the lesson. Please try again!"
-    }
-  ],
   "SessionActions.deleteSession": [
     {
       "type": 0,
       "value": "Delete Lesson"
     }
   ],
-  "SessionActions.deleteSuccessMessage": [
+  "SessionDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Are you sure? You can't undo this action afterwards."
+    }
+  ],
+  "SessionDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "SessionDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Delete Lesson"
+    }
+  ],
+  "SessionDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the lesson. Please try again!"
+    }
+  ],
+  "SessionDeleteModal.success": [
     {
       "type": 0,
       "value": "Lesson deleted successfully"
+    }
+  ],
+  "SessionDeleteModal.title": [
+    {
+      "type": 0,
+      "value": "Delete Lesson"
     }
   ],
   "SessionDetail.errorMessage": [
@@ -1285,10 +1375,10 @@
       "value": "Anonymous"
     }
   ],
-  "SessionForm.sharingType.public": [
+  "SessionForm.sharingType.private": [
     {
       "type": 0,
-      "value": "Public"
+      "value": "Private"
     }
   ],
   "SessionList.canOnlyShareOwnSessions": [
@@ -1389,6 +1479,30 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionShareModal.anonymousLessonInfo": [
+    {
+      "type": 0,
+      "value": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+    }
+  ],
+  "SessionShareModal.privateLessonInfo": [
+    {
+      "type": 0,
+      "value": "This Lesson will be shared privately. Students will need to login to join the lesson."
+    }
+  ],
+  "SessionShareModal.subtitle": [
+    {
+      "type": 0,
+      "value": "Share Link"
+    }
+  ],
+  "SessionShareModal.title": [
+    {
+      "type": 0,
+      "value": "Invite Student"
     }
   ],
   "Showcase.addResult": [
@@ -2259,6 +2373,30 @@
     {
       "type": 0,
       "value": "User Details"
+    }
+  ],
+  "UserRole.admin": [
+    {
+      "type": 0,
+      "value": "Admin"
+    }
+  ],
+  "UserRole.jupyter": [
+    {
+      "type": 0,
+      "value": "Jupyter"
+    }
+  ],
+  "UserRole.scratch": [
+    {
+      "type": 0,
+      "value": "Scratch"
+    }
+  ],
+  "UserRole.teacher": [
+    {
+      "type": 0,
+      "value": "Teacher"
     }
   ],
   "UserSignIn.newUserDescription": [

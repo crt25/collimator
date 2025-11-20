@@ -68,6 +68,9 @@
   "BuiltInFunctionCallCriterionFilterForm.functionName": {
     "message": "Function Name"
   },
+  "ButtonMessages.actions": {
+    "message": "Actions"
+  },
   "Category.allTestsPass": {
     "message": "All tests pass"
   },
@@ -92,7 +95,25 @@
   "Category.yAxis": {
     "message": "y-Axis"
   },
-  "ClassActions.deleteSession": {
+  "ClassActions.deleteClass": {
+    "message": "Delete Class"
+  },
+  "ClassDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "ClassDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "ClassDeleteModal.confirm": {
+    "message": "Delete Class"
+  },
+  "ClassDeleteModal.error": {
+    "message": "There was an error deleting the class. Please try again!"
+  },
+  "ClassDeleteModal.success": {
+    "message": "Class deleted successfully"
+  },
+  "ClassDeleteModal.title": {
     "message": "Delete Class"
   },
   "ClassDetail.actions": {
@@ -181,6 +202,12 @@
   },
   "ClassSessionList.title": {
     "message": "{name} - Lessons"
+  },
+  "ClassStatus.current": {
+    "message": "Current"
+  },
+  "ClassStatus.past": {
+    "message": "Past"
   },
   "ClassUserList.title": {
     "message": "{name} - Students"
@@ -477,6 +504,12 @@
   "LessonNavigation.lessonTab": {
     "message": "Lesson Details"
   },
+  "List.delete": {
+    "message": "Delete"
+  },
+  "List.filters.search.placeholder": {
+    "message": "Search..."
+  },
   "ListClasses.header": {
     "message": "Classes"
   },
@@ -534,6 +567,9 @@
   "LoopCriterionFilterForm.count": {
     "message": "Number of loops"
   },
+  "Modal.cancel": {
+    "message": "Cancel"
+  },
   "OpenIdConnectRedirect.authenticating": {
     "message": "You are being authenticated..."
   },
@@ -573,32 +609,41 @@
   "ProgressList.columns.taskColumn": {
     "message": "Task"
   },
+  "ProgressList.completedStatus": {
+    "message": "Complete"
+  },
   "ProgressList.emptyState.title": {
     "message": "There is no progress data available."
+  },
+  "ProgressList.incompleteStatus": {
+    "message": "Incomplete"
+  },
+  "ProgressList.notStartedStatus": {
+    "message": "Not Started"
   },
   "SessionActions.copySessionLink": {
     "message": "Copy Lesson Link"
   },
-  "SessionActions.deleteConfirmation.body": {
-    "message": "Are you sure? You can't undo this action afterwards."
-  },
-  "SessionActions.deleteConfirmation.cancel": {
-    "message": "Cancel"
-  },
-  "SessionActions.deleteConfirmation.confirm": {
-    "message": "Delete Lesson"
-  },
-  "SessionActions.deleteConfirmation.title": {
-    "message": "Delete Lesson"
-  },
-  "SessionActions.deleteErrorMessage": {
-    "message": "There was an error deleting the lesson. Please try again!"
-  },
   "SessionActions.deleteSession": {
     "message": "Delete Lesson"
   },
-  "SessionActions.deleteSuccessMessage": {
+  "SessionDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "SessionDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "SessionDeleteModal.confirm": {
+    "message": "Delete Lesson"
+  },
+  "SessionDeleteModal.error": {
+    "message": "There was an error deleting the lesson. Please try again!"
+  },
+  "SessionDeleteModal.success": {
     "message": "Lesson deleted successfully"
+  },
+  "SessionDeleteModal.title": {
+    "message": "Delete Lesson"
   },
   "SessionDetail.errorMessage": {
     "message": "There was an error saving the changes. Please try to save again!"
@@ -615,8 +660,8 @@
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
   },
-  "SessionForm.sharingType.public": {
-    "message": "Public"
+  "SessionForm.sharingType.private": {
+    "message": "Private"
   },
   "SessionList.canOnlyShareOwnSessions": {
     "message": "You can only share lessons belonging to your classes."
@@ -665,6 +710,18 @@
   },
   "SessionProgress.title": {
     "message": "Progress - {title}"
+  },
+  "SessionShareModal.anonymousLessonInfo": {
+    "message": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+  },
+  "SessionShareModal.privateLessonInfo": {
+    "message": "This Lesson will be shared privately. Students will need to login to join the lesson."
+  },
+  "SessionShareModal.subtitle": {
+    "message": "Share Link"
+  },
+  "SessionShareModal.title": {
+    "message": "Invite Student"
   },
   "Showcase.addResult": {
     "message": "Add Result to Showcase"
@@ -1064,6 +1121,18 @@
   },
   "UserNavigation.userTab": {
     "message": "User Details"
+  },
+  "UserRole.admin": {
+    "message": "Admin"
+  },
+  "UserRole.jupyter": {
+    "message": "Jupyter"
+  },
+  "UserRole.scratch": {
+    "message": "Scratch"
+  },
+  "UserRole.teacher": {
+    "message": "Teacher"
   },
   "UserSignIn.newUserDescription": {
     "message": "Set up encryption for student identities"

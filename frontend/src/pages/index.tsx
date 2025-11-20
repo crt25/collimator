@@ -82,6 +82,27 @@ const Home = () => {
             </Link>
           </GridItem>
 
+          <GridItem colSpan={{ base: 12, lg: 6 }}>
+            <Link display="block" href="/task">
+              <Card.Root variant="dashboard" size="lg">
+                <Card.Body>
+                  <Text
+                    marginTop="md"
+                    fontSize="3xl"
+                    fontWeight="semiBold"
+                    wordBreak="keep-all"
+                    whiteSpace="nowrap"
+                  >
+                    <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
+                  </Text>
+                  <Text>
+                    <FormattedMessage {...messages.tasksDescription} />
+                  </Text>
+                </Card.Body>
+              </Card.Root>
+            </Link>
+          </GridItem>
+
           {isAdmin && (
             <GridItem colSpan={{ base: 12, lg: 6 }}>
               <Link display="block" href="/user">
@@ -107,27 +128,6 @@ const Home = () => {
               </Link>
             </GridItem>
           )}
-
-          <GridItem colSpan={{ base: 12, lg: 6 }}>
-            <Link display="block" href="/task">
-              <Card.Root variant="dashboard" size="lg">
-                <Card.Body>
-                  <Text
-                    marginTop="md"
-                    fontSize="3xl"
-                    fontWeight="semiBold"
-                    wordBreak="keep-all"
-                    whiteSpace="nowrap"
-                  >
-                    <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
-                  </Text>
-                  <Text>
-                    <FormattedMessage {...messages.tasksDescription} />
-                  </Text>
-                </Card.Body>
-              </Card.Root>
-            </Link>
-          </GridItem>
         </Grid>
       </Container>
     </>

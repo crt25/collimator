@@ -20,7 +20,7 @@ import { EditedBadge } from "../EditedBadge";
 
 export enum SharingType {
   anonymous = "anonymous",
-  public = "public",
+  private = "private",
 }
 
 const messages = defineMessages({
@@ -52,9 +52,9 @@ const messages = defineMessages({
     id: "SessionForm.sharingType.anonymous",
     defaultMessage: "Anonymous",
   },
-  sharingTypePublic: {
-    id: "SessionForm.sharingType.public",
-    defaultMessage: "Public",
+  sharingTypePrivate: {
+    id: "SessionForm.sharingType.private",
+    defaultMessage: "Private",
   },
 });
 
@@ -125,7 +125,7 @@ const SessionForm = ({
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
   // ensure that the selected tasks are always in sync with the form
@@ -226,8 +226,8 @@ const SessionForm = ({
                     label: messages.sharingTypeAnonymous,
                   },
                   {
-                    value: SharingType.public,
-                    label: messages.sharingTypePublic,
+                    value: SharingType.private,
+                    label: messages.sharingTypePrivate,
                   },
                 ]}
               />

@@ -110,6 +110,7 @@ const ClassList = () => {
           </Icon>
         </Button>
       ),
+      size: 32,
       meta: {
         columnType: ColumnType.icon,
       },

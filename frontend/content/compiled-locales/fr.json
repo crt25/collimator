@@ -137,6 +137,12 @@
       "value": "Nom de la fonction"
     }
   ],
+  "ButtonMessages.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
   "Category.allTestsPass": [
     {
       "type": 0,
@@ -185,10 +191,46 @@
       "value": "Axe y"
     }
   ],
-  "ClassActions.deleteSession": [
+  "ClassActions.deleteClass": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacement de la classe"
+    }
+  ],
+  "ClassDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action ensuite."
+    }
+  ],
+  "ClassDeleteModal.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "ClassDeleteModal.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
+    }
+  ],
+  "ClassDeleteModal.error": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de l'effacement de la classe. Veuillez re-essayer."
+    }
+  ],
+  "ClassDeleteModal.success": [
+    {
+      "type": 0,
+      "value": "La classe a été effacée."
+    }
+  ],
+  "ClassDeleteModal.title": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.actions": [
@@ -200,7 +242,7 @@
   "ClassDetail.deleteAction": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.deleteConfirmation.body": [
@@ -218,13 +260,13 @@
   "ClassDetail.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassDetail.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer la classe : \""
+      "value": "Effacer la classe : \""
     },
     {
       "type": 1,
@@ -238,13 +280,13 @@
   "ClassDetail.deleteErrorMessage": [
     {
       "type": 0,
-      "value": "Une erreur est survenue lors de la suppression de la classe. Veuillez réessayer !"
+      "value": "Une erreur est survenue lors de l'effacement de la classe. Veuillez réessayer !"
     }
   ],
   "ClassDetail.deleteSuccessMessage": [
     {
       "type": 0,
-      "value": "Classe supprimée avec succès"
+      "value": "Classe effacée avec succès"
     }
   ],
   "ClassDetail.errorMessage": [
@@ -326,25 +368,25 @@
   "ClassList.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette classe ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette classe ?"
     }
   ],
   "ClassList.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassList.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer la classe"
+      "value": "Effacer la classe"
     }
   ],
   "ClassList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no classes yet. Let's create some!"
+      "value": "Il n'y a pas encore de classes. Créez-en quelques unes!"
     }
   ],
   "ClassList.viewDetails": [
@@ -381,6 +423,18 @@
       "value": " - Leçons"
     }
   ],
+  "ClassStatus.current": [
+    {
+      "type": 0,
+      "value": "Courant"
+    }
+  ],
+  "ClassStatus.past": [
+    {
+      "type": 0,
+      "value": "Passé"
+    }
+  ],
   "ClassUserList.title": [
     {
       "type": 1,
@@ -388,7 +442,7 @@
     },
     {
       "type": 0,
-      "value": " - Étudiants"
+      "value": " - Élèves"
     }
   ],
   "CodeComparison.defaultOption": [
@@ -648,7 +702,7 @@
   "CrtNavigation.classesTab": [
     {
       "type": 0,
-      "value": "Leçons"
+      "value": "Classes"
     }
   ],
   "CrtNavigation.homeTab": [
@@ -697,6 +751,12 @@
     {
       "type": 0,
       "value": "filtered out"
+    }
+  ],
+  "DEPRECATED: ClassActions.deleteSession": [
+    {
+      "type": 0,
+      "value": "Effacer la classe"
     }
   ],
   "DEPRECATED: ClassDetail.table.numberOfStudents": [
@@ -883,6 +943,42 @@
       "value": "Time on Task"
     }
   ],
+  "DEPRECATED: SessionActions.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer la leçon"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Effacer la leçon"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteErrorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de l'effacement de la leçon. Veuillez réessayer !"
+    }
+  ],
+  "DEPRECATED: SessionActions.deleteSuccessMessage": [
+    {
+      "type": 0,
+      "value": "Leçon effacée avec succès"
+    }
+  ],
   "DEPRECATED: SessionAnalysis.header": [
     {
       "type": 0,
@@ -909,6 +1005,12 @@
     {
       "type": 0,
       "value": "Le titre est requis"
+    }
+  ],
+  "DEPRECATED: SessionForm.sharingType.public": [
+    {
+      "type": 0,
+      "value": "Public"
     }
   ],
   "DEPRECATED: SessionGrouping.header": [
@@ -1098,13 +1200,13 @@
   "Home.classes": [
     {
       "type": 0,
-      "value": "Leçons"
+      "value": "Classes"
     }
   ],
   "Home.classesDescription": [
     {
       "type": 0,
-      "value": "Gérez vos leçons et étudiants."
+      "value": "Gérez vos classes, leçons et élèves."
     }
   ],
   "Home.description": [
@@ -1249,18 +1351,34 @@
       "value": "Détails de la leçon"
     }
   ],
+  "List.delete": [
+    {
+      "type": 0,
+      "value": "Effacer"
+    }
+  ],
+  "List.filters.search.placeholder": [
+    {
+      "type": 0,
+      "value": "Chercher..."
+    }
+  ],
   "ListClasses.header": [
     {
       "type": 0,
-      "value": "Gestion des leçons"
+      "value": "Gestion des classes"
     }
   ],
   "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
+    }
   ],
   "ListClasses.pageTitle": [
     {
       "type": 0,
-      "value": "Gestion des leçons"
+      "value": "Gestion des classes"
     }
   ],
   "ListLessons.header": [
@@ -1308,19 +1426,19 @@
   "LoginPage.authenticate.microsoft": [
     {
       "type": 0,
-      "value": "Authentifier avec Microsoft"
+      "value": "S'authentifier avec Microsoft"
     }
   ],
   "LoginPage.cardDescription": [
     {
       "type": 0,
-      "value": "Log in to access your classes, tasks, and learning resources."
+      "value": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
     }
   ],
   "LoginPage.cardTitle": [
     {
       "type": 0,
-      "value": "Teacher Login"
+      "value": "Connexion Enseignant"
     }
   ],
   "LoginPage.header": [
@@ -1332,7 +1450,7 @@
   "LoginPage.pageDescription": [
     {
       "type": 0,
-      "value": "You're about to access the teacher portal."
+      "value": "Vous êtes sur le point d'accéder au portail des enseignants."
     }
   ],
   "LoginPage.title": [
@@ -1357,6 +1475,12 @@
     {
       "type": 0,
       "value": "Nombre de boucles"
+    }
+  ],
+  "Modal.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
     }
   ],
   "OpenIdConnectRedirect.authenticating": [
@@ -1404,13 +1528,13 @@
   "OpenIdConnectRedirect.userFirstTimeSignInDescription": [
     {
       "type": 0,
-      "value": "Les identités des étudiants seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des étudiants."
+      "value": "Les identités des élèves seront cryptées avec une clé à laquelle vous seul avez accès. Veuillez entrer un mot de passe pour protéger la clé. De plus, entrez un second mot de passe de secours et assurez-vous de vous souvenir de l'un des deux. Sinon, vous perdrez l'accès aux identités des élèves."
     }
   ],
   "OpenIdConnectRedirect.userSignInDescription": [
     {
       "type": 0,
-      "value": "Les identités des étudiants sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
+      "value": "Les identités des élèves sont cryptées avec la clé à laquelle vous seul avez accès. Veuillez entrer ce mot de passe pour vous connecter."
     }
   ],
   "ProgressList.columns.actions": [
@@ -1437,10 +1561,28 @@
       "value": "Activité"
     }
   ],
+  "ProgressList.completedStatus": [
+    {
+      "type": 0,
+      "value": "Complété"
+    }
+  ],
   "ProgressList.emptyState.title": [
     {
       "type": 0,
-      "value": "There is no progress data available."
+      "value": "Il n'y a pas encore de données sur le travail des élèves."
+    }
+  ],
+  "ProgressList.incompleteStatus": [
+    {
+      "type": 0,
+      "value": "Incomplet"
+    }
+  ],
+  "ProgressList.notStartedStatus": [
+    {
+      "type": 0,
+      "value": "Pas commencé"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -1449,46 +1591,46 @@
       "value": "Copier le lien de la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.body": [
+  "SessionActions.deleteSession": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr ? Vous ne pourrez pas annuler cette action après."
+      "value": "Effacer la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.cancel": [
+  "SessionDeleteModal.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+    }
+  ],
+  "SessionDeleteModal.cancel": [
     {
       "type": 0,
       "value": "Annuler"
     }
   ],
-  "SessionActions.deleteConfirmation.confirm": [
+  "SessionDeleteModal.confirm": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
+      "value": "Effacer la leçon"
     }
   ],
-  "SessionActions.deleteConfirmation.title": [
+  "SessionDeleteModal.error": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
+      "value": "Une erreur est survenue lors de l'effacement de la leçon. Veuillez re-essayer."
     }
   ],
-  "SessionActions.deleteErrorMessage": [
+  "SessionDeleteModal.success": [
     {
       "type": 0,
-      "value": "Une erreur s'est produite lors de la suppression de la leçon. Veuillez réessayer !"
+      "value": "La leçon a été effacée avec succès"
     }
   ],
-  "SessionActions.deleteSession": [
+  "SessionDeleteModal.title": [
     {
       "type": 0,
-      "value": "Supprimer la leçon"
-    }
-  ],
-  "SessionActions.deleteSuccessMessage": [
-    {
-      "type": 0,
-      "value": "Leçon supprimée avec succès"
+      "value": "Effacer la leçon"
     }
   ],
   "SessionDetail.errorMessage": [
@@ -1525,10 +1667,10 @@
       "value": "Anonyme"
     }
   ],
-  "SessionForm.sharingType.public": [
+  "SessionForm.sharingType.private": [
     {
       "type": 0,
-      "value": "Public"
+      "value": "Privé"
     }
   ],
   "SessionList.canOnlyShareOwnSessions": [
@@ -1600,7 +1742,7 @@
   "SessionList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no lessons yet. Let's create some!"
+      "value": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
     }
   ],
   "SessionNavigation.lessonDetails": [
@@ -1631,52 +1773,76 @@
       "value": "title"
     }
   ],
+  "SessionShareModal.anonymousLessonInfo": [
+    {
+      "type": 0,
+      "value": "Cette leçon va être accessible anonymement. Quiconque avec le lien pourra rejoindre la leçon."
+    }
+  ],
+  "SessionShareModal.privateLessonInfo": [
+    {
+      "type": 0,
+      "value": "Cette leçon va être accessible de manière privée. Les étudiants devront s'authentifier pour rejoindre la leçon."
+    }
+  ],
+  "SessionShareModal.subtitle": [
+    {
+      "type": 0,
+      "value": "Lien à partager"
+    }
+  ],
+  "SessionShareModal.title": [
+    {
+      "type": 0,
+      "value": "Inviter les élèves"
+    }
+  ],
   "Showcase.addResult": [
     {
       "type": 0,
-      "value": "Add Result to Showcase"
+      "value": "Ajouter une solution à la vitrine"
     }
   ],
   "Showcase.instructions": [
     {
       "type": 0,
-      "value": "Sort and preview the showcased solutions."
+      "value": "Tri et aperçu des solutions en vitrine."
     }
   ],
   "Showcase.noStudentSelectedHelp": [
     {
       "type": 0,
-      "value": "Click on a student name to view their solution."
+      "value": "Cliquez sur le nom d'un élève pour voir sa solution."
     }
   ],
   "Showcase.openShowCasePage": [
     {
       "type": 0,
-      "value": "Open Showcase Page"
+      "value": "Ouvrir la vitrine"
     }
   ],
   "Showcase.unknownAnalysisType": [
     {
       "type": 0,
-      "value": "Unknown analysis type"
+      "value": "Type d'analyse inconnu"
     }
   ],
   "ShowcasePresentation.next": [
     {
       "type": 0,
-      "value": "Next"
+      "value": "Suivant"
     }
   ],
   "ShowcasePresentation.previous": [
     {
       "type": 0,
-      "value": "Next"
+      "value": "Précédent"
     }
   ],
   "ShowcasePresentation.unknownAnalysisType": [
     {
       "type": 0,
-      "value": "Unknown analysis type"
+      "value": "Type d'analyse inconnu"
     }
   ],
   "SolveTask.correctSolutionSubmitted": [
@@ -1768,7 +1934,7 @@
   "StudentList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no students yet."
+      "value": "Il n'y a pas encore d'élèves."
     }
   ],
   "StudentLoginPage.authenticate.microsoft": [
@@ -1780,13 +1946,13 @@
   "StudentLoginPage.cardDescription": [
     {
       "type": 0,
-      "value": "Please authenticate below to access your lesson."
+      "value": "Authentifies-toi ci-dessous pour accéder à la leçon."
     }
   ],
   "StudentLoginPage.cardTitle": [
     {
       "type": 0,
-      "value": "Student Login"
+      "value": "Connexion Étudiant"
     }
   ],
   "StudentLoginPage.header": [
@@ -1834,43 +2000,43 @@
   "TaskActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Are you sure? You can't undo this action afterwards."
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
     }
   ],
   "TaskActions.deleteConfirmation.cancel": [
     {
       "type": 0,
-      "value": "Cancel"
+      "value": "Annuler"
     }
   ],
   "TaskActions.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Delete Task"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskActions.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Delete Task"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskActions.deleteErrorMessage": [
     {
       "type": 0,
-      "value": "There was an error deleting the task. Please try again!"
+      "value": "Une erreur est survenue lors de l'effacement de l'activité. Merci de re-essayer!"
     }
   ],
   "TaskActions.deleteSuccessMessage": [
     {
       "type": 0,
-      "value": "Task deleted successfully"
+      "value": "L'activité a été effacée avec succès"
     }
   ],
   "TaskActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskDetail.title": [
@@ -2096,13 +2262,13 @@
   "TaskInstanceNavigation.showcaseTab": [
     {
       "type": 0,
-      "value": "Showcase"
+      "value": "Vitrine"
     }
   ],
   "TaskInstanceNavigation.studentResults": [
     {
       "type": 0,
-      "value": "Résultats des Étudiants"
+      "value": "Résultats des Élèves"
     }
   ],
   "TaskInstanceNavigation.taskDetails": [
@@ -2148,7 +2314,7 @@
   "TaskInstanceProgressList.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no students yet."
+      "value": "Il n'y a pas encore d'élèves."
     }
   ],
   "TaskInstanceReferenceSolutions.submit": [
@@ -2170,7 +2336,7 @@
   "TaskInstanceShowcase.title": [
     {
       "type": 0,
-      "value": "Showcase - "
+      "value": "Vitrine - "
     },
     {
       "type": 1,
@@ -2180,25 +2346,25 @@
   "TaskInstanceShowcasePresent.back": [
     {
       "type": 0,
-      "value": "Back to task details"
+      "value": "Retourner aux détails de l'activité"
     }
   ],
   "TaskInstanceShowcasePresent.heading": [
     {
       "type": 0,
-      "value": "Showcase"
+      "value": "Vitrine"
     }
   ],
   "TaskInstanceShowcasePresent.noSolutionsSelected": [
     {
       "type": 0,
-      "value": "No solutions selected for showcase presentation."
+      "value": "Aucune solution sélectionnée pour la présentation en vitrine."
     }
   ],
   "TaskInstanceShowcasePresent.title": [
     {
       "type": 0,
-      "value": "Showcase - "
+      "value": "Vitrine - "
     },
     {
       "type": 1,
@@ -2232,31 +2398,31 @@
   "TaskInstanceTable.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette activité ?"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskInstanceTable.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no tasks yet."
+      "value": "Il n'y a pas encore d'activités."
     }
   ],
   "TaskInstanceTable.viewDetails": [
@@ -2338,7 +2504,7 @@
   "TaskSessionActions.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.columns.actionsColumn": [
@@ -2374,31 +2540,31 @@
   "TaskTable.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cette activité ?"
+      "value": "Êtes-vous sûr de vouloir effacer cette activité ?"
     }
   ],
   "TaskTable.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.deleteTask": [
     {
       "type": 0,
-      "value": "Supprimer l'activité"
+      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.emptyState.title": [
     {
       "type": 0,
-      "value": "There are no tasks yet. Let's create some!"
+      "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
   "TaskTable.viewDetails": [
@@ -2474,19 +2640,19 @@
   "UserList.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
     }
   ],
   "UserList.deleteConfirmation.confirm": [
     {
       "type": 0,
-      "value": "Supprimer l'utilisateur"
+      "value": "Effacer l'utilisateur"
     }
   ],
   "UserList.deleteConfirmation.title": [
     {
       "type": 0,
-      "value": "Supprimer l'utilisateur"
+      "value": "Effacer l'utilisateur"
     }
   ],
   "UserList.generateRegistrationToken": [
@@ -2499,6 +2665,30 @@
     {
       "type": 0,
       "value": "Détails de l'utilisateur"
+    }
+  ],
+  "UserRole.admin": [
+    {
+      "type": 0,
+      "value": "Administrateur"
+    }
+  ],
+  "UserRole.jupyter": [
+    {
+      "type": 0,
+      "value": "Jupyter"
+    }
+  ],
+  "UserRole.scratch": [
+    {
+      "type": 0,
+      "value": "Scratch"
+    }
+  ],
+  "UserRole.teacher": [
+    {
+      "type": 0,
+      "value": "Enseignant"
     }
   ],
   "UserSignIn.newUserDescription": [

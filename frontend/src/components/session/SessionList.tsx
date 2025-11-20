@@ -9,6 +9,7 @@ import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClass
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
+import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
@@ -68,25 +69,6 @@ const messages = defineMessages({
   canOnlyShareOwnSessions: {
     id: "SessionList.canOnlyShareOwnSessions",
     defaultMessage: "You can only share lessons belonging to your classes.",
-  },
-  shareModalTitle: {
-    id: "SessionList.shareModalTitle",
-    defaultMessage: "Invite Student",
-  },
-  shareModalSubtitle: {
-    id: "SessionList.shareModalSubtitle",
-    defaultMessage: "Share Link",
-  },
-  shareModalAnonymousLessonInfo: {
-    id: "SessionList.shareModalAnonymousLessonInfo",
-    defaultMessage:
-      "This Lesson will be shared anonymously. Anyone with this link can join the lesson.",
-  },
-  shareModalPrivateLessonInfo: {
-    id: "SessionList.shareModalPrivateLessonInfo",
-    defaultMessage:
-      "This Lesson will be shared privately. " +
-      "Students will need to login to join the lesson.",
   },
   emptyStateTitle: {
     id: "SessionList.emptyState.title",
@@ -253,6 +235,7 @@ const SessionList = ({ classId }: { classId: number }) => {
           </Icon>
         </Button>
       ),
+      size: 32,
       meta: {
         columnType: ColumnType.icon,
       },
@@ -313,13 +296,15 @@ const SessionList = ({ classId }: { classId: number }) => {
       </Button>
 
       <ShareModal
-        title={<FormattedMessage {...messages.shareModalTitle} />}
-        subtitle={<FormattedMessage {...messages.shareModalSubtitle} />}
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
+        subtitle={
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
+        }
         description={
           <FormattedMessage
             {...(selectedSession?.isAnonymous
-              ? messages.shareModalAnonymousLessonInfo
-              : messages.shareModalPrivateLessonInfo)}
+              ? SessionShareMessages.shareModalAnonymousLessonInfo
+              : SessionShareMessages.shareModalPrivateLessonInfo)}
             values={{
               link: (chunks) => (
                 <Link

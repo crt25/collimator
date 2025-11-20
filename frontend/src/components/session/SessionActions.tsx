@@ -1,11 +1,16 @@
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { LuSend, LuTrash } from "react-icons/lu";
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
+import { Link } from "@chakra-ui/react";
 import { ButtonMessages } from "@/i18n/button-messages";
+import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
+import { ShareModal } from "@/components/form/ShareModal";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
+import { SessionDeleteModalMessages } from "@/i18n/session-delete-modal-messages";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
 import DropdownMenu from "../DropdownMenu";
@@ -19,44 +24,22 @@ const messages = defineMessages({
     id: "SessionActions.deleteSession",
     defaultMessage: "Delete Lesson",
   },
-  deleteConfirmationTitle: {
-    id: "SessionActions.deleteConfirmation.title",
-    defaultMessage: "Delete Lesson",
-  },
-  deleteConfirmationBody: {
-    id: "SessionActions.deleteConfirmation.body",
-    defaultMessage: "Are you sure? You can't undo this action afterwards.",
-  },
-  deleteConfirmationConfirm: {
-    id: "SessionActions.deleteConfirmation.confirm",
-    defaultMessage: "Delete Lesson",
-  },
-  deleteConfirmationCancel: {
-    id: "SessionActions.deleteConfirmation.cancel",
-    defaultMessage: "Cancel",
-  },
-  deleteSuccessMessage: {
-    id: "SessionActions.deleteSuccessMessage",
-    defaultMessage: "Lesson deleted successfully",
-  },
-  deleteErrorMessage: {
-    id: "SessionActions.deleteErrorMessage",
-    defaultMessage: "There was an error deleting the lesson. Please try again!",
-  },
 });
 
 const SessionActions = ({
   klass,
-  sessionId,
+  session,
 }: {
   klass: ExistingClassExtended;
-  sessionId: number;
+  session: ExistingSessionExtended;
 }) => {
   const intl = useIntl();
   const router = useRouter();
   const deleteSession = useDeleteClassSession();
   const authenticationContext = useContext(AuthenticationContext);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [sessionLink, setSessionLink] = useState("");
 
   const canGetSessionLink =
     "userId" in authenticationContext &&
@@ -64,14 +47,14 @@ const SessionActions = ({
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteSession(klass.id, sessionId);
+      await deleteSession(klass.id, session.id);
       toaster.success({
-        title: intl.formatMessage(messages.deleteSuccessMessage),
+        title: intl.formatMessage(SessionDeleteModalMessages.success),
       });
       router.push(`/class/${klass.id}/session`);
     } catch {
       toaster.error({
-        title: intl.formatMessage(messages.deleteErrorMessage),
+        title: intl.formatMessage(SessionDeleteModalMessages.error),
       });
     }
   };
@@ -87,9 +70,9 @@ const SessionActions = ({
             onClick={async () => {
               const fingerprint =
                 await authenticationContext.keyPair.getPublicKeyFingerprint();
-              navigator.clipboard.writeText(
-                `${window.location.origin}/class/${klass.id}/session/${sessionId}/join?key=${fingerprint}`,
-              );
+              const link = `${window.location.origin}/class/${klass.id}/session/${session.id}/join?key=${fingerprint}`;
+              setSessionLink(link);
+              setIsShareModalOpen(true);
             }}
             icon={<LuSend />}
           >
@@ -105,15 +88,42 @@ const SessionActions = ({
       </DropdownMenu>
 
       <Modal
-        title={intl.formatMessage(messages.deleteConfirmationTitle)}
-        description={intl.formatMessage(messages.deleteConfirmationBody)}
+        title={intl.formatMessage(SessionDeleteModalMessages.title)}
+        description={intl.formatMessage(SessionDeleteModalMessages.body)}
         confirmButtonText={intl.formatMessage(
-          messages.deleteConfirmationConfirm,
+          SessionDeleteModalMessages.confirm,
         )}
-        cancelButtonText={intl.formatMessage(messages.deleteConfirmationCancel)}
+        cancelButtonText={intl.formatMessage(SessionDeleteModalMessages.cancel)}
         onConfirm={handleDeleteConfirm}
         open={isDeleteModalOpen}
         onOpenChange={(details) => setIsDeleteModalOpen(details.open)}
+      />
+
+      <ShareModal
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
+        subtitle={
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
+        }
+        description={
+          <FormattedMessage
+            {...(session?.isAnonymous
+              ? SessionShareMessages.shareModalAnonymousLessonInfo
+              : SessionShareMessages.shareModalPrivateLessonInfo)}
+            values={{
+              link: (chunks) => (
+                <Link
+                  textDecoration="underline"
+                  href={`/class/${klass.id}/session/${session.id}/detail`}
+                >
+                  {chunks}
+                </Link>
+              ),
+            }}
+          />
+        }
+        open={isShareModalOpen}
+        shareLink={sessionLink}
+        onOpenChange={(details) => setIsShareModalOpen(details.open)}
       />
     </>
   );

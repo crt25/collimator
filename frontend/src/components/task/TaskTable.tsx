@@ -146,6 +146,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
+      size: 64,
       meta: {
         columnType: ColumnType.text,
       },
@@ -171,6 +172,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
+      size: 32,
       meta: {
         columnType: ColumnType.text,
       },

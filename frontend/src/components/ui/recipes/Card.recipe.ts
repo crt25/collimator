@@ -8,10 +8,9 @@ export const CardRecipe = defineSlotRecipe({
       dashboard: {
         root: {
           cursor: "pointer",
-          padding: "lg",
-          maxHeight: "3xs",
+          paddingLeft: "lg",
+          paddingBottom: "lg",
           borderWidth: "thin",
-          height: "3xs",
           _hover: {
             opacity: 0.8,
           },
@@ -20,5 +19,3 @@ export const CardRecipe = defineSlotRecipe({
     },
   },
 });
-
-export default CardRecipe;
