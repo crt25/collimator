@@ -134,7 +134,7 @@ const SolveTaskPage = () => {
           title: intl.formatMessage(messages.correctSolutionSubmitted),
           action: {
             label: intl.formatMessage(messages.openTaskList),
-            onClick: toggleSessionMenu,
+            onClick: () => setShowSessionMenu(true),
           },
           closable: true,
           duration: 60 * 1000,
@@ -144,14 +144,14 @@ const SolveTaskPage = () => {
           title: intl.formatMessage(messages.solutionSubmitted),
           action: {
             label: intl.formatMessage(messages.openTaskList),
-            onClick: toggleSessionMenu,
+            onClick: () => setShowSessionMenu(true),
           },
           closable: true,
           duration: 60 * 1000,
         });
       }
     },
-    [createSolution, intl, toggleSessionMenu],
+    [createSolution, intl, setShowSessionMenu],
   );
 
   const onSubmitSolution = useCallback(async () => {
