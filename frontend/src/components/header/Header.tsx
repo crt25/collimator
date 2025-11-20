@@ -1,14 +1,9 @@
 import React from "react";
-import {
-  defineMessages,
-  MessageDescriptor,
-  PrimitiveType,
-  useIntl,
-} from "react-intl";
-import Head from "next/head";
+import { MessageDescriptor, PrimitiveType } from "react-intl";
 import { chakra, Container } from "@chakra-ui/react";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
+import HtmlHead from "./HtmlHead";
 
 const StyledHeader = chakra("header", {
   base: {
@@ -27,13 +22,6 @@ const HeaderInner = chakra("div", {
   },
 });
 
-const messages = defineMessages({
-  applicationName: {
-    id: "Header.applicationName",
-    defaultMessage: "ClassMosaic",
-  },
-});
-
 const Header = ({
   title,
   titleParameters,
@@ -47,22 +35,13 @@ const Header = ({
   children?: React.ReactNode;
   hideSignIn?: boolean;
 }) => {
-  const intl = useIntl();
-
   return (
     <>
-      <Head>
-        <title>
-          {`${intl.formatMessage(messages.applicationName)} - ${intl.formatMessage(title, titleParameters)}`}
-        </title>
-        {description && (
-          <meta name="description" content={intl.formatMessage(description)} />
-        )}
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <HtmlHead
+        title={title}
+        titleParameters={titleParameters}
+        description={description}
+      />
 
       <StyledHeader>
         <Container>
