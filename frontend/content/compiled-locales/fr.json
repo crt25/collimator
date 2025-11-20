@@ -911,6 +911,12 @@
       "value": "Le titre est requis"
     }
   ],
+  "DEPRECATED: SessionForm.sharingType.public": [
+    {
+      "type": 0,
+      "value": "Public"
+    }
+  ],
   "DEPRECATED: SessionGrouping.header": [
     {
       "type": 0,
@@ -1529,10 +1535,10 @@
       "value": "Anonyme"
     }
   ],
-  "SessionForm.sharingType.public": [
+  "SessionForm.sharingType.private": [
     {
       "type": 0,
-      "value": "Public"
+      "value": "Privé"
     }
   ],
   "SessionList.canOnlyShareOwnSessions": [
@@ -1605,6 +1611,30 @@
     {
       "type": 0,
       "value": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
+    }
+  ],
+  "SessionList.shareModalAnonymousLessonInfo": [
+    {
+      "type": 0,
+      "value": "Cette leçon va être accessible anonymement. Quiconque avec le lien pourra rejoindre la leçon."
+    }
+  ],
+  "SessionList.shareModalPrivateLessonInfo": [
+    {
+      "type": 0,
+      "value": "Cette leçon va être accessible de manière privée. Les étudiants devront s'authentifier pour rejoindre la leçon."
+    }
+  ],
+  "SessionList.shareModalSubtitle": [
+    {
+      "type": 0,
+      "value": "Lien à partager"
+    }
+  ],
+  "SessionList.shareModalTitle": [
+    {
+      "type": 0,
+      "value": "Inviter les élèves"
     }
   ],
   "SessionNavigation.lessonDetails": [

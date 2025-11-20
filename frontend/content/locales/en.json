@@ -615,8 +615,8 @@
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
   },
-  "SessionForm.sharingType.public": {
-    "message": "Public"
+  "SessionForm.sharingType.private": {
+    "message": "Private"
   },
   "SessionList.canOnlyShareOwnSessions": {
     "message": "You can only share lessons belonging to your classes."
@@ -653,6 +653,18 @@
   },
   "SessionList.emptyState.title": {
     "message": "There are no lessons yet. Let's create some!"
+  },
+  "SessionList.shareModalAnonymousLessonInfo": {
+    "message": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+  },
+  "SessionList.shareModalPrivateLessonInfo": {
+    "message": "This Lesson will be shared privately. Students will need to login to join the lesson."
+  },
+  "SessionList.shareModalSubtitle": {
+    "message": "Share Link"
+  },
+  "SessionList.shareModalTitle": {
+    "message": "Invite Student"
   },
   "SessionNavigation.lessonDetails": {
     "message": "Lesson Details"

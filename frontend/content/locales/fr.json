@@ -119,6 +119,9 @@
   "DEPRECATED: LoginPage.description": {
     "message": "Connectez-vous pour accéder à vos classes, activités et matériel pédagogique."
   },
+  "DEPRECATED: SessionForm.sharingType.public": {
+    "message": "Public"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -735,8 +738,8 @@
   "SessionForm.sharingType.anonymous": {
     "message": "Anonyme"
   },
-  "SessionForm.sharingType.public": {
-    "message": "Public"
+  "SessionForm.sharingType.private": {
+    "message": "Privé"
   },
   "SessionList.canOnlyShareOwnSessions": {
     "message": "Vous ne pouvez partager que les leçons appartenant à vos classes."
@@ -773,6 +776,18 @@
   },
   "SessionList.emptyState.title": {
     "message": "Il n'y a pas encore de leçons. Créez-en quelques-unes!"
+  },
+  "SessionList.shareModalAnonymousLessonInfo": {
+    "message": "Cette leçon va être accessible anonymement. Quiconque avec le lien pourra rejoindre la leçon."
+  },
+  "SessionList.shareModalPrivateLessonInfo": {
+    "message": "Cette leçon va être accessible de manière privée. Les étudiants devront s'authentifier pour rejoindre la leçon."
+  },
+  "SessionList.shareModalSubtitle": {
+    "message": "Lien à partager"
+  },
+  "SessionList.shareModalTitle": {
+    "message": "Inviter les élèves"
   },
   "SessionNavigation.lessonDetails": {
     "message": "Détails de la leçon"
