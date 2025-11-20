@@ -56,7 +56,7 @@ const tabs: NavigationTab[] = [
     testId: "task-instance-reference-solutions-tab",
   },
   {
-    url: "progress",
+    url: "student",
     title: (intl) => intl.formatMessage(messages.studentResultsTab),
     icon: <LuFilePenLine />,
     testId: "task-instance-student-results-tab",
