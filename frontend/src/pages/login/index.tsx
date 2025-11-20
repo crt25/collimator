@@ -3,14 +3,35 @@ import { useCallback } from "react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { AbsoluteCenter, Container } from "@chakra-ui/react";
 import Header from "@/components/Header";
+import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
 import LoginCard from "@/components/login/LoginCard";
-import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 
 const messages = defineMessages({
   title: {
     id: "LoginPage.title",
     defaultMessage: "Teacher Login",
+  },
+  header: {
+    id: "LoginPage.header",
+    defaultMessage: "Teacher Login",
+  },
+  pageDescription: {
+    id: "LoginPage.pageDescription",
+    defaultMessage: "Welcome to the ClassMosaic Teacher Portal.",
+  },
+  cardTitle: {
+    id: "LoginPage.cardTitle",
+    defaultMessage: "Teacher Login",
+  },
+  cardDescription: {
+    id: "LoginPage.cardDescription",
+    defaultMessage:
+      "Log in to access your classes, tasks, and learning resources.",
+  },
+  authenticateMicrosoft: {
+    id: "LoginPage.authenticate.microsoft",
+    defaultMessage: "Authenticate using Microsoft",
   },
 });
 
@@ -36,35 +57,17 @@ const LoginPage = () => {
       <Header title={messages.title} hideSignIn />
       <Container>
         <PageHeading>
-          <FormattedMessage
-            id="LoginPage.title"
-            defaultMessage="Teacher Login"
-          />
+          <FormattedMessage {...messages.header} />
         </PageHeading>
         <PageHeading variant="description">
-          <FormattedMessage
-            id="LoginPage.description"
-            defaultMessage="Log in to access your account"
-          />
+          <FormattedMessage {...messages.pageDescription} />
         </PageHeading>
       </Container>
       <AbsoluteCenter>
         <LoginCard
-          title={
-            <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
-          }
-          description={
-            <FormattedMessage
-              id="LoginPage.description"
-              defaultMessage="Log in to access your account"
-            />
-          }
-          buttonLabel={
-            <FormattedMessage
-              id="LoginPage.authenticate.microsoft"
-              defaultMessage="Authenticate using Microsoft"
-            />
-          }
+          title={<FormattedMessage {...messages.cardTitle} />}
+          description={<FormattedMessage {...messages.cardDescription} />}
+          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
         />
       </AbsoluteCenter>

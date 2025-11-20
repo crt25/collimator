@@ -16,18 +16,15 @@ import { CSS } from "@dnd-kit/utilities";
 import { useCallback } from "react";
 import styled from "@emotion/styled";
 
-const SortableListWrapper = styled.div`
-  margin-bottom: 1rem;
-`;
-
-const ItemList = styled.div`
+const ItemList = styled.div<{ noGap?: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+
+  gap: ${(props: { noGap?: boolean }) => (props.noGap ? "0" : "1rem")};
 `;
 
 const SortableItem = (props: {
-  id: number;
+  id: number | string;
   testId?: string;
   children: React.ReactNode;
 }) => {
@@ -52,16 +49,18 @@ const SortableItem = (props: {
   );
 };
 
-const SortableListInput = <TItem extends { id: number }>({
+const SortableListInput = <TItem extends { id: number | string }>({
   items,
   updateItems,
   children: renderItemContent,
   testId,
+  noGap,
 }: {
   items: TItem[];
   updateItems: (items: TItem[]) => void;
   children: (item: TItem, index: number) => React.ReactNode;
   testId?: string;
+  noGap?: boolean;
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -85,14 +84,14 @@ const SortableListInput = <TItem extends { id: number }>({
   );
 
   return (
-    <SortableListWrapper data-testid={testId}>
+    <div data-testid={testId}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <ItemList>
+          <ItemList noGap={noGap}>
             {items.map((item, index) => (
               <SortableItem
                 key={`${item.id}`}
@@ -105,7 +104,7 @@ const SortableListInput = <TItem extends { id: number }>({
           </ItemList>
         </SortableContext>
       </DndContext>
-    </SortableListWrapper>
+    </div>
   );
 };
 

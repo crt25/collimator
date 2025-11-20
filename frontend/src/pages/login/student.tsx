@@ -51,7 +51,7 @@ const StudentLoginPage = () => {
         <Container>
           <FormattedMessage
             id="StudentLoginPage.invalidParameters"
-            defaultMessage="You can only log in as a student in order to join a session. Please open the link you received from your teacher."
+            defaultMessage="You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
           />
         </Container>
       </>

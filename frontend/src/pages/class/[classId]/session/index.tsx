@@ -14,7 +14,7 @@ import ClassActions from "@/components/class/ClassActions";
 const messages = defineMessages({
   title: {
     id: "ClassSessionList.title",
-    defaultMessage: "{name} - Sessions",
+    defaultMessage: "{name} - Lessons",
   },
 });
 

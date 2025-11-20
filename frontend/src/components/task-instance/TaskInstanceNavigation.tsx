@@ -6,6 +6,7 @@ import {
   LuChartScatter,
   LuFilePenLine,
   LuSettings2,
+  LuStar,
 } from "react-icons/lu";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
@@ -34,6 +35,10 @@ const messages = defineMessages({
   dissimilarPairsTab: {
     id: "TaskInstanceNavigation.dissimilarPairsTab",
     defaultMessage: "Dissimilar Pairs",
+  },
+  showcaseTab: {
+    id: "TaskInstanceNavigation.showcaseTab",
+    defaultMessage: "Showcase",
   },
 });
 
@@ -73,6 +78,12 @@ const tabs: NavigationTab[] = [
     title: (intl) => intl.formatMessage(messages.dissimilarPairsTab),
     icon: <LuChartColumnBig />,
     testId: "task-instance-dissimilar-pairs-tab",
+  },
+  {
+    url: "showcase",
+    title: (intl) => intl.formatMessage(messages.showcaseTab),
+    icon: <LuStar />,
+    testId: "task-instance-showcase-tab",
   },
 ];
 

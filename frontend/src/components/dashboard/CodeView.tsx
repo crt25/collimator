@@ -16,6 +16,10 @@ export const CodeViewContainer = styled.div`
 
   border: var(--foreground-color) 1px solid;
   border-radius: var(--border-radius);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const CodeViewWrapper = styled(CodeViewContainer)`

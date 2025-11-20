@@ -22,11 +22,11 @@ import SessionActions from "@/components/session/SessionActions";
 const messages = defineMessages({
   title: {
     id: "SessionDetail.title",
-    defaultMessage: "Session - {title}",
+    defaultMessage: "Lesson - {title}",
   },
   submit: {
     id: "SessionDetail.submit",
-    defaultMessage: "Save Session",
+    defaultMessage: "Save Lesson",
   },
   successMessage: {
     id: "SessionDetail.successMessage",
