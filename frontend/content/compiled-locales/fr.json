@@ -1290,13 +1290,13 @@
   "JoinSession.waitingForTeacher": [
     {
       "type": 0,
-      "value": "En attente que la machine de l'enseignant vous admette dans la leçon..."
+      "value": "En attente que l'ordinateur de l'enseignant vous admette dans la leçon..."
     }
   ],
   "LanguageChooser.english": [
     {
       "type": 0,
-      "value": "Anglais"
+      "value": "English"
     }
   ],
   "LanguageChooser.french": [

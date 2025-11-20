@@ -242,6 +242,9 @@ const SolveTaskPage = () => {
     return null;
   }
 
+  // FEATURE FLAG: Disable import/export for now
+  const disableImportExport = true;
+
   return (
     <MaxScreenHeight>
       <Header title={messages.title} titleParameters={{ title: task?.title }}>
@@ -278,16 +281,26 @@ const SolveTaskPage = () => {
             />
           </Button>
         </li>
-        <li>
-          <Button onClick={onExport}>
-            <FormattedMessage id="SolveTask.export" defaultMessage="Export" />
-          </Button>
-        </li>
-        <li>
-          <Button onClick={onImport}>
-            <FormattedMessage id="SolveTask.import" defaultMessage="Import" />
-          </Button>
-        </li>
+        {!disableImportExport && (
+          <>
+            <li>
+              <Button onClick={onExport}>
+                <FormattedMessage
+                  id="SolveTask.export"
+                  defaultMessage="Export"
+                />
+              </Button>
+            </li>
+            <li>
+              <Button onClick={onImport}>
+                <FormattedMessage
+                  id="SolveTask.import"
+                  defaultMessage="Import"
+                />
+              </Button>
+            </li>
+          </>
+        )}
       </Header>
       <MultiSwrContent
         data={[session, task, taskFile]}
