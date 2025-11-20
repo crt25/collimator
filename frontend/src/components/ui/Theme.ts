@@ -9,7 +9,6 @@ import { BreadcrumbsRecipe } from "./recipes/Breadcrumbs.recipe";
 import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
 import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
 import { CardRecipe } from "./recipes/Card.recipe";
-import { ContainerRecipe } from "./recipes/Container.recipe";
 import { DropdownMenuRecipe } from "./recipes/DropdownMenu.recipe";
 import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
