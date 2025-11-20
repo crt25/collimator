@@ -15,28 +15,10 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
-import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
-import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
-import { StudentName } from "../encryption/StudentName";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import CodeView from "./CodeView";
-
-const getNameOfAnalysis = (analysis: CurrentAnalysis) =>
-  analysis instanceof CurrentStudentAnalysis ? (
-    <StudentName
-      studentId={analysis.studentId}
-      keyPairId={analysis.studentKeyPairId}
-      pseudonym={analysis.studentPseudonym}
-    />
-  ) : analysis instanceof ReferenceAnalysis ? (
-    analysis.title
-  ) : (
-    <FormattedMessage
-      id="ShowcasePresentation.unknownAnalysisType"
-      defaultMessage="Unknown analysis type"
-    />
-  );
+import AnalysisName from "./AnalysisName";
 
 const ShowcasePresentationInternal = ({
   klass,
@@ -111,7 +93,7 @@ const ShowcasePresentationInternal = ({
                 >
                   <HStack gap="sm">
                     <span>{index + 1}.</span>
-                    {getNameOfAnalysis(analysis)}
+                    {<AnalysisName analysis={analysis} />}
                   </HStack>
                 </Carousel.Item>
               ))}

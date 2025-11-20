@@ -31,7 +31,7 @@ import SolveTaskModal from "../modals/SolveTaskModal";
 import TextArea from "../form/TextArea";
 
 const AddReferenceSolutionButton = styled(Button)`
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `;
 
 const ReferenceSolutionListElement = styled.div`
