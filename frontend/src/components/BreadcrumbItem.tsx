@@ -47,7 +47,7 @@ const BreadcrumbItem = ({
   if (onClick) {
     return (
       <Breadcrumb.Item>
-        <Breadcrumb.Link onClick={onClick} cursor="pointer">
+        <Breadcrumb.Link as="button" type="button" onClick={onClick}>
           <HStack>
             {icon && <span>{icon}</span>}
             {children}
