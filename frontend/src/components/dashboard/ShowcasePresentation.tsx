@@ -121,7 +121,7 @@ const ShowcasePresentationInternal = ({
         <Button onClick={() => carousel.scrollNext()}>
           <HStack>
             <FormattedMessage
-              id="ShowcasePresentation.previous"
+              id="ShowcasePresentation.next"
               defaultMessage="Next"
             />
             <Icon>
