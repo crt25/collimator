@@ -124,7 +124,7 @@ const SessionDetail = () => {
                   taskIds: session.tasks.map((t) => t.id),
                   sharingType: session.isAnonymous
                     ? SharingType.anonymous
-                    : SharingType.public,
+                    : SharingType.private,
                 }}
                 onSubmit={onSubmit}
               />
