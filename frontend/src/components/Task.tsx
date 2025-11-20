@@ -1,5 +1,5 @@
 import { RefObject, useCallback } from "react";
-import { chakra, Container, Dialog, Icon } from "@chakra-ui/react";
+import { chakra, Dialog, Icon } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
 import { FormattedMessage } from "react-intl";
 import { IoMdClose } from "react-icons/io";
@@ -90,7 +90,7 @@ const Task = ({
           <Dialog.Positioner>
             <Dialog.Content marginLeft="4xl" marginTop="5xl">
               <Dialog.Header>
-                <Dialog.CloseTrigger _hover={{ cursor: "pointer" }}>
+                <Dialog.CloseTrigger>
                   <Icon>
                     <IoMdClose />
                   </Icon>

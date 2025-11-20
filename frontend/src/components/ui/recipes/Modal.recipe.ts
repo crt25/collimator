@@ -7,7 +7,7 @@ export const ModalRecipe = defineSlotRecipe({
     "title",
     "footer",
     "warningText",
-    "closeIcon",
+    "closeTrigger",
   ],
   base: {
     content: {
@@ -24,8 +24,12 @@ export const ModalRecipe = defineSlotRecipe({
       fontWeight: "semibold !important",
       marginBottom: "sm !important",
     },
-    closeIcon: {
+    closeTrigger: {
       fontSize: "2xl",
+      padding: "sm",
+      _hover: {
+        cursor: "pointer",
+      },
     },
   },
 });
