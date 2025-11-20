@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useReducer } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Dialog, Grid, GridItem, Portal } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
@@ -8,7 +8,6 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
-import Button from "../Button";
 import Checkbox from "../form/Checkbox";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
@@ -25,8 +24,6 @@ import {
   AnalyzerState,
   AnalyzerStateActionType,
   analyzerStateReducer,
-  defaultGroupValue,
-  defaultSolutionIdValue,
 } from "./Analyzer.state";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
@@ -49,22 +46,6 @@ const messages = defineMessages({
     id: "Analyzer.numberOfGroups",
     defaultMessage: "Number of groups",
   },
-  selectSolutionForComparisonTitle: {
-    id: "Analyzer.selectSolutionForComparisonTitle",
-    defaultMessage: "Selecting Solution for Comparison",
-  },
-  selectSolutionForComparisonDescription: {
-    id: "Analyzer.selectSolutionForComparisonDescription",
-    defaultMessage: "Where should the selected solution be placed?",
-  },
-  selectSolutionForComparisonLeft: {
-    id: "Analyzer.selectSolutionForComparisonLeft",
-    defaultMessage: "Left",
-  },
-  selectSolutionForComparisonRight: {
-    id: "Analyzer.selectSolutionForComparisonRight",
-    defaultMessage: "Right",
-  },
 });
 
 const Analyzer = ({
@@ -74,8 +55,6 @@ const Analyzer = ({
   session: ExistingSessionExtended;
   task: ExistingTask;
 }) => {
-  const intl = useIntl();
-
   const [state, dispatch] = useReducer(analyzerStateReducer, {
     selectedTask: session.tasks[0]?.id,
     selectedSubTaskId: undefined,
@@ -85,13 +64,7 @@ const Analyzer = ({
     filters: [],
     splits: [],
     selectedSolutionIds: new Set<string>(),
-    comparison: {
-      clickedAnalysis: undefined,
-      selectedLeftGroup: defaultGroupValue,
-      selectedRightGroup: defaultGroupValue,
-      selectedRightSolutionId: defaultSolutionIdValue,
-      selectedLeftSolutionId: defaultSolutionIdValue,
-    },
+    comparison: { selectedSolutionIds: new Set<string>() },
   } satisfies AnalyzerState);
 
   const {
@@ -159,32 +132,13 @@ const Analyzer = ({
 
   const onSelectSolution = useCallback(
     (groupKey: string, { solutionId }: CurrentAnalysis) => {
-      if (state.comparison.selectedLeftSolutionId === defaultSolutionIdValue) {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedLeft,
-          groupKey,
-          solutionId,
-        });
-      } else if (
-        state.comparison.selectedRightSolutionId === defaultSolutionIdValue
-      ) {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedRight,
-          groupKey,
-          solutionId,
-        });
-      } else {
-        // let the user choose
-        dispatch({
-          type: AnalyzerStateActionType.setClickedAnalysis,
-          clickedAnalysis: { groupKey, solutionId: solutionId },
-        });
-      }
+      dispatch({
+        type: AnalyzerStateActionType.setAnalysesSelectedForComparison,
+        solutionIds: [solutionId],
+        unionWithPrevious: true,
+      });
     },
-    [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
+    [],
   );
 
   if (!state.selectedTask) {
@@ -283,80 +237,6 @@ const Analyzer = ({
           </Grid>
         )}
       </MultiSwrContent>
-      <Dialog.Root
-        open={state.comparison.clickedAnalysis !== undefined}
-        onOpenChange={() =>
-          dispatch({
-            type: AnalyzerStateActionType.setClickedAnalysis,
-            clickedAnalysis: undefined,
-          })
-        }
-        data-testid="solution-selection-modal"
-      >
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>
-                  {intl.formatMessage(
-                    messages.selectSolutionForComparisonTitle,
-                  )}
-                </Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                {intl.formatMessage(
-                  messages.selectSolutionForComparisonDescription,
-                )}
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Button
-                  onClick={() => {
-                    if (state.comparison.clickedAnalysis) {
-                      dispatch({
-                        type: AnalyzerStateActionType.setSelectedLeft,
-                        groupKey: state.comparison.clickedAnalysis.groupKey,
-                        solutionId: state.comparison.clickedAnalysis.solutionId,
-                      });
-
-                      dispatch({
-                        type: AnalyzerStateActionType.setClickedAnalysis,
-                        clickedAnalysis: undefined,
-                      });
-                    }
-                  }}
-                  variant="primary"
-                  data-testid="cancel-button"
-                >
-                  {intl.formatMessage(messages.selectSolutionForComparisonLeft)}
-                </Button>
-                <Button
-                  onClick={() => {
-                    if (state.comparison.clickedAnalysis) {
-                      dispatch({
-                        type: AnalyzerStateActionType.setSelectedRight,
-                        groupKey: state.comparison.clickedAnalysis.groupKey,
-                        solutionId: state.comparison.clickedAnalysis.solutionId,
-                      });
-
-                      dispatch({
-                        type: AnalyzerStateActionType.setClickedAnalysis,
-                        clickedAnalysis: undefined,
-                      });
-                    }
-                  }}
-                  variant="primary"
-                  data-testid="cancel-button"
-                >
-                  {intl.formatMessage(
-                    messages.selectSolutionForComparisonRight,
-                  )}
-                </Button>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
     </>
   );
 };

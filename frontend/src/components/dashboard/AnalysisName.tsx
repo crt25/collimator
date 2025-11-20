@@ -1,10 +1,12 @@
 import { FormattedMessage } from "react-intl";
-import { StudentName } from "../encryption/StudentName";
+import { HStack, Icon } from "@chakra-ui/react";
+import { LuStar } from "react-icons/lu";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
+import { StudentName } from "../encryption/StudentName";
 
-const AnalysisName = ({ analysis }: { analysis: CurrentAnalysis }) => {
+const AnalysisPlainName = ({ analysis }: { analysis: CurrentAnalysis }) => {
   if (analysis instanceof CurrentStudentAnalysis) {
     return (
       <StudentName
@@ -33,6 +35,45 @@ const AnalysisName = ({ analysis }: { analysis: CurrentAnalysis }) => {
       id="AnalysisName.unknownAnalysisType"
       defaultMessage="Unknown analysis type"
     />
+  );
+};
+
+const AnalysisIcon = ({ analysis }: { analysis: CurrentAnalysis }) => {
+  if (analysis instanceof CurrentStudentAnalysis) {
+    if (analysis.isReferenceSolution) {
+      return <LuStar />;
+    }
+
+    return null;
+  }
+
+  if (analysis instanceof ReferenceAnalysis) {
+    if (analysis.isInitialTaskSolution) {
+      return null;
+    }
+
+    return null;
+  }
+
+  return null;
+};
+
+const AnalysisName = ({
+  analysis,
+  withIcon,
+}: {
+  analysis: CurrentAnalysis;
+  withIcon?: boolean;
+}) => {
+  return (
+    <HStack>
+      {withIcon && (
+        <Icon>
+          <AnalysisIcon analysis={analysis} />
+        </Icon>
+      )}
+      <AnalysisPlainName analysis={analysis} />
+    </HStack>
   );
 };
 

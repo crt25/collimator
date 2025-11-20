@@ -1,53 +1,51 @@
-import { Dispatch, useContext, useEffect, useMemo, useState } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import styled from "@emotion/styled";
-import { Grid, GridItem } from "@chakra-ui/react";
-import { getStudentNickname } from "@/utilities/student-name";
-import { TaskType } from "@/api/collimator/generated/models";
-import { decodeBase64 } from "@/utilities/crypto/base64";
+import { Dispatch, useCallback, useMemo } from "react";
 import {
-  AuthenticationContext,
-  AuthenticationContextType,
-  isFullyAuthenticated,
-} from "@/contexts/AuthenticationContext";
-import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
-import { compareLabels } from "@/utilities/comparisons";
+  defineMessages,
+  FormattedMessage,
+  MessageDescriptor,
+  useIntl,
+} from "react-intl";
+import styled from "@emotion/styled";
+import {
+  Box,
+  Collapsible,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Icon,
+  Tag,
+} from "@chakra-ui/react";
+import { LuChevronRight, LuX } from "react-icons/lu";
+import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
-import { useStudentAnonymization } from "@/hooks/useStudentAnonymization";
 import Button from "../Button";
-import ViewSolutionModal from "../modals/ViewSolutionModal";
-import Select from "../form/Select";
 import { Group, CategorizedDataPoint } from "./hooks/types";
-import CodeView, { CodeViewContainer } from "./CodeView";
+import CodeView from "./CodeView";
 import { axisCriteria } from "./axes";
 import {
   AnalyzerState,
   AnalyzerStateAction,
   AnalyzerStateActionType,
-  defaultGroupValue,
-  defaultSolutionIdValue,
-  selectedGroupValue,
 } from "./Analyzer.state";
 import StarAnalysisButton from "./StarAnalysisButton";
+import AnalysisName from "./AnalysisName";
 
 const messages = defineMessages({
-  defaultGroupOption: {
-    id: "CodeComparison.defaultOption",
-    defaultMessage: "Group: All solutions",
-  },
-  selectedSolutions: {
-    id: "CodeComparison.selectedSolutions",
-    defaultMessage: "Group: Selected solutions",
-  },
   groupLabelPrefix: {
     id: "CodeComparison.groupPrefix",
     defaultMessage: "Group: ",
   },
-  defaultSolutionOption: {
-    id: "CodeComparison.defaultSolutionOption",
-    defaultMessage: "Select a solution",
+  studentSolutions: {
+    id: "CodeComparison.studentSolutions",
+    defaultMessage: "Student solutions",
+  },
+  referenceSolutions: {
+    id: "CodeComparison.referenceSolutions",
+    defaultMessage: "Reference solutions",
   },
 });
 
@@ -55,148 +53,214 @@ const CodeComparisonWrapper = styled.div`
   margin-bottom: 2rem;
 `;
 
-const SelectionMenu = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-flow: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-
-  margin-bottom: 1rem;
-
-  & > label {
-    flex-shrink: 0;
-    flex-grow: 1;
-  }
-
-  & > * {
-    /* avoid overflow */
-    min-width: 0;
-
-    select {
-      width: 100%;
-    }
-  }
-`;
-
-const ModalHeader = styled.div`
-  flex-grow: 1;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ModalHeaderLeft = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-
-  margin-left: 1rem;
-  gap: 1rem;
-`;
-
-const AxisValues = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-
-  gap: 1rem;
-`;
-
-type Option = { label: string; value: string };
-
-const getOptions = async (
-  authContext: AuthenticationContextType,
-  analyses: CurrentAnalysis[],
-  showStudentName: boolean,
-): Promise<Option[]> => {
-  const options = await Promise.all(
-    analyses.map(async (analysis) => {
-      if (analysis instanceof CurrentStudentAnalysis) {
-        const {
-          studentId,
-          studentPseudonym,
-          isReferenceSolution,
-          solutionId: value,
-        } = analysis;
-
-        let label = getStudentNickname(studentId, studentPseudonym);
-
-        if (
-          showStudentName &&
-          studentPseudonym &&
-          isFullyAuthenticated(authContext)
-        ) {
-          try {
-            const decryptedIdentity: StudentIdentity = JSON.parse(
-              await authContext.keyPair.decryptString(
-                decodeBase64(studentPseudonym),
-              ),
-            );
-
-            label = decryptedIdentity.name;
-          } catch {
-            // if decryption fails, use the nickname
-          }
-        }
-
-        return {
-          label: isReferenceSolution ? `⭐ ${label}` : label,
-          value,
-        };
-      }
-
-      if (analysis instanceof ReferenceAnalysis) {
-        return {
-          label: `𝓡 ${analysis.title}`,
-          value: analysis.solutionId,
-        };
-      }
-
-      throw new Error(`Unknown analysis type: ${JSON.stringify(analysis)}`);
-    }),
-  );
-
-  return options.toSorted(compareLabels);
+type UpdateSelectionProps = {
+  addAnalysisToComparison: (analysis: CurrentAnalysis) => void;
+  removeAnalysisFromComparison: (analysis: CurrentAnalysis) => void;
 };
 
-const findAssignment = (
-  categorizedDataPoints: CategorizedDataPoint[],
-  selectedGroup: string,
-  selectedSolutionId: string,
-):
-  | {
-      dataPoint: CategorizedDataPoint;
-      analysis: CurrentAnalysis;
-    }
-  | undefined =>
-  categorizedDataPoints
-    .map((dataPoint) => {
-      if (
-        dataPoint.groupKey === selectedGroup ||
-        defaultGroupValue === selectedGroup ||
-        selectedGroupValue === selectedGroup
-      ) {
-        const analysis = dataPoint.analyses.find(
-          (analysis) => analysis.solutionId === selectedSolutionId,
-        );
+const AnalysisTag = ({
+  analysis,
+  selected,
+  addAnalysisToComparison,
+  removeAnalysisFromComparison,
+}: {
+  analysis: CurrentAnalysis;
+  selected?: boolean;
+} & UpdateSelectionProps) => {
+  const onClick = useMemo(
+    () =>
+      selected
+        ? () => removeAnalysisFromComparison(analysis)
+        : () => addAnalysisToComparison(analysis),
+    [analysis, addAnalysisToComparison, removeAnalysisFromComparison, selected],
+  );
 
-        if (analysis) {
-          return {
-            dataPoint,
-            analysis,
-          };
+  return (
+    <Tag.Root
+      key={analysis.solutionId}
+      size="lg"
+      as="button"
+      cursor="pointer"
+      onClick={onClick}
+      variant={selected ? "solid" : "subtle"}
+      colorScheme={selected ? "blue" : "gray"}
+    >
+      <Tag.Label>
+        <AnalysisName analysis={analysis} withIcon />
+      </Tag.Label>
+    </Tag.Root>
+  );
+};
+
+const GroupedDataPoint = ({
+  group,
+  points,
+  selectedSolutionIds,
+  addAnalysisToComparison,
+  removeAnalysisFromComparison,
+}: {
+  group: Group;
+  points: CategorizedDataPoint[];
+  selectedSolutionIds: Set<string>;
+} & UpdateSelectionProps) => {
+  const analyses = useMemo(
+    () => points.flatMap((point) => point.analyses),
+    [points],
+  );
+
+  const referenceSolutions = useMemo(
+    () =>
+      analyses
+        .filter((analysis) => analysis instanceof ReferenceAnalysis)
+        .toSorted((a, b) => a.solutionId.localeCompare(b.solutionId)),
+    [analyses],
+  );
+
+  const studentAnalyses = useMemo(
+    () =>
+      analyses
+        .filter((analysis) => analysis instanceof CurrentStudentAnalysis)
+        .toSorted((a, b) => a.solutionId.localeCompare(b.solutionId)),
+    [analyses],
+  );
+
+  return (
+    <GridItem colSpan={12}>
+      <Collapsible.Root defaultOpen marginBottom="md">
+        <Collapsible.Trigger>
+          <HStack alignItems="center" justifyContent="center">
+            <Collapsible.Indicator
+              transition="transform 0.2s"
+              _open={{ transform: "rotate(90deg)" }}
+            >
+              <Icon>
+                <LuChevronRight />
+              </Icon>
+            </Collapsible.Indicator>
+            <Heading>
+              <FormattedMessage {...messages.groupLabelPrefix} />{" "}
+              {group.groupLabel}
+            </Heading>
+          </HStack>
+        </Collapsible.Trigger>
+
+        <Box marginTop="md">
+          <Collapsible.Content>
+            <Flex flexDirection="column" gap="lg">
+              <Box>
+                <Heading size="sm" marginBottom="sm">
+                  <FormattedMessage {...messages.studentSolutions} />
+                </Heading>
+                <Flex wrap="wrap" gap="md">
+                  {studentAnalyses.map((analysis) => (
+                    <AnalysisTag
+                      key={analysis.solutionId}
+                      analysis={analysis}
+                      selected={selectedSolutionIds.has(analysis.solutionId)}
+                      addAnalysisToComparison={addAnalysisToComparison}
+                      removeAnalysisFromComparison={
+                        removeAnalysisFromComparison
+                      }
+                    />
+                  ))}
+                </Flex>
+              </Box>
+              <Box>
+                <Heading size="sm" marginBottom="sm">
+                  <FormattedMessage {...messages.referenceSolutions} />
+                </Heading>
+                <Flex wrap="wrap" gap="md">
+                  {referenceSolutions.map((analysis) => (
+                    <AnalysisTag
+                      key={analysis.solutionId}
+                      analysis={analysis}
+                      selected={selectedSolutionIds.has(analysis.solutionId)}
+                      addAnalysisToComparison={addAnalysisToComparison}
+                      removeAnalysisFromComparison={
+                        removeAnalysisFromComparison
+                      }
+                    />
+                  ))}
+                </Flex>
+              </Box>
+            </Flex>
+          </Collapsible.Content>
+        </Box>
+      </Collapsible.Root>
+    </GridItem>
+  );
+};
+
+const SelectedAnalysis = ({
+  analysis,
+  point,
+  classId,
+  sessionId,
+  taskId,
+  taskType,
+  xAxisLabel,
+  yAxisLabel,
+  removeAnalysisFromComparison,
+}: {
+  analysis: CurrentAnalysis;
+  point: CategorizedDataPoint;
+  classId: number;
+  sessionId: number;
+  taskId: number;
+  taskType: TaskType;
+  xAxisLabel?: MessageDescriptor;
+  yAxisLabel?: MessageDescriptor;
+} & UpdateSelectionProps) => {
+  const intl = useIntl();
+
+  return (
+    <GridItem colSpan={{ base: 12, md: 6 }}>
+      <HStack marginBottom="sm" justifyContent="space-between">
+        <HStack gap="md">
+          <Heading size="md">
+            <AnalysisName analysis={analysis} withIcon />
+          </Heading>
+          <StarAnalysisButton
+            classId={classId}
+            analysis={analysis}
+            testId={`star-analysis-${analysis.solutionId}-button`}
+          />
+        </HStack>
+        <Button
+          variant="subtle"
+          size="lg"
+          paddingX="0"
+          onClick={() => removeAnalysisFromComparison(analysis)}
+        >
+          <Icon>
+            <LuX />
+          </Icon>
+        </Button>
+      </HStack>
+      <CodeView
+        classId={classId}
+        sessionId={sessionId}
+        taskId={taskId}
+        taskType={taskType}
+        solutionHash={analysis.solutionHash}
+        modalFooter={
+          <HStack>
+            {xAxisLabel && (
+              <div>
+                {intl.formatMessage(xAxisLabel)}: {point.x}
+              </div>
+            )}
+            {yAxisLabel && (
+              <div>
+                {intl.formatMessage(yAxisLabel)}: {point.y}
+              </div>
+            )}
+          </HStack>
         }
-      }
-
-      return null;
-    })
-    .find((analysis) => analysis !== null);
+      />
+    </GridItem>
+  );
+};
 
 const CodeComparison = ({
   classId,
@@ -204,14 +268,7 @@ const CodeComparison = ({
   taskId,
   taskType,
   state: {
-    selectedSolutionIds,
-    comparison: {
-      selectedLeftGroup,
-      selectedLeftSolutionId,
-      selectedRightGroup,
-      selectedRightSolutionId,
-    },
-    selectedSubTaskId,
+    comparison: { selectedSolutionIds },
     xAxis,
     yAxis,
   },
@@ -228,211 +285,28 @@ const CodeComparison = ({
   categorizedDataPoints: CategorizedDataPoint[];
   groups: Group[];
 }) => {
-  const intl = useIntl();
-  const authContext = useContext(AuthenticationContext);
-  const [anonymizationState] = useStudentAnonymization();
-  const [modalSide, setModalSide] = useState<"left" | "right" | null>(null);
-
-  const [leftOptions, setLeftOptions] = useState<Option[]>([]);
-  const [rightOptions, setRightOptions] = useState<Option[]>([]);
-
-  const groupOptions = useMemo(
-    () => [
-      {
-        label: intl.formatMessage(messages.defaultGroupOption),
-        value: defaultGroupValue,
-      },
-      {
-        label: intl.formatMessage(messages.selectedSolutions),
-        value: selectedGroupValue,
-      },
-      ...groups
-        .map((g) => ({
-          label: intl.formatMessage(messages.groupLabelPrefix) + g.groupLabel,
-          value: g.groupKey,
-        }))
-        .toSorted(compareLabels),
-    ],
-    [intl, groups],
+  const addAnalysisToComparison = useCallback(
+    (analysis: CurrentAnalysis) => {
+      dispatch({
+        type: AnalyzerStateActionType.setAnalysesSelectedForComparison,
+        solutionIds: [analysis.solutionId],
+        unionWithPrevious: true,
+      });
+    },
+    [dispatch],
   );
 
-  const leftDataPoint = useMemo(
-    () =>
-      findAssignment(
-        categorizedDataPoints,
-        selectedLeftGroup,
-        selectedLeftSolutionId,
-      ),
-    [categorizedDataPoints, selectedLeftGroup, selectedLeftSolutionId],
-  );
-
-  const rightDataPoint = useMemo(
-    () =>
-      findAssignment(
-        categorizedDataPoints,
-        selectedRightGroup,
-        selectedRightSolutionId,
-      ),
-    [categorizedDataPoints, selectedRightGroup, selectedRightSolutionId],
-  );
-
-  useEffect(() => {
-    const analyses = categorizedDataPoints
-      .filter(
-        (s) =>
-          selectedLeftGroup === defaultGroupValue ||
-          selectedLeftGroup === selectedGroupValue ||
-          selectedLeftGroup === s.groupKey,
-      )
-      .flatMap((point) =>
-        point.analyses.filter(
-          (analysis) =>
-            // either we are not looking for the manually selected data points
-            selectedLeftGroup !== selectedGroupValue ||
-            // or the analysis is manually selected
-            selectedSolutionIds.has(analysis.solutionId),
+  const removeAnalysisFromComparison = useCallback(
+    (analysis: CurrentAnalysis) => {
+      dispatch({
+        type: AnalyzerStateActionType.setAnalysesSelectedForComparison,
+        solutionIds: [...selectedSolutionIds].filter(
+          (id) => id !== analysis.solutionId,
         ),
-      );
-
-    let isCancelled = false;
-
-    getOptions(authContext, analyses, anonymizationState.showActualName).then(
-      (options) => {
-        if (isCancelled) {
-          return;
-        }
-
-        setLeftOptions(options);
-      },
-    );
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [
-    intl,
-    anonymizationState.showActualName,
-    categorizedDataPoints,
-    selectedLeftGroup,
-    authContext,
-    selectedSolutionIds,
-  ]);
-
-  useEffect(() => {
-    const analyses = categorizedDataPoints
-      .filter(
-        (s) =>
-          selectedRightGroup === defaultGroupValue ||
-          selectedRightGroup === selectedGroupValue ||
-          selectedRightGroup === s.groupKey,
-      )
-      .flatMap((point) =>
-        point.analyses.filter(
-          (analysis) =>
-            // either we are not looking for the manually selected data points
-            selectedRightGroup !== selectedGroupValue ||
-            // or the analysis is manually selected
-            selectedSolutionIds.has(analysis.solutionId),
-        ),
-      );
-
-    let isCancelled = false;
-
-    getOptions(authContext, analyses, anonymizationState.showActualName).then(
-      (options) => {
-        if (isCancelled) {
-          return;
-        }
-
-        setRightOptions(options);
-
-        return () => {
-          isCancelled = true;
-        };
-      },
-    );
-  }, [
-    intl,
-    anonymizationState.showActualName,
-    categorizedDataPoints,
-    selectedRightGroup,
-    authContext,
-    selectedSolutionIds,
-  ]);
-
-  useEffect(() => {
-    if (selectedLeftSolutionId) {
-      const leftGroup = groups.some((g) => g.groupKey === selectedLeftGroup);
-
-      // leftDataPoint is already re-computed based on the current categorized data points
-      // and therefore undefined if it no longer exists
-      if (leftDataPoint) {
-        // the solution may now be in a different group -> select that unless we previously selected
-        // the default group (all) OR the group of selected solutions
-        if (
-          ![defaultGroupValue, selectedGroupValue].includes(selectedLeftGroup)
-        ) {
-          dispatch({
-            type: AnalyzerStateActionType.setSelectedLeftGroup,
-            groupKey: leftDataPoint.dataPoint.groupKey,
-          });
-        }
-      } else if (leftGroup || selectedLeftGroup === defaultGroupValue) {
-        // solution no longer exists but the group does => de-select the solution
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedLeftAnalysis,
-          solutionId: defaultSolutionIdValue,
-        });
-      } else {
-        // de-select the group and the solution if they no longer exists
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedLeft,
-          groupKey: defaultGroupValue,
-          solutionId: defaultSolutionIdValue,
-        });
-      }
-    }
-
-    if (selectedRightSolutionId) {
-      const rightGroup = groups.some((g) => g.groupKey === selectedRightGroup);
-
-      if (rightDataPoint) {
-        if (
-          ![defaultGroupValue, selectedGroupValue].includes(selectedRightGroup)
-        ) {
-          dispatch({
-            type: AnalyzerStateActionType.setSelectedRightGroup,
-            groupKey: rightDataPoint.dataPoint.groupKey,
-          });
-        }
-      } else if (rightGroup || selectedRightGroup === defaultGroupValue) {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedRightAnalysis,
-          solutionId: defaultSolutionIdValue,
-        });
-      } else {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedRight,
-          groupKey: defaultGroupValue,
-          solutionId: defaultSolutionIdValue,
-        });
-      }
-    }
-    // this should only be triggerd if the groups change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groups, categorizedDataPoints]);
-
-  const modalDataPoint = useMemo(() => {
-    if (!modalSide) {
-      return null;
-    }
-
-    if (modalSide === "left") {
-      return leftDataPoint;
-    } else {
-      return rightDataPoint;
-    }
-  }, [leftDataPoint, rightDataPoint, modalSide]);
+      });
+    },
+    [dispatch, selectedSolutionIds],
+  );
 
   const xAxisLabel = useMemo(
     () =>
@@ -446,236 +320,82 @@ const CodeComparison = ({
     [yAxis, taskType],
   );
 
-  const leftStudentName = useMemo(
-    () =>
-      leftOptions.find((o) => o.value === selectedLeftSolutionId)?.label ?? "",
-    [leftOptions, selectedLeftSolutionId],
-  );
+  const groupedDataPoints = useMemo(() => {
+    const dataPointsByGroupKey = Object.fromEntries(
+      groups.map((groups) => [groups.groupKey, [] as CategorizedDataPoint[]]),
+    );
 
-  const rightStudentName = useMemo(
+    for (const dataPoint of categorizedDataPoints) {
+      if (dataPointsByGroupKey[dataPoint.groupKey]) {
+        dataPointsByGroupKey[dataPoint.groupKey].push(dataPoint);
+      }
+    }
+
+    return groups
+      .map((group) => ({
+        group,
+        points: dataPointsByGroupKey[group.groupKey],
+      }))
+      .toSorted((a, b) => a.group.groupLabel.localeCompare(b.group.groupLabel));
+  }, [groups, categorizedDataPoints]);
+
+  const selectedAnalyses = useMemo(
     () =>
-      rightOptions.find((o) => o.value === selectedRightSolutionId)?.label ??
-      "",
-    [rightOptions, selectedRightSolutionId],
+      categorizedDataPoints
+        .map((point) => ({
+          ...point,
+          analyses: point.analyses.filter((analysis) =>
+            selectedSolutionIds.has(analysis.solutionId),
+          ),
+        }))
+        .filter((point) => point.analyses.length > 0)
+        .flatMap((point) =>
+          point.analyses.map((analysis) => ({
+            analysis,
+            point,
+          })),
+        ),
+    [categorizedDataPoints, selectedSolutionIds],
   );
 
   return (
     <>
-      {modalDataPoint && (
-        <ViewSolutionModal
-          isShown={true}
-          setIsShown={(isShown) => setModalSide(isShown ? modalSide : null)}
-          classId={classId}
-          sessionId={sessionId}
-          taskId={taskId}
-          taskType={taskType}
-          solutionHash={modalDataPoint?.analysis.solutionHash}
-          footer={
-            <ModalHeader>
-              <ModalHeaderLeft>
-                {selectedLeftSolutionId !== defaultSolutionIdValue &&
-                selectedRightSolutionId !== defaultSolutionIdValue ? (
-                  <div>
-                    <Button
-                      onClick={() => {
-                        setModalSide("left");
-                      }}
-                    >
-                      {leftStudentName}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setModalSide("right");
-                      }}
-                    >
-                      {rightStudentName}
-                    </Button>
-                  </div>
-                ) : null}
-                <AxisValues>
-                  {xAxisLabel && (
-                    <div>
-                      {intl.formatMessage(xAxisLabel)}:{" "}
-                      {modalDataPoint.dataPoint.x}
-                    </div>
-                  )}
-                  {yAxisLabel && (
-                    <div>
-                      {intl.formatMessage(yAxisLabel)}:{" "}
-                      {modalDataPoint.dataPoint.y}
-                    </div>
-                  )}
-                </AxisValues>
-              </ModalHeaderLeft>
-            </ModalHeader>
-          }
-        />
-      )}
       <CodeComparisonWrapper>
-        <h2>
+        <Heading marginBottom="lg">
           <FormattedMessage
             id="CodeComparison.heading"
             defaultMessage="Comparison"
           />
-        </h2>
+        </Heading>
 
-        <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-          <GridItem colSpan={6}>
-            <SelectionMenu>
-              <Select
-                options={groupOptions}
-                value={selectedLeftGroup}
-                onValueChange={(v) =>
-                  dispatch({
-                    type: AnalyzerStateActionType.setSelectedLeftGroup,
-                    groupKey: v,
-                  })
-                }
-                alwaysShow
-                noMargin
-              />
-              <Select
-                options={leftOptions}
-                placeholder={messages.defaultSolutionOption}
-                value={selectedLeftSolutionId}
-                onValueChange={(v) =>
-                  dispatch({
-                    type: AnalyzerStateActionType.setSelectedLeftAnalysis,
-                    solutionId: v,
-                  })
-                }
-                alwaysShow
-                noMargin
-              />
-              {leftDataPoint && (
-                <>
-                  <Button
-                    onClick={() => {
-                      setModalSide("left");
-                    }}
-                    data-testid="left-view-button"
-                  >
-                    <FormattedMessage
-                      id="CodeComparison.view"
-                      defaultMessage="View"
-                    />
-                  </Button>
-                  <StarAnalysisButton
-                    analysis={leftDataPoint.analysis}
-                    classId={classId}
-                    testId="left-bookmark-button"
-                  />
-                </>
-              )}
-            </SelectionMenu>
-            {leftDataPoint ? (
-              <div>
-                <AxisValues>
-                  {xAxisLabel && (
-                    <div>
-                      {intl.formatMessage(xAxisLabel)}:{" "}
-                      {leftDataPoint.dataPoint.x}
-                    </div>
-                  )}
-                  {yAxisLabel && (
-                    <div>
-                      {intl.formatMessage(yAxisLabel)}:{" "}
-                      {leftDataPoint.dataPoint.y}
-                    </div>
-                  )}
-                </AxisValues>
-                <CodeView
-                  classId={classId}
-                  sessionId={sessionId}
-                  taskId={taskId}
-                  subTaskId={selectedSubTaskId}
-                  taskType={taskType}
-                  solutionHash={leftDataPoint.analysis.solutionHash}
-                />
-              </div>
-            ) : (
-              <CodeViewContainer />
-            )}
-          </GridItem>
-          <GridItem colSpan={6}>
-            <SelectionMenu>
-              <Select
-                options={groupOptions}
-                value={selectedRightGroup}
-                onValueChange={(v) =>
-                  dispatch({
-                    type: AnalyzerStateActionType.setSelectedRightGroup,
-                    groupKey: v,
-                  })
-                }
-                alwaysShow
-                noMargin
-              />
-              <Select
-                options={rightOptions}
-                placeholder={messages.defaultSolutionOption}
-                value={selectedRightSolutionId}
-                onValueChange={(v) =>
-                  dispatch({
-                    type: AnalyzerStateActionType.setSelectedRightAnalysis,
-                    solutionId: v,
-                  })
-                }
-                alwaysShow
-                noMargin
-              />
-              {rightDataPoint && (
-                <>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      setModalSide("right");
-                    }}
-                    data-testid="right-view-button"
-                  >
-                    <FormattedMessage
-                      id="CodeComparison.view"
-                      defaultMessage="View"
-                    />
-                  </Button>
-                  <StarAnalysisButton
-                    analysis={rightDataPoint.analysis}
-                    classId={classId}
-                    testId="right-bookmark-button"
-                  />
-                </>
-              )}
-            </SelectionMenu>
-            {rightDataPoint ? (
-              <div>
-                <AxisValues>
-                  {xAxisLabel && (
-                    <div>
-                      {intl.formatMessage(xAxisLabel)}:{" "}
-                      {rightDataPoint.dataPoint.x}
-                    </div>
-                  )}
-                  {yAxisLabel && (
-                    <div>
-                      {intl.formatMessage(yAxisLabel)}:{" "}
-                      {rightDataPoint.dataPoint.y}
-                    </div>
-                  )}
-                </AxisValues>
-                <CodeView
-                  classId={classId}
-                  sessionId={sessionId}
-                  taskId={taskId}
-                  subTaskId={selectedSubTaskId}
-                  taskType={taskType}
-                  solutionHash={rightDataPoint.analysis.solutionHash}
-                />
-              </div>
-            ) : (
-              <CodeViewContainer />
-            )}
-          </GridItem>
+        <Grid templateColumns="repeat(12, 1fr)">
+          {groupedDataPoints.map(({ group, points }) => (
+            <GroupedDataPoint
+              key={group.groupKey}
+              group={group}
+              points={points}
+              selectedSolutionIds={selectedSolutionIds}
+              addAnalysisToComparison={addAnalysisToComparison}
+              removeAnalysisFromComparison={removeAnalysisFromComparison}
+            />
+          ))}
+        </Grid>
+        <Grid templateColumns="repeat(12, 1fr)" gap="xl" marginTop="lg">
+          {selectedAnalyses.map(({ analysis, point }) => (
+            <SelectedAnalysis
+              key={analysis.solutionId}
+              analysis={analysis}
+              point={point}
+              classId={classId}
+              sessionId={sessionId}
+              taskId={taskId}
+              taskType={taskType}
+              xAxisLabel={xAxisLabel}
+              yAxisLabel={yAxisLabel}
+              addAnalysisToComparison={addAnalysisToComparison}
+              removeAnalysisFromComparison={removeAnalysisFromComparison}
+            />
+          ))}
         </Grid>
       </CodeComparisonWrapper>
     </>
