@@ -1,5 +1,5 @@
 import { ComponentProps, useMemo } from "react";
-import { defineMessages, useIntl } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { HStack, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -10,6 +10,7 @@ import { ExistingStudentSolution } from "@/api/collimator/models/solutions/exist
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { ProgressMessages } from "@/i18n/progress-messages";
+import { EmptyState } from "@/components/EmptyState";
 import ChakraDataTable from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
@@ -34,6 +35,10 @@ const messages = defineMessages({
   inShowcaseColumn: {
     id: "TaskInstanceProgressList.columns.inShowcaseColumn",
     defaultMessage: "In Showcase",
+  },
+  emptyStateTitle: {
+    id: "TaskInstanceProgressList.emptyState.title",
+    defaultMessage: "There are no students yet.",
   },
 });
 
@@ -261,6 +266,11 @@ const TaskInstanceProgressList = ({
       >
         {([_klass, _session]) => (
           <ChakraDataTable
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
             data={progress}
             columns={columns}
             features={{

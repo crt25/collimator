@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { AbsoluteCenter, Card, Stack, Container } from "@chakra-ui/react";
-import Button from "@/components/Button";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Center, Container } from "@chakra-ui/react";
 import Header from "@/components/Header";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
+import LoginCard from "@/components/login/LoginCard";
 
 const messages = defineMessages({
   title: {
@@ -14,10 +14,18 @@ const messages = defineMessages({
   },
   header: {
     id: "LoginPage.header",
-    defaultMessage: "Login",
+    defaultMessage: "Welcome to ClassMosaic!",
   },
-  description: {
-    id: "LoginPage.description",
+  pageDescription: {
+    id: "LoginPage.pageDescription",
+    defaultMessage: "You're about to access the teacher portal.",
+  },
+  cardTitle: {
+    id: "LoginPage.cardTitle",
+    defaultMessage: "Teacher Login",
+  },
+  cardDescription: {
+    id: "LoginPage.cardDescription",
     defaultMessage:
       "Log in to access your classes, tasks, and learning resources.",
   },
@@ -29,7 +37,6 @@ const messages = defineMessages({
 
 const LoginPage = () => {
   const router = useRouter();
-  const intl = useIntl();
   const { redirectUri, registrationToken } = router.query as {
     redirectUri?: string;
     registrationToken?: string;
@@ -47,38 +54,22 @@ const LoginPage = () => {
 
   return (
     <>
-      <Header title={messages.title} />
+      <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeading>
-          <FormattedMessage {...messages.title} />
-        </PageHeading>
-        <PageHeading variant="description">
-          <FormattedMessage {...messages.description} />
+        <PageHeading
+          description={<FormattedMessage {...messages.pageDescription} />}
+        >
+          <FormattedMessage {...messages.header} />
         </PageHeading>
       </Container>
-      <AbsoluteCenter>
-        <Stack gap="sm" width="full" maxWidth="md">
-          <Card.Root width="full">
-            <Card.Header gap="sm">
-              <Card.Title>
-                <FormattedMessage {...messages.header} />
-              </Card.Title>
-              <Card.Description>
-                <FormattedMessage {...messages.description} />
-              </Card.Description>
-            </Card.Header>
-            <Card.Body />
-            <Card.Footer justifyContent="flex-end">
-              <Button
-                onClick={onAuthenticateWithMicrosoft}
-                data-testid="signin-button"
-              >
-                <FormattedMessage {...messages.authenticateMicrosoft} />
-              </Button>
-            </Card.Footer>
-          </Card.Root>
-        </Stack>
-      </AbsoluteCenter>
+      <Center marginTop="xl">
+        <LoginCard
+          title={<FormattedMessage {...messages.cardTitle} />}
+          description={<FormattedMessage {...messages.cardDescription} />}
+          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
+          onAuthenticate={onAuthenticateWithMicrosoft}
+        />
+      </Center>
     </>
   );
 };

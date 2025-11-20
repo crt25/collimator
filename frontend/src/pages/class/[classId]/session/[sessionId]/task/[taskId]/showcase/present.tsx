@@ -8,7 +8,6 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import ShowcasePresentation from "@/components/dashboard/ShowcasePresentation";
 

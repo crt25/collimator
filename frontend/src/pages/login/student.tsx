@@ -1,16 +1,42 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "@chakra-ui/react";
+import { Center, Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import Button from "@/components/Button";
 import Header from "@/components/Header";
-import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
+import LoginCard from "@/components/login/LoginCard";
+import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 
 const messages = defineMessages({
   title: {
     id: "StudentLoginPage.title",
     defaultMessage: "Student Login",
+  },
+  header: {
+    id: "StudentLoginPage.header",
+    defaultMessage: "Welcome to ClassMosaic!",
+  },
+  subtitle: {
+    id: "StudentLoginPage.subtitle",
+    defaultMessage: "You're about to join your lesson as a student.",
+  },
+  invalidParameters: {
+    id: "StudentLoginPage.invalidParameters",
+    defaultMessage:
+      "The link you followed is invalid. You can only log in as a student to join a lesson. " +
+      "Please open the link given you received from your teacher.",
+  },
+  cardTitle: {
+    id: "StudentLoginPage.cardTitle",
+    defaultMessage: "Student Login",
+  },
+  cardDescription: {
+    id: "StudentLoginPage.cardDescription",
+    defaultMessage: "Please authenticate below to access your lesson.",
+  },
+  authenticateMicrosoft: {
+    id: "StudentLoginPage.authenticate.microsoft",
+    defaultMessage: "Authenticate using Microsoft",
   },
 });
 
@@ -46,12 +72,9 @@ const StudentLoginPage = () => {
   if (!classId || !sessionId || !teacherPublicKeyFingerprint) {
     return (
       <>
-        <Header title={messages.title} />
+        <Header title={messages.title} hideSignIn />
         <Container>
-          <FormattedMessage
-            id="StudentLoginPage.invalidParameters"
-            defaultMessage="You can only log in as a student in order to join a lesson. Please open the link you received from your teacher."
-          />
+          <FormattedMessage {...messages.invalidParameters} />
         </Container>
       </>
     );
@@ -59,24 +82,20 @@ const StudentLoginPage = () => {
 
   return (
     <>
-      <Header title={messages.title} />
+      <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeading>
-          <FormattedMessage
-            id="StudentLoginPage.header"
-            defaultMessage="Student Login"
-          />
+        <PageHeading description={<FormattedMessage {...messages.subtitle} />}>
+          <FormattedMessage {...messages.header} />
         </PageHeading>
-        <Button
-          onClick={onAuthenticateWithMicrosoft}
-          data-testid="signin-student-button"
-        >
-          <FormattedMessage
-            id="StudentLoginPage.authenticate.microsoft"
-            defaultMessage="Authenticate using Microsoft"
-          />
-        </Button>
       </Container>
+      <Center marginTop="xl">
+        <LoginCard
+          title={<FormattedMessage {...messages.cardTitle} />}
+          description={<FormattedMessage {...messages.cardDescription} />}
+          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
+          onAuthenticate={onAuthenticateWithMicrosoft}
+        />
+      </Center>
     </>
   );
 };

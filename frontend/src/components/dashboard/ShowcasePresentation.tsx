@@ -10,10 +10,6 @@ import {
 import { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
-import Button from "../Button";
-import SwrContent from "../SwrContent";
-import { StudentName } from "../encryption/StudentName";
-import CodeView from "./CodeView";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
@@ -21,6 +17,10 @@ import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
+import { StudentName } from "../encryption/StudentName";
+import SwrContent from "../SwrContent";
+import Button from "../Button";
+import CodeView from "./CodeView";
 
 const getNameOfAnalysis = (analysis: CurrentAnalysis) =>
   analysis instanceof CurrentStudentAnalysis ? (
@@ -121,7 +121,7 @@ const ShowcasePresentationInternal = ({
         <Button onClick={() => carousel.scrollNext()}>
           <HStack>
             <FormattedMessage
-              id="ShowcasePresentation.previous"
+              id="ShowcasePresentation.next"
               defaultMessage="Next"
             />
             <Icon>
