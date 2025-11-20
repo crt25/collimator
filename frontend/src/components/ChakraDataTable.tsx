@@ -89,6 +89,7 @@ interface ChakraDataTableProps<T> {
   variant?: "outline" | "line";
   includeSearchBar?: boolean;
   emptyStateElement: React.ReactNode;
+  highlightedRowId?: number;
 }
 
 const InputWrapper = chakra("div", {
@@ -150,6 +151,7 @@ export const ChakraDataTable = <T extends { id: number }>({
   emptyStateElement,
   variant = "outline",
   includeSearchBar = false,
+  highlightedRowId,
 }: ChakraDataTableProps<T>) => {
   const intl = useIntl();
 
@@ -524,6 +526,9 @@ export const ChakraDataTable = <T extends { id: number }>({
             <Table.Row
               key={row.id}
               onClick={(e) => onRowClick?.(row.original, e)}
+              backgroundColor={
+                row.original.id === highlightedRowId ? "gray.200" : undefined
+              }
             >
               {row.getVisibleCells().map((cell) => (
                 <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
