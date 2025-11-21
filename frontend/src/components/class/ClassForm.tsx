@@ -66,13 +66,7 @@ const ClassForm = ({
     register,
     reset,
     handleSubmit,
-    formState: {
-      errors,
-      dirtyFields,
-      isDirty,
-      isSubmitSuccessful,
-      isSubmitting,
-    },
+    formState: { errors, dirtyFields, isDirty, isSubmitting },
     control,
   } = useForm<ClassFormValues>({
     resolver,
@@ -83,9 +77,8 @@ const ClassForm = ({
 
   const showEditedBadges = !!initialValues;
 
-  // Disable the button if in edit mode with no changes, or if the form is submitting or has been successfully submitted
-  const isButtonDisabled =
-    (showEditedBadges && !isDirty) || isSubmitSuccessful || isSubmitting;
+  // Disable the button if in edit mode with no changes, or if the form is submitting
+  const isButtonDisabled = (showEditedBadges && !isDirty) || isSubmitting;
 
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
