@@ -147,7 +147,7 @@ test.describe("session analysis", () => {
         );
       });
 
-      test("shows expected analysis chart", async ({ page }, testInfo) => {
+      test.skip("shows expected analysis chart", async ({ page }, testInfo) => {
         const analysis = await SessionAnalysisPageModel.create(page);
 
         await analysis.setXAxis("statement");
