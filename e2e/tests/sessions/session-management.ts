@@ -26,13 +26,11 @@ export const createSession = async (
 
   await form.inputs.title.fill(session.name);
   await form.inputs.description.fill(session.description);
-  await form.inputs.sharingType.click();
 
-  if (session.isAnonymous) {
-    await pwPage.locator(`[data-value="anonymous"]`).click();
-  } else {
-    await pwPage.locator(`[data-value="private"]`).click();
-  }
+  await form.selectChakraOption(
+    form.inputs.sharingType,
+    session.isAnonymous ? "anonymous" : "private",
+  );
 
   let availableTaskIds = new Set(await form.getAvailableTaskIds());
   const sessionTaskIds = new Set(session.taskIds);
@@ -47,7 +45,6 @@ export const createSession = async (
 
   // select all tasks
   for (const taskId of sessionTaskIds) {
-    await form.inputs.addTaskSelect.click();
     await form.selectChakraOption(form.inputs.addTaskSelect, taskId.toString());
     // we expect the chosen task to be removed from the available task select
     const updatedAvailableTaskIds = new Set(await form.getAvailableTaskIds());
