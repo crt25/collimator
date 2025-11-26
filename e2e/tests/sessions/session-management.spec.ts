@@ -56,10 +56,15 @@ test.describe("session management", () => {
       });
     });
 
-    test.describe("/class/{id}/session/{id}/edit", () => {
-      test.beforeEach(async ({ page }) => {
+    test.describe("/class/{id}/session/{id}/detail", () => {
+      test.beforeEach(async ({ page, baseURL }) => {
         const list = await SessionListPageModel.create(page);
         await list.editItem(newSessionId);
+        await page.getByTestId("session-lesson-details-tab").click();
+
+        await page.waitForURL(
+          `${baseURL}/class/${newClassId}/session/${newSessionId}/detail`,
+        );
       });
 
       test("can update an existing session", async ({
@@ -124,6 +129,7 @@ test.describe("session management", () => {
       test("can delete listed items", async ({ page: pwPage }) => {
         const page = await SessionListPageModel.create(pwPage);
 
+        await page.editItem(newSessionId);
         await page.deleteItem(newSessionId);
 
         // Wait for the deletion to be reflected in the UI

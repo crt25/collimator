@@ -40,7 +40,7 @@ export abstract class ListPageModel {
 
   editItem(itemId: number | string): Promise<void> {
     return this.page
-      .getByTestId(`${this.itemPrefix}-${itemId}-edit-button`)
+      .getByTestId(`${this.itemPrefix}-${itemId}-details-button`)
       .click();
   }
 

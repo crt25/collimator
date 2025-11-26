@@ -26,11 +26,12 @@ export const createSession = async (
 
   await form.inputs.title.fill(session.name);
   await form.inputs.description.fill(session.description);
+  await form.inputs.sharingType.click();
 
   if (session.isAnonymous) {
-    await form.inputs.isAnonymous.check();
+    await pwPage.locator(`[data-value="anonymous"]`).click();
   } else {
-    await form.inputs.isAnonymous.uncheck();
+    await pwPage.locator(`[data-value="private"]`).click();
   }
 
   let availableTaskIds = new Set(await form.getAvailableTaskIds());
@@ -46,9 +47,8 @@ export const createSession = async (
 
   // select all tasks
   for (const taskId of sessionTaskIds) {
-    // select the task
-    await form.inputs.addTaskSelect.selectOption(taskId.toString());
-
+    await form.inputs.addTaskSelect.click();
+    await form.selectChakraOption(form.inputs.addTaskSelect, taskId.toString());
     // we expect the chosen task to be removed from the available task select
     const updatedAvailableTaskIds = new Set(await form.getAvailableTaskIds());
 
@@ -81,6 +81,10 @@ export const createSession = async (
   expect(reorderedSelectedTasks[0]).toBe(firstTaskId);
 
   await form.submitButton.click();
+
+  const toastButton = pwPage.getByTestId("toast-action-button");
+  await toastButton.waitFor({ state: "visible" });
+  await toastButton.click();
 
   await pwPage.waitForURL(`${baseUrl}/class/${session.classId}/session`);
 

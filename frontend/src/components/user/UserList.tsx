@@ -92,7 +92,7 @@ const UserList = () => {
             e.stopPropagation();
             router.push(`/user/${rowData.id}/edit`);
           }}
-          data-testid={`user-${rowData.id}-edit-button`}
+          data-testid={`user-${rowData.id}-details-button`}
         >
           <Icon>
             <FaEdit />
