@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import createCache from "@emotion/cache";
@@ -30,8 +29,6 @@ import { ChakraProvider } from "../components/ui/ChakraProvider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";
-
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 // https://docs.fontawesome.com/web/use-with/react/use-with
 fontAwesomeConfig.autoAddCss = false;
@@ -124,7 +121,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   return (
-    <div className={inter.variable}>
+    <div>
       <CacheProvider value={cache}>
         <ChakraProvider>
           <Toaster />
