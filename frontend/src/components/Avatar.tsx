@@ -91,7 +91,7 @@ const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
             <UsernameItem
               value="username"
               onClick={handleUsernameClick}
-              data-testid="current-user"
+              data-testid="current-username"
             >
               {username}
             </UsernameItem>
