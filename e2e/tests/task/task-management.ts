@@ -40,7 +40,7 @@ export const createTask = async (
   await page.saveTask();
   await page.submitButton.click();
 
-  await pwPage.waitForURL(`${baseUrl}/task`);
+  await pwPage.goto(`${baseUrl}/task`);
 
   await expect(list.getTitleElementByTitle(task.title)).toHaveCount(1);
 
