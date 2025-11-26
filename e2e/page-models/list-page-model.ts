@@ -66,7 +66,6 @@ export abstract class ListPageModel {
       .context()
       .grantPermissions(["clipboard-read", "clipboard-write"]);
 
-    await this.getItemActionsDropdownButton(itemId).click();
     await this.getSessionLinkButton(itemId).click();
 
     return this.page.evaluate(() => navigator.clipboard.readText());
