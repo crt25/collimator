@@ -106,7 +106,7 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
     await page.getByTestId("toggle-session-menu-button").click();
     await page.waitForSelector("[data-testid=session-name]");
 
-    await page.getByTestId("toggle-session-menu-button").click();
+    await page.getByTestId("close-session-menu-button").click();
     expect(page.getByTestId("session-name")).toHaveCount(0);
   });
 });

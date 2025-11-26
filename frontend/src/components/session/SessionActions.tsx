@@ -64,6 +64,7 @@ const SessionActions = ({
       <DropdownMenu
         trigger={intl.formatMessage(ButtonMessages.actions)}
         variant="emphasized"
+        testId={`session-${session.id}-actions-dropdown-button`}
       >
         {canGetSessionLink && (
           <DropdownMenu.Item
@@ -82,6 +83,7 @@ const SessionActions = ({
         <DropdownMenu.Item
           onClick={() => setIsDeleteModalOpen(true)}
           icon={<LuTrash />}
+          testId={`session-${session.id}-delete-button`}
         >
           {intl.formatMessage(messages.deleteSession)}
         </DropdownMenu.Item>

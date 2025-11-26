@@ -90,14 +90,17 @@ const Task = ({
           <Dialog.Positioner>
             <Dialog.Content marginLeft="4xl" marginTop="5xl">
               <Dialog.Header>
-                <Dialog.CloseTrigger>
+                <Dialog.CloseTrigger data-testid="close-session-menu-button">
                   <Icon>
                     <IoMdClose />
                   </Icon>
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body>
-                <PageHeading description={session.description}>
+                <PageHeading
+                  testId="session-name"
+                  description={session.description}
+                >
                   <FormattedMessage
                     id="Task.sessionMenu.heading.title"
                     defaultMessage="{sessionName} - Tasks"

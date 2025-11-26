@@ -8,17 +8,23 @@ const PageHeading = ({
   actions,
   description,
   children,
+  testId,
 }: {
   variant?: React.ComponentProps<typeof StyledPageHeading>["variant"];
   description?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
+  testId?: string;
 }) => {
   const heading = (
     <Box marginTop="lg" marginBottom="lg">
       {description ? (
         <>
-          <StyledPageHeading variant={variant} marginBottom="md">
+          <StyledPageHeading
+            variant={variant}
+            marginBottom="md"
+            data-testid={testId}
+          >
             {children}
           </StyledPageHeading>
           <StyledPageHeading variant="description">
@@ -26,7 +32,9 @@ const PageHeading = ({
           </StyledPageHeading>
         </>
       ) : (
-        <StyledPageHeading variant={variant}>{children}</StyledPageHeading>
+        <StyledPageHeading variant={variant} data-testid={testId}>
+          {children}
+        </StyledPageHeading>
       )}
     </Box>
   );

@@ -32,7 +32,7 @@ export const Modal = ({
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content>
+          <Dialog.Content data-testid="confirmation-modal">
             <Dialog.Header>
               <Dialog.Title>{title}</Dialog.Title>
             </Dialog.Header>
@@ -44,7 +44,9 @@ export const Modal = ({
               <Dialog.ActionTrigger asChild>
                 <Button variant="secondary">{cancelButtonText}</Button>
               </Dialog.ActionTrigger>
-              <Button onClick={handleConfirm}>{confirmButtonText}</Button>
+              <Button data-testid="confirm-button" onClick={handleConfirm}>
+                {confirmButtonText}
+              </Button>
             </Dialog.Footer>
             <Dialog.CloseTrigger>
               <Icon fontSize="2xl" margin="sm">

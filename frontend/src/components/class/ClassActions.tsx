@@ -43,10 +43,12 @@ const ClassActions = ({ klass }: { klass: ExistingClassExtended }) => {
       <DropdownMenu
         trigger={intl.formatMessage(ButtonMessages.actions)}
         variant="emphasized"
+        testId={`class-${klass.id}-actions-dropdown-button`}
       >
         <DropdownMenu.Item
           onClick={() => setIsDeleteModalOpen(true)}
           icon={<LuTrash />}
+          testId={`class-${klass.id}-delete-button`}
         >
           {intl.formatMessage(messages.deleteClass)}
         </DropdownMenu.Item>

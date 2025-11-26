@@ -49,7 +49,7 @@ export const Toaster = () => {
               </Stack>
               <Stack direction="row" align="center" gap="sm">
                 {toast.action && (
-                  <Toast.ActionTrigger>
+                  <Toast.ActionTrigger data-testid="toast-action-button">
                     {toast.action.label}
                   </Toast.ActionTrigger>
                 )}
