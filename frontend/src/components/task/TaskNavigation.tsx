@@ -34,6 +34,7 @@ const tabs: NavigationTab[] = [
     url: "view",
     title: (intl) => intl.formatMessage(messages.viewTaskTab),
     icon: <LuView />,
+    testId: "task-instance-view-task-tab",
   },
 ];
 

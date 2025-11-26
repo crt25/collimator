@@ -134,10 +134,16 @@ test.describe("session analysis", () => {
 
     test.describe("/class/{id}/session/{id}/analysis", () => {
       test.beforeEach(async ({ page, baseURL }) => {
-        await page.getByTestId("session-analysis-tab").click();
+        await page.getByTestId(`task-${firstTaskId}`).click();
 
         await page.waitForURL(
-          `${baseURL}/class/${classId}/session/${sessionId}/analysis`,
+          `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/student`,
+        );
+
+        await page.getByTestId("task-instance-analysis-tab").click();
+
+        await page.waitForURL(
+          `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/analysis`,
         );
       });
 
