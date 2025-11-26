@@ -90,6 +90,7 @@ const ClassDetail = () => {
           toaster.success({
             title: intl.formatMessage(messages.successMessage),
           });
+          router.push(`/class`);
         } catch {
           toaster.error({
             title: intl.formatMessage(messages.errorMessage),
@@ -97,7 +98,7 @@ const ClassDetail = () => {
         }
       }
     },
-    [intl, klass, updateClass],
+    [intl, klass, updateClass, router],
   );
 
   return (
@@ -113,7 +114,10 @@ const ClassDetail = () => {
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <PageHeading actions={<ClassActions klass={klass} />}>
+              <PageHeading
+                testId="class-details"
+                actions={<ClassActions klass={klass} />}
+              >
                 {klass.name}
               </PageHeading>{" "}
               <ClassNavigation classId={klass?.id} />

@@ -71,9 +71,11 @@ const EditTask = () => {
           referenceSolutions,
           referenceSolutionsFiles,
         });
+
+        router.push(`/task`);
       }
     },
-    [task.data, taskFile.data, updateTask],
+    [task.data, taskFile.data, updateTask, router],
   );
 
   return (
