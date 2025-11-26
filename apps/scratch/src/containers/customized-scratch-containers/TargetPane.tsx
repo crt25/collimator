@@ -13,7 +13,10 @@ import {
   COSTUMES_TAB_INDEX,
   BLOCKS_TAB_INDEX,
 } from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
-import { setReceivedBlocks } from "@scratch-submodule/scratch-gui/src/reducers/hovered-target";
+import {
+  setReceivedBlocks,
+  setHoveredSprite,
+} from "@scratch-submodule/scratch-gui/src/reducers/hovered-target";
 import {
   showStandardAlert,
   closeAlertWithId,
@@ -53,6 +56,7 @@ interface Props
 
   onCloseImporting: () => void;
   onShowImporting: () => void;
+  onClearHoveredTarget: () => void;
 
   isRtl: boolean;
   workspaceMetrics: { targets: { [key: string]: Metrics } };
@@ -244,6 +248,8 @@ class TargetPane extends React.Component<Props> {
         this.props.editingTarget,
       );
       this.props.onReceivedBlocks(true);
+      // Set hovered target to null to prevent multiple shares
+      this.props.onClearHoveredTarget();
     }
   }
   shareBlocks(
@@ -354,6 +360,7 @@ class TargetPane extends React.Component<Props> {
       onCloseImporting,
       onHighlightTarget,
       onReceivedBlocks,
+      onClearHoveredTarget,
       onShowImporting,
       workspaceMetrics,
       ...componentProps
@@ -431,6 +438,9 @@ const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
   },
   onHighlightTarget: (id: string) => {
     dispatch(highlightTarget(id));
+  },
+  onClearHoveredTarget: () => {
+    dispatch(setHoveredSprite(null));
   },
   onCloseImporting: () =>
     dispatch(closeAlertWithId("importingAsset") as Action),
