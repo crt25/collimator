@@ -2,7 +2,6 @@ import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { classList, emptyStateContent } from "../../selectors";
 import { ClassFormPageModel } from "./class-form-page-model";
-// import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 import { createClass } from "./class-management";
 
