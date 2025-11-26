@@ -133,7 +133,7 @@ const SessionList = ({ classId }: { classId: number }) => {
             const link = `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`;
             handleShareClick(rowData, link);
           }}
-          data-test-id={`session-${rowData.id}-copy-session-link-button`}
+          data-testid={`session-${rowData.id}-copy-session-link-button`}
         >
           <Icon>
             <LuSend />
@@ -284,7 +284,7 @@ const SessionList = ({ classId }: { classId: number }) => {
       <Button
         variant="primary"
         onClick={() => router.push(`/class/${classId}/session/create`)}
-        data-testid="class-create-button"
+        data-testid="session-create-button"
         marginTop="md"
       >
         <HStack>
