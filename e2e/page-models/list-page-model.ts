@@ -29,9 +29,13 @@ export abstract class ListPageModel {
   }
 
   getSessionLinkButton(itemId: number | string) {
-    return this.page.getByTestId(
-      `${this.itemPrefix}-${itemId}-copy-session-link-button`,
-    );
+    this.page
+      .getByTestId(`${this.itemPrefix}-${itemId}-copy-session-link-button`)
+      .click();
+
+    const modal = this.page.locator('[data-testid="share-modal"]');
+
+    return modal.locator('[data-testid="copy-button"]');
   }
 
   editItem(itemId: number | string): Promise<void> {
