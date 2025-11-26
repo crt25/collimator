@@ -32,6 +32,10 @@ export const createClass = async (
   await pwPage.locator(`[data-value="${newClassTeacherId}"]`).click();
   await form.submitButton.click();
 
+  const toastButton = pwPage.getByTestId("toast-action-button");
+  await toastButton.waitFor({ state: "visible" });
+  await toastButton.click();
+
   await pwPage.waitForURL(`${baseUrl}/class`);
 
   await expect(list.getNameElementByName(klass.name)).toHaveCount(1);
