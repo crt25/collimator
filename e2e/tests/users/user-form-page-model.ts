@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
-export class UserFormPageModel {
+export class UserFormPageModel extends FormPageModel {
   private static readonly classForm = '[data-testid="user-form"]';
 
-  readonly page: Page;
-
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get form() {

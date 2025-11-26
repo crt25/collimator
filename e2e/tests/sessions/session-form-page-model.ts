@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
-export class SessionFormPageModel {
+export class SessionFormPageModel extends FormPageModel {
   private static readonly classForm = '[data-testid="session-form"]';
 
-  readonly page: Page;
-
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get form() {
@@ -20,7 +19,7 @@ export class SessionFormPageModel {
       description: this.form.locator('[data-testid="description"]'),
       addTaskSelect: this.form.locator('[data-testid="add-task"]'),
       selectedTasks: this.form.locator('[data-testid="selected-tasks"]'),
-      isAnonymous: this.form.locator('[data-testid="is-anonymous"]'),
+      sharingType: this.form.locator('[data-testid="sharing-type"]'),
     };
   }
 
@@ -29,11 +28,13 @@ export class SessionFormPageModel {
   }
 
   getAvailableTaskIds() {
-    return this.inputs.addTaskSelect.evaluate((el) =>
-      [...el.querySelectorAll("option")]
-        .map((option) => parseInt(option.value))
-        .filter((id) => !isNaN(id) && id > 0),
-    );
+    return this.page
+      .locator('[data-scope="select"][data-part="item"]')
+      .evaluateAll((elements) =>
+        elements
+          .map((el) => parseInt(el.getAttribute("data-value") ?? ""))
+          .filter((id) => !isNaN(id) && id > 0),
+      );
   }
 
   getSelectedTaskIds() {

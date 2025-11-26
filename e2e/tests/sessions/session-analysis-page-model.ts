@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
 const chartSelector = "[data-testid='analysis-chart']";
 
 type AxesCriterionType = "statement" | "test";
 
-export class SessionAnalysisPageModel {
-  protected readonly page: Page;
-
+export class SessionAnalysisPageModel extends FormPageModel {
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get chart() {

@@ -45,7 +45,7 @@ test.describe("task management", () => {
 
       await page.inputs.title.fill(updatedTaskTitle);
       await page.inputs.description.fill(updatedTaskDecription);
-      await page.inputs.type.selectOption(updatedTaskType);
+      await page.selectChakraOption(page.inputs.type, updatedTaskType);
       await page.openEditTaskModal();
       await page.saveTask();
       await page.submitButton.click();

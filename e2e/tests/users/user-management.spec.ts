@@ -37,7 +37,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newTeacherName);
       await page.inputs.email.fill(newTeacherEmail);
-      await page.inputs.type.selectOption(UserType.TEACHER);
+      await page.selectChakraOption(page.inputs.type, UserType.TEACHER);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -54,7 +54,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newAdminName);
       await page.inputs.email.fill(newAdminEmail);
-      await page.inputs.type.selectOption(UserType.ADMIN);
+      await page.selectChakraOption(page.inputs.type, UserType.ADMIN);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -85,7 +85,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedTeacherName);
       await form.inputs.email.fill(updatedTeacherEmail);
-      await form.inputs.type.selectOption(UserType.TEACHER);
+      await form.selectChakraOption(form.inputs.type, UserType.TEACHER);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -102,7 +102,7 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.inputs.type.selectOption(UserType.ADMIN);
+      await form.selectChakraOption(form.inputs.type, UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -124,7 +124,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedAdminName);
       await form.inputs.email.fill(updatedAdminEmail);
-      await form.inputs.type.selectOption(UserType.ADMIN);
+      await form.selectChakraOption(form.inputs.type, UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -141,7 +141,8 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.inputs.type.selectOption(UserType.TEACHER);
+      await form.selectChakraOption(form.inputs.type, UserType.TEACHER);
+
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);

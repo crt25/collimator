@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
-export class TaskFormPageModel {
+export class TaskFormPageModel extends FormPageModel {
   private static readonly taskForm = '[data-testid="task-form"]';
   private static readonly taskModal = '[data-testid="task-modal"]';
 
-  readonly page: Page;
-
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get form() {
