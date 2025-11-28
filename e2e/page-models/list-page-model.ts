@@ -33,9 +33,9 @@ export abstract class ListPageModel {
       .getByTestId(`${this.itemPrefix}-${itemId}-copy-session-link-button`)
       .click();
 
-    const modal = this.page.locator('[data-testid="share-modal"]');
+    const modal = this.page.getByTestId("share-modal");
 
-    return modal.locator('[data-testid="copy-button"]');
+    return modal.getByTestId("copy-button");
   }
 
   editItem(itemId: number | string): Promise<void> {

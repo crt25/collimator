@@ -99,4 +99,17 @@ export class SolveTaskPageModel {
 
     return new SolveTaskPageModel(page);
   }
+
+  async openSessionMenu() {
+    await this.page.getByTestId("toggle-session-menu-button").click();
+    await this.page.waitForSelector("[data-testid=session-name]");
+  }
+
+  async closeSessionMenu() {
+    await this.page.getByTestId("close-session-menu-button").click();
+  }
+
+  getSessionName() {
+    return this.page.getByTestId("session-name");
+  }
 }

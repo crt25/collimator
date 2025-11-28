@@ -21,6 +21,10 @@ export class UserFormPageModel extends FormPageModel {
     };
   }
 
+  async setUserType(type: string) {
+    await this.selectChakraOption(this.inputs.type, type);
+  }
+
   get submitButton() {
     return this.form.locator('[data-testid="submit"]');
   }

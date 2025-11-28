@@ -25,6 +25,10 @@ export class ClassListPageModel extends ListPageModel {
     );
   }
 
+  getClasses() {
+    return this.page.getByTestId("class-details");
+  }
+
   getName(itemId: number | string) {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-name`);
   }

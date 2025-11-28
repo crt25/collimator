@@ -47,6 +47,10 @@ export class TaskFormPageModel extends FormPageModel {
     return this.taskEditModal.getByTestId("save-button").click();
   }
 
+  async setTaskType(type: string) {
+    await this.selectChakraOption(this.inputs.type, type);
+  }
+
   static async create(page: Page) {
     await page.waitForSelector(TaskFormPageModel.taskForm);
 

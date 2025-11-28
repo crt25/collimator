@@ -54,10 +54,7 @@ test.describe("class management", () => {
       updatedClassTeacherId = newTeacherId!;
 
       await page.inputs.className.fill(updatedClassName);
-      await page.selectChakraOption(
-        page.inputs.teacherId,
-        updatedClassTeacherId.toString(),
-      );
+      await page.setTeacher(updatedClassTeacherId.toString());
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/class`);
@@ -68,7 +65,9 @@ test.describe("class management", () => {
     });
 
     test("shows class details", async ({ page }) => {
-      await expect(page.getByTestId("class-details")).toHaveCount(1);
+      const list = await ClassListPageModel.create(page);
+
+      await expect(list.getClasses()).toHaveCount(1);
     });
   });
 
@@ -107,6 +106,8 @@ test.describe("class management", () => {
 
     test("can delete listed items", async ({ page: pwPage }) => {
       const page = await ClassListPageModel.create(pwPage);
+
+      await expect(page.getItemActions(newClassId)).toHaveCount(1);
 
       await page.editItem(newClassId);
       await page.deleteItem(newClassId);

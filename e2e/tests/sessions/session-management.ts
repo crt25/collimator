@@ -27,10 +27,7 @@ export const createSession = async (
   await form.inputs.title.fill(session.name);
   await form.inputs.description.fill(session.description);
 
-  await form.selectChakraOption(
-    form.inputs.sharingType,
-    session.isAnonymous ? "anonymous" : "private",
-  );
+  await form.setSessionSharingType(session.isAnonymous ?? false);
 
   let availableTaskIds = new Set(await form.getAvailableTaskIds());
   const sessionTaskIds = new Set(session.taskIds);
@@ -45,7 +42,7 @@ export const createSession = async (
 
   // select all tasks
   for (const taskId of sessionTaskIds) {
-    await form.selectChakraOption(form.inputs.addTaskSelect, taskId.toString());
+    await form.setTask(taskId.toString());
     // we expect the chosen task to be removed from the available task select
     const updatedAvailableTaskIds = new Set(await form.getAvailableTaskIds());
 
@@ -79,7 +76,7 @@ export const createSession = async (
 
   await form.submitButton.click();
 
-  const toastButton = pwPage.getByTestId("toast-action-button");
+  const toastButton = pwPage.getByTestId("toast-trigger");
   await toastButton.waitFor({ state: "visible" });
   await toastButton.click();
 

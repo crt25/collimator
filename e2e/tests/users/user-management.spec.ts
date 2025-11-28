@@ -37,7 +37,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newTeacherName);
       await page.inputs.email.fill(newTeacherEmail);
-      await page.selectChakraOption(page.inputs.type, UserType.TEACHER);
+      await page.setUserType(UserType.TEACHER);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -54,7 +54,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newAdminName);
       await page.inputs.email.fill(newAdminEmail);
-      await page.selectChakraOption(page.inputs.type, UserType.ADMIN);
+      await page.setUserType(UserType.ADMIN);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -85,7 +85,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedTeacherName);
       await form.inputs.email.fill(updatedTeacherEmail);
-      await form.selectChakraOption(form.inputs.type, UserType.TEACHER);
+      await form.setUserType(UserType.TEACHER);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -102,7 +102,7 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.selectChakraOption(form.inputs.type, UserType.ADMIN);
+      await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -124,7 +124,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedAdminName);
       await form.inputs.email.fill(updatedAdminEmail);
-      await form.selectChakraOption(form.inputs.type, UserType.ADMIN);
+      await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -141,7 +141,7 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.selectChakraOption(form.inputs.type, UserType.TEACHER);
+      await form.setUserType(UserType.TEACHER);
 
       await form.submitButton.click();
 

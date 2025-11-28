@@ -2,6 +2,11 @@
 import { Page } from "@playwright/test";
 import { FormPageModel } from "../../page-models/form-page-model";
 
+enum SharingType {
+  anonymous = "anonymous",
+  private = "private",
+}
+
 export class SessionFormPageModel extends FormPageModel {
   private static readonly classForm = '[data-testid="session-form"]';
 
@@ -28,8 +33,9 @@ export class SessionFormPageModel extends FormPageModel {
   }
 
   getAvailableTaskIds() {
+    // we rely on data-state="open" to select only the active select options, as ChakraUI does not allow two selects to be open at the same time
     return this.page
-      .locator('[data-scope="select"][data-part="item"]')
+      .locator('[data-testid="id"][data-state="open"][data-part="item"]')
       .evaluateAll((elements) =>
         elements
           .map((el) => parseInt(el.getAttribute("data-value") ?? ""))
@@ -66,6 +72,17 @@ export class SessionFormPageModel extends FormPageModel {
         `[data-testid="selected-tasks-item-${taskId}"] [data-testid="remove-task"]`,
       )
       .click();
+  }
+
+  async setSessionSharingType(isAnonymous: boolean) {
+    await this.selectChakraOption(
+      this.inputs.sharingType,
+      isAnonymous ? SharingType.anonymous : SharingType.private,
+    );
+  }
+
+  async setTask(taskId: string) {
+    await this.selectChakraOption(this.inputs.addTaskSelect, taskId);
   }
 
   static async create(page: Page) {
