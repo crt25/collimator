@@ -33,9 +33,9 @@ export class SessionFormPageModel extends FormPageModel {
   }
 
   getAvailableTaskIds() {
-    // we rely on data-state="open" to select only the active select options, as ChakraUI does not allow two selects to be open at the same time
+    // ChakraUI does not allow two selects to be open at the same time, therefore there are no possible conflicts with other select options
     return this.page
-      .locator('[data-testid="id"][data-state="open"][data-part="item"]')
+      .locator('[data-part="item"]')
       .evaluateAll((elements) =>
         elements
           .map((el) => parseInt(el.getAttribute("data-value") ?? ""))
