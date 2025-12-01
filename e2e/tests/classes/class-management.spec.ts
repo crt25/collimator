@@ -57,7 +57,7 @@ test.describe("class management", () => {
       await page.setTeacher(updatedClassTeacherId.toString());
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/class`);
+      await pwPage.goto(`${baseURL}/class`);
 
       const list = await ClassListPageModel.create(pwPage);
 
@@ -65,18 +65,9 @@ test.describe("class management", () => {
     });
 
     test("shows class details", async ({ page }) => {
-      const list = await ClassListPageModel.create(page);
+      const form = await ClassFormPageModel.create(page);
 
-      await expect(list.getClasses()).toHaveCount(1);
-    });
-  });
-
-  test.describe("/class/{id}/detail", () => {
-    test.beforeEach(async ({ baseURL, page }) => {
-      const list = await ClassListPageModel.create(page);
-
-      await list.viewItem(newClassId);
-      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+      await expect(form.getForm()).toHaveCount(1);
     });
   });
 
@@ -103,17 +94,28 @@ test.describe("class management", () => {
     test("renders the fetched items", async ({ page }) => {
       await expect(page.locator(classList).locator("tbody tr")).toHaveCount(1);
     });
+  });
 
-    test("can delete listed items", async ({ page: pwPage }) => {
+  test.describe("/class/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await ClassListPageModel.create(page);
+
+      await list.viewItem(newClassId);
+      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+    });
+
+    test("can delete listed items", async ({ page: pwPage, baseURL }) => {
       const page = await ClassListPageModel.create(pwPage);
 
-      await expect(page.getItemActions(newClassId)).toHaveCount(1);
+      await expect(page.getItemActionsDropdownButton(newClassId)).toHaveCount(
+        1,
+      );
 
-      await page.editItem(newClassId);
       await page.deleteItem(newClassId);
 
+      await pwPage.waitForURL(`${baseURL}/class`);
       // Wait for the deletion to be reflected in the UI
-      await expect(page.getItemActions(newClassId)).toHaveCount(0);
+      await expect(page.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });

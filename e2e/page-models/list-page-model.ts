@@ -18,6 +18,10 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-actions`);
   }
 
+  getItemName(itemId: number | string) {
+    return this.page.getByTestId(`${this.itemPrefix}-${itemId}-name`);
+  }
+
   getItemActionsDropdownButton(itemId: number | string) {
     return this.page.getByTestId(
       `${this.itemPrefix}-${itemId}-actions-dropdown-button`,
