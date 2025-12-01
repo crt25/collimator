@@ -1,7 +1,7 @@
 import { expect, jsonResponse, test } from "../../helpers";
 import { useAdminUser } from "../../authentication-helpers";
-import { SolveTaskPageModel } from "../sessions/solve-task-page-model";
 import { routeDummyApp } from "./helpers";
+import { TaskPageModel } from "./task-page-model";
 import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import {
@@ -102,11 +102,12 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
   });
 
   test("can open session menu", async ({ page }) => {
-    const pageModel = await SolveTaskPageModel.create(page);
-    expect(pageModel.getSessionName()).toHaveCount(0);
+    const taskPage = await TaskPageModel.create(page);
 
-    await pageModel.openSessionMenu();
-    await pageModel.closeSessionMenu();
-    expect(pageModel.getSessionName()).toHaveCount(0);
+    expect(taskPage.getSessionName()).toHaveCount(0);
+
+    await taskPage.openSessionMenu();
+    await taskPage.closeSessionMenu();
+    expect(taskPage.getSessionName()).toHaveCount(0);
   });
 });
