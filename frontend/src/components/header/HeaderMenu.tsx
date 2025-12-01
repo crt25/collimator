@@ -36,7 +36,7 @@ const HeaderMenu = ({
       {!hideSignIn && (
         <li>
           {isAuthenticated ? (
-            <AvatarMenu icon={<FaRegUser />} testId="current-user">
+            <AvatarMenu icon={<FaRegUser />} testId="user-menu">
               <AvatarMenu.Item href="/logout">
                 <FormattedMessage
                   id="Header.signOut"
