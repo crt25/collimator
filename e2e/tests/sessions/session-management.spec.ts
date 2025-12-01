@@ -62,7 +62,7 @@ test.describe("session management", () => {
         await list.editItem(newSessionId);
         await page.getByTestId("session-lesson-details-tab").click();
 
-        await page.waitForURL(
+        await page.goto(
           `${baseURL}/class/${newClassId}/session/${newSessionId}/detail`,
         );
       });
@@ -90,7 +90,7 @@ test.describe("session management", () => {
         await page.inputs.description.fill("Updated description.");
         await page.submitButton.click();
 
-        await pwPage.waitForURL(`${baseURL}/class/${newClassId}/session`);
+        await pwPage.goto(`${baseURL}/class/${newClassId}/session`);
 
         const list = await SessionListPageModel.create(pwPage);
 

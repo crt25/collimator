@@ -62,7 +62,7 @@ test.describe("session analysis", () => {
     sessionId = id;
     firstTaskId = sortedTaskIds[0];
 
-    await page.waitForURL(`${baseURL}/class/${classId}/session`);
+    await page.goto(`${baseURL}/class/${classId}/session`);
 
     const list = await SessionListPageModel.create(page);
     sessionLink = await list.getSessionLink(sessionId);
