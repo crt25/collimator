@@ -12,10 +12,7 @@ export abstract class FormPageModel {
     value: string,
   ): Promise<void> {
     await selectLocator.click();
-    // ChakraUI does not allow two selects to be open at the same time
-    // therefore there are no possible conflicts with other select options
-    await this.page
-      .locator(`[data-part="item"][data-value="${value}"]`)
-      .click();
+
+    await this.page.locator(`[data-testid="select-option-${value}"]`).click();
   }
 }
