@@ -58,7 +58,7 @@
   },
   "crt.extensions.assertions.event_whenTaskFinishedRunning": {
     "description": "The name displayed on the scratch block that runs after the project has stopped running",
-    "message": "Le nom affiché sur le bloc scratch qui s'exécute après l'arrêt du projet."
+    "message": "lorsque l'exécution de la tâche est terminée"
   },
   "crt.extensions.assertions.unnamedAssertion": {
     "message": "Affirmation sans nom"
