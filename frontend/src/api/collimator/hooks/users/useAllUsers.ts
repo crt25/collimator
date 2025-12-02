@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { useMemo } from "react";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
+import { LazyTableResult } from "@/components/DataTable";
 import {
   ApiResponse,
   fromDtos,
@@ -30,9 +30,10 @@ export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
   );
 };
 
-export const useAllUsersLazyTable = (
-  _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> => {
+export const useAllUsersLazyTable = (): ApiResponse<
+  LazyTableResult<GetUsersReturnType[0]>,
+  Error
+> => {
   const { data, isLoading, error } = useAllUsers();
 
   const transformedData = useMemo(() => {

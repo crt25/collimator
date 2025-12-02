@@ -153,6 +153,7 @@ model Session {
 
 enum TaskType {
   SCRATCH
+  JUPYTER
 }
 
 model Task {
@@ -340,7 +341,7 @@ model StudentActivityApp {
   id Int @id
 
   type String
-  data Bytes
+  data Json
 
   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
 }

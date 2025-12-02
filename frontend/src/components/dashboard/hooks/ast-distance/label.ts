@@ -53,6 +53,25 @@ export const getAstNodeLabel = (node: AstNode): string =>
               node.type ?? "",
             ),
         )
+        .with({ statementType: StatementNodeType.multiAssignment }, (node) =>
+          getName(node.nodeType, node.statementType),
+        )
+        .with(
+          { statementType: StatementNodeType.expressionAsStatement },
+          (node) => getName(node.nodeType, node.statementType),
+        )
+        .with({ statementType: StatementNodeType.return }, (node) =>
+          getName(node.nodeType, node.statementType),
+        )
+        .with({ statementType: StatementNodeType.continue }, (node) =>
+          getName(node.nodeType, node.statementType),
+        )
+        .with({ statementType: StatementNodeType.break }, (node) =>
+          getName(node.nodeType, node.statementType),
+        )
+        .with({ statementType: StatementNodeType.classDeclaration }, (node) =>
+          getName(node.nodeType, node.statementType, node.name),
+        )
         .exhaustive(),
     )
     .with({ nodeType: AstNodeType.expression }, (node) =>
@@ -69,6 +88,19 @@ export const getAstNodeLabel = (node: AstNode): string =>
         )
         .with({ expressionType: ExpressionNodeType.variable }, (node) =>
           getName(node.nodeType, node.expressionType, node.name),
+        )
+        .with({ expressionType: ExpressionNodeType.sequence }, (node) =>
+          getName(node.nodeType, node.expressionType),
+        )
+        .with({ expressionType: ExpressionNodeType.assignment }, (node) =>
+          getName(node.nodeType, node.expressionType),
+        )
+        .with({ expressionType: ExpressionNodeType.lambda }, (node) =>
+          getName(
+            node.nodeType,
+            node.expressionType,
+            node.parameterNames.length.toString(),
+          ),
         )
         .exhaustive(),
     )

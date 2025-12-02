@@ -1,3 +1,4 @@
+import { ExpressionNode } from "../expression-node";
 import { StatementSequenceNode } from "./statement-sequence-node";
 import { StatementNodeBase } from "./statement-node-base";
 import { StatementNodeType } from "./statement-node-type";
@@ -11,5 +12,6 @@ export interface FunctionDeclarationNode extends StatementNodeBase {
   name: string;
 
   parameterNames: string[];
+  decorators?: ExpressionNode[];
   body: StatementSequenceNode;
 }

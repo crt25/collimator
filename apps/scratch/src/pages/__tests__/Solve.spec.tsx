@@ -9,6 +9,8 @@ import { TestFailingTaskPage } from "./page-objects/test-failing-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
 import tasks from "./tasks/index";
+import type { RpcMethodName } from "../../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
+
 declare global {
   interface Window {
     // we store posted messages on the window object instead of actually posting so we can assert on them
@@ -524,11 +526,23 @@ test.describe("/solve", () => {
 
     await pwPage.waitForFunction(() => window.postedMessages.length > 2);
 
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some(
+        (m) =>
+          (m.message as { method?: RpcMethodName }).method === "getSubmission",
+      ),
+    );
+
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(3);
+    const submissionMessage = messages.find(
+      (m) =>
+        (m.message as { method?: RpcMethodName }).method === "getSubmission",
+    );
 
-    expect(messages[2].message).toEqual({
+    expect(submissionMessage).toBeDefined();
+
+    expect(submissionMessage!.message).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",

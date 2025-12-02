@@ -4,3 +4,9 @@
 [submodule "frontend/collimator-storybook"]
 	path = frontend/storybook-submodule
 	url = git@github.com:crt25/collimator-storybook.git
+[submodule "apps/jupyter/otter-grader"]
+	path = apps/jupyter/otter-grader
+	url = https://github.com/crt25/otter-grader
+[submodule "backend/grammars-v4"]
+	path = backend/src/ast/antlr-grammars
+	url = https://github.com/antlr/grammars-v4
