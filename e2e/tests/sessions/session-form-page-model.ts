@@ -38,17 +38,18 @@ export class SessionFormPageModel extends FormPageModel {
       .locator('[data-testid^="select-option-"]')
       .evaluateAll((elements) =>
         elements
-          .map((el) => Number.parseInt(el.getAttribute("data-value") ?? ""))
+          .map((el) => Number.parseInt(el.dataset.value ?? ""))
           .filter((id) => !isNaN(id) && id > 0),
       );
   }
 
   getSelectedTaskIds() {
     return this.inputs.selectedTasks.evaluate((el) =>
-      [...el.querySelectorAll('[data-testid^="selected-tasks-item-"]')].map(
-        (option) =>
-          Number.parseInt(option.getAttribute("data-testid")!.split("-")[3]),
-      ),
+      [
+        ...el.querySelectorAll<HTMLElement>(
+          '[data-testid^="selected-tasks-item-"]',
+        ),
+      ].map((option) => Number.parseInt(option.dataset.testid!.split("-")[3])),
     );
   }
 
