@@ -76,7 +76,6 @@ const SessionDetail = () => {
           toaster.success({
             title: intl.formatMessage(messages.successMessage),
           });
-          router.push(`/class/${klass.id}/session`);
         } catch {
           toaster.error({
             title: intl.formatMessage(messages.errorMessage),
@@ -84,7 +83,7 @@ const SessionDetail = () => {
         }
       }
     },
-    [intl, klass, session, updateSession, router],
+    [intl, klass, session, updateSession],
   );
 
   return (
