@@ -38,7 +38,7 @@ export class SessionFormPageModel extends FormPageModel {
       .locator('[data-testid^="select-option-"]')
       .evaluateAll((elements) =>
         elements
-          .map((el) => parseInt(el.getAttribute("data-value") ?? ""))
+          .map((el) => Number.parseInt(el.getAttribute("data-value") ?? ""))
           .filter((id) => !isNaN(id) && id > 0),
       );
   }
@@ -46,7 +46,8 @@ export class SessionFormPageModel extends FormPageModel {
   getSelectedTaskIds() {
     return this.inputs.selectedTasks.evaluate((el) =>
       [...el.querySelectorAll('[data-testid^="selected-tasks-item-"]')].map(
-        (option) => parseInt(option.getAttribute("data-testid")!.split("-")[3]),
+        (option) =>
+          Number.parseInt(option.getAttribute("data-testid")!.split("-")[3]),
       ),
     );
   }
