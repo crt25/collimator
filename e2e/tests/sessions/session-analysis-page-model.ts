@@ -29,11 +29,11 @@ export class SessionAnalysisPageModel extends FormPageModel {
     return new SessionAnalysisPageModel(page);
   }
 
-  async loadTaskAnalysisPage(taskId: string) {
+  async navigateToTaskAnalysisPage(taskId: string) {
     await this.page.getByTestId(`task-${taskId}`).click();
   }
 
-  async loadTaskInstanceTabPage() {
+  async navigateToTaskInstanceTabPage() {
     await this.page.getByTestId("task-instance-analysis-tab").click();
   }
 }

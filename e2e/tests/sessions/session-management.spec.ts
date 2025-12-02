@@ -130,7 +130,7 @@ test.describe("session management", () => {
         const page = await SessionListPageModel.create(pwPage);
 
         await page.editItem(newSessionId);
-        await page.deleteItem(newSessionId);
+        await page.deleteItemAndConfirm(newSessionId);
 
         // Wait for the deletion to be reflected in the UI
         await expect(page.getItemActions(newSessionId)).toHaveCount(0);

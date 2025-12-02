@@ -54,7 +54,7 @@ export abstract class ListPageModel {
 
   abstract viewItem(itemId: number | string): Promise<void>;
 
-  async deleteItem(itemId: number | string): Promise<void> {
+  async deleteItemAndConfirm(itemId: number | string): Promise<void> {
     await this.getItemActionsDropdownButton(itemId).click();
     await this.getDeleteItemButton(itemId).click();
 

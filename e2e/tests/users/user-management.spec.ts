@@ -177,8 +177,8 @@ test.describe("user management", () => {
     test("can delete listed items", async ({ page: pwPage }) => {
       const page = await UserListPageModel.create(pwPage);
 
-      await page.deleteItem(newTeacherId);
-      await page.deleteItem(newAdminId);
+      await page.deleteItemAndConfirm(newTeacherId);
+      await page.deleteItemAndConfirm(newAdminId);
 
       // Wait for the deletion to be reflected in the UI
       await expect(page.getItemActions(newTeacherId)).toHaveCount(0);

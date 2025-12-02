@@ -85,7 +85,7 @@ test.describe("task management", () => {
       const page = await TaskListPageModel.create(pwPage);
 
       await page.editItem(newTaskId);
-      await page.deleteItem(newTaskId);
+      await page.deleteItemAndConfirm(newTaskId);
 
       // Wait for the deletion to be reflected in the UI
       await expect(page.getItemActions(newTaskId)).toHaveCount(0);

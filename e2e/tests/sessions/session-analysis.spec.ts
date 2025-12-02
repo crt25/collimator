@@ -136,13 +136,15 @@ test.describe("session analysis", () => {
       test.beforeEach(async ({ page, baseURL }) => {
         const sessionAnalysis = await SessionAnalysisPageModel.create(page);
 
-        await sessionAnalysis.loadTaskAnalysisPage(firstTaskId.toString());
+        await sessionAnalysis.navigateToTaskAnalysisPage(
+          firstTaskId.toString(),
+        );
 
         await page.waitForURL(
           `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/student`,
         );
 
-        await sessionAnalysis.loadTaskInstanceTabPage();
+        await sessionAnalysis.navigateToTaskInstanceTabPage();
 
         await page.waitForURL(
           `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/analysis`,

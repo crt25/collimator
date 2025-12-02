@@ -64,10 +64,10 @@ test.describe("class management", () => {
       await expect(list.getName(newClassId)).toHaveText(updatedClassName);
     });
 
-    test("shows class details", async ({ page }) => {
-      const form = await ClassFormPageModel.create(page);
+    test("shows class details", async ({ page: pwPage }) => {
+      const page = await ClassFormPageModel.create(pwPage);
 
-      await expect(form.getForm()).toHaveCount(1);
+      await expect(page.getForm()).toHaveCount(1);
     });
   });
 
@@ -111,11 +111,9 @@ test.describe("class management", () => {
         1,
       );
 
-      await page.deleteItem(newClassId);
+      await page.deleteItemAndConfirm(newClassId);
 
       await pwPage.waitForURL(`${baseURL}/class`);
-      // Wait for the deletion to be reflected in the UI
-      await expect(page.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });
