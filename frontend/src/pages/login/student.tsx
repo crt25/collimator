@@ -96,6 +96,7 @@ const StudentLoginPage = () => {
           description={<FormattedMessage {...messages.cardDescription} />}
           buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
+          buttonDataTestId="signin-student-button"
         />
       </Center>
       <PageFooter />

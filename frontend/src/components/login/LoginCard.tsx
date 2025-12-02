@@ -7,6 +7,7 @@ interface LoginCardProps {
   description: JSX.Element;
   buttonLabel: JSX.Element;
   onAuthenticate: () => void;
+  buttonDataTestId?: string;
 }
 
 const LoginCard = ({
@@ -14,6 +15,7 @@ const LoginCard = ({
   description,
   buttonLabel,
   onAuthenticate,
+  buttonDataTestId,
 }: LoginCardProps) => {
   return (
     <Stack gap="sm" width="full" maxWidth="md">
@@ -24,7 +26,7 @@ const LoginCard = ({
         </Card.Header>
         <Card.Body />
         <Card.Footer justifyContent="flex-end">
-          <Button onClick={onAuthenticate} data-testid="signin-button">
+          <Button onClick={onAuthenticate} data-testid={buttonDataTestId}>
             {buttonLabel}
           </Button>
         </Card.Footer>

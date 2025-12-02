@@ -282,6 +282,7 @@ const SolveTaskPage = () => {
                   <BreadcrumbItem
                     onClick={toggleSessionMenu}
                     icon={<LuSignpost />}
+                    testId="toggle-session-menu-button"
                   >
                     {session.title}
                   </BreadcrumbItem>

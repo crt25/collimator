@@ -132,15 +132,11 @@ const TaskModal = ({
 
   return (
     <>
-      <Dialog.Root
-        open={isShown}
-        onOpenChange={warnBeforeClose}
-        data-testid="task-modal"
-      >
+      <Dialog.Root open={isShown} onOpenChange={warnBeforeClose}>
         <Portal>
           <Dialog.Backdrop />
           <LargeModal>
-            <Dialog.Content>
+            <Dialog.Content data-testid="task-modal">
               <MaxScreenHeightInModal>
                 {(title || header) && (
                   <Dialog.Header paddingBottom="0">

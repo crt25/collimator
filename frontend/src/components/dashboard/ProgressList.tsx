@@ -284,6 +284,7 @@ const ProgressList = ({
             <Link
               href={`/class/${classId}/session/${session?.id}/task/${task.id}/student`}
               variant="underline"
+              data-testid={`task-${task.id}`}
             >{`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}</Link>
           ),
           enableSorting: false,

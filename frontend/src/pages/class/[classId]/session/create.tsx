@@ -66,6 +66,9 @@ const CreateSession = () => {
               label: intl.formatMessage(messages.returnToSessionList),
               onClick: () => router.push(`/class/${klass.id}/session`),
             },
+            meta: {
+              actionTestId: "go-back-to-session-list",
+            },
             closable: true,
           });
           router.push(`/class/${klass.id}/session/${session.id}/detail`);

@@ -70,6 +70,7 @@ const LoginPage = () => {
           description={<FormattedMessage {...messages.cardDescription} />}
           buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
           onAuthenticate={onAuthenticateWithMicrosoft}
+          buttonDataTestId="signin-button"
         />
       </Center>
       <PageFooter />
