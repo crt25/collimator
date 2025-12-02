@@ -76,7 +76,7 @@ export const createSession = async (
 
   await form.submitButton.click();
 
-  const toastButton = pwPage.getByTestId("toast-trigger");
+  const toastButton = pwPage.getByTestId("go-back-to-session-list");
   await toastButton.waitFor({ state: "visible" });
   await toastButton.click();
 
