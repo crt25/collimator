@@ -1,8 +1,3 @@
-import {
-  DataTablePageEvent,
-  DataTableSortEvent,
-  DataTableFilterEvent,
-} from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useCallback, useState } from "react";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
@@ -12,7 +7,7 @@ import { defineMessages, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import DataTable, { LazyTableState } from "@/components/DataTable";
+import DataTable from "@/components/DataTable";
 import { getUserTypeMessage } from "@/i18n/user-type-messages";
 import { TableMessages } from "@/i18n/table-messages";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
@@ -70,38 +65,8 @@ const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-      role: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
-
-  const { data, isLoading, error } = useAllUsersLazyTable(lazyState);
+  const { data, isLoading, error } = useAllUsersLazyTable();
   const generateRegistrationToken = useGenerateRegistrationToken();
-
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
@@ -180,19 +145,11 @@ const UserList = () => {
         {(data) => (
           <DataTable
             value={data.items}
-            lazy
             filterDisplay="row"
             dataKey="id"
             paginator
-            first={lazyState.first}
             rows={10}
             totalRecords={data.totalCount}
-            onPage={onPage}
-            onSort={onSort}
-            sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder}
-            onFilter={onFilter}
-            filters={lazyState.filters}
             loading={isLoading}
             onRowClick={(e) =>
               router.push(`/user/${(e.data as ExistingUser).id}/detail`)

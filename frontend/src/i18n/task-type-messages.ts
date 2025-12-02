@@ -6,6 +6,10 @@ const TaskTypeMessages = defineMessages({
     id: "UserRole.scratch",
     defaultMessage: "Scratch",
   },
+  [TaskType.JUPYTER]: {
+    id: "UserRole.jupyter",
+    defaultMessage: "Jupyter",
+  },
 });
 
 export const getTaskTypeMessage = (status: TaskType): MessageDescriptor =>

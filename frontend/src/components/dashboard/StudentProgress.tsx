@@ -6,7 +6,7 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { SessionTask } from "@/api/collimator/models/sessions/session-task";
 import { TaskType } from "@/api/collimator/generated/models";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useFileHash } from "@/hooks/useFileHash";
@@ -23,6 +23,8 @@ const getDisplaySolutionUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/show`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=show`;
     default:
       return null;
   }

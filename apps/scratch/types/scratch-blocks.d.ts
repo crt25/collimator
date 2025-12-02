@@ -21,14 +21,20 @@ declare namespace ScratchBlocksExtended {
     jsonInit: (json: Record<string, unknown>) => void;
   }
 
-  interface Block extends ScratchBlocks.Block {
+  interface BlockDefinition {
     init: (this: BlockThis) => void;
-
-    inputList?: BlockInput[];
-    isMonitored?: boolean;
-
     mutationToDom?: () => HTMLElement;
     domToMutation?: (element: HTMLElement) => void;
+  }
+
+  interface Block extends ScratchBlocks.Block {
+    inputList?: BlockInput[];
+    isMonitored?: boolean;
+    getNextBlock: () => Block | null;
+    getParent: () => Block | null;
+    getChildren: () => Block[];
+    id: string;
+    type: string;
   }
 
   class Flyout extends ScratchBlocks.Flyout {
@@ -202,7 +208,7 @@ declare namespace ScratchBlocksExtended {
 
   const hideChaff: () => void;
 
-  const Blocks: { [opcode: string]: Block };
+  const Blocks: { [opcode: string]: BlockDefinition };
 
   // https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/tests/jsunit/test_utilities.js#L144
   const defineBlocksWithJsonArray: (

@@ -4763,6 +4763,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"antlr4@npm:^4.13.2":
+  version: 4.13.2
+  resolution: "antlr4@npm:4.13.2"
+  checksum: 10c0/dfe7dcb24fe99ce103e1eac3ce30558a3df713cf5deeacd7e30686f5cca8206864e49b254af3bd5eff5904d31e5cd7902a7468c13dcb619da10caf3f703d03b4
+  languageName: node
+  linkType: hard
+
 "anymatch@npm:^3.0.3":
   version: 3.1.3
   resolution: "anymatch@npm:3.1.3"
@@ -5065,6 +5072,7 @@ __metadata:
     "@types/supertest": "npm:^6.0.3"
     "@typescript-eslint/eslint-plugin": "npm:^8.29.0"
     "@typescript-eslint/parser": "npm:^8.29.0"
+    antlr4: "npm:^4.13.2"
     babel-jest: "npm:^29.7.0"
     c8: "npm:^10.1.3"
     class-transformer: "npm:^0.5.1"
@@ -5093,6 +5101,7 @@ __metadata:
     ts-pattern: "npm:^5.7.0"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
+    typescript-collections: "npm:^1.3.3"
   languageName: unknown
   linkType: soft
 
@@ -11384,6 +11393,13 @@ __metadata:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: 10c0/6005cb31df50eef8b1f3c780eb71a17925f3038a100d82f9406ac2ad1de5eb59f8e6decbdc145b3a1f8e5836e17b0c0002fb698b9fe2516b8f9f9ff602d36412
+  languageName: node
+  linkType: hard
+
+"typescript-collections@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "typescript-collections@npm:1.3.3"
+  checksum: 10c0/44a22e822a1e78616ca531950f21c62ca847eeda1b2f666d7e58eb0c28c17cfd58891c482b7522c4576c7b9901f9a8e6a609cd6b205528083180a22594b5ff21
   languageName: node
   linkType: hard
 

@@ -67,6 +67,7 @@ export * from "./taskProgress";
 export * from "./taskReferenceSolutionDto";
 export * from "./taskType";
 export * from "./trackAppStudentActivityDto";
+export * from "./trackAppStudentActivityDtoData";
 export * from "./trackStudentActivitiesDto";
 export * from "./trackStudentActivityDto";
 export * from "./trackStudentActivityDtoAppActivity";

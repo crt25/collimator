@@ -17,6 +17,19 @@ export enum AstWalkSignal {
   stopWalking,
 }
 
+type Options = {
+  walkFunctionDeclarations: boolean;
+};
+
+type Callbacks = {
+  statementCallback?: (
+    node: StatementNode,
+    depth: number,
+    indentation: number,
+  ) => AstWalkSignal;
+  expressionCallback?: (node: ExpressionNode, depth: number) => AstWalkSignal;
+};
+
 /**
  * Sequentially execute the passed (non-null) functions and
  * stop as soon as one of them returns a stop signal.
@@ -37,16 +50,21 @@ const performWalksUntilStop = (
  * Walks through all statements in the AST and calls the callback for each statement.
  * @param node The AST node to walk
  * @param depth The depth of the current AST node
+ * @param indentation The current (semantic) indentation level
  * @param expressionCallback The callback to call for each expression. If the callback returns false, the walking will stop.
  * @param options Options for the walking
  */
 const walkExpression = (
   node: ExpressionNode,
   depth: number,
-  expressionCallback: (node: ExpressionNode, depth: number) => AstWalkSignal,
-  options: unknown,
+  indentation: number,
+  callbacks: Callbacks,
+  options: Options,
 ): AstWalkSignal => {
-  if (expressionCallback(node, depth) === AstWalkSignal.stopWalking) {
+  if (
+    callbacks.expressionCallback &&
+    callbacks.expressionCallback(node, depth) === AstWalkSignal.stopWalking
+  ) {
     return AstWalkSignal.stopWalking;
   }
 
@@ -55,16 +73,79 @@ const walkExpression = (
     .with({ expressionType: ExpressionNodeType.functionCall }, (node) =>
       performWalksUntilStop(
         node.arguments.map((argument) =>
-          lazyWalkExpression(argument, depth + 1, expressionCallback, options),
+          lazyWalkExpression(
+            argument,
+            depth + 1,
+            indentation,
+            callbacks,
+            options,
+          ),
         ),
       ),
     )
     .with({ expressionType: ExpressionNodeType.operator }, (node) =>
       performWalksUntilStop(
         node.operands.map((operand) =>
-          lazyWalkExpression(operand, depth + 1, expressionCallback, options),
+          lazyWalkExpression(
+            operand,
+            depth + 1,
+            indentation,
+            callbacks,
+            options,
+          ),
         ),
       ),
+    )
+    .with({ expressionType: ExpressionNodeType.sequence }, (node) =>
+      performWalksUntilStop(
+        node.expressions.map((expression) =>
+          lazyWalkExpression(
+            expression,
+            depth + 1,
+            indentation,
+            callbacks,
+            options,
+          ),
+        ),
+      ),
+    )
+    .with({ expressionType: ExpressionNodeType.assignment }, (node) =>
+      performWalksUntilStop([
+        lazyWalkExpression(
+          node.variable,
+          depth + 1,
+          indentation,
+          callbacks,
+          options,
+        ),
+        lazyWalkExpression(
+          node.value,
+          depth + 1,
+          indentation,
+          callbacks,
+          options,
+        ),
+      ]),
+    )
+    .with({ expressionType: ExpressionNodeType.lambda }, (node) =>
+      performWalksUntilStop([
+        ...(node.decorators || []).map((decorator) =>
+          lazyWalkExpression(
+            decorator,
+            depth + 1,
+            indentation,
+            callbacks,
+            options,
+          ),
+        ),
+        lazyWalkStatement(
+          node.body,
+          depth + 1,
+          indentation + 1,
+          callbacks,
+          options,
+        ),
+      ]),
     )
     .otherwise(() => AstWalkSignal.continueWalking);
 };
@@ -72,13 +153,14 @@ const walkExpression = (
 const lazyWalkExpression = (
   node: undefined | null | Parameters<typeof walkExpression>[0],
   depth: number,
-  expressionCallback: undefined | null | Parameters<typeof walkExpression>[2],
-  options: Parameters<typeof walkExpression>[3],
+  indentation: number,
+  callbacks: Callbacks,
+  options: Options,
 ): null | (() => AstWalkSignal) =>
   // if either the node or expressionCallback is not defined, return null
-  expressionCallback && node
+  node
     ? (): AstWalkSignal =>
-        walkExpression(node, depth, expressionCallback, options)
+        walkExpression(node, depth, indentation, callbacks, options)
     : null;
 
 /**
@@ -101,9 +183,7 @@ const walkStatement = (
     ) => AstWalkSignal;
     expressionCallback?: (node: ExpressionNode, depth: number) => AstWalkSignal;
   },
-  options: {
-    walkFunctionDeclarations: boolean;
-  },
+  options: Options,
 ): AstWalkSignal => {
   if (
     callbacks.statementCallback &&
@@ -120,7 +200,8 @@ const walkStatement = (
         lazyWalkExpression(
           node.condition,
           depth + 1,
-          callbacks.expressionCallback,
+          indentation,
+          callbacks,
           options,
         ),
         lazyWalkStatement(
@@ -144,7 +225,8 @@ const walkStatement = (
         lazyWalkExpression(
           node.condition,
           depth + 1,
-          callbacks.expressionCallback,
+          indentation,
+          callbacks,
           options,
         ),
         lazyWalkStatement(
@@ -192,7 +274,8 @@ const walkStatement = (
           lazyWalkExpression(
             argument,
             depth + 1,
-            callbacks.expressionCallback,
+            indentation,
+            callbacks,
             options,
           ),
         ),
@@ -201,9 +284,55 @@ const walkStatement = (
     .with({ statementType: StatementNodeType.assignment }, (node) =>
       performWalksUntilStop([
         lazyWalkExpression(
+          node.variable,
+          depth + 1,
+          indentation,
+          callbacks,
+          options,
+        ),
+        lazyWalkExpression(
           node.value,
           depth + 1,
-          callbacks.expressionCallback,
+          indentation,
+          callbacks,
+          options,
+        ),
+      ]),
+    )
+    .with({ statementType: StatementNodeType.multiAssignment }, (node) =>
+      performWalksUntilStop([
+        ...node.assignmentExpressions.map((exp) =>
+          lazyWalkExpression(exp, depth + 1, indentation, callbacks, options),
+        ),
+        ...node.values.map((v) =>
+          lazyWalkExpression(v, depth + 1, indentation, callbacks, options),
+        ),
+      ]),
+    )
+    .with({ statementType: StatementNodeType.expressionAsStatement }, (node) =>
+      performWalksUntilStop([
+        lazyWalkExpression(
+          node.expression,
+          depth + 1,
+          indentation,
+          callbacks,
+          options,
+        ),
+      ]),
+    )
+    .with({ statementType: StatementNodeType.classDeclaration }, (node) =>
+      performWalksUntilStop([
+        ...node.baseClasses.map((c) =>
+          lazyWalkExpression(c, depth + 1, indentation, callbacks, options),
+        ),
+        ...(node.decorators || []).map((c) =>
+          lazyWalkExpression(c, depth + 1, indentation, callbacks, options),
+        ),
+        lazyWalkStatement(
+          node.body,
+          depth + 1,
+          indentation + 1,
+          callbacks,
           options,
         ),
       ]),
@@ -212,12 +341,7 @@ const walkStatement = (
       { statementType: StatementNodeType.variableDeclaration },
       ({ value }) =>
         performWalksUntilStop([
-          lazyWalkExpression(
-            value,
-            depth + 1,
-            callbacks.expressionCallback,
-            options,
-          ),
+          lazyWalkExpression(value, depth + 1, indentation, callbacks, options),
         ]),
     )
     .otherwise(() => AstWalkSignal.continueWalking);
@@ -283,7 +407,8 @@ export const walkAst = (
           walkExpression(
             parameter,
             eventListenerDepth + 1,
-            callbacks.expressionCallback,
+            0,
+            callbacks,
             options,
           );
         }
