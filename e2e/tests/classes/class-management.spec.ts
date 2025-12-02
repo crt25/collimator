@@ -114,6 +114,8 @@ test.describe("class management", () => {
       await page.deleteItemAndConfirm(newClassId);
 
       await pwPage.waitForURL(`${baseURL}/class`);
+
+      await expect(page.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });
