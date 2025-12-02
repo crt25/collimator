@@ -2,7 +2,7 @@
   "crt.assertionsModal.close": [
     {
       "type": 0,
-      "value": "Close"
+      "value": "Fermer"
     }
   ],
   "crt.assertionsModal.heading": [
@@ -24,19 +24,19 @@
   "crt.assertionsModal.tableAssertionStatusFailed": [
     {
       "type": 0,
-      "value": "Fail"
+      "value": "Échec"
     }
   ],
   "crt.assertionsModal.tableAssertionStatusHeading": [
     {
       "type": 0,
-      "value": "Status"
+      "value": "Statut"
     }
   ],
   "crt.assertionsModal.tableAssertionStatusPassed": [
     {
       "type": 0,
-      "value": "Pass"
+      "value": "Réussi"
     }
   ],
   "crt.blockConfig.blockUsageLimit": [
@@ -84,7 +84,7 @@
   "crt.extensions.assertions.assertDefaultValue": [
     {
       "type": 0,
-      "value": "x-Coordinate of final position is correct"
+      "value": "La coordonnée x de la position finale est correcte"
     }
   ],
   "crt.extensions.assertions.categoryName": [
@@ -102,7 +102,7 @@
   "crt.extensions.assertions.unnamedAssertion": [
     {
       "type": 0,
-      "value": "Unnamed Assertion"
+      "value": "Assertion sans nom"
     }
   ],
   "crt.taskConfig.allowAllStandardBlocks": [
@@ -138,7 +138,7 @@
   "crt.taskConfig.enableStageInteractions": [
     {
       "type": 0,
-      "value": "Enable students to interact with the stage"
+      "value": "Permettre aux étudiants d'interagir avec la scène"
     }
   ],
   "crt.taskConfig.heading": [
@@ -150,7 +150,7 @@
   "crt.taskConfig.maximumExecutionTime": [
     {
       "type": 0,
-      "value": "Maximum execution time in seconds."
+      "value": "Temps d'exécution maximum en secondes."
     }
   ]
 }
