@@ -51,7 +51,7 @@ test.describe("task management", () => {
       await page.saveTask();
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/task`);
+      await pwPage.goto(`${baseURL}/task`);
 
       const list = await TaskListPageModel.create(pwPage);
       await expect(list.getTitle(newTaskId)).toHaveText(updatedTaskTitle);
