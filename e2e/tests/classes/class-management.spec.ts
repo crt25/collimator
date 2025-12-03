@@ -54,30 +54,20 @@ test.describe("class management", () => {
       updatedClassTeacherId = newTeacherId!;
 
       await page.inputs.className.fill(updatedClassName);
-      await page.selectChakraOption(
-        page.inputs.teacherId,
-        updatedClassTeacherId.toString(),
-      );
+      await page.setTeacher(updatedClassTeacherId.toString());
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/class`);
+      await pwPage.goto(`${baseURL}/class`);
 
       const list = await ClassListPageModel.create(pwPage);
 
       await expect(list.getName(newClassId)).toHaveText(updatedClassName);
     });
 
-    test("shows class details", async ({ page }) => {
-      await expect(page.getByTestId("class-details")).toHaveCount(1);
-    });
-  });
+    test("shows class details", async ({ page: pwPage }) => {
+      const page = await ClassFormPageModel.create(pwPage);
 
-  test.describe("/class/{id}/detail", () => {
-    test.beforeEach(async ({ baseURL, page }) => {
-      const list = await ClassListPageModel.create(page);
-
-      await list.viewItem(newClassId);
-      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+      await expect(page.getForm()).toHaveCount(1);
     });
   });
 
@@ -104,15 +94,28 @@ test.describe("class management", () => {
     test("renders the fetched items", async ({ page }) => {
       await expect(page.locator(classList).locator("tbody tr")).toHaveCount(1);
     });
+  });
 
-    test("can delete listed items", async ({ page: pwPage }) => {
+  test.describe("/class/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await ClassListPageModel.create(page);
+
+      await list.viewItem(newClassId);
+      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+    });
+
+    test("can delete listed items", async ({ page: pwPage, baseURL }) => {
       const page = await ClassListPageModel.create(pwPage);
 
-      await page.editItem(newClassId);
-      await page.deleteItem(newClassId);
+      await expect(page.getItemActionsDropdownButton(newClassId)).toHaveCount(
+        1,
+      );
 
-      // Wait for the deletion to be reflected in the UI
-      await expect(page.getItemActions(newClassId)).toHaveCount(0);
+      await page.deleteItemAndConfirm(newClassId);
+
+      await pwPage.waitForURL(`${baseURL}/class`);
+
+      await expect(page.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });

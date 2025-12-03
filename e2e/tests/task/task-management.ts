@@ -24,7 +24,7 @@ export const createTask = async (
 
   await page.inputs.title.fill(task.title);
   await page.inputs.description.fill(task.description);
-  await page.selectChakraOption(page.inputs.type, task.template.type);
+  await page.setTaskType(task.template.type);
   await page.openEditTaskModal();
 
   const fileChooserPromise = pwPage.waitForEvent("filechooser");

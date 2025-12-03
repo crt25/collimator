@@ -32,6 +32,14 @@ export class ClassFormPageModel extends FormPageModel {
     );
   }
 
+  getForm() {
+    return this.form;
+  }
+
+  setTeacher(teacherId: string) {
+    return this.selectChakraOption(this.inputs.teacherId, teacherId);
+  }
+
   static async create(page: Page) {
     await page.waitForSelector(ClassFormPageModel.classForm);
 

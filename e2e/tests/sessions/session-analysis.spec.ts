@@ -62,7 +62,7 @@ test.describe("session analysis", () => {
     sessionId = id;
     firstTaskId = sortedTaskIds[0];
 
-    await page.waitForURL(`${baseURL}/class/${classId}/session`);
+    await page.goto(`${baseURL}/class/${classId}/session`);
 
     const list = await SessionListPageModel.create(page);
     sessionLink = await list.getSessionLink(sessionId);
@@ -134,13 +134,17 @@ test.describe("session analysis", () => {
 
     test.describe("/class/{id}/session/{id}/analysis", () => {
       test.beforeEach(async ({ page, baseURL }) => {
-        await page.getByTestId(`task-${firstTaskId}`).click();
+        const sessionAnalysis = await SessionAnalysisPageModel.create(page);
+
+        await sessionAnalysis.navigateToTaskAnalysisPage(
+          firstTaskId.toString(),
+        );
 
         await page.waitForURL(
           `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/student`,
         );
 
-        await page.getByTestId("task-instance-analysis-tab").click();
+        await sessionAnalysis.navigateToTaskInstanceTabPage();
 
         await page.waitForURL(
           `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/analysis`,

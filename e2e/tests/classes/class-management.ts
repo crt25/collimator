@@ -32,7 +32,7 @@ export const createClass = async (
   await pwPage.locator(`[data-value="${newClassTeacherId}"]`).click();
   await form.submitButton.click();
 
-  const toastButton = pwPage.getByTestId("toast-action-button");
+  const toastButton = pwPage.getByTestId("go-back-to-class-list");
   await toastButton.waitFor({ state: "visible" });
   await toastButton.click();
 

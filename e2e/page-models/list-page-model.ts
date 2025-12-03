@@ -18,6 +18,10 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-actions`);
   }
 
+  getItemName(itemId: number | string) {
+    return this.page.getByTestId(`${this.itemPrefix}-${itemId}-name`);
+  }
+
   getItemActionsDropdownButton(itemId: number | string) {
     return this.page.getByTestId(
       `${this.itemPrefix}-${itemId}-actions-dropdown-button`,
@@ -33,9 +37,9 @@ export abstract class ListPageModel {
       .getByTestId(`${this.itemPrefix}-${itemId}-copy-session-link-button`)
       .click();
 
-    const modal = this.page.locator('[data-testid="share-modal"]');
+    const modal = this.page.getByTestId("share-modal");
 
-    return modal.locator('[data-testid="copy-button"]');
+    return modal.getByTestId("copy-button");
   }
 
   editItem(itemId: number | string): Promise<void> {
@@ -50,7 +54,7 @@ export abstract class ListPageModel {
 
   abstract viewItem(itemId: number | string): Promise<void>;
 
-  async deleteItem(itemId: number | string): Promise<void> {
+  async deleteItemAndConfirm(itemId: number | string): Promise<void> {
     await this.getItemActionsDropdownButton(itemId).click();
     await this.getDeleteItemButton(itemId).click();
 

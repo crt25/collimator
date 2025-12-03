@@ -46,12 +46,12 @@ test.describe("task management", () => {
 
       await page.inputs.title.fill(updatedTaskTitle);
       await page.inputs.description.fill(updatedTaskDecription);
-      await page.selectChakraOption(page.inputs.type, updatedTaskType);
+      await page.setTaskType(updatedTaskType);
       await page.openEditTaskModal();
       await page.saveTask();
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/task`);
+      await pwPage.goto(`${baseURL}/task`);
 
       const list = await TaskListPageModel.create(pwPage);
       await expect(list.getTitle(newTaskId)).toHaveText(updatedTaskTitle);
@@ -85,7 +85,7 @@ test.describe("task management", () => {
       const page = await TaskListPageModel.create(pwPage);
 
       await page.editItem(newTaskId);
-      await page.deleteItem(newTaskId);
+      await page.deleteItemAndConfirm(newTaskId);
 
       // Wait for the deletion to be reflected in the UI
       await expect(page.getItemActions(newTaskId)).toHaveCount(0);

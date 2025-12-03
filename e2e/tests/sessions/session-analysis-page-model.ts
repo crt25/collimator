@@ -28,4 +28,12 @@ export class SessionAnalysisPageModel extends FormPageModel {
 
     return new SessionAnalysisPageModel(page);
   }
+
+  async navigateToTaskAnalysisPage(taskId: string) {
+    await this.page.getByTestId(`task-${taskId}`).click();
+  }
+
+  async navigateToTaskInstanceTabPage() {
+    await this.page.getByTestId("task-instance-analysis-tab").click();
+  }
 }

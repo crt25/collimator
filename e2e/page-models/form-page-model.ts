@@ -7,13 +7,12 @@ export abstract class FormPageModel {
     this.page = page;
   }
 
-  async selectChakraOption(
+  protected async selectChakraOption(
     selectLocator: Locator,
     value: string,
   ): Promise<void> {
     await selectLocator.click();
-    await this.page
-      .locator(`[data-part="item"][data-value="${value}"]`)
-      .click();
+
+    await this.page.locator(`[data-testid="select-option-${value}"]`).click();
   }
 }
