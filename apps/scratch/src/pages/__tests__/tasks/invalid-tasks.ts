@@ -32,7 +32,7 @@ export const createMissingAssetsTask = (): TestTask => {
   zip.file("costume1.png", "mock");
 
   return {
-    blocksOfMainTarget: 1,
+    blocksOfMainTarget: 0,
     frozenBlocksOfMainTarget: 0,
     crtConfig: defaultCrtConfig,
     file: zip.generateAsync({ type: "nodebuffer" }),
