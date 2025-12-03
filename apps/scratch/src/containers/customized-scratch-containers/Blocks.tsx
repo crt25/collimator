@@ -110,8 +110,11 @@ const addFunctionListener = (
 
 const suppressStackClicks =
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  (listener: Function) => (e: { element: unknown }) => {
-    if (e.element === "stackclick" || e.element === "click") {
+  (listener: Function) => (e: WorkspaceChangeEvent) => {
+    if (
+      "element" in e &&
+      (e.element === "stackclick" || e.element === "click")
+    ) {
       // suppress stack click events
       // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
       return;
@@ -202,6 +205,7 @@ class Blocks extends React.Component<Props, State> {
   private _renderedToolboxXML?: string;
   private setToolboxRefreshEnabled?: (enabled: boolean) => void;
   private toolboxUpdateTimeout?: number;
+  private wrappedBlockListener?: (e: WorkspaceChangeEvent) => void;
 
   constructor(props: Props) {
     super(props);
@@ -529,9 +533,11 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    this.getWorkspace().addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
+    // store the wrapped listener so we can remove it later
+    this.wrappedBlockListener = suppressStackClicks(
+      this.props.vm.blockListener,
     );
+    this.getWorkspace().addChangeListener(this.wrappedBlockListener);
     this.getWorkspace().addChangeListener(this.onWorkspaceChange);
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
@@ -741,7 +747,9 @@ class Blocks extends React.Component<Props, State> {
     const workspace = this.getWorkspace();
 
     // Remove and reattach the workspace listener (but allow flyout events)
-    workspace.removeChangeListener(this.props.vm.blockListener);
+    if (this.wrappedBlockListener) {
+      workspace.removeChangeListener(this.wrappedBlockListener);
+    }
     workspace.removeChangeListener(this.onWorkspaceChange);
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
@@ -766,9 +774,9 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    workspace.addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
-    );
+    if (this.wrappedBlockListener) {
+      workspace.addChangeListener(this.wrappedBlockListener);
+    }
     workspace.addChangeListener(this.onWorkspaceChange);
 
     if (
