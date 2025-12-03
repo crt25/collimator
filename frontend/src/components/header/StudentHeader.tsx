@@ -1,6 +1,6 @@
 import React from "react";
 import { MessageDescriptor, PrimitiveType } from "react-intl";
-import { chakra, Container } from "@chakra-ui/react";
+import { chakra } from "@chakra-ui/react";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
 import HtmlHead from "./HtmlHead";

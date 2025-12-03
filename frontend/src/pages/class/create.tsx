@@ -63,6 +63,9 @@ const CreateClass = () => {
             label: intl.formatMessage(messages.returnToClassList),
             onClick: () => router.push(`/class`),
           },
+          meta: {
+            actionTestId: "go-back-to-class-list",
+          },
           closable: true,
         });
 

@@ -34,7 +34,7 @@ export const ShareModal = ({
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content>
+          <Dialog.Content data-testid="share-modal">
             <Dialog.Header>
               <Dialog.Title>{title}</Dialog.Title>
             </Dialog.Header>
@@ -47,7 +47,7 @@ export const ShareModal = ({
                   endElement={
                     <Clipboard.Trigger asChild>
                       <IconButton variant="surface" size="xs" marginEnd="-2">
-                        <Clipboard.Indicator asChild>
+                        <Clipboard.Indicator data-testid="copy-button" asChild>
                           <LuClipboardCopy />
                         </Clipboard.Indicator>
                       </IconButton>

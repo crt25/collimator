@@ -64,10 +64,12 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
       <DropdownMenu
         trigger={intl.formatMessage(ButtonMessages.actions)}
         variant="emphasized"
+        testId={`task-${taskId}-actions-dropdown-button`}
       >
         <DropdownMenu.Item
           onClick={() => setIsDeleteModalOpen(true)}
           icon={<LuTrash />}
+          testId={`task-${taskId}-delete-button`}
         >
           {intl.formatMessage(messages.deleteTask)}
         </DropdownMenu.Item>

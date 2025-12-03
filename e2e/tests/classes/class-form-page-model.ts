@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
-export class ClassFormPageModel {
+export class ClassFormPageModel extends FormPageModel {
   private static readonly classForm = '[data-testid="class-form"]';
 
-  readonly page: Page;
-
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get form() {
@@ -31,6 +30,14 @@ export class ClassFormPageModel {
         parseInt(option.getAttribute("data-value") || "0"),
       ),
     );
+  }
+
+  getForm() {
+    return this.form;
+  }
+
+  setTeacher(teacherId: string) {
+    return this.selectChakraOption(this.inputs.teacherId, teacherId);
   }
 
   static async create(page: Page) {

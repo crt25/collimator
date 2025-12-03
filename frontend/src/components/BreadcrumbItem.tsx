@@ -7,6 +7,7 @@ export type BreadcrumbItemData = {
   children: React.ReactNode;
   isCurrentPage?: boolean;
   icon?: React.ReactNode;
+  testId?: string;
 };
 
 const BreadcrumbItem = ({
@@ -15,10 +16,11 @@ const BreadcrumbItem = ({
   children,
   isCurrentPage,
   icon,
+  testId,
 }: BreadcrumbItemData) => {
   if (isCurrentPage || (!href && !onClick)) {
     return (
-      <Breadcrumb.Item>
+      <Breadcrumb.Item data-testid={testId}>
         <Breadcrumb.CurrentLink>
           <HStack>
             {icon && <span>{icon}</span>}
@@ -31,7 +33,7 @@ const BreadcrumbItem = ({
 
   if (href) {
     return (
-      <Breadcrumb.Item>
+      <Breadcrumb.Item data-testid={testId}>
         <Breadcrumb.Link asChild>
           <Link href={href}>
             <HStack>
@@ -46,7 +48,7 @@ const BreadcrumbItem = ({
 
   if (onClick) {
     return (
-      <Breadcrumb.Item>
+      <Breadcrumb.Item data-testid={testId}>
         <Breadcrumb.Link as="button" type="button" onClick={onClick}>
           <HStack>
             {icon && <span>{icon}</span>}
@@ -58,7 +60,7 @@ const BreadcrumbItem = ({
   }
 
   return (
-    <Breadcrumb.Item>
+    <Breadcrumb.Item data-testid={testId}>
       <HStack>
         {icon && <span>{icon}</span>}
         {children}

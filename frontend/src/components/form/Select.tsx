@@ -125,7 +125,11 @@ const InternalSelect = (
           <ChakraSelect.Positioner>
             <ChakraSelect.Content>
               {collection.items.map((option) => (
-                <ChakraSelect.Item key={option.value} item={option}>
+                <ChakraSelect.Item
+                  key={option.value}
+                  item={option}
+                  data-testid={`select-option-${option.value}`}
+                >
                   {option.label}
                 </ChakraSelect.Item>
               ))}

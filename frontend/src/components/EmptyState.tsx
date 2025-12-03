@@ -4,7 +4,7 @@ import { JSX } from "react";
 export const EmptyState = ({ title }: { title: JSX.Element }) => {
   return (
     <ChakraEmptyState.Root>
-      <ChakraEmptyState.Content>
+      <ChakraEmptyState.Content data-testid="empty-state-content">
         <VStack textAlign="center">
           <ChakraEmptyState.Title>{title}</ChakraEmptyState.Title>
         </VStack>

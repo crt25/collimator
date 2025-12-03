@@ -23,15 +23,11 @@ const ConfirmationModal = ({
   const intl = useIntl();
 
   return (
-    <Dialog.Root
-      open={isShown}
-      onOpenChange={() => setIsShown(false)}
-      data-testid="confirmation-modal"
-    >
+    <Dialog.Root open={isShown} onOpenChange={() => setIsShown(false)}>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content>
+          <Dialog.Content data-testid="confirmation-modal">
             <Dialog.Header>
               <Dialog.Title>{intl.formatMessage(messages.title)}</Dialog.Title>
             </Dialog.Header>
