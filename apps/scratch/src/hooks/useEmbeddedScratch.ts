@@ -232,7 +232,7 @@ export class EmbeddedScratchCallbacks {
 
   async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
     try {
-      const task = await getTask(this.getTask, request.id);
+      const task = await getTask(this.getTask.bind(this), request.id);
 
       return {
         file: task.file,
