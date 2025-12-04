@@ -34,6 +34,7 @@ import { TaskFormat } from "./task-format";
 import { AppTranslator, MessageKeys } from "./translator";
 
 import {
+  DirectoryNotFoundError,
   GenericNotebookTaskImportError,
   GetTaskError,
   UnsupportedTaskFormatError,
@@ -484,20 +485,22 @@ export class EmbeddedPythonCallbacks {
         content: true,
       });
 
-      if (folder.type === "directory" && folder.content) {
-        for (const item of folder.content) {
-          const itemPath = `${path}/${item.name}`;
+      if (folder.type !== "directory") {
+        throw new DirectoryNotFoundError(path);
+      }
 
-          if (item.type === "directory") {
-            // Recursively read subdirectories
-            const subFiles = await this.getFolderContents(itemPath);
-            for (const [subPath, blob] of subFiles.entries()) {
-              files.set(`${item.name}/${subPath}`, blob);
-            }
-          } else if (item.type === "file") {
-            const fileContent = await this.getFileContents(itemPath);
-            files.set(item.name, fileContent);
+      for (const item of folder.content) {
+        const itemPath = `${path}/${item.name}`;
+
+        if (item.type === "directory") {
+          // Recursively read subdirectories
+          const subFiles = await this.getFolderContents(itemPath);
+          for (const [subPath, blob] of subFiles.entries()) {
+            files.set(`${item.name}/${subPath}`, blob);
           }
+        } else if (item.type === "file") {
+          const fileContent = await this.getFileContents(itemPath);
+          files.set(item.name, fileContent);
         }
       }
     } catch {
