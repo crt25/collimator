@@ -84,12 +84,7 @@ test.describe("/edit", () => {
       // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
       result: {
         file: {},
-        filename: expect.stringMatching(/\.zip$/),
-        initialSolution: {
-          failedTests: [],
-          passedTests: [],
-          file: {},
-        },
+        filename: expect.stringMatching(/\.sb3$/),
       },
     });
   });
