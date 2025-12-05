@@ -87,5 +87,7 @@ const copyFolderToKernel = async (
       `Error copying folder from ${sourcePath} to ${destPath} in Pyodide:`,
       e,
     );
+
+    throw e;
   }
 };
