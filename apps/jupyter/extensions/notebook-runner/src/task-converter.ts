@@ -12,10 +12,9 @@ import {
 } from "./task-format";
 
 type File = Blob;
-type FilePath = string;
 
 /** This represents a flattened directory structure where FilePath may include nested subfolders. */
-export type Directory = Map<FilePath, File>;
+export type Directory = Map<string, File>;
 
 export interface CrtInternalTask {
   taskTemplateFile: File;
@@ -51,7 +50,7 @@ const extractFolder = async (
   zip: JSZip,
   prefix: string,
 ): Promise<Directory> => {
-  const files = new Map<FilePath, File>();
+  const files = new Map<string, File>();
 
   const folderPath = prefix.endsWith("/") ? prefix : `${prefix}/`;
 
