@@ -304,7 +304,10 @@ export class EmbeddedPythonCallbacks {
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
-      this.appTranslator.displayErrorFromException(MessageKeys.TaskLoaded, e);
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotLoadProject,
+        e,
+      );
 
       throw e;
     }
