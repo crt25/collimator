@@ -94,5 +94,41 @@
   "crt.taskConfig.maximumExecutionTime": {
     "description": "Label shown next to the input field for setting the maximum execution time.",
     "message": "Temps d’exécution maximal (en secondes)."
+  },
+  "crt.useEmbeddedScratch.cannotLoadProject": {
+    "message": "Impossible de charger le projet."
+  },
+  "crt.useEmbeddedScratch.cannotSaveProject": {
+    "message": "Impossible d'enregistrer le projet."
+  },
+  "crt.useEmbeddedScratch.concurrentLoadError": {
+    "message": "Un projet est déjà en cours de chargement. Ce projet a été mis en file d'attente."
+  },
+  "crt.useEmbeddedScratch.crtConfigParseError": {
+    "message": "Le fichier crt.json n'est pas un JSON valide."
+  },
+  "crt.useEmbeddedScratch.invalidProjectJson": {
+    "message": "Le fichier project.json n'est pas un JSON valide."
+  },
+  "crt.useEmbeddedScratch.invalidScratchProject": {
+    "message": "Le fichier de projet n'est pas un projet Scratch valide."
+  },
+  "crt.useEmbeddedScratch.invalidZip": {
+    "message": "Le fichier de projet n'est pas une archive ZIP valide."
+  },
+  "crt.useEmbeddedScratch.missingAssets": {
+    "message": "Il manque les ressources suivantes au projet : {assets}."
+  },
+  "crt.useEmbeddedScratch.projectJsonMissing": {
+    "message": "Le fichier de projet est incomplet : il manque project.json."
+  },
+  "crt.useEmbeddedScratch.timeoutExceeded": {
+    "message": "Nous avons arrêté l'exécution, car elle prenait trop de temps."
+  },
+  "crt.useEmbeddedScratch.unknownError": {
+    "message": "Une erreur inconnue est survenue."
+  },
+  "crt.useEmbeddedScratch.vmLoadError": {
+    "message": "La VM Scratch n'a pas réussi à charger le projet."
   }
 }

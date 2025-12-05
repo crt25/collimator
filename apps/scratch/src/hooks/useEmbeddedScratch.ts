@@ -34,52 +34,52 @@ const logModule = "[Embedded Scratch]";
 
 const messages = defineMessages({
   cannotLoadProject: {
-    id: "useEmbeddedScratch.cannotLoadProject",
+    id: "crt.useEmbeddedScratch.cannotLoadProject",
     defaultMessage: "Could not load the project.",
   },
   projectJsonMissing: {
-    id: "useEmbeddedScratch.projectJsonMissing",
+    id: "crt.useEmbeddedScratch.projectJsonMissing",
     defaultMessage: "The project file is missing project.json.",
   },
   missingAssets: {
-    id: "useEmbeddedScratch.missingAssets",
+    id: "crt.useEmbeddedScratch.missingAssets",
     defaultMessage: "The project is missing the following assets: {assets}.",
   },
   invalidScratchProject: {
-    id: "useEmbeddedScratch.invalidScratchProject",
+    id: "crt.useEmbeddedScratch.invalidScratchProject",
     defaultMessage: "The project file is not a valid Scratch project.",
   },
   cannotSaveProject: {
-    id: "useEmbeddedScratch.cannotSaveProject",
+    id: "crt.useEmbeddedScratch.cannotSaveProject",
     defaultMessage: "Could not save the project.",
   },
   timeoutExceeded: {
-    id: "useEmbeddedScratch.timeoutExceeded",
+    id: "crt.useEmbeddedScratch.timeoutExceeded",
     defaultMessage: "We stopped the run, it was taking too long.",
   },
   invalidProjectJson: {
-    id: "useEmbeddedScratch.invalidProjectJson",
+    id: "crt.useEmbeddedScratch.invalidProjectJson",
     defaultMessage: "The project.json file is not valid JSON.",
   },
   invalidZip: {
-    id: "useEmbeddedScratch.invalidZip",
+    id: "crt.useEmbeddedScratch.invalidZip",
     defaultMessage: "The project file is not a valid ZIP archive.",
   },
   crtConfigParseError: {
-    id: "useEmbeddedScratch.crtConfigParseError",
+    id: "crt.useEmbeddedScratch.crtConfigParseError",
     defaultMessage: "The crt.json file is not valid JSON.",
   },
   vmLoadError: {
-    id: "useEmbeddedScratch.vmLoadError",
+    id: "crt.useEmbeddedScratch.vmLoadError",
     defaultMessage: "The Scratch VM failed to load the project.",
   },
   concurrentLoadError: {
-    id: "useEmbeddedScratch.concurrentLoadError",
+    id: "crt.useEmbeddedScratch.concurrentLoadError",
     defaultMessage:
       "A project is already being loaded. This project has been queued.",
   },
   unknownError: {
-    id: "useEmbeddedScratch.unknownError",
+    id: "crt.useEmbeddedScratch.unknownError",
     defaultMessage: "An unknown error occurred.",
   },
 });

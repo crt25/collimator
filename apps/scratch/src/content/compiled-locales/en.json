@@ -152,5 +152,85 @@
       "type": 0,
       "value": "Maximum execution time in seconds."
     }
+  ],
+  "crt.useEmbeddedScratch.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Could not load the project."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Could not save the project."
+    }
+  ],
+  "crt.useEmbeddedScratch.concurrentLoadError": [
+    {
+      "type": 0,
+      "value": "A project is already being loaded. This project has been queued."
+    }
+  ],
+  "crt.useEmbeddedScratch.crtConfigParseError": [
+    {
+      "type": 0,
+      "value": "The crt.json file is not valid JSON."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidProjectJson": [
+    {
+      "type": 0,
+      "value": "The project.json file is not valid JSON."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidScratchProject": [
+    {
+      "type": 0,
+      "value": "The project file is not a valid Scratch project."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidZip": [
+    {
+      "type": 0,
+      "value": "The project file is not a valid ZIP archive."
+    }
+  ],
+  "crt.useEmbeddedScratch.missingAssets": [
+    {
+      "type": 0,
+      "value": "The project is missing the following assets: "
+    },
+    {
+      "type": 1,
+      "value": "assets"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "crt.useEmbeddedScratch.projectJsonMissing": [
+    {
+      "type": 0,
+      "value": "The project file is missing project.json."
+    }
+  ],
+  "crt.useEmbeddedScratch.timeoutExceeded": [
+    {
+      "type": 0,
+      "value": "We stopped the run, it was taking too long."
+    }
+  ],
+  "crt.useEmbeddedScratch.unknownError": [
+    {
+      "type": 0,
+      "value": "An unknown error occurred."
+    }
+  ],
+  "crt.useEmbeddedScratch.vmLoadError": [
+    {
+      "type": 0,
+      "value": "The Scratch VM failed to load the project."
+    }
   ]
 }

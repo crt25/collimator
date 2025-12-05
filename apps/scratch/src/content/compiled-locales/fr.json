@@ -138,19 +138,99 @@
   "crt.taskConfig.enableStageInteractions": [
     {
       "type": 0,
-      "value": "Permettre aux étudiants d'interagir avec la scène"
+      "value": "Autoriser les interactions des étudiants avec la scène"
     }
   ],
   "crt.taskConfig.heading": [
     {
       "type": 0,
-      "value": "Configuration des tâches"
+      "value": "Configuration des tâches."
     }
   ],
   "crt.taskConfig.maximumExecutionTime": [
     {
       "type": 0,
-      "value": "Temps d'exécution maximum en secondes."
+      "value": "Temps d’exécution maximal (en secondes)."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Impossible de charger le projet."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Impossible d'enregistrer le projet."
+    }
+  ],
+  "crt.useEmbeddedScratch.concurrentLoadError": [
+    {
+      "type": 0,
+      "value": "Un projet est déjà en cours de chargement. Ce projet a été mis en file d'attente."
+    }
+  ],
+  "crt.useEmbeddedScratch.crtConfigParseError": [
+    {
+      "type": 0,
+      "value": "Le fichier crt.json n'est pas un JSON valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidProjectJson": [
+    {
+      "type": 0,
+      "value": "Le fichier project.json n'est pas un JSON valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidScratchProject": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet n'est pas un projet Scratch valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidZip": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet n'est pas une archive ZIP valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.missingAssets": [
+    {
+      "type": 0,
+      "value": "Il manque les ressources suivantes au projet : "
+    },
+    {
+      "type": 1,
+      "value": "assets"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "crt.useEmbeddedScratch.projectJsonMissing": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet est incomplet : il manque project.json."
+    }
+  ],
+  "crt.useEmbeddedScratch.timeoutExceeded": [
+    {
+      "type": 0,
+      "value": "Nous avons arrêté l'exécution, car elle prenait trop de temps."
+    }
+  ],
+  "crt.useEmbeddedScratch.unknownError": [
+    {
+      "type": 0,
+      "value": "Une erreur inconnue est survenue."
+    }
+  ],
+  "crt.useEmbeddedScratch.vmLoadError": [
+    {
+      "type": 0,
+      "value": "La VM Scratch n'a pas réussi à charger le projet."
     }
   ]
 }

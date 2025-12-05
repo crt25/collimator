@@ -94,5 +94,41 @@
   "crt.taskConfig.maximumExecutionTime": {
     "description": "Label shown next to the input field for setting the maximum execution time.",
     "message": "Maximum execution time in seconds."
+  },
+  "crt.useEmbeddedScratch.cannotLoadProject": {
+    "message": "Could not load the project."
+  },
+  "crt.useEmbeddedScratch.cannotSaveProject": {
+    "message": "Could not save the project."
+  },
+  "crt.useEmbeddedScratch.concurrentLoadError": {
+    "message": "A project is already being loaded. This project has been queued."
+  },
+  "crt.useEmbeddedScratch.crtConfigParseError": {
+    "message": "The crt.json file is not valid JSON."
+  },
+  "crt.useEmbeddedScratch.invalidProjectJson": {
+    "message": "The project.json file is not valid JSON."
+  },
+  "crt.useEmbeddedScratch.invalidScratchProject": {
+    "message": "The project file is not a valid Scratch project."
+  },
+  "crt.useEmbeddedScratch.invalidZip": {
+    "message": "The project file is not a valid ZIP archive."
+  },
+  "crt.useEmbeddedScratch.missingAssets": {
+    "message": "The project is missing the following assets: {assets}."
+  },
+  "crt.useEmbeddedScratch.projectJsonMissing": {
+    "message": "The project file is missing project.json."
+  },
+  "crt.useEmbeddedScratch.timeoutExceeded": {
+    "message": "We stopped the run, it was taking too long."
+  },
+  "crt.useEmbeddedScratch.unknownError": {
+    "message": "An unknown error occurred."
+  },
+  "crt.useEmbeddedScratch.vmLoadError": {
+    "message": "The Scratch VM failed to load the project."
   }
 }
