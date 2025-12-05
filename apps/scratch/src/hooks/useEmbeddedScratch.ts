@@ -14,6 +14,7 @@ import {
   LoadTask,
   LoadSubmission,
   SetLocale,
+  ImportTask,
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";

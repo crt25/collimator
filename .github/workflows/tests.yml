@@ -159,6 +159,10 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn test
 
+      - name: Test jupyter app
+        working-directory: ./apps/jupyter
+        run: make test
+
       - name: Run e2e tests
         working-directory: ./e2e
         run: yarn test

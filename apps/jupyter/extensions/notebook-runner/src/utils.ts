@@ -191,3 +191,25 @@ with open("${path}", "wb") as f:
           `,
   }).done;
 };
+
+export const hasStatus = (error: unknown, status: number): boolean => {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  if ("status" in error && error.status === status) {
+    return true;
+  }
+
+  if (
+    "response" in error &&
+    typeof error.response === "object" &&
+    error.response !== null &&
+    "status" in error.response &&
+    error.response.status === status
+  ) {
+    return true;
+  }
+
+  return false;
+};

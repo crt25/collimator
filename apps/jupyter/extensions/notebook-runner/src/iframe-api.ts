@@ -1,6 +1,7 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
+
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -12,6 +13,7 @@ import {
   Submission,
   Task,
 } from "./iframe-rpc/src";
+
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
@@ -99,6 +101,7 @@ export class EmbeddedPythonCallbacks {
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
+    private readonly appTranslator: AppTranslator,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -185,38 +188,71 @@ export class EmbeddedPythonCallbacks {
       this.setJupyterLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
-      const { taskTemplate, studentTask, autograder } = await this.unpackTask(
-        request.params.task,
-      );
+      const importedFiles = await importCrtInternalTask(request.params.task);
 
       await this.closeAllDocuments();
 
-      if (this.mode == Mode.edit) {
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.taskTemplateLocation,
-          taskTemplate,
-        );
+      await this.writeCrtInternalTask(importedFiles);
 
-        this.documentManager.openOrReveal(
-          EmbeddedPythonCallbacks.taskTemplateLocation,
-        );
-      } else {
-        await this.createFolder("/student", "student");
-        await this.createFolder("/autograder", "autograder");
+      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
+        e,
+      );
 
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.studentTaskLocation,
-          studentTask,
-        );
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotLoadProject,
+        e,
+      );
 
-        await this.putFileContents(
-          EmbeddedPythonCallbacks.autograderLocation,
-          autograder,
-        );
+      throw e;
+    }
 
-        this.documentManager.openOrReveal(
-          EmbeddedPythonCallbacks.studentTaskLocation,
-        );
+    return undefined;
+  }
+
+  async importTask(request: ImportTask["request"]): Promise<undefined> {
+    try {
+      this.setJupyterLocale(request.params.language);
+
+      const fileFormat = await detectTaskFormat(request.params.task);
+
+      await this.closeAllDocuments();
+
+      switch (fileFormat) {
+        case TaskFormat.CrtInternal: {
+          const importedCrtInternalFiles = await importCrtInternalTask(
+            request.params.task,
+          );
+
+          await this.writeCrtInternalTask(importedCrtInternalFiles);
+
+          break;
+        }
+
+        case TaskFormat.GenericNotebook: {
+          const importedExternalFiles = await importGenericNotebookTask(
+            request.params.task,
+          );
+
+          if (this.mode !== Mode.edit) {
+            // cannot import external custom task in non-edit mode
+
+            this.appTranslator.displayError(
+              MessageKeys.CannotImportExternalInNonEditMode,
+            );
+
+            throw new GenericNotebookTaskImportError();
+          }
+
+          await this.writeGenericNotebookTask(importedExternalFiles);
+
+          break;
+        }
+
+        default:
+          throw new UnsupportedTaskFormatError(Object.values(TaskFormat));
       }
     } catch (e) {
       console.error(
@@ -224,9 +260,13 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
+      this.appTranslator.displayErrorFromException(
+        MessageKeys.CannotImportTask,
+        e,
+      );
+
       throw e;
     }
-
     return undefined;
   }
 
@@ -240,16 +280,15 @@ export class EmbeddedPythonCallbacks {
     try {
       console.debug(`${logModule} Loading project`);
 
-      const { autograder } = await this.unpackTask(request.params.task);
+      const { autograderFile } = await importCrtInternalTask(
+        request.params.task,
+      );
 
       await this.closeAllDocuments();
 
-      await this.createFolder("/student", "student");
-      await this.createFolder("/autograder", "autograder");
-
       await this.putFileContents(
         EmbeddedPythonCallbacks.autograderLocation,
-        autograder,
+        autograderFile,
       );
 
       await this.putFileContents(
@@ -260,8 +299,12 @@ export class EmbeddedPythonCallbacks {
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
+
+      this.appTranslator.displaySuccess(MessageKeys.TaskLoaded);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
+
+      this.appTranslator.displayErrorFromException(MessageKeys.TaskLoaded, e);
 
       throw e;
     }
@@ -365,33 +408,14 @@ export class EmbeddedPythonCallbacks {
         return;
       }
 
-    if (!taskTemplate || !studentTask || !autograder) {
-      console.error(
-        `${logModule} Failed to load task files. Received: ${{
-          taskTemplate,
-          studentTask,
-          autograder,
-        }}`,
-      );
-
-      throw new Error("Failed to load task files, see console for details");
+      throw error;
     }
-
-    return {
-      taskTemplate,
-      studentTask,
-      autograder,
-    };
-  }
-
-  private async createFolder(path: string, name: string): Promise<void> {
-    await this.app.serviceManager.contents.save(path, {
-      type: "directory",
-      name,
-    });
   }
 
   private async putFileContents(path: string, content: Blob): Promise<void> {
+    // create directories if needed
+    await this.createDirectoryPath(path);
+
     if (content.type === "text/plain" || path.endsWith(".txt")) {
       const textContent = await content.text();
       await this.app.serviceManager.contents.save(path, {
