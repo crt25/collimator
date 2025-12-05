@@ -301,8 +301,6 @@ export class EmbeddedPythonCallbacks {
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskLoaded);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
