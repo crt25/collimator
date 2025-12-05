@@ -254,6 +254,8 @@ export class EmbeddedPythonCallbacks {
         default:
           throw new UnsupportedTaskFormatError(Object.values(TaskFormat));
       }
+
+      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
