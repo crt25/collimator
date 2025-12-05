@@ -388,7 +388,7 @@ test.describe("/solve", () => {
   });
 
   test("returns missing files when some are not in zip", async ({ page }) => {
-    const missingAssetsTask = await tasks.createMissingAssetsTask();
+    const missingAssetsTask = tasks.createMissingAssetsTask();
     const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       missingAssetsTask,
@@ -398,7 +398,7 @@ test.describe("/solve", () => {
   });
 
   test("handling project with no targets", async ({ page }) => {
-    const noTargetsTask = await tasks.createNoTargetsTask();
+    const noTargetsTask = tasks.createNoTargetsTask();
     const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       noTargetsTask,
@@ -408,7 +408,7 @@ test.describe("/solve", () => {
   });
 
   test("handling targets with no costumes or sounds", async ({ page }) => {
-    const noCostumesOrSoundsTask = await tasks.createNoCostumesOrSoundsTask();
+    const noCostumesOrSoundsTask = tasks.createNoCostumesOrSoundsTask();
     const { page: taskPage } = await TestFailingTaskPage.load(
       page,
       noCostumesOrSoundsTask,
