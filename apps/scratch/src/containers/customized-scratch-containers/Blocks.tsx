@@ -205,7 +205,6 @@ class Blocks extends React.Component<Props, State> {
   private _renderedToolboxXML?: string;
   private setToolboxRefreshEnabled?: (enabled: boolean) => void;
   private toolboxUpdateTimeout?: number;
-  private wrappedBlockListener?: (e: WorkspaceChangeEvent) => void;
 
   constructor(props: Props) {
     super(props);
@@ -239,6 +238,9 @@ class Blocks extends React.Component<Props, State> {
       "setLocale",
       "requestToolboxUpdate",
       "onWorkspaceChange",
+      "blockListener",
+      "attachWorkspaceListeners",
+      "removeWorkspaceListeners",
       "onBlocksChange",
       "onProjectLoaded",
     ]);
@@ -533,11 +535,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    // store the wrapped listener so we can remove it later
-    this.wrappedBlockListener = suppressStackClicks(
-      this.props.vm.blockListener,
-    );
-    this.getWorkspace().addChangeListener(this.wrappedBlockListener);
+    this.getWorkspace().addChangeListener(this.blockListener);
     this.getWorkspace().addChangeListener(this.onWorkspaceChange);
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
@@ -592,6 +590,25 @@ class Blocks extends React.Component<Props, State> {
       this.handleStatusButtonUpdate,
     );
     this.props.vm.runtime.off("PROJECT_LOADED", this.onProjectLoaded);
+  }
+
+  attachWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    // Blockly does not provide a way to check if a listener is already attached.
+    // We remove and reattach to avoid duplicates without having to track attachment state
+    workspace.removeChangeListener(this.blockListener);
+    workspace.addChangeListener(this.blockListener);
+
+    workspace.removeChangeListener(this.onWorkspaceChange);
+    workspace.addChangeListener(this.onWorkspaceChange);
+  }
+
+  removeWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    workspace.removeChangeListener(this.blockListener);
+    workspace.removeChangeListener(this.onWorkspaceChange);
   }
 
   onProjectLoaded = () => {
@@ -747,10 +764,7 @@ class Blocks extends React.Component<Props, State> {
     const workspace = this.getWorkspace();
 
     // Remove and reattach the workspace listener (but allow flyout events)
-    if (this.wrappedBlockListener) {
-      workspace.removeChangeListener(this.wrappedBlockListener);
-    }
-    workspace.removeChangeListener(this.onWorkspaceChange);
+    this.removeWorkspaceListeners();
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
       this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -774,8 +788,8 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    if (this.wrappedBlockListener) {
-      workspace.addChangeListener(this.wrappedBlockListener);
+    if (this.blockListener) {
+      workspace.addChangeListener(this.blockListener);
     }
     workspace.addChangeListener(this.onWorkspaceChange);
 
@@ -1077,6 +1091,19 @@ class Blocks extends React.Component<Props, State> {
     }
 
     return flyout;
+  }
+
+  blockListener(event: WorkspaceChangeEvent) {
+    if (
+      "element" in event &&
+      (event.element === "stackclick" || event.element === "click")
+    ) {
+      // suppress stack click events
+      // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
+      return;
+    }
+
+    this.props.vm.blockListener(event);
   }
 
   onWorkspaceChange(event: WorkspaceChangeEvent) {
