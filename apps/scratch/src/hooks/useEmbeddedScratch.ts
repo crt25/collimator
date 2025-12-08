@@ -21,11 +21,7 @@ import { AnyAction, Dispatch } from "redux";
 import { loadCrtProject } from "../vm/load-crt-project";
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
-import {
-  ExportTask,
-  ExportTaskResult,
-} from "../../../../libraries/iframe-rpc/src/methods/export-task";
-import { getTask } from "../utilities/embedded-app";
+import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -231,12 +227,12 @@ export class EmbeddedScratchCallbacks {
     });
   }
 
-  async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
+  async exportTask(): Promise<ExportTaskResult> {
     try {
-      const task = await getTask(this.getTask.bind(this), request.id);
+      const task = await saveCrtProject(this.vm);
 
       return {
-        file: task.file,
+        file: task,
         filename: "task.sb3",
       };
     } catch (e) {
