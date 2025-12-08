@@ -266,8 +266,6 @@ export class EmbeddedPythonCallbacks {
         MessageKeys.CannotImportTask,
         e,
       );
-
-      throw e;
     }
     return undefined;
   }
@@ -308,8 +306,6 @@ export class EmbeddedPythonCallbacks {
         MessageKeys.CannotLoadProject,
         e,
       );
-
-      throw e;
     }
 
     return undefined;
@@ -525,9 +521,13 @@ export class EmbeddedPythonCallbacks {
           for (const [subPath, blob] of subFiles.entries()) {
             files.set(`${item.name}/${subPath}`, blob);
           }
-        } else if (item.type === "file") {
+        } else if (item.type === "file" || item.type === "notebook") {
           const fileContent = await this.getFileContents(itemPath);
           files.set(item.name, fileContent);
+        } else {
+          console.warn(
+            `${logModule} Unsupported item type in folder ${path}: ${item.type}`,
+          );
         }
       }
     } catch {
