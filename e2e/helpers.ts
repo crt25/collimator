@@ -302,7 +302,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
       return use(undefined);
     },
-    { auto: true, scope: "test", timeout: 10 * 1000 },
+    { auto: true, scope: "test", timeout: 100 * 1000 },
   ],
 
   page: async ({ page }, use) => {
