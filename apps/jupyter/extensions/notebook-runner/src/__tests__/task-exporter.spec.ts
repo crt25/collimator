@@ -1,11 +1,43 @@
-import { CrtInternalFiles, GenericNotebookFiles } from "../task-format";
+import { CrtInternalFiles } from "../task-format";
 import * as TaskConverter from "../task-converter";
-import { CrtInternalTask, GenericNotebookTask } from "../task-converter";
+
 import {
   mockTaskImporterLoadJSZip,
   mockTaskConverterExports,
   loadExportedBlob,
-} from "./helpers";
+} from "./helpers/common";
+import {
+  assertCrtInternalTaskEquality,
+  assertGenericNotebookTaskEquality,
+} from "./helpers/exports";
+
+const completeCrtTaskData = {
+  taskTemplateFile: new Blob(["template content"]),
+  studentTaskFile: new Blob(["student content"]),
+  autograderFile: new Blob(["autograder content"]),
+  data: new Map([["data.txt", new Blob(["data content"])]]),
+  gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
+  src: new Map([["code.py", new Blob(["print('hello')"])]]),
+  gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
+};
+
+const emptyCrtTaskData = {
+  taskTemplateFile: new Blob(["template"]),
+  studentTaskFile: new Blob(["student"]),
+  autograderFile: new Blob(["autograder"]),
+  data: new Map(),
+  gradingData: new Map(),
+  src: new Map(),
+  gradingSrc: new Map(),
+};
+
+const completeGenericTaskData = {
+  taskFile: new Blob(["task content"]),
+  data: new Map([["data.txt", new Blob(["data content"])]]),
+  gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
+  src: new Map([["code.py", new Blob(["print('hello')"])]]),
+  gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
+};
 
 describe("exportCrtInternalTask", () => {
   let cleanupLoad: () => void;
@@ -22,41 +54,20 @@ describe("exportCrtInternalTask", () => {
   });
 
   it("should successfully export a complete CRT internal task", async () => {
-    const task: CrtInternalTask = {
-      taskTemplateFile: new Blob(["template content"]),
-      studentTaskFile: new Blob(["student content"]),
-      autograderFile: new Blob(["autograder content"]),
-      data: new Map([["data.txt", new Blob(["data content"])]]),
-      gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
-      src: new Map([["code.py", new Blob(["print('hello')"])]]),
-      gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
-    };
-
-    const result = await TaskConverter.exportCrtInternalTask(task);
+    const result =
+      await TaskConverter.exportCrtInternalTask(completeCrtTaskData);
     expect(result).toBeInstanceOf(Blob);
 
     const resultZip = await loadExportedBlob(result);
     const regenerated = await resultZip.generateAsync({ type: "blob" });
-
     expect(regenerated).toBeInstanceOf(Blob);
-    expect(resultZip.file(CrtInternalFiles.template)).not.toBeNull();
-    expect(resultZip.file(CrtInternalFiles.student)).not.toBeNull();
-    expect(resultZip.file(CrtInternalFiles.autograder)).not.toBeNull();
-    expect(resultZip.file(`${CrtInternalFiles.data}/data.txt`)).not.toBeNull();
+
+    const imported = await TaskConverter.importCrtInternalTask(result);
+    await assertCrtInternalTaskEquality(imported, completeCrtTaskData);
   });
 
   it("should export with empty optional folders", async () => {
-    const task: CrtInternalTask = {
-      taskTemplateFile: new Blob(["template"]),
-      studentTaskFile: new Blob(["student"]),
-      autograderFile: new Blob(["autograder"]),
-      data: new Map(),
-      gradingData: new Map(),
-      src: new Map(),
-      gradingSrc: new Map(),
-    };
-
-    const result = await TaskConverter.exportCrtInternalTask(task);
+    const result = await TaskConverter.exportCrtInternalTask(emptyCrtTaskData);
 
     const resultZip = await loadExportedBlob(result);
 
@@ -82,25 +93,17 @@ describe("exportExternalCustomTask", () => {
   });
 
   it("should successfully export a generic notebook task", async () => {
-    const task: GenericNotebookTask = {
-      taskFile: new Blob(["task content"]),
-      data: new Map([["data.txt", new Blob(["data content"])]]),
-      gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
-      src: new Map([["code.py", new Blob(["print('hello')"])]]),
-      gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
-    };
-
-    const result = await TaskConverter.exportExternalCustomTask(task);
+    const result = await TaskConverter.exportExternalCustomTask(
+      completeGenericTaskData,
+    );
     expect(result).toBeInstanceOf(Blob);
 
     const resultZip = await loadExportedBlob(result);
     const regenerated = await resultZip.generateAsync({ type: "blob" });
 
     expect(regenerated).toBeInstanceOf(Blob);
-    expect(resultZip.file(GenericNotebookFiles.task)).not.toBeNull();
-    expect(
-      resultZip.file(`${GenericNotebookFiles.data}/data.txt`),
-    ).not.toBeNull();
+    const imported = await TaskConverter.importGenericNotebookTask(result);
+    await assertGenericNotebookTaskEquality(imported, completeGenericTaskData);
   });
 });
 
@@ -119,36 +122,19 @@ describe("export and import round-trip", () => {
   });
 
   it("should be able to import exported CRT internal task", async () => {
-    const task: CrtInternalTask = {
-      taskTemplateFile: new Blob(["template"]),
-      studentTaskFile: new Blob(["student"]),
-      autograderFile: new Blob(["autograder"]),
-      data: new Map([["data.txt", new Blob(["data content"])]]),
-      gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
-      src: new Map([["code.py", new Blob(["print('hello')"])]]),
-      gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
-    };
-
-    const exported = await TaskConverter.exportCrtInternalTask(task);
+    const exported =
+      await TaskConverter.exportCrtInternalTask(completeCrtTaskData);
     const imported = await TaskConverter.importCrtInternalTask(exported);
 
-    expect(await imported.taskTemplateFile.text()).toBe("template");
-    expect(await imported.data.get("data.txt")?.text()).toBe("data content");
+    await assertCrtInternalTaskEquality(imported, completeCrtTaskData);
   });
 
   it("should be able to import exported generic notebook task", async () => {
-    const task: GenericNotebookTask = {
-      taskFile: new Blob(["task"]),
-      data: new Map([["data.txt", new Blob(["data content"])]]),
-      gradingData: new Map([["grading.txt", new Blob(["grading content"])]]),
-      src: new Map([["code.py", new Blob(["print('hello')"])]]),
-      gradingSrc: new Map([["test.py", new Blob(["print('test')"])]]),
-    };
-
-    const exported = await TaskConverter.exportExternalCustomTask(task);
+    const exported = await TaskConverter.exportExternalCustomTask(
+      completeGenericTaskData,
+    );
     const imported = await TaskConverter.importGenericNotebookTask(exported);
 
-    expect(await imported.taskFile.text()).toBe("task");
-    expect(await imported.data.get("data.txt")?.text()).toBe("data content");
+    await assertGenericNotebookTaskEquality(imported, completeGenericTaskData);
   });
 });

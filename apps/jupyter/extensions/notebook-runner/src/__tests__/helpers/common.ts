@@ -1,8 +1,8 @@
 import JSZip from "jszip";
-import { InvalidTaskBlobError, TaskError } from "../errors/task-errors";
-import * as TaskImporter from "../task-converter";
-import { CrtInternalFiles, GenericNotebookFiles } from "../task-format";
-import { NoErrorThrownError } from "./errors";
+import { InvalidTaskBlobError, TaskError } from "../../errors/task-errors";
+import * as TaskImporter from "../../task-converter";
+import { CrtInternalFiles, GenericNotebookFiles } from "../../task-format";
+import { NoErrorThrownError } from "../errors";
 
 /**
  * Mocks TaskImporter.loadJSZip to work around Node.js Blob incompatibility with jsdom.
