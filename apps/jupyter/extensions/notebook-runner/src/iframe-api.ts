@@ -179,7 +179,7 @@ export class EmbeddedPythonCallbacks {
       );
 
       this.appTranslator.displayErrorFromException(MessageKeys.ExportError, e);
-      throw e;
+      return undefined;
     }
   }
 
@@ -205,8 +205,7 @@ export class EmbeddedPythonCallbacks {
         MessageKeys.CannotLoadProject,
         e,
       );
-
-      throw e;
+      return undefined;
     }
 
     return undefined;
