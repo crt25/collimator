@@ -788,10 +788,7 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    if (this.blockListener) {
-      workspace.addChangeListener(this.blockListener);
-    }
-    workspace.addChangeListener(this.onWorkspaceChange);
+    this.attachWorkspaceListeners();
 
     if (
       this.props.vm.editingTarget &&
