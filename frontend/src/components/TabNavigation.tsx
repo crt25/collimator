@@ -1,9 +1,10 @@
-import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Nav } from "react-bootstrap";
+import { Breadcrumb, HStack, Icon, Tabs } from "@chakra-ui/react";
 import { IntlShape, useIntl } from "react-intl";
-import { useContext } from "react";
+import { Fragment, ReactNode, useContext } from "react";
+import styled from "@emotion/styled";
+
 import {
   AuthenticationContext,
   AuthenticationContextType,
@@ -11,16 +12,10 @@ import {
 import { isNonNull } from "@/utilities/is-non-null";
 import BreadcrumbItem from "./BreadcrumbItem";
 
-const StyledNav = styled(Nav)`
-  margin: 1rem 0;
-
-  .nav-item {
-  }
-
-  .nav-link {
-    &.active {
-    }
-  }
+const TabsRoot = styled(Tabs.Root)`
+  margin-top: 1rem;
+  width: fit-content;
+  margin-bottom: 1rem;
 `;
 
 export interface NavigationTab<T = undefined> {
@@ -28,6 +23,7 @@ export interface NavigationTab<T = undefined> {
   title: (intl: IntlShape, args: T) => string;
   isShown?: (authContext: AuthenticationContextType) => boolean;
   testId?: string;
+  icon?: ReactNode;
 }
 
 // regex to remove both leading & trailing slashes
@@ -73,35 +69,41 @@ const TabNavigation = <T extends unknown = undefined>({
     })
     .filter(isNonNull);
 
+  const activeItems = navigationTabs.filter((tab) => tab.isActive);
+
   if (breadcrumb) {
-    const activeItems = navigationTabs.filter((tab) => tab.isActive);
-    return (
-      <>
-        {activeItems.map((item) => (
-          <BreadcrumbItem key={item.url} href={item.url}>
-            {item.title(intl, tabTitleArguments as T)}
-          </BreadcrumbItem>
-        ))}
-      </>
-    );
+    return activeItems.map((item) => (
+      <Fragment key={item.url}>
+        <Breadcrumb.Separator />
+        <BreadcrumbItem href={item.url} icon={item.icon}>
+          {item.title(intl, tabTitleArguments as T)}
+        </BreadcrumbItem>
+      </Fragment>
+    ));
   }
 
+  const activeValue = activeItems[0]?.url || "";
+
   return (
-    <StyledNav variant="tabs">
-      {navigationTabs.map((tab) => (
-        <Nav.Item key={tab.url}>
-          <Link
-            className={tab.isActive ? "nav-link active" : "nav-link"}
-            role="button"
-            tabIndex={0}
-            href={tab.url}
-            data-testid={tab.testId}
-          >
-            {tab.title(intl, tabTitleArguments as T)}
-          </Link>
-        </Nav.Item>
-      ))}
-    </StyledNav>
+    <TabsRoot
+      value={activeValue}
+      navigate={({ value }) => {
+        router.push(value);
+      }}
+    >
+      <Tabs.List>
+        {navigationTabs.map((tab) => (
+          <Tabs.Trigger key={tab.url} value={tab.url} asChild>
+            <Link href={tab.url} data-testid={tab.testId}>
+              <HStack gap="sm" align="center">
+                {tab.icon && <Icon>{tab.icon}</Icon>}
+                <span>{tab.title(intl, tabTitleArguments as T)}</span>
+              </HStack>
+            </Link>
+          </Tabs.Trigger>
+        ))}
+      </Tabs.List>
+    </TabsRoot>
   );
 };
 

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { faStar, faStarHalfStroke } from "@fortawesome/free-regular-svg-icons";
+import { chakra, defineRecipe } from "@chakra-ui/react";
 import { faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
 import {
   FontAwesomeIcon,
@@ -7,54 +7,68 @@ import {
 } from "@fortawesome/react-fontawesome";
 import { TaskProgress } from "@/api/collimator/generated/models";
 
-const TaskListItemWrapper = styled.button<{ active?: boolean }>`
-  width: 100%;
-  padding: 1rem 2rem;
+const taskListItemRecipe = defineRecipe({
+  base: {
+    width: "100%",
+    padding: "{spacing.md} {spacing.xl}",
+    border: "1px solid",
+    borderColor: "fg",
+    borderRadius: "sm",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "{spacing.md}",
+    maxHeight: "4rem",
+    backgroundColor: "bg",
+    textDecoration: "none",
+    _hover: {
+      "& *": {
+        textDecoration: "underline",
+      },
+    },
+  },
+  variants: {
+    active: {
+      true: {
+        textDecoration: "underline",
+      },
+      false: {
+        textDecoration: "none",
+      },
+    },
+  },
+  defaultVariants: {
+    active: false,
+  },
+});
 
-  border: 1px solid var(--foreground-color);
-  border-radius: var(--border-radius);
+const TaskListItemWrapper = chakra("button", taskListItemRecipe);
 
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+const ChildWrapper = chakra("div", {
+  base: {
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    /** allows the item to take up less space than it's contents */
+    minWidth: 0,
+  },
+});
 
-  max-height: 4rem;
-
-  background-color: var(--background-color);
-
-  text-decoration: ${({ active }) => (active ? "underline" : "none")};
-
-  &:hover * {
-    text-decoration: underline;
-  }
-`;
-
-const ChildWrapper = styled.div`
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-
-  /* allows the item to take up less space than it's contents */
-  min-width: 0;
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  /* do not allows this item to shrink */
-  flex-shrink: 0;
-
-  width: 1.5rem;
-
-  svg {
-    height: auto;
-    width: 100%;
-  }
-`;
+const IconWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    /** do not allows this item to shrink */
+    flexShrink: 0,
+    width: "{spacing.lg}",
+    "& svg": {
+      height: "auto",
+      width: "100%",
+    },
+  },
+});
 
 const iconByTaskStatus = (
   status: TaskProgress,

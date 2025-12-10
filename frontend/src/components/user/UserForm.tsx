@@ -11,6 +11,7 @@ import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import Select from "../form/Select";
+import { EditedBadge } from "../EditedBadge";
 
 const messages = defineMessages({
   name: {
@@ -67,29 +68,45 @@ const UserForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { errors, dirtyFields },
   } = useForm<UserFormValues>({
     resolver,
     defaultValues,
   });
 
+  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="user-form">
-      <Input label={messages.name} {...register("name")} data-testid="name">
-        <ValidationErrorMessage>{errors.name?.message}</ValidationErrorMessage>
-      </Input>
+      <Input
+        label={messages.name}
+        {...register("name")}
+        data-testid="name"
+        invalid={!!errors.name}
+        errorText={errors.name?.message}
+        labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
+      />
 
-      <Input label={messages.email} {...register("email")} data-testid="email">
-        <ValidationErrorMessage>{errors.email?.message}</ValidationErrorMessage>
-      </Input>
+      <Input
+        label={messages.email}
+        {...register("email")}
+        data-testid="email"
+        invalid={!!errors.email}
+        errorText={errors.email?.message}
+        labelBadge={showEditedBadges && dirtyFields.email && <EditedBadge />}
+      />
 
       <Select
+        name="type"
+        control={control}
         label={messages.type}
+        showEditedBadge={showEditedBadges}
         options={Object.values(UserType).map((userType) => ({
           value: userType,
           label: getUserTypeMessage(userType as UserType),
         }))}
-        {...register("type")}
         data-testid="type"
       >
         <ValidationErrorMessage>{errors.type?.message}</ValidationErrorMessage>

@@ -1,11 +1,5 @@
 import useSWR from "swr";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
-import {
-  ApiResponse,
-  fromDtos,
-  getSwrParamererizedKey,
-  transformToLazyTableResult,
-} from "../helpers";
+import { ApiResponse, fromDtos } from "../helpers";
 import {
   getSessionsControllerFindAllV0Url,
   sessionsControllerFindAllV0,
@@ -30,29 +24,7 @@ export const useAllClassSessions = (
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) => getSessionsControllerFindAllV0Url(classId),
-      undefined,
-    ),
-    () => fetchByClassIdAndTransform(authOptions, classId, params),
-  );
-};
-
-export const useAllClassSessionsLazyTable = (
-  classId: number,
-  _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetSessionsReturnType[0]>, Error> => {
-  const authOptions = useAuthenticationOptions();
-
-  return useSWR(
-    getSwrParamererizedKey(
-      (_params?: undefined) => getSessionsControllerFindAllV0Url(classId),
-      undefined,
-    ),
-    () =>
-      fetchByClassIdAndTransform(authOptions, classId).then(
-        transformToLazyTableResult,
-      ),
+  return useSWR(getSessionsControllerFindAllV0Url(classId), () =>
+    fetchByClassIdAndTransform(authOptions, classId, params),
   );
 };

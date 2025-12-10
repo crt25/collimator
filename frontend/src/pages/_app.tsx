@@ -1,3 +1,4 @@
+import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import createCache from "@emotion/cache";
@@ -5,8 +6,8 @@ import { CacheProvider } from "@emotion/react";
 import { IntlProvider } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PrimeReactProvider } from "primereact/api";
-import { Toaster } from "react-hot-toast";
 import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core";
+import { Toaster } from "@/components/Toaster";
 import {
   AuthenticationContext,
   authenticationContextDefaultValue,
@@ -25,9 +26,12 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
+import { ChakraProvider } from "../components/ui/ChakraProvider";
 import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
 import type { AppProps } from "next/app";
+
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 // https://docs.fontawesome.com/web/use-with/react/use-with
 fontAwesomeConfig.autoAddCss = false;
@@ -120,37 +124,36 @@ const App = ({ Component, pageProps }: AppProps) => {
   );
 
   return (
-    <CacheProvider value={cache}>
-      <IntlProvider locale={localizationState.locale} messages={messages}>
-        <YupLocalization>
-          <PrimeReactProvider>
-            <AuthenticationContext.Provider value={authenticationState}>
-              <UpdateAuthenticationContext.Provider
-                value={updateAuthenticationState}
-              >
-                <UpdateLocalizationContext.Provider
-                  value={updateLocalizationState}
-                >
-                  <AuthenticationBarrier
-                    authenticationStateLoaded={authenticationStateLoaded}
+    <div className={inter.variable}>
+      <CacheProvider value={cache}>
+        <ChakraProvider>
+          <Toaster />
+          <IntlProvider locale={localizationState.locale} messages={messages}>
+            <YupLocalization>
+              <PrimeReactProvider>
+                <AuthenticationContext.Provider value={authenticationState}>
+                  <UpdateAuthenticationContext.Provider
+                    value={updateAuthenticationState}
                   >
-                    <WebSocketProvider>
-                      <Component {...pageProps} />
-                      <Toaster
-                        toastOptions={{
-                          position: "bottom-right",
-                          duration: 5000,
-                        }}
-                      />
-                    </WebSocketProvider>
-                  </AuthenticationBarrier>
-                </UpdateLocalizationContext.Provider>
-              </UpdateAuthenticationContext.Provider>
-            </AuthenticationContext.Provider>
-          </PrimeReactProvider>
-        </YupLocalization>
-      </IntlProvider>
-    </CacheProvider>
+                    <UpdateLocalizationContext.Provider
+                      value={updateLocalizationState}
+                    >
+                      <AuthenticationBarrier
+                        authenticationStateLoaded={authenticationStateLoaded}
+                      >
+                        <WebSocketProvider>
+                          <Component {...pageProps} />
+                        </WebSocketProvider>
+                      </AuthenticationBarrier>
+                    </UpdateLocalizationContext.Provider>
+                  </UpdateAuthenticationContext.Provider>
+                </AuthenticationContext.Provider>
+              </PrimeReactProvider>
+            </YupLocalization>
+          </IntlProvider>
+        </ChakraProvider>
+      </CacheProvider>
+    </div>
   );
 };
 

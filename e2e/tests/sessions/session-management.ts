@@ -27,11 +27,7 @@ export const createSession = async (
   await form.inputs.title.fill(session.name);
   await form.inputs.description.fill(session.description);
 
-  if (session.isAnonymous) {
-    await form.inputs.isAnonymous.check();
-  } else {
-    await form.inputs.isAnonymous.uncheck();
-  }
+  await form.setSessionSharingType(session.isAnonymous ?? false);
 
   let availableTaskIds = new Set(await form.getAvailableTaskIds());
   const sessionTaskIds = new Set(session.taskIds);
@@ -46,9 +42,7 @@ export const createSession = async (
 
   // select all tasks
   for (const taskId of sessionTaskIds) {
-    // select the task
-    await form.inputs.addTaskSelect.selectOption(taskId.toString());
-
+    await form.setTask(taskId.toString());
     // we expect the chosen task to be removed from the available task select
     const updatedAvailableTaskIds = new Set(await form.getAvailableTaskIds());
 
@@ -81,6 +75,10 @@ export const createSession = async (
   expect(reorderedSelectedTasks[0]).toBe(firstTaskId);
 
   await form.submitButton.click();
+
+  const toastButton = pwPage.getByTestId("go-back-to-session-list");
+  await toastButton.waitFor({ state: "visible" });
+  await toastButton.click();
 
   await pwPage.waitForURL(`${baseUrl}/class/${session.classId}/session`);
 

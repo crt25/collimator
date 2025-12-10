@@ -1,11 +1,14 @@
 import { useCallback } from "react";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
+import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
+import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -20,28 +23,41 @@ const messages = defineMessages({
 
 const CreateTask = () => {
   const createTask = useCreateTask();
+  const router = useRouter();
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
-      await createTask(taskSubmission);
+      const createdTask = await createTask({
+        ...taskSubmission,
+        referenceSolutions:
+          taskSubmission.initialSolution !== null
+            ? [taskSubmission.initialSolution]
+            : [],
+        referenceSolutionsFiles:
+          taskSubmission.initialSolutionFile !== null
+            ? [taskSubmission.initialSolutionFile]
+            : [],
+      });
+      router.push(`/task/${createdTask.id}/detail`);
     },
-    [createTask],
+    [createTask, router],
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
         <CrtNavigation />
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="CreateTask.header"
             defaultMessage="Create Task"
           />
-        </PageHeader>
+        </PageHeading>
         <TaskForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

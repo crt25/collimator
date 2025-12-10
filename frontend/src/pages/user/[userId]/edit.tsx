@@ -1,16 +1,18 @@
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import SwrContent from "@/components/SwrContent";
 import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
+import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -50,7 +52,7 @@ const EditUser = () => {
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -61,9 +63,9 @@ const EditUser = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb user={user} />
         </Breadcrumbs>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage id="EditUser.header" defaultMessage="Edit User" />
-        </PageHeader>
+        </PageHeading>
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <UserForm
@@ -74,7 +76,8 @@ const EditUser = () => {
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

@@ -75,3 +75,7 @@ const server = app.listen(process.env.PORT ?? 9999, () => {
     `Serving frontend from '${staticDir}' on http://localhost:${address.port}`,
   );
 });
+
+server.on("error", (err) => {
+  console.error("Server error:", err);
+});

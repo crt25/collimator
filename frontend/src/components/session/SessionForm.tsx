@@ -1,27 +1,27 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
-import {
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
 import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
+import { EditedBadge } from "../EditedBadge";
+
+export enum SharingType {
+  anonymous = "anonymous",
+  private = "private",
+}
 
 const messages = defineMessages({
   title: {
@@ -44,9 +44,17 @@ const messages = defineMessages({
     id: "CreateSessionForm.selectTaskToAdd",
     defaultMessage: "Select a task to add",
   },
-  isAnonymous: {
-    id: "CreateSessionForm.isAnonymous",
-    defaultMessage: "Whether students are anonymous when working on tasks.",
+  sharingType: {
+    id: "CreateSessionForm.sharingType",
+    defaultMessage: "Sharing Type",
+  },
+  sharingTypeAnonymous: {
+    id: "SessionForm.sharingType.anonymous",
+    defaultMessage: "Anonymous",
+  },
+  sharingTypePrivate: {
+    id: "SessionForm.sharingType.private",
+    defaultMessage: "Private",
   },
 });
 
@@ -54,7 +62,7 @@ export interface SessionFormValues {
   title: string;
   description: string;
   taskIds: number[];
-  isAnonymous: boolean;
+  sharingType: SharingType;
 }
 
 const TaskListElement = styled.div`
@@ -82,7 +90,10 @@ const SessionForm = ({
     title: yup.string().required(),
     description: yup.string().required(),
     taskIds: yup.array().of(yup.number().required()).required(),
-    isAnonymous: yup.boolean().required(),
+    sharingType: yup
+      .mixed<SharingType>()
+      .oneOf(Object.values(SharingType))
+      .required(),
   });
 
   const resolver = useYupResolver(schema);
@@ -100,7 +111,9 @@ const SessionForm = ({
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    reset,
+    formState: { errors, dirtyFields },
+    control,
   } = useForm<SessionFormValues>({
     resolver,
     defaultValues,
@@ -111,6 +124,9 @@ const SessionForm = ({
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
+
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
 
   // ensure that the selected tasks are always in sync with the form
   const setSelectedTasks = useCallback(
@@ -125,8 +141,8 @@ const SessionForm = ({
   );
 
   const onAddTask = useCallback(
-    (event: SyntheticEvent<HTMLSelectElement, Event>) => {
-      const taskId = parseInt(event.currentTarget.value, 10);
+    (taskIdString: string) => {
+      const taskId = parseInt(taskIdString, 10);
 
       if (taskId === addTaskEmptyId) {
         return;
@@ -167,79 +183,101 @@ const SessionForm = ({
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
-        <form onSubmit={handleSubmit(onSubmit)} data-testid="session-form">
-          <Input
-            label={messages.title}
-            {...register("title")}
-            data-testid="title"
-          >
-            <ValidationErrorMessage>
-              {errors.title?.message}
-            </ValidationErrorMessage>
-          </Input>
+        <form
+          onSubmit={handleSubmit((values) => {
+            onSubmit(values);
+            reset(values);
+          })}
+          data-testid="session-form"
+        >
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <Input
+                label={messages.title}
+                {...register("title")}
+                data-testid="title"
+                errorText={errors.title?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.title && <EditedBadge />
+                }
+              />
 
-          <TextArea
-            label={messages.description}
-            {...register("description")}
-            data-testid="description"
-          >
-            <ValidationErrorMessage>
-              {errors.description?.message}
-            </ValidationErrorMessage>
-          </TextArea>
+              <TextArea
+                label={messages.description}
+                {...register("description")}
+                data-testid="description"
+                errorText={errors.description?.message}
+                labelBadge={
+                  showEditedBadges && dirtyFields.description && <EditedBadge />
+                }
+              />
 
-          <SortableListInput
-            items={selectedTasks}
-            updateItems={setSelectedTasks}
-            testId="selected-tasks"
-          >
-            {(task) => (
-              <TaskListElement>
-                <span>{task.title}</span>
-                <RemoveTask
-                  data-testid="remove-task"
-                  onClick={() =>
-                    setSelectedTasks(selectedTasks.filter((t) => t !== task))
-                  }
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </RemoveTask>
-              </TaskListElement>
-            )}
-          </SortableListInput>
+              <SortableListInput
+                items={selectedTasks}
+                updateItems={setSelectedTasks}
+                testId="selected-tasks"
+              >
+                {(task) => (
+                  <TaskListElement>
+                    <span>{task.title}</span>
+                    <RemoveTask
+                      data-testid="remove-task"
+                      onClick={() =>
+                        setSelectedTasks(
+                          selectedTasks.filter((t) => t !== task),
+                        )
+                      }
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </RemoveTask>
+                  </TaskListElement>
+                )}
+              </SortableListInput>
 
-          <Select
-            label={messages.addTask}
-            options={[
-              {
-                value: addTaskEmptyId,
-                label: messages.selectTaskToAdd,
-              },
-              // in theory tasks should never be undefined, but it seems to happen sometimes??
-              // TODO: investigate why this happens
-              ...(Array.isArray(tasks) ? tasks : [])
-                // don't list again tasks that are already selected
-                .filter((t) => !selectedTaskIds.includes(t.id))
-                .map((t) => ({
-                  value: t.id,
-                  label: t.title,
-                })),
-            ]}
-            data-testid="add-task"
-            onChange={onAddTask}
-            value={addTaskId}
-          />
+              <Select
+                label={messages.addTask}
+                options={[
+                  {
+                    value: addTaskEmptyId.toString(),
+                    label: messages.selectTaskToAdd,
+                  },
+                  // in theory tasks should never be undefined, but it seems to happen sometimes??
+                  // TODO: investigate why this happens
+                  ...(Array.isArray(tasks) ? tasks : [])
+                    // don't list again tasks that are already selected
+                    .filter((t) => !selectedTaskIds.includes(t.id))
+                    .map((t) => ({
+                      value: t.id.toString(),
+                      label: t.title,
+                    })),
+                ]}
+                data-testid="add-task"
+                onValueChange={onAddTask}
+                value={addTaskId.toString()}
+                marginTop="lg"
+              />
+            </GridItem>
 
-          <Input
-            label={messages.isAnonymous}
-            {...register("isAnonymous")}
-            data-testid="is-anonymous"
-            type="checkbox"
-          >
-            <ValidationErrorMessage>
-              {errors.isAnonymous?.message}
-            </ValidationErrorMessage>
-          </Input>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <Select
+                name="sharingType"
+                control={control}
+                showEditedBadge={showEditedBadges}
+                label={messages.sharingType}
+                data-testid="sharing-type"
+                options={[
+                  {
+                    value: SharingType.anonymous,
+                    label: messages.sharingTypeAnonymous,
+                  },
+                  {
+                    value: SharingType.private,
+                    label: messages.sharingTypePrivate,
+                  },
+                ]}
+              />
+            </GridItem>
+          </Grid>
 
           <SubmitFormButton label={submitMessage} />
         </form>

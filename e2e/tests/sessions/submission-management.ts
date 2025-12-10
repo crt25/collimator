@@ -19,7 +19,7 @@ export const createAnonymousSubmission = async (
     const joinPage = await JoinAnonymousSessionPageModel.create(studentPage);
 
     // ensure we start listening for the loadTask event before the page is loaded
-    const solvePagePromise = SolveTaskPageModel.create(studentPage);
+    const solvePage = SolveTaskPageModel.create(studentPage);
 
     await joinPage.joinSession();
 
@@ -27,7 +27,7 @@ export const createAnonymousSubmission = async (
       /\/class\/\d+\/session\/\d+\/task\/\d+\/solve/,
     );
 
-    const solvePage = await solvePagePromise;
+    await solvePage.waitForTaskLoad();
 
     await solvePage.loadSolution(task, solution);
 

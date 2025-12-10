@@ -56,10 +56,15 @@ test.describe("session management", () => {
       });
     });
 
-    test.describe("/class/{id}/session/{id}/edit", () => {
-      test.beforeEach(async ({ page }) => {
+    test.describe("/class/{id}/session/{id}/detail", () => {
+      test.beforeEach(async ({ page, baseURL }) => {
         const list = await SessionListPageModel.create(page);
         await list.editItem(newSessionId);
+        await page.getByTestId("session-lesson-details-tab").click();
+
+        await page.goto(
+          `${baseURL}/class/${newClassId}/session/${newSessionId}/detail`,
+        );
       });
 
       test("can update an existing session", async ({
@@ -85,7 +90,7 @@ test.describe("session management", () => {
         await page.inputs.description.fill("Updated description.");
         await page.submitButton.click();
 
-        await pwPage.waitForURL(`${baseURL}/class/${newClassId}/session`);
+        await pwPage.goto(`${baseURL}/class/${newClassId}/session`);
 
         const list = await SessionListPageModel.create(pwPage);
 
@@ -124,7 +129,8 @@ test.describe("session management", () => {
       test("can delete listed items", async ({ page: pwPage }) => {
         const page = await SessionListPageModel.create(pwPage);
 
-        await page.deleteItem(newSessionId);
+        await page.editItem(newSessionId);
+        await page.deleteItemAndConfirm(newSessionId);
 
         // Wait for the deletion to be reflected in the UI
         await expect(page.getItemActions(newSessionId)).toHaveCount(0);
