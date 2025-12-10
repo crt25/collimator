@@ -33,8 +33,6 @@ import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
 
-import { AppTranslator, MessageKeys } from "./translator";
-
 import {
   DirectoryNotFoundError,
   GenericNotebookTaskImportError,
@@ -101,7 +99,6 @@ export class EmbeddedPythonCallbacks {
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
-    private readonly appTranslator: AppTranslator,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -178,8 +175,7 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
-      this.appTranslator.displayErrorFromException(MessageKeys.ExportError, e);
-      return undefined;
+      throw e;
     }
   }
 
@@ -193,19 +189,13 @@ export class EmbeddedPythonCallbacks {
       await this.closeAllDocuments();
 
       await this.writeCrtInternalTask(importedFiles);
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
 
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotLoadProject,
-        e,
-      );
-      return undefined;
+      throw e;
     }
 
     return undefined;
@@ -237,11 +227,6 @@ export class EmbeddedPythonCallbacks {
 
           if (this.mode !== Mode.edit) {
             // cannot import external custom task in non-edit mode
-
-            this.appTranslator.displayError(
-              MessageKeys.CannotImportExternalInNonEditMode,
-            );
-
             throw new GenericNotebookTaskImportError();
           }
 
@@ -253,18 +238,13 @@ export class EmbeddedPythonCallbacks {
         default:
           throw new UnsupportedTaskFormatError(Object.values(TaskFormat));
       }
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
 
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotImportTask,
-        e,
-      );
+      throw e;
     }
     return undefined;
   }
@@ -301,10 +281,7 @@ export class EmbeddedPythonCallbacks {
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotLoadProject,
-        e,
-      );
+      throw e;
     }
 
     return undefined;
