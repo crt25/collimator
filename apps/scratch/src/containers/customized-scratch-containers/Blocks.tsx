@@ -535,7 +535,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    this.getWorkspace().addChangeListener(this.blockListener);
+    this.getWorkspace().addChangeListener(this.reAttachWorkspaceListeners);
     this.getWorkspace().addChangeListener(this.onWorkspaceChange);
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
@@ -592,7 +592,7 @@ class Blocks extends React.Component<Props, State> {
     this.props.vm.runtime.off("PROJECT_LOADED", this.onProjectLoaded);
   }
 
-  attachWorkspaceListeners() {
+  reAttachWorkspaceListeners() {
     const workspace = this.getWorkspace();
 
     // Blockly does not provide a way to check if a listener is already attached.
@@ -788,7 +788,7 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    this.attachWorkspaceListeners();
+    this.reAttachWorkspaceListeners();
 
     if (
       this.props.vm.editingTarget &&
