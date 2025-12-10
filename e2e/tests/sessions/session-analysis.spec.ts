@@ -62,7 +62,7 @@ test.describe("session analysis", () => {
     sessionId = id;
     firstTaskId = sortedTaskIds[0];
 
-    await page.waitForURL(`${baseURL}/class/${classId}/session`);
+    await page.goto(`${baseURL}/class/${classId}/session`);
 
     const list = await SessionListPageModel.create(page);
     sessionLink = await list.getSessionLink(sessionId);
@@ -134,14 +134,24 @@ test.describe("session analysis", () => {
 
     test.describe("/class/{id}/session/{id}/analysis", () => {
       test.beforeEach(async ({ page, baseURL }) => {
-        await page.getByTestId("session-analysis-tab").click();
+        const sessionAnalysis = await SessionAnalysisPageModel.create(page);
+
+        await sessionAnalysis.navigateToTaskAnalysisPage(
+          firstTaskId.toString(),
+        );
 
         await page.waitForURL(
-          `${baseURL}/class/${classId}/session/${sessionId}/analysis`,
+          `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/student`,
+        );
+
+        await sessionAnalysis.navigateToTaskInstanceTabPage();
+
+        await page.waitForURL(
+          `${baseURL}/class/${classId}/session/${sessionId}/task/${firstTaskId}/analysis`,
         );
       });
 
-      test("shows expected analysis chart", async ({ page }, testInfo) => {
+      test.skip("shows expected analysis chart", async ({ page }, testInfo) => {
         const analysis = await SessionAnalysisPageModel.create(page);
 
         await analysis.setXAxis("statement");

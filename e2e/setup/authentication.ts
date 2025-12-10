@@ -114,6 +114,8 @@ setup.describe("authentication against a mock backend", () => {
 
     await page.waitForURL(/session\/3\/join/);
 
+    await page.getByTestId("user-menu").click();
+
     await expect(page.locator(headerCurrentUserName).innerText()).resolves.toBe(
       adminUser.name,
     );

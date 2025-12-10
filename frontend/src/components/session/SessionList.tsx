@@ -1,99 +1,89 @@
-import {
-  DataTablePageEvent,
-  DataTableSortEvent,
-  DataTableFilterEvent,
-} from "primereact/datatable";
-import { Column } from "primereact/column";
 import { useCallback, useContext, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import { defineMessages, useIntl } from "react-intl";
-import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import { useRouter } from "next/router";
-import { TableMessages } from "@/i18n/table-messages";
-import Tags from "@/components/Tags";
-import Tag from "@/components/Tag";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { useAllClassSessionsLazyTable } from "@/api/collimator/hooks/sessions/useAllClassSessions";
+import { chakra, HStack, Icon, Text, Link } from "@chakra-ui/react";
+import { LuChevronRight, LuSend } from "react-icons/lu";
+import { ColumnDef } from "@tanstack/react-table";
+import { MdAdd } from "react-icons/md";
+import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
-import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import ConfirmationModal from "../modals/ConfirmationModal";
+import { SessionShareMessages } from "@/i18n/session-share-messages";
+import { isClickOnRow } from "@/utilities/table";
+import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
-import Button, { ButtonVariant } from "../Button";
+import Button from "../Button";
+import ChakraDataTable from "../ChakraDataTable";
+import { ShareModal } from "../form/ShareModal";
+import { EmptyState } from "../EmptyState";
 
-const SessionListWrapper = styled.div`
-  margin: 1rem 0;
-
-  tr {
-    cursor: pointer;
-  }
-`;
+const SessionListWrapper = chakra("div", {
+  base: {
+    marginTop: "md",
+    marginBottom: "md",
+  },
+});
 
 const messages = defineMessages({
+  idColumn: {
+    id: "SessionList.columns.id",
+    defaultMessage: "ID",
+  },
   titleColumn: {
     id: "SessionList.columns.title",
     defaultMessage: "Title",
   },
-  tagsColumn: {
-    id: "SessionList.columns.tags",
-    defaultMessage: "Tags",
-  },
   startedAtColumn: {
     id: "SessionList.columns.startedAt",
-    defaultMessage: "Started at",
+    defaultMessage: "Start Date",
   },
   finishedAtColumn: {
     id: "SessionList.columns.finishedAt",
-    defaultMessage: "Finished at",
+    defaultMessage: "End Date",
+  },
+  sharingTypeColumn: {
+    id: "SessionList.columns.sharingType",
+    defaultMessage: "Sharing Type",
+  },
+  sharingTypeColumnAnonymous: {
+    id: "SessionList.columns.sharingTypeAnonymous",
+    defaultMessage: "Anonymous",
+  },
+  sharingTypeColumnPrivate: {
+    id: "SessionList.columns.sharingTypePrivate",
+    defaultMessage: "Private",
   },
   actionsColumn: {
     id: "SessionList.columns.actions",
-    defaultMessage: "Actions",
+    defaultMessage: "Quick Action",
   },
-  deleteConfirmationTitle: {
-    id: "SessionList.deleteConfirmation.title",
-    defaultMessage: "Delete Session",
-  },
-  deleteConfirmationBody: {
-    id: "SessionList.deleteConfirmation.body",
-    defaultMessage: "Are you sure you want to delete this session?",
-  },
-  deleteConfirmationConfirm: {
-    id: "SessionList.deleteConfirmation.confirm",
-    defaultMessage: "Delete Session",
+  createSession: {
+    id: "SessionList.columns.createSession",
+    defaultMessage: "Create Lesson",
   },
   copySessionLink: {
     id: "SessionList.copySessionLink",
-    defaultMessage: "Copy Session Link",
+    defaultMessage: "Share",
+  },
+  canOnlyShareOwnSessions: {
+    id: "SessionList.canOnlyShareOwnSessions",
+    defaultMessage: "You can only share lessons belonging to your classes.",
+  },
+  emptyStateTitle: {
+    id: "SessionList.emptyState.title",
+    defaultMessage: "There are no lessons yet. Let's create some!",
   },
 });
-
-const sessionTitleTemplate = (rowData: ExistingSession) => (
-  <span data-testid={`session-${rowData.id}-title`}>{rowData.title}</span>
-);
 
 const SessionList = ({ classId }: { classId: number }) => {
   const router = useRouter();
   const intl = useIntl();
   const authenticationContext = useContext(AuthenticationContext);
-
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [selectedSession, setSelectedSession] =
+    useState<ExistingSession | null>(null);
+  const [sessionLink, setSessionLink] = useState("");
 
   const {
     data: klass,
@@ -101,34 +91,14 @@ const SessionList = ({ classId }: { classId: number }) => {
     isLoading: isLoadingKlass,
   } = useClass(classId);
 
-  const { data, isLoading, error } = useAllClassSessionsLazyTable(
-    classId,
-    lazyState,
-  );
+  const { data, isLoading, error } = useAllClassSessions(classId);
 
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const tagsTemplate = useCallback(
-    (_rowData: ExistingSession) => (
-      // TODO: Use tags once they're available
-      <Tags>
-        {[].map((tag, index) => (
-          <Tag key={index} id={tag}>
-            {tag}
-          </Tag>
-        ))}
-      </Tags>
-    ),
+  const handleShareClick = useCallback(
+    (session: ExistingSession, link: string) => {
+      setSessionLink(link);
+      setSelectedSession(session);
+      setIsShareModalOpen(true);
+    },
     [],
   );
 
@@ -144,84 +114,133 @@ const SessionList = ({ classId }: { classId: number }) => {
     [intl],
   );
 
-  const finishedAtTemplate = useCallback(
+  const actionsTemplate = useCallback(
+    (rowData: ExistingSession) => {
+      if (!klass) {
+        return null;
+      }
+
+      const canGetSessionLink =
+        "userId" in authenticationContext &&
+        klass.teacher.id === authenticationContext.userId;
+
+      return canGetSessionLink ? (
+        <Button
+          onClick={async () => {
+            const fingerprint =
+              await authenticationContext.keyPair.getPublicKeyFingerprint();
+
+            const link = `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`;
+            handleShareClick(rowData, link);
+          }}
+          data-testid={`session-${rowData.id}-copy-session-link-button`}
+        >
+          <Icon>
+            <LuSend />
+          </Icon>{" "}
+          {intl.formatMessage(messages.copySessionLink)}
+        </Button>
+      ) : (
+        <Button
+          disabled
+          title={intl.formatMessage(messages.canOnlyShareOwnSessions)}
+        >
+          <Icon>
+            <LuSend />
+          </Icon>{" "}
+          {intl.formatMessage(messages.copySessionLink)}
+        </Button>
+      );
+    },
+    [intl, authenticationContext, klass, handleShareClick, classId],
+  );
+
+  const sharingTypeTemplate = useCallback(
     (rowData: ExistingSession) =>
-      // TODO: Change to finishedAt once it's available
-      rowData.createdAt && (
-        <time>
-          {intl.formatDate(rowData.createdAt)}{" "}
-          {intl.formatTime(rowData.createdAt)}
-        </time>
-      ),
+      rowData.isAnonymous
+        ? intl.formatMessage(messages.sharingTypeColumnAnonymous)
+        : intl.formatMessage(messages.sharingTypeColumnPrivate),
     [intl],
   );
 
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
-  const [sessionIdToDelete, setSessionIdToDelete] = useState<number | null>(
-    null,
-  );
-  const deleteSession = useDeleteClassSession();
-
-  const actionsTemplate = useCallback(
-    (rowData: ExistingSession) => (
-      <div>
-        <Dropdown as={ButtonGroup}>
-          <Button
-            variant={ButtonVariant.secondary}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              router.push(`/class/${classId}/session/${rowData.id}/edit`);
-            }}
-            data-testid={`session-${rowData.id}-edit-button`}
-          >
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
-
-          <Dropdown.Toggle
-            variant="secondary"
-            split
-            data-testid={`session-${rowData.id}-actions-dropdown-button`}
-          />
-
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={(e) => {
-                e.stopPropagation();
-
-                setSessionIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
-              }}
-              data-testid={`session-${rowData.id}-delete-button`}
-            >
-              {intl.formatMessage(TableMessages.delete)}
-            </Dropdown.Item>
-            {klass &&
-              "userId" in authenticationContext &&
-              klass.teacher.id === authenticationContext.userId && (
-                <Dropdown.Item
-                  onClick={async (e) => {
-                    e.stopPropagation();
-
-                    const fingerprint =
-                      await authenticationContext.keyPair.getPublicKeyFingerprint();
-
-                    navigator.clipboard.writeText(
-                      `${window.location.origin}/class/${classId}/session/${rowData.id}/join?key=${fingerprint}`,
-                    );
-                  }}
-                  data-testid={`session-${rowData.id}-copy-session-link-button`}
-                >
-                  {intl.formatMessage(messages.copySessionLink)}
-                </Dropdown.Item>
-              )}
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    ),
-    [classId, intl, router, authenticationContext, klass],
-  );
+  const columns: ColumnDef<ExistingSession>[] = [
+    {
+      accessorKey: "id",
+      header: intl.formatMessage(messages.idColumn),
+      enableSorting: false,
+      size: 32,
+    },
+    {
+      accessorKey: "title",
+      header: intl.formatMessage(messages.titleColumn),
+      cell: (info) => (
+        <Text
+          fontWeight="semibold"
+          fontSize="lg"
+          data-testid={`session-${info.row.original.id}-title`}
+          margin={0}
+        >
+          {info.row.original.title}
+        </Text>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "startedAt",
+      header: intl.formatMessage(messages.startedAtColumn),
+      enableSorting: false,
+      cell: (info) => startedAtTemplate(info.row.original),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "isAnonymous",
+      header: intl.formatMessage(messages.sharingTypeColumn),
+      enableSorting: false,
+      cell: (info) => sharingTypeTemplate(info.row.original),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      id: "actions",
+      header: intl.formatMessage(messages.actionsColumn),
+      enableSorting: false,
+      cell: (info) => actionsTemplate(info.row.original),
+      meta: {
+        columnType: ColumnType.icon,
+      },
+    },
+    {
+      id: "details",
+      header: "",
+      enableSorting: false,
+      cell: (info) => (
+        <Button
+          aria-label={intl.formatMessage(messages.actionsColumn)}
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(
+              `/class/${classId}/session/${info.row.original.id}/progress`,
+            );
+          }}
+          data-testid={`session-${info.row.original.id}-details-button`}
+          variant="detail"
+        >
+          <Icon>
+            <LuChevronRight />
+          </Icon>
+        </Button>
+      ),
+      size: 32,
+      meta: {
+        columnType: ColumnType.icon,
+      },
+    },
+  ];
 
   return (
     <SessionListWrapper data-testid="session-list">
@@ -231,97 +250,76 @@ const SessionList = ({ classId }: { classId: number }) => {
         errors={[error, klassError]}
       >
         {([data]) => (
-          <DataTable
-            value={data.items}
-            lazy
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            first={lazyState.first}
-            rows={10}
-            totalRecords={data.totalCount}
-            onPage={onPage}
-            onSort={onSort}
-            sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder}
-            onFilter={onFilter}
-            filters={lazyState.filters}
-            loading={isLoading}
-            onRowClick={(e) =>
-              router.push(
-                `/class/${classId}/session/${(e.data as ExistingSession).id}/progress`,
-              )
-            }
-          >
-            <Column
-              field="title"
-              header={intl.formatMessage(messages.titleColumn)}
-              sortable
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={sessionTitleTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.tagsColumn)}
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={tagsTemplate}
-            />
-            <Column
-              field="startedAt"
-              header={intl.formatMessage(messages.startedAtColumn)}
-              sortable
-              body={startedAtTemplate}
-            />
-            <Column
-              field="finishedAt"
-              header={intl.formatMessage(messages.finishedAtColumn)}
-              sortable
-              body={finishedAtTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.actionsColumn)}
-              body={actionsTemplate}
-              filter
-              filterElement={
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() =>
-                      router.push(`/class/${classId}/session/create`)
-                    }
-                    data-testid="session-create-button"
-                  >
-                    <FontAwesomeIcon icon={faAdd} />
-                  </Button>
-                </Dropdown>
+          <ChakraDataTable
+            data={data}
+            columns={columns}
+            isLoading={isLoading}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(`/class/${classId}/session/${row.id}/progress`);
               }
-            />
-          </DataTable>
+            }}
+            features={{
+              sorting: true,
+              columnFiltering: {
+                columns: [
+                  {
+                    accessorKey: "title",
+                    label: intl.formatMessage(messages.titleColumn),
+                  },
+                ],
+              },
+              pagination: {
+                pageSize: 10,
+              },
+            }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
+          />
         )}
       </MultiSwrContent>
-      <ConfirmationModal
-        isShown={showDeleteConfirmationModal}
-        setIsShown={setShowDeleteConfirmationModal}
-        onConfirm={
-          sessionIdToDelete
-            ? () => deleteSession(classId, sessionIdToDelete)
-            : undefined
+      <Button
+        variant="primary"
+        onClick={() => router.push(`/class/${classId}/session/create`)}
+        data-testid="session-create-button"
+        marginTop="md"
+      >
+        <HStack>
+          <Icon>
+            <MdAdd />
+          </Icon>
+          {intl.formatMessage(messages.createSession)}
+        </HStack>
+      </Button>
+
+      <ShareModal
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
+        subtitle={
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
         }
-        isDangerous
-        messages={{
-          title: messages.deleteConfirmationTitle,
-          body: messages.deleteConfirmationBody,
-          confirmButton: messages.deleteConfirmationConfirm,
-        }}
+        description={
+          <FormattedMessage
+            {...(selectedSession?.isAnonymous
+              ? SessionShareMessages.shareModalAnonymousLessonInfo
+              : SessionShareMessages.shareModalPrivateLessonInfo)}
+            values={{
+              link: (chunks) => (
+                <Link
+                  textDecoration="underline"
+                  href={`/class/${classId}/session/${selectedSession?.id}/detail`}
+                >
+                  {chunks}
+                </Link>
+              ),
+            }}
+          />
+        }
+        open={isShareModalOpen}
+        shareLink={sessionLink}
+        onOpenChange={(details) => setIsShareModalOpen(details.open)}
       />
     </SessionListWrapper>
   );

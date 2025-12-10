@@ -2,6 +2,7 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useCallback, useContext } from "react";
 import { useRouter } from "next/router";
 import { UseFormSetError } from "react-hook-form";
+import { Card, Stack } from "@chakra-ui/react";
 import { useUpdateUserKey } from "@/api/collimator/hooks/users/useUpdateUserKey";
 import TeacherLongTermKeyPair from "@/utilities/crypto/TeacherLongTermKeyPair";
 import { PasswordDerivedKey } from "@/utilities/crypto/PasswordDerivedKey";
@@ -13,11 +14,25 @@ import {
   AuthenticationResponseDto,
   UserType,
 } from "@/api/collimator/generated/models";
+import { TextComponent as Text } from "@/components/Text";
 import UserSignInForm, { UserSignInFormValues } from "./UserSignInForm";
 
 const logModule = "[UserSignIn]";
 
 const messages = defineMessages({
+  title: {
+    id: "UserSignIn.title",
+    defaultMessage: "Complete Sign In",
+  },
+  returningUserDescription: {
+    id: "UserSignIn.returningUserDescription",
+    defaultMessage:
+      "Enter your password to access encrypted student identities",
+  },
+  newUserDescription: {
+    id: "UserSignIn.newUserDescription",
+    defaultMessage: "Set up encryption for student identities",
+  },
   submit: {
     id: "UserSignIn.submit",
     defaultMessage: "Sign In",
@@ -61,6 +76,8 @@ const UserSignIn = ({
   const router = useRouter();
   const updateUserKey = useUpdateUserKey();
   const updateAuthenticationContext = useContext(UpdateAuthenticationContext);
+
+  const isFirstTimeSignIn = authResponse.keyPair === null;
 
   const tryUserSignIn = useCallback(
     async (
@@ -246,24 +263,42 @@ const UserSignIn = ({
 
   return (
     <>
-      <p>
-        {authResponse.keyPair ? (
-          <FormattedMessage
-            id="OpenIdConnectRedirect.userSignInDescription"
-            defaultMessage="The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
-          />
-        ) : (
-          <FormattedMessage
-            id="OpenIdConnectRedirect.userFirstTimeSignInDescription"
-            defaultMessage="The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
-          />
-        )}
-      </p>
-      <UserSignInForm
-        submitMessage={messages.submit}
-        onSubmit={onSubmitSignInForm}
-        showBackupPassword={authResponse.keyPair === null}
-      />
+      <Card.Root maxWidth="lg" width="full">
+        <Card.Header>
+          <Card.Title>
+            <FormattedMessage {...messages.title} />
+          </Card.Title>
+          <Card.Description>
+            <FormattedMessage
+              {...(isFirstTimeSignIn
+                ? messages.newUserDescription
+                : messages.returningUserDescription)}
+            />
+          </Card.Description>
+          <Text fontSize="sm" color="gray.600">
+            {isFirstTimeSignIn ? (
+              <FormattedMessage
+                id="OpenIdConnectRedirect.userFirstTimeSignInDescription"
+                defaultMessage="The student identities will be encrypted with a key that only you have access to. Please enter a password to protected the key. On top, enter a second, backup password and make sure you remember at least one of those two. Otherwise you will lose access to the student identities."
+              />
+            ) : (
+              <FormattedMessage
+                id="OpenIdConnectRedirect.userSignInDescription"
+                defaultMessage="The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
+              />
+            )}
+          </Text>
+        </Card.Header>
+        <Card.Body>
+          <Stack gap="sm" width="full">
+            <UserSignInForm
+              submitMessage={messages.submit}
+              onSubmit={onSubmitSignInForm}
+              showBackupPassword={isFirstTimeSignIn}
+            />
+          </Stack>
+        </Card.Body>
+      </Card.Root>
     </>
   );
 };

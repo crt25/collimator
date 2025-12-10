@@ -2,17 +2,26 @@
   "Analysis.groupName": {
     "message": "Group"
   },
+  "Analysis.initialTaskSolution": {
+    "message": "Initial Task Solution"
+  },
+  "Analysis.numberOfReferenceSolutions": {
+    "message": "Number of Reference Solutions"
+  },
   "Analysis.numberOfStudents": {
     "message": "Number of Students"
-  },
-  "Analysis.selected": {
-    "message": "Selected"
   },
   "Analysis.xAxis": {
     "message": "x-Axis"
   },
   "Analysis.yAxis": {
     "message": "y-Axis"
+  },
+  "AnalysisName.initialTaskSolution": {
+    "message": "Initial task solution"
+  },
+  "AnalysisName.unknownAnalysisType": {
+    "message": "Unknown analysis type"
   },
   "Analyzer.allSubTasks": {
     "message": "All sub-tasks"
@@ -24,31 +33,19 @@
     "message": "Computing groups, please be patient."
   },
   "Analyzer.noTasksInSession": {
-    "message": "There are no tasks in this session."
+    "message": "There are no tasks in this lesson."
   },
   "Analyzer.numberOfGroups": {
     "message": "Number of groups"
   },
-  "Analyzer.selectSolutionForComparisonDescription": {
-    "message": "Where should the selected solution be placed?"
-  },
-  "Analyzer.selectSolutionForComparisonLeft": {
-    "message": "Left"
-  },
-  "Analyzer.selectSolutionForComparisonRight": {
-    "message": "Right"
-  },
-  "Analyzer.selectSolutionForComparisonTitle": {
-    "message": "Selecting Solution for Comparison"
-  },
   "Analyzer.subTaskSelection": {
     "message": "Sub-task Selection"
   },
-  "Analyzer.taskSelection": {
-    "message": "Task Selection"
-  },
   "AnalyzerFilterForm.filterCriteria": {
     "message": "Filtering Criteria"
+  },
+  "AnonymizationToggle.label": {
+    "message": "Anonymize Names"
   },
   "AstHeightCriterionFilterForm.count": {
     "message": "Height of the AST"
@@ -64,6 +61,9 @@
   },
   "BuiltInFunctionCallCriterionFilterForm.functionName": {
     "message": "Function Name"
+  },
+  "ButtonMessages.actions": {
+    "message": "Actions"
   },
   "Category.allTestsPass": {
     "message": "All tests pass"
@@ -89,11 +89,62 @@
   "Category.yAxis": {
     "message": "y-Axis"
   },
-  "ClassDetail.table.numberOfStudents": {
-    "message": "Number of Students"
+  "ClassActions.deleteClass": {
+    "message": "Delete Class"
   },
-  "ClassDetail.table.teacher": {
-    "message": "Teacher"
+  "ClassDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "ClassDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "ClassDeleteModal.confirm": {
+    "message": "Delete Class"
+  },
+  "ClassDeleteModal.error": {
+    "message": "There was an error deleting the class. Please try again!"
+  },
+  "ClassDeleteModal.success": {
+    "message": "Class deleted successfully"
+  },
+  "ClassDeleteModal.title": {
+    "message": "Delete Class"
+  },
+  "ClassDetail.actions": {
+    "message": "Actions"
+  },
+  "ClassDetail.deleteAction": {
+    "message": "Delete Class"
+  },
+  "ClassDetail.deleteConfirmation.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "ClassDetail.deleteConfirmation.cancel": {
+    "message": "Cancel"
+  },
+  "ClassDetail.deleteConfirmation.confirm": {
+    "message": "Delete Class"
+  },
+  "ClassDetail.deleteConfirmation.title": {
+    "message": "Delete Class: \"{name}\""
+  },
+  "ClassDetail.deleteErrorMessage": {
+    "message": "There was an error deleting the class. Please try again!"
+  },
+  "ClassDetail.deleteSuccessMessage": {
+    "message": "Class deleted successfully"
+  },
+  "ClassDetail.errorMessage": {
+    "message": "There was an error saving the changes. Please try to save again!"
+  },
+  "ClassDetail.returnToClassList": {
+    "message": "Return to Class List"
+  },
+  "ClassDetail.submit": {
+    "message": "Save Class"
+  },
+  "ClassDetail.successMessage": {
+    "message": "Successfully saved changes"
   },
   "ClassDetail.title": {
     "message": "Class - {name}"
@@ -101,23 +152,23 @@
   "ClassForm.name": {
     "message": "Name"
   },
+  "ClassForm.placeholder.selectTeacher": {
+    "message": "Select Teacher"
+  },
   "ClassForm.teacher": {
     "message": "Teacher"
   },
-  "ClassList.column.lastSession.none": {
-    "message": "None"
-  },
-  "ClassList.columns.actions": {
-    "message": "Actions"
-  },
-  "ClassList.columns.lastSession": {
-    "message": "Last Session"
+  "ClassForm.tooltip.disabledSaveButton": {
+    "message": "No changes to save"
   },
   "ClassList.columns.name": {
     "message": "Name"
   },
-  "ClassList.columns.status": {
-    "message": "Status"
+  "ClassList.columns.teacher": {
+    "message": "Teacher"
+  },
+  "ClassList.createClass": {
+    "message": "Create Class"
   },
   "ClassList.deleteConfirmation.body": {
     "message": "Are you sure you want to delete this class?"
@@ -128,38 +179,50 @@
   "ClassList.deleteConfirmation.title": {
     "message": "Delete Class"
   },
+  "ClassList.emptyState.title": {
+    "message": "There are no classes yet. Let's create some!"
+  },
+  "ClassList.viewDetails": {
+    "message": "View Class Details"
+  },
   "ClassNavigation.classTab": {
     "message": "Class Details"
   },
   "ClassNavigation.sessionsTab": {
-    "message": "Sessions"
+    "message": "Lessons"
   },
   "ClassNavigation.studentsTab": {
     "message": "Students"
   },
   "ClassSessionList.title": {
-    "message": "{name} - Sessions"
+    "message": "{name} - Lessons"
+  },
+  "ClassStatus.current": {
+    "message": "Current"
+  },
+  "ClassStatus.past": {
+    "message": "Past"
   },
   "ClassUserList.title": {
     "message": "{name} - Students"
   },
-  "CodeComparison.defaultOption": {
-    "message": "Group: All solutions"
-  },
-  "CodeComparison.defaultSolutionOption": {
-    "message": "Select a solution"
+  "CodeComparison.addToShowcase": {
+    "message": "Add to showcase"
   },
   "CodeComparison.groupPrefix": {
-    "message": "Group: "
+    "message": "Group:"
   },
   "CodeComparison.heading": {
     "message": "Comparison"
   },
-  "CodeComparison.selectedSolutions": {
-    "message": "Group: Selected solutions"
+  "CodeComparison.referenceSolutions": {
+    "message": "Reference solutions"
   },
-  "CodeComparison.view": {
-    "message": "View"
+  "CodeComparison.removeFromShowcase": {
+    "message": "Remove from showcase"
+  },
+  "CodeComparison.studentSolutions": {
+    "message": "Student solutions"
   },
   "CodeView.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
@@ -167,11 +230,23 @@
   "ConditionCriterionFilterForm.count": {
     "message": "Number of conditions"
   },
+  "CreateClass.errorMessage": {
+    "message": "There was an error creating the new Class. Please try to save again!"
+  },
   "CreateClass.header": {
     "message": "Create Class"
   },
+  "CreateClass.pageDescription": {
+    "message": ""
+  },
+  "CreateClass.returnToClassList": {
+    "message": "Return to Class List"
+  },
   "CreateClass.submit": {
     "message": "Create Class"
+  },
+  "CreateClass.successMessage": {
+    "message": "Class created successfully"
   },
   "CreateClass.title": {
     "message": "Create Class"
@@ -188,14 +263,23 @@
   "CreateLessonForm.name": {
     "message": "Name"
   },
+  "CreateSession.errorMessage": {
+    "message": "There was an error creating the new Lesson. Please try to save again!"
+  },
   "CreateSession.header": {
-    "message": "Create Session"
+    "message": "Create Lesson"
+  },
+  "CreateSession.returnToSessionList": {
+    "message": "Return to Lesson List"
   },
   "CreateSession.submit": {
-    "message": "Create Session"
+    "message": "Create Lesson"
+  },
+  "CreateSession.successMessage": {
+    "message": "Lesson created successfully"
   },
   "CreateSession.title": {
-    "message": "Create Session"
+    "message": "Create Lesson"
   },
   "CreateSessionForm.addTask": {
     "message": "Add Task"
@@ -203,11 +287,11 @@
   "CreateSessionForm.description": {
     "message": "Description"
   },
-  "CreateSessionForm.isAnonymous": {
-    "message": "Whether students are anonymous when working on tasks."
-  },
   "CreateSessionForm.selectTaskToAdd": {
     "message": "Select a task to add"
+  },
+  "CreateSessionForm.sharingType": {
+    "message": "Sharing Type"
   },
   "CreateSessionForm.tasks": {
     "message": "Tasks"
@@ -222,6 +306,18 @@
     "message": "Create Task"
   },
   "CreateTask.title": {
+    "message": "Create Task"
+  },
+  "CreateTaskInstance.description": {
+    "message": ""
+  },
+  "CreateTaskInstance.header": {
+    "message": "Create Task"
+  },
+  "CreateTaskInstance.submit": {
+    "message": "Create Task"
+  },
+  "CreateTaskInstance.title": {
     "message": "Create Task"
   },
   "CreateUser.header": {
@@ -251,9 +347,6 @@
   "CustomFunctionCallCriterionFilterForm.count": {
     "message": "Number of custom function callss"
   },
-  "DissimilarAnalysisPairs.header": {
-    "message": "Dissimilar Solutions"
-  },
   "DissimilarAnalysisPairs.title": {
     "message": "Dissimilar Pairs - {title}"
   },
@@ -266,20 +359,11 @@
   "DissimilarPairs.subTaskSelection": {
     "message": "Sub-task Selection"
   },
-  "DissimilarPairs.taskSelection": {
-    "message": "Task Selection"
-  },
-  "DissimilarSolutions.header": {
-    "message": "Dissimilar Solutions"
-  },
   "DissimilarSolutions.title": {
     "message": "Dissimilar Solutions - {title}"
   },
   "DissimilarityAnalysis.allSubTasks": {
     "message": "All sub-tasks"
-  },
-  "DissimilarityAnalysis.noTasksInSession": {
-    "message": "There are no tasks in this session."
   },
   "DissimilarityAnalysis.numberOfDissimilarSolutions": {
     "message": "Number of dissimilar solutions"
@@ -287,20 +371,8 @@
   "DissimilarityAnalysis.subTaskSelection": {
     "message": "Sub-task Selection"
   },
-  "DissimilarityAnalysis.taskSelection": {
-    "message": "Task Selection"
-  },
   "DissimilarityAnalysis.tooManyCombinations": {
     "message": "Too many combinations to calculate dissimilar pairs."
-  },
-  "EditClass.header": {
-    "message": "Edit Class"
-  },
-  "EditClass.submit": {
-    "message": "Save Class"
-  },
-  "EditClass.title": {
-    "message": "Edit Class - {name}"
   },
   "EditLesson.header": {
     "message": "Edit Lesson"
@@ -310,18 +382,6 @@
   },
   "EditLesson.title": {
     "message": "Edit Lesson - {name}"
-  },
-  "EditSession.header": {
-    "message": "Edit Session"
-  },
-  "EditSession.submit": {
-    "message": "Save Session"
-  },
-  "EditSession.title": {
-    "message": "Edit Session - {title}"
-  },
-  "EditTask.header": {
-    "message": "Edit Task"
   },
   "EditTask.submit": {
     "message": "Save Task"
@@ -338,8 +398,20 @@
   "EditUser.title": {
     "message": "Edit User - {name}"
   },
+  "EditedBadge.edited": {
+    "message": "Edited"
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
+  },
+  "FooterLink.hepLink": {
+    "message": "HEP Vaud"
+  },
+  "FooterLink.impressumLink": {
+    "message": "Impressum"
+  },
+  "FooterLink.termsLink": {
+    "message": "Terms of Use"
   },
   "FunctionDeclarationCriterionFilterForm.count": {
     "message": "Number of function declarations"
@@ -353,39 +425,66 @@
   "Header.signOut": {
     "message": "Sign Out"
   },
-  "Home.header": {
-    "message": "Home"
+  "HeaderLogo.logoName": {
+    "message": "ClassMosaic"
   },
-  "Home.title": {
-    "message": "Home"
+  "Home.adminDescription": {
+    "message": "Welcome to the Admin Dashboard of ClassMosaic. Edit classes, tasks, or manage user profiles."
+  },
+  "Home.adminHeader": {
+    "message": "Admin Dashboard"
+  },
+  "Home.classes": {
+    "message": "Classes"
+  },
+  "Home.classesDescription": {
+    "message": "Manage your classes and students."
+  },
+  "Home.description": {
+    "message": "Welcome to the Teacher Dashboard of ClassMosaic."
+  },
+  "Home.header": {
+    "message": "Teacher Dashboard"
+  },
+  "Home.tasks": {
+    "message": "Tasks"
+  },
+  "Home.tasksDescription": {
+    "message": "Create and manage tasks for your classes."
+  },
+  "Home.users": {
+    "message": "Users"
+  },
+  "Home.usersDescription": {
+    "message": "Manage user accounts and permissions."
+  },
+  "Impressum.header": {
+    "message": "Impressum"
+  },
+  "Impressum.title": {
+    "message": "Impressum"
   },
   "IndentationCriterionFilterForm.level": {
     "message": "Level of code indentation"
-  },
-  "JoinSession.anonymousSessionDescription": {
-    "message": "This session is anonymous which means you do not need to sign-in. Note that you cannot continue working on the session after closing the browser."
   },
   "JoinSession.choosePseudonym": {
     "message": "Enter a pseudonym"
   },
   "JoinSession.invalidJoinLink": {
-    "message": "This session link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
+    "message": "This lesson link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
   },
   "JoinSession.joinSession": {
-    "message": "Join Session"
+    "message": "Join Lesson"
   },
   "JoinSession.savePseudonym": {
     "message": "Confirm"
   },
-  "JoinSession.taskList": {
-    "message": "Tasks"
-  },
   "JoinSession.title": {
-    "message": "Join Session"
+    "message": "Join Lesson"
   },
   "JoinSession.waitingForTeacher": {
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the session",
-    "message": "Waiting for the teacher's machine to admit you to the session..."
+    "message": "Waiting for the teacher's machine to admit you to the lesson..."
   },
   "LanguageChooser.english": {
     "message": "English"
@@ -414,11 +513,20 @@
   "LessonNavigation.lessonTab": {
     "message": "Lesson Details"
   },
-  "ListClasses.header": {
-    "message": "Class Manager"
+  "List.delete": {
+    "message": "Delete"
   },
-  "ListClasses.title": {
+  "List.filters.search.placeholder": {
+    "message": "Search..."
+  },
+  "ListClasses.header": {
     "message": "Classes"
+  },
+  "ListClasses.pageDescription": {
+    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
+  },
+  "ListClasses.pageTitle": {
+    "message": "Class Manager"
   },
   "ListLessons.header": {
     "message": "Lesson Manager"
@@ -427,7 +535,10 @@
     "message": "Lessons"
   },
   "ListTasks.header": {
-    "message": "Task Manager"
+    "message": "Task Bank"
+  },
+  "ListTasks.pageDescription": {
+    "message": "This page displays all the existing ClassMosaic tasks that you can include in your lessons."
   },
   "ListTasks.title": {
     "message": "Tasks"
@@ -441,8 +552,17 @@
   "LoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
   },
+  "LoginPage.cardDescription": {
+    "message": "Log in to access your classes, tasks, and learning resources."
+  },
+  "LoginPage.cardTitle": {
+    "message": "Teacher Login"
+  },
   "LoginPage.header": {
-    "message": "Login"
+    "message": "Welcome to ClassMosaic!"
+  },
+  "LoginPage.pageDescription": {
+    "message": "You're about to access the teacher portal."
   },
   "LoginPage.title": {
     "message": "Teacher Login"
@@ -455,6 +575,9 @@
   },
   "LoopCriterionFilterForm.count": {
     "message": "Number of loops"
+  },
+  "Modal.cancel": {
+    "message": "Cancel"
   },
   "OpenIdConnectRedirect.authenticating": {
     "message": "You are being authenticated..."
@@ -483,9 +606,6 @@
   "OpenIdConnectRedirect.userSignInDescription": {
     "message": "The student identities are encrypted with the key that only you have access to. Please enter that password to sign in."
   },
-  "OpenIdConnectRedirect.userSignInHeading": {
-    "message": "User Sign In"
-  },
   "ProgressList.columns.actions": {
     "message": "Actions"
   },
@@ -498,74 +618,155 @@
   "ProgressList.columns.taskColumn": {
     "message": "Task"
   },
-  "ProgressList.columns.timeOnTask": {
-    "message": "Time on Task"
+  "ProgressList.completedStatus": {
+    "message": "Complete"
   },
-  "SessionAnalysis.header": {
-    "message": "Analysis"
+  "ProgressList.emptyState.title": {
+    "message": "There is no progress data available."
   },
-  "SessionAnalysis.title": {
-    "message": "Analysis - {title}"
+  "ProgressList.incompleteStatus": {
+    "message": "Incomplete"
+  },
+  "ProgressList.notStartedStatus": {
+    "message": "Not Started"
+  },
+  "SessionActions.copySessionLink": {
+    "message": "Copy Lesson Link"
+  },
+  "SessionActions.deleteSession": {
+    "message": "Delete Lesson"
+  },
+  "SessionDeleteModal.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "SessionDeleteModal.cancel": {
+    "message": "Cancel"
+  },
+  "SessionDeleteModal.confirm": {
+    "message": "Delete Lesson"
+  },
+  "SessionDeleteModal.error": {
+    "message": "There was an error deleting the lesson. Please try again!"
+  },
+  "SessionDeleteModal.success": {
+    "message": "Lesson deleted successfully"
+  },
+  "SessionDeleteModal.title": {
+    "message": "Delete Lesson"
+  },
+  "SessionDetail.errorMessage": {
+    "message": "There was an error saving the changes. Please try to save again!"
+  },
+  "SessionDetail.submit": {
+    "message": "Save Lesson"
+  },
+  "SessionDetail.successMessage": {
+    "message": "Successfully saved changes"
+  },
+  "SessionDetail.title": {
+    "message": "Lesson - {title}"
+  },
+  "SessionForm.sharingType.anonymous": {
+    "message": "Anonymous"
+  },
+  "SessionForm.sharingType.private": {
+    "message": "Private"
+  },
+  "SessionList.canOnlyShareOwnSessions": {
+    "message": "You can only share lessons belonging to your classes."
   },
   "SessionList.columns.actions": {
-    "message": "Actions"
+    "message": "Quick Action"
+  },
+  "SessionList.columns.createSession": {
+    "message": "Create Lesson"
   },
   "SessionList.columns.finishedAt": {
-    "message": "Finished at"
+    "message": "End Date"
+  },
+  "SessionList.columns.id": {
+    "message": "ID"
+  },
+  "SessionList.columns.sharingType": {
+    "message": "Sharing Type"
+  },
+  "SessionList.columns.sharingTypeAnonymous": {
+    "message": "Anonymous"
+  },
+  "SessionList.columns.sharingTypePrivate": {
+    "message": "Private"
   },
   "SessionList.columns.startedAt": {
-    "message": "Started at"
-  },
-  "SessionList.columns.tags": {
-    "message": "Tags"
+    "message": "Start Date"
   },
   "SessionList.columns.title": {
     "message": "Title"
   },
   "SessionList.copySessionLink": {
-    "message": "Copy Session Link"
+    "message": "Share"
   },
-  "SessionList.deleteConfirmation.body": {
-    "message": "Are you sure you want to delete this session?"
+  "SessionList.emptyState.title": {
+    "message": "There are no lessons yet. Let's create some!"
   },
-  "SessionList.deleteConfirmation.confirm": {
-    "message": "Delete Session"
-  },
-  "SessionList.deleteConfirmation.title": {
-    "message": "Delete Session"
-  },
-  "SessionNavigation.analysisTab": {
-    "message": "Analysis"
-  },
-  "SessionNavigation.dissimilarPairsTab": {
-    "message": "Dissimilar Pairs"
-  },
-  "SessionNavigation.dissimilarSolutionsTab": {
-    "message": "Dissimilar Solutions"
+  "SessionNavigation.lessonDetails": {
+    "message": "Lesson Details"
   },
   "SessionNavigation.progress": {
     "message": "Progress"
   },
-  "SessionProgress.header": {
-    "message": "Session Progress"
+  "SessionNavigation.tasks": {
+    "message": "Tasks"
+  },
+  "SessionProgress.canOnlyShareOwnSessions": {
+    "message": "You can only share lessons belonging to your classes."
+  },
+  "SessionProgress.shareLesson": {
+    "message": "Invite Student"
   },
   "SessionProgress.title": {
     "message": "Progress - {title}"
   },
+  "SessionShareModal.anonymousLessonInfo": {
+    "message": "This Lesson will be shared anonymously. Anyone with this link can join the lesson."
+  },
+  "SessionShareModal.privateLessonInfo": {
+    "message": "This Lesson will be shared privately. Students will need to login to join the lesson."
+  },
+  "SessionShareModal.subtitle": {
+    "message": "Share Link"
+  },
+  "SessionShareModal.title": {
+    "message": "Invite Student"
+  },
+  "Showcase.addResult": {
+    "message": "Add Result to Showcase"
+  },
+  "Showcase.instructions": {
+    "message": "Sort and preview the showcased solutions."
+  },
+  "Showcase.noStudentSelectedHelp": {
+    "message": "Click on a student name to view their solution."
+  },
+  "Showcase.openShowCasePage": {
+    "message": "Open Showcase Page"
+  },
+  "ShowcasePresentation.next": {
+    "message": "Next"
+  },
+  "ShowcasePresentation.previous": {
+    "message": "Previous"
+  },
   "SolveTask.correctSolutionSubmitted": {
-    "message": "Your successfully solved this task. You can check if there are more tasks in the session menu."
+    "message": "Your successfully solved this task. You can check if there are more tasks in the lesson menu."
   },
   "SolveTask.export": {
     "message": "Export"
   },
-  "SolveTask.hideSession": {
-    "message": "Hide Session"
-  },
   "SolveTask.import": {
     "message": "Import"
   },
-  "SolveTask.showSession": {
-    "message": "Show Session"
+  "SolveTask.openTaskList": {
+    "message": "Open Task List"
   },
   "SolveTask.solutionSubmitted": {
     "message": "The solution was submitted successfully."
@@ -585,14 +786,26 @@
   "StudentList.columns.name": {
     "message": "Name"
   },
+  "StudentList.emptyState.title": {
+    "message": "There are no students yet."
+  },
   "StudentLoginPage.authenticate.microsoft": {
     "message": "Authenticate using Microsoft"
   },
-  "StudentLoginPage.header": {
+  "StudentLoginPage.cardDescription": {
+    "message": "Please authenticate below to access your lesson."
+  },
+  "StudentLoginPage.cardTitle": {
     "message": "Student Login"
   },
+  "StudentLoginPage.header": {
+    "message": "Welcome to ClassMosaic!"
+  },
   "StudentLoginPage.invalidParameters": {
-    "message": "You can only log in as a student in order to join a session. Please open the link you received from your teacher."
+    "message": "The link you followed is invalid. You can only log in as a student to join a lesson. Please open the link given you received from your teacher."
+  },
+  "StudentLoginPage.subtitle": {
+    "message": "You're about to join your lesson as a student."
   },
   "StudentLoginPage.title": {
     "message": "Student Login"
@@ -605,6 +818,36 @@
   },
   "StudentName.decrypting": {
     "message": "Decrypting..."
+  },
+  "StudentTaskInstance.solutionNotFound": {
+    "message": "No solution found."
+  },
+  "StudentTaskInstance.title": {
+    "message": "Student Solution - {name}"
+  },
+  "Task.sessionMenu.heading.title": {
+    "message": "{sessionName} - Tasks"
+  },
+  "TaskActions.deleteConfirmation.body": {
+    "message": "Are you sure? You can't undo this action afterwards."
+  },
+  "TaskActions.deleteConfirmation.cancel": {
+    "message": "Cancel"
+  },
+  "TaskActions.deleteConfirmation.confirm": {
+    "message": "Delete Task"
+  },
+  "TaskActions.deleteConfirmation.title": {
+    "message": "Delete Task"
+  },
+  "TaskActions.deleteErrorMessage": {
+    "message": "There was an error deleting the task. Please try again!"
+  },
+  "TaskActions.deleteSuccessMessage": {
+    "message": "Task deleted successfully"
+  },
+  "TaskActions.deleteTask": {
+    "message": "Delete Task"
   },
   "TaskDetail.title": {
     "message": "Task - {title}"
@@ -639,11 +882,152 @@
   "TaskForm.description": {
     "message": "Description"
   },
+  "TaskForm.referenceSolutionsLengthValidation": {
+    "message": "The number of reference solutions must match the number of reference solution files"
+  },
   "TaskForm.title": {
     "message": "Title"
   },
   "TaskForm.type": {
     "message": "Type"
+  },
+  "TaskFormReferenceSolutions.SaveError": {
+    "message": "An error occurred while saving the task. Try again later."
+  },
+  "TaskFormReferenceSolutions.SaveSuccess": {
+    "message": "The task was saved successfully."
+  },
+  "TaskFormReferenceSolutions.addReferenceSolution": {
+    "message": "Add reference solution"
+  },
+  "TaskFormReferenceSolutions.blobValidation": {
+    "message": "The provided file data is invalid"
+  },
+  "TaskFormReferenceSolutions.closeConfirmation.body": {
+    "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
+  },
+  "TaskFormReferenceSolutions.closeConfirmation.button": {
+    "message": "Yes, I don't need to save."
+  },
+  "TaskFormReferenceSolutions.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
+  "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": {
+    "message": "The number of reference solutions must match the number of reference solution files"
+  },
+  "TaskFormReferenceSolutions.solution.create": {
+    "message": "Create reference solution in external application"
+  },
+  "TaskFormReferenceSolutions.solution.edit": {
+    "message": "Edit reference solution in external application"
+  },
+  "TaskInstanceAnalysis.title": {
+    "message": "Analysis - {title}"
+  },
+  "TaskInstanceDetails.submit": {
+    "message": "Save Task"
+  },
+  "TaskInstanceDetails.title": {
+    "message": "Edit Task - {title}"
+  },
+  "TaskInstanceList.title": {
+    "message": "Tasks"
+  },
+  "TaskInstanceNavigation.analysisTab": {
+    "message": "Analysis"
+  },
+  "TaskInstanceNavigation.dissimilarPairsTab": {
+    "message": "Dissimilar Pairs"
+  },
+  "TaskInstanceNavigation.dissimilarSolutionsTab": {
+    "message": "Dissimilar Solutions"
+  },
+  "TaskInstanceNavigation.referenceSolutions": {
+    "message": "Reference Solutions"
+  },
+  "TaskInstanceNavigation.showcaseTab": {
+    "message": "Showcase"
+  },
+  "TaskInstanceNavigation.studentResults": {
+    "message": "Students' Results"
+  },
+  "TaskInstanceNavigation.taskDetails": {
+    "message": "Task Details"
+  },
+  "TaskInstanceProgress.title": {
+    "message": "Progress - {title}"
+  },
+  "TaskInstanceProgressList.columns.inShowcaseColumn": {
+    "message": "In Showcase"
+  },
+  "TaskInstanceProgressList.columns.lastLoginDateColumn": {
+    "message": "Last Login Date"
+  },
+  "TaskInstanceProgressList.columns.name": {
+    "message": "Name"
+  },
+  "TaskInstanceProgressList.columns.progressColumn": {
+    "message": "Student Progress"
+  },
+  "TaskInstanceProgressList.emptyState.title": {
+    "message": "There are no students yet."
+  },
+  "TaskInstanceProgressList.viewDetails": {
+    "message": "View student solution"
+  },
+  "TaskInstanceReferenceSolutions.submit": {
+    "message": "Save Task"
+  },
+  "TaskInstanceReferenceSolutions.title": {
+    "message": "Edit Task - {title}"
+  },
+  "TaskInstanceShowcase.title": {
+    "message": "Showcase - {title}"
+  },
+  "TaskInstanceShowcasePresent.back": {
+    "message": "Back to task details"
+  },
+  "TaskInstanceShowcasePresent.heading": {
+    "message": "Showcase"
+  },
+  "TaskInstanceShowcasePresent.noSolutionsSelected": {
+    "message": "No solutions selected for showcase presentation."
+  },
+  "TaskInstanceShowcasePresent.title": {
+    "message": "Showcase - {title}"
+  },
+  "TaskInstanceTable.columns.id": {
+    "message": "ID"
+  },
+  "TaskInstanceTable.columns.name": {
+    "message": "Name"
+  },
+  "TaskInstanceTable.columns.taskType": {
+    "message": "Task Type"
+  },
+  "TaskInstanceTable.createTask": {
+    "message": "Create Task"
+  },
+  "TaskInstanceTable.deleteConfirmation.body": {
+    "message": "Are you sure you want to delete this task?"
+  },
+  "TaskInstanceTable.deleteConfirmation.confirm": {
+    "message": "Delete Task"
+  },
+  "TaskInstanceTable.deleteConfirmation.title": {
+    "message": "Delete Task"
+  },
+  "TaskInstanceTable.deleteTask": {
+    "message": "Delete Task"
+  },
+  "TaskInstanceTable.emptyState.title": {
+    "message": "There are no tasks yet."
+  },
+  "TaskInstanceTable.viewDetails": {
+    "message": "View Task Details"
+  },
+  "TaskModal.cancel": {
+    "message": "Cancel"
   },
   "TaskModal.closeConfirmation": {
     "message": "Are you sure you want to close without saving?"
@@ -663,11 +1047,47 @@
   "TaskNavigation.classTab": {
     "message": "Task Details"
   },
-  "TaskTable.columns.actions": {
-    "message": "Actions"
+  "TaskNavigation.referenceSolutions": {
+    "message": "Reference Solutions"
+  },
+  "TaskNavigation.viewTaskTab": {
+    "message": "View Task"
+  },
+  "TaskProgressList.columns.progress": {
+    "message": "Progress"
+  },
+  "TaskProgressList.columns.title": {
+    "message": "Task"
+  },
+  "TaskProgressList.emptyState.title": {
+    "message": "No tasks found."
+  },
+  "TaskProgressList.status.opened": {
+    "message": "Opened"
+  },
+  "TaskReferenceSolutions.submit": {
+    "message": "Save Task"
+  },
+  "TaskReferenceSolutions.title": {
+    "message": "Edit Task - {title}"
+  },
+  "TaskSessionActions.deleteTask": {
+    "message": "Delete Task"
+  },
+  "TaskTable.columns.actionsColumn": {
+    "message": "Quick Actions"
+  },
+  "TaskTable.columns.id": {
+    "message": "ID"
+  },
+  "TaskTable.columns.taskType": {
+    "message": "Task Type"
   },
   "TaskTable.columns.title": {
     "message": "Title"
+  },
+  "TaskTable.createTask": {
+    "message": "Create Task"
   },
   "TaskTable.deleteConfirmation.body": {
     "message": "Are you sure you want to delete this task?"
@@ -677,6 +1097,15 @@
   },
   "TaskTable.deleteConfirmation.title": {
     "message": "Delete Task"
+  },
+  "TaskTable.deleteTask": {
+    "message": "Delete Task"
+  },
+  "TaskTable.emptyState.title": {
+    "message": "There are no tasks yet. Let's create some!"
+  },
+  "TaskTable.viewDetails": {
+    "message": "View Task Details"
   },
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"
@@ -723,14 +1152,29 @@
   "UserNavigation.userTab": {
     "message": "User Details"
   },
-  "UserSessionProgress.header": {
-    "message": "User Progress"
+  "UserRole.admin": {
+    "message": "Admin"
   },
-  "UserSessionProgress.title": {
-    "message": "Student Progress - {name}"
+  "UserRole.jupyter": {
+    "message": "Jupyter"
+  },
+  "UserRole.scratch": {
+    "message": "Scratch"
+  },
+  "UserRole.teacher": {
+    "message": "Teacher"
+  },
+  "UserSignIn.newUserDescription": {
+    "message": "Set up encryption for student identities"
+  },
+  "UserSignIn.returningUserDescription": {
+    "message": "Enter your password to access encrypted student identities"
   },
   "UserSignIn.submit": {
     "message": "Sign In"
+  },
+  "UserSignIn.title": {
+    "message": "Complete Sign In"
   },
   "UserSignInForm.backupPassword": {
     "message": "Backup Password"
@@ -738,44 +1182,53 @@
   "UserSignInForm.password": {
     "message": "Password"
   },
-  "UserTaskProgress.unsupportedApp": {
-    "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
-  },
   "ViewSolutionModal.title": {
     "message": "View solution"
   },
   "criteria.astHeight.name": {
-    "message": "Maximum Code Nestedness (AST Tree Height)"
+    "message": "Nestedness (AST Tree Height)"
   },
   "criteria.builtInFunctionCall.name": {
-    "message": "Number of Built-in Function Calls"
+    "message": "Built-in Function Calls"
   },
   "criteria.condition.name": {
-    "message": "Number of if statements"
+    "message": "If"
   },
   "criteria.customFunctionCall.name": {
     "message": "Custom Function Calls"
   },
   "criteria.expression.name": {
-    "message": "Number of Expressions"
+    "message": "Expression"
   },
   "criteria.functionDeclaration.name": {
-    "message": "Number of Function Declarations"
+    "message": "Function Declaration"
   },
   "criteria.indentation.name": {
-    "message": "Maximum Code Indentation"
+    "message": "Code Indentation"
   },
   "criteria.loop.name": {
-    "message": "Number of Loop"
+    "message": "Loop"
   },
   "criteria.none.filterName": {
     "message": "Add a new filter"
   },
   "criteria.statement.name": {
-    "message": "Number of Statements"
+    "message": "Statement"
   },
   "criteria.test.name": {
-    "message": "Number of Passed Tests"
+    "message": "Passed Tests"
+  },
+  "datatable.label.filterBy": {
+    "message": "Filter by..."
+  },
+  "datatable.pagination.next": {
+    "message": "Next"
+  },
+  "datatable.pagination.previous": {
+    "message": "Previous"
+  },
+  "datatable.placeholder.filterBy": {
+    "message": "Search"
   },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"
@@ -875,5 +1328,23 @@
   },
   "forms.stringUuid": {
     "message": "$'{path}' must be a valid UUID"
+  },
+  "impressum.generalInformation": {
+    "message": "General Information"
+  },
+  "impressum.hosting": {
+    "message": "Hosting"
+  },
+  "impressum.hostingProvider": {
+    "message": "Amazon Web Services, Inc. - Zurich Region"
+  },
+  "impressum.projectSponsor": {
+    "message": "Project Sponsor"
+  },
+  "impressum.softwareDevelopment": {
+    "message": "Software Development"
+  },
+  "impressum.switzerland": {
+    "message": "Switzerland"
   }
 }

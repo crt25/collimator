@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { useMemo } from "react";
-import PrimeRange from "./PrimeRange";
+import ChakraRange from "./ChakraRange";
 
 const Label = styled.span`
   display: block;
@@ -56,19 +56,12 @@ const MinMaxRange = ({
         <CurrentValues>
           {valueMin} - {valueMax}
         </CurrentValues>
-        <PrimeRange
+        <ChakraRange
           min={min}
           max={max}
           step={step ?? 1}
           value={[valueMin, valueMax]}
-          onChange={(e) => {
-            const [n1, n2] = e.value as [number, number];
-            const min = Math.min(n1, n2);
-            const max = Math.max(n1, n2);
-
-            onChange(min, max);
-          }}
-          range
+          onChange={([min, max]) => onChange(min, max)}
         />
       </InputWrapper>
       {children}

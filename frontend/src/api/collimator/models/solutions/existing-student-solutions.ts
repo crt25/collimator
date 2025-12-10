@@ -1,6 +1,7 @@
 import { ExistingStudentSolutionDto } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
 import { ExistingSolution } from "./existing-solution";
+import { ExistingSolutionTest } from "./existing-solution-test";
 
 export class ExistingStudentSolution {
   readonly id: number;
@@ -9,6 +10,8 @@ export class ExistingStudentSolution {
   readonly taskId: number;
   readonly createdAt: Date;
   readonly solution: ExistingSolution;
+  readonly isReference: boolean;
+  readonly tests: ExistingSolutionTest[] = [];
 
   protected constructor({
     id,
@@ -17,6 +20,8 @@ export class ExistingStudentSolution {
     taskId,
     createdAt,
     solution,
+    isReference,
+    tests,
   }: ClassProperties<ExistingStudentSolution>) {
     this.id = id;
     this.sessionId = sessionId;
@@ -24,6 +29,8 @@ export class ExistingStudentSolution {
     this.taskId = taskId;
     this.createdAt = createdAt;
     this.solution = solution;
+    this.isReference = isReference;
+    this.tests = tests;
   }
 
   static fromDto(dto: ExistingStudentSolutionDto): ExistingStudentSolution {
@@ -31,6 +38,7 @@ export class ExistingStudentSolution {
       ...dto,
       createdAt: new Date(dto.createdAt),
       solution: ExistingSolution.fromDto(dto.solution),
+      tests: dto.tests.map(ExistingSolutionTest.fromDto),
     });
   }
 

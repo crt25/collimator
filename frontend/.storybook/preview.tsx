@@ -1,0 +1,53 @@
+import type { Preview } from "@storybook/react";
+import { reactIntl } from "./reactIntl";
+import {
+  getAuthenticatedTeacherContext,
+  getAuthenticatedAdminContext,
+  getFullyAuthenticatedStudentContext,
+  getLocallyAuthenticatedStudentContext,
+  getUnauthenticatedContext,
+} from "../src/contexts/__tests__/mock-contexts";
+import { ChakraProvider } from "../src/components/ui/ChakraProvider";
+import { UserRole } from "../src/types/user/user-role";
+
+import "../src/styles/globals.scss";
+
+const preview: Preview = {
+  initialGlobals: {
+    locale: reactIntl.defaultLocale,
+    locales: {
+      en: "English",
+      fr: "Français",
+    },
+  },
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+    reactIntl,
+  },
+  tags: ["autodocs"],
+  loaders: [
+    async () => ({
+      authenticationContextTeacher: await getAuthenticatedTeacherContext(
+        window.crypto.subtle,
+      ),
+      authenticationContextAdmin:
+        await getAuthenticatedAdminContext(UserRole.admin)(window.crypto.subtle),
+      authenticationContextStudent: await getFullyAuthenticatedStudentContext(
+        window.crypto.subtle,
+      ),
+      authenticationContextLocalStudent:
+        await getLocallyAuthenticatedStudentContext(),
+      authenticationContextUnauthenticated: await getUnauthenticatedContext(),
+    }),
+  ],
+  decorators: [
+    (Story, { args }) => (<ChakraProvider><Story {...args} /></ChakraProvider>)
+  ]
+};
+
+export default preview;

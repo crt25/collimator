@@ -1,12 +1,13 @@
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
-import { classList, classStudentList } from "../../selectors";
+import { classList, emptyStateContent } from "../../selectors";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 import { createClass } from "./class-management";
 
 const newClassName = "new class name";
 let newClassId: number = -1;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let newClassTeacherId: number = -1;
 
 const updatedClassName = "updated class name";
@@ -30,7 +31,7 @@ test.describe("class management", () => {
     });
   });
 
-  test.describe("/class/{id}/edit", () => {
+  test.describe("/class/{id}/detail", () => {
     test.beforeEach(async ({ page }) => {
       const list = await ClassListPageModel.create(page);
       await list.editItem(newClassId);
@@ -53,29 +54,20 @@ test.describe("class management", () => {
       updatedClassTeacherId = newTeacherId!;
 
       await page.inputs.className.fill(updatedClassName);
-      await page.inputs.teacherId.selectOption(
-        updatedClassTeacherId.toString(),
-      );
+      await page.setTeacher(updatedClassTeacherId.toString());
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/class`);
+      await pwPage.goto(`${baseURL}/class`);
 
       const list = await ClassListPageModel.create(pwPage);
 
       await expect(list.getName(newClassId)).toHaveText(updatedClassName);
     });
-  });
 
-  test.describe("/class/{id}/detail", () => {
-    test.beforeEach(async ({ baseURL, page }) => {
-      const list = await ClassListPageModel.create(page);
+    test("shows class details", async ({ page: pwPage }) => {
+      const page = await ClassFormPageModel.create(pwPage);
 
-      await list.viewItem(newClassId);
-      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
-    });
-
-    test("shows class details", async ({ page }) => {
-      await expect(page.getByTestId("class-details")).toHaveCount(1);
+      await expect(page.getForm()).toHaveCount(1);
     });
   });
 
@@ -90,11 +82,7 @@ test.describe("class management", () => {
     });
 
     test("renders the student members", async ({ page }) => {
-      await expect(
-        page
-          .locator(classStudentList)
-          .locator("tbody tr [data-testid^='student-']"),
-      ).toHaveCount(0);
+      await expect(page.locator(emptyStateContent)).toHaveCount(0);
     });
   });
 
@@ -106,14 +94,28 @@ test.describe("class management", () => {
     test("renders the fetched items", async ({ page }) => {
       await expect(page.locator(classList).locator("tbody tr")).toHaveCount(1);
     });
+  });
 
-    test("can delete listed items", async ({ page: pwPage }) => {
+  test.describe("/class/{id}/detail", () => {
+    test.beforeEach(async ({ baseURL, page }) => {
+      const list = await ClassListPageModel.create(page);
+
+      await list.viewItem(newClassId);
+      await page.waitForURL(`${baseURL}/class/${newClassId}/detail`);
+    });
+
+    test("can delete listed items", async ({ page: pwPage, baseURL }) => {
       const page = await ClassListPageModel.create(pwPage);
 
-      await page.deleteItem(newClassId);
+      await expect(page.getItemActionsDropdownButton(newClassId)).toHaveCount(
+        1,
+      );
 
-      // Wait for the deletion to be reflected in the UI
-      await expect(page.getItemActions(newClassId)).toHaveCount(0);
+      await page.deleteItemAndConfirm(newClassId);
+
+      await pwPage.waitForURL(`${baseURL}/class`);
+
+      await expect(page.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });
