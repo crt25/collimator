@@ -37,7 +37,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newTeacherName);
       await page.inputs.email.fill(newTeacherEmail);
-      await page.inputs.type.selectOption(UserType.TEACHER);
+      await page.setUserType(UserType.TEACHER);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -54,7 +54,7 @@ test.describe("user management", () => {
 
       await page.inputs.name.fill(newAdminName);
       await page.inputs.email.fill(newAdminEmail);
-      await page.inputs.type.selectOption(UserType.ADMIN);
+      await page.setUserType(UserType.ADMIN);
       await page.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -85,7 +85,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedTeacherName);
       await form.inputs.email.fill(updatedTeacherEmail);
-      await form.inputs.type.selectOption(UserType.TEACHER);
+      await form.setUserType(UserType.TEACHER);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -102,7 +102,7 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.inputs.type.selectOption(UserType.ADMIN);
+      await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -124,7 +124,7 @@ test.describe("user management", () => {
 
       await form.inputs.name.fill(updatedAdminName);
       await form.inputs.email.fill(updatedAdminEmail);
-      await form.inputs.type.selectOption(UserType.ADMIN);
+      await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -141,7 +141,8 @@ test.describe("user management", () => {
 
       const form = await UserFormPageModel.create(pwPage);
 
-      await form.inputs.type.selectOption(UserType.TEACHER);
+      await form.setUserType(UserType.TEACHER);
+
       await form.submitButton.click();
 
       await pwPage.waitForURL(`${baseURL}/user`);
@@ -176,8 +177,8 @@ test.describe("user management", () => {
     test("can delete listed items", async ({ page: pwPage }) => {
       const page = await UserListPageModel.create(pwPage);
 
-      await page.deleteItem(newTeacherId);
-      await page.deleteItem(newAdminId);
+      await page.deleteItemAndConfirm(newTeacherId);
+      await page.deleteItemAndConfirm(newAdminId);
 
       // Wait for the deletion to be reflected in the UI
       await expect(page.getItemActions(newTeacherId)).toHaveCount(0);

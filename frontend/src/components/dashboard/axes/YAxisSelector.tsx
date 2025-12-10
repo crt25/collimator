@@ -8,6 +8,10 @@ const YAxisSelector = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+
+  & > * {
+    flex-grow: 1;
+  }
 `;
 
 export default YAxisSelector;

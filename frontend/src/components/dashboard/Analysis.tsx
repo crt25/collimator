@@ -19,12 +19,7 @@ import {
   ChartEvent,
   ChartDataset,
 } from "chart.js";
-import { _DeepPartialObject } from "chart.js/dist/types/utils";
-import {
-  AnnotationOptions,
-  AnnotationPluginOptions,
-  EventContext,
-} from "chartjs-plugin-annotation";
+import { AnnotationOptions, EventContext } from "chartjs-plugin-annotation";
 import { MetaCriterionType } from "@/components/dashboard/criteria/meta-criterion-type";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { StudentName } from "@/components/encryption/StudentName";
@@ -51,6 +46,11 @@ import {
 } from "./Analyzer.state";
 import { SelectPlugin, SplitPlugin, SplitType } from "./chartjs-plugins";
 import { createReferenceSymbol } from "./shapes/reference";
+
+type AnnotationOptionsType = Exclude<
+  Exclude<ChartConfiguration<"bubble">["options"], undefined>["plugins"],
+  undefined
+>["annotation"];
 
 type AdditionalChartData = {
   groups: {
@@ -94,7 +94,9 @@ const messages = defineMessages({
   },
 });
 
-const AnalysisWrapper = styled.div``;
+const AnalysisWrapper = styled.div`
+  overflow: hidden;
+`;
 
 const ChartWrapper = styled.div`
   position: relative;
@@ -104,7 +106,7 @@ const ChartWrapper = styled.div`
   padding-bottom: 1rem;
 `;
 
-const StudentNameWrapper = styled.span`
+const AnalysisNameWrapper = styled.span`
   text-decoration: underline;
   cursor: pointer;
 `;
@@ -209,15 +211,21 @@ const TooltipContent = ({
                     </div>
                     <div>
                       <ul>
-                        {referenceAnalyses.map((analysis) =>
-                          analysis.isInitialTaskSolution ? (
-                            <li key={analysis.solutionId}>
-                              {intl.formatMessage(messages.initialTaskSolution)}
-                            </li>
-                          ) : (
-                            <li key={analysis.solutionId}>{analysis.title}</li>
-                          ),
-                        )}
+                        {referenceAnalyses.map((analysis) => (
+                          <li key={analysis.solutionId}>
+                            <AnalysisNameWrapper
+                              onClick={() =>
+                                onSelectAnalysis(group.key, analysis)
+                              }
+                            >
+                              {analysis.isInitialTaskSolution
+                                ? intl.formatMessage(
+                                    messages.initialTaskSolution,
+                                  )
+                                : analysis.title}
+                            </AnalysisNameWrapper>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </>
@@ -235,7 +243,7 @@ const TooltipContent = ({
                       <ul>
                         {studentAnalyses.map((analysis) => (
                           <li key={analysis.solutionId}>
-                            <StudentNameWrapper
+                            <AnalysisNameWrapper
                               onClick={() =>
                                 onSelectAnalysis(group.key, analysis)
                               }
@@ -245,7 +253,7 @@ const TooltipContent = ({
                                 pseudonym={analysis.studentPseudonym}
                                 keyPairId={analysis.studentKeyPairId}
                               />
-                            </StudentNameWrapper>
+                            </AnalysisNameWrapper>
                           </li>
                         ))}
                       </ul>
@@ -363,16 +371,6 @@ const Analysis = ({
   const splittingEnabled = !state.isAutomaticGrouping;
   const xAxisConfig = useMemo(() => getAxisConfig(state.xAxis), [state.xAxis]);
   const yAxisConfig = useMemo(() => getAxisConfig(state.yAxis), [state.yAxis]);
-  const analysisSolutionIdsSelectedForComparison = useMemo(
-    () => [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
-    [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
-  );
 
   const chartRef = useRef<ChartJsChart | null>(null);
   const initialChartDataRef = useRef<{
@@ -407,7 +405,7 @@ const Analysis = ({
       // check if any of the data points is selected or bookmarked
       const isSelectedForComparison = dataPoints.some((dataPoint) =>
         dataPoint.analyses?.some((s) =>
-          analysisSolutionIdsSelectedForComparison.includes(s.solutionId),
+          state.comparison.selectedSolutionIds.has(s.solutionId),
         ),
       );
 
@@ -515,7 +513,7 @@ const Analysis = ({
   }, [
     intl,
     categorizedDataPoints,
-    analysisSolutionIdsSelectedForComparison,
+    state.comparison.selectedSolutionIds,
     state.selectedSolutionIds,
   ]);
 
@@ -564,7 +562,7 @@ const Analysis = ({
     [],
   );
 
-  const annotations = useMemo<_DeepPartialObject<AnnotationPluginOptions>>(
+  const annotations = useMemo<AnnotationOptionsType>(
     () => ({
       // allow annotations in axes
       clip: false,
@@ -737,6 +735,8 @@ const Analysis = ({
                   (
                     dataset.data as unknown as PointWithAdditionalData[]
                   ).flatMap((dataPoint) =>
+                    dataPoint.x !== null &&
+                    dataPoint.y !== null &&
                     dataPoint.x >= selection.minX &&
                     dataPoint.x <= selection.maxX &&
                     dataPoint.y >= selection.minY &&
@@ -848,8 +848,8 @@ const Analysis = ({
       <YAxisSelector>
         <Select
           options={axisOptions}
-          onChange={(e) => {
-            setYAxis(e.target.value as AxesCriterionType);
+          onValueChange={(v) => {
+            setYAxis(v as AxesCriterionType);
           }}
           value={state.yAxis}
           alwaysShow
@@ -878,8 +878,8 @@ const Analysis = ({
       <XAxisSelector>
         <Select
           options={axisOptions}
-          onChange={(e) => {
-            setXAxis(e.target.value as AxesCriterionType);
+          onValueChange={(v) => {
+            setXAxis(v as AxesCriterionType);
           }}
           value={state.xAxis}
           alwaysShow

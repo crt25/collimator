@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Container } from "react-bootstrap";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { UserInfoResponse } from "openid-client";
 import { useRouter } from "next/router";
+import { AbsoluteCenter, Container } from "@chakra-ui/react";
 import { authenticate } from "@/utilities/authentication/openid-connect";
 import { UpdateAuthenticationContext } from "@/contexts/UpdateAuthenticationContext";
 import { latestAuthenticationContextVersion } from "@/contexts/AuthenticationContext";
-import PageHeader from "@/components/PageHeader";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import ProgressSpinner from "@/components/ProgressSpinner";
 import { UserRole } from "@/types/user/user-role";
 import { useAuthenticateUser } from "@/api/collimator/hooks/authentication/useAuthenticateUser";
@@ -18,6 +17,9 @@ import {
 } from "@/api/collimator/generated/models";
 import { AuthenticationError } from "@/errors/authentication";
 import UserSignIn from "@/components/authentication/UserSignIn";
+import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
@@ -135,15 +137,15 @@ const OpenIdConnectRedirect = () => {
 
   if (authenticationFailed) {
     return (
-      <>
+      <MaxScreenHeight>
         <Header title={messages.title} />
         <Container>
-          <PageHeader>
+          <PageHeading>
             <FormattedMessage
               id="OpenIdConnectRedirect.authenticationFailed"
               defaultMessage="Authentication failed"
             />
-          </PageHeader>
+          </PageHeading>
           <Link href={errorRedirectPath ?? "/login"}>
             <FormattedMessage
               id="OpenIdConnectRedirect.retry"
@@ -151,7 +153,8 @@ const OpenIdConnectRedirect = () => {
             />
           </Link>
         </Container>
-      </>
+        <PageFooter />
+      </MaxScreenHeight>
     );
   }
 
@@ -159,19 +162,13 @@ const OpenIdConnectRedirect = () => {
     return (
       <>
         <Header title={messages.title} />
-        <Container>
-          <PageHeader>
-            <FormattedMessage
-              id="OpenIdConnectRedirect.userSignInHeading"
-              defaultMessage="User Sign In"
-            />
-          </PageHeader>
+        <AbsoluteCenter>
           <UserSignIn
             authResponse={userSignInState.authResponse}
             idToken={userSignInState.idToken}
             redirectPath={userSignInState.redirectPath}
           />
-        </Container>
+        </AbsoluteCenter>
       </>
     );
   }
@@ -180,12 +177,12 @@ const OpenIdConnectRedirect = () => {
     <>
       <Header title={messages.title} />
       <Container>
-        <PageHeader>
+        <PageHeading>
           <FormattedMessage
             id="OpenIdConnectRedirect.authenticating"
             defaultMessage="You are being authenticated..."
           />
-        </PageHeader>
+        </PageHeading>
         <ProgressSpinner />
       </Container>
     </>

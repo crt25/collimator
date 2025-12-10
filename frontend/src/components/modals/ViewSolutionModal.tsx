@@ -70,7 +70,7 @@ const ViewSolutionModal = ({
   );
 
   if (!isShown) {
-    return false;
+    return null;
   }
 
   return (

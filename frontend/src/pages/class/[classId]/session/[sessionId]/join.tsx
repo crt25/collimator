@@ -1,20 +1,17 @@
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useRef } from "react";
-import { Col, Container } from "react-bootstrap";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { fetchPublicKey } from "@/api/collimator/hooks/authentication/usePublicKey";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useIsSessionAnonymous } from "@/api/collimator/hooks/sessions/useIsSessionAnonymous";
 import Button from "@/components/Button";
-import Header from "@/components/Header";
-import FullHeightRow from "@/components/layout/FullHeightRow";
+import Header from "@/components/header/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import RemainingHeightContainer from "@/components/layout/RemainingHeightContainer";
 import VerticalSpacing from "@/components/layout/VerticalSpacing";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import ProgressSpinner from "@/components/ProgressSpinner";
-import TaskDescription from "@/components/TaskDescription";
 import TaskList from "@/components/TaskList";
 import {
   AuthenticationContext,
@@ -32,13 +29,15 @@ import { StudentAuthenticationRequestContent } from "@/types/websocket-events";
 import { decodeBase64, encodeBase64 } from "@/utilities/crypto/base64";
 import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
+import PageHeading from "@/components/PageHeading";
+import PageFooter from "@/components/PageFooter";
 
 const logModule = "[JoinSession]";
 
 const messages = defineMessages({
   title: {
     id: "JoinSession.title",
-    defaultMessage: "Join Session",
+    defaultMessage: "Join Lesson",
   },
   choosePseudonym: {
     id: "JoinSession.choosePseudonym",
@@ -49,10 +48,6 @@ const messages = defineMessages({
     defaultMessage: "Confirm",
   },
 });
-
-const SubHeader = styled.h2`
-  margin-bottom: 1rem;
-`;
 
 const JoinSessionContent = ({
   classId,
@@ -93,29 +88,24 @@ const JoinSessionContent = ({
       isLoading={[isLoadingSession]}
     >
       {([session]) => (
-        <FullHeightRow>
-          <Col xs={4}>
-            <SubHeader>
-              <FormattedMessage
-                id="JoinSession.taskList"
-                defaultMessage="Tasks"
-              />
-            </SubHeader>
+        <>
+          <Container>
+            <PageHeading description={session.description}>
+              {session.title}
+            </PageHeading>
             <TaskList classId={classId} session={session} />
-          </Col>
-          <Col xs={8}>
-            <SubHeader>{session.title}</SubHeader>
-            <TaskDescription>
-              <p>{session.description}</p>
-            </TaskDescription>
-            <Button onClick={onJoinSession} data-testid="join-session-button">
+            <Button
+              onClick={onJoinSession}
+              data-testid="join-session-button"
+              marginTop="1rem"
+            >
               <FormattedMessage
                 id="JoinSession.joinSession"
-                defaultMessage="Join Session"
+                defaultMessage="Join Lesson"
               />
             </Button>
-          </Col>
-        </FullHeightRow>
+          </Container>
+        </>
       )}
     </MultiSwrContent>
   );
@@ -335,7 +325,7 @@ const JoinSession = () => {
         <Container>
           <FormattedMessage
             id="JoinSession.invalidJoinLink"
-            defaultMessage="This session link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
+            defaultMessage="This lesson link is invalid. Make sure you opened the correct one and otherwise ask your teacher to send it again."
           />
         </Container>
       </>
@@ -354,7 +344,7 @@ const JoinSession = () => {
           <>
             <FormattedMessage
               id="JoinSession.waitingForTeacher"
-              defaultMessage="Waiting for the teacher's machine to admit you to the session..."
+              defaultMessage="Waiting for the teacher's machine to admit you to the lesson..."
               description="Displayed when the student is waiting for the teacher's machine to admit them to the session"
             />
             <ProgressSpinner />
@@ -362,6 +352,7 @@ const JoinSession = () => {
         )}
       </RemainingHeightContainer>
       <VerticalSpacing />
+      <PageFooter />
     </MaxScreenHeight>
   );
 };

@@ -1,15 +1,12 @@
-import styled from "@emotion/styled";
-import { Row } from "react-bootstrap";
+import { Grid } from "@chakra-ui/react";
+import React from "react";
 
-const FullHeightRow = styled(Row)`
-  min-height: 0;
-
-  & > * {
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-  }
-`;
+const FullHeightRow = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+      {children}
+    </Grid>
+  );
+};
 
 export default FullHeightRow;

@@ -82,9 +82,13 @@ export class SolveTaskPageModel {
     return waitForSuccess;
   }
 
-  static async create(page: Page) {
+  static create(page: Page) {
+    return new SolveTaskPageModel(page);
+  }
+
+  async waitForTaskLoad() {
     // wait for the iframe to load the task
-    await page.evaluate(
+    await this.page.evaluate(
       () =>
         new Promise<void>((resolve) => {
           window.addEventListener("message", (event) => {
@@ -96,7 +100,18 @@ export class SolveTaskPageModel {
           });
         }),
     );
+  }
 
-    return new SolveTaskPageModel(page);
+  async openSessionMenu() {
+    await this.page.getByTestId("toggle-session-menu-button").click();
+    await this.page.waitForSelector("[data-testid=session-name]");
+  }
+
+  async closeSessionMenu() {
+    await this.page.getByTestId("close-session-menu-button").click();
+  }
+
+  getSessionName() {
+    return this.page.getByTestId("session-name");
   }
 }

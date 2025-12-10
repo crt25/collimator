@@ -8,15 +8,15 @@ let nextConfig: NextConfig = {
 
   reactStrictMode: true,
 
-  transpilePackages: [
-    "../backend",
-    "iframe-rpc",
-    "iframe-rpc-react",
-  ],
+  transpilePackages: ["../backend", "iframe-rpc", "iframe-rpc-react"],
 
   eslint: {
     // ignore ESLint during compilation - we check it on the CI
     ignoreDuringBuilds: true,
+  },
+
+  experimental: {
+    optimizePackageImports: ["@chakra-ui/react"],
   },
 
   sassOptions: {

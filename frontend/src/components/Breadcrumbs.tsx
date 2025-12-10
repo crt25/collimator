@@ -1,33 +1,28 @@
-import styled from "@emotion/styled";
+import { Breadcrumb, HStack, Icon } from "@chakra-ui/react";
 import { FormattedMessage } from "react-intl";
+import React, { ComponentProps } from "react";
+import { LuHouse } from "react-icons/lu";
 import BreadcrumbItem from "./BreadcrumbItem";
 
-const StyledNav = styled.nav`
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border: var(--foreground-color) 1px solid;
-  border-radius: var(--border-radius);
-`;
-
-const StyledOl = styled.ol`
-  margin: 0;
-`;
-
-const Breadcrumbs = ({
-  homeHref,
-  children,
-}: {
-  homeHref?: string;
+type BreadcrumbsProps = ComponentProps<typeof Breadcrumb.Root> & {
+  topLevel?: React.ReactNode;
   children?: React.ReactNode;
-}) => (
-  <StyledNav aria-label="breadcrumb">
-    <StyledOl className="breadcrumb">
-      <BreadcrumbItem href={homeHref ?? "/"}>
-        <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
-      </BreadcrumbItem>
-      {children}
-    </StyledOl>
-  </StyledNav>
+};
+
+const Breadcrumbs = ({ topLevel, children, ...rest }: BreadcrumbsProps) => (
+  <Breadcrumb.Root {...rest}>
+    <Breadcrumb.List>
+      <HStack>
+        {topLevel ?? (
+          <BreadcrumbItem href="/">
+            <Icon as={LuHouse} />
+            <FormattedMessage id="Breadcrumbs.home" defaultMessage="Home" />
+          </BreadcrumbItem>
+        )}
+        {children}
+      </HStack>
+    </Breadcrumb.List>
+  </Breadcrumb.Root>
 );
 
 export default Breadcrumbs;
