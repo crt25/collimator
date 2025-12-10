@@ -239,7 +239,7 @@ class Blocks extends React.Component<Props, State> {
       "requestToolboxUpdate",
       "onWorkspaceChange",
       "blockListener",
-      "attachWorkspaceListeners",
+      "reAttachWorkspaceListeners",
       "removeWorkspaceListeners",
       "onBlocksChange",
       "onProjectLoaded",
@@ -535,8 +535,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    this.getWorkspace().addChangeListener(this.reAttachWorkspaceListeners);
-    this.getWorkspace().addChangeListener(this.onWorkspaceChange);
+    this.reAttachWorkspaceListeners();
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
     flyoutWorkspace.addChangeListener(
