@@ -6,6 +6,7 @@ import { Dialog, Portal } from "@chakra-ui/react";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import Button from "../Button";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
@@ -93,11 +94,15 @@ const TaskModal = ({
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("importTask", {
-      task,
-      language: intl.locale as Language,
-    });
-
+    await executeAsyncWithToasts(
+      () =>
+        embeddedApp.current!.sendRequest("importTask", {
+          task,
+          language: intl.locale as Language,
+        }),
+      <FormattedMessage id="embeddedApp.taskImported" />,
+      <FormattedMessage id="embeddedApp.cannotImportTask" />,
+    );
     setAppLoaded(true);
   }, [intl.locale]);
 
@@ -106,9 +111,10 @@ const TaskModal = ({
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "exportTask",
-      undefined,
+    const response = await executeAsyncWithToasts(
+      () => embeddedApp.current!.sendRequest("exportTask", undefined),
+      <FormattedMessage id="embeddedApp.taskCreated" />,
+      <FormattedMessage id="embeddedApp.exportError" />,
     );
 
     downloadBlob(response.result.file, response.result.filename);

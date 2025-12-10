@@ -22,6 +22,7 @@ import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/use
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
+import { executeAsyncWithToasts } from "@/utilities/task";
 
 const messages = defineMessages({
   title: {
@@ -205,11 +206,16 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        await embeddedApp.current.sendRequest("loadSubmission", {
-          task: taskFile,
-          submission: solutionFile,
-          language: intl.locale as Language,
-        });
+        executeAsyncWithToasts(
+          () =>
+            embeddedApp.current!.sendRequest("loadSubmission", {
+              task: taskFile,
+              submission: solutionFile,
+              language: intl.locale as Language,
+            }),
+          <FormattedMessage id="embeddedApp.taskLoaded" />,
+          <FormattedMessage id="embeddedApp.cannotLoadTask" />,
+        );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
         await embeddedApp.current.sendRequest("loadTask", {
@@ -242,10 +248,15 @@ const SolveTaskPage = () => {
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("loadTask", {
-      task,
-      language: intl.locale as Language,
-    });
+    await executeAsyncWithToasts(
+      () =>
+        embeddedApp.current!.sendRequest("importTask", {
+          task,
+          language: intl.locale as Language,
+        }),
+      <FormattedMessage id="embeddedApp.taskImported" />,
+      <FormattedMessage id="embeddedApp.cannotImportTask" />,
+    );
   }, [intl]);
 
   const onExport = useCallback(async () => {
@@ -253,9 +264,10 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "exportTask",
-      undefined,
+    const response = await executeAsyncWithToasts(
+      () => embeddedApp.current!.sendRequest("exportTask", undefined),
+      <FormattedMessage id="embeddedApp.taskCreated" />,
+      <FormattedMessage id="embeddedApp.exportError" />,
     );
 
     downloadBlob(response.result.file, "task.sb3");
