@@ -159,6 +159,11 @@ export abstract class IframeRpcApi<
         resolve: (response: TIncomingResult): void => {
           if (response.method !== request.method) {
             console.error("Invalid response procedure", response, request);
+            reject(
+              new Error(
+                `Invalid response procedure ${response.method}, expected ${request.method}`,
+              ),
+            );
             return;
           }
 
@@ -220,10 +225,7 @@ export abstract class IframeRpcApi<
 
       handleResponse.reject(errorMessage);
     } else {
-      handleResponse.resolve(
-        // unfortunately typescript cannot infer the type
-        response as TIncomingResult,
-      );
+      handleResponse.resolve(response);
     }
     // remove the resolve function from the pendingRequests object
     delete this.pendingRequests[response.id];
