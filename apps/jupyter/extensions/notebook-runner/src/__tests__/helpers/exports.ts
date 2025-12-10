@@ -1,12 +1,12 @@
 import {
   CrtInternalTask,
-  TaskAssetFiles,
+  SharedDirectories,
   GenericNotebookTask,
 } from "../../task-converter";
 
 export const assertSharedDirectoriesEquality = async (
-  actual: TaskAssetFiles,
-  expected: TaskAssetFiles,
+  actual: SharedDirectories,
+  expected: SharedDirectories,
 ): Promise<void> => {
   expect(actual.data.size).toBe(expected.data.size);
   for (const [key, expectedBlob] of expected.data.entries()) {

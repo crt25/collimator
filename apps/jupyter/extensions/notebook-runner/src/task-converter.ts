@@ -39,7 +39,7 @@ export enum FileSystemOperation {
   ReadFolder = "read folder",
 }
 
-export interface TaskAssetFiles {
+export interface SharedDirectories {
   data: Directory;
   gradingData: Directory;
   src: Directory;

@@ -26,7 +26,7 @@ import {
   importGenericNotebookTask,
   exportCrtInternalTask,
   exportExternalCustomTask,
-  TaskAssetFiles,
+  SharedDirectories,
 } from "./task-converter";
 
 import { detectTaskFormat } from "./format-detector";
@@ -635,7 +635,7 @@ export class EmbeddedPythonCallbacks {
       gradingSrc: await this.getFolderContents(
         EmbeddedPythonCallbacks.gradingSrcLocation,
       ),
-    } satisfies TaskAssetFiles;
+    } satisfies SharedDirectories;
   }
 }
 
