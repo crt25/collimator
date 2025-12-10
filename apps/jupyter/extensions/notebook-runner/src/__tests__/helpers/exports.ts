@@ -1,12 +1,12 @@
 import {
   CrtInternalTask,
-  ExportedSharedFiles,
+  TaskAssetFiles,
   GenericNotebookTask,
 } from "../../task-converter";
 
-export const assertSharedDirectories = async (
-  actual: ExportedSharedFiles,
-  expected: ExportedSharedFiles,
+export const assertSharedDirectoriesEquality = async (
+  actual: TaskAssetFiles,
+  expected: TaskAssetFiles,
 ): Promise<void> => {
   expect(actual.data.size).toBe(expected.data.size);
   for (const [key, expectedBlob] of expected.data.entries()) {
@@ -51,7 +51,7 @@ export const assertCrtInternalTaskEquality = async (
     await expected.autograderFile.text(),
   );
 
-  await assertSharedDirectories(actual, expected);
+  await assertSharedDirectoriesEquality(actual, expected);
 };
 
 export const assertGenericNotebookTaskEquality = async (
@@ -60,5 +60,5 @@ export const assertGenericNotebookTaskEquality = async (
 ): Promise<void> => {
   expect(await actual.taskFile.text()).toBe(await expected.taskFile.text());
 
-  await assertSharedDirectories(actual, expected);
+  await assertSharedDirectoriesEquality(actual, expected);
 };
