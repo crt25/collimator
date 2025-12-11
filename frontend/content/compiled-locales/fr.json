@@ -1095,6 +1095,16 @@
       "value": "Function Call"
     }
   ],
+  "DEPRECATED: embeddedApp.exportError": [
+    {
+      "type": 0,
+      "value": "Échec de l'exportation de la tâche : "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
   "DissimilarAnalysisPairs.title": [
     {
       "type": 0,
@@ -2969,6 +2979,122 @@
     {
       "type": 0,
       "value": "Rechercher..."
+    }
+  ],
+  "embeddedApp.cannotExport": [
+    {
+      "type": 0,
+      "value": "Failed to export task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotGetTask": [
+    {
+      "type": 0,
+      "value": "Cannot get task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotImportExternalInNonEditMode": [
+    {
+      "type": 0,
+      "value": "Cannot import external tasks in non-edit mode"
+    }
+  ],
+  "embeddedApp.cannotImportTask": [
+    {
+      "type": 0,
+      "value": "Impossible d'importer la tâche : "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Cannot load project: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadSubmission": [
+    {
+      "type": 0,
+      "value": "Impossible de charger la soumission : "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadTask": [
+    {
+      "type": 0,
+      "value": "Impossible de charger le contenu de la tâche : "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Cannot save project: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotSaveTask": [
+    {
+      "type": 0,
+      "value": "Cannot save task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.savingTask": [
+    {
+      "type": 0,
+      "value": "Saving task..."
+    }
+  ],
+  "embeddedApp.submissionLoaded": [
+    {
+      "type": 0,
+      "value": "Soumission chargée avec succès"
+    }
+  ],
+  "embeddedApp.taskCreated": [
+    {
+      "type": 0,
+      "value": "Tâche créée avec succès"
+    }
+  ],
+  "embeddedApp.taskImported": [
+    {
+      "type": 0,
+      "value": "Tâche importée avec succès"
+    }
+  ],
+  "embeddedApp.taskLoaded": [
+    {
+      "type": 0,
+      "value": "Tâche chargée avec succès"
     }
   ],
   "forms.arrayLength": [

@@ -5,6 +5,7 @@ import {
 import { ICommandPalette } from "@jupyterlab/apputils";
 import { ContentsManager, IContentsManager } from "@jupyterlab/services";
 import { IStatusBar } from "@jupyterlab/statusbar";
+import { ITranslator } from "@jupyterlab/translation";
 import { IRunningSessionSidebar } from "@jupyterlab/running";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
@@ -34,6 +35,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     ICommandPalette,
     IPropertyInspectorProvider,
     IFileBrowserFactory,
+    ITranslator,
   ],
   activate: async (
     app: JupyterFrontEnd,
