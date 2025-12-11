@@ -21,7 +21,7 @@ export const messages = defineMessages({
     id: "embeddedApp.cannotLoadSubmission",
     defaultMessage: "Cannot load submission: {error}",
   },
-  cannotLoadContent: {
+  cannotLoadTask: {
     id: "embeddedApp.cannotLoadTask",
     defaultMessage: "Cannot load content of the task: {error}",
   },
