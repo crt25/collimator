@@ -290,11 +290,17 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // trigger request that will make backend re-connect to the database
       await waitUntil(
         async () => {
-          const response = await fetch(
-            `http://localhost:${workerConfig.backendPort}/api/v0/authentication/public-key/${anyFingerprint}`,
-          );
+          try {
+            const response = await fetch(
+              `http://localhost:${workerConfig.backendPort}/api/v0/authentication/public-key/${anyFingerprint}`,
+            );
 
-          return response.status === 200;
+            return response.status === 200;
+          } catch {
+            // We know that sometimes network requests can fail here, so we just return false to signal that the condition is not met.
+            // This allows waitUntil's retry loop to continue up to maxTries.
+            return false;
+          }
         },
         60,
         300,
@@ -302,7 +308,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
       return use(undefined);
     },
-    { auto: true, scope: "test", timeout: 10 * 1000 },
+    { auto: true, scope: "test", timeout: 100 * 1000 },
   ],
 
   page: async ({ page }, use) => {

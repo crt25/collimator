@@ -110,8 +110,11 @@ const addFunctionListener = (
 
 const suppressStackClicks =
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  (listener: Function) => (e: { element: unknown }) => {
-    if (e.element === "stackclick" || e.element === "click") {
+  (listener: Function) => (e: WorkspaceChangeEvent) => {
+    if (
+      "element" in e &&
+      (e.element === "stackclick" || e.element === "click")
+    ) {
       // suppress stack click events
       // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
       return;
@@ -235,6 +238,9 @@ class Blocks extends React.Component<Props, State> {
       "setLocale",
       "requestToolboxUpdate",
       "onWorkspaceChange",
+      "blockListener",
+      "reAttachWorkspaceListeners",
+      "removeWorkspaceListeners",
       "onBlocksChange",
       "onProjectLoaded",
     ]);
@@ -529,10 +535,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    this.getWorkspace().addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
-    );
-    this.getWorkspace().addChangeListener(this.onWorkspaceChange);
+    this.reAttachWorkspaceListeners();
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
     flyoutWorkspace.addChangeListener(
@@ -586,6 +589,25 @@ class Blocks extends React.Component<Props, State> {
       this.handleStatusButtonUpdate,
     );
     this.props.vm.runtime.off("PROJECT_LOADED", this.onProjectLoaded);
+  }
+
+  reAttachWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    // Blockly does not provide a way to check if a listener is already attached.
+    // We remove and reattach to avoid duplicates without having to track attachment state
+    workspace.removeChangeListener(this.blockListener);
+    workspace.addChangeListener(this.blockListener);
+
+    workspace.removeChangeListener(this.onWorkspaceChange);
+    workspace.addChangeListener(this.onWorkspaceChange);
+  }
+
+  removeWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    workspace.removeChangeListener(this.blockListener);
+    workspace.removeChangeListener(this.onWorkspaceChange);
   }
 
   onProjectLoaded = () => {
@@ -741,8 +763,7 @@ class Blocks extends React.Component<Props, State> {
     const workspace = this.getWorkspace();
 
     // Remove and reattach the workspace listener (but allow flyout events)
-    workspace.removeChangeListener(this.props.vm.blockListener);
-    workspace.removeChangeListener(this.onWorkspaceChange);
+    this.removeWorkspaceListeners();
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
       this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -766,10 +787,7 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    workspace.addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
-    );
-    workspace.addChangeListener(this.onWorkspaceChange);
+    this.reAttachWorkspaceListeners();
 
     if (
       this.props.vm.editingTarget &&
@@ -1069,6 +1087,19 @@ class Blocks extends React.Component<Props, State> {
     }
 
     return flyout;
+  }
+
+  blockListener(event: WorkspaceChangeEvent) {
+    if (
+      "element" in event &&
+      (event.element === "stackclick" || event.element === "click")
+    ) {
+      // suppress stack click events
+      // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
+      return;
+    }
+
+    this.props.vm.blockListener(event);
   }
 
   onWorkspaceChange(event: WorkspaceChangeEvent) {
