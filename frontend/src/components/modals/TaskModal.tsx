@@ -6,9 +6,11 @@ import { Dialog, Portal } from "@chakra-ui/react";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import Button from "../Button";
-import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import { executeAsyncWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
+import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import Button from "../Button";
 
 const messages = defineMessages({
   closeConfirmation: {
@@ -93,26 +95,31 @@ const TaskModal = ({
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("importTask", {
-      task,
-      language: intl.locale as Language,
-    });
-
+    await executeAsyncWithToasts(
+      () =>
+        embeddedApp.current!.sendRequest("importTask", {
+          task,
+          language: intl.locale as Language,
+        }),
+      intl.formatMessage(taskMessages.taskImported),
+      intl.formatMessage(taskMessages.cannotImportTask),
+    );
     setAppLoaded(true);
-  }, [intl.locale]);
+  }, [intl]);
 
   const onExportTask = useCallback(async () => {
     if (!embeddedApp.current) {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "getTask",
-      undefined,
+    const response = await executeAsyncWithToasts(
+      () => embeddedApp.current!.sendRequest("exportTask", undefined),
+      intl.formatMessage(taskMessages.taskCreated),
+      intl.formatMessage(taskMessages.cannotExport),
     );
 
-    downloadBlob(response.result.file, "task.sb3");
-  }, []);
+    downloadBlob(response.result.file, response.result.filename);
+  }, [intl]);
 
   const loadAppData = useCallback(() => {
     if (embeddedApp.current) {

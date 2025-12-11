@@ -39,6 +39,13 @@ export enum FileSystemOperation {
   ReadFolder = "read folder",
 }
 
+export interface SharedDirectories {
+  data: Directory;
+  gradingData: Directory;
+  src: Directory;
+  gradingSrc: Directory;
+}
+
 const extractFolder = async (
   zip: JSZip,
   prefix: string,
@@ -199,4 +206,75 @@ const getFileCaseInsensitive = (
 ): JSZip.JSZipObject | null => {
   const actualPath = findFileCaseInsensitive(zip, targetPath);
   return actualPath ? zip.file(actualPath) : null;
+};
+
+export const exportCrtInternalTask = async (
+  task: CrtInternalTask,
+): Promise<Blob> => {
+  const zip = new JSZip();
+
+  zip.file(CrtInternalFiles.template, task.taskTemplateFile);
+  zip.file(CrtInternalFiles.student, task.studentTaskFile);
+  zip.file(CrtInternalFiles.autograder, task.autograderFile);
+
+  if (task.data.size > 0) {
+    for (const [path, blob] of task.data) {
+      zip.file(`${CrtInternalFiles.data}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingData.size > 0) {
+    for (const [path, blob] of task.gradingData) {
+      zip.file(`${CrtInternalFiles.gradingData}/${path}`, blob);
+    }
+  }
+
+  if (task.src.size > 0) {
+    for (const [path, blob] of task.src) {
+      zip.file(`${CrtInternalFiles.src}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingSrc.size > 0) {
+    for (const [path, blob] of task.gradingSrc) {
+      zip.file(`${CrtInternalFiles.gradingSrc}/${path}`, blob);
+    }
+  }
+
+  return await zip.generateAsync({ type: "blob" });
+};
+
+export const exportExternalCustomTask = async (
+  task: GenericNotebookTask,
+): Promise<Blob> => {
+  const zip = new JSZip();
+
+  zip.file(GenericNotebookFiles.task, task.taskFile);
+
+  if (task.data.size > 0) {
+    // Add the data folder if it exists
+    for (const [path, blob] of task.data) {
+      zip.file(`${GenericNotebookFiles.data}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingData.size > 0) {
+    for (const [path, blob] of task.gradingData) {
+      zip.file(`${GenericNotebookFiles.gradingData}/${path}`, blob);
+    }
+  }
+
+  if (task.src.size > 0) {
+    for (const [path, blob] of task.src) {
+      zip.file(`${GenericNotebookFiles.src}/${path}`, blob);
+    }
+  }
+
+  if (task.gradingSrc.size > 0) {
+    for (const [path, blob] of task.gradingSrc) {
+      zip.file(`${GenericNotebookFiles.gradingSrc}/${path}`, blob);
+    }
+  }
+
+  return await zip.generateAsync({ type: "blob" });
 };

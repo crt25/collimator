@@ -4,7 +4,7 @@ import {
   GenericNotebookFiles,
   TaskFormat,
 } from "./task-format";
-import { loadJSZip } from "./task-importer";
+import { loadJSZip } from "./task-converter";
 
 export const detectTaskFormat = async (taskBlob: Blob): Promise<TaskFormat> => {
   const zip = await loadJSZip(taskBlob);

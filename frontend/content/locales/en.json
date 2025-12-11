@@ -1230,6 +1230,48 @@
   "datatable.placeholder.filterBy": {
     "message": "Search"
   },
+  "embeddedApp.cannotExport": {
+    "message": "Failed to export task: {error}"
+  },
+  "embeddedApp.cannotGetTask": {
+    "message": "Cannot get task: {error}"
+  },
+  "embeddedApp.cannotImportExternalInNonEditMode": {
+    "message": "Cannot import external tasks in non-edit mode"
+  },
+  "embeddedApp.cannotImportTask": {
+    "message": "Cannot import task: {error}"
+  },
+  "embeddedApp.cannotLoadProject": {
+    "message": "Cannot load project: {error}"
+  },
+  "embeddedApp.cannotLoadSubmission": {
+    "message": "Cannot load submission: {error}"
+  },
+  "embeddedApp.cannotLoadTask": {
+    "message": "Cannot load content of the task: {error}"
+  },
+  "embeddedApp.cannotSaveProject": {
+    "message": "Cannot save project: {error}"
+  },
+  "embeddedApp.cannotSaveTask": {
+    "message": "Cannot save task: {error}"
+  },
+  "embeddedApp.savingTask": {
+    "message": "Saving task..."
+  },
+  "embeddedApp.submissionLoaded": {
+    "message": "Submission loaded successfully"
+  },
+  "embeddedApp.taskCreated": {
+    "message": "Task created successfully"
+  },
+  "embeddedApp.taskImported": {
+    "message": "Task imported successfully"
+  },
+  "embeddedApp.taskLoaded": {
+    "message": "Task loaded successfully"
+  },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"
   },

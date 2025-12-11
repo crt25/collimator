@@ -22,6 +22,8 @@ import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/use
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
+import { executeAsyncWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 
 const messages = defineMessages({
   title: {
@@ -205,11 +207,16 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        await embeddedApp.current.sendRequest("loadSubmission", {
-          task: taskFile,
-          submission: solutionFile,
-          language: intl.locale as Language,
-        });
+        executeAsyncWithToasts(
+          () =>
+            embeddedApp.current!.sendRequest("loadSubmission", {
+              task: taskFile,
+              submission: solutionFile,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
         await embeddedApp.current.sendRequest("loadTask", {
@@ -242,10 +249,15 @@ const SolveTaskPage = () => {
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("loadTask", {
-      task,
-      language: intl.locale as Language,
-    });
+    await executeAsyncWithToasts(
+      () =>
+        embeddedApp.current!.sendRequest("importTask", {
+          task,
+          language: intl.locale as Language,
+        }),
+      intl.formatMessage(taskMessages.taskImported),
+      intl.formatMessage(taskMessages.cannotImportTask),
+    );
   }, [intl]);
 
   const onExport = useCallback(async () => {
@@ -253,13 +265,14 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "getTask",
-      undefined,
+    const response = await executeAsyncWithToasts(
+      () => embeddedApp.current!.sendRequest("exportTask", undefined),
+      intl.formatMessage(taskMessages.taskCreated),
+      intl.formatMessage(taskMessages.cannotExport),
     );
 
     downloadBlob(response.result.file, "task.sb3");
-  }, []);
+  }, [intl]);
 
   if (!sessionId || !taskId) {
     return null;

@@ -1,4 +1,4 @@
-import { FileSystemOperation } from "../task-importer";
+import { FileSystemOperation } from "../task-converter";
 
 export class TaskError extends Error {}
 
@@ -98,5 +98,17 @@ export class UnexpectedFileTypeError extends TaskError {
 export class UnexpectedFileError extends UnexpectedFileTypeError {
   constructor(public readonly path: string) {
     super(path, "file");
+  }
+}
+
+export class ExportError extends TaskError {
+  constructor(public readonly reason: string) {
+    super(`Failed to export task: ${reason}`);
+  }
+}
+
+export class GetTaskError extends TaskError {
+  constructor(public readonly reason: string) {
+    super(`Failed to get task: ${reason}`);
   }
 }

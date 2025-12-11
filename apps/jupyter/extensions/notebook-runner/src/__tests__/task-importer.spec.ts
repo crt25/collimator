@@ -4,12 +4,12 @@ import {
   GenericNotebookFiles,
   TaskFormat,
 } from "../task-format";
-import * as TaskImporter from "../task-importer";
+import * as TaskImporter from "../task-converter";
 import {
   InvalidTaskBlobError,
   MissingRequiredFilesError,
 } from "../errors/task-errors";
-import { mockTaskImporterLoadJSZip, expectError } from "./helpers";
+import { mockTaskImporterLoadJSZip, expectError } from "./helpers/common";
 
 describe("importCrtInternalTask", () => {
   let mockZip: JSZip;

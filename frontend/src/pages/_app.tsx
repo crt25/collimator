@@ -26,9 +26,9 @@ import {
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
-import { ChakraProvider } from "../components/ui/ChakraProvider";
-import French from "../../content/compiled-locales/fr.json";
 import English from "../../content/compiled-locales/en.json";
+import French from "../../content/compiled-locales/fr.json";
+import { ChakraProvider } from "../components/ui/ChakraProvider";
 import type { AppProps } from "next/app";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -127,8 +127,8 @@ const App = ({ Component, pageProps }: AppProps) => {
     <div className={inter.variable}>
       <CacheProvider value={cache}>
         <ChakraProvider>
-          <Toaster />
           <IntlProvider locale={localizationState.locale} messages={messages}>
+            <Toaster />
             <YupLocalization>
               <PrimeReactProvider>
                 <AuthenticationContext.Provider value={authenticationState}>

@@ -1,5 +1,4 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
-import JSZip from "jszip";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
@@ -23,23 +22,28 @@ import {
   CrtInternalTask,
   GenericNotebookTask,
   Directory,
-  FileSystemOperation,
   importCrtInternalTask,
   importGenericNotebookTask,
-} from "./task-importer";
+  exportCrtInternalTask,
+  exportExternalCustomTask,
+  SharedDirectories,
+} from "./task-converter";
+
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
 import { TaskFormat } from "./task-format";
 
-import { AppTranslator, MessageKeys } from "./translator";
-
 import {
   DirectoryNotFoundError,
   GenericNotebookTaskImportError,
-  FileSystemError,
+  GetTaskError,
   UnsupportedTaskFormatError,
 } from "./errors/task-errors";
 import { hasStatus } from "./utils";
+import {
+  ExportTask,
+  ExportTaskResult,
+} from "./iframe-rpc/src/methods/export-task";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -90,16 +94,11 @@ export class EmbeddedPythonCallbacks {
   public static readonly srcLocation: string = "/src";
   public static readonly gradingSrcLocation: string = "/grading_src";
 
-  private static readonly taskTemplateInZip: string = "template.ipynb";
-  private static readonly studentTaskInZip: string = "student.ipynb";
-  private static readonly autograderInZip: string = "autograder.zip";
-
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
-    private readonly appTranslator: AppTranslator,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -107,25 +106,34 @@ export class EmbeddedPythonCallbacks {
   }
 
   async getTask(request: GetTask["request"]): Promise<Task> {
-    // generate student task and autograder
-    await this.app.commands.execute(runAssignCommand);
-
-    const initialSolution = await this.getJupyterSubmission();
-    const studentTask = initialSolution.file;
-
-    const taskTemplate = await this.getFileContents(
-      EmbeddedPythonCallbacks.taskTemplateLocation,
-    );
-
-    const autograder = await this.getFileContents(
-      EmbeddedPythonCallbacks.autograderLocation,
-    );
-
-    const task = await this.packTask(taskTemplate, studentTask, autograder);
-
     try {
+      // generate student task and autograder
+      await this.app.commands.execute(runAssignCommand);
+
+      const initialSolution = await this.getJupyterSubmission();
+      const studentTaskFile = initialSolution.file;
+
+      const taskTemplateFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+
+      const autograderFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.autograderLocation,
+      );
+
+      const folders = await this.getAllFolderContents();
+
+      const crtInternalTask = {
+        taskTemplateFile,
+        studentTaskFile,
+        autograderFile,
+        ...folders,
+      } satisfies CrtInternalTask;
+
+      const taskBlob = await exportCrtInternalTask(crtInternalTask);
+
       return {
-        file: task,
+        file: taskBlob,
         initialSolution,
       };
     } catch (e) {
@@ -134,8 +142,36 @@ export class EmbeddedPythonCallbacks {
         e,
       );
 
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotGetTask,
+      const errorMessage = e instanceof Error ? e.message : String(e);
+
+      throw new GetTaskError(errorMessage);
+    }
+  }
+
+  async exportTask(request: ExportTask["request"]): Promise<ExportTaskResult> {
+    try {
+      console.debug(`${logModule} Exporting task in external format`);
+
+      const taskFile = await this.getFileContents(
+        EmbeddedPythonCallbacks.taskTemplateLocation,
+      );
+
+      const folders = await this.getAllFolderContents();
+
+      const externalTask = {
+        taskFile,
+        ...folders,
+      } satisfies GenericNotebookTask;
+
+      const taskBlob = await exportExternalCustomTask(externalTask);
+
+      return {
+        file: taskBlob,
+        filename: "task.zip",
+      };
+    } catch (e) {
+      console.error(
+        `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
 
@@ -153,16 +189,9 @@ export class EmbeddedPythonCallbacks {
       await this.closeAllDocuments();
 
       await this.writeCrtInternalTask(importedFiles);
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
-        e,
-      );
-
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotLoadProject,
         e,
       );
 
@@ -198,11 +227,6 @@ export class EmbeddedPythonCallbacks {
 
           if (this.mode !== Mode.edit) {
             // cannot import external custom task in non-edit mode
-
-            this.appTranslator.displayError(
-              MessageKeys.CannotImportExternalInNonEditMode,
-            );
-
             throw new GenericNotebookTaskImportError();
           }
 
@@ -214,16 +238,9 @@ export class EmbeddedPythonCallbacks {
         default:
           throw new UnsupportedTaskFormatError(Object.values(TaskFormat));
       }
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskImported);
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
-        e,
-      );
-
-      this.appTranslator.displayErrorFromException(
-        MessageKeys.CannotImportTask,
         e,
       );
 
@@ -261,12 +278,8 @@ export class EmbeddedPythonCallbacks {
       this.documentManager.openOrReveal(
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
-
-      this.appTranslator.displaySuccess(MessageKeys.TaskLoaded);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
-
-      this.appTranslator.displayErrorFromException(MessageKeys.TaskLoaded, e);
 
       throw e;
     }
@@ -356,51 +369,6 @@ export class EmbeddedPythonCallbacks {
         })),
       file: submission,
     };
-  }
-
-  private async packTask(
-    taskTemplate: Blob,
-    studentTask: Blob,
-    autograder: Blob,
-  ): Promise<Blob> {
-    const zip = new JSZip();
-    zip.file(EmbeddedPythonCallbacks.taskTemplateInZip, taskTemplate);
-    zip.file(EmbeddedPythonCallbacks.studentTaskInZip, studentTask);
-    zip.file(EmbeddedPythonCallbacks.autograderInZip, autograder);
-
-    const data = await this.readFolderContents(
-      EmbeddedPythonCallbacks.dataLocation,
-    );
-
-    const src = await this.readFolderContents(
-      EmbeddedPythonCallbacks.srcLocation,
-    );
-
-    const gradingData = await this.readFolderContents(
-      EmbeddedPythonCallbacks.gradingDataLocation,
-    );
-
-    const gradingSrc = await this.readFolderContents(
-      EmbeddedPythonCallbacks.gradingSrcLocation,
-    );
-
-    for (const [relativePath, blob] of data.entries()) {
-      zip.file(`data/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of src.entries()) {
-      zip.file(`src/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of gradingData.entries()) {
-      zip.file(`grading_data/${relativePath}`, blob);
-    }
-
-    for (const [relativePath, blob] of gradingSrc.entries()) {
-      zip.file(`grading_src/${relativePath}`, blob);
-    }
-
-    return zip.generateAsync({ type: "blob" });
   }
 
   private async createFolder(path: string, name: string): Promise<void> {
@@ -508,6 +476,43 @@ export class EmbeddedPythonCallbacks {
     }
   }
 
+  private async getFolderContents(path: string): Promise<Map<string, Blob>> {
+    const files = new Map<string, Blob>();
+
+    try {
+      const folder = await this.app.serviceManager.contents.get(path, {
+        content: true,
+      });
+
+      if (folder.type !== "directory") {
+        throw new DirectoryNotFoundError(path);
+      }
+
+      for (const item of folder.content) {
+        const itemPath = `${path}/${item.name}`;
+
+        if (item.type === "directory") {
+          // Recursively read subdirectories
+          const subFiles = await this.getFolderContents(itemPath);
+          for (const [subPath, blob] of subFiles.entries()) {
+            files.set(`${item.name}/${subPath}`, blob);
+          }
+        } else if (item.type === "file" || item.type === "notebook") {
+          const fileContent = await this.getFileContents(itemPath);
+          files.set(item.name, fileContent);
+        } else {
+          console.warn(
+            `${logModule} Unsupported item type in folder ${path}: ${item.type}`,
+          );
+        }
+      }
+    } catch {
+      console.debug(`${logModule} Folder ${path} not found, skipping`);
+    }
+
+    return files;
+  }
+
   private async writeFolderContents(
     basePath: string,
     files: Directory,
@@ -516,40 +521,6 @@ export class EmbeddedPythonCallbacks {
       const path = `${basePath}/${relativePath}`;
       await this.putFileContents(path, blob);
     }
-  }
-
-  private async readFolderContents(basePath: string): Promise<Directory> {
-    const files = new Map<string, Blob>();
-
-    try {
-      const folder = await this.app.serviceManager.contents.get(basePath, {
-        content: true,
-      });
-
-      if (folder.type !== "directory") {
-        throw new DirectoryNotFoundError(basePath);
-      }
-
-      for (const item of folder.content || []) {
-        const itemPath = `${basePath}/${item.name}`;
-
-        if (item.type === "directory") {
-          const subFiles = await this.readFolderContents(itemPath);
-
-          for (const [subPath, blob] of subFiles.entries()) {
-            files.set(`${item.name}/${subPath}`, blob);
-          }
-        } else {
-          const blob = await this.getFileContents(itemPath);
-
-          files.set(item.name, blob);
-        }
-      }
-    } catch (e) {
-      // Throw FileSystemError for any error encountered during reading
-      throw new FileSystemError(FileSystemOperation.ReadFolder, basePath, e);
-    }
-    return files;
   }
 
   private async writeCrtInternalTask(task: CrtInternalTask): Promise<void> {
@@ -625,6 +596,24 @@ export class EmbeddedPythonCallbacks {
       EmbeddedPythonCallbacks.taskTemplateLocation,
     );
   }
+
+  private async getAllFolderContents(): Promise<{
+    data: Directory;
+    gradingData: Directory;
+    src: Directory;
+    gradingSrc: Directory;
+  }> {
+    return {
+      data: await this.getFolderContents(EmbeddedPythonCallbacks.dataLocation),
+      gradingData: await this.getFolderContents(
+        EmbeddedPythonCallbacks.gradingDataLocation,
+      ),
+      src: await this.getFolderContents(EmbeddedPythonCallbacks.srcLocation),
+      gradingSrc: await this.getFolderContents(
+        EmbeddedPythonCallbacks.gradingSrcLocation,
+      ),
+    } satisfies SharedDirectories;
+  }
 }
 
 export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
@@ -636,5 +625,6 @@ export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
     loadSubmission: callbacks.loadSubmission.bind(callbacks),
     setLocale: callbacks.setLocale.bind(callbacks),
     importTask: callbacks.importTask.bind(callbacks),
+    exportTask: callbacks.exportTask.bind(callbacks),
   });
 };

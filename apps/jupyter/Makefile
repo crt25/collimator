@@ -112,5 +112,5 @@ endif
 
 	@echo The otter grader wheel has been built successfully and is located in the 'dist' directory.
 
-.PHONY: all init init-submodules install-deps init-extensions build-extensions clean build serve build-otter
+.PHONY: all init init-submodules test install-deps init-extensions build-extensions clean build serve build-otter
 .DEFAULT_GOAL := all

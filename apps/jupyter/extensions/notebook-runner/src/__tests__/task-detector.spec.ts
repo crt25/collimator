@@ -9,7 +9,7 @@ import {
   UnsupportedTaskFormatError,
 } from "../errors/task-errors";
 import { detectTaskFormat } from "../format-detector";
-import { mockTaskImporterLoadJSZip, expectError } from "./helpers";
+import { mockTaskImporterLoadJSZip, expectError } from "./helpers/common";
 
 describe("detectTaskFormat", () => {
   let mockZip: JSZip;
