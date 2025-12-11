@@ -7,9 +7,10 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import { executeAsyncWithToasts } from "@/utilities/task";
-import Button from "../Button";
-import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
+import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
+import Button from "../Button";
 
 const messages = defineMessages({
   closeConfirmation: {
@@ -100,11 +101,11 @@ const TaskModal = ({
           task,
           language: intl.locale as Language,
         }),
-      <FormattedMessage id="embeddedApp.taskImported" />,
-      <FormattedMessage id="embeddedApp.cannotImportTask" />,
+      intl.formatMessage(taskMessages.taskImported),
+      intl.formatMessage(taskMessages.cannotImportTask),
     );
     setAppLoaded(true);
-  }, [intl.locale]);
+  }, [intl]);
 
   const onExportTask = useCallback(async () => {
     if (!embeddedApp.current) {
@@ -113,12 +114,12 @@ const TaskModal = ({
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      <FormattedMessage id="embeddedApp.taskCreated" />,
-      <FormattedMessage id="embeddedApp.exportError" />,
+      intl.formatMessage(taskMessages.taskCreated),
+      intl.formatMessage(taskMessages.cannotExport),
     );
 
     downloadBlob(response.result.file, response.result.filename);
-  }, []);
+  }, [intl]);
 
   const loadAppData = useCallback(() => {
     if (embeddedApp.current) {

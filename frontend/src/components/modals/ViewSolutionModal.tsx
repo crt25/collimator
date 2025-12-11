@@ -6,8 +6,9 @@ import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { executeWithToasts } from "@/utilities/task";
-import MultiSwrContent from "../MultiSwrContent";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
+import MultiSwrContent from "../MultiSwrContent";
 import TaskModal from "./TaskModal";
 
 const getViewUrl = (taskType: TaskType) => {
@@ -67,8 +68,8 @@ const ViewSolutionModal = ({
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          <FormattedMessage id="embeddedApp.taskLoaded" />,
-          <FormattedMessage id="embeddedApp.cannotLoadTask" />,
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
         );
       }
     },

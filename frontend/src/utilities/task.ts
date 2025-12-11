@@ -1,12 +1,11 @@
-import { ReactNode } from "react";
 import { toaster } from "@/components/Toaster";
 
 const toastDuration = 60 * 1000;
 
 export const executeAsyncWithToasts = async <T>(
   fn: () => Promise<T>,
-  successMessage: ReactNode,
-  errorMessage: ReactNode,
+  successMessage: string,
+  errorMessage: string,
 ): Promise<T> => {
   try {
     const response = await fn();
@@ -28,8 +27,8 @@ export const executeAsyncWithToasts = async <T>(
 
 export const executeWithToasts = <T>(
   fn: () => T,
-  successMessage: ReactNode,
-  errorMessage: ReactNode,
+  successMessage: string,
+  errorMessage: string,
 ): T => {
   try {
     const response = fn();

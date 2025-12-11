@@ -9,10 +9,11 @@ import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
 import { executeWithToasts } from "@/utilities/task";
-import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
-import MultiSwrContent from "../MultiSwrContent";
-import ViewSolutionModal from "../modals/ViewSolutionModal";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import Button from "../Button";
+import ViewSolutionModal from "../modals/ViewSolutionModal";
+import MultiSwrContent from "../MultiSwrContent";
+import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";
 
 export const CodeViewContainer = styled.div`
   /* always take up 100% of the screen (minus some margin for the selects and axis values) */
@@ -95,8 +96,8 @@ const CodeView = ({
             subTaskId: subTaskId,
             language: intl.locale as Language,
           }),
-        <FormattedMessage id="embeddedApp.submissionLoaded" />,
-        <FormattedMessage id="embeddedApp.cannotLoadSubmission" />,
+        intl.formatMessage(taskMessages.submissionLoaded),
+        intl.formatMessage(taskMessages.cannotLoadSubmission),
       );
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content

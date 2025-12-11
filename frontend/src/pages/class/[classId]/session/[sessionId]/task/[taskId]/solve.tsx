@@ -23,6 +23,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 
 const messages = defineMessages({
   title: {
@@ -213,8 +214,8 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          <FormattedMessage id="embeddedApp.taskLoaded" />,
-          <FormattedMessage id="embeddedApp.cannotLoadTask" />,
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
@@ -254,8 +255,8 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      <FormattedMessage id="embeddedApp.taskImported" />,
-      <FormattedMessage id="embeddedApp.cannotImportTask" />,
+      intl.formatMessage(taskMessages.taskImported),
+      intl.formatMessage(taskMessages.cannotImportTask),
     );
   }, [intl]);
 
@@ -266,12 +267,12 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      <FormattedMessage id="embeddedApp.taskCreated" />,
-      <FormattedMessage id="embeddedApp.exportError" />,
+      intl.formatMessage(taskMessages.taskCreated),
+      intl.formatMessage(taskMessages.cannotExport),
     );
 
     downloadBlob(response.result.file, "task.sb3");
-  }, []);
+  }, [intl]);
 
   if (!sessionId || !taskId) {
     return null;

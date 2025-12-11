@@ -17,6 +17,10 @@ export const messages = defineMessages({
     id: "embeddedApp.cannotGetTask",
     defaultMessage: "Cannot get task: {error}",
   },
+  cannotSaveTask: {
+    id: "embeddedApp.cannotSaveTask",
+    defaultMessage: "Cannot save task: {error}",
+  },
   cannotLoadSubmission: {
     id: "embeddedApp.cannotLoadSubmission",
     defaultMessage: "Cannot load submission: {error}",
@@ -48,5 +52,9 @@ export const messages = defineMessages({
   taskLoaded: {
     id: "embeddedApp.taskLoaded",
     defaultMessage: "Task loaded successfully",
+  },
+  savingTask: {
+    id: "embeddedApp.savingTask",
+    defaultMessage: "Saving task...",
   },
 });

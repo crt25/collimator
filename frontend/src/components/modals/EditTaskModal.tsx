@@ -1,9 +1,10 @@
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Language, Task } from "iframe-rpc-react/src";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import { executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts, executeWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -37,11 +38,14 @@ const EditTaskModal = ({
 
   const onSaveTask = useCallback(
     async (embeddedApp: EmbeddedAppRef) => {
-      const task = await embeddedApp.sendRequest("getTask", undefined);
-
+      const task = await executeAsyncWithToasts(
+        () => embeddedApp.sendRequest("getTask", undefined),
+        intl.formatMessage(taskMessages.savingTask),
+        intl.formatMessage(taskMessages.cannotSaveTask),
+      );
       onSave(task.result);
     },
-    [onSave],
+    [onSave, intl],
   );
 
   const loadContent = useCallback(
@@ -59,12 +63,12 @@ const EditTaskModal = ({
               task: initialTask,
               language: intl.locale as Language,
             }),
-          <FormattedMessage id="embeddedApp.taskLoaded" />,
-          <FormattedMessage id="embeddedApp.cannotLoadTaskContent" />,
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
         );
       }
     },
-    [initialTask, intl.locale],
+    [initialTask, intl],
   );
 
   useEffect(() => {
