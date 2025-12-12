@@ -80,7 +80,8 @@ dev-frontend:
 dev-scratch:
 	cd apps/scratch && yarn dev
 
-dev: dev-backend dev-frontend dev-scratch
+dev:
+	make dev-backend & make dev-frontend & make dev-scratch
 
 storybook:
 	cd storybook && yarn storybook
@@ -97,10 +98,14 @@ prisma-generate:
 api-generate:
 	cd frontend && yarn update:api
 
+clean-jupyter:
+	cd apps/notebook-runner && make clean
+
 clean:
 	rm -rf frontend/node_modules backend/node_modules apps/scratch/node_modules
 	rm -rf frontend/dist backend/dist apps/scratch/dist
-	rm -rf e2e/node_modules storybook/node_modules
+	rm -rf e2e/node_modules
+	clean-jupyter
 
 devin-pull:
 	git pull
@@ -117,4 +122,4 @@ devin-test:
 devin-dev:
 	make dev-backend & make dev-frontend & make dev-scratch
 
-.PHONY: setup test test-unit test-e2e build build-e2e clean lint dev
+.PHONY: setup setup-repo setup-deps setup-db test test-unit test-e2e test-frontend test-backend test-scratch test-storybook build build-frontend build-backend build-scratch build-jupyter build-e2e build-e2e-frontend build-e2e-backend build-e2e-scratch clean clean-jupyter lint lint-frontend lint-backend dev dev-backend dev-frontend dev-scratch storybook jupyter-serve i18n-update prisma-generate api-generate devin-pull devin-deps devin-lint devin-test devin-dev
