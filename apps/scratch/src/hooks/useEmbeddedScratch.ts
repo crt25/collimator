@@ -1,7 +1,7 @@
 import VM from "scratch-vm";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
-import { defineMessages, InjectedIntl } from "react-intl";
+import { defineMessages, InjectedIntl, FormattedMessage } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
@@ -19,6 +19,13 @@ import {
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
 import { loadCrtProject } from "../vm/load-crt-project";
+
+import {
+  MissingAssetsError,
+  ScratchProjectError,
+  ScratchProjectErrorCode,
+} from "../errors/scratch/index";
+
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
 import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
@@ -29,20 +36,57 @@ const logModule = "[Embedded Scratch]";
 
 const messages = defineMessages({
   cannotLoadProject: {
-    id: "useEmbeddedScratch.cannotLoadProject",
-    defaultMessage: "Could not load the project",
+    id: "crt.useEmbeddedScratch.cannotLoadProject",
+    defaultMessage: "Could not load the project.",
+  },
+  projectJsonMissing: {
+    id: "crt.useEmbeddedScratch.projectJsonMissing",
+    defaultMessage: "The project file is missing project.json.",
+  },
+  missingAssets: {
+    id: "crt.useEmbeddedScratch.missingAssets",
+    defaultMessage: "The project is missing the following assets: {assets}.",
+  },
+  invalidScratchProject: {
+    id: "crt.useEmbeddedScratch.invalidScratchProject",
+    defaultMessage: "The project file is not a valid Scratch project.",
   },
   cannotSaveProject: {
-    id: "useEmbeddedScratch.cannotSaveProject",
-    defaultMessage: "Could not save the project",
+    id: "crt.useEmbeddedScratch.cannotSaveProject",
+    defaultMessage: "Could not save the project.",
   },
   timeoutExceeded: {
-    id: "useEmbeddedScratch.timeoutExceeded",
+    id: "crt.useEmbeddedScratch.timeoutExceeded",
     defaultMessage: "We stopped the run, it was taking too long.",
   },
   cannotExportProject: {
     id: "useEmbeddedScratch.cannotExportProject",
     defaultMessage: "Could not export the project",
+  },
+  invalidProjectJson: {
+    id: "crt.useEmbeddedScratch.invalidProjectJson",
+    defaultMessage: "The project.json file is not valid JSON.",
+  },
+  invalidZip: {
+    id: "crt.useEmbeddedScratch.invalidZip",
+    defaultMessage: "The project file is not a valid ZIP archive.",
+  },
+  crtConfigParseError: {
+    id: "crt.useEmbeddedScratch.crtConfigParseError",
+    defaultMessage: "The crt.json file is not valid JSON.",
+  },
+  vmLoadError: {
+    id: "crt.useEmbeddedScratch.vmLoadError",
+    defaultMessage: "The Scratch VM failed to load the project.",
+  },
+  concurrentLoadError: {
+    id: "crt.useEmbeddedScratch.concurrentLoadError",
+    defaultMessage:
+      "A project is already being loaded. This project has been queued.",
+  },
+  unknownError: {
+    id: "crt.useEmbeddedScratch.unknownError",
+    defaultMessage: "An unknown error occurred.",
   },
 });
 
@@ -173,6 +217,36 @@ export class EmbeddedScratchCallbacks {
     private dispatch: Dispatch<AnyAction>,
   ) {}
 
+  static readonly errorMessages: Record<
+    ScratchProjectErrorCode,
+    FormattedMessage.MessageDescriptor
+  > = {
+    [ScratchProjectErrorCode.InvalidZip]: messages.invalidZip,
+    [ScratchProjectErrorCode.MissingProjectJson]: messages.projectJsonMissing,
+    [ScratchProjectErrorCode.InvalidProjectJson]: messages.invalidProjectJson,
+    [ScratchProjectErrorCode.CrtConfigParseError]: messages.crtConfigParseError,
+    [ScratchProjectErrorCode.VmLoadError]: messages.vmLoadError,
+    [ScratchProjectErrorCode.MissingAssets]: messages.missingAssets,
+    [ScratchProjectErrorCode.InvalidFormat]: messages.invalidScratchProject,
+    [ScratchProjectErrorCode.Unknown]: messages.unknownError,
+  };
+
+  private getErrorMessage(e: unknown): string {
+    if (!(e instanceof ScratchProjectError)) {
+      return this.intl.formatMessage(messages.unknownError);
+    }
+
+    const descriptor =
+      EmbeddedScratchCallbacks.errorMessages[e.code] ?? messages.unknownError;
+
+    if (e instanceof MissingAssetsError) {
+      const assets = e.missingAssets.join(", ");
+      return this.intl.formatMessage(descriptor, { assets });
+    }
+
+    return this.intl.formatMessage(descriptor);
+  }
+
   async getHeight(): Promise<number> {
     return document.body.scrollHeight;
   }
@@ -206,6 +280,7 @@ export class EmbeddedScratchCallbacks {
       this.setScratchLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
+
       const sb3Project = await request.params.task.arrayBuffer();
       await loadCrtProject(this.vm, sb3Project);
     } catch (e) {
@@ -213,7 +288,8 @@ export class EmbeddedScratchCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      toast.error(this.intl.formatMessage(messages.cannotLoadProject));
+
+      toast.error(this.getErrorMessage(e));
 
       throw e;
     }

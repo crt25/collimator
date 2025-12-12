@@ -5,8 +5,10 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
+import { TestFailingTaskPage } from "./page-objects/test-failing-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
+import tasks from "./tasks/index";
 import type { RpcMethodName } from "../../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 declare global {
@@ -383,6 +385,36 @@ test.describe("/solve", () => {
     await expect(page.openTaskConfigButton).toHaveCount(0);
 
     expect(page.taskConfigForm).toHaveCount(0);
+  });
+
+  test("returns missing files when some are not in zip", async ({ page }) => {
+    const missingAssetsTask = tasks.createMissingAssetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      missingAssetsTask,
+    );
+    // if assets are missing, the project should fail to fully load
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling project with no targets", async ({ page }) => {
+    const noTargetsTask = tasks.createNoTargetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      noTargetsTask,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling targets with no costumes or sounds", async ({ page }) => {
+    const noCostumesOrSoundsTask = tasks.createNoCostumesOrSoundsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      noCostumesOrSoundsTask,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
   });
 
   test("removing initial blocks does not increase the limit", async ({
