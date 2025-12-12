@@ -1,17 +1,17 @@
-# Makefile for devin and managing the Collimator project
+# Makefile for devin
 
 setup: setup-repo setup-deps setup-db
 
 setup-repo:
 	git pull
 	git submodule update --init --recursive
-	cd apps/notebook-runner && git submodule update --init --recursive
+	cd apps/jupyter && git submodule update --init --recursive
 
 setup-deps:
 	cd backend && yarn install
 	cd frontend && yarn install
 	cd apps/scratch && yarn install
-	cd apps/notebook-runner && make init
+	cd apps/jupyter && make init
 
 setup-db:
 	cd backend && yarn prisma migrate dev
@@ -28,7 +28,7 @@ build-scratch:
 	cd apps/scratch && yarn build
 
 build-jupyter:
-	cd apps/notebook-runner && make build
+	cd apps/jupyter && make build
 
 build-e2e: build-e2e-frontend build-e2e-backend build-e2e-scratch
 
@@ -87,7 +87,7 @@ storybook:
 	cd storybook && yarn storybook
 
 jupyter-serve:
-	cd apps/notebook-runner && make serve
+	cd apps/jupyter && make serve
 
 i18n-update:
 	cd frontend && yarn i18n:update
@@ -99,13 +99,12 @@ api-generate:
 	cd frontend && yarn update:api
 
 clean-jupyter:
-	cd apps/notebook-runner && make clean
+	cd apps/jupyter && make clean
 
-clean:
+clean: clean-jupyter
 	rm -rf frontend/node_modules backend/node_modules apps/scratch/node_modules
 	rm -rf frontend/dist backend/dist apps/scratch/dist
 	rm -rf e2e/node_modules
-	clean-jupyter
 
 devin-pull:
 	git pull
