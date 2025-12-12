@@ -1,10 +1,10 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
 import { defineMessages, InjectedIntl, FormattedMessage } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
-import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
+import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import {
   useIframeParent,
   Language,

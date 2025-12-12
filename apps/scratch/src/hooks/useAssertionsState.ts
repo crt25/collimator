@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { Assertion } from "../types/scratch-vm-custom";
 
 interface AssertionsState {

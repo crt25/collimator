@@ -302,12 +302,12 @@ declare class VMExtended extends VM {
   crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }
 
-declare module "scratch-vm" {
+declare module "@scratch/scratch-vm" {
   export = VMExtended;
   export default VMExtended;
 }
 
-declare module "scratch-vm/src/blocks/*" {
+declare module "@scratch/scratch-vm/src/blocks/*" {
   const blockPackage: VMExtended.StaticBlockPackage;
 
   export default blockPackage;

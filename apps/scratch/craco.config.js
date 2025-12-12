@@ -23,14 +23,14 @@ module.exports = {
         // lint all files in the src/ folder
         "./src/**/*",
         // but ignore scratch submodules - not under our control
-        "!./src/scratch/**/*",
+        "!./src/scratch-editor/**/*",
       ],
     },
   },
   // see https://craco.js.org/docs/configuration/webpack/
   webpack: {
     alias: {
-      "@scratch-submodule": resolvePath("src/scratch"),
+      "@scratch-submodule": resolvePath("src/scratch-editor"),
     },
     // webpack plugins
     plugins: {
@@ -51,7 +51,7 @@ module.exports = {
             {
               // overwrite some of the default block media with high-contrast versions
               // this entry must come after copying scratch-blocks/media into the high-contrast directory
-              from: "src/scratch/scratch-gui/src/lib/themes/high-contrast/blocks-media",
+              from: "src/scratch-editor/packages/scratch-gui/src/lib/themes/high-contrast/blocks-media",
               to: "static/blocks-media/high-contrast",
               force: true,
             },

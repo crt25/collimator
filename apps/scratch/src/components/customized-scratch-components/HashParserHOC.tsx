@@ -6,7 +6,7 @@ import {
   defaultProjectId,
   getIsFetchingWithoutId,
   setProjectId,
-} from "@scratch-submodule/scratch-gui/src/reducers/project-state";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/project-state";
 import { Dispatch } from "redux";
 
 /* Higher Order Component to get the project id from location.hash

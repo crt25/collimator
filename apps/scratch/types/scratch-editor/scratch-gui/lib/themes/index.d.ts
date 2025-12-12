@@ -1,5 +1,5 @@
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/lib/themes/index.js
-declare module "@scratch-submodule/scratch-gui/src/lib/themes" {
+declare module "@scratch-submodule/packages/scratch-gui/src/lib/themes" {
   export interface ColorSet {
     primary: string;
     secondary: string;

@@ -1,48 +1,49 @@
 import React from "react";
 import { Action, compose, Dispatch } from "redux";
 import { connect } from "react-redux";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { InjectedIntl, injectIntl } from "react-intl";
 
-import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
+import ErrorBoundaryHOC from "@scratch-submodule/packages/scratch-gui/src/lib/error-boundary-hoc.jsx";
 import {
   getIsError,
   getIsShowingProject,
   onFetchedProjectData,
-} from "@scratch-submodule/scratch-gui/src/reducers/project-state";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/project-state";
 import {
   activateTab,
   BLOCKS_TAB_INDEX,
   COSTUMES_TAB_INDEX,
   SOUNDS_TAB_INDEX,
-} from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/editor-tab";
 
 import {
   closeCostumeLibrary,
   closeBackdropLibrary,
   openExtensionLibrary,
-} from "@scratch-submodule/scratch-gui/src/reducers/modals";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
+import { ScratchStorage } from "scratch-storage";
+import FontLoaderHOC from "@scratch-submodule/packages/scratch-gui/src/lib/font-loader-hoc.jsx";
+import LocalizationHOC from "@scratch-submodule/packages/scratch-gui/src/lib/localization-hoc.jsx";
+import TitledHOC from "@scratch-submodule/packages/scratch-gui/src/lib/titled-hoc.jsx";
+import vmListenerHOC from "@scratch-submodule/packages/scratch-gui/src/lib/vm-listener-hoc.jsx";
+import vmManagerHOC from "@scratch-submodule/packages/scratch-gui/src/lib/vm-manager-hoc.jsx";
+import systemPreferencesHOC from "@scratch-submodule/packages/scratch-gui/src/lib/system-preferences-hoc.jsx";
 
-import FontLoaderHOC from "@scratch-submodule/scratch-gui/src/lib/font-loader-hoc.jsx";
-import LocalizationHOC from "@scratch-submodule/scratch-gui/src/lib/localization-hoc.jsx";
-import TitledHOC from "@scratch-submodule/scratch-gui/src/lib/titled-hoc.jsx";
-import storage from "@scratch-submodule/scratch-gui/src/lib/storage";
-import vmListenerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-listener-hoc.jsx";
-import vmManagerHOC from "@scratch-submodule/scratch-gui/src/lib/vm-manager-hoc.jsx";
-import systemPreferencesHOC from "@scratch-submodule/scratch-gui/src/lib/system-preferences-hoc.jsx";
-
-import { setIsScratchDesktop } from "@scratch-submodule/scratch-gui/src/lib/isScratchDesktop.js";
-import { StageSizeMode } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
-import { AppStateHOC } from "@scratch-submodule/scratch-gui/src";
+import { StageSizeMode } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
+import { GUIStorage } from "@scratch-submodule/packages/scratch-gui/src/gui-config";
 import GUIComponent from "../../components/customized-scratch-components/gui/Gui";
 import { loadCrtProject } from "../../vm/load-crt-project";
 import CrtHoc from "../../components/CrtHoc";
 import HashParserHOC from "../../components/customized-scratch-components/HashParserHOC";
 import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
+import AppStateHOC from "./AppStateHOC";
 
-const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
-
-const setProjectIdMetadata = (projectId: string | number) => {
+const setProjectIdMetadata = (
+  storage: ScratchStorage,
+  projectId: string | number,
+) => {
+  const { RequestMetadata, setMetadata, unsetMetadata } = storage.scratchFetch;
   // If project ID is '0' or zero, it's not a real project ID. In that case, remove the project ID metadata.
   // Same if it's null undefined.
   if (projectId && projectId !== "0") {
@@ -52,8 +53,9 @@ const setProjectIdMetadata = (projectId: string | number) => {
   }
 };
 
-interface Props {
+type Props = {
   vm: VM;
+  storage: GUIStorage;
   crtConfig: ScratchCrtConfig;
   assetHost?: string;
   children?: React.ReactNode;
@@ -70,7 +72,9 @@ interface Props {
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
   onSeeCommunity?: () => void;
-  onStorageInit?: (storage: unknown) => void;
+  onStorageInit?: (storage: {
+    addOfficialScratchWebStores: () => void;
+  }) => void;
   onUpdateProjectId?: (projectId: string | number) => void;
   onVmInit?: (vm: VM) => void;
   projectHost?: string;
@@ -81,6 +85,14 @@ interface Props {
 
   onFetchedProjectData: (projectData: unknown, loadingState: unknown) => void;
 
+  cannotInteractWithBlocks?: boolean;
+  canEditTask?: boolean;
+  isStandaloneCodeEnabled?: boolean;
+  isCodeTabEnabled?: boolean;
+  isStageEnabled?: boolean;
+  isCostumesTabEnabled?: boolean;
+  isSoundsTabEnabled?: boolean;
+  cardsVisible?: boolean;
   backpackHost: string | null;
   backpackVisible: boolean;
   blocksId: string;
@@ -91,10 +103,32 @@ interface Props {
   canCreateCopy: boolean;
   isCreating: boolean;
   stageSizeMode: StageSizeMode;
-}
+};
+
+type ExternalProps = Pick<
+  Props,
+  | "cannotInteractWithBlocks"
+  | "canEditTask"
+  | "isStandaloneCodeEnabled"
+  | "isCodeTabEnabled"
+  | "isStageEnabled"
+  | "isCostumesTabEnabled"
+  | "isSoundsTabEnabled"
+  | "onStorageInit"
+  | "basePath"
+> & {
+  isFullScreen?: boolean;
+  isPlayerOnly?: boolean;
+  isTelemetryEnabled?: boolean;
+  showTelemetryModal?: boolean;
+  isEmbedded?: boolean;
+};
 
 interface ReduxState {
   scratchGui: {
+    config: {
+      storage: GUIStorage;
+    };
     projectState: {
       loadingState: string;
       error: unknown | string;
@@ -119,6 +153,8 @@ interface ReduxState {
       costumeLibrary: boolean;
       loadingProject: boolean;
       tipsLibrary: boolean;
+      debugModal: boolean;
+      telemetryModal: boolean;
     };
     targets: {
       stage: {
@@ -135,7 +171,7 @@ interface ReduxState {
 
 class GUI extends React.Component<Props> {
   componentDidMount() {
-    setIsScratchDesktop(this.props.isScratchDesktop);
+    const storage = this.props.storage.scratchStorage;
 
     if (this.props.onStorageInit) {
       this.props.onStorageInit(storage);
@@ -145,7 +181,7 @@ class GUI extends React.Component<Props> {
       this.props.onVmInit(this.props.vm);
     }
 
-    setProjectIdMetadata(this.props.projectId);
+    setProjectIdMetadata(storage, this.props.projectId);
 
     storage.setAssetHost("https://assets.scratch.mit.edu");
     storage.setTranslatorFunction(this.props.intl.formatMessage);
@@ -171,7 +207,10 @@ class GUI extends React.Component<Props> {
       if (this.props.projectId !== null && this.props.onUpdateProjectId) {
         this.props.onUpdateProjectId(this.props.projectId);
       }
-      setProjectIdMetadata(this.props.projectId);
+      setProjectIdMetadata(
+        this.props.storage.scratchStorage,
+        this.props.projectId,
+      );
     }
     if (
       this.props.isShowingProject &&
@@ -224,10 +263,15 @@ class GUI extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => {
+const mapStateToProps = (
+  state: ReduxState,
+  ownProps: {
+    platform: string;
+  },
+) => {
   const loadingState = state.scratchGui.projectState.loadingState;
   return {
-    activeTabIndex: state.scratchGui.editorTab.activeTabIndex,
+    storage: state.scratchGui.config.storage,
     alertsVisible: state.scratchGui.alerts.visible,
     backdropLibraryVisible: state.scratchGui.modals.backdropLibrary,
     blocksTabVisible:
@@ -237,6 +281,7 @@ const mapStateToProps = (state: ReduxState) => {
     costumeLibraryVisible: state.scratchGui.modals.costumeLibrary,
     costumesTabVisible:
       state.scratchGui.editorTab.activeTabIndex === COSTUMES_TAB_INDEX,
+    debugModalVisible: state.scratchGui.modals.debugModal,
     error: state.scratchGui.projectState.error,
     isError: getIsError(loadingState),
     isFullScreen: state.scratchGui.mode.isFullScreen,
@@ -244,6 +289,7 @@ const mapStateToProps = (state: ReduxState) => {
     isRtl: state.locales.isRtl,
     isShowingProject: getIsShowingProject(loadingState),
     loadingStateVisible: state.scratchGui.modals.loadingProject,
+    platform: ownProps.platform,
     projectId: state.scratchGui.projectState.projectId,
     soundsTabVisible:
       state.scratchGui.editorTab.activeTabIndex === SOUNDS_TAB_INDEX,
@@ -251,6 +297,7 @@ const mapStateToProps = (state: ReduxState) => {
       state.scratchGui.targets.stage &&
       state.scratchGui.targets.stage.id ===
         state.scratchGui.targets.editingTarget,
+    telemetryModalVisible: state.scratchGui.modals.telemetryModal,
     tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
     vm: state.scratchGui.vm,
   };
@@ -285,6 +332,11 @@ const WrappedGui = compose(
 )(ConnectedGUI);
 
 // Analogous to https://github.com/scratchfoundation/scratch-gui/blob/develop/src/playground/render-gui.jsx#L37
-const DoubleWrapedGui = AppStateHOC(HashParserHOC(CrtHoc(WrappedGui)));
+const DoubleWrapedGui = AppStateHOC<ExternalProps>(
+  // @ts-expect-error The type inference based on the jsdoc is off
+  HashParserHOC(CrtHoc(WrappedGui)),
+  false,
+  undefined,
+);
 
 export default DoubleWrapedGui;

@@ -1,14 +1,14 @@
 import classNames from "classnames";
 
-import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants";
+import DragConstants from "@scratch-submodule/packages/scratch-gui/src/lib/drag-constants";
 
-import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
-import SpriteSelectorItem from "@scratch-submodule/scratch-gui/src/containers/sprite-selector-item.jsx";
-import SortableHOC from "@scratch-submodule/scratch-gui/src/lib/sortable-hoc.jsx";
-import SortableAsset from "@scratch-submodule/scratch-gui/src/components/asset-panel/sortable-asset.jsx";
-import ThrottledPropertyHOC from "@scratch-submodule/scratch-gui/src/lib/throttled-property-hoc.jsx";
+import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
+import SpriteSelectorItem from "@scratch-submodule/packages/scratch-gui/src/containers/sprite-selector-item.jsx";
+import SortableHOC from "@scratch-submodule/packages/scratch-gui/src/lib/sortable-hoc.jsx";
+import SortableAsset from "@scratch-submodule/packages/scratch-gui/src/components/asset-panel/sortable-asset.jsx";
+import ThrottledPropertyHOC from "@scratch-submodule/packages/scratch-gui/src/lib/throttled-property-hoc.jsx";
 
-import styles from "@scratch-submodule/scratch-gui/src/components/sprite-selector/sprite-selector.css";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/sprite-selector/sprite-selector.css";
 import React from "react";
 import { Sprite } from "../target-pane/TargetPane";
 

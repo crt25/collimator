@@ -1,5 +1,5 @@
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/lib/screen-utils.js
-declare module "@scratch-submodule/scratch-gui/src/lib/screen-utils" {
+declare module "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils" {
   export type StageSizeMode = "small" | "large";
   export type StageDisplaySize = "small" | "large" | "largeConstrained";
   export interface StageDimension {

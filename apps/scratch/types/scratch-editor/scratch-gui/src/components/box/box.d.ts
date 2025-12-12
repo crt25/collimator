@@ -1,5 +1,5 @@
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/components/box/box.jsx
-declare module "@scratch-submodule/scratch-gui/src/components/box/box.jsx" {
+declare module "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx" {
   import { ComponentRef, FunctionComponent, ReactNode } from "react";
 
   const Box: FunctionComponent<{

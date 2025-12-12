@@ -1,40 +1,40 @@
 import bindAll from "lodash.bindall";
 import React from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { connect } from "react-redux";
 import { injectIntl, InjectedIntl } from "react-intl";
 
 import {
   openSpriteLibrary,
   closeSpriteLibrary,
-} from "@scratch-submodule/scratch-gui/src/reducers/modals";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
 import {
   activateTab,
   COSTUMES_TAB_INDEX,
   BLOCKS_TAB_INDEX,
-} from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
-import { setReceivedBlocks } from "@scratch-submodule/scratch-gui/src/reducers/hovered-target";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/editor-tab";
+import { setReceivedBlocks } from "@scratch-submodule/packages/scratch-gui/src/reducers/hovered-target";
 import {
   showStandardAlert,
   closeAlertWithId,
-} from "@scratch-submodule/scratch-gui/src/reducers/alerts";
-import { setRestore } from "@scratch-submodule/scratch-gui/src/reducers/restore-deletion";
-import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants";
-import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
-import spriteLibraryContent from "@scratch-submodule/scratch-gui/src/lib/libraries/sprites.json";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/alerts";
+import { setRestore } from "@scratch-submodule/packages/scratch-gui/src/reducers/restore-deletion";
+import DragConstants from "@scratch-submodule/packages/scratch-gui/src/lib/drag-constants";
+import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
+import spriteLibraryContent from "@scratch-submodule/packages/scratch-gui/src/lib/libraries/sprites.json";
 import {
   handleFileUpload,
   spriteUpload,
-} from "@scratch-submodule/scratch-gui/src/lib/file-uploader.js";
-import sharedMessages from "@scratch-submodule/scratch-gui/src/lib/shared-messages";
-import { emptySprite } from "@scratch-submodule/scratch-gui/src/lib/empty-assets";
-import { highlightTarget } from "@scratch-submodule/scratch-gui/src/reducers/targets";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/file-uploader.js";
+import sharedMessages from "@scratch-submodule/packages/scratch-gui/src/lib/shared-messages";
+import { emptySprite } from "@scratch-submodule/packages/scratch-gui/src/lib/empty-assets";
+import { highlightTarget } from "@scratch-submodule/packages/scratch-gui/src/reducers/targets";
 import {
   fetchSprite,
   fetchCode,
-} from "@scratch-submodule/scratch-gui/src/lib/backpack-api";
-import randomizeSpritePosition from "@scratch-submodule/scratch-gui/src/lib/randomize-sprite-position";
-import downloadBlob from "@scratch-submodule/scratch-gui/src/lib/download-blob";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/backpack-api";
+import randomizeSpritePosition from "@scratch-submodule/packages/scratch-gui/src/lib/randomize-sprite-position";
+import downloadBlob from "@scratch-submodule/packages/scratch-gui/src/lib/download-blob";
 import { Action, Dispatch } from "redux";
 import TargetPaneComponent, {
   Sprite,
@@ -86,6 +86,7 @@ class TargetPane extends React.Component<Props> {
       "handleDuplicateSprite",
       "handleExportSprite",
       "handleNewSprite",
+      "handleNewSpriteClick",
       "handleSelectSprite",
       "handleSurpriseSpriteClick",
       "handlePaintSpriteClick",
@@ -301,7 +302,7 @@ class TargetPane extends React.Component<Props> {
       // Add one to both new and target index because we are not counting/moving the stage
       this.props.vm.reorderTarget(dragInfo.index + 1, dragInfo.newIndex + 1);
     } else if (dragInfo.dragType === DragConstants.BACKPACK_SPRITE) {
-      // storage does not have a way of loading zips right now, and may never need it.
+      // TODO storage does not have a way of loading zips right now, and may never need it.
       // So for now just grab the zip manually.
       fetchSprite(dragInfo.payload.bodyUrl).then((sprite3Zip) =>
         this.props.vm.addSprite(sprite3Zip),
@@ -315,7 +316,7 @@ class TargetPane extends React.Component<Props> {
       // it allows the user to share multiple things without switching back and forth.
       if (dragInfo.dragType === DragConstants.COSTUME) {
         this.props.vm.shareCostumeToTarget(dragInfo.index, targetId);
-      } else if (dragInfo.dragType === DragConstants.SOUND) {
+      } else if (targetId && dragInfo.dragType === DragConstants.SOUND) {
         this.props.vm.shareSoundToTarget(dragInfo.index, targetId);
       } else if (dragInfo.dragType === DragConstants.BACKPACK_COSTUME) {
         // In scratch 2, this only creates a new sprite from the costume.

@@ -5,21 +5,19 @@ declare namespace ScratchStorageExtended {
   export * from "../node_modules/@turbowarp/types/types/scratch-storage.d.ts";
 }
 
-declare class GUIScratchStorageExtended extends GUIScratchStorage {
-  scratchFetch: {
-    RequestMetadata: {
-      ProjectId: string;
-    }
-
-    setMetadata: (projectId: string, projectId2: string | number) => void;
-    unsetMetadata: (projectId: string) => void;
-  };
-
-  setAssetHost(assetHost: string): void;
-  setTranslatorFunction(translator: (message: ReactIntl.FormattedMessage.MessageDescriptor) => string): void;
-}
-
 declare module "scratch-storage" {
-  export = StorageExtended;
-  export default StorageExtended;
+  declare class ScratchStorage extends GUIScratchStorage {
+    scratchFetch: {
+      RequestMetadata: {
+        ProjectId: string;
+      }
+
+      setMetadata: (projectId: string, projectId2: string | number) => void;
+      unsetMetadata: (projectId: string) => void;
+    };
+
+    setAssetHost(assetHost: string): void;
+    setTranslatorFunction(translator: (message: ReactIntl.FormattedMessage.MessageDescriptor) => string): void;
+    addOfficialScratchWebStores(): void;
+  }
 }

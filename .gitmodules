@@ -7,3 +7,6 @@
 [submodule "backend/grammars-v4"]
 	path = backend/src/ast/antlr-grammars
 	url = https://github.com/antlr/grammars-v4
+[submodule "apps/scratch/src/scratch-editor"]
+	path = apps/scratch/src/scratch-editor
+	url = https://github.com/scratchfoundation/scratch-editor

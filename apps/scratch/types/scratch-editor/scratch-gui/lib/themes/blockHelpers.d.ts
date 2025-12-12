@@ -1,7 +1,7 @@
-import { ColorTheme } from "@scratch-submodule/scratch-gui/src/lib/themes";
+import { ColorTheme } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/lib/themes/blockHelpers.js
-declare module "@scratch-submodule/scratch-gui/src/lib/themes/blockHelpers" {
+declare module "@scratch-submodule/packages/scratch-gui/src/lib/themes/blockHelpers" {
   /**
    * Applies extension color theme to categories.
    * No changes are applied if called with the default theme, allowing extensions to provide their own colors.

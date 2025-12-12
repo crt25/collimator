@@ -10,43 +10,43 @@ import { connect } from "react-redux";
 import MediaQuery from "react-responsive";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import tabStyles from "react-tabs/style/react-tabs.css";
-import Renderer from "scratch-render";
-import VM from "scratch-vm";
+import Renderer from "@scratch/scratch-render";
+import VM from "@scratch/scratch-vm";
 
-import CostumeTab from "@scratch-submodule/scratch-gui/src/containers/costume-tab.jsx";
-import SoundTab from "@scratch-submodule/scratch-gui/src/containers/sound-tab.jsx";
-import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
-import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
-import CostumeLibrary from "@scratch-submodule/scratch-gui/src/containers/costume-library.jsx";
-import BackdropLibrary from "@scratch-submodule/scratch-gui/src/containers/backdrop-library.jsx";
-import Watermark from "@scratch-submodule/scratch-gui/src/containers/watermark.jsx";
+import CostumeTab from "@scratch-submodule/packages/scratch-gui/src/containers/costume-tab.jsx";
+import SoundTab from "@scratch-submodule/packages/scratch-gui/src/containers/sound-tab.jsx";
+import Loader from "@scratch-submodule/packages/scratch-gui/src/components/loader/loader.jsx";
+import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
+import CostumeLibrary from "@scratch-submodule/packages/scratch-gui/src/containers/costume-library.jsx";
+import BackdropLibrary from "@scratch-submodule/packages/scratch-gui/src/containers/backdrop-library.jsx";
+import Watermark from "@scratch-submodule/packages/scratch-gui/src/containers/watermark.jsx";
 
-import Backpack from "@scratch-submodule/scratch-gui/src/containers/backpack.jsx";
-import WebGlModal from "@scratch-submodule/scratch-gui/src/containers/webgl-modal.jsx";
-import TipsLibrary from "@scratch-submodule/scratch-gui/src/containers/tips-library.jsx";
-import Cards from "@scratch-submodule/scratch-gui/src/containers/cards.jsx";
-import Alerts from "@scratch-submodule/scratch-gui/src/containers/alerts.jsx";
-import DragLayer from "@scratch-submodule/scratch-gui/src/containers/drag-layer.jsx";
-import ConnectionModal from "@scratch-submodule/scratch-gui/src/containers/connection-modal.jsx";
+import Backpack from "@scratch-submodule/packages/scratch-gui/src/containers/backpack.jsx";
+import WebGlModal from "@scratch-submodule/packages/scratch-gui/src/containers/webgl-modal.jsx";
+import TipsLibrary from "@scratch-submodule/packages/scratch-gui/src/containers/tips-library.jsx";
+import Cards from "@scratch-submodule/packages/scratch-gui/src/containers/cards.jsx";
+import Alerts from "@scratch-submodule/packages/scratch-gui/src/containers/alerts.jsx";
+import DragLayer from "@scratch-submodule/packages/scratch-gui/src/containers/drag-layer.jsx";
+import ConnectionModal from "@scratch-submodule/packages/scratch-gui/src/containers/connection-modal.jsx";
 
 import layout, {
   BLOCKS_DEFAULT_SCALE,
   STAGE_SIZE_MODES,
-} from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
 import {
   resolveStageSize,
   StageSizeMode,
-} from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
 import {
   ColorTheme,
   themeMap,
-} from "@scratch-submodule/scratch-gui/src/lib/themes";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 
-import styles from "@scratch-submodule/scratch-gui/src/components/gui/gui.css";
-import addExtensionIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--extensions.svg";
-import codeIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--code.svg";
-import costumesIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--costumes.svg";
-import soundsIcon from "@scratch-submodule/scratch-gui/src/components/gui/icon--sounds.svg";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/gui/gui.css";
+import addExtensionIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--extensions.svg";
+import codeIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--code.svg";
+import costumesIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--costumes.svg";
+import soundsIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--sounds.svg";
 import { useEffect, useMemo } from "react";
 import { CrtContext } from "../../../contexts/CrtContext";
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
@@ -81,7 +81,9 @@ const GUIComponent = (props: {
   isShowingProject?: boolean;
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
-  onStorageInit?: () => void;
+  onStorageInit?: (storageInstance: {
+    addOfficialScratchWebStores: () => void;
+  }) => void;
   onUpdateProjectId?: () => void;
   onVmInit?: () => void;
   projectHost?: string;

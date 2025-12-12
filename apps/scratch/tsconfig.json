@@ -17,9 +17,11 @@
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "preserveSymlinks": true,
+    // scratch provides only partial types
+    "noImplicitAny": false,
     "paths": {
       // alias
-      "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"],
+      "@scratch-submodule/*": ["./src/scratch-editor/*", "./types/scratch-editor/*"],
     }
   },
   "include": [

@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import {

@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { FormattedMessage } from "react-intl";
 import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 

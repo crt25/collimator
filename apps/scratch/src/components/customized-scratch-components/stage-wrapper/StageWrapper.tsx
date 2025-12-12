@@ -1,29 +1,29 @@
 import classNames from "classnames";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 
-import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
+import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
 import {
   STAGE_DISPLAY_SIZES,
   STAGE_SIZE_MODES,
-} from "@scratch-submodule/scratch-gui/src/lib/layout-constants.js";
-import Stage from "@scratch-submodule/scratch-gui/src/containers/stage.jsx";
-import Loader from "@scratch-submodule/scratch-gui/src/components/loader/loader.jsx";
-import styles from "@scratch-submodule/scratch-gui/src/components/stage-wrapper/stage-wrapper.css";
-import headerStyles from "@scratch-submodule/scratch-gui/src/components/stage-header/stage-header.css";
-import { setStageSize } from "@scratch-submodule/scratch-gui/src/reducers/stage-size";
-import { setFullScreen } from "@scratch-submodule/scratch-gui/src";
-import Button from "@scratch-submodule/scratch-gui/src/components/button/button";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants.js";
+import Stage from "@scratch-submodule/packages/scratch-gui/src/containers/stage.jsx";
+import Loader from "@scratch-submodule/packages/scratch-gui/src/components/loader/loader.jsx";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/stage-wrapper/stage-wrapper.css";
+import headerStyles from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/stage-header.css";
+import { setStageSize } from "@scratch-submodule/packages/scratch-gui/src/reducers/stage-size";
+import { setFullScreen } from "@scratch-submodule/packages/scratch-gui/src";
+import Button from "@scratch-submodule/packages/scratch-gui/src/components/button/button";
 import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
 
-import fullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--fullscreen.svg";
-import largeStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--large-stage.svg";
-import smallStageIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--small-stage.svg";
-import unFullScreenIcon from "@scratch-submodule/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
-import settingsIcon from "@scratch-submodule/scratch-gui/src/components/menu-bar/icon--settings.svg";
-import { getStageDimensions } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
+import fullScreenIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--fullscreen.svg";
+import largeStageIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--large-stage.svg";
+import smallStageIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--small-stage.svg";
+import unFullScreenIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--unfullscreen.svg";
+import settingsIcon from "@scratch-submodule/packages/scratch-gui/src/components/menu-bar/icon--settings.svg";
+import { getStageDimensions } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import ToggleButtons from "../../../scratch/scratch-gui/src/components/toggle-buttons/toggle-buttons";
+import ToggleButtons from "@scratch-submodule/packages/scratch-gui/src/components/toggle-buttons/toggle-buttons";
 import TaskConfig from "../../TaskConfig";
 import AssertionsState from "../../assertions-state/AssertionsState";
 import Controls from "../../../containers/customized-scratch-containers/Controls";

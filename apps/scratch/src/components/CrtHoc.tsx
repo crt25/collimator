@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { InjectedIntl, injectIntl } from "react-intl";
 import { useDispatch } from "react-redux";
 import scratchMessages from "scratch-l10n/locales/editor-msgs";
 import { patchScratchVm } from "../vm";
 import { useEmbeddedScratch } from "../hooks/useEmbeddedScratch";
 import { basePath } from "..";
-import { setLocales } from "../scratch/scratch-gui/src/reducers/locales";
+import { setLocales } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import en from "../content/compiled-locales/en.json";
 import fr from "../content/compiled-locales/fr.json";
 import { ExtensionId } from "../extensions";

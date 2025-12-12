@@ -1,8 +1,8 @@
 // https://github.com/scratchfoundation/scratch-gui/blob/develop/src/containers/stage-wrapper.jsx
-declare module "@scratch-submodule/scratch-gui/src/containers/stage-wrapper.jsx" {
-  import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
+declare module "@scratch-submodule/packages/scratch-gui/src/containers/stage-wrapper.jsx" {
+  import { StageDisplaySize } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
   import { FunctionComponent } from "react";
-  import VM from "scratch-vm";
+  import VM from "@scratch/scratch-vm";
 
   const StageWrapper: FunctionComponent<{
     vm: VM;

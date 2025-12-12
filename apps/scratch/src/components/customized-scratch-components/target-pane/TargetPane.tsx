@@ -1,10 +1,10 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 
-import SpriteLibrary from "@scratch-submodule/scratch-gui/src/containers/sprite-library.jsx";
-import StageSelector from "@scratch-submodule/scratch-gui/src/containers/stage-selector.jsx";
-import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
+import SpriteLibrary from "@scratch-submodule/packages/scratch-gui/src/containers/sprite-library.jsx";
+import StageSelector from "@scratch-submodule/packages/scratch-gui/src/containers/stage-selector.jsx";
+import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
 
-import styles from "@scratch-submodule/scratch-gui/src/components/target-pane/target-pane.css";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/target-pane/target-pane.css";
 import React from "react";
 import MinimalStageSelector from "../../MinimalStageSelector";
 import SpriteSelectorComponent from "../sprite-selector/SpriteSelector";

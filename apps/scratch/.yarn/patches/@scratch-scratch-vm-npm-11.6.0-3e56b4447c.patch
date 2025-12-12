@@ -1,8 +1,8 @@
 diff --git a/package.json b/package.json
-index 2d0fc98a781c482a3f1df8e7148034d3959faa59..c7cbcfc231fc54cc45934ab158de4acd3713a232 100644
+index f4246efcafd4af2050e465c02ee083bfbd391d58..443a8ebbc0db480ff84c82ed70220023f0be1311 100644
 --- a/package.json
 +++ b/package.json
-@@ -13,10 +13,21 @@
+@@ -12,10 +12,21 @@
    "main": "./dist/node/scratch-vm.js",
    "browser": "./dist/web/scratch-vm.js",
    "exports": {
@@ -26,5 +26,5 @@ index 2d0fc98a781c482a3f1df8e7148034d3959faa59..c7cbcfc231fc54cc45934ab158de4acd
 +    "./src/blocks/scratch3_data": "./src/blocks/scratch3_data.js",
 +    "./src/blocks/scratch3_procedures": "./src/blocks/scratch3_procedures.js"
    },
-   "scripts": {
-     "build": "npm run docs && webpack --progress",
+   "files": [
+     "dist",
