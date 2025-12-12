@@ -14,6 +14,7 @@ import {
   LoadTask,
   LoadSubmission,
   SetLocale,
+  ImportTask,
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
@@ -27,6 +28,7 @@ import {
 
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
+import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -56,6 +58,10 @@ const messages = defineMessages({
   timeoutExceeded: {
     id: "crt.useEmbeddedScratch.timeoutExceeded",
     defaultMessage: "We stopped the run, it was taking too long.",
+  },
+  cannotExportProject: {
+    id: "useEmbeddedScratch.cannotExportProject",
+    defaultMessage: "Could not export the project",
   },
   invalidProjectJson: {
     id: "crt.useEmbeddedScratch.invalidProjectJson",
@@ -289,6 +295,30 @@ export class EmbeddedScratchCallbacks {
     }
   }
 
+  async importTask(request: ImportTask["request"]): Promise<undefined> {
+    // Since the importTask has the same implementation as loadTask, we can reuse it instead of creating a new logic.
+    return this.loadTask({
+      ...request,
+      method: "loadTask",
+    });
+  }
+
+  async exportTask(): Promise<ExportTaskResult> {
+    try {
+      const task = await saveCrtProject(this.vm);
+
+      return {
+        file: task,
+        filename: "task.sb3",
+      };
+    } catch (e) {
+      console.error(`Failed to export task:`, e);
+      toast.error(this.intl.formatMessage(messages.cannotExportProject));
+
+      throw e;
+    }
+  }
+
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
     this.setScratchLocale(request.params.language);
 
@@ -374,6 +404,8 @@ export const useEmbeddedScratch = (
         loadTask: callbacks.loadTask.bind(callbacks),
         loadSubmission: callbacks.loadSubmission.bind(callbacks),
         setLocale: callbacks.setLocale.bind(callbacks),
+        importTask: callbacks.importTask.bind(callbacks),
+        exportTask: callbacks.exportTask.bind(callbacks),
       };
     }
 
@@ -388,6 +420,8 @@ export const useEmbeddedScratch = (
       loadTask: throwError,
       loadSubmission: throwError,
       setLocale: throwError,
+      importTask: throwError,
+      exportTask: throwError,
     };
   }, [callbacks]);
 

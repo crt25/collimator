@@ -13,6 +13,9 @@ link:
 	cd ./notebook-runner && jupyter labextension develop . --overwrite
 	cd ./notebook-runner && jupyter labextension link .
 
+test: 
+	cd ./notebook-runner && jlpm test
+
 create-extension:
 ifeq ($(EXTENSION), 'none')
 		@echo Please set the EXTENSION variable to the name of the extension you want to create.
@@ -41,5 +44,5 @@ endif
 	cd $(EXTENSION)
 	jupyter labextension develop . --overwrite
 
-.PHONY: init build create-extension install-extension-deps link-extension
+.PHONY: init build link test create-extension install-extension-deps link-extension 
 .DEFAULT_GOAL := build

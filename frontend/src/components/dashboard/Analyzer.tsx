@@ -1,16 +1,14 @@
 import { useCallback, useMemo, useReducer } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Col, Modal, Row } from "react-bootstrap";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import { AstCriterionType } from "@/data-analyzer/analyze-asts";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import MultiSwrContent from "../MultiSwrContent";
 import Select from "../form/Select";
-import Input from "../form/Input";
-import Button, { ButtonVariant } from "../Button";
-import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
+import Checkbox from "../form/Checkbox";
 import { MetaCriterionType } from "./criteria/meta-criterion-type";
 import AnalyzerFilterForm from "./filter/AnalyzerFilterForm";
 import {
@@ -23,22 +21,15 @@ import Analysis from "./Analysis";
 import CodeComparison from "./CodeComparison";
 import { FilteredAnalysis } from "./hooks/types";
 import {
-  allSubtasks,
   AnalyzerState,
   AnalyzerStateActionType,
   analyzerStateReducer,
-  defaultGroupValue,
-  defaultSolutionIdValue,
 } from "./Analyzer.state";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
 
 const messages = defineMessages({
-  taskSelection: {
-    id: "Analyzer.taskSelection",
-    defaultMessage: "Task Selection",
-  },
   subTaskSelection: {
     id: "Analyzer.subTaskSelection",
     defaultMessage: "Sub-task Selection",
@@ -55,27 +46,15 @@ const messages = defineMessages({
     id: "Analyzer.numberOfGroups",
     defaultMessage: "Number of groups",
   },
-  selectSolutionForComparisonTitle: {
-    id: "Analyzer.selectSolutionForComparisonTitle",
-    defaultMessage: "Selecting Solution for Comparison",
-  },
-  selectSolutionForComparisonDescription: {
-    id: "Analyzer.selectSolutionForComparisonDescription",
-    defaultMessage: "Where should the selected solution be placed?",
-  },
-  selectSolutionForComparisonLeft: {
-    id: "Analyzer.selectSolutionForComparisonLeft",
-    defaultMessage: "Left",
-  },
-  selectSolutionForComparisonRight: {
-    id: "Analyzer.selectSolutionForComparisonRight",
-    defaultMessage: "Right",
-  },
 });
 
-const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
-  const intl = useIntl();
-
+const Analyzer = ({
+  session,
+  task,
+}: {
+  session: ExistingSessionExtended;
+  task: ExistingTask;
+}) => {
   const [state, dispatch] = useReducer(analyzerStateReducer, {
     selectedTask: session.tasks[0]?.id,
     selectedSubTaskId: undefined,
@@ -85,20 +64,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
     filters: [],
     splits: [],
     selectedSolutionIds: new Set<string>(),
-    comparison: {
-      clickedAnalysis: undefined,
-      selectedLeftGroup: defaultGroupValue,
-      selectedRightGroup: defaultGroupValue,
-      selectedRightSolutionId: defaultSolutionIdValue,
-      selectedLeftSolutionId: defaultSolutionIdValue,
-    },
+    comparison: { selectedSolutionIds: new Set<string>() },
   } satisfies AnalyzerState);
-
-  const {
-    data: task,
-    isLoading: isLoadingTask,
-    error: taskError,
-  } = useTask(state.selectedTask);
 
   const {
     data: analyses,
@@ -165,39 +132,20 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
 
   const onSelectSolution = useCallback(
     (groupKey: string, { solutionId }: CurrentAnalysis) => {
-      if (state.comparison.selectedLeftSolutionId === defaultSolutionIdValue) {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedLeft,
-          groupKey,
-          solutionId,
-        });
-      } else if (
-        state.comparison.selectedRightSolutionId === defaultSolutionIdValue
-      ) {
-        dispatch({
-          type: AnalyzerStateActionType.setSelectedRight,
-          groupKey,
-          solutionId,
-        });
-      } else {
-        // let the user choose
-        dispatch({
-          type: AnalyzerStateActionType.setClickedAnalysis,
-          clickedAnalysis: { groupKey, solutionId: solutionId },
-        });
-      }
+      dispatch({
+        type: AnalyzerStateActionType.setAnalysesSelectedForComparison,
+        solutionIds: [solutionId],
+        unionWithPrevious: true,
+      });
     },
-    [
-      state.comparison.selectedLeftSolutionId,
-      state.comparison.selectedRightSolutionId,
-    ],
+    [],
   );
 
   if (!state.selectedTask) {
     return (
       <FormattedMessage
         id="Analyzer.noTasksInSession"
-        defaultMessage="There are no tasks in this session."
+        defaultMessage="There are no tasks in this lesson."
       />
     );
   }
@@ -205,51 +153,26 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
   return (
     <>
       <MultiSwrContent
-        data={[task, analyses]}
-        isLoading={[isLoadingTask, isLoadingAnalyses]}
-        errors={[taskError, analysesErrors]}
+        data={[analyses]}
+        isLoading={[isLoadingAnalyses]}
+        errors={[analysesErrors]}
       >
-        {([task]) => (
-          <Row>
-            <Col xs={12} lg={3}>
+        {([_analyses]) => (
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, lg: 3 }}>
               <AnalysisParameters>
                 <Select
-                  label={messages.taskSelection}
-                  options={session.tasks.map((task) => ({
-                    label: task.title,
-                    value: task.id,
-                  }))}
-                  data-testid="select-task"
-                  onChange={(e) =>
-                    dispatch({
-                      type: AnalyzerStateActionType.setSelectedTask,
-                      selectedTaskId: parseInt(e.target.value),
-                    })
-                  }
-                  value={state.selectedTask}
-                  alwaysShow
-                />
-
-                <Select
                   label={messages.subTaskSelection}
-                  options={[
-                    {
-                      label: intl.formatMessage(messages.allSubTasks),
-                      value: allSubtasks,
-                    },
-                    ...subtasks.map((subtask) => ({
-                      label: subtask.toString(),
-                      value: subtask,
-                    })),
-                  ]}
+                  placeholder={messages.allSubTasks}
+                  options={subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  }))}
                   data-testid="select-subtask"
-                  onChange={(e) =>
+                  onValueChange={(value) =>
                     dispatch({
                       type: AnalyzerStateActionType.setSelectedSubTask,
-                      selectedSubTaskId:
-                        e.target.value !== allSubtasks
-                          ? e.target.value
-                          : undefined,
+                      selectedSubTaskId: value,
                     })
                   }
                   value={state.selectedSubTaskId}
@@ -268,14 +191,13 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   parametersByCriterion={parametersByCriterion}
                 />
 
-                <Input
+                <Checkbox
                   label={messages.automaticGrouping}
-                  type="checkbox"
                   checked={state.isAutomaticGrouping}
-                  onChange={(e) =>
+                  onCheckedChange={(checked) =>
                     dispatch({
                       type: AnalyzerStateActionType.setAutomaticGrouping,
-                      isAutomaticGrouping: e.target.checked,
+                      isAutomaticGrouping: checked,
                     })
                   }
                 />
@@ -286,11 +208,9 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                     defaultMessage="Computing groups, please be patient."
                   />
                 )}
-
-                <StudentAnonymizationToggle />
               </AnalysisParameters>
-            </Col>
-            <Col xs={12} lg={9}>
+            </GridItem>
+            <GridItem colSpan={{ base: 12, lg: 9 }}>
               <Analysis
                 taskType={task.type}
                 state={state}
@@ -299,8 +219,8 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                 manualGroups={manualGroups}
                 onSelectAnalysis={onSelectSolution}
               />
-            </Col>
-            <Col xs={12}>
+            </GridItem>
+            <GridItem colSpan={{ base: 12 }}>
               {task && (
                 <CodeComparison
                   classId={session.klass.id}
@@ -313,71 +233,10 @@ const Analyzer = ({ session }: { session: ExistingSessionExtended }) => {
                   groups={groups}
                 />
               )}
-            </Col>
-          </Row>
+            </GridItem>
+          </Grid>
         )}
       </MultiSwrContent>
-      <Modal
-        show={state.comparison.clickedAnalysis !== undefined}
-        onHide={() =>
-          dispatch({
-            type: AnalyzerStateActionType.setClickedAnalysis,
-            clickedAnalysis: undefined,
-          })
-        }
-        data-testid="solution-selection-modal"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {intl.formatMessage(messages.selectSolutionForComparisonTitle)}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {intl.formatMessage(messages.selectSolutionForComparisonDescription)}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => {
-              if (state.comparison.clickedAnalysis) {
-                dispatch({
-                  type: AnalyzerStateActionType.setSelectedLeft,
-                  groupKey: state.comparison.clickedAnalysis.groupKey,
-                  solutionId: state.comparison.clickedAnalysis.solutionId,
-                });
-
-                dispatch({
-                  type: AnalyzerStateActionType.setClickedAnalysis,
-                  clickedAnalysis: undefined,
-                });
-              }
-            }}
-            variant={ButtonVariant.primary}
-            data-testid="cancel-button"
-          >
-            {intl.formatMessage(messages.selectSolutionForComparisonLeft)}
-          </Button>
-          <Button
-            onClick={() => {
-              if (state.comparison.clickedAnalysis) {
-                dispatch({
-                  type: AnalyzerStateActionType.setSelectedRight,
-                  groupKey: state.comparison.clickedAnalysis.groupKey,
-                  solutionId: state.comparison.clickedAnalysis.solutionId,
-                });
-
-                dispatch({
-                  type: AnalyzerStateActionType.setClickedAnalysis,
-                  clickedAnalysis: undefined,
-                });
-              }
-            }}
-            variant={ButtonVariant.primary}
-            data-testid="cancel-button"
-          >
-            {intl.formatMessage(messages.selectSolutionForComparisonRight)}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

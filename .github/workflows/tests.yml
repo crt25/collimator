@@ -35,10 +35,20 @@ jobs:
 
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
 
     steps:
       - name: Enable Corepack
         run: corepack enable
+      - name: Maximise disk space
+        run: df -h
+
+      - run: |
+          sudo rm -rf /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          sudo docker builder prune -a
+
+      - run: df -h
 
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -158,6 +168,10 @@ jobs:
       - name: Test scratch app
         working-directory: ./apps/scratch
         run: yarn test
+
+      - name: Test jupyter app
+        working-directory: ./apps/jupyter
+        run: make test
 
       - name: Run e2e tests
         working-directory: ./e2e

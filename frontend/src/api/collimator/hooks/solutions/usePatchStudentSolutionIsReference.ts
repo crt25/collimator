@@ -9,6 +9,7 @@ import { PatchStudentSolutionIsReferenceDto } from "../../generated/models";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { useRevalidateStudentSolution } from "./useRevalidateStudentSolution";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
+import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
 
 type PatchSolutionType = (
   classId: number,
@@ -37,6 +38,7 @@ const patchAndTransform = (
 
 export const usePatchStudentSolutionIsReference = (): PatchSolutionType => {
   const revalidateStudentSolution = useRevalidateStudentSolution();
+  const revalidateSolutionList = useRevalidateSolutionList();
   const { mutate, cache } = useSWRConfig();
   const authOptions = useAuthenticationOptions();
 
@@ -56,6 +58,8 @@ export const usePatchStudentSolutionIsReference = (): PatchSolutionType => {
           taskId,
           studentSolutionId,
         );
+
+        revalidateSolutionList(classId, sessionId, taskId);
 
         // mutate the analysis list locally but do not revalidate it
         const key = getSolutionsControllerFindCurrentAnalysesV0Url(
@@ -79,6 +83,12 @@ export const usePatchStudentSolutionIsReference = (): PatchSolutionType => {
           );
         }
       }),
-    [authOptions, revalidateStudentSolution, cache, mutate],
+    [
+      authOptions,
+      revalidateStudentSolution,
+      revalidateSolutionList,
+      cache,
+      mutate,
+    ],
   );
 };

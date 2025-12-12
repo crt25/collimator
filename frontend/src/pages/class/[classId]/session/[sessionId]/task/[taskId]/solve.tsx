@@ -1,15 +1,16 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import toast from "react-hot-toast";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
+import { Box, Breadcrumb, Text } from "@chakra-ui/react";
+import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import Header from "@/components/Header";
+import StudentHeader from "@/components/header/StudentHeader";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
@@ -18,11 +19,29 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import BreadcrumbItem from "@/components/BreadcrumbItem";
+import { toaster } from "@/components/Toaster";
+import { executeAsyncWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 
 const messages = defineMessages({
   title: {
     id: "SolveTaskPage.title",
     defaultMessage: "Solve - {title}",
+  },
+  correctSolutionSubmitted: {
+    id: "SolveTask.correctSolutionSubmitted",
+    defaultMessage:
+      "Your successfully solved this task. You can check if there are more tasks in the lesson menu.",
+  },
+  solutionSubmitted: {
+    id: "SolveTask.solutionSubmitted",
+    defaultMessage: "The solution was submitted successfully.",
+  },
+  openTaskList: {
+    id: "SolveTask.openTaskList",
+    defaultMessage: "Open Task List",
   },
 });
 
@@ -81,6 +100,10 @@ const SolveTaskPage = () => {
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
 
+  const toggleSessionMenu = useCallback(() => {
+    setShowSessionMenu((show) => !show);
+  }, []);
+
   const saveSubmission = useCallback(
     async (
       classId: number,
@@ -109,22 +132,28 @@ const SolveTaskPage = () => {
         submission.failedTests.length === 0 &&
         submission.passedTests.length > 0
       ) {
-        toast.success(
-          <FormattedMessage
-            id="SolveTask.correctSolutionSubmitted"
-            defaultMessage="Your successfully solved this task. You can check if there are more tasks in the session menu."
-          />,
-        );
+        toaster.success({
+          title: intl.formatMessage(messages.correctSolutionSubmitted),
+          action: {
+            label: intl.formatMessage(messages.openTaskList),
+            onClick: () => setShowSessionMenu(true),
+          },
+          closable: true,
+          duration: 60 * 1000,
+        });
       } else {
-        toast.success(
-          <FormattedMessage
-            id="SolveTask.solutionSubmitted"
-            defaultMessage="The solution was submitted successfully."
-          />,
-        );
+        toaster.info({
+          title: intl.formatMessage(messages.solutionSubmitted),
+          action: {
+            label: intl.formatMessage(messages.openTaskList),
+            onClick: () => setShowSessionMenu(true),
+          },
+          closable: true,
+          duration: 60 * 1000,
+        });
       }
     },
-    [createSolution],
+    [createSolution, intl, setShowSessionMenu],
   );
 
   const onSubmitSolution = useCallback(async () => {
@@ -153,10 +182,6 @@ const SolveTaskPage = () => {
     isScratchMutexAvailable.current = true;
   }, [session, task, saveSubmission]);
 
-  const toggleSessionMenu = useCallback(() => {
-    setShowSessionMenu((show) => !show);
-  }, []);
-
   useEffect(() => {
     if (embeddedApp.current && wasInitialized.current) {
       embeddedApp.current.sendRequest("setLocale", intl.locale as Language);
@@ -182,11 +207,16 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        await embeddedApp.current.sendRequest("loadSubmission", {
-          task: taskFile,
-          submission: solutionFile,
-          language: intl.locale as Language,
-        });
+        executeAsyncWithToasts(
+          () =>
+            embeddedApp.current!.sendRequest("loadSubmission", {
+              task: taskFile,
+              submission: solutionFile,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
         await embeddedApp.current.sendRequest("loadTask", {
@@ -219,10 +249,15 @@ const SolveTaskPage = () => {
 
     const task = await readSingleFileFromDisk();
 
-    await embeddedApp.current.sendRequest("loadTask", {
-      task,
-      language: intl.locale as Language,
-    });
+    await executeAsyncWithToasts(
+      () =>
+        embeddedApp.current!.sendRequest("importTask", {
+          task,
+          language: intl.locale as Language,
+        }),
+      intl.formatMessage(taskMessages.taskImported),
+      intl.formatMessage(taskMessages.cannotImportTask),
+    );
   }, [intl]);
 
   const onExport = useCallback(async () => {
@@ -230,43 +265,63 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "getTask",
-      undefined,
+    const response = await executeAsyncWithToasts(
+      () => embeddedApp.current!.sendRequest("exportTask", undefined),
+      intl.formatMessage(taskMessages.taskCreated),
+      intl.formatMessage(taskMessages.cannotExport),
     );
 
     downloadBlob(response.result.file, "task.sb3");
-  }, []);
+  }, [intl]);
 
   if (!sessionId || !taskId) {
     return null;
   }
 
+  // FEATURE FLAG: Disable import/export for now
+  const disableImportExport = true;
+
   return (
     <MaxScreenHeight>
-      <Header title={messages.title} titleParameters={{ title: task?.title }}>
-        <li>
-          <Button
-            onClick={toggleSessionMenu}
-            data-testid="toggle-session-menu-button"
-          >
-            {showSessionMenu ? (
-              <span>
-                <FormattedMessage
-                  id="SolveTask.hideSession"
-                  defaultMessage="Hide Session"
-                />
-              </span>
-            ) : (
-              <span>
-                <FormattedMessage
-                  id="SolveTask.showSession"
-                  defaultMessage="Show Session"
-                />
-              </span>
-            )}
-          </Button>
-        </li>
+      <StudentHeader
+        title={messages.title}
+        titleParameters={{ title: task?.title }}
+        logo={
+          task &&
+          session && (
+            <Box>
+              <Breadcrumbs
+                topLevel={
+                  <BreadcrumbItem
+                    onClick={toggleSessionMenu}
+                    icon={<LuSignpost />}
+                    testId="toggle-session-menu-button"
+                  >
+                    {session.title}
+                  </BreadcrumbItem>
+                }
+                marginBottom="0"
+              >
+                <Breadcrumb.Separator />
+                <BreadcrumbItem
+                  icon={<LuListTodo />}
+                  onClick={toggleSessionMenu}
+                >
+                  {task.title}
+                </BreadcrumbItem>
+              </Breadcrumbs>
+            </Box>
+          )
+        }
+        belowHeader={
+          task && (
+            <Text marginBottom="md" marginX={"lg"}>
+              {task.description}
+            </Text>
+          )
+        }
+      >
+        <li></li>
         <li>
           <Button
             onClick={onSubmitSolution}
@@ -278,17 +333,27 @@ const SolveTaskPage = () => {
             />
           </Button>
         </li>
-        <li>
-          <Button onClick={onExport}>
-            <FormattedMessage id="SolveTask.export" defaultMessage="Export" />
-          </Button>
-        </li>
-        <li>
-          <Button onClick={onImport}>
-            <FormattedMessage id="SolveTask.import" defaultMessage="Import" />
-          </Button>
-        </li>
-      </Header>
+        {!disableImportExport && (
+          <>
+            <li>
+              <Button onClick={onExport}>
+                <FormattedMessage
+                  id="SolveTask.export"
+                  defaultMessage="Export"
+                />
+              </Button>
+            </li>
+            <li>
+              <Button onClick={onImport}>
+                <FormattedMessage
+                  id="SolveTask.import"
+                  defaultMessage="Import"
+                />
+              </Button>
+            </li>
+          </>
+        )}
+      </StudentHeader>
       <MultiSwrContent
         data={[session, task, taskFile]}
         errors={[sessionError, taskError, taskFileError]}

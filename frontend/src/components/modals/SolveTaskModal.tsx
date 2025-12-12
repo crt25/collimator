@@ -3,6 +3,8 @@ import { useCallback, useMemo } from "react";
 import { Language, Submission } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { executeWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -50,22 +52,32 @@ const SolveTaskModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (solution && task) {
-        embeddedApp.sendRequest("loadSubmission", {
-          task,
-          submission: solution,
-          language: intl.locale as Language,
-        });
+        executeWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadSubmission", {
+              task,
+              submission: solution,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
         return;
       }
 
       if (task) {
-        embeddedApp.sendRequest("loadTask", {
-          task,
-          language: intl.locale as Language,
-        });
+        executeWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadTask", {
+              task,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
       }
     },
-    [task, solution, intl.locale],
+    [task, solution, intl],
   );
 
   return (

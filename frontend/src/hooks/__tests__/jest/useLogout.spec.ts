@@ -1,5 +1,6 @@
 import { useContext as useContextMock } from "react";
 import { useRouter as useRouterMock } from "next/router";
+import { useSWRConfig as useSWRConfigMock } from "swr";
 import { useLogout } from "@/hooks/useLogout";
 import { authenticationContextDefaultValue } from "@/contexts/AuthenticationContext";
 
@@ -13,8 +14,15 @@ jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }));
 
+jest.mock("swr", () => ({
+  useSWRConfig: jest.fn(() => ({
+    mutate: jest.fn(),
+  })),
+}));
+
 const useContext = useContextMock as jest.Mock;
 const useRouter = useRouterMock as jest.Mock;
+const useSWRConfig = useSWRConfigMock as jest.Mock;
 
 const updateAuthenticationContext = jest.fn();
 const routerPush = jest.fn();
@@ -24,6 +32,7 @@ beforeEach(() => {
 
   useContext.mockReturnValue(updateAuthenticationContext);
   useRouter.mockReturnValue({ push: routerPush });
+  useSWRConfig.mockReturnValue({ mutate: jest.fn() });
 });
 
 describe("useLogout", () => {

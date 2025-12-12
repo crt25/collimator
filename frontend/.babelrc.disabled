@@ -8,7 +8,14 @@
      },
     "coverage": {
       "presets": ["next/babel"],
-      "plugins":["istanbul"]
+      "plugins": [
+          ["module-resolver", {
+            "alias": {
+              "next/font/google": "./src/shims/next-font-google.js"
+            }
+          }],
+          "istanbul"
+      ]
     }
   }
 }

@@ -1,11 +1,12 @@
 import { useContext, useMemo } from "react";
-import { Dropdown } from "react-bootstrap";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import {
   allSupportedLocales,
   SupportedLocale,
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
+
+import DropdownMenu from "./DropdownMenu";
 
 const messages = defineMessages({
   english: {
@@ -37,24 +38,20 @@ const LanguageChooser = () => {
   );
 
   return (
-    <Dropdown>
-      <Dropdown.Toggle>
-        {intl.formatMessage(
-          languageMessageByLocale[intl.locale as SupportedLocale],
-        )}
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        {availableLocales.map((locale) => (
-          <Dropdown.Item
-            key={locale}
-            onClick={() => setLocalizationState({ locale })}
-          >
-            {intl.formatMessage(languageMessageByLocale[locale])}
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
+    <DropdownMenu
+      trigger={intl.formatMessage(
+        languageMessageByLocale[intl.locale as SupportedLocale],
+      )}
+    >
+      {availableLocales.map((locale) => (
+        <DropdownMenu.Item
+          key={locale}
+          onClick={() => setLocalizationState({ locale })}
+        >
+          {intl.formatMessage(languageMessageByLocale[locale])}
+        </DropdownMenu.Item>
+      ))}
+    </DropdownMenu>
   );
 };
 
