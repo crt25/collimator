@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "@playwright/test";
+import { FormPageModel } from "../../page-models/form-page-model";
 
-export class SessionFormPageModel {
+enum SharingType {
+  anonymous = "anonymous",
+  private = "private",
+}
+
+export class SessionFormPageModel extends FormPageModel {
   private static readonly classForm = '[data-testid="session-form"]';
 
-  readonly page: Page;
-
   protected constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
 
   get form() {
@@ -20,7 +24,7 @@ export class SessionFormPageModel {
       description: this.form.locator('[data-testid="description"]'),
       addTaskSelect: this.form.locator('[data-testid="add-task"]'),
       selectedTasks: this.form.locator('[data-testid="selected-tasks"]'),
-      isAnonymous: this.form.locator('[data-testid="is-anonymous"]'),
+      sharingType: this.form.locator('[data-testid="sharing-type"]'),
     };
   }
 
@@ -29,18 +33,23 @@ export class SessionFormPageModel {
   }
 
   getAvailableTaskIds() {
-    return this.inputs.addTaskSelect.evaluate((el) =>
-      [...el.querySelectorAll("option")]
-        .map((option) => parseInt(option.value))
-        .filter((id) => !isNaN(id) && id > 0),
-    );
+    // ChakraUI does not allow two selects to be open at the same time, therefore there are no possible conflicts with other select options
+    return this.page
+      .locator('[data-testid^="select-option-"]')
+      .evaluateAll((elements) =>
+        elements
+          .map((el) => Number.parseInt(el.dataset.value ?? ""))
+          .filter((id) => !isNaN(id) && id > 0),
+      );
   }
 
   getSelectedTaskIds() {
     return this.inputs.selectedTasks.evaluate((el) =>
-      [...el.querySelectorAll('[data-testid^="selected-tasks-item-"]')].map(
-        (option) => parseInt(option.getAttribute("data-testid")!.split("-")[3]),
-      ),
+      [
+        ...el.querySelectorAll<HTMLElement>(
+          '[data-testid^="selected-tasks-item-"]',
+        ),
+      ].map((option) => Number.parseInt(option.dataset.testid!.split("-")[3])),
     );
   }
 
@@ -65,6 +74,17 @@ export class SessionFormPageModel {
         `[data-testid="selected-tasks-item-${taskId}"] [data-testid="remove-task"]`,
       )
       .click();
+  }
+
+  async setSessionSharingType(isAnonymous: boolean) {
+    await this.selectChakraOption(
+      this.inputs.sharingType,
+      isAnonymous ? SharingType.anonymous : SharingType.private,
+    );
+  }
+
+  async setTask(taskId: string) {
+    await this.selectChakraOption(this.inputs.addTaskSelect, taskId);
   }
 
   static async create(page: Page) {

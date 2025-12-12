@@ -22,7 +22,7 @@ test.describe("task management", () => {
     await page.goto(`${baseURL}/task`);
   });
 
-  test.describe("/task/[taskId]/edit", () => {
+  test.describe("/task/[taskId]/detail", () => {
     test("can create a task", async ({ page: pwPage, baseURL }) => {
       newTaskId = await createTask(baseURL!, pwPage, {
         title: newTaskTitle,
@@ -32,12 +32,13 @@ test.describe("task management", () => {
     });
   });
 
-  test.describe("/task/[taskId]/edit", () => {
-    test.beforeEach(async ({ context, page }) => {
+  test.describe("/task/[taskId]/detail", () => {
+    test.beforeEach(async ({ context, page, baseURL }) => {
       await useAdminUser(context);
 
       const list = await TaskListPageModel.create(page);
       await list.editItem(newTaskId);
+      await page.waitForURL(`${baseURL}/task/${newTaskId}/detail`);
     });
 
     test("can update a task", async ({ page: pwPage, baseURL }) => {
@@ -45,24 +46,25 @@ test.describe("task management", () => {
 
       await page.inputs.title.fill(updatedTaskTitle);
       await page.inputs.description.fill(updatedTaskDecription);
-      await page.inputs.type.selectOption(updatedTaskType);
+      await page.setTaskType(updatedTaskType);
       await page.openEditTaskModal();
       await page.saveTask();
       await page.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/task`);
+      await pwPage.goto(`${baseURL}/task`);
 
       const list = await TaskListPageModel.create(pwPage);
       await expect(list.getTitle(newTaskId)).toHaveText(updatedTaskTitle);
     });
   });
 
-  test.describe("/task/{id}/detail", () => {
+  test.describe("/task/{id}/view", () => {
     test.beforeEach(async ({ baseURL, page }) => {
       const list = await TaskListPageModel.create(page);
 
       await list.viewItem(newTaskId);
-      await page.waitForURL(`${baseURL}/task/${newTaskId}/detail`);
+      await page.getByTestId("task-instance-view-task-tab").click();
+      await page.waitForURL(`${baseURL}/task/${newTaskId}/view`);
     });
 
     test("renders the task", async ({ page }) => {
@@ -82,7 +84,8 @@ test.describe("task management", () => {
     test("can delete listed items", async ({ page: pwPage }) => {
       const page = await TaskListPageModel.create(pwPage);
 
-      await page.deleteItem(newTaskId);
+      await page.editItem(newTaskId);
+      await page.deleteItemAndConfirm(newTaskId);
 
       // Wait for the deletion to be reflected in the UI
       await expect(page.getItemActions(newTaskId)).toHaveCount(0);

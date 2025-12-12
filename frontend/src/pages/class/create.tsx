@@ -1,54 +1,98 @@
-import { Container } from "react-bootstrap";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { Container } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
+import { toaster } from "@/components/Toaster";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeading from "@/components/PageHeading";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
     id: "CreateClass.title",
     defaultMessage: "Create Class",
   },
+  header: {
+    id: "CreateClass.header",
+    defaultMessage: "Create Class",
+  },
+  description: {
+    id: "CreateClass.pageDescription",
+    defaultMessage: "",
+  },
   submit: {
     id: "CreateClass.submit",
     defaultMessage: "Create Class",
   },
+  successMessage: {
+    id: "CreateClass.successMessage",
+    defaultMessage: "Class created successfully",
+  },
+  errorMessage: {
+    id: "CreateClass.errorMessage",
+    defaultMessage:
+      "There was an error creating the new Class. Please try to save again!",
+  },
+  returnToClassList: {
+    id: "CreateClass.returnToClassList",
+    defaultMessage: "Return to Class List",
+  },
 });
 
 const CreateClass = () => {
+  const intl = useIntl();
   const router = useRouter();
   const createClass = useCreateClass();
 
   const onSubmit = useCallback(
     async (formValues: ClassFormValues) => {
-      await createClass({
-        name: formValues.name,
-        teacherId: formValues.teacherId,
-      });
+      try {
+        const response = await createClass({
+          name: formValues.name,
+          teacherId: formValues.teacherId,
+        });
 
-      router.back();
+        toaster.success({
+          title: intl.formatMessage(messages.successMessage),
+          action: {
+            label: intl.formatMessage(messages.returnToClassList),
+            onClick: () => router.push(`/class`),
+          },
+          meta: {
+            actionTestId: "go-back-to-class-list",
+          },
+          closable: true,
+        });
+
+        router.push(`/class/${response.id}/detail`);
+      } catch {
+        toaster.error({
+          title: intl.formatMessage(messages.errorMessage),
+        });
+      }
     },
-    [createClass, router],
+    [createClass, router, intl],
   );
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
-        <CrtNavigation />
-        <PageHeader>
-          <FormattedMessage
-            id="CreateClass.header"
-            defaultMessage="Create Class"
-          />
-        </PageHeader>
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb />
+        </Breadcrumbs>
+        <PageHeading description={"" /* no description */}>
+          <FormattedMessage {...messages.header} />
+        </PageHeading>
         <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

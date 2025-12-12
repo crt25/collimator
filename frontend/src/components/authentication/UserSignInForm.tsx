@@ -1,9 +1,9 @@
 import { useForm, UseFormSetError } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
+import { chakra, Stack } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
-import ValidationErrorMessage from "../form/ValidationErrorMessage";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 
@@ -23,6 +23,14 @@ export type UserSignInFormValues = {
   backupPassword?: string;
 };
 
+const ButtonWrapper = chakra("div", {
+  base: {
+    marginTop: "xs",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+});
+
 const UserSignInForm = ({
   submitMessage,
   initialValues,
@@ -41,9 +49,7 @@ const UserSignInForm = ({
     password: yup.string().required(),
     backupPassword: yup.string(),
   });
-
   const resolver = useYupResolver(schema);
-
   const {
     register,
     handleSubmit,
@@ -59,31 +65,27 @@ const UserSignInForm = ({
       onSubmit={handleSubmit((data) => onSubmit(data, setError))}
       data-testid="user-sign-in-form"
     >
-      <Input
-        label={messages.password}
-        {...register("password")}
-        data-testid="password"
-        type="password"
-      >
-        <ValidationErrorMessage>
-          {errors.password?.message}
-        </ValidationErrorMessage>
-      </Input>
-
-      {showBackupPassword && (
+      <Stack gap="sm">
         <Input
-          label={messages.backupPassword}
-          {...register("backupPassword")}
-          data-testid="backupPassword"
+          label={messages.password}
+          {...register("password")}
+          data-testid="password"
           type="password"
-        >
-          <ValidationErrorMessage>
-            {errors.backupPassword?.message}
-          </ValidationErrorMessage>
-        </Input>
-      )}
-
-      <SubmitFormButton label={submitMessage} />
+          errorText={errors.password?.message}
+        />
+        {showBackupPassword && (
+          <Input
+            label={messages.backupPassword}
+            {...register("backupPassword")}
+            data-testid="backupPassword"
+            type="password"
+            errorText={errors.backupPassword?.message}
+          />
+        )}
+        <ButtonWrapper>
+          <SubmitFormButton label={submitMessage} width="auto" />
+        </ButtonWrapper>
+      </Stack>
     </form>
   );
 };

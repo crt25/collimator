@@ -1,40 +1,85 @@
-import styled from "@emotion/styled";
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
+import { CiSearch } from "react-icons/ci";
+import {
+  Field,
+  Input as ChakraInput,
+  InputProps as ChakraInputProps,
+  chakra,
+  InputGroup,
+} from "@chakra-ui/react";
 
-const StyledInput = styled.input`
-  padding: 0.25rem 0.5rem;
+const InputWrapper = chakra("div", {
+  base: {
+    display: "block",
+    marginBottom: "1rem",
+  },
+});
 
-  max-width: 100%;
-`;
-
-const InputWrapper = styled.label`
-  display: block;
-  margin-bottom: 1rem;
-`;
-
-const Label = styled.span`
-  display: block;
-  margin-bottom: 0.25rem;
-`;
-
-interface Props {
-  label: MessageDescriptor;
-  children?: React.ReactNode;
+export enum InputVariety {
+  Search = "search",
 }
 
+interface Props {
+  label?: MessageDescriptor;
+  labelBadge?: React.ReactNode;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
+  variety?: InputVariety;
+  variant?: ChakraInputProps["variant"];
+}
+
+// Omit the native size, children attribute to avoid confusion with Chakra UI's size prop
+type InputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "children"
+> &
+  Props & {
+    size?: ChakraInputProps["size"];
+  };
+
 const Input = forwardRef(function Input(
-  props: React.InputHTMLAttributes<HTMLInputElement> & Props,
+  props: InputProps,
   ref: React.Ref<HTMLInputElement>,
 ) {
   const intl = useIntl();
-  const { label, children, ...inputProps } = props;
+  const {
+    label,
+    helperText,
+    errorText,
+    invalid,
+    variety,
+    variant = "subtle",
+    type,
+    labelBadge,
+    size,
+    ...inputProps
+  } = props;
+
+  const showSearchIcon = variety === InputVariety.Search;
 
   return (
     <InputWrapper>
-      <Label>{intl.formatMessage(label)}</Label>
-      <StyledInput {...inputProps} ref={ref} />
-      {children}
+      <Field.Root invalid={invalid || !!errorText}>
+        {label && (
+          <Field.Label>
+            {intl.formatMessage(label)}
+            {labelBadge || null}
+          </Field.Label>
+        )}
+        <InputGroup startElement={showSearchIcon ? <CiSearch /> : undefined}>
+          <ChakraInput
+            ref={ref}
+            type={type}
+            variant={variant}
+            size={size}
+            {...inputProps}
+          />
+        </InputGroup>
+        {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
+        {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
+      </Field.Root>
     </InputWrapper>
   );
 });

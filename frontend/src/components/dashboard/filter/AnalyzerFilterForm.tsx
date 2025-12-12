@@ -54,8 +54,8 @@ const AnalyzerFilterForm = ({
       <Select
         options={filterOptions}
         data-testid="add-filter"
-        onChange={(e) => {
-          const type = e.target.value as FilterCriterionType;
+        onValueChange={(v) => {
+          const type = v as FilterCriterionType;
 
           setFilters([...filters, getInitialFilterValues(type)]);
         }}

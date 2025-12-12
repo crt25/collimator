@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ApiResponse, getSwrParamererizedKey } from "../helpers";
+import { ApiResponse } from "../helpers";
 import {
   getSessionsControllerGetSessionProgressV0Url,
   sessionsControllerGetSessionProgressV0,
@@ -23,9 +23,7 @@ export const useSessionProgress = (
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getSwrParamererizedKey((_params?: undefined) =>
-      getSessionsControllerGetSessionProgressV0Url(classId, sessionId),
-    ),
+    getSessionsControllerGetSessionProgressV0Url(classId, sessionId),
     () => fetchByClassIdAndTransform(authOptions, classId, sessionId),
   );
 };

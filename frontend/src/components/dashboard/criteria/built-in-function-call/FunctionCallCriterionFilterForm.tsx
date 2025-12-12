@@ -87,7 +87,7 @@ const BuiltInFunctionCallCriterionFilterForm: CriterionFormComponent<
         label={messages.functionName}
         data-testid="functionName"
         value={value.functionName}
-        onChange={(e) => onChange({ ...value, functionName: e.target.value })}
+        onValueChange={(v) => onChange({ ...value, functionName: v })}
         options={options}
         alwaysShow
       />

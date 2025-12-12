@@ -1,58 +1,50 @@
 import { defineMessages } from "react-intl";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
+import { LuListTodo, LuSettings2, LuTrendingUp } from "react-icons/lu";
 import TabNavigation, { NavigationTab } from "../TabNavigation";
-import BreadcrumbItem from "../BreadcrumbItem";
-import { StudentName } from "../encryption/StudentName";
 
 const messages = defineMessages({
+  lessonDetailsTab: {
+    id: "SessionNavigation.lessonDetails",
+    defaultMessage: "Lesson Details",
+  },
+  tasksTab: {
+    id: "SessionNavigation.tasks",
+    defaultMessage: "Tasks",
+  },
   progressTab: {
     id: "SessionNavigation.progress",
     defaultMessage: "Progress",
-  },
-  analysisTab: {
-    id: "SessionNavigation.analysisTab",
-    defaultMessage: "Analysis",
-  },
-  dissimilarSolutionsTab: {
-    id: "SessionNavigation.dissimilarSolutionsTab",
-    defaultMessage: "Dissimilar Solutions",
-  },
-  dissimilarPairsTab: {
-    id: "SessionNavigation.dissimilarPairsTab",
-    defaultMessage: "Dissimilar Pairs",
   },
 });
 
 const tabs: NavigationTab[] = [
   {
+    url: "detail",
+    title: (intl) => intl.formatMessage(messages.lessonDetailsTab),
+    icon: <LuSettings2 />,
+    testId: "session-lesson-details-tab",
+  },
+  {
+    url: "task",
+    title: (intl) => intl.formatMessage(messages.tasksTab),
+    icon: <LuListTodo />,
+    testId: "session-tasks-tab",
+  },
+  {
     url: "progress",
     title: (intl) => intl.formatMessage(messages.progressTab),
+    icon: <LuTrendingUp />,
     testId: "session-progress-tab",
-  },
-  {
-    url: "analysis",
-    title: (intl) => intl.formatMessage(messages.analysisTab),
-    testId: "session-analysis-tab",
-  },
-  {
-    url: "dissimilar-solutions",
-    title: (intl) => intl.formatMessage(messages.dissimilarSolutionsTab),
-  },
-  {
-    url: "dissimilar-pairs",
-    title: (intl) => intl.formatMessage(messages.dissimilarPairsTab),
   },
 ];
 
 const SessionNavigation = ({
   classId,
   sessionId,
-  student,
   breadcrumb,
 }: {
   classId?: number;
   sessionId?: number;
-  student?: ClassStudent;
   breadcrumb?: boolean;
 }) => (
   <>
@@ -61,15 +53,6 @@ const SessionNavigation = ({
       prefix={`/class/${classId}/session/${sessionId}/`}
       breadcrumb={breadcrumb}
     />
-    {breadcrumb && student && (
-      <BreadcrumbItem>
-        <StudentName
-          studentId={student.studentId}
-          pseudonym={student.pseudonym}
-          keyPairId={student.keyPairId}
-        />
-      </BreadcrumbItem>
-    )}
   </>
 );
 

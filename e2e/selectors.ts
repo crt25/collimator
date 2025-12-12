@@ -1,8 +1,8 @@
-export const headerCurrentUserName = "[data-testid=current-user]";
+export const headerCurrentUserName = "[data-testid=current-username]";
 
+export const emptyStateContent = "[data-testid='empty-state-content']";
 export const userList = "[data-testid='user-list']";
 export const classList = "[data-testid='class-list']";
-export const classStudentList = "[data-testid='student-list']";
 export const taskList = "[data-testid='task-list']";
 export const sessionList = "[data-testid='session-list']";
 export const progressList = "[data-testid='progress-list']";
