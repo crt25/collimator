@@ -2,7 +2,7 @@ import {
   isBlockFlyout,
   isBlocksContainer,
   isBlockWithId,
-} from "../../utilities/scratch-selectors";
+} from "../utilities/scratch-selectors";
 
 export const getBlockSelector = (blockId: string): string =>
   isBlockWithId(blockId);

@@ -12,7 +12,7 @@ import {
   isBlockWitOpCodeInFlyoutCanvas,
   isScratchBlock,
   isVisualTopOfStack,
-} from "../../../utilities/scratch-selectors";
+} from "../../utilities/scratch-selectors";
 
 export class ScratchEditorPage {
   protected readonly page: Page;

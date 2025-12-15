@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { ScratchCrtConfig } from "../../../types/scratch-vm-custom";
+import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 import { TestTask } from "./index";
 
 const defaultCrtConfig: ScratchCrtConfig = {

@@ -1,6 +1,6 @@
 import { Page } from "playwright/test";
 import { expect } from "playwright-test-coverage";
-import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { TestTask } from "./tasks";
 
 export const getExpectedBlockConfigButtonLabel = (
