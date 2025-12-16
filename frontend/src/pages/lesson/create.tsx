@@ -1,15 +1,15 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
-import Header from "@/components/header/Header";
+import { defineMessages } from "react-intl";
 import LessonForm from "@/components/lesson/LessonForm";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/Page";
 
 const messages = defineMessages({
   title: {
     id: "CreateLesson.title",
+    defaultMessage: "Create Lesson",
+  },
+  heading: {
+    id: "CreateLesson.header",
     defaultMessage: "Create Lesson",
   },
   submit: {
@@ -20,20 +20,13 @@ const messages = defineMessages({
 
 const CreateLesson = () => {
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <CrtNavigation />
-        <PageHeading>
-          <FormattedMessage
-            id="CreateLesson.header"
-            defaultMessage="Create Lesson"
-          />
-        </PageHeading>
-        <LessonForm submitMessage={messages.submit} onSubmit={console.log} />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.heading}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <LessonForm submitMessage={messages.submit} onSubmit={console.log} />
+    </PageLayout>
   );
 };
 

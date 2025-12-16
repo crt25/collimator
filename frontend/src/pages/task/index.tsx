@@ -1,17 +1,16 @@
-import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import TaskTable from "@/components/task/TaskTable";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/Page";
 
 const messages = defineMessages({
   title: {
     id: "ListTasks.title",
     defaultMessage: "Tasks",
+  },
+  heading: {
+    id: "ListTasks.header",
+    defaultMessage: "Task Bank",
   },
   description: {
     id: "ListTasks.pageDescription",
@@ -23,21 +22,14 @@ const messages = defineMessages({
 
 const ListTasks = () => {
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb />
-        </Breadcrumbs>
-        <PageHeading
-          description={<FormattedMessage {...messages.description} />}
-        >
-          <FormattedMessage id="ListTasks.header" defaultMessage="Task Bank" />
-        </PageHeading>
-        <TaskTable />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.heading}
+      description={<FormattedMessage {...messages.description} />}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <TaskTable />
+    </PageLayout>
   );
 };
 

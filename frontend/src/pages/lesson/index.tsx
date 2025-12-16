@@ -1,12 +1,7 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/header/Header";
+import { defineMessages } from "react-intl";
 import LessonList, { Lesson } from "@/components/lesson/LessonList";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/Page";
 
 const lessons: Lesson[] = [
   {
@@ -82,29 +77,25 @@ const messages = defineMessages({
     id: "ListLessons.title",
     defaultMessage: "Lessons",
   },
+  heading: {
+    id: "ListLessons.header",
+    defaultMessage: "Lesson Manager",
+  },
 });
 
 const ListLessons = () => {
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <Breadcrumbs />
-        <CrtNavigation />
-        <PageHeading>
-          <FormattedMessage
-            id="ListLessons.header"
-            defaultMessage="Lesson Manager"
-          />
-        </PageHeading>
-        <LessonList
-          fetchData={() =>
-            Promise.resolve({ items: lessons, totalCount: lessons.length })
-          }
-        />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.heading}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <LessonList
+        fetchData={() =>
+          Promise.resolve({ items: lessons, totalCount: lessons.length })
+        }
+      />
+    </PageLayout>
   );
 };
 
