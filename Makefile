@@ -1,11 +1,9 @@
 # Makefile for devin
-
 setup: setup-repo setup-deps setup-db
 
 setup-repo:
 	git pull
 	git submodule update --init --recursive
-	cd apps/jupyter && git submodule update --init --recursive
 
 setup-deps:
 	cd backend && yarn install
@@ -14,7 +12,7 @@ setup-deps:
 	cd apps/jupyter && make init
 
 setup-db:
-	cd backend && yarn prisma migrate dev
+	cd backend && yarn prisma:migrate:dev
 
 build: build-frontend build-backend build-scratch build-jupyter
 
@@ -63,7 +61,7 @@ test-scratch:
 test-storybook:
 	cd storybook && yarn test
 
-lint: lint-frontend lint-backend
+lint: lint-frontend lint-backend lint-scratch lint-jupyter
 
 lint-frontend:
 	cd frontend && yarn lint
@@ -71,29 +69,15 @@ lint-frontend:
 lint-backend:
 	cd backend && yarn lint
 
-dev-backend:
-	cd backend && yarn start:dev
+lint-scratch:
+	cd apps/scratch && yarn lint
 
-dev-frontend:
-	cd frontend && yarn dev
-
-dev-scratch:
-	cd apps/scratch && yarn dev
-
-dev:
-	make dev-backend & make dev-frontend & make dev-scratch
-
-storybook:
-	cd storybook && yarn storybook
-
-jupyter-serve:
-	cd apps/jupyter && make serve
+lint-jupyter:
+	cd apps/jupyter && yarn lint
 
 i18n-update:
 	cd frontend && yarn i18n:update
-
-prisma-generate:
-	cd backend && yarn prisma generate
+	cd apps/scratch && yarn i18n:update
 
 api-generate:
 	cd frontend && yarn update:api
@@ -118,7 +102,4 @@ devin-lint:
 devin-test:
 	make test-unit
 
-devin-dev:
-	make dev-backend & make dev-frontend & make dev-scratch
-
-.PHONY: setup setup-repo setup-deps setup-db test test-unit test-e2e test-frontend test-backend test-scratch test-storybook build build-frontend build-backend build-scratch build-jupyter build-e2e build-e2e-frontend build-e2e-backend build-e2e-scratch clean clean-jupyter lint lint-frontend lint-backend dev dev-backend dev-frontend dev-scratch storybook jupyter-serve i18n-update prisma-generate api-generate devin-pull devin-deps devin-lint devin-test devin-dev
+.PHONY: setup setup-repo setup-deps setup-db test test-unit test-e2e test-frontend test-backend test-scratch test-storybook build build-frontend build-backend build-scratch build-jupyter build-e2e build-e2e-frontend build-e2e-backend build-e2e-scratch clean clean-jupyter lint lint-frontend lint-backend lint-scratch lint-jupyter i18n-update api-generate devin-pull devin-deps devin-lint devin-test
