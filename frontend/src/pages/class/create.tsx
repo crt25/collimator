@@ -1,16 +1,11 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { toaster } from "@/components/Toaster";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
-import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/Page";
 
 const messages = defineMessages({
   title: {
@@ -80,19 +75,13 @@ const CreateClass = () => {
   );
 
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb />
-        </Breadcrumbs>
-        <PageHeading description={"" /* no description */}>
-          <FormattedMessage {...messages.header} />
-        </PageHeading>
-        <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.header}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <ClassForm submitMessage={messages.submit} onSubmit={onSubmit} />
+    </PageLayout>
   );
 };
 
