@@ -1,5 +1,6 @@
 import {
   Cell,
+  Column,
   TableOptions,
   ColumnFiltersState,
   SortingState,
@@ -45,6 +46,9 @@ type DataTableColumn = {
   label: string;
 };
 
+// Default page size for pagination
+const DEFAULT_PAGE_SIZE = 10;
+
 interface DataTableFeatures {
   columnOrdering?: boolean;
   columnPinning?: {
@@ -65,9 +69,8 @@ interface DataTableFeatures {
     columns: DataTableColumn[];
   };
   expanding?: boolean;
-  pagination?: {
-    pageSize: number;
-  };
+  // pagination can be true (uses default pageSize) or an object with custom pageSize
+  pagination?: boolean | { pageSize?: number };
   rowPinning?: {
     top?: number[];
     bottom?: number[];
@@ -123,12 +126,20 @@ const TableContainer = chakra("div", {
   },
 });
 
-const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
+// Reuse the return type from TanStack's getIsSorted for type consistency
+type SortDirection = ReturnType<Column<unknown, unknown>["getIsSorted"]>;
+
+const SortIcon = ({ isSorted }: { isSorted: SortDirection }) => {
   if (isSorted === "asc") {
     return <LuArrowUpNarrowWide size={16} />;
   }
 
-  return <LuArrowDownNarrowWide size={16} />;
+  if (isSorted === "desc") {
+    return <LuArrowDownNarrowWide size={16} />;
+  }
+
+  // When not sorted, don't render an icon
+  return null;
 };
 
 const messages = defineMessages({
@@ -172,9 +183,16 @@ export const ChakraDataTable = <T extends { id: number }>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  // Helper to get page size from pagination feature (handles both boolean and object forms)
+  const getPageSize = () => {
+    if (!features?.pagination) return DEFAULT_PAGE_SIZE;
+    if (typeof features.pagination === "boolean") return DEFAULT_PAGE_SIZE;
+    return features.pagination.pageSize ?? DEFAULT_PAGE_SIZE;
+  };
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: features?.pagination?.pageSize || 10,
+    pageSize: getPageSize(),
   });
 
   const rowModels = useMemo(() => {
@@ -493,31 +511,37 @@ export const ChakraDataTable = <T extends { id: number }>({
         <Table.Header>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Row key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  onClick={
-                    features?.sorting && header.column.getCanSort()
-                      ? header.column.getToggleSortingHandler()
-                      : undefined
-                  }
-                  width={`${header.getSize()}px`}
-                >
-                  <HeaderContent>
-                    <div>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </div>
-                    {features?.sorting && header.column.getCanSort() && (
-                      <SortIcon isSorted={header.column.getIsSorted()} />
-                    )}
-                  </HeaderContent>
-                </Table.ColumnHeader>
-              ))}
+              {headerGroup.headers.map((header) => {
+                // Only apply explicit width when column defines a size
+                const columnSize = header.column.columnDef.size;
+                const widthStyle = columnSize ? `${columnSize}px` : undefined;
+
+                return (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    onClick={
+                      features?.sorting && header.column.getCanSort()
+                        ? header.column.getToggleSortingHandler()
+                        : undefined
+                    }
+                    width={widthStyle}
+                  >
+                    <HeaderContent>
+                      <div>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </div>
+                      {features?.sorting && header.column.getCanSort() && (
+                        <SortIcon isSorted={header.column.getIsSorted()} />
+                      )}
+                    </HeaderContent>
+                  </Table.ColumnHeader>
+                );
+              })}
             </Table.Row>
           ))}
         </Table.Header>

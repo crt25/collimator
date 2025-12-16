@@ -317,10 +317,7 @@ const ProgressList = ({
             data={progress}
             columns={columns}
             features={{
-              sorting: true,
-              pagination: {
-                pageSize: 10,
-              },
+              pagination: true,
             }}
             emptyStateElement={
               <EmptyState

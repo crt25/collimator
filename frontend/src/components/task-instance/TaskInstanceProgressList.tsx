@@ -333,10 +333,7 @@ const TaskInstanceProgressList = ({
               }
             }}
             features={{
-              sorting: true,
-              pagination: {
-                pageSize: 10,
-              },
+              pagination: true,
             }}
           />
         )}
