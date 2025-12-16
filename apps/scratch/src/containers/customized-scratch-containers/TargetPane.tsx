@@ -406,7 +406,7 @@ const mapStateToProps = (state: {
   workspaceMetrics: state.scratchGui.workspaceMetrics,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   onNewSpriteClick: () => {
     dispatch(openSpriteLibrary());
   },

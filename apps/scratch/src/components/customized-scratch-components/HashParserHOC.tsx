@@ -79,7 +79,7 @@ const HashParserHOC = function <
     };
   };
 
-  const mapDispatchToProps = (dispatch: Dispatch<State>) => ({
+  const mapDispatchToProps = (dispatch: Dispatch) => ({
     setProjectId: (projectId: string | number) => {
       dispatch(setProjectId(projectId));
     },
