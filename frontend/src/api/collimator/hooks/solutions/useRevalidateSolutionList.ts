@@ -27,6 +27,14 @@ export const useRevalidateSolutionList = (): ((
         getSolutionsControllerFindAllStudentSolutionsV0Url(
           classId,
           sessionId,
+          taskId,
+        ),
+      );
+
+      mutate(
+        getSolutionsControllerFindAllStudentSolutionsV0Url(
+          classId,
+          sessionId,
           allTasksPlaceholder,
         ),
       );

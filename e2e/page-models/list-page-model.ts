@@ -18,6 +18,10 @@ export abstract class ListPageModel {
     return this.page.getByTestId(`${this.itemPrefix}-${itemId}-actions`);
   }
 
+  getItemName(itemId: number | string) {
+    return this.page.getByTestId(`${this.itemPrefix}-${itemId}-name`);
+  }
+
   getItemActionsDropdownButton(itemId: number | string) {
     return this.page.getByTestId(
       `${this.itemPrefix}-${itemId}-actions-dropdown-button`,
@@ -29,14 +33,18 @@ export abstract class ListPageModel {
   }
 
   getSessionLinkButton(itemId: number | string) {
-    return this.page.getByTestId(
-      `${this.itemPrefix}-${itemId}-copy-session-link-button`,
-    );
+    this.page
+      .getByTestId(`${this.itemPrefix}-${itemId}-copy-session-link-button`)
+      .click();
+
+    const modal = this.page.getByTestId("share-modal");
+
+    return modal.getByTestId("copy-button");
   }
 
   editItem(itemId: number | string): Promise<void> {
     return this.page
-      .getByTestId(`${this.itemPrefix}-${itemId}-edit-button`)
+      .getByTestId(`${this.itemPrefix}-${itemId}-details-button`)
       .click();
   }
 
@@ -46,7 +54,7 @@ export abstract class ListPageModel {
 
   abstract viewItem(itemId: number | string): Promise<void>;
 
-  async deleteItem(itemId: number | string): Promise<void> {
+  async deleteItemAndConfirm(itemId: number | string): Promise<void> {
     await this.getItemActionsDropdownButton(itemId).click();
     await this.getDeleteItemButton(itemId).click();
 
@@ -62,7 +70,6 @@ export abstract class ListPageModel {
       .context()
       .grantPermissions(["clipboard-read", "clipboard-write"]);
 
-    await this.getItemActionsDropdownButton(itemId).click();
     await this.getSessionLinkButton(itemId).click();
 
     return this.page.evaluate(() => navigator.clipboard.readText());

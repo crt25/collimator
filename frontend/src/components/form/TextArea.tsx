@@ -1,41 +1,59 @@
-import styled from "@emotion/styled";
 import { forwardRef } from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
+import {
+  Field,
+  Textarea as ChakraTextarea,
+  TextareaProps as ChakraTextareaProps,
+} from "@chakra-ui/react";
+import styled from "@emotion/styled";
 
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  min-height: 10rem;
-
-  padding: 0.25rem 0.5rem;
-`;
-
-const InputWrapper = styled.label`
+const InputWrapper = styled.div`
   display: block;
   margin-bottom: 1rem;
 `;
 
-const Label = styled.span`
-  display: block;
-  margin-bottom: 0.25rem;
-`;
-
 interface Props {
-  label: MessageDescriptor;
-  children: React.ReactNode;
+  label?: MessageDescriptor;
+  labelBadge?: React.ReactNode;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
 }
 
-const TextArea = forwardRef(function Input(
-  props: React.InputHTMLAttributes<HTMLTextAreaElement> & Props,
+type TextAreaProps = ChakraTextareaProps & Props;
+
+const TextArea = forwardRef(function TextArea(
+  props: TextAreaProps,
   ref: React.Ref<HTMLTextAreaElement>,
 ) {
   const intl = useIntl();
-  const { label, children, ...inputProps } = props;
+  const {
+    label,
+    labelBadge,
+    helperText,
+    errorText,
+    invalid,
+    variant,
+    ...textareaProps
+  } = props;
 
   return (
     <InputWrapper>
-      <Label>{intl.formatMessage(label)}</Label>
-      <StyledTextarea {...inputProps} ref={ref} />
-      {children}
+      <Field.Root invalid={invalid || !!errorText}>
+        {label && (
+          <Field.Label>
+            {intl.formatMessage(label)}
+            {labelBadge || null}
+          </Field.Label>
+        )}
+        <ChakraTextarea
+          ref={ref}
+          variant={variant ?? "subtle"}
+          {...textareaProps}
+        />
+        {errorText && <Field.ErrorText>{errorText}</Field.ErrorText>}
+        {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
+      </Field.Root>
     </InputWrapper>
   );
 });

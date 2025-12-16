@@ -1,27 +1,20 @@
 import { useState } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Col, Row } from "react-bootstrap";
-import styled from "@emotion/styled";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import { useTask } from "@/api/collimator/hooks/tasks/useTask";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import MultiSwrContent from "../MultiSwrContent";
 import Input from "../form/Input";
 import Select from "../form/Select";
 import { StudentName } from "../encryption/StudentName";
-import { StudentAnonymizationToggle } from "../student/StudentAnonymizationToggle";
 import AnalysisParameters from "./AnalysisParameters";
 import { useSubtasks } from "./hooks/useSubtasks";
 import { useSubtaskAnalyses } from "./hooks/useSubtaskAnalyses";
-import { allSubtasks } from "./Analyzer.state";
 import { useDissimilarAnalyses } from "./hooks/useDissimilarAnalyses";
 import CodeView from "./CodeView";
 
 const messages = defineMessages({
-  taskSelection: {
-    id: "DissimilarityAnalysis.taskSelection",
-    defaultMessage: "Task Selection",
-  },
   subTaskSelection: {
     id: "DissimilarityAnalysis.subTaskSelection",
     defaultMessage: "Sub-task Selection",
@@ -36,21 +29,13 @@ const messages = defineMessages({
   },
 });
 
-const CodeViewCol = styled(Col)`
-  margin-bottom: 1rem;
-`;
-
 const DissimilarityAnalysis = ({
   session,
+  task,
 }: {
   session: ExistingSessionExtended;
+  task: ExistingTask;
 }) => {
-  const intl = useIntl();
-
-  const [selectedTask, setSelectedTask] = useState<number | undefined>(
-    session.tasks[0]?.id,
-  );
-
   const [selectedSubTaskId, setSelectedSubTaskId] = useState<
     string | undefined
   >();
@@ -58,34 +43,15 @@ const DissimilarityAnalysis = ({
   const [numberOfSolutions, setNumberOfSolutions] = useState<number>(2);
 
   const {
-    data: task,
-    isLoading: isLoadingTask,
-    error: taskError,
-  } = useTask(selectedTask);
-
-  const {
     data: analyses,
     isLoading: isLoadingAnalyses,
     error: analysesErrors,
-  } = useCurrentSessionTaskSolutions(
-    session.klass.id,
-    session.id,
-    selectedTask,
-  );
+  } = useCurrentSessionTaskSolutions(session.klass.id, session.id, task.id);
 
   const subtasks = useSubtasks(analyses);
   const subTaskAnalyses = useSubtaskAnalyses(analyses, selectedSubTaskId);
   const { analyses: dissimilarAnalyses, tooManyCombinations } =
     useDissimilarAnalyses(subTaskAnalyses, numberOfSolutions);
-
-  if (!selectedTask) {
-    return (
-      <FormattedMessage
-        id="DissimilarityAnalysis.noTasksInSession"
-        defaultMessage="There are no tasks in this session."
-      />
-    );
-  }
 
   if (tooManyCombinations) {
     return (
@@ -99,48 +65,23 @@ const DissimilarityAnalysis = ({
   return (
     <>
       <MultiSwrContent
-        data={[task, analyses]}
-        isLoading={[isLoadingTask, isLoadingAnalyses]}
-        errors={[taskError, analysesErrors]}
+        data={[analyses]}
+        isLoading={[isLoadingAnalyses]}
+        errors={[analysesErrors]}
       >
-        {([task]) => (
-          <Row>
-            <Col xs={12} lg={3}>
+        {([_analyses]) => (
+          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+            <GridItem colSpan={{ base: 12, lg: 3 }}>
               <AnalysisParameters>
                 <Select
-                  label={messages.taskSelection}
-                  options={session.tasks.map((task) => ({
-                    label: task.title,
-                    value: task.id,
-                  }))}
-                  data-testid="select-task"
-                  onChange={(e) =>
-                    setSelectedTask(parseInt(e.target.value, 10))
-                  }
-                  value={selectedTask}
-                  alwaysShow
-                />
-
-                <Select
                   label={messages.subTaskSelection}
-                  options={[
-                    {
-                      label: intl.formatMessage(messages.allSubTasks),
-                      value: allSubtasks,
-                    },
-                    ...subtasks.map((subtask) => ({
-                      label: subtask.toString(),
-                      value: subtask,
-                    })),
-                  ]}
+                  placeholder={messages.allSubTasks}
+                  options={subtasks.map((subtask) => ({
+                    label: subtask.toString(),
+                    value: subtask,
+                  }))}
                   data-testid="select-subtask"
-                  onChange={(e) =>
-                    setSelectedSubTaskId(
-                      e.target.value !== allSubtasks
-                        ? e.target.value
-                        : undefined,
-                    )
-                  }
+                  onValueChange={(v) => setSelectedSubTaskId(v)}
                   value={selectedSubTaskId}
                   alwaysShow
                 />
@@ -155,15 +96,17 @@ const DissimilarityAnalysis = ({
                     setNumberOfSolutions(Math.max(2, parseInt(e.target.value)))
                   }
                 />
-
-                <StudentAnonymizationToggle />
               </AnalysisParameters>
-            </Col>
-            <Col xs={12} lg={9}>
-              <Row>
+            </GridItem>
+            <GridItem colSpan={{ base: 12, lg: 9 }}>
+              <Grid templateColumns="repeat(12, 1fr)" gap={4}>
                 {dissimilarAnalyses
                   ? dissimilarAnalyses.map((analysis) => (
-                      <CodeViewCol key={analysis.solutionId} xs={12} lg={6}>
+                      <GridItem
+                        key={analysis.solutionId}
+                        colSpan={{ base: 12, lg: 6 }}
+                        marginBottom="md"
+                      >
                         <StudentName
                           studentId={analysis.studentId}
                           pseudonym={analysis.studentPseudonym}
@@ -177,12 +120,12 @@ const DissimilarityAnalysis = ({
                           taskType={task.type}
                           solutionHash={analysis.solutionHash}
                         />
-                      </CodeViewCol>
+                      </GridItem>
                     ))
                   : null}
-              </Row>
-            </Col>
-          </Row>
+              </Grid>
+            </GridItem>
+          </Grid>
         )}
       </MultiSwrContent>
     </>

@@ -1,6 +1,5 @@
-import { CartesianScaleTypeRegistry, ScaleOptionsByType } from "chart.js";
 import { MessageDescriptor } from "react-intl";
-import { DeepPartial } from "chart.js/dist/types/utils";
+import { ChartConfiguration } from "chart.js";
 import { TaskType } from "@/api/collimator/generated/models";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CriterionType } from "./criterion-type";
@@ -25,10 +24,10 @@ export type CriterionFormComponent<
   Parameters extends CriterionBase<Type>,
 > = React.FunctionComponent<CriterionFormProps<Type, Criterion, Parameters>>;
 
-export type AxisConfig = DeepPartial<
-  // use the scale options for cartesian scales
-  ScaleOptionsByType<keyof CartesianScaleTypeRegistry>
->;
+export type AxisConfig = Exclude<
+  Exclude<ChartConfiguration<"bubble">["options"], undefined>["scales"],
+  undefined
+>["x"];
 
 export interface CriterionAxisDefinition<Type extends CriterionType> {
   criterion: Type;

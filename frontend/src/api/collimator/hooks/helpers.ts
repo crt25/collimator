@@ -50,12 +50,15 @@ export const invalidateParameterizedKey = <TParams>(
   mutate: Mutate,
   getUrl: (params?: TParams) => string,
 ): void => {
+  const baseUrl = getUrl();
+
   mutate((key) => {
     return (
-      Array.isArray(key) &&
-      key.length >= 1 &&
-      typeof key[0] === "string" &&
-      key[0].startsWith(getUrl())
+      key === baseUrl ||
+      (Array.isArray(key) &&
+        key.length >= 1 &&
+        typeof key[0] === "string" &&
+        key[0].startsWith(baseUrl))
     );
   });
 };

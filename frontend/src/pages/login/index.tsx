@@ -1,23 +1,44 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "react-bootstrap";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import Button from "@/components/Button";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
-import { WarningMessages } from "@/i18n/warning-messages";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Center, Container } from "@chakra-ui/react";
+import Header from "@/components/header/Header";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
+import PageHeading from "@/components/PageHeading";
+import LoginCard from "@/components/login/LoginCard";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
     id: "LoginPage.title",
     defaultMessage: "Teacher Login",
   },
+  header: {
+    id: "LoginPage.header",
+    defaultMessage: "Welcome to ClassMosaic!",
+  },
+  pageDescription: {
+    id: "LoginPage.pageDescription",
+    defaultMessage: "You're about to access the teacher portal.",
+  },
+  cardTitle: {
+    id: "LoginPage.cardTitle",
+    defaultMessage: "Teacher Login",
+  },
+  cardDescription: {
+    id: "LoginPage.cardDescription",
+    defaultMessage:
+      "Log in to access your classes, tasks, and learning resources.",
+  },
+  authenticateMicrosoft: {
+    id: "LoginPage.authenticate.microsoft",
+    defaultMessage: "Authenticate using Microsoft",
+  },
 });
 
 const LoginPage = () => {
   const router = useRouter();
-  const intl = useIntl();
   const { redirectUri, registrationToken } = router.query as {
     redirectUri?: string;
     registrationToken?: string;
@@ -34,24 +55,26 @@ const LoginPage = () => {
   }, [redirectUri, registrationToken]);
 
   return (
-    <>
-      <Header title={messages.title} />
+    <MaxScreenHeight>
+      <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeader>
-          <FormattedMessage id="LoginPage.header" defaultMessage="Login" />
-        </PageHeader>
-        <p>{intl.formatMessage(WarningMessages.authenticationTracking)}</p>
-        <Button
-          onClick={onAuthenticateWithMicrosoft}
-          data-testid="signin-button"
+        <PageHeading
+          description={<FormattedMessage {...messages.pageDescription} />}
         >
-          <FormattedMessage
-            id="LoginPage.authenticate.microsoft"
-            defaultMessage="Authenticate using Microsoft"
-          />
-        </Button>
+          <FormattedMessage {...messages.header} />
+        </PageHeading>
       </Container>
-    </>
+      <Center marginTop="xl">
+        <LoginCard
+          title={<FormattedMessage {...messages.cardTitle} />}
+          description={<FormattedMessage {...messages.cardDescription} />}
+          buttonLabel={<FormattedMessage {...messages.authenticateMicrosoft} />}
+          onAuthenticate={onAuthenticateWithMicrosoft}
+          buttonDataTestId="signin-button"
+        />
+      </Center>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

@@ -1,42 +1,44 @@
-import {
-  DataTablePageEvent,
-  DataTableSortEvent,
-  DataTableFilterEvent,
-} from "primereact/datatable";
-import { Column } from "primereact/column";
-import { useCallback, useState } from "react";
-import { ButtonGroup, Dropdown } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import { defineMessages, useIntl } from "react-intl";
+import { useState } from "react";
+import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
-import DataTable, { LazyTableState } from "@/components/DataTable";
-import { TableMessages } from "@/i18n/table-messages";
-import { useAllTasksLazyTable } from "@/api/collimator/hooks/tasks/useAllTasks";
+import { ColumnDef } from "@tanstack/react-table";
+import { MdAdd } from "react-icons/md";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { Icon, HStack, Text } from "@chakra-ui/react";
+import { LuChevronRight } from "react-icons/lu";
+import { ColumnType } from "@/types/tanstack-types";
+import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { capitalizeString } from "@/utilities/strings";
+import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import Button, { ButtonVariant } from "../Button";
+import { ChakraDataTable } from "../ChakraDataTable";
+import Button from "../Button";
+import { EmptyState } from "../EmptyState";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
-
-  tr {
-    cursor: pointer;
-  }
 `;
 
 const messages = defineMessages({
+  idColumn: {
+    id: "TaskTable.columns.id",
+    defaultMessage: "ID",
+  },
   titleColumn: {
     id: "TaskTable.columns.title",
     defaultMessage: "Title",
   },
+  taskTypeColumn: {
+    id: "TaskTable.columns.taskType",
+    defaultMessage: "Task Type",
+  },
   actionsColumn: {
-    id: "TaskTable.columns.actions",
-    defaultMessage: "Actions",
+    id: "TaskTable.columns.actionsColumn",
+    defaultMessage: "Quick Actions",
   },
   deleteConfirmationTitle: {
     id: "TaskTable.deleteConfirmation.title",
@@ -50,143 +52,166 @@ const messages = defineMessages({
     id: "TaskTable.deleteConfirmation.confirm",
     defaultMessage: "Delete Task",
   },
+  viewDetails: {
+    id: "TaskTable.viewDetails",
+    defaultMessage: "View Task Details",
+  },
+  deleteTask: {
+    id: "TaskTable.deleteTask",
+    defaultMessage: "Delete Task",
+  },
+  createTask: {
+    id: "TaskTable.createTask",
+    defaultMessage: "Create Task",
+  },
+  emptyStateTitle: {
+    id: "TaskTable.emptyState.title",
+    defaultMessage: "There are no tasks yet. Let's create some!",
+  },
 });
-
-const taskTitleTemplate = (rowData: ExistingTask) => (
-  <span data-testid={`task-${rowData.id}-title`}>{rowData.title}</span>
-);
 
 const TaskTable = () => {
   const intl = useIntl();
   const router = useRouter();
 
-  const [lazyState, setLazyState] = useState<LazyTableState>({
-    first: 0,
-    rows: 10,
-    page: 1,
-    sortField: undefined,
-    sortOrder: undefined,
-    filters: {
-      name: {
-        value: "",
-        matchMode: "contains",
-      },
-    },
-  });
-
-  const { data, isLoading, error } = useAllTasksLazyTable(lazyState);
-
-  const onPage = (event: DataTablePageEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onSort = (event: DataTableSortEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
-
-  const onFilter = (event: DataTableFilterEvent) => {
-    setLazyState((state) => ({ ...state, ...event }));
-  };
+  const { data, isLoading, error } = useAllTasks();
+  const deleteTask = useDeleteTask();
 
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<number | null>(null);
-  const deleteTask = useDeleteTask();
 
-  const actionsTemplate = useCallback(
-    (rowData: ExistingTask) => (
-      <div data-testid={`task-${rowData.id}-actions`}>
-        <Dropdown as={ButtonGroup}>
+  const columns: ColumnDef<ExistingTask>[] = [
+    {
+      accessorKey: "id",
+      header: intl.formatMessage(messages.idColumn),
+      enableSorting: false,
+      cell: (info) => (
+        <span data-testid={`task-${info.row.original.id}-id`}>
+          {info.row.original.id}
+        </span>
+      ),
+      size: 32,
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "title",
+      header: intl.formatMessage(messages.titleColumn),
+      cell: (info) => (
+        <Text
+          fontWeight="semibold"
+          fontSize="lg"
+          data-testid={`task-${info.row.original.id}-title`}
+          margin={0}
+        >
+          {info.row.original.title}
+        </Text>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      accessorKey: "taskType",
+      header: intl.formatMessage(messages.taskTypeColumn),
+      enableSorting: false,
+      cell: (info) => (
+        <span data-testid={`task-${info.row.original.id}-taskType`}>
+          {capitalizeString(info.row.original.type)}
+        </span>
+      ),
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      id: "actions",
+      header: intl.formatMessage(messages.actionsColumn),
+      enableSorting: false,
+      cell: (info) => (
+        <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
-            variant={ButtonVariant.secondary}
+            aria-label={intl.formatMessage(messages.deleteTask)}
             onClick={(e) => {
               e.stopPropagation();
-
-              router.push(`/task/${rowData.id}/edit`);
+              setTaskIdToDelete(info.row.original.id);
+              setShowDeleteConfirmationModal(true);
             }}
-            data-testid={`task-${rowData.id}-edit-button`}
+            data-testid={`task-${info.row.original.id}-delete-button`}
+            variant="ghost"
           >
-            <FontAwesomeIcon icon={faEdit} />
+            <FaRegTrashAlt />
           </Button>
-
-          <Dropdown.Toggle
-            variant="secondary"
-            split
-            data-testid={`task-${rowData.id}-actions-dropdown-button`}
-          />
-
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={(e) => {
-                e.stopPropagation();
-
-                setTaskIdToDelete(rowData.id);
-                setShowDeleteConfirmationModal(true);
-              }}
-              data-testid={`task-${rowData.id}-delete-button`}
-            >
-              {intl.formatMessage(TableMessages.delete)}
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    ),
-    [router, intl],
-  );
+        </div>
+      ),
+      size: 64,
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+    {
+      id: "details",
+      header: "",
+      enableSorting: false,
+      cell: (info) => (
+        <div data-testid={`task-${info.row.original.id}-actions`}>
+          <Button
+            aria-label={intl.formatMessage(messages.viewDetails)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/task/${info.row.original.id}/detail`);
+            }}
+            data-testid={`task-${info.row.original.id}-details-button`}
+            variant="detail"
+          >
+            <Icon>
+              <LuChevronRight />
+            </Icon>
+          </Button>
+        </div>
+      ),
+      size: 32,
+      meta: {
+        columnType: ColumnType.text,
+      },
+    },
+  ];
 
   return (
     <TaskTableWrapper data-testid="task-list">
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {(data) => (
-          <DataTable
-            value={data.items}
-            lazy
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            first={lazyState.first}
-            rows={10}
-            totalRecords={data.totalCount}
-            onPage={onPage}
-            onSort={onSort}
-            sortField={lazyState.sortField}
-            sortOrder={lazyState.sortOrder}
-            onFilter={onFilter}
-            filters={lazyState.filters}
-            loading={isLoading}
-            onRowClick={(e) =>
-              router.push(`/task/${(e.data as ExistingTask).id}/detail`)
-            }
-          >
-            <Column
-              field="title"
-              header={intl.formatMessage(messages.titleColumn)}
-              sortable
-              filter
-              filterPlaceholder={intl.formatMessage(
-                TableMessages.searchFilterPlaceholder,
-              )}
-              filterMatchMode="contains"
-              showFilterMenu={false}
-              body={taskTitleTemplate}
-            />
-            <Column
-              header={intl.formatMessage(messages.actionsColumn)}
-              body={actionsTemplate}
-              filter
-              filterElement={
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => router.push("task/create")}
-                    data-testid="task-create-button"
-                  >
-                    <FontAwesomeIcon icon={faAdd} />
-                  </Button>
-                </Dropdown>
+          <ChakraDataTable
+            data={data}
+            columns={columns}
+            isLoading={isLoading}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(`/task/${row.id}/detail`);
               }
-            />
-          </DataTable>
+            }}
+            features={{
+              sorting: true,
+              columnFiltering: {
+                columns: [
+                  {
+                    accessorKey: "title",
+                    label: intl.formatMessage(messages.titleColumn),
+                  },
+                ],
+              },
+              pagination: {
+                pageSize: 10,
+              },
+            }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
+          />
         )}
       </SwrContent>
       <ConfirmationModal
@@ -202,6 +227,19 @@ const TaskTable = () => {
           confirmButton: messages.deleteConfirmationConfirm,
         }}
       />
+      <Button
+        variant="primary"
+        onClick={() => router.push("task/create")}
+        data-testid="task-create-button"
+        marginTop="md"
+      >
+        <HStack>
+          <Icon>
+            <MdAdd />
+          </Icon>
+          {intl.formatMessage(messages.createTask)}
+        </HStack>
+      </Button>
     </TaskTableWrapper>
   );
 };

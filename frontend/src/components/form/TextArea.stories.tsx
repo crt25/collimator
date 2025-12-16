@@ -11,7 +11,8 @@ export const Default = {
       id: "_",
       defaultMessage: "The label",
     },
-    children: <p>Some content below the input such as errors</p>,
+    invalid: true,
+    errorText: "This is an error message",
     placeholder: "Some placeholder text",
   },
 };
