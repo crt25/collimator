@@ -48,6 +48,7 @@ export const AppStateProviderHOC = <TProps extends object>(
     render() {
       const {
         appState,
+        localesOnly: _localesOnly,
         isFullScreen: _isFullScreen,
         isPlayerOnly: _isPlayerOnly,
         showTelemetryModal: _showTelemetryModal,

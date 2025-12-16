@@ -1,7 +1,7 @@
 import bindAll from "lodash.bindall";
 import React from "react";
 import VM from "@scratch/scratch-vm";
-import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
+import { defineMessages, IntlShape, injectIntl } from "react-intl";
 
 import LibraryComponent from "@scratch-submodule/packages/scratch-gui/src/components/library/library.jsx";
 import extensionIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--sprite.svg";
@@ -21,7 +21,7 @@ const messages = defineMessages({
 });
 
 interface Props {
-  intl: InjectedIntl;
+  intl: IntlShape;
   onCategorySelected: (id: string) => void;
   onRequestClose: () => void;
   visible?: boolean;

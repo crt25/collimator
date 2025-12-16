@@ -278,6 +278,8 @@ declare class VMExtended extends VM {
   runtime: VMExtended.RuntimeExtended;
   extensionManager: VMExtended.ExtensionManagerExtended;
 
+  attachStorage(storage: import("scratch-storage").ScratchStorage): void;
+
   /**
    * Deletes the target with the given ID and any of its clones.
    * @returns If a sprite was deleted, returns a function to undo the deletion.

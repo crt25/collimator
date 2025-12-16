@@ -1,0 +1,6 @@
+# Copied over from the node modules
+mediapipe
+fetch-worker.*
+
+!.gitignore
+!.gitkeep

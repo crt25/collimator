@@ -3,3 +3,5 @@
 
 # tests & coverage
 /coverage
+
+.babelrc

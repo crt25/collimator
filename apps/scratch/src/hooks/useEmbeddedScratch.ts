@@ -1,7 +1,7 @@
 import VM from "@scratch/scratch-vm";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
-import { defineMessages, InjectedIntl, FormattedMessage } from "react-intl";
+import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
@@ -130,10 +130,7 @@ const buildSubmission = (
   failedTests,
 });
 
-const getSubmission = async (
-  vm: VM,
-  intl: InjectedIntl,
-): Promise<Submission> => {
+const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
   // first stop the project and reset the state
   vm.runtime.stopAll();
 
@@ -213,13 +210,13 @@ const getSubmission = async (
 export class EmbeddedScratchCallbacks {
   constructor(
     private vm: VM,
-    private intl: InjectedIntl,
+    private intl: IntlShape,
     private dispatch: Dispatch<AnyAction>,
   ) {}
 
   static readonly errorMessages: Record<
     ScratchProjectErrorCode,
-    FormattedMessage.MessageDescriptor
+    MessageDescriptor
   > = {
     [ScratchProjectErrorCode.InvalidZip]: messages.invalidZip,
     [ScratchProjectErrorCode.MissingProjectJson]: messages.projectJsonMissing,
@@ -383,7 +380,7 @@ export class EmbeddedScratchCallbacks {
 
 export const useEmbeddedScratch = (
   vm: VM | null,
-  intl: InjectedIntl,
+  intl: IntlShape,
 ): ReturnType<typeof useIframeParent> => {
   const dispatch = useDispatch();
 

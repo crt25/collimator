@@ -132,12 +132,14 @@ const TargetPane = ({
   if (stageId) {
     stageSelector = isStageSelectorVisible ? (
       <StageSelector
+        // @ts-expect-error Type inference is not correct
         asset={stage.costume?.asset}
-        // @ts-expect-error The inferred type is wrong
         backdropCount={stage.costumeCount}
         id={stageId}
         selected={stageId === editingTarget}
         onSelect={onSelectSprite}
+        raised={false}
+        receivedBlocks={false}
       />
     ) : (
       <MinimalStageSelector

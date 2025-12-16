@@ -1,4 +1,10 @@
-import Gui from "../containers/customized-scratch-containers/Gui";
+import dynamic from "next/dynamic";
+const Gui = dynamic(
+  () => import("../containers/customized-scratch-containers/Gui"),
+  {
+    ssr: false,
+  },
+);
 
 const Edit = () => {
   return (
@@ -8,10 +14,7 @@ const Edit = () => {
       isStageEnabled={true}
       isCostumesTabEnabled={true}
       isSoundsTabEnabled={true}
-      onStorageInit={(storageInstance: {
-        addOfficialScratchWebStores: () => void;
-      }) => storageInstance.addOfficialScratchWebStores()}
-      basePath="/"
+      basePath="/scratch"
     />
   );
 };

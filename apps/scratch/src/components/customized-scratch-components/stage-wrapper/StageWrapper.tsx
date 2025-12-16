@@ -13,7 +13,7 @@ import headerStyles from "@scratch-submodule/packages/scratch-gui/src/components
 import { setStageSize } from "@scratch-submodule/packages/scratch-gui/src/reducers/stage-size";
 import { setFullScreen } from "@scratch-submodule/packages/scratch-gui/src";
 import Button from "@scratch-submodule/packages/scratch-gui/src/components/button/button";
-import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
+import { defineMessages, IntlShape, injectIntl } from "react-intl";
 
 import fullScreenIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--fullscreen.svg";
 import largeStageIcon from "@scratch-submodule/packages/scratch-gui/src/components/stage-header/icon--large-stage.svg";
@@ -58,7 +58,7 @@ const messages = defineMessages({
 });
 
 interface Props {
-  intl: InjectedIntl;
+  intl: IntlShape;
   isFullScreen?: boolean;
   isRendererSupported?: boolean;
   isRtl?: boolean;

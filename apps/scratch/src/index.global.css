@@ -42,7 +42,8 @@ body {
 
 html,
 body,
-#root {
+body > div[id],
+body > div[id] > div {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -66,12 +67,6 @@ body,
 .disabled-block-button text,
 .stack-freeze-button text {
   fill: white;
-}
-
-.enabled-block-button rect,
-.disabled-block-button rect,
-.stack-freeze-button rect {
-  fill: black;
 }
 
 .enabled-block-button:hover rect,

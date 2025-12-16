@@ -3,8 +3,8 @@ import omit from "lodash.omit";
 import {
   defineMessages,
   FormattedMessage,
-  InjectedIntl,
   injectIntl,
+  IntlShape,
 } from "react-intl";
 import { connect } from "react-redux";
 import MediaQuery from "react-responsive";
@@ -48,6 +48,7 @@ import codeIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui
 import costumesIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--costumes.svg";
 import soundsIcon from "@scratch-submodule/packages/scratch-gui/src/components/gui/icon--sounds.svg";
 import { useEffect, useMemo } from "react";
+import { ScratchStorage } from "scratch-storage";
 import { CrtContext } from "../../../contexts/CrtContext";
 import Blocks from "../../../containers/customized-scratch-containers/Blocks";
 import TargetPane from "../../../containers/customized-scratch-containers/TargetPane";
@@ -71,7 +72,7 @@ const GUIComponent = (props: {
   // required
   vm: VM;
   crtConfig: ScratchCrtConfig;
-  intl: InjectedIntl;
+  intl: IntlShape;
 
   // optional
   assetHost?: string;
@@ -81,9 +82,7 @@ const GUIComponent = (props: {
   isShowingProject?: boolean;
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
-  onStorageInit?: (storageInstance: {
-    addOfficialScratchWebStores: () => void;
-  }) => void;
+  onStorageInit?: (storageInstance: ScratchStorage) => void;
   onUpdateProjectId?: () => void;
   onVmInit?: () => void;
   projectHost?: string;

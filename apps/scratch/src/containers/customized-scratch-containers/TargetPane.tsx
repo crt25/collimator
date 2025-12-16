@@ -2,7 +2,7 @@ import bindAll from "lodash.bindall";
 import React from "react";
 import VM from "@scratch/scratch-vm";
 import { connect } from "react-redux";
-import { injectIntl, InjectedIntl } from "react-intl";
+import { injectIntl, IntlShape } from "react-intl";
 
 import {
   openSpriteLibrary,
@@ -48,28 +48,18 @@ interface Metrics {
 }
 
 interface Props
-  extends Omit<TargetPaneProps, "onSelectSprite" | "onActivateBlocksTab"> {
-  intl: InjectedIntl;
-
-  onCloseImporting: () => void;
-  onShowImporting: () => void;
-
-  isRtl: boolean;
-  workspaceMetrics: { targets: { [key: string]: Metrics } };
-
-  dispatchUpdateRestore: (restoreState: {
-    restoreFun: () => void;
-    deletedItem: string;
-  }) => void;
-  onHighlightTarget: (id: string) => void;
-  onActivateTab: (tabIndex: number) => void;
-  onReceivedBlocks: (receivedBlocks: boolean) => void;
+  extends Omit<
+    TargetPaneProps,
+    "onSelectSprite" | "onActivateBlocksTab" | keyof InjectedProps
+  > {
+  intl: IntlShape;
+  onNewSpriteClick?: (e: Event) => void;
 }
 
-class TargetPane extends React.Component<Props> {
+class TargetPane extends React.Component<ConnectedProps> {
   private fileInput?: HTMLInputElement;
 
-  constructor(props: Props) {
+  constructor(props: ConnectedProps) {
     super(props);
     bindAll(this, [
       "handleActivateBlocksTab",
@@ -186,6 +176,10 @@ class TargetPane extends React.Component<Props> {
   }
   handleActivateBlocksTab() {
     this.props.onActivateTab(BLOCKS_TAB_INDEX);
+  }
+  handleNewSpriteClick(e: Event) {
+    e.preventDefault();
+    this.props.onNewSpriteClick(e);
   }
   handleNewSprite(spriteJSONString: string) {
     return this.props.vm
@@ -354,6 +348,7 @@ class TargetPane extends React.Component<Props> {
       onActivateTab,
       onCloseImporting,
       onHighlightTarget,
+      onNewSpriteClick,
       onReceivedBlocks,
       onShowImporting,
       workspaceMetrics,
@@ -381,6 +376,7 @@ class TargetPane extends React.Component<Props> {
         onSelectSprite={this.handleSelectSprite}
         onSpriteUpload={this.handleSpriteUpload}
         onSurpriseSpriteClick={this.handleSurpriseSpriteClick}
+        onNewSpriteClick={this.handleNewSpriteClick}
       />
     );
   }
@@ -411,8 +407,7 @@ const mapStateToProps = (state: {
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
-  onNewSpriteClick: (e: Event) => {
-    e.preventDefault();
+  onNewSpriteClick: () => {
     dispatch(openSpriteLibrary());
   },
   onRequestCloseSpriteLibrary: () => {
@@ -439,6 +434,22 @@ const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
     dispatch(showStandardAlert("importingAsset") as Action),
 });
 
+const mergeProps = (
+  stateProps: ReturnType<typeof mapStateToProps>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
+  ownProps: Props,
+) => ({
+  ...ownProps,
+  ...stateProps,
+  ...dispatchProps,
+  onNewSpriteClick: ownProps.onNewSpriteClick || dispatchProps.onNewSpriteClick,
+});
+
+type InjectedProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
+
+type ConnectedProps = ReturnType<typeof mergeProps>;
+
 export default injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(TargetPane),
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(TargetPane),
 );

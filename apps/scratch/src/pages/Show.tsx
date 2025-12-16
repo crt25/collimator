@@ -1,10 +1,16 @@
-import { useSearchParams } from "react-router-dom";
-import Gui from "../containers/customized-scratch-containers/Gui";
+import { useRouter } from "next/dist/client/router";
+import dynamic from "next/dynamic";
+const Gui = dynamic(
+  () => import("../containers/customized-scratch-containers/Gui"),
+  {
+    ssr: false,
+  },
+);
 
 const Show = () => {
-  const [searchParams] = useSearchParams();
+  const router = useRouter();
 
-  const showStage = searchParams.get("showStage") !== null;
+  const showStage = router.query.showStage !== null;
 
   return (
     <Gui
@@ -14,10 +20,7 @@ const Show = () => {
       isCostumesTabEnabled={false}
       isSoundsTabEnabled={false}
       isStageEnabled={showStage}
-      onStorageInit={(storageInstance: {
-        addOfficialScratchWebStores: () => void;
-      }) => storageInstance.addOfficialScratchWebStores()}
-      basePath="/"
+      basePath="/scratch"
     />
   );
 };
