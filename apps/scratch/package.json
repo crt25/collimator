@@ -6,7 +6,7 @@
     "dev": "cross-env NODE_OPTIONS=--preserve-symlinks next dev --webpack --port 3101",
     "dev:coverage": "yarn test:cov:enable && cross-env NODE_OPTIONS=--preserve-symlinks BABEL_ENV=coverage next dev --webpack --port 3101 && yarn test:cov:disable",
     "build": "cross-env NODE_OPTIONS=--preserve-symlinks next build --webpack",
-    "start": "cross-env NODE_OPTIONS=--preserve-symlinks next start --webpack --port 3101",
+    "start": "cross-env NODE_OPTIONS=--preserve-symlinks next start --port 3101",
     "pretest": "shx rm -rf coverage/ .nyc_output/ && yarn test:cov:enable",
     "test": "yarn pretest && playwright test && yarn posttest",
     "test:cov:enable": "shx cp .babelrc.disabled .babelrc",
