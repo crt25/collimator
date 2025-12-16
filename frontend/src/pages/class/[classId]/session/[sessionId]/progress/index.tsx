@@ -14,7 +14,7 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import SessionActions from "@/components/session/SessionActions";
-import { ShareModal } from "@/components/form/ShareModal";
+import { ShareModal } from "@/components/modals/ShareModal";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import Button from "@/components/Button";
