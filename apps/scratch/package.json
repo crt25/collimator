@@ -35,6 +35,7 @@
     "@scratch/scratch-render": "11.6.0-react-18",
     "@scratch/scratch-vm": "patch:@scratch/scratch-vm@npm%3A11.6.0-react-18#~/.yarn/patches/@scratch-scratch-vm-npm-11.6.0-react-18-c04086e700.patch",
     "@sentry/cli": "^2.43.0",
+    "@sentry/nextjs": "^10.31.0",
     "@sentry/react": "^9.11.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",

@@ -118,7 +118,7 @@ jobs:
         working-directory: ./apps/scratch
         run: yarn build
         env:
-          REACT_APP_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
 
       - name: Upload scratch app source maps
         working-directory: ./apps/scratch
