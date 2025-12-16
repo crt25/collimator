@@ -1,4 +1,5 @@
 import {
+  CloseButton,
   createListCollection,
   Grid,
   GridItem,
@@ -18,6 +19,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
+import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
@@ -139,6 +141,8 @@ const ShowcaseInternal = ({
     [items],
   );
 
+  const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
+
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap="md" marginBottom="md">
       <GridItem
@@ -166,26 +170,62 @@ const ShowcaseInternal = ({
               updateItems={updateOrder}
               noGap
             >
-              {(item) => (
-                <Listbox.Item
-                  item={item}
-                  key={item.value}
-                  padding="md"
-                  borderRadius="0"
-                  backgroundColor={{
-                    base: "gray.100",
-                    _selected: "gray.300",
-                  }}
-                >
-                  <Listbox.ItemText fontWeight="semiBold">
-                    <HStack>
-                      {item.index + 1}.{" "}
-                      <AnalysisName analysis={item.analysis} />
-                    </HStack>
-                  </Listbox.ItemText>
-                  <Listbox.ItemIndicator />
-                </Listbox.Item>
-              )}
+              {(item) => {
+                const analysis = item.analysis;
+                const studentAnalysisId =
+                  analysis instanceof CurrentStudentAnalysis
+                    ? analysis.studentSolutionId
+                    : null;
+
+                return (
+                  <Listbox.Item
+                    item={item}
+                    key={item.value}
+                    padding="sm"
+                    borderRadius="0"
+                    backgroundColor={{
+                      base: "gray.100",
+                      _selected: "gray.300",
+                    }}
+                  >
+                    <Listbox.ItemText fontWeight="semiBold">
+                      <HStack justifyContent="space-between">
+                        <HStack>
+                          <span>{item.index + 1}. </span>
+                          <AnalysisName analysis={analysis} />
+                        </HStack>
+                        {
+                          // Only student solutions can be removed from the showcase.
+                          studentAnalysisId ? (
+                            <CloseButton
+                              variant="ghost"
+                              padding="0"
+                              backgroundColor={{ _hover: "gray.300" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+
+                                patchStudentSolutionIsReference(
+                                  klass.id,
+                                  session.id,
+                                  task.id,
+                                  studentAnalysisId,
+                                  {
+                                    isReference: false,
+                                  },
+                                );
+                              }}
+                            />
+                          ) : (
+                            <CloseButton variant="ghost" disabled>
+                              𝓡
+                            </CloseButton>
+                          )
+                        }
+                      </HStack>
+                    </Listbox.ItemText>
+                  </Listbox.Item>
+                );
+              }}
             </SortableListInput>
           </Listbox.Content>
         </Listbox.Root>

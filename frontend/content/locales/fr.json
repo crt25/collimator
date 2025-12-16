@@ -185,6 +185,9 @@
   "DEPRECATED: Task.sessionMenu.heading.description": {
     "message": ""
   },
+  "DEPRECATED: embeddedApp.exportError": {
+    "message": "Échec de l'exportation de la tâche : {error}"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -1415,6 +1418,48 @@
   },
   "datatable.placeholder.filterBy": {
     "message": "Rechercher..."
+  },
+"embeddedApp.cannotExport": {
+    "message": "Échec de l'exportation de la tâche : {error}"
+  },
+  "embeddedApp.cannotGetTask": {
+    "message": "Impossible de récupérer la tâche : {error}"
+  },
+  "embeddedApp.cannotImportExternalInNonEditMode": {
+    "message": "Impossible d'importer des tâches externes en mode non-édition"
+  },
+  "embeddedApp.cannotImportTask": {
+    "message": "Impossible d'importer la tâche : {error}"
+  },
+  "embeddedApp.cannotLoadProject": {
+    "message": "Impossible de charger le projet : {error}"
+  },
+  "embeddedApp.cannotLoadSubmission": {
+    "message": "Impossible de charger la soumission : {error}"
+  },
+  "embeddedApp.cannotLoadTask": {
+    "message": "Impossible de charger le contenu de la tâche : {error}"
+  },
+  "embeddedApp.cannotSaveProject": {
+    "message": "Impossible de sauvegarder le projet : {error}"
+  },
+  "embeddedApp.cannotSaveTask": {
+    "message": "Impossible de sauvegarder la tâche : {error}"
+  },
+  "embeddedApp.savingTask": {
+    "message": "Sauvegarde de la tâche en cours..."
+  },
+  "embeddedApp.submissionLoaded": {
+    "message": "Soumission chargée avec succès"
+  },
+  "embeddedApp.taskCreated": {
+    "message": "Tâche créée avec succès"
+  },
+  "embeddedApp.taskImported": {
+    "message": "Tâche importée avec succès"
+  },
+  "embeddedApp.taskLoaded": {
+    "message": "Tâche chargée avec succès"
   },
   "forms.arrayLength": {
     "message": "$'{path}' doit avoir $'{length}' éléments"

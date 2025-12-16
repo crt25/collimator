@@ -1,4 +1,44 @@
 {
+  "crt.assertionsModal.close": [
+    {
+      "type": 0,
+      "value": "Close"
+    }
+  ],
+  "crt.assertionsModal.heading": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionNameHeading": [
+    {
+      "type": 0,
+      "value": "Assertion on "
+    },
+    {
+      "type": 1,
+      "value": "targetName"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusFailed": [
+    {
+      "type": 0,
+      "value": "Fail"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusHeading": [
+    {
+      "type": 0,
+      "value": "Status"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusPassed": [
+    {
+      "type": 0,
+      "value": "Pass"
+    }
+  ],
   "crt.blockConfig.blockUsageLimit": [
     {
       "type": 0,
@@ -38,7 +78,13 @@
   "crt.extensions.assertions.assert": [
     {
       "type": 0,
-      "value": "Assert [CONDITION] is true"
+      "value": "[NAME]: Assert [CONDITION] is true"
+    }
+  ],
+  "crt.extensions.assertions.assertDefaultValue": [
+    {
+      "type": 0,
+      "value": "x-Coordinate of final position is correct"
     }
   ],
   "crt.extensions.assertions.categoryName": [
@@ -51,6 +97,12 @@
     {
       "type": 0,
       "value": "when task finished running"
+    }
+  ],
+  "crt.extensions.assertions.unnamedAssertion": [
+    {
+      "type": 0,
+      "value": "Unnamed Assertion"
     }
   ],
   "crt.taskConfig.allowAllStandardBlocks": [
@@ -83,10 +135,102 @@
       "value": "Enable assertions simulating a student solving the task."
     }
   ],
+  "crt.taskConfig.enableStageInteractions": [
+    {
+      "type": 0,
+      "value": "Enable students to interact with the stage"
+    }
+  ],
   "crt.taskConfig.heading": [
     {
       "type": 0,
       "value": "Task Config"
+    }
+  ],
+  "crt.taskConfig.maximumExecutionTime": [
+    {
+      "type": 0,
+      "value": "Maximum execution time in seconds."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Could not load the project."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Could not save the project."
+    }
+  ],
+  "crt.useEmbeddedScratch.concurrentLoadError": [
+    {
+      "type": 0,
+      "value": "A project is already being loaded. This project has been queued."
+    }
+  ],
+  "crt.useEmbeddedScratch.crtConfigParseError": [
+    {
+      "type": 0,
+      "value": "The crt.json file is not valid JSON."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidProjectJson": [
+    {
+      "type": 0,
+      "value": "The project.json file is not valid JSON."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidScratchProject": [
+    {
+      "type": 0,
+      "value": "The project file is not a valid Scratch project."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidZip": [
+    {
+      "type": 0,
+      "value": "The project file is not a valid ZIP archive."
+    }
+  ],
+  "crt.useEmbeddedScratch.missingAssets": [
+    {
+      "type": 0,
+      "value": "The project is missing the following assets: "
+    },
+    {
+      "type": 1,
+      "value": "assets"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "crt.useEmbeddedScratch.projectJsonMissing": [
+    {
+      "type": 0,
+      "value": "The project file is missing project.json."
+    }
+  ],
+  "crt.useEmbeddedScratch.timeoutExceeded": [
+    {
+      "type": 0,
+      "value": "We stopped the run, it was taking too long."
+    }
+  ],
+  "crt.useEmbeddedScratch.unknownError": [
+    {
+      "type": 0,
+      "value": "An unknown error occurred."
+    }
+  ],
+  "crt.useEmbeddedScratch.vmLoadError": [
+    {
+      "type": 0,
+      "value": "The Scratch VM failed to load the project."
     }
   ]
 }

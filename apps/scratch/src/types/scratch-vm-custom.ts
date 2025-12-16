@@ -89,3 +89,17 @@ export interface ScratchCrtConfig {
    */
   enableStageInteractions: boolean;
 }
+
+export interface ScratchAsset {
+  assetId: string;
+  dataFormat: string;
+}
+
+export interface ScratchTarget {
+  costumes?: ScratchAsset[];
+  sounds?: ScratchAsset[];
+}
+
+export interface ScratchProject {
+  targets: ScratchTarget[];
+}

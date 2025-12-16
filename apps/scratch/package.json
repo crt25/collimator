@@ -13,7 +13,7 @@
     "posttest": "nyc report",
     "eject": "react-scripts eject",
     "lint": "eslint '**/*.ts' '**/*.tsx' --ignore-pattern node_modules/",
-    "i18n:extract": "formatjs extract 'src/{components,sections,extensions}/**/*.{js,ts,tsx}' --format crowdin --out-file src/content/locales/en.json",
+    "i18n:extract": "formatjs extract 'src/{components,sections,extensions,hooks}/**/*.{js,ts,tsx}' --format crowdin --out-file src/content/locales/en.json",
     "i18n:compile": "formatjs compile-folder --ast --format crowdin src/content/locales src/content/compiled-locales",
     "i18n:fill": "node ./scripts/fill-locales.mjs",
     "i18n:update": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
