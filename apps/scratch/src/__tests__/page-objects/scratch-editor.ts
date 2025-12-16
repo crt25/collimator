@@ -61,6 +61,13 @@ export class ScratchEditorPage {
     return this.page.getByTestId("task-config-form");
   }
 
+  static zoomResetButtonSelector =
+    '[*|href="/scratch/static/blocks-media/default/zoom-reset.svg"]';
+
+  get zoomResetButton() {
+    return this.page.locator(ScratchEditorPage.zoomResetButtonSelector);
+  }
+
   getBlockConfigButton(opcode: string) {
     return this.page.locator(getBlockConfigButtonSelector(opcode));
   }
@@ -240,8 +247,6 @@ export class ScratchEditorPage {
   }
 
   resetZoom() {
-    return this.page
-      .locator('[*|href="/scratch/static/blocks-media/default/zoom-reset.svg"]')
-      .click();
+    return this.zoomResetButton.click();
   }
 }

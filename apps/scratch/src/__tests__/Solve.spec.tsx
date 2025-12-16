@@ -9,6 +9,7 @@ import { TestFailingTaskPage } from "./page-objects/test-failing-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
 import tasks from "./tasks/index";
+import { ScratchEditorPage } from "./page-objects/scratch-editor";
 import type { RpcMethodName } from "../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 declare global {
@@ -36,7 +37,8 @@ test.describe("/solve", () => {
 
     await page.goto(`${baseURL!}/solve`);
 
-    await page.waitForSelector("#root");
+    await page.waitForSelector(ScratchEditorPage.zoomResetButtonSelector);
+    await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
   });
 
   test("can select the stage", async ({ page: pwPage }) => {

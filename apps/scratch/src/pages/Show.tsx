@@ -10,7 +10,7 @@ const Gui = dynamic(
 const Show = () => {
   const router = useRouter();
 
-  const showStage = router.query.showStage !== null;
+  const showStage = router.query.showStage !== undefined;
 
   return (
     <Gui

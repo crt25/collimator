@@ -7,6 +7,7 @@ import { TestTaskPage } from "./page-objects/test-task";
 import { EditTaskPage, Extension } from "./page-objects/edit-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
+import { ScratchEditorPage } from "./page-objects/scratch-editor";
 
 declare global {
   interface Window {
@@ -33,7 +34,8 @@ test.describe("/edit", () => {
 
     await page.goto(`${baseURL!}/edit`);
 
-    await page.waitForSelector("#root");
+    await page.waitForSelector(ScratchEditorPage.zoomResetButtonSelector);
+    await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
   });
 
   test("can get height via window.postMessage", async ({ page }) => {

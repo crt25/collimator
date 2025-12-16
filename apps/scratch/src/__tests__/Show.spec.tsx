@@ -5,6 +5,7 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
+import { ScratchEditorPage } from "./page-objects/scratch-editor";
 
 declare global {
   interface Window {
@@ -31,7 +32,8 @@ test.describe("/show", () => {
 
     await page.goto(`${baseURL!}/show?showStage`);
 
-    await page.waitForSelector("#root");
+    await page.waitForSelector(ScratchEditorPage.zoomResetButtonSelector);
+    await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
   });
 
   test("can select the stage", async ({ page: pwPage }) => {
