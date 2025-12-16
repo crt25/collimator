@@ -2599,6 +2599,122 @@
       "value": "Search"
     }
   ],
+  "embeddedApp.cannotExport": [
+    {
+      "type": 0,
+      "value": "Failed to export task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotGetTask": [
+    {
+      "type": 0,
+      "value": "Cannot get task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotImportExternalInNonEditMode": [
+    {
+      "type": 0,
+      "value": "Cannot import external tasks in non-edit mode"
+    }
+  ],
+  "embeddedApp.cannotImportTask": [
+    {
+      "type": 0,
+      "value": "Cannot import task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Cannot load project: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadSubmission": [
+    {
+      "type": 0,
+      "value": "Cannot load submission: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotLoadTask": [
+    {
+      "type": 0,
+      "value": "Cannot load content of the task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Cannot save project: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.cannotSaveTask": [
+    {
+      "type": 0,
+      "value": "Cannot save task: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "embeddedApp.savingTask": [
+    {
+      "type": 0,
+      "value": "Saving task..."
+    }
+  ],
+  "embeddedApp.submissionLoaded": [
+    {
+      "type": 0,
+      "value": "Submission loaded successfully"
+    }
+  ],
+  "embeddedApp.taskCreated": [
+    {
+      "type": 0,
+      "value": "Task created successfully"
+    }
+  ],
+  "embeddedApp.taskImported": [
+    {
+      "type": 0,
+      "value": "Task imported successfully"
+    }
+  ],
+  "embeddedApp.taskLoaded": [
+    {
+      "type": 0,
+      "value": "Task loaded successfully"
+    }
+  ],
   "forms.arrayLength": [
     {
       "type": 0,

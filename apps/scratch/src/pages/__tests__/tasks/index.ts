@@ -5,6 +5,11 @@ import * as fs from "fs";
 import { BlockFreezeStates } from "../../../blocks/types";
 import { ScratchCrtConfig } from "../../../types/scratch-vm-custom";
 import { zipDirectory } from "./helpers";
+import {
+  createMissingAssetsTask,
+  createNoCostumesOrSoundsTask,
+  createNoTargetsTask,
+} from "./invalid-tasks";
 
 export type TestTask = {
   blocksOfMainTarget: number;
@@ -125,6 +130,12 @@ const tasks = {
   get assertionTask(): TestTask {
     return getTask(path.resolve(__dirname, "assertion-task"));
   },
+  get testFailingTask(): TestTask {
+    return getTask(path.resolve(__dirname, "test-failing-task"));
+  },
+  createMissingAssetsTask,
+  createNoTargetsTask,
+  createNoCostumesOrSoundsTask,
 };
 
 export default tasks;

@@ -59,6 +59,36 @@ test.describe("/edit", () => {
     });
   });
 
+  test("can export task via window.postMessage", async ({ page }) => {
+    await TestTaskPage.load(page);
+
+    await page.evaluate(() => {
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 0,
+        method: "exportTask",
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    await page.waitForFunction(() => window.postedMessages.length > 1);
+
+    const messages = await page.evaluate(() => window.postedMessages);
+
+    expect(messages).toHaveLength(2);
+
+    expect(messages[1].message).toEqual({
+      jsonrpc: "2.0",
+      id: 0,
+      method: "exportTask",
+      // blobs cannot be transferred, see https://github.com/puppeteer/puppeteer/issues/3722
+      result: {
+        file: {},
+        filename: expect.stringMatching(/\.sb3$/),
+      },
+    });
+  });
+
   test("can get task via window.postMessage", async ({ page }) => {
     await TestTaskPage.load(page);
 

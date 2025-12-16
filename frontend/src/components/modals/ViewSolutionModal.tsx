@@ -5,8 +5,10 @@ import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import MultiSwrContent from "../MultiSwrContent";
+import { executeWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
+import MultiSwrContent from "../MultiSwrContent";
 import TaskModal from "./TaskModal";
 
 const getViewUrl = (taskType: TaskType) => {
@@ -59,11 +61,16 @@ const ViewSolutionModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (taskFile && solutionFile) {
-        embeddedApp.sendRequest("loadSubmission", {
-          task: taskFile,
-          submission: solutionFile,
-          language: intl.locale as Language,
-        });
+        executeWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadSubmission", {
+              task: taskFile,
+              submission: solutionFile,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
       }
     },
     [taskFile, solutionFile, intl],

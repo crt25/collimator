@@ -1,4 +1,44 @@
 {
+  "crt.assertionsModal.close": [
+    {
+      "type": 0,
+      "value": "Fermer"
+    }
+  ],
+  "crt.assertionsModal.heading": [
+    {
+      "type": 0,
+      "value": "Assertions"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionNameHeading": [
+    {
+      "type": 0,
+      "value": "Assertion on "
+    },
+    {
+      "type": 1,
+      "value": "targetName"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusFailed": [
+    {
+      "type": 0,
+      "value": "Échec"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusHeading": [
+    {
+      "type": 0,
+      "value": "Statut"
+    }
+  ],
+  "crt.assertionsModal.tableAssertionStatusPassed": [
+    {
+      "type": 0,
+      "value": "Réussi"
+    }
+  ],
   "crt.blockConfig.blockUsageLimit": [
     {
       "type": 0,
@@ -41,6 +81,12 @@
       "value": "Affirmer que [CONDITION] est vrai"
     }
   ],
+  "crt.extensions.assertions.assertDefaultValue": [
+    {
+      "type": 0,
+      "value": "La coordonnée x de la position finale est correcte"
+    }
+  ],
   "crt.extensions.assertions.categoryName": [
     {
       "type": 0,
@@ -51,6 +97,12 @@
     {
       "type": 0,
       "value": "lorsque l'exécution de la tâche est terminée"
+    }
+  ],
+  "crt.extensions.assertions.unnamedAssertion": [
+    {
+      "type": 0,
+      "value": "Assertion sans nom"
     }
   ],
   "crt.taskConfig.allowAllStandardBlocks": [
@@ -80,13 +132,105 @@
   "crt.taskConfig.enableAssertions": [
     {
       "type": 0,
-      "value": "Activer les affirmations simulant la résolution de la tâche par un étudiant."
+      "value": "Activer les assertions simulant la résolution de la tâche par un étudiant."
+    }
+  ],
+  "crt.taskConfig.enableStageInteractions": [
+    {
+      "type": 0,
+      "value": "Autoriser les interactions des étudiants avec la scène"
     }
   ],
   "crt.taskConfig.heading": [
     {
       "type": 0,
-      "value": "Configuration des tâches"
+      "value": "Configuration des tâches."
+    }
+  ],
+  "crt.taskConfig.maximumExecutionTime": [
+    {
+      "type": 0,
+      "value": "Temps d’exécution maximal (en secondes)."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotLoadProject": [
+    {
+      "type": 0,
+      "value": "Impossible de charger le projet."
+    }
+  ],
+  "crt.useEmbeddedScratch.cannotSaveProject": [
+    {
+      "type": 0,
+      "value": "Impossible d'enregistrer le projet."
+    }
+  ],
+  "crt.useEmbeddedScratch.concurrentLoadError": [
+    {
+      "type": 0,
+      "value": "Un projet est déjà en cours de chargement. Ce projet a été mis en file d'attente."
+    }
+  ],
+  "crt.useEmbeddedScratch.crtConfigParseError": [
+    {
+      "type": 0,
+      "value": "Le fichier crt.json n'est pas un JSON valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidProjectJson": [
+    {
+      "type": 0,
+      "value": "Le fichier project.json n'est pas un JSON valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidScratchProject": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet n'est pas un projet Scratch valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.invalidZip": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet n'est pas une archive ZIP valide."
+    }
+  ],
+  "crt.useEmbeddedScratch.missingAssets": [
+    {
+      "type": 0,
+      "value": "Il manque les ressources suivantes au projet : "
+    },
+    {
+      "type": 1,
+      "value": "assets"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "crt.useEmbeddedScratch.projectJsonMissing": [
+    {
+      "type": 0,
+      "value": "Le fichier de projet est incomplet : il manque project.json."
+    }
+  ],
+  "crt.useEmbeddedScratch.timeoutExceeded": [
+    {
+      "type": 0,
+      "value": "Nous avons arrêté l'exécution, car elle prenait trop de temps."
+    }
+  ],
+  "crt.useEmbeddedScratch.unknownError": [
+    {
+      "type": 0,
+      "value": "Une erreur inconnue est survenue."
+    }
+  ],
+  "crt.useEmbeddedScratch.vmLoadError": [
+    {
+      "type": 0,
+      "value": "La VM Scratch n'a pas réussi à charger le projet."
     }
   ]
 }
