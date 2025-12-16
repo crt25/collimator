@@ -4,9 +4,9 @@ import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { useEffect } from "react";
 import BrowserModalComponent from "@scratch-submodule/packages/scratch-gui/src/components/browser-modal/browser-modal.jsx";
+import Head from "next/head";
 import { isDevelopment } from "../utilities/constants";
 import type { AppProps } from "next/app";
-import Head from "next/head";
 
 const cache = createCache({ key: "next" });
 
@@ -39,10 +39,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <div>
       <Head>
         <title>Scratch</title>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <CacheProvider value={cache}>
         <Toaster />

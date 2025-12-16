@@ -1,4 +1,4 @@
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 const Gui = dynamic(
   () => import("../containers/customized-scratch-containers/Gui"),
