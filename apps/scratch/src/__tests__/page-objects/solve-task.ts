@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { Page } from "playwright/test";
 import { ScratchEditorPage } from "./scratch-editor";
 

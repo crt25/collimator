@@ -158,7 +158,6 @@ const motionXmlByOpCode: Record<MotionOpCode, (targetId: string) => string> = {
     <block id="${targetId}__motion_direction" type="motion_direction"/>`,
 };
 
-/* eslint-disable no-unused-vars */
 export const buildMotionXml = function (
   isInitialSetup: boolean,
   isStage: boolean,
