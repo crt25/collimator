@@ -2,12 +2,12 @@ import bindAll from "lodash.bindall";
 import React from "react";
 import { connect } from "react-redux";
 
+import { Dispatch } from "redux";
 import {
   defaultProjectId,
   getIsFetchingWithoutId,
   setProjectId,
 } from "@scratch-submodule/packages/scratch-gui/src/reducers/project-state";
-import { Dispatch } from "redux";
 
 /* Higher Order Component to get the project id from location.hash
  * @param {React.Component} WrappedComponent: component to render

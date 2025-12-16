@@ -1,11 +1,11 @@
 import React from "react";
 import { defineMessages, IntlShape, injectIntl } from "react-intl";
 
+import VM from "@scratch/scratch-vm";
+import { isRtl } from "scratch-l10n";
 import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
 import SpriteInfo from "@scratch-submodule/packages/scratch-gui/src//containers/sprite-info.jsx";
 import ActionMenu from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/action-menu.jsx";
-import VM from "@scratch/scratch-vm";
-import { isRtl } from "scratch-l10n";
 
 import styles from "@scratch-submodule/packages/scratch-gui/src/components/sprite-selector/sprite-selector.css";
 

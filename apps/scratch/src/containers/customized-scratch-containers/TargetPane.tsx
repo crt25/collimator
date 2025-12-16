@@ -4,6 +4,7 @@ import VM from "@scratch/scratch-vm";
 import { connect } from "react-redux";
 import { injectIntl, IntlShape } from "react-intl";
 
+import { Action, Dispatch } from "redux";
 import {
   openSpriteLibrary,
   closeSpriteLibrary,
@@ -35,7 +36,6 @@ import {
 } from "@scratch-submodule/packages/scratch-gui/src/lib/backpack-api";
 import randomizeSpritePosition from "@scratch-submodule/packages/scratch-gui/src/lib/randomize-sprite-position";
 import downloadBlob from "@scratch-submodule/packages/scratch-gui/src/lib/download-blob";
-import { Action, Dispatch } from "redux";
 import TargetPaneComponent, {
   Sprite,
   Props as TargetPaneProps,

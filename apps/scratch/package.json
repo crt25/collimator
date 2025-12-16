@@ -28,7 +28,6 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@eslint/compat": "^2.0.0",
     "@microbit/microbit-universal-hex": "^0.2.2",
     "@playwright/test": "^1.51.1",
     "@radix-ui/react-context-menu": "^2.2.5",

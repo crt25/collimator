@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import VM from "@scratch/scratch-vm";
 import { IntlShape, injectIntl } from "react-intl";
 
+import { ScratchStorage } from "scratch-storage";
 import ErrorBoundaryHOC from "@scratch-submodule/packages/scratch-gui/src/lib/error-boundary-hoc.jsx";
 import {
   getIsError,
@@ -22,7 +23,6 @@ import {
   closeBackdropLibrary,
   openExtensionLibrary,
 } from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
-import { ScratchStorage } from "scratch-storage";
 import FontLoaderHOC from "@scratch-submodule/packages/scratch-gui/src/lib/font-loader-hoc.jsx";
 import LocalizationHOC from "@scratch-submodule/packages/scratch-gui/src/lib/localization-hoc.jsx";
 import TitledHOC from "@scratch-submodule/packages/scratch-gui/src/lib/titled-hoc.jsx";

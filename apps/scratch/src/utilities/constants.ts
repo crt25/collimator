@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 export const isDevelopment =
   (process.env.NEXT_PUBLIC_DEVELOPMENT as unknown as string | undefined) !==
   undefined;

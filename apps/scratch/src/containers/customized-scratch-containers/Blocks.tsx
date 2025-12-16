@@ -9,6 +9,9 @@ import VM, {
   VariableType,
 } from "@scratch/scratch-vm";
 
+import { connect } from "react-redux";
+import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
+import { Action, Dispatch } from "redux";
 import log from "@scratch-submodule/packages/scratch-gui/src/lib/log.js";
 import Prompt from "@scratch-submodule/packages/scratch-gui/src/containers/prompt.jsx";
 import BlocksComponent from "@scratch-submodule/packages/scratch-gui/src/components/blocks/blocks.jsx";
@@ -27,7 +30,6 @@ import {
   injectExtensionCategoryTheme,
 } from "@scratch-submodule/packages/scratch-gui/src/lib/themes/blockHelpers";
 
-import { connect } from "react-redux";
 import { updateToolbox } from "@scratch-submodule/packages/scratch-gui/src/reducers/toolbox";
 import { activateColorPicker } from "@scratch-submodule/packages/scratch-gui/src/reducers/color-picker";
 import {
@@ -48,8 +50,6 @@ import {
   SOUNDS_TAB_INDEX,
 } from "@scratch-submodule/packages/scratch-gui/src/reducers/editor-tab";
 import { StageDisplaySize } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
-import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import { Action, Dispatch } from "redux";
 import VMScratchBlocks from "@scratch-submodule/packages/scratch-gui/src/lib/blocks";
 import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import {

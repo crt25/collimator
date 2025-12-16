@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
-import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import {
   useIframeParent,
   Language,
@@ -18,6 +17,7 @@ import {
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
+import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { loadCrtProject } from "../vm/load-crt-project";
 
 import {

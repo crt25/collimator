@@ -3,8 +3,8 @@ import { Toaster } from "react-hot-toast";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { useEffect } from "react";
-import BrowserModalComponent from "@scratch-submodule/packages/scratch-gui/src/components/browser-modal/browser-modal.jsx";
 import Head from "next/head";
+import BrowserModalComponent from "@scratch-submodule/packages/scratch-gui/src/components/browser-modal/browser-modal.jsx";
 import { isDevelopment } from "../utilities/constants";
 import type { AppProps } from "next/app";
 
