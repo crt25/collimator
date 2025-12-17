@@ -50,7 +50,6 @@
     "jszip": "^3.10.1"
   },
   "devDependencies": {
-    "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@jupyterlab/builder": "^4.0.0",

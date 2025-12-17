@@ -1,8 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
-import _import from "eslint-plugin-import";
-import { fixupPluginRules } from "@eslint/compat";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
@@ -33,7 +32,7 @@ export default defineConfig([
     extends: compat.extends("../.eslintrc.js"),
 
     plugins: {
-      import: fixupPluginRules(_import),
+      import: importPlugin,
     },
 
     languageOptions: {

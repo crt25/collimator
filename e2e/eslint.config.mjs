@@ -1,8 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import importPlugin from "eslint-plugin-import";
 import { defineConfig } from "eslint/config";
-import _import from "eslint-plugin-import";
-import { fixupPluginRules } from "@eslint/compat";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
@@ -21,7 +20,7 @@ export default defineConfig([
     extends: compat.extends("../.eslintrc.js"),
 
     plugins: {
-      import: fixupPluginRules(_import),
+      import: importPlugin,
     },
 
     rules: {

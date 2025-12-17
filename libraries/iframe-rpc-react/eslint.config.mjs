@@ -1,10 +1,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import importPlugin from "eslint-plugin-import";
 import { defineConfig } from "eslint/config";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import _import from "eslint-plugin-import";
 import jestExtended from "eslint-plugin-jest-extended";
-import { fixupPluginRules } from "@eslint/compat";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
@@ -26,7 +25,7 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": typescriptEslint,
-      import: fixupPluginRules(_import),
+      import: importPlugin,
       "jest-extended": jestExtended,
     },
 

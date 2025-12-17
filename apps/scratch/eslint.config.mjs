@@ -1,10 +1,10 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import _import from "eslint-plugin-import";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
@@ -32,6 +32,7 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      import: importPlugin,
     },
 
     languageOptions: {

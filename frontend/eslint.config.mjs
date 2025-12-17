@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
-import _import from "eslint-plugin-import";
 import jestExtended from "eslint-plugin-jest-extended";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -28,6 +28,7 @@ export default defineConfig([
 
     plugins: {
       "jest-extended": jestExtended,
+      import: importPlugin,
     },
 
     rules: {
