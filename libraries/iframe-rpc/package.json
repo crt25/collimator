@@ -9,12 +9,16 @@
     "demo": "http-server -o ./demo"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.0",
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.2",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "eslint": "8.57.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest-extended": "^3.0.0",
     "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.5.0",
     "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
