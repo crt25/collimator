@@ -8,6 +8,8 @@ import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,11 +35,7 @@ export default defineConfig([
     "jest.config.js",
   ]),
   {
-    extends: compat.extends(
-      "../../../../.eslintrc.js",
-      "eslint:recommended",
-      "plugin:prettier/recommended",
-    ),
+    extends: compat.extends("../../../../.eslintrc.js", "eslint:recommended"),
 
     plugins: {
       "@typescript-eslint": typescriptEslint,
@@ -82,4 +80,8 @@ export default defineConfig([
       ],
     },
   },
+  // Should be 2nd to last to override other configs, see https://github.com/prettier/eslint-config-prettier?tab=readme-ov-file#installation.
+  eslintConfigPrettier,
+  // Must be imported last, see https://github.com/prettier/eslint-plugin-prettier?tab=readme-ov-file#configuration-legacy-eslintrc.
+  eslintPluginPrettierRecommended,
 ]);

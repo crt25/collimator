@@ -5,6 +5,8 @@ import _import from "eslint-plugin-import";
 import jestExtended from "eslint-plugin-jest-extended";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +24,6 @@ export default defineConfig([
       ...compat.extends("next/core-web-vitals"),
       ...compat.extends("../.eslintrc.js"),
       ...compat.extends("plugin:storybook/recommended"),
-      ...compat.extends("plugin:prettier/recommended"),
     ],
 
     plugins: {
@@ -85,4 +86,8 @@ export default defineConfig([
       "@typescript-eslint/explicit-function-return-type": "off",
     },
   },
+  // Should be 2nd to last to override other configs, see https://github.com/prettier/eslint-config-prettier?tab=readme-ov-file#installation.
+  eslintConfigPrettier,
+  // Must be imported last, see https://github.com/prettier/eslint-plugin-prettier?tab=readme-ov-file#configuration-legacy-eslintrc.
+  eslintPluginPrettierRecommended,
 ]);
