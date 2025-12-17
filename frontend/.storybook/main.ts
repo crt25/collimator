@@ -1,49 +1,33 @@
-import type { StorybookConfig } from "@storybook/nextjs";
+import type { StorybookConfig } from "@storybook/nextjs-vite";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@chromatic-com/storybook",
-    "@storybook/addon-interactions",
-    "storybook-react-intl",
-    "@storybook/addon-coverage",
-    "storybook-addon-mock",
+    "storybook/actions",
+    "storybook/highlight",
+    "storybook/viewport",
+    // Add back when it supports storybook 10 (required for Next.js v16)
+    // "storybook-addon-mock",
+    "@storybook/addon-vitest"
   ],
   framework: {
-    name: "@storybook/nextjs",
+    name: "@storybook/nextjs-vite",
     options: {},
   },
   staticDirs: ["../public"],
-  webpackFinal: async (config) => {
-    // Add the packages you want to transpile here
-    const transpileModules = [
-      "../backend",
-      "iframe-rpc",
-      "iframe-rpc-react",
-    ];
-
-    const transpileRegex = new RegExp(
-      `node_modules/(?!(${transpileModules.join("|")})/)`,
-    );
-
-
-    // Modify existing swc rule to include the selected node_modules
-    (config?.module?.rules ?? []).forEach((rule) => {
-      if (
-        rule &&
-        typeof rule === "object" &&
-        "use" in rule &&
-        typeof rule.use === "object" &&
-        "loader" in rule.use &&
-        rule.use.loader?.includes("swc")
-      ) {
-        rule.exclude = transpileRegex;
+  viteFinal: async (config, { configType }) => {
+    // Customize the Vite config here
+    return {
+      ...config,
+      optimizeDeps: {
+        include: [
+          /*"../backend",
+          "iframe-rpc",
+          "iframe-rpc-react",*/
+        ],
       }
-    });
-
-    return config;
+    };
   },
 };
 export default config;

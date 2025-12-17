@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import SubmitFormButton from "./SubmitFormButton";
 
 export default {

@@ -2,6 +2,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
+import next from "eslint-config-next";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import jestExtended from "eslint-plugin-jest-extended";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -20,11 +22,12 @@ const compat = new FlatCompat({
 export default defineConfig([
   globalIgnores(["dist", ".next", ".nyc_output", ".swc", "coverage*"]),
   ...storybook.configs["flat/recommended"],
+  ...next,
+  ...nextCoreWebVitals,
   {
     extends: [
-      ...compat.extends("next"),
-      ...compat.extends("next/core-web-vitals"),
       ...compat.extends("../.eslintrc.js"),
+      ...compat.extends("plugin:storybook/recommended"),
     ],
 
     plugins: {
