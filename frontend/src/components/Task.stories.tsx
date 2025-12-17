@@ -1,4 +1,3 @@
-import { Meta as MetaType } from "@storybook/react";
 import { useState, useRef } from "@storybook/preview-api";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
@@ -7,6 +6,8 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import Task from "./Task";
 import { EmbeddedAppRef } from "./EmbeddedApp";
+// eslint-disable-next-line storybook/no-renderer-packages
+import type { Meta as MetaType } from "@storybook/react";
 
 type Args = Omit<
   Parameters<typeof Task>[0],

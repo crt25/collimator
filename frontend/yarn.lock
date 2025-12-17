@@ -9449,7 +9449,7 @@ __metadata:
     eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-jest-extended: "npm:^3.0.0"
     eslint-plugin-prettier: "npm:^5.5.4"
-    eslint-plugin-storybook: "npm:^0.11.3"
+    eslint-plugin-storybook: "npm:^10.1.9"
     iframe-rpc-react: "portal:../libraries/iframe-rpc-react"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
@@ -11249,17 +11249,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:^0.11.3":
-  version: 0.11.3
-  resolution: "eslint-plugin-storybook@npm:0.11.3"
+"eslint-plugin-storybook@npm:^10.1.9":
+  version: 10.1.9
+  resolution: "eslint-plugin-storybook@npm:10.1.9"
   dependencies:
-    "@storybook/csf": "npm:^0.1.11"
     "@typescript-eslint/utils": "npm:^8.8.1"
-    ts-dedent: "npm:^2.2.0"
   peerDependencies:
     eslint: ">=8"
-    typescript: ">=4.8.4 <5.8.0"
-  checksum: 10c0/118d66f03b9657b0a4eae50bb31ca91c892722ac2946f3206cbbe6778b977e5c9310595b216fe1d05d89b6b572f97c25f64347e3c5bd7b20113e18147a975bf3
+    storybook: ^10.1.9
+  checksum: 10c0/9acea59ea3efbf20086b9610d81aa4515f3db00a0ec585668009ed7138716424185a7c369d1d4c3654729ab34fcd78cba16c20619c774521a1e69bd3f8edf7e7
   languageName: node
   linkType: hard
 
