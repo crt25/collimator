@@ -45,8 +45,12 @@ export default defineConfig([
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          name: "@fontawesome",
-          message: "Use icons from react-icons instead.",
+          paths: [
+            {
+              name: "@fontawesome",
+              message: "Use icons from react-icons instead.",
+            },
+          ],
         },
       ],
 

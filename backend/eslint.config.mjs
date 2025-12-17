@@ -42,7 +42,7 @@ export default defineConfig([
       },
 
       parser: tsParser,
-      ecmaVersion: 5,
+      ecmaVersion: 2021,
       sourceType: "module",
 
       parserOptions: {
