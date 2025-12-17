@@ -1,0 +1,88 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig, globalIgnores } from "eslint/config";
+import _import from "eslint-plugin-import";
+import jestExtended from "eslint-plugin-jest-extended";
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
+});
+
+export default defineConfig([
+  globalIgnores(["dist", ".next", ".nyc_output", ".swc", "coverage*"]),
+  {
+    extends: [
+      ...compat.extends("next"),
+      ...compat.extends("next/core-web-vitals"),
+      ...compat.extends("../.eslintrc.js"),
+      ...compat.extends("plugin:storybook/recommended"),
+      ...compat.extends("plugin:prettier/recommended"),
+    ],
+
+    plugins: {
+      "jest-extended": jestExtended,
+    },
+
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          name: "@fontawesome",
+          message: "Use icons from react-icons instead.",
+        },
+      ],
+
+      "import/no-duplicates": [
+        "error",
+        {
+          "prefer-inline": true,
+        },
+      ],
+
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object",
+            "type",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["**/*.tsx"],
+
+    rules: {
+      "@typescript-eslint/no-unnecessary-type-constraint": "off",
+    },
+  },
+  {
+    files: ["src/api/**/generated/**/*", "**/*.js"],
+
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+    },
+  },
+]);
