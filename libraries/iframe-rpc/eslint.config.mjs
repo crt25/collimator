@@ -20,8 +20,9 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
+  js.configs.recommended,
   {
-    extends: compat.extends("../../.eslintrc.js", "eslint:recommended"),
+    extends: compat.extends("../../.eslintrc.js"),
 
     plugins: {
       "@typescript-eslint": typescriptEslint,

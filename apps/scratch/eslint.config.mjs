@@ -22,13 +22,11 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   globalIgnores(["**/*.d.ts", "src/scratch-editor"]),
+  js.configs.recommended,
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   {
-    extends: [
-      ...compat.extends("../../.eslintrc.js"),
-      ...nextCoreWebVitals,
-      ...nextTypescript,
-      ...compat.extends("eslint:recommended"),
-    ],
+    extends: [...compat.extends("../../.eslintrc.js")],
 
     plugins: {
       "@typescript-eslint": typescriptEslint,

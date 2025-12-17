@@ -33,8 +33,9 @@ export default defineConfig([
     "babel.config.js",
     "jest.config.js",
   ]),
+  js.configs.recommended,
   {
-    extends: compat.extends("../../../../.eslintrc.js", "eslint:recommended"),
+    extends: compat.extends("../../../../.eslintrc.js"),
 
     plugins: {
       "@typescript-eslint": typescriptEslint,
