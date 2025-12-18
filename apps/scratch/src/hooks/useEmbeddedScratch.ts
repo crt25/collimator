@@ -29,6 +29,7 @@ import {
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
 import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
+import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -89,12 +90,6 @@ const messages = defineMessages({
     defaultMessage: "An unknown error occurred.",
   },
 });
-
-class VmUnavailableError extends Error {
-  constructor() {
-    super("VM is not available");
-  }
-}
 
 const areAssertionsEnabled = (vm: VM): boolean => {
   let assertionsEnabled = false;
@@ -378,6 +373,8 @@ export class EmbeddedScratchCallbacks {
   }
 }
 
+const initialMessages = stopBufferingIframeMessages();
+
 export const useEmbeddedScratch = (
   vm: VM | null,
   intl: IntlShape,
@@ -406,21 +403,8 @@ export const useEmbeddedScratch = (
       };
     }
 
-    const throwError = (): never => {
-      throw new VmUnavailableError();
-    };
-
-    return {
-      getHeight: throwError,
-      getSubmission: throwError,
-      getTask: throwError,
-      loadTask: throwError,
-      loadSubmission: throwError,
-      setLocale: throwError,
-      importTask: throwError,
-      exportTask: throwError,
-    };
+    return null;
   }, [callbacks]);
 
-  return useIframeParent(handleRequest);
+  return useIframeParent(handleRequest, initialMessages);
 };
