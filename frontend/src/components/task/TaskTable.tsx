@@ -202,7 +202,6 @@ const TaskTable = () => {
                   },
                 ],
               },
-              pagination: true,
             }}
             emptyStateElement={
               <EmptyState

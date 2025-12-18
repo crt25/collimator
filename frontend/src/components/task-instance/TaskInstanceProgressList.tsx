@@ -332,9 +332,6 @@ const TaskInstanceProgressList = ({
                 );
               }
             }}
-            features={{
-              pagination: true,
-            }}
           />
         )}
       </MultiSwrContent>

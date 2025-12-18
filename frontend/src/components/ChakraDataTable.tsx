@@ -46,8 +46,7 @@ type DataTableColumn = {
   label: string;
 };
 
-// Default page size for pagination
-const DEFAULT_PAGE_SIZE = 10;
+const DefaultPageSize = 10;
 
 interface DataTableFeatures {
   columnOrdering?: boolean;
@@ -69,8 +68,6 @@ interface DataTableFeatures {
     columns: DataTableColumn[];
   };
   expanding?: boolean;
-  // pagination can be true (uses default pageSize) or an object with custom pageSize
-  pagination?: boolean | { pageSize?: number };
   rowPinning?: {
     top?: number[];
     bottom?: number[];
@@ -183,16 +180,9 @@ export const ChakraDataTable = <T extends { id: number }>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  // Helper to get page size from pagination feature (handles both boolean and object forms)
-  const getPageSize = () => {
-    if (!features?.pagination) return DEFAULT_PAGE_SIZE;
-    if (typeof features.pagination === "boolean") return DEFAULT_PAGE_SIZE;
-    return features.pagination.pageSize ?? DEFAULT_PAGE_SIZE;
-  };
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: getPageSize(),
+    pageSize: DefaultPageSize,
   });
 
   const rowModels = useMemo(() => {
@@ -218,9 +208,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       models.getFilteredRowModel = getFilteredRowModel();
     }
 
-    if (features?.pagination) {
-      models.getPaginationRowModel = getPaginationRowModel();
-    }
+    models.getPaginationRowModel = getPaginationRowModel();
 
     if (features?.grouping) {
       models.getGroupedRowModel = getGroupedRowModel();
@@ -260,9 +248,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       stateObject.columnFilters = columnFilters;
     }
 
-    if (features?.pagination) {
-      stateObject.pagination = pagination;
-    }
+    stateObject.pagination = pagination;
 
     if (features?.rowSelection) {
       stateObject.rowSelection = rowSelection;
@@ -349,9 +335,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       callbacksObject.onColumnFiltersChange = setColumnFilters;
     }
 
-    if (features?.pagination) {
-      callbacksObject.onPaginationChange = setPagination;
-    }
+    callbacksObject.onPaginationChange = setPagination;
 
     if (features?.rowSelection) {
       callbacksObject.onRowSelectionChange = setRowSelection;
@@ -563,7 +547,7 @@ export const ChakraDataTable = <T extends { id: number }>({
         </Table.Body>
       </Table.Root>
 
-      {features?.pagination && table.getPageCount() > 1 && (
+      {table.getPageCount() > 1 && (
         <DataTablePagination
           pageIndex={table.getState().pagination.pageIndex}
           pageCount={table.getPageCount()}

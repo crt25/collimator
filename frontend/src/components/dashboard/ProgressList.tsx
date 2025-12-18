@@ -316,9 +316,6 @@ const ProgressList = ({
           <ChakraDataTable
             data={progress}
             columns={columns}
-            features={{
-              pagination: true,
-            }}
             emptyStateElement={
               <EmptyState
                 title={<FormattedMessage {...messages.emptyStateTitle} />}

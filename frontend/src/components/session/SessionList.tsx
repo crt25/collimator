@@ -269,7 +269,6 @@ const SessionList = ({ classId }: { classId: number }) => {
                   },
                 ],
               },
-              pagination: true,
             }}
             emptyStateElement={
               <EmptyState

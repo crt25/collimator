@@ -211,7 +211,6 @@ const TaskInstanceTable = ({
                   },
                 ],
               },
-              pagination: true,
             }}
           />
         )}

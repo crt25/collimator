@@ -141,7 +141,6 @@ const ClassList = () => {
                   },
                 ],
               },
-              pagination: true,
             }}
             emptyStateElement={
               <EmptyState
