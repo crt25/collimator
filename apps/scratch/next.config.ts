@@ -60,10 +60,14 @@ const nextConfig: NextConfig = {
             one.use.loader &&
             one.use.loader.includes("next-swc-loader")
           ) {
-            one.exclude = [
-              ...(Array.isArray(one.exclude) ? one.exclude : []),
-              /scratch-paint\/dist/,
-            ];
+            let existingExclude: typeof one.exclude = undefined;
+
+            if (one.exclude !== undefined) {
+              existingExclude = Array.isArray(one.exclude)
+                ? one.exclude
+                : [one.exclude];
+            }
+            one.exclude = [...(existingExclude ?? []), /scratch-paint\/dist/];
           }
         });
       }

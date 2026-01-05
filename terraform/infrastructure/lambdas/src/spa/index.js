@@ -4,7 +4,7 @@ exports.handler = (evt, ctx, cb) => {
   const { request } = evt.Records[0].cf;
 
   // drop first part of the path (the spa name)
-  request.uri = request.uri.replace(/^\/[^/]+/, "");
+  const uri = request.uri.replace(/^\/[^/]+/, "");
 
   // If the URI doesn't have an extension, assume it's a page/directory and rewrite to index.html
   if (uri === "/") {
