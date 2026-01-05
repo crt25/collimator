@@ -29,6 +29,7 @@ export const useStudentName = ({
     const isCancelled = false;
 
     if (!("keyPairId" in authContext)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDecrypting(false);
       return;
     }
