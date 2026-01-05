@@ -27,7 +27,6 @@ export default defineConfig([
   {
     extends: [
       ...compat.extends("../.eslintrc.js"),
-      ...compat.extends("plugin:storybook/recommended"),
     ],
 
     plugins: {
