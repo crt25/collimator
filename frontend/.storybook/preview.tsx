@@ -93,8 +93,8 @@ const preview: Preview = {
       
       return (
         <IntlProvider
+          key={currentLocale}
           timeZone={timeZone}
-          key={locale}
           formats={safeFormats}
           messages={messages[currentLocale]}
           locale={currentLocale}
