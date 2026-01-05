@@ -21,6 +21,7 @@ const config: StorybookConfig = {
     return {
       ...config,
       optimizeDeps: {
+        ...config.optimizeDeps,
         include: [
           /*"../backend",
           "iframe-rpc",
