@@ -40,6 +40,35 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>Scratch</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+        const logModule = "[Iframe Message Buffer]";
+
+        // This script is loaded when the scratch app starts up and before the load event is fired
+        // so that we can buffer any incoming iframe messages until the main app is ready to handle them.
+
+        const bufferIncomingMessages = (e) => {
+          console.debug(\`\${logModule} Buffering incoming message:\`, e);
+          window.bufferedMessages.push(e);
+        };
+
+        window.stopBufferingIframeMessages = () => {
+          console.debug(
+            \`\${logModule} Stopping message buffering, returning \${window.bufferedMessages.length} messages\`
+          );
+          window.removeEventListener("message", bufferIncomingMessages);
+
+          return window.bufferedMessages;
+        };
+
+        console.debug(\`\${logModule} Starting message buffering\`);
+
+        window.bufferedMessages = [];
+        window.addEventListener("message", bufferIncomingMessages);
+`,
+          }}
+        />
       </Head>
       <CacheProvider value={cache}>
         <Toaster />

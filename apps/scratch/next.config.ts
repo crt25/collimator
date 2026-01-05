@@ -42,6 +42,37 @@ const nextConfig: NextConfig = {
       webpackConfig.module.rules = [];
     }
 
+    // Excluding scratch-paint from next-swc-loader
+    webpackConfig.module.rules.forEach((rule) => {
+      if (
+        typeof rule === "object" &&
+        rule !== null &&
+        "oneOf" in rule &&
+        rule.oneOf !== undefined
+      ) {
+        rule.oneOf.forEach((one) => {
+          if (
+            typeof one === "object" &&
+            one !== null &&
+            one.use &&
+            typeof one.use === "object" &&
+            "loader" in one.use &&
+            one.use.loader &&
+            one.use.loader.includes("next-swc-loader")
+          ) {
+            let existingExclude: typeof one.exclude = undefined;
+
+            if (one.exclude !== undefined) {
+              existingExclude = Array.isArray(one.exclude)
+                ? one.exclude
+                : [one.exclude];
+            }
+            one.exclude = [...(existingExclude ?? []), /scratch-paint\/dist/];
+          }
+        });
+      }
+    });
+
     const isNoGlobalCssErrorLoader = (
       rule: Exclude<
         Exclude<Configuration["module"], undefined>["rules"],
