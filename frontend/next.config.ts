@@ -1,3 +1,4 @@
+import { join } from "path";
 import { withSentryConfig } from "@sentry/nextjs";
 import { NextConfig } from "next";
 
@@ -18,6 +19,13 @@ let nextConfig: NextConfig = {
     // ignore deprecation warning from sass because of bootstrap
     // https://sass-lang.com/documentation/breaking-changes/import/
     quietDeps: true,
+  },
+
+  turbopack: {
+    // Turbopack by default does not allow importing files outside the project folder.
+    // Because we import shared libraries from ../libraries, and the G-AST files from
+    // ../backend, we need to set the root to the parent folder.
+    root: join(__dirname, ".."),
   },
 
   webpack: (config) => {
