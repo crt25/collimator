@@ -1,19 +1,22 @@
 import { useRouter } from "next/router";
-import { Container } from "react-bootstrap";
 import { defineMessages } from "react-intl";
+import { Container } from "@chakra-ui/react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ClassNavigation from "@/components/class/ClassNavigation";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import Header from "@/components/header/Header";
 import SessionList from "@/components/session/SessionList";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
+import PageHeading from "@/components/PageHeading";
+import ClassActions from "@/components/class/ClassActions";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
     id: "ClassSessionList.title",
-    defaultMessage: "{name} - Sessions",
+    defaultMessage: "{name} - Lessons",
   },
 });
 
@@ -26,7 +29,7 @@ const ClassSessionList = () => {
   const { data: klass, error, isLoading } = useClass(classId);
 
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
@@ -37,17 +40,23 @@ const ClassSessionList = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
         </Breadcrumbs>
-        <ClassNavigation classId={klass?.id} />
         <SwrContent error={error} isLoading={isLoading} data={klass}>
           {(klass) => (
             <>
-              <PageHeader>{klass.name}</PageHeader>
+              <PageHeading
+                variant="title"
+                actions={<ClassActions klass={klass} />}
+              >
+                {klass.name}
+              </PageHeading>
+              <ClassNavigation classId={klass?.id} />
               <SessionList classId={klass.id} />
             </>
           )}
         </SwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 

@@ -23,9 +23,7 @@
     "esModuleInterop": false,
     "types": ["@types/jest", "@quramy/jest-prisma-node"],
     "paths": {
-      "@e2e-data/*": [
-        "../e2e/setup/seeding/*"
-      ]
+      "@e2e-data/*": ["../e2e/setup/seeding/*"]
     }
   }
 }

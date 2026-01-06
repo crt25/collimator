@@ -1,10 +1,20 @@
 import { defineMessages } from "react-intl";
+import {
+  LuHouse,
+  LuGraduationCap,
+  LuListTodo,
+  LuUsers,
+  LuBookUser,
+  LuMap,
+} from "react-icons/lu";
+import { Breadcrumb } from "@chakra-ui/react";
+import { Fragment } from "react";
 import { ExistingClass } from "@/api/collimator/models/classes/existing-class";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { UserRole } from "@/types/user/user-role";
-import BreadcrumbItem from "./BreadcrumbItem";
+import BreadcrumbItem, { BreadcrumbItemData } from "./BreadcrumbItem";
 import TabNavigation, { NavigationTab } from "./TabNavigation";
 
 const messages = defineMessages({
@@ -34,15 +44,18 @@ const tabs: NavigationTab[] = [
   {
     url: "/",
     title: (intl) => intl.formatMessage(messages.homeTab),
+    icon: <LuHouse />,
   },
   {
     url: "/user",
     title: (intl) => intl.formatMessage(messages.usersTab),
     isShown: (authContext) => authContext.role === UserRole.admin,
+    icon: <LuUsers />,
   },
   {
     url: "/class",
     title: (intl) => intl.formatMessage(messages.classesTab),
+    icon: <LuGraduationCap />,
   },
   // {
   //   url: "/lesson",
@@ -51,6 +64,7 @@ const tabs: NavigationTab[] = [
   {
     url: "/task",
     title: (intl) => intl.formatMessage(messages.tasksTab),
+    icon: <LuListTodo />,
   },
 ];
 
@@ -60,40 +74,65 @@ const CrtNavigation = ({
   klass,
   task,
   lessonId,
+  breadcrumbItems,
 }: {
   breadcrumb?: boolean;
   user?: ExistingUser;
   klass?: ExistingClass | ExistingClassExtended;
   task?: ExistingTask;
   lessonId?: number;
+  breadcrumbItems?: BreadcrumbItemData[];
 }) => {
   const lessonName = "Introduction to React";
-
   return (
     <>
       <TabNavigation tabs={tabs} breadcrumb={breadcrumb} />
       {breadcrumb && (
         <>
           {user && (
-            <BreadcrumbItem href={`/user/${user.id}`}>
-              {user.name ?? user.email}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`/user/${user.id}`} icon={<LuUsers />}>
+                {user.name ?? user.email}
+              </BreadcrumbItem>
+            </>
           )}
           {klass && (
-            <BreadcrumbItem href={`/class/${klass.id}/detail`}>
-              {klass.name}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem
+                href={`/class/${klass.id}/detail`}
+                icon={<LuBookUser />}
+              >
+                {klass.name}
+              </BreadcrumbItem>
+            </>
           )}
           {task && (
-            <BreadcrumbItem href={`/task/${task.id}/detail`}>
-              {task.title}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem
+                href={`/task/${task.id}/detail`}
+                icon={<LuListTodo />}
+              >
+                {task.title}
+              </BreadcrumbItem>
+            </>
           )}
           {lessonId && (
-            <BreadcrumbItem href={`/lesson/${lessonId}`}>
-              {lessonName}
-            </BreadcrumbItem>
+            <>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuMap />}>
+                {lessonName}
+              </BreadcrumbItem>
+            </>
           )}
+          {breadcrumbItems?.map((item, index) => (
+            <Fragment key={index}>
+              <Breadcrumb.Separator />
+              <BreadcrumbItem {...item}>{item.children}</BreadcrumbItem>
+            </Fragment>
+          ))}
         </>
       )}
     </>

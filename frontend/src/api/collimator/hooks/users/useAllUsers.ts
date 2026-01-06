@@ -1,12 +1,7 @@
 import useSWR from "swr";
 import { useMemo } from "react";
-import { LazyTableResult, LazyTableState } from "@/components/DataTable";
-import {
-  ApiResponse,
-  fromDtos,
-  getSwrParamererizedKey,
-  transformToLazyTableResult,
-} from "../helpers";
+import { LazyTableResult } from "@/components/DataTable";
+import { ApiResponse, fromDtos, transformToLazyTableResult } from "../helpers";
 import {
   getUsersControllerFindAllV0Url,
   usersControllerFindAllV0,
@@ -25,14 +20,15 @@ export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
   // use the URL with the params as the first entry in the key for easier invalidation
-  return useSWR(getSwrParamererizedKey(getUsersControllerFindAllV0Url), () =>
+  return useSWR(getUsersControllerFindAllV0Url(), () =>
     fetchAndTransform(authOptions),
   );
 };
 
-export const useAllUsersLazyTable = (
-  _state: LazyTableState,
-): ApiResponse<LazyTableResult<GetUsersReturnType[0]>, Error> => {
+export const useAllUsersLazyTable = (): ApiResponse<
+  LazyTableResult<GetUsersReturnType[0]>,
+  Error
+> => {
   const { data, isLoading, error } = useAllUsers();
 
   const transformedData = useMemo(() => {

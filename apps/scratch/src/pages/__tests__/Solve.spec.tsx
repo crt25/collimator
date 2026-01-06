@@ -5,8 +5,11 @@ import {
 } from "./mock-message-event";
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
+import { TestFailingTaskPage } from "./page-objects/test-failing-task";
 import { getExpectedBlockConfigButtonLabel } from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
+import tasks from "./tasks/index";
+import type { RpcMethodName } from "../../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 declare global {
   interface Window {
@@ -384,6 +387,36 @@ test.describe("/solve", () => {
     expect(page.taskConfigForm).toHaveCount(0);
   });
 
+  test("returns missing files when some are not in zip", async ({ page }) => {
+    const missingAssetsTask = tasks.createMissingAssetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      missingAssetsTask,
+    );
+    // if assets are missing, the project should fail to fully load
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling project with no targets", async ({ page }) => {
+    const noTargetsTask = tasks.createNoTargetsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      noTargetsTask,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
+  test("handling targets with no costumes or sounds", async ({ page }) => {
+    const noCostumesOrSoundsTask = tasks.createNoCostumesOrSoundsTask();
+    const { page: taskPage } = await TestFailingTaskPage.load(
+      page,
+      noCostumesOrSoundsTask,
+    );
+
+    await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
+  });
+
   test("removing initial blocks does not increase the limit", async ({
     page: pwPage,
   }) => {
@@ -493,11 +526,23 @@ test.describe("/solve", () => {
 
     await pwPage.waitForFunction(() => window.postedMessages.length > 2);
 
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some(
+        (m) =>
+          (m.message as { method?: RpcMethodName }).method === "getSubmission",
+      ),
+    );
+
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(3);
+    const submissionMessage = messages.find(
+      (m) =>
+        (m.message as { method?: RpcMethodName }).method === "getSubmission",
+    );
 
-    expect(messages[2].message).toEqual({
+    expect(submissionMessage).toBeDefined();
+
+    expect(submissionMessage!.message).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",

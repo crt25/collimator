@@ -1,8 +1,10 @@
 import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Language, Task } from "iframe-rpc-react/src";
-import { scratchAppHostName } from "@/utilities/constants";
+import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
+import { executeAsyncWithToasts, executeWithToasts } from "@/utilities/task";
+import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
 
@@ -10,6 +12,8 @@ const getEditUrl = (taskType: TaskType) => {
   switch (taskType) {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/edit`;
+    case TaskType.JUPYTER:
+      return `${jupyterAppHostName}?mode=edit`;
     default:
       return null;
   }
@@ -34,11 +38,14 @@ const EditTaskModal = ({
 
   const onSaveTask = useCallback(
     async (embeddedApp: EmbeddedAppRef) => {
-      const task = await embeddedApp.sendRequest("getTask", undefined);
-
+      const task = await executeAsyncWithToasts(
+        () => embeddedApp.sendRequest("getTask", undefined),
+        intl.formatMessage(taskMessages.savingTask),
+        intl.formatMessage(taskMessages.cannotSaveTask),
+      );
       onSave(task.result);
     },
-    [onSave],
+    [onSave, intl],
   );
 
   const loadContent = useCallback(
@@ -50,13 +57,18 @@ const EditTaskModal = ({
       wasInitialized.current = true;
 
       if (initialTask) {
-        embeddedApp.sendRequest("loadTask", {
-          task: initialTask,
-          language: intl.locale as Language,
-        });
+        executeWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadTask", {
+              task: initialTask,
+              language: intl.locale as Language,
+            }),
+          intl.formatMessage(taskMessages.taskLoaded),
+          intl.formatMessage(taskMessages.cannotLoadTask),
+        );
       }
     },
-    [initialTask, intl.locale],
+    [initialTask, intl],
   );
 
   useEffect(() => {

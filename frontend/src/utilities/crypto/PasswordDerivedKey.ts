@@ -12,7 +12,7 @@ export class PasswordDerivedKey extends SymmetricKey {
   static async derive(
     crypto: SubtleCrypto,
     password: string,
-    salt: BufferSource,
+    salt: Uint8Array<ArrayBuffer>,
   ): Promise<PasswordDerivedKey> {
     if (salt.byteLength < 16) {
       throw new Error("The salt must be at least 16 bytes long");
@@ -49,7 +49,7 @@ export class PasswordDerivedKey extends SymmetricKey {
     return new PasswordDerivedKey(crypto, derivedKey);
   }
 
-  static generateSalt(): Uint8Array {
+  static generateSalt(): Uint8Array<ArrayBuffer> {
     return crypto.getRandomValues(new Uint8Array(16));
   }
 }

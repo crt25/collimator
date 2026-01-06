@@ -72,30 +72,15 @@ import {
   isVisualTopOfStack,
 } from "../../utilities/scratch-selectors";
 import { getCrtColorsTheme } from "../../blocks/colors";
+import { StudentActionType } from "../../types/scratch-student-activities";
+import {
+  handleStudentActivityTracking,
+  mapScratchEventTypeToStudentActionType,
+} from "../../utilities/scratch-student-activities/student-activity-tracking";
+import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import ExtensionLibrary from "./ExtensionLibrary";
-
-// reverse engineered from https://github.com/scratchfoundation/scratch-vm/blob/613399e9a9a333eef5c8fb5e846d5c8f4f9536c6/src/engine/blocks.js#L312
-interface WorkspaceChangeEvent {
-  type:
-    | "create"
-    | "change"
-    | "move"
-    | "dragOutside"
-    | "endDrag"
-    | "delete"
-    | "var_create"
-    | "var_rename"
-    | "var_delete"
-    | "comment_create"
-    | "comment_change"
-    | "comment_move"
-    | "comment_delete";
-
-  blockId?: string;
-  recordUndo?: boolean;
-  xml?: Element;
-  oldXml?: Element;
-}
+import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
+import type { CrtContextValue } from "../../contexts/CrtContext";
 
 const addFunctionListener = (
   object: unknown,
@@ -125,8 +110,11 @@ const addFunctionListener = (
 
 const suppressStackClicks =
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  (listener: Function) => (e: { element: unknown }) => {
-    if (e.element === "stackclick" || e.element === "click") {
+  (listener: Function) => (e: WorkspaceChangeEvent) => {
+    if (
+      "element" in e &&
+      (e.element === "stackclick" || e.element === "click")
+    ) {
       // suppress stack click events
       // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
       return;
@@ -188,6 +176,7 @@ interface Props {
   workspaceMetrics: {
     targets: Record<string, Metrics>;
   };
+  sendRequest: CrtContextValue["sendRequest"];
 }
 
 type PromptCallback = (
@@ -249,6 +238,9 @@ class Blocks extends React.Component<Props, State> {
       "setLocale",
       "requestToolboxUpdate",
       "onWorkspaceChange",
+      "blockListener",
+      "reAttachWorkspaceListeners",
+      "removeWorkspaceListeners",
       "onBlocksChange",
       "onProjectLoaded",
     ]);
@@ -543,10 +535,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   attachVM() {
-    this.getWorkspace().addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
-    );
-    this.getWorkspace().addChangeListener(this.onWorkspaceChange);
+    this.reAttachWorkspaceListeners();
 
     const flyoutWorkspace = this.getWorkspaceFlyout().getWorkspace();
     flyoutWorkspace.addChangeListener(
@@ -600,6 +589,25 @@ class Blocks extends React.Component<Props, State> {
       this.handleStatusButtonUpdate,
     );
     this.props.vm.runtime.off("PROJECT_LOADED", this.onProjectLoaded);
+  }
+
+  reAttachWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    // Blockly does not provide a way to check if a listener is already attached.
+    // We remove and reattach to avoid duplicates without having to track attachment state
+    workspace.removeChangeListener(this.blockListener);
+    workspace.addChangeListener(this.blockListener);
+
+    workspace.removeChangeListener(this.onWorkspaceChange);
+    workspace.addChangeListener(this.onWorkspaceChange);
+  }
+
+  removeWorkspaceListeners() {
+    const workspace = this.getWorkspace();
+
+    workspace.removeChangeListener(this.blockListener);
+    workspace.removeChangeListener(this.onWorkspaceChange);
   }
 
   onProjectLoaded = () => {
@@ -755,8 +763,7 @@ class Blocks extends React.Component<Props, State> {
     const workspace = this.getWorkspace();
 
     // Remove and reattach the workspace listener (but allow flyout events)
-    workspace.removeChangeListener(this.props.vm.blockListener);
-    workspace.removeChangeListener(this.onWorkspaceChange);
+    this.removeWorkspaceListeners();
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
       this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -780,10 +787,7 @@ class Blocks extends React.Component<Props, State> {
       }
       log.error(error);
     }
-    workspace.addChangeListener(
-      suppressStackClicks(this.props.vm.blockListener),
-    );
-    workspace.addChangeListener(this.onWorkspaceChange);
+    this.reAttachWorkspaceListeners();
 
     if (
       this.props.vm.editingTarget &&
@@ -1085,57 +1089,60 @@ class Blocks extends React.Component<Props, State> {
     return flyout;
   }
 
+  blockListener(event: WorkspaceChangeEvent) {
+    if (
+      "element" in event &&
+      (event.element === "stackclick" || event.element === "click")
+    ) {
+      // suppress stack click events
+      // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
+      return;
+    }
+
+    this.props.vm.blockListener(event);
+  }
+
   onWorkspaceChange(event: WorkspaceChangeEvent) {
     if (!this.blocks) {
       // if the blocks are not yet mounted, ignore the event
       return;
     }
 
-    if (["create", "delete"].includes(event.type)) {
-      let xml: Element | undefined;
+    handleBlockLifecycle({
+      event,
+      vm: this.props.vm,
+      canEditTask: this.props.canEditTask,
+      blocks: this.blocks,
+      filterNonNull,
+      updateSingleBlockConfigButton,
+    });
 
-      if (event.type === "create" && event.xml) {
-        xml = event.xml;
-      } else if (event.type === "delete" && event.oldXml) {
-        xml = event.oldXml;
-      }
+    const eventAction = mapScratchEventTypeToStudentActionType(event.type);
 
-      if (!xml) {
-        console.error("Could not find xml in event", event);
-        return;
-      }
-
-      // create a new element to be able to use querySelectorAll on it, otherwise
-      // only the children are matched against the selector
-      const el = document.createElement("div");
-      el.appendChild(xml);
-
-      const opcodes = [...el.querySelectorAll("block[type]")]
-        .map((element) => element.getAttribute("type"))
-        .filter(filterNonNull);
-
-      // update the block config button for the blocks
-      for (const opcode of opcodes) {
-        updateSingleBlockConfigButton(
-          this.props.vm,
-          this.blocks,
-          opcode,
-          this.props.canEditTask,
-        );
-      }
-
-      if (
-        event.type === "delete" &&
-        // when switching sprites, blocks are also deleted but with
-        // recordUndo set to false
-        event.recordUndo &&
-        event.blockId &&
-        this.props.canEditTask
-      ) {
-        // remove the config for this task block
-        delete this.props.vm.crtConfig?.freezeStateByBlockId[event.blockId];
-      }
+    if (!eventAction) {
+      // The action is unknown in our registry, so we do nothing
+      return;
     }
+
+    const block = this.getWorkspace().getBlockById(event.blockId || "");
+
+    if (!block && eventAction !== StudentActionType.Delete) {
+      // If the block is not found and it's not a delete event, we cannot track it
+      // If the block is not found during a delete event, we can still track it
+      return;
+    }
+
+    const json = this.props.vm.toJSON();
+    const solution = new Blob([json], { type: "application/json" });
+
+    handleStudentActivityTracking({
+      event,
+      action: eventAction,
+      canEditTask: this.props.canEditTask,
+      sendRequest: this.props.sendRequest,
+      solution,
+      block,
+    });
   }
 
   render() {
@@ -1162,6 +1169,7 @@ class Blocks extends React.Component<Props, State> {
       updateMetrics: updateMetricsProp,
       useCatBlocks,
       workspaceMetrics,
+      sendRequest,
       ...props
     } = this.props;
     /* eslint-enable @typescript-eslint/no-unused-vars */

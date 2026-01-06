@@ -24,7 +24,7 @@ export const createTask = async (
 
   await page.inputs.title.fill(task.title);
   await page.inputs.description.fill(task.description);
-  await page.inputs.type.selectOption(task.template.type);
+  await page.setTaskType(task.template.type);
   await page.openEditTaskModal();
 
   const fileChooserPromise = pwPage.waitForEvent("filechooser");
@@ -40,7 +40,7 @@ export const createTask = async (
   await page.saveTask();
   await page.submitButton.click();
 
-  await pwPage.waitForURL(`${baseUrl}/task`);
+  await pwPage.goto(`${baseUrl}/task`);
 
   await expect(list.getTitleElementByTitle(task.title)).toHaveCount(1);
 

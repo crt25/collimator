@@ -16,6 +16,16 @@ module.exports = {
     jest: true,
   },
   plugins: ["import"],
+  ignorePatterns: [
+    "src/ast/antlr-grammars/**/*",
+    ".yarn",
+    "antlr",
+    "coverage",
+    "coverage-e2e",
+    "dist",
+    "docker",
+    "node_modules",
+  ],
   rules: {
     "@typescript-eslint/no-unused-vars": [
       "error",

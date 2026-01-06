@@ -1,4 +1,27 @@
 {
+  "crt.assertionsModal.close": {
+    "message": "Fermer"
+  },
+  "crt.assertionsModal.heading": {
+    "description": "Heading of the assertions modal.",
+    "message": "Affirmations"
+  },
+  "crt.assertionsModal.tableAssertionNameHeading": {
+    "description": "Heading of the assertion name column in the assertions modal.",
+    "message": "Affirmation sur {targetName}"
+  },
+  "crt.assertionsModal.tableAssertionStatusFailed": {
+    "description": "Indicator that a given assertion failed.",
+    "message": "Échec"
+  },
+  "crt.assertionsModal.tableAssertionStatusHeading": {
+    "description": "Heading of the assertion status column in the assertions modal.",
+    "message": "Statut"
+  },
+  "crt.assertionsModal.tableAssertionStatusPassed": {
+    "description": "Indicator that a given assertion passed.",
+    "message": "Réussi"
+  },
   "crt.blockConfig.blockUsageLimit": {
     "description": "Label shown next to the input field for configuring how often a block can be used by students.",
     "message": "Combien de fois ce bloc peut-il être utilisé ?"
@@ -26,6 +49,9 @@
   "crt.extensions.assertions.assert": {
     "message": "Affirmer que [CONDITION] est vrai"
   },
+  "crt.extensions.assertions.assertDefaultValue": {
+    "message": "La coordonnée X de la position finale est correcte"
+  },
   "crt.extensions.assertions.categoryName": {
     "description": "Label for the Assertions extension category",
     "message": "Affirmations"
@@ -34,17 +60,20 @@
     "description": "The name displayed on the scratch block that runs after the project has stopped running",
     "message": "lorsque l'exécution de la tâche est terminée"
   },
+  "crt.extensions.assertions.unnamedAssertion": {
+    "message": "Affirmation sans nom"
+  },
   "crt.taskConfig.allowAllStandardBlocks": {
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
     "message": "Permettre l'utilisation de tous les blocs standard"
   },
   "crt.taskConfig.allowCustomProcedureBlocks": {
     "description": "Label for checkbox to allow custom procedures in task",
-    "message": "Allow 'My Blocks' custom procedures"
+    "message": "Autoriser les procédures personnalisées « Mes Blocs »"
   },
   "crt.taskConfig.allowVariableBlocks": {
     "description": "Label for checkbox to allow variables in task",
-    "message": "Allow variable blocks"
+    "message": "Autoriser les blocs de variables"
   },
   "crt.taskConfig.disallowAllBlocks": {
     "description": "Label shown on the button that, when clicked, disallows all blocks from being used by students.",
@@ -54,8 +83,52 @@
     "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
     "message": "Activer les assertions simulant la résolution de la tâche par un étudiant."
   },
+  "crt.taskConfig.enableStageInteractions": {
+    "description": "Label for checkbox to enable stage interactions in task",
+    "message": "Autoriser les interactions des étudiants avec la scène"
+  },
   "crt.taskConfig.heading": {
     "description": "Label shown next to the checkbox that allows a teacher to simulate the assertion mode when editing.",
-    "message": "Configuration des tâches"
+    "message": "Configuration des tâches."
+  },
+  "crt.taskConfig.maximumExecutionTime": {
+    "description": "Label shown next to the input field for setting the maximum execution time.",
+    "message": "Temps d’exécution maximal (en secondes)."
+  },
+  "crt.useEmbeddedScratch.cannotLoadProject": {
+    "message": "Impossible de charger le projet."
+  },
+  "crt.useEmbeddedScratch.cannotSaveProject": {
+    "message": "Impossible d'enregistrer le projet."
+  },
+  "crt.useEmbeddedScratch.concurrentLoadError": {
+    "message": "Un projet est déjà en cours de chargement. Ce projet a été mis en file d'attente."
+  },
+  "crt.useEmbeddedScratch.crtConfigParseError": {
+    "message": "Le fichier crt.json n'est pas un JSON valide."
+  },
+  "crt.useEmbeddedScratch.invalidProjectJson": {
+    "message": "Le fichier project.json n'est pas un JSON valide."
+  },
+  "crt.useEmbeddedScratch.invalidScratchProject": {
+    "message": "Le fichier de projet n'est pas un projet Scratch valide."
+  },
+  "crt.useEmbeddedScratch.invalidZip": {
+    "message": "Le fichier de projet n'est pas une archive ZIP valide."
+  },
+  "crt.useEmbeddedScratch.missingAssets": {
+    "message": "Il manque les ressources suivantes au projet : {assets}."
+  },
+  "crt.useEmbeddedScratch.projectJsonMissing": {
+    "message": "Le fichier de projet est incomplet : il manque project.json."
+  },
+  "crt.useEmbeddedScratch.timeoutExceeded": {
+    "message": "Nous avons arrêté l'exécution, car elle prenait trop de temps."
+  },
+  "crt.useEmbeddedScratch.unknownError": {
+    "message": "Une erreur inconnue est survenue."
+  },
+  "crt.useEmbeddedScratch.vmLoadError": {
+    "message": "La VM Scratch n'a pas réussi à charger le projet."
   }
 }

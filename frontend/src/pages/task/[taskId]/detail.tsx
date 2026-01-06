@@ -1,122 +1,130 @@
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useRef } from "react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Container } from "react-bootstrap";
-import { Language } from "iframe-rpc-react/src";
-import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
-import { TaskType } from "@/api/collimator/generated/models";
-import TaskNavigation from "@/components/task/TaskNavigation";
-import MultiSwrContent from "@/components/MultiSwrContent";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/Header";
-import PageHeader from "@/components/PageHeader";
+import { useCallback } from "react";
+import { Container } from "@chakra-ui/react";
+import { defineMessages } from "react-intl";
+import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
+import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
-import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import { useFileHash } from "@/hooks/useFileHash";
-import { scratchAppHostName } from "@/utilities/constants";
+import Header from "@/components/header/Header";
+import MultiSwrContent from "@/components/MultiSwrContent";
+import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
+import { useTaskWithReferenceSolutions } from "@/api/collimator/hooks/tasks/useTaskWithReferenceSolutions";
+import PageHeading from "@/components/PageHeading";
+import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
+import TaskNavigation from "@/components/task/TaskNavigation";
+import TaskActions from "@/components/task/TaskActions";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageFooter from "@/components/PageFooter";
 
 const messages = defineMessages({
   title: {
-    id: "TaskDetail.title",
-    defaultMessage: "Task - {title}",
+    id: "EditTask.title",
+    defaultMessage: "Edit Task - {title}",
+  },
+  submit: {
+    id: "EditTask.submit",
+    defaultMessage: "Save Task",
   },
 });
 
-const getDisplaySolveUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/solve`;
-    default:
-      return null;
-  }
-};
-
-const TaskDetail = () => {
+const EditTask = () => {
   const router = useRouter();
-  const intl = useIntl();
-
   const { taskId } = router.query as {
-    taskId: string;
+    taskId?: string;
   };
 
-  const {
-    data: task,
-    error: taskError,
-    isLoading: isLoadingTask,
-  } = useTask(taskId);
+  const task = useTaskWithReferenceSolutions(taskId);
+  const taskFile = useTaskFile(taskId);
+  const updateTask = useUpdateTask();
 
-  const {
-    data: taskFile,
-    isLoading: isLoadingTaskFile,
-    error: taskFileError,
-  } = useTaskFile(taskId);
+  const onSubmit = useCallback(
+    async (taskSubmission: TaskFormSubmission) => {
+      if (task.data && taskFile.data) {
+        let referenceSolutions: UpdateReferenceSolutionDto[];
+        let referenceSolutionsFiles: Blob[];
 
-  const iframeSrc = useMemo(
-    () => (task ? getDisplaySolveUrl(task.type) : null),
-    [task],
+        if (
+          taskSubmission.initialSolution &&
+          taskSubmission.initialSolutionFile
+        ) {
+          referenceSolutions = [
+            ...task.data.referenceSolutions.filter((s) => !s.isInitial),
+            taskSubmission.initialSolution,
+          ];
+
+          referenceSolutionsFiles = [
+            ...task.data.referenceSolutions
+              .filter((s) => !s.isInitial)
+              .map((s) => s.solution),
+            taskSubmission.initialSolutionFile,
+          ];
+        } else {
+          referenceSolutions = [...task.data.referenceSolutions];
+          referenceSolutionsFiles = [
+            ...task.data.referenceSolutions.map((s) => s.solution),
+          ];
+        }
+
+        await updateTask(task.data.id, {
+          ...taskSubmission,
+          referenceSolutions,
+          referenceSolutionsFiles,
+        });
+      }
+    },
+    [task.data, taskFile.data, updateTask],
   );
 
-  const taskFileHash = useFileHash(taskFile);
-
-  const embeddedApp = useRef<EmbeddedAppRef | null>(null);
-
-  const onAppAvailable = useCallback(() => {
-    if (embeddedApp.current && taskFile) {
-      embeddedApp.current.sendRequest("loadTask", {
-        task: taskFile,
-        language: intl.locale as Language,
-      });
-    }
-    // since taskFileHash is a blob, use its hash as a proxy for its content
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskFile, taskFileHash, intl.locale]);
-
   return (
-    <>
+    <MaxScreenHeight>
       <Header
         title={messages.title}
         titleParameters={{
-          title: task?.title ?? "",
+          title: task.data?.title ?? "",
         }}
       />
       <Container>
         <Breadcrumbs>
-          <CrtNavigation breadcrumb task={task} />
+          <CrtNavigation breadcrumb task={task.data} />
         </Breadcrumbs>
-        <TaskNavigation taskId={task?.id} />
         <MultiSwrContent
-          data={[task, taskFile]}
-          errors={[taskError, taskFileError]}
-          isLoading={[isLoadingTask, isLoadingTaskFile]}
+          data={[task.data, taskFile.data]}
+          isLoading={[task.isLoading, taskFile.isLoading]}
+          errors={[task.error, taskFile.error]}
         >
-          {([task, _taskFile]) => (
-            <>
-              <div>
-                <PageHeader>{task.title}</PageHeader>
-                <p>{task.description}</p>
-              </div>
-              {(!!iframeSrc && (
-                <EmbeddedApp
-                  src={iframeSrc}
-                  ref={embeddedApp}
-                  onAppAvailable={onAppAvailable}
-                />
-              )) || (
-                <FormattedMessage
-                  id="TaskDetail.unsupportedApp"
-                  defaultMessage="The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
-                  values={{
-                    type: task.type,
-                    taskId: task.id,
+          {([task, taskFile]) => {
+            const initialSolution = task.referenceSolutions.find(
+              (s) => s.isInitial,
+            );
+
+            return (
+              <>
+                <PageHeading
+                  actions={<TaskActions taskId={task?.id} />}
+                  description={task.description}
+                >
+                  {task.title}
+                </PageHeading>
+                <TaskNavigation taskId={task?.id} />
+                <TaskForm
+                  initialValues={{
+                    ...task,
+                    taskFile,
+                    initialSolution: initialSolution ?? null,
+                    initialSolutionFile: initialSolution?.solution ?? null,
                   }}
+                  submitMessage={messages.submit}
+                  onSubmit={onSubmit}
                 />
-              )}
-            </>
-          )}
+              </>
+            );
+          }}
         </MultiSwrContent>
       </Container>
-    </>
+      <PageFooter />
+    </MaxScreenHeight>
   );
 };
 
-export default TaskDetail;
+export default EditTask;
