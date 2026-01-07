@@ -112,12 +112,6 @@ const nextConfig: NextConfig = {
       throw new Error("Could not find NextJS CSS no-global-css error loader.");
     }
 
-    /*console.log(
-      JSON.stringify(webpackConfig.module.rules[cssRulesIdx], null, 2),
-    );
-    //console.log(webpackConfig.module.rules);
-    throw new Error();*/
-
     // Replace the existing CSS rule with our custom rules
     // to support non .module.css CSS modules.
     // https://github.com/scratchfoundation/scratch-webpack-configuration/blob/308ad647caaf8bae31224a7467c4642b7c32ce2f/src/index.cjs#L186-L238
