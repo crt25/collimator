@@ -38,6 +38,8 @@ test.describe("/solve", () => {
     await page.goto(`${baseURL!}/solve`);
 
     await page.waitForSelector(ScratchEditorPage.zoomResetButtonSelector);
+
+    // Hide nextjs portal elements that interfere with visual tests that are shown in development mode
     await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
   });
 
