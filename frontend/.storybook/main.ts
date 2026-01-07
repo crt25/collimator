@@ -18,17 +18,7 @@ const config: StorybookConfig = {
   staticDirs: ["../public"],
   viteFinal: async (config, { configType }) => {
     // Customize the Vite config here
-    return {
-      ...config,
-      optimizeDeps: {
-        ...config.optimizeDeps,
-        include: [
-          /*"../backend",
-          "iframe-rpc",
-          "iframe-rpc-react",*/
-        ],
-      }
-    };
+    return config;
   },
 };
 export default config;
