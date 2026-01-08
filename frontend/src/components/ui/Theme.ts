@@ -4,7 +4,7 @@ import {
   defineConfig,
   defineTokens,
 } from "@chakra-ui/react";
-import { EmptyStateRecipe } from "./recipes/data-display/EmptyState.recipe";
+import { EmptyStateRecipe } from "./recipes/table/EmptyState.recipe";
 import { BreadcrumbsRecipe } from "./recipes/navigation/Breadcrumbs.recipe";
 import { ButtonRecipe } from "./recipes/buttons/Button.recipe";
 import { CloseButtonRecipe } from "./recipes/buttons/CloseButton.recipe";
@@ -15,10 +15,10 @@ import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
 import { HStackRecipe } from "./recipes/layout/HStack.recipe";
 import { IconButtonRecipe } from "./recipes/buttons/IconButton.recipe";
 import { MenuRecipe } from "./recipes/navigation/Menu.recipe";
-import { ModalRecipe } from "./recipes/notification/Modal.recipe";
+import { ModalRecipe } from "./recipes/modal/Modal.recipe";
 import { PageHeadingRecipe } from "./recipes/layout/PageHeading.recipe";
 import { SelectRecipe } from "./recipes/form/Select.recipe";
-import { TableRecipe } from "./recipes/data-display/TableRoot.recipe";
+import { TableRecipe } from "./recipes/table/TableRoot.recipe";
 import { ToasterRecipe } from "./recipes/notification/Toaster.recipe";
 
 const config = defineConfig({
