@@ -34,7 +34,6 @@ const MenuTrigger = chakra(Menu.Trigger, {
 const MenuContent = chakra(Menu.Content, {
   base: {
     backgroundColor: "bg",
-    borderColor: "headerBorder",
   },
 });
 

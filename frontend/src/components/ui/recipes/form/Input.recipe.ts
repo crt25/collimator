@@ -10,9 +10,6 @@ export const InputRecipe = defineRecipe({
         cursor: "pointer",
         textAlign: "center",
         width: "fit-content",
-        _disabled: {
-          backgroundColor: "buttonDisabledBg",
-        },
         _hover: {
           backgroundColor: "accent",
           opacity: 0.8,
