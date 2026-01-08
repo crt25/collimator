@@ -80,6 +80,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
       const limit = isNaN(limitOrNaN) ? 1 : limitOrNaN;
 
       if (canBeUsed) {
+        // eslint-disable-next-line react-hooks/immutability
         config.allowedBlocks[blockId] = hasBlockLimit ? limit : infiniteUses;
       } else {
         config.allowedBlocks[blockId] = cannotBeUsed;

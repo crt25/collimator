@@ -8,6 +8,7 @@ export const useCrtConfig = (vm: VM | null): ScratchCrtConfig => {
 
   useEffect(() => {
     if (crtConfig === defaultCrtConfig && vm?.crtConfig !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCrtConfig(vm.crtConfig);
     }
 

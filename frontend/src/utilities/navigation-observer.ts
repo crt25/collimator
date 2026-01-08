@@ -7,7 +7,6 @@ const errorMessage = "[NavigationObserver] Please ignore this error.";
 
 const throwFakeErrorToFoolNextRouter = (): void => {
   // Throwing an actual error class trips the Next.JS 500 Page, this string literal does not.
-  // eslint-disable-next-line no-throw-literal
   throw errorMessage;
 };
 

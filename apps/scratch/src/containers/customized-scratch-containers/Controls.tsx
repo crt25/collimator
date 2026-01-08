@@ -46,7 +46,7 @@ const Controls = ({
         vm.greenFlag();
       }
     },
-    [vm, isStarted, turbo, sendRequest],
+    [vm, isStarted, turbo, sendRequest, canEditTask],
   );
 
   const handleStopAllClick = useCallback(

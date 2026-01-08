@@ -37,7 +37,6 @@ export const useYupResolver = <TFieldValues extends FieldValues>(
       ...args: YupResolverParameters<TFieldValues>
     ): YupResolverReturnType<TFieldValues> => resolverRef.current(...args),
     // the dependency array is empty as the react-hook form never updates the resolver anyway
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 };

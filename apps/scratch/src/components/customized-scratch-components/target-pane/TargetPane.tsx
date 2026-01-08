@@ -1,11 +1,11 @@
 import VM from "@scratch/scratch-vm";
 
+import React from "react";
 import SpriteLibrary from "@scratch-submodule/packages/scratch-gui/src/containers/sprite-library.jsx";
 import StageSelector from "@scratch-submodule/packages/scratch-gui/src/containers/stage-selector.jsx";
 import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
 
 import styles from "@scratch-submodule/packages/scratch-gui/src/components/target-pane/target-pane.css";
-import React from "react";
 import MinimalStageSelector from "../../MinimalStageSelector";
 import SpriteSelectorComponent from "../sprite-selector/SpriteSelector";
 
@@ -132,12 +132,14 @@ const TargetPane = ({
   if (stageId) {
     stageSelector = isStageSelectorVisible ? (
       <StageSelector
+        // @ts-expect-error Type inference is not correct
         asset={stage.costume?.asset}
-        // @ts-expect-error The inferred type is wrong
         backdropCount={stage.costumeCount}
         id={stageId}
         selected={stageId === editingTarget}
         onSelect={onSelectSprite}
+        raised={false}
+        receivedBlocks={false}
       />
     ) : (
       <MinimalStageSelector

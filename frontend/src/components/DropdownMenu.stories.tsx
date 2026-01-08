@@ -1,5 +1,6 @@
 import { LuUser, LuSettings, LuLogOut } from "react-icons/lu";
 import DropdownMenu from "./DropdownMenu";
+// eslint-disable-next-line storybook/no-renderer-packages
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

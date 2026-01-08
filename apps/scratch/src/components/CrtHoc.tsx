@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import VM from "@scratch/scratch-vm";
-import { InjectedIntl, injectIntl } from "react-intl";
+import { injectIntl, IntlShape } from "react-intl";
 import { useDispatch } from "react-redux";
 import scratchMessages from "scratch-l10n/locales/editor-msgs";
+import { setLocales } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { patchScratchVm } from "../vm";
 import { useEmbeddedScratch } from "../hooks/useEmbeddedScratch";
-import { basePath } from "..";
-import { setLocales } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import en from "../content/compiled-locales/en.json";
 import fr from "../content/compiled-locales/fr.json";
 import { ExtensionId } from "../extensions";
 import { CrtContext } from "../contexts/CrtContext";
 import { useCrtConfig } from "../hooks/useCrtConfig";
+
+const basePath = "/scratch";
 
 const customLocales: { [locale: string]: { [key: string]: string } } =
   Object.fromEntries(
@@ -35,7 +36,7 @@ const defaultExtensions: ExtensionId[] = [ExtensionId.Assertions];
 // This allows us to configure the CRT parameters with the intl parameter available
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
-  return function CrtHoc(props: T & { intl: InjectedIntl }) {
+  return function CrtHoc(props: T & { intl: IntlShape }) {
     const [vm, setVm] = useState<VM | null>(null);
     const crtConfig = useCrtConfig(vm);
 
@@ -91,7 +92,7 @@ const CrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
   const CrtComponent = InternalCrtHoc(Component);
 
   const intlClass = class IntlComponent extends React.Component<
-    T & { intl: InjectedIntl }
+    T & { intl: IntlShape }
   > {
     render() {
       return <CrtComponent {...this.props} />;

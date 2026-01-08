@@ -1,5 +1,6 @@
 import classNames from "classnames";
 
+import React from "react";
 import DragConstants from "@scratch-submodule/packages/scratch-gui/src/lib/drag-constants";
 
 import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
@@ -9,7 +10,6 @@ import SortableAsset from "@scratch-submodule/packages/scratch-gui/src/component
 import ThrottledPropertyHOC from "@scratch-submodule/packages/scratch-gui/src/lib/throttled-property-hoc.jsx";
 
 import styles from "@scratch-submodule/packages/scratch-gui/src/components/sprite-selector/sprite-selector.css";
-import React from "react";
 import { Sprite } from "../target-pane/TargetPane";
 
 const ThrottledSpriteSelectorItem = ThrottledPropertyHOC(

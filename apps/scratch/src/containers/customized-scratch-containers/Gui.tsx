@@ -2,8 +2,9 @@ import React from "react";
 import { Action, compose, Dispatch } from "redux";
 import { connect } from "react-redux";
 import VM from "@scratch/scratch-vm";
-import { InjectedIntl, injectIntl } from "react-intl";
+import { IntlShape, injectIntl } from "react-intl";
 
+import { ScratchStorage } from "scratch-storage";
 import ErrorBoundaryHOC from "@scratch-submodule/packages/scratch-gui/src/lib/error-boundary-hoc.jsx";
 import {
   getIsError,
@@ -22,7 +23,6 @@ import {
   closeBackdropLibrary,
   openExtensionLibrary,
 } from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
-import { ScratchStorage } from "scratch-storage";
 import FontLoaderHOC from "@scratch-submodule/packages/scratch-gui/src/lib/font-loader-hoc.jsx";
 import LocalizationHOC from "@scratch-submodule/packages/scratch-gui/src/lib/localization-hoc.jsx";
 import TitledHOC from "@scratch-submodule/packages/scratch-gui/src/lib/titled-hoc.jsx";
@@ -38,6 +38,12 @@ import CrtHoc from "../../components/CrtHoc";
 import HashParserHOC from "../../components/customized-scratch-components/HashParserHOC";
 import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 import AppStateHOC from "./AppStateHOC";
+
+const GUIComponentTyped = GUIComponent as unknown as React.ComponentType<
+  React.ComponentProps<typeof GUIComponent> & {
+    children?: React.ReactNode;
+  }
+>;
 
 const setProjectIdMetadata = (
   storage: ScratchStorage,
@@ -62,7 +68,7 @@ type Props = {
   cloudHost?: string;
   error?: unknown | string;
   fetchingProject?: boolean;
-  intl: InjectedIntl;
+  intl: IntlShape;
   isError?: boolean;
   isLoading?: boolean;
   isScratchDesktop: boolean;
@@ -72,9 +78,7 @@ type Props = {
   loadingStateVisible?: boolean;
   onProjectLoaded?: () => void;
   onSeeCommunity?: () => void;
-  onStorageInit?: (storage: {
-    addOfficialScratchWebStores: () => void;
-  }) => void;
+  onStorageInit?: (storage: ScratchStorage) => void;
   onUpdateProjectId?: (projectId: string | number) => void;
   onVmInit?: (vm: VM) => void;
   projectHost?: string;
@@ -171,22 +175,31 @@ interface ReduxState {
 
 class GUI extends React.Component<Props> {
   componentDidMount() {
-    const storage = this.props.storage.scratchStorage;
+    const storage = this.props.storage;
 
     if (this.props.onStorageInit) {
-      this.props.onStorageInit(storage);
+      this.props.onStorageInit(storage.scratchStorage);
     }
 
     if (this.props.onVmInit) {
       this.props.onVmInit(this.props.vm);
     }
 
-    setProjectIdMetadata(storage, this.props.projectId);
+    setProjectIdMetadata(storage.scratchStorage, this.props.projectId);
 
-    storage.setAssetHost("https://assets.scratch.mit.edu");
-    storage.setTranslatorFunction(this.props.intl.formatMessage);
-    storage
-      .load(storage.AssetType.Project, "0", storage.DataFormat.JSON)
+    if (storage.setAssetHost) {
+      storage.setAssetHost("https://assets.scratch.mit.edu");
+    }
+
+    if (storage.setTranslatorFunction) {
+      storage.setTranslatorFunction(this.props.intl.formatMessage);
+    }
+    storage.scratchStorage
+      .load(
+        storage.scratchStorage.AssetType.Project,
+        "0",
+        storage.scratchStorage.DataFormat.JSON,
+      )
       .then((projectAsset) => {
         if (projectAsset) {
           loadCrtProject(
@@ -253,12 +266,12 @@ class GUI extends React.Component<Props> {
       ...componentProps
     } = this.props;
     return (
-      <GUIComponent
+      <GUIComponentTyped
         loading={fetchingProject || isLoading || loadingStateVisible || false}
         {...componentProps}
       >
         {children}
-      </GUIComponent>
+      </GUIComponentTyped>
     );
   }
 }
@@ -281,7 +294,6 @@ const mapStateToProps = (
     costumeLibraryVisible: state.scratchGui.modals.costumeLibrary,
     costumesTabVisible:
       state.scratchGui.editorTab.activeTabIndex === COSTUMES_TAB_INDEX,
-    debugModalVisible: state.scratchGui.modals.debugModal,
     error: state.scratchGui.projectState.error,
     isError: getIsError(loadingState),
     isFullScreen: state.scratchGui.mode.isFullScreen,
@@ -297,7 +309,6 @@ const mapStateToProps = (
       state.scratchGui.targets.stage &&
       state.scratchGui.targets.stage.id ===
         state.scratchGui.targets.editingTarget,
-    telemetryModalVisible: state.scratchGui.modals.telemetryModal,
     tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
     vm: state.scratchGui.vm,
   };

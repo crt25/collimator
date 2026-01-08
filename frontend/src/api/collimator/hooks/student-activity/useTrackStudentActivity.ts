@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from "react";
-// eslint-disable-next-line import/order
 import { fetchApi } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { TrackStudentActivityDto } from "../../generated/models";

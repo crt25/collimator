@@ -1,5 +1,5 @@
-import { ColorSet } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 import ScratchBlocks from "scratch-blocks";
+import { ColorSet } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 import { categorySeparator } from "./constants";
 import { filterNotAllowedBlocks } from "./helpers";
 
@@ -158,7 +158,6 @@ const motionXmlByOpCode: Record<MotionOpCode, (targetId: string) => string> = {
     <block id="${targetId}__motion_direction" type="motion_direction"/>`,
 };
 
-/* eslint-disable no-unused-vars */
 export const buildMotionXml = function (
   isInitialSetup: boolean,
   isStage: boolean,

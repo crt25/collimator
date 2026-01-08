@@ -1,5 +1,5 @@
-import { fn } from "@storybook/test";
-import { useState } from "@storybook/preview-api";
+import { fn } from "storybook/test";
+import { useState } from "storybook/preview-api";
 import Button from "../Button";
 import ConfirmationModal from "./ConfirmationModal";
 
