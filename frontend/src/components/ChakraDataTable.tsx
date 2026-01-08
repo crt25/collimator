@@ -123,7 +123,6 @@ const TableContainer = chakra("div", {
   },
 });
 
-// Reuse the return type from TanStack's getIsSorted for type consistency
 type SortDirection = ReturnType<Column<unknown, unknown>["getIsSorted"]>;
 
 const SortIcon = ({ isSorted }: { isSorted: SortDirection }) => {
@@ -135,8 +134,7 @@ const SortIcon = ({ isSorted }: { isSorted: SortDirection }) => {
     return <LuArrowDownNarrowWide size={16} />;
   }
 
-  // When not sorted, don't render an icon
-  return null;
+  return <LuArrowDownNarrowWide size={16} />;
 };
 
 const messages = defineMessages({
@@ -495,37 +493,31 @@ export const ChakraDataTable = <T extends { id: number }>({
         <Table.Header>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Row key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                // Only apply explicit width when column defines a size
-                const columnSize = header.column.columnDef.size;
-                const widthStyle = columnSize ? `${columnSize}px` : undefined;
-
-                return (
-                  <Table.ColumnHeader
-                    key={header.id}
-                    onClick={
-                      features?.sorting && header.column.getCanSort()
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                    width={widthStyle}
-                  >
-                    <HeaderContent>
-                      <div>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </div>
-                      {features?.sorting && header.column.getCanSort() && (
-                        <SortIcon isSorted={header.column.getIsSorted()} />
-                      )}
-                    </HeaderContent>
-                  </Table.ColumnHeader>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <Table.ColumnHeader
+                  key={header.id}
+                  onClick={
+                    features?.sorting && header.column.getCanSort()
+                      ? header.column.getToggleSortingHandler()
+                      : undefined
+                  }
+                  width={`${header.getSize()}px`}
+                >
+                  <HeaderContent>
+                    <div>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </div>
+                    {features?.sorting && header.column.getCanSort() && (
+                      <SortIcon isSorted={header.column.getIsSorted()} />
+                    )}
+                  </HeaderContent>
+                </Table.ColumnHeader>
+              ))}
             </Table.Row>
           ))}
         </Table.Header>
