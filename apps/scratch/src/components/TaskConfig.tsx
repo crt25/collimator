@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
 
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import {
@@ -144,6 +144,7 @@ const TaskConfig = ({
       enableAssertions,
       updateConfig,
       hideModal,
+      maximumExecutionTimeInS,
     ],
   );
 
@@ -195,6 +196,7 @@ const TaskConfig = ({
             type="checkbox"
             onChange={(e) => {
               setAllowVariableBlocks(e.target.checked);
+              // eslint-disable-next-line react-hooks/immutability
               vm.crtConfig!.allowedBlocks.variables = e.target.checked;
             }}
           />
@@ -210,6 +212,7 @@ const TaskConfig = ({
             type="checkbox"
             onChange={(e) => {
               setAllowCustomProcedureBlocks(e.target.checked);
+              // eslint-disable-next-line react-hooks/immutability
               vm.crtConfig!.allowedBlocks.customBlocks = e.target.checked;
             }}
           />
@@ -225,6 +228,7 @@ const TaskConfig = ({
             type="checkbox"
             onChange={(e) => {
               setEnableStageInteractions(e.target.checked);
+              // eslint-disable-next-line react-hooks/immutability
               vm.crtConfig!.enableStageInteractions = e.target.checked;
             }}
           />

@@ -1,10 +1,10 @@
 import bindAll from "lodash.bindall";
 import React from "react";
-import VM from "scratch-vm";
-import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
+import VM from "@scratch/scratch-vm";
+import { defineMessages, IntlShape, injectIntl } from "react-intl";
 
-import LibraryComponent from "@scratch-submodule/scratch-gui/src/components/library/library.jsx";
-import extensionIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--sprite.svg";
+import LibraryComponent from "@scratch-submodule/packages/scratch-gui/src/components/library/library.jsx";
+import extensionIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--sprite.svg";
 import extensionLibraryContent, { ExtensionId } from "../../extensions";
 
 const messages = defineMessages({
@@ -21,10 +21,12 @@ const messages = defineMessages({
 });
 
 interface Props {
-  intl: InjectedIntl;
+  intl: IntlShape;
   onCategorySelected: (id: string) => void;
   onRequestClose: () => void;
   visible?: boolean;
+  showNewFeatureCallouts?: boolean;
+  username?: string;
   vm: VM;
 }
 
@@ -63,6 +65,8 @@ class ExtensionLibrary extends React.PureComponent<Props> {
         visible={this.props.visible}
         onItemSelected={this.handleItemSelect}
         onRequestClose={this.props.onRequestClose}
+        showNewFeatureCallouts={false}
+        username={undefined}
       />
     );
   }

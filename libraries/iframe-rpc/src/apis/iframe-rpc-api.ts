@@ -77,12 +77,17 @@ export abstract class IframeRpcApi<
   private requestTarget: MessageTarget | null = null;
   private counter = 0;
 
+  /**
+   * Buffer for incoming requests received before onRequest handler is set.
+   */
+  private bufferedRequests: {request: TIncomingRequests; event: MessageEvent}[] = [];
+
   constructor(
     private onRequest: HandleRequestMap<
       TIncomingMethods,
       TIncomingRequests,
       TOutgoingResult
-    >,
+    > | null = null,
   ) {}
 
   setOnRequest(
@@ -90,9 +95,19 @@ export abstract class IframeRpcApi<
       TIncomingMethods,
       TIncomingRequests,
       TOutgoingResult
-    >,
+    > | null,
   ): void {
     this.onRequest = onRequest;
+
+    if(this.onRequest !== null){
+      // Process buffered requests
+      const bufferedRequests = this.bufferedRequests;
+      this.bufferedRequests = [];
+
+      for (const {request, event} of bufferedRequests) {
+        this.handleRequest(request, event);
+      }
+    }
   }
 
   setOrigin(origin: string | null): void {
@@ -235,6 +250,11 @@ export abstract class IframeRpcApi<
     request: TIncomingRequests,
     event: MessageEvent,
   ): Promise<void> {
+    if(this.onRequest === null){
+      this.bufferedRequests.push({request, event});
+      return;
+    }
+
     const fn = this.onRequest[request.method];
 
     if (typeof fn !== "function") {

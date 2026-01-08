@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { UseFormSetError } from "react-hook-form";
 import UserSignInForm, { UserSignInFormValues } from "./UserSignInForm";
 

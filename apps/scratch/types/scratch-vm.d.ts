@@ -278,6 +278,8 @@ declare class VMExtended extends VM {
   runtime: VMExtended.RuntimeExtended;
   extensionManager: VMExtended.ExtensionManagerExtended;
 
+  attachStorage(storage: import("scratch-storage").ScratchStorage): void;
+
   /**
    * Deletes the target with the given ID and any of its clones.
    * @returns If a sprite was deleted, returns a function to undo the deletion.
@@ -302,12 +304,12 @@ declare class VMExtended extends VM {
   crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }
 
-declare module "scratch-vm" {
+declare module "@scratch/scratch-vm" {
   export = VMExtended;
   export default VMExtended;
 }
 
-declare module "scratch-vm/src/blocks/*" {
+declare module "@scratch/scratch-vm/src/blocks/*" {
   const blockPackage: VMExtended.StaticBlockPackage;
 
   export default blockPackage;

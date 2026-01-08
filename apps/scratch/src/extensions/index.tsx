@@ -1,6 +1,6 @@
 import { FormattedMessage } from "react-intl";
 import React from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { ArgumentType } from "../blocks/argument-type";
 import { BlockType } from "../blocks/block-type";
 

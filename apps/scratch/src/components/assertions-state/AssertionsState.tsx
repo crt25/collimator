@@ -1,4 +1,4 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import classNames from "classnames";
 import { useState } from "react";
 import icon from "../../extensions/assertions/test-icon-white.svg";

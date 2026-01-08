@@ -1,10 +1,9 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
-import { defineMessages, InjectedIntl, FormattedMessage } from "react-intl";
+import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
-import { selectLocale } from "@scratch-submodule/scratch-gui/src/reducers/locales";
 import {
   useIframeParent,
   Language,
@@ -18,6 +17,7 @@ import {
   Task,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
+import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { loadCrtProject } from "../vm/load-crt-project";
 
 import {
@@ -29,6 +29,7 @@ import {
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
 import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
+import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer";
 
 export const scratchIdentifierSeparator = "$";
 
@@ -90,12 +91,6 @@ const messages = defineMessages({
   },
 });
 
-class VmUnavailableError extends Error {
-  constructor() {
-    super("VM is not available");
-  }
-}
-
 const areAssertionsEnabled = (vm: VM): boolean => {
   let assertionsEnabled = false;
   const setAssertionsEnabled = (enabled: boolean): void => {
@@ -130,10 +125,7 @@ const buildSubmission = (
   failedTests,
 });
 
-const getSubmission = async (
-  vm: VM,
-  intl: InjectedIntl,
-): Promise<Submission> => {
+const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
   // first stop the project and reset the state
   vm.runtime.stopAll();
 
@@ -213,13 +205,13 @@ const getSubmission = async (
 export class EmbeddedScratchCallbacks {
   constructor(
     private vm: VM,
-    private intl: InjectedIntl,
+    private intl: IntlShape,
     private dispatch: Dispatch<AnyAction>,
   ) {}
 
   static readonly errorMessages: Record<
     ScratchProjectErrorCode,
-    FormattedMessage.MessageDescriptor
+    MessageDescriptor
   > = {
     [ScratchProjectErrorCode.InvalidZip]: messages.invalidZip,
     [ScratchProjectErrorCode.MissingProjectJson]: messages.projectJsonMissing,
@@ -381,9 +373,11 @@ export class EmbeddedScratchCallbacks {
   }
 }
 
+const initialMessages = stopBufferingIframeMessages();
+
 export const useEmbeddedScratch = (
   vm: VM | null,
-  intl: InjectedIntl,
+  intl: IntlShape,
 ): ReturnType<typeof useIframeParent> => {
   const dispatch = useDispatch();
 
@@ -409,21 +403,8 @@ export const useEmbeddedScratch = (
       };
     }
 
-    const throwError = (): never => {
-      throw new VmUnavailableError();
-    };
-
-    return {
-      getHeight: throwError,
-      getSubmission: throwError,
-      getTask: throwError,
-      loadTask: throwError,
-      loadSubmission: throwError,
-      setLocale: throwError,
-      importTask: throwError,
-      exportTask: throwError,
-    };
+    return null;
   }, [callbacks]);
 
-  return useIframeParent(handleRequest);
+  return useIframeParent(handleRequest, initialMessages);
 };
