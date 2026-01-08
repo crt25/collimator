@@ -1,0 +1,21 @@
+{
+  "env": {
+    "production": {
+       "presets": ["next/babel"]
+     },
+    "development": {
+       "presets": ["next/babel"]
+     },
+    "coverage": {
+      "presets": ["next/babel"],
+      "plugins": [
+          ["module-resolver", {
+            "alias": {
+              "next/font/google": "./src/shims/next-font-google.js"
+            }
+          }],
+          "istanbul"
+      ]
+    }
+  }
+}

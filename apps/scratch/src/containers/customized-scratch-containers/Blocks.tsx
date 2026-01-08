@@ -7,50 +7,50 @@ import VM, {
   ExtensionInfoExtended,
   Monitors,
   VariableType,
-} from "scratch-vm";
+} from "@scratch/scratch-vm";
 
-import log from "@scratch-submodule/scratch-gui/src/lib/log.js";
-import Prompt from "@scratch-submodule/scratch-gui/src/containers/prompt.jsx";
-import BlocksComponent from "@scratch-submodule/scratch-gui/src/components/blocks/blocks.jsx";
-import extensionData from "@scratch-submodule/scratch-gui/src/lib/libraries/extensions/index.jsx";
-import CustomProcedures from "@scratch-submodule/scratch-gui/src/containers/custom-procedures.jsx";
-import ErrorBoundaryHOC from "@scratch-submodule/scratch-gui/src/lib/error-boundary-hoc.jsx";
-import DropAreaHOC from "@scratch-submodule/scratch-gui/src/lib/drop-area-hoc.jsx";
-import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants";
-import defineDynamicBlock from "@scratch-submodule/scratch-gui/src/lib/define-dynamic-block";
+import { connect } from "react-redux";
+import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
+import { Action, Dispatch } from "redux";
+import log from "@scratch-submodule/packages/scratch-gui/src/lib/log.js";
+import Prompt from "@scratch-submodule/packages/scratch-gui/src/containers/prompt.jsx";
+import BlocksComponent from "@scratch-submodule/packages/scratch-gui/src/components/blocks/blocks.jsx";
+import extensionData from "@scratch-submodule/packages/scratch-gui/src/lib/libraries/extensions/index.jsx";
+import CustomProcedures from "@scratch-submodule/packages/scratch-gui/src/containers/custom-procedures.jsx";
+import ErrorBoundaryHOC from "@scratch-submodule/packages/scratch-gui/src/lib/error-boundary-hoc.jsx";
+import DropAreaHOC from "@scratch-submodule/packages/scratch-gui/src/lib/drop-area-hoc.jsx";
+import DragConstants from "@scratch-submodule/packages/scratch-gui/src/lib/drag-constants";
+import defineDynamicBlock from "@scratch-submodule/packages/scratch-gui/src/lib/define-dynamic-block";
 import {
   ColorTheme,
   getColorsForTheme,
-} from "@scratch-submodule/scratch-gui/src/lib/themes";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 import {
   injectExtensionBlockTheme,
   injectExtensionCategoryTheme,
-} from "@scratch-submodule/scratch-gui/src/lib/themes/blockHelpers";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/themes/blockHelpers";
 
-import { connect } from "react-redux";
-import { updateToolbox } from "@scratch-submodule/scratch-gui/src/reducers/toolbox";
-import { activateColorPicker } from "@scratch-submodule/scratch-gui/src/reducers/color-picker";
+import { updateToolbox } from "@scratch-submodule/packages/scratch-gui/src/reducers/toolbox";
+import { activateColorPicker } from "@scratch-submodule/packages/scratch-gui/src/reducers/color-picker";
 import {
   closeExtensionLibrary,
   openSoundRecorder,
   openConnectionModal,
-} from "@scratch-submodule/scratch-gui/src/reducers/modals";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
 import {
   activateCustomProcedures,
   deactivateCustomProcedures,
-} from "@scratch-submodule/scratch-gui/src/reducers/custom-procedures";
-import { setConnectionModalExtensionId } from "@scratch-submodule/scratch-gui/src/reducers/connection-modal";
-import { updateMetrics } from "@scratch-submodule/scratch-gui/src/reducers/workspace-metrics";
-import { isTimeTravel2020 } from "@scratch-submodule/scratch-gui/src/reducers/time-travel";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/custom-procedures";
+import { setConnectionModalExtensionId } from "@scratch-submodule/packages/scratch-gui/src/reducers/connection-modal";
+import { updateMetrics } from "@scratch-submodule/packages/scratch-gui/src/reducers/workspace-metrics";
+import { isTimeTravel2020 } from "@scratch-submodule/packages/scratch-gui/src/reducers/time-travel";
 
 import {
   activateTab,
   SOUNDS_TAB_INDEX,
-} from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
-import { StageDisplaySize } from "@scratch-submodule/scratch-gui/src/lib/screen-utils";
-import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
-import { Action, Dispatch } from "redux";
-import VMScratchBlocks from "@scratch-submodule/scratch-gui/src/lib/blocks";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/editor-tab";
+import { StageDisplaySize } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
+import VMScratchBlocks from "@scratch-submodule/packages/scratch-gui/src/lib/blocks";
 import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import {
   addBlockConfigButtons,

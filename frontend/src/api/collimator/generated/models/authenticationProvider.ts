@@ -12,7 +12,6 @@
 export type AuthenticationProvider =
   (typeof AuthenticationProvider)[keyof typeof AuthenticationProvider];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const AuthenticationProvider = {
   MICROSOFT: "MICROSOFT",
 } as const;

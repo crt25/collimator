@@ -82,6 +82,7 @@ const ShowcaseInternal = ({
         : Math.max(maxIndex, 0);
     }, 0);
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(
       analyses
         .filter((a) => a.isReferenceSolution)

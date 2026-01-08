@@ -17,8 +17,11 @@ app.use("/scratch", (request, response, next) => {
   urlPath = urlPath.endsWith("/") ? urlPath.slice(0, -1) : urlPath;
   search = search ? `?${search}` : "";
 
-  if (urlPath === "/" || urlPath === "" || !path.extname(urlPath)) {
+  if (urlPath === "/" || urlPath === "") {
     request.url = `/index.html${search}`;
+  } else if (!path.extname(urlPath)) {
+    // If URI doesn't have an extension, assume it's a page and add .html
+    request.url = `${urlPath}.html${search}`;
   }
 
   next();

@@ -11,7 +11,6 @@
  */
 export type UserType = (typeof UserType)[keyof typeof UserType];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserType = {
   TEACHER: "TEACHER",
   ADMIN: "ADMIN",

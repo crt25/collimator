@@ -50,6 +50,7 @@ export const useGrouping = (
     if (!isAutomaticGrouping) {
       const dataPoints = manual.dataPoints;
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGroups(manual.groups);
       setManualGroups(manual.groups);
       setIsGroupingAvailable(true);

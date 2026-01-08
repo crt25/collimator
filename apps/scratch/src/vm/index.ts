@@ -1,4 +1,4 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
 

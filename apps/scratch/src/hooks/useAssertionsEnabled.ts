@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 
 export const useAssertionsEnabled = (vm: VM): boolean => {
   const [assertionsEnabled, setAssertionsEnabled] = useState(false);

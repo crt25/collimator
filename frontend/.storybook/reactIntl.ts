@@ -1,9 +1,11 @@
+import en from "../content/compiled-locales/en.json";
+import fr from "../content/compiled-locales/fr.json";
 const locales = ['en', 'fr'];
 
-const messages = locales.reduce((acc, lang) => ({
-  ...acc,
-  [lang]: require(`../content/compiled-locales/${lang}.json`),
-}), {});
+const messages = {
+  en,
+  fr,
+};
 
 const formats = {};
 

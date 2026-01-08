@@ -86,6 +86,7 @@ const LessonList = ({
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
 
     fetchData(lazyState).then(({ items, totalCount }) => {
