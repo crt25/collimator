@@ -167,11 +167,11 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
       size: 32,
     },
     {
       accessorKey: "title",
+      enableSorting: true,
       header: intl.formatMessage(messages.titleColumn),
       cell: (info) => (
         <Text
@@ -190,7 +190,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "startedAt",
       header: intl.formatMessage(messages.startedAtColumn),
-      enableSorting: false,
       cell: (info) => startedAtTemplate(info.row.original),
       meta: {
         columnType: ColumnType.text,
@@ -199,7 +198,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "isAnonymous",
       header: intl.formatMessage(messages.sharingTypeColumn),
-      enableSorting: false,
       cell: (info) => sharingTypeTemplate(info.row.original),
       meta: {
         columnType: ColumnType.text,
@@ -208,7 +206,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       id: "actions",
       header: intl.formatMessage(messages.actionsColumn),
-      enableSorting: false,
       cell: (info) => actionsTemplate(info.row.original),
       meta: {
         columnType: ColumnType.icon,
@@ -217,7 +214,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <Button
           aria-label={intl.formatMessage(messages.actionsColumn)}

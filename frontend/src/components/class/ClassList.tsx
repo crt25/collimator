@@ -65,6 +65,7 @@ const ClassList = () => {
     {
       accessorKey: "name",
       header: intl.formatMessage(messages.nameColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -82,7 +83,6 @@ const ClassList = () => {
     {
       accessorKey: "teacher",
       header: intl.formatMessage(messages.teacherColumn),
-      enableSorting: false,
       cell: (info) => {
         const teacher = info.row.original.teacher;
         return <span>{teacher?.name}</span>;
@@ -94,7 +94,6 @@ const ClassList = () => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <Button
           aria-label={intl.formatMessage(messages.viewDetails)}

@@ -237,7 +237,6 @@ const TaskInstanceProgressList = ({
       {
         id: "name",
         header: intl.formatMessage(messages.nameColumn),
-        enableSorting: false,
         cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
@@ -248,7 +247,6 @@ const TaskInstanceProgressList = ({
       {
         id: "lastLoginDate",
         header: intl.formatMessage(messages.lastLoginDateColumn),
-        enableSorting: false,
         cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
@@ -257,7 +255,6 @@ const TaskInstanceProgressList = ({
       {
         id: "progress",
         header: intl.formatMessage(messages.progressColumn),
-        enableSorting: false,
         cell: (info) => (
           <TaskTemplate
             classId={classId}
@@ -272,7 +269,6 @@ const TaskInstanceProgressList = ({
       {
         id: "inShowcase",
         header: intl.formatMessage(messages.inShowcaseColumn),
-        enableSorting: false,
         cell: (info) => (
           <InShowCaseTemplate classId={classId} progress={info.row.original} />
         ),
@@ -283,7 +279,6 @@ const TaskInstanceProgressList = ({
       {
         id: "details",
         header: "",
-        enableSorting: false,
         cell: (info) => (
           <Button
             aria-label={intl.formatMessage(messages.viewDetails)}

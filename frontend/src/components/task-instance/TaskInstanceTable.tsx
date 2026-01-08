@@ -82,7 +82,6 @@ const TaskInstanceTable = ({
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
       size: 32,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
@@ -96,6 +95,7 @@ const TaskInstanceTable = ({
     {
       accessorKey: "title",
       header: intl.formatMessage(messages.nameColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -113,7 +113,6 @@ const TaskInstanceTable = ({
     {
       accessorKey: "taskType",
       header: intl.formatMessage(messages.taskTypeColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-taskType`}>
           {capitalizeString(info.row.original.type)}
@@ -128,7 +127,6 @@ const TaskInstanceTable = ({
     {
       id: "actions",
       header: "Quick Actions",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           {
@@ -155,7 +153,6 @@ const TaskInstanceTable = ({
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
