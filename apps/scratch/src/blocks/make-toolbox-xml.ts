@@ -1,4 +1,4 @@
-import { Colors } from "@scratch-submodule/scratch-gui/src/lib/themes";
+import { Colors } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 import { buildMotionXml, MotionOpCode } from "./xml/motion";
 import { buildLooksXml, LooksOpCode } from "./xml/looks";
 import { buildSoundXml, SoundOpCode } from "./xml/sound";

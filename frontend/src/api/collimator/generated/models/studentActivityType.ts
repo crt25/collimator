@@ -12,7 +12,6 @@
 export type StudentActivityType =
   (typeof StudentActivityType)[keyof typeof StudentActivityType];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const StudentActivityType = {
   TASK_STARTED: "TASK_STARTED",
   TASK_RUN_SOLUTION: "TASK_RUN_SOLUTION",

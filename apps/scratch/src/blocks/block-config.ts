@@ -1,4 +1,4 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
 import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";

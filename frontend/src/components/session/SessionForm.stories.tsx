@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { backendHostName } from "@/utilities/constants";
 import { getTasksControllerFindAllV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
 import { getTasksControllerFindAllV0Url } from "@/api/collimator/generated/endpoints/tasks/tasks";
