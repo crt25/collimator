@@ -1,5 +1,5 @@
-import { useState, useRef } from "@storybook/preview-api";
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+import { useState, useRef } from "storybook/preview-api";
+import { INITIAL_VIEWPORTS } from "storybook/viewport";
 import { getSessionsControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
 import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";

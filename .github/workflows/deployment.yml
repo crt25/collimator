@@ -84,6 +84,12 @@ jobs:
         working-directory: ./frontend
         run: yarn install
 
+      - name: Install library dependencies
+        working-directory: ./libraries
+        run: |
+          cd iframe-rpc && yarn install && cd ..
+          cd iframe-rpc-react && yarn install
+
       - name: Install scratch app dependencies
         working-directory: ./apps/scratch
         run: yarn install

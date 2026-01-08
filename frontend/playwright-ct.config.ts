@@ -44,7 +44,7 @@ export default defineConfig({
         },
       },
       plugins: [
-        react(),
+        ...react(),
         istanbul({
           include: "src/*",
           exclude: ["node_modules", "src/tests"],
