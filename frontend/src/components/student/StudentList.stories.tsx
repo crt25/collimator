@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useEffect } from "@storybook/preview-api";
+import { useEffect } from "storybook/preview-api";
 import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { AuthenticatedTeacher } from "@/contexts/__tests__/decorators/authentication";

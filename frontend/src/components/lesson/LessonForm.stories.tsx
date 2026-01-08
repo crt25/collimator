@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import LessonForm from "./LessonForm";
 
 type Args = Parameters<typeof LessonForm>[0];

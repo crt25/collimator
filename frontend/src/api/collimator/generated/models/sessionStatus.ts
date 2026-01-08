@@ -11,7 +11,6 @@
  */
 export type SessionStatus = (typeof SessionStatus)[keyof typeof SessionStatus];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SessionStatus = {
   CREATED: "CREATED",
   ONGOING: "ONGOING",

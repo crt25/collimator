@@ -2,9 +2,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
-import nextTypescript from "eslint-config-next/typescript";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
@@ -21,36 +18,53 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  globalIgnores(["**/*.d.ts", "src/scratch-editor"]),
-  js.configs.recommended,
-  ...nextCoreWebVitals,
-  ...nextTypescript,
+  globalIgnores([
+    "src/ast/antlr-grammars/**/*",
+    "**/.yarn",
+    "**/antlr",
+    "**/coverage",
+    "**/coverage-e2e",
+    "**/dist",
+    "**/docker",
+    "**/node_modules",
+  ]),
   {
-    extends: [...compat.extends("../../.eslintrc.js")],
+    extends: compat.extends("../.eslintrc.js"),
 
     plugins: {
-      "@typescript-eslint": typescriptEslint,
       import: importPlugin,
     },
 
     languageOptions: {
       globals: {
-        ...globals.browser,
+        ...globals.node,
         ...globals.jest,
       },
 
       parser: tsParser,
+      ecmaVersion: 2021,
+      sourceType: "module",
+
+      parserOptions: {
+        project: "tsconfig.json",
+        tsconfigRootDir: __dirname,
+      },
     },
 
     rules: {
-      "no-unused-vars": "off",
-
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      "import/no-duplicates": [
+        "error",
+        {
+          "prefer-inline": true,
         },
       ],
 

@@ -2,15 +2,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
+import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
-import nextTypescript from "eslint-config-next/typescript";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
+import jestExtended from "eslint-plugin-jest-extended";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
+import storybook from "eslint-plugin-storybook";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,36 +20,46 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  globalIgnores(["**/*.d.ts", "src/scratch-editor"]),
-  js.configs.recommended,
+  globalIgnores(["dist", ".next", ".nyc_output", ".swc", "coverage*"]),
+  ...storybook.configs["flat/recommended"],
+  ...next,
   ...nextCoreWebVitals,
-  ...nextTypescript,
   {
-    extends: [...compat.extends("../../.eslintrc.js")],
+    extends: [
+      ...compat.extends("../.eslintrc.js"),
+    ],
 
     plugins: {
-      "@typescript-eslint": typescriptEslint,
+      "jest-extended": jestExtended,
       import: importPlugin,
     },
 
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.jest,
-      },
-
-      parser: tsParser,
-    },
-
     rules: {
-      "no-unused-vars": "off",
-
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@fontawesome",
+              message: "Use icons from react-icons instead.",
+            },
+          ],
+        },
+      ],
+
+      "import/no-duplicates": [
+        "error",
+        {
+          "prefer-inline": true,
         },
       ],
 
@@ -70,6 +79,31 @@ export default defineConfig([
         },
       ],
     },
+  },
+  {
+    files: ["**/*.tsx"],
+
+    rules: {
+      "@typescript-eslint/no-unnecessary-type-constraint": "off",
+    },
+  },
+  {
+    files: ["**/*.stories.tsx"],
+
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+    },
+  },
+  {
+    files: ["src/api/**/generated/**/*", "**/*.js"],
+
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+    },
+  },
+  {
+    // According to https://github.com/storybookjs/storybook/tree/next/code/lib/eslint-plugin#installation
+    ignores: ["!.storybook"],
   },
   // Should be 2nd to last to override other configs, see https://github.com/prettier/eslint-config-prettier?tab=readme-ov-file#installation.
   eslintConfigPrettier,
