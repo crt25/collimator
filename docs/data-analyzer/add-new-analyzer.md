@@ -192,3 +192,7 @@ To add a new axis, you will need to
 1. Define a new instance of `CriterionFilterDefinition`, including a `CriterionFormComponent` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `filterCriteria` list in `frontend/src/components/dashboard/filter/index.ts`.
 3. Extend the component `CriterionFilterForm` in `frontend/src/components/dashboard/filter/CriterionFilterForm.tsx` to support your new filter form.
+
+## Automatic Grouping (Machine Learning / AI)
+
+TODO
