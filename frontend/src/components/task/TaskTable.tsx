@@ -15,7 +15,7 @@ import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
 
@@ -85,13 +85,12 @@ const TaskTable = () => {
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
           {info.row.original.id}
         </span>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },
@@ -99,6 +98,7 @@ const TaskTable = () => {
     {
       accessorKey: "title",
       header: intl.formatMessage(messages.titleColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -116,7 +116,6 @@ const TaskTable = () => {
     {
       accessorKey: "taskType",
       header: intl.formatMessage(messages.taskTypeColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-taskType`}>
           {capitalizeString(info.row.original.type)}
@@ -129,7 +128,6 @@ const TaskTable = () => {
     {
       id: "actions",
       header: intl.formatMessage(messages.actionsColumn),
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
@@ -146,7 +144,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 64,
+      size: ColumnSize.md,
       meta: {
         columnType: ColumnType.text,
       },
@@ -154,7 +152,6 @@ const TaskTable = () => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
@@ -172,7 +169,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },
@@ -201,9 +198,6 @@ const TaskTable = () => {
                     label: intl.formatMessage(messages.titleColumn),
                   },
                 ],
-              },
-              pagination: {
-                pageSize: 10,
               },
             }}
             emptyStateElement={

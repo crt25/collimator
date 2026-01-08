@@ -1,5 +1,6 @@
 import {
   Cell,
+  Column,
   TableOptions,
   ColumnFiltersState,
   SortingState,
@@ -24,26 +25,31 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
-import { LuArrowDownNarrowWide, LuArrowUpNarrowWide } from "react-icons/lu";
+import {
+  LuArrowDownNarrowWide,
+  LuArrowUpNarrowWide,
+  LuArrowUpDown,
+} from "react-icons/lu";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
 import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
+import { ColumnType } from "@/types/tanstack-types";
 import { DataTablePagination } from "./Pagination";
 import Input, { InputVariety } from "./form/Input";
 import Tag from "./Tag";
 import DropdownMenu from "./DropdownMenu";
 
-enum ColumnType {
-  text = "text",
-  icon = "icon",
-  link = "link",
-  tags = "tags",
+export enum ColumnSize {
+  sm = 32,
+  md = 64,
 }
 
 type DataTableColumn = {
   accessorKey: string;
   label: string;
 };
+
+const DefaultPageSize = 10;
 
 interface DataTableFeatures {
   columnOrdering?: boolean;
@@ -65,9 +71,6 @@ interface DataTableFeatures {
     columns: DataTableColumn[];
   };
   expanding?: boolean;
-  pagination?: {
-    pageSize: number;
-  };
   rowPinning?: {
     top?: number[];
     bottom?: number[];
@@ -123,12 +126,18 @@ const TableContainer = chakra("div", {
   },
 });
 
-const SortIcon = ({ isSorted }: { isSorted: false | "asc" | "desc" }) => {
-  if (isSorted === "asc") {
+type SortDirection = ReturnType<Column<unknown, unknown>["getIsSorted"]>;
+
+const SortIcon = ({ sortDirection }: { sortDirection: SortDirection }) => {
+  if (sortDirection === "asc") {
     return <LuArrowUpNarrowWide size={16} />;
   }
 
-  return <LuArrowDownNarrowWide size={16} />;
+  if (sortDirection === "desc") {
+    return <LuArrowDownNarrowWide size={16} />;
+  }
+
+  return <LuArrowUpDown size={16} />;
 };
 
 const messages = defineMessages({
@@ -174,7 +183,7 @@ export const ChakraDataTable = <T extends { id: number }>({
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: features?.pagination?.pageSize || 10,
+    pageSize: DefaultPageSize,
   });
 
   const rowModels = useMemo(() => {
@@ -200,9 +209,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       models.getFilteredRowModel = getFilteredRowModel();
     }
 
-    if (features?.pagination) {
-      models.getPaginationRowModel = getPaginationRowModel();
-    }
+    models.getPaginationRowModel = getPaginationRowModel();
 
     if (features?.grouping) {
       models.getGroupedRowModel = getGroupedRowModel();
@@ -242,9 +249,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       stateObject.columnFilters = columnFilters;
     }
 
-    if (features?.pagination) {
-      stateObject.pagination = pagination;
-    }
+    stateObject.pagination = pagination;
 
     if (features?.rowSelection) {
       stateObject.rowSelection = rowSelection;
@@ -331,9 +336,7 @@ export const ChakraDataTable = <T extends { id: number }>({
       callbacksObject.onColumnFiltersChange = setColumnFilters;
     }
 
-    if (features?.pagination) {
-      callbacksObject.onPaginationChange = setPagination;
-    }
+    callbacksObject.onPaginationChange = setPagination;
 
     if (features?.rowSelection) {
       callbacksObject.onRowSelectionChange = setRowSelection;
@@ -362,38 +365,46 @@ export const ChakraDataTable = <T extends { id: number }>({
     return callbacksObject;
   }, [features]);
 
-  const buildTableConfig = (): TableOptions<T> => ({
-    data,
-    columns,
-    state,
-    enableSortingRemoval: false,
-    getCoreRowModel: getCoreRowModel<T>(),
-    ...(rowModels.getSortedRowModel && {
-      getSortedRowModel: rowModels.getSortedRowModel,
-    }),
-    ...(rowModels.getFilteredRowModel && {
-      getFilteredRowModel: rowModels.getFilteredRowModel,
-    }),
-    ...(rowModels.getPaginationRowModel && {
-      getPaginationRowModel: rowModels.getPaginationRowModel,
-    }),
-    ...(rowModels.getExpandedRowModel && {
-      getExpandedRowModel: rowModels.getExpandedRowModel,
-    }),
-    ...(rowModels.getGroupedRowModel && {
-      getGroupedRowModel: rowModels.getGroupedRowModel,
-    }),
-    ...(rowModels.getFacetedRowModel && {
-      getFacetedRowModel: rowModels.getFacetedRowModel,
-    }),
-    ...(rowModels.getFacetedUniqueValues && {
-      getFacetedUniqueValues: rowModels.getFacetedUniqueValues,
-    }),
-    ...(rowModels.getFacetedMinMaxValues && {
-      getFacetedMinMaxValues: rowModels.getFacetedMinMaxValues,
-    }),
-    ...callbacks,
-  });
+  const buildTableConfig = (): TableOptions<T> => {
+    const processedColumns = columns.map((col) => ({
+      ...col,
+      enableSorting: col.enableSorting ?? false,
+    }));
+
+    return {
+      data,
+      columns: processedColumns,
+      state,
+      enableSortingRemoval: false,
+      enableSorting: features?.sorting ?? false,
+      getCoreRowModel: getCoreRowModel<T>(),
+      ...(rowModels.getSortedRowModel && {
+        getSortedRowModel: rowModels.getSortedRowModel,
+      }),
+      ...(rowModels.getFilteredRowModel && {
+        getFilteredRowModel: rowModels.getFilteredRowModel,
+      }),
+      ...(rowModels.getPaginationRowModel && {
+        getPaginationRowModel: rowModels.getPaginationRowModel,
+      }),
+      ...(rowModels.getExpandedRowModel && {
+        getExpandedRowModel: rowModels.getExpandedRowModel,
+      }),
+      ...(rowModels.getGroupedRowModel && {
+        getGroupedRowModel: rowModels.getGroupedRowModel,
+      }),
+      ...(rowModels.getFacetedRowModel && {
+        getFacetedRowModel: rowModels.getFacetedRowModel,
+      }),
+      ...(rowModels.getFacetedUniqueValues && {
+        getFacetedUniqueValues: rowModels.getFacetedUniqueValues,
+      }),
+      ...(rowModels.getFacetedMinMaxValues && {
+        getFacetedMinMaxValues: rowModels.getFacetedMinMaxValues,
+      }),
+      ...callbacks,
+    };
+  };
 
   const table = useReactTable(buildTableConfig());
 
@@ -513,7 +524,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                           )}
                     </div>
                     {features?.sorting && header.column.getCanSort() && (
-                      <SortIcon isSorted={header.column.getIsSorted()} />
+                      <SortIcon sortDirection={header.column.getIsSorted()} />
                     )}
                   </HeaderContent>
                 </Table.ColumnHeader>
@@ -539,7 +550,7 @@ export const ChakraDataTable = <T extends { id: number }>({
         </Table.Body>
       </Table.Root>
 
-      {features?.pagination && table.getPageCount() > 1 && (
+      {table.getPageCount() > 1 && (
         <DataTablePagination
           pageIndex={table.getState().pagination.pageIndex}
           pageCount={table.getPageCount()}
