@@ -365,39 +365,46 @@ export const ChakraDataTable = <T extends { id: number }>({
     return callbacksObject;
   }, [features]);
 
-  const buildTableConfig = (): TableOptions<T> => ({
-    data,
-    columns,
-    state,
-    enableSortingRemoval: false,
-    enableSorting: false,
-    getCoreRowModel: getCoreRowModel<T>(),
-    ...(rowModels.getSortedRowModel && {
-      getSortedRowModel: rowModels.getSortedRowModel,
-    }),
-    ...(rowModels.getFilteredRowModel && {
-      getFilteredRowModel: rowModels.getFilteredRowModel,
-    }),
-    ...(rowModels.getPaginationRowModel && {
-      getPaginationRowModel: rowModels.getPaginationRowModel,
-    }),
-    ...(rowModels.getExpandedRowModel && {
-      getExpandedRowModel: rowModels.getExpandedRowModel,
-    }),
-    ...(rowModels.getGroupedRowModel && {
-      getGroupedRowModel: rowModels.getGroupedRowModel,
-    }),
-    ...(rowModels.getFacetedRowModel && {
-      getFacetedRowModel: rowModels.getFacetedRowModel,
-    }),
-    ...(rowModels.getFacetedUniqueValues && {
-      getFacetedUniqueValues: rowModels.getFacetedUniqueValues,
-    }),
-    ...(rowModels.getFacetedMinMaxValues && {
-      getFacetedMinMaxValues: rowModels.getFacetedMinMaxValues,
-    }),
-    ...callbacks,
-  });
+  const buildTableConfig = (): TableOptions<T> => {
+    const processedColumns = columns.map((col) => ({
+      ...col,
+      enableSorting: col.enableSorting ?? false,
+    }));
+
+    return {
+      data,
+      columns: processedColumns,
+      state,
+      enableSortingRemoval: false,
+      enableSorting: features?.sorting ?? false,
+      getCoreRowModel: getCoreRowModel<T>(),
+      ...(rowModels.getSortedRowModel && {
+        getSortedRowModel: rowModels.getSortedRowModel,
+      }),
+      ...(rowModels.getFilteredRowModel && {
+        getFilteredRowModel: rowModels.getFilteredRowModel,
+      }),
+      ...(rowModels.getPaginationRowModel && {
+        getPaginationRowModel: rowModels.getPaginationRowModel,
+      }),
+      ...(rowModels.getExpandedRowModel && {
+        getExpandedRowModel: rowModels.getExpandedRowModel,
+      }),
+      ...(rowModels.getGroupedRowModel && {
+        getGroupedRowModel: rowModels.getGroupedRowModel,
+      }),
+      ...(rowModels.getFacetedRowModel && {
+        getFacetedRowModel: rowModels.getFacetedRowModel,
+      }),
+      ...(rowModels.getFacetedUniqueValues && {
+        getFacetedUniqueValues: rowModels.getFacetedUniqueValues,
+      }),
+      ...(rowModels.getFacetedMinMaxValues && {
+        getFacetedMinMaxValues: rowModels.getFacetedMinMaxValues,
+      }),
+      ...callbacks,
+    };
+  };
 
   const table = useReactTable(buildTableConfig());
 
