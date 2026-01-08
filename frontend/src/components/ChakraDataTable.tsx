@@ -25,7 +25,11 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
-import { LuArrowDownNarrowWide, LuArrowUpNarrowWide } from "react-icons/lu";
+import {
+  LuArrowDownNarrowWide,
+  LuArrowUpNarrowWide,
+  LuArrowUpDown,
+} from "react-icons/lu";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
 import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
@@ -133,7 +137,7 @@ const SortIcon = ({ sortDirection }: { sortDirection: SortDirection }) => {
     return <LuArrowDownNarrowWide size={16} />;
   }
 
-  return null;
+  return <LuArrowUpDown size={16} />;
 };
 
 const messages = defineMessages({
