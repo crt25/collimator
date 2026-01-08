@@ -133,7 +133,7 @@ const SortIcon = ({ sortDirection }: { sortDirection: SortDirection }) => {
     return <LuArrowDownNarrowWide size={16} />;
   }
 
-  return <LuArrowDownNarrowWide size={16} />;
+  return null;
 };
 
 const messages = defineMessages({
