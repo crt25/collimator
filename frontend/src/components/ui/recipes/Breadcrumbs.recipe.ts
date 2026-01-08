@@ -1,6 +1,8 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
+import { breadcrumbAnatomy } from "@chakra-ui/react/anatomy";
+
 export const BreadcrumbsRecipe = defineSlotRecipe({
-  slots: ["root", "list", "item", "link", "separator"],
+  slots: breadcrumbAnatomy.keys(),
   base: {
     root: {
       padding: "sm",

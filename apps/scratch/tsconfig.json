@@ -3,6 +3,8 @@
     "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    // scratch has some JS files for which this setting causes errors
+    "checkJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -17,14 +19,17 @@
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "preserveSymlinks": true,
+    // scratch provides only partial types
+    "noImplicitAny": false,
     "paths": {
       // alias
-      "@scratch-submodule/*": ["./src/scratch/*", "./types/scratch/*"],
-    }
+      "@scratch-submodule/*": [
+        "./src/scratch-editor/*",
+        "./types/scratch-editor/*"
+      ]
+    },
+    "incremental": true
   },
-  "include": [
-    "src",
-    "types/**/*.d.ts",
-    "__tests__"
-  ]
+  "include": ["src", "types/**/*.d.ts", "__tests__"],
+  "exclude": ["node_modules"]
 }

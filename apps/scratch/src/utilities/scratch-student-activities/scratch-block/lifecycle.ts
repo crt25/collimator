@@ -1,4 +1,4 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { filterNonNull } from "../../filter-non-null";
 import type { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 

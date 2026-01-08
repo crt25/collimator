@@ -1,4 +1,3 @@
-import { Meta, StoryObj } from "@storybook/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { LuClock, LuUser } from "react-icons/lu";
 import { FaCheckCircle } from "react-icons/fa";
@@ -6,6 +5,8 @@ import { FiXCircle } from "react-icons/fi";
 import { ColumnType } from "@/types/tanstack-types";
 import ChakraDataTable from "./ChakraDataTable";
 import { EmptyState } from "./EmptyState";
+// eslint-disable-next-line storybook/no-renderer-packages
+import type { Meta, StoryObj } from "@storybook/react";
 
 type TaskData = {
   id: number;

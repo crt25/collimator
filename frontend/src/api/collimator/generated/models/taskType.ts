@@ -11,7 +11,6 @@
  */
 export type TaskType = (typeof TaskType)[keyof typeof TaskType];
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TaskType = {
   SCRATCH: "SCRATCH",
   JUPYTER: "JUPYTER",

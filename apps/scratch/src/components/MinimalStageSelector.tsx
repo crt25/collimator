@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { FormattedMessage } from "react-intl";
 
-import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
-import styles from "@scratch-submodule/scratch-gui/src/components/stage-selector/stage-selector.css";
+import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/stage-selector/stage-selector.css";
 
 interface Props {
   backdropCount: number;
