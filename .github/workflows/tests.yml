@@ -73,7 +73,7 @@ jobs:
         working-directory: ./libraries
         run: |
           cd iframe-rpc && yarn install && cd ..
-          cd iframe-rpc-react && yarn install && cd ..
+          cd iframe-rpc-react && yarn install
           
       - name: Install scratch app dependencies
         working-directory: ./apps/scratch
