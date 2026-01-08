@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join } from "node:path";
 import { withSentryConfig } from "@sentry/nextjs";
 import { NextConfig } from "next";
 
