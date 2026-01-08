@@ -1,6 +1,6 @@
 // adapted from https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extensions/scratch3_music/index.js
 
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { defineMessages } from "react-intl";
 import { ExtensionId, ExtensionMetadata, ExtensionUtilType } from "..";
 import { BlockType } from "../../blocks/block-type";

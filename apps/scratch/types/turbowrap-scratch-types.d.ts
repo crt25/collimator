@@ -4,7 +4,7 @@
 /// <reference path="../node_modules/@turbowarp/types/types/scratch-audio.d.ts" />
 /// <reference path="../node_modules/@turbowarp/types/types/scratch-scratch-parser.d.ts" />
 
-declare module "scratch-render" {
+declare module "@scratch/scratch-render" {
   export = RenderWebGL;
 }
 

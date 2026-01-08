@@ -3,7 +3,7 @@ import {
   ColorSet,
   ColorTheme,
   getColorsForTheme,
-} from "@scratch-submodule/scratch-gui/src/lib/themes";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 
 type ColorsExtended = Colors & {
   Assertions: ColorSet;

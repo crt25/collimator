@@ -1,41 +1,41 @@
 import bindAll from "lodash.bindall";
 import React from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { connect } from "react-redux";
-import { injectIntl, InjectedIntl } from "react-intl";
+import { injectIntl, IntlShape } from "react-intl";
 
+import { Action, Dispatch } from "redux";
 import {
   openSpriteLibrary,
   closeSpriteLibrary,
-} from "@scratch-submodule/scratch-gui/src/reducers/modals";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/modals";
 import {
   activateTab,
   COSTUMES_TAB_INDEX,
   BLOCKS_TAB_INDEX,
-} from "@scratch-submodule/scratch-gui/src/reducers/editor-tab";
-import { setReceivedBlocks } from "@scratch-submodule/scratch-gui/src/reducers/hovered-target";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/editor-tab";
+import { setReceivedBlocks } from "@scratch-submodule/packages/scratch-gui/src/reducers/hovered-target";
 import {
   showStandardAlert,
   closeAlertWithId,
-} from "@scratch-submodule/scratch-gui/src/reducers/alerts";
-import { setRestore } from "@scratch-submodule/scratch-gui/src/reducers/restore-deletion";
-import DragConstants from "@scratch-submodule/scratch-gui/src/lib/drag-constants";
-import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
-import spriteLibraryContent from "@scratch-submodule/scratch-gui/src/lib/libraries/sprites.json";
+} from "@scratch-submodule/packages/scratch-gui/src/reducers/alerts";
+import { setRestore } from "@scratch-submodule/packages/scratch-gui/src/reducers/restore-deletion";
+import DragConstants from "@scratch-submodule/packages/scratch-gui/src/lib/drag-constants";
+import { BLOCKS_DEFAULT_SCALE } from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
+import spriteLibraryContent from "@scratch-submodule/packages/scratch-gui/src/lib/libraries/sprites.json";
 import {
   handleFileUpload,
   spriteUpload,
-} from "@scratch-submodule/scratch-gui/src/lib/file-uploader.js";
-import sharedMessages from "@scratch-submodule/scratch-gui/src/lib/shared-messages";
-import { emptySprite } from "@scratch-submodule/scratch-gui/src/lib/empty-assets";
-import { highlightTarget } from "@scratch-submodule/scratch-gui/src/reducers/targets";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/file-uploader.js";
+import sharedMessages from "@scratch-submodule/packages/scratch-gui/src/lib/shared-messages";
+import { emptySprite } from "@scratch-submodule/packages/scratch-gui/src/lib/empty-assets";
+import { highlightTarget } from "@scratch-submodule/packages/scratch-gui/src/reducers/targets";
 import {
   fetchSprite,
   fetchCode,
-} from "@scratch-submodule/scratch-gui/src/lib/backpack-api";
-import randomizeSpritePosition from "@scratch-submodule/scratch-gui/src/lib/randomize-sprite-position";
-import downloadBlob from "@scratch-submodule/scratch-gui/src/lib/download-blob";
-import { Action, Dispatch } from "redux";
+} from "@scratch-submodule/packages/scratch-gui/src/lib/backpack-api";
+import randomizeSpritePosition from "@scratch-submodule/packages/scratch-gui/src/lib/randomize-sprite-position";
+import downloadBlob from "@scratch-submodule/packages/scratch-gui/src/lib/download-blob";
 import TargetPaneComponent, {
   Sprite,
   Props as TargetPaneProps,
@@ -48,28 +48,18 @@ interface Metrics {
 }
 
 interface Props
-  extends Omit<TargetPaneProps, "onSelectSprite" | "onActivateBlocksTab"> {
-  intl: InjectedIntl;
-
-  onCloseImporting: () => void;
-  onShowImporting: () => void;
-
-  isRtl: boolean;
-  workspaceMetrics: { targets: { [key: string]: Metrics } };
-
-  dispatchUpdateRestore: (restoreState: {
-    restoreFun: () => void;
-    deletedItem: string;
-  }) => void;
-  onHighlightTarget: (id: string) => void;
-  onActivateTab: (tabIndex: number) => void;
-  onReceivedBlocks: (receivedBlocks: boolean) => void;
+  extends Omit<
+    TargetPaneProps,
+    "onSelectSprite" | "onActivateBlocksTab" | keyof InjectedProps
+  > {
+  intl: IntlShape;
+  onNewSpriteClick?: (e: Event) => void;
 }
 
-class TargetPane extends React.Component<Props> {
+class TargetPane extends React.Component<ConnectedProps> {
   private fileInput?: HTMLInputElement;
 
-  constructor(props: Props) {
+  constructor(props: ConnectedProps) {
     super(props);
     bindAll(this, [
       "handleActivateBlocksTab",
@@ -86,6 +76,7 @@ class TargetPane extends React.Component<Props> {
       "handleDuplicateSprite",
       "handleExportSprite",
       "handleNewSprite",
+      "handleNewSpriteClick",
       "handleSelectSprite",
       "handleSurpriseSpriteClick",
       "handlePaintSpriteClick",
@@ -185,6 +176,10 @@ class TargetPane extends React.Component<Props> {
   }
   handleActivateBlocksTab() {
     this.props.onActivateTab(BLOCKS_TAB_INDEX);
+  }
+  handleNewSpriteClick(e: Event) {
+    e.preventDefault();
+    this.props.onNewSpriteClick(e);
   }
   handleNewSprite(spriteJSONString: string) {
     return this.props.vm
@@ -301,7 +296,7 @@ class TargetPane extends React.Component<Props> {
       // Add one to both new and target index because we are not counting/moving the stage
       this.props.vm.reorderTarget(dragInfo.index + 1, dragInfo.newIndex + 1);
     } else if (dragInfo.dragType === DragConstants.BACKPACK_SPRITE) {
-      // storage does not have a way of loading zips right now, and may never need it.
+      // TODO storage does not have a way of loading zips right now, and may never need it.
       // So for now just grab the zip manually.
       fetchSprite(dragInfo.payload.bodyUrl).then((sprite3Zip) =>
         this.props.vm.addSprite(sprite3Zip),
@@ -315,7 +310,7 @@ class TargetPane extends React.Component<Props> {
       // it allows the user to share multiple things without switching back and forth.
       if (dragInfo.dragType === DragConstants.COSTUME) {
         this.props.vm.shareCostumeToTarget(dragInfo.index, targetId);
-      } else if (dragInfo.dragType === DragConstants.SOUND) {
+      } else if (targetId && dragInfo.dragType === DragConstants.SOUND) {
         this.props.vm.shareSoundToTarget(dragInfo.index, targetId);
       } else if (dragInfo.dragType === DragConstants.BACKPACK_COSTUME) {
         // In scratch 2, this only creates a new sprite from the costume.
@@ -353,6 +348,7 @@ class TargetPane extends React.Component<Props> {
       onActivateTab,
       onCloseImporting,
       onHighlightTarget,
+      onNewSpriteClick,
       onReceivedBlocks,
       onShowImporting,
       workspaceMetrics,
@@ -380,6 +376,7 @@ class TargetPane extends React.Component<Props> {
         onSelectSprite={this.handleSelectSprite}
         onSpriteUpload={this.handleSpriteUpload}
         onSurpriseSpriteClick={this.handleSurpriseSpriteClick}
+        onNewSpriteClick={this.handleNewSpriteClick}
       />
     );
   }
@@ -409,9 +406,8 @@ const mapStateToProps = (state: {
   workspaceMetrics: state.scratchGui.workspaceMetrics,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
-  onNewSpriteClick: (e: Event) => {
-    e.preventDefault();
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onNewSpriteClick: () => {
     dispatch(openSpriteLibrary());
   },
   onRequestCloseSpriteLibrary: () => {
@@ -438,6 +434,22 @@ const mapDispatchToProps = (dispatch: Dispatch<unknown>) => ({
     dispatch(showStandardAlert("importingAsset") as Action),
 });
 
+const mergeProps = (
+  stateProps: ReturnType<typeof mapStateToProps>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
+  ownProps: Props,
+) => ({
+  ...ownProps,
+  ...stateProps,
+  ...dispatchProps,
+  onNewSpriteClick: ownProps.onNewSpriteClick || dispatchProps.onNewSpriteClick,
+});
+
+type InjectedProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
+
+type ConnectedProps = ReturnType<typeof mergeProps>;
+
 export default injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(TargetPane),
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(TargetPane),
 );

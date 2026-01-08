@@ -1,0 +1,243 @@
+:root {
+  --enabled-block-button-background-color: green;
+  --disabled-block-button-background-color: red;
+  --freeze-block-stack-button-background-color: #3333ee;
+
+  --disabled-block-background-color: #666;
+  --disabled-block-foreground-color: #ddd;
+
+  --border-radius: 0.25rem;
+
+  --modal-background-color: #fff;
+
+  --input-border-color: #000;
+  --input-background-color: #fff;
+  --input-background-color-hover: #ddd;
+
+  /* safe colors according to https://www.nceas.ucsb.edu/sites/default/files/2022-06/Colorblind%20Safe%20Color%20Schemes.pdf (Paul Tol's Bright)*/
+  --assertions-default-color: #c26a77;
+  --assertions-failed-color: #c26a77;
+  --assertions-success-color: #337539;
+
+  --scratch-motion-block-color: #4C97FF;
+  --scratch-looks-block-color: #9966FF;
+  --scratch-sound-block-color: #CF63CF;
+  --scratch-control-block-color: #FFAB19;
+  --scratch-events-block-color: #FFBF00;
+  --scratch-sensing-block-color: #5CB1D6;
+  --scratch-operators-block-color: #59C059;
+  --scratch-variables-block-color: #FF8C1A;
+  --scratch-list-block-color: #FF661A;
+  --scratch-function-block-color: #FF6680;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+body > div[id],
+body > div[id] > div {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  
+  /* this CSS block is copied over from the scratch codebase */
+  /* Setting min height makes the UI scroll below those sizes */
+  min-height: 640px; /* Min height to fit sprite/backdrop button */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.enabled-block-button,
+.disabled-block-button,
+.stack-freeze-button {
+  cursor: pointer;
+}
+
+.enabled-block-button text,
+.disabled-block-button text,
+.stack-freeze-button text {
+  fill: white;
+}
+
+.enabled-block-button:hover rect,
+.disabled-block-button:hover rect,
+.stack-freeze-button:hover rect {
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.enabled-block-button rect {
+  fill: var(--enabled-block-button-background-color);
+}
+
+.disabled-block-button rect {
+  fill: var(--disabled-block-button-background-color);
+}
+
+.stack-freeze-button rect {
+  fill: var(--freeze-block-stack-button-background-color);
+}
+
+.d-contents {
+  display: contents;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.non-interactive {
+  pointer-events: none;
+  user-select: none;
+}
+
+.non-interactive::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/*
+  make the direct non-block descendants of frozen blocks non-interactive.
+  the stacks are nested meaning without '>' students could not touch
+  blocks they added themselves.
+*/
+.frozen-block-frozen > *:not(.blocklyDraggable),
+.frozen-block-appendable > *:not(.blocklyDraggable) {
+  pointer-events: none;
+  user-select: none;
+}
+
+/*
+  change the color of frozen blocks.
+  original colors: https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/core/colours.js#L29
+*/
+
+
+[data-category="motion"] 
+{
+  --block-color: var(--scratch-motion-block-color);
+}
+
+[data-category="looks"] 
+{
+  --block-color: var(--scratch-looks-block-color);
+}
+
+[data-category="sounds"] 
+{
+  --block-color: var(--scratch-sound-block-color);
+}
+
+[data-category="control"] 
+{
+  --block-color: var(--scratch-control-block-color);
+}
+
+[data-category="events"] 
+{
+  --block-color: var(--scratch-events-block-color);
+}
+
+[data-category="sensing"] 
+{
+  --block-color: var(--scratch-sensing-block-color);
+}
+
+[data-category="operators"] 
+{
+  --block-color: var(--scratch-operators-block-color);
+}
+
+[data-category="data"] 
+{
+  --block-color: var(--scratch-variables-block-color);
+}
+
+[data-category="data-lists"] 
+{
+  --block-color: var(--scratch-list-block-color);
+}
+
+[data-category="Assertions"] 
+{
+  --block-color: #0FBD8C;
+
+  & [stroke="#c26a77"]{
+    /* ensure the secondary color is only shown for highlighting (glow) when an assertion fails */
+    stroke: #0DA57A;
+  }
+}
+
+.blocklyDraggable:not([data-category])
+{
+  --block-color: var(--scratch-function-block-color);
+}
+
+.frozen-block-frozen > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-frozen > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line,
+.frozen-block-appendable > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > .blocklyBlockBackground,
+.frozen-block-appendable > *:not(.blocklyDraggable,[data-argument-type^="text"]) > line
+{
+  --bg-color: color-mix(
+    in srgb,
+    var(--block-color, var(--disabled-block-background-color)),
+    var(--disabled-block-background-color)
+    60%
+  );
+
+  fill: var(--bg-color);
+  stroke: color-mix(
+    in srgb,
+    var(--bg-color),
+    #000,
+    50%
+  );
+}
+
+.frozen-block-frozen .blocklyPath[data-argument-type^="boolean"],
+.frozen-block-appendable .blocklyPath[data-argument-type^="boolean"]
+{
+  /* ensure the boolean slots are darker than the block around it */
+  --bg-color: color-mix(
+    in srgb,
+    var(--block-color, var(--disabled-block-background-color)),
+    var(--disabled-block-background-color)
+    80%
+  );
+
+  fill: var(--bg-color);
+}
+
+/*
+  disable pointer events on all rects. you can still grab the block via the svg group element.
+  however, without this rule, it is possible to drag the rect even though the corresponding block is disabled.
+*/
+.blocklyFlyout rect:not(.interactive) {
+  pointer-events: none;
+}
+
+/*
+  reduce the size of the custom image of extension blocks
+*/
+.blocklyDraggable > g > image {
+  transform: scale(0.9);
+  transform-origin: 20px 20px;
+}

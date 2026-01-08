@@ -1,4 +1,4 @@
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import JSZip from "jszip";
 import { ScratchCrtConfig, ScratchProject } from "../types/scratch-vm-custom";
 

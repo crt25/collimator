@@ -1,14 +1,8 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
+import { toastAnatomy } from "@chakra-ui/react/anatomy";
 
 export const ToasterRecipe = defineSlotRecipe({
-  slots: [
-    "root",
-    "title",
-    "description",
-    "actionTrigger",
-    "closeTrigger",
-    "indicator",
-  ],
+  slots: toastAnatomy.keys(),
   base: {
     root: {
       width: "auto",

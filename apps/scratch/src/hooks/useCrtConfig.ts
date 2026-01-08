@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { defaultCrtConfig } from "../vm/default-crt-config";
 
@@ -8,6 +8,7 @@ export const useCrtConfig = (vm: VM | null): ScratchCrtConfig => {
 
   useEffect(() => {
     if (crtConfig === defaultCrtConfig && vm?.crtConfig !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCrtConfig(vm.crtConfig);
     }
 

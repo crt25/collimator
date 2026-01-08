@@ -13,6 +13,7 @@ export const useFileHash = (fileData: Blob | undefined): string => {
 
   useEffect(() => {
     if (fileData === undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHash("");
       return;
     }
