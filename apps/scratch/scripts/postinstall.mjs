@@ -28,7 +28,8 @@ const downloadMicrobitHex = async () => {
   const relativeHexDir = path.join(
     basePath,
     "src",
-    "scratch",
+    "scratch-editor",
+    "packages",
     "scratch-gui",
     "static",
     "microbit",
@@ -41,7 +42,8 @@ const downloadMicrobitHex = async () => {
   // EDIT: Write to the git submodule
   const relativeGeneratedDir = path.join(
     "src",
-    "scratch",
+    "scratch-editor",
+    "packages",
     "scratch-gui",
     "src",
     "generated",

@@ -1,21 +1,20 @@
 import React from "react";
-import { defineMessages, InjectedIntl, injectIntl } from "react-intl";
+import { defineMessages, IntlShape, injectIntl } from "react-intl";
 
-import Box from "@scratch-submodule/scratch-gui/src/components/box/box.jsx";
-import SpriteInfo from "@scratch-submodule/scratch-gui/src//containers/sprite-info.jsx";
-import ActionMenu from "@scratch-submodule/scratch-gui/src/components/action-menu/action-menu.jsx";
-import VM from "scratch-vm";
-// @ts-expect-error - no type definitions
+import VM from "@scratch/scratch-vm";
 import { isRtl } from "scratch-l10n";
+import Box from "@scratch-submodule/packages/scratch-gui/src/components/box/box.jsx";
+import SpriteInfo from "@scratch-submodule/packages/scratch-gui/src//containers/sprite-info.jsx";
+import ActionMenu from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/action-menu.jsx";
 
-import styles from "@scratch-submodule/scratch-gui/src/components/sprite-selector/sprite-selector.css";
+import styles from "@scratch-submodule/packages/scratch-gui/src/components/sprite-selector/sprite-selector.css";
 
-import fileUploadIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--file-upload.svg";
-import paintIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--paint.svg";
-import spriteIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--sprite.svg";
-import surpriseIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--surprise.svg";
-import searchIcon from "@scratch-submodule/scratch-gui/src/components/action-menu/icon--search.svg";
-import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/scratch-gui/src/lib/layout-constants";
+import fileUploadIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--file-upload.svg";
+import paintIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--paint.svg";
+import spriteIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--sprite.svg";
+import surpriseIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--surprise.svg";
+import searchIcon from "@scratch-submodule/packages/scratch-gui/src/components/action-menu/icon--search.svg";
+import { STAGE_DISPLAY_SIZES } from "@scratch-submodule/packages/scratch-gui/src/lib/layout-constants";
 import { Sprite } from "../target-pane/TargetPane";
 import { WithoutInteraction } from "../../WithoutInteraction";
 import SpriteList from "./SpriteList";
@@ -54,7 +53,7 @@ type Props = {
     hoveredSprite?: string;
     receivedBlocks?: boolean;
   };
-  intl: InjectedIntl;
+  intl: IntlShape;
   onChangeSpriteDirection?: (direction: number) => void;
   onChangeSpriteName?: (name: string) => void;
   onChangeSpriteRotationStyle?: (style: VM.RotationStyle) => void;

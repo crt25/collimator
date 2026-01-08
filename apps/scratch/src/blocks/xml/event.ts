@@ -1,4 +1,4 @@
-import { ColorSet } from "@scratch-submodule/scratch-gui/src/lib/themes";
+import { ColorSet } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
 import { categorySeparator } from "./constants";
 import { filterNotAllowedBlocks } from "./helpers";
 

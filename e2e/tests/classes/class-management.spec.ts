@@ -7,7 +7,7 @@ import { createClass } from "./class-management";
 
 const newClassName = "new class name";
 let newClassId: number = -1;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 let newClassTeacherId: number = -1;
 
 const updatedClassName = "updated class name";
