@@ -13,7 +13,7 @@ import { useTaskInstances } from "@/api/collimator/hooks/tasks/useTaskInstances"
 import { isClickOnRow } from "@/utilities/table";
 import { EmptyState } from "@/components/EmptyState";
 import Button from "../Button";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import SwrContent from "../SwrContent";
 
 const TaskInstanceTableWrapper = chakra("div", {
@@ -82,7 +82,7 @@ const TaskInstanceTable = ({
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      size: 32,
+      size: ColumnSize.sm,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
           {info.row.original.id}

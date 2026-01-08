@@ -9,7 +9,7 @@ import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existi
 import { ColumnType } from "@/types/tanstack-types";
 import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
 
@@ -109,7 +109,7 @@ const ClassList = () => {
           </Icon>
         </Button>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.icon,
       },

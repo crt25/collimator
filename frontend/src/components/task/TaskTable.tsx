@@ -15,7 +15,7 @@ import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
 
@@ -90,7 +90,7 @@ const TaskTable = () => {
           {info.row.original.id}
         </span>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },
@@ -144,7 +144,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 64,
+      size: ColumnSize.md,
       meta: {
         columnType: ColumnType.text,
       },
@@ -169,7 +169,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },

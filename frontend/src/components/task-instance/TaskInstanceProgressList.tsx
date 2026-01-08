@@ -14,7 +14,7 @@ import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/use
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
-import ChakraDataTable from "../ChakraDataTable";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
 import StarSolutionButton from "../solution/StarSolutionButton";
@@ -296,7 +296,7 @@ const TaskInstanceProgressList = ({
             </Icon>
           </Button>
         ),
-        size: 32,
+        size: ColumnSize.sm,
         meta: {
           columnType: ColumnType.icon,
         },

@@ -29,16 +29,15 @@ import { LuArrowDownNarrowWide, LuArrowUpNarrowWide } from "react-icons/lu";
 import { defineMessages, useIntl } from "react-intl";
 import Link from "next/link";
 import { chakra, Table, HStack, Icon, Spinner } from "@chakra-ui/react";
+import { ColumnType } from "@/types/tanstack-types";
 import { DataTablePagination } from "./Pagination";
 import Input, { InputVariety } from "./form/Input";
 import Tag from "./Tag";
 import DropdownMenu from "./DropdownMenu";
 
-enum ColumnType {
-  text = "text",
-  icon = "icon",
-  link = "link",
-  tags = "tags",
+export enum ColumnSize {
+  sm = 32,
+  md = 64,
 }
 
 type DataTableColumn = {

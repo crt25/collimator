@@ -13,7 +13,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
-import ChakraDataTable from "../ChakraDataTable";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
 
 const ProgressListWrapper = styled.div`
@@ -263,7 +263,7 @@ const ProgressList = ({
         id: "helpNeeded",
         header: intl.formatMessage(messages.helpColumn),
         cell: (info) => helpTemplate(info.row.original),
-        size: 32,
+        size: ColumnSize.sm,
         meta: {
           columnType: ColumnType.text,
         },

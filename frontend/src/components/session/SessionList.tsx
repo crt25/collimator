@@ -14,7 +14,7 @@ import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
-import ChakraDataTable from "../ChakraDataTable";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { ShareModal } from "../form/ShareModal";
 import { EmptyState } from "../EmptyState";
 
@@ -167,7 +167,7 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      size: 32,
+      size: ColumnSize.sm,
     },
     {
       accessorKey: "title",
@@ -231,7 +231,7 @@ const SessionList = ({ classId }: { classId: number }) => {
           </Icon>
         </Button>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.icon,
       },
