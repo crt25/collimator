@@ -10,7 +10,7 @@ import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSol
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import StudentPageLayout from "@/components/layout/StudentPage";
+import StudentPageLayout from "@/components/layout/StudentPageLayout";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";

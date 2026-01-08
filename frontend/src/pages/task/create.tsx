@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

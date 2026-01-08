@@ -7,7 +7,7 @@ import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
 import { useUser } from "@/api/collimator/hooks/users/useUser";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

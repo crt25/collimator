@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { TextComponent as Text } from "@/components/Text";
 import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   teacherHeader: {

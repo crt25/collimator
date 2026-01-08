@@ -5,7 +5,7 @@ import CrtNavigation from "@/components/CrtNavigation";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

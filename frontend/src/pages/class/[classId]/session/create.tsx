@@ -10,7 +10,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import { toaster } from "@/components/Toaster";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

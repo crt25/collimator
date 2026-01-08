@@ -1,7 +1,7 @@
 import { defineMessages, FormattedMessage } from "react-intl";
 import CrtNavigation from "@/components/CrtNavigation";
 import TaskTable from "@/components/task/TaskTable";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

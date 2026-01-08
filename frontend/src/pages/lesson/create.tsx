@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
 import LessonForm from "@/components/lesson/LessonForm";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

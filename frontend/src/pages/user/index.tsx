@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
 import CrtNavigation from "@/components/CrtNavigation";
 import UserList from "@/components/user/UserList";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {

@@ -1,7 +1,7 @@
 import { defineMessages } from "react-intl";
 import LessonList, { Lesson } from "@/components/lesson/LessonList";
 import CrtNavigation from "@/components/CrtNavigation";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const lessons: Lesson[] = [
   {
