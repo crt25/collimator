@@ -1,12 +1,61 @@
-# Scratch Modifications
+# Scratch
+
+## G-AST Converter
+
+Each Scratch block is assigned to one of three categories:
+
+- [Hat Blocks](https://en.scratch-wiki.info/wiki/Hat_Block) - starting blocks reacting to events.
+- Statement Blocks - blocks that will be converted to G-AST statement nodes.
+- Expression Blocks - blocks that will be converted to G-AST expression nodes.
+
+The conversion process is handled by two main functions :
+
+- `convertBlockTreeToStatement`
+- `convertBlockTreeToExpression`
+
+Both functions first branch based on th Scratch block category, such as:
+
+- Motion
+- Looks
+- Sound
+- Event
+- Control
+- Sensing
+- Operator
+- Variables (`data`)
+- My Blocks (`procedures`)
+
+Then each category is handled by a dedicated converter function. The function name follows the pattern: `convert<category>BlockTreeTo<type>`
+
+For example: 
+
+- `convertMotionBlockTreeToStatement` handles Motion blocks that produce statements.
+- `convertSoundBlockTreeToExpression` handles Sound blocks that produce expressions.
+
+Inside these category-specific functions, the **opcode** of each Scratch block is checked against a set of [known values](https://en.scratch-wiki.info/wiki/List_of_Block_Opcodes).
+
+Based on this opcode, the block is then converted to either a statement or an expression.
+
+## The Scratch .sb3 Format
+
+Scratch stores its data in a data format called `sb3` and also uses those three letters as a file extension.
+The format is a zip file containing resource files such as images and audio data plus a `project.json` file.
+
+[Scratch's Parser GitHub repository](https://github.com/scratchfoundation/scratch-parser) lists a JSON schema for this file [here](https://github.com/scratchfoundation/scratch-parser/blob/master/lib/sb3_definitions.json) and [here](https://github.com/scratchfoundation/scratch-parser/blob/master/lib/sb3_schema.json).
+
+However, the individual inputs to the different blocks are not documented in this JSON schema.
+Instead, they may be found in the [respective block definition on the scratch-blocks GitHub repository](https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/blocks_vertical/).
+
+## Scratch Modifications
 
 This document is intended for developers working on this project and who may need to update or maintain the Scratch integration.
 
 This project modified Scratch, the scope of the changes and their purpose are described below.
 
-## Edit and Solve mode
+### Edit and Solve mode
 
 This project extends the Scratch GUI component to additionally accept a `canEditTask` property which, if disabled, deactivates the following built-in Scratch features:
+
 - the button to load extensions is not shown
 - the buttons to add new sprites is not shown
 - the buttons to load stage sprites is not shown
@@ -17,11 +66,11 @@ In the following we will use "Task editing mode" (or "Edit mode") to denote `can
 
 Moreover, the new properties `isCostumesTabEnabled` and `isSoundsTabEnabled` allow hiding the costume and sound tabs.
 
-## CRT Config
+### CRT Config
 
 To store additional information with a scratch project, we add an additional `crt.json` file into the zip archive.
 
-## Block Config
+### Block Config
 
 To restrict the available blocks, we introduced the block config button rendered at the top left of each button in the [flyout toolbox](https://developers.google.com/blockly/guides/get-started/workspace-anatomy#flyout_toolbox) to the left.
 The button shows either a number or the infinity symbol, indicting the number of times this block can be used by a student.
@@ -38,7 +87,7 @@ Moreover, when the counter reaches zero, the block is completely disabled.
 Blocks which the editor configures to be disallowed (a count of `0`), are never rendered in Solve mode.
 However, blocks reaching a remaining count of zero are still shown.
 
-### Implementation
+#### Implementation
 
 Because the blocks part of the Scratch GUI is not rendered in React, we need to directly modify the DOM, which leads to unorthodox code in a React project.
 Every time the toolbox is updated, we check its contents using CSS selectors and add the buttons whose text value is the number of remaining blocks.
@@ -53,7 +102,7 @@ Whenever it sees this event, it re-renders the toolbox resulting in updated numb
 To reduce the number of available blocks of a given type, we add an event listener to listen for workspace changes in the modified `Blocks` component.
 This event handler checks whether it is a block create or delete event and if it is, it triggers an update of the respective config button's label.
 
-## Freezing Blocks
+### Freezing Blocks
 
 In order for teachers to provide some initial task blocks that cannot be edited by students, we extend scratch with a block freeze functionality.
 There are three possible states: editable (default), appendable and frozen, each applying to an entire stack of blocks.
@@ -69,7 +118,7 @@ The user cannot interact with any of these grayed out blocks.
 In the case of frozen stacks, it is also impossible to prepend or append blocks.
 In the case of appendable stacks, blocks can be appended at the end of the stack or in between if there are control blocks with a body.
 
-### Implementation (⚠️ patching npm dependency `scratch-block`)
+#### Implementation (⚠️ patching npm dependency `scratch-block`)
 
 Because the workspace change updates we use for the block config are not in sync with the DOM elements, we instead rely on a DOM mutation observer for adding and removing the freeze buttons to the workspace stacks.
 

@@ -1,10 +1,10 @@
-# Developer setup guide
+# Installation
+
+## Developer setup guide
 
 This guide provides instructions for setting up the ClassMosaic project for local development. The project is a monorepo project and uses git submodules too.
 
 The repository is structured into several key directories, including `backend`, `frontend`, `apps` for the applications, `e2e` for end-to-end tests, and `terraform` for infrastructure as code.
-
-## Local development setup (manual)
 
 ### Prerequisites
 
@@ -31,17 +31,20 @@ git submodule update --init --recursive --progress
 ?> The `docker/` folder and `backend/Dockerfile` are only used for deployment. For local development, use the native setup described below.
 
 1. Create a PostgreSQL database for ClassMosaic.
+
    You can either use the [Postgres Docker](#postgres-docker) instructions in the appendices, or install PostgreSQL directly (see the [official documentation](https://www.postgresql.org/docs/current/)).
 
 2. In the `backend` folder, copy `.env.sample` to `.env` and set `DATABASE_URL` to match your database, if needed.
 
 3. Install dependencies:
-```sh
-$ cd backend
-$ yarn install
-```
 
-1. Customize the admin account by editing `prisma/seed/production.ts`:
+    ```sh
+    $ cd backend
+    $ yarn install
+    ```
+
+4. Customize the admin account by editing `prisma/seed/production.ts`:
+
     ```ts
     export const seedProduction = async (prisma: PrismaClient): Promise<void> => {
       const count = await prisma.user.count({
@@ -59,43 +62,50 @@ $ yarn install
 
     ```
 
-2. Apply migrations and generate the Prisma client:
-```sh 
-# From: backend/
-$ yarn prisma migrate deploy
-$ yarn prisma:generate
-```
+5. Apply migrations and generate the Prisma client:
 
-1. Build the backend:
-```sh
-$ yarn build
-```
+    ```sh
+    # From: backend/
+    $ yarn prisma migrate deploy
+    $ yarn prisma:generate
+    ```
 
-1. Seed the database:
-```sh
-$ yarn prisma:seed
-```
-In the console, you should see:
-```sh
-[
-  'admin',
-  {
-    id: 1,
-    name: 'yourName',
-    oidcSub: null,
-    email: 'yourMicrosoftAccountEmail',
-    authenticationProvider: 'MICROSOFT',
-    type: 'ADMIN'
-  },
-  'yourRegistrationToken'
-]
-```             
-Keep your registration token. You will need it to log in from the frontend.
+6. Build the backend:
 
-1. Start the backend in development mode:
-```sh
-$ yarn dev
-```
+    ```sh
+    $ yarn build
+    ```
+
+7. Seed the database:
+
+    ```sh
+    $ yarn prisma:seed
+    ```
+
+    In the console, you should see:
+
+    ```sh
+    [
+    'admin',
+    {
+        id: 1,
+        name: 'yourName',
+        oidcSub: null,
+        email: 'yourMicrosoftAccountEmail',
+        authenticationProvider: 'MICROSOFT',
+        type: 'ADMIN'
+    },
+    'yourRegistrationToken'
+    ]
+    ```
+
+    Keep your registration token. You will need it to log in from the frontend.
+
+8. Start the backend in development mode:
+
+    ```sh
+    $ yarn dev
+    ```
 
 ### Frontend Setup
 
@@ -104,20 +114,24 @@ $ yarn dev
 2. If you changed the backend URI, copy `.env.development` to `.env` and update it. If not, you can keep `.env.development` as is.
 
 3. Install dependencies, then start the frontend:
-```sh
-$ yarn install
-$ yarn dev
-```
+
+    ```sh
+    $ yarn install
+    $ yarn dev
+    ```
 
 ### Scratch Setup
 
 1. Move to the `apps/scratch` folder.
+
 2. Ensure submodules are initialized:
+
     ```sh
     $ git submodule update --init --recursive
     ```
 
 3. Install dependencies and start the app:
+
     ```sh
     $ yarn install
     $ yarn dev
@@ -130,32 +144,38 @@ $ yarn dev
 3. Click "Authenticate using Microsoft".
 
 ### Appendices
+
 #### Postgres Docker
 
 This process creates two Docker containers:  
-- one for the PostgreSQL server  
+
+- one for the PostgreSQL server
 - one for pgAdmin (a web-based management tool)
 
 1. Create a PostgreSQL container:
-```sh
-$ docker run --name postgres \
-    -p 5432:5432 \
-    -e POSTGRES_PASSWORD=password \
-    -d postgres
-```
-2. Create a pgAdmin container:
-```sh 
-$ docker run --name pgadmin \
-    -p 5050:80 \
-    -e PGADMIN_DEFAULT_EMAIL=YOUR_EMAIL \
-    -e PGADMIN_DEFAULT_PASSWORD=YOUR_PASSWORD \
-    -d dpage/pgadmin4
-```
-3. Find the virtual IP address postgres is working on:
-```sh
-$ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
-```
 
+    ```sh
+    $ docker run --name postgres \
+        -p 5432:5432 \
+        -e POSTGRES_PASSWORD=password \
+        -d postgres
+    ```
+
+2. Create a pgAdmin container:
+
+    ```sh
+    $ docker run --name pgadmin \
+        -p 5050:80 \
+        -e PGADMIN_DEFAULT_EMAIL=YOUR_EMAIL \
+        -e PGADMIN_DEFAULT_PASSWORD=YOUR_PASSWORD \
+        -d dpage/pgadmin4
+    ```
+
+3. Find the virtual IP address postgres is working on:
+
+    ```sh
+    $ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres
+    ```
 4. Open pgAdmin in your browser: http://localhost:5050
 5. Log in with the email and password you set in step 2.
 6. In pgAdmin, select **Servers** (top-left).

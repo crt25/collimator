@@ -1,6 +1,7 @@
 # Database
 
 In order to connect to a deployed database, use the AWS session manager for port forwarding:
+
 ```pwsh
 aws ssm start-session `
   --target ecs:collimator-dev-backend_<task-id>_<container-runtime_id> `
