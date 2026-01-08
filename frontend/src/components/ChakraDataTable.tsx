@@ -124,12 +124,12 @@ const TableContainer = chakra("div", {
 
 type SortDirection = ReturnType<Column<unknown, unknown>["getIsSorted"]>;
 
-const SortIcon = ({ isSorted }: { isSorted: SortDirection }) => {
-  if (isSorted === "asc") {
+const SortIcon = ({ sortDirection }: { sortDirection: SortDirection }) => {
+  if (sortDirection === "asc") {
     return <LuArrowUpNarrowWide size={16} />;
   }
 
-  if (isSorted === "desc") {
+  if (sortDirection === "desc") {
     return <LuArrowDownNarrowWide size={16} />;
   }
 
@@ -513,7 +513,7 @@ export const ChakraDataTable = <T extends { id: number }>({
                           )}
                     </div>
                     {features?.sorting && header.column.getCanSort() && (
-                      <SortIcon isSorted={header.column.getIsSorted()} />
+                      <SortIcon sortDirection={header.column.getIsSorted()} />
                     )}
                   </HeaderContent>
                 </Table.ColumnHeader>
