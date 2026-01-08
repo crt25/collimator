@@ -5,7 +5,7 @@ import { toaster } from "@/components/Toaster";
 import ClassForm, { ClassFormValues } from "@/components/class/ClassForm";
 import CrtNavigation from "@/components/CrtNavigation";
 import { useCreateClass } from "@/api/collimator/hooks/classes/useCreateClass";
-import PageLayout from "@/components/layout/Page";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {
