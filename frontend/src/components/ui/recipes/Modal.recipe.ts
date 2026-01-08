@@ -1,23 +1,14 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
+import { dialogAnatomy } from "@chakra-ui/react/anatomy";
 
 export const ModalRecipe = defineSlotRecipe({
-  slots: [
-    "content",
-    "positioner",
-    "title",
-    "footer",
-    "warningText",
-    "closeTrigger",
-  ],
+  slots: dialogAnatomy.keys(),
   base: {
     content: {
       backgroundColor: "bg",
     },
     footer: {
       gap: "md",
-    },
-    warningText: {
-      color: "fgTertiary",
     },
     title: {
       fontSize: "xl !important",
