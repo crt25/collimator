@@ -3,3 +3,10 @@
 
 # tests & coverage
 /coverage
+
+# When .babelrc is there, the SWC compiler is not run (https://nextjs.org/docs/architecture/nextjs-compiler#unsupported-features)
+# Because SWC is faster, we do not want a custom babel config.
+# Unfortunately we need one for the coverage collection in the tests.
+# The scripts temporarily create the file in this place and then delete it again.
+# Putting it in the .gitignore prevents the file from being committed accidentally.
+.babelrc

@@ -9,7 +9,8 @@ import { ParametersOf } from "iframe-rpc/src/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export const useIframeParent = (
-  handleRequest: AppHandleRequestMap,
+  handleRequest: AppHandleRequestMap | null,
+  initialMessages?: MessageEvent<unknown>[],
 ): {
   isInIframe: boolean;
   hasLoaded: boolean;
@@ -28,7 +29,7 @@ export const useIframeParent = (
   const [taskOrigin, setTaskOrigin] = useState<string | null>(null);
 
   const modifiedHandleRequest = useMemo(
-    () => ({
+    () => handleRequest !== null ?({
       ...handleRequest,
       loadSubmission: async (
         ...args: Parameters<typeof handleRequest.loadSubmission>
@@ -44,7 +45,7 @@ export const useIframeParent = (
 
         return handleRequest.loadTask(...args);
       },
-    }),
+    }) : null,
     [handleRequest],
   );
 
@@ -79,6 +80,12 @@ export const useIframeParent = (
 
     if (isInIframe) {
       window.addEventListener("message", eventHandler);
+
+      if (initialMessages) {
+        for (const msg of initialMessages) {
+          eventHandler(msg);
+        }
+      }
 
       return (): void => {
         window.removeEventListener("message", eventHandler);

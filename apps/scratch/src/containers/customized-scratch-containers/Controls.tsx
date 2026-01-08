@@ -1,8 +1,8 @@
 import { useCallback, useContext } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { connect } from "react-redux";
 
-import ControlsComponent from "@scratch-submodule/scratch-gui/src/components/controls/controls.jsx";
+import ControlsComponent from "@scratch-submodule/packages/scratch-gui/src/components/controls/controls.jsx";
 import { CrtContext } from "../../contexts/CrtContext";
 
 interface Props {
@@ -46,7 +46,7 @@ const Controls = ({
         vm.greenFlag();
       }
     },
-    [vm, isStarted, turbo, sendRequest],
+    [vm, isStarted, turbo, sendRequest, canEditTask],
   );
 
   const handleStopAllClick = useCallback(

@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import VM from "scratch-vm";
+import VM from "@scratch/scratch-vm";
 import { FormattedMessage } from "react-intl";
 import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 
@@ -80,6 +80,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
       const limit = isNaN(limitOrNaN) ? 1 : limitOrNaN;
 
       if (canBeUsed) {
+        // eslint-disable-next-line react-hooks/immutability
         config.allowedBlocks[blockId] = hasBlockLimit ? limit : infiniteUses;
       } else {
         config.allowedBlocks[blockId] = cannotBeUsed;
