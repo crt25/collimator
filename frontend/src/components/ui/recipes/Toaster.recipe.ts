@@ -17,7 +17,6 @@ export const ToasterRecipe = defineSlotRecipe({
       fontSize: "sm",
       borderWidth: "thin",
       borderRadius: "sm",
-      borderColor: "buttonSecondaryBorder",
       _hover: {
         opacity: 0.8,
       },

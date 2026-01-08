@@ -9,49 +9,6 @@ export const PageHeadingRecipe = defineRecipe({
       description: {
         fontSize: "lg",
         fontWeight: "normal",
-        color: "pageDescriptionColor",
-      },
-      subHeading: {
-        marginTop: "md",
-        fontSize: "3xl",
-        fontWeight: "semiBold",
-        wordBreak: "keep-all",
-        whiteSpace: "nowrap",
-        color: "fg",
-      },
-    },
-    size: {
-      sm: {
-        fontSize: "lg",
-      },
-      md: {
-        fontSize: "xl",
-      },
-      lg: {
-        fontSize: "2xl",
-      },
-      xl: {
-        fontSize: "3xl",
-      },
-      "2xl": {
-        fontSize: "4xl",
-      },
-    },
-    spacing: {
-      none: {
-        marginTop: "0",
-      },
-      tight: {
-        marginTop: "sm",
-      },
-      normal: {
-        marginTop: "md",
-      },
-      loose: {
-        marginTop: "lg",
-      },
-      extraLoose: {
-        marginTop: "4xl",
       },
     },
   },

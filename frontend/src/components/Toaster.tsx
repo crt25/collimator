@@ -21,7 +21,6 @@ const StyledCloseTrigger = chakra(Toast.CloseTrigger, {
     borderWidth: "thin",
     padding: "sm",
     borderRadius: "sm !important",
-    borderColor: "buttonSecondaryBorder",
     cursor: "pointer",
     _hover: {
       opacity: 0.8,
