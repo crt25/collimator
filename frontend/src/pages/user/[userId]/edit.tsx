@@ -53,6 +53,9 @@ const EditUser = () => {
   return (
     <PageLayout
       title={messages.title}
+      titleParameters={{
+        name: user?.name ?? "",
+      }}
       heading={messages.heading}
       breadcrumbs={<CrtNavigation breadcrumb user={user} />}
     >
