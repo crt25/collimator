@@ -12,7 +12,6 @@ import { CardRecipe } from "./recipes/layout/Card.recipe";
 import { DropdownMenuRecipe } from "./recipes/navigation/DropdownMenu.recipe";
 import { FieldRecipe, InputRecipe } from "./recipes/form/Input.recipe";
 import { TextAreaRecipe } from "./recipes/form/Textarea.recipe";
-import { HStackRecipe } from "./recipes/layout/HStack.recipe";
 import { IconButtonRecipe } from "./recipes/buttons/IconButton.recipe";
 import { MenuRecipe } from "./recipes/navigation/Menu.recipe";
 import { ModalRecipe } from "./recipes/modal/Modal.recipe";
@@ -42,7 +41,6 @@ const config = defineConfig({
       input: InputRecipe,
       closeButton: CloseButtonRecipe,
       textArea: TextAreaRecipe,
-      hstack: HStackRecipe,
     },
     tokens: defineTokens({
       colors: {
@@ -67,9 +65,6 @@ const config = defineConfig({
       },
       inputWidths: {
         md: { value: "30rem" },
-      },
-      borders: {
-        thin: { value: "1px solid" },
       },
       fontSizes: {
         sm: { value: "0.875rem" },
@@ -99,7 +94,6 @@ const config = defineConfig({
         buttonFg: { value: "{colors.white}" },
         buttonDangerBg: { value: "{colors.error}" },
         buttonDangerFg: { value: "{colors.white}" },
-        errorColor: { value: "{colors.error}" },
         footerBg: { value: "{colors.bg.emphasized}" },
       },
     }),

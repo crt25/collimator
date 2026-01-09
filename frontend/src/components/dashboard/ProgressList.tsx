@@ -13,7 +13,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
-import ChakraDataTable from "../ChakraDataTable";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
 
 const ProgressListWrapper = styled.div`
@@ -254,7 +254,6 @@ const ProgressList = ({
       {
         id: "name",
         header: intl.formatMessage(messages.nameColumn),
-        enableSorting: false,
         cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
@@ -263,9 +262,8 @@ const ProgressList = ({
       {
         id: "helpNeeded",
         header: intl.formatMessage(messages.helpColumn),
-        enableSorting: false,
         cell: (info) => helpTemplate(info.row.original),
-        size: 32,
+        size: ColumnSize.sm,
         meta: {
           columnType: ColumnType.text,
         },
@@ -287,7 +285,6 @@ const ProgressList = ({
               data-testid={`task-${task.id}`}
             >{`${intl.formatMessage(messages.taskColumn)} ${i + 1}`}</Link>
           ),
-          enableSorting: false,
           cell: (info) => (
             <TaskTemplate
               classId={classId}
@@ -316,12 +313,6 @@ const ProgressList = ({
           <ChakraDataTable
             data={progress}
             columns={columns}
-            features={{
-              sorting: true,
-              pagination: {
-                pageSize: 10,
-              },
-            }}
             emptyStateElement={
               <EmptyState
                 title={<FormattedMessage {...messages.emptyStateTitle} />}

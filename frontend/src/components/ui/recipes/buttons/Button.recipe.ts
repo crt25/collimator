@@ -15,10 +15,7 @@ export const ButtonRecipe = defineRecipe({
         },
       },
       secondary: {
-        backgroundColor: "buttonSecondaryBg",
-        color: "buttonSecondaryFg",
         borderWidth: "thin",
-        borderColor: "buttonSecondaryBorder",
       },
       danger: {
         backgroundColor: "buttonDangerBg",
@@ -30,21 +27,8 @@ export const ButtonRecipe = defineRecipe({
         width: "full",
         justifyContent: "flex-end",
         _hover: {
-          color: "accentHighlight",
           opacity: 0.8,
         },
-      },
-      toastClose: {
-        backgroundColor: "transparent",
-        borderWidth: "thin !important",
-        borderColor: "buttonSecondaryBorder !important",
-        marginRight: "md !important",
-        color: "white",
-        padding: "sm",
-        borderRadius: "sm !important",
-        marginTop: "lg !important",
-        cursor: "pointer",
-        transition: "color 0.2s ease",
       },
     },
   },

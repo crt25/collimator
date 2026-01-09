@@ -102,7 +102,6 @@ const TaskList = ({
     return [
       {
         accessorKey: "title",
-        enableSorting: false,
         header: intl.formatMessage(messages.titleColumn),
         cell: (info) => (
           <Text
@@ -121,7 +120,6 @@ const TaskList = ({
       {
         accessorKey: "progress",
         header: intl.formatMessage(messages.progressColumn),
-        enableSorting: false,
         cell: (info) => (
           <ProgressTemplate progress={info.row.original.progress} intl={intl} />
         ),
