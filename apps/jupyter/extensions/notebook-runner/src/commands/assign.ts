@@ -42,7 +42,11 @@ export const registerAssignCommand = (
             EmbeddedPythonCallbacks.taskTemplateLocation,
             { content: true },
           );
-        } catch {
+        } catch (error) {
+          console.debug(
+            `Cannot read notebook: ${EmbeddedPythonCallbacks.taskTemplateLocation}`,
+            error,
+          );
           throw new CannotReadNotebookException(
             EmbeddedPythonCallbacks.taskTemplateLocation,
           );
