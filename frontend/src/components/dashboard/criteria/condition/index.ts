@@ -26,8 +26,7 @@ export interface ConditionFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface ConditionFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface ConditionFilterCriterionParameters extends CriterionBase<Criterion> {
   minNumberOfConditions: number;
   maxNumberOfConditions: number;
 }

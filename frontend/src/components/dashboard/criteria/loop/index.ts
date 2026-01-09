@@ -26,8 +26,7 @@ export interface LoopFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface LoopFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface LoopFilterCriterionParameters extends CriterionBase<Criterion> {
   minNumberOfLoops: number;
   maxNumberOfLoops: number;
 }
