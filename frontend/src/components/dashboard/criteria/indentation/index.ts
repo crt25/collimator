@@ -26,8 +26,7 @@ export interface IndentationFilterCriterion extends CriterionBase<Criterion> {
   maximumIndentation: number;
 }
 
-export interface IndentationFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface IndentationFilterCriterionParameters extends CriterionBase<Criterion> {
   minimumIndentation: number;
   maximumIndentation: number;
 }

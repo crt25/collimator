@@ -80,7 +80,10 @@ export abstract class IframeRpcApi<
   /**
    * Buffer for incoming requests received before onRequest handler is set.
    */
-  private bufferedRequests: {request: TIncomingRequests; event: MessageEvent}[] = [];
+  private bufferedRequests: {
+    request: TIncomingRequests;
+    event: MessageEvent;
+  }[] = [];
 
   constructor(
     private onRequest: HandleRequestMap<
@@ -99,12 +102,12 @@ export abstract class IframeRpcApi<
   ): void {
     this.onRequest = onRequest;
 
-    if(this.onRequest !== null){
+    if (this.onRequest !== null) {
       // Process buffered requests
       const bufferedRequests = this.bufferedRequests;
       this.bufferedRequests = [];
 
-      for (const {request, event} of bufferedRequests) {
+      for (const { request, event } of bufferedRequests) {
         this.handleRequest(request, event);
       }
     }
@@ -250,8 +253,8 @@ export abstract class IframeRpcApi<
     request: TIncomingRequests,
     event: MessageEvent,
   ): Promise<void> {
-    if(this.onRequest === null){
-      this.bufferedRequests.push({request, event});
+    if (this.onRequest === null) {
+      this.bufferedRequests.push({ request, event });
       return;
     }
 

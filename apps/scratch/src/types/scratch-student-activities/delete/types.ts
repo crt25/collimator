@@ -12,7 +12,9 @@ export interface StudentDeleteActivity extends StudentAppActivity {
   deletedBlocks: DeletedBlockInfo | null;
 }
 
-export interface DeleteStudentAction
-  extends Omit<StudentActionContext, "block"> {
+export interface DeleteStudentAction extends Omit<
+  StudentActionContext,
+  "block"
+> {
   block: DeletedBlockRecord;
 }

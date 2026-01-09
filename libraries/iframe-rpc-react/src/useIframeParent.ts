@@ -29,23 +29,26 @@ export const useIframeParent = (
   const [taskOrigin, setTaskOrigin] = useState<string | null>(null);
 
   const modifiedHandleRequest = useMemo(
-    () => handleRequest !== null ?({
-      ...handleRequest,
-      loadSubmission: async (
-        ...args: Parameters<typeof handleRequest.loadSubmission>
-      ): ReturnType<typeof handleRequest.loadSubmission> => {
-        setTaskOrigin(args[1].origin);
+    () =>
+      handleRequest !== null
+        ? {
+            ...handleRequest,
+            loadSubmission: async (
+              ...args: Parameters<typeof handleRequest.loadSubmission>
+            ): ReturnType<typeof handleRequest.loadSubmission> => {
+              setTaskOrigin(args[1].origin);
 
-        return handleRequest.loadSubmission(...args);
-      },
-      loadTask: async (
-        ...args: Parameters<typeof handleRequest.loadTask>
-      ): ReturnType<typeof handleRequest.loadTask> => {
-        setTaskOrigin(args[1].origin);
+              return handleRequest.loadSubmission(...args);
+            },
+            loadTask: async (
+              ...args: Parameters<typeof handleRequest.loadTask>
+            ): ReturnType<typeof handleRequest.loadTask> => {
+              setTaskOrigin(args[1].origin);
 
-        return handleRequest.loadTask(...args);
-      },
-    }) : null,
+              return handleRequest.loadTask(...args);
+            },
+          }
+        : null,
     [handleRequest],
   );
 

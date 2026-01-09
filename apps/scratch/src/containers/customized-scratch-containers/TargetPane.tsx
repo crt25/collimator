@@ -47,11 +47,10 @@ interface Metrics {
   scale: number;
 }
 
-interface Props
-  extends Omit<
-    TargetPaneProps,
-    "onSelectSprite" | "onActivateBlocksTab" | keyof InjectedProps
-  > {
+interface Props extends Omit<
+  TargetPaneProps,
+  "onSelectSprite" | "onActivateBlocksTab" | keyof InjectedProps
+> {
   intl: IntlShape;
   onNewSpriteClick?: (e: Event) => void;
 }

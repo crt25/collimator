@@ -26,8 +26,7 @@ export interface AstHeightFilterCriterion extends CriterionBase<Criterion> {
   maximumHeight: number;
 }
 
-export interface AstHeightFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface AstHeightFilterCriterionParameters extends CriterionBase<Criterion> {
   minimumAstHeight: number;
   maximumAstHeight: number;
 }
