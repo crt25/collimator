@@ -5,8 +5,8 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc"
-import tseslint from 'typescript-eslint';
+import { FlatCompat } from "@eslint/eslintrc";
+import tseslint from "typescript-eslint";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
