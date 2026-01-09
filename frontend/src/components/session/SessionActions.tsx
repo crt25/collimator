@@ -8,7 +8,7 @@ import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
-import { ShareModal } from "@/components/form/ShareModal";
+import { ShareModal } from "@/components/modals/ShareModal";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { SessionDeleteModalMessages } from "@/i18n/session-delete-modal-messages";
 import { toaster } from "../Toaster";

@@ -1,5 +1,5 @@
 import { Box, chakra, HStack } from "@chakra-ui/react";
-import { PageHeadingRecipe } from "./ui/recipes/PageHeading.recipe";
+import { PageHeadingRecipe } from "./ui/recipes/layout/PageHeading.recipe";
 
 const StyledPageHeading = chakra("p", PageHeadingRecipe);
 
