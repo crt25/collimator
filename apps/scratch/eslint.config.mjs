@@ -2,9 +2,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import importPlugin from "eslint-plugin-import";
 import { defineConfig, globalIgnores } from "eslint/config";
+import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
@@ -22,14 +22,13 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   globalIgnores(["**/*.d.ts", "src/scratch-editor"]),
-  js.configs.recommended,
+  ...next,
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
     extends: [...compat.extends("../../.eslintrc.js")],
 
     plugins: {
-      "@typescript-eslint": typescriptEslint,
       import: importPlugin,
     },
 

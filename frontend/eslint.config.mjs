@@ -5,7 +5,6 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import jestExtended from "eslint-plugin-jest-extended";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -31,7 +30,6 @@ export default defineConfig([
     extends: [...compat.extends("../.eslintrc.js")],
 
     plugins: {
-      "@typescript-eslint": typescriptEslint,
       "jest-extended": jestExtended,
       import: importPlugin,
     },

@@ -7,6 +7,7 @@ import jestExtended from "eslint-plugin-jest-extended";
 import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 import { FlatCompat } from "@eslint/eslintrc";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
@@ -21,6 +22,7 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   js.configs.recommended,
+  tseslint.configs.recommended,
   {
     extends: compat.extends("../../.eslintrc.js"),
 

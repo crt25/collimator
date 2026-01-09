@@ -1,7 +1,4 @@
 module.exports = {
-  extends: [
-    "plugin:@typescript-eslint/recommended",
-  ],
   root: true,
   ignorePatterns: [".eslintrc.js"],
   rules: {
