@@ -112,5 +112,12 @@ endif
 
 	@echo The otter grader wheel has been built successfully and is located in the 'dist' directory.
 
-.PHONY: all init init-submodules test install-deps init-extensions build-extensions clean build serve build-otter
+upload-sourcemaps:
+ifeq ($(OS),Windows_NT)
+		poetry run pwsh -Command "cd ./extensions && make upload-sourcemaps"
+else
+		poetry run bash -c "cd ./extensions && make upload-sourcemaps"
+endif
+
+.PHONY: all init init-submodules test install-deps init-extensions build-extensions clean build serve build-otter upload-sourcemaps
 .DEFAULT_GOAL := all

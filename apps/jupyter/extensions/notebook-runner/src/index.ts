@@ -11,11 +11,13 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
+import * as Sentry from "@sentry/browser";
 import { getModeFromUrl } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
+import { VERSION } from "./version";
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
@@ -48,6 +50,23 @@ const plugin: JupyterFrontEndPlugin<void> = {
     propertyInspectorProvider: IPropertyInspectorProvider,
     factory: IFileBrowserFactory,
   ) => {
+    // Check if running on localhost, i.e. in a development environment
+    const isProductionEnvironment = window.location.hostname !== "localhost";
+
+    if (isProductionEnvironment) {
+      Sentry.init({
+        dsn: "https://2b691a9ac828880dda066b5be1ae9873@o4508199129382912.ingest.de.sentry.io/4510680604016720",
+
+        // Adds request headers and IP for users, for more info visit:
+        // https://docs.sentry.io/platforms/javascript/configuration/options/#sendDefaultPii
+        sendDefaultPii: true,
+
+        // Alternatively, use `process.env.npm_package_version` for a dynamic release version
+        // if your build tool supports it.
+        release: `crt-jupyter@${VERSION}`,
+      });
+    }
+
     console.debug("JupyterLab extension notebook-runner is activated!");
 
     // The default file browser instance

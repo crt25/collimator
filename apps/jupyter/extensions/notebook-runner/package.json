@@ -37,7 +37,8 @@
     "test": "jest --coverage",
     "watch": "run-p watch:src watch:labextension",
     "watch:src": "tsc -w --sourceMap",
-    "watch:labextension": "jupyter labextension watch ."
+    "watch:labextension": "jupyter labextension watch .",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-jupyter ./lib && sentry-cli sourcemaps upload --org hep-vaud --project crt-jupyter ./lib"
   },
   "dependencies": {
     "@jupyterlab/application": "^4.0.0",
@@ -46,6 +47,8 @@
     "@jupyterlab/property-inspector": "^4.4.4",
     "@jupyterlab/running-extension": "^4.4.4",
     "@jupyterlab/services": "^7.4.4",
+    "@sentry/browser": "^10.32.1",
+    "@sentry/cli": "2",
     "eslint-plugin-import": "^2.32.0",
     "jszip": "^3.10.1"
   },

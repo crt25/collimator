@@ -2,6 +2,7 @@ EXTENSION?='none'
 
 init:
 	cd ./notebook-runner && node scripts/create-symlink.js
+	cd ./notebook-runner && node scripts/create-version.js
 	cd ./notebook-runner && pip install -e "."
 	cd ./notebook-runner && jupyter labextension develop . --overwrite
 	cd ./notebook-runner && jupyter labextension link .
@@ -44,5 +45,9 @@ endif
 	cd $(EXTENSION)
 	jupyter labextension develop . --overwrite
 
-.PHONY: init build link test create-extension install-extension-deps link-extension 
+upload-sourcemaps:
+	@echo Uploading sourcemaps to Sentry
+	cd ./notebook-runner && jlpm sentry:sourcemaps
+
+.PHONY: init build link test create-extension install-extension-deps link-extension  upload-sourcemaps
 .DEFAULT_GOAL := build
