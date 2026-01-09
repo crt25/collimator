@@ -7,10 +7,15 @@ import { executeRunNotebookCommand, runGradingCommand } from "../command";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
 import { OtterGradingResults } from "../grading-results";
 import {
+  executePythonInKernel,
   writeBinaryToVirtualFilesystem,
   writeJsonToVirtualFilesystem,
 } from "../utils";
-import { copyRequiredFoldersToKernel, kernelPaths } from "./helper";
+import {
+  copyRequiredFoldersToKernel,
+  handleOtterCommandError,
+  kernelPaths,
+} from "./helper";
 
 const createOnNewNotebookListener =
   (app: JupyterFrontEnd, state: NotebookRunnerState) =>
@@ -44,43 +49,45 @@ export const registerGradeCommand = (
   app.commands.addCommand(runGradingCommand, {
     label: "Run Grading",
     execute: async () => {
-      console.debug("Saving all open notebooks...");
-      const widgets = app.shell.widgets("main");
-
-      const savePromises: Promise<void>[] = [];
-
-      for (const widget of widgets) {
-        if (widget instanceof NotebookPanel) {
-          savePromises.push(widget.context.save());
-        }
-      }
-      await Promise.all(savePromises);
-
-      console.debug(`Waiting for otter session kernel to be available`);
-      const kernel = await state.getOtterKernel();
-
-      console.debug(`Transferring autograder for grading...`);
-
-      let autograder: Contents.IModel | null = null;
       try {
-        autograder = await contentsManager.get(
+        console.debug("Saving all open notebooks...");
+        const widgets = app.shell.widgets("main");
+
+        const savePromises: Promise<void>[] = [];
+
+        for (const widget of widgets) {
+          if (widget instanceof NotebookPanel) {
+            savePromises.push(widget.context.save());
+          }
+        }
+        await Promise.all(savePromises);
+
+        console.debug(`Waiting for otter session kernel to be available`);
+        const kernel = await state.getOtterKernel();
+
+        console.debug(`Transferring autograder for grading...`);
+
+        let autograder: Contents.IModel | null = null;
+        try {
+          autograder = await contentsManager.get(
+            EmbeddedPythonCallbacks.autograderLocation,
+            { content: true },
+          );
+        } catch (error) {
+          throw new Error("Error reading autograder:" + error);
+        }
+
+        await writeBinaryToVirtualFilesystem(
+          kernel,
           EmbeddedPythonCallbacks.autograderLocation,
-          { content: true },
+          autograder.content,
         );
-      } catch (error) {
-        throw new Error("Error reading autograder:" + error);
-      }
 
-      await writeBinaryToVirtualFilesystem(
-        kernel,
-        EmbeddedPythonCallbacks.autograderLocation,
-        autograder.content,
-      );
+        console.debug(`Unpack tests from autograder.zip to student/`);
 
-      console.debug(`Unpack tests from autograder.zip to student/`);
-
-      await kernel.requestExecute({
-        code: `
+        await executePythonInKernel({
+          kernel,
+          code: `
 import os
 import zipfile
 
@@ -90,52 +97,53 @@ student_path = "/student"
 with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
   zip_ref.extractall(student_path)
 `,
-      }).done;
+        });
 
-      console.debug(`Executing notebook before submitting it for grading`);
+        console.debug(`Executing notebook before submitting it for grading`);
 
-      await executeRunNotebookCommand(
-        app,
-        state,
-        notebookTracker.currentWidget,
-        contentsManager,
-        documentManager,
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        kernelPaths.results,
-      );
-
-      // read the notebook that has been executed and autograder
-      let executedNotebook: Contents.IModel | null = null;
-      try {
-        executedNotebook = await contentsManager.get(
+        await executeRunNotebookCommand(
+          app,
+          state,
+          notebookTracker.currentWidget,
+          contentsManager,
+          documentManager,
           EmbeddedPythonCallbacks.studentTaskLocation,
-          { content: true },
+          kernelPaths.results,
         );
-      } catch (error) {
-        throw new Error(
-          `Error reading notebook at ${EmbeddedPythonCallbacks.studentTaskLocation} when running otter grade: ${JSON.stringify(error)}`,
+
+        // read the notebook that has been executed and autograder
+        let executedNotebook: Contents.IModel | null = null;
+        try {
+          executedNotebook = await contentsManager.get(
+            EmbeddedPythonCallbacks.studentTaskLocation,
+            { content: true },
+          );
+        } catch (error) {
+          throw new Error(
+            `Error reading notebook at ${EmbeddedPythonCallbacks.studentTaskLocation} when running otter grade: ${JSON.stringify(error)}`,
+          );
+        }
+
+        console.debug(
+          `Transfering executed notebook to virtual filesystem to '${EmbeddedPythonCallbacks.studentTaskLocation}'`,
         );
-      }
 
-      console.debug(
-        `Transfering executed notebook to virtual filesystem to '${EmbeddedPythonCallbacks.studentTaskLocation}'`,
-      );
+        await writeJsonToVirtualFilesystem(
+          kernel,
+          EmbeddedPythonCallbacks.studentTaskLocation,
+          executedNotebook.content,
+        );
 
-      await writeJsonToVirtualFilesystem(
-        kernel,
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        executedNotebook.content,
-      );
+        console.debug(
+          "Running notebook with autograder: ",
+          EmbeddedPythonCallbacks.autograderLocation,
+        );
 
-      console.debug(
-        "Running notebook with autograder: ",
-        EmbeddedPythonCallbacks.autograderLocation,
-      );
+        await copyRequiredFoldersToKernel(kernel, contentsManager);
 
-      await copyRequiredFoldersToKernel(kernel, contentsManager);
-
-      const run = kernel.requestExecute({
-        code: `
+        const run = executePythonInKernel({
+          kernel,
+          code: `
 run(
   "${EmbeddedPythonCallbacks.studentTaskLocation}",
   autograder="${EmbeddedPythonCallbacks.autograderLocation}",
@@ -146,25 +154,28 @@ run(
   output_dir="/"
 )
           `,
-      });
+        });
 
-      try {
-        await run.done;
+        try {
+          await run;
+        } catch (error) {
+          console.error("Error running notebook:", error);
+        }
+
+        console.debug("Retrieving results...");
+
+        const results =
+          await state.readJsonFromVirtualFilesystem<OtterGradingResults>(
+            kernel,
+            "/results.json",
+          );
+
+        console.debug("Grading results:", results);
+
+        return results;
       } catch (error) {
-        console.error("Error running notebook:", error);
+        handleOtterCommandError(error);
       }
-
-      console.debug("Retrieving results...");
-
-      const results =
-        await state.readJsonFromVirtualFilesystem<OtterGradingResults>(
-          kernel,
-          "/results.json",
-        );
-
-      console.debug("Grading results:", results);
-
-      return results;
     },
   });
 

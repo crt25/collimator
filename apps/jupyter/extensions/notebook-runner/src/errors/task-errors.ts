@@ -78,6 +78,13 @@ export class DirectoryNotFoundError extends TaskError {
   }
 }
 
+export class FileNotFoundError extends TaskError {
+  constructor(public readonly path: string) {
+    const message = `File not found at path: ${path}`;
+    super(message);
+  }
+}
+
 export class GenericNotebookTaskImportError extends TaskError {
   constructor() {
     const message = `Cannot import external custom task in solve mode.`;

@@ -1,8 +1,16 @@
 import { Contents, ContentsManager } from "@jupyterlab/services";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
-import { writeBinaryToVirtualFilesystem } from "../utils";
+import { showErrorMessage } from "@jupyterlab/apputils";
+import {
+  executePythonInKernel,
+  writeBinaryToVirtualFilesystem,
+} from "../utils";
 import { DirectoryNotFoundError } from "../errors/task-errors";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
+import {
+  AssignNotebookFormatException,
+  CannotReadNotebookException,
+} from "../errors/otter-errors";
 
 export const kernelPaths = {
   data: "/data",
@@ -85,12 +93,13 @@ const copyFolderToKernel = async (
     throw new DirectoryNotFoundError(sourcePath);
   }
 
-  await kernel.requestExecute({
+  await executePythonInKernel({
+    kernel,
     code: `
       from pathlib import Path
       Path("${destPath}").mkdir(parents=True, exist_ok=True)
       `,
-  }).done;
+  });
 
   for (const item of folder.content || []) {
     const itemPath = `${sourcePath}/${item.name}`;
@@ -109,4 +118,29 @@ const copyFolderToKernel = async (
 
     await writeBinaryToVirtualFilesystem(kernel, itemDestPath, file.content);
   }
+};
+
+export const handleOtterCommandError = (error: unknown): void => {
+  if (error instanceof AssignNotebookFormatException) {
+    showErrorMessage(
+      "Notebook Format Error",
+      `There was an error with the format of the notebook used for assignment: ${error.message}`,
+    );
+    return;
+  }
+
+  if (error instanceof CannotReadNotebookException) {
+    showErrorMessage(
+      "Cannot Read Notebook",
+      `The notebook runner could not read the notebook at ${error.message}. Try again if it keeps failing, report this issue.`,
+    );
+    return;
+  }
+
+  showErrorMessage(
+    "Error Running Assign",
+    `An unexpected error occurred while running the assign command: ${
+      error instanceof Error ? error.message : String(error)
+    }`,
+  );
 };

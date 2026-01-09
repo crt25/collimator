@@ -3,7 +3,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { NotebookActions, NotebookPanel } from "@jupyterlab/notebook";
 import { Contents, ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "./notebook-runner-state";
-import { writeJsonToVirtualFilesystem } from "./utils";
+import { executePythonInKernel, writeJsonToVirtualFilesystem } from "./utils";
 
 export const runAssignCommand = "notebook-runner:run-assign";
 export const runGradingCommand = "notebook-runner:run-grading";
@@ -81,7 +81,8 @@ export const executeRunNotebookCommand = async (
   const parentDir = notebookPath.split("/").slice(0, -1).join("/");
   console.debug("Change working directory to ", parentDir);
 
-  await otterKernel.requestExecute({
+  await executePythonInKernel({
+    kernel: otterKernel,
     code: `
 import os
 os.chdir("${parentDir}")
@@ -89,7 +90,7 @@ os.chdir("${parentDir}")
 from otter import Notebook as nb
 nb.init_grading_mode("./tests")
 `,
-  }).done;
+  });
 
   // Run all cells silently
   console.debug(
@@ -104,7 +105,8 @@ nb.init_grading_mode("./tests")
 
   console.debug("All cells executed in the new notebook. Now running tests...");
 
-  await otterKernel.requestExecute({
+  await executePythonInKernel({
+    kernel: otterKernel,
     code: `
 from otter.execute import Checker
 from glob import glob
@@ -118,7 +120,7 @@ import pickle
 with open("${binaryResultsPath}", "wb") as f:
   pickle.dump(results, f)
     `,
-  }).done;
+  });
 
   console.debug("Tests executed, saving notebook...");
 
