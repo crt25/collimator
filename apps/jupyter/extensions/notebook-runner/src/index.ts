@@ -16,6 +16,7 @@ import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
+import { AutoSaveManager } from "./auto-save";
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
@@ -61,6 +62,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     const mode = getModeFromUrl();
+
+    new AutoSaveManager(notebookTracker);
 
     preInstallPackages(app, contentsManager, notebookTracker);
     setupIframeApi(
