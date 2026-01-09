@@ -148,6 +148,9 @@ shutil.move(
         );
       } catch (error) {
         handleOtterCommandError(error);
+
+        // Propagate error to caller (usually iframe API)
+        throw error;
       }
     },
   });

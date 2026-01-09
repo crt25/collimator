@@ -48,7 +48,7 @@ export const registerGradeCommand = (
 ): void => {
   app.commands.addCommand(runGradingCommand, {
     label: "Run Grading",
-    execute: async () => {
+    execute: async (): Promise<OtterGradingResults> => {
       try {
         console.debug("Saving all open notebooks...");
         const widgets = app.shell.widgets("main");
@@ -175,6 +175,9 @@ run(
         return results;
       } catch (error) {
         handleOtterCommandError(error);
+
+        // Propagate error to caller (usually iframe API)
+        throw error;
       }
     },
   });
