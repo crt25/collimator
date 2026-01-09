@@ -1,8 +1,4 @@
-export abstract class OtterError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+export abstract class OtterError extends Error {}
 
 export class AssignNotebookFormatException extends OtterError {
   constructor(message: string) {

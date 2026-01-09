@@ -1,6 +1,6 @@
 import { FileSystemOperation } from "../task-converter";
 
-export class TaskError extends Error {}
+export abstract class TaskError extends Error {}
 
 export class UnsupportedTaskFormatError extends TaskError {
   constructor(public readonly availableFiles: string[]) {
