@@ -98,7 +98,7 @@ export const preInstallPackages = async (
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing Otter Grade...");
+  console.debug("Installing Otter Grader...");
   await kernel.requestExecute(
     {
       code: `

@@ -1158,14 +1158,14 @@ test = ["jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-jupyter[server] (>
 
 [[package]]
 name = "jupyterlab"
-version = "4.4.7"
+version = "4.5.1"
 description = "JupyterLab computational environment"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "jupyterlab-4.4.7-py3-none-any.whl", hash = "sha256:808bae6136b507a4d18f04254218bfe71ed8ba399a36ef3280d5f259e69abf80"},
-    {file = "jupyterlab-4.4.7.tar.gz", hash = "sha256:8c8e225492f4513ebde9bbbc00a05b651ab9a1f5b0013015d96fabf671c37188"},
+    {file = "jupyterlab-4.5.1-py3-none-any.whl", hash = "sha256:31b059de96de0754ff1f2ce6279774b6aab8c34d7082e9752db58207c99bd514"},
+    {file = "jupyterlab-4.5.1.tar.gz", hash = "sha256:09da1ddfbd9eec18b5101dbb8515612aa1e47443321fb99503725a88e93d20d9"},
 ]
 
 [package.dependencies]
@@ -1176,7 +1176,7 @@ jinja2 = ">=3.0.3"
 jupyter-core = "*"
 jupyter-lsp = ">=2.0.0"
 jupyter-server = ">=2.4.0,<3"
-jupyterlab-server = ">=2.27.1,<3"
+jupyterlab-server = ">=2.28.0,<3"
 notebook-shim = ">=0.2"
 packaging = "*"
 setuptools = ">=41.1.0"
@@ -1184,9 +1184,9 @@ tornado = ">=6.2.0"
 traitlets = "*"
 
 [package.extras]
-dev = ["build", "bump2version", "coverage", "hatch", "pre-commit", "pytest-cov", "ruff (==0.11.4)"]
+dev = ["build", "bump2version", "coverage", "hatch", "pre-commit", "pytest-cov", "ruff (==0.11.12)"]
 docs = ["jsx-lexer", "myst-parser", "pydata-sphinx-theme (>=0.13.0)", "pytest", "pytest-check-links", "pytest-jupyter", "sphinx (>=1.8,<8.2.0)", "sphinx-copybutton"]
-docs-screenshots = ["altair (==5.5.0)", "ipython (==8.16.1)", "ipywidgets (==8.1.5)", "jupyterlab-geojson (==3.4.0)", "jupyterlab-language-pack-zh-cn (==4.3.post1)", "matplotlib (==3.10.0)", "nbconvert (>=7.0.0)", "pandas (==2.2.3)", "scipy (==1.15.1)", "vega-datasets (==0.9.0)"]
+docs-screenshots = ["altair (==6.0.0)", "ipython (==8.16.1)", "ipywidgets (==8.1.5)", "jupyterlab-geojson (==3.4.0)", "jupyterlab-language-pack-zh-cn (==4.3.post1)", "matplotlib (==3.10.0)", "nbconvert (>=7.0.0)", "pandas (==2.2.3)", "scipy (==1.15.1)"]
 test = ["coverage", "pytest (>=7.0)", "pytest-check-links (>=0.7)", "pytest-console-scripts", "pytest-cov", "pytest-jupyter (>=0.5.3)", "pytest-timeout", "pytest-tornasync", "requests", "requests-cache", "virtualenv"]
 upgrade-extension = ["copier (>=9,<10)", "jinja2-time (<0.3)", "pydantic (<3.0)", "pyyaml-include (<3.0)", "tomli-w (<2.0)"]
 
@@ -1204,14 +1204,14 @@ files = [
 
 [[package]]
 name = "jupyterlab-server"
-version = "2.27.3"
+version = "2.28.0"
 description = "A set of server components for JupyterLab and JupyterLab like applications."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "jupyterlab_server-2.27.3-py3-none-any.whl", hash = "sha256:e697488f66c3db49df675158a77b3b017520d772c6e1548c7d9bcc5df7944ee4"},
-    {file = "jupyterlab_server-2.27.3.tar.gz", hash = "sha256:eb36caca59e74471988f0ae25c77945610b887f777255aa21f8065def9e51ed4"},
+    {file = "jupyterlab_server-2.28.0-py3-none-any.whl", hash = "sha256:e4355b148fdcf34d312bbbc80f22467d6d20460e8b8736bf235577dd18506968"},
+    {file = "jupyterlab_server-2.28.0.tar.gz", hash = "sha256:35baa81898b15f93573e2deca50d11ac0ae407ebb688299d3a5213265033712c"},
 ]
 
 [package.dependencies]
@@ -1230,51 +1230,52 @@ test = ["hatch", "ipykernel", "openapi-core (>=0.18.0,<0.19.0)", "openapi-spec-v
 
 [[package]]
 name = "jupyterlite-core"
-version = "0.6.4"
+version = "0.7.1"
 description = ""
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "jupyterlite_core-0.6.4-py3-none-any.whl", hash = "sha256:0e20c1e32a26a6ca7d80df2094d69acfcb58b54c109c66865bbe8513c3502c01"},
-    {file = "jupyterlite_core-0.6.4.tar.gz", hash = "sha256:a753c3d83a1f4112d8f04f6e103945c3f6d746ae27d2293af74fb862851e91e3"},
+    {file = "jupyterlite_core-0.7.1-py3-none-any.whl", hash = "sha256:0d99339e83e186888b6f22ec7e7ced4485ca0eaf7bb53284cae0f4001c961c78"},
+    {file = "jupyterlite_core-0.7.1.tar.gz", hash = "sha256:e9c1068f875c2e75dca3771a035eb31826a41343e62bbb77c80ad2a3478b6986"},
 ]
 
 [package.dependencies]
 doit = ">=0.34,<1"
 jupyter-core = ">=4.7"
+pycparser = {version = "*", markers = "platform_python_implementation == \"PyPy\""}
 
 [package.extras]
-all = ["jsonschema (>=3)", "jupyter-server", "jupyterlab (>=4.4.5,<4.5)", "jupyterlab-server (>=2.8.1,<3)", "libarchive-c (>=4.0)", "notebook (>=7.4.5,<7.5)", "pkginfo", "tornado (>=6.1)"]
+all = ["jsonschema (>=3)", "jupyter-server", "jupyterlab (>=4.5.1,<4.6)", "jupyterlab-server (>=2.8.1,<3)", "libarchive-c (>=4.0)", "notebook (>=7.5.1,<7.6)", "pkginfo", "tornado (>=6.1)"]
 check = ["jsonschema[format-nongpl] (>=3)"]
 contents = ["jupyter-server"]
-lab = ["jupyterlab (>=4.4.5,<4.5)", "notebook (>=7.4.5,<7.5)"]
+lab = ["jupyterlab (>=4.5.1,<4.6)", "notebook (>=7.5.1,<7.6)"]
 libarchive = ["libarchive-c (>=4.0)"]
 serve = ["tornado (>=6.1)"]
-test = ["ansi2html", "diffoscope ; sys_platform == \"linux\"", "pytest-console-scripts", "pytest-cov", "pytest-html", "pytest-xdist"]
+test = ["ansi2html", "diffoscope ; sys_platform == \"linux\"", "pytest-console-scripts", "pytest-cov (<7)", "pytest-html", "pytest-xdist"]
 translation = ["jupyterlab-server (>=2.8.1,<3)"]
 
 [[package]]
 name = "jupyterlite-pyodide-kernel"
-version = "0.6.1"
+version = "0.7.0"
 description = "Python kernel for JupyterLite powered by Pyodide"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "jupyterlite_pyodide_kernel-0.6.1-py3-none-any.whl", hash = "sha256:d16f2e44dedd60d7a5578cd901a4de1ac34d30c80671abba7ec1ac70a65e2972"},
-    {file = "jupyterlite_pyodide_kernel-0.6.1.tar.gz", hash = "sha256:161714b3db78050064f8e9b6e542b368ba60a098f6a92a4a50abde403b5fb8c3"},
+    {file = "jupyterlite_pyodide_kernel-0.7.0-py3-none-any.whl", hash = "sha256:02174ce22a3ac8e6c2a7e9206aa13afba77da15fc75237b8721b4548fb68c487"},
+    {file = "jupyterlite_pyodide_kernel-0.7.0.tar.gz", hash = "sha256:4c2b6763518faf6d72eea91b2db31e215fbc9aa3099cc3cfa5a2866cbd1c380e"},
 ]
 
 [package.dependencies]
-jupyterlite-core = ">=0.6.0,<0.7.0"
+jupyterlite-core = ">=0.7.0,<0.8.0"
 pkginfo = "*"
 
 [package.extras]
-dev = ["build", "hatch", "jupyterlab (>=4.4.3,<4.5.0a0)"]
+dev = ["build", "hatch", "jupyterlab (>=4.5.0,<4.6.0)"]
 docs = ["ipywidgets (>=8.1.3,<9)", "jupyter-server-mathjax", "jupyterlab-language-pack-fr-fr", "jupyterlab-language-pack-zh-cn", "libarchive-c", "myst-parser", "pydata-sphinx-theme", "sphinx-copybutton"]
 lint = ["ruff (>=0.3.0)"]
-test = ["pytest", "pytest-console-scripts (>=1.4.0)", "pytest-cov", "pytest-html"]
+test = ["pytest", "pytest-console-scripts (>=1.4.0)", "pytest-cov (<7)", "pytest-html"]
 
 [[package]]
 name = "lark"
@@ -2712,4 +2713,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "3eafccafc5c576cbcd7971f99fb0c68bb7936a977a3f9efdda327c41e518fd3d"
+content-hash = "0ed35eca2a3579b2e1c1edb9d4eb8a5abe582891cef685b262ad5ae51e2740b1"
