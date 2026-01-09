@@ -1,4 +1,4 @@
-import { ContentsManager } from "@jupyterlab/services";
+import { Contents, ContentsManager } from "@jupyterlab/services";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { writeBinaryToVirtualFilesystem } from "../utils";
 import { DirectoryNotFoundError } from "../errors/task-errors";
@@ -19,30 +19,52 @@ export const copyRequiredFoldersToKernel = async (
   kernel: IKernelConnection,
   contentsManager: ContentsManager,
 ): Promise<void> => {
-  await copyFolderToKernel(
+  await copyFolderToKernelIfExists(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.dataLocation,
     kernelPaths.data,
   );
-  await copyFolderToKernel(
+
+  await copyFolderToKernelIfExists(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.srcLocation,
     kernelPaths.src,
   );
-  await copyFolderToKernel(
+
+  await copyFolderToKernelIfExists(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.gradingDataLocation,
     kernelPaths.gradingData,
   );
-  await copyFolderToKernel(
+
+  await copyFolderToKernelIfExists(
     kernel,
     contentsManager,
     EmbeddedPythonCallbacks.gradingSrcLocation,
     kernelPaths.gradingSrc,
   );
+};
+
+const copyFolderToKernelIfExists = async (
+  kernel: IKernelConnection,
+  contents: ContentsManager,
+  sourcePath: string,
+  destPath: string,
+): Promise<void> => {
+  try {
+    await copyFolderToKernel(kernel, contents, sourcePath, destPath);
+  } catch (error) {
+    if (error instanceof DirectoryNotFoundError) {
+      console.warn(
+        `Warning: ${error.message}. Continuing without copying ${sourcePath} folder.`,
+      );
+    } else {
+      throw error; // Re-throw if it's a different error
+    }
+  }
 };
 
 const copyFolderToKernel = async (
@@ -51,43 +73,40 @@ const copyFolderToKernel = async (
   sourcePath: string,
   destPath: string,
 ): Promise<void> => {
+  let folder: Contents.IModel;
+
   try {
-    const folder = await contents.get(sourcePath, { content: true });
+    folder = await contents.get(sourcePath, { content: true });
+  } catch {
+    throw new DirectoryNotFoundError(sourcePath);
+  }
 
-    if (folder.type !== "directory") {
-      throw new DirectoryNotFoundError(sourcePath);
-    }
+  if (folder.type !== "directory") {
+    throw new DirectoryNotFoundError(sourcePath);
+  }
 
-    await kernel.requestExecute({
-      code: `
+  await kernel.requestExecute({
+    code: `
       from pathlib import Path
       Path("${destPath}").mkdir(parents=True, exist_ok=True)
       `,
-    }).done;
+  }).done;
 
-    for (const item of folder.content || []) {
-      const itemPath = `${sourcePath}/${item.name}`;
-      const itemDestPath = `${destPath}/${item.name}`;
+  for (const item of folder.content || []) {
+    const itemPath = `${sourcePath}/${item.name}`;
+    const itemDestPath = `${destPath}/${item.name}`;
 
-      if (item.type === "directory") {
-        // Recursively copy subdirectory
-        await copyFolderToKernel(kernel, contents, itemPath, itemDestPath);
-        continue;
-      }
-
-      const file = await contents.get(itemPath, {
-        content: true,
-        format: "base64",
-      });
-
-      await writeBinaryToVirtualFilesystem(kernel, itemDestPath, file.content);
+    if (item.type === "directory") {
+      // Recursively copy subdirectory
+      await copyFolderToKernel(kernel, contents, itemPath, itemDestPath);
+      continue;
     }
-  } catch (e) {
-    console.error(
-      `Error copying folder from ${sourcePath} to ${destPath} in Pyodide:`,
-      e,
-    );
 
-    throw e;
+    const file = await contents.get(itemPath, {
+      content: true,
+      format: "base64",
+    });
+
+    await writeBinaryToVirtualFilesystem(kernel, itemDestPath, file.content);
   }
 };
