@@ -1,17 +1,19 @@
-- Collimator
+- [Welcome to ClassMosaic!](/)
+- [Installation](/overview/developer-setup-guide.md)
+- [Overview](/overview/overview.md)
 
-  - [Home](/)
+- Guides
+  - [Add a programming language](guides/add-new-app.md)
+  - [Add a new Analysis Logic](guides/add-new-analysis.md)
+
+- Going deeper
   - [Student Identity Management](identity-management/student.md)
-
-- Data Collector
-
-  - [Home](/)
-
-- Data Analyzer
-
-  - [General AST](data-analyzer/ast.md)
-  - [G-AST Converters](data-analyzer/converters.md)
-
-- Quality Assurance
-
+  - [Iframe RPC](infrastructure/iframe-rpc.md)
+  - [AST conversion](data-analyzer/ast-conversion.md)
+  - [Data analysis](data-analyzer/data-analysis.md)
+  - [Database](infrastructure/database.md)
   - [End-to-End Tests](quality-assurance/e2e.md)
+
+- Apps
+  - [Python](python/python.md)
+  - [Scratch](scratch/scratch.md)
