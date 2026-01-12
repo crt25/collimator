@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -134,7 +135,7 @@ export class SolutionsController {
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<CurrentAnalysesDto> {
     const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
       user,

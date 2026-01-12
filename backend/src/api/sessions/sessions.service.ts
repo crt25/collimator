@@ -55,7 +55,7 @@ export class SessionsService {
     includeSoftDelete = false,
   ): Promise<Session> {
     return this.prisma.session.findUniqueOrThrow({
-      where: includeSoftDelete ? { id } : { id, deletedAt: null },
+      where: includeSoftDelete ? { classId, id } : { classId, id, deletedAt: null },
       include: fullInclude,
     });
   }

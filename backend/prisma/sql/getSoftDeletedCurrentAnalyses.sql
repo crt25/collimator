@@ -39,7 +39,7 @@ LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = studentSolutions."studentId"
   AND student."deletedAt" IS NULL
 INNER JOIN "SolutionTest" test
-  ON test."studentSolutionId" = studentSolutions.id
+  ON test."studentSolutionId" = studentSolutions.id AND test."deletedAt" IS NULL
   -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
 WHERE studentSolutions."isReference" = false
 ORDER BY test."name" ASC

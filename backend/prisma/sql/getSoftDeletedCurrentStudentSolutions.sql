@@ -11,7 +11,7 @@ FROM "SessionTask" sessionTask
 LEFT JOIN "StudentSolution" studentSolution
   ON sessionTask."taskId" = studentSolution."taskId"
   AND studentSolution."studentId" = $2
-  AND studentSolution."deletedAt" IS NULL
+  AND studentSolution."deletedAt" IS NOT NULL
 INNER JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution."id"
 WHERE sessionTask."sessionId" = $1
