@@ -1,4 +1,9 @@
-import { INotebookTracker, NotebookPanel } from "@jupyterlab/notebook";
+import {
+  INotebookTracker,
+  NotebookActions,
+  NotebookPanel,
+} from "@jupyterlab/notebook";
+import { Cell, ICellModel } from "@jupyterlab/cells";
 import { TaskAutoSaver } from "../task-auto-saver";
 
 describe("TaskAutoSaver", () => {
@@ -7,6 +12,7 @@ describe("TaskAutoSaver", () => {
   let mockSave: jest.Mock;
   let mockContentChangedConnect: jest.Mock;
   let mockDisposedConnect: jest.Mock;
+  const mockCell = {} as Cell<ICellModel>;
 
   const createMockPanel = (path: string, dirty: boolean): NotebookPanel => {
     const save = jest.fn().mockResolvedValue(undefined);
@@ -28,13 +34,34 @@ describe("TaskAutoSaver", () => {
         save,
       } as Partial<NotebookPanel["context"]> as NotebookPanel["context"],
 
-      content: { id: path } as NotebookPanel["content"],
+      content: { id: path, activeCell: mockCell } as NotebookPanel["content"],
 
       disposed: {
         connect: disposedConnect,
         disconnect: jest.fn(),
       },
     } as Partial<NotebookPanel> as NotebookPanel;
+  };
+
+  const simulateExecutionScheduled = (panel: NotebookPanel): void => {
+    const connectCall = jest
+      .mocked(NotebookActions.executionScheduled.connect)
+      .mock.calls.find((call) => {
+        return typeof call[0] === "function";
+      });
+
+    if (!connectCall) {
+      throw new Error("Execution listener was not connected");
+    }
+
+    const callback = connectCall[0];
+
+    const cell = panel.content.activeCell;
+
+    callback(NotebookActions, {
+      notebook: panel.content,
+      cell: cell!,
+    });
   };
 
   const simulateContentChange = (panel: NotebookPanel): void => {
@@ -60,6 +87,15 @@ describe("TaskAutoSaver", () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
+
+    // NotebookActions.executionScheduled is a read-only property that cannot be directly reassigned.
+    // We can mock its connect/disconnect methods this way to simulate execution events.
+    jest
+      .spyOn(NotebookActions.executionScheduled, "connect")
+      .mockImplementation(jest.fn());
+    jest
+      .spyOn(NotebookActions.executionScheduled, "disconnect")
+      .mockImplementation(jest.fn());
 
     mockPanel = createMockPanel("/test/notebook.ipynb", false);
     mockSave = jest.mocked(mockPanel.context.save);
@@ -143,5 +179,47 @@ describe("TaskAutoSaver", () => {
 
     expect(mockPanel.context.save).toHaveBeenCalledTimes(1);
     expect(mockPanel2.context.save).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not save on execution when notebook is not dirty", async () => {
+    new TaskAutoSaver(mockTracker);
+    mockPanel.context.model.dirty = false;
+    addNotebookToTracker(mockPanel);
+
+    simulateExecutionScheduled(mockPanel);
+
+    await Promise.resolve();
+
+    expect(mockSave).not.toHaveBeenCalled();
+  });
+
+  it("should save immediately when execution is scheduled and notebook is dirty", async () => {
+    new TaskAutoSaver(mockTracker);
+    mockPanel.context.model.dirty = true;
+    addNotebookToTracker(mockPanel);
+
+    simulateExecutionScheduled(mockPanel);
+
+    await Promise.resolve();
+
+    expect(mockSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("should cancel debounce timer when execution triggers immediate save", async () => {
+    const autoSaver = new TaskAutoSaver(mockTracker);
+    addNotebookToTracker(mockPanel);
+
+    simulateContentChange(mockPanel);
+    jest.advanceTimersByTime(autoSaver.debounceInterval / 2);
+    simulateExecutionScheduled(mockPanel);
+
+    await Promise.resolve();
+
+    // Save should have been called once due to execution
+    expect(mockSave).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(autoSaver.debounceInterval);
+
+    expect(mockSave).toHaveBeenCalledTimes(1);
   });
 });
