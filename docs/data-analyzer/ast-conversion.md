@@ -37,6 +37,10 @@ The action of an event listener is described by a *statement* sequence.
 Expressions are different from statements in the aspect of having a value.
 For instance a literal is an expression whereas a control structure such as a condition or a variable assignment/declaration is a statement.
 
+?> The conversion is not a one-to-one process.
+
+For example, the block `while not( ... ){ ... }` will be converted in two blocks `while( not( ... ) ) { ... }`.
+
 ### Structure
 
 The diagram below shows the main interfaces that constitute the General AST.
@@ -182,7 +186,7 @@ The backend conversion process is managed by the AstConversionService and execut
 | `AstConversionService` | A NestJS injectable service that orchestrates the conversion. It receives a task and a solution, determines the correct conversion path, and invokes the worker. | backend/src/ast/ast-conversion.service.ts |
 | `Piscina` Worker Pool | A worker thread pool used by `AstConversionService` to run the conversion logic in a separate process. This prevents blocking the main Node.js event loop. | backend/src/ast/ast-conversion.service.ts |
 | `SolutionConversionWorker` | The script executed by the Piscina worker. It receives the solution data, decodes it, and calls the appropriate language-specific converter (e.g., for Scratch). | backend/src/ast/converters/solution-conversion-worker.piscina.ts` |
-| converter | A specific converter function that transforms the task solution into the General AST format. See [G-AST Converters](#g-ast-converters). | |
+| converter | A specific converter function that transforms the task solution into the General AST format. See [G-AST Converter for Scratch](#going-deeper). | |
 
 ### Data flow
 
@@ -209,7 +213,6 @@ sequenceDiagram
     "API Controller"->>Client: Response (e.g., analysis results)
 ```
 
-## G-AST Converters
+## Going deeper
 
-- [Scratch](scratch/g-ast-converter.md)
-- [Python](python/g-ast-converter.md)
+- [Converter for Scratch](scratch/scratch.md#g-ast-converter)
