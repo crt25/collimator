@@ -1,30 +1,40 @@
 # How to add a new app
 
-To implement a new app (or programming language), you need to follow this steps.
+To integrate a new application (or programming language), follow the steps below.
 
-1. Install the app and implement JSON-RPC.
-2. Adapt the backend stuff to integrate the new app and define a new AST converter.
-3. Introduce the new task type into the frontend.
+## Overview
+
+Adding a new app requires work on three main parts of the system:
+
+1. The application itself (installation and JSON-RPC integration).
+2. The backend (database, task type, and AST conversion).
+3. The frontend (task type handling and configuration).
 
 ## App
 
-1. Create a specific folder into `apps`.
-2. Install the app, its dependencies and tools.
+### Setup
 
-Next needed steps can be very specific, according to the choosen app:
+1. Create a dedicated folder inside the `apps` directory.
+2. Install the application, its dependencies, and any required tools.
 
-- Customize the app (ex. Scratch)
-- Create a dedicated extension (ex. Jupyter)
+Additional steps depend on the application you are integrating. For example:
 
-### JSON-RPC
+- Customize the application (e.g. Scratch)
+- Create a dedicated extension or plugin (e.g. [Jupyter](../python/python.md))
 
-To support the integration into the CRT platform, you need to implement its `iframe-rpc` API for applications.
+### JSON-RPC Integration
 
-Declare events that needed to be sent to the backend or received by, for example, `GetTask` or `LoadTask`.
+To integrate the app into the CRT platform, you must implement the `iframe-rpc` API.
+
+This includes declaring the events exchanged between the app and the backend (e.g. `GetTask`, `LoadTask`).
 
 ## Backend
 
-You need to adapt the database schema. Modify the `backend/prisma/schema.prisma` and add the a new type of task:
+### Database and Task Type
+
+You must update the database schema to support the new task type.
+
+Edit  `backend/prisma/schema.prisma` and add a new value to the `TaskType` enum:
 
 ```psl
 enum TaskType {
@@ -34,7 +44,7 @@ enum TaskType {
 }
 ```
 
-Then generate a migration and apply it:
+Then generate and apply a migration:
 
 ```sh
 prisma migrate dev --name added_my_new_task_type
@@ -42,37 +52,46 @@ prisma migrate dev --name added_my_new_task_type
 
 ### AST converter
 
-In the folder `backend/src/ast/converters`, create a folder for the app (and/or language).
+1. In `backend/src/ast/converters`, create a folder for the app (and/or the language).
+2. If the language is supported by ANTLR, you can use an existing grammar from
+https://github.com/antlr/grammars-v4.
+  Otherwise, refer to the [Scratch implementation](../scratch/scratch.md) as an example.
+3. Adapt all commands prefixed with `antlr:generate` in `package.json` to match your grammar and output.
+4. Use the generated parser to implement converters for each node.
+  Each node must be converted into one or more elements of the general AST.
+5. Create a main converter function `convertMyAppToGeneralAst` in the `backend/src/ast/converters/my_app/index.ts`.
+6. Declare this converter in `backend/src/ast/converters/solution-conversion-worker.piscina.ts`.
 
-You probably can use ANTLR4 project to obtain a parser if the language is [supported](https://github.com/antlr/grammars-v4). If not, you can see our implementation of Scratch.
-
-Adapt all commands prefixed by `antlr:generate` in the `package.json` to your needs.
-
-Then use the parser to write specific converters for each node in it. Each node must be translated into one or more AST elements.
-
-Create a general converter named `convertMyAppToGeneralAst` in the `backend/src/ast/converters/my_app/index.ts` and add it into `backend/src/ast/converters/solution-conversion-worker.piscina.ts`.
-
-See Python implementation as example.
+The Python implementation can be used as a reference.
 
 ## Frontend
 
-Add the app hostname in environment files `.env.development` and `.env.test.sample` and add the following line in `frontend/src/utilities/constants.ts`:
+1. Add the application hostname to environment files:
+   - `.env.development`
+   - `.env.test.sample`
+2. Declare the hostname constant in `frontend/src/utilities/constants.ts`:
+  ```ts
+  export const myNewAppHostName = process.env
+    .NEXT_PUBLIC_MY_NEW_APP_HOSTNAME as unknown as string
+  ```
+3. In the frontend codebase, search for `TaskType.SCRATCH`.
+  Copy the surrounding conditional logic, paste it, and adapt it for the new task type.
 
-```ts
-export const myNewAppHostName = process.env
-  .NEXT_PUBLIC_MY_NEW_APP_HOSTNAME as unknown as string
-```
-
-In your code editor, search `TaskType.SCRATCH`, copy the block code around the condition. Then paste it and adapt with your new task type.
 
 ## Testing
 
-It's very specific to the application and will be not covered in this documentation.
+Testing is highly application-specific and is not covered in this documentation.
 
 ## Deployment
 
-ClassMosaic uses Github workflows and Terraform recipes. For a deployment, you need to update files to add the new app and satisfy its dependencies and requirements.
+ClassMosaic uses Github workflows and Terraform for deployment. 
+
+To deploy a new app, update the relevant workflow and Terraform files to:
+
+- Register the new app.
+- Install required dependencies.
+- Fulfill infrastructure or runtime requirements.
 
 ## Documentation
 
-We invite you to document your process and your modifications about this all previous step in one or more markdown files.
+You are encouraged to document your implementation process and changes in one or more Markdown files, covering all the steps described above.
