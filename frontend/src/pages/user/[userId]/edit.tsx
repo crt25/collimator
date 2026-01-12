@@ -12,7 +12,7 @@ import PageLayout from "@/components/layout/PageLayout";
 const messages = defineMessages({
   title: {
     id: "EditUser.title",
-    defaultMessage: "Edit User",
+    defaultMessage: "Edit User - {name}",
   },
   heading: {
     id: "EditUser.header",
