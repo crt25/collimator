@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import {
   ApiCreatedResponse,
@@ -80,7 +81,7 @@ export class SessionsController {
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
-    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto[]> {
     const isAuthorized = await this.authorizationService.canListSessions(
       user,

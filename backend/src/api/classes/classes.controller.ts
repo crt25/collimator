@@ -89,7 +89,7 @@ export class ClassesController {
   async findOne(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
-    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete = false,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true })) includeSoftDelete = false,
   ): Promise<ExistingClassExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewClass(user, id);
 

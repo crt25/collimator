@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsDate } from "class-validator";
+import { IsArray, IsDate, IsOptional } from "class-validator";
 import { Expose, Type } from "class-transformer";
 import { CreateReferenceSolutionDto } from "./create-reference-solution.dto";
 import { TaskDto } from "./task.dto";
@@ -29,7 +29,9 @@ export class CreateTaskDto extends TaskDto {
   })
   readonly referenceSolutions!: CreateReferenceSolutionDto[];
 
+  @Type(() => Date)
   @IsDate()
+  @IsOptional()
   @ApiProperty({ nullable: true })
   @Expose()
   readonly deletedAt!: Date | null;

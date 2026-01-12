@@ -7,7 +7,7 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
-import { Expose, plainToInstance } from "class-transformer";
+import { Expose, plainToInstance, Type } from "class-transformer";
 import { CreateUserDto } from "./create-user.dto";
 
 export type UserId = number;
@@ -52,7 +52,9 @@ export class ExistingUserDto extends CreateUserDto implements User {
   @Expose()
   publicKeyId!: number | null;
 
+  @Type(() => Date)
   @IsDate()
+  @IsOptional()
   @ApiProperty({ nullable: true })
   @Expose()
   readonly deletedAt!: Date | null;

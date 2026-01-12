@@ -21,7 +21,7 @@ export class UsersService {
   ): Promise<User[]> {
     return this.prisma.user.findMany({
       ...args,
-      where: includeSoftDelete ? undefined : { deletedAt: null },
+      where: includeSoftDelete ? args?.where : { ...(args?.where), deletedAt: null },
     });
   }
 
