@@ -9,8 +9,11 @@ type ExecutionScheduledCallback = Parameters<
 >[0];
 
 export class TaskAutoSaver {
-  private contentChangeTimers = new Map<string, NodeJS.Timeout>();
-  private executionListeners = new Map<string, ExecutionScheduledCallback>();
+  private readonly contentChangeTimers = new Map<string, NodeJS.Timeout>();
+  private readonly executionListeners = new Map<
+    string,
+    ExecutionScheduledCallback
+  >();
   public debounceInterval = 2004;
 
   constructor(notebookTracker: INotebookTracker) {
