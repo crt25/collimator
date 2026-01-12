@@ -43,16 +43,15 @@ const Home = () => {
   const authContext = useContext(AuthenticationContext);
 
   const isAdmin = authContext.role === UserRole.admin || undefined;
-  const title = isAdmin ? messages.adminHeader : messages.teacherHeader;
-  const heading = isAdmin ? messages.adminHeader : messages.teacherHeader;
+  const header = isAdmin ? messages.adminHeader : messages.teacherHeader;
   const description = isAdmin
     ? messages.adminDescription
     : messages.teacherDescription;
 
   return (
     <PageLayout
-      title={title}
-      heading={heading}
+      title={header}
+      heading={header}
       description={<FormattedMessage {...description} />}
     >
       <Grid marginBottom="lg" templateColumns="repeat(12, 1fr)" gap="md">

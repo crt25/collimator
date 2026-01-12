@@ -4,12 +4,12 @@ import CrtNavigation from "@/components/CrtNavigation";
 import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
-  title: {
+  header: {
     id: "ListClasses.header",
     defaultMessage: "Classes",
   },
   heading: {
-    id: "ListClasses.pageTitle",
+    id: "ListClasses.heading",
     defaultMessage: "Class Manager",
   },
   description: {
@@ -23,7 +23,7 @@ const messages = defineMessages({
 const ListClasses = () => {
   return (
     <PageLayout
-      title={messages.title}
+      title={messages.header}
       heading={messages.heading}
       description={<FormattedMessage {...messages.description} />}
       breadcrumbs={<CrtNavigation breadcrumb />}

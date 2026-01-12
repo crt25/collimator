@@ -12,10 +12,6 @@ const messages = defineMessages({
     id: "CreateUser.title",
     defaultMessage: "Create User",
   },
-  heading: {
-    id: "CreateUser.header",
-    defaultMessage: "Create User",
-  },
   submit: {
     id: "CreateUser.submit",
     defaultMessage: "Create User",
@@ -43,7 +39,7 @@ const CreateUser = () => {
   return (
     <PageLayout
       title={messages.title}
-      heading={messages.heading}
+      heading={messages.title}
       breadcrumbs={<CrtNavigation breadcrumb />}
     >
       <UserForm submitMessage={messages.submit} onSubmit={onSubmit} />

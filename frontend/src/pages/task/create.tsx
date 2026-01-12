@@ -11,10 +11,6 @@ const messages = defineMessages({
     id: "CreateTask.title",
     defaultMessage: "Create Task",
   },
-  heading: {
-    id: "CreateTask.header",
-    defaultMessage: "Create Task",
-  },
   submit: {
     id: "CreateTask.submit",
     defaultMessage: "Create Task",
@@ -46,7 +42,7 @@ const CreateTask = () => {
   return (
     <PageLayout
       title={messages.title}
-      heading={messages.heading}
+      heading={messages.title}
       breadcrumbs={<CrtNavigation breadcrumb />}
     >
       <TaskForm submitMessage={messages.submit} onSubmit={onSubmit} />

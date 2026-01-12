@@ -17,10 +17,6 @@ const messages = defineMessages({
     id: "CreateSession.title",
     defaultMessage: "Create Lesson",
   },
-  heading: {
-    id: "CreateSession.header",
-    defaultMessage: "Create Lesson",
-  },
   submit: {
     id: "CreateSession.submit",
     defaultMessage: "Create Lesson",
@@ -84,7 +80,7 @@ const CreateSession = () => {
   return (
     <PageLayout
       title={messages.title}
-      heading={messages.heading}
+      heading={messages.title}
       breadcrumbs={<CrtNavigation breadcrumb klass={klass} />}
     >
       <ClassNavigation classId={klass?.id} />

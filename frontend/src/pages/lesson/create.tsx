@@ -8,10 +8,6 @@ const messages = defineMessages({
     id: "CreateLesson.title",
     defaultMessage: "Create Lesson",
   },
-  heading: {
-    id: "CreateLesson.header",
-    defaultMessage: "Create Lesson",
-  },
   submit: {
     id: "CreateLesson.submit",
     defaultMessage: "Create Lesson",
@@ -22,7 +18,7 @@ const CreateLesson = () => {
   return (
     <PageLayout
       title={messages.title}
-      heading={messages.heading}
+      heading={messages.title}
       breadcrumbs={<CrtNavigation breadcrumb />}
     >
       <LessonForm submitMessage={messages.submit} onSubmit={console.log} />
