@@ -18,8 +18,8 @@ It enables secure and structured communication between two applications across i
 
 `iframe-rpc` facilitates communication between two applications connected via an iframe:
 
--  the host application (aka the frontend), which embeds the iframe.
--  the embedded application (like Scratch), which runs inside the iframe.
+- the host application (aka the frontend), which embeds the iframe.
+- the embedded application (like Scratch), which runs inside the iframe.
 
 It defines strict types for requests and responses, ensuring reliability and security.
 
