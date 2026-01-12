@@ -6,6 +6,10 @@ This diagram shows the high-level architecture of the ClassMosaic project.
 
 ![Overview ClassMosaic](../assets/ClassMosaic-big-picture.png)
 
+And this diagram shows the data flow of the project.
+
+![Overview ClassMosaic](../assets/ClassMosaic-Data-Flow.png)
+
 ## Frontend
 
 The frontend is a Next.js application written in TypeScript. It serves as the main user interface for both teachers and students.
