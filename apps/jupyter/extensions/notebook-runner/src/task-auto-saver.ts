@@ -37,6 +37,8 @@ export class TaskAutoSaver {
 
     this.executionListeners.set(path, executionListener);
 
+    NotebookActions.executionScheduled.connect(executionListener);
+
     panel.disposed.connect(() => {
       this.handleNotebookDisposed(panel);
     });
