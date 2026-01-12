@@ -8,7 +8,7 @@ type ExecutionScheduledCallback = Parameters<
   typeof NotebookActions.executionScheduled.connect
 >[0];
 
-export class AutoSaveManager {
+export class TaskAutoSaver {
   private contentChangeTimers = new Map<string, NodeJS.Timeout>();
   private executionListeners = new Map<string, ExecutionScheduledCallback>();
 
