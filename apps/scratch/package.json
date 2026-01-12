@@ -20,8 +20,7 @@
     "i18n:compile": "formatjs compile-folder --ast --format crowdin src/content/locales src/content/compiled-locales",
     "i18n:fill": "node ./scripts/fill-locales.mjs",
     "i18n:update": "yarn i18n:extract && yarn i18n:fill && yarn i18n:compile",
-    "postinstall": "node scripts/postinstall.mjs && yarn patch:scratch-editor",
-    "patch:scratch-editor": "cd ./src/scratch-editor && git reset --hard && git apply ../../scratch-editor.patch",
+    "postinstall": "node scripts/postinstall.mjs",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-scratch ./build && sentry-cli sourcemaps upload --org hep-vaud --project crt-scratch ./build"
   },
   "homepage": "/scratch",
