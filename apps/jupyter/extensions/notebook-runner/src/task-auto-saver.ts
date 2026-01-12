@@ -11,6 +11,7 @@ type ExecutionScheduledCallback = Parameters<
 export class TaskAutoSaver {
   private contentChangeTimers = new Map<string, NodeJS.Timeout>();
   private executionListeners = new Map<string, ExecutionScheduledCallback>();
+  public debounceInterval = 2004;
 
   constructor(notebookTracker: INotebookTracker) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
@@ -46,7 +47,7 @@ export class TaskAutoSaver {
     const timer = setTimeout(() => {
       this.saveNotebook(panel);
       this.contentChangeTimers.delete(path);
-    }, 2004);
+    }, this.debounceInterval);
 
     this.contentChangeTimers.set(path, timer);
   }
