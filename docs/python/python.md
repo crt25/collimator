@@ -25,7 +25,7 @@ The three modes are detected based on the query parameter `mode`.
 
 ## Auto-Installing a Modified Version of `otter-grader`
 
-To each sessioh that is attached to a notebook widget, we attach a listener that is called whenever the kernel changes.
+To each session that is attached to a notebook widget, we attach a listener that is called whenever the kernel changes.
 
 This listener pre-installs [our modified version of `otter-grader`](https://github.com/crt25/otter-grader) with all its dependencies.
 
