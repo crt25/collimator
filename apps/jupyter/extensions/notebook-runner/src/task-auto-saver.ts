@@ -1,10 +1,11 @@
 import {
+  INotebookModel,
   INotebookTracker,
   NotebookActions,
   NotebookPanel,
 } from "@jupyterlab/notebook";
 
-type ExecutionScheduledCallback = Parameters<
+export type ExecutionScheduledCallback = Parameters<
   typeof NotebookActions.executionScheduled.connect
 >[0];
 
@@ -18,7 +19,7 @@ export class TaskAutoSaver {
 
   constructor(notebookTracker: INotebookTracker) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
-      this.registerNotebook(panel);
+      this.registerNotebook(panel, panel.context.path, panel.context.model);
     });
   }
 
@@ -28,16 +29,18 @@ export class TaskAutoSaver {
     return new TaskAutoSaver(notebookTracker);
   }
 
-  private registerNotebook(panel: NotebookPanel): void {
-    const path = panel.context.path;
-
+  private registerNotebook(
+    panel: NotebookPanel,
+    path: string,
+    model: INotebookModel,
+  ): void {
     panel.context.model.contentChanged.connect(() => {
-      this.handleContentChange(panel);
+      this.handleContentChange(panel, path, model);
     });
 
     const executionListener: ExecutionScheduledCallback = (sender, args) => {
       if (args.notebook === panel.content) {
-        this.handleExecutionScheduled(panel);
+        this.handleExecutionScheduled(panel, path, model);
       }
     };
 
@@ -46,37 +49,39 @@ export class TaskAutoSaver {
     NotebookActions.executionScheduled.connect(executionListener);
 
     panel.disposed.connect(() => {
-      this.handleNotebookDisposed(panel);
+      this.handleNotebookDisposed(panel, path);
     });
   }
 
-  private handleContentChange(panel: NotebookPanel): void {
-    const path = panel.context.path;
-
+  private handleContentChange(
+    panel: NotebookPanel,
+    path: string,
+    model: INotebookModel,
+  ): void {
     this.cancelContentChangeTimer(path);
 
     const timer = setTimeout(() => {
-      this.saveNotebook(panel);
+      this.saveNotebook(panel, path, model);
       this.contentChangeTimers.delete(path);
     }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(path, timer);
   }
 
-  private async handleExecutionScheduled(panel: NotebookPanel): Promise<void> {
-    const model = panel.context.model;
-
+  private async handleExecutionScheduled(
+    panel: NotebookPanel,
+    path: string,
+    model: INotebookModel,
+  ): Promise<void> {
     if (!model.dirty) {
       return;
     }
 
-    this.cancelContentChangeTimer(panel.context.path);
-    await this.saveNotebook(panel);
+    this.cancelContentChangeTimer(path);
+    await this.saveNotebook(panel, path, model);
   }
 
-  private handleNotebookDisposed(panel: NotebookPanel): void {
-    const path = panel.context.path;
-
+  private handleNotebookDisposed(panel: NotebookPanel, path: string): void {
     this.cancelContentChangeTimer(path);
 
     const listener = this.executionListeners.get(path);
@@ -87,9 +92,11 @@ export class TaskAutoSaver {
     }
   }
 
-  private async saveNotebook(panel: NotebookPanel): Promise<void> {
-    const { path, model } = panel.context;
-
+  private async saveNotebook(
+    panel: NotebookPanel,
+    path: string,
+    model: INotebookModel,
+  ): Promise<void> {
     if (!model.dirty) {
       return;
     }

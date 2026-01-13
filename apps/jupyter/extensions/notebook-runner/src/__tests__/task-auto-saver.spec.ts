@@ -79,10 +79,13 @@ describe("TaskAutoSaver", () => {
   };
 
   const addNotebookToTracker = (panel: NotebookPanel): void => {
-    const callback = jest.mocked(mockTracker.widgetAdded.connect).mock
-      .calls[0][0];
+    const callbacks = getCallbacksFromMockConnection(
+      mockTracker.widgetAdded.connect,
+    );
 
-    callback(mockTracker, panel);
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i](mockTracker, panel);
+    }
   };
 
   beforeEach(() => {
