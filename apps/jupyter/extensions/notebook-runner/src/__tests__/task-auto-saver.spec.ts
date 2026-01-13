@@ -5,6 +5,7 @@ import {
 } from "@jupyterlab/notebook";
 import { Cell, ICellModel } from "@jupyterlab/cells";
 import { TaskAutoSaver } from "../task-auto-saver";
+import { getCallbacksFromMockConnection } from "./helpers/callback";
 
 describe("TaskAutoSaver", () => {
   let mockTracker: INotebookTracker;
@@ -44,38 +45,37 @@ describe("TaskAutoSaver", () => {
   };
 
   const simulateExecutionScheduled = (panel: NotebookPanel): void => {
-    const connectCall = jest
-      .mocked(NotebookActions.executionScheduled.connect)
-      .mock.calls.find((call) => {
-        return typeof call[0] === "function";
-      });
-
-    if (!connectCall) {
-      throw new Error("Execution listener was not connected");
-    }
-
-    const callback = connectCall[0];
+    const callbacks = getCallbacksFromMockConnection(
+      NotebookActions.executionScheduled.connect,
+    );
 
     const cell = panel.content.activeCell;
 
-    callback(NotebookActions, {
-      notebook: panel.content,
-      cell: cell!,
-    });
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i](NotebookActions, {
+        notebook: panel.content,
+        cell: cell!,
+      });
+    }
   };
 
   const simulateContentChange = (panel: NotebookPanel): void => {
     panel.context.model.dirty = true;
-    const callback = jest.mocked(panel.context.model.contentChanged.connect)
-      .mock.calls[0][0];
+    const callbacks = getCallbacksFromMockConnection(
+      panel.context.model.contentChanged.connect,
+    );
 
-    callback(panel.context.model, undefined);
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i](panel.context.model, undefined);
+    }
   };
 
   const simulateDisposal = (panel: NotebookPanel): void => {
-    const callback = jest.mocked(panel.disposed.connect).mock.calls[0][0];
+    const callbacks = getCallbacksFromMockConnection(panel.disposed.connect);
 
-    callback(panel, undefined);
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i](panel, undefined);
+    }
   };
 
   const addNotebookToTracker = (panel: NotebookPanel): void => {
