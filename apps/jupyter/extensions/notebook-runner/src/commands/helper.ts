@@ -85,7 +85,13 @@ const copyFolderToKernel = async (
 
   try {
     folder = await contents.get(sourcePath, { content: true });
-  } catch {
+  } catch (e) {
+    console.debug(
+      `Error accessing ${sourcePath}:`,
+      e,
+      ". Treating as not found.",
+    );
+
     throw new DirectoryNotFoundError(sourcePath);
   }
 
