@@ -38,7 +38,7 @@
     "watch": "run-p watch:src watch:labextension",
     "watch:src": "tsc -w --sourceMap",
     "watch:labextension": "jupyter labextension watch .",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-jupyter --ignore \"iframe-rpc/**/*\" --ignore \"__tests__/**/*\" ./lib && sentry-cli sourcemaps upload --org hep-vaud --project crt-jupyter --ignore \"iframe-rpc/**/*\" --ignore \"__tests__/**/*\"  ./lib"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\" ./lib && sentry-cli sourcemaps upload --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\"  ./lib"
   },
   "dependencies": {
     "@jupyterlab/application": "^4.0.0",
