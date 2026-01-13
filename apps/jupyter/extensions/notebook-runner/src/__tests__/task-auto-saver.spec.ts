@@ -125,6 +125,17 @@ describe("TaskAutoSaver", () => {
     expect(mockDisposedConnect).toHaveBeenCalled();
   });
 
+  it("should unregister notebook on disposal", () => {
+    TaskAutoSaver.trackNotebook(mockTracker);
+    addNotebookToTracker(mockPanel);
+
+    simulateDisposal(mockPanel);
+
+    expect(
+      jest.mocked(NotebookActions.executionScheduled.disconnect),
+    ).toHaveBeenCalled();
+  });
+
   it("should debounce saves on rapid content changes", () => {
     const autoSaver = new TaskAutoSaver(mockTracker);
     addNotebookToTracker(mockPanel);
