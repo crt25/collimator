@@ -11,7 +11,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
-import { getModeFromUrl } from "./mode";
+import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
@@ -63,7 +63,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    new TaskAutoSaver(notebookTracker);
+    if (mode != Mode.solve) {
+      TaskAutoSaver.trackNotebook(notebookTracker);
+    }
 
     preInstallPackages(app, contentsManager, notebookTracker);
     setupIframeApi(

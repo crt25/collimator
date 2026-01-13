@@ -22,6 +22,12 @@ export class TaskAutoSaver {
     });
   }
 
+  public static trackNotebook(
+    notebookTracker: INotebookTracker,
+  ): TaskAutoSaver {
+    return new TaskAutoSaver(notebookTracker);
+  }
+
   private registerNotebook(panel: NotebookPanel): void {
     const path = panel.context.path;
 

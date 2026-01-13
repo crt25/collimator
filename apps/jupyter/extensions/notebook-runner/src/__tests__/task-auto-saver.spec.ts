@@ -118,7 +118,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should register notebook when added to tracker", () => {
-    new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
     expect(mockContentChangedConnect).toHaveBeenCalled();
@@ -137,7 +137,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should debounce saves on rapid content changes", () => {
-    const autoSaver = new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -149,7 +149,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should reset debounce timer on each content change", () => {
-    const autoSaver = new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -168,7 +168,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should cleanup timers on notebook disposal", () => {
-    const autoSaver = new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -180,7 +180,7 @@ describe("TaskAutoSaver", () => {
 
   it("should handle multiple notebooks independently", () => {
     const mockPanel2 = createMockPanel("/test/notebook2.ipynb", false);
-    const autoSaver = new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
     addNotebookToTracker(mockPanel2);
 
@@ -193,7 +193,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should not save on execution when notebook is not dirty", async () => {
-    new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     mockPanel.context.model.dirty = false;
     addNotebookToTracker(mockPanel);
 
@@ -205,7 +205,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should save immediately when execution is scheduled and notebook is dirty", async () => {
-    new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     mockPanel.context.model.dirty = true;
     addNotebookToTracker(mockPanel);
 
