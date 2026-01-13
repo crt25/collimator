@@ -14,7 +14,7 @@ export class TaskAutoSaver {
     string,
     ExecutionScheduledCallback
   >();
-  public debounceInterval = 2004;
+  public static debounceInterval = 2004;
 
   constructor(notebookTracker: INotebookTracker) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
@@ -58,7 +58,7 @@ export class TaskAutoSaver {
     const timer = setTimeout(() => {
       this.saveNotebook(panel);
       this.contentChangeTimers.delete(path);
-    }, this.debounceInterval);
+    }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(path, timer);
   }

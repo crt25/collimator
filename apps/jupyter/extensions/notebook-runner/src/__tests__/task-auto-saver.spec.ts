@@ -143,7 +143,7 @@ describe("TaskAutoSaver", () => {
     simulateContentChange(mockPanel);
     simulateContentChange(mockPanel);
     simulateContentChange(mockPanel);
-    jest.advanceTimersByTime(autoSaver.debounceInterval);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
 
     expect(mockSave).toHaveBeenCalledTimes(1);
   });
@@ -153,15 +153,15 @@ describe("TaskAutoSaver", () => {
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
-    jest.advanceTimersByTime(autoSaver.debounceInterval / 2);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval / 2);
     simulateContentChange(mockPanel);
-    jest.advanceTimersByTime(autoSaver.debounceInterval / 2);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval / 2);
 
     // Save should not have been called here because the timer was reset
     expect(mockSave).not.toHaveBeenCalled();
 
     // Wait the remaining half interval plus a little extra to ensure the timer completes
-    jest.advanceTimersByTime(autoSaver.debounceInterval / 2 + 5);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval / 2 + 5);
 
     // Now that the full debounce interval has passed since the last change, save should be called
     expect(mockSave).toHaveBeenCalledTimes(1);
@@ -173,7 +173,7 @@ describe("TaskAutoSaver", () => {
 
     simulateContentChange(mockPanel);
     simulateDisposal(mockPanel);
-    jest.advanceTimersByTime(autoSaver.debounceInterval);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
 
     expect(mockSave).not.toHaveBeenCalled();
   });
@@ -186,7 +186,7 @@ describe("TaskAutoSaver", () => {
 
     simulateContentChange(mockPanel);
     simulateContentChange(mockPanel2);
-    jest.advanceTimersByTime(autoSaver.debounceInterval);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
 
     expect(mockPanel.context.save).toHaveBeenCalledTimes(1);
     expect(mockPanel2.context.save).toHaveBeenCalledTimes(1);
@@ -217,11 +217,11 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should cancel debounce timer when execution triggers immediate save", async () => {
-    const autoSaver = new TaskAutoSaver(mockTracker);
+    TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
-    jest.advanceTimersByTime(autoSaver.debounceInterval / 2);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval / 2);
     simulateExecutionScheduled(mockPanel);
 
     await Promise.resolve();
@@ -229,7 +229,7 @@ describe("TaskAutoSaver", () => {
     // Save should have been called once due to execution
     expect(mockSave).toHaveBeenCalledTimes(1);
 
-    jest.advanceTimersByTime(autoSaver.debounceInterval);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
 
     expect(mockSave).toHaveBeenCalledTimes(1);
   });
