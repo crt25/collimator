@@ -10,16 +10,19 @@ export type ExecutionScheduledCallback = Parameters<
 >[0];
 
 export class TaskAutoSaver {
-  private readonly contentChangeTimers = new Map<string, NodeJS.Timeout>();
+  private readonly contentChangeTimers = new Map<
+    INotebookModel,
+    NodeJS.Timeout
+  >();
   private readonly executionListeners = new Map<
-    string,
+    INotebookModel,
     ExecutionScheduledCallback
   >();
   public static debounceInterval = 2004;
 
   constructor(notebookTracker: INotebookTracker) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
-      this.registerNotebook(panel, panel.context.path, panel.context.model);
+      this.registerNotebook(panel, panel.context.model);
     });
   }
 
@@ -29,72 +32,65 @@ export class TaskAutoSaver {
     return new TaskAutoSaver(notebookTracker);
   }
 
-  private registerNotebook(
-    panel: NotebookPanel,
-    path: string,
-    model: INotebookModel,
-  ): void {
+  private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
     panel.context.model.contentChanged.connect(() => {
-      this.handleContentChange(panel, path, model);
+      this.handleContentChange(panel, model);
     });
 
     const executionListener: ExecutionScheduledCallback = (sender, args) => {
       if (args.notebook === panel.content) {
-        this.handleExecutionScheduled(panel, path, model);
+        this.handleExecutionScheduled(panel, model);
       }
     };
 
-    this.executionListeners.set(path, executionListener);
+    this.executionListeners.set(model, executionListener);
 
     NotebookActions.executionScheduled.connect(executionListener);
 
     panel.disposed.connect(() => {
-      this.handleNotebookDisposed(panel, path);
+      this.handleNotebookDisposed(model);
     });
   }
 
   private handleContentChange(
     panel: NotebookPanel,
-    path: string,
     model: INotebookModel,
   ): void {
-    this.cancelContentChangeTimer(path);
+    this.cancelContentChangeTimer(model);
 
     const timer = setTimeout(() => {
-      this.saveNotebook(panel, path, model);
-      this.contentChangeTimers.delete(path);
+      this.saveNotebook(panel, model);
+      this.contentChangeTimers.delete(model);
     }, TaskAutoSaver.debounceInterval);
 
-    this.contentChangeTimers.set(path, timer);
+    this.contentChangeTimers.set(model, timer);
   }
 
   private async handleExecutionScheduled(
     panel: NotebookPanel,
-    path: string,
     model: INotebookModel,
   ): Promise<void> {
     if (!model.dirty) {
       return;
     }
 
-    this.cancelContentChangeTimer(path);
-    await this.saveNotebook(panel, path, model);
+    this.cancelContentChangeTimer(model);
+    await this.saveNotebook(panel, model);
   }
 
-  private handleNotebookDisposed(panel: NotebookPanel, path: string): void {
-    this.cancelContentChangeTimer(path);
+  private handleNotebookDisposed(model: INotebookModel): void {
+    this.cancelContentChangeTimer(model);
 
-    const listener = this.executionListeners.get(path);
+    const listener = this.executionListeners.get(model);
 
     if (listener) {
       NotebookActions.executionScheduled.disconnect(listener);
-      this.executionListeners.delete(path);
+      this.executionListeners.delete(model);
     }
   }
 
   private async saveNotebook(
     panel: NotebookPanel,
-    path: string,
     model: INotebookModel,
   ): Promise<void> {
     if (!model.dirty) {
@@ -104,18 +100,18 @@ export class TaskAutoSaver {
     try {
       await panel.context.save();
     } catch (error) {
-      console.error(`Save failed:`, path, error);
+      console.error(`Save failed:`, error);
     }
   }
 
-  private cancelContentChangeTimer(path: string): void {
-    const timer = this.contentChangeTimers.get(path);
+  private cancelContentChangeTimer(model: INotebookModel): void {
+    const timer = this.contentChangeTimers.get(model);
 
     if (!timer) {
       return;
     }
 
     clearTimeout(timer);
-    this.contentChangeTimers.delete(path);
+    this.contentChangeTimers.delete(model);
   }
 }
