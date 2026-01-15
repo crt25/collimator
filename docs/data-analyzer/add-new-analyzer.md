@@ -193,6 +193,224 @@ To add a new axis, you will need to
 2. Add it to the `filterCriteria` list in `frontend/src/components/dashboard/filter/index.ts`.
 3. Extend the component `CriterionFilterForm` in `frontend/src/components/dashboard/filter/CriterionFilterForm.tsx` to support your new filter form.
 
-## Automatic Grouping (Machine Learning / AI)
+## Solution Grouping
 
-TODO
+The `Analyzer` component provides all grouping functionality by relying on the `useGrouping` hook located at `src/components/dashboard/hooks/useGrouping.ts`.
+
+The hook accepts several parameters, among them the set of analyzed solutions which the function is supposed to group, the current `x` and `y` axes, the manually performed `splits` (veritcal and horizontal lines on the chart) and a boolean flag `isAutomaticGrouping`.
+
+### Manual Grouping
+
+If the flag `isAutomaticGrouping` is set to false, the solution groups are computed based on the (manually provided) vertical and horizontal split lines as well as the currently selected axes.
+This computation is performed in the `useManualGrouping` hook, located at `src/components/dashboard/hooks/useManualGrouping.ts`.
+
+To modify the logic for the manual grouping, you will need to change the code in this file.
+
+### Automatic Grouping (Machine Learning / AI)
+
+If the flag `isAutomaticGrouping` is set to true, the grouping is performed by the `useAutomaticGrouping` hook, located at `src/components/dashboard/hooks/useAutomaticGrouping.ts`.
+
+The hook `useAutomaticGrouping` in turn relies on the `getAutomaticGroups` function, which accepts the set of analyzed solutions which are to be grouped, an `AutomaticGroupingType` enum value determening what algorithm is to be used for the grouping and finally a `DistanceType` enum value determening the distance metric which is to be used by the algorithm.
+
+#### How to add a new grouping algorithm
+
+To add a new algorithm for automatic grouping, you need to:
+
+1. Give the algorithm a name and add it to the `AutomaticGroupingType` enum defined in `src/components/dashboard/hooks/automatic-grouping/grouping-type.ts`.
+2. Implement the algorithm as a function with the signature
+
+   ```typescript
+   (analyses: CurrentAnalysis[], distanceType: DistanceType): Promise<AnalysisGroup[]>
+   ```
+
+   If your algorithm does not rely on a distance metric, it would be advisable to [add a custom distance metric](#how-to-add-a-new-distance-metric) called `None` which always throws when being called.
+
+   Place the file in `src/components/dashboard/hooks/automatic-grouping/`.
+
+3. Modify `src/components/dashboard/hooks/automatic-grouping/index.ts` so that `getAutomaticGroups` calls your new algorithm when the matching enum value is provided.
+4. (Optionally) Modify the `useAutomaticGrouping` hook to use your new algorithm.
+
+##### Example Algorithm
+
+```typescript
+interface AnalysisGroupWithReference extends AnalysisGroup {
+  reference: CurrentAnalysis;
+}
+
+// Partitions the analyses into a set of reference solutions
+// and a set of non-reference solutions.
+const partitionAnalyses = (
+  analyses: CurrentAnalysis[]
+): {
+  referenceSolutions: CurrentAnalysis[];
+  nonReferenceSolutions: CurrentAnalysis[];
+} => {
+  const referenceSolutions: CurrentAnalysis[] = [];
+  const nonReferenceSolutions: CurrentAnalysis[] = [];
+
+  for (const analysis of analyses) {
+    if (analysis.isReferenceSolution) {
+      referenceSolutions.push(analysis);
+    } else {
+      nonReferenceSolutions.push(analysis);
+    }
+  }
+
+  return {
+    referenceSolutions,
+    nonReferenceSolutions,
+  };
+};
+
+// Our Algorithm
+export const referenceSolutionClustering = async (
+  analyses: CurrentAnalysis[],
+  distanceType: DistanceType
+): Promise<AnalysisGroup[]> => {
+  // Compute the distances between all pairs of solutions.
+  const { referenceSolutions, nonReferenceSolutions } =
+    partitionAnalyses(analyses);
+
+  if (referenceSolutions.length === 0) {
+    // If there are no reference solutions, return a single group containing all solutions.
+    return [{ analyses }];
+  }
+
+  // Create a group for each reference solution.
+  const referenceGroups = referenceSolutions.map<AnalysisGroupWithReference>(
+    (analysis) => ({
+      reference: analysis,
+      analyses: [analysis],
+    })
+  );
+
+  // For each non-reference solution, find the closest group and add it to that group.
+  const referenceAssignments = await Promise.all(
+    nonReferenceSolutions.map(async (analysis) => {
+      // Compute the distances to all groups.
+      const referenceDistances = await Promise.all(
+        referenceGroups.map((group, groupIdx) =>
+          getAstDistance(
+            distanceType,
+            analysis.generalAst,
+            group.reference.generalAst
+          ).then((distance) => ({
+            distance,
+            referenceGroupIndex: groupIdx,
+          }))
+        )
+      );
+
+      // Find the group with the minimum distance.
+      const bestReference = referenceDistances.reduce(
+        (best, reference) =>
+          best.distance < reference.distance ? best : reference,
+        {
+          distance: Number.POSITIVE_INFINITY,
+          referenceGroupIndex: 0,
+        }
+      );
+
+      return {
+        analysis,
+        referenceGroupIndex: bestReference.referenceGroupIndex,
+      };
+    })
+  );
+
+  for (const referenceAssignment of referenceAssignments) {
+    referenceGroups[referenceAssignment.referenceGroupIndex].analyses.push(
+      referenceAssignment.analysis
+    );
+  }
+
+  return referenceGroups;
+};
+```
+
+#### How to add a new distance metric
+
+To add a new distance metric for automatic grouping, you need to:
+
+1. Give the metric a name and add it to the `DistanceType` enum defined in `src/components/dashboard/hooks/ast-distance/distance-type.ts`.
+
+2. Implement the algorithm as a function with the signature
+
+   ```typescript
+   (a: AstNode, b: AstNode): Promise<number>
+   ```
+
+   Place the file in `src/components/dashboard/hooks/ast-distance/`.
+
+3. Modify `src/components/dashboard/hooks/ast-distance/index.ts` so that `getAstDistance` calls your new distance metric when the matching enum value is provided.
+
+4. (Optionally) Modify the `useAutomaticGrouping` hook to use your new metric.
+
+##### Example Distance Metric (Zhang-Shasha)
+
+```typescript
+// Input parameters for the external library.
+const insertCost = (_: AstNode): number => 1;
+const removeCost = insertCost;
+const updateCost = (a: AstNode, b: AstNode): number =>
+  getAstNodeLabel(a) !== getAstNodeLabel(b) ? 1 : 0;
+
+// The actal distance metric function.
+export const computeZhangShashaDistance = (
+  a: AstNode,
+  b: AstNode
+): Promise<number> => {
+  const analysis = treeEditDistance(
+    a,
+    b,
+    getAstNodeChildren,
+    insertCost,
+    removeCost,
+    updateCost
+  );
+  return Promise.resolve(analysis.distance);
+};
+```
+
+where `getAstNodeChildren` is a function that given an `AstNode`, returns the list of `AstNode` children.
+Similarly, `getAstNodeLabel` returns a unique `string` label for any provided `AstNode`.
+
+Note that the implementation of `getAstNodeChildren` and `getAstNodeLabel` is fully independent of the distance metric algorithm and may be used by many.
+
+For example, see the similarity of the implementation of the [PQ-Grams distance](#example-distance-metric-pq-grams).
+
+In both examples, we use external libraries that provide the `treeEditDistance` or `jqgram` functions.
+
+##### Example Distance Metric (PQ-Grams)
+
+```typescript
+// Transforms the input into the format that the external
+// library expects.
+const getInputForNode = (
+  a: AstNode
+): {
+  root: AstNode;
+  lfn: (node: AstNode) => string;
+  cfn: (node: AstNode) => AstNode[];
+} => ({
+  root: a,
+  lfn: getAstNodeLabel,
+  cfn: getAstNodeChildren,
+});
+
+// The actal distance metric function.
+export const computePqGramsDistance = (
+  a: AstNode,
+  b: AstNode,
+  p = 2,
+  q = 3
+): Promise<number> =>
+  new Promise((resolve) =>
+    jqgram.distance(
+      getInputForNode(a),
+      getInputForNode(b),
+      { p, q },
+      (result) => resolve(result.distance)
+    )
+  );
+```
