@@ -130,7 +130,7 @@ describe("TaskAutoSaver", () => {
     jest.useRealTimers();
   });
 
-  it.only("should register notebook when added to tracker", () => {
+  it.only("should connect to notebook events when added to tracker", () => {
     TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
