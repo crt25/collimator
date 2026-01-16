@@ -5,7 +5,7 @@ import {
   NotebookPanel,
 } from "@jupyterlab/notebook";
 
-import { JupyterContextValue } from "../jupyter-context";
+import { AppCrtIframeApi } from "../iframe-rpc/src";
 import { sendTaskSolution } from "./send-task-solution";
 
 export type ExecutionScheduledCallback = Parameters<
@@ -25,7 +25,7 @@ export class TaskAutoSaver {
 
   constructor(
     notebookTracker: INotebookTracker,
-    private readonly context: JupyterContextValue,
+    private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
       this.registerNotebook(panel, panel.context.model);
@@ -34,9 +34,9 @@ export class TaskAutoSaver {
 
   public static trackNotebook(
     notebookTracker: INotebookTracker,
-    context: JupyterContextValue,
+    sendRequest: AppCrtIframeApi["sendRequest"],
   ): TaskAutoSaver {
-    return new TaskAutoSaver(notebookTracker, context);
+    return new TaskAutoSaver(notebookTracker, sendRequest);
   }
 
   private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
@@ -120,7 +120,7 @@ export class TaskAutoSaver {
         type: "application/json",
       });
 
-      sendTaskSolution(solution, this.context.sendRequest);
+      await sendTaskSolution(solution, this.sendRequest);
     } catch (error) {
       console.warn("Failed to post solution to parent:", error);
     }

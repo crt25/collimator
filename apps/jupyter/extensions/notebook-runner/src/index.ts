@@ -11,14 +11,12 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
-import { useContext } from "react";
 import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
-import { JupyterContext } from "./jupyter-context";
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
@@ -63,18 +61,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
       return;
     }
 
-    const jupyterContext = useContext(JupyterContext);
-
     const mode = getModeFromUrl();
 
-    if (mode === Mode.solve) {
-      TaskAutoSaver.trackNotebook(notebookTracker, jupyterContext);
-    }
-
     preInstallPackages(app, contentsManager, notebookTracker);
-    setupIframeApi(
+    const platform = setupIframeApi(
       new EmbeddedPythonCallbacks(mode, app, documentManager, fileBrowser),
     );
+
+    if (mode === Mode.solve) {
+      TaskAutoSaver.trackNotebook(notebookTracker, platform.sendRequest);
+    }
 
     simplifyUserInterface(
       mode,

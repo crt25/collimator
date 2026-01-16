@@ -47,7 +47,7 @@ import {
 
 const logModule = "[Embedded Jupyter]";
 
-const initIframeApi = (handleRequest: AppHandleRequestMap): void => {
+const initIframeApi = (handleRequest: AppHandleRequestMap): AppCrtIframeApi => {
   const crtPlatform = new AppCrtIframeApi({
     ...handleRequest,
     loadSubmission: async (
@@ -79,6 +79,8 @@ const initIframeApi = (handleRequest: AppHandleRequestMap): void => {
   for (const msg of bufferedMessages) {
     crtPlatform.handleWindowMessage(msg);
   }
+
+  return crtPlatform;
 };
 
 export class EmbeddedPythonCallbacks {
@@ -616,8 +618,10 @@ export class EmbeddedPythonCallbacks {
   }
 }
 
-export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
-  initIframeApi({
+export const setupIframeApi = (
+  callbacks: EmbeddedPythonCallbacks,
+): AppCrtIframeApi => {
+  return initIframeApi({
     getHeight: callbacks.getHeight.bind(callbacks),
     getSubmission: callbacks.getSubmission.bind(callbacks),
     getTask: callbacks.getTask.bind(callbacks),

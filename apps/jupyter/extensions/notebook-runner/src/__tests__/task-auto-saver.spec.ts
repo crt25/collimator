@@ -5,8 +5,8 @@ import {
 } from "@jupyterlab/notebook";
 import { Cell, ICellModel } from "@jupyterlab/cells";
 import { TaskAutoSaver } from "../auto-save/task-auto-saver";
-import { JupyterContextValue } from "../jupyter-context";
 import * as sendTaskSolutionModule from "../auto-save/send-task-solution";
+import { AppCrtIframeApi } from "../iframe-rpc/src";
 import { getCallbacksFromMockConnection } from "./helpers/callback";
 
 describe("TaskAutoSaver", () => {
@@ -17,7 +17,7 @@ describe("TaskAutoSaver", () => {
   let mockSendTaskSolution: jest.SpyInstance;
   let mockDisposedConnect: jest.SpyInstance;
   let mockToJSON: jest.SpyInstance;
-  let mockContext: JupyterContextValue;
+  let mockSendRequest: AppCrtIframeApi["sendRequest"];
   const mockCell = {} as Cell<ICellModel>;
 
   const createMockPanel = (path: string, dirty: boolean): NotebookPanel => {
@@ -119,9 +119,7 @@ describe("TaskAutoSaver", () => {
       .spyOn(sendTaskSolutionModule, "sendTaskSolution")
       .mockResolvedValue(undefined);
 
-    mockContext = {
-      sendRequest: jest.fn(),
-    } as JupyterContextValue;
+    mockSendRequest = jest.fn() as AppCrtIframeApi["sendRequest"];
 
     mockTracker = {
       widgetAdded: {
@@ -137,7 +135,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should connect to notebook events when added to tracker", () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     expect(mockContentChangedConnect).toHaveBeenCalled();
@@ -145,7 +143,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should unregister notebook on disposal", () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateDisposal(mockPanel);
@@ -156,7 +154,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should debounce saves on rapid content changes", () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -168,7 +166,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should reset debounce timer on each content change", () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -187,7 +185,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should cleanup timers on notebook disposal", () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -199,7 +197,7 @@ describe("TaskAutoSaver", () => {
 
   it("should handle multiple notebooks independently", () => {
     const mockPanel2 = createMockPanel("/test/notebook2.ipynb", false);
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
     addNotebookToTracker(mockPanel2);
 
@@ -212,7 +210,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should not save on execution when notebook is not dirty", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     mockPanel.context.model.dirty = false;
     addNotebookToTracker(mockPanel);
 
@@ -224,7 +222,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should save immediately when execution is scheduled and notebook is dirty", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     mockPanel.context.model.dirty = true;
     addNotebookToTracker(mockPanel);
 
@@ -236,7 +234,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should cancel debounce timer when execution triggers immediate save", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -254,7 +252,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should post solution to parent after successful save", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
@@ -267,7 +265,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should post solution after execution-triggered save", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     mockPanel.context.model.dirty = true;
     addNotebookToTracker(mockPanel);
 
@@ -280,7 +278,7 @@ describe("TaskAutoSaver", () => {
   });
 
   it("should convert notebook to JSON before posting", async () => {
-    TaskAutoSaver.trackNotebook(mockTracker, mockContext);
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     addNotebookToTracker(mockPanel);
 
     simulateContentChange(mockPanel);
