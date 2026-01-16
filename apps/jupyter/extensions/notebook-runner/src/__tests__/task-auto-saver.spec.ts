@@ -58,8 +58,8 @@ describe("TaskAutoSaver", () => {
 
     const cell = panel.content.activeCell;
 
-    for (let i = 0; i < callbacks.length; i++) {
-      callbacks[i](NotebookActions, {
+    for (const callback of callbacks) {
+      callback(NotebookActions, {
         notebook: panel.content,
         cell: cell!,
       });
@@ -72,16 +72,16 @@ describe("TaskAutoSaver", () => {
       panel.context.model.contentChanged.connect,
     );
 
-    for (let i = 0; i < callbacks.length; i++) {
-      callbacks[i](panel.context.model, undefined);
+    for (const callback of callbacks) {
+      callback(panel.context.model, undefined);
     }
   };
 
   const simulateDisposal = (panel: NotebookPanel): void => {
     const callbacks = getCallbacksFromMockConnection(panel.disposed.connect);
 
-    for (let i = 0; i < callbacks.length; i++) {
-      callbacks[i](panel, undefined);
+    for (const callback of callbacks) {
+      callback(panel, undefined);
     }
   };
 
@@ -90,8 +90,8 @@ describe("TaskAutoSaver", () => {
       mockTracker.widgetAdded.connect,
     );
 
-    for (let i = 0; i < callbacks.length; i++) {
-      callbacks[i](mockTracker, panel);
+    for (const callback of callbacks) {
+      callback(mockTracker, panel);
     }
   };
 
