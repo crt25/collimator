@@ -21,15 +21,13 @@ const messages = defineMessages({
   },
 });
 
-export interface BuiltInFunctionCallFilterCriterion
-  extends CriterionBase<Criterion> {
+export interface BuiltInFunctionCallFilterCriterion extends CriterionBase<Criterion> {
   functionName: string;
   minimumCount: number;
   maximumCount: number;
 }
 
-export interface BuiltInFunctionCallFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface BuiltInFunctionCallFilterCriterionParameters extends CriterionBase<Criterion> {
   minCallsByFunctionName: {
     [functionName: string]: number;
   };

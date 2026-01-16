@@ -15,7 +15,7 @@ import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
-import { ShareModal } from "../form/ShareModal";
+import { ShareModal } from "../modals/ShareModal";
 import { EmptyState } from "../EmptyState";
 
 const SessionListWrapper = chakra("div", {

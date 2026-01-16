@@ -22,8 +22,7 @@ export interface TestFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface TestFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface TestFilterCriterionParameters extends CriterionBase<Criterion> {
   minPassedTests: number;
   maxPassedTests: number;
 }
