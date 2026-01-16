@@ -1,5 +1,5 @@
 import { NoCallbacksConnectedError } from "../errors";
-import { ExecutionScheduledCallback } from "../../task-auto-saver";
+import { ExecutionScheduledCallback } from "../../auto-save/task-auto-saver";
 
 export const getCallbacksFromMockConnection = (
   connection: ExecutionScheduledCallback,

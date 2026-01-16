@@ -35,6 +35,7 @@ interface Props {
   embeddedApp: RefObject<EmbeddedAppRef | null>;
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
+  onReceiveTaskSolution?: (solution: Blob) => void;
 }
 
 const Task = ({
@@ -47,6 +48,7 @@ const Task = ({
   embeddedApp,
   onAppAvailable,
   onReceiveSubmission,
+  onReceiveTaskSolution,
 }: Props) => {
   const trackStudentActivity = useTrackStudentActivity();
   const onSolutionRun = useCallback(
@@ -125,6 +127,7 @@ const Task = ({
         onReceiveSubmission={onReceiveSubmission}
         onSolutionRun={onSolutionRun}
         onStudentAppActivity={onStudentAppActivity}
+        onReceiveTaskSolution={onReceiveTaskSolution}
       />
     </TaskWrapper>
   );

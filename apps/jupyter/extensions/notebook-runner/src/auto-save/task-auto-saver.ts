@@ -5,6 +5,10 @@ import {
   NotebookPanel,
 } from "@jupyterlab/notebook";
 
+import { useContext } from "react";
+import { JupyterContext } from "../jupyter-context";
+import { sendTaskSolution } from "./send-task-solution";
+
 export type ExecutionScheduledCallback = Parameters<
   typeof NotebookActions.executionScheduled.connect
 >[0];
@@ -18,7 +22,7 @@ export class TaskAutoSaver {
     INotebookModel,
     ExecutionScheduledCallback
   >();
-  public static debounceInterval = 2004;
+  public static debounceInterval = 20000;
 
   constructor(notebookTracker: INotebookTracker) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
@@ -99,8 +103,25 @@ export class TaskAutoSaver {
 
     try {
       await panel.context.save();
+      await this.postCurrentSolution(panel);
     } catch (error) {
       console.error(`Save failed:`, error);
+    }
+  }
+
+  private async postCurrentSolution(panel: NotebookPanel): Promise<void> {
+    try {
+      const notebookData = panel.context.model.toJSON();
+
+      const solution = new Blob([JSON.stringify(notebookData, null, 2)], {
+        type: "application/json",
+      });
+
+      const { sendRequest } = useContext(JupyterContext);
+
+      sendTaskSolution(solution, sendRequest);
+    } catch (error) {
+      console.warn("Failed to post solution to parent:", error);
     }
   }
 

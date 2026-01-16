@@ -16,7 +16,7 @@ import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
-import { TaskAutoSaver } from "./task-auto-saver";
+import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
@@ -63,7 +63,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    if (mode != Mode.solve) {
+    if (mode === Mode.solve) {
       TaskAutoSaver.trackNotebook(notebookTracker);
     }
 
