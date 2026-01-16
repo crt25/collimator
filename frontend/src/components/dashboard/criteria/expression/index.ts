@@ -26,8 +26,7 @@ export interface ExpressionFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface ExpressionFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface ExpressionFilterCriterionParameters extends CriterionBase<Criterion> {
   minNumberOfExpressions: number;
   maxNumberOfExpressions: number;
 }

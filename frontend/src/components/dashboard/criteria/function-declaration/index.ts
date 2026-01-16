@@ -21,14 +21,12 @@ const messages = defineMessages({
   },
 });
 
-export interface FunctionDeclarationFilterCriterion
-  extends CriterionBase<Criterion> {
+export interface FunctionDeclarationFilterCriterion extends CriterionBase<Criterion> {
   minimumCount: number;
   maximumCount: number;
 }
 
-export interface FunctionDeclarationFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface FunctionDeclarationFilterCriterionParameters extends CriterionBase<Criterion> {
   minNumberOfFunctionDeclarations: number;
   maxNumberOfFunctionDeclarations: number;
 }
