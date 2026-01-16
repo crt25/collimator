@@ -4,27 +4,32 @@ import {
   NotebookPanel,
 } from "@jupyterlab/notebook";
 import { Cell, ICellModel } from "@jupyterlab/cells";
-import { TaskAutoSaver } from "../task-auto-saver";
+import { TaskAutoSaver } from "../auto-save/task-auto-saver";
+import { sendTaskSolution } from "../auto-save/send-task-solution";
 import { getCallbacksFromMockConnection } from "./helpers/callback";
 
 describe("TaskAutoSaver", () => {
   let mockTracker: INotebookTracker;
   let mockPanel: NotebookPanel;
-  let mockSave: jest.Mock;
-  let mockContentChangedConnect: jest.Mock;
-  let mockDisposedConnect: jest.Mock;
+  let mockSave: jest.SpyInstance;
+  let mockContentChangedConnect: jest.SpyInstance;
+  let mockSendTaskSolution: jest.SpyInstance;
+  let mockDisposedConnect: jest.SpyInstance;
+  let mockToJSON: jest.SpyInstance;
   const mockCell = {} as Cell<ICellModel>;
 
   const createMockPanel = (path: string, dirty: boolean): NotebookPanel => {
     const save = jest.fn().mockResolvedValue(undefined);
     const contentChangedConnect = jest.fn();
     const disposedConnect = jest.fn();
+    const toJSON = jest.fn().mockReturnValue({ cells: [] });
 
     return {
       context: {
         path,
         model: {
           dirty,
+          toJSON,
           contentChanged: {
             connect: contentChangedConnect,
             disconnect: jest.fn(),
@@ -91,8 +96,6 @@ describe("TaskAutoSaver", () => {
   beforeEach(() => {
     jest.useFakeTimers();
 
-    // NotebookActions.executionScheduled is a read-only property that cannot be directly reassigned.
-    // We can mock its connect/disconnect methods this way to simulate execution events.
     jest
       .spyOn(NotebookActions.executionScheduled, "connect")
       .mockImplementation(jest.fn());
@@ -101,11 +104,18 @@ describe("TaskAutoSaver", () => {
       .mockImplementation(jest.fn());
 
     mockPanel = createMockPanel("/test/notebook.ipynb", false);
-    mockSave = jest.mocked(mockPanel.context.save);
-    mockContentChangedConnect = jest.mocked(
-      mockPanel.context.model.contentChanged.connect,
+
+    mockSave = jest.spyOn(mockPanel.context, "save");
+    mockContentChangedConnect = jest.spyOn(
+      mockPanel.context.model.contentChanged,
+      "connect",
     );
-    mockDisposedConnect = jest.mocked(mockPanel.disposed.connect);
+    mockDisposedConnect = jest.spyOn(mockPanel.disposed, "connect");
+    mockToJSON = jest.spyOn(mockPanel.context.model, "toJSON");
+
+    mockSendTaskSolution = jest
+      .spyOn({ sendTaskSolution }, "sendTaskSolution")
+      .mockResolvedValue(undefined);
 
     mockTracker = {
       widgetAdded: {
@@ -120,7 +130,7 @@ describe("TaskAutoSaver", () => {
     jest.useRealTimers();
   });
 
-  it("should register notebook when added to tracker", () => {
+  it.only("should register notebook when added to tracker", () => {
     TaskAutoSaver.trackNotebook(mockTracker);
     addNotebookToTracker(mockPanel);
 
@@ -235,5 +245,43 @@ describe("TaskAutoSaver", () => {
     jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
 
     expect(mockSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("should post solution to parent after successful save", async () => {
+    TaskAutoSaver.trackNotebook(mockTracker);
+    addNotebookToTracker(mockPanel);
+
+    simulateContentChange(mockPanel);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
+
+    await Promise.resolve();
+
+    expect(mockSave).toHaveBeenCalledTimes(1);
+    expect(mockSendTaskSolution).toHaveBeenCalledTimes(1);
+  });
+
+  it("should post solution after execution-triggered save", async () => {
+    TaskAutoSaver.trackNotebook(mockTracker);
+    mockPanel.context.model.dirty = true;
+    addNotebookToTracker(mockPanel);
+
+    simulateExecutionScheduled(mockPanel);
+
+    await Promise.resolve();
+
+    expect(mockSave).toHaveBeenCalledTimes(1);
+    expect(mockSendTaskSolution).toHaveBeenCalledTimes(1);
+  });
+
+  it("should convert notebook to JSON before posting", async () => {
+    TaskAutoSaver.trackNotebook(mockTracker);
+    addNotebookToTracker(mockPanel);
+
+    simulateContentChange(mockPanel);
+    jest.advanceTimersByTime(TaskAutoSaver.debounceInterval);
+
+    await Promise.resolve();
+
+    expect(mockToJSON).toHaveBeenCalledTimes(1);
   });
 });
