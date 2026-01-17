@@ -16,6 +16,9 @@ import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
+import { enableSentry } from "./sentry";
+
+enableSentry();
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
