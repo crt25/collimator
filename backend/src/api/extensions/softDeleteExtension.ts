@@ -4,6 +4,8 @@ import { hasSoftDelete } from "src/utilities/has-soft-delete";
 interface PrismaModelContext {
   update: (args: {
     where: unknown;
+    include: unknown;
+    select: unknown;
     data: { deletedAt: Date };
   }) => Promise<unknown>;
   updateMany: (args: {
@@ -63,6 +65,8 @@ export const softDeleteExtension = Prisma.defineExtension({
         case "delete": {
           return context.update({
             where: args.where,
+            include: args.include,
+            select: args.select,
             data: { deletedAt: new Date() },
           });
         }
