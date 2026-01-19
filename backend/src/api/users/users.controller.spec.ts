@@ -26,6 +26,7 @@ describe("UsersController", () => {
     oidcSub: null,
     authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
+    deletedAt: null,
   };
 
   beforeEach(async () => {
@@ -63,6 +64,7 @@ describe("UsersController", () => {
       oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
+      deletedAt: null,
     };
     const createdUser = { ...user, id: 1 };
     prismaMock.user.create.mockResolvedValue(createdUser);
@@ -82,6 +84,7 @@ describe("UsersController", () => {
       oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
+      deletedAt: null,
     };
     const updatedUser = { ...user, id: 2 };
     prismaMock.user.update.mockResolvedValue(updatedUser);
@@ -107,6 +110,7 @@ describe("UsersController", () => {
       oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
+      deletedAt: null,
     };
     prismaMock.user.delete.mockResolvedValue(user);
 
@@ -126,6 +130,7 @@ describe("UsersController", () => {
       oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
+      deletedAt: null,
     };
     prismaMock.user.findUniqueOrThrow.mockResolvedValue(user);
 
@@ -134,7 +139,7 @@ describe("UsersController", () => {
     expect(result).toBeInstanceOf(ExistingUserDto);
     expect(result).toEqual(user);
     expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
-      where: { id: user.id },
+      where: { id: user.id, deletedAt: null },
     });
   });
 
@@ -146,6 +151,7 @@ describe("UsersController", () => {
       oidcSub: null,
       authenticationProvider: AuthenticationProvider.MICROSOFT,
       type: UserType.TEACHER,
+      deletedAt: null,
     };
     prismaMock.user.findUniqueOrThrow.mockRejectedValue(new Error("Not found"));
 
@@ -162,6 +168,7 @@ describe("UsersController", () => {
         oidcSub: null,
         authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.TEACHER,
+        deletedAt: null,
       },
       {
         id: 2,
@@ -170,6 +177,7 @@ describe("UsersController", () => {
         oidcSub: null,
         authenticationProvider: AuthenticationProvider.MICROSOFT,
         type: UserType.ADMIN,
+        deletedAt: null,
       },
     ];
 
