@@ -12,8 +12,9 @@ LEFT JOIN "StudentSolution" studentSolution
   ON sessionTask."taskId" = studentSolution."taskId"
   AND studentSolution."studentId" = $2
   AND studentSolution."deletedAt" IS NOT NULL
-INNER JOIN "SolutionTest" test
+LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution."id"
+  AND test."deletedAt" IS NOT NULL
 WHERE sessionTask."sessionId" = $1
 GROUP BY studentSolution."taskId", studentSolution."id"
 ORDER BY studentSolution."taskId", studentSolution."createdAt" DESC;
