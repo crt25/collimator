@@ -356,7 +356,16 @@ export class AuthorizationService {
 
     const whereWithSoftDelete = includeSoftDeleted
       ? { id: studentSolutionId }
-      : { id: studentSolutionId, deletedAt: null };
+      : {
+          id: studentSolutionId,
+          deletedAt: null,
+          session: {
+            deletedAt: null,
+            class: {
+              deletedAt: null,
+            },
+          },
+        };
 
     const solution = await this.prisma.studentSolution.findUniqueOrThrow({
       where: whereWithSoftDelete,
