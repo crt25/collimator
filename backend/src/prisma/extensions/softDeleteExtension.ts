@@ -58,8 +58,6 @@ export const softDeleteExtension = Prisma.defineExtension({
         return query(args);
       }
 
-      // Type assertion necessary due to Prisma extension API limitations
-      // Safe because all models in softDeletableModels support update/updateMany
       const context = Prisma.getExtensionContext(this) as PrismaModelContext;
 
       switch (operation) {
