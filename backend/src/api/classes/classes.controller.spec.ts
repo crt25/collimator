@@ -27,6 +27,7 @@ describe("ClassesController", () => {
     name: "Admin",
     email: "root@collimator.com",
     oidcSub: null,
+    deletedAt: null,
     authenticationProvider: AuthenticationProvider.MICROSOFT,
     type: "ADMIN",
   };
@@ -61,7 +62,7 @@ describe("ClassesController", () => {
 
   it("can create a class", async () => {
     const dto: CreateClassDto = { name: "Test Class", teacherId: 33 };
-    const createdClass = { id: 1, ...dto };
+    const createdClass = { id: 1, ...dto, deletedAt: null };
     prismaMock.class.create.mockResolvedValue(createdClass);
 
     const result = await controller.create(dto);
@@ -78,7 +79,7 @@ describe("ClassesController", () => {
   it("can update a class", async () => {
     const id = 3;
     const dto: UpdateClassDto = { name: "Updated Class", teacherId: 34 };
-    const updatedClass = { id, ...dto };
+    const updatedClass = { id, ...dto, deletedAt: null };
     prismaMock.class.update.mockResolvedValue(updatedClass);
 
     const result = await controller.update(adminUser, id, dto);
@@ -92,7 +93,7 @@ describe("ClassesController", () => {
 
   it("can delete a class", async () => {
     const id = 99;
-    const deletedClass = { id, name: "Deleted Class", teacherId: 34 };
+    const deletedClass = { id, name: "Deleted Class", teacherId: 34, deletedAt: new Date() };
     prismaMock.class.delete.mockResolvedValue(deletedClass);
 
     const result = await controller.remove(adminUser, id);
@@ -110,6 +111,7 @@ describe("ClassesController", () => {
       sessions: [],
       teacherId: 33,
       teacher: { name: "Teacher" },
+      deletedAt: null,
       students: [],
     };
     prismaMock.class.findUniqueOrThrow.mockResolvedValue(klass);
@@ -121,16 +123,18 @@ describe("ClassesController", () => {
     expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
       include: {
         sessions: {
-          select: { id: true },
+          select: { id: true},
+          where: { deletedAt: null },
         },
         teacher: {
-          select: { id: true, name: true },
+          select: { id: true, name: true},
         },
         students: {
           select: { studentId: true, keyPairId: true, pseudonym: true },
+          where: { deletedAt: null },
         },
       },
-      where: { id: 1 },
+      where: { id: 1, deletedAt: null },
     });
   });
 
@@ -150,12 +154,14 @@ describe("ClassesController", () => {
         name: "Test Class",
         teacherId: 5,
         teacher: { id: 5, name: "Jerry Smith" },
+        deletedAt: null,
       },
       {
         id: 2,
         name: "Another Class",
         teacherId: 6,
         teacher: { id: 6, name: "Summer Smith" },
+        deletedAt: null,
       },
     ];
 
@@ -181,12 +187,14 @@ describe("ClassesController", () => {
         name: "Test Class",
         teacherId: teacherId,
         teacher: { id: teacherId, name: "Jerry Smith" },
+        deletedAt: null,
       },
       {
         id: 2,
         name: "Another Class",
         teacherId: teacherId,
         teacher: { id: teacherId, name: "Jerry Smith" },
+        deletedAt: null,
       },
     ];
 
@@ -195,7 +203,7 @@ describe("ClassesController", () => {
     const result = await controller.findAll(adminUser, teacherId);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
-      where: { teacherId: teacherId },
+      where: { teacherId: teacherId, deletedAt: null },
       include: { teacher: { select: { id: true, name: true } } },
     });
     expect(Array.isArray(result)).toBe(true);

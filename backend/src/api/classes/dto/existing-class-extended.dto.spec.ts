@@ -7,11 +7,13 @@ describe("ExistingClassExtendedDto", () => {
     name: "Test Class",
     teacherId: 5,
     teacher: { id: 5, name: "Jerry Smith" },
+    deletedAt: null,
     sessions: [{ id: 1 }, { id: 2 }],
     students: new Array(25).fill(undefined).map(
       (_, i) =>
         ({
           id: i + 1,
+          deletedAt: null,
           pseudonym: new TextEncoder().encode(`Student ${i + 1}`),
         }) as Student,
     ),
