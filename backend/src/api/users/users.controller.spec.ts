@@ -231,7 +231,9 @@ describe("UsersController", () => {
     const result = await controller.findAll(true);
 
     expect(result).toHaveLength(2);
-    expect(prismaMock.user.findMany).toHaveBeenCalledWith({});
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith({
+      where: undefined,
+    });
   });
 
   it("should not update soft deleted user by default", async () => {
