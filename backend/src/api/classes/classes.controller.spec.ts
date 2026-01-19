@@ -87,6 +87,22 @@ describe("ClassesController", () => {
     expect(result).toEqual(plainToInstance(ExistingClassDto, updatedClass));
     expect(prismaMock.class.update).toHaveBeenCalledWith({
       data: dto,
+      where: { id, deletedAt: null },
+    });
+  });
+
+  it("can update a class excluding soft delete filter", async () => {
+    const id = 3;
+    const dto: UpdateClassDto = { name: "Updated Class", teacherId: 34 };
+    const updatedClass = { id, ...dto, deletedAt: null };
+    
+    prismaMock.class.update.mockResolvedValue(updatedClass);
+    
+    const result = await controller.update(adminUser, id, dto, true);
+    
+    expect(result).toEqual(plainToInstance(ExistingClassDto, updatedClass));
+    expect(prismaMock.class.update).toHaveBeenCalledWith({
+      data: dto,
       where: { id },
     });
   });
@@ -107,10 +123,10 @@ describe("ClassesController", () => {
   it("can find an existing class", async () => {
     const klass: ClassExtended = {
       id: 1,
-      name: "Test Class",
+      name: "Existing Class",
       sessions: [],
       teacherId: 33,
-      teacher: { name: "Teacher" },
+      teacher: { name: "Jerry Smith" },
       deletedAt: null,
       students: [],
     };
@@ -213,5 +229,277 @@ describe("ClassesController", () => {
     expect(result).toEqual(
       fromQueryResults(ExistingClassWithTeacherDto, classes),
     );
+  });
+
+  it("should exclude soft-deleted classes when finding all classes by default", async () => {
+    const classes = [
+      {
+        id: 1,
+        name: "Existing Class",
+        teacherId: 5,
+        teacher: { id: 5, name: "Jerry Smith" },
+        deletedAt: null,
+      },
+    ];
+
+    prismaMock.class.findMany.mockResolvedValue(classes);
+
+    await controller.findAll(adminUser);
+
+    expect(prismaMock.class.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: null },
+      include: { teacher: { select: { id: true, name: true } } },
+    });
+  });
+
+  it("should include soft-deleted classes when includeSoftDelete=true in findAll", async () => {
+    const allClasses = [
+      {
+        id: 1,
+        name: "Existing Class",
+        teacherId: 5,
+        teacher: { id: 5, name: "Jerry Smith" },
+        deletedAt: null,
+      },
+      {
+        id: 2,
+        name: "Deleted Class",
+        teacherId: 5,
+        teacher: { id: 5, name: "Jerry Smith" },
+        deletedAt: new Date(),
+      },
+    ];
+
+    prismaMock.class.findMany.mockResolvedValue(allClasses);
+
+    const result = await controller.findAll(adminUser, undefined, true);
+
+    expect(prismaMock.class.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: undefined },
+      include: { teacher: { select: { id: true, name: true } } },
+    });
+    expect(result).toHaveLength(2);
+  });
+
+  it("should exclude soft-deleted related entities when finding a class by default", async () => {
+    const klass: ClassExtended = {
+      id: 1,
+      name: "Existing Class",
+      sessions: [{ id: 1 }],
+      teacherId: 33,
+      teacher: { name: "Jerry Smith" },
+      deletedAt: null,
+      students: [
+        { studentId: 1, pseudonym: Buffer.from("test"), keyPairId: null },
+      ],
+    };
+    prismaMock.class.findUniqueOrThrow.mockResolvedValue(klass);
+
+    await controller.findOne(adminUser, 1);
+
+    expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
+      include: {
+        sessions: {
+          select: { id: true },
+          where: { deletedAt: null },
+        },
+        teacher: {
+          select: { id: true, name: true },
+        },
+        students: {
+          select: { studentId: true, keyPairId: true, pseudonym: true },
+          where: { deletedAt: null },
+        },
+      },
+      where: { id: 1, deletedAt: null },
+    });
+  });
+
+  it("should include soft-deleted related entities when includeSoftDelete=true in findOne", async () => {
+    const klass: ClassExtended = {
+      id: 1,
+      name: "Existing Class",
+      sessions: [{ id: 1 }, { id: 2 }],
+      teacherId: 33,
+      teacher: { name: "Jerry Smith" },
+      deletedAt: null,
+      students: [
+        { studentId: 1, pseudonym: Buffer.from("test1"), keyPairId: null },
+        { studentId: 2, pseudonym: Buffer.from("test2"), keyPairId: null },
+      ],
+    };
+    prismaMock.class.findUniqueOrThrow.mockResolvedValue(klass);
+
+    await controller.findOne(adminUser, 1, true);
+
+    expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
+      include: {
+        sessions: {
+          select: { id: true },
+          where: undefined,
+        },
+        teacher: {
+          select: { id: true, name: true },
+        },
+        students: {
+          select: { studentId: true, keyPairId: true, pseudonym: true },
+          where: undefined,
+        },
+      },
+      where: { id: 1 },
+    });
+  });
+
+  it("should perform soft delete when deleting a class", async () => {
+    const id = 99;
+    const softDeletedClass = {
+      id,
+      name: "Existing Class",
+      teacherId: 34,
+      deletedAt: new Date(),
+    };
+    
+    prismaMock.class.delete.mockResolvedValue(softDeletedClass);
+
+    const result = await controller.remove(adminUser, id);
+
+    expect(result).toEqual(plainToInstance(DeletedClassDto, softDeletedClass));
+    expect(prismaMock.class.delete).toHaveBeenCalledWith({
+      where: { id },
+    });
+    expect(result.deletedAt).toEqual(softDeletedClass.deletedAt);
+  });
+
+  it("should be able to update a soft-deleted class when includeSoftDelete=true", async () => {
+    const id = 3;
+    const dto: UpdateClassDto = { name: "Updated Deleted Class", teacherId: 34 };
+    const updatedClass = {
+      id,
+      ...dto,
+      teacherId: 34,
+      deletedAt: new Date(),
+    };
+
+    prismaMock.class.update.mockResolvedValue(updatedClass);
+
+    const result = await controller.update(adminUser, id, dto, true);
+
+    expect(result).toEqual(plainToInstance(ExistingClassDto, updatedClass));
+    expect(prismaMock.class.update).toHaveBeenCalledWith({
+      data: dto,
+      where: { id },
+    });
+  });
+
+  it("should filter by teacher and exclude soft-deleted classes by default", async () => {
+    const teacherId = 5;
+    const activeClasses = [
+      {
+        id: 1,
+        name: "Existing Class",
+        teacherId,
+        teacher: { id: teacherId, name: "Jerry Smith" },
+        deletedAt: null,
+      },
+    ];
+
+    prismaMock.class.findMany.mockResolvedValue(activeClasses);
+
+    await controller.findAll(adminUser, teacherId);
+
+    expect(prismaMock.class.findMany).toHaveBeenCalledWith({
+      where: { teacherId, deletedAt: null },
+      include: { teacher: { select: { id: true, name: true } } },
+    });
+  });
+
+  it("should filter by teacher and include soft-deleted classes when includeSoftDelete=true", async () => {
+    const teacherId = 5;
+    const allClasses = [
+      {
+        id: 1,
+        name: "Existing Class",
+        teacherId,
+        teacher: { id: teacherId, name: "Jerry Smith" },
+        deletedAt: null,
+      },
+      {
+        id: 2,
+        name: "Deleted Class",
+        teacherId,
+        teacher: { id: teacherId, name: "Jerry Smith" },
+        deletedAt: new Date(),
+      },
+    ];
+
+    prismaMock.class.findMany.mockResolvedValue(allClasses);
+
+    await controller.findAll(adminUser, teacherId, true);
+
+    expect(prismaMock.class.findMany).toHaveBeenCalledWith({
+      where: { teacherId, deletedAt: undefined },
+      include: { teacher: { select: { id: true, name: true } } },
+    });
+  });
+
+  it("should not find a soft-deleted class by default", async () => {
+    prismaMock.class.findUniqueOrThrow.mockRejectedValue(
+      new Error("Record not found")
+    );
+
+    await expect(controller.findOne(adminUser, 999)).rejects.toThrow(
+      "Record not found"
+    );
+
+    expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
+      include: {
+        sessions: {
+          select: { id: true },
+          where: { deletedAt: null },
+        },
+        teacher: {
+          select: { id: true, name: true },
+        },
+        students: {
+          select: { studentId: true, keyPairId: true, pseudonym: true },
+          where: { deletedAt: null },
+        },
+      },
+      where: { id: 999, deletedAt: null },
+    });
+  });
+
+  it("should find a soft-deleted class when includeSoftDelete=true", async () => {
+    const softDeletedClass: ClassExtended = {
+      id: 999,
+      name: "Soft Deleted Class",
+      sessions: [],
+      teacherId: 33,
+      teacher: { name: "Jerry Smith" },
+      deletedAt: new Date(),
+      students: [],
+    };
+    prismaMock.class.findUniqueOrThrow.mockResolvedValue(softDeletedClass);
+
+    const result = await controller.findOne(adminUser, 999, true);
+
+    expect(result).toBeInstanceOf(ExistingClassExtendedDto);
+    expect(result.deletedAt).toEqual(softDeletedClass.deletedAt);
+    expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
+      include: {
+        sessions: {
+          select: { id: true },
+          where: undefined,
+        },
+        teacher: {
+          select: { id: true, name: true },
+        },
+        students: {
+          select: { studentId: true, keyPairId: true, pseudonym: true },
+          where: undefined,
+        },
+      },
+      where: { id: 999 },
+    });
   });
 });

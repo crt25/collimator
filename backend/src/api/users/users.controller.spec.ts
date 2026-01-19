@@ -98,7 +98,158 @@ describe("UsersController", () => {
     expect(result).toEqual(updatedUser);
     expect(prismaMock.user.update).toHaveBeenCalledWith({
       data: user,
+      where: { id: 2, deletedAt: null },
+    });
+  });
+
+  it("can update a user excluding soft delete filter", async () => {
+    const user = {
+      name: "Alice",
+      email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
+      type: UserType.TEACHER,
+      deletedAt: null,
+    };
+    const updatedUser = { ...user, id: 2 };
+    prismaMock.user.update.mockResolvedValue(updatedUser);
+
+    const result = await controller.update(
+      adminUser,
+      2,
+      plainToInstance(CreateUserDto, user),
+      true,
+    );
+
+    expect(result).toEqual(updatedUser);
+    expect(prismaMock.user.update).toHaveBeenCalledWith({
+      data: user,
       where: { id: 2 },
+    });
+  });
+
+  it("can delete a user and it sets deletedAt", async () => {
+    const user = {
+      id: 2,
+      name: "Alice",
+      email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
+      type: UserType.TEACHER,
+      deletedAt: new Date(),
+    };
+    prismaMock.user.delete.mockResolvedValue(user);
+
+    const result = await controller.delete(user.id);
+
+    expect(result).toEqual(plainToInstance(ExistingUserDto, user));
+    expect(result.deletedAt).not.toBeNull();
+    expect(prismaMock.user.delete).toHaveBeenCalledWith({
+      where: { id: user.id },
+    });
+  });
+
+  it("should not find soft deleted user by default", async () => {
+    const userId = 1;
+    prismaMock.user.findUniqueOrThrow.mockRejectedValue(new Error("Not found"));
+
+    await expect(controller.findOne(adminUser, userId)).rejects.toThrow("Not found");
+    
+    expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: userId, deletedAt: null },
+    });
+  });
+
+  it("should find soft deleted user when includeSoftDelete is true", async () => {
+    const user = {
+      id: 1,
+      name: "Alice",
+      email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
+      type: UserType.TEACHER,
+      deletedAt: new Date(),
+    };
+    prismaMock.user.findUniqueOrThrow.mockResolvedValue(user);
+
+    const result = await controller.findOne(adminUser, user.id, true);
+
+    expect(result).toEqual(user);
+    expect(result.deletedAt).not.toBeNull();
+    expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: user.id },
+    });
+  });
+
+  it("should not include soft deleted users in findAll by default", async () => {
+    const users = [
+      {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        oidcSub: null,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
+        type: UserType.TEACHER,
+        deletedAt: null,
+      },
+    ];
+    prismaMock.user.findMany.mockResolvedValue(users);
+
+    const result = await controller.findAll();
+
+    expect(result).toHaveLength(1);
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: null },
+    });
+  });
+
+  it("should include soft deleted users in findAll when includeSoftDelete is true", async () => {
+    const users = [
+      {
+        id: 1,
+        name: "Alice",
+        email: "alice@example.com",
+        oidcSub: null,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
+        type: UserType.TEACHER,
+        deletedAt: null,
+      },
+      {
+        id: 2,
+        name: "Bob",
+        email: "bob@example.com",
+        oidcSub: null,
+        authenticationProvider: AuthenticationProvider.MICROSOFT,
+        type: UserType.ADMIN,
+        deletedAt: new Date(),
+      },
+    ];
+    prismaMock.user.findMany.mockResolvedValue(users);
+
+    const result = await controller.findAll(true);
+
+    expect(result).toHaveLength(2);
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith({});
+  });
+
+  it("should not update soft deleted user by default", async () => {
+    const user = {
+      name: "Alice",
+      email: "alice@example.com",
+      oidcSub: null,
+      authenticationProvider: AuthenticationProvider.MICROSOFT,
+      type: UserType.TEACHER,
+      deletedAt: null,
+    };
+    prismaMock.user.update.mockRejectedValue(new Error("Not found"));
+
+    await expect(
+      controller.update(adminUser, 2, plainToInstance(CreateUserDto, user)),
+    ).rejects.toThrow("Not found");
+
+    expect(prismaMock.user.update).toHaveBeenCalledWith({
+      data: user,
+      where: { id: 2, deletedAt: null },
     });
   });
 
