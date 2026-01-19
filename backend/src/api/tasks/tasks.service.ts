@@ -111,7 +111,9 @@ export class TasksService {
     return this.prisma.task.findMany({
       ...args,
       omit: omitData,
-      where: includeSoftDelete ? undefined : { deletedAt: null },
+      where: includeSoftDelete
+        ? args?.where
+        : { ...args?.where, deletedAt: null },
     });
   }
 

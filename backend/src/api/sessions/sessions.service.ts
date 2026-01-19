@@ -68,7 +68,9 @@ export class SessionsService {
   ): Promise<Session[]> {
     return this.prisma.session.findMany({
       ...args,
-      where: includeSoftDelete ? undefined : { deletedAt: null },
+      where: includeSoftDelete
+        ? args?.where
+        : { ...args?.where, deletedAt: null },
       include: compactInclude,
     });
   }
