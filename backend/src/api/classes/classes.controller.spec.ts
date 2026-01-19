@@ -95,11 +95,11 @@ describe("ClassesController", () => {
     const id = 3;
     const dto: UpdateClassDto = { name: "Updated Class", teacherId: 34 };
     const updatedClass = { id, ...dto, deletedAt: null };
-    
+
     prismaMock.class.update.mockResolvedValue(updatedClass);
-    
+
     const result = await controller.update(adminUser, id, dto, true);
-    
+
     expect(result).toEqual(plainToInstance(ExistingClassDto, updatedClass));
     expect(prismaMock.class.update).toHaveBeenCalledWith({
       data: dto,
@@ -109,7 +109,12 @@ describe("ClassesController", () => {
 
   it("can delete a class", async () => {
     const id = 99;
-    const deletedClass = { id, name: "Deleted Class", teacherId: 34, deletedAt: new Date() };
+    const deletedClass = {
+      id,
+      name: "Deleted Class",
+      teacherId: 34,
+      deletedAt: new Date(),
+    };
     prismaMock.class.delete.mockResolvedValue(deletedClass);
 
     const result = await controller.remove(adminUser, id);
@@ -139,11 +144,11 @@ describe("ClassesController", () => {
     expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({
       include: {
         sessions: {
-          select: { id: true},
+          select: { id: true },
           where: { deletedAt: null },
         },
         teacher: {
-          select: { id: true, name: true},
+          select: { id: true, name: true },
         },
         students: {
           select: { studentId: true, keyPairId: true, pseudonym: true },
@@ -358,7 +363,7 @@ describe("ClassesController", () => {
       teacherId: 34,
       deletedAt: new Date(),
     };
-    
+
     prismaMock.class.delete.mockResolvedValue(softDeletedClass);
 
     const result = await controller.remove(adminUser, id);
@@ -372,7 +377,10 @@ describe("ClassesController", () => {
 
   it("should be able to update a soft-deleted class when includeSoftDelete=true", async () => {
     const id = 3;
-    const dto: UpdateClassDto = { name: "Updated Deleted Class", teacherId: 34 };
+    const dto: UpdateClassDto = {
+      name: "Updated Deleted Class",
+      teacherId: 34,
+    };
     const updatedClass = {
       id,
       ...dto,
@@ -444,11 +452,11 @@ describe("ClassesController", () => {
 
   it("should not find a soft-deleted class by default", async () => {
     prismaMock.class.findUniqueOrThrow.mockRejectedValue(
-      new Error("Record not found")
+      new Error("Record not found"),
     );
 
     await expect(controller.findOne(adminUser, 999)).rejects.toThrow(
-      "Record not found"
+      "Record not found",
     );
 
     expect(prismaMock.class.findUniqueOrThrow).toHaveBeenCalledWith({

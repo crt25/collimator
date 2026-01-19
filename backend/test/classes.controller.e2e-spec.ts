@@ -1,9 +1,9 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { classes, defaultAdmin, defaultTeacher, users } from "test/seed";
+import { PrismaService } from "src/prisma/prisma.service";
 import { adminUserToken, ensureUserExists } from "./helpers/user";
 import { getApp } from "./helpers/index";
-import { PrismaService } from "src/prisma/prisma.service";
 
 const checkClassesInList = (expectedClasses, returnedClasses): void => {
   expect(returnedClasses).toHaveLength(expectedClasses.length);
@@ -35,7 +35,7 @@ describe("ClassesController (e2e)", () => {
 
   beforeEach(async () => {
     app = await getApp();
-    prisma = app.get<PrismaService>(PrismaService)
+    prisma = app.get<PrismaService>(PrismaService);
 
     await ensureUserExists(app, defaultAdmin, adminUserToken);
   });
@@ -155,9 +155,7 @@ describe("ClassesController (e2e)", () => {
       .expect(200);
 
     const returnedClasses = response.body;
-    const deletedClassInList = returnedClasses.find(
-      (c) => c.id === klass.id,
-    );
+    const deletedClassInList = returnedClasses.find((c) => c.id === klass.id);
 
     expect(deletedClassInList).toBeUndefined();
   });
@@ -169,9 +167,7 @@ describe("ClassesController (e2e)", () => {
       .delete(`/classes/${klass.id}`)
       .expect(200);
 
-    await request(app.getHttpServer())
-      .get(`/classes/${klass.id}`)
-      .expect(404);
+    await request(app.getHttpServer()).get(`/classes/${klass.id}`).expect(404);
   });
 
   test("DELETE on already deleted class should return 404", async () => {
@@ -212,9 +208,7 @@ describe("ClassesController (e2e)", () => {
       .expect(200);
 
     const returnedClasses = response.body;
-    const deletedClassInList = returnedClasses.find(
-      (c) => c.id === klass.id,
-    );
+    const deletedClassInList = returnedClasses.find((c) => c.id === klass.id);
 
     expect(deletedClassInList).toBeUndefined();
   });

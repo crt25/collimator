@@ -10,8 +10,8 @@ import {
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import {
-  getCurrentAnalyses,
   deleteStudentSolutions,
+  getCurrentAnalyses,
   getSoftDeletedCurrentAnalyses,
 } from "@prisma/client/sql";
 
@@ -334,7 +334,7 @@ export class SolutionsService {
     return this.prisma.solutionAnalysis.findUniqueOrThrow({
       where: includeSoftDelete
         ? { taskId_solutionHash: { taskId, solutionHash: hash } }
-        : { 
+        : {
             taskId_solutionHash: { taskId, solutionHash: hash },
             deletedAt: null,
           },
