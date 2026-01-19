@@ -43,7 +43,9 @@ async function clearDatabase(prisma: PrismaClient): Promise<void> {
 }
 
 beforeAll(async () => {
-  await promisify(exec)("npx prisma db push --accept-data-loss");
+  // NOTE: A few changes were made in migration scripts to support partial unique indexes.
+  // We run the migrations because db push does not apply those changes correctly.
+  await promisify(exec)("npx prisma migrate deploy");
   const prisma = new PrismaClient();
   await prisma.$connect();
   await clearDatabase(prisma);
