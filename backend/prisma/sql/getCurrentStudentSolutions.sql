@@ -10,8 +10,10 @@ SELECT
 FROM "SessionTask" sessionTask
 LEFT JOIN "StudentSolution" studentSolution
   ON sessionTask."taskId" = studentSolution."taskId"
+  AND studentSolution."deletedAt" IS NULL
 LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution."id"
+  AND test."deletedAt" IS NULL
 WHERE sessionTask."sessionId" = $1
 AND studentSolution."studentId" = $2
 GROUP BY studentSolution."taskId", studentSolution."id"
