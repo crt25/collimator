@@ -153,8 +153,10 @@ describe("UsersController", () => {
     const userId = 1;
     prismaMock.user.findUniqueOrThrow.mockRejectedValue(new Error("Not found"));
 
-    await expect(controller.findOne(adminUser, userId)).rejects.toThrow("Not found");
-    
+    await expect(controller.findOne(adminUser, userId)).rejects.toThrow(
+      "Not found",
+    );
+
     expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
       where: { id: userId, deletedAt: null },
     });

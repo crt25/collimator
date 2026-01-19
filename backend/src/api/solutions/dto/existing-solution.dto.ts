@@ -1,5 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, plainToInstance, Transform, Type } from "class-transformer";
+import {
+  Exclude,
+  Expose,
+  plainToInstance,
+  Transform,
+  Type,
+} from "class-transformer";
 import { Modify } from "src/utilities/modify";
 import { IsDate, IsOptional } from "class-validator";
 import { SolutionWithoutData } from "../solutions.service";
