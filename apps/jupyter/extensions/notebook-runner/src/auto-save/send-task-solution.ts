@@ -1,8 +1,8 @@
-import { JupyterContextValue } from "../jupyter-context";
+import { AppCrtIframeApi } from "../iframe-rpc/src";
 
 export const sendTaskSolution = async (
   solution: Blob,
-  sendRequest: JupyterContextValue["sendRequest"],
+  sendRequest: AppCrtIframeApi["sendRequest"],
 ): Promise<void> => {
   try {
     await sendRequest("postTaskSolution", {
