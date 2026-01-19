@@ -119,10 +119,9 @@ export class ClassesController {
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
+    @Body() updateClassDto: UpdateClassDto,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete = false,
-    @Body()
-    updateClassDto: UpdateClassDto,
   ): Promise<ExistingClassDto> {
     const isAuthorized = await this.authorizationService.canUpdateClass(
       user,
