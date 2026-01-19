@@ -49,7 +49,8 @@ export const softDeleteExtension = Prisma.defineExtension({
         "RegistrationToken",
         "AuthenticationToken",
         "KeyPair",
-        "PrivateKey",
+        "EncryptedPrivateKey",
+        "SolutionTest",
       ];
 
       if (!hasSoftDelete(model, softDeletableModels)) {
