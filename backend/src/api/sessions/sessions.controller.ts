@@ -129,7 +129,7 @@ export class SessionsController {
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
-    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewSession(
       user,
