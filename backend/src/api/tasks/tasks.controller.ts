@@ -115,7 +115,8 @@ export class TasksController {
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
 
@@ -130,7 +131,8 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
     const task = await this.tasksService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingTaskDto.fromQueryResult(task);
@@ -142,7 +144,8 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
     const task = await this.tasksService.findByIdOrThrowWithReferenceSolutions(
       id,
@@ -167,7 +170,8 @@ export class TasksController {
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
     const task = await this.tasksService.downloadByIdOrThrow(
       id,
@@ -199,7 +203,8 @@ export class TasksController {
       taskFile?: Express.Multer.File[];
       referenceSolutionsFiles?: Express.Multer.File[];
     },
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
     const isAuthorized = await this.authorizationService.canUpdateTask(
       user,
@@ -244,7 +249,8 @@ export class TasksController {
   async remove(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<DeletedTaskDto> {
     const isAuthorized = await this.authorizationService.canDeleteTask(
       user,
