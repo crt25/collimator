@@ -51,6 +51,7 @@ export class ClassesService {
     return this.prisma.class.findMany({
       ...args,
       where: {
+        ...args?.where,
         deletedAt: includeSoftDelete ? undefined : null,
       },
       include: {

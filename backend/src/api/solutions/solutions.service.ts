@@ -329,9 +329,15 @@ export class SolutionsService {
   findAnalysisOrThrow(
     taskId: number,
     hash: Uint8Array,
+    includeSoftDelete = false,
   ): Promise<SolutionAnalysis> {
     return this.prisma.solutionAnalysis.findUniqueOrThrow({
-      where: { taskId_solutionHash: { taskId, solutionHash: hash } },
+      where: includeSoftDelete
+        ? { taskId_solutionHash: { taskId, solutionHash: hash } }
+        : { 
+            taskId_solutionHash: { taskId, solutionHash: hash },
+            deletedAt: null,
+          },
     });
   }
 
@@ -406,7 +412,9 @@ export class SolutionsService {
           solution: { select: { data: true, mimeType: true } },
           createdAt: true,
         },
-        where: { studentId, taskId, sessionId },
+        where: includeSoftDelete
+          ? { studentId, taskId, sessionId }
+          : { studentId, taskId, sessionId, deletedAt: null },
         orderBy: {
           createdAt: "desc",
         },
@@ -455,7 +463,10 @@ export class SolutionsService {
   ): Promise<SolutionWithoutData[]> {
     return this.prisma.solution.findMany({
       ...args,
-      where: includeSoftDeleted ? undefined : { deletedAt: null },
+      where: {
+        ...args?.where,
+        ...(includeSoftDeleted ? undefined : { deletedAt: null }),
+      },
       omit: omitData,
     });
   }
@@ -476,6 +487,7 @@ export class SolutionsService {
       deleteStudentSolutions(sessionId, taskId, id),
     );
     const deletedRows = result[0]?.count ?? 0;
+
     return deletedRows > 0;
   }
 
