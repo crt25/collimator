@@ -1,6 +1,11 @@
 import { FileSystemOperation } from "../task-converter";
 
-export class TaskError extends Error {}
+export abstract class TaskError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = new.target.name;
+  }
+}
 
 export class UnsupportedTaskFormatError extends TaskError {
   constructor(public readonly availableFiles: string[]) {
@@ -74,6 +79,13 @@ export class FileSystemError extends TaskError {
 export class DirectoryNotFoundError extends TaskError {
   constructor(public readonly path: string) {
     const message = `Directory not found at path: ${path}`;
+    super(message);
+  }
+}
+
+export class FileNotFoundError extends TaskError {
+  constructor(public readonly path: string) {
+    const message = `File not found at path: ${path}`;
     super(message);
   }
 }
