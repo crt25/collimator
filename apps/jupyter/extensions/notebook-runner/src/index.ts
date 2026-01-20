@@ -17,6 +17,9 @@ import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
+import { enableSentry } from "./sentry";
+
+enableSentry();
 
 const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
