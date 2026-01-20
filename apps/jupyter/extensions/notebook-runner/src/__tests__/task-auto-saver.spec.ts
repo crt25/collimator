@@ -12,11 +12,11 @@ import { getCallbacksFromMockConnection } from "./helpers/callback";
 describe("TaskAutoSaver", () => {
   let mockTracker: INotebookTracker;
   let mockPanel: NotebookPanel;
-  let mockSave: jest.SpyInstance;
-  let mockContentChangedConnect: jest.SpyInstance;
+  let mockSave: jest.Mock = jest.fn();
+  let mockContentChangedConnect: jest.Mock = jest.fn();
+  let mockDisposedConnect: jest.Mock = jest.fn();
+  let mockToJSON: jest.Mock = jest.fn();
   let mockSendTaskSolution: jest.SpyInstance;
-  let mockDisposedConnect: jest.SpyInstance;
-  let mockToJSON: jest.SpyInstance;
   let mockSendRequest: AppCrtIframeApi["sendRequest"];
   const mockCell = {} as Cell<ICellModel>;
 
@@ -107,13 +107,11 @@ describe("TaskAutoSaver", () => {
 
     mockPanel = createMockPanel("/test/notebook.ipynb", false);
 
-    mockSave = jest.spyOn(mockPanel.context, "save");
-    mockContentChangedConnect = jest.spyOn(
-      mockPanel.context.model.contentChanged,
-      "connect",
-    );
-    mockDisposedConnect = jest.spyOn(mockPanel.disposed, "connect");
-    mockToJSON = jest.spyOn(mockPanel.context.model, "toJSON");
+    mockSave = mockPanel.context.save as jest.Mock;
+    mockContentChangedConnect = mockPanel.context.model.contentChanged
+      .connect as jest.Mock;
+    mockDisposedConnect = mockPanel.disposed.connect as jest.Mock;
+    mockToJSON = mockPanel.context.model.toJSON as jest.Mock;
 
     mockSendTaskSolution = jest
       .spyOn(sendTaskSolutionModule, "sendTaskSolution")
