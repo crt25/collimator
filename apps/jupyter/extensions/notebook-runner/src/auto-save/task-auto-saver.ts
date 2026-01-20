@@ -116,7 +116,7 @@ export class TaskAutoSaver {
     try {
       const notebookData = panel.context.model.toJSON();
 
-      const solution = new Blob([JSON.stringify(notebookData, null, 2)], {
+      const solution = new Blob([JSON.stringify(notebookData, null)], {
         type: "application/json",
       });
 
