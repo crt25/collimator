@@ -1,3 +1,4 @@
+import { FailedToSendTaskSolutionError } from "../errors/task-errors";
 import { AppCrtIframeApi } from "../iframe-rpc/src";
 
 export const sendTaskSolution = async (
@@ -9,6 +10,8 @@ export const sendTaskSolution = async (
       solution,
     });
   } catch (error) {
-    console.error("Failed to send solution with error:", error);
+    throw new FailedToSendTaskSolutionError(
+      `Failed to send task solution: ${error}`,
+    );
   }
 };

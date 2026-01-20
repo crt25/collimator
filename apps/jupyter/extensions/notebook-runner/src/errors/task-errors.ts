@@ -112,3 +112,9 @@ export class GetTaskError extends TaskError {
     super(`Failed to get task: ${reason}`);
   }
 }
+
+export class FailedToSendTaskSolutionError extends Error {
+  constructor(originalError: unknown) {
+    super(`Failed to send task solution: ${originalError}`);
+  }
+}
