@@ -234,6 +234,7 @@ const SolveTaskPage = () => {
   const onReceiveTaskSolution = useCallback(
     async (solutionBlob: Blob) => {
       if (!session || !task) {
+        console.error("No session or task available");
         return;
       }
 
@@ -243,7 +244,7 @@ const SolveTaskPage = () => {
           tests: [],
         });
       } catch (error) {
-        console.error("failed with", error);
+        console.error("Failed to receive task solution with", error);
       }
     },
     [session, task, createSolution],
