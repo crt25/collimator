@@ -21,24 +21,33 @@ export const ensureUserExists = async (
     },
   });
 
-  await prisma.authenticationToken.upsert({
-    where: {
-      token: userToken,
-    },
-    create: {
-      token: userToken,
-      userId: user.id,
-      lastUsedAt: new Date(),
-      deletedAt: null,
-    },
-    update: {
-      userId: user.id,
-      studentId: null,
-      createdAt: new Date(),
-      lastUsedAt: new Date(),
-      deletedAt: null,
-    },
+  // NOTE: Prisma does not let us specify the index predicate in ON CONFLICT
+  // PostgreSQL will look for indexes that match the specified columns and will only infer non-partial indexes.
+  // Since AuthenticationToken.token only has a partial unique index, we cannot use upsert() here.
+  // See here: https://www.postgresql.org/docs/9.6/sql-insert.html#SQL-ON-CONFLICT
+  const token = await prisma.authenticationToken.findFirst({
+    where: { token: userToken, deletedAt: null },
   });
+
+  if (token) {
+    await prisma.authenticationToken.update({
+      where: {
+        id: token.id,
+      },
+      data: {
+        lastUsedAt: new Date(),
+      },
+    });
+  } else {
+    await prisma.authenticationToken.create({
+      data: {
+        token: userToken,
+        userId: user.id,
+        lastUsedAt: new Date(),
+        deletedAt: null,
+      },
+    });
+  }
 };
 
 export const ensureSoftDeletedUserExists = async (
