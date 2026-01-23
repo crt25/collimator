@@ -27,3 +27,7 @@ export const prismaOperations = {
   aggregate: "aggregate",
   groupBy: "groupBy",
 } as const;
+
+export const getModelName = (model: string): string => {
+  return model[0].toLowerCase() + model.slice(1);
+};
