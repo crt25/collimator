@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { withNestedOperations } from "prisma-extension-nested-operations";
-import { prismaOperations } from "./common";
+import { getModelName, prismaOperations } from "./common";
 
 const getSoftDeletableModels = (): string[] => {
   return Prisma.dmmf.datamodel.models
@@ -24,7 +24,8 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
 
             switch (operation) {
               case prismaOperations.delete: {
-                return await client[model.toLowerCase()].update({
+                const clientModel = getModelName(model);
+                return await client[clientModel].update({
                   where: args.where,
                   include: args.include,
                   select: args.select,
@@ -33,7 +34,8 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
               }
 
               case prismaOperations.deleteMany: {
-                return await client[model.toLowerCase()].updateMany({
+                const clientModel = getModelName(model);
+                return await client[clientModel].updateMany({
                   where: { ...args.where, deletedAt: null },
                   data: { deletedAt: new Date() },
                 });
