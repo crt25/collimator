@@ -11,11 +11,12 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
-import { getModeFromUrl } from "./mode";
+import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { preInstallPackages } from "./packages";
+import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 import { enableSentry } from "./sentry";
 
 enableSentry();
@@ -66,9 +67,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const mode = getModeFromUrl();
 
     preInstallPackages(app, contentsManager, notebookTracker);
-    setupIframeApi(
+    const platform = setupIframeApi(
       new EmbeddedPythonCallbacks(mode, app, documentManager, fileBrowser),
     );
+
+    if (mode === Mode.solve) {
+      TaskAutoSaver.trackNotebook(notebookTracker, platform.sendRequest);
+    }
 
     simplifyUserInterface(
       mode,

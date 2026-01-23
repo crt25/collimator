@@ -7,6 +7,7 @@ import { ImportTask } from "./import-task";
 import { LoadSubmission } from "./load-submission";
 import { LoadTask } from "./load-task";
 import { PostSolutionRun } from "./post-solution-run";
+import { PostTaskSolution } from "./post-task-solution";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 import { PostStudentAppActivity } from "./post-student-activity";
@@ -33,7 +34,8 @@ type Methods =
   | PostSubmission
   | ImportTask
   | PostStudentAppActivity
-  | PostSolutionRun;
+  | PostSolutionRun
+  | PostTaskSolution;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
   caller: Caller;
