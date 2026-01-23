@@ -338,6 +338,7 @@ model StudentActivity {
   type       StudentActivityType
   // measured by the client and may therefore be completely different from createdAt
   happenedAt DateTime
+  deletedAt  DateTime?
 
   studentId    Int
   sessionId    Int
