@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { withNestedOperations } from "prisma-extension-nested-operations";
-import { hasSoftDelete } from "src/utilities/has-soft-delete";
 import { prismaOperations } from "./common";
 
 const getSoftDeletableModels = (): string[] => {
@@ -19,7 +18,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
           async $rootOperation(params) {
             const { model, operation, args, query } = params;
 
-            if (!hasSoftDelete(model, softDeletableModels)) {
+            if (!softDeletableModels.includes(model)) {
               return query(args);
             }
 
@@ -47,7 +46,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
           async $allNestedOperations(params) {
             const { model, operation, args, query } = params;
 
-            if (!hasSoftDelete(model, softDeletableModels)) {
+            if (!softDeletableModels.includes(model)) {
               return await query(args, operation);
             }
 
