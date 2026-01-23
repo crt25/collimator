@@ -108,13 +108,18 @@ export class TasksService {
     args?: Prisma.TaskFindManyArgs,
     includeSoftDelete = false,
   ): Promise<TaskWithoutData[]> {
-    return this.prisma.task.findMany({
+    const where = includeSoftDelete
+      ? args?.where
+      : { ...args?.where, deletedAt: null };
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs: Prisma.TaskFindManyArgs = {
       ...args,
+      where,
       omit: omitData,
-      where: includeSoftDelete
-        ? args?.where
-        : { ...args?.where, deletedAt: null },
-    });
+    };
+
+    return this.prisma.task.findMany(finalArgs);
   }
 
   async create(

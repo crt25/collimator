@@ -19,12 +19,15 @@ export class UsersService {
     args?: Prisma.UserFindManyArgs,
     includeSoftDelete?: boolean,
   ): Promise<User[]> {
-    return this.prisma.user.findMany({
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs: Prisma.UserFindManyArgs = {
       ...args,
       where: includeSoftDelete
         ? args?.where
         : { ...args?.where, deletedAt: null },
-    });
+    };
+
+    return this.prisma.user.findMany(finalArgs);
   }
 
   create(user: Prisma.UserCreateInput): Promise<User> {
@@ -34,7 +37,7 @@ export class UsersService {
   update(
     id: UserId,
     user: Prisma.UserUpdateInput,
-    includeSoftDelete,
+    includeSoftDelete?: boolean,
   ): Promise<User> {
     return this.prisma.user.update({
       data: user,

@@ -33,12 +33,12 @@ export class ClassesService {
           select: {
             id: true,
           },
-          where: includeSoftDelete ? undefined : { deletedAt: null }, // filter out soft-deleted sessions
+          where: includeSoftDelete ? undefined : { deletedAt: null },
         },
         teacher: { select: { id: true, name: true } },
         students: {
           select: { studentId: true, pseudonym: true, keyPairId: true },
-          where: includeSoftDelete ? undefined : { deletedAt: null }, // filter out soft-deleted students
+          where: includeSoftDelete ? undefined : { deletedAt: null },
         },
       },
     });
@@ -56,7 +56,7 @@ export class ClassesService {
       },
       include: {
         teacher: {
-          select: { id: true, name: true },
+          select: { id: true, name: true, deletedAt: true },
         },
       },
     });
