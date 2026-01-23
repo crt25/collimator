@@ -231,6 +231,25 @@ const SolveTaskPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embeddedApp, taskFileHash, session, task]);
 
+  const onReceiveTaskSolution = useCallback(
+    async (solutionBlob: Blob) => {
+      if (!session || !task) {
+        console.error("No session or task available");
+        return;
+      }
+
+      try {
+        await createSolution(session.klass.id, session.id, task.id, {
+          file: solutionBlob,
+          tests: [],
+        });
+      } catch (error) {
+        console.error("Failed to receive task solution with", error);
+      }
+    },
+    [session, task, createSolution],
+  );
+
   const onReceiveSubmission = useCallback(
     async (submission: Submission) => {
       if (!session || !task) {
@@ -371,6 +390,7 @@ const SolveTaskPage = () => {
               iframeSrc={iframeSrc}
               onAppAvailable={onAppAvailable}
               onReceiveSubmission={onReceiveSubmission}
+              onReceiveTaskSolution={onReceiveTaskSolution}
             />
           ) : (
             <FormattedMessage
