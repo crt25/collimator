@@ -207,14 +207,14 @@ describe("ClassesController", () => {
         id: 1,
         name: "Test Class",
         teacherId: teacherId,
-        teacher: { id: teacherId, name: "Jerry Smith" },
+        teacher: { id: teacherId, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
       {
         id: 2,
         name: "Another Class",
         teacherId: teacherId,
-        teacher: { id: teacherId, name: "Jerry Smith" },
+        teacher: { id: teacherId, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
     ];
@@ -225,7 +225,9 @@ describe("ClassesController", () => {
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { teacherId: teacherId, deletedAt: null },
-      include: { teacher: { select: { id: true, name: true } } },
+      include: {
+        teacher: { select: { id: true, name: true, deletedAt: true } },
+      },
     });
     expect(Array.isArray(result)).toBe(true);
     expect(
@@ -242,7 +244,7 @@ describe("ClassesController", () => {
         id: 1,
         name: "Existing Class",
         teacherId: 5,
-        teacher: { id: 5, name: "Jerry Smith" },
+        teacher: { id: 5, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
     ];
@@ -253,24 +255,26 @@ describe("ClassesController", () => {
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { deletedAt: null },
-      include: { teacher: { select: { id: true, name: true } } },
+      include: {
+        teacher: { select: { id: true, name: true, deletedAt: true } },
+      },
     });
   });
 
-  it("should include soft-deleted classes when includeSoftDelete=true in findAll", async () => {
+  it("should include soft-deleted classes when includeSoftDelete is true in findAll", async () => {
     const allClasses = [
       {
         id: 1,
         name: "Existing Class",
         teacherId: 5,
-        teacher: { id: 5, name: "Jerry Smith" },
+        teacher: { id: 5, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
       {
         id: 2,
         name: "Deleted Class",
         teacherId: 5,
-        teacher: { id: 5, name: "Jerry Smith" },
+        teacher: { id: 5, name: "Jerry Smith", deletedAt: new Date() },
         deletedAt: new Date(),
       },
     ];
@@ -281,7 +285,9 @@ describe("ClassesController", () => {
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { deletedAt: undefined },
-      include: { teacher: { select: { id: true, name: true } } },
+      include: {
+        teacher: { select: { id: true, name: true, deletedAt: true } },
+      },
     });
     expect(result).toHaveLength(2);
   });
@@ -375,7 +381,7 @@ describe("ClassesController", () => {
     expect(result.deletedAt).toEqual(softDeletedClass.deletedAt);
   });
 
-  it("should be able to update a soft-deleted class when includeSoftDelete=true", async () => {
+  it("should be able to update a soft-deleted class when includeSoftDelete is true", async () => {
     const id = 3;
     const dto: UpdateClassDto = {
       name: "Updated Deleted Class",
@@ -406,7 +412,7 @@ describe("ClassesController", () => {
         id: 1,
         name: "Existing Class",
         teacherId,
-        teacher: { id: teacherId, name: "Jerry Smith" },
+        teacher: { id: teacherId, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
     ];
@@ -417,25 +423,27 @@ describe("ClassesController", () => {
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { teacherId, deletedAt: null },
-      include: { teacher: { select: { id: true, name: true } } },
+      include: {
+        teacher: { select: { id: true, name: true, deletedAt: true } },
+      },
     });
   });
 
-  it("should filter by teacher and include soft-deleted classes when includeSoftDelete=true", async () => {
+  it("should filter by teacher and include soft-deleted classes when includeSoftDelete is true", async () => {
     const teacherId = 5;
     const allClasses = [
       {
         id: 1,
         name: "Existing Class",
         teacherId,
-        teacher: { id: teacherId, name: "Jerry Smith" },
+        teacher: { id: teacherId, name: "Jerry Smith", deletedAt: null },
         deletedAt: null,
       },
       {
         id: 2,
         name: "Deleted Class",
         teacherId,
-        teacher: { id: teacherId, name: "Jerry Smith" },
+        teacher: { id: teacherId, name: "Jerry Smith", deletedAt: new Date() },
         deletedAt: new Date(),
       },
     ];
@@ -446,7 +454,9 @@ describe("ClassesController", () => {
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
       where: { teacherId, deletedAt: undefined },
-      include: { teacher: { select: { id: true, name: true } } },
+      include: {
+        teacher: { select: { id: true, name: true, deletedAt: true } },
+      },
     });
   });
 
@@ -477,7 +487,7 @@ describe("ClassesController", () => {
     });
   });
 
-  it("should find a soft-deleted class when includeSoftDelete=true", async () => {
+  it("should find a soft-deleted class when includeSoftDelete is true", async () => {
     const softDeletedClass: ClassExtended = {
       id: 999,
       name: "Soft Deleted Class",
