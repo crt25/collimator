@@ -66,13 +66,18 @@ export class SessionsService {
     args?: Prisma.SessionFindManyArgs,
     includeSoftDelete = false,
   ): Promise<Session[]> {
-    return this.prisma.session.findMany({
+    const whereClause = includeSoftDelete
+      ? args?.where
+      : { ...args?.where, deletedAt: null };
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs = {
       ...args,
-      where: includeSoftDelete
-        ? args?.where
-        : { ...args?.where, deletedAt: null },
       include: compactInclude,
-    });
+      where: whereClause,
+    };
+
+    return this.prisma.session.findMany(finalArgs);
   }
 
   create(
