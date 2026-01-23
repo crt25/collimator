@@ -56,7 +56,8 @@ export class UsersController {
   @AdminOnly()
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
   async findAll(
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
     const users = await this.usersService.findMany({}, includeSoftDelete);
@@ -69,7 +70,8 @@ export class UsersController {
   async findOne(
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canViewUser(
       authenticatedUser,
@@ -92,7 +94,8 @@ export class UsersController {
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
     @Body() userDto: UpdateUserDto,
-    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canUpdateUser(
       authenticatedUser,
