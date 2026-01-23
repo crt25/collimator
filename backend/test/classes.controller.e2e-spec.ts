@@ -1,7 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { classes, defaultAdmin, defaultTeacher, users } from "test/seed";
-import { PrismaService } from "src/prisma/prisma.service";
 import { adminUserToken, ensureUserExists } from "./helpers/user";
 import { getApp } from "./helpers/index";
 
@@ -31,11 +30,9 @@ jest.mock("src/api/authentication/helpers.ts", () => ({
 
 describe("ClassesController (e2e)", () => {
   let app: INestApplication;
-  let prisma: PrismaService;
 
   beforeEach(async () => {
     app = await getApp();
-    prisma = app.get<PrismaService>(PrismaService);
 
     await ensureUserExists(app, defaultAdmin, adminUserToken);
   });
@@ -103,7 +100,7 @@ describe("ClassesController (e2e)", () => {
       .send(dto)
       .expect(201);
 
-    expect(response.body).toEqual({ id: 1, ...dto });
+    expect(response.body).toEqual({ id: 1, ...dto, deletedAt: null });
   });
 
   test("/classes/:id (PATCH)", async () => {
@@ -115,7 +112,7 @@ describe("ClassesController (e2e)", () => {
       .send(dto)
       .expect(200);
 
-    expect(response.body).toEqual({ id: klass.id, ...dto });
+    expect(response.body).toEqual({ id: klass.id, ...dto, deletedAt: null });
   });
 
   test("/classes/:id (DELETE)", async () => {
@@ -124,7 +121,12 @@ describe("ClassesController (e2e)", () => {
       .delete(`/classes/${klass.id}`)
       .expect(200);
 
-    expect(response.body).toEqual(klass);
+    expect(response.body).toMatchObject({
+      id: klass.id,
+      teacherId: klass.teacherId,
+    });
+
+    expect(response.body.deletedAt).toBeTruthy();
   });
 
   test("DELETE should soft delete and not hard delete", async () => {
@@ -134,13 +136,16 @@ describe("ClassesController (e2e)", () => {
       .delete(`/classes/${klass.id}`)
       .expect(200);
 
-    const deletedClass = await prisma.class.findUnique({
-      where: { id: klass.id },
-    });
+    await request(app.getHttpServer()).get(`/classes/${klass.id}`).expect(404);
 
-    expect(deletedClass).not.toBeNull();
-    expect(deletedClass!.deletedAt).not.toBeNull();
-    expect(deletedClass!.deletedAt).toBeInstanceOf(Date);
+    const deletedClass = await request(app.getHttpServer())
+      .get(`/classes/${klass.id}?includeSoftDelete=true`)
+      .expect(200);
+
+    expect(deletedClass.body).not.toBeNull();
+    expect(deletedClass.body.deletedAt).not.toBeNull();
+    expect(new Date(deletedClass.body.deletedAt)).toBeInstanceOf(Date);
+    expect(new Date(deletedClass.body.deletedAt).getTime()).toBeGreaterThan(0);
   });
 
   test("GET should not return soft deleted classes", async () => {
@@ -160,17 +165,7 @@ describe("ClassesController (e2e)", () => {
     expect(deletedClassInList).toBeUndefined();
   });
 
-  test("GET /:id should return 404 for soft deleted class", async () => {
-    const klass = classes[0];
-
-    await request(app.getHttpServer())
-      .delete(`/classes/${klass.id}`)
-      .expect(200);
-
-    await request(app.getHttpServer()).get(`/classes/${klass.id}`).expect(404);
-  });
-
-  test("DELETE on already deleted class should return 404", async () => {
+  test("DELETE on already deleted class should be idempotent", async () => {
     const klass = classes[0];
 
     await request(app.getHttpServer())
@@ -179,7 +174,7 @@ describe("ClassesController (e2e)", () => {
 
     await request(app.getHttpServer())
       .delete(`/classes/${klass.id}`)
-      .expect(404);
+      .expect(200);
   });
 
   test("PATCH should not update soft deleted class", async () => {
@@ -214,20 +209,25 @@ describe("ClassesController (e2e)", () => {
   });
 
   test("Soft deleted class data is preserved in database", async () => {
-    const klass = classes[0];
-    const originalName = klass.name;
+    const klass = classes[1];
+
+    const beforeDelete = await request(app.getHttpServer())
+      .get(`/classes/${klass.id}?includeSoftDelete=true`)
+      .expect(200);
 
     await request(app.getHttpServer())
       .delete(`/classes/${klass.id}`)
       .expect(200);
 
-    const deletedClass = await prisma.class.findUnique({
-      where: { id: klass.id },
-    });
+    await request(app.getHttpServer()).get(`/classes/${klass.id}`).expect(404);
 
-    expect(deletedClass).not.toBeNull();
-    expect(deletedClass!.name).toBe(originalName);
-    expect(deletedClass!.teacherId).toBe(klass.teacherId);
-    expect(deletedClass!.deletedAt).not.toBeNull();
+    const deletedClass = await request(app.getHttpServer())
+      .get(`/classes/${klass.id}?includeSoftDelete=true`)
+      .expect(200);
+
+    expect(deletedClass.body).not.toBeNull();
+    expect(deletedClass.body.name).toBe(beforeDelete.body.name);
+    expect(deletedClass.body.teacherId).toBe(beforeDelete.body.teacherId);
+    expect(deletedClass.body.deletedAt).not.toBeNull();
   });
 });
