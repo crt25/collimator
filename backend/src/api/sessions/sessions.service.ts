@@ -32,7 +32,7 @@ const fullInclude = {
       },
     },
   },
-  class: { select: { id: true, name: true } },
+  class: { select: { id: true, name: true, deletedAt: true } },
   lesson: { select: { id: true, title: true } },
 };
 
