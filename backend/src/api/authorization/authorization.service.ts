@@ -211,11 +211,15 @@ export class AuthorizationService {
     const whereWithSoftDelete = includeSoftDeleted
       ? {
           id: sessionId,
-          class: { teacherId: authenticatedUser.id, deletedAt: null },
+          class: { teacherId: authenticatedUser.id },
         }
       : {
           id: sessionId,
-          class: { teacherId: authenticatedUser.id },
+          class: {
+            teacherId: authenticatedUser.id,
+            deletedAt: null,
+            teacher: { deletedAt: null },
+          },
           deletedAt: null,
         };
 
@@ -481,6 +485,7 @@ export class AuthorizationService {
                       class: {
                         teacherId: authenticatedUser.id,
                         deletedAt: null,
+                        teacher: { deletedAt: null },
                       },
                     },
                   },
@@ -488,7 +493,10 @@ export class AuthorizationService {
               },
               {
                 referenceSolutions: {
-                  some: { deletedAt: null },
+                  some: {
+                    deletedAt: null,
+                    task: { deletedAt: null },
+                  },
                 },
               },
             ],
