@@ -24,9 +24,47 @@ Additional steps depend on the application you are integrating. For example:
 
 ### JSON-RPC Integration
 
-To integrate the app into the CRT platform, you must implement the `iframe-rpc` API.
+To integrate the app into the CRT platform, you must implement the [`iframe-rpc` API](../architecture/iframe-rpc.md).
 
 This includes declaring the events exchanged between the app and the backend (e.g. `GetTask`, `LoadTask`).
+
+As an example, to retrieve the height of the embedded iframe, you must implement the `GetHeight` event.
+
+In a non-React environment, this can be implemented in a file named `iframe-api.ts`, for example:
+
+```typescript
+{ AppCrtIframeApi, AppHandleRequestMap, GetHeight } from "./iframe-rpc/src";
+
+const logModule = "[Embedded MyApp]";
+
+const initIframeApi = (handleRequest: AppHandleRequestMap): void => {
+  const crtPlatform = new AppCrtIframeApi({
+    ...handleRequest,
+  });
+
+  if (window.parent && window.parent !== window) {
+    crtPlatform.setTarget(window.parent);
+  }
+
+  window.addEventListener(
+    "message",
+    crtPlatform.handleWindowMessage.bind(crtPlatform),
+  );
+};
+
+export class EmbeddedMyAppCallbacks {
+
+  async getHeight(): Promise<number> {
+    return document.body.scrollHeight;
+  }
+
+export const setupIframeApi = (callbacks: EmbeddedMyAppCallbacks): void => {
+  initIframeApi({
+    getHeight: callbacks.getHeight.bind(callbacks),
+  });
+};
+
+```
 
 ## Backend
 
@@ -52,17 +90,24 @@ prisma migrate dev --name added_my_new_task_type
 
 ### AST converter
 
-1. In `backend/src/ast/converters`, create a folder for the app (and/or the language).
-2. If the language is supported by ANTLR, you can use an existing grammar from
-https://github.com/antlr/grammars-v4.
-  Otherwise, refer to the [Scratch implementation](../scratch/scratch.md) as an example.
-3. Adapt all commands prefixed with `antlr:generate` in `package.json` to match your grammar and output.
-4. Use the generated parser to implement converters for each node.
-  Each node must be converted into one or more elements of the general AST.
-5. Create a main converter function `convertMyAppToGeneralAst` in the `backend/src/ast/converters/my_app/index.ts`.
-6. Declare this converter in `backend/src/ast/converters/solution-conversion-worker.piscina.ts`.
+The AST converter is responsible for transforming solutions from their original format (e.g., Scratch project JSON) into a standardized, language-agnostic General AST. See [AST conversion](../data-analyzer/ast-conversion.md) to going deeper.
 
-The Python implementation can be used as a reference.
+First step, create a folder for the app (and/or the language) in `backend/src/ast/converters`.
+
+#### Nodes converters
+
+If the language is supported by ANTLR, you can use an [existing grammar](https://github.com/antlr/grammars-v4). Otherwise, refer to the [Scratch implementation](../scratch/scratch.md) as an example.
+
+1. Adapt all commands prefixed with `antlr:generate` in `package.json` to match your grammar and output.
+2. Use the generated parser to implement converters for each node. Each node must be converted into one or more elements of the general AST.
+
+The Python implementation can be used as a reference. Review the files in `backend/src/ast/converters/python`, starting by the `README.md`.
+
+#### Main converter
+
+1. Create a main converter function `convertMyAppToGeneralAst` in the `backend/src/ast/converters/my_app/index.ts`.
+2. Declare this converter in `backend/src/ast/converters/solution-conversion-worker.piscina.ts`.
+
 
 ## Frontend
 
@@ -86,11 +131,13 @@ Testing is highly application-specific and is not covered in this documentation.
 
 ClassMosaic uses Github workflows and Terraform for deployment. 
 
-To deploy a new app, update the relevant workflow and Terraform files to:
+To deploy a new app, update the workflow `.github/workflows/deployment.yml` and Terraform files to:
 
 - Register the new app.
 - Install required dependencies.
 - Fulfill infrastructure or runtime requirements.
+
+Please review the following folders: `terraform/deployment/`, `terraform/infrastructure/` and `terraform/infrastructure/cloudfront`. When possible, follow a similar approach.
 
 ## Documentation
 

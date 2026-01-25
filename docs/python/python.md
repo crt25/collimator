@@ -23,6 +23,10 @@ The three modes are detected based on the query parameter `mode`.
 2. Solve mode through `?mode=solve`
 3. Show mode through `?mode=show`
 
+## G-AST converter
+
+The G-AST converter is based on the ANTLR grammar. Specific information is giving in a `backend/src/ast/converters/python/README.md`.
+
 ## Auto-Installing a Modified Version of `otter-grader`
 
 To each session that is attached to a notebook widget, we attach a listener that is called whenever the kernel changes.

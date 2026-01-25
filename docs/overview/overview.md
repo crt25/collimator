@@ -29,7 +29,7 @@ It has three main responsibilities:
 
 - Handling database requests.
 - Storing keys to bridge students, teachers, and the OpenID provider.
-- Converting task results into a [Generalized Abstract Syntax Tree (G-AST)](../data-analyzer/ast.md)
+- Converting task results into a [Generalized Abstract Syntax Tree (G-AST)](../data-analyzer/ast-conversion.md)
 
 ## Apps
 
@@ -54,4 +54,4 @@ Currently supported apps:
 
 - `iframe-rpc-react` is built on top of `iframe-rpc` to simplify its usage in a React environment, i.e. the frontend.
 
-See also: [`iframe-rpc` Documentation](../infrastructure/iframe-rpc.md)
+See also: [`iframe-rpc` Documentation](../architecture/iframe-rpc.md)

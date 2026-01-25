@@ -8,7 +8,7 @@
 
 - Going deeper
   - [Student Identity Management](identity-management/student.md)
-  - [Iframe RPC](infrastructure/iframe-rpc.md)
+  - [Iframe RPC](architecture/iframe-rpc.md)
   - [AST conversion](data-analyzer/ast-conversion.md)
   - [Data analysis](data-analyzer/data-analysis.md)
   - [Database](infrastructure/database.md)

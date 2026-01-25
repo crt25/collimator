@@ -215,4 +215,5 @@ sequenceDiagram
 
 ## Going deeper
 
-- [Converter for Scratch](scratch/scratch.md#g-ast-converter)
+- [Converter for Scratch](../scratch/scratch.md#g-ast-converter)
+- [Converter for Python](../python/python.md#g-ast-converter)

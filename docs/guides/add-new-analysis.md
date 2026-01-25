@@ -2,13 +2,20 @@
 
 To provide a scalable system with minimal resource requirements on the server, the analysis is performed client-side, i.e. in `frontend/`.
 
-This document will guide you through the process of adding additional types of analyses.
+## Overview
+
+An new Analysis Logic can be one of the following:
+
+- An analyzer, based on an AST or meta criterion;
+- A solution grouping, either automatic or manual.
+
+This document guides you through the process of adding these additional types of analyses.
 
 ## Criteria Based Analyzer
 
 Criteria based analyzers are located in `frontend/src/data-analyzer/criteria-based-analyzers`.
 
-As an example, a simple analyzer to count the number of conditions in the [G-AST](ast.md) may look like the following:
+As an example, a simple analyzer to count the number of conditions in the [G-AST](../data-analyzer/ast-conversion.md) may look like the following:
 
 ```typescript
 export const countConditions = (
@@ -38,13 +45,13 @@ This function, given an G-AST and a criterion input, runs the respective analyze
 
 In `frontend/src/components/dashboard/criteria` the `analyzeAst` is then used for 1) axes and 2) filters.
 
-To add a new AST criterion, you will need to
+To **add a new AST criterion**, you will need to
 
 1. Add your criterion to the `AstCriterionType` enum and the types `CriteriaBasedAnalyzerInput`, `CriteriaBasedAnalyzerOutput`, `AnalysisFunction` in `frontend/src/data-analyzer/analyze-asts.ts`.
 2. Create a new analyzer in `frontend/src/data-analyzer/criteria-based-analyzers` and extend the `analyzeAst` function in `frontend/src/data-analyzer/analyze-asts.ts`.
 3. Use the analyzer in an axis or a filter as described below.
 
-To add a new meta criterion (if its unrelated to the AST), you will need to
+To **add a new meta criterion** (if its unrelated to the AST), you will need to
 
 1. Add your criterion to `MetaCriterionType` in `frontend/src/data-analyzer/meta-criterion-type.ts`.
 2. Define an axis or a filter as described below.
@@ -52,6 +59,7 @@ To add a new meta criterion (if its unrelated to the AST), you will need to
 ### Axis
 
 To use a given criterion as an axis in the analyzer, an instance of `CriterionAxisDefinition<>` must be defined in `frontend/src/components/dashboard/criteria`.
+
 For the criterion example counting the number of condition statements, this may look like the following:
 
 ```typescript
@@ -91,7 +99,7 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<AstCriterionType.co
 
 Note that for axes, it is currently not possible to provide additional input parameters.
 
-To add a new axis, you will need to
+To **add a new axis**, you will need to
 
 1. Define a new instance of `CriterionAxisDefinition` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `axisCriteria` list in `frontend/src/components/dashboard/axes/index.ts`.
@@ -99,6 +107,7 @@ To add a new axis, you will need to
 ### Filter
 
 To use a given criterion as an axis in the analyzer, an instance of `CriterionFilterDefinition<>` must be defined in `frontend/src/components/dashboard/criteria`.
+
 For the criterion example counting the number of condition statements, this may look like the following:
 
 ```typescript
@@ -187,7 +196,7 @@ const ConditionCriterionFilterForm: CriterionFormComponent<
 );
 ```
 
-To add a new axis, you will need to
+To **add a new axis**, you will need to
 
 1. Define a new instance of `CriterionFilterDefinition`, including a `CriterionFormComponent` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `filterCriteria` list in `frontend/src/components/dashboard/filter/index.ts`.
@@ -415,3 +424,13 @@ export const computePqGramsDistance = (
     )
   );
 ```
+
+## Testing
+
+Tests for a criteria based analyzer must be written in a dedicated `.spec.ts` file in `frontend/src/data-analyzer/criteria-based-analyzers/__tests__/jest`. Use `condition.spec.ts` as a reference.
+
+Tests for a solution grouping depend on your specific implementation. Please review the files in `frontend/src/components/dashboard/hooks/` and, when possible, follow a similar testing approach.
+
+## Documentation
+
+You are encouraged to document your implementation process and changes in one or more Markdown files, covering all the steps described above.
