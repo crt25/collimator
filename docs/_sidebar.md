@@ -12,6 +12,7 @@
   - [AST conversion](data-analyzer/ast-conversion.md)
   - [Data analysis](data-analyzer/data-analysis.md)
   - [Database](infrastructure/database.md)
+  - [API reference](architecture/api.md)
   - [End-to-End Tests](quality-assurance/e2e.md)
 
 - Apps
