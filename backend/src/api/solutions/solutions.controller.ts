@@ -135,8 +135,7 @@ export class SolutionsController {
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<CurrentAnalysesDto> {
     const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
       user,
@@ -179,8 +178,7 @@ export class SolutionsController {
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
     const solution =
       await this.solutionsService.downloadLatestStudentSolutionOrThrow(
@@ -207,8 +205,7 @@ export class SolutionsController {
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("id", ParseIntPipe) id: StudentSolutionId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingStudentSolutionDto> {
     const isAuthorized = await this.authorizationService.canViewStudentSolution(
       user,
@@ -220,15 +217,11 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const canIncludeSoftDelete =
-      user?.type === UserType.ADMIN ||
-      (user?.type === UserType.TEACHER && includeSoftDelete);
-
     const solution = await this.solutionsService.findByStudentIdOrThrow(
       sessionId,
       taskId,
       id,
-      canIncludeSoftDelete,
+      includeSoftDelete,
     );
     return ExistingStudentSolutionDto.fromQueryResult(solution);
   }
@@ -245,8 +238,7 @@ export class SolutionsController {
     @Param("sessionId", ParseIntPipe) _sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("hash") hash: string,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
     const solutionHash = Buffer.from(hash, "base64url");
     const isAuthorized = await this.authorizationService.canViewSolution(
@@ -287,8 +279,7 @@ export class SolutionsController {
     @Param("taskId", ParseIntPipe) _taskId: number,
     @Param("id", ParseIntPipe) id: StudentSolutionId,
     @Body() dto: PatchStudentSolutionIsReferenceDto,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<void> {
     const isAuthorized =
       await this.authorizationService.canUpdateStudentSolutionIsReference(
@@ -300,14 +291,10 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const canIncludeSoftDelete =
-      user?.type === UserType.ADMIN ||
-      (user?.type === UserType.TEACHER && includeSoftDelete);
-
     return this.solutionsService.updateStudentSolutionIsReference(
       id,
       dto.isReference,
-      canIncludeSoftDelete,
+      includeSoftDelete,
     );
   }
 
