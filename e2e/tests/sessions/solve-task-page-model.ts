@@ -114,4 +114,8 @@ export class SolveTaskPageModel {
   getSessionName() {
     return this.page.getByTestId("session-name");
   }
+
+  getSaveErrorMessage() {
+    return this.page.getByTestId("save-error-message");
+  }
 }

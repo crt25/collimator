@@ -110,4 +110,25 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
     await page.closeSessionMenu();
     expect(page.getSessionName()).toHaveCount(0);
   });
+
+  test("shows error when save fails", async ({ page: pwPage, apiURL }) => {
+    const page = SolveTaskPageModel.create(pwPage);
+
+    await pwPage.route(
+      `${apiURL}/classes/2/sessions/3/tasks/5/solutions`,
+      (route) =>
+        route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ message: "Internal Server Error" }),
+        }),
+    );
+
+    await page.waitForTaskLoad();
+
+    await page.submit();
+
+    await expect(page.getSaveErrorMessage()).toBeVisible();
+    await expect(page.getSaveErrorMessage()).toBeDefined();
+  });
 });
