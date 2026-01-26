@@ -19,6 +19,7 @@ import { PageHeadingRecipe } from "./recipes/layout/PageHeading.recipe";
 import { SelectRecipe } from "./recipes/form/Select.recipe";
 import { TableRecipe } from "./recipes/table/TableRoot.recipe";
 import { ToasterRecipe } from "./recipes/notification/Toaster.recipe";
+import { TextRecipe } from "./recipes/Text.recipe";
 
 const config = defineConfig({
   theme: {
@@ -38,6 +39,7 @@ const config = defineConfig({
       button: ButtonRecipe,
       iconButton: IconButtonRecipe,
       pageHeading: PageHeadingRecipe,
+      text: TextRecipe,
       input: InputRecipe,
       closeButton: CloseButtonRecipe,
       textArea: TextAreaRecipe,
