@@ -92,11 +92,7 @@ export class ClassesController {
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete = false,
   ): Promise<ExistingClassExtendedDto> {
-    const isAuthorized = await this.authorizationService.canViewClass(
-      user,
-      id,
-      includeSoftDelete,
-    );
+    const isAuthorized = await this.authorizationService.canViewClass(user, id);
 
     if (!isAuthorized) {
       throw new ForbiddenException();
@@ -131,7 +127,6 @@ export class ClassesController {
     const isAuthorized = await this.authorizationService.canUpdateClass(
       user,
       id,
-      includeSoftDelete,
     );
 
     if (!isAuthorized) {

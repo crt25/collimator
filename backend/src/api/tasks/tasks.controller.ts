@@ -117,17 +117,12 @@ export class TasksController {
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
-    @AuthenticatedUser() user: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
 
-    const canIncludeSoftDelete =
-      user.type === UserType.ADMIN ||
-      (user.type === UserType.TEACHER && includeSoftDelete);
-
-    const tasks = await this.tasksService.findMany({}, canIncludeSoftDelete);
+    const tasks = await this.tasksService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingTaskDto, tasks);
   }
 
@@ -137,19 +132,11 @@ export class TasksController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
-    @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const canIncludeSoftDelete =
-      user.type === UserType.ADMIN ||
-      (user.type === UserType.TEACHER && includeSoftDelete);
-
-    const task = await this.tasksService.findByIdOrThrow(
-      id,
-      canIncludeSoftDelete,
-    );
+    const task = await this.tasksService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingTaskDto.fromQueryResult(task);
   }
 
@@ -190,18 +177,13 @@ export class TasksController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
-    @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
-    const canIncludeSoftDelete =
-      user.type === UserType.ADMIN ||
-      (user.type === UserType.TEACHER && includeSoftDelete);
-
     const task = await this.tasksService.downloadByIdOrThrow(
       id,
-      canIncludeSoftDelete,
+      includeSoftDelete,
     );
     return new StreamableFile(task.data, {
       type: task.mimeType,

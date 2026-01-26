@@ -81,8 +81,7 @@ export class SessionsController {
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto[]> {
     const isAuthorized = await this.authorizationService.canListSessions(
       user,
@@ -130,8 +129,7 @@ export class SessionsController {
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewSession(
       user,
@@ -159,8 +157,7 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
@@ -188,8 +185,7 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     return this.changeStatus(
       user,
@@ -208,8 +204,7 @@ export class SessionsController {
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     return this.changeStatus(
       user,
@@ -254,8 +249,7 @@ export class SessionsController {
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
     @Body() updateSessionDto: UpdateSessionDto,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
+    @Param("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
