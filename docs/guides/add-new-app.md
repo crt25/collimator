@@ -33,7 +33,7 @@ As an example, to retrieve the height of the embedded iframe, you must implement
 In a non-React environment, this can be implemented in a file named `iframe-api.ts`, for example:
 
 ```typescript
-{ AppCrtIframeApi, AppHandleRequestMap, GetHeight } from "./iframe-rpc/src";
+import { AppCrtIframeApi, AppHandleRequestMap, GetHeight } from "./iframe-rpc/src";
 
 const logModule = "[Embedded MyApp]";
 
@@ -58,11 +58,12 @@ export class EmbeddedMyAppCallbacks {
     return document.body.scrollHeight;
   }
 
-export const setupIframeApi = (callbacks: EmbeddedMyAppCallbacks): void => {
-  initIframeApi({
-    getHeight: callbacks.getHeight.bind(callbacks),
-  });
-};
+  export const setupIframeApi = (callbacks: EmbeddedMyAppCallbacks): void => {
+    initIframeApi({
+      getHeight: callbacks.getHeight.bind(callbacks),
+    });
+  };
+}
 
 ```
 

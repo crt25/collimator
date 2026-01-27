@@ -25,7 +25,7 @@ The three modes are detected based on the query parameter `mode`.
 
 ## G-AST converter
 
-The G-AST converter is based on the ANTLR grammar. Specific information is giving in a `backend/src/ast/converters/python/README.md`.
+The G-AST converter is based on the ANTLR grammar. Specific information is given in `backend/src/ast/converters/python/README.md`.
 
 ## Auto-Installing a Modified Version of `otter-grader`
 

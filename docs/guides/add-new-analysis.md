@@ -4,7 +4,7 @@ To provide a scalable system with minimal resource requirements on the server, t
 
 ## Overview
 
-An new Analysis Logic can be one of the following:
+A new Analysis Logic can be one of the following:
 
 - An analyzer, based on an AST or meta criterion;
 - A solution grouping, either automatic or manual.
@@ -196,7 +196,7 @@ const ConditionCriterionFilterForm: CriterionFormComponent<
 );
 ```
 
-To **add a new axis**, you will need to
+To **add a new filter**, you will need to
 
 1. Define a new instance of `CriterionFilterDefinition`, including a `CriterionFormComponent` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `filterCriteria` list in `frontend/src/components/dashboard/filter/index.ts`.
