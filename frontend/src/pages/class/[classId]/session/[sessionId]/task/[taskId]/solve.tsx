@@ -104,6 +104,10 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
+  const [saveError, setSaveError] = useState(false);
+
+  const isSaveError = useMemo(() => saveError, [saveError]);
+
   const saveSubmission = useCallback(
     async (
       classId: number,
@@ -167,19 +171,26 @@ const SolveTaskPage = () => {
       return;
     }
 
-    const response = await embeddedApp.current.sendRequest(
-      "getSubmission",
-      undefined,
-    );
+    try {
+      const response = await embeddedApp.current.sendRequest(
+        "getSubmission",
+        undefined,
+      );
 
-    await saveSubmission(
-      session.klass.id,
-      session.id,
-      task.id,
-      response.result,
-    );
+      await saveSubmission(
+        session.klass.id,
+        session.id,
+        task.id,
+        response.result,
+      );
 
-    isScratchMutexAvailable.current = true;
+      setSaveError(false);
+    } catch (error) {
+      console.error("Failed to submit solution with", error);
+      setSaveError(true);
+    } finally {
+      isScratchMutexAvailable.current = true;
+    }
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
@@ -230,10 +241,6 @@ const SolveTaskPage = () => {
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embeddedApp, taskFileHash, session, task]);
-
-  const [saveError, setSaveError] = useState(false);
-
-  const isSaveError = useMemo(() => saveError, [saveError]);
 
   const onReceiveTaskSolution = useCallback(
     async (solutionBlob: Blob) => {
