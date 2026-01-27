@@ -80,6 +80,45 @@ const messages = defineMessages({
     id: "TaskForm.SaveError",
     defaultMessage: "An error occurred while saving the task. Try again later.",
   },
+  clearSolutionsConfirmationTitle: {
+    id: "TaskForm.clearSolutionsConfirmation.title",
+    defaultMessage: "Clear reference solutions?",
+  },
+  clearSolutionsConfirmationBody: {
+    id: "TaskForm.clearSolutionsConfirmation.body",
+    defaultMessage:
+      "Changing the task type will remove all reference solutions when you save the task. Are you sure you want to continue?",
+  },
+  clearSolutionsConfirmationButton: {
+    id: "TaskForm.clearSolutionsConfirmation.button",
+    defaultMessage: "Yes, clear solutions",
+  },
+  editConfirmationTitle: {
+    id: "TaskForm.editConfirmation.title",
+    defaultMessage: "Edit task?",
+  },
+  editConfirmationBody: {
+    id: "TaskForm.editConfirmation.body",
+    defaultMessage:
+      "You are about to open the task in an external application for editing. Any unsaved changes in this form will be preserved.",
+  },
+  editConfirmationButton: {
+    id: "TaskForm.editConfirmation.button",
+    defaultMessage: "Yes, edit task",
+  },
+  changeTypeConfirmationTitle: {
+    id: "TaskForm.changeTypeConfirmation.title",
+    defaultMessage: "Change task type",
+  },
+  changeTypeConfirmationBody: {
+    id: "TaskForm.changeTypeConfirmation.body",
+    defaultMessage:
+      "Changing the task type will require you to recreate the task file in the new format. Any existing reference solutions will be cleared when you save. This action cannot be undone. Are you sure you want to continue?",
+  },
+  changeTypeConfirmationButton: {
+    id: "TaskForm.changeTypeConfirmation.button",
+    defaultMessage: "Yes, change type",
+  },
 });
 
 type TaskFormValues = {
@@ -91,6 +130,8 @@ type TaskFormValues = {
   initialSolutionFile: Blob | null;
 };
 
+type TaskFile = Blob | undefined | null;
+
 export type TaskFormSubmission = {
   title: string;
   description: string;
@@ -98,6 +139,7 @@ export type TaskFormSubmission = {
   taskFile: Blob;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  clearAllReferenceSolutions: boolean;
 };
 
 const getYupSchema = (intl: IntlShape) => ({
@@ -155,14 +197,24 @@ const TaskForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  hasReferenceSolutions = false,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
+  hasReferenceSolutions?: boolean;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
+  const [showClearSolutionsModal, setShowClearSolutionsModal] = useState(false);
+  const [clearSolutionsOnSave, setClearSolutionsOnSave] = useState(false);
+
+  const taskTypeChangeSessionRef = useRef<{
+    previousTaskType: TaskType;
+    previousTaskFile: TaskFile;
+  } | null>(null);
+
   const cannotNavigate = useRef(false);
 
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
@@ -199,6 +251,15 @@ const TaskForm = ({
     defaultValues,
   });
 
+  const taskFile: TaskFile = watch("taskFile");
+  const taskType: TaskType = watch("type");
+
+  const committedTaskType = useRef(taskType);
+  const isInitialMount = useRef(true);
+
+  const [pendingTaskType, setPendingTaskType] = useState<TaskType | null>(null);
+  const [showChangeTypeModal, setShowChangeTypeModal] = useState(false);
+
   const initialSolution = watch("initialSolution");
   const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
   const onNavigate = useCallback(() => {
@@ -222,6 +283,11 @@ const TaskForm = ({
       handleSubmit((v: TaskFormValues) => {
         data = v;
 
+        if (clearSolutionsOnSave) {
+          data.initialSolution = null;
+          data.initialSolutionFile = null;
+        }
+
         return onSubmit({
           title: data.title,
           description: data.description,
@@ -229,11 +295,14 @@ const TaskForm = ({
           taskFile: data.taskFile,
           initialSolution: data.initialSolution,
           initialSolutionFile: data.initialSolutionFile,
+          clearAllReferenceSolutions: clearSolutionsOnSave,
         } satisfies TaskFormSubmission);
       })(e)
         .then(() => {
           // allow navigation after the task has been saved
           cannotNavigate.current = false;
+          committedTaskType.current = data.type;
+          setClearSolutionsOnSave(false);
 
           // reset the form to the updated values
           // and mark the blob as not changed
@@ -254,14 +323,144 @@ const TaskForm = ({
           });
         });
     },
-    [handleSubmit, onSubmit, reset, intl],
+    [handleSubmit, onSubmit, reset, intl, clearSolutionsOnSave],
   );
 
-  const taskFile: Blob | undefined | null = watch("taskFile");
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      committedTaskType.current = taskType;
+      return;
+    }
 
-  const taskType = watch("type");
+    if (taskType === committedTaskType.current) {
+      // if the user reverted the change, no need to show the modal
+      console.log(`${logModule} Task type reverted to committed type`);
+      return;
+    }
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+    setPendingTaskType(taskType);
+    setShowChangeTypeModal(true);
+    setValue("type", committedTaskType.current, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [taskType, setValue]);
+
+  const onConfirmChangeType = useCallback(() => {
+    if (!pendingTaskType) {
+      return;
+    }
+
+    taskTypeChangeSessionRef.current = {
+      previousTaskType: committedTaskType.current,
+      previousTaskFile: taskFile,
+    };
+
+    setValue("type", pendingTaskType);
+
+    committedTaskType.current = pendingTaskType;
+
+    setValue("taskFile", new Blob());
+
+    setClearSolutionsOnSave(true);
+
+    setShowChangeTypeModal(false);
+    setShowEditTaskModal(true);
+  }, [pendingTaskType, taskFile, setValue]);
+
+  const onCancelChangeType = useCallback(() => {
+    setPendingTaskType(null);
+    setShowChangeTypeModal(false);
+  }, []);
+
+  const handleEditModalClose = useCallback(
+    (isShown: boolean) => {
+      setShowEditTaskModal(isShown);
+
+      if (!isShown && taskTypeChangeSessionRef.current) {
+        // if the modal was closed without saving, revert changes
+        setValue("type", taskTypeChangeSessionRef.current.previousTaskType, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        committedTaskType.current =
+          taskTypeChangeSessionRef.current.previousTaskType;
+
+        if (taskTypeChangeSessionRef.current.previousTaskFile) {
+          setValue(
+            "taskFile",
+            taskTypeChangeSessionRef.current.previousTaskFile,
+            {
+              shouldDirty: true,
+              shouldValidate: true,
+            },
+          );
+        }
+
+        taskTypeChangeSessionRef.current = null;
+        setPendingTaskType(null);
+      }
+    },
+    [setValue],
+  );
+
+  const handleEditModalSave = useCallback(
+    (task: { file: Blob; initialSolution: Submission }) => {
+      setValue("taskFile", task.file, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setValue("initialSolutionFile", task.initialSolution.file, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setValue(
+        "initialSolution",
+        // if possible, use the existing initial solution id,
+        // otherwise set it to null and create a new one
+        {
+          id: initialSolution?.id ?? null,
+          title: "",
+          description: "",
+          isInitial: true,
+          tests: createSubmissionTests(task.initialSolution),
+        } satisfies UpdateReferenceSolutionDto,
+        { shouldDirty: true, shouldValidate: true },
+      );
+    },
+    [initialSolution, setValue],
+  );
+
+  const onConfirmClearSolutions = useCallback(() => {
+    setShowClearSolutionsModal(false);
+    setShowEditTaskModal(true);
+  }, []);
+
+  const onCancelClearSolutions = useCallback(() => {
+    if (!taskTypeChangeSessionRef.current) {
+      return;
+    }
+
+    setValue("type", taskTypeChangeSessionRef.current.previousTaskType);
+    committedTaskType.current =
+      taskTypeChangeSessionRef.current.previousTaskType;
+
+    if (taskTypeChangeSessionRef.current.previousTaskFile) {
+      setValue("taskFile", taskTypeChangeSessionRef.current.previousTaskFile);
+    }
+
+    taskTypeChangeSessionRef.current = null;
+    setPendingTaskType(null);
+    setShowClearSolutionsModal(false);
+  }, [setValue]);
+
+  const [showEditConfirmationModal, setShowEditConfirmationModal] =
+    useState(false);
+
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
   return (
@@ -298,7 +497,14 @@ const TaskForm = ({
               <EditTaskButton
                 data-testid="edit-task-button"
                 type="button"
-                onClick={() => setShowEditTaskModal(true)}
+                onClick={() => {
+                  if (hasReferenceSolutions) {
+                    setShowEditConfirmationModal(true);
+                  } else {
+                    setClearSolutionsOnSave(true);
+                    setShowEditTaskModal(true);
+                  }
+                }}
               >
                 {taskFile ? (
                   <FormattedMessage
@@ -347,37 +553,10 @@ const TaskForm = ({
         </Box>
         <EditTaskModal
           isShown={showEditTaskModal}
-          setIsShown={setShowEditTaskModal}
+          setIsShown={handleEditModalClose}
           initialTask={taskFile}
           taskType={taskType}
-          onSave={(task) => {
-            setValue("taskFile", task.file, {
-              shouldDirty: true,
-              shouldValidate: true,
-            });
-
-            setValue("initialSolutionFile", task.initialSolution.file, {
-              shouldDirty: true,
-              shouldValidate: true,
-            });
-
-            setValue(
-              "initialSolution",
-              {
-                // if possible, use the existing initial solution id,
-                // otherwise set it to null and create a new one
-                id: initialSolution?.id ?? null,
-                title: "",
-                description: "",
-                isInitial: true,
-                tests: createSubmissionTests(task.initialSolution),
-              },
-              {
-                shouldDirty: true,
-                shouldValidate: true,
-              },
-            );
-          }}
+          onSave={handleEditModalSave}
         />
       </form>
       <ConfirmationModal
@@ -389,6 +568,52 @@ const TaskForm = ({
           title: messages.closeConfirmationTitle,
           body: messages.closeConfirmationBody,
           confirmButton: messages.closeConfirmationButton,
+        }}
+      />
+
+      <ConfirmationModal
+        isShown={showClearSolutionsModal}
+        setIsShown={(isShown) => {
+          setShowClearSolutionsModal(isShown);
+          if (!isShown) onCancelClearSolutions();
+        }}
+        onConfirm={onConfirmClearSolutions}
+        isDangerous
+        messages={{
+          title: messages.clearSolutionsConfirmationTitle,
+          body: messages.clearSolutionsConfirmationBody,
+          confirmButton: messages.clearSolutionsConfirmationButton,
+        }}
+      />
+
+      <ConfirmationModal
+        isShown={showEditConfirmationModal}
+        setIsShown={setShowEditConfirmationModal}
+        onConfirm={() => {
+          setShowEditConfirmationModal(false);
+          setClearSolutionsOnSave(true);
+          setShowEditTaskModal(true);
+        }}
+        isDangerous
+        messages={{
+          title: messages.editConfirmationTitle,
+          body: messages.editConfirmationBody,
+          confirmButton: messages.editConfirmationButton,
+        }}
+      />
+
+      <ConfirmationModal
+        isShown={showChangeTypeModal}
+        setIsShown={(isShown) => {
+          setShowChangeTypeModal(isShown);
+          if (!isShown) onCancelChangeType();
+        }}
+        onConfirm={onConfirmChangeType}
+        isDangerous
+        messages={{
+          title: messages.changeTypeConfirmationTitle,
+          body: messages.changeTypeConfirmationBody,
+          confirmButton: messages.changeTypeConfirmationButton,
         }}
       />
     </>

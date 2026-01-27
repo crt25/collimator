@@ -44,7 +44,21 @@ const EditTask = () => {
         let referenceSolutions: UpdateReferenceSolutionDto[];
         let referenceSolutionsFiles: Blob[];
 
-        if (
+        const shouldClearAllSolutions =
+          taskSubmission.clearAllReferenceSolutions ?? false;
+
+        if (shouldClearAllSolutions) {
+          if (
+            taskSubmission.initialSolution &&
+            taskSubmission.initialSolutionFile
+          ) {
+            referenceSolutions = [taskSubmission.initialSolution];
+            referenceSolutionsFiles = [taskSubmission.initialSolutionFile];
+          } else {
+            referenceSolutions = [];
+            referenceSolutionsFiles = [];
+          }
+        } else if (
           taskSubmission.initialSolution &&
           taskSubmission.initialSolutionFile
         ) {
@@ -115,6 +129,10 @@ const EditTask = () => {
                     initialSolutionFile: initialSolution?.solution ?? null,
                   }}
                   submitMessage={messages.submit}
+                  hasReferenceSolutions={
+                    task.referenceSolutions.filter((s) => !s.isInitial).length >
+                    0
+                  }
                   onSubmit={onSubmit}
                 />
               </>
