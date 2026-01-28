@@ -261,7 +261,129 @@ const TaskForm = ({
 
   const taskType = watch("type");
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+    setPendingTaskType(taskType);
+    setShowChangeTypeModal(true);
+    setValue("type", committedTaskType.current, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [taskType, setValue]);
+
+  const onConfirmChangeType = useCallback(() => {
+    if (!pendingTaskType) {
+      return;
+    }
+
+    taskTypeChangeSessionRef.current = {
+      previousTaskType: committedTaskType.current,
+      previousTaskFile: taskFile,
+    };
+
+    setValue("type", pendingTaskType);
+
+    committedTaskType.current = pendingTaskType;
+
+    setValue("taskFile", new Blob());
+
+    setClearSolutionsOnSave(true);
+
+    setShowChangeTypeModal(false);
+    setShowEditTaskModal(true);
+  }, [pendingTaskType, taskFile, setValue]);
+
+  const onCancelChangeType = useCallback(() => {
+    setPendingTaskType(null);
+    setShowChangeTypeModal(false);
+  }, []);
+
+  const handleEditModalClose = useCallback(
+    (isShown: boolean) => {
+      setShowEditTaskModal(isShown);
+
+      if (!isShown && taskTypeChangeSessionRef.current) {
+        // if the modal was closed without saving, revert changes
+        setValue("type", taskTypeChangeSessionRef.current.previousTaskType, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        committedTaskType.current =
+          taskTypeChangeSessionRef.current.previousTaskType;
+
+        if (taskTypeChangeSessionRef.current.previousTaskFile) {
+          setValue(
+            "taskFile",
+            taskTypeChangeSessionRef.current.previousTaskFile,
+            {
+              shouldDirty: true,
+              shouldValidate: true,
+            },
+          );
+        }
+
+        taskTypeChangeSessionRef.current = null;
+        setClearSolutionsOnSave(false);
+        setPendingTaskType(null);
+      }
+    },
+    [setValue],
+  );
+
+  const handleEditModalSave = useCallback(
+    (task: { file: Blob; initialSolution: Submission }) => {
+      setValue("taskFile", task.file, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setValue("initialSolutionFile", task.initialSolution.file, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setValue(
+        "initialSolution",
+        // if possible, use the existing initial solution id,
+        // otherwise set it to null and create a new one
+        {
+          id: initialSolution?.id ?? null,
+          title: "",
+          description: "",
+          isInitial: true,
+          tests: createSubmissionTests(task.initialSolution),
+        } satisfies UpdateReferenceSolutionDto,
+        { shouldDirty: true, shouldValidate: true },
+      );
+    },
+    [initialSolution, setValue],
+  );
+
+  const onConfirmClearSolutions = useCallback(() => {
+    setShowClearSolutionsModal(false);
+    setShowEditTaskModal(true);
+  }, []);
+
+  const onCancelClearSolutions = useCallback(() => {
+    if (!taskTypeChangeSessionRef.current) {
+      return;
+    }
+
+    setValue("type", taskTypeChangeSessionRef.current.previousTaskType);
+    committedTaskType.current =
+      taskTypeChangeSessionRef.current.previousTaskType;
+
+    if (taskTypeChangeSessionRef.current.previousTaskFile) {
+      setValue("taskFile", taskTypeChangeSessionRef.current.previousTaskFile);
+    }
+
+    taskTypeChangeSessionRef.current = null;
+    setPendingTaskType(null);
+    setShowClearSolutionsModal(false);
+  }, [setValue]);
+
+  const [showEditConfirmationModal, setShowEditConfirmationModal] =
+    useState(false);
+
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
   return (
