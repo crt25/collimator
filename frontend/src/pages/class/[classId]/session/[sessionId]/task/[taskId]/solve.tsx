@@ -4,7 +4,6 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
 import { Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
-import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
@@ -24,6 +23,7 @@ import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
+import { TaskType } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
   title: {
@@ -104,6 +104,10 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
+  const [saveError, setSaveError] = useState(false);
+
+  const isSaveError = useMemo(() => saveError, [saveError]);
+
   const saveSubmission = useCallback(
     async (
       classId: number,
@@ -163,21 +167,28 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task) {
-      return;
+    try {
+      if (!session || !task) {
+        return;
+      }
+
+      const response = await embeddedApp.current.sendRequest(
+        "getSubmission",
+        undefined,
+      );
+
+      await saveSubmission(
+        session.klass.id,
+        session.id,
+        task.id,
+        response.result,
+      );
+
+      setSaveError(false);
+    } catch (error) {
+      console.error("Failed to submit solution with", error);
+      setSaveError(true);
     }
-
-    const response = await embeddedApp.current.sendRequest(
-      "getSubmission",
-      undefined,
-    );
-
-    await saveSubmission(
-      session.klass.id,
-      session.id,
-      task.id,
-      response.result,
-    );
 
     isScratchMutexAvailable.current = true;
   }, [session, task, saveSubmission]);
@@ -243,8 +254,10 @@ const SolveTaskPage = () => {
           file: solutionBlob,
           tests: [],
         });
+        setSaveError(false);
       } catch (error) {
         console.error("Failed to receive task solution with", error);
+        setSaveError(true);
       }
     },
     [session, task, createSolution],
@@ -340,6 +353,16 @@ const SolveTaskPage = () => {
           )
         }
       >
+        {isSaveError && (
+          <Text variant="error">
+            <FormattedMessage
+              data-testid="save-error-message"
+              id="SolveTask.saveError"
+              defaultMessage="Network issues, saving may not work."
+            />
+          </Text>
+        )}
+
         <li></li>
         <li>
           <Button
