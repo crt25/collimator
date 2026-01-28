@@ -399,6 +399,7 @@ const TaskForm = ({
         }
 
         taskTypeChangeSessionRef.current = null;
+        setClearSolutionsOnSave(false);
         setPendingTaskType(null);
       }
     },
