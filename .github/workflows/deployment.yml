@@ -35,7 +35,7 @@ jobs:
 
   deploy:
     # For now, we deploy even if tests fail. CHANGE THIS ASAP.
-    # needs: [tests]
+    needs: [tests]
     runs-on: ubuntu-latest
 
     # Service containers to run with `runner-job`
