@@ -1,4 +1,4 @@
-# Jupyterlite Modifications
+# Jupyterlite modifications
 
 This document is intended for developers working on this project and who may need to update or maintain the Jupyterlite integration.
 
@@ -7,14 +7,14 @@ To be compatible with the CRT platform, Jupyterlite was modified. The scope of t
 All modifications are made either through the jupyterlite configuration files `jupyter-lite.json` and `overrides.json` or through the custom extension `notebook-runner`.
 The only exception is described in [the next section](#iframe-communication) because it requires to load custom javascript code before Jupyterlite finishes loading.
 
-## `iframe` Communication
+## `iframe` communication
 
 To support the integration into the CRT platform, we need to implement its `iframe-rpc` API for applications.
 
 To ensure no messages are missed, we load custom javascript code (`iframe-message-buffering.js`) before the page finishes loading which immediately attaches a listener and starts buffering incoming `iframe-rpc` messages.
 The `notebook-runner` extension then later retrieves the buffered messages and stops the buffering process.
 
-## Mode Detection
+## Mode detection
 
 Analogous to the scratch application, the jupyter application supports three modes.
 The three modes are detected based on the query parameter `mode`.
@@ -27,7 +27,7 @@ The three modes are detected based on the query parameter `mode`.
 
 The G-AST converter is based on the ANTLR grammar. Specific information is given in `backend/src/ast/converters/python/README.md`.
 
-## Auto-Installing a Modified Version of `otter-grader`
+## Auto-installing a modified version of `otter-grader`
 
 To each session that is attached to a notebook widget, we attach a listener that is called whenever the kernel changes.
 
@@ -62,14 +62,14 @@ Based on the opened otter-compatible notebook (aka the _template_), this generat
 
 This runs `otter-grader`'s `grade` command on the _task_ notebook and returns the grading results.
 
-### Command Execution and the _Otter Kernel_
+### Command execution and the _Otter kernel_
 
 To provide minimal isolation of the execution environments, 1) assigning a notebook, 2) executing and 3) grading it are all executed in a separated Jupyter kernel named the _otter kernel_.
 
 The _otter kernel_ is initialized when the extension loads.
 On top of `otter-grader`, we also install `nbconvert` which is necessary for executing the [assign](#notebook-runnerrun-assign) command.
 
-### Virtual File System
+### Virtual file system
 
 Because Jupyterlite simulates a full Jupyter environment in a browser, `pyodide` (the software used to execute python on a browser) provides a virtual filesystem.
 
@@ -81,7 +81,7 @@ Therefore, we disabled this feature by adding `@jupyterlite/application-extensio
 Unfortunately this requires us to handle data transfers between pyodide and the `notebook-runner` extension ourselves resulting in more complicated code.
 Once Jupyterlite provides a stable implementation for `/drive`, it is advisable to revert back to using it.
 
-## User Interface Modifications
+## User interface modifications
 
 ### Simplifications
 
@@ -91,11 +91,11 @@ On top, we enable Jupyterlite's simple mode and hide the status bar.
 
 Finally, unless we are in `edit` mode, we also hide the [Grading folders](#jupyterlite-file-format) from the file browser.
 
-### Additional UI Elements
+### Additional UI elements
 
 To allow users to run all cells in a notebook, the additional command `notebook-runner:run-all-cells` is added which is trigerred by a play button displayed in the toolbar.
 
-## Jupyterlite Project Structure
+## Jupyterlite project structure
 
 There are multiple files in the CRT version of Jupyterlite:
 

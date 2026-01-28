@@ -1,12 +1,14 @@
 # API reference
 
-The NestJS backend uses OpenAPI principes, documented by the code. Then the collected documentation is used by Orval to generate a RESTful client for Next.js frontend.
+The NestJS backend follows OpenAPI principes and is documented directly in the code.
+
+The generated OpenAPI specification is then used by Orval to generate a REST client for the Next.js frontend.
 
 ## OpenAPI / Swagger
 
-The API is described by controllers and DTO in `backend/src/api/` and documented using `@nestjs/swagger`.
+The API is defined by controllers and DTOs located in `backend/src/api/` and documented using `@nestjs/swagger`.
 
-As an example, the `name` attribute for user creation is described in `create-user.dto.ts`:
+For example, the `name` field for user creation is described in `create-user.dto.ts`:
 
 ```typescript
 
@@ -29,13 +31,13 @@ export class CreateUserDto {
   // ...
 ```
 
-This way an OpenAPI documentation is built and available at `localhost:3001/api` and `localhost:3001/api-json`.
+This configuration generates an OpenAPI specification that is available at:
+
+- `http://localhost:3001/api` (Swagger UI)
+- `http://localhost:3001/api-json` (raw OpenAPI JSON)
 
 ## Orval
 
-"Orval generates type-safe JS clients (TypeScript) from any valid OpenAPI v3."
+Orval generates type-safe JavaScript and TypeScript clients from any valid OpenAPI v3 specification.
 
-With the CLI command `yarn update:api` in the `frontend` folder, the JSON version of the OpenAPI documentation is reading and a client is generated into `frontend/api/collimator/generated`.
-
-
-
+The command `yarn update:api` in the `frontend` folderThis reads the OpenAPI JSON specification and generates a client in `frontend/api/collimator/generated`.

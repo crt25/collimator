@@ -1,18 +1,17 @@
-# `iframe-rpc` & `iframe-rpc-react` Documentation
+# `iframe-rpc` & `iframe-rpc-react` documentation
 
 This documentation covers both the core library `iframe-rpc` and its React integration `iframe-rpc-react`.
 
 The React package builds on top of the core, providing hooks for integration in React applications.
 
-
 ## Introduction
 
-- `iframe-rpc`: A TypeScript library that implements a typed JSON-RPC 2.0 mechanism over the browser's [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API. 
-It enables secure and structured communication between two applications across iframe boundaries.
+- `iframe-rpc`: A TypeScript library that implements a typed JSON-RPC 2.0 mechanism over the browser's [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+    It enables secure and structured communication between two applications across iframe boundaries.
 
 - `iframe-rpc-react`: A React wrapper around `iframe-rpc`, exposing two hooks, `useIframeParent` and `useIframeChild`, for seamless integration in React applications.
 
-## Core Library: `iframe-rpc`
+## Core library: `iframe-rpc`
 
 ### Overview
 
@@ -31,7 +30,7 @@ It defines strict types for requests and responses, ensuring reliability and sec
 - Retrieve data from the app to the frontend.
 - Ensure secure communication across different origins.
 
-### Installation and Setup
+### Installation and setup
 
 The library is installed with ClassMosaic.
 
@@ -50,9 +49,9 @@ yarn install
 - `AppIframeRpcApi` (exported as `AppCrtIframeApi`): for the embedded application (iframe).
 - `PlatformIframeRpcApi` (exported as `PlatformCrtIframeApi`): for the host application (frontend).
 
-#### Available Methods
+#### Available methods
 
-Defined in methods/index.ts:
+Defined in `methods/index.ts`:
 
 | Method            | Description                             |
 | ----------------- | --------------------------------------- |
@@ -76,14 +75,14 @@ Each method is strongly typed for parameters and return values.
 yarn demo
 ```
 
-## React Integration: `iframe-rpc-react`
+## React integration: `iframe-rpc-react`
 
 ### Overview
 
 `iframe-rpc-react` is build on top of `iframe-rpc` to provide React hooks that simplify integration.
 It encapsulates origin validation, lifecycle handling, and communication setup for a React environment.
 
-### Installation and Setup
+### Installation and setup
 
 The library is installed with ClassMosaic.
 

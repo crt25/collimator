@@ -22,7 +22,7 @@ Additional steps depend on the application you are integrating. For example:
 - Customize the application (e.g. Scratch)
 - Create a dedicated extension or plugin (e.g. [Jupyter](../python/python.md))
 
-### JSON-RPC Integration
+### JSON-RPC integration
 
 To integrate the app into the CRT platform, you must implement the [`iframe-rpc` API](../architecture/iframe-rpc.md).
 
@@ -69,7 +69,7 @@ export class EmbeddedMyAppCallbacks {
 
 ## Backend
 
-### Database and Task Type
+### Database and task type
 
 You must update the database schema to support the new task type.
 
@@ -109,7 +109,6 @@ The Python implementation can be used as a reference. Review the files in `backe
 1. Create a main converter function `convertMyAppToGeneralAst` in the `backend/src/ast/converters/my_app/index.ts`.
 2. Declare this converter in `backend/src/ast/converters/solution-conversion-worker.piscina.ts`.
 
-
 ## Frontend
 
 1. Add the application hostname to environment files:
@@ -122,7 +121,6 @@ The Python implementation can be used as a reference. Review the files in `backe
   ```
 3. In the frontend codebase, search for `TaskType.SCRATCH`.
   Copy the surrounding conditional logic, paste it, and adapt it for the new task type.
-
 
 ## Testing
 

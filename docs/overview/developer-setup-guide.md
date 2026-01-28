@@ -16,7 +16,7 @@ Make sure the following tools are installed:
 
 You need a Microsoft account to log in. It can be either a personal account or an organizational account, provided the organization has allowed its users to access the application.
 
-### Clone the Repository
+### Clone the repository
 
 Download the source code and initialize submodules:
 
@@ -26,7 +26,7 @@ cd collimator
 git submodule update --init --recursive --progress
 ```
 
-### Backend Setup
+### Backend setup
 
 ?> The `docker/` folder and `backend/Dockerfile` are only used for deployment. For local development, use the native setup described below.
 
@@ -107,7 +107,7 @@ git submodule update --init --recursive --progress
     $ yarn dev
     ```
 
-### Frontend Setup
+### Frontend setup
 
 1. Move to the `frontend` folder.
 
@@ -120,7 +120,7 @@ git submodule update --init --recursive --progress
     $ yarn dev
     ```
 
-### Scratch Setup
+### Scratch setup
 
 1. Move to the `apps/scratch` folder.
 
@@ -192,3 +192,5 @@ This process creates two Docker containers:
 The project uses Terraform to manage its cloud infrastructure on AWS. The configuration is located in the `terraform/infrastructure` directory. It defines modules for networking, database, backend (Fargate), frontend (S3/CloudFront), and apps (S3/CloudFront).
 
 This setup is intended for deployment and is not required for local development, but it provides context on how the application is hosted in a production-like environment. Files into `.github/workflows` provide another way to understand the project architecture.
+
+See [Deployment](../infrastructure/deployment.md) for more.

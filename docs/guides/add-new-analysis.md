@@ -1,21 +1,21 @@
-# How to add new Analysis Logic
+# How to add new analysis logic
 
-To provide a scalable system with minimal resource requirements on the server, the analysis is performed client-side, i.e. in `frontend/`.
+To provide a scalable system with minimal server resource usage, all analysis is performed client-side, in the `frontend` application.
 
 ## Overview
 
-A new Analysis Logic can be one of the following:
+A new analysis logic can be one of the following:
 
-- An analyzer, based on an AST or meta criterion;
+- An analyzer, based on an AST or meta criteria;
 - A solution grouping, either automatic or manual.
 
 This document guides you through the process of adding these additional types of analyses.
 
-## Criteria Based Analyzer
+## Criteria-based analyzer
 
-Criteria based analyzers are located in `frontend/src/data-analyzer/criteria-based-analyzers`.
+Criteria-based analyzers are located in `frontend/src/data-analyzer/criteria-based-analyzers`.
 
-As an example, a simple analyzer to count the number of conditions in the [G-AST](../data-analyzer/ast-conversion.md) may look like the following:
+As an example, a simple analyzer that counts the number of condition statements in the [G-AST](../data-analyzer/ast-conversion.md) may look like this:
 
 ```typescript
 export const countConditions = (
@@ -38,29 +38,37 @@ export const countConditions = (
 };
 ```
 
-where `walkAst` is an utility function recursively walking the AST and calling `statementCallback` for every statement that is found.
+Here, `walkAst` is an utility function that recursively walks the AST and calls `statementCallback` for each statement node.
 
-The enum `AstCriterionType` as well as the types `CriteriaBasedAnalyzerInput` and `CriteriaBasedAnalyzerOutput` are defined in `frontend/src/data-analyzer/analyze-asts.ts` which additionally defines the global `analyzeAst` function.
-This function, given an G-AST and a criterion input, runs the respective analyzer and its output.
+The enum `AstCriterionType`, as well as the types `CriteriaBasedAnalyzerInput` and `CriteriaBasedAnalyzerOutput`, are defined in `frontend/src/data-analyzer/analyze-asts.ts`.
 
-In `frontend/src/components/dashboard/criteria` the `analyzeAst` is then used for 1) axes and 2) filters.
+This file also defines the global `analyzeAst` function. Given an G-AST and a criterion input, this function runs the corresponding analyzer and returns its output.
 
-To **add a new AST criterion**, you will need to
+In `frontend/src/components/dashboard/criteria` the `analyzeAst` function is used for:
+
+1. Axes
+2. Filters
+
+### Adding a new AST criterion
+
+To add a new AST-based criterion, you must:
 
 1. Add your criterion to the `AstCriterionType` enum and the types `CriteriaBasedAnalyzerInput`, `CriteriaBasedAnalyzerOutput`, `AnalysisFunction` in `frontend/src/data-analyzer/analyze-asts.ts`.
 2. Create a new analyzer in `frontend/src/data-analyzer/criteria-based-analyzers` and extend the `analyzeAst` function in `frontend/src/data-analyzer/analyze-asts.ts`.
-3. Use the analyzer in an axis or a filter as described below.
+3. Use the analyzer in an axis or a filter, as described below.
 
-To **add a new meta criterion** (if its unrelated to the AST), you will need to
+### Adding a new meta criterion
+
+If your criterion is not related to the AST, you must:
 
 1. Add your criterion to `MetaCriterionType` in `frontend/src/data-analyzer/meta-criterion-type.ts`.
-2. Define an axis or a filter as described below.
+2. Define an axis or a filter, as described below.
 
 ### Axis
 
-To use a given criterion as an axis in the analyzer, an instance of `CriterionAxisDefinition<>` must be defined in `frontend/src/components/dashboard/criteria`.
+To use a criterion as an axis in the analyzer, you must define an instance of `CriterionAxisDefinition<>` in `frontend/src/components/dashboard/criteria`.
 
-For the criterion example counting the number of condition statements, this may look like the following:
+For the example that counts condition statements, this may look like:
 
 ```typescript
 export const ConditionCriterionAxis: CriterionAxisDefinition<AstCriterionType.condition> =
@@ -85,7 +93,7 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<AstCriterionType.co
       },
     },
 
-    // A function that, given an analysis, returns the respective axis value
+    // Returns the axis value for a given analysis
     getAxisValue: (analysis) => {
       const numberOfConditions = analyzeAst(analysis.generalAst, {
         criterion,
@@ -97,18 +105,20 @@ export const ConditionCriterionAxis: CriterionAxisDefinition<AstCriterionType.co
   };
 ```
 
-Note that for axes, it is currently not possible to provide additional input parameters.
+Note: For axes, it is currently not possible to provide additional input parameters.
 
-To **add a new axis**, you will need to
+#### Adding a new axis
 
-1. Define a new instance of `CriterionAxisDefinition` in `frontend/src/components/dashboard/criteria`.
+To add a new axis, you must:
+
+1. Define a new `CriterionAxisDefinition` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `axisCriteria` list in `frontend/src/components/dashboard/axes/index.ts`.
 
 ### Filter
 
-To use a given criterion as an axis in the analyzer, an instance of `CriterionFilterDefinition<>` must be defined in `frontend/src/components/dashboard/criteria`.
+To use a criterion as a filter, you must define an instance of `CriterionFilterDefinition<>` must in `frontend/src/components/dashboard/criteria`.
 
-For the criterion example counting the number of condition statements, this may look like the following:
+For the example that counts condition statements, this may look like:
 
 ```typescript
 export const ConditionCriterionFilter: CriterionFilterDefinition<
@@ -116,7 +126,7 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
   ConditionFilterCriterion,
   ConditionFilterCriterionParameters
 > = {
-  // Which cirterion is this filter for
+  // Which criterion is this filter for
   criterion: AstCriterionType.condition,
 
   // A CriterionFormComponent accepting the properties 'value', 'onChange' and 'parameters'
@@ -166,7 +176,7 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
 };
 ```
 
-The corresponding filter component may look like this:
+The corresponding filter component may look like:
 
 ```typescript
 const ConditionCriterionFilterForm: CriterionFormComponent<
@@ -196,53 +206,61 @@ const ConditionCriterionFilterForm: CriterionFormComponent<
 );
 ```
 
-To **add a new filter**, you will need to
+#### Adding a new filter
 
-1. Define a new instance of `CriterionFilterDefinition`, including a `CriterionFormComponent` in `frontend/src/components/dashboard/criteria`.
+To add a new filter, you must:
+
+1. Define a new `CriterionFilterDefinition` and `CriterionFormComponent` in `frontend/src/components/dashboard/criteria`.
 2. Add it to the `filterCriteria` list in `frontend/src/components/dashboard/filter/index.ts`.
 3. Extend the component `CriterionFilterForm` in `frontend/src/components/dashboard/filter/CriterionFilterForm.tsx` to support your new filter form.
 
-## Solution Grouping
+## Solution grouping
 
 The `Analyzer` component provides all grouping functionality by relying on the `useGrouping` hook located at `src/components/dashboard/hooks/useGrouping.ts`.
 
-The hook accepts several parameters, among them the set of analyzed solutions which the function is supposed to group, the current `x` and `y` axes, the manually performed `splits` (vertical and horizontal lines on the chart) and a boolean flag `isAutomaticGrouping`.
+The hook accepts, among others:
 
-### Manual Grouping
+- The set of analyzed solutions to group
+- The current `x` and `y` axes
+- The manually defined `splits` (vertical and horizontal lines)
+- The boolean flag `isAutomaticGrouping`.
 
-If the flag `isAutomaticGrouping` is set to false, the solution groups are computed based on the (manually provided) vertical and horizontal split lines as well as the currently selected axes.
+### Manual grouping
 
-This computation is performed in the `useManualGrouping` hook, located at `src/components/dashboard/hooks/useManualGrouping.ts`.
+When `isAutomaticGrouping` is `false`, groups are computed based on the (manually provided) vertical and horizontal split lines as well as the currently selected axes.
 
-To modify the logic for the manual grouping, you will need to change the code in this file.
+This logic is implemented in `src/components/dashboard/hooks/useManualGrouping.ts`.
 
-### Automatic Grouping (Machine Learning / AI)
+To modify manual grouping behavior, update this file.
 
-If the flag `isAutomaticGrouping` is set to true, the grouping is performed by the `useAutomaticGrouping` hook, located at `src/components/dashboard/hooks/useAutomaticGrouping.ts`.
+### Automatic grouping (Machine Learning / AI)
 
-The hook `useAutomaticGrouping` in turn relies on the `getAutomaticGroups` function, which accepts :
-- the set of analyzed solutions which are to be grouped,
-- an `AutomaticGroupingType` enum value determining what algorithm is to be used for the grouping and
-- a `DistanceType` enum value determining the distance metric which is to be used by the algorithm.
+When `isAutomaticGrouping` is `true`, grouping is handled by `useAutomaticGrouping` hook, located at `src/components/dashboard/hooks/useAutomaticGrouping.ts`.
 
-#### How to add a new grouping algorithm
+This hook relies on `getAutomaticGroups`, which accepts:
 
-To add a new algorithm for automatic grouping, you need to:
+- The set of analyzed solutions,
+- An `AutomaticGroupingType` enum (algorithm selection)
+- A `DistanceType` enum (distance metric selection)
 
-1. Give the algorithm a name and add it to the `AutomaticGroupingType` enum defined in `src/components/dashboard/hooks/automatic-grouping/grouping-type.ts`.
-2. Create a dedicated file for the algorithm in `src/components/dashboard/hooks/automatic-grouping/`
-3. Implement the algorithm as a function with the signature
+#### Adding a new grouping algorithm
+
+To add a new algorithm for automatic grouping, you must:
+
+1. Add a new to the `AutomaticGroupingType` enum defined in `src/components/dashboard/hooks/automatic-grouping/grouping-type.ts`.
+2. Create a new file in `src/components/dashboard/hooks/automatic-grouping/`
+3. Implement a function with the signature
 
    ```typescript
    (analyses: CurrentAnalysis[], distanceType: DistanceType): Promise<AnalysisGroup[]>
    ```
 
-   If your algorithm does not rely on a distance metric, it would be advisable to [add a custom distance metric](#how-to-add-a-new-distance-metric) called `None` which always throws when being called.
+   If your algorithm does not rely on a distance metric, consider [adding a custom  `None` distance metric](#how-to-add-a-new-distance-metric) that always throws.
 
-4. Modify `src/components/dashboard/hooks/automatic-grouping/index.ts` so that `getAutomaticGroups` calls your new algorithm when the matching enum value is provided.
-5. (Optionally) Modify the `useAutomaticGrouping` hook to use your new algorithm.
+4. Update `src/components/dashboard/hooks/automatic-grouping/index.ts` so that `getAutomaticGroups` calls your algorithm.
+5. (Optionally) Update `useAutomaticGrouping` to expose your algorithm.
 
-##### Example Algorithm
+##### Example of algorithm
 
 ```typescript
 interface AnalysisGroupWithReference extends AnalysisGroup {
@@ -274,7 +292,7 @@ const partitionAnalyses = (
   };
 };
 
-// Our Algorithm
+// Our algorithm
 export const referenceSolutionClustering = async (
   analyses: CurrentAnalysis[],
   distanceType: DistanceType
@@ -340,22 +358,22 @@ export const referenceSolutionClustering = async (
 };
 ```
 
-#### How to add a new distance metric
+#### Adding a new distance metric
 
-To add a new distance metric for automatic grouping, you need to:
+To add a new distance metric for automatic grouping, you must:
 
-1. Give the metric a name and add it to the `DistanceType` enum defined in `src/components/dashboard/hooks/ast-distance/distance-type.ts`.
-2. Create a dedicated file in `src/components/dashboard/hooks/ast-distance/`
-3. Implement the algorithm as a function with the signature
+1. Add a new value to `DistanceType` enum defined in `src/components/dashboard/hooks/ast-distance/distance-type.ts`.
+2. Create a new file in `src/components/dashboard/hooks/ast-distance/`
+3. Implement a function with the signature
 
   ```typescript
   (a: AstNode, b: AstNode): Promise<number>
   ```
 
-4. Modify `src/components/dashboard/hooks/ast-distance/index.ts` so that `getAstDistance` calls your new distance metric when the matching enum value is provided.
-5. (Optionally) Modify the `useAutomaticGrouping` hook to use your new metric.
+1. Update `src/components/dashboard/hooks/ast-distance/index.ts` so that `getAstDistance` calls your new metric.
+2. (Optionally) Update `useAutomaticGrouping` hook to expose your metric.
 
-##### Example Distance Metric (Zhang-Shasha)
+##### Example for distance metric (Zhang-Shasha)
 
 ```typescript
 // Input parameters for the external library.
@@ -381,7 +399,7 @@ export const computeZhangShashaDistance = (
 };
 ```
 
-where `getAstNodeChildren` is a function that given an `AstNode`, returns the list of `AstNode` children.
+Here, `getAstNodeChildren` is a function that given an `AstNode`, returns the list of `AstNode` children.
 
 Similarly, `getAstNodeLabel` returns a unique `string` label for any provided `AstNode`.
 
@@ -391,7 +409,7 @@ For example, see the similarity of the implementation of the [PQ-Grams distance]
 
 In both examples, we use external libraries that provide the `treeEditDistance` or `jqgram` functions.
 
-##### Example Distance Metric (PQ-Grams)
+##### Example for distance metric (PQ-Grams)
 
 ```typescript
 // Transforms the input into the format that the external

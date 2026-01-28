@@ -1,4 +1,4 @@
-# Student Identity Management
+# Student identity management
 
 ![](protocol.png "Protocol Visualization")
 

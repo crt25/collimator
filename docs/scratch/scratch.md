@@ -1,6 +1,6 @@
 # Scratch
 
-## G-AST Converter
+## G-AST converter
 
 Each Scratch block is assigned to one of three categories:
 
@@ -36,7 +36,7 @@ Inside these category-specific functions, the **opcode** of each Scratch block i
 
 Based on this opcode, the block is then converted to either a statement or an expression.
 
-## The Scratch .sb3 Format
+## The Scratch .sb3 format
 
 Scratch stores its data in a data format called `sb3` and also uses those three letters as a file extension.
 The format is a zip file containing resource files such as images and audio data plus a `project.json` file.
@@ -46,13 +46,13 @@ The format is a zip file containing resource files such as images and audio data
 However, the individual inputs to the different blocks are not documented in this JSON schema.
 Instead, they may be found in the [respective block definition on the scratch-blocks GitHub repository](https://github.com/scratchfoundation/scratch-blocks/blob/2e3a31e555a611f0c48d7c57074e2e54104c04ce/blocks_vertical/).
 
-## Scratch Modifications
+## Scratch modifications
 
 This document is intended for developers working on this project and who may need to update or maintain the Scratch integration.
 
 This project modified Scratch, the scope of the changes and their purpose are described below.
 
-### Edit and Solve mode
+### Edit and solve mode
 
 This project extends the Scratch GUI component to additionally accept a `canEditTask` property which, if disabled, deactivates the following built-in Scratch features:
 
@@ -66,11 +66,11 @@ In the following we will use "Task editing mode" (or "Edit mode") to denote `can
 
 Moreover, the new properties `isCostumesTabEnabled` and `isSoundsTabEnabled` allow hiding the costume and sound tabs.
 
-### CRT Config
+### CRT config
 
 To store additional information with a scratch project, we add an additional `crt.json` file into the zip archive.
 
-### Block Config
+### Block config
 
 To restrict the available blocks, we introduced the block config button rendered at the top left of each button in the [flyout toolbox](https://developers.google.com/blockly/guides/get-started/workspace-anatomy#flyout_toolbox) to the left.
 The button shows either a number or the infinity symbol, indicting the number of times this block can be used by a student.
@@ -102,7 +102,7 @@ Whenever it sees this event, it re-renders the toolbox resulting in updated numb
 To reduce the number of available blocks of a given type, we add an event listener to listen for workspace changes in the modified `Blocks` component.
 This event handler checks whether it is a block create or delete event and if it is, it triggers an update of the respective config button's label.
 
-### Freezing Blocks
+### Freezing blocks
 
 In order for teachers to provide some initial task blocks that cannot be edited by students, we extend scratch with a block freeze functionality.
 There are three possible states: editable (default), appendable and frozen, each applying to an entire stack of blocks.

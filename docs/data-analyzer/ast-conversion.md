@@ -178,7 +178,6 @@ This function will be converted to JSON like this:
 
 The backend conversion process is managed by the AstConversionService and executed by a worker pool. This design offloads CPU-intensive parsing from the main event loop. ClassMosaic uses [Piscina.js](https://piscinajs.dev/) as worker pool library for Node.js.
 
-
 ### Components
 
 | Component | Description | Source File |
