@@ -56,7 +56,7 @@ const EditTaskModal = ({
       }
       wasInitialized.current = true;
 
-      if (initialTask) {
+      if (initialTask && initialTask.size > 0) {
         executeWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
