@@ -55,6 +55,11 @@ export class ClassesController {
 
   @Get()
   @ApiQuery({ name: "teacherId", required: false, type: Number })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
     @AuthenticatedUser() user: User,
@@ -84,6 +89,11 @@ export class ClassesController {
 
   @Get(":id")
   @ApiOkResponse({ type: ExistingClassExtendedDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
@@ -115,6 +125,11 @@ export class ClassesController {
 
   @Patch(":id")
   @ApiCreatedResponse({ type: ExistingClassDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async update(

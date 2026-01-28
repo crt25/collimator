@@ -7,7 +7,10 @@ import {
 } from "../../generated/endpoints/classes/classes";
 import { ExistingClassExtended } from "../../models/classes/existing-class-extended";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UpdateClassDto } from "../../generated/models";
+import {
+  ClassesControllerUpdateV0Params,
+  UpdateClassDto,
+} from "../../generated/models";
 import { GetClassReturnType } from "./useClass";
 import { useRevalidateClassList } from "./useRevalidateClassList";
 
@@ -16,14 +19,20 @@ type UpdateClassType = (
   updateClassDto: UpdateClassDto,
 ) => Promise<ExistingClass>;
 
+const defaultParams: ClassesControllerUpdateV0Params = {};
+
 const fetchAndTransform = (
   options: RequestInit,
   id: number,
   updateClassDto: UpdateClassDto,
+  params?: ClassesControllerUpdateV0Params,
 ): ReturnType<UpdateClassType> =>
-  classesControllerUpdateV0(id, updateClassDto, options).then(
-    ExistingClass.fromDto,
-  );
+  classesControllerUpdateV0(
+    id,
+    updateClassDto,
+    params ?? defaultParams,
+    options,
+  ).then(ExistingClass.fromDto);
 
 export const useUpdateClass = (): UpdateClassType => {
   const authOptions = useAuthenticationOptions();

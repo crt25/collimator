@@ -11,6 +11,11 @@ import type {
   CurrentAnalysesDto,
   ExistingStudentSolutionDto,
   PatchStudentSolutionIsReferenceDto,
+  SolutionsControllerDownloadLatestStudentSolutionV0Params,
+  SolutionsControllerDownloadOneV0Params,
+  SolutionsControllerFindCurrentAnalysesV0Params,
+  SolutionsControllerFindOneStudentSolutionV0Params,
+  SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
 } from "../../models";
 
 export const getSolutionsControllerCreateStudentSolutionV0Url = (
@@ -79,18 +84,37 @@ export const getSolutionsControllerFindCurrentAnalysesV0Url = (
   classId: number,
   sessionId: number,
   taskId: number,
+  params?: SolutionsControllerFindCurrentAnalysesV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/current-analyses`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/current-analyses?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/current-analyses`;
 };
 
 export const solutionsControllerFindCurrentAnalysesV0 = async (
   classId: number,
   sessionId: number,
   taskId: number,
+  params?: SolutionsControllerFindCurrentAnalysesV0Params,
   options?: RequestInit,
 ): Promise<CurrentAnalysesDto> => {
   return fetchApi<CurrentAnalysesDto>(
-    getSolutionsControllerFindCurrentAnalysesV0Url(classId, sessionId, taskId),
+    getSolutionsControllerFindCurrentAnalysesV0Url(
+      classId,
+      sessionId,
+      taskId,
+      params,
+    ),
     {
       ...options,
       method: "GET",
@@ -102,14 +126,28 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0Url = (
   classId: number,
   sessionId: number,
   taskId: number,
+  params?: SolutionsControllerDownloadLatestStudentSolutionV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/latest`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/latest?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/latest`;
 };
 
 export const solutionsControllerDownloadLatestStudentSolutionV0 = async (
   classId: number,
   sessionId: number,
   taskId: number,
+  params?: SolutionsControllerDownloadLatestStudentSolutionV0Params,
   options?: RequestInit,
 ): Promise<ExistingStudentSolutionDto> => {
   return fetchApi<ExistingStudentSolutionDto>(
@@ -117,6 +155,7 @@ export const solutionsControllerDownloadLatestStudentSolutionV0 = async (
       classId,
       sessionId,
       taskId,
+      params,
     ),
     {
       ...options,
@@ -130,8 +169,21 @@ export const getSolutionsControllerFindOneStudentSolutionV0Url = (
   sessionId: number,
   taskId: number,
   id: number,
+  params?: SolutionsControllerFindOneStudentSolutionV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}`;
 };
 
 export const solutionsControllerFindOneStudentSolutionV0 = async (
@@ -139,6 +191,7 @@ export const solutionsControllerFindOneStudentSolutionV0 = async (
   sessionId: number,
   taskId: number,
   id: number,
+  params?: SolutionsControllerFindOneStudentSolutionV0Params,
   options?: RequestInit,
 ): Promise<ExistingStudentSolutionDto> => {
   return fetchApi<ExistingStudentSolutionDto>(
@@ -147,6 +200,7 @@ export const solutionsControllerFindOneStudentSolutionV0 = async (
       sessionId,
       taskId,
       id,
+      params,
     ),
     {
       ...options,
@@ -193,8 +247,21 @@ export const getSolutionsControllerDownloadOneV0Url = (
   sessionId: number,
   taskId: number,
   hash: string,
+  params?: SolutionsControllerDownloadOneV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/${hash}/download`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/${hash}/download?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/${hash}/download`;
 };
 
 export const solutionsControllerDownloadOneV0 = async (
@@ -202,10 +269,17 @@ export const solutionsControllerDownloadOneV0 = async (
   sessionId: number,
   taskId: number,
   hash: string,
+  params?: SolutionsControllerDownloadOneV0Params,
   options?: RequestInit,
 ): Promise<void> => {
   return fetchApi<void>(
-    getSolutionsControllerDownloadOneV0Url(classId, sessionId, taskId, hash),
+    getSolutionsControllerDownloadOneV0Url(
+      classId,
+      sessionId,
+      taskId,
+      hash,
+      params,
+    ),
     {
       ...options,
       method: "GET",
@@ -221,8 +295,21 @@ export const getSolutionsControllerPatchStudentSolutionIsReferenceV0Url = (
   sessionId: number,
   taskId: number,
   id: number,
+  params?: SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference`;
 };
 
 export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
@@ -231,6 +318,7 @@ export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
   taskId: number,
   id: number,
   patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
+  params?: SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
   options?: RequestInit,
 ): Promise<void> => {
   return fetchApi<void>(
@@ -239,6 +327,7 @@ export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
       sessionId,
       taskId,
       id,
+      params,
     ),
     {
       ...options,

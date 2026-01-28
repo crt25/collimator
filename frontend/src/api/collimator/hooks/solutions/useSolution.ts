@@ -10,20 +10,29 @@ import {
 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { ExistingStudentSolution } from "../../models/solutions/existing-student-solutions";
+import {
+  SolutionsControllerDownloadLatestStudentSolutionV0Params,
+  SolutionsControllerDownloadOneV0Params,
+  SolutionsControllerFindOneStudentSolutionV0Params,
+} from "../../generated/models";
 
 export type GetSolutionReturnType = ExistingStudentSolution;
+
+const findOneStudentSolutiondefaultParams: SolutionsControllerFindOneStudentSolutionV0Params = {};
 
 const fetchAndTransform = (
   classId: number,
   sessionId: number,
   taskId: number,
   id: number,
+  params: SolutionsControllerFindOneStudentSolutionV0Params = findOneStudentSolutiondefaultParams,
 ): Promise<GetSolutionReturnType> =>
   solutionsControllerFindOneStudentSolutionV0(
     classId,
     sessionId,
     taskId,
     id,
+    params ?? findOneStudentSolutiondefaultParams,
   ).then(ExistingStudentSolution.fromDto);
 
 export const useSolution = (
@@ -31,6 +40,7 @@ export const useSolution = (
   sessionId?: string | number,
   taskId?: string | number,
   id?: string | number,
+  params?: SolutionsControllerFindOneStudentSolutionV0Params,
 ): ApiResponse<GetSolutionReturnType, Error> => {
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(sessionId);
@@ -43,6 +53,7 @@ export const useSolution = (
       numericSessionId,
       numericTaskId,
       numericSolutionId,
+      params ?? findOneStudentSolutiondefaultParams,
     ),
     () =>
       isNaN(numericClassId) ||
@@ -56,15 +67,19 @@ export const useSolution = (
             numericSessionId,
             numericTaskId,
             numericSolutionId,
+            params ?? findOneStudentSolutiondefaultParams,
           ),
   );
 };
+
+const downloadOneParams: SolutionsControllerDownloadOneV0Params = {};
 
 export const useSolutionFile = (
   classId?: string | number,
   sessionId?: string | number,
   taskId?: string | number,
   solutionHash?: string,
+  params?: SolutionsControllerDownloadOneV0Params,
 ): ApiResponse<Blob, Error> => {
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(sessionId);
@@ -78,6 +93,7 @@ export const useSolutionFile = (
       numericSessionId,
       numericTaskId,
       solutionHash ?? "",
+      params ?? downloadOneParams,
     ),
     () =>
       isNaN(numericClassId) ||
@@ -92,6 +108,7 @@ export const useSolutionFile = (
               numericSessionId,
               numericTaskId,
               solutionHash,
+              params ?? downloadOneParams,
             ),
             {
               ...authOptions,
@@ -101,20 +118,29 @@ export const useSolutionFile = (
   );
 };
 
+const downloadLatestParams: SolutionsControllerDownloadLatestStudentSolutionV0Params = {};
+
 export const useFetchLatestSolutionFile = (): ((
   classId: number,
   sessionId: number,
   taskId: number,
+  params?: SolutionsControllerDownloadLatestStudentSolutionV0Params,
 ) => Promise<Blob>) => {
   const authOptions = useAuthenticationOptions();
 
   return useCallback(
-    (classId: number, sessionId: number, taskId: number) =>
+    (
+      classId: number,
+      sessionId: number,
+      taskId: number,
+      params?: SolutionsControllerDownloadLatestStudentSolutionV0Params,
+    ) =>
       fetchFile(
         getSolutionsControllerDownloadLatestStudentSolutionV0Url(
           classId,
           sessionId,
           taskId,
+          params ?? downloadLatestParams,
         ),
         {
           ...authOptions,

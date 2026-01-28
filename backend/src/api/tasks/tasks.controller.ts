@@ -25,6 +25,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -115,6 +116,11 @@ export class TasksController {
 
   @Get()
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
@@ -128,6 +134,11 @@ export class TasksController {
 
   @Get(":id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -142,6 +153,11 @@ export class TasksController {
 
   @Get(":id/with-reference-solutions")
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
@@ -174,6 +190,11 @@ export class TasksController {
   @Get(":id/download")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
@@ -205,6 +226,11 @@ export class TasksController {
     ]),
     JsonToObjectsInterceptor(["referenceSolutions"]),
   )
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -262,6 +288,11 @@ export class TasksController {
   }
 
   @Delete(":id")
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
