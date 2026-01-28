@@ -24,7 +24,7 @@ Additional steps depend on the application you are integrating. For example:
 
 ### JSON-RPC integration
 
-To integrate the app into the CRT platform, you must implement the [`iframe-rpc` API](../architecture/iframe-rpc.md).
+To integrate the app into ClassMosaic, you must implement the [`iframe-rpc` API](../architecture/iframe-rpc.md).
 
 This includes declaring the events exchanged between the app and the backend (e.g. `GetTask`, `LoadTask`).
 

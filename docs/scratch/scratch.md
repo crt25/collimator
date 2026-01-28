@@ -66,7 +66,7 @@ In the following we will use "Task editing mode" (or "Edit mode") to denote `can
 
 Moreover, the new properties `isCostumesTabEnabled` and `isSoundsTabEnabled` allow hiding the costume and sound tabs.
 
-### CRT config
+### ClassMosaic config
 
 To store additional information with a scratch project, we add an additional `crt.json` file into the zip archive.
 
@@ -91,7 +91,7 @@ However, blocks reaching a remaining count of zero are still shown.
 
 Because the blocks part of the Scratch GUI is not rendered in React, we need to directly modify the DOM, which leads to unorthodox code in a React project.
 Every time the toolbox is updated, we check its contents using CSS selectors and add the buttons whose text value is the number of remaining blocks.
-The current number of used blocks is counted by iterating over the Scratch VM's targets (sprites, stage) and the number of allowed blocks is retrieved from the CRT config.
+The current number of used blocks is counted by iterating over the Scratch VM's targets (sprites, stage) and the number of allowed blocks is retrieved from the ClassMosaic config.
 
 When pressing any block config button (e.g., to change the maximum number of allowed blocks), we dispatch on the Window object a `ModifyBlockConfigEvent` event containing the opcode of the block whose config we want to modify.
 The `BlockConfig` React component listens for this event and, upon being triggered, renders a modal with a form to configure how often the block can be used.
@@ -109,7 +109,7 @@ There are three possible states: editable (default), appendable and frozen, each
 
 Whenever a block stack is created in the workspace, we show a small button at the top left, analogous to the block config buttons in the toolbox.
 When clicking on the button in Edit mode, it iterates through the different states showing a different symbol for each.
-At the same time, the CRT config is updated to store the new freeze state for the given stack (indexed by the id of the block at the top).
+At the same time, the ClassMosaic config is updated to store the new freeze state for the given stack (indexed by the id of the block at the top).
 
 In Solve mode, initial blocks in an appendable or frozen stack are rendered in gray.
 For appendable stacks, the respective symbol is shown at the top left of the stack.
@@ -122,7 +122,7 @@ In the case of appendable stacks, blocks can be appended at the end of the stack
 
 Because the workspace change updates we use for the block config are not in sync with the DOM elements, we instead rely on a DOM mutation observer for adding and removing the freeze buttons to the workspace stacks.
 
-In addition, we also have a small code snippet in the workspace update listener that removes entries from the CRT config whenever a block is deleted.
+In addition, we also have a small code snippet in the workspace update listener that removes entries from the ClassMosaic config whenever a block is deleted.
 
 When the blocks are frozen in Edit mode, we need to change the behavior of the npm module `scratch-blocks` to either prevent block prepends and appends ("frozen" state), or only block prepends ("appendable" state).
 To avoid forking the entire project, we instead use a tiny patch file modifying the installed dependency.
