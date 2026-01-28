@@ -167,11 +167,11 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task) {
-      return;
-    }
-
     try {
+      if (!session || !task) {
+        return;
+      }
+
       const response = await embeddedApp.current.sendRequest(
         "getSubmission",
         undefined,
@@ -188,9 +188,9 @@ const SolveTaskPage = () => {
     } catch (error) {
       console.error("Failed to submit solution with", error);
       setSaveError(true);
-    } finally {
-      isScratchMutexAvailable.current = true;
     }
+
+    isScratchMutexAvailable.current = true;
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
