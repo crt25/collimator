@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance } from "class-transformer";
 import { SolutionTest } from "@prisma/client";
+import { IsDate } from "class-validator";
 import { CreateSolutionTestDto } from "./create-solution-test.dto";
 import { StudentSolutionId } from "./existing-student-solution.dto";
 import { ReferenceSolutionId } from "./existing-reference-solution.dto";
@@ -28,6 +29,11 @@ export class ExistingSolutionTestDto extends CreateSolutionTestDto {
     nullable: true,
   })
   readonly studentSolutionId!: StudentSolutionId | null;
+
+  @IsDate()
+  @ApiProperty({ nullable: true })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   static fromQueryResult(data: SolutionTest): ExistingSolutionTestDto {
     return plainToInstance(ExistingSolutionTestDto, data, {

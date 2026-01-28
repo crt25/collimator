@@ -8,6 +8,8 @@ import {
   Delete,
   ParseIntPipe,
   ForbiddenException,
+  ParseBoolPipe,
+  Query,
 } from "@nestjs/common";
 import {
   ApiCreatedResponse,
@@ -53,9 +55,11 @@ export class UsersController {
   @Get()
   @AdminOnly()
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
-  async findAll(): Promise<ExistingUserDto[]> {
+  async findAll(
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
+  ): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
-    const users = await this.usersService.findMany({});
+    const users = await this.usersService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingUserDto, users);
   }
 
@@ -65,6 +69,7 @@ export class UsersController {
   async findOne(
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canViewUser(
       authenticatedUser,
@@ -75,7 +80,7 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    const user = await this.usersService.findByIdOrThrow(id);
+    const user = await this.usersService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingUserDto.fromQueryResult(user);
   }
 
@@ -87,6 +92,7 @@ export class UsersController {
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
     @Body() userDto: UpdateUserDto,
+    @Query("includeSoftDelete", ParseBoolPipe) includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canUpdateUser(
       authenticatedUser,
@@ -98,7 +104,7 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    const user = await this.usersService.update(id, userDto);
+    const user = await this.usersService.update(id, userDto, includeSoftDelete);
 
     return ExistingUserDto.fromQueryResult(user);
   }

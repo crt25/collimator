@@ -117,8 +117,8 @@ export const startBackend = (config: {
   jwkEndpoint?: string;
   userInfoEndpoint?: string;
   clientId?: string;
-}): ChildProcessWithoutNullStreams =>
-  spawn("yarn", ["start:built:coverage"], {
+}): ChildProcessWithoutNullStreams => {
+  const backendProcess = spawn("yarn", ["start:built:coverage"], {
     env: {
       ...process.env,
       NODE_ENV: "production",
@@ -133,6 +133,34 @@ export const startBackend = (config: {
     cwd: getBackendPath(),
     shell: true,
   });
+
+  backendProcess.stdout.on("data", (data) => {
+    const output = data.toString();
+    if (isDebug) {
+      console.log("[backend]: " + output);
+    }
+  });
+
+  backendProcess.stderr.on("data", (data) => {
+    const output = data.toString();
+    console.error("[backend-stdeerr]" + output);
+  });
+
+  backendProcess.on("close", (code) => {
+    console.log("[backend] process exited with code +" + code);
+  });
+
+  backendProcess.on("error", (error) => {
+    console.log(
+      "[backend] process exited with code +" +
+        error.message +
+        "with error:" +
+        error,
+    );
+  });
+
+  return backendProcess;
+};
 
 export const buildFrontend = (
   config: {
