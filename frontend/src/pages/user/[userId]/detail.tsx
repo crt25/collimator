@@ -10,6 +10,7 @@ import SwrContent from "@/components/SwrContent";
 import PageHeading from "@/components/PageHeading";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import UserActions from "@/components/user/UserActions";
 
 const messages = defineMessages({
   title: {
@@ -38,11 +39,13 @@ const UserDetail = () => {
         <Breadcrumbs>
           <CrtNavigation breadcrumb />
         </Breadcrumbs>
-        <UserNavigation userId={user?.id} />
         <SwrContent error={error} isLoading={isLoading} data={user}>
           {(user) => (
             <div>
-              <PageHeading>{user.name ?? user.oidcSub}</PageHeading>
+              <PageHeading actions={<UserActions user={user} />}>
+                {user.name ?? user.oidcSub}
+              </PageHeading>
+              <UserNavigation userId={user?.id} />
               <Table.Root role="presentation" data-testid="user-details">
                 <Table.Body>
                   <Table.Row>

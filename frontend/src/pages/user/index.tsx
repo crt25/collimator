@@ -20,8 +20,9 @@ const ListUsers = () => {
     <MaxScreenHeight>
       <Header title={messages.title} />
       <Container>
-        <Breadcrumbs />
-        <CrtNavigation />
+        <Breadcrumbs>
+          <CrtNavigation breadcrumb />
+        </Breadcrumbs>
         <PageHeading>
           <FormattedMessage
             id="ListUsers.header"

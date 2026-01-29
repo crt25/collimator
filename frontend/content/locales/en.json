@@ -1110,6 +1110,30 @@
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"
   },
+  "UserActions.deleteCancel": {
+    "message": "Cancel"
+  },
+  "UserActions.deleteConfirmation.body": {
+    "message": "Are you sure you want to delete this user?"
+  },
+  "UserActions.deleteConfirmation.confirm": {
+    "message": "Delete User"
+  },
+  "UserActions.deleteConfirmation.title": {
+    "message": "Delete User"
+  },
+  "UserActions.deleteError": {
+    "message": "There was an error deleting the user. Please try again!"
+  },
+  "UserActions.deleteSuccess": {
+    "message": "User deleted successfully"
+  },
+  "UserActions.deleteUser": {
+    "message": "Delete User"
+  },
+  "UserActions.generateRegistrationToken": {
+    "message": "Get registration link"
+  },
   "UserDetail.table.oidcSub": {
     "message": "OpenId Connect Identifier"
   },
@@ -1128,26 +1152,17 @@
   "UserForm.role": {
     "message": "Role"
   },
-  "UserList.columns.actions": {
-    "message": "Actions"
-  },
   "UserList.columns.name": {
     "message": "Name"
   },
   "UserList.columns.role": {
     "message": "Role"
   },
-  "UserList.deleteConfirmation.body": {
-    "message": "Are you sure you want to delete this user?"
+  "UserList.createUser": {
+    "message": "Create User"
   },
-  "UserList.deleteConfirmation.confirm": {
-    "message": "Delete User"
-  },
-  "UserList.deleteConfirmation.title": {
-    "message": "Delete User"
-  },
-  "UserList.generateRegistrationToken": {
-    "message": "Get registration link"
+  "UserList.viewDetails": {
+    "message": "View user Details"
   },
   "UserNavigation.userTab": {
     "message": "User Details"
