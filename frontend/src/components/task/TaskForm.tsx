@@ -125,7 +125,7 @@ type TaskFormValues = {
   title: string;
   description: string;
   type: TaskType;
-  taskFile: Blob;
+  taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
 };
@@ -136,7 +136,7 @@ export type TaskFormSubmission = {
   title: string;
   description: string;
   type: TaskType;
-  taskFile: Blob;
+  taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
   clearAllReferenceSolutions: boolean;
@@ -151,9 +151,10 @@ const getYupSchema = (intl: IntlShape) => ({
     .test(
       "is-blob",
       intl.formatMessage(messages.blobValidation),
-      (v) => v instanceof Blob,
+      (v) => v instanceof Blob || v === null,
     )
-    .required(),
+    .nullable()
+    .defined(),
   initialSolutionFile: yup
     .mixed<Blob>()
     .test(
@@ -221,7 +222,7 @@ const TaskForm = ({
     title: string;
     description: string;
     type: TaskType;
-    taskFile: Blob;
+    taskFile: Blob | null;
     initialSolution: UpdateReferenceSolutionDto | null;
     initialSolutionFile: Blob | null;
   }>;
