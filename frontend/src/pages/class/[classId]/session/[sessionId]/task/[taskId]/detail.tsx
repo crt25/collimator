@@ -17,9 +17,12 @@ import ClassNavigation from "@/components/class/ClassNavigation";
 import SessionNavigation from "@/components/session/SessionNavigation";
 import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
-import { UpdateReferenceSolutionDto } from "@/api/collimator/generated/models";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import {
+  appendOrUpdateInitialSolution,
+  getInitialSolutionOnly,
+} from "@/utilities/task/task-instance";
 
 const messages = defineMessages({
   title: {
@@ -58,38 +61,30 @@ const TaskInstanceDetails = () => {
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
-      if (task.data && taskFile.data) {
-        let referenceSolutions: UpdateReferenceSolutionDto[];
-        let referenceSolutionsFiles: Blob[];
-
-        if (
-          taskSubmission.initialSolution &&
-          taskSubmission.initialSolutionFile
-        ) {
-          referenceSolutions = [
-            ...task.data.referenceSolutions.filter((s) => !s.isInitial),
-            taskSubmission.initialSolution,
-          ];
-
-          referenceSolutionsFiles = [
-            ...task.data.referenceSolutions
-              .filter((s) => !s.isInitial)
-              .map((s) => s.solution),
-            taskSubmission.initialSolutionFile,
-          ];
-        } else {
-          referenceSolutions = [...task.data.referenceSolutions];
-          referenceSolutionsFiles = [
-            ...task.data.referenceSolutions.map((s) => s.solution),
-          ];
-        }
-
-        await updateTask(task.data.id, {
-          ...taskSubmission,
-          referenceSolutions,
-          referenceSolutionsFiles,
-        });
+      if (!task.data || !taskFile.data || !taskSubmission.taskFile) {
+        return;
       }
+
+      const shouldClearAllSolutions =
+        taskSubmission.clearAllReferenceSolutions ?? false;
+
+      const [referenceSolutions, referenceSolutionsFiles] =
+        // if we are clearing all solutions
+        shouldClearAllSolutions
+          ? // then we only keep the initial solution from the submission
+            getInitialSolutionOnly(taskSubmission)
+          : // otherwise we append or update the initial solution as usual
+            appendOrUpdateInitialSolution(
+              taskSubmission,
+              task.data.referenceSolutions,
+            );
+
+      await updateTask(task.data.id, {
+        ...taskSubmission,
+        taskFile: taskSubmission.taskFile,
+        referenceSolutions,
+        referenceSolutionsFiles,
+      });
     },
     [task.data, taskFile.data, updateTask],
   );

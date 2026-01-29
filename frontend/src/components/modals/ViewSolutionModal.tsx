@@ -5,7 +5,7 @@ import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { executeWithToasts } from "@/utilities/task";
+import { executeWithToasts } from "@/utilities/task/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import MultiSwrContent from "../MultiSwrContent";
