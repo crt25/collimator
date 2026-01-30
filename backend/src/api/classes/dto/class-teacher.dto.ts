@@ -22,7 +22,7 @@ export class ClassTeacherDto {
   @Type(() => Date)
   @IsDate()
   @IsOptional()
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: Date, nullable: true, required: false })
   @Expose()
   readonly deletedAt!: Date | null;
 }
