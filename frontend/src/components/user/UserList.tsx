@@ -100,7 +100,7 @@ const UserList = () => {
       ),
       size: ColumnSize.sm,
       meta: {
-        columnType: ColumnType.icon,
+        columnType: ColumnType.text,
       },
     },
   ];
