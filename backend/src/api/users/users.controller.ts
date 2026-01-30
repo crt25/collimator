@@ -61,11 +61,6 @@ export class UsersController {
     type: Boolean,
   })
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
-  @ApiQuery({
-    name: "includeSoftDelete",
-    required: false,
-    type: Boolean,
-  })
   async findAll(
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
