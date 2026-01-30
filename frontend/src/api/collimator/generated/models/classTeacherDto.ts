@@ -14,4 +14,6 @@ export interface ClassTeacherDto {
    * @nullable
    */
   name: string | null;
+  /** @nullable */
+  deletedAt?: string | null;
 }

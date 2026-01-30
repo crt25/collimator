@@ -35,4 +35,6 @@ export interface ExistingSolutionTestDto {
    * @nullable
    */
   studentSolutionId: ExistingSolutionTestDtoStudentSolutionId;
+  /** @nullable */
+  deletedAt?: string | null;
 }

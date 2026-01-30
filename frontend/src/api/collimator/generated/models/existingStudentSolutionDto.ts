@@ -17,6 +17,8 @@ export interface ExistingStudentSolutionDto {
   studentId: number;
   sessionId: number;
   taskId: number;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The base64 encoded solution hash. */
   solutionHash: string;
   /** The associated solution. */
