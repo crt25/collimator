@@ -62,7 +62,6 @@ const EditTaskModal = ({
               task: initialTask,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       }

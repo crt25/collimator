@@ -214,7 +214,6 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
