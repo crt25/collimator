@@ -149,6 +149,10 @@ const TaskInstanceDetails = () => {
                     initialSolutionFile: initialSolution?.solution ?? null,
                   }}
                   submitMessage={messages.submit}
+                  hasReferenceSolutions={
+                    // only consider reference solutions that are not marked as initial
+                    task.referenceSolutions.some((s) => !s.isInitial)
+                  }
                   onSubmit={onSubmit}
                 />
               </>

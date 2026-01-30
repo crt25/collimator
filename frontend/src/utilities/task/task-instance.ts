@@ -31,8 +31,5 @@ export const appendOrUpdateInitialSolution = (
     ];
   }
 
-  return [
-    [...existingSolutions],
-    [...existingSolutions.map((s) => s.solution)],
-  ];
+  return [[...existingSolutions], existingSolutions.map((s) => s.solution)];
 };
