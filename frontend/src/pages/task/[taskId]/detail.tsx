@@ -111,8 +111,8 @@ const EditTask = () => {
                   }}
                   submitMessage={messages.submit}
                   hasReferenceSolutions={
-                    task.referenceSolutions.filter((s) => !s.isInitial).length >
-                    0
+                    // only consider reference solutions that are not marked as initial
+                    task.referenceSolutions.some((s) => !s.isInitial)
                   }
                   onSubmit={onSubmit}
                 />

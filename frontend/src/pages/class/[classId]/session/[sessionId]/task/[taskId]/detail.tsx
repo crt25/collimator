@@ -150,9 +150,8 @@ const TaskInstanceDetails = () => {
                   }}
                   submitMessage={messages.submit}
                   hasReferenceSolutions={
-                    // we filter the initial solution here because it's not manually created by the user
-                    task.referenceSolutions.filter((s) => !s.isInitial).length >
-                    0
+                    // only consider reference solutions that are not marked as initial
+                    task.referenceSolutions.some((s) => !s.isInitial)
                   }
                   onSubmit={onSubmit}
                 />
