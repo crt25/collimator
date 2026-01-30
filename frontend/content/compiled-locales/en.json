@@ -823,28 +823,6 @@
       "value": "title"
     }
   ],
-  "EditUser.header": [
-    {
-      "type": 0,
-      "value": "Edit User"
-    }
-  ],
-  "EditUser.submit": [
-    {
-      "type": 0,
-      "value": "Save User"
-    }
-  ],
-  "EditUser.title": [
-    {
-      "type": 0,
-      "value": "Edit User - "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
   "EditedBadge.edited": [
     {
       "type": 0,
@@ -2403,16 +2381,10 @@
       "value": "Get registration link"
     }
   ],
-  "UserDetail.table.oidcSub": [
+  "UserDetail.submit": [
     {
       "type": 0,
-      "value": "OpenId Connect Identifier"
-    }
-  ],
-  "UserDetail.table.type": [
-    {
-      "type": 0,
-      "value": "Type"
+      "value": "Save User"
     }
   ],
   "UserDetail.title": [

@@ -1089,6 +1089,18 @@
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
+  "DEPRECATED: UserDetail.table.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
+  "DEPRECATED: UserDetail.table.type": [
+    {
+      "type": 0,
+      "value": "Type"
+    }
+  ],
   "DEPRECATED: UserList.columns.actions": [
     {
       "type": 0,
@@ -1233,28 +1245,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "EditUser.header": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur"
-    }
-  ],
-  "EditUser.submit": [
-    {
-      "type": 0,
-      "value": "Sauvegarder l'Utilisateur"
-    }
-  ],
-  "EditUser.title": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur - "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "EditedBadge.edited": [
@@ -2815,16 +2805,10 @@
       "value": "Obtenir le lien d'inscription"
     }
   ],
-  "UserDetail.table.oidcSub": [
+  "UserDetail.submit": [
     {
       "type": 0,
-      "value": "Identifiant OpenId Connect"
-    }
-  ],
-  "UserDetail.table.type": [
-    {
-      "type": 0,
-      "value": "Type"
+      "value": "Save User"
     }
   ],
   "UserDetail.title": [
@@ -2870,13 +2854,13 @@
   "UserList.createUser": [
     {
       "type": 0,
-      "value": "Create User"
+      "value": "Créer un Utilisateur"
     }
   ],
   "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "View user Details"
+      "value": "Voir les détails de l'utilisateur"
     }
   ],
   "UserNavigation.userTab": [

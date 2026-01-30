@@ -389,15 +389,6 @@
   "EditTask.title": {
     "message": "Edit Task - {title}"
   },
-  "EditUser.header": {
-    "message": "Edit User"
-  },
-  "EditUser.submit": {
-    "message": "Save User"
-  },
-  "EditUser.title": {
-    "message": "Edit User - {name}"
-  },
   "EditedBadge.edited": {
     "message": "Edited"
   },
@@ -1134,11 +1125,8 @@
   "UserActions.generateRegistrationToken": {
     "message": "Get registration link"
   },
-  "UserDetail.table.oidcSub": {
-    "message": "OpenId Connect Identifier"
-  },
-  "UserDetail.table.type": {
-    "message": "Type"
+  "UserDetail.submit": {
+    "message": "Save User"
   },
   "UserDetail.title": {
     "message": "User - {name}"

@@ -2,13 +2,13 @@ import { defineMessages, useIntl } from "react-intl";
 import { LuLink, LuTrash } from "react-icons/lu";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { toaster } from "@/components/Toaster";
 import DropdownMenu from "../DropdownMenu";
 import { ExistingUser } from "@/api/collimator/models/users/existing-user";
 import { useDeleteUser } from "@/api/collimator/hooks/users/useDeleteUser";
 import { useGenerateRegistrationToken } from "@/api/collimator/hooks/users/useGenerateRegistrationToken";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { Modal } from "@/components/form/Modal";
-import { toaster } from "@/components/Toaster";
 
 const messages = defineMessages({
   deleteUser: {

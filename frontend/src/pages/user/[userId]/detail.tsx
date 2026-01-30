@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { defineMessages, FormattedMessage } from "react-intl";
-import { Container, Table } from "@chakra-ui/react";
+import { defineMessages } from "react-intl";
+import { Container } from "@chakra-ui/react";
+import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -11,11 +12,18 @@ import PageHeading from "@/components/PageHeading";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
 import UserActions from "@/components/user/UserActions";
+import { AuthenticationProvider } from "@/api/collimator/generated/models";
+import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
+import UserForm, { UserFormValues } from "@/components/user/UserForm";
 
 const messages = defineMessages({
   title: {
     id: "UserDetail.title",
     defaultMessage: "User - {name}",
+  },
+  submit: {
+    id: "UserDetail.submit",
+    defaultMessage: "Save User",
   },
 });
 
@@ -26,6 +34,24 @@ const UserDetail = () => {
   };
 
   const { data: user, isLoading, error } = useUser(userId);
+
+  const updateUser = useUpdateUser();
+
+  const onSubmit = useCallback(
+    async (formValues: UserFormValues) => {
+      if (user) {
+        await updateUser(user.id, {
+          name: formValues.name,
+          email: formValues.email,
+          authenticationProvider: AuthenticationProvider.MICROSOFT,
+          type: formValues.type,
+        });
+
+        router.back();
+      }
+    },
+    [user, updateUser, router],
+  );
 
   return (
     <MaxScreenHeight>
@@ -46,28 +72,11 @@ const UserDetail = () => {
                 {user.name ?? user.oidcSub}
               </PageHeading>
               <UserNavigation userId={user?.id} />
-              <Table.Root role="presentation" data-testid="user-details">
-                <Table.Body>
-                  <Table.Row>
-                    <Table.Cell>
-                      <FormattedMessage
-                        id="UserDetail.table.oidcSub"
-                        defaultMessage="OpenId Connect Identifier"
-                      />
-                    </Table.Cell>
-                    <Table.Cell>{user.oidcSub}</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>
-                      <FormattedMessage
-                        id="UserDetail.table.type"
-                        defaultMessage="Type"
-                      />
-                    </Table.Cell>
-                    <Table.Cell>{user.type}</Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table.Root>
+              <UserForm
+                submitMessage={messages.submit}
+                initialValues={user}
+                onSubmit={onSubmit}
+              />
             </div>
           )}
         </SwrContent>

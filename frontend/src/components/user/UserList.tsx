@@ -112,13 +112,9 @@ const UserList = () => {
           <ChakraDataTable
             data={data.items}
             columns={columns}
-            filterDisplay="row"
-            dataKey="id"
-            paginator
-            rows={10}
-            totalRecords={data.totalCount}
-            loading={isLoading}
+            isLoading={isLoading}
             includeSearchBar
+            emptyStateElement={null}
             onRowClick={(row, e) => {
               if (isClickOnRow(e)) {
                 router.push(`/user/${row.id}/detail`);
@@ -135,7 +131,7 @@ const UserList = () => {
                 ],
               },
             }}
-          ></ChakraDataTable>
+          />
         )}
       </SwrContent>
       <Button

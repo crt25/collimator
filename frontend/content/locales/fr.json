@@ -203,6 +203,12 @@
   "DEPRECATED: UserList.generateRegistrationToken": {
     "message": "Obtenir le lien d'inscription"
   },
+  "DEPRECATED: UserDetail.table.oidcSub": {
+    "message": "Identifiant OpenId Connect"
+  },
+  "DEPRECATED: UserDetail.table.type": {
+    "message": "Type"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -592,15 +598,6 @@
   },
   "EditTask.title": {
     "message": "Modifier l'activité - {title}"
-  },
-  "EditUser.header": {
-    "message": "Modifier l'Utilisateur"
-  },
-  "EditUser.submit": {
-    "message": "Sauvegarder l'Utilisateur"
-  },
-  "EditUser.title": {
-    "message": "Modifier l'Utilisateur - {name}"
   },
   "EditedBadge.edited": {
     "message": "Modifié"
@@ -1338,11 +1335,8 @@
   "UserActions.generateRegistrationToken": {
     "message": "Obtenir le lien d'inscription"
   },
-  "UserDetail.table.oidcSub": {
-    "message": "Identifiant OpenId Connect"
-  },
-  "UserDetail.table.type": {
-    "message": "Type"
+  "UserDetail.submit": {
+    "message": "Sauvegarder l'utilisateur"
   },
   "UserDetail.title": {
     "message": "Utilisateur - {name}"
