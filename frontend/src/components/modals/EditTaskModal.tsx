@@ -40,7 +40,6 @@ const EditTaskModal = ({
     async (embeddedApp: EmbeddedAppRef) => {
       const task = await executeAsyncWithToasts(
         () => embeddedApp.sendRequest("getTask", undefined),
-        intl.formatMessage(taskMessages.savingTask),
         intl.formatMessage(taskMessages.cannotSaveTask),
       );
       onSave(task.result);
