@@ -401,7 +401,7 @@ const TaskForm = ({
       type: pendingTaskType,
       title: title || "",
       description: description || "",
-      replaceTaskId: taskId ? taskId : "",
+      replaceTaskId: taskId || "",
     });
 
     router.push(`/task/create?${queryParams.toString()}`);

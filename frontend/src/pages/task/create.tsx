@@ -95,7 +95,7 @@ const CreateTask = () => {
 
       if (queryParams.replaceTaskId) {
         try {
-          await deleteTask(parseInt(queryParams.replaceTaskId));
+          await deleteTask(Number.parseInt(queryParams.replaceTaskId));
         } catch {
           toaster.error({
             title: intl.formatMessage(messages.cannotDeleteReplacedTask),
