@@ -1089,6 +1089,36 @@
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
+  "DEPRECATED: UserList.columns.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
   "DEPRECATED: criteria.functionCall.name": [
     {
       "type": 0,
@@ -2737,6 +2767,54 @@
       "value": "Nombre de tests réussis"
     }
   ],
+  "UserActions.deleteCancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "UserActions.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+    }
+  ],
+  "UserActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteError": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'utilisateur. Veuillez réessayer."
+    }
+  ],
+  "UserActions.deleteSuccess": [
+    {
+      "type": 0,
+      "value": "Utilisateur supprimé avec succès"
+    }
+  ],
+  "UserActions.deleteUser": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
   "UserDetail.table.oidcSub": [
     {
       "type": 0,
@@ -2777,12 +2855,6 @@
       "value": "Rôle"
     }
   ],
-  "UserList.columns.actions": [
-    {
-      "type": 0,
-      "value": "Actions"
-    }
-  ],
   "UserList.columns.name": [
     {
       "type": 0,
@@ -2795,28 +2867,16 @@
       "value": "Rôle"
     }
   ],
-  "UserList.deleteConfirmation.body": [
+  "UserList.createUser": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+      "value": "Create User"
     }
   ],
-  "UserList.deleteConfirmation.confirm": [
+  "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.generateRegistrationToken": [
-    {
-      "type": 0,
-      "value": "Obtenir le lien d'inscription"
+      "value": "View user Details"
     }
   ],
   "UserNavigation.userTab": [
@@ -2984,7 +3044,7 @@
   "embeddedApp.cannotExport": [
     {
       "type": 0,
-      "value": "Failed to export task: "
+      "value": "Échec de l'exportation de la tâche : "
     },
     {
       "type": 1,
@@ -2994,7 +3054,7 @@
   "embeddedApp.cannotGetTask": [
     {
       "type": 0,
-      "value": "Cannot get task: "
+      "value": "Impossible de récupérer la tâche : "
     },
     {
       "type": 1,
@@ -3004,7 +3064,7 @@
   "embeddedApp.cannotImportExternalInNonEditMode": [
     {
       "type": 0,
-      "value": "Cannot import external tasks in non-edit mode"
+      "value": "Impossible d'importer des tâches externes en mode non-édition"
     }
   ],
   "embeddedApp.cannotImportTask": [
@@ -3020,7 +3080,7 @@
   "embeddedApp.cannotLoadProject": [
     {
       "type": 0,
-      "value": "Cannot load project: "
+      "value": "Impossible de charger le projet : "
     },
     {
       "type": 1,
@@ -3050,7 +3110,7 @@
   "embeddedApp.cannotSaveProject": [
     {
       "type": 0,
-      "value": "Cannot save project: "
+      "value": "Impossible de sauvegarder le projet : "
     },
     {
       "type": 1,
@@ -3060,7 +3120,7 @@
   "embeddedApp.cannotSaveTask": [
     {
       "type": 0,
-      "value": "Cannot save task: "
+      "value": "Impossible de sauvegarder la tâche : "
     },
     {
       "type": 1,
@@ -3070,7 +3130,7 @@
   "embeddedApp.savingTask": [
     {
       "type": 0,
-      "value": "Saving task..."
+      "value": "Sauvegarde de la tâche en cours..."
     }
   ],
   "embeddedApp.submissionLoaded": [

@@ -188,6 +188,21 @@
   "DEPRECATED: embeddedApp.exportError": {
     "message": "Échec de l'exportation de la tâche : {error}"
   },
+  "DEPRECATED: UserList.columns.actions": {
+    "message": "Actions"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.confirm": {
+    "message": "Effacer l'utilisateur"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.title": {
+    "message": "Effacer l'utilisateur"
+  },
+  "DEPRECATED: UserList.generateRegistrationToken": {
+    "message": "Obtenir le lien d'inscription"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -1299,6 +1314,30 @@
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
   },
+  "UserActions.deleteCancel": {
+    "message": "Annuler"
+  },
+  "UserActions.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+  },
+  "UserActions.deleteConfirmation.confirm": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.deleteConfirmation.title": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.deleteError": {
+    "message": "Une erreur est survenue lors de la suppression de l'utilisateur. Veuillez réessayer."
+  },
+  "UserActions.deleteSuccess": {
+    "message": "Utilisateur supprimé avec succès"
+  },
+  "UserActions.deleteUser": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.generateRegistrationToken": {
+    "message": "Obtenir le lien d'inscription"
+  },
   "UserDetail.table.oidcSub": {
     "message": "Identifiant OpenId Connect"
   },
@@ -1317,26 +1356,17 @@
   "UserForm.role": {
     "message": "Rôle"
   },
-  "UserList.columns.actions": {
-    "message": "Actions"
-  },
   "UserList.columns.name": {
     "message": "Nom"
   },
   "UserList.columns.role": {
     "message": "Rôle"
   },
-  "UserList.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+  "UserList.createUser": {
+    "message": "Créer un Utilisateur"
   },
-  "UserList.deleteConfirmation.confirm": {
-    "message": "Effacer l'utilisateur"
-  },
-  "UserList.deleteConfirmation.title": {
-    "message": "Effacer l'utilisateur"
-  },
-  "UserList.generateRegistrationToken": {
-    "message": "Obtenir le lien d'inscription"
+  "UserList.viewDetails": {
+    "message": "Voir les détails de l'utilisateur"
   },
   "UserNavigation.userTab": {
     "message": "Détails de l'utilisateur"
@@ -1419,7 +1449,7 @@
   "datatable.placeholder.filterBy": {
     "message": "Rechercher..."
   },
-"embeddedApp.cannotExport": {
+  "embeddedApp.cannotExport": {
     "message": "Échec de l'exportation de la tâche : {error}"
   },
   "embeddedApp.cannotGetTask": {

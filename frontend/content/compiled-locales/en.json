@@ -2355,6 +2355,54 @@
       "value": "Number of passed tests"
     }
   ],
+  "UserActions.deleteCancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "UserActions.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to delete this user?"
+    }
+  ],
+  "UserActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.deleteError": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the user. Please try again!"
+    }
+  ],
+  "UserActions.deleteSuccess": [
+    {
+      "type": 0,
+      "value": "User deleted successfully"
+    }
+  ],
+  "UserActions.deleteUser": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Get registration link"
+    }
+  ],
   "UserDetail.table.oidcSub": [
     {
       "type": 0,
@@ -2395,12 +2443,6 @@
       "value": "Role"
     }
   ],
-  "UserList.columns.actions": [
-    {
-      "type": 0,
-      "value": "Actions"
-    }
-  ],
   "UserList.columns.name": [
     {
       "type": 0,
@@ -2413,28 +2455,16 @@
       "value": "Role"
     }
   ],
-  "UserList.deleteConfirmation.body": [
+  "UserList.createUser": [
     {
       "type": 0,
-      "value": "Are you sure you want to delete this user?"
+      "value": "Create User"
     }
   ],
-  "UserList.deleteConfirmation.confirm": [
+  "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "Delete User"
-    }
-  ],
-  "UserList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Delete User"
-    }
-  ],
-  "UserList.generateRegistrationToken": [
-    {
-      "type": 0,
-      "value": "Get registration link"
+      "value": "View user Details"
     }
   ],
   "UserNavigation.userTab": [
