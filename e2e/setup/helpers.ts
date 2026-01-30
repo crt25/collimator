@@ -134,31 +134,6 @@ export const startBackend = (config: {
     shell: true,
   });
 
-  backendProcess.stdout.on("data", (data) => {
-    const output = data.toString();
-    if (isDebug) {
-      console.log("[backend]: " + output);
-    }
-  });
-
-  backendProcess.stderr.on("data", (data) => {
-    const output = data.toString();
-    console.error("[backend-stdeerr]" + output);
-  });
-
-  backendProcess.on("close", (code) => {
-    console.log("[backend] process exited with code +" + code);
-  });
-
-  backendProcess.on("error", (error) => {
-    console.log(
-      "[backend] process exited with code +" +
-        error.message +
-        "with error:" +
-        error,
-    );
-  });
-
   return backendProcess;
 };
 
