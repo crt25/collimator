@@ -2409,10 +2409,22 @@
       "value": "Name"
     }
   ],
+  "UserForm.oidcSub": [
+    {
+      "type": 0,
+      "value": "OpenID Connect Identifier"
+    }
+  ],
   "UserForm.role": [
     {
       "type": 0,
       "value": "Role"
+    }
+  ],
+  "UserForm.tooltip.disabledSaveButton": [
+    {
+      "type": 0,
+      "value": "No changes to save"
     }
   ],
   "UserList.columns.name": [

@@ -1137,8 +1137,14 @@
   "UserForm.name": {
     "message": "Name"
   },
+  "UserForm.oidcSub": {
+    "message": "OpenID Connect Identifier"
+  },
   "UserForm.role": {
     "message": "Role"
+  },
+  "UserForm.tooltip.disabledSaveButton": {
+    "message": "No changes to save"
   },
   "UserList.columns.name": {
     "message": "Name"

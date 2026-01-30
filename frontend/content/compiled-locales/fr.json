@@ -2808,7 +2808,7 @@
   "UserDetail.submit": [
     {
       "type": 0,
-      "value": "Save User"
+      "value": "Sauvegarder l'utilisateur"
     }
   ],
   "UserDetail.title": [
@@ -2833,10 +2833,22 @@
       "value": "Nom"
     }
   ],
+  "UserForm.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
   "UserForm.role": [
     {
       "type": 0,
       "value": "Rôle"
+    }
+  ],
+  "UserForm.tooltip.disabledSaveButton": [
+    {
+      "type": 0,
+      "value": "Aucune modification n'a été apportée au formulaire."
     }
   ],
   "UserList.columns.name": [
