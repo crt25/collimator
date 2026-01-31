@@ -5,6 +5,8 @@ import { hideBin } from "yargs/helpers";
 import { seedProduction } from "./production";
 import { seedEndToEndTesting } from "./e2e";
 
+const DEFAULT_FRONTEND_HOSTNAME = 'https://[YourClassMosaicInstance]';
+
 enum SeedingMode {
   production = "production",
   e2e = "e2e",
@@ -35,7 +37,8 @@ const prisma = new PrismaClient();
 async function main(): Promise<void> {
   const mode = (process.env.SEEDING_MODE ??
     SeedingMode.production) as SeedingMode;
-  const frontendHostname = process.env.FRONTEND_HOSTNAME as string;
+  const frontendHostname = (process.env.FRONTEND_HOSTNAME ??
+    DEFAULT_FRONTEND_HOSTNAME) as string;
 
   await match(mode)
     .with(SeedingMode.production, async () => {
