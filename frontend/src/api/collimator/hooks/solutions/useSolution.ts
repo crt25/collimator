@@ -18,7 +18,8 @@ import {
 
 export type GetSolutionReturnType = ExistingStudentSolution;
 
-const findOneStudentSolutiondefaultParams: SolutionsControllerFindOneStudentSolutionV0Params = {};
+const findOneStudentSolutiondefaultParams: SolutionsControllerFindOneStudentSolutionV0Params =
+  {};
 
 const fetchAndTransform = (
   classId: number,
@@ -118,7 +119,8 @@ export const useSolutionFile = (
   );
 };
 
-const downloadLatestParams: SolutionsControllerDownloadLatestStudentSolutionV0Params = {};
+const downloadLatestParams: SolutionsControllerDownloadLatestStudentSolutionV0Params =
+  {};
 
 export const useFetchLatestSolutionFile = (): ((
   classId: number,
