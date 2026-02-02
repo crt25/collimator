@@ -214,7 +214,6 @@ const TaskForm = ({
   const cannotNavigate = useRef(false);
 
   const originalType = initialValues?.type ?? TaskType.SCRATCH;
-  const originalTaskFile = initialValues?.taskFile ?? null;
 
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
     title: string;
@@ -334,39 +333,9 @@ const TaskForm = ({
     setOpenModal(ModalStates.none);
   }, []);
 
-  const handleEditModalClose = useCallback(
-    (isShown: boolean) => {
-      if (isShown) {
-        setOpenModal(ModalStates.taskEdit);
-        return;
-      }
-
-      setOpenModal(ModalStates.none);
-
-      // if type was changed and user closes without saving, revert everything
-      if (hasTypeChanged) {
-        setValueClean("type", originalType);
-        setValueClean("taskFile", originalTaskFile);
-        setValueClean(
-          "initialSolution",
-          initialValues?.initialSolution ?? null,
-        );
-        setValueClean(
-          "initialSolutionFile",
-          initialValues?.initialSolutionFile ?? null,
-        );
-        setHasTypeChanged(false);
-        setClearSolutionsOnSave(false);
-      }
-    },
-    [
-      hasTypeChanged,
-      originalType,
-      originalTaskFile,
-      initialValues,
-      setValueClean,
-    ],
-  );
+  const handleEditModalClose = useCallback(() => {
+    setOpenModal(ModalStates.none);
+  }, []);
 
   const handleEditModalSave = useCallback(
     (task: { file: Blob; initialSolution: Submission }) => {
@@ -438,22 +407,6 @@ const TaskForm = ({
   const showEditedBadges = !!initialValues;
   const needsTaskFile = hasTypeChanged && !taskFile;
   const canSubmit = isDirty && isValid && !needsTaskFile;
-
-  const closeModalIfActive =
-    (state: ModalStates, onClose?: () => void) => (isShown: boolean) => {
-      if (!isShown) {
-        setOpenModal((current) => {
-          if (current === state) {
-            // only call onclose if we're actually closing this modal to none
-            // not if we're transitioning to another modal
-            // this prevents the cancel callback from running when the user confirms
-            onClose?.();
-            return ModalStates.none;
-          }
-          return current;
-        });
-      }
-    };
 
   return (
     <>
@@ -543,7 +496,7 @@ const TaskForm = ({
       </form>
       <ConfirmationModal
         isShown={openModal === ModalStates.quitNoSave}
-        setIsShown={closeModalIfActive(ModalStates.quitNoSave)}
+        setIsShown={(isShown) => !isShown && setOpenModal(ModalStates.none)}
         onConfirm={navigate}
         isDangerous
         messages={{
@@ -555,10 +508,12 @@ const TaskForm = ({
 
       <ConfirmationModal
         isShown={openModal === ModalStates.changeTypeConfirmation}
-        setIsShown={closeModalIfActive(
-          ModalStates.changeTypeConfirmation,
-          onCancelTypeChange,
-        )}
+        setIsShown={(isShown) => {
+          if (!isShown) {
+            onCancelTypeChange();
+            setOpenModal(ModalStates.none);
+          }
+        }}
         onConfirm={onConfirmTypeChange}
         isDangerous
         messages={{
@@ -570,10 +525,12 @@ const TaskForm = ({
 
       <ConfirmationModal
         isShown={openModal === ModalStates.changeTaskFileConfirmation}
-        setIsShown={closeModalIfActive(
-          ModalStates.changeTaskFileConfirmation,
-          onCancelChangeTaskFileAction,
-        )}
+        setIsShown={(isShown) => {
+          if (!isShown) {
+            onCancelChangeTaskFileAction();
+            setOpenModal(ModalStates.none);
+          }
+        }}
         onConfirm={onConfirmChangeTaskFileAction}
         isDangerous
         messages={{
