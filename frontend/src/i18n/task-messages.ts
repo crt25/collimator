@@ -49,10 +49,6 @@ export const messages = defineMessages({
     id: "embeddedApp.taskImported",
     defaultMessage: "Task imported successfully",
   },
-  taskLoaded: {
-    id: "embeddedApp.taskLoaded",
-    defaultMessage: "Task loaded successfully",
-  },
   savingTask: {
     id: "embeddedApp.savingTask",
     defaultMessage: "Saving task...",
