@@ -5,7 +5,7 @@ locals {
 
 module "ecs_service" {
   source  = "terraform-aws-modules/ecs/aws//modules/service"
-  version = "~> 5.6"
+  version = "~> 7.3"
 
   name          = var.name
   desired_count = 1
@@ -17,9 +17,9 @@ module "ecs_service" {
   container_definitions = {
     (local.container_name) = {
       image                    = module.ecr_backend.repository_url
-      readonly_root_filesystem = false
+      readonlyRootFilesystem   = false
 
-      port_mappings = [
+      portMappings = [
         {
           protocol      = "tcp",
           containerPort = local.container_port
@@ -75,21 +75,22 @@ module "ecs_service" {
   }
 
   subnet_ids = var.private_subnet_ids
-  security_group_rules = {
+  security_group_ingress_rules = {
     ingress_alb_service = {
-      type                     = "ingress"
-      from_port                = local.container_port
-      to_port                  = local.container_port
-      protocol                 = "tcp"
-      description              = "Backend"
-      source_security_group_id = module.alb.security_group_id
+      from_port                    = local.container_port
+      to_port                      = local.container_port
+      ip_protocol                  = "tcp"
+      description                  = "Backend"
+      referenced_security_group_id = module.alb.security_group_id
     }
+  }
+
+  security_group_egress_rules = {
     egress_all = {
-      type        = "egress"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
+      # You may not specify all protocols and specific ports. Please specify each protocol
+      # and port range combination individually, or all protocols and no port range.
+      ip_protocol = "-1"
+      cidr_ipv4   = "0.0.0.0/0"
     }
   }
 

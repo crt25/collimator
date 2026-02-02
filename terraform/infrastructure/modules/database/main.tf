@@ -57,7 +57,8 @@ module "database" {
   username = local.database_user
 
   manage_master_user_password = false
-  password                    = random_password.database.result
+  password_wo                 = random_password.database.result
+  password_wo_version         = "1"
   port                        = "5432"
 
   multi_az = false

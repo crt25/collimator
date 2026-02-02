@@ -2,6 +2,7 @@
 
 # module "ecr_registry" {
 #   source = "terraform-aws-modules/ecr/aws"
+#   version = "~> 3.2"
 
 #   # this is a registry, not a repository
 #   create_repository = false

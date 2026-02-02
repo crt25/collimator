@@ -44,7 +44,8 @@ data "aws_cloudfront_response_headers_policy" "security_headers_policy" {
 }
 
 module "cloudfront" {
-  source = "terraform-aws-modules/cloudfront/aws"
+  source  = "terraform-aws-modules/cloudfront/aws"
+  version = "~> 6.3"
 
   aliases = [var.domain_name]
 
@@ -64,9 +65,6 @@ module "cloudfront" {
   # This rate is charged only once per month, per metric (up to 8 metrics per distribution).
   create_monitoring_subscription = true
 
-  create_origin_access_identity = false
-
-  create_origin_access_control = true
   origin_access_control = {
     # we need to allow cloudfront to access S3 buckets
     s3_oac = {
@@ -85,18 +83,18 @@ module "cloudfront" {
 
   origin = {
     frontend = {
-      domain_name           = var.frontend_domain_name
-      origin_access_control = "s3_oac" # key in `origin_access_control` map
+      domain_name               = var.frontend_domain_name
+      origin_access_control_key = "s3_oac" # key in `origin_access_control` map
     }
 
     scratchapp = {
-      domain_name           = var.scratchapp_domain_name
-      origin_access_control = "s3_oac"
+      domain_name               = var.scratchapp_domain_name
+      origin_access_control_key = "s3_oac"
     }
 
     jupyterapp = {
-      domain_name           = var.jupyterapp_domain_name
-      origin_access_control = "s3_oac"
+      domain_name               = var.jupyterapp_domain_name
+      origin_access_control_key = "s3_oac"
     }
 
     backend = {
@@ -116,8 +114,6 @@ module "cloudfront" {
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-
-    use_forwarded_values = false
 
     cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
@@ -139,8 +135,6 @@ module "cloudfront" {
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
 
-      use_forwarded_values = false
-
       # disable caching
       cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
       origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.pass_all_headers.id
@@ -151,8 +145,6 @@ module "cloudfront" {
       target_origin_id       = "backend"
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-
-      use_forwarded_values = false
 
       # disable caching
       cache_policy_id = data.aws_cloudfront_cache_policy.no_caching.id
@@ -167,8 +159,6 @@ module "cloudfront" {
       allowed_methods        = ["GET", "HEAD", "OPTIONS"]
       cached_methods         = ["GET", "HEAD"]
       compress               = true
-
-      use_forwarded_values = false
 
       cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
@@ -187,8 +177,6 @@ module "cloudfront" {
       allowed_methods        = ["GET", "HEAD", "OPTIONS"]
       cached_methods         = ["GET", "HEAD"]
       compress               = true
-
-      use_forwarded_values = false
 
       cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
