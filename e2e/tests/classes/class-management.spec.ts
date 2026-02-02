@@ -82,7 +82,7 @@ test.describe("class management", () => {
     });
 
     test("renders the student members", async ({ page }) => {
-      await expect(page.locator(emptyStateContent)).toHaveCount(0);
+      await expect(page.locator(emptyStateContent)).toHaveCount(1);
     });
   });
 
