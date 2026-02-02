@@ -1,6 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { softDeleteExtension } from "./extensions/softDeleteExtension";
+import { prismaOptions } from "./helper";
 
 @Injectable()
 export class PrismaProvider
@@ -8,6 +9,10 @@ export class PrismaProvider
   implements OnModuleInit, OnModuleDestroy
 {
   private static initialized = false;
+
+  constructor() {
+    super(prismaOptions());
+  }
 
   async onModuleInit(): Promise<void> {
     if (!PrismaProvider.initialized) {
