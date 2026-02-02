@@ -6,7 +6,7 @@ import { Dialog, Portal } from "@chakra-ui/react";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { executeAsyncWithToasts } from "@/utilities/task/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import MaxScreenHeightInModal from "../layout/MaxScreenHeightInModal";
 import EmbeddedApp, { EmbeddedAppRef } from "../EmbeddedApp";

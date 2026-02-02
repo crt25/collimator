@@ -8,7 +8,7 @@ import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
-import { executeWithToasts } from "@/utilities/task/task";
+import { executeWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";

@@ -22,7 +22,7 @@ import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/use
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
-import { executeAsyncWithToasts } from "@/utilities/task/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 
 const messages = defineMessages({

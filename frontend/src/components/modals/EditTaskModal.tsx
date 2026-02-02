@@ -3,10 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Language, Task } from "iframe-rpc-react/src";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import {
-  executeAsyncWithToasts,
-  executeWithToasts,
-} from "@/utilities/task/task";
+import { executeAsyncWithToasts, executeWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";

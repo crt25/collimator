@@ -3,7 +3,11 @@ import { useCallback } from "react";
 import { defineMessages } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
-import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
+import {
+  useUpdateTask,
+  getInitialSolutionOnly,
+  appendOrUpdateInitialSolution,
+} from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/header/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
@@ -19,10 +23,6 @@ import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
-import {
-  appendOrUpdateInitialSolution,
-  getInitialSolutionOnly,
-} from "@/utilities/task/task-instance";
 
 const messages = defineMessages({
   title: {
@@ -81,6 +81,7 @@ const TaskInstanceDetails = () => {
 
       await updateTask(task.data.id, {
         ...taskSubmission,
+        // typescript does not track property access through object spreads, so we need to re-add taskFile here
         taskFile: taskSubmission.taskFile,
         referenceSolutions,
         referenceSolutionsFiles,
