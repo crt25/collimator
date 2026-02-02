@@ -11,7 +11,6 @@ import * as yup from "yup";
 import styled from "@emotion/styled";
 import { Submission } from "iframe-rpc-react/src";
 import { Box, Field, Grid, GridItem } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
@@ -108,16 +107,9 @@ enum ModalStates {
   none = "none",
   quitNoSave = "quitNoSave",
   changeTypeConfirmation = "changeTypeConfirmation",
-  destructiveConfirmation = "destructiveConfirmation",
+  changeTaskFileConfirmation = "changeTaskFileConfirmation",
   taskEdit = "taskEdit",
 }
-
-enum ActionTypes {
-  editTask = "editTask",
-  changeType = "changeType",
-}
-
-type DestructiveAction = ActionTypes.editTask | ActionTypes.changeType;
 
 type TaskFormValues = {
   title: string;
@@ -126,11 +118,6 @@ type TaskFormValues = {
   taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
-};
-
-type TaskTypeSession = {
-  previousTaskType: TaskType;
-  previousTaskFile: TaskFile;
 };
 
 type TaskFile = Blob | undefined | null;
@@ -206,14 +193,25 @@ const TaskForm = ({
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
 }) => {
   const intl = useIntl();
-  const router = useRouter();
 
   const [clearSolutionsOnSave, setClearSolutionsOnSave] = useState(false);
 
   const [openModal, setOpenModal] = useState<ModalStates>(ModalStates.none);
-  const taskTypeSessionRef = useRef<TaskTypeSession | null>(null);
+
+  // this tracks whether the user has confirmed a type change in this session
+  // when true, the user can change the type without further confirmation and shows "Create" instead of "Edit" button
+  const [hasTypeChanged, setHasTypeChanged] = useState(false);
+
+  // this holds the type change awaiting user confirmation in the modal
+  // it temporarily stores the new type while the confirmation modal is open
+  const [pendingTypeChange, setPendingTypeChange] = useState<TaskType | null>(
+    null,
+  );
 
   const cannotNavigate = useRef(false);
+
+  const originalType = initialValues?.type ?? TaskType.SCRATCH;
+  const originalTaskFile = initialValues?.taskFile ?? null;
 
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
     title: string;
@@ -231,6 +229,9 @@ const TaskForm = ({
       type: TaskType.SCRATCH,
       title: "",
       description: "",
+      taskFile: null,
+      initialSolution: null,
+      initialSolutionFile: null,
       ...initialValues,
     }),
     [initialValues],
@@ -261,22 +262,6 @@ const TaskForm = ({
 
   const taskFile: TaskFile = watch("taskFile");
   const taskType: TaskType = watch("type");
-  const title = watch("title");
-  const description = watch("description");
-
-  // this ref keeps track of the task type that has been confirmed by the user
-  // it also matches what's saved or will be saved
-  const committedTaskType = useRef<TaskType>(
-    initialValues?.type ?? TaskType.SCRATCH,
-  );
-
-  const isCreateMode = router.pathname.includes("/create");
-
-  const [pendingAction, setPendingAction] = useState<DestructiveAction | null>(
-    null,
-  );
-  const [pendingTaskType, setPendingTaskType] = useState<TaskType | null>(null);
-
   const initialSolution = watch("initialSolution");
   const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
   const onNavigate = useCallback(() => {
@@ -292,6 +277,114 @@ const TaskForm = ({
     // when the form becomes dirty, we do not allow navigation
     cannotNavigate.current = isDirty;
   }, [isDirty]);
+
+  useEffect(() => {
+    if (taskType === originalType) {
+      return;
+    }
+
+    if (hasTypeChanged) {
+      // at this point, if the user has already changed the type and confirmed,
+      // we can just allow switching without further confirmation
+      return;
+    }
+
+    setPendingTypeChange(taskType);
+    setValueClean("type", originalType);
+    setOpenModal(ModalStates.changeTypeConfirmation);
+  }, [taskType, originalType, hasTypeChanged, setValueClean]);
+
+  const onConfirmTypeChange = useCallback(() => {
+    if (!pendingTypeChange) {
+      return;
+    }
+
+    setValueClean("type", pendingTypeChange);
+    setValueClean("taskFile", null);
+    setValueClean("initialSolution", null);
+    setValueClean("initialSolutionFile", null);
+    setHasTypeChanged(true);
+    setClearSolutionsOnSave(true);
+    setPendingTypeChange(null);
+    setOpenModal(ModalStates.none);
+  }, [pendingTypeChange, setValueClean]);
+
+  const onCancelTypeChange = useCallback(() => {
+    setPendingTypeChange(null);
+    setOpenModal(ModalStates.none);
+  }, []);
+
+  const handleOpenEditTask = useCallback(() => {
+    if (hasTypeChanged || !hasReferenceSolutions) {
+      setOpenModal(ModalStates.taskEdit);
+    } else {
+      setOpenModal(ModalStates.changeTaskFileConfirmation);
+    }
+  }, [hasTypeChanged, hasReferenceSolutions]);
+
+  const onConfirmChangeTaskFileAction = useCallback(() => {
+    setClearSolutionsOnSave(true);
+    setOpenModal(ModalStates.taskEdit);
+  }, []);
+
+  const onCancelChangeTaskFileAction = useCallback(() => {
+    setOpenModal(ModalStates.none);
+  }, []);
+
+  const handleEditModalClose = useCallback(
+    (isShown: boolean) => {
+      if (isShown) {
+        setOpenModal(ModalStates.taskEdit);
+        return;
+      }
+
+      setOpenModal(ModalStates.none);
+
+      // if type was changed and user closes without saving, revert everything
+      if (hasTypeChanged) {
+        setValueClean("type", originalType);
+        setValueClean("taskFile", originalTaskFile);
+        setValueClean(
+          "initialSolution",
+          initialValues?.initialSolution ?? null,
+        );
+        setValueClean(
+          "initialSolutionFile",
+          initialValues?.initialSolutionFile ?? null,
+        );
+        setHasTypeChanged(false);
+        setClearSolutionsOnSave(false);
+      }
+    },
+    [
+      hasTypeChanged,
+      originalType,
+      originalTaskFile,
+      initialValues,
+      setValueClean,
+    ],
+  );
+
+  const handleEditModalSave = useCallback(
+    (task: { file: Blob; initialSolution: Submission }) => {
+      setValueClean("taskFile", task.file);
+      setValueClean("initialSolutionFile", task.initialSolution.file);
+      setValueClean(
+        "initialSolution",
+        // if possible, use the existing initial solution id,
+        // otherwise set it to null and create a new one
+        {
+          id: initialSolution?.id ?? null,
+          title: "",
+          description: "",
+          isInitial: true,
+          tests: createSubmissionTests(task.initialSolution),
+        } satisfies UpdateReferenceSolutionDto,
+      );
+      setOpenModal(ModalStates.none);
+    },
+    [initialSolution, setValueClean],
+  );
 
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -312,6 +405,8 @@ const TaskForm = ({
         .then(() => {
           // allow navigation after the task has been saved
           cannotNavigate.current = false;
+          setHasTypeChanged(false);
+          setClearSolutionsOnSave(false);
 
           // reset the form to the updated values
           // and mark the blob as not changed
@@ -335,215 +430,24 @@ const TaskForm = ({
     [handleSubmit, onSubmit, reset, intl],
   );
 
-  const revertTaskType = useCallback(() => {
-    if (!taskTypeSessionRef.current) {
-      return;
-    }
-
-    setValueClean("type", taskTypeSessionRef.current.previousTaskType);
-
-    committedTaskType.current = taskTypeSessionRef.current.previousTaskType;
-  }, [setValueClean]);
-
-  const revertTaskFile = useCallback(() => {
-    if (!taskTypeSessionRef.current?.previousTaskFile) {
-      return;
-    }
-
-    setValueClean("taskFile", taskTypeSessionRef.current.previousTaskFile);
-  }, [setValueClean]);
-
-  const revertTaskChanges = useCallback(() => {
-    revertTaskType();
-    revertTaskFile();
-
-    taskTypeSessionRef.current = null;
-
-    setClearSolutionsOnSave(false);
-    setPendingTaskType(null);
-  }, [revertTaskType, revertTaskFile]);
-
-  const deleteSolutions = useCallback(() => {
-    setClearSolutionsOnSave(true);
-  }, []);
-
-  const setNewTaskType = useCallback(
-    (type: TaskType, clearFile: boolean = false) => {
-      setValueClean("type", type);
-
-      committedTaskType.current = type;
-
-      if (!clearFile) {
-        return;
-      }
-
-      // since task files are type specific, we delete the existing one explicitly
-      setValueClean("taskFile", null);
-    },
-    [setValueClean],
-  );
-
-  const onConfirmChangeType = useCallback(() => {
-    if (!pendingTaskType) {
-      return;
-    }
-
-    cannotNavigate.current = false;
-    const taskId = router.query.taskId as string | undefined;
-
-    const queryParams = new URLSearchParams({
-      type: pendingTaskType,
-      title: title || "",
-      description: description || "",
-      replaceTaskId: taskId || "",
-    });
-
-    router.push(`/task/create?${queryParams.toString()}`);
-  }, [pendingTaskType, title, description, router]);
-
-  const onCancelChangeType = useCallback(() => {
-    setValueClean("type", committedTaskType.current);
-
-    setPendingTaskType(null);
-  }, [setValueClean]);
-
-  const setNewTask = useCallback(
-    (task: { file: Blob; initialSolution: Submission }) => {
-      setValueClean("taskFile", task.file);
-
-      setValueClean("initialSolutionFile", task.initialSolution.file);
-
-      setValueClean(
-        "initialSolution",
-        // if possible, use the existing initial solution id,
-        // otherwise set it to null and create a new one
-        {
-          id: initialSolution?.id ?? null,
-          title: "",
-          description: "",
-          isInitial: true,
-          tests: createSubmissionTests(task.initialSolution),
-        } satisfies UpdateReferenceSolutionDto,
-      );
-    },
-    [initialSolution, setValueClean],
-  );
-
-  const executeDestructiveAction = useCallback(
-    (action: DestructiveAction) => {
-      switch (action) {
-        case ActionTypes.editTask:
-          deleteSolutions();
-          setOpenModal(ModalStates.taskEdit);
-          break;
-
-        case ActionTypes.changeType:
-          if (pendingTaskType) {
-            taskTypeSessionRef.current = {
-              previousTaskType: committedTaskType.current,
-              previousTaskFile: taskFile,
-            };
-
-            setNewTaskType(pendingTaskType, true);
-            deleteSolutions();
-            setOpenModal(ModalStates.taskEdit);
-          }
-          break;
-      }
-
-      setPendingAction(null);
-    },
-    [pendingTaskType, taskFile, deleteSolutions, setNewTaskType],
-  );
-
-  const requestDestructiveAction = useCallback(
-    (action: DestructiveAction) => {
-      if (hasReferenceSolutions) {
-        // ask for confirmation if there are existing reference solutions
-        setPendingAction(action);
-        setOpenModal(ModalStates.destructiveConfirmation);
-      } else {
-        executeDestructiveAction(action);
-      }
-    },
-    [hasReferenceSolutions, executeDestructiveAction],
-  );
-
-  useEffect(() => {
-    if (taskType === committedTaskType.current) {
-      return;
-    }
-
-    if (isCreateMode) {
-      // in create mode, we do not need to confirm changing the type since there is no data loss
-      committedTaskType.current = taskType;
-      return;
-    }
-
-    setPendingTaskType(taskType);
-    setOpenModal(ModalStates.changeTypeConfirmation);
-  }, [taskType, isCreateMode]);
-
-  const onConfirmDestructiveAction = useCallback(() => {
-    if (pendingAction) {
-      executeDestructiveAction(pendingAction);
-    }
-  }, [pendingAction, executeDestructiveAction]);
-
-  const onCancelDestructiveAction = useCallback(() => {
-    if (pendingAction === ActionTypes.changeType && pendingTaskType) {
-      // restore the last confirmed task type when change type is canclled
-      setValueClean("type", committedTaskType.current);
-    }
-
-    setPendingAction(null);
-    setPendingTaskType(null);
-  }, [pendingAction, pendingTaskType, setValueClean]);
-
-  const handleEditModalClose = useCallback(
-    (isShown: boolean) => {
-      if (isShown) {
-        setOpenModal(ModalStates.taskEdit);
-        return;
-      }
-
-      setOpenModal(ModalStates.none);
-
-      if (taskTypeSessionRef.current) {
-        // revert changes if the user closes the edit modal without saving
-        revertTaskChanges();
-      }
-    },
-    [revertTaskChanges],
-  );
-
-  const clearSession = useCallback(() => {
-    taskTypeSessionRef.current = null;
-    setPendingTaskType(null);
-  }, []);
-
-  const handleEditModalSave = useCallback(
-    (task: { file: Blob; initialSolution: Submission }) => {
-      setNewTask(task);
-      clearSession();
-    },
-    [setNewTask, clearSession],
-  );
-
-  const handleOpenEditTask = useCallback(() => {
-    requestDestructiveAction(ActionTypes.editTask);
-  }, [requestDestructiveAction]);
-
-  // If the initialValues are provided and we are not in create mode, show the EditedBadge for fields that have been modified
-  const showEditedBadges = !!initialValues && !isCreateMode;
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
+  const showEditedBadges = !!initialValues;
+  const needsTaskFile = hasTypeChanged && !taskFile;
+  const canSubmit = isDirty && isValid && !needsTaskFile;
 
   const closeModalIfActive =
     (state: ModalStates, onClose?: () => void) => (isShown: boolean) => {
       if (!isShown) {
-        setOpenModal((current) =>
-          current === state ? ModalStates.none : current,
-        );
-        onClose?.();
+        setOpenModal((current) => {
+          if (current === state) {
+            // only call onclose if we're actually closing this modal to none
+            // not if we're transitioning to another modal
+            // this prevents the cancel callback from running when the user confirms
+            onClose?.();
+            return ModalStates.none;
+          }
+          return current;
+        });
       }
     };
 
@@ -583,15 +487,15 @@ const TaskForm = ({
                 type="button"
                 onClick={handleOpenEditTask}
               >
-                {taskFile ? (
-                  <FormattedMessage
-                    id="TaskForm.blob.edit"
-                    defaultMessage="Edit task in external application"
-                  />
-                ) : (
+                {hasTypeChanged || !taskFile ? (
                   <FormattedMessage
                     id="TaskForm.blob.create"
                     defaultMessage="Create task in external application"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="TaskForm.blob.edit"
+                    defaultMessage="Edit task in external application"
                   />
                 )}
               </EditTaskButton>
@@ -623,15 +527,12 @@ const TaskForm = ({
           </GridItem>
         </Grid>
         <Box display="flex" justifyContent="flex-end">
-          <SubmitFormButton
-            label={submitMessage}
-            disabled={!isDirty || !isValid}
-          />
+          <SubmitFormButton label={submitMessage} disabled={!canSubmit} />
         </Box>
         <EditTaskModal
           isShown={openModal === ModalStates.taskEdit}
           setIsShown={handleEditModalClose}
-          initialTask={taskFile}
+          initialTask={hasTypeChanged ? null : taskFile}
           taskType={taskType}
           onSave={(task) => {
             setValue("taskFile", task.file, {
@@ -679,9 +580,9 @@ const TaskForm = ({
         isShown={openModal === ModalStates.changeTypeConfirmation}
         setIsShown={closeModalIfActive(
           ModalStates.changeTypeConfirmation,
-          onCancelChangeType,
+          onCancelTypeChange,
         )}
-        onConfirm={onConfirmChangeType}
+        onConfirm={onConfirmTypeChange}
         isDangerous
         messages={{
           title: messages.changeTypeConfirmationTitle,
@@ -691,12 +592,12 @@ const TaskForm = ({
       />
 
       <ConfirmationModal
-        isShown={openModal === ModalStates.destructiveConfirmation}
+        isShown={openModal === ModalStates.changeTaskFileConfirmation}
         setIsShown={closeModalIfActive(
-          ModalStates.destructiveConfirmation,
-          onCancelDestructiveAction,
+          ModalStates.changeTaskFileConfirmation,
+          onCancelChangeTaskFileAction,
         )}
-        onConfirm={onConfirmDestructiveAction}
+        onConfirm={onConfirmChangeTaskFileAction}
         isDangerous
         messages={{
           title: messages.destructiveActionTitle,
