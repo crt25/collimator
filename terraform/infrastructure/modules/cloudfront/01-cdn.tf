@@ -28,6 +28,11 @@ data "aws_cloudfront_cache_policy" "no_caching" {
   name = "Managed-CachingDisabled"
 }
 
+# https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized-uncompressed
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html#managed-origin-request-policy-all-viewer
 data "aws_cloudfront_origin_request_policy" "pass_all_headers" {
   name = "Managed-AllViewer"
@@ -114,7 +119,7 @@ module "cloudfront" {
 
     use_forwarded_values = false
 
-    cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
     lambda_function_association = {
@@ -136,6 +141,7 @@ module "cloudfront" {
 
       use_forwarded_values = false
 
+      # disable caching
       cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
       origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.pass_all_headers.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
@@ -148,6 +154,7 @@ module "cloudfront" {
 
       use_forwarded_values = false
 
+      # disable caching
       cache_policy_id = data.aws_cloudfront_cache_policy.no_caching.id
       # allow websocket connections
       origin_request_policy_id   = aws_cloudfront_origin_request_policy.websocket.id
@@ -162,8 +169,7 @@ module "cloudfront" {
 
       use_forwarded_values = false
 
-      # disable caching
-      cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
+      cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
       lambda_function_association = {
@@ -182,8 +188,7 @@ module "cloudfront" {
 
       use_forwarded_values = false
 
-      # disable caching
-      cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
+      cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
       lambda_function_association = {
