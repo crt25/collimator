@@ -90,7 +90,7 @@ export const classesControllerFindOneV0 = async (
   options?: RequestInit,
 ): Promise<ExistingClassExtendedDto> => {
   return fetchApi<ExistingClassExtendedDto>(
-    getClassesControllerFindOneV0Url(id, {}),
+    getClassesControllerFindOneV0Url(id, params),
     {
       ...options,
       method: "GET",
