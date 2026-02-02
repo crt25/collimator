@@ -166,6 +166,7 @@ module "cloudfront" {
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["GET", "HEAD", "OPTIONS"]
       cached_methods         = ["GET", "HEAD"]
+      compress               = true
 
       use_forwarded_values = false
 
@@ -185,6 +186,7 @@ module "cloudfront" {
       viewer_protocol_policy = "redirect-to-https"
       allowed_methods        = ["GET", "HEAD", "OPTIONS"]
       cached_methods         = ["GET", "HEAD"]
+      compress               = true
 
       use_forwarded_values = false
 
