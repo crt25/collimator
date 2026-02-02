@@ -167,11 +167,11 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task) {
-      return;
-    }
-
     try {
+      if (!session || !task) {
+        return;
+      }
+
       const response = await embeddedApp.current.sendRequest(
         "getSubmission",
         undefined,
