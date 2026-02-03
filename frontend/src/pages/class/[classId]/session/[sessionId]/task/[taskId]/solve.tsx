@@ -327,7 +327,7 @@ const SolveTaskPage = () => {
       }
       belowHeader={
         task && (
-          <Text marginBottom="md" marginX={"lg"}>
+          <Text marginBottom="md" marginX="lg">
             {task.description}
           </Text>
         )
