@@ -146,6 +146,8 @@ const EditTask = () => {
                     </Alert.Content>
                   </Alert.Root>
                 )}
+                {/* key={formKey} forces React to remount TaskForm when formKey changes,
+                    resetting all form state to initialValues after a conflict error */}
                 <TaskForm
                   key={formKey}
                   initialValues={{
