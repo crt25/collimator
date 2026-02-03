@@ -101,6 +101,10 @@ const messages = defineMessages({
     id: "TaskForm.changeTypeConfirmation.button",
     defaultMessage: "Yes, change type",
   },
+  taskFileRequired: {
+    id: "TaskForm.taskFileRequired",
+    defaultMessage: "A task file is required before saving.",
+  },
 });
 
 enum ModalStates {
@@ -126,7 +130,7 @@ export type TaskFormSubmission = {
   title: string;
   description: string;
   type: TaskType;
-  taskFile: Blob | null;
+  taskFile: Blob;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
   clearAllReferenceSolutions: boolean;
@@ -365,6 +369,19 @@ const TaskForm = ({
       handleSubmit((v: TaskFormValues) => {
         data = v;
 
+        // A null taskFile affects UI state:
+        // - modal selection in task detail pages
+        // - button text in this form
+        // but more critically, the API requires a non-null taskFile for persistence.
+        // Therefore, we block submission if taskFile is null.
+        if (data.taskFile === null) {
+          toaster.error({
+            title: intl.formatMessage(messages.taskFileRequired),
+            closable: true,
+          });
+          return Promise.reject(new Error("Task file is required"));
+        }
+
         return onSubmit({
           title: data.title,
           description: data.description,
@@ -405,8 +422,7 @@ const TaskForm = ({
 
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
-  const needsTaskFile = hasTypeChanged && !taskFile;
-  const canSubmit = isDirty && isValid && !needsTaskFile;
+  const canSubmit = isDirty && isValid && taskFile !== null;
 
   return (
     <>
