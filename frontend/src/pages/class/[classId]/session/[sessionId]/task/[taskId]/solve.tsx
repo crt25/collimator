@@ -2,15 +2,20 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
-import { Box, Breadcrumb, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  Box,
+  Breadcrumb,
+  Text,
+} from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
+import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import StudentHeader from "@/components/header/StudentHeader";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import StudentPageLayout from "@/components/layout/StudentPageLayout";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
@@ -23,7 +28,6 @@ import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
-import { TaskType } from "@/api/collimator/generated/models";
 
 const messages = defineMessages({
   title: {
@@ -105,8 +109,6 @@ const SolveTaskPage = () => {
   }, []);
 
   const [saveError, setSaveError] = useState(false);
-
-  const isSaveError = useMemo(() => saveError, [saveError]);
 
   const saveSubmission = useCallback(
     async (
@@ -225,7 +227,6 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
@@ -287,7 +288,6 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.taskImported),
       intl.formatMessage(taskMessages.cannotImportTask),
     );
   }, [intl]);
@@ -299,8 +299,8 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.taskCreated),
       intl.formatMessage(taskMessages.cannotExport),
+      intl.formatMessage(taskMessages.taskCreated),
     );
 
     downloadBlob(response.result.file, "task.sb3");
@@ -314,88 +314,90 @@ const SolveTaskPage = () => {
   const disableImportExport = true;
 
   return (
-    <MaxScreenHeight>
-      <StudentHeader
-        title={messages.title}
-        titleParameters={{ title: task?.title }}
-        logo={
-          task &&
-          session && (
-            <Box>
-              <Breadcrumbs
-                topLevel={
-                  <BreadcrumbItem
-                    onClick={toggleSessionMenu}
-                    icon={<LuSignpost />}
-                    testId="toggle-session-menu-button"
-                  >
-                    {session.title}
-                  </BreadcrumbItem>
-                }
-                marginBottom="0"
-              >
-                <Breadcrumb.Separator />
+    <StudentPageLayout
+      title={messages.title}
+      titleParameters={{ title: task?.title ?? "" }}
+      logo={
+        task &&
+        session && (
+          <Box>
+            <Breadcrumbs
+              topLevel={
                 <BreadcrumbItem
-                  icon={<LuListTodo />}
                   onClick={toggleSessionMenu}
+                  icon={<LuSignpost />}
+                  testId="toggle-session-menu-button"
                 >
-                  {task.title}
+                  {session.title}
                 </BreadcrumbItem>
-              </Breadcrumbs>
-            </Box>
-          )
-        }
-        belowHeader={
-          task && (
-            <Text marginBottom="md" marginX={"lg"}>
-              {task.description}
-            </Text>
-          )
-        }
-      >
-        {isSaveError && (
-          <Text variant="error">
-            <FormattedMessage
-              data-testid="save-error-message"
-              id="SolveTask.saveError"
-              defaultMessage="Network issues, saving may not work."
-            />
-          </Text>
-        )}
+              }
+              marginBottom="0"
+            >
+              <Breadcrumb.Separator />
+              <BreadcrumbItem icon={<LuListTodo />} onClick={toggleSessionMenu}>
+                {task.title}
+              </BreadcrumbItem>
+            </Breadcrumbs>
+          </Box>
+        )
+      }
+      headerActions={
+        <>
+          <li></li>
 
-        <li></li>
-        <li>
-          <Button
-            onClick={onSubmitSolution}
-            data-testid="submit-solution-button"
-          >
-            <FormattedMessage
-              id="SolveTask.submitSolution"
-              defaultMessage="Submit Solution"
-            />
-          </Button>
-        </li>
-        {!disableImportExport && (
-          <>
-            <li>
-              <Button onClick={onExport}>
+          {saveError && (
+            <Alert.Root status="error" size="sm">
+              <Alert.Indicator />
+              <Alert.Title>
                 <FormattedMessage
-                  id="SolveTask.export"
-                  defaultMessage="Export"
+                  data-testid="save-error-message"
+                  id="SolveTask.saveError"
+                  defaultMessage="You are currently experiencing network issues, saving may not work."
                 />
-              </Button>
-            </li>
-            <li>
-              <Button onClick={onImport}>
-                <FormattedMessage
-                  id="SolveTask.import"
-                  defaultMessage="Import"
-                />
-              </Button>
-            </li>
-          </>
-        )}
-      </StudentHeader>
+              </Alert.Title>
+            </Alert.Root>
+          )}
+          {!disableImportExport && (
+            <>
+              <li>
+                <Button onClick={onExport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.export"
+                    defaultMessage="Export"
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button onClick={onImport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.import"
+                    defaultMessage="Import"
+                  />
+                </Button>
+              </li>
+            </>
+          )}
+          <li>
+            <Button
+              onClick={onSubmitSolution}
+              data-testid="submit-solution-button"
+            >
+              <FormattedMessage
+                id="SolveTask.submitSolution"
+                defaultMessage="Submit Solution"
+              />
+            </Button>
+          </li>
+        </>
+      }
+      belowHeader={
+        task && (
+          <Text marginBottom="md" marginX="lg">
+            {task.description}
+          </Text>
+        )
+      }
+    >
       <MultiSwrContent
         data={[session, task, taskFile]}
         errors={[sessionError, taskError, taskFileError]}
@@ -424,7 +426,7 @@ const SolveTaskPage = () => {
           )
         }
       </MultiSwrContent>
-    </MaxScreenHeight>
+    </StudentPageLayout>
   );
 };
 
