@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   ForbiddenException,
@@ -16,6 +17,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -138,8 +140,10 @@ export class TasksController {
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
-    const task =
-      await this.tasksService.findByIdOrThrowWithReferenceSolutions(id);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrowWithReferenceSolutions(id),
+      this.tasksService.isTaskInUse(id),
+    ]);
 
     // workaround for bug where class-transformer loses the Uint8Array type
     // see https://github.com/typestack/class-transformer/issues/1815
@@ -149,7 +153,10 @@ export class TasksController {
         (solution.solution.data = Buffer.from(solution.solution.data)),
     );
 
-    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult(task);
+    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult({
+      ...task,
+      isInUse,
+    });
   }
 
   @Get(":id/download")
@@ -171,6 +178,9 @@ export class TasksController {
   @ApiCreatedResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be modified",
+  })
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: "taskFile", maxCount: 1 },
@@ -195,6 +205,13 @@ export class TasksController {
 
     if (!isAuthorized) {
       throw new ForbiddenException();
+    }
+
+    const isInUse = await this.tasksService.isTaskInUse(id);
+    if (isInUse) {
+      throw new ConflictException(
+        "Task is in use by one or more classes and cannot be modified",
+      );
     }
 
     const referenceSolutionsFiles = files.referenceSolutionsFiles || [];
@@ -227,6 +244,9 @@ export class TasksController {
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be deleted",
+  })
   async remove(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -238,6 +258,13 @@ export class TasksController {
 
     if (!isAuthorized) {
       throw new ForbiddenException();
+    }
+
+    const isInUse = await this.tasksService.isTaskInUse(id);
+    if (isInUse) {
+      throw new ConflictException(
+        "Task is in use by one or more classes and cannot be deleted",
+      );
     }
 
     const task = await this.tasksService.deleteById(id);

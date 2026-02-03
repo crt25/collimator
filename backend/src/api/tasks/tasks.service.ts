@@ -316,6 +316,32 @@ export class TasksService {
     ) as (Prisma.SolutionTestUncheckedCreateInput & { id: number })[];
   }
 
+  async isTaskInUse(id: TaskId): Promise<boolean> {
+    const sessionWithStudents = await this.prisma.sessionTask.findFirst({
+      where: {
+        taskId: id,
+        session: {
+          OR: [
+            {
+              anonymousStudents: {
+                some: {},
+              },
+            },
+            {
+              class: {
+                students: {
+                  some: {},
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return sessionWithStudents !== null;
+  }
+
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
     const [_, __, deletedTask] = await this.prisma.$transaction([
       // delete all reference solutions for this task

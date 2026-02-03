@@ -1,5 +1,15 @@
 import { backendHostName } from "@/utilities/constants";
 
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export const fetchApi = async <T>(
   url: string,
   options: RequestInit,
@@ -17,7 +27,10 @@ export const fetchApi = async <T>(
   }
 
   if (response.status >= 400) {
-    throw new Error(`Unexpected response code ${response.status}`);
+    throw new ApiError(
+      response.status,
+      `Unexpected response code ${response.status}`,
+    );
   }
 
   if (response.status === 204) {

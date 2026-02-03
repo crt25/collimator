@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { Container } from "@chakra-ui/react";
-import { defineMessages } from "react-intl";
+import { Alert, Container, Icon } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { LuLock } from "react-icons/lu";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -26,6 +27,15 @@ const messages = defineMessages({
     id: "EditTask.submit",
     defaultMessage: "Save Task",
   },
+  taskLockedTitle: {
+    id: "EditTask.taskLockedTitle",
+    defaultMessage: "Task is locked",
+  },
+  taskLockedDescription: {
+    id: "EditTask.taskLockedDescription",
+    defaultMessage:
+      "This task is currently in active use by one or more classes and cannot be modified or deleted.",
+  },
 });
 
 const EditTask = () => {
@@ -37,6 +47,10 @@ const EditTask = () => {
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
+
+  const handleConflictError = useCallback(() => {
+    task.mutate();
+  }, [task]);
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
@@ -97,26 +111,45 @@ const EditTask = () => {
             const initialSolution = task.referenceSolutions.find(
               (s) => s.isInitial,
             );
+            const isLocked = task.isInUse;
 
             return (
               <>
                 <PageHeading
-                  actions={<TaskActions taskId={task?.id} />}
+                  actions={!isLocked && <TaskActions taskId={task?.id} />}
                   description={task.description}
                 >
                   {task.title}
                 </PageHeading>
                 <TaskNavigation taskId={task?.id} />
-                <TaskForm
-                  initialValues={{
-                    ...task,
-                    taskFile,
-                    initialSolution: initialSolution ?? null,
-                    initialSolutionFile: initialSolution?.solution ?? null,
-                  }}
-                  submitMessage={messages.submit}
-                  onSubmit={onSubmit}
-                />
+                {isLocked && (
+                  <Alert.Root status="info" mb={4}>
+                    <Alert.Indicator>
+                      <Icon as={LuLock} />
+                    </Alert.Indicator>
+                    <Alert.Content>
+                      <Alert.Title>
+                        <FormattedMessage {...messages.taskLockedTitle} />
+                      </Alert.Title>
+                      <Alert.Description>
+                        <FormattedMessage {...messages.taskLockedDescription} />
+                      </Alert.Description>
+                    </Alert.Content>
+                  </Alert.Root>
+                )}
+                {!isLocked && (
+                  <TaskForm
+                    initialValues={{
+                      ...task,
+                      taskFile,
+                      initialSolution: initialSolution ?? null,
+                      initialSolutionFile: initialSolution?.solution ?? null,
+                    }}
+                    submitMessage={messages.submit}
+                    onSubmit={onSubmit}
+                    onConflictError={handleConflictError}
+                  />
+                )}
               </>
             );
           }}

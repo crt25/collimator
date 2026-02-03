@@ -20,6 +20,7 @@ import {
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
+import { ApiError } from "@/api/fetch";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
@@ -79,6 +80,11 @@ const messages = defineMessages({
   saveError: {
     id: "TaskForm.SaveError",
     defaultMessage: "An error occurred while saving the task. Try again later.",
+  },
+  saveConflictError: {
+    id: "TaskForm.SaveConflictError",
+    defaultMessage:
+      "The task is now in use by one or more classes and can no longer be modified.",
   },
 });
 
@@ -155,10 +161,12 @@ const TaskForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  onConflictError,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
+  onConflictError?: () => void;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
@@ -248,13 +256,21 @@ const TaskForm = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
 
-          toaster.error({
-            title: intl.formatMessage(messages.saveError),
-            closable: true,
-          });
+          if (err instanceof ApiError && err.status === 409) {
+            toaster.error({
+              title: intl.formatMessage(messages.saveConflictError),
+              closable: true,
+            });
+            onConflictError?.();
+          } else {
+            toaster.error({
+              title: intl.formatMessage(messages.saveError),
+              closable: true,
+            });
+          }
         });
     },
-    [handleSubmit, onSubmit, reset, intl],
+    [handleSubmit, onSubmit, reset, intl, onConflictError],
   );
 
   const taskFile: Blob | undefined | null = watch("taskFile");
