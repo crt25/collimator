@@ -93,7 +93,7 @@ const UserList = () => {
       cell: (info) => (
         <UserNameCell
           id={info.row.original.id}
-          name={info.row.original.name}
+          name={info.row.original.name ?? ""}
         />
       ),
       meta: {
