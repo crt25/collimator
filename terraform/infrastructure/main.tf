@@ -19,7 +19,7 @@ module "frontend" {
   name   = "${var.name}-${var.environment}-static-frontend"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/frontend/index.js"
+  nodejs_lambda_function_path = "./lambdas/src/frontend/index.mjs"
   lambda_function_output_zip  = "${local.lambda_function_output_directory}/frontend.zip"
 
   tags = var.tags
@@ -31,7 +31,7 @@ module "scratchapp" {
   name   = "${var.name}-${var.environment}-app-scratch"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/scratch/index.js"
+  nodejs_lambda_function_path = "./lambdas/src/scratch/index.mjs"
   lambda_function_output_zip  = "${local.lambda_function_output_directory}/scratch.zip"
 
   tags = var.tags
@@ -43,7 +43,7 @@ module "jupyterapp" {
   name   = "${var.name}-${var.environment}-app-jupyter"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/jupyter/index.js"
+  nodejs_lambda_function_path = "./lambdas/src/jupyter/index.mjs"
   lambda_function_output_zip  = "${local.lambda_function_output_directory}/jupyter.zip"
 
   tags = var.tags
