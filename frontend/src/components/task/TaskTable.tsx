@@ -72,12 +72,11 @@ const messages = defineMessages({
   },
   successMessage: {
     id: "TaskTable.successMessage",
-    defaultMessage: "Successfully saved changes",
+    defaultMessage: "Task deleted successfully",
   },
   genericErrorMessage: {
     id: "TaskTable.errorMessage",
-    defaultMessage:
-      "There was an error saving the changes. Please try to save again!",
+    defaultMessage: "There was an error deleting the task. Please try again!",
   },
   conflictErrorMessage: {
     id: "TaskTable.conflictErrorMessage",

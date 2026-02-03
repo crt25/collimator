@@ -331,29 +331,7 @@ export class TasksService {
   }
 
   async isTaskInUse(id: TaskId): Promise<boolean> {
-    const sessionWithStudents = await this.prisma.sessionTask.findFirst({
-      where: {
-        taskId: id,
-        session: {
-          OR: [
-            {
-              anonymousStudents: {
-                some: {},
-              },
-            },
-            {
-              class: {
-                students: {
-                  some: {},
-                },
-              },
-            },
-          ],
-        },
-      },
-    });
-
-    return sessionWithStudents !== null;
+    return this.isTaskInUseTx(this.prisma, id);
   }
 
   private async isTaskInUseTx(
