@@ -213,7 +213,6 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
@@ -229,6 +228,25 @@ const SolveTaskPage = () => {
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embeddedApp, taskFileHash, session, task]);
+
+  const onReceiveTaskSolution = useCallback(
+    async (solutionBlob: Blob) => {
+      if (!session || !task) {
+        console.error("No session or task available");
+        return;
+      }
+
+      try {
+        await createSolution(session.klass.id, session.id, task.id, {
+          file: solutionBlob,
+          tests: [],
+        });
+      } catch (error) {
+        console.error("Failed to receive task solution with", error);
+      }
+    },
+    [session, task, createSolution],
+  );
 
   const onReceiveSubmission = useCallback(
     async (submission: Submission) => {
@@ -254,7 +272,6 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.taskImported),
       intl.formatMessage(taskMessages.cannotImportTask),
     );
   }, [intl]);
@@ -266,8 +283,8 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.taskCreated),
       intl.formatMessage(taskMessages.cannotExport),
+      intl.formatMessage(taskMessages.taskCreated),
     );
 
     downloadBlob(response.result.file, "task.sb3");
@@ -369,6 +386,7 @@ const SolveTaskPage = () => {
               iframeSrc={iframeSrc}
               onAppAvailable={onAppAvailable}
               onReceiveSubmission={onReceiveSubmission}
+              onReceiveTaskSolution={onReceiveTaskSolution}
             />
           ) : (
             <FormattedMessage

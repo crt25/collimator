@@ -35,7 +35,7 @@ jobs:
 
   deploy:
     # For now, we deploy even if tests fail. CHANGE THIS ASAP.
-    # needs: [tests]
+    needs: [tests]
     runs-on: ubuntu-latest
 
     # Service containers to run with `runner-job`
@@ -138,6 +138,12 @@ jobs:
           make build-extensions
           make build
 
+      - name: Upload jupyter app source maps
+        working-directory: ./apps/jupyter
+        run: make upload-sourcemaps
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
+        
       - name: Install OpenTofu
         uses: opentofu/setup-opentofu@v1
 

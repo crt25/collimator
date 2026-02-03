@@ -26,8 +26,7 @@ export interface StatementFilterCriterion extends CriterionBase<Criterion> {
   maximumCount: number;
 }
 
-export interface StatementFilterCriterionParameters
-  extends CriterionBase<Criterion> {
+export interface StatementFilterCriterionParameters extends CriterionBase<Criterion> {
   minNumberOfStatements: number;
   maxNumberOfStatements: number;
 }

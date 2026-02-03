@@ -1,11 +1,40 @@
 import { ISessionContext } from "@jupyterlab/apputils";
 import { IChangedArgs } from "@jupyterlab/coreutils";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
+import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
+import { FileNotFoundError } from "./errors/task-errors";
+import { AssignNotebookFormatException } from "./errors/otter-errors";
 
 const isPreparedKey = "__isPrepared";
 const preparedKey = "__prepared";
 const preparedResolveKey = "__preparedResolve";
 const preparedRejectKey = "__preparedReject";
+
+export const executePythonInKernel = async (parameters: {
+  kernel: IKernelConnection;
+  code: string;
+  disposeOnDone?: boolean;
+}): Promise<IExecuteReplyMsg> => {
+  const reply = await parameters.kernel.requestExecute(
+    { code: parameters.code },
+    parameters.disposeOnDone,
+  ).done;
+
+  if (reply.content.status === "error") {
+    if (reply.content.ename === "FileNotFoundError") {
+      const path = reply.content.evalue.match(/'(.+?)'/)?.[1] || "unknown";
+      throw new FileNotFoundError(path);
+    } else if (reply.content.ename.includes("AssignNotebookFormatException")) {
+      throw new AssignNotebookFormatException(reply.content.evalue);
+    }
+
+    throw new Error(
+      `Error executing code: ${reply.content.ename}: ${reply.content.evalue}`,
+    );
+  }
+
+  return reply;
+};
 
 const isPatched = (kernel: IKernelConnection): boolean => {
   // @ts-expect-error This is a custom property
@@ -157,7 +186,8 @@ export const writeJsonToVirtualFilesystem = async (
     String.fromCharCode(byte),
   ).join("");
 
-  await kernel.requestExecute({
+  await executePythonInKernel({
+    kernel,
     // it seems as if the encoding here does not allow us to put JSON.stringify directly
     code: `
 import base64
@@ -169,7 +199,7 @@ Path("${path}").parent.mkdir(parents=True, exist_ok=True)
 with open("${path}", "wb") as f:
   f.write(json_content)
 `,
-  }).done;
+  });
 };
 
 export const writeBinaryToVirtualFilesystem = async (
@@ -177,7 +207,8 @@ export const writeBinaryToVirtualFilesystem = async (
   path: string,
   bas64Binary: string,
 ): Promise<void> => {
-  await kernel.requestExecute({
+  await executePythonInKernel({
+    kernel,
     code: `
 import base64
 
@@ -189,7 +220,7 @@ Path("${path}").parent.mkdir(parents=True, exist_ok=True)
 with open("${path}", "wb") as f:
   f.write(binary_content)
           `,
-  }).done;
+  });
 };
 
 export const hasStatus = (error: unknown, status: number): boolean => {

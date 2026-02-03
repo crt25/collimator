@@ -1,6 +1,11 @@
 import { FileSystemOperation } from "../task-converter";
 
-export class TaskError extends Error {}
+export abstract class TaskError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = new.target.name;
+  }
+}
 
 export class UnsupportedTaskFormatError extends TaskError {
   constructor(public readonly availableFiles: string[]) {
@@ -78,6 +83,13 @@ export class DirectoryNotFoundError extends TaskError {
   }
 }
 
+export class FileNotFoundError extends TaskError {
+  constructor(public readonly path: string) {
+    const message = `File not found at path: ${path}`;
+    super(message);
+  }
+}
+
 export class GenericNotebookTaskImportError extends TaskError {
   constructor() {
     const message = `Cannot import external custom task in solve mode.`;
@@ -110,5 +122,11 @@ export class ExportError extends TaskError {
 export class GetTaskError extends TaskError {
   constructor(public readonly reason: string) {
     super(`Failed to get task: ${reason}`);
+  }
+}
+
+export class FailedToSendTaskSolutionError extends Error {
+  constructor(originalError: unknown) {
+    super(`Failed to send task solution: ${originalError}`);
   }
 }

@@ -53,6 +53,7 @@ export interface Props {
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
+  onReceiveTaskSolution?: (solution: Blob) => void;
   onStudentAppActivity?: (
     action: string,
     data: Record<string, unknown>,
@@ -67,6 +68,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     onReceiveSubmission,
     onSolutionRun,
     onStudentAppActivity,
+    onReceiveTaskSolution,
   },
   ref,
 ) {
@@ -91,6 +93,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     {
       postSubmission: async (request) => {
         onReceiveSubmission?.(request.params);
+      },
+      postTaskSolution: async (request) => {
+        onReceiveTaskSolution?.(request.params.solution);
       },
       postSolutionRun: async (request) => {
         onSolutionRun?.(request.params);
