@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { defineMessages } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import { Container } from "@chakra-ui/react";
 import { useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -15,6 +15,7 @@ import UserActions from "@/components/user/UserActions";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 import { useUpdateUser } from "@/api/collimator/hooks/users/useUpdateUser";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
+import { toaster } from "@/components/Toaster";
 
 const messages = defineMessages({
   title: {
@@ -25,10 +26,20 @@ const messages = defineMessages({
     id: "UserDetail.submit",
     defaultMessage: "Save User",
   },
+  successMessage: {
+    id: "UserDetail.successMessage",
+    defaultMessage: "Successfully saved changes",
+  },
+  errorMessage: {
+    id: "UserDetail.errorMessage",
+    defaultMessage:
+      "There was an error saving the changes. Please try to save again!",
+  },
 });
 
 const UserDetail = () => {
   const router = useRouter();
+  const intl = useIntl();
   const { userId } = router.query as {
     userId: string;
   };
@@ -39,7 +50,11 @@ const UserDetail = () => {
 
   const onSubmit = useCallback(
     async (formValues: UserFormValues) => {
-      if (user) {
+      if (!user) {
+        return;
+      }
+
+      try {
         await updateUser(user.id, {
           name: formValues.name,
           email: formValues.email,
@@ -47,10 +62,17 @@ const UserDetail = () => {
           type: formValues.type,
         });
 
-        router.back();
+        toaster.success({
+          title: intl.formatMessage(messages.successMessage),
+        });
+      } catch (e) {
+        console.error("Failed to update user:", e);
+        toaster.error({
+          title: intl.formatMessage(messages.errorMessage),
+        });
       }
     },
-    [user, updateUser, router],
+    [user, updateUser, intl],
   );
 
   return (
