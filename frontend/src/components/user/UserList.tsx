@@ -40,6 +40,38 @@ const messages = defineMessages({
   },
 });
 
+const UserNameCell = ({ id, name }: { id: number; name: string }) => (
+  <Text
+    fontWeight="semibold"
+    fontSize="lg"
+    data-testid={`user-${id}-name`}
+    margin={0}
+  >
+    {name}
+  </Text>
+);
+
+const UserDetailsButton = ({ id }: { id: number }) => {
+  const intl = useIntl();
+  const router = useRouter();
+
+  return (
+    <Button
+      aria-label={intl.formatMessage(messages.viewDetails)}
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(`/user/${id}/detail`);
+      }}
+      data-testid={`user-${id}-details-button`}
+      variant="detail"
+    >
+      <Icon>
+        <LuChevronRight />
+      </Icon>
+    </Button>
+  );
+};
+
 const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
@@ -59,14 +91,10 @@ const UserList = () => {
       enableSorting: true,
       header: intl.formatMessage(messages.nameColumn),
       cell: (info) => (
-        <Text
-          fontWeight="semibold"
-          fontSize="lg"
-          data-testid={`user-${info.row.original.id}-name`}
-          margin={0}
-        >
-          {info.row.original.name}
-        </Text>
+        <UserNameCell
+          id={info.row.original.id}
+          name={info.row.original.name}
+        />
       ),
       meta: {
         columnType: ColumnType.text,
@@ -83,21 +111,7 @@ const UserList = () => {
     {
       id: "details",
       header: "",
-      cell: (info) => (
-        <Button
-          aria-label={intl.formatMessage(messages.viewDetails)}
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(`/user/${info.row.original.id}/detail`);
-          }}
-          data-testid={`user-${info.row.original.id}-details-button`}
-          variant="detail"
-        >
-          <Icon>
-            <LuChevronRight />
-          </Icon>
-        </Button>
-      ),
+      cell: (info) => <UserDetailsButton id={info.row.original.id} />,
       size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
