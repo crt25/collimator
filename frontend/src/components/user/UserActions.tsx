@@ -88,7 +88,7 @@ const UserActions = ({ user }: { user: ExistingUser }) => {
               const token = await generateRegistrationToken(user.id);
 
               navigator.clipboard.writeText(
-                `${window.location.origin}/login?registrationToken=${token}`,
+                `${globalThis.location.origin}/login?registrationToken=${token}`,
               );
             }}
             icon={<LuLink />}
