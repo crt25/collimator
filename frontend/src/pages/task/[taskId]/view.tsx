@@ -73,7 +73,6 @@ const TaskDetail = () => {
             task: taskFile,
             language: intl.locale as Language,
           }),
-        intl.formatMessage(taskMessages.taskLoaded),
         intl.formatMessage(taskMessages.cannotLoadTask),
       );
     }

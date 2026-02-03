@@ -10,8 +10,7 @@ import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSol
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import StudentHeader from "@/components/header/StudentHeader";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import StudentPageLayout from "@/components/layout/StudentPageLayout";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
@@ -214,7 +213,6 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
@@ -274,7 +272,6 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.taskImported),
       intl.formatMessage(taskMessages.cannotImportTask),
     );
   }, [intl]);
@@ -286,8 +283,8 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.taskCreated),
       intl.formatMessage(taskMessages.cannotExport),
+      intl.formatMessage(taskMessages.taskCreated),
     );
 
     downloadBlob(response.result.file, "task.sb3");
@@ -301,78 +298,77 @@ const SolveTaskPage = () => {
   const disableImportExport = true;
 
   return (
-    <MaxScreenHeight>
-      <StudentHeader
-        title={messages.title}
-        titleParameters={{ title: task?.title }}
-        logo={
-          task &&
-          session && (
-            <Box>
-              <Breadcrumbs
-                topLevel={
-                  <BreadcrumbItem
-                    onClick={toggleSessionMenu}
-                    icon={<LuSignpost />}
-                    testId="toggle-session-menu-button"
-                  >
-                    {session.title}
-                  </BreadcrumbItem>
-                }
-                marginBottom="0"
-              >
-                <Breadcrumb.Separator />
+    <StudentPageLayout
+      title={messages.title}
+      titleParameters={{ title: task?.title ?? "" }}
+      logo={
+        task &&
+        session && (
+          <Box>
+            <Breadcrumbs
+              topLevel={
                 <BreadcrumbItem
-                  icon={<LuListTodo />}
                   onClick={toggleSessionMenu}
+                  icon={<LuSignpost />}
+                  testId="toggle-session-menu-button"
                 >
-                  {task.title}
+                  {session.title}
                 </BreadcrumbItem>
-              </Breadcrumbs>
-            </Box>
-          )
-        }
-        belowHeader={
-          task && (
-            <Text marginBottom="md" marginX={"lg"}>
-              {task.description}
-            </Text>
-          )
-        }
-      >
-        <li></li>
-        <li>
-          <Button
-            onClick={onSubmitSolution}
-            data-testid="submit-solution-button"
-          >
-            <FormattedMessage
-              id="SolveTask.submitSolution"
-              defaultMessage="Submit Solution"
-            />
-          </Button>
-        </li>
-        {!disableImportExport && (
-          <>
-            <li>
-              <Button onClick={onExport}>
-                <FormattedMessage
-                  id="SolveTask.export"
-                  defaultMessage="Export"
-                />
-              </Button>
-            </li>
-            <li>
-              <Button onClick={onImport}>
-                <FormattedMessage
-                  id="SolveTask.import"
-                  defaultMessage="Import"
-                />
-              </Button>
-            </li>
-          </>
-        )}
-      </StudentHeader>
+              }
+              marginBottom="0"
+            >
+              <Breadcrumb.Separator />
+              <BreadcrumbItem icon={<LuListTodo />} onClick={toggleSessionMenu}>
+                {task.title}
+              </BreadcrumbItem>
+            </Breadcrumbs>
+          </Box>
+        )
+      }
+      belowHeader={
+        task && (
+          <Text marginBottom="md" marginX="lg">
+            {task.description}
+          </Text>
+        )
+      }
+      headerActions={
+        <>
+          <li></li>
+          <li>
+            <Button
+              onClick={onSubmitSolution}
+              data-testid="submit-solution-button"
+            >
+              <FormattedMessage
+                id="SolveTask.submitSolution"
+                defaultMessage="Submit Solution"
+              />
+            </Button>
+          </li>
+          {!disableImportExport && (
+            <>
+              <li>
+                <Button onClick={onExport}>
+                  <FormattedMessage
+                    id="SolveTask.export"
+                    defaultMessage="Export"
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button onClick={onImport}>
+                  <FormattedMessage
+                    id="SolveTask.import"
+                    defaultMessage="Import"
+                  />
+                </Button>
+              </li>
+            </>
+          )}
+        </>
+      }
+    >
       <MultiSwrContent
         data={[session, task, taskFile]}
         errors={[sessionError, taskError, taskFileError]}
@@ -401,7 +397,7 @@ const SolveTaskPage = () => {
           )
         }
       </MultiSwrContent>
-    </MaxScreenHeight>
+    </StudentPageLayout>
   );
 };
 

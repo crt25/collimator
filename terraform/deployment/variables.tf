@@ -13,7 +13,7 @@ variable "scratchapp_bucket_id" {
 
 variable "scratchapp_build_directory" {
   type    = string
-  default = "../../apps/jupyter/build"
+  default = "../../apps/scratch/build"
 }
 
 variable "jupyterapp_bucket_id" {

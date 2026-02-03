@@ -1,38 +1,28 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import Header from "@/components/header/Header";
+import { defineMessages } from "react-intl";
 import CrtNavigation from "@/components/CrtNavigation";
 import UserList from "@/components/user/UserList";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {
     id: "ListUsers.title",
     defaultMessage: "Users",
   },
+  heading: {
+    id: "ListUsers.header",
+    defaultMessage: "User Manager",
+  },
 });
 
 const ListUsers = () => {
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb />
-        </Breadcrumbs>
-        <PageHeading>
-          <FormattedMessage
-            id="ListUsers.header"
-            defaultMessage="User Manager"
-          />
-        </PageHeading>
-        <UserList />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.heading}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <UserList />
+    </PageLayout>
   );
 };
 
