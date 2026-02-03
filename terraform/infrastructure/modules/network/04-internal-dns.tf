@@ -1,4 +1,4 @@
-﻿resource "aws_service_discovery_private_dns_namespace" "this" {
+resource "aws_service_discovery_private_dns_namespace" "this" {
   name = "default.${var.name}.local"
   vpc  = module.vpc.vpc_id
 

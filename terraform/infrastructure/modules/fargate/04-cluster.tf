@@ -1,4 +1,4 @@
-﻿module "ecs_cluster" {
+module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
   version = "~> 7.3"
 

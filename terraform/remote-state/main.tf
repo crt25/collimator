@@ -1,4 +1,4 @@
-﻿resource "aws_s3_bucket" "this" {
+resource "aws_s3_bucket" "this" {
   bucket = var.name
 
   # block delete unless the bucket is empty

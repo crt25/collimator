@@ -16,8 +16,8 @@ module "ecs_service" {
 
   container_definitions = {
     (local.container_name) = {
-      image                    = module.ecr_backend.repository_url
-      readonlyRootFilesystem   = false
+      image                  = module.ecr_backend.repository_url
+      readonlyRootFilesystem = false
 
       portMappings = [
         {
@@ -57,8 +57,8 @@ module "ecs_service" {
       ]
       secrets = [
         {
-            name      = "DATABASE_URL"
-            valueFrom = var.database_url_arn
+          name      = "DATABASE_URL"
+          valueFrom = var.database_url_arn
         }
       ]
     }

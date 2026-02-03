@@ -1,4 +1,4 @@
-﻿locals {
+locals {
   lambda_function_output_directory = "./lambdas/build"
 }
 
@@ -78,7 +78,7 @@ module "backend" {
   public_subnet_ids      = module.network.public_subnet_ids
 
   open_id_connect_microsoft_client_id = var.open_id_connect_microsoft_client_id
-  sentry_dsn                          = var.sentry_dsn_backend 
+  sentry_dsn                          = var.sentry_dsn_backend
   database_url_arn                    = module.database.database_url_arn
 
   tags = var.tags

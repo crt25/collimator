@@ -14,9 +14,9 @@ module "ecr_backend" {
         rulePriority = 1,
         description  = "Keep last ten images",
         selection = {
-          tagStatus     = "untagged",
-          countType     = "imageCountMoreThan",
-          countNumber   = 10
+          tagStatus   = "untagged",
+          countType   = "imageCountMoreThan",
+          countNumber = 10
         },
         action = {
           type = "expire"

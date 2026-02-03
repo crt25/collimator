@@ -14,7 +14,7 @@ variable "region" {
 }
 
 variable "domain_name" {
-  type = string
+  type    = string
   default = "classmosaic.anansi-solutions.net"
 }
 
@@ -34,7 +34,7 @@ variable "vpc_cidr" {
 }
 
 variable "tfstate_bucket_name" {
-  type = string
+  type    = string
   default = "collimator-dev-tf-state"
 }
 
