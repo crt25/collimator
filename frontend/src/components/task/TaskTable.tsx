@@ -13,11 +13,13 @@ import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
+import { ConflictError } from "@/api/fetch";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
+import { toaster } from "../Toaster";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -67,6 +69,20 @@ const messages = defineMessages({
   emptyStateTitle: {
     id: "TaskTable.emptyState.title",
     defaultMessage: "There are no tasks yet. Let's create some!",
+  },
+  successMessage: {
+    id: "TaskTable.successMessage",
+    defaultMessage: "Successfully saved changes",
+  },
+  genericErrorMessage: {
+    id: "TaskTable.errorMessage",
+    defaultMessage:
+      "There was an error saving the changes. Please try to save again!",
+  },
+  conflictErrorMessage: {
+    id: "TaskTable.conflictErrorMessage",
+    defaultMessage:
+      "Cannot delete task because it is currently in use. Please remove all references to this task before deleting it.",
   },
 });
 
@@ -212,7 +228,27 @@ const TaskTable = () => {
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
         onConfirm={
-          taskIdToDelete ? () => deleteTask(taskIdToDelete) : undefined
+          taskIdToDelete
+            ? async () => {
+                try {
+                  await deleteTask(taskIdToDelete);
+                  toaster.success({
+                    title: intl.formatMessage(messages.successMessage),
+                  });
+                } catch (error) {
+                  if (error instanceof ConflictError) {
+                    toaster.error({
+                      title: intl.formatMessage(messages.conflictErrorMessage),
+                    });
+                    return;
+                  }
+
+                  toaster.error({
+                    title: intl.formatMessage(messages.genericErrorMessage),
+                  });
+                }
+              }
+            : undefined
         }
         isDangerous
         messages={{
