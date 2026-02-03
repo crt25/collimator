@@ -79,7 +79,7 @@ module "backend" {
 
   open_id_connect_microsoft_client_id = var.open_id_connect_microsoft_client_id
   sentry_dsn                          = var.sentry_dsn_backend 
-  database_url                        = module.database.database_url
+  database_url_arn                    = module.database.database_url_arn
 
   tags = var.tags
 }

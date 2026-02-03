@@ -31,10 +31,6 @@ module "ecs_service" {
           value = local.container_port
         },
         {
-          name  = "DATABASE_URL",
-          value = var.database_url
-        },
-        {
           name  = "FRONTEND_HOSTNAME",
           value = "https://${var.domain_name}"
         },
@@ -57,6 +53,12 @@ module "ecs_service" {
         {
           name  = "SENTRY_ENVIRONMENT",
           value = var.environment
+        }
+      ]
+      secrets = [
+        {
+            name      = "DATABASE_URL"
+            valueFrom = var.database_url_arn
         }
       ]
     }

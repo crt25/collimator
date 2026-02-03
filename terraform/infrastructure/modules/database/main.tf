@@ -93,3 +93,18 @@ module "database" {
 
   tags = var.tags
 }
+
+locals {
+  database_url = sensitive("postgresql://${local.database_user}:${random_password.database.result}@${module.database.db_instance_address}:5432/${local.database_name}?schema=public")
+}
+
+resource "aws_secretsmanager_secret" "database_url" {
+  name = "${var.name}-url"
+
+  tags = var.tags
+}
+
+resource "aws_secretsmanager_secret_version" "database_url" {
+  secret_id     = aws_secretsmanager_secret.database_url.id
+  secret_string = local.database_url
+}
