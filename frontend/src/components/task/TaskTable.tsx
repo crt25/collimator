@@ -72,17 +72,15 @@ const messages = defineMessages({
   },
   successMessage: {
     id: "TaskTable.successMessage",
-    defaultMessage: "Successfully saved changes",
+    defaultMessage: "Successfully deleted the task",
   },
   genericErrorMessage: {
     id: "TaskTable.errorMessage",
-    defaultMessage:
-      "There was an error saving the changes. Please try to save again!",
+    defaultMessage: "There was an error deleting the task. Please try again!",
   },
   conflictErrorMessage: {
     id: "TaskTable.conflictErrorMessage",
-    defaultMessage:
-      "Cannot delete task because it is currently in use. Please remove all references to this task before deleting it.",
+    defaultMessage: "Cannot delete task because it is currently in use.",
   },
 });
 
