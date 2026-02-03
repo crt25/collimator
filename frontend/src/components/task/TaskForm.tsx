@@ -20,7 +20,7 @@ import {
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
-import { ApiError } from "@/api/fetch";
+import { ConflictError } from "@/api/fetch";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
@@ -162,11 +162,13 @@ const TaskForm = ({
   initialValues,
   onSubmit,
   onConflictError,
+  disabled = false,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
   onConflictError?: () => void;
+  disabled?: boolean;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
@@ -256,7 +258,7 @@ const TaskForm = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
 
-          if (err instanceof ApiError && err.status === 409) {
+          if (err instanceof ConflictError) {
             toaster.error({
               title: intl.formatMessage(messages.saveConflictError),
               closable: true,
@@ -293,6 +295,7 @@ const TaskForm = ({
               labelBadge={
                 showEditedBadges && dirtyFields.title && <EditedBadge />
               }
+              disabled={disabled}
             />
             <TextArea
               label={messages.description}
@@ -302,6 +305,7 @@ const TaskForm = ({
               labelBadge={
                 showEditedBadges && dirtyFields.description && <EditedBadge />
               }
+              disabled={disabled}
             />
 
             <Field.Root
@@ -315,6 +319,7 @@ const TaskForm = ({
                 data-testid="edit-task-button"
                 type="button"
                 onClick={() => setShowEditTaskModal(true)}
+                disabled={disabled}
               >
                 {taskFile ? (
                   <FormattedMessage
@@ -349,6 +354,7 @@ const TaskForm = ({
                   label: getTaskTypeMessage(taskType as TaskType),
                 }))}
                 data-testid="type"
+                disabled={disabled}
               >
                 <Field.ErrorText>{errors.type?.message}</Field.ErrorText>
               </Select>
@@ -358,7 +364,7 @@ const TaskForm = ({
         <Box display="flex" justifyContent="flex-end">
           <SubmitFormButton
             label={submitMessage}
-            disabled={!isDirty || !isValid}
+            disabled={disabled || !isDirty || !isValid}
           />
         </Box>
         <EditTaskModal

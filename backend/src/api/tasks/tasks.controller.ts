@@ -40,7 +40,7 @@ import {
   DeletedTaskDto,
   TaskId,
 } from "./dto";
-import { TasksService } from "./tasks.service";
+import { TaskInUseError, TasksService } from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
 @Controller("tasks")
@@ -207,13 +207,6 @@ export class TasksController {
       throw new ForbiddenException();
     }
 
-    const isInUse = await this.tasksService.isTaskInUse(id);
-    if (isInUse) {
-      throw new ConflictException(
-        "Task is in use by one or more classes and cannot be modified",
-      );
-    }
-
     const referenceSolutionsFiles = files.referenceSolutionsFiles || [];
     const taskFile = files.taskFile?.[0];
 
@@ -228,16 +221,25 @@ export class TasksController {
         "The number of reference solutions must match the number of files",
       );
     }
-    const task = await this.tasksService.update(
-      id,
-      rest,
-      taskFile.mimetype,
-      taskFile.buffer,
-      referenceSolutions,
-      referenceSolutionsFiles,
-    );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    try {
+      const task = await this.tasksService.update(
+        id,
+        rest,
+        taskFile.mimetype,
+        taskFile.buffer,
+        referenceSolutions,
+        referenceSolutionsFiles,
+        true,
+      );
+
+      return ExistingTaskDto.fromQueryResult(task);
+    } catch (error) {
+      if (error instanceof TaskInUseError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Delete(":id")
@@ -260,14 +262,14 @@ export class TasksController {
       throw new ForbiddenException();
     }
 
-    const isInUse = await this.tasksService.isTaskInUse(id);
-    if (isInUse) {
-      throw new ConflictException(
-        "Task is in use by one or more classes and cannot be deleted",
-      );
+    try {
+      const task = await this.tasksService.deleteById(id, true);
+      return DeletedTaskDto.fromQueryResult(task);
+    } catch (error) {
+      if (error instanceof TaskInUseError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
     }
-
-    const task = await this.tasksService.deleteById(id);
-    return DeletedTaskDto.fromQueryResult(task);
   }
 }

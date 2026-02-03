@@ -10,6 +10,13 @@ export class ApiError extends Error {
   }
 }
 
+export class ConflictError extends ApiError {
+  constructor(message: string = "Conflict") {
+    super(409, message);
+    this.name = "ConflictError";
+  }
+}
+
 export const fetchApi = async <T>(
   url: string,
   options: RequestInit,
@@ -24,6 +31,10 @@ export const fetchApi = async <T>(
     // never-resolving promise - this way the redirect will happen before
     // the UI knows about the error
     return new Promise<T>(() => {});
+  }
+
+  if (response.status === 409) {
+    throw new ConflictError(`Conflict: ${response.statusText}`);
   }
 
   if (response.status >= 400) {

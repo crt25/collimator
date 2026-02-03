@@ -12,6 +12,13 @@ import { Modify } from "src/utilities/modify";
 import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
 import { TaskId } from "./dto";
 
+export class TaskInUseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TaskInUseError";
+  }
+}
+
 export type TaskCreateInput = Omit<
   Prisma.TaskUncheckedCreateInput,
   "data" | "mimeType"
@@ -153,6 +160,7 @@ export class TasksService {
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
+    checkInUse: boolean = false,
   ): Promise<Task> {
     const solutionsWithFile = referenceSolutions.map(
       (referenceSolution, index) => ({
@@ -188,9 +196,18 @@ export class TasksService {
         referenceSolution.solution.id !== null,
     );
 
-    const [_, __, updatedTask] = await this.prisma.$transaction([
+    return this.prisma.$transaction(async (tx) => {
+      if (checkInUse) {
+        const isInUse = await this.isTaskInUseTx(tx, id);
+        if (isInUse) {
+          throw new TaskInUseError(
+            "Task is in use by one or more classes and cannot be modified",
+          );
+        }
+      }
+
       // delete all reference solutions that are not in the new list
-      this.prisma.referenceSolution.deleteMany({
+      await tx.referenceSolution.deleteMany({
         where: {
           taskId: id,
           id: {
@@ -199,16 +216,18 @@ export class TasksService {
               .filter((id) => id !== undefined && id !== null),
           },
         },
-      }),
+      });
+
       // delete all solutions without any reference
-      this.prisma.solution.deleteMany({
+      await tx.solution.deleteMany({
         where: {
           referenceSolutions: { none: {} },
           studentSolutions: { none: {} },
         },
-      }),
+      });
+
       // update the task
-      this.prisma.task.update({
+      return tx.task.update({
         data: {
           ...task,
           mimeType,
@@ -294,10 +313,8 @@ export class TasksService {
         },
         where: { id },
         omit: omitData,
-      }),
-    ]);
-
-    return updatedTask;
+      });
+    });
   }
 
   private getNewTests(
@@ -342,10 +359,51 @@ export class TasksService {
     return sessionWithStudents !== null;
   }
 
-  async deleteById(id: TaskId): Promise<TaskWithoutData> {
-    const [_, __, deletedTask] = await this.prisma.$transaction([
+  private async isTaskInUseTx(
+    tx: Prisma.TransactionClient,
+    id: TaskId,
+  ): Promise<boolean> {
+    const sessionWithStudents = await tx.sessionTask.findFirst({
+      where: {
+        taskId: id,
+        session: {
+          OR: [
+            {
+              anonymousStudents: {
+                some: {},
+              },
+            },
+            {
+              class: {
+                students: {
+                  some: {},
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return sessionWithStudents !== null;
+  }
+
+  async deleteById(
+    id: TaskId,
+    checkInUse: boolean = false,
+  ): Promise<TaskWithoutData> {
+    return this.prisma.$transaction(async (tx) => {
+      if (checkInUse) {
+        const isInUse = await this.isTaskInUseTx(tx, id);
+        if (isInUse) {
+          throw new TaskInUseError(
+            "Task is in use by one or more classes and cannot be deleted",
+          );
+        }
+      }
+
       // delete all reference solutions for this task
-      this.prisma.solution.deleteMany({
+      await tx.solution.deleteMany({
         where: {
           taskId: id,
           referenceSolutions: {
@@ -354,19 +412,19 @@ export class TasksService {
             },
           },
         },
-      }),
-      this.prisma.referenceSolution.deleteMany({
+      });
+
+      await tx.referenceSolution.deleteMany({
         where: {
           taskId: id,
         },
-      }),
+      });
+
       // and the task itself
-      this.prisma.task.delete({
+      return tx.task.delete({
         where: { id },
         omit: omitData,
-      }),
-    ]);
-
-    return deletedTask;
+      });
+    });
   }
 }
