@@ -15,10 +15,12 @@ variable "region" {
 
 variable "domain_name" {
   type = string
+  default = "classmosaic.anansi-solutions.net"
 }
 
 variable "sentry_dsn_backend" {
   type    = string
+  default = "https://58dc036282f2b5865866d3008d8d63ba@o4508199129382912.ingest.de.sentry.io/4508737117880400"
 }
 
 variable "open_id_connect_microsoft_client_id" {
