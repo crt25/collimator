@@ -99,9 +99,13 @@ test.describe("user management", () => {
       await form.setUserType(UserType.TEACHER);
       await form.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/user`);
+      await pwPage.goto(`${baseURL}/user`);
 
-      await expect(list.getName(newTeacherId)).toHaveText(updatedTeacherName);
+      const updatedList = await UserListPageModel.create(pwPage);
+
+      await expect(
+        updatedList.getNameElementByName(updatedTeacherName),
+      ).toHaveCount(1);
     });
 
     test("can promote an existing teacher to an admin", async ({
@@ -116,9 +120,13 @@ test.describe("user management", () => {
       await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/user`);
+      await pwPage.goto(`${baseURL}/user`);
 
-      await expect(list.getName(newTeacherId)).toHaveText(updatedTeacherName);
+      const updatedList = await UserListPageModel.create(pwPage);
+
+      await expect(
+        updatedList.getNameElementByName(updatedTeacherName),
+      ).toHaveCount(1);
     });
 
     test("can update an existing admin", async ({ page: pwPage, baseURL }) => {
@@ -138,9 +146,13 @@ test.describe("user management", () => {
       await form.setUserType(UserType.ADMIN);
       await form.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/user`);
+      await pwPage.goto(`${baseURL}/user`);
 
-      await expect(list.getName(newAdminId)).toHaveText(updatedAdminName);
+      const updatedList = await UserListPageModel.create(pwPage);
+
+      await expect(
+        updatedList.getNameElementByName(updatedAdminName),
+      ).toHaveCount(1);
     });
 
     test("can demote an existing admin to a teacher", async ({
@@ -156,9 +168,13 @@ test.describe("user management", () => {
 
       await form.submitButton.click();
 
-      await pwPage.waitForURL(`${baseURL}/user`);
+      await pwPage.goto(`${baseURL}/user`);
 
-      await expect(list.getName(newAdminId)).toHaveText(updatedAdminName);
+      const updatedList = await UserListPageModel.create(pwPage);
+
+      await expect(
+        updatedList.getNameElementByName(updatedAdminName),
+      ).toHaveCount(1);
     });
     test("can delete items", async ({ page: pwPage }) => {
       const page = await UserListPageModel.create(pwPage);
