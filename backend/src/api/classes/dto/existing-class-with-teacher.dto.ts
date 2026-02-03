@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Class } from "@prisma/client";
 import { Expose, plainToInstance, Type } from "class-transformer";
+import { IsDate, IsOptional } from "class-validator";
 import { ClassId } from "./existing-class.dto";
 import { ClassTeacherDto } from "./class-teacher.dto";
 
@@ -22,6 +23,13 @@ export class ExistingClassWithTeacherDto implements Omit<Class, "teacherId"> {
   @Type(() => ClassTeacherDto)
   @Expose()
   readonly teacher!: ClassTeacherDto;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   static fromQueryResult(data: Class): ExistingClassWithTeacherDto {
     return plainToInstance(ExistingClassWithTeacherDto, data, {

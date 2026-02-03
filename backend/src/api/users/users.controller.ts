@@ -8,12 +8,15 @@ import {
   Delete,
   ParseIntPipe,
   ForbiddenException,
+  ParseBoolPipe,
+  Query,
 } from "@nestjs/common";
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { User } from "@prisma/client";
@@ -52,19 +55,34 @@ export class UsersController {
 
   @Get()
   @AdminOnly()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
-  async findAll(): Promise<ExistingUserDto[]> {
+  async findAll(
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
+  ): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
-    const users = await this.usersService.findMany({});
+    const users = await this.usersService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingUserDto, users);
   }
 
   @Get(":id")
   @ApiOkResponse({ type: ExistingUserDto })
   @ApiNotFoundResponse()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   async findOne(
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canViewUser(
       authenticatedUser,
@@ -75,18 +93,25 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    const user = await this.usersService.findByIdOrThrow(id);
+    const user = await this.usersService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingUserDto.fromQueryResult(user);
   }
 
   @Patch(":id")
   @ApiCreatedResponse({ type: ExistingUserDto })
   @ApiForbiddenResponse()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiNotFoundResponse()
   async update(
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
     @Body() userDto: UpdateUserDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto> {
     const isAuthorized = await this.authorizationService.canUpdateUser(
       authenticatedUser,
@@ -98,7 +123,7 @@ export class UsersController {
       throw new ForbiddenException();
     }
 
-    const user = await this.usersService.update(id, userDto);
+    const user = await this.usersService.update(id, userDto, includeSoftDelete);
 
     return ExistingUserDto.fromQueryResult(user);
   }

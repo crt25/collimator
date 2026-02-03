@@ -7,9 +7,11 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   StreamableFile,
   UploadedFile,
   UseInterceptors,
@@ -24,6 +26,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
@@ -127,12 +130,19 @@ export class SolutionsController {
   }
 
   @Get("current-analyses")
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: CurrentAnalysesDto })
   async findCurrentAnalyses(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<CurrentAnalysesDto> {
     const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
       user,
@@ -146,6 +156,7 @@ export class SolutionsController {
     const solutions = await this.solutionsService.findCurrentAnalyses(
       sessionId,
       taskId,
+      includeSoftDelete,
     );
 
     const studentAnalyses: CurrentStudentAnalysisDto[] = fromQueryResults(
@@ -166,6 +177,11 @@ export class SolutionsController {
 
   @Get("student/latest")
   @StudentOnly()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -174,12 +190,15 @@ export class SolutionsController {
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
     const solution =
       await this.solutionsService.downloadLatestStudentSolutionOrThrow(
         sessionId,
         taskId,
         student.id,
+        includeSoftDelete,
       );
 
     return new StreamableFile(solution.data, {
@@ -189,6 +208,11 @@ export class SolutionsController {
 
   @Get("student/:id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -199,6 +223,8 @@ export class SolutionsController {
     @Param("sessionId", ParseIntPipe) sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("id", ParseIntPipe) id: StudentSolutionId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingStudentSolutionDto> {
     const isAuthorized = await this.authorizationService.canViewStudentSolution(
       user,
@@ -214,6 +240,7 @@ export class SolutionsController {
       sessionId,
       taskId,
       id,
+      includeSoftDelete,
     );
     return ExistingStudentSolutionDto.fromQueryResult(solution);
   }
@@ -221,6 +248,11 @@ export class SolutionsController {
   @Get(":hash/download")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
@@ -230,6 +262,8 @@ export class SolutionsController {
     @Param("sessionId", ParseIntPipe) _sessionId: number,
     @Param("taskId", ParseIntPipe) taskId: number,
     @Param("hash") hash: string,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
     const solutionHash = Buffer.from(hash, "base64url");
     const isAuthorized = await this.authorizationService.canViewSolution(
@@ -246,6 +280,7 @@ export class SolutionsController {
     const solution = await this.solutionsService.downloadByHashOrThrow(
       taskId,
       solutionHash,
+      includeSoftDelete,
     );
 
     return new StreamableFile(solution.data, {
@@ -258,6 +293,11 @@ export class SolutionsController {
     summary: "Updates the isReference field of a student solution",
   })
   @ApiOkResponse()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @HttpCode(204)
@@ -269,6 +309,8 @@ export class SolutionsController {
     @Param("taskId", ParseIntPipe) _taskId: number,
     @Param("id", ParseIntPipe) id: StudentSolutionId,
     @Body() dto: PatchStudentSolutionIsReferenceDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<void> {
     const isAuthorized =
       await this.authorizationService.canUpdateStudentSolutionIsReference(
@@ -283,6 +325,7 @@ export class SolutionsController {
     return this.solutionsService.updateStudentSolutionIsReference(
       id,
       dto.isReference,
+      includeSoftDelete,
     );
   }
 

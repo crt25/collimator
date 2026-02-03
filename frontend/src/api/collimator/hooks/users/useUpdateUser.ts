@@ -2,9 +2,14 @@ import { useCallback } from "react";
 import { usersControllerUpdateV0 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UpdateUserDto } from "../../generated/models";
+import {
+  UpdateUserDto,
+  UsersControllerUpdateV0Params,
+} from "../../generated/models";
 import { useRevalidateUserList } from "./useRevalidateUserList";
 import { useRevalidateUser } from "./useRevalidateUser";
+
+const defaultParams: UsersControllerUpdateV0Params = {};
 
 type UpdateUserType = (
   id: number,
@@ -16,8 +21,9 @@ const fetchAndTransform = (
   options: RequestInit,
   id: number,
   updateUserDto: UpdateUserDto,
+  params: UsersControllerUpdateV0Params = defaultParams,
 ): ReturnType<UpdateUserType> =>
-  usersControllerUpdateV0(id, updateUserDto, options).then(
+  usersControllerUpdateV0(id, updateUserDto, params, options).then(
     ExistingUser.fromDto,
   );
 

@@ -9,6 +9,7 @@ WITH studentSolutions AS (
     FROM "StudentSolution" studentSolution
     WHERE studentSolution."sessionId" = $1
     AND studentSolution."taskId" = $2
+    AND studentSolution."deletedAt" IS NULL
     ORDER BY
       studentSolution."studentId",
       studentSolution."createdAt" DESC
@@ -33,10 +34,12 @@ FROM studentSolutions
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolutions."taskId"
   AND analysis."solutionHash" = studentSolutions."solutionHash"
+  AND analysis."deletedAt" IS NULL
 LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = studentSolutions."studentId"
+  AND student."deletedAt" IS NULL
 INNER JOIN "SolutionTest" test
-  ON test."studentSolutionId" = studentSolutions.id
+  ON test."studentSolutionId" = studentSolutions.id AND test."deletedAt" IS NULL
   -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
 WHERE studentSolutions."isReference" = false
 ORDER BY test."name" ASC
@@ -66,13 +69,17 @@ FROM "StudentSolution" studentSolution
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolution."taskId"
   AND analysis."solutionHash" = studentSolution."solutionHash"
+  AND analysis."deletedAt" IS NULL
 LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = studentSolution."studentId"
+  AND student."deletedAt" IS NULL
 INNER JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution.id
+  AND test."deletedAt" IS NULL
 WHERE studentSolution."sessionId" = $1
 AND studentSolution."taskId" = $2
 AND studentSolution."isReference" = true
+AND studentSolution."deletedAt" IS NULL
 
 )
 
@@ -100,7 +107,10 @@ FROM "ReferenceSolution" referenceSolution
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = referenceSolution."taskId"
   AND analysis."solutionHash" = referenceSolution."solutionHash"
+  AND analysis."deletedAt" IS NULL
 INNER JOIN "SolutionTest" test
   ON test."referenceSolutionId" = referenceSolution.id
+  AND test."deletedAt" IS NULL
 WHERE referenceSolution."taskId" = $2
+AND referenceSolution."deletedAt" IS NULL
 )

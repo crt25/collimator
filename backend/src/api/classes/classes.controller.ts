@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -54,11 +55,18 @@ export class ClassesController {
 
   @Get()
   @ApiQuery({ name: "teacherId", required: false, type: Number })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
     @AuthenticatedUser() user: User,
     @Query("teacherId", new ParseIntPipe({ optional: true }))
     teacherId?: number,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete = false,
   ): Promise<ExistingClassWithTeacherDto[]> {
     const isAuthorized =
       await this.authorizationService.canListClassesOfTeacher(user, teacherId);
@@ -69,20 +77,30 @@ export class ClassesController {
 
     // TODO: add pagination support
 
-    const classes = await this.classesService.listClassesWithTeacher({
-      where: teacherId ? { teacherId } : undefined,
-    });
+    const classes = await this.classesService.listClassesWithTeacher(
+      {
+        where: teacherId ? { teacherId } : undefined,
+      },
+      includeSoftDelete,
+    );
 
     return fromQueryResults(ExistingClassWithTeacherDto, classes);
   }
 
   @Get(":id")
   @ApiOkResponse({ type: ExistingClassExtendedDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete = false,
   ): Promise<ExistingClassExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewClass(user, id);
 
@@ -90,7 +108,10 @@ export class ClassesController {
       throw new ForbiddenException();
     }
 
-    const klass = await this.classesService.findByIdOrThrow(id);
+    const klass = await this.classesService.findByIdOrThrow(
+      id,
+      includeSoftDelete,
+    );
 
     // workaround for bug where class-transformer loses the Uint8Array type
     // see https://github.com/typestack/class-transformer/issues/1815
@@ -104,12 +125,19 @@ export class ClassesController {
 
   @Patch(":id")
   @ApiCreatedResponse({ type: ExistingClassDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: ClassId,
     @Body() updateClassDto: UpdateClassDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete = false,
   ): Promise<ExistingClassDto> {
     const isAuthorized = await this.authorizationService.canUpdateClass(
       user,
@@ -120,7 +148,11 @@ export class ClassesController {
       throw new ForbiddenException();
     }
 
-    const klass = await this.classesService.update(id, updateClassDto);
+    const klass = await this.classesService.update(
+      id,
+      updateClassDto,
+      includeSoftDelete,
+    );
     return ExistingClassDto.fromQueryResult(klass);
   }
 

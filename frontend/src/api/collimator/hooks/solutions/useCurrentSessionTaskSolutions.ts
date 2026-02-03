@@ -8,21 +8,25 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 import { CurrentAnalysis } from "../../models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "../../models/solutions/reference-analysis";
+import { SolutionsControllerFindCurrentAnalysesV0Params } from "../../generated/models";
 
 export type GetCurrentAnalysisReturnType = CurrentAnalysis[];
+
+const defaultParams: SolutionsControllerFindCurrentAnalysesV0Params = {};
 
 export const fetchSolutionsAndTransform = (
   options: RequestInit,
   classId: number,
   sessionId: number,
   taskId?: number,
-  _params?: undefined,
+  params: SolutionsControllerFindCurrentAnalysesV0Params = defaultParams,
 ): Promise<GetCurrentAnalysisReturnType> =>
   taskId
     ? solutionsControllerFindCurrentAnalysesV0(
         classId,
         sessionId,
         taskId,
+        params,
         options,
       ).then((data) => {
         const studentAnalyses: CurrentStudentAnalysis[] = fromDtos(
@@ -43,7 +47,7 @@ export const useCurrentSessionTaskSolutions = (
   classId: number,
   sessionId: number,
   taskId?: number,
-  params?: undefined,
+  params: SolutionsControllerFindCurrentAnalysesV0Params = defaultParams,
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
@@ -53,9 +57,9 @@ export const useCurrentSessionTaskSolutions = (
           classId,
           sessionId,
           taskId,
+          params,
         )
-      : // do not fetch if the taskId is undefined
-        null,
+      : null,
     () =>
       fetchSolutionsAndTransform(
         authOptions,
