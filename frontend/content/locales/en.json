@@ -1125,8 +1125,14 @@
   "UserActions.generateRegistrationToken": {
     "message": "Get registration link"
   },
+  "UserDetail.errorMessage": {
+    "message": "There was an error saving the changes. Please try to save again!"
+  },
   "UserDetail.submit": {
     "message": "Save User"
+  },
+  "UserDetail.successMessage": {
+    "message": "Successfully saved changes"
   },
   "UserDetail.title": {
     "message": "User - {name}"

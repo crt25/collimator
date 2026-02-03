@@ -2805,10 +2805,22 @@
       "value": "Obtenir le lien d'inscription"
     }
   ],
+  "UserDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
+    }
+  ],
   "UserDetail.submit": [
     {
       "type": 0,
       "value": "Sauvegarder l'utilisateur"
+    }
+  ],
+  "UserDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Modifications enregistrées avec succès"
     }
   ],
   "UserDetail.title": [

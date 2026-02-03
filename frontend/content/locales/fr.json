@@ -1335,8 +1335,14 @@
   "UserActions.generateRegistrationToken": {
     "message": "Obtenir le lien d'inscription"
   },
+  "UserDetail.errorMessage": {
+    "message": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
+  },
   "UserDetail.submit": {
     "message": "Sauvegarder l'utilisateur"
+  },
+  "UserDetail.successMessage": {
+    "message": "Modifications enregistrées avec succès"
   },
   "UserDetail.title": {
     "message": "Utilisateur - {name}"

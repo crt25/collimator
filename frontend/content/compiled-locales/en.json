@@ -2381,10 +2381,22 @@
       "value": "Get registration link"
     }
   ],
+  "UserDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error saving the changes. Please try to save again!"
+    }
+  ],
   "UserDetail.submit": [
     {
       "type": 0,
       "value": "Save User"
+    }
+  ],
+  "UserDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully saved changes"
     }
   ],
   "UserDetail.title": [
