@@ -52,12 +52,14 @@ const EditTask = () => {
 
   const [formKey, setFormKey] = useState(0);
 
+  const currentTaskId = task.data?.id;
+
   const handleConflictError = useCallback(() => {
-    if (task.data?.id) {
-      revalidateTask(task.data.id);
+    if (currentTaskId !== undefined) {
+      revalidateTask(currentTaskId);
     }
     setFormKey((prev) => prev + 1);
-  }, [task.data?.id, revalidateTask]);
+  }, [currentTaskId, revalidateTask]);
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
