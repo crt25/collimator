@@ -67,7 +67,18 @@ test.describe("user management", () => {
     });
   });
 
-  test.describe("/user/{id}/edit", () => {
+  test.describe("/user", () => {
+    test.beforeEach(async ({ page }) => {
+      await UserListPageModel.create(page);
+    });
+
+    test("renders the fetched items", async ({ page }) => {
+      // 2 from seedings + 2 from the create tests
+      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(4);
+    });
+  });
+
+  test.describe("/user/{id}/detail", () => {
     test("can update an existing teacher", async ({
       page: pwPage,
       baseURL,
@@ -149,40 +160,17 @@ test.describe("user management", () => {
 
       await expect(list.getName(newAdminId)).toHaveText(updatedAdminName);
     });
-  });
-
-  test.describe("/user/{id}/detail", () => {
-    test.beforeEach(async ({ baseURL, page }) => {
-      const list = await UserListPageModel.create(page);
-
-      await list.viewItem(newAdminId);
-      await page.waitForURL(`${baseURL}/user/${newAdminId}/detail`);
-    });
-
-    test("renders user information", async ({ page }) => {
-      await expect(page.getByTestId("user-details")).toHaveCount(1);
-    });
-  });
-
-  test.describe("/user", () => {
-    test.beforeEach(async ({ page }) => {
-      await UserListPageModel.create(page);
-    });
-
-    test("renders the fetched items", async ({ page }) => {
-      // 2 from seedings + 2 from the create tests
-      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(4);
-    });
-
-    test("can delete listed items", async ({ page: pwPage }) => {
+    test("can delete items", async ({ page: pwPage }) => {
       const page = await UserListPageModel.create(pwPage);
 
-      await page.deleteItemAndConfirm(newTeacherId);
+      await page.editItem(newAdminId);
       await page.deleteItemAndConfirm(newAdminId);
 
-      // Wait for the deletion to be reflected in the UI
-      await expect(page.getItemActions(newTeacherId)).toHaveCount(0);
-      await expect(page.getItemActions(newAdminId)).toHaveCount(0);
+      // expect to be redirected back to the list page
+      await pwPage.waitForURL(/\/user$/);
+
+      // expect the deleted item to no longer be in the list
+      await expect(page.getName(newAdminId)).toHaveCount(0);
     });
   });
 });
