@@ -2,20 +2,19 @@ import { useCallback } from "react";
 import { ExistingSession } from "../../models/sessions/existing-session";
 import { sessionsControllerCopyV0 } from "../../generated/endpoints/sessions/sessions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { CopySessionDto } from "../../generated/models";
 import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 
 type CopySessionType = (
   targetClassId: number,
-  copySessionDto: CopySessionDto,
+  sourceSessionId: number,
 ) => Promise<ExistingSession>;
 
 const copyAndTransform = (
   options: RequestInit,
   targetClassId: number,
-  copySessionDto: CopySessionDto,
+  sourceSessionId: number,
 ): ReturnType<CopySessionType> =>
-  sessionsControllerCopyV0(targetClassId, copySessionDto, options).then(
+  sessionsControllerCopyV0(targetClassId, { sourceSessionId }, options).then(
     ExistingSession.fromDto,
   );
 
@@ -24,8 +23,8 @@ export const useCopySession = (): CopySessionType => {
   const authOptions = useAuthenticationOptions();
 
   return useCallback<CopySessionType>(
-    (targetClassId, copySessionDto) =>
-      copyAndTransform(authOptions, targetClassId, copySessionDto).then(
+    (targetClassId, sourceSessionId) =>
+      copyAndTransform(authOptions, targetClassId, sourceSessionId).then(
         (result) => {
           revalidateList(targetClassId);
 

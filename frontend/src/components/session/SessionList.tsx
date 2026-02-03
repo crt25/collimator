@@ -65,7 +65,7 @@ const messages = defineMessages({
   },
   copyExistingLesson: {
     id: "SessionList.copyExistingLesson",
-    defaultMessage: "Copy existing Lesson",
+    defaultMessage: "Copy Existing Lesson",
   },
   copySessionLink: {
     id: "SessionList.copySessionLink",

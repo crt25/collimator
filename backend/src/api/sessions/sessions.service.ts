@@ -177,30 +177,41 @@ export class SessionsService {
     sourceSessionId: SessionId,
     targetClassId: number,
   ): Promise<Session> {
-    const sourceSession = await this.prisma.session.findUniqueOrThrow({
-      where: { id: sourceSessionId },
-      include: {
-        tasks: {
-          orderBy: { index: "asc" as Prisma.SortOrder },
-          select: {
-            taskId: true,
-            index: true,
+    return this.prisma.$transaction(async (tx) => {
+      const sourceSession = await tx.session.findUniqueOrThrow({
+        where: { id: sourceSessionId },
+        include: {
+          tasks: {
+            orderBy: { index: "asc" as Prisma.SortOrder },
+            select: {
+              taskId: true,
+              index: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    const taskIds = sourceSession.tasks.map((t) => t.taskId);
+      const taskIds = sourceSession.tasks.map((t) => t.taskId);
 
-    return this.create(
-      targetClassId,
-      {
+      const checkedSession: Prisma.SessionCreateInput = {
         title: sourceSession.title,
         description: sourceSession.description,
         isAnonymous: sourceSession.isAnonymous,
-      },
-      taskIds,
-    );
+        class: {
+          connect: { id: targetClassId },
+        },
+        tasks: {
+          createMany: {
+            data: taskIds.map((taskId, index) => ({ taskId, index })),
+          },
+        },
+      };
+
+      return tx.session.create({
+        data: checkedSession,
+        include: compactInclude,
+      });
+    });
   }
 
   async getSessionProgress(

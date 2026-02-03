@@ -11,12 +11,11 @@ import Select from "../form/Select";
 const messages = defineMessages({
   title: {
     id: "CopyLessonModal.title",
-    defaultMessage: "Copy existing Lesson",
+    defaultMessage: "Copy existing lesson",
   },
   description: {
     id: "CopyLessonModal.description",
-    defaultMessage:
-      "Select an existing Lesson to copy from another class. The Tasks structure will be copied as well but without any data.",
+    defaultMessage: "Select an existing lesson to copy from another class.",
   },
   classLabel: {
     id: "CopyLessonModal.classLabel",
@@ -57,9 +56,10 @@ const CopyLessonModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: classes } = useAllClasses();
-  const { data: sessions } = useAllClassSessions(
-    selectedClassId ? parseInt(selectedClassId, 10) : 0,
-  );
+  const selectedClassIdNumber = selectedClassId
+    ? parseInt(selectedClassId, 10)
+    : null;
+  const { data: sessions } = useAllClassSessions(selectedClassIdNumber);
 
   const copySession = useCopySession();
 
@@ -101,9 +101,7 @@ const CopyLessonModal = ({
 
     setIsSubmitting(true);
     try {
-      await copySession(targetClassId, {
-        sourceSessionId: parseInt(selectedSessionId, 10),
-      });
+      await copySession(targetClassId, parseInt(selectedSessionId, 10));
       handleClose();
     } finally {
       setIsSubmitting(false);
