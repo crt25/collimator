@@ -50,6 +50,8 @@ module "spa_lambda_function" {
   create_package         = false
   local_existing_package = data.archive_file.lambda_function.output_path
 
+  cloudwatch_logs_retention_in_days = 90
+
   tags = var.tags
 }
 
