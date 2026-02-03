@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import { useMemo } from "react";
-import { chakra } from "@chakra-ui/react";
+import { chakra, Grid, GridItem } from "@chakra-ui/react";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { omitNullValues, PartialNullable } from "@/utilities/type";
@@ -13,6 +13,7 @@ import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import Select from "../form/Select";
 import { EditedBadge } from "../EditedBadge";
+import FormContainer from "../form/FormContainer";
 
 const ButtonWrapper = chakra("div", {
   base: {
@@ -103,45 +104,63 @@ const UserForm = ({
   const isButtonDisabled = (showEditedBadges && !isDirty) || isSubmitting;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} data-testid="user-form">
-      <Input
-        label={messages.name}
-        {...register("name")}
-        data-testid="name"
-        invalid={!!errors.name}
-        errorText={errors.name?.message}
-        labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
-      />
+    <FormContainer
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      data-testid="user-form"
+    >
+      <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+        <GridItem colSpan={{ base: 12, md: 6 }}>
+          <Input
+            label={messages.name}
+            {...register("name")}
+            data-testid="name"
+            invalid={!!errors.name}
+            errorText={errors.name?.message}
+            labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
+          />
+        </GridItem>
 
-      <Input
-        label={messages.email}
-        {...register("email")}
-        data-testid="email"
-        invalid={!!errors.email}
-        errorText={errors.email?.message}
-        labelBadge={showEditedBadges && dirtyFields.email && <EditedBadge />}
-      />
+        <GridItem colSpan={{ base: 12, md: 6 }}>
+          <Select
+            name="type"
+            control={control}
+            label={messages.type}
+            showEditedBadge={showEditedBadges}
+            options={Object.values(UserType).map((userType) => ({
+              value: userType,
+              label: getUserTypeMessage(userType as UserType),
+            }))}
+            data-testid="type"
+          >
+            <ValidationErrorMessage>
+              {errors.type?.message}
+            </ValidationErrorMessage>
+          </Select>
+        </GridItem>
 
-      <Select
-        name="type"
-        control={control}
-        label={messages.type}
-        showEditedBadge={showEditedBadges}
-        options={Object.values(UserType).map((userType) => ({
-          value: userType,
-          label: getUserTypeMessage(userType as UserType),
-        }))}
-        data-testid="type"
-      >
-        <ValidationErrorMessage>{errors.type?.message}</ValidationErrorMessage>
-      </Select>
+        <GridItem colSpan={{ base: 12, md: 6 }}>
+          <Input
+            label={messages.email}
+            {...register("email")}
+            data-testid="email"
+            invalid={!!errors.email}
+            errorText={errors.email?.message}
+            labelBadge={
+              showEditedBadges && dirtyFields.email && <EditedBadge />
+            }
+          />
+        </GridItem>
 
-      <Input
-        label={messages.oidcSub}
-        value={initialValues?.oidcSub ?? ""}
-        data-testid="oidcSub"
-        disabled
-      />
+        <GridItem colSpan={{ base: 12, md: 6 }}>
+          <Input
+            label={messages.oidcSub}
+            value={initialValues?.oidcSub ?? ""}
+            data-testid="oidcSub"
+            disabled
+          />
+        </GridItem>
+      </Grid>
 
       <ButtonWrapper>
         <SubmitFormButton
@@ -154,7 +173,7 @@ const UserForm = ({
           }
         />
       </ButtonWrapper>
-    </form>
+    </FormContainer>
   );
 };
 
