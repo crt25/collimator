@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Alert, Container, Icon } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { LuLock } from "react-icons/lu";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
+import { useRevalidateTask } from "@/api/collimator/hooks/tasks/useRevalidateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/header/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
@@ -47,10 +48,16 @@ const EditTask = () => {
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
+  const revalidateTask = useRevalidateTask();
+
+  const [formKey, setFormKey] = useState(0);
 
   const handleConflictError = useCallback(() => {
-    task.mutate();
-  }, [task]);
+    if (task.data?.id) {
+      revalidateTask(task.data.id);
+    }
+    setFormKey((prev) => prev + 1);
+  }, [task.data?.id, revalidateTask]);
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
@@ -137,19 +144,19 @@ const EditTask = () => {
                     </Alert.Content>
                   </Alert.Root>
                 )}
-                {!isLocked && (
-                  <TaskForm
-                    initialValues={{
-                      ...task,
-                      taskFile,
-                      initialSolution: initialSolution ?? null,
-                      initialSolutionFile: initialSolution?.solution ?? null,
-                    }}
-                    submitMessage={messages.submit}
-                    onSubmit={onSubmit}
-                    onConflictError={handleConflictError}
-                  />
-                )}
+                <TaskForm
+                  key={formKey}
+                  initialValues={{
+                    ...task,
+                    taskFile,
+                    initialSolution: initialSolution ?? null,
+                    initialSolutionFile: initialSolution?.solution ?? null,
+                  }}
+                  submitMessage={messages.submit}
+                  onSubmit={onSubmit}
+                  onConflictError={handleConflictError}
+                  disabled={isLocked}
+                />
               </>
             );
           }}
