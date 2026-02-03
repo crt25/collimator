@@ -230,7 +230,6 @@ export class TasksController {
         taskFile.buffer,
         referenceSolutions,
         referenceSolutionsFiles,
-        true,
       );
 
       return ExistingTaskDto.fromQueryResult(task);
@@ -263,7 +262,7 @@ export class TasksController {
     }
 
     try {
-      const task = await this.tasksService.deleteById(id, true);
+      const task = await this.tasksService.deleteById(id);
       return DeletedTaskDto.fromQueryResult(task);
     } catch (error) {
       if (error instanceof TaskInUseError) {

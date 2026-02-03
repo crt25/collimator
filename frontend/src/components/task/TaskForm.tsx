@@ -361,12 +361,14 @@ const TaskForm = ({
             </Field.Root>
           </GridItem>
         </Grid>
-        <Box display="flex" justifyContent="flex-end">
-          <SubmitFormButton
-            label={submitMessage}
-            disabled={disabled || !isDirty || !isValid}
-          />
-        </Box>
+        {!disabled && (
+          <Box display="flex" justifyContent="flex-end">
+            <SubmitFormButton
+              label={submitMessage}
+              disabled={!isDirty || !isValid}
+            />
+          </Box>
+        )}
         <EditTaskModal
           isShown={showEditTaskModal}
           setIsShown={setShowEditTaskModal}

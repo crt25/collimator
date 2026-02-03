@@ -160,7 +160,6 @@ export class TasksService {
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
-    checkInUse: boolean = false,
   ): Promise<Task> {
     const solutionsWithFile = referenceSolutions.map(
       (referenceSolution, index) => ({
@@ -197,13 +196,11 @@ export class TasksService {
     );
 
     return this.prisma.$transaction(async (tx) => {
-      if (checkInUse) {
-        const isInUse = await this.isTaskInUseTx(tx, id);
-        if (isInUse) {
-          throw new TaskInUseError(
-            "Task is in use by one or more classes and cannot be modified",
-          );
-        }
+      const isInUse = await this.isTaskInUseTx(tx, id);
+      if (isInUse) {
+        throw new TaskInUseError(
+          "Task is in use by one or more classes and cannot be modified",
+        );
       }
 
       // delete all reference solutions that are not in the new list
@@ -388,18 +385,13 @@ export class TasksService {
     return sessionWithStudents !== null;
   }
 
-  async deleteById(
-    id: TaskId,
-    checkInUse: boolean = false,
-  ): Promise<TaskWithoutData> {
+  async deleteById(id: TaskId): Promise<TaskWithoutData> {
     return this.prisma.$transaction(async (tx) => {
-      if (checkInUse) {
-        const isInUse = await this.isTaskInUseTx(tx, id);
-        if (isInUse) {
-          throw new TaskInUseError(
-            "Task is in use by one or more classes and cannot be deleted",
-          );
-        }
+      const isInUse = await this.isTaskInUseTx(tx, id);
+      if (isInUse) {
+        throw new TaskInUseError(
+          "Task is in use by one or more classes and cannot be deleted",
+        );
       }
 
       // delete all reference solutions for this task
