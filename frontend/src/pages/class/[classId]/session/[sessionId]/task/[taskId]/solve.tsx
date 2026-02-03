@@ -416,6 +416,7 @@ const SolveTaskPage = () => {
               onAppAvailable={onAppAvailable}
               onReceiveSubmission={onReceiveSubmission}
               onReceiveTaskSolution={onReceiveTaskSolution}
+              onTrackStudentActivityFailure={setSaveError}
             />
           ) : (
             <FormattedMessage
