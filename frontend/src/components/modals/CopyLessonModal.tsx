@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Dialog, Portal, Text } from "@chakra-ui/react";
+import Button from "../Button";
+import Select from "../form/Select";
 import { ModalMessages } from "@/i18n/modal-messages";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { useCopySession } from "@/api/collimator/hooks/sessions/useCopySession";
-import Button from "../Button";
-import Select from "../form/Select";
 
 const messages = defineMessages({
   title: {
@@ -136,6 +136,7 @@ const CopyLessonModal = ({
                 label={messages.classLabel}
                 placeholder={messages.classPlaceholder}
                 alwaysShow
+                insideDialog
                 data-testid="copy-lesson-class-select"
               />
 
@@ -146,6 +147,7 @@ const CopyLessonModal = ({
                 label={messages.lessonLabel}
                 placeholder={messages.lessonPlaceholder}
                 alwaysShow
+                insideDialog
                 data-testid="copy-lesson-session-select"
               />
             </Dialog.Body>

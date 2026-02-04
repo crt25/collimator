@@ -48,6 +48,12 @@ type SharedSelectProps = InternalSelectProps & {
   options: { value: string; label: string | MessageDescriptor }[];
   noMargin?: boolean;
   alwaysShow?: boolean;
+  // True if the Select is rendered inside a Chakra UI Dialog, false otherwise
+  // Chakra's Dialog traps focus within its content, so the Select dropdown
+  // cannot be interacted with if it's rendered via a Portal at the document
+  // body (outside the Dialog DOM tree).
+  // see https://github.com/chakra-ui/ark/discussions/2299
+  insideDialog?: boolean;
 };
 
 type Props<TValues extends FieldValues, TField extends Path<TValues>> = (
@@ -60,6 +66,7 @@ const InternalSelect = (
   props: InternalSelectProps & {
     name?: string;
     value?: string;
+    insideDialog?: boolean;
     collection: ListCollection<{
       label: string;
       value: string;
@@ -81,6 +88,7 @@ const InternalSelect = (
     isDirty,
     errorMessage,
     children,
+    insideDialog,
     ...rest
   } = props;
 
@@ -121,21 +129,25 @@ const InternalSelect = (
 
         {children}
 
-        <Portal>
-          <ChakraSelect.Positioner>
-            <ChakraSelect.Content>
-              {collection.items.map((option) => (
-                <ChakraSelect.Item
-                  key={option.value}
-                  item={option}
-                  data-testid={`select-option-${option.value}`}
-                >
-                  {option.label}
-                </ChakraSelect.Item>
-              ))}
-            </ChakraSelect.Content>
-          </ChakraSelect.Positioner>
-        </Portal>
+        {(() => {
+          const positioner = (
+            <ChakraSelect.Positioner>
+              <ChakraSelect.Content>
+                {collection.items.map((option) => (
+                  <ChakraSelect.Item
+                    key={option.value}
+                    item={option}
+                    data-testid={`select-option-${option.value}`}
+                  >
+                    {option.label}
+                  </ChakraSelect.Item>
+                ))}
+              </ChakraSelect.Content>
+            </ChakraSelect.Positioner>
+          );
+
+          return insideDialog ? positioner : <Portal>{positioner}</Portal>;
+        })()}
       </ChakraSelect.Root>
     </Field.Root>
   );
@@ -153,6 +165,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
     placeholder,
     noMargin,
     alwaysShow,
+    insideDialog,
     ...rest
   } = props;
 
@@ -190,6 +203,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               variant={variant}
               label={label}
               placeholder={placeholder}
+              insideDialog={insideDialog}
             >
               {children}
             </InternalSelect>
@@ -210,6 +224,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
         variant={variant}
         label={label}
         placeholder={placeholder}
+        insideDialog={insideDialog}
       >
         {children}
       </InternalSelect>
