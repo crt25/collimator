@@ -22,6 +22,10 @@ export enum CrtApp {
   scratch = "scratch",
 }
 
+export enum JupyterApp {
+  jupyter = "jupyter",
+}
+
 export const portLockDirectory = "playwright/.port";
 
 export const setupBackendPort = 3999;
@@ -52,7 +56,7 @@ export const getFrontendPath = (): string => {
   return [...segments.slice(0, e2eIdx), "frontend"].join(path.sep);
 };
 
-export const getAppPath = (app: CrtApp): string => {
+export const getAppPath = (app: CrtApp | JupyterApp): string => {
   const segments = process.cwd().split(path.sep);
   const e2eIdx = segments.lastIndexOf("e2e");
 
@@ -151,6 +155,7 @@ export const buildFrontend = (
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: config.oidcClientId,
       NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "/scratch",
+      NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: "/jupyter/lab/index.html",
     },
     cwd: getFrontendPath(),
     shell: true,
@@ -158,8 +163,8 @@ export const buildFrontend = (
   });
 };
 
-export const buildApp = (
-  app: CrtApp,
+export const buildScratchApp = (
+  app: CrtApp | JupyterApp,
   stdout: "pipe" | "ignore" = "pipe",
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
@@ -171,6 +176,23 @@ export const buildApp = (
     cwd: getAppPath(app),
     shell: true,
     stdio: ["ignore", stdout, stderr],
+  });
+};
+
+export const buildJupyterApp = (
+  app: JupyterApp,
+  stdout: "pipe" | "ignore" = "pipe",
+  stderr: "pipe" | "ignore" = "pipe",
+): void => {
+  spawnSync("make", ["build"], {
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      BASE_URL: "/jupyter",
+    },
+    cwd: getAppPath(app),
+    shell: true,
+    stdio: ["pipe", stdout, stderr],
   });
 };
 
