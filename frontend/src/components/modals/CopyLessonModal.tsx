@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { Dialog, Portal, Text } from "@chakra-ui/react";
@@ -9,6 +11,8 @@ import { ModalMessages } from "@/i18n/modal-messages";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { useCopySession } from "@/api/collimator/hooks/sessions/useCopySession";
+import { useYupSchema } from "@/hooks/useYupSchema";
+import { useYupResolver } from "@/hooks/useYupResolver";
 
 const messages = defineMessages({
   title: {
@@ -62,6 +66,11 @@ const messages = defineMessages({
   },
 });
 
+interface CopyLessonFormValues {
+  classId: string;
+  sessionId: string;
+}
+
 interface CopyLessonModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -75,9 +84,30 @@ const CopyLessonModal = ({
 }: CopyLessonModalProps) => {
   const intl = useIntl();
   const router = useRouter();
-  const [selectedClassId, setSelectedClassId] = useState<string>("");
-  const [selectedSessionId, setSelectedSessionId] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useYupSchema({
+    classId: yup.string().required(),
+    sessionId: yup.string().required(),
+  });
+
+  const resolver = useYupResolver(schema);
+
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    control,
+    formState: { isSubmitting, isValid },
+  } = useForm<CopyLessonFormValues>({
+    resolver,
+    defaultValues: {
+      classId: "",
+      sessionId: "",
+    },
+  });
+
+  const selectedClassId = watch("classId");
 
   const {
     data: classes,
@@ -117,64 +147,47 @@ const CopyLessonModal = ({
     [sessions],
   );
 
-  const handleClassChange = useCallback((value: string) => {
-    setSelectedClassId(value);
-    setSelectedSessionId("");
-  }, []);
-
-  const handleSessionChange = useCallback((value: string) => {
-    setSelectedSessionId(value);
-  }, []);
+  useEffect(() => {
+    setValue("sessionId", "");
+  }, [selectedClassId, setValue]);
 
   const handleClose = useCallback(() => {
-    setSelectedClassId("");
-    setSelectedSessionId("");
+    reset();
     onClose();
-  }, [onClose]);
+  }, [onClose, reset]);
 
-  const handleCopy = useCallback(async () => {
-    if (!selectedSessionId) return;
+  const onSubmit = useCallback(
+    async (data: CopyLessonFormValues) => {
+      try {
+        const newSession = await copySession(
+          targetClassId,
+          parseInt(data.sessionId, 10),
+        );
 
-    setIsSubmitting(true);
+        handleClose();
 
-    try {
-      const newSession = await copySession(
-        targetClassId,
-        parseInt(selectedSessionId, 10),
-      );
+        toaster.success({
+          title: intl.formatMessage(messages.copySuccess),
+          action: {
+            label: intl.formatMessage(messages.goToLesson),
+            onClick: () =>
+              router.push(
+                `/class/${targetClassId}/session/${newSession.id}/detail`,
+              ),
+          },
+          closable: true,
+        });
+      } catch {
+        toaster.error({
+          title: intl.formatMessage(messages.copyError),
+          closable: true,
+        });
+      }
+    },
+    [targetClassId, copySession, handleClose, intl, router],
+  );
 
-      handleClose();
-
-      toaster.success({
-        title: intl.formatMessage(messages.copySuccess),
-        action: {
-          label: intl.formatMessage(messages.goToLesson),
-          onClick: () =>
-            router.push(
-              `/class/${targetClassId}/session/${newSession.id}/detail`,
-            ),
-        },
-        closable: true,
-      });
-    } catch {
-      toaster.error({
-        title: intl.formatMessage(messages.copyError),
-        closable: true,
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [
-    selectedSessionId,
-    targetClassId,
-    copySession,
-    handleClose,
-    intl,
-    router,
-  ]);
-
-  const canSubmit =
-    selectedClassId && selectedSessionId && !isSubmitting && !hasError;
+  const canSubmit = isValid && !isSubmitting && !hasError;
 
   return (
     <Dialog.Root
@@ -202,9 +215,9 @@ const CopyLessonModal = ({
                   </Text>
 
                   <Select
+                    name="classId"
+                    control={control}
                     options={classOptions}
-                    value={selectedClassId}
-                    onValueChange={handleClassChange}
                     label={messages.classLabel}
                     placeholder={
                       isLoadingClasses
@@ -218,9 +231,9 @@ const CopyLessonModal = ({
                   />
 
                   <Select
+                    name="sessionId"
+                    control={control}
                     options={sessionOptions}
-                    value={selectedSessionId}
-                    onValueChange={handleSessionChange}
                     label={messages.lessonLabel}
                     placeholder={
                       isLoadingSessions
@@ -244,7 +257,7 @@ const CopyLessonModal = ({
                 {intl.formatMessage(ModalMessages.cancel)}
               </Button>
               <Button
-                onClick={handleCopy}
+                onClick={handleSubmit(onSubmit)}
                 variant="primary"
                 disabled={!canSubmit}
                 data-testid="copy-lesson-confirm-button"
