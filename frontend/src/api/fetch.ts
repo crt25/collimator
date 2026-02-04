@@ -1,3 +1,4 @@
+import Router from "next/router";
 import { backendHostName } from "@/utilities/constants";
 
 export class ApiError extends Error {
@@ -26,7 +27,7 @@ export const fetchApi = async <T>(
 
   if (response.status === 401) {
     // properly sign out the user
-    window.location.href = "/logout";
+    Router.push("/logout");
 
     // never-resolving promise - this way the redirect will happen before
     // the UI knows about the error
