@@ -313,13 +313,10 @@ export class TasksController {
   async remove(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
   ): Promise<DeletedTaskDto> {
     const isAuthorized = await this.authorizationService.canDeleteTask(
       user,
       id,
-      includeSoftDelete,
     );
 
     if (!isAuthorized) {
