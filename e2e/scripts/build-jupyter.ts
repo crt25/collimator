@@ -1,7 +1,7 @@
-import { buildScratchApp, CrtApp } from "../setup/helpers";
+import { buildJupyterApp, JupyterApp } from "../setup/helpers";
 
 const main = async (): Promise<void> => {
-  buildScratchApp(CrtApp.scratch);
+  buildJupyterApp(JupyterApp.jupyter);
 };
 
 main().catch((error) => {

@@ -381,15 +381,21 @@ const TaskFormReferenceSolutions = ({
             testId="reference-solutions"
           >
             {(solution, index) => (
-              <ReferenceSolutionListElement>
+              <ReferenceSolutionListElement
+                key={solution.id}
+                data-testid={`solution-${solution.id}`}
+              >
                 <div>
                   <Field.Root>
-                    <Field.Label>
+                    <Field.Label
+                      data-testid={`reference-solution-${solution.id}-title`}
+                    >
                       {intl.formatMessage(messages.title)}
                     </Field.Label>
                     <Input
                       variant="subtle"
                       value={solution.title}
+                      data-testid={`reference-solution-${solution.id}-title-input`}
                       onChange={(e) =>
                         updateReferenceSolution(index, {
                           ...referenceSolutions[index],
@@ -399,13 +405,17 @@ const TaskFormReferenceSolutions = ({
                     />
                   </Field.Root>
                   <Field.Root>
-                    <Field.Label>
+                    <Field.Label
+                      data-testid={`reference-solution-${solution.id}-description`}
+                    >
                       {intl.formatMessage(messages.description)}
                     </Field.Label>
+
                     <TextArea
                       variant="subtle"
                       rows={5}
                       value={solution.description}
+                      data-testid={`reference-solution-${solution.id}-description-input`}
                       onChange={(e) =>
                         updateReferenceSolution(index, {
                           ...referenceSolutions[index],
@@ -438,7 +448,7 @@ const TaskFormReferenceSolutions = ({
                   </Button>
                 </div>
                 <RemoveTask
-                  data-testid="remove-task"
+                  data-testid={`remove-task-${solution.id}`}
                   onClick={() => {
                     setReferenceSolutions(
                       referenceSolutions.filter((s) => s !== solution),
@@ -522,6 +532,7 @@ const TaskFormReferenceSolutions = ({
           <SubmitFormButton
             label={submitMessage}
             disabled={!isDirty || !isValid}
+            data-testid="task-reference-solutions-form-submit"
           />
         </Box>
       </form>
