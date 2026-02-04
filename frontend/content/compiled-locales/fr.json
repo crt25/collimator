@@ -1089,6 +1089,48 @@
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
+  "DEPRECATED: UserDetail.table.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
+  "DEPRECATED: UserDetail.table.type": [
+    {
+      "type": 0,
+      "value": "Type"
+    }
+  ],
+  "DEPRECATED: UserList.columns.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
   "DEPRECATED: criteria.functionCall.name": [
     {
       "type": 0,
@@ -1203,28 +1245,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "EditUser.header": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur"
-    }
-  ],
-  "EditUser.submit": [
-    {
-      "type": 0,
-      "value": "Sauvegarder l'Utilisateur"
-    }
-  ],
-  "EditUser.title": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur - "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "EditedBadge.edited": [
@@ -2737,16 +2757,70 @@
       "value": "Nombre de tests réussis"
     }
   ],
-  "UserDetail.table.oidcSub": [
+  "UserActions.deleteCancel": [
     {
       "type": 0,
-      "value": "Identifiant OpenId Connect"
+      "value": "Annuler"
     }
   ],
-  "UserDetail.table.type": [
+  "UserActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Type"
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+    }
+  ],
+  "UserActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteError": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'utilisateur. Veuillez réessayer."
+    }
+  ],
+  "UserActions.deleteSuccess": [
+    {
+      "type": 0,
+      "value": "Utilisateur supprimé avec succès"
+    }
+  ],
+  "UserActions.deleteUser": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
+  "UserDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
+    }
+  ],
+  "UserDetail.submit": [
+    {
+      "type": 0,
+      "value": "Sauvegarder l'utilisateur"
+    }
+  ],
+  "UserDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Modifications enregistrées avec succès"
     }
   ],
   "UserDetail.title": [
@@ -2771,16 +2845,22 @@
       "value": "Nom"
     }
   ],
+  "UserForm.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
   "UserForm.role": [
     {
       "type": 0,
       "value": "Rôle"
     }
   ],
-  "UserList.columns.actions": [
+  "UserForm.tooltip.disabledSaveButton": [
     {
       "type": 0,
-      "value": "Actions"
+      "value": "Aucune modification n'a été apportée au formulaire."
     }
   ],
   "UserList.columns.name": [
@@ -2795,28 +2875,16 @@
       "value": "Rôle"
     }
   ],
-  "UserList.deleteConfirmation.body": [
+  "UserList.createUser": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+      "value": "Créer un Utilisateur"
     }
   ],
-  "UserList.deleteConfirmation.confirm": [
+  "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.generateRegistrationToken": [
-    {
-      "type": 0,
-      "value": "Obtenir le lien d'inscription"
+      "value": "Voir les détails de l'utilisateur"
     }
   ],
   "UserNavigation.userTab": [
@@ -2984,7 +3052,7 @@
   "embeddedApp.cannotExport": [
     {
       "type": 0,
-      "value": "Failed to export task: "
+      "value": "Échec de l'exportation de la tâche : "
     },
     {
       "type": 1,
@@ -2994,7 +3062,7 @@
   "embeddedApp.cannotGetTask": [
     {
       "type": 0,
-      "value": "Cannot get task: "
+      "value": "Impossible de récupérer la tâche : "
     },
     {
       "type": 1,
@@ -3004,7 +3072,7 @@
   "embeddedApp.cannotImportExternalInNonEditMode": [
     {
       "type": 0,
-      "value": "Cannot import external tasks in non-edit mode"
+      "value": "Impossible d'importer des tâches externes en mode non-édition"
     }
   ],
   "embeddedApp.cannotImportTask": [
@@ -3020,7 +3088,7 @@
   "embeddedApp.cannotLoadProject": [
     {
       "type": 0,
-      "value": "Cannot load project: "
+      "value": "Impossible de charger le projet : "
     },
     {
       "type": 1,
@@ -3050,7 +3118,7 @@
   "embeddedApp.cannotSaveProject": [
     {
       "type": 0,
-      "value": "Cannot save project: "
+      "value": "Impossible de sauvegarder le projet : "
     },
     {
       "type": 1,
@@ -3060,7 +3128,7 @@
   "embeddedApp.cannotSaveTask": [
     {
       "type": 0,
-      "value": "Cannot save task: "
+      "value": "Impossible de sauvegarder la tâche : "
     },
     {
       "type": 1,
@@ -3070,7 +3138,7 @@
   "embeddedApp.savingTask": [
     {
       "type": 0,
-      "value": "Saving task..."
+      "value": "Sauvegarde de la tâche en cours..."
     }
   ],
   "embeddedApp.submissionLoaded": [
