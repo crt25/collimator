@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { useRouter } from "next/router";
 import { Dialog, Portal, Text } from "@chakra-ui/react";
 import Button from "../Button";
 import Select from "../form/Select";
+import { toaster } from "../Toaster";
 import { ModalMessages } from "@/i18n/modal-messages";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
@@ -46,6 +48,18 @@ const messages = defineMessages({
     defaultMessage:
       "There was a network issue. Please close this dialog and try again later.",
   },
+  copySuccess: {
+    id: "CopyLessonModal.copySuccess",
+    defaultMessage: "Lesson copied successfully",
+  },
+  copyError: {
+    id: "CopyLessonModal.copyError",
+    defaultMessage: "Failed to copy lesson. Please try again.",
+  },
+  goToLesson: {
+    id: "CopyLessonModal.goToLesson",
+    defaultMessage: "Go to lesson",
+  },
 });
 
 interface CopyLessonModalProps {
@@ -60,6 +74,7 @@ const CopyLessonModal = ({
   targetClassId,
 }: CopyLessonModalProps) => {
   const intl = useIntl();
+  const router = useRouter();
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [selectedSessionId, setSelectedSessionId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -121,13 +136,42 @@ const CopyLessonModal = ({
     if (!selectedSessionId) return;
 
     setIsSubmitting(true);
+
     try {
-      await copySession(targetClassId, parseInt(selectedSessionId, 10));
+      const newSession = await copySession(
+        targetClassId,
+        parseInt(selectedSessionId, 10),
+      );
+
       handleClose();
+
+      toaster.success({
+        title: intl.formatMessage(messages.copySuccess),
+        action: {
+          label: intl.formatMessage(messages.goToLesson),
+          onClick: () =>
+            router.push(
+              `/class/${targetClassId}/session/${newSession.id}/detail`,
+            ),
+        },
+        closable: true,
+      });
+    } catch {
+      toaster.error({
+        title: intl.formatMessage(messages.copyError),
+        closable: true,
+      });
     } finally {
       setIsSubmitting(false);
     }
-  }, [selectedSessionId, targetClassId, copySession, handleClose]);
+  }, [
+    selectedSessionId,
+    targetClassId,
+    copySession,
+    handleClose,
+    intl,
+    router,
+  ]);
 
   const canSubmit =
     selectedClassId && selectedSessionId && !isSubmitting && !hasError;
