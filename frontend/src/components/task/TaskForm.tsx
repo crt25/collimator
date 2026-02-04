@@ -130,9 +130,10 @@ export type TaskFormSubmission = {
   title: string;
   description: string;
   type: TaskType;
-  taskFile: Blob;
+  taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  clearAllReferenceSolutions: boolean;
 };
 
 const getYupSchema = (intl: IntlShape) => ({
@@ -191,10 +192,12 @@ const TaskForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  hasReferenceSolutions = false,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
+  hasReferenceSolutions?: boolean;
 }) => {
   const intl = useIntl();
 
@@ -391,6 +394,7 @@ const TaskForm = ({
           taskFile: data.taskFile,
           initialSolution: data.initialSolution,
           initialSolutionFile: data.initialSolutionFile,
+          clearAllReferenceSolutions: clearSolutionsOnSave,
         } satisfies TaskFormSubmission);
       })(e)
         .then(() => {
@@ -418,7 +422,7 @@ const TaskForm = ({
           });
         });
     },
-    [handleSubmit, onSubmit, reset, intl],
+    [handleSubmit, onSubmit, reset, intl, clearSolutionsOnSave],
   );
 
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
@@ -508,34 +512,7 @@ const TaskForm = ({
           setIsShown={handleEditModalClose}
           initialTask={hasTypeChanged ? null : taskFile}
           taskType={taskType}
-          onSave={(task) => {
-            setValue("taskFile", task.file, {
-              shouldDirty: true,
-              shouldValidate: true,
-            });
-
-            setValue("initialSolutionFile", task.initialSolution.file, {
-              shouldDirty: true,
-              shouldValidate: true,
-            });
-
-            setValue(
-              "initialSolution",
-              {
-                // if possible, use the existing initial solution id,
-                // otherwise set it to null and create a new one
-                id: initialSolution?.id ?? null,
-                title: "",
-                description: "",
-                isInitial: true,
-                tests: createSubmissionTests(task.initialSolution),
-              },
-              {
-                shouldDirty: true,
-                shouldValidate: true,
-              },
-            );
-          }}
+          onSave={handleEditModalSave}
         />
       </form>
       <ConfirmationModal
