@@ -213,6 +213,7 @@ const TaskForm = ({
   );
 
   const cannotNavigate = useRef(false);
+  const confirmedActionRef = useRef(false);
 
   const originalType = initialValues?.type ?? TaskType.SCRATCH;
 
@@ -302,6 +303,7 @@ const TaskForm = ({
       return;
     }
 
+    confirmedActionRef.current = true;
     setValueClean("type", pendingTypeChange);
     setValueClean("taskFile", null);
     setValueClean("initialSolution", null);
@@ -326,6 +328,7 @@ const TaskForm = ({
   }, [hasTypeChanged, hasReferenceSolutions]);
 
   const onConfirmChangeTaskFileAction = useCallback(() => {
+    confirmedActionRef.current = true;
     setClearSolutionsOnSave(true);
     setOpenModal(ModalStates.taskEdit);
   }, []);
@@ -549,8 +552,11 @@ const TaskForm = ({
         isShown={openModal === ModalStates.changeTypeConfirmation}
         setIsShown={(isShown) => {
           if (!isShown) {
-            onCancelTypeChange();
-            setOpenModal(ModalStates.none);
+            if (confirmedActionRef.current) {
+              confirmedActionRef.current = false;
+            } else {
+              onCancelTypeChange();
+            }
           }
         }}
         onConfirm={onConfirmTypeChange}
@@ -564,10 +570,14 @@ const TaskForm = ({
 
       <ConfirmationModal
         isShown={openModal === ModalStates.changeTaskFileConfirmation}
+        data-testid="change-task-file-confirmation-modal"
         setIsShown={(isShown) => {
           if (!isShown) {
-            onCancelChangeTaskFileAction();
-            setOpenModal(ModalStates.none);
+            if (confirmedActionRef.current) {
+              confirmedActionRef.current = false;
+            } else {
+              onCancelChangeTaskFileAction();
+            }
           }
         }}
         onConfirm={onConfirmChangeTaskFileAction}
