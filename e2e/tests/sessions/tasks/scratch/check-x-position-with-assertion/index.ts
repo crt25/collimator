@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { readFile } from "fs/promises";
 import path from "path";
-import { TaskTemplateWithSolutions } from "../task-template-with-solutions";
+import { TaskTemplateWithSolutions } from "../../task-template-with-solutions";
 import { TaskType } from "@/api/collimator/generated/models";
 
 const currentDirectory = import.meta.dirname;
@@ -20,10 +20,7 @@ const checkXPositionWithAssertion: TaskTemplateWithSolutions = {
   },
   template: () => readFile(path.join(currentDirectory, "task.sb3")),
   solutions: {
-    correct: [
-      () => readFile(path.join(correctSolutionPath, "5-x-10.json")),
-      () => readFile(path.join(correctSolutionPath, "loop-5-x-10.json")),
-    ],
+    correct: [() => readFile(path.join(correctSolutionPath, "task.sb3"))],
     incorrect: [
       () => readFile(path.join(incorrectSolutionPath, "1-x-10.json")),
       () => readFile(path.join(incorrectSolutionPath, "loop-10-x-10.json")),
