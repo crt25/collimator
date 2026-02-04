@@ -37,6 +37,15 @@ const messages = defineMessages({
     id: "CopyLessonModal.copyButton",
     defaultMessage: "Copy",
   },
+  loading: {
+    id: "CopyLessonModal.loading",
+    defaultMessage: "Loading…",
+  },
+  networkError: {
+    id: "CopyLessonModal.networkError",
+    defaultMessage:
+      "There was a network issue. Please close this dialog and try again later.",
+  },
 });
 
 interface CopyLessonModalProps {
@@ -55,11 +64,23 @@ const CopyLessonModal = ({
   const [selectedSessionId, setSelectedSessionId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: classes } = useAllClasses();
+  const {
+    data: classes,
+    error: classesError,
+    isLoading: isLoadingClasses,
+  } = useAllClasses();
+
   const selectedClassIdNumber = selectedClassId
     ? parseInt(selectedClassId, 10)
     : null;
-  const { data: sessions } = useAllClassSessions(selectedClassIdNumber);
+
+  const {
+    data: sessions,
+    error: sessionsError,
+    isLoading: isLoadingSessions,
+  } = useAllClassSessions(selectedClassIdNumber);
+
+  const hasError = !!classesError || !!sessionsError;
 
   const copySession = useCopySession();
 
@@ -108,7 +129,8 @@ const CopyLessonModal = ({
     }
   }, [selectedSessionId, targetClassId, copySession, handleClose]);
 
-  const canSubmit = selectedClassId && selectedSessionId && !isSubmitting;
+  const canSubmit =
+    selectedClassId && selectedSessionId && !isSubmitting && !hasError;
 
   return (
     <Dialog.Root
@@ -125,31 +147,49 @@ const CopyLessonModal = ({
               </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              <Text marginBottom="md">
-                <FormattedMessage {...messages.description} />
-              </Text>
+              {hasError ? (
+                <Text>
+                  <FormattedMessage {...messages.networkError} />
+                </Text>
+              ) : (
+                <>
+                  <Text marginBottom="md">
+                    <FormattedMessage {...messages.description} />
+                  </Text>
 
-              <Select
-                options={classOptions}
-                value={selectedClassId}
-                onValueChange={handleClassChange}
-                label={messages.classLabel}
-                placeholder={messages.classPlaceholder}
-                alwaysShow
-                insideDialog
-                data-testid="copy-lesson-class-select"
-              />
+                  <Select
+                    options={classOptions}
+                    value={selectedClassId}
+                    onValueChange={handleClassChange}
+                    label={messages.classLabel}
+                    placeholder={
+                      isLoadingClasses
+                        ? messages.loading
+                        : messages.classPlaceholder
+                    }
+                    disabled={isLoadingClasses}
+                    alwaysShow
+                    insideDialog
+                    data-testid="copy-lesson-class-select"
+                  />
 
-              <Select
-                options={sessionOptions}
-                value={selectedSessionId}
-                onValueChange={handleSessionChange}
-                label={messages.lessonLabel}
-                placeholder={messages.lessonPlaceholder}
-                alwaysShow
-                insideDialog
-                data-testid="copy-lesson-session-select"
-              />
+                  <Select
+                    options={sessionOptions}
+                    value={selectedSessionId}
+                    onValueChange={handleSessionChange}
+                    label={messages.lessonLabel}
+                    placeholder={
+                      isLoadingSessions
+                        ? messages.loading
+                        : messages.lessonPlaceholder
+                    }
+                    disabled={!selectedClassId || isLoadingSessions}
+                    alwaysShow
+                    insideDialog
+                    data-testid="copy-lesson-session-select"
+                  />
+                </>
+              )}
             </Dialog.Body>
             <Dialog.Footer>
               <Button
