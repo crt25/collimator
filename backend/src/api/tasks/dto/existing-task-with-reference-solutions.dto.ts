@@ -7,11 +7,15 @@ import { TaskReferenceSolutionDto } from "./task-reference-solution.dto";
 
 export type TaskId = number;
 
+export type TaskWithReferenceSolutionsAndInUse = TaskWithReferenceSolutions & {
+  isInUse: boolean;
+};
+
 export class ExistingTaskWithReferenceSolutionsDto
   extends ExistingTaskDto
   implements
     Modify<
-      TaskWithReferenceSolutions,
+      TaskWithReferenceSolutionsAndInUse,
       { referenceSolutions: TaskReferenceSolutionDto[] }
     >
 {
@@ -31,8 +35,16 @@ export class ExistingTaskWithReferenceSolutionsDto
   @Expose()
   readonly referenceSolutions!: TaskReferenceSolutionDto[];
 
+  @ApiProperty({
+    description:
+      "Whether the task is in use by one or more classes with students.",
+    example: false,
+  })
+  @Expose()
+  readonly isInUse!: boolean;
+
   static fromQueryResult(
-    data: TaskWithReferenceSolutions,
+    data: TaskWithReferenceSolutionsAndInUse,
   ): ExistingTaskWithReferenceSolutionsDto {
     return plainToInstance(ExistingTaskWithReferenceSolutionsDto, data, {
       excludeExtraneousValues: true,

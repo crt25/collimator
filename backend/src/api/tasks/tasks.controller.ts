@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   ForbiddenException,
@@ -16,6 +17,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -38,7 +40,7 @@ import {
   DeletedTaskDto,
   TaskId,
 } from "./dto";
-import { TasksService } from "./tasks.service";
+import { TaskInUseError, TasksService } from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
 @Controller("tasks")
@@ -138,8 +140,10 @@ export class TasksController {
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
-    const task =
-      await this.tasksService.findByIdOrThrowWithReferenceSolutions(id);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrowWithReferenceSolutions(id),
+      this.tasksService.isTaskInUse(id),
+    ]);
 
     // workaround for bug where class-transformer loses the Uint8Array type
     // see https://github.com/typestack/class-transformer/issues/1815
@@ -149,7 +153,10 @@ export class TasksController {
         (solution.solution.data = Buffer.from(solution.solution.data)),
     );
 
-    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult(task);
+    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult({
+      ...task,
+      isInUse,
+    });
   }
 
   @Get(":id/download")
@@ -171,6 +178,9 @@ export class TasksController {
   @ApiCreatedResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be modified",
+  })
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: "taskFile", maxCount: 1 },
@@ -211,22 +221,33 @@ export class TasksController {
         "The number of reference solutions must match the number of files",
       );
     }
-    const task = await this.tasksService.update(
-      id,
-      rest,
-      taskFile.mimetype,
-      taskFile.buffer,
-      referenceSolutions,
-      referenceSolutionsFiles,
-    );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    try {
+      const task = await this.tasksService.update(
+        id,
+        rest,
+        taskFile.mimetype,
+        taskFile.buffer,
+        referenceSolutions,
+        referenceSolutionsFiles,
+      );
+
+      return ExistingTaskDto.fromQueryResult(task);
+    } catch (error) {
+      if (error instanceof TaskInUseError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Delete(":id")
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be deleted",
+  })
   async remove(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -240,7 +261,14 @@ export class TasksController {
       throw new ForbiddenException();
     }
 
-    const task = await this.tasksService.deleteById(id);
-    return DeletedTaskDto.fromQueryResult(task);
+    try {
+      const task = await this.tasksService.deleteById(id);
+      return DeletedTaskDto.fromQueryResult(task);
+    } catch (error) {
+      if (error instanceof TaskInUseError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 }
