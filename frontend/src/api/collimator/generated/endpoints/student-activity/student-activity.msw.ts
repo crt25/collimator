@@ -5,7 +5,7 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
-import { HttpResponse, delay, http, type RequestHandlerOptions } from "msw";
+import { HttpResponse, delay, http, RequestHandlerOptions } from "msw";
 
 export const getStudentActivityControllerTrackV0MockHandler = (
   overrideResponse?:

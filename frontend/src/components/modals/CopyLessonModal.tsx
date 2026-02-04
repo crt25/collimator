@@ -4,15 +4,15 @@ import * as yup from "yup";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { Dialog, Portal, Text } from "@chakra-ui/react";
-import Button from "../Button";
-import Select from "../form/Select";
-import { toaster } from "../Toaster";
 import { ModalMessages } from "@/i18n/modal-messages";
 import { useAllClasses } from "@/api/collimator/hooks/classes/useAllClasses";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { useCopySession } from "@/api/collimator/hooks/sessions/useCopySession";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
+import { toaster } from "../Toaster";
+import Select from "../form/Select";
+import Button from "../Button";
 
 const messages = defineMessages({
   title: {
