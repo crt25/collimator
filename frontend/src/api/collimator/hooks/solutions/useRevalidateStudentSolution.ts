@@ -1,10 +1,7 @@
 import { useSWRConfig } from "swr";
 import { useCallback } from "react";
 import { getSolutionsControllerFindOneStudentSolutionV0Url } from "../../generated/endpoints/solutions/solutions";
-import { SolutionsControllerFindOneStudentSolutionV0Params } from "../../generated/models";
 import { GetSolutionReturnType } from "./useSolution";
-
-const defaultParams: SolutionsControllerFindOneStudentSolutionV0Params = {};
 
 export const useRevalidateStudentSolution = (): ((
   classId: number,
@@ -12,7 +9,6 @@ export const useRevalidateStudentSolution = (): ((
   taskId: number,
   solutionId: number,
   newSolution?: GetSolutionReturnType,
-  params?: SolutionsControllerFindOneStudentSolutionV0Params,
 ) => void) => {
   const { mutate } = useSWRConfig();
 
@@ -23,7 +19,6 @@ export const useRevalidateStudentSolution = (): ((
       taskId: number,
       solutionId: number,
       newSolution?: GetSolutionReturnType,
-      params: SolutionsControllerFindOneStudentSolutionV0Params = defaultParams,
     ) => {
       mutate(
         getSolutionsControllerFindOneStudentSolutionV0Url(
@@ -31,7 +26,7 @@ export const useRevalidateStudentSolution = (): ((
           sessionId,
           taskId,
           solutionId,
-          params ?? defaultParams,
+          {},
         ),
         newSolution,
       );

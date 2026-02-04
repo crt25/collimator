@@ -1,18 +1,12 @@
 import { useCallback } from "react";
 import { fetchApi } from "@/api/fetch";
 import { getTasksControllerUpdateV0Url } from "../../generated/endpoints/tasks/tasks";
-import {
-  ExistingTaskDto,
-  UpdateTaskDto,
-  TasksControllerUpdateV0Params,
-} from "../../generated/models";
+import { ExistingTaskDto, UpdateTaskDto } from "../../generated/models";
 import { ExistingTask } from "../../models/tasks/existing-task";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { useRevalidateTaskList } from "./useRevalidateTaskList";
 import { useRevalidateTask } from "./useRevalidateTask";
 import { useRevalidateTaskFile } from "./useRevalidateTaskFile";
-
-const defaultParams: TasksControllerUpdateV0Params = {};
 
 type UpdateTaskType = (
   id: number,
@@ -22,7 +16,6 @@ type UpdateTaskType = (
 const tasksControllerUpdate = async (
   id: number,
   updateTaskDto: UpdateTaskDto,
-  params: TasksControllerUpdateV0Params = defaultParams,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
   const formData = new FormData();
@@ -38,7 +31,7 @@ const tasksControllerUpdate = async (
     JSON.stringify(updateTaskDto.referenceSolutions),
   );
 
-  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id, params), {
+  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id), {
     ...options,
     method: "PATCH",
     body: formData,
@@ -49,11 +42,8 @@ const fetchAndTransform = (
   options: RequestInit,
   id: number,
   updateTaskDto: UpdateTaskDto,
-  params: TasksControllerUpdateV0Params = defaultParams,
 ): ReturnType<UpdateTaskType> =>
-  tasksControllerUpdate(id, updateTaskDto, params, options).then(
-    ExistingTask.fromDto,
-  );
+  tasksControllerUpdate(id, updateTaskDto, options).then(ExistingTask.fromDto);
 
 export const useUpdateTask = (): UpdateTaskType => {
   const authOptions = useAuthenticationOptions();

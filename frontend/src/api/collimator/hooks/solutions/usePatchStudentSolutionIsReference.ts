@@ -5,10 +5,7 @@ import {
   solutionsControllerPatchStudentSolutionIsReferenceV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import {
-  PatchStudentSolutionIsReferenceDto,
-  SolutionsControllerFindCurrentAnalysesV0Params,
-} from "../../generated/models";
+import { PatchStudentSolutionIsReferenceDto } from "../../generated/models";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { useRevalidateStudentSolution } from "./useRevalidateStudentSolution";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
@@ -22,8 +19,6 @@ type PatchSolutionType = (
   patchSolutionDto: PatchStudentSolutionIsReferenceDto,
 ) => Promise<void>;
 
-const defaultParams: SolutionsControllerFindCurrentAnalysesV0Params = {};
-
 const patchAndTransform = (
   options: RequestInit,
   classId: number,
@@ -31,7 +26,6 @@ const patchAndTransform = (
   taskId: number,
   studentSolutionId: number,
   patchSolutionDto: PatchStudentSolutionIsReferenceDto,
-  params: SolutionsControllerFindCurrentAnalysesV0Params = defaultParams,
 ): Promise<void> =>
   solutionsControllerPatchStudentSolutionIsReferenceV0(
     classId,
@@ -39,7 +33,7 @@ const patchAndTransform = (
     taskId,
     studentSolutionId,
     patchSolutionDto,
-    params,
+    {},
     options,
   );
 
@@ -73,7 +67,7 @@ export const usePatchStudentSolutionIsReference = (): PatchSolutionType => {
           classId,
           sessionId,
           taskId,
-          defaultParams,
+          {},
         );
 
         const cachedData: GetCurrentAnalysisReturnType | undefined =

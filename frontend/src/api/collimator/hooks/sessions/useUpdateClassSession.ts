@@ -20,20 +20,18 @@ type UpdateSessionType = (
   updateSessionDto: UpdateSessionDto,
 ) => Promise<ExistingSession>;
 
-const defaultParams: SessionsControllerFindAllV0Params = {};
-
 const fetchAndTransform = (
   options: RequestInit,
   classId: number,
   id: number,
   updateSessionDto: UpdateSessionDto,
-  params: SessionsControllerFindAllV0Params = defaultParams,
+  params?: SessionsControllerFindAllV0Params,
 ): ReturnType<UpdateSessionType> =>
   sessionsControllerUpdateV0(
     classId,
     id,
     updateSessionDto,
-    params,
+    params || {},
     options,
   ).then(ExistingSession.fromDto);
 
@@ -46,11 +44,7 @@ export const useUpdateClassSession = (): UpdateSessionType => {
     (classId, id, updateSessionDto) =>
       fetchAndTransform(authOptions, classId, id, updateSessionDto).then(
         (result) => {
-          const key = getSessionsControllerFindOneV0Url(
-            classId,
-            result.id,
-            defaultParams,
-          );
+          const key = getSessionsControllerFindOneV0Url(classId, result.id, {});
 
           const cachedData: GetSessionReturnType | undefined =
             cache.get(key)?.data;

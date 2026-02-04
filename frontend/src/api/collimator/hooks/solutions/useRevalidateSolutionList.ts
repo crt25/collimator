@@ -4,32 +4,23 @@ import {
   getSolutionsControllerFindAllStudentSolutionsV0Url,
   getSolutionsControllerFindCurrentAnalysesV0Url,
 } from "../../generated/endpoints/solutions/solutions";
-import { SolutionsControllerFindCurrentAnalysesV0Params } from "../../generated/models";
 import { allTasksPlaceholder } from "./useAllSessionSolutions";
-
-const defaultParams: SolutionsControllerFindCurrentAnalysesV0Params = {};
 
 export const useRevalidateSolutionList = (): ((
   classId: number,
   sessionId: number,
   taskId: number,
-  params?: SolutionsControllerFindCurrentAnalysesV0Params,
 ) => void) => {
   const { mutate } = useSWRConfig();
 
   return useCallback(
-    (
-      classId: number,
-      sessionId: number,
-      taskId: number,
-      params?: SolutionsControllerFindCurrentAnalysesV0Params,
-    ) => {
+    (classId: number, sessionId: number, taskId: number) => {
       mutate(
         getSolutionsControllerFindCurrentAnalysesV0Url(
           classId,
           sessionId,
           taskId,
-          params ?? defaultParams,
+          {},
         ),
       );
 

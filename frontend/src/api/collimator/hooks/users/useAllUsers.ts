@@ -8,28 +8,20 @@ import {
 } from "../../generated/endpoints/users/users";
 import { ExistingUser } from "../../models/users/existing-user";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UsersControllerFindAllV0Params } from "../../generated/models";
 
 export type GetUsersReturnType = ExistingUser[];
 
-const defaultParams: UsersControllerFindAllV0Params = {};
-
-const fetchAndTransform = (
-  options: RequestInit,
-  params: UsersControllerFindAllV0Params = defaultParams,
-): Promise<GetUsersReturnType> =>
-  usersControllerFindAllV0(params, options).then((data) =>
+const fetchAndTransform = (options: RequestInit): Promise<GetUsersReturnType> =>
+  usersControllerFindAllV0({}, options).then((data) =>
     fromDtos(ExistingUser, data),
   );
 
-export const useAllUsers = (
-  params: UsersControllerFindAllV0Params = defaultParams,
-): ApiResponse<GetUsersReturnType, Error> => {
+export const useAllUsers = (): ApiResponse<GetUsersReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
   // use the URL with the params as the first entry in the key for easier invalidation
-  return useSWR(getUsersControllerFindAllV0Url(params), () =>
-    fetchAndTransform(authOptions, params),
+  return useSWR(getUsersControllerFindAllV0Url(), () =>
+    fetchAndTransform(authOptions),
   );
 };
 
