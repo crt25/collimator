@@ -270,7 +270,14 @@ const TaskForm = ({
   const taskFile: TaskFile = watch("taskFile");
   const taskType: TaskType = watch("type");
   const initialSolution = watch("initialSolution");
-  const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
+
+  // when the form becomes dirty, we do not allow navigation
+  const shouldStopNavigation = useCallback(() => {
+    cannotNavigate.current = isDirty;
+
+    return cannotNavigate.current;
+  }, [isDirty]);
+
   const onNavigate = useCallback(() => {
     setOpenModal(ModalStates.quitNoSave);
   }, []);
@@ -279,11 +286,6 @@ const TaskForm = ({
     shouldStopNavigation,
     onNavigate,
   });
-
-  useEffect(() => {
-    // when the form becomes dirty, we do not allow navigation
-    cannotNavigate.current = isDirty;
-  }, [isDirty]);
 
   useEffect(() => {
     if (taskType === originalType) {
