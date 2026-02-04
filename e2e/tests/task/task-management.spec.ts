@@ -213,5 +213,14 @@ test.describe("task management", () => {
 
       await expect(page.getItemActions(newTaskId)).toHaveCount(0);
     });
+
+    // editing tasks with reference solutions should clear the reference solution
+    // editing tasks but cancelling with reference solutions should keep the reference solution
+    // editing tasks with reference solutions but not pressing save task should keep the reference solution
+    // editing tasks without reference solutions should work as expected
+    // changing task type should create new task and remove related reference solutions to the old task
+    // changing task type but cancelling should keep the original task and reference solutions
+    // changing task type but not saving should keep the original task and reference solutions
+    // should be able to replace existing task by changing the task type
   });
 });

@@ -130,7 +130,7 @@ export type TaskFormSubmission = {
   title: string;
   description: string;
   type: TaskType;
-  taskFile: Blob;
+  taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
   clearAllReferenceSolutions: boolean;
