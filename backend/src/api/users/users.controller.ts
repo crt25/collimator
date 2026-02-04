@@ -21,7 +21,10 @@ import {
 } from "@nestjs/swagger";
 import { User } from "@prisma/client";
 import { fromQueryResults } from "../helpers";
-import { AdminOnly } from "../authentication/role.decorator";
+import {
+  AdminOnly,
+  RequiresSoftDeletePermission,
+} from "../authentication/role.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
@@ -60,6 +63,7 @@ export class UsersController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
   async findAll(
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
@@ -78,6 +82,7 @@ export class UsersController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   async findOne(
     @AuthenticatedUser() authenticatedUser: User,
     @Param("id", ParseIntPipe) id: UserId,
@@ -105,6 +110,7 @@ export class UsersController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiNotFoundResponse()
   async update(
     @AuthenticatedUser() authenticatedUser: User,

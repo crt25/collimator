@@ -27,6 +27,7 @@ import { AuthenticatedUser } from "../authentication/authenticated-user.decorato
 import {
   NonUserRoles,
   Public,
+  RequiresSoftDeletePermission,
   Roles,
   StudentOnly,
 } from "../authentication/role.decorator";
@@ -84,6 +85,7 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
@@ -134,6 +136,7 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
@@ -169,6 +172,7 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async start(
@@ -228,6 +232,7 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async finish(
@@ -279,6 +284,7 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
+  @RequiresSoftDeletePermission()
   @ApiNotFoundResponse()
   async update(
     @AuthenticatedUser() user: User,
