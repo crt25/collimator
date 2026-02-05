@@ -41,7 +41,9 @@ export const useAuthExpirationCheck = (): void => {
     }, POLLING_INTERVAL_MS);
 
     return (): void => {
-      clearInterval(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
   }, [authOptions, context]);
 };
