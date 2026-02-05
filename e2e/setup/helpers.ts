@@ -164,7 +164,7 @@ export const buildFrontend = (
 };
 
 export const buildScratchApp = (
-  app: CrtApp | JupyterApp,
+  app: CrtApp,
   stdout: "pipe" | "ignore" = "pipe",
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
@@ -192,7 +192,7 @@ export const buildJupyterApp = (
     },
     cwd: getAppPath(app),
     shell: true,
-    stdio: ["pipe", stdout, stderr],
+    stdio: ["ignore", stdout, stderr],
   });
 };
 
