@@ -19,4 +19,6 @@ export interface ExistingTaskWithReferenceSolutionsDto {
   creatorId: number;
   /** The list of reference solutions. */
   referenceSolutions: TaskReferenceSolutionDto[];
+  /** Whether the task is in use by one or more classes with students. */
+  isInUse: boolean;
 }

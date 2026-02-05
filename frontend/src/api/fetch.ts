@@ -1,5 +1,22 @@
 import { backendHostName } from "@/utilities/constants";
 
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
+export class ConflictError extends ApiError {
+  constructor(message: string = "Conflict") {
+    super(409, message);
+    this.name = "ConflictError";
+  }
+}
+
 export const fetchApi = async <T>(
   url: string,
   options: RequestInit,
@@ -16,8 +33,15 @@ export const fetchApi = async <T>(
     return new Promise<T>(() => {});
   }
 
+  if (response.status === 409) {
+    throw new ConflictError(`Conflict: ${response.statusText}`);
+  }
+
   if (response.status >= 400) {
-    throw new Error(`Unexpected response code ${response.status}`);
+    throw new ApiError(
+      response.status,
+      `Unexpected response code ${response.status}`,
+    );
   }
 
   if (response.status === 204) {

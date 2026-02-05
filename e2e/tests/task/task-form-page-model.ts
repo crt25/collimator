@@ -13,8 +13,11 @@ export class TaskFormPageModel extends FormPageModel {
     return this.page.locator(TaskFormPageModel.taskForm);
   }
 
-  /* eslint-disable @typescript-eslint/explicit-function-return-type */
-  get inputs() {
+  get inputs(): {
+    title: Locator;
+    description: Locator;
+    type: Locator;
+  } {
     return {
       title: this.form.locator('[data-testid="title"]'),
       description: this.form.locator('[data-testid="description"]'),
@@ -41,6 +44,12 @@ export class TaskFormPageModel extends FormPageModel {
 
   async importTask(): Promise<void> {
     await this.taskEditModal.getByTestId("import-button").click();
+  }
+
+  async goToReferenceSolutions(): Promise<void> {
+    await this.taskEditModal
+      .getByTestId("task-instance-reference-solutions-tab")
+      .click();
   }
 
   async saveTask(): Promise<void> {

@@ -144,6 +144,7 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
       studentSolutionId: {},
     })),
   })),
+  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 

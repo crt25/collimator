@@ -2,8 +2,6 @@ import { Locator, Page } from "@playwright/test";
 import { getItemIdFromTableTestId } from "../../helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
 
-const temporaryId = 1;
-
 export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   private static readonly referenceSolutionsForm =
     '[data-testid="task-reference-solutions-form"]';
@@ -20,6 +18,10 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
 
   override get submitButton(): Locator {
     return this.form.getByTestId("task-reference-solutions-form-submit");
+  }
+
+  get getSubmitFormButton(): Locator {
+    return this.form.getByTestId("submit-button");
   }
 
   get referenceSolutionsList(): Locator {
@@ -46,6 +48,10 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
     );
   }
 
+  getTaskEditModal(): Locator {
+    return this.page.locator(TaskFormPageModel.taskModal);
+  }
+
   async getAllSolutionsIds(): Promise<number[]> {
     const solutionItems = this.referenceSolutionsList.locator(
       '[data-testid^="solution-"]',
@@ -67,8 +73,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   async lastSolutionId(): Promise<number> {
     const allSolutionIds = await this.getAllSolutionsIds();
     if (allSolutionIds.length === 0) {
-      // New solutions start with temporary ID 1 before being persisted to the database
-      return temporaryId;
+      throw new Error("No reference solutions found.");
     }
 
     return allSolutionIds[allSolutionIds.length - 1];
@@ -96,16 +101,24 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
     await this.page.waitForSelector(TaskFormPageModel.taskModal);
   }
 
-  async importSolution(): Promise<void> {
+  async importSolution(
+    name: string,
+    mimeType: string,
+    file: Buffer,
+  ): Promise<void> {
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
     await this.taskEditModal.getByTestId("import-button").click();
+    const fileChooser = await fileChooserPromise;
+
+    await fileChooser.setFiles({
+      name: name,
+      mimeType: mimeType,
+      buffer: file,
+    });
   }
 
   async saveSolution(): Promise<void> {
     await this.taskEditModal.getByTestId("save-button").click();
-  }
-
-  async cancelSolutionModal(): Promise<void> {
-    await this.taskEditModal.getByTestId("cancel-button").click();
   }
 
   async closeSolutionModal(): Promise<void> {
