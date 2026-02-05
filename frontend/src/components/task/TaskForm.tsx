@@ -308,38 +308,39 @@ const TaskForm = ({
               disabled={disabled}
             />
 
-            <Field.Root
-              invalid={
-                !!errors.taskFile ||
-                !!errors.initialSolution ||
-                !!errors.initialSolutionFile
-              }
-            >
-              <EditTaskButton
-                data-testid="edit-task-button"
-                type="button"
-                onClick={() => setShowEditTaskModal(true)}
-                disabled={disabled}
+            {!disabled && (
+              <Field.Root
+                invalid={
+                  !!errors.taskFile ||
+                  !!errors.initialSolution ||
+                  !!errors.initialSolutionFile
+                }
               >
-                {taskFile ? (
-                  <FormattedMessage
-                    id="TaskForm.blob.edit"
-                    defaultMessage="Edit task in external application"
-                  />
-                ) : (
-                  <FormattedMessage
-                    id="TaskForm.blob.create"
-                    defaultMessage="Create task in external application"
-                  />
-                )}
-              </EditTaskButton>
+                <EditTaskButton
+                  data-testid="edit-task-button"
+                  type="button"
+                  onClick={() => setShowEditTaskModal(true)}
+                >
+                  {taskFile ? (
+                    <FormattedMessage
+                      id="TaskForm.blob.edit"
+                      defaultMessage="Edit task in external application"
+                    />
+                  ) : (
+                    <FormattedMessage
+                      id="TaskForm.blob.create"
+                      defaultMessage="Create task in external application"
+                    />
+                  )}
+                </EditTaskButton>
 
-              <Field.ErrorText>
-                {errors.taskFile?.message}
-                {errors.initialSolution?.message}
-                {errors.initialSolutionFile?.message}
-              </Field.ErrorText>
-            </Field.Root>
+                <Field.ErrorText>
+                  {errors.taskFile?.message}
+                  {errors.initialSolution?.message}
+                  {errors.initialSolutionFile?.message}
+                </Field.ErrorText>
+              </Field.Root>
+            )}
           </GridItem>
           <GridItem colSpan={{ base: 12, md: 6 }}>
             <Field.Root>
