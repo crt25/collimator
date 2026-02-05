@@ -29,6 +29,9 @@ const CreateTask = () => {
         ? returnUrlParam[0]
         : undefined;
 
+  const isValidReturnUrl = (url: string): boolean =>
+    url.startsWith("/") && !url.startsWith("//");
+
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       const createdTask = await createTask({
@@ -43,8 +46,8 @@ const CreateTask = () => {
             : [],
       });
 
-      // Redirect to returnUrl if provided, otherwise to task detail page
-      if (returnUrl) {
+      // Redirect to returnUrl if provided and valid, otherwise to task detail page
+      if (returnUrl && isValidReturnUrl(decodeURIComponent(returnUrl))) {
         router.push(decodeURIComponent(returnUrl));
       } else {
         router.push(`/task/${createdTask.id}/detail`);
