@@ -14,6 +14,7 @@ export * from "./authenticationResponseDtoKeyPair";
 export * from "./classStudentDto";
 export * from "./classTeacherDto";
 export * from "./classesControllerFindAllV0Params";
+export * from "./copySessionDto";
 export * from "./createClassDto";
 export * from "./createKeyPairDto";
 export * from "./createPrivateKeyDto";
