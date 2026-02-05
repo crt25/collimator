@@ -42,6 +42,10 @@ const messages = defineMessages({
     id: "TaskInstanceDetails.submit",
     defaultMessage: "Save Task",
   },
+  viewTask: {
+    id: "TaskInstanceDetails.viewTask",
+    defaultMessage: "View Task",
+  },
 });
 
 const TaskInstanceDetails = () => {
@@ -148,6 +152,12 @@ const TaskInstanceDetails = () => {
                   onSubmit={async () => {}}
                   disabled={true}
                 />
+                <Button
+                  mb={4}
+                  onClick={() => router.push(`/task/${task.id}/view`)}
+                >
+                  {intl.formatMessage(messages.viewTask)}
+                </Button>
               </>
             );
           }}
