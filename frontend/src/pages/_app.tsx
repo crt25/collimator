@@ -25,6 +25,7 @@ import {
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { authenticationStateKey } from "@/utilities/constants";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
 import English from "../../content/compiled-locales/en.json";
 import French from "../../content/compiled-locales/fr.json";
@@ -38,7 +39,6 @@ fontAwesomeConfig.autoAddCss = false;
 
 const logModule = "[App]";
 
-export const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
 
 const cache = createCache({ key: "next" });
