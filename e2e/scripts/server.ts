@@ -16,8 +16,6 @@ const app = express();
 const staticDir = path.join(getFrontendPath(), "dist");
 const scratchAppDir = path.join(getAppPath(CrtApp.scratch), "build");
 const jupyterAppDir = path.join(getAppPath(JupyterApp.jupyter), "dist", "app");
-console.log("Scratch app dir:", scratchAppDir);
-console.log("Jupyter app dir:", jupyterAppDir);
 
 app.use("/scratch", (request, response, next) => {
   let [urlPath, search] = request.url.split("?");
