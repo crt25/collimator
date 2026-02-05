@@ -54,45 +54,6 @@ const TaskInstanceDetails = () => {
 
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
-  const updateTask = useUpdateTask();
-
-  const onSubmit = useCallback(
-    async (taskSubmission: TaskFormSubmission) => {
-      if (task.data && taskFile.data) {
-        let referenceSolutions: UpdateReferenceSolutionDto[];
-        let referenceSolutionsFiles: Blob[];
-
-        if (
-          taskSubmission.initialSolution &&
-          taskSubmission.initialSolutionFile
-        ) {
-          referenceSolutions = [
-            ...task.data.referenceSolutions.filter((s) => !s.isInitial),
-            taskSubmission.initialSolution,
-          ];
-
-          referenceSolutionsFiles = [
-            ...task.data.referenceSolutions
-              .filter((s) => !s.isInitial)
-              .map((s) => s.solution),
-            taskSubmission.initialSolutionFile,
-          ];
-        } else {
-          referenceSolutions = [...task.data.referenceSolutions];
-          referenceSolutionsFiles = [
-            ...task.data.referenceSolutions.map((s) => s.solution),
-          ];
-        }
-
-        await updateTask(task.data.id, {
-          ...taskSubmission,
-          referenceSolutions,
-          referenceSolutionsFiles,
-        });
-      }
-    },
-    [task.data, taskFile.data, updateTask],
-  );
 
   return (
     <MaxScreenHeight>
@@ -129,18 +90,7 @@ const TaskInstanceDetails = () => {
 
             return (
               <>
-                <PageHeading
-                  variant="title"
-                  actions={
-                    <TaskSessionActions
-                      classId={klass.id}
-                      sessionId={session.id}
-                      taskId={task.id}
-                    />
-                  }
-                >
-                  {task.title}
-                </PageHeading>
+                <PageHeading variant="title">{task.title}</PageHeading>
                 <TaskInstanceNavigation
                   classId={klass.id}
                   sessionId={session.id}
@@ -154,7 +104,8 @@ const TaskInstanceDetails = () => {
                     initialSolutionFile: initialSolution?.solution ?? null,
                   }}
                   submitMessage={messages.submit}
-                  onSubmit={onSubmit}
+                  onSubmit={async () => {}}
+                  disabled={true}
                 />
               </>
             );
