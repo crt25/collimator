@@ -1,7 +1,4 @@
-import {
-  authenticationStateKey,
-  backendHostName,
-} from "@/utilities/constants";
+import { authenticationStateKey, backendHostName } from "@/utilities/constants";
 
 export class ApiError extends Error {
   constructor(
