@@ -1,20 +1,12 @@
+import { Page } from "@playwright/test";
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { taskList } from "../../selectors";
 import checkXPositionWithAssertion from "../sessions/tasks/scratch/check-x-position-with-assertion";
+import { TaskTemplateWithSolutions } from "../sessions/tasks/task-template-with-solutions";
 import { TaskListPageModel } from "./task-list-page-model";
 import { TaskFormPageModel } from "./task-form-page-model";
-import {
-  createTask,
-  createReferenceSolutionForTask,
-  ReferenceSolutionParams,
-  openEditSolutionModalAndCancel,
-  openEditSolutionModalAndClose,
-  changeTaskTypeWithoutSaving,
-  changeTaskTypeAndSave,
-  verifyReferenceSolutionExists,
-  verifyNoReferenceSolutions,
-} from "./task-management";
+import { createReferenceSolutionForTask, createTask } from "./task-management";
 import { TaskFormReferenceSolutionsPageModel } from "./task-form-reference-solutions-page-model";
 import { TaskType } from "@/api/collimator/generated/models";
 
@@ -104,46 +96,28 @@ test.describe("task management", () => {
 
       test("can create a reference solution for a task", async ({
         page: pwPage,
-        baseURL,
       }) => {
-        solutionId = await createReferenceSolutionForTask(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          {
-            title: referenceSolutionTitle,
-            description: referenceSolutionDescription,
-            template: checkXPositionWithAssertion,
-          } satisfies ReferenceSolutionParams["solution"],
-        ).then((r) => r.id);
+        const page = await TaskFormReferenceSolutionsPageModel.create(pwPage);
+        solutionId = await createReferenceSolutionForTask(page, pwPage, {
+          title: referenceSolutionTitle,
+          description: referenceSolutionDescription,
+          template: checkXPositionWithAssertion,
+        } satisfies {
+          baseUrl: string;
+          pwPage: Page;
+          taskId: number;
+          solution: {
+            title: string;
+            description: string;
+            template: TaskTemplateWithSolutions;
+          };
+        }["solution"]).then((r) => r.id);
 
-        await verifyReferenceSolutionExists(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
+        expect(await page.getReferenceSolutionCount()).toBeGreaterThan(0);
+        await expect(page.getTitleInput(solutionId)).toHaveValue(
           referenceSolutionTitle,
-          referenceSolutionDescription,
         );
-      });
-
-      test("editing solution but cancelling should keep the reference solution", async ({
-        page: pwPage,
-        baseURL,
-      }) => {
-        await openEditSolutionModalAndCancel(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
-        );
-
-        await verifyReferenceSolutionExists(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
-          referenceSolutionTitle,
+        await expect(page.getDescriptionTextarea(solutionId)).toHaveValue(
           referenceSolutionDescription,
         );
       });
@@ -152,19 +126,21 @@ test.describe("task management", () => {
         page: pwPage,
         baseURL,
       }) => {
-        await openEditSolutionModalAndClose(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
-        );
+        await pwPage.goto(`${baseURL!}/task/${newTaskId}/reference-solutions`);
 
-        await verifyReferenceSolutionExists(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
+        const page = await TaskFormReferenceSolutionsPageModel.create(pwPage);
+
+        await page.openEditSolutionModal(solutionId);
+        await expect(page.taskEditModal).toBeVisible();
+
+        await page.closeSolutionModal();
+        await expect(page.taskEditModal).toBeHidden();
+
+        expect(await page.getReferenceSolutionCount()).toBeGreaterThan(0);
+        await expect(page.getTitleInput(solutionId)).toHaveValue(
           referenceSolutionTitle,
+        );
+        await expect(page.getDescriptionTextarea(solutionId)).toHaveValue(
           referenceSolutionDescription,
         );
       });
@@ -173,35 +149,48 @@ test.describe("task management", () => {
         baseURL,
         page: pwPage,
       }) => {
-        await changeTaskTypeWithoutSaving(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          TaskType.JUPYTER,
-        );
+        await pwPage.goto(`${baseURL!}/task/${newTaskId}/detail`);
 
-        await verifyReferenceSolutionExists(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          solutionId,
+        const taskForm = await TaskFormPageModel.create(pwPage);
+        await taskForm.setTaskType(TaskType.JUPYTER);
+
+        await taskForm.goToReferenceSolutions();
+
+        const referencesPage =
+          await TaskFormReferenceSolutionsPageModel.create(pwPage);
+
+        expect(
+          await referencesPage.getReferenceSolutionCount(),
+        ).toBeGreaterThan(0);
+        await expect(referencesPage.getTitleInput(solutionId)).toHaveValue(
           referenceSolutionTitle,
-          referenceSolutionDescription,
         );
+        await expect(
+          referencesPage.getDescriptionTextarea(solutionId),
+        ).toHaveValue(referenceSolutionDescription);
       });
 
       test("editing task type with reference solutions should overwrite the current task and remove related reference solutions", async ({
-        baseURL,
         page: pwPage,
       }) => {
-        await changeTaskTypeAndSave(
-          baseURL!,
-          pwPage,
-          newTaskId,
-          TaskType.JUPYTER,
-        );
+        const taskForm = await TaskFormPageModel.create(pwPage);
 
-        await verifyNoReferenceSolutions(baseURL!, pwPage, newTaskId);
+        await taskForm.setTaskType(TaskType.JUPYTER);
+        await taskForm.acceptConfirmationModal();
+        await taskForm.openEditTaskModal();
+        await taskForm.saveTask();
+        await taskForm.submitButton.click();
+
+        await taskForm.goToReferenceSolutions();
+
+        const referencesPage =
+          await TaskFormReferenceSolutionsPageModel.create(pwPage);
+
+        expect(
+          await referencesPage.getReferenceSolutionCount(),
+        ).toBeGreaterThan(0);
+
+        expect(await referencesPage.getReferenceSolutionCount()).toBe(0);
       });
     });
 

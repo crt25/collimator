@@ -66,7 +66,7 @@ const EditTask = () => {
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
-      if (!task.data || !taskFile.data || !taskSubmission.taskFile) {
+      if (!task.data || !taskSubmission.taskFile) {
         return;
       }
 
@@ -92,7 +92,7 @@ const EditTask = () => {
         referenceSolutionsFiles,
       });
     },
-    [task.data, taskFile.data, updateTask],
+    [task.data, updateTask],
   );
 
   return (
