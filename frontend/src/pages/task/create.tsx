@@ -21,6 +21,14 @@ const CreateTask = () => {
   const createTask = useCreateTask();
   const router = useRouter();
 
+  const returnUrlParam = router.query.returnUrl;
+  const returnUrl =
+    typeof returnUrlParam === "string"
+      ? returnUrlParam
+      : Array.isArray(returnUrlParam)
+        ? returnUrlParam[0]
+        : undefined;
+
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
       const createdTask = await createTask({
@@ -34,9 +42,15 @@ const CreateTask = () => {
             ? [taskSubmission.initialSolutionFile]
             : [],
       });
-      router.push(`/task/${createdTask.id}/detail`);
+
+      // Redirect to returnUrl if provided, otherwise to task detail page
+      if (returnUrl) {
+        router.push(decodeURIComponent(returnUrl));
+      } else {
+        router.push(`/task/${createdTask.id}/detail`);
+      }
     },
-    [createTask, router],
+    [createTask, router, returnUrl],
   );
 
   return (
