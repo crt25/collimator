@@ -38,7 +38,7 @@ fontAwesomeConfig.autoAddCss = false;
 
 const logModule = "[App]";
 
-const authenticationStateKey = "authenticationState";
+export const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
 
 const cache = createCache({ key: "next" });

@@ -1,5 +1,5 @@
-import { backendHostName } from "@/utilities/constants";
 import { authenticationStateKey } from "@/pages/_app";
+import { backendHostName } from "@/utilities/constants";
 
 export class ApiError extends Error {
   constructor(
