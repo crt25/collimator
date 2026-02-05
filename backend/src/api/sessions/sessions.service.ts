@@ -173,6 +173,36 @@ export class SessionsService {
     return this.deletedByIdAndClass(id);
   }
 
+  async copy(
+    sourceSessionId: SessionId,
+    targetClassId: number,
+  ): Promise<Session> {
+    const sourceSession = await this.prisma.session.findUniqueOrThrow({
+      where: { id: sourceSessionId },
+      include: {
+        tasks: {
+          orderBy: { index: "asc" as Prisma.SortOrder },
+          select: {
+            taskId: true,
+            index: true,
+          },
+        },
+      },
+    });
+
+    const taskIds = sourceSession.tasks.map((t) => t.taskId);
+
+    return this.create(
+      targetClassId,
+      {
+        title: sourceSession.title,
+        description: sourceSession.description,
+        isAnonymous: sourceSession.isAnonymous,
+      },
+      taskIds,
+    );
+  }
+
   async getSessionProgress(
     id: SessionId,
     studentId: StudentId,
