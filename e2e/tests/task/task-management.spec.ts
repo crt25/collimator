@@ -1,9 +1,7 @@
-import { Page } from "@playwright/test";
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { taskList } from "../../selectors";
 import checkXPositionWithAssertion from "../sessions/tasks/scratch/check-x-position-with-assertion";
-import { TaskTemplateWithSolutions } from "../sessions/tasks/task-template-with-solutions";
 import { TaskListPageModel } from "./task-list-page-model";
 import { TaskFormPageModel } from "./task-form-page-model";
 import { createReferenceSolutionForTask, createTask } from "./task-management";
@@ -89,29 +87,21 @@ test.describe("task management", () => {
     });
 
     test.describe("/task/{id}/reference-solutions", () => {
+      let page: TaskFormReferenceSolutionsPageModel;
+
       test.beforeEach(async ({ baseURL, page: pwPage }) => {
         await pwPage.goto(`${baseURL}/task/${newTaskId}/reference-solutions`);
-        await TaskFormReferenceSolutionsPageModel.create(pwPage);
+        page = await TaskFormReferenceSolutionsPageModel.create(pwPage);
       });
 
       test("can create a reference solution for a task", async ({
         page: pwPage,
       }) => {
-        const page = await TaskFormReferenceSolutionsPageModel.create(pwPage);
         solutionId = await createReferenceSolutionForTask(page, pwPage, {
           title: referenceSolutionTitle,
           description: referenceSolutionDescription,
           template: checkXPositionWithAssertion,
-        } satisfies {
-          baseUrl: string;
-          pwPage: Page;
-          taskId: number;
-          solution: {
-            title: string;
-            description: string;
-            template: TaskTemplateWithSolutions;
-          };
-        }["solution"]).then((r) => r.id);
+        }).then((r) => r.id);
 
         expect(await page.getReferenceSolutionCount()).toBeGreaterThan(0);
         await expect(page.getTitleInput(solutionId)).toHaveValue(
@@ -122,19 +112,12 @@ test.describe("task management", () => {
         );
       });
 
-      test("editing solution but not pressing save should keep the reference solution", async ({
-        page: pwPage,
-        baseURL,
-      }) => {
-        await pwPage.goto(`${baseURL!}/task/${newTaskId}/reference-solutions`);
-
-        const page = await TaskFormReferenceSolutionsPageModel.create(pwPage);
-
+      test("editing solution but not pressing save should keep the reference solution", async () => {
         await page.openEditSolutionModal(solutionId);
-        await expect(page.taskEditModal).toBeVisible();
+        await expect(page.getTaskEditModal()).toBeVisible();
 
         await page.closeSolutionModal();
-        await expect(page.taskEditModal).toBeHidden();
+        await expect(page.getTaskEditModal()).toBeHidden();
 
         expect(await page.getReferenceSolutionCount()).toBeGreaterThan(0);
         await expect(page.getTitleInput(solutionId)).toHaveValue(
@@ -146,22 +129,22 @@ test.describe("task management", () => {
       });
 
       test("editing task type with reference solutions but not saving should keep the original task and reference solutions", async ({
-        baseURL,
         page: pwPage,
+        baseURL,
       }) => {
         await pwPage.goto(`${baseURL!}/task/${newTaskId}/detail`);
-
         const taskForm = await TaskFormPageModel.create(pwPage);
-        await taskForm.setTaskType(TaskType.JUPYTER);
 
+        await taskForm.setTaskType(TaskType.JUPYTER);
         await taskForm.goToReferenceSolutions();
 
         const referencesPage =
           await TaskFormReferenceSolutionsPageModel.create(pwPage);
 
-        expect(
-          await referencesPage.getReferenceSolutionCount(),
+        await expect(
+          referencesPage.getReferenceSolutionCount(),
         ).toBeGreaterThan(0);
+
         await expect(referencesPage.getTitleInput(solutionId)).toHaveValue(
           referenceSolutionTitle,
         );
@@ -185,10 +168,6 @@ test.describe("task management", () => {
 
         const referencesPage =
           await TaskFormReferenceSolutionsPageModel.create(pwPage);
-
-        expect(
-          await referencesPage.getReferenceSolutionCount(),
-        ).toBeGreaterThan(0);
 
         expect(await referencesPage.getReferenceSolutionCount()).toBe(0);
       });

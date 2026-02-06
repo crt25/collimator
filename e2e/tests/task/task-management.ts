@@ -64,6 +64,7 @@ export const createReferenceSolutionForTask = async (
   await page.addReferenceSolution();
 
   const solutionId = await page.lastSolutionId();
+  await expect(solutionId).not.toBe(-1);
 
   await page.fillReferenceSolution(solutionId, {
     title: solution.title,
@@ -79,19 +80,20 @@ export const createReferenceSolutionForTask = async (
   );
 
   await page.saveSolution();
-  expect(await page.getTaskEditModal()).toBeHidden();
+  await expect(page.getTaskEditModal()).toBeHidden();
 
   await page.submitForm();
-  expect(page.getSubmitFormButton()).toBeDisabled();
+  await expect(page.getSubmitFormButton()).toBeDisabled();
 
   // A reload is required for the ids to be persisted to the frontend from the backend
-  await pwPage.reload(); // ?
+  await pwPage.reload();
 
   await pwPage.waitForSelector("[data-testid=task-reference-solutions-form]");
 
   const refreshedPage =
     await TaskFormReferenceSolutionsPageModel.create(pwPage);
   const actualSolutionId = await refreshedPage.lastSolutionId();
+  await expect(actualSolutionId).not.toBe(-1);
 
   return {
     id: actualSolutionId,
