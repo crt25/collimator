@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Button, chakra, Grid, GridItem, HStack, Icon } from "@chakra-ui/react";
+import router from "next/router";
+import { MdAdd } from "react-icons/md";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -22,6 +24,14 @@ export enum SharingType {
   anonymous = "anonymous",
   private = "private",
 }
+
+const ButtonWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "flex-start",
+    marginBottom: "xl",
+  },
+});
 
 const messages = defineMessages({
   title: {
@@ -56,6 +66,10 @@ const messages = defineMessages({
     id: "SessionForm.sharingType.private",
     defaultMessage: "Private",
   },
+  createTask: {
+    id: "SessionForm.createTask",
+    defaultMessage: "Create Task",
+  },
 });
 
 export interface SessionFormValues {
@@ -86,6 +100,8 @@ const SessionForm = ({
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
     title: yup.string().required(),
     description: yup.string().required(),
@@ -276,6 +292,27 @@ const SessionForm = ({
                   },
                 ]}
               />
+            </GridItem>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <ButtonWrapper>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const currentUrl = router.asPath;
+                    const returnUrl = encodeURIComponent(currentUrl);
+                    router.push(`/task/create?returnUrl=${returnUrl}`);
+                  }}
+                  data-testid="task-create-button"
+                  marginTop="md"
+                >
+                  <HStack>
+                    <Icon>
+                      <MdAdd />
+                    </Icon>
+                    {intl.formatMessage(messages.createTask)}
+                  </HStack>
+                </Button>
+              </ButtonWrapper>
             </GridItem>
           </Grid>
 

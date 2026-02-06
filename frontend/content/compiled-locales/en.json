@@ -535,12 +535,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +557,6 @@
     {
       "type": 0,
       "value": "There was an error creating the new Lesson. Please try to save again!"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +619,6 @@
       "value": "Title"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Create Task"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +649,6 @@
     {
       "type": 0,
       "value": "Create Task"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Create User"
     }
   ],
   "CreateUser.submit": [
@@ -811,6 +787,18 @@
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Task is locked"
     }
   ],
   "EditTask.title": [
@@ -1073,16 +1061,16 @@
       "value": "Classes"
     }
   ],
-  "ListClasses.pageDescription": [
-    {
-      "type": 0,
-      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-    }
-  ],
-  "ListClasses.pageTitle": [
+  "ListClasses.heading": [
     {
       "type": 0,
       "value": "Class Manager"
+    }
+  ],
+  "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
     }
   ],
   "ListLessons.header": [
@@ -1363,6 +1351,12 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
     }
   ],
   "SessionForm.sharingType.anonymous": [
@@ -1795,6 +1789,12 @@
       "value": "). Please report this issue."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "The task is now in use by one or more classes and can no longer be modified."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -1937,20 +1937,52 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Save Task"
     }
   ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "task bank"
+    }
+  ],
   "TaskInstanceDetails.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Task - "
     },
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "View Task"
     }
   ],
   "TaskInstanceList.title": [
@@ -2285,6 +2317,12 @@
       "value": "Title"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Cannot delete task because it is currently in use."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2319,6 +2357,18 @@
     {
       "type": 0,
       "value": "There are no tasks yet. Let's create some!"
+    }
+  ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully deleted the task"
     }
   ],
   "TaskTable.viewDetails": [
@@ -2733,12 +2783,6 @@
     {
       "type": 0,
       "value": "Task imported successfully"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Task loaded successfully"
     }
   ],
   "forms.arrayLength": [
