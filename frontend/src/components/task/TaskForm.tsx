@@ -408,7 +408,11 @@ const TaskForm = ({
         .then(() => {
           // allow navigation after the task has been saved
           cannotNavigate.current = false;
-          setHasTypeChanged(false);
+
+          if (data.type === originalType) {
+            setHasTypeChanged(false);
+          }
+
           setClearSolutionsOnSave(false);
 
           // reset the form to the updated values
