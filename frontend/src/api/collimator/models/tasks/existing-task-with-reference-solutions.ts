@@ -6,17 +6,14 @@ import { TaskReferenceSolution } from "./task-reference-solution";
 
 export class ExistingTaskWithReferenceSolutions extends ExistingTask {
   readonly referenceSolutions: TaskReferenceSolution[];
-  readonly isInUse: boolean;
 
   protected constructor({
     referenceSolutions,
-    isInUse,
     ...rest
   }: ClassProperties<ExistingTaskWithReferenceSolutions>) {
     super(rest);
 
     this.referenceSolutions = referenceSolutions;
-    this.isInUse = isInUse;
   }
 
   static fromDto(

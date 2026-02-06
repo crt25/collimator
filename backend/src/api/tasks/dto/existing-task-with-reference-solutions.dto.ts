@@ -2,14 +2,13 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform } from "class-transformer";
 import { Modify } from "src/utilities/modify";
 import { TaskWithReferenceSolutions } from "../tasks.service";
-import { ExistingTaskDto } from "./existing-task.dto";
+import { ExistingTaskDto, TaskWithoutDataAndInUse } from "./existing-task.dto";
 import { TaskReferenceSolutionDto } from "./task-reference-solution.dto";
 
 export type TaskId = number;
 
-export type TaskWithReferenceSolutionsAndInUse = TaskWithReferenceSolutions & {
-  isInUse: boolean;
-};
+export type TaskWithReferenceSolutionsAndInUse = TaskWithReferenceSolutions &
+  Pick<TaskWithoutDataAndInUse, "isInUse">;
 
 export class ExistingTaskWithReferenceSolutionsDto
   extends ExistingTaskDto
@@ -34,14 +33,6 @@ export class ExistingTaskWithReferenceSolutionsDto
   )
   @Expose()
   readonly referenceSolutions!: TaskReferenceSolutionDto[];
-
-  @ApiProperty({
-    description:
-      "Whether the task is in use by one or more classes with students.",
-    example: false,
-  })
-  @Expose()
-  readonly isInUse!: boolean;
 
   static fromQueryResult(
     data: TaskWithReferenceSolutionsAndInUse,

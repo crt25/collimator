@@ -29,7 +29,6 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import "multer";
 import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
-import { fromQueryResults } from "../helpers";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
@@ -108,7 +107,8 @@ export class TasksController {
       referenceSolutionsFiles,
     );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    // Newly created task cannot be in use
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
   }
 
   @Get()
@@ -117,8 +117,8 @@ export class TasksController {
   async findAll(): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
 
-    const tasks = await this.tasksService.findMany({});
-    return fromQueryResults(ExistingTaskDto, tasks);
+    const tasks = await this.tasksService.findManyWithInUseStatus();
+    return tasks.map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 
   @Get(":id")
@@ -129,8 +129,12 @@ export class TasksController {
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
   ): Promise<ExistingTaskDto> {
-    const task = await this.tasksService.findByIdOrThrow(id);
-    return ExistingTaskDto.fromQueryResult(task);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrow(id),
+      this.tasksService.isTaskInUse(id),
+    ]);
+
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse });
   }
 
   @Get(":id/with-reference-solutions")
@@ -232,7 +236,8 @@ export class TasksController {
         referenceSolutionsFiles,
       );
 
-      return ExistingTaskDto.fromQueryResult(task);
+      // If update succeeded, task was not in use (service throws if in use)
+      return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
     } catch (error) {
       if (error instanceof TaskInUseError) {
         throw new ConflictException(error.message);

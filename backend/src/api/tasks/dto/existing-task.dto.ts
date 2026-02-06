@@ -6,6 +6,8 @@ import { TaskDto } from "./task.dto";
 
 export type TaskId = number;
 
+export type TaskWithoutDataAndInUse = TaskWithoutData & { isInUse: boolean };
+
 export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   @ApiProperty({
     example: 318,
@@ -33,7 +35,15 @@ export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   @Exclude()
   readonly mimeType!: string;
 
-  static fromQueryResult(data: TaskWithoutData): ExistingTaskDto {
+  @ApiProperty({
+    description:
+      "Whether the task is in use by one or more classes with students.",
+    example: false,
+  })
+  @Expose()
+  readonly isInUse!: boolean;
+
+  static fromQueryResult(data: TaskWithoutDataAndInUse): ExistingTaskDto {
     return plainToInstance(ExistingTaskDto, data, {
       excludeExtraneousValues: true,
     });

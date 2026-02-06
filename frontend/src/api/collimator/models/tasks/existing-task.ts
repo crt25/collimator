@@ -6,17 +6,20 @@ export class ExistingTask {
   readonly title: string;
   readonly description: string;
   readonly type: TaskType;
+  readonly isInUse: boolean;
 
   protected constructor({
     id,
     title,
     description,
     type,
+    isInUse,
   }: ClassProperties<ExistingTask>) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
+    this.isInUse = isInUse;
   }
 
   equals(other?: ExistingTask): boolean {
@@ -24,7 +27,8 @@ export class ExistingTask {
       this.id === other?.id &&
       this.title === other.title &&
       this.description === other.description &&
-      this.type === other.type
+      this.type === other.type &&
+      this.isInUse === other.isInUse
     );
   }
 
