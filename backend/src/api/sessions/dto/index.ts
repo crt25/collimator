@@ -1,3 +1,4 @@
+export * from "./copy-session.dto";
 export * from "./create-session.dto";
 export * from "./update-session.dto";
 export * from "./existing-session.dto";

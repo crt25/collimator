@@ -497,6 +497,78 @@
       "value": "Number of conditions"
     }
   ],
+  "CopyLessonModal.classLabel": [
+    {
+      "type": 0,
+      "value": "Class"
+    }
+  ],
+  "CopyLessonModal.classPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a class"
+    }
+  ],
+  "CopyLessonModal.copyButton": [
+    {
+      "type": 0,
+      "value": "Copy"
+    }
+  ],
+  "CopyLessonModal.copyError": [
+    {
+      "type": 0,
+      "value": "Failed to copy lesson. Please try again."
+    }
+  ],
+  "CopyLessonModal.copySuccess": [
+    {
+      "type": 0,
+      "value": "Lesson copied successfully"
+    }
+  ],
+  "CopyLessonModal.description": [
+    {
+      "type": 0,
+      "value": "Select an existing lesson to copy from another class."
+    }
+  ],
+  "CopyLessonModal.goToLesson": [
+    {
+      "type": 0,
+      "value": "Go to lesson"
+    }
+  ],
+  "CopyLessonModal.lessonLabel": [
+    {
+      "type": 0,
+      "value": "Lesson"
+    }
+  ],
+  "CopyLessonModal.lessonPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a lesson"
+    }
+  ],
+  "CopyLessonModal.loading": [
+    {
+      "type": 0,
+      "value": "Loading…"
+    }
+  ],
+  "CopyLessonModal.networkError": [
+    {
+      "type": 0,
+      "value": "There was a network issue. Please close this dialog and try again later."
+    }
+  ],
+  "CopyLessonModal.title": [
+    {
+      "type": 0,
+      "value": "Copy existing lesson"
+    }
+  ],
   "CreateClass.errorMessage": [
     {
       "type": 0,
@@ -535,12 +607,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +629,6 @@
     {
       "type": 0,
       "value": "There was an error creating the new Lesson. Please try to save again!"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +691,6 @@
       "value": "Title"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Create Task"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +721,6 @@
     {
       "type": 0,
       "value": "Create Task"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Create User"
     }
   ],
   "CreateUser.submit": [
@@ -811,6 +859,18 @@
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Task is locked"
     }
   ],
   "EditTask.title": [
@@ -1073,16 +1133,16 @@
       "value": "Classes"
     }
   ],
-  "ListClasses.pageDescription": [
-    {
-      "type": 0,
-      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-    }
-  ],
-  "ListClasses.pageTitle": [
+  "ListClasses.heading": [
     {
       "type": 0,
       "value": "Class Manager"
+    }
+  ],
+  "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
     }
   ],
   "ListLessons.header": [
@@ -1435,6 +1495,12 @@
     {
       "type": 0,
       "value": "Title"
+    }
+  ],
+  "SessionList.copyExistingLesson": [
+    {
+      "type": 0,
+      "value": "Copy Existing Lesson"
     }
   ],
   "SessionList.copySessionLink": [
@@ -1793,6 +1859,12 @@
     {
       "type": 0,
       "value": "). Please report this issue."
+    }
+  ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "The task is now in use by one or more classes and can no longer be modified."
     }
   ],
   "TaskForm.SaveError": [
@@ -2285,6 +2357,12 @@
       "value": "Title"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Cannot delete task because it is currently in use."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2319,6 +2397,18 @@
     {
       "type": 0,
       "value": "There are no tasks yet. Let's create some!"
+    }
+  ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Task deleted successfully"
     }
   ],
   "TaskTable.viewDetails": [
@@ -2733,12 +2823,6 @@
     {
       "type": 0,
       "value": "Task imported successfully"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Task loaded successfully"
     }
   ],
   "forms.arrayLength": [

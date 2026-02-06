@@ -7,6 +7,7 @@
  */
 import { fetchApi } from "../../../../fetch";
 import type {
+  CopySessionDto,
   CreateSessionDto,
   DeletedSessionDto,
   ExistingSessionDto,
@@ -201,6 +202,23 @@ export const sessionsControllerFinishV0 = async (
       method: "POST",
     },
   );
+};
+
+export const getSessionsControllerCopyV0Url = (classId: number) => {
+  return `/api/v0/classes/${classId}/sessions/copy`;
+};
+
+export const sessionsControllerCopyV0 = async (
+  classId: number,
+  copySessionDto: CopySessionDto,
+  options?: RequestInit,
+): Promise<ExistingSessionDto> => {
+  return fetchApi<ExistingSessionDto>(getSessionsControllerCopyV0Url(classId), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(copySessionDto),
+  });
 };
 
 export const getSessionsControllerGetSessionProgressV0Url = (
