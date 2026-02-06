@@ -1,6 +1,9 @@
 import { Locator, Page } from "@playwright/test";
 import { getItemIdFromTableTestId } from "../../helpers";
 import { TaskFormPageModel } from "./task-form-page-model";
+import { TaskEditModalPageModel } from "./task-edit-modal-page-model";
+
+const NOT_FOUND = -1;
 
 export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   private static readonly referenceSolutionsForm =
@@ -20,7 +23,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
     return this.form.getByTestId("task-reference-solutions-form-submit");
   }
 
-  get getSubmitFormButton(): Locator {
+  getSubmitFormButton(): Locator {
     return this.form.getByTestId("submit-button");
   }
 
@@ -49,7 +52,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   }
 
   getTaskEditModal(): Locator {
-    return this.page.locator(TaskFormPageModel.taskModal);
+    return this.taskEditModal.modal;
   }
 
   async getAllSolutionsIds(): Promise<number[]> {
@@ -73,7 +76,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   async lastSolutionId(): Promise<number> {
     const allSolutionIds = await this.getAllSolutionsIds();
     if (allSolutionIds.length === 0) {
-      throw new Error("No reference solutions found.");
+      return NOT_FOUND;
     }
 
     return allSolutionIds[allSolutionIds.length - 1];
@@ -98,7 +101,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
 
   async openEditSolutionModal(solutionId: number): Promise<void> {
     await this.getEditSolutionButton(solutionId).click();
-    await this.page.waitForSelector(TaskFormPageModel.taskModal);
+    this.taskEditModalInstance = await TaskEditModalPageModel.create(this.page);
   }
 
   async importSolution(
@@ -107,7 +110,7 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
     file: Buffer,
   ): Promise<void> {
     const fileChooserPromise = this.page.waitForEvent("filechooser");
-    await this.taskEditModal.getByTestId("import-button").click();
+    await this.taskEditModal.import();
     const fileChooser = await fileChooserPromise;
 
     await fileChooser.setFiles({
@@ -118,11 +121,11 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
   }
 
   async saveSolution(): Promise<void> {
-    await this.taskEditModal.getByTestId("save-button").click();
+    await this.taskEditModal.save();
   }
 
   async closeSolutionModal(): Promise<void> {
-    await this.taskEditModal.getByTestId("cancel-button").click();
+    await this.taskEditModal.cancel();
   }
 
   async submitForm(): Promise<void> {
