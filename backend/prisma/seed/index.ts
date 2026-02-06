@@ -5,7 +5,7 @@ import { hideBin } from "yargs/helpers";
 import { seedProduction } from "./production";
 import { seedEndToEndTesting } from "./e2e";
 
-const DEFAULT_FRONTEND_HOSTNAME = 'https://[YourClassMosaicInstance]';
+const DEFAULT_FRONTEND_HOSTNAME = "https://[YourClassMosaicInstance]";
 
 enum SeedingMode {
   production = "production",

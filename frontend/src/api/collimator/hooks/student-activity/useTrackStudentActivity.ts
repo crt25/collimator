@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchApi } from "@/api/fetch";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { TrackStudentActivityDto } from "../../generated/models";
@@ -9,6 +9,7 @@ type ActivityDto = Omit<TrackStudentActivityDto, "happenedAt"> & {
 };
 type ActivityDtoWithDate = ActivityDto & { happenedAt: Date };
 type TrackActivityType = (trackActivityDto: ActivityDto) => Promise<void>;
+type TrackActivityFailure = boolean;
 
 let activitiesToTrack: ActivityDtoWithDate[] = [];
 
@@ -44,15 +45,33 @@ export const studentActivityControllerTrack = async (
   });
 };
 
-const trackActivity = (
-  options: RequestInit,
-  activities: ActivityDtoWithDate[],
-): ReturnType<TrackActivityType> => {
-  return studentActivityControllerTrack(activities, options);
-};
-
-export const useTrackStudentActivity = (): TrackActivityType => {
+export const useTrackStudentActivity = (): [
+  TrackActivityType,
+  TrackActivityFailure,
+] => {
   const authOptions = useAuthenticationOptions();
+
+  const [activityTrackingError, setActivityTrackingError] = useState(false);
+
+  const trackActivity = useCallback(
+    async (
+      options: RequestInit,
+      activities: ActivityDtoWithDate[],
+    ): ReturnType<TrackActivityType> => {
+      try {
+        const result = await studentActivityControllerTrack(
+          activities,
+          options,
+        );
+        setActivityTrackingError(false);
+        return result;
+      } catch (error) {
+        setActivityTrackingError(true);
+        throw error;
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     // add event listener for when the application is online
@@ -68,7 +87,6 @@ export const useTrackStudentActivity = (): TrackActivityType => {
         } catch (error) {
           // if the request fails, restore the activities to track
           activitiesToTrack = activities;
-
           console.error("Failed to track student activities:", error);
         }
       }
@@ -80,26 +98,29 @@ export const useTrackStudentActivity = (): TrackActivityType => {
     return (): void => window.removeEventListener("online", handleOnline);
   }, [authOptions]);
 
-  return useCallback<TrackActivityType>(
-    async (newActivity) => {
-      // create new array with activities that should be tracked
-      const activities = [
-        ...activitiesToTrack,
-        { ...newActivity, happenedAt: new Date() },
-      ];
-      // clear the array to avoid duplicate tracking
-      activitiesToTrack = [];
+  return [
+    useCallback<TrackActivityType>(
+      async (newActivity) => {
+        // create new array with activities that should be tracked
+        const activities = [
+          ...activitiesToTrack,
+          { ...newActivity, happenedAt: new Date() },
+        ];
+        // clear the array to avoid duplicate tracking
+        activitiesToTrack = [];
 
-      try {
-        return await trackActivity(authOptions, activities);
-      } catch (error) {
-        // on error, ensure the activities are tracked again the next time
-        // we send a request by appending them
-        activitiesToTrack = [...activitiesToTrack, ...activities];
+        try {
+          return await trackActivity(authOptions, activities);
+        } catch (error) {
+          // on error, ensure the activities are tracked again the next time
+          // we send a request by appending them
+          activitiesToTrack = [...activitiesToTrack, ...activities];
 
-        throw error;
-      }
-    },
-    [authOptions],
-  );
+          throw error;
+        }
+      },
+      [authOptions],
+    ),
+    activityTrackingError,
+  ];
 };
