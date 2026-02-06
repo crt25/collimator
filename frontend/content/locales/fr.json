@@ -596,6 +596,12 @@
   "EditTask.submit": {
     "message": "Sauvegarder l'activité"
   },
+  "EditTask.taskLockedDescription": {
+    "message": "Cette tâche est actuellement utilisée par une ou plusieurs classes et ne peut pas être modifiée ni supprimée."
+  },
+  "EditTask.taskLockedTitle": {
+    "message": "La tâche est verrouillée"
+  },
   "EditTask.title": {
     "message": "Modifier l'activité - {title}"
   },
@@ -1056,6 +1062,9 @@
   "TaskDetail.unsupportedApp": {
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
+  "TaskForm.SaveConflictError": {
+    "message": "La tâche est désormais utilisée par une ou plusieurs classes et ne peut plus être modifiée."
+  },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
   },
@@ -1071,6 +1080,15 @@
   "TaskForm.blobValidation": {
     "message": "Les données du fichier fourni sont invalides"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Oui, changer le type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Changer le type de la tâche"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
   },
@@ -1083,8 +1101,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  "TaskForm.destructiveAction.body": {
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Oui, continuer"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "Cette action supprimera les solutions de référence"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "Un fichier de tâche est requis avant l’enregistrement."
   },
   "TaskForm.title": {
     "message": "Titre"
@@ -1287,6 +1314,9 @@
   "TaskTable.columns.title": {
     "message": "Titre"
   },
+  "TaskTable.conflictErrorMessage": {
+    "message": "Impossible de supprimer la tâche car elle est actuellement utilisée."
+  },
   "TaskTable.createTask": {
     "message": "Créer une activité"
   },
@@ -1304,6 +1334,12 @@
   },
   "TaskTable.emptyState.title": {
     "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
+  },
+  "TaskTable.errorMessage": {
+    "message": "Une erreur s’est produite lors de la suppression de la tâche. Veuillez réessayer."
+  },
+  "TaskTable.successMessage": {
+    "message": "La tâche a été supprimée avec succès"
   },
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"
