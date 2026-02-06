@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, plainToInstance } from "class-transformer";
+import { IsBoolean } from "class-validator";
 import { TaskWithoutData } from "../tasks.service";
 import { TaskDto } from "./task.dto";
 
@@ -19,6 +20,15 @@ export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   })
   @Expose()
   readonly creatorId!: number;
+
+  @ApiProperty({
+    description:
+      "Whether the task is public and visible to all teachers/admins.",
+    example: false,
+  })
+  @IsBoolean()
+  @Expose()
+  readonly isPublic!: boolean;
 
   @Exclude()
   readonly mimeType!: string;
