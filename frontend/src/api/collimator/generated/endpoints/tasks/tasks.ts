@@ -26,6 +26,7 @@ export const tasksControllerCreateV0 = async (
   formData.append(`title`, createTaskDto.title);
   formData.append(`description`, createTaskDto.description);
   formData.append(`type`, createTaskDto.type);
+  formData.append(`isPublic`, createTaskDto.isPublic.toString());
   formData.append(`taskFile`, createTaskDto.taskFile);
   createTaskDto.referenceSolutionsFiles.forEach((value) =>
     formData.append(`referenceSolutionsFiles`, value),
@@ -81,6 +82,7 @@ export const tasksControllerUpdateV0 = async (
   formData.append(`title`, updateTaskDto.title);
   formData.append(`description`, updateTaskDto.description);
   formData.append(`type`, updateTaskDto.type);
+  formData.append(`isPublic`, updateTaskDto.isPublic.toString());
   formData.append(`taskFile`, updateTaskDto.taskFile);
   updateTaskDto.referenceSolutionsFiles.forEach((value) =>
     formData.append(`referenceSolutionsFiles`, value),

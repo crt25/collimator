@@ -27,6 +27,8 @@ export const getTasksControllerCreateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
@@ -48,6 +50,8 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
       max: undefined,
       fractionDigits: 2,
     }),
+    isPublic: faker.datatype.boolean(),
+    isInUse: faker.datatype.boolean(),
   }));
 
 export const getTasksControllerFindOneV0ResponseMock = (
@@ -62,6 +66,8 @@ export const getTasksControllerFindOneV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
@@ -77,6 +83,8 @@ export const getTasksControllerUpdateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
@@ -92,6 +100,8 @@ export const getTasksControllerRemoveV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
@@ -107,6 +117,8 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   referenceSolutions: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -144,7 +156,6 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
       studentSolutionId: {},
     })),
   })),
-  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
