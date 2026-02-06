@@ -194,6 +194,12 @@ const createSubmissionTests = (
   ...submission.passedTests.map((t) => ({ ...t, passed: true })),
 ];
 
+class NoTaskFileError extends Error {
+  constructor() {
+    super("No task file was provided");
+  }
+}
+
 const TaskForm = ({
   submitMessage,
   initialValues,
@@ -348,11 +354,7 @@ const TaskForm = ({
     setOpenModal(ModalStates.taskEdit);
   }, []);
 
-  const onCancelChangeTaskFileAction = useCallback(() => {
-    setOpenModal(ModalStates.none);
-  }, []);
-
-  const handleEditModalClose = useCallback(() => {
+  const closeModal = useCallback(() => {
     setOpenModal(ModalStates.none);
   }, []);
 
@@ -390,11 +392,7 @@ const TaskForm = ({
         // but more critically, the API requires a non-null taskFile for persistence.
         // Therefore, we block submission if taskFile is null.
         if (data.taskFile === null) {
-          toaster.error({
-            title: intl.formatMessage(messages.taskFileRequired),
-            closable: true,
-          });
-          return Promise.reject(new Error("Task file is required"));
+          return Promise.reject(new NoTaskFileError());
         }
 
         return onSubmit({
@@ -426,6 +424,18 @@ const TaskForm = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
 
+          if (err instanceof NoTaskFileError) {
+            toaster.error({
+              title: intl.formatMessage(messages.taskFileRequired),
+              closable: true,
+            });
+          } else {
+            toaster.error({
+              title: intl.formatMessage(messages.saveError),
+              closable: true,
+            });
+          }
+
           if (err instanceof ConflictError) {
             toaster.error({
               title: intl.formatMessage(messages.saveConflictError),
@@ -440,7 +450,14 @@ const TaskForm = ({
           }
         });
     },
-    [handleSubmit, onSubmit, reset, intl, clearSolutionsOnSave, onConflictError],
+    [
+      handleSubmit,
+      onSubmit,
+      reset,
+      intl,
+      clearSolutionsOnSave,
+      onConflictError,
+    ],
   );
 
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
@@ -482,7 +499,7 @@ const TaskForm = ({
             >
               <EditTaskButton
                 data-testid="edit-task-button"
-                type="button
+                type="button"
                 onClick={handleOpenEditTask}
                 disabled={disabled}
               >
@@ -528,15 +545,12 @@ const TaskForm = ({
         </Grid>
         {!disabled && (
           <Box display="flex" justifyContent="flex-end">
-            <SubmitFormButton
-              label={submitMessage}
-              disabled={!canSubmit}
-            />
+            <SubmitFormButton label={submitMessage} disabled={!canSubmit} />
           </Box>
         )}
         <EditTaskModal
           isShown={openModal === ModalStates.taskEdit}
-          setIsShown={handleEditModalClose}
+          setIsShown={closeModal}
           initialTask={hasTypeChanged ? null : taskFile}
           taskType={taskType}
           onSave={handleEditModalSave}
@@ -582,7 +596,7 @@ const TaskForm = ({
             if (confirmedActionRef.current) {
               confirmedActionRef.current = false;
             } else {
-              onCancelChangeTaskFileAction();
+              closeModal();
             }
           }
         }}
