@@ -1,7 +1,7 @@
-import { buildScratchApp, CrtApp } from "../setup/helpers";
+import { buildApp, CrtApp } from "../setup/helpers";
 
 const main = async (): Promise<void> => {
-  buildScratchApp(CrtApp.scratch);
+  buildApp(CrtApp.scratch);
 };
 
 main().catch((error) => {

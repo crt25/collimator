@@ -1,7 +1,7 @@
-import { buildJupyterApp, JupyterApp } from "../setup/helpers";
+import { buildApp, CrtApp } from "../setup/helpers";
 
 const main = async (): Promise<void> => {
-  buildJupyterApp(JupyterApp.jupyter);
+  buildApp(CrtApp.jupyter);
 };
 
 main().catch((error) => {

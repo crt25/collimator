@@ -20,9 +20,6 @@ export type PostgresConfig = {
 
 export enum CrtApp {
   scratch = "scratch",
-}
-
-export enum JupyterApp {
   jupyter = "jupyter",
 }
 
@@ -56,7 +53,7 @@ export const getFrontendPath = (): string => {
   return [...segments.slice(0, e2eIdx), "frontend"].join(path.sep);
 };
 
-export const getAppPath = (app: CrtApp | JupyterApp): string => {
+export const getAppPath = (app: CrtApp): string => {
   const segments = process.cwd().split(path.sep);
   const e2eIdx = segments.lastIndexOf("e2e");
 
@@ -163,32 +160,18 @@ export const buildFrontend = (
   });
 };
 
-export const buildScratchApp = (
+export const buildApp = (
   app: CrtApp,
   stdout: "pipe" | "ignore" = "pipe",
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
-  spawnSync("yarn", ["build"], {
-    env: {
-      ...process.env,
-      NODE_ENV: "production",
-    },
-    cwd: getAppPath(app),
-    shell: true,
-    stdio: ["ignore", stdout, stderr],
-  });
-};
+  const isScratch = app === CrtApp.scratch;
+  const command = isScratch ? "yarn" : "make";
 
-export const buildJupyterApp = (
-  app: JupyterApp,
-  stdout: "pipe" | "ignore" = "pipe",
-  stderr: "pipe" | "ignore" = "pipe",
-): void => {
-  spawnSync("make", ["build"], {
+  spawnSync(command, ["build"], {
     env: {
       ...process.env,
       NODE_ENV: "production",
-      BASE_URL: "/jupyter",
     },
     cwd: getAppPath(app),
     shell: true,
