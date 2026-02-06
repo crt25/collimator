@@ -164,6 +164,7 @@ model Task {
   data        Bytes
   mimeType    String
   creatorId   Int?
+  isPublic    Boolean  @default(false)
 
   studentSolutions   StudentSolution[]
   referenceSolutions ReferenceSolution[]
