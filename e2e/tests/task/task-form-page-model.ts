@@ -43,6 +43,7 @@ export class TaskFormPageModel extends FormPageModel {
   }
 
   async acceptConfirmationModal(): Promise<void> {
+    await this.page.waitForSelector("[data-testid=confirm-button]");
     await this.page.getByTestId("confirm-button").click();
   }
 
@@ -51,7 +52,9 @@ export class TaskFormPageModel extends FormPageModel {
   }
 
   async goToReferenceSolutions(): Promise<void> {
-    await this.taskEditModal.goToReferenceSolutions();
+    await this.page
+      .getByTestId("task-instance-reference-solutions-tab")
+      .click();
   }
 
   async saveTask(): Promise<void> {

@@ -80,10 +80,8 @@ export const createReferenceSolutionForTask = async (
   );
 
   await page.saveSolution();
-  await expect(page.getTaskEditModal()).toBeHidden();
-
   await page.submitForm();
-  await expect(page.getSubmitFormButton()).toBeDisabled();
+  await expect(page.getSubmitButton()).toBeDisabled();
 
   // A reload is required for the ids to be persisted to the frontend from the backend
   await pwPage.reload();

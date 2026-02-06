@@ -132,6 +132,10 @@ export class TaskFormReferenceSolutionsPageModel extends TaskFormPageModel {
     await this.submitButton.click();
   }
 
+  getSubmitButton(): Locator {
+    return this.submitButton;
+  }
+
   static override async create(
     page: Page,
   ): Promise<TaskFormReferenceSolutionsPageModel> {

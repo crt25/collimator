@@ -21,6 +21,10 @@ export class TaskEditModalPageModel {
     return this.modal.getByTestId("cancel-button");
   }
 
+  get modalConfirmButton(): Locator {
+    return this.page.getByTestId("confirm-button");
+  }
+
   get referenceSolutionsTab(): Locator {
     return this.modal.getByTestId("task-instance-reference-solutions-tab");
   }
@@ -34,6 +38,7 @@ export class TaskEditModalPageModel {
   }
 
   async cancel(): Promise<void> {
+    await this.waitForModal();
     await this.cancelButton.click();
   }
 
@@ -43,6 +48,10 @@ export class TaskEditModalPageModel {
 
   async waitForModal(): Promise<void> {
     await this.page.waitForSelector(TaskEditModalPageModel.taskModal);
+  }
+
+  async waitForModalConfirmation(): Promise<void> {
+    await this.page.waitForSelector("[data-testid=confirm-button]");
   }
 
   static async create(page: Page): Promise<TaskEditModalPageModel> {

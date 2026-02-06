@@ -136,13 +136,16 @@ test.describe("task management", () => {
         const taskForm = await TaskFormPageModel.create(pwPage);
 
         await taskForm.setTaskType(TaskType.JUPYTER);
+        await taskForm.acceptConfirmationModal();
+
         await taskForm.goToReferenceSolutions();
+        await taskForm.acceptConfirmationModal();
 
         const referencesPage =
           await TaskFormReferenceSolutionsPageModel.create(pwPage);
 
         await expect(
-          referencesPage.getReferenceSolutionCount(),
+          await referencesPage.getReferenceSolutionCount(),
         ).toBeGreaterThan(0);
 
         await expect(referencesPage.getTitleInput(solutionId)).toHaveValue(
@@ -155,15 +158,19 @@ test.describe("task management", () => {
 
       test("editing task type with reference solutions should overwrite the current task and remove related reference solutions", async ({
         page: pwPage,
+        baseURL,
       }) => {
+        await pwPage.goto(`${baseURL!}/task/${newTaskId}/detail`);
         const taskForm = await TaskFormPageModel.create(pwPage);
 
         await taskForm.setTaskType(TaskType.JUPYTER);
         await taskForm.acceptConfirmationModal();
+
         await taskForm.openEditTaskModal();
         await taskForm.saveTask();
-        await taskForm.submitButton.click();
 
+        await taskForm.submitButton.click();
+        await expect(taskForm.submitButton).toBeDisabled();
         await taskForm.goToReferenceSolutions();
 
         const referencesPage =
