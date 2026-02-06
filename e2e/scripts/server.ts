@@ -10,6 +10,7 @@ const app = express();
 
 const staticDir = path.join(getFrontendPath(), "dist");
 const scratchAppDir = path.join(getAppPath(CrtApp.scratch), "build");
+const jupyterAppDir = path.join(getAppPath(CrtApp.jupyter), "dist", "app");
 
 app.use("/scratch", (request, response, next) => {
   let [urlPath, search] = request.url.split("?");
@@ -29,6 +30,33 @@ app.use("/scratch", (request, response, next) => {
 
 app.use("/scratch", express.static(scratchAppDir));
 
+app.use("/jupyter", (request, response, next) => {
+  let [urlPath, search] = request.url.split("?");
+
+  urlPath = urlPath.endsWith("/") ? urlPath.slice(0, -1) : urlPath;
+  search = search ? `?${search}` : "";
+
+  if (urlPath === "/" || urlPath === "") {
+    request.url = `index.html${search}`;
+  } else if (urlPath === "/lab") {
+    request.url = `/lab/index.html${search}`;
+  } else if (!path.extname(urlPath)) {
+    request.url = `${urlPath}.html${search}`;
+  } else {
+    request.url = `${urlPath}${search}`;
+  }
+
+  next();
+});
+
+app.use("/jupyter", express.static(jupyterAppDir));
+
+console.log(
+  `Serving Scratch app from '${scratchAppDir}' on http://localhost:${process.env.PORT ?? 9999}/scratch`,
+);
+console.log(
+  `Serving Jupyter app from '${jupyterAppDir}' on http://localhost:${process.env.PORT ?? 9999}/jupyter`,
+);
 app.use(
   "/api",
   createProxyMiddleware<Request, Response>({

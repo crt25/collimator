@@ -20,6 +20,7 @@ export type PostgresConfig = {
 
 export enum CrtApp {
   scratch = "scratch",
+  jupyter = "jupyter",
 }
 
 export const portLockDirectory = "playwright/.port";
@@ -151,6 +152,7 @@ export const buildFrontend = (
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: config.oidcClientId,
       NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "/scratch",
+      NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: "/jupyter/lab/index.html",
     },
     cwd: getFrontendPath(),
     shell: true,
@@ -163,7 +165,10 @@ export const buildApp = (
   stdout: "pipe" | "ignore" = "pipe",
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
-  spawnSync("yarn", ["build"], {
+  const isScratch = app === CrtApp.scratch;
+  const command = isScratch ? "yarn" : "make";
+
+  spawnSync(command, ["build"], {
     env: {
       ...process.env,
       NODE_ENV: "production",

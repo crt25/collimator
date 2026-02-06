@@ -813,6 +813,18 @@
       "value": "Save Task"
     }
   ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Task is locked"
+    }
+  ],
   "EditTask.title": [
     {
       "type": 0,
@@ -1795,6 +1807,12 @@
       "value": "). Please report this issue."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "The task is now in use by one or more classes and can no longer be modified."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -1825,6 +1843,24 @@
       "value": "The provided file data is invalid"
     }
   ],
+  "TaskForm.changeTypeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, change type"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Change task type"
+    }
+  ],
   "TaskForm.closeConfirmation.body": [
     {
       "type": 0,
@@ -1849,10 +1885,28 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutionsLengthValidation": [
+  "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "The number of reference solutions must match the number of reference solution files"
+      "value": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.destructiveAction.button": [
+    {
+      "type": 0,
+      "value": "Yes, continue"
+    }
+  ],
+  "TaskForm.destructiveAction.title": [
+    {
+      "type": 0,
+      "value": "This action will delete reference solutions"
+    }
+  ],
+  "TaskForm.taskFileRequired": [
+    {
+      "type": 0,
+      "value": "A task file is required before saving."
     }
   ],
   "TaskForm.title": [
@@ -2285,6 +2339,12 @@
       "value": "Title"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Cannot delete task because it is currently in use."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2319,6 +2379,18 @@
     {
       "type": 0,
       "value": "There are no tasks yet. Let's create some!"
+    }
+  ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully deleted the task"
     }
   ],
   "TaskTable.viewDetails": [

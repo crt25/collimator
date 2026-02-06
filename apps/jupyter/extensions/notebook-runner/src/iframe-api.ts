@@ -227,8 +227,8 @@ export class EmbeddedPythonCallbacks {
             request.params.task,
           );
 
-          if (this.mode !== Mode.edit) {
-            // cannot import external custom task in non-edit mode
+          if (this.mode !== Mode.edit && this.mode !== Mode.solve) {
+            // cannot import external custom task in show mode
             throw new GenericNotebookTaskImportError();
           }
 

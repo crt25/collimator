@@ -6,7 +6,7 @@ import { createTask } from "../task/task-management";
 import { SessionFormPageModel } from "./session-form-page-model";
 import { SessionListPageModel } from "./session-list-page-model";
 import { createSession } from "./session-management";
-import checkXPositionWithAssertion from "./tasks/check-x-position-with-assertion";
+import checkXPositionWithAssertion from "./tasks/scratch/check-x-position-with-assertion";
 
 const newClassName = "new class name";
 let newClassId: number = -1;

@@ -386,6 +386,12 @@
   "EditTask.submit": {
     "message": "Save Task"
   },
+  "EditTask.taskLockedDescription": {
+    "message": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+  },
+  "EditTask.taskLockedTitle": {
+    "message": "Task is locked"
+  },
   "EditTask.title": {
     "message": "Edit Task - {title}"
   },
@@ -846,6 +852,9 @@
   "TaskDetail.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
   },
+  "TaskForm.SaveConflictError": {
+    "message": "The task is now in use by one or more classes and can no longer be modified."
+  },
   "TaskForm.SaveError": {
     "message": "An error occurred while saving the task. Try again later."
   },
@@ -861,6 +870,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Yes, change type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Change task type"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
   },
@@ -873,8 +891,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+  "TaskForm.destructiveAction.body": {
+    "message": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Yes, continue"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "This action will delete reference solutions"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "A task file is required before saving."
   },
   "TaskForm.title": {
     "message": "Title"
@@ -1077,6 +1104,9 @@
   "TaskTable.columns.title": {
     "message": "Title"
   },
+  "TaskTable.conflictErrorMessage": {
+    "message": "Cannot delete task because it is currently in use."
+  },
   "TaskTable.createTask": {
     "message": "Create Task"
   },
@@ -1094,6 +1124,12 @@
   },
   "TaskTable.emptyState.title": {
     "message": "There are no tasks yet. Let's create some!"
+  },
+  "TaskTable.errorMessage": {
+    "message": "There was an error deleting the task. Please try again!"
+  },
+  "TaskTable.successMessage": {
+    "message": "Successfully deleted the task"
   },
   "TaskTable.viewDetails": {
     "message": "View Task Details"
