@@ -39,7 +39,9 @@ export class UpdateTaskDto {
       "Whether the task is public and visible to all teachers/admins.",
     example: false,
   })
-  @Transform(({ value }) => value === "true" || value === true)
+  @Transform(({ value }) =>
+    value === undefined ? undefined : value === "true" || value === true,
+  )
   @IsBoolean()
   @Expose()
   readonly isPublic!: boolean;

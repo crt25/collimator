@@ -128,20 +128,28 @@ export class TasksController {
     teacherId?: number,
   ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
+    const publicTasks = await this.tasksService.findManyWithInUseStatus({
+      where: { isPublic: true },
+    });
+
     const isAuthorized = await this.authorizationService.canListTasksOfTeacher(
       user,
       teacherId,
     );
 
     if (!isAuthorized) {
-      throw new ForbiddenException();
+      return publicTasks.map((task) => ExistingTaskDto.fromQueryResult(task));
     }
 
-    const tasks = await this.tasksService.findManyWithInUseStatus({
-      where: teacherId ? { creatorId: teacherId } : undefined,
+    const privateTasks = await this.tasksService.findManyWithInUseStatus({
+      where: teacherId
+        ? { creatorId: teacherId, isPublic: false }
+        : { isPublic: false },
     });
-    console.log("tasks with in use status", tasks);
-    return tasks.map((task) => ExistingTaskDto.fromQueryResult(task));
+
+    return privateTasks
+      .concat(publicTasks)
+      .map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 
   @Get(":id")
@@ -317,8 +325,8 @@ export class TasksController {
     }
 
     try {
-      const task = await this.tasksService.deleteById(id);
-      return DeletedTaskDto.fromQueryResult(task);
+      const deletedTask = await this.tasksService.deleteById(id);
+      return DeletedTaskDto.fromQueryResult(deletedTask);
     } catch (error) {
       if (error instanceof TaskInUseError) {
         throw new ConflictException(error.message);

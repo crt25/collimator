@@ -70,7 +70,16 @@ export class AuthorizationService {
   }
 
   async canViewTask(authenticatedUser: User, taskId: number): Promise<boolean> {
-    return this.isAdminOrCreatorOfTask(authenticatedUser, taskId);
+    if (await this.isAdminOrCreatorOfTask(authenticatedUser, taskId)) {
+      return true;
+    }
+
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId, isPublic: true },
+      select: { id: true },
+    });
+
+    return task !== null;
   }
 
   async canListTasksOfTeacher(
@@ -81,7 +90,7 @@ export class AuthorizationService {
       return true;
     }
 
-    // teachers can only list their own classes
+    // teachers can only list their own tasks
     return (
       authenticatedUser.type === UserType.TEACHER &&
       teacherId !== undefined &&

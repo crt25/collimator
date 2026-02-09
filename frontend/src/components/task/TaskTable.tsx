@@ -226,42 +226,40 @@ const TaskTable = () => {
 
   return (
     <TaskTableWrapper data-testid="task-list">
+      <Box marginBottom="md">
+        <TaskVisibilityFilter
+          value={visibilityFilter}
+          onChange={setVisibilityFilter}
+        />
+      </Box>
       <SwrContent data={data} isLoading={isLoading} error={error}>
         {() => (
-          <>
-            <Box marginBottom="md">
-              <TaskVisibilityFilter
-                value={visibilityFilter}
-                onChange={setVisibilityFilter}
-              />
-            </Box>
-            <ChakraDataTable
-              data={filteredData}
-              columns={columns}
-              isLoading={isLoading}
-              onRowClick={(row, e) => {
-                if (isClickOnRow(e)) {
-                  router.push(`/task/${row.id}/detail`);
-                }
-              }}
-              features={{
-                sorting: true,
-                columnFiltering: {
-                  columns: [
-                    {
-                      accessorKey: "title",
-                      label: intl.formatMessage(messages.titleColumn),
-                    },
-                  ],
-                },
-              }}
-              emptyStateElement={
-                <EmptyState
-                  title={<FormattedMessage {...messages.emptyStateTitle} />}
-                />
+          <ChakraDataTable
+            data={filteredData}
+            columns={columns}
+            isLoading={isLoading}
+            onRowClick={(row, e) => {
+              if (isClickOnRow(e)) {
+                router.push(`/task/${row.id}/detail`);
               }
-            />
-          </>
+            }}
+            features={{
+              sorting: true,
+              columnFiltering: {
+                columns: [
+                  {
+                    accessorKey: "title",
+                    label: intl.formatMessage(messages.titleColumn),
+                  },
+                ],
+              },
+            }}
+            emptyStateElement={
+              <EmptyState
+                title={<FormattedMessage {...messages.emptyStateTitle} />}
+              />
+            }
+          />
         )}
       </SwrContent>
       <ConfirmationModal
