@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useMemo } from "react";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
+import { useAuthExpirationCheck } from "@/hooks/useAuthExpirationCheck";
 import DisableSSR from "../next/DisableSSR";
 
 const allowedRoutesForUnauthenticatedUsers = [
@@ -33,6 +34,9 @@ const AuthenticationBarrier = ({
 
   const isAuthenticated =
     authenticationContext.authenticationToken !== undefined;
+
+  // Hook to periodically check for authentication expiration
+  useAuthExpirationCheck();
 
   const isPublicPage = useMemo(
     () =>

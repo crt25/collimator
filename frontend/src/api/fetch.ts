@@ -1,4 +1,4 @@
-import { backendHostName } from "@/utilities/constants";
+import { authenticationStateKey, backendHostName } from "@/utilities/constants";
 
 export class ApiError extends Error {
   constructor(
@@ -27,6 +27,8 @@ export const fetchApi = async <T>(
   if (response.status === 401) {
     // properly sign out the user
     window.location.href = "/logout";
+    // clear local storage auth entry
+    localStorage.removeItem(authenticationStateKey);
 
     // never-resolving promise - this way the redirect will happen before
     // the UI knows about the error
