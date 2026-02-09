@@ -66,6 +66,7 @@ export * from "./studentTaskProgressDto";
 export * from "./taskProgress";
 export * from "./taskReferenceSolutionDto";
 export * from "./taskType";
+export * from "./tasksControllerFindAllV0Params";
 export * from "./trackAppStudentActivityDto";
 export * from "./trackAppStudentActivityDtoData";
 export * from "./trackStudentActivitiesDto";
