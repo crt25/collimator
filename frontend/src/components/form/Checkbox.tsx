@@ -30,6 +30,7 @@ type InternalProps = {
   variant?: ChakraProps["variant"];
   children?: React.ReactNode;
   onCheckedChange?: (checked: boolean) => void;
+  onBeforeChange?: (newValue: boolean) => boolean;
   isDirty?: boolean;
   showEditedBadge?: boolean;
   disabled?: boolean;
@@ -55,6 +56,7 @@ const InternalCheckbox = (
     checked,
     label,
     onCheckedChange,
+    onBeforeChange,
     variant,
     isDirty,
     showEditedBadge,
@@ -66,7 +68,13 @@ const InternalCheckbox = (
       name={name}
       checked={checked}
       variant={variant}
-      onCheckedChange={({ checked }) => onCheckedChange?.(!!checked)}
+      onCheckedChange={({ checked: newChecked }) => {
+        const newValue = !!newChecked;
+        if (onBeforeChange && !onBeforeChange(newValue)) {
+          return;
+        }
+        onCheckedChange?.(newValue);
+      }}
       disabled={disabled}
     >
       <ChakraCheckbox.HiddenInput />
@@ -98,6 +106,7 @@ const Checkbox = <TValues extends FieldValues, TField extends Path<TValues>>(
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                onBeforeChange={props.onBeforeChange}
                 isDirty={fieldState.isDirty}
                 variant={variant}
                 label={label}

@@ -100,6 +100,20 @@ const messages = defineMessages({
     id: "TaskForm.isPublic",
     defaultMessage: "This task is public",
   },
+  makePublicConfirmationTitle: {
+    id: "TaskForm.makePublicConfirmation.title",
+    defaultMessage: "Make this task public?",
+  },
+  makePublicConfirmationBody: {
+    id: "TaskForm.makePublicConfirmation.body",
+    defaultMessage:
+      "Making a task public allows other users to view and use it. This action may be irreversible.\n" +
+      "Are you sure you want to continue?",
+  },
+  makePublicConfirmationButton: {
+    id: "TaskForm.makePublicConfirmation.button",
+    defaultMessage: "Yes, make it public",
+  },
 });
 
 type TaskFormValues = {
@@ -192,6 +206,7 @@ const TaskForm = ({
   const isAdmin = authenticationContext.role === UserRole.admin;
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
+  const [showMakePublicModal, setShowMakePublicModal] = useState(false);
   const cannotNavigate = useRef(false);
 
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
@@ -235,6 +250,22 @@ const TaskForm = ({
   const onNavigate = useCallback(() => {
     setShowQuitNoSaveModal(true);
   }, []);
+
+  const handleIsPublicBeforeChange = useCallback((newValue: boolean) => {
+    // Only show confirmation when trying to make the task public
+    if (newValue === true) {
+      setShowMakePublicModal(true);
+      return false; // Prevent immediate change, wait for confirmation
+    }
+    return true; // Allow unchecking without confirmation
+  }, []);
+
+  const handleConfirmMakePublic = useCallback(() => {
+    setValue("isPublic", true, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }, [setValue]);
 
   const navigate = useNavigationObserver({
     shouldStopNavigation,
@@ -338,6 +369,7 @@ const TaskForm = ({
                 showEditedBadge={showEditedBadges}
                 data-testid="isPublic"
                 disabled={disabled}
+                onBeforeChange={handleIsPublicBeforeChange}
               />
             )}
 
@@ -446,6 +478,17 @@ const TaskForm = ({
           title: messages.closeConfirmationTitle,
           body: messages.closeConfirmationBody,
           confirmButton: messages.closeConfirmationButton,
+        }}
+      />
+      <ConfirmationModal
+        isShown={showMakePublicModal}
+        setIsShown={setShowMakePublicModal}
+        onConfirm={handleConfirmMakePublic}
+        isDangerous
+        messages={{
+          title: messages.makePublicConfirmationTitle,
+          body: messages.makePublicConfirmationBody,
+          confirmButton: messages.makePublicConfirmationButton,
         }}
       />
     </>
