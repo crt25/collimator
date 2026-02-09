@@ -1153,7 +1153,7 @@
     "message": "Sauvegarder l'activité"
   },
   "TaskInstanceDetails.taskBankLink": {
-    "message": "task bank"
+    "message": "banque d'activités"
   },
   "TaskInstanceDetails.title": {
     "message": "Modifier l'activité - {title}"
