@@ -234,7 +234,9 @@ const TaskForm = ({
   const cannotNavigate = useRef(false);
   const confirmedActionRef = useRef(false);
 
-  const originalType = initialValues?.type ?? TaskType.SCRATCH;
+  const [originalType, setOriginalType] = useState(
+    initialValues?.type ?? TaskType.SCRATCH,
+  );
 
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
     title: string;
@@ -311,6 +313,7 @@ const TaskForm = ({
     if (hasTypeChanged) {
       // at this point, if the user has already changed the type and confirmed,
       // we can just allow switching without further confirmation
+
       return;
     }
 
@@ -409,10 +412,12 @@ const TaskForm = ({
           // allow navigation after the task has been saved
           cannotNavigate.current = false;
 
-          if (data.type === originalType) {
-            setHasTypeChanged(false);
+          if (data.type !== originalType) {
+            // Update the "original" type to the newly saved type
+            setOriginalType(data.type);
           }
 
+          setHasTypeChanged(false);
           setClearSolutionsOnSave(false);
 
           // reset the form to the updated values
