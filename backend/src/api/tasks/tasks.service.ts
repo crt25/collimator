@@ -50,6 +50,15 @@ export type TaskDataOnly = Pick<Task, "data" | "mimeType">;
 
 const omitData = { data: true };
 
+// When using Prisma extensions with client.$extends(), the transaction callback
+// receives a client type that excludes certain top-level methods like $use, $transaction, etc.
+// This type matches both the extended PrismaService and transaction clients by only
+// requiring the model access methods we actually need, and not the full TransactionClient interface.
+type PrismaTransactionClient = Omit<
+  PrismaService,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$extends"
+>;
+
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
@@ -237,10 +246,16 @@ export class TasksService {
           },
         };
 
-    const orphanedSolutionsWhere = {
-      referenceSolutions: { none: {} },
-      studentSolutions: { none: {} },
-    };
+    const orphanedSolutionsWhere = includeSoftDelete
+      ? {
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        }
+      : {
+          deletedAt: null,
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        };
 
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
@@ -372,7 +387,7 @@ export class TasksService {
   }
 
   private async isTaskInUseTx(
-    tx: Prisma.TransactionClient,
+    tx: PrismaTransactionClient,
     id: TaskId,
   ): Promise<boolean> {
     const sessionWithStudents = await tx.sessionTask.findFirst({
