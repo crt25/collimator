@@ -341,7 +341,11 @@ const SolveTaskPage = () => {
           <li></li>
 
           {saveError && (
-            <Alert.Root status="error" size="sm">
+            <Alert.Root
+              status="error"
+              data-testid="save-error-message"
+              size="sm"
+            >
               <Alert.Indicator />
               <Alert.Title>
                 <FormattedMessage
