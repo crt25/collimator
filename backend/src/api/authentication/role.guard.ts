@@ -59,6 +59,8 @@ export class RoleGuard implements CanActivate {
           studentRequestKey,
           user,
         );
+
+        this.canSoftDeleteForStudent(context);
       } else {
         if (!allowedRoles.includes(user.type)) {
           throw new ForbiddenException();
@@ -96,7 +98,27 @@ export class RoleGuard implements CanActivate {
       return;
     }
 
-    if (!softDeleteRoles.includes(user.type)) {
+    if (!softDeleteRoles || !softDeleteRoles.includes(user.type)) {
+      throw new ForbiddenException(
+        "You do not have permission to view soft-deleted items",
+      );
+    }
+  }
+
+  private canSoftDeleteForStudent(context: ExecutionContext): void {
+    const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
+      SOFT_DELETE_ROLES,
+      [context.getHandler(), context.getClass()],
+    );
+
+    const request = context.switchToHttp().getRequest();
+    const includeSoftDelete = request.query.includeSoftDelete === "true";
+
+    if (!includeSoftDelete) {
+      return;
+    }
+
+    if (softDeleteRoles) {
       throw new ForbiddenException(
         "You do not have permission to view soft-deleted items",
       );
