@@ -69,6 +69,10 @@ export class AuthorizationService {
     return task !== null;
   }
 
+  async canViewTask(authenticatedUser: User, taskId: number): Promise<boolean> {
+    return this.isAdminOrCreatorOfTask(authenticatedUser, taskId);
+  }
+
   async canListTasksOfTeacher(
     authenticatedUser: User,
     teacherId?: number,

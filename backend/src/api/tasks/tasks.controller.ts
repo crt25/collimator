@@ -140,17 +140,25 @@ export class TasksController {
     const tasks = await this.tasksService.findManyWithInUseStatus({
       where: teacherId ? { creatorId: teacherId } : undefined,
     });
+    console.log("tasks with in use status", tasks);
     return tasks.map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 
   @Get(":id")
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @AuthenticatedUser() user: User,
   ): Promise<ExistingTaskDto> {
+    const isAuthorized = await this.authorizationService.canViewTask(user, id);
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrow(id),
       this.tasksService.isTaskInUse(id),
@@ -160,12 +168,20 @@ export class TasksController {
   }
 
   @Get(":id/with-reference-solutions")
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
+    @AuthenticatedUser() user: User,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
+    const isAuthorized = await this.authorizationService.canViewTask(user, id);
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrowWithReferenceSolutions(id),
       this.tasksService.isTaskInUse(id),
@@ -186,13 +202,20 @@ export class TasksController {
   }
 
   @Get(":id/download")
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiOkResponse(/*??*/)
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @AuthenticatedUser() user: User,
   ): Promise<StreamableFile> {
+    const isAuthorized = await this.authorizationService.canViewTask(user, id);
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const task = await this.tasksService.downloadByIdOrThrow(id);
     return new StreamableFile(task.data, {
       type: task.mimeType,
