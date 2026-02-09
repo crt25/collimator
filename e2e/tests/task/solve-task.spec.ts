@@ -22,7 +22,7 @@ let taskId: number = -1;
 let sessionLink = "";
 let page: SolveTaskPageModel;
 
-test.describe.only("/session/[sessionId]/task/[taskId]/solve", () => {
+test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
   test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
   });
@@ -110,7 +110,7 @@ test.describe.only("/session/[sessionId]/task/[taskId]/solve", () => {
           }),
       );
 
-      page.clickSubmitButton();
+      await page.clickSubmitButton();
 
       await expect(page.getSaveErrorMessage()).toBeVisible();
       await expect(page.getSaveErrorMessage()).toBeDefined();
