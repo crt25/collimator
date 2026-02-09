@@ -32,6 +32,7 @@ type InternalProps = {
   onCheckedChange?: (checked: boolean) => void;
   isDirty?: boolean;
   showEditedBadge?: boolean;
+  disabled?: boolean;
 };
 
 type SharedProps = InternalProps;
@@ -57,6 +58,7 @@ const InternalCheckbox = (
     variant,
     isDirty,
     showEditedBadge,
+    disabled = false,
   } = props;
 
   return (
@@ -65,6 +67,7 @@ const InternalCheckbox = (
       checked={checked}
       variant={variant}
       onCheckedChange={({ checked }) => onCheckedChange?.(!!checked)}
+      disabled={disabled}
     >
       <ChakraCheckbox.HiddenInput />
       <ChakraCheckbox.Control />
@@ -100,6 +103,7 @@ const Checkbox = <TValues extends FieldValues, TField extends Path<TValues>>(
                 label={label}
                 placeholder={placeholder}
                 showEditedBadge={props.showEditedBadge}
+                disabled={props.disabled}
               >
                 {children}
               </InternalCheckbox>

@@ -301,7 +301,7 @@ const TaskForm = ({
 
   const taskType = watch("type");
 
-  // If the intiialValues are provided, show the EditedBadge for fields that have been modified
+  // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
   return (
