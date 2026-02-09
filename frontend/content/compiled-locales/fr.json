@@ -535,12 +535,6 @@
       "value": "Créer une leçon"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +557,6 @@
     {
       "type": 0,
       "value": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +619,6 @@
       "value": "Titre"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Créer une activité"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +649,6 @@
     {
       "type": 0,
       "value": "Créer une activité"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Créer un Utilisateur"
     }
   ],
   "CreateUser.submit": [
@@ -843,10 +819,34 @@
       "value": "Voir"
     }
   ],
+  "DEPRECATED: CreateLesson.header": [
+    {
+      "type": 0,
+      "value": "Créer une leçon"
+    }
+  ],
+  "DEPRECATED: CreateSession.header": [
+    {
+      "type": 0,
+      "value": "Créer une leçon"
+    }
+  ],
   "DEPRECATED: CreateSessionForm.isAnonymous": [
     {
       "type": 0,
       "value": "Whether students are anonymous when working on tasks."
+    }
+  ],
+  "DEPRECATED: CreateTask.header": [
+    {
+      "type": 0,
+      "value": "Créer une activité"
+    }
+  ],
+  "DEPRECATED: CreateUser.header": [
+    {
+      "type": 0,
+      "value": "Créer un Utilisateur"
     }
   ],
   "DEPRECATED: DissimilarAnalysisPairs.header": [
@@ -960,6 +960,12 @@
     }
   ],
   "DEPRECATED: ListClasses.description": [
+  ],
+  "DEPRECATED: ListClasses.pageTitle": [
+    {
+      "type": 0,
+      "value": "Gestion des classes"
+    }
   ],
   "DEPRECATED: ListClasses.title": [
     {
@@ -1147,6 +1153,12 @@
       "value": "error"
     }
   ],
+  "DEPRECATED: embeddedApp.taskLoaded": [
+    {
+      "type": 0,
+      "value": "Tâche chargée avec succès"
+    }
+  ],
   "DissimilarAnalysisPairs.title": [
     {
       "type": 0,
@@ -1235,6 +1247,30 @@
     {
       "type": 0,
       "value": "Sauvegarder l'activité"
+    }
+  ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Activité verrouillée"
+    }
+  ],
+  "EditTask.taskReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une activité publique créée par un autre utilisateur. Seul le créateur peut modifier cette activité."
+    }
+  ],
+  "EditTask.taskReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Lecture seule"
     }
   ],
   "EditTask.title": [
@@ -1497,16 +1533,16 @@
       "value": "Gestion des classes"
     }
   ],
+  "ListClasses.heading": [
+    {
+      "type": 0,
+      "value": "Class Manager"
+    }
+  ],
   "ListClasses.pageDescription": [
     {
       "type": 0,
       "value": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-    }
-  ],
-  "ListClasses.pageTitle": [
-    {
-      "type": 0,
-      "value": "Gestion des classes"
     }
   ],
   "ListLessons.header": [
@@ -1711,6 +1747,12 @@
     {
       "type": 0,
       "value": "Pas commencé"
+    }
+  ],
+  "PublicBadge.public": [
+    {
+      "type": 0,
+      "value": "Publique"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -2219,6 +2261,12 @@
       "value": "). Veuillez signaler ce problème."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -2271,6 +2319,30 @@
     {
       "type": 0,
       "value": "Description"
+    }
+  ],
+  "TaskForm.isPublic": [
+    {
+      "type": 0,
+      "value": "This task is public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, make it public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Make this task public?"
     }
   ],
   "TaskForm.referenceSolutionsLengthValidation": [
@@ -2709,6 +2781,12 @@
       "value": "Titre"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Impossible de supprimer l'activité car elle est actuellement utilisée."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2745,10 +2823,46 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer !"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Activité supprimée avec succès"
+    }
+  ],
   "TaskTable.viewDetails": [
     {
       "type": 0,
       "value": "Voir les détails de l'activité"
+    }
+  ],
+  "TaskVisibilityFilter.allTasks": [
+    {
+      "type": 0,
+      "value": "Toutes les activités"
+    }
+  ],
+  "TaskVisibilityFilter.filterLabel": [
+    {
+      "type": 0,
+      "value": "Filtrer par visibilité"
+    }
+  ],
+  "TaskVisibilityFilter.privateOnly": [
+    {
+      "type": 0,
+      "value": "Privée uniquement"
+    }
+  ],
+  "TaskVisibilityFilter.publicOnly": [
+    {
+      "type": 0,
+      "value": "Publique uniquement"
     }
   ],
   "TestCriterionFilterForm.count": [
@@ -3157,12 +3271,6 @@
     {
       "type": 0,
       "value": "Tâche importée avec succès"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Tâche chargée avec succès"
     }
   ],
   "forms.arrayLength": [

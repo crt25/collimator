@@ -535,12 +535,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +557,6 @@
     {
       "type": 0,
       "value": "There was an error creating the new Lesson. Please try to save again!"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +619,6 @@
       "value": "Title"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Create Task"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +649,6 @@
     {
       "type": 0,
       "value": "Create Task"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Create User"
     }
   ],
   "CreateUser.submit": [
@@ -811,6 +787,30 @@
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Task is locked"
+    }
+  ],
+  "EditTask.taskReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a public task created by another user. Only the creator can edit this task."
+    }
+  ],
+  "EditTask.taskReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
     }
   ],
   "EditTask.title": [
@@ -1073,16 +1073,16 @@
       "value": "Classes"
     }
   ],
-  "ListClasses.pageDescription": [
-    {
-      "type": 0,
-      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-    }
-  ],
-  "ListClasses.pageTitle": [
+  "ListClasses.heading": [
     {
       "type": 0,
       "value": "Class Manager"
+    }
+  ],
+  "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
     }
   ],
   "ListLessons.header": [
@@ -1287,6 +1287,12 @@
     {
       "type": 0,
       "value": "Not Started"
+    }
+  ],
+  "PublicBadge.public": [
+    {
+      "type": 0,
+      "value": "Public"
     }
   ],
   "SessionActions.copySessionLink": [
@@ -1795,6 +1801,12 @@
       "value": "). Please report this issue."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "The task is now in use by one or more classes and can no longer be modified."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -1847,6 +1859,30 @@
     {
       "type": 0,
       "value": "Description"
+    }
+  ],
+  "TaskForm.isPublic": [
+    {
+      "type": 0,
+      "value": "This task is public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, make it public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Make this task public?"
     }
   ],
   "TaskForm.referenceSolutionsLengthValidation": [
@@ -2285,6 +2321,12 @@
       "value": "Title"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Cannot delete task because it is currently in use."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2321,10 +2363,46 @@
       "value": "There are no tasks yet. Let's create some!"
     }
   ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully deleted the task"
+    }
+  ],
   "TaskTable.viewDetails": [
     {
       "type": 0,
       "value": "View Task Details"
+    }
+  ],
+  "TaskVisibilityFilter.allTasks": [
+    {
+      "type": 0,
+      "value": "All Tasks"
+    }
+  ],
+  "TaskVisibilityFilter.filterLabel": [
+    {
+      "type": 0,
+      "value": "Filter by visibility"
+    }
+  ],
+  "TaskVisibilityFilter.privateOnly": [
+    {
+      "type": 0,
+      "value": "Private Only"
+    }
+  ],
+  "TaskVisibilityFilter.publicOnly": [
+    {
+      "type": 0,
+      "value": "Public Only"
     }
   ],
   "TestCriterionFilterForm.count": [
@@ -2733,12 +2811,6 @@
     {
       "type": 0,
       "value": "Task imported successfully"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Task loaded successfully"
     }
   ],
   "forms.arrayLength": [
