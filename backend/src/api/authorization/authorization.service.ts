@@ -69,6 +69,22 @@ export class AuthorizationService {
     return task !== null;
   }
 
+  async canListTasksOfTeacher(
+    authenticatedUser: User,
+    teacherId?: number,
+  ): Promise<boolean> {
+    if (authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    // teachers can only list their own classes
+    return (
+      authenticatedUser.type === UserType.TEACHER &&
+      teacherId !== undefined &&
+      authenticatedUser.id === teacherId
+    );
+  }
+
   async canUpdateTask(
     authenticatedUser: User,
     taskId: number,

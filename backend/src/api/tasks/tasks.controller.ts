@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   StreamableFile,
   UploadedFiles,
   UseInterceptors,
@@ -23,6 +24,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -31,7 +33,7 @@ import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { NonUserRoles, Roles } from "../authentication/role.decorator";
+import { Roles } from "../authentication/role.decorator";
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -112,12 +114,27 @@ export class TasksController {
   }
 
   @Get()
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({ name: "teacherId", required: false, type: Number })
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
-  async findAll(): Promise<ExistingTaskDto[]> {
+  async findAll(
+    @AuthenticatedUser() user: User,
+    @Query("teacherId", new ParseIntPipe({ optional: true }))
+    teacherId?: number,
+  ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
+    const isAuthorized = await this.authorizationService.canListTasksOfTeacher(
+      user,
+      teacherId,
+    );
 
-    const tasks = await this.tasksService.findManyWithInUseStatus();
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    const tasks = await this.tasksService.findManyWithInUseStatus({
+      where: teacherId ? { creatorId: teacherId } : undefined,
+    });
     return tasks.map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 

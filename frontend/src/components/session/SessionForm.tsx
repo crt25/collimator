@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor } from "react-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +10,8 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { UserRole } from "@/types/user/user-role";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";

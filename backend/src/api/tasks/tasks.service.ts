@@ -100,33 +100,31 @@ export class TasksService {
     });
   }
 
-  findManyWithInUseStatus(): Promise<
-    (TaskWithoutData & { isInUse: boolean })[]
-  > {
-    return this.prisma.task
-      .findMany({
-        omit: omitData,
-        include: {
-          sessions: {
-            where: {
-              session: {
-                OR: [
-                  { anonymousStudents: { some: {} } },
-                  { class: { students: { some: {} } } },
-                ],
-              },
+  async findManyWithInUseStatus(
+    args?: Prisma.TaskFindManyArgs,
+  ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
+    const tasks = await this.prisma.task.findMany({
+      ...args,
+      omit: omitData,
+      include: {
+        sessions: {
+          where: {
+            session: {
+              OR: [
+                { anonymousStudents: { some: {} } },
+                { class: { students: { some: {} } } },
+              ],
             },
-            take: 1,
-            select: { taskId: true },
           },
+          take: 1,
+          select: { taskId: true },
         },
-      })
-      .then((tasks) =>
-        tasks.map(({ sessions, ...task }) => ({
-          ...task,
-          isInUse: sessions.length > 0,
-        })),
-      );
+      },
+    });
+    return tasks.map(({ sessions, ...task }) => ({
+      ...task,
+      isInUse: sessions.length > 0,
+    }));
   }
 
   async create(
