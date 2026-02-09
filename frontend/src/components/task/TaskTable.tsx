@@ -15,7 +15,6 @@ import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
 import { ConflictError } from "@/api/fetch";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import { UserRole } from "@/types/user/user-role";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
