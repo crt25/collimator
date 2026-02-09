@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Alert, Container, Icon } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
-import { LuLock } from "react-icons/lu";
+import { LuEye, LuLock } from "react-icons/lu";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import { useRevalidateTask } from "@/api/collimator/hooks/tasks/useRevalidateTask";
@@ -37,6 +38,15 @@ const messages = defineMessages({
     defaultMessage:
       "This task is currently in active use by one or more classes and cannot be modified or deleted.",
   },
+  taskReadOnlyTitle: {
+    id: "EditTask.taskReadOnlyTitle",
+    defaultMessage: "View only",
+  },
+  taskReadOnlyDescription: {
+    id: "EditTask.taskReadOnlyDescription",
+    defaultMessage:
+      "You are viewing a public task created by another user. Only the creator can edit this task.",
+  },
 });
 
 const EditTask = () => {
@@ -45,6 +55,7 @@ const EditTask = () => {
     taskId?: string;
   };
 
+  const authContext = useContext(AuthenticationContext);
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
@@ -121,27 +132,41 @@ const EditTask = () => {
               (s) => s.isInitial,
             );
             const isLocked = task.isInUse;
+            const isCreator =
+              authContext.role !== undefined &&
+              "userId" in authContext &&
+              authContext.userId === task.creatorId;
 
             return (
               <>
                 <PageHeading
-                  actions={!isLocked && <TaskActions taskId={task?.id} />}
+                  actions={
+                    !isLocked && isCreator && <TaskActions taskId={task?.id} />
+                  }
                   description={task.description}
                 >
                   {task.title}
                 </PageHeading>
                 <TaskNavigation taskId={task?.id} />
-                {isLocked && (
+                {(isLocked || !isCreator) && (
                   <Alert.Root status="info" mb={4}>
                     <Alert.Indicator>
-                      <Icon as={LuLock} />
+                      <Icon as={isLocked ? LuLock : LuEye} />
                     </Alert.Indicator>
                     <Alert.Content>
                       <Alert.Title>
-                        <FormattedMessage {...messages.taskLockedTitle} />
+                        <FormattedMessage
+                          {...(isLocked
+                            ? messages.taskLockedTitle
+                            : messages.taskReadOnlyTitle)}
+                        />
                       </Alert.Title>
                       <Alert.Description>
-                        <FormattedMessage {...messages.taskLockedDescription} />
+                        <FormattedMessage
+                          {...(isLocked
+                            ? messages.taskLockedDescription
+                            : messages.taskReadOnlyDescription)}
+                        />
                       </Alert.Description>
                     </Alert.Content>
                   </Alert.Root>
@@ -159,7 +184,7 @@ const EditTask = () => {
                   submitMessage={messages.submit}
                   onSubmit={onSubmit}
                   onConflictError={handleConflictError}
-                  disabled={isLocked}
+                  disabled={isLocked || !isCreator}
                 />
               </>
             );

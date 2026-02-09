@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   defineMessages,
   FormattedMessage,
@@ -11,6 +18,8 @@ import * as yup from "yup";
 import styled from "@emotion/styled";
 import { Submission } from "iframe-rpc-react/src";
 import { Box, Field, Grid, GridItem } from "@chakra-ui/react";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { UserRole } from "@/types/user/user-role";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
@@ -26,6 +35,7 @@ import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
 import Select from "../form/Select";
+import Checkbox from "../form/Checkbox";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
 import { EditedBadge } from "../EditedBadge";
@@ -86,6 +96,10 @@ const messages = defineMessages({
     defaultMessage:
       "The task is now in use by one or more classes and can no longer be modified.",
   },
+  isPublicLabel: {
+    id: "TaskForm.isPublic",
+    defaultMessage: "This task is public",
+  },
 });
 
 type TaskFormValues = {
@@ -95,6 +109,7 @@ type TaskFormValues = {
   taskFile: Blob;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  isPublic: boolean;
 };
 
 export type TaskFormSubmission = {
@@ -104,12 +119,14 @@ export type TaskFormSubmission = {
   taskFile: Blob;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  isPublic: boolean;
 };
 
 const getYupSchema = (intl: IntlShape) => ({
   title: yup.string().required(),
   description: yup.string().defined(),
   type: yup.string().oneOf(Object.values(TaskType)).required(),
+  isPublic: yup.boolean().defined(),
   taskFile: yup
     .mixed<Blob>()
     .test(
@@ -171,6 +188,8 @@ const TaskForm = ({
   disabled?: boolean;
 }) => {
   const intl = useIntl();
+  const authenticationContext = useContext(AuthenticationContext);
+  const isAdmin = authenticationContext.role === UserRole.admin;
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
   const cannotNavigate = useRef(false);
@@ -182,6 +201,7 @@ const TaskForm = ({
     taskFile: Blob;
     initialSolution: UpdateReferenceSolutionDto | null;
     initialSolutionFile: Blob | null;
+    isPublic: boolean;
   }>;
 
   const resolver = useYupResolver(schema);
@@ -191,6 +211,7 @@ const TaskForm = ({
       type: TaskType.SCRATCH,
       title: "",
       description: "",
+      isPublic: false,
       ...initialValues,
     }),
     [initialValues],
@@ -239,6 +260,7 @@ const TaskForm = ({
           taskFile: data.taskFile,
           initialSolution: data.initialSolution,
           initialSolutionFile: data.initialSolutionFile,
+          isPublic: data.isPublic,
         } satisfies TaskFormSubmission);
       })(e)
         .then(() => {
@@ -307,6 +329,17 @@ const TaskForm = ({
               }
               disabled={disabled}
             />
+
+            {isAdmin && (
+              <Checkbox
+                name="isPublic"
+                control={control}
+                label={messages.isPublicLabel}
+                showEditedBadge={showEditedBadges}
+                data-testid="isPublic"
+                disabled={disabled}
+              />
+            )}
 
             <Field.Root
               invalid={

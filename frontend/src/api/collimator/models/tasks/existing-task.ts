@@ -6,6 +6,8 @@ export class ExistingTask {
   readonly title: string;
   readonly description: string;
   readonly type: TaskType;
+  readonly creatorId: number;
+  readonly isPublic: boolean;
   readonly isInUse: boolean;
 
   protected constructor({
@@ -13,12 +15,16 @@ export class ExistingTask {
     title,
     description,
     type,
+    creatorId,
+    isPublic,
     isInUse,
   }: ClassProperties<ExistingTask>) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.type = type;
+    this.creatorId = creatorId;
+    this.isPublic = isPublic;
     this.isInUse = isInUse;
   }
 
@@ -28,6 +34,8 @@ export class ExistingTask {
       this.title === other.title &&
       this.description === other.description &&
       this.type === other.type &&
+      this.creatorId === other.creatorId &&
+      this.isPublic === other.isPublic &&
       this.isInUse === other.isInUse
     );
   }
