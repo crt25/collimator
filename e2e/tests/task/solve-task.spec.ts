@@ -1,135 +1,119 @@
-import { expect, jsonResponse, test } from "../../helpers";
+import { expect, test } from "../../helpers";
 import { useAdminUser } from "../../authentication-helpers";
 import { SolveTaskPageModel } from "../sessions/solve-task-page-model";
-import { routeDummyApp } from "./helpers";
-import { getClassesControllerFindOneV0Url } from "@/api/collimator/generated/endpoints/classes/classes";
-import { getClassesControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/classes/classes.msw";
-import {
-  getSessionsControllerFindOneV0ResponseMock,
-  getSessionsControllerGetSessionProgressV0ResponseMock,
-} from "@/api/collimator/generated/endpoints/sessions/sessions.msw";
-import {
-  getSessionsControllerFindOneV0Url,
-  getSessionsControllerGetSessionProgressV0Url,
-  getSessionsControllerGetSessionSolutionsV0Url,
-} from "@/api/collimator/generated/endpoints/sessions/sessions";
-import {
-  getTasksControllerDownloadOneV0Url,
-  getTasksControllerFindOneV0Url,
-} from "@/api/collimator/generated/endpoints/tasks/tasks";
-import { getTasksControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/tasks/tasks.msw";
+import { adminUser } from "../../setup/seeding/user";
+import { createClass } from "../classes/class-management";
+import { createTask } from "../task/task-management";
+import { SessionListPageModel } from "../sessions/session-list-page-model";
+import { createSession } from "../sessions/session-management";
+import { createAnonymousSubmission } from "../sessions/submission-management";
+import checkXPositionWithAssertion from "../sessions/tasks/check-x-position-with-assertion";
+import { getTasksControllerDownloadOneV0Url } from "@/api/collimator/generated/endpoints/tasks/tasks";
+import { getSessionsControllerGetSessionTaskSolveV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
 
-const taskBinary = new Blob(['{"existing": "task"}'], {
-  type: "application/json",
-});
+const newClassName = "solve task test class";
+let classId: number = -1;
 
-test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
-  test.beforeEach(async ({ context, page, baseURL, apiURL, scratchURL }) => {
+const task = checkXPositionWithAssertion;
+
+const newSessionName = "solve task test session";
+let sessionId: number = -1;
+let taskId: number = -1;
+let sessionLink = "";
+let page: SolveTaskPageModel;
+
+test.describe.only("/session/[sessionId]/task/[taskId]/solve", () => {
+  test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
+  });
 
-    await page.route(
-      `${apiURL}${getClassesControllerFindOneV0Url(2)}`,
-      (route) =>
-        route.fulfill({
-          ...jsonResponse,
-          body: JSON.stringify(
-            getClassesControllerFindOneV0ResponseMock({ id: 2 }),
-          ),
-        }),
-    );
+  test("preparation", async ({ page, baseURL, browser }) => {
+    classId = await createClass(baseURL!, page, {
+      name: newClassName,
+      teacherId: adminUser.id,
+    }).then((r) => r.id);
 
-    const sessionResponse = getSessionsControllerFindOneV0ResponseMock({
-      id: 3,
+    taskId = await createTask(baseURL!, page, {
+      title: "Solve Task Test",
+      description: "A description.",
+      template: task,
+    }).then((r) => r.id);
+
+    const { id } = await createSession(baseURL!, page, {
+      classId: classId,
+      name: newSessionName,
+      description: "A description.",
+      taskIds: [taskId],
+      isAnonymous: true,
     });
 
-    await page.route(
-      `${apiURL}${getSessionsControllerFindOneV0Url(2, 3)}`,
-      (route) =>
-        route.fulfill({
-          ...jsonResponse,
-          body: JSON.stringify({
-            ...sessionResponse,
-            class: {
-              ...sessionResponse.class,
-              id: 2,
-            },
+    sessionId = id;
+
+    await page.goto(`${baseURL}/class/${classId}/session`);
+
+    const sessionList = await SessionListPageModel.create(page);
+    sessionLink = await sessionList.getSessionLink(sessionId);
+
+    for (const solution of task.solutions.correct.slice(0, 2)) {
+      await createAnonymousSubmission(browser, sessionLink, task, solution);
+    }
+  });
+
+  test.describe("tests", () => {
+    test.beforeEach(async ({ page, baseURL, apiURL }) => {
+      const taskBuffer = await task.template();
+
+      await page.route(
+        `${apiURL}${getTasksControllerDownloadOneV0Url(taskId)}`,
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: "application/x.scratch.sb3",
+            body: taskBuffer,
+          });
+        },
+      );
+
+      await page.goto(
+        `${baseURL}/class/${classId}/session/${sessionId}/task/${taskId}/solve`,
+      );
+      await page.waitForSelector("#__next");
+    });
+
+    test("shows an iframe", async ({ page }) => {
+      expect(page.locator("iframe")).toHaveCount(1);
+    });
+
+    test("can open session menu", async ({ page: pwPage }) => {
+      page = SolveTaskPageModel.create(pwPage);
+      await page.waitForTaskLoad();
+
+      expect(page.getSessionName()).toHaveCount(0);
+
+      await page.openSessionMenu();
+      await page.closeSessionMenu();
+      expect(page.getSessionName()).toHaveCount(0);
+    });
+
+    test("shows error when save fails", async ({ page: pwPage, apiURL }) => {
+      const page = SolveTaskPageModel.create(pwPage);
+
+      await page.waitForTaskLoad();
+
+      await pwPage.route(
+        `${apiURL}${getSessionsControllerGetSessionTaskSolveV0Url(classId, sessionId, taskId)}`,
+        (route) =>
+          route.fulfill({
+            status: 500,
+            contentType: "application/json",
+            body: JSON.stringify({ message: "Internal Server Error" }),
           }),
-        }),
-    );
+      );
 
-    await page.route(`${apiURL}${getTasksControllerFindOneV0Url(5)}`, (route) =>
-      route.fulfill({
-        ...jsonResponse,
-        body: JSON.stringify(
-          getTasksControllerFindOneV0ResponseMock({ id: 5 }),
-        ),
-      }),
-    );
+      page.clickSubmitButton();
 
-    await page.route(
-      `${apiURL}${getTasksControllerDownloadOneV0Url(5)}`,
-      async (route) =>
-        route.fulfill({
-          ...jsonResponse,
-          body: Buffer.from(await taskBinary.arrayBuffer()),
-        }),
-    );
-
-    await routeDummyApp(page, `${scratchURL}/solve`);
-
-    await page.route(
-      `${apiURL}${getSessionsControllerGetSessionProgressV0Url(2, 3)}`,
-      (route) =>
-        route.fulfill({
-          ...jsonResponse,
-          body: JSON.stringify(
-            getSessionsControllerGetSessionProgressV0ResponseMock({
-              id: 3,
-              taskProgress: sessionResponse.tasks.map((task) => ({
-                id: task.id,
-                taskProgress: "unOpened",
-              })),
-            }),
-          ),
-        }),
-    );
-
-    await page.goto(`${baseURL}/class/2/session/3/task/5/solve`);
-    await page.waitForSelector("#__next");
-  });
-
-  test("shows an iframe", async ({ page }) => {
-    expect(page.locator("iframe")).toHaveCount(1);
-  });
-
-  test("can open session menu", async ({ page: pwPage }) => {
-    const page = SolveTaskPageModel.create(pwPage);
-
-    expect(page.getSessionName()).toHaveCount(0);
-
-    await page.openSessionMenu();
-    await page.closeSessionMenu();
-    expect(page.getSessionName()).toHaveCount(0);
-  });
-
-  test("shows error when save fails", async ({ page: pwPage, apiURL }) => {
-    const page = SolveTaskPageModel.create(pwPage);
-
-    await pwPage.route(
-      `${apiURL}${getSessionsControllerGetSessionSolutionsV0Url(2, 3)}`,
-      (route) =>
-        route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          body: JSON.stringify({ message: "Internal Server Error" }),
-        }),
-    );
-
-    await page.waitForTaskLoad();
-
-    await page.submit();
-
-    await expect(page.getSaveErrorMessage()).toBeVisible();
-    await expect(page.getSaveErrorMessage()).toBeDefined();
+      await expect(page.getSaveErrorMessage()).toBeVisible();
+      await expect(page.getSaveErrorMessage()).toBeDefined();
+    });
   });
 });

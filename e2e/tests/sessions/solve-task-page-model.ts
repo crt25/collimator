@@ -77,9 +77,17 @@ export class SolveTaskPageModel {
       "[data-testid='submit-solution-button'] [data-testid='success-icon']",
     );
 
-    await this.page.getByTestId("submit-solution-button").click();
+    this.clickSubmitButton();
 
     return waitForSuccess;
+  }
+
+  getSubmitButton() {
+    return this.page.getByTestId("submit-solution-button");
+  }
+
+  clickSubmitButton() {
+    this.getSubmitButton().click();
   }
 
   static create(page: Page) {
