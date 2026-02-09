@@ -7,7 +7,7 @@ import {
   getClassesControllerFindAllV0Url,
 } from "../../generated/endpoints/classes/classes";
 import { ClassesControllerFindAllV0Params } from "../../generated/models";
-import { ApiResponse, fromDtos, getSwrParamererizedKey } from "../helpers";
+import { ApiResponse, fromDtos, getSwrParametrizedKey } from "../helpers";
 import { ExistingClassWithTeacher } from "../../models/classes/existing-class-with-teacher";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 
@@ -40,7 +40,7 @@ export const useAllClasses = (
 
   return useSWR(
     // use the URL with the params as the first entry in the key for easier invalidation
-    getSwrParamererizedKey(getClassesControllerFindAllV0Url, parameters),
+    getSwrParametrizedKey(getClassesControllerFindAllV0Url, parameters),
     () => fetchAndTransform(authOptions, parameters),
   );
 };

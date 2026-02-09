@@ -32,7 +32,7 @@ export const transformToLazyTableResult = <TData>(
  * @param params The params for the getUrl function.
  * @returns A swr key consisting of two strings.
  */
-export const getSwrParamererizedKey = <TParams>(
+export const getSwrParametrizedKey = <TParams>(
   getUrl: (params?: TParams) => string,
   params?: TParams,
 ): [string, string] => [getUrl(), getUrl(params)];
