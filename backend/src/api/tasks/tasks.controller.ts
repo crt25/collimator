@@ -303,7 +303,6 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
