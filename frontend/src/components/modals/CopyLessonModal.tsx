@@ -170,10 +170,11 @@ const CopyLessonModal = ({
           title: intl.formatMessage(messages.copySuccess),
           action: {
             label: intl.formatMessage(messages.goToLesson),
-            onClick: () =>
+            onClick: () => {
               router.push(
                 `/class/${targetClassId}/session/${newSession.id}/detail`,
-              ),
+              );
+            },
           },
           closable: true,
         });
