@@ -11,6 +11,7 @@ import {
 import {
   getSessionsControllerFindOneV0Url,
   getSessionsControllerGetSessionProgressV0Url,
+  getSessionsControllerGetSessionSolutionsV0Url,
 } from "@/api/collimator/generated/endpoints/sessions/sessions";
 import {
   getTasksControllerDownloadOneV0Url,
@@ -115,7 +116,7 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
     const page = SolveTaskPageModel.create(pwPage);
 
     await pwPage.route(
-      `${apiURL}/classes/2/sessions/3/tasks/5/solutions`,
+      `${apiURL}${getSessionsControllerGetSessionSolutionsV0Url(2, 3)}`,
       (route) =>
         route.fulfill({
           status: 500,
