@@ -98,6 +98,11 @@ export class TasksController {
       );
     }
 
+    // Only admins can create public tasks
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can create public tasks");
+    }
+
     const task = await this.tasksService.create(
       {
         ...rest,
@@ -241,6 +246,11 @@ export class TasksController {
       throw new BadRequestException(
         "The number of reference solutions must match the number of files",
       );
+    }
+
+    // Only admins can make tasks public
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can make tasks public");
     }
 
     try {
