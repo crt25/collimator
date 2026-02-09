@@ -77,9 +77,17 @@ export class SolveTaskPageModel {
       "[data-testid='submit-solution-button'] [data-testid='success-icon']",
     );
 
-    await this.page.getByTestId("submit-solution-button").click();
+    await this.clickSubmitButton();
 
     return waitForSuccess;
+  }
+
+  getSubmitButton() {
+    return this.page.getByTestId("submit-solution-button");
+  }
+
+  async clickSubmitButton() {
+    await this.getSubmitButton().click();
   }
 
   static create(page: Page) {
@@ -113,5 +121,9 @@ export class SolveTaskPageModel {
 
   getSessionName() {
     return this.page.getByTestId("session-name");
+  }
+
+  getSaveErrorMessage() {
+    return this.page.getByTestId("save-error-message");
   }
 }
