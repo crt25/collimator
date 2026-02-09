@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { Container } from "@chakra-ui/react";
-import { defineMessages } from "react-intl";
+import { useCallback, useState } from "react";
+import { Alert, Container, Icon } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { LuLock } from "react-icons/lu";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
+import { useRevalidateTask } from "@/api/collimator/hooks/tasks/useRevalidateTask";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/header/Header";
 import MultiSwrContent from "@/components/MultiSwrContent";
@@ -26,6 +28,15 @@ const messages = defineMessages({
     id: "EditTask.submit",
     defaultMessage: "Save Task",
   },
+  taskLockedTitle: {
+    id: "EditTask.taskLockedTitle",
+    defaultMessage: "Task is locked",
+  },
+  taskLockedDescription: {
+    id: "EditTask.taskLockedDescription",
+    defaultMessage:
+      "This task is currently in active use by one or more classes and cannot be modified or deleted.",
+  },
 });
 
 const EditTask = () => {
@@ -37,6 +48,18 @@ const EditTask = () => {
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
+  const revalidateTask = useRevalidateTask();
+
+  const [formKey, setFormKey] = useState(0);
+
+  const currentTaskId = task.data?.id;
+
+  const handleConflictError = useCallback(() => {
+    if (currentTaskId !== undefined) {
+      revalidateTask(currentTaskId);
+    }
+    setFormKey((prev) => prev + 1);
+  }, [currentTaskId, revalidateTask]);
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
@@ -97,17 +120,36 @@ const EditTask = () => {
             const initialSolution = task.referenceSolutions.find(
               (s) => s.isInitial,
             );
+            const isLocked = task.isInUse;
 
             return (
               <>
                 <PageHeading
-                  actions={<TaskActions taskId={task?.id} />}
+                  actions={!isLocked && <TaskActions taskId={task?.id} />}
                   description={task.description}
                 >
                   {task.title}
                 </PageHeading>
                 <TaskNavigation taskId={task?.id} />
+                {isLocked && (
+                  <Alert.Root status="info" mb={4}>
+                    <Alert.Indicator>
+                      <Icon as={LuLock} />
+                    </Alert.Indicator>
+                    <Alert.Content>
+                      <Alert.Title>
+                        <FormattedMessage {...messages.taskLockedTitle} />
+                      </Alert.Title>
+                      <Alert.Description>
+                        <FormattedMessage {...messages.taskLockedDescription} />
+                      </Alert.Description>
+                    </Alert.Content>
+                  </Alert.Root>
+                )}
+                {/* key={formKey} forces React to remount TaskForm when formKey changes,
+                    resetting all form state to initialValues after a conflict error */}
                 <TaskForm
+                  key={formKey}
                   initialValues={{
                     ...task,
                     taskFile,
@@ -116,6 +158,8 @@ const EditTask = () => {
                   }}
                   submitMessage={messages.submit}
                   onSubmit={onSubmit}
+                  onConflictError={handleConflictError}
+                  disabled={isLocked}
                 />
               </>
             );

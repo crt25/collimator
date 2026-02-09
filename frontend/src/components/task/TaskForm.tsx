@@ -20,6 +20,7 @@ import {
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
+import { ConflictError } from "@/api/fetch";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
@@ -79,6 +80,11 @@ const messages = defineMessages({
   saveError: {
     id: "TaskForm.SaveError",
     defaultMessage: "An error occurred while saving the task. Try again later.",
+  },
+  saveConflictError: {
+    id: "TaskForm.SaveConflictError",
+    defaultMessage:
+      "The task is now in use by one or more classes and can no longer be modified.",
   },
 });
 
@@ -155,10 +161,14 @@ const TaskForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  onConflictError,
+  disabled = false,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormValues>;
   onSubmit: (data: TaskFormSubmission) => Promise<void>;
+  onConflictError?: () => void;
+  disabled?: boolean;
 }) => {
   const intl = useIntl();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
@@ -248,13 +258,21 @@ const TaskForm = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
 
-          toaster.error({
-            title: intl.formatMessage(messages.saveError),
-            closable: true,
-          });
+          if (err instanceof ConflictError) {
+            toaster.error({
+              title: intl.formatMessage(messages.saveConflictError),
+              closable: true,
+            });
+            onConflictError?.();
+          } else {
+            toaster.error({
+              title: intl.formatMessage(messages.saveError),
+              closable: true,
+            });
+          }
         });
     },
-    [handleSubmit, onSubmit, reset, intl],
+    [handleSubmit, onSubmit, reset, intl, onConflictError],
   );
 
   const taskFile: Blob | undefined | null = watch("taskFile");
@@ -277,6 +295,7 @@ const TaskForm = ({
               labelBadge={
                 showEditedBadges && dirtyFields.title && <EditedBadge />
               }
+              disabled={disabled}
             />
             <TextArea
               label={messages.description}
@@ -286,6 +305,7 @@ const TaskForm = ({
               labelBadge={
                 showEditedBadges && dirtyFields.description && <EditedBadge />
               }
+              disabled={disabled}
             />
 
             <Field.Root
@@ -299,6 +319,7 @@ const TaskForm = ({
                 data-testid="edit-task-button"
                 type="button"
                 onClick={() => setShowEditTaskModal(true)}
+                disabled={disabled}
               >
                 {taskFile ? (
                   <FormattedMessage
@@ -333,18 +354,21 @@ const TaskForm = ({
                   label: getTaskTypeMessage(taskType as TaskType),
                 }))}
                 data-testid="type"
+                disabled={disabled}
               >
                 <Field.ErrorText>{errors.type?.message}</Field.ErrorText>
               </Select>
             </Field.Root>
           </GridItem>
         </Grid>
-        <Box display="flex" justifyContent="flex-end">
-          <SubmitFormButton
-            label={submitMessage}
-            disabled={!isDirty || !isValid}
-          />
-        </Box>
+        {!disabled && (
+          <Box display="flex" justifyContent="flex-end">
+            <SubmitFormButton
+              label={submitMessage}
+              disabled={!isDirty || !isValid}
+            />
+          </Box>
+        )}
         <EditTaskModal
           isShown={showEditTaskModal}
           setIsShown={setShowEditTaskModal}
