@@ -35,7 +35,7 @@ test.describe("session analysis", () => {
     await useAdminUser(context);
   });
 
-  test.beforeAll("preparation", async ({ page, baseURL, browser }) => {
+  test("preparation", async ({ page, baseURL, browser }) => {
     classId = await createClass(baseURL!, page, {
       name: newClassName,
       teacherId: adminUser.id,
