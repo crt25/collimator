@@ -10,10 +10,7 @@ export const useRevalidateUser = (): ((
   const { mutate } = useSWRConfig();
 
   return useCallback(
-    (
-      userId: number,
-      newUser?: GetUserReturnType,
-    ) => {
+    (userId: number, newUser?: GetUserReturnType) => {
       mutate(getUsersControllerFindOneV0Url(userId, {}), newUser);
     },
     [mutate],
