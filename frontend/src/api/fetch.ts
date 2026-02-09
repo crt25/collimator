@@ -36,7 +36,15 @@ export const fetchApi = async <T>(
   }
 
   if (response.status === 409) {
-    throw new ConflictError(`Conflict: ${response.statusText}`);
+    // Try to extract the error message from the response body
+    try {
+      const errorBody = await response.json();
+      const message = errorBody?.message || response.statusText;
+      throw new ConflictError(message);
+    } catch (e) {
+      if (e instanceof ConflictError) throw e;
+      throw new ConflictError(response.statusText);
+    }
   }
 
   if (response.status >= 400) {
