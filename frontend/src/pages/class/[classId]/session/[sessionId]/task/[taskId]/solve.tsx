@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
-import { Box, Breadcrumb, Text } from "@chakra-ui/react";
+import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -103,6 +103,8 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
+  const [saveError, setSaveError] = useState(false);
+
   const saveSubmission = useCallback(
     async (
       classId: number,
@@ -162,23 +164,30 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task) {
-      return;
+    try {
+      if (!session || !task) {
+        return;
+      }
+
+      const response = await embeddedApp.current.sendRequest(
+        "getSubmission",
+        undefined,
+      );
+
+      await saveSubmission(
+        session.klass.id,
+        session.id,
+        task.id,
+        response.result,
+      );
+
+      setSaveError(false);
+    } catch (error) {
+      console.error("Failed to submit solution with", error);
+      setSaveError(true);
+    } finally {
+      isScratchMutexAvailable.current = true;
     }
-
-    const response = await embeddedApp.current.sendRequest(
-      "getSubmission",
-      undefined,
-    );
-
-    await saveSubmission(
-      session.klass.id,
-      session.id,
-      task.id,
-      response.result,
-    );
-
-    isScratchMutexAvailable.current = true;
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
@@ -241,8 +250,10 @@ const SolveTaskPage = () => {
           file: solutionBlob,
           tests: [],
         });
+        setSaveError(false);
       } catch (error) {
         console.error("Failed to receive task solution with", error);
+        setSaveError(true);
       }
     },
     [session, task, createSolution],
@@ -325,16 +336,46 @@ const SolveTaskPage = () => {
           </Box>
         )
       }
-      belowHeader={
-        task && (
-          <Text marginBottom="md" marginX="lg">
-            {task.description}
-          </Text>
-        )
-      }
       headerActions={
         <>
           <li></li>
+
+          {saveError && (
+            <Alert.Root
+              status="error"
+              data-testid="save-error-message"
+              size="sm"
+            >
+              <Alert.Indicator />
+              <Alert.Title>
+                <FormattedMessage
+                  data-testid="save-error-message"
+                  id="SolveTask.saveError"
+                  defaultMessage="You are currently experiencing network issues, saving may not work."
+                />
+              </Alert.Title>
+            </Alert.Root>
+          )}
+          {!disableImportExport && (
+            <>
+              <li>
+                <Button onClick={onExport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.export"
+                    defaultMessage="Export"
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button onClick={onImport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.import"
+                    defaultMessage="Import"
+                  />
+                </Button>
+              </li>
+            </>
+          )}
           <li>
             <Button
               onClick={onSubmitSolution}
@@ -346,27 +387,14 @@ const SolveTaskPage = () => {
               />
             </Button>
           </li>
-          {!disableImportExport && (
-            <>
-              <li>
-                <Button onClick={onExport}>
-                  <FormattedMessage
-                    id="SolveTask.export"
-                    defaultMessage="Export"
-                  />
-                </Button>
-              </li>
-              <li>
-                <Button onClick={onImport}>
-                  <FormattedMessage
-                    id="SolveTask.import"
-                    defaultMessage="Import"
-                  />
-                </Button>
-              </li>
-            </>
-          )}
         </>
+      }
+      belowHeader={
+        task && (
+          <Text marginBottom="md" marginX="lg">
+            {task.description}
+          </Text>
+        )
       }
     >
       <MultiSwrContent
@@ -387,6 +415,7 @@ const SolveTaskPage = () => {
               onAppAvailable={onAppAvailable}
               onReceiveSubmission={onReceiveSubmission}
               onReceiveTaskSolution={onReceiveTaskSolution}
+              onTrackStudentActivityFailure={setSaveError}
             />
           ) : (
             <FormattedMessage
