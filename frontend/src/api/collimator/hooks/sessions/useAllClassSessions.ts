@@ -25,7 +25,9 @@ export const useAllClassSessions = (
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    classId !== null ? getSessionsControllerFindAllV0Url(classId) : null,
+    classId !== null
+      ? getSessionsControllerFindAllV0Url(classId)
+      : "useAllClassSessions:null",
     () =>
       classId !== null
         ? fetchByClassIdAndTransform(authOptions, classId, params)

@@ -468,13 +468,13 @@
     "message": "Copier"
   },
   "CopyLessonModal.copyError": {
-    "message": "Échec de la copie de la leçon. Veuillez réessayer."
+    "message": "La copie de la leçon a échoué. Veuillez réessayer."
   },
   "CopyLessonModal.copySuccess": {
     "message": "Leçon copiée avec succès"
   },
   "CopyLessonModal.description": {
-    "message": "Sélectionnez une leçon existante à copier depuis une autre classe."
+    "message": "Sélectionnez une leçon à copier depuis une autre classe."
   },
   "CopyLessonModal.goToLesson": {
     "message": "Aller à la leçon"

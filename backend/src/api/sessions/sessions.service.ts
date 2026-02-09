@@ -182,7 +182,7 @@ export class SessionsService {
         where: { id: sourceSessionId },
         include: {
           tasks: {
-            orderBy: { index: "asc" as Prisma.SortOrder },
+            orderBy: { index: "asc" },
             select: {
               taskId: true,
               index: true,
