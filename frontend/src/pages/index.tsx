@@ -1,13 +1,10 @@
 import { defineMessages, FormattedMessage } from "react-intl";
-import { Grid, GridItem, Card, Container, Link } from "@chakra-ui/react";
+import { Grid, GridItem, Card, Link } from "@chakra-ui/react";
 import { useContext } from "react";
-import Header from "@/components/header/Header";
-import PageHeading from "@/components/PageHeading";
 import { TextComponent as Text } from "@/components/Text";
 import { UserRole } from "@/types/user/user-role";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import PageFooter from "@/components/PageFooter";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   teacherHeader: {
@@ -52,16 +49,60 @@ const Home = () => {
     : messages.teacherDescription;
 
   return (
-    <MaxScreenHeight>
-      <Header title={header} />
-      <Container>
-        <PageHeading description={<FormattedMessage {...description} />}>
-          <FormattedMessage {...header} />
-        </PageHeading>
+    <PageLayout
+      title={header}
+      heading={header}
+      description={<FormattedMessage {...description} />}
+    >
+      <Grid marginBottom="lg" templateColumns="repeat(12, 1fr)" gap="md">
+        <GridItem colSpan={{ base: 12, lg: 6 }}>
+          <Link display="block" href="/class">
+            <Card.Root variant="dashboard" size="lg">
+              <Card.Body>
+                <Text
+                  marginTop="md"
+                  fontSize="3xl"
+                  fontWeight="semiBold"
+                  wordBreak="keep-all"
+                  whiteSpace="nowrap"
+                >
+                  <FormattedMessage
+                    id="Home.classes"
+                    defaultMessage="Classes"
+                  />
+                </Text>
+                <Text>
+                  <FormattedMessage {...messages.classesDescription} />
+                </Text>
+              </Card.Body>
+            </Card.Root>
+          </Link>
+        </GridItem>
 
-        <Grid marginBottom="lg" templateColumns="repeat(12, 1fr)" gap="md">
+        <GridItem colSpan={{ base: 12, lg: 6 }}>
+          <Link display="block" href="/task">
+            <Card.Root variant="dashboard" size="lg">
+              <Card.Body>
+                <Text
+                  marginTop="md"
+                  fontSize="3xl"
+                  fontWeight="semiBold"
+                  wordBreak="keep-all"
+                  whiteSpace="nowrap"
+                >
+                  <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
+                </Text>
+                <Text>
+                  <FormattedMessage {...messages.tasksDescription} />
+                </Text>
+              </Card.Body>
+            </Card.Root>
+          </Link>
+        </GridItem>
+
+        {isAdmin && (
           <GridItem colSpan={{ base: 12, lg: 6 }}>
-            <Link display="block" href="/class">
+            <Link display="block" href="/user">
               <Card.Root variant="dashboard" size="lg">
                 <Card.Body>
                   <Text
@@ -71,69 +112,18 @@ const Home = () => {
                     wordBreak="keep-all"
                     whiteSpace="nowrap"
                   >
-                    <FormattedMessage
-                      id="Home.classes"
-                      defaultMessage="Classes"
-                    />
+                    <FormattedMessage id="Home.users" defaultMessage="Users" />
                   </Text>
                   <Text>
-                    <FormattedMessage {...messages.classesDescription} />
+                    <FormattedMessage {...messages.usersDescription} />
                   </Text>
                 </Card.Body>
               </Card.Root>
             </Link>
           </GridItem>
-
-          <GridItem colSpan={{ base: 12, lg: 6 }}>
-            <Link display="block" href="/task">
-              <Card.Root variant="dashboard" size="lg">
-                <Card.Body>
-                  <Text
-                    marginTop="md"
-                    fontSize="3xl"
-                    fontWeight="semiBold"
-                    wordBreak="keep-all"
-                    whiteSpace="nowrap"
-                  >
-                    <FormattedMessage id="Home.tasks" defaultMessage="Tasks" />
-                  </Text>
-                  <Text>
-                    <FormattedMessage {...messages.tasksDescription} />
-                  </Text>
-                </Card.Body>
-              </Card.Root>
-            </Link>
-          </GridItem>
-
-          {isAdmin && (
-            <GridItem colSpan={{ base: 12, lg: 6 }}>
-              <Link display="block" href="/user">
-                <Card.Root variant="dashboard" size="lg">
-                  <Card.Body>
-                    <Text
-                      marginTop="md"
-                      fontSize="3xl"
-                      fontWeight="semiBold"
-                      wordBreak="keep-all"
-                      whiteSpace="nowrap"
-                    >
-                      <FormattedMessage
-                        id="Home.users"
-                        defaultMessage="Users"
-                      />
-                    </Text>
-                    <Text>
-                      <FormattedMessage {...messages.usersDescription} />
-                    </Text>
-                  </Card.Body>
-                </Card.Root>
-              </Link>
-            </GridItem>
-          )}
-        </Grid>
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+        )}
+      </Grid>
+    </PageLayout>
   );
 };
 
