@@ -89,7 +89,8 @@ export class RoleGuard implements CanActivate {
     const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
       SOFT_DELETE_ROLES,
       [context.getHandler(), context.getClass()],
-    );
+      // fallback to default roles if no roles are specified
+    ) ?? this.defaultAllowedRoles;
 
     const request = context.switchToHttp().getRequest();
     const includeSoftDelete = request.query.includeSoftDelete === "true";
@@ -109,7 +110,7 @@ export class RoleGuard implements CanActivate {
     const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
       SOFT_DELETE_ROLES,
       [context.getHandler(), context.getClass()],
-    );
+    ) ?? this.defaultAllowedRoles;
 
     const request = context.switchToHttp().getRequest();
     const includeSoftDelete = request.query.includeSoftDelete === "true";
