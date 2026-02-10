@@ -7,7 +7,7 @@ import { createTask } from "../task/task-management";
 import { waitUntil } from "../../setup/helpers";
 import { SessionListPageModel } from "./session-list-page-model";
 import { createSession } from "./session-management";
-import checkXPositionWithAssertion from "./tasks/check-x-position-with-assertion";
+import checkXPositionWithAssertion from "./tasks/scratch/check-x-position-with-assertion";
 import { createAnonymousSubmission } from "./submission-management";
 import { SessionProgressPageModel } from "./session-progress-page-model";
 import { SessionAnalysisPageModel } from "./session-analysis-page-model";
