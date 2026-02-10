@@ -224,7 +224,7 @@ describe("ClassesController", () => {
     const result = await controller.findAll(adminUser, teacherId);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
-      where: { teacherId: teacherId, deletedAt: null },
+      where: { teacherId: teacherId, deletedAt: null, teacher: { deletedAt: null }},
       include: {
         teacher: { select: { id: true, name: true, deletedAt: true } },
       },
@@ -254,7 +254,7 @@ describe("ClassesController", () => {
     await controller.findAll(adminUser);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
-      where: { deletedAt: null },
+      where: { deletedAt: null, teacher: { deletedAt: null } },
       include: {
         teacher: { select: { id: true, name: true, deletedAt: true } },
       },
@@ -422,7 +422,7 @@ describe("ClassesController", () => {
     await controller.findAll(adminUser, teacherId);
 
     expect(prismaMock.class.findMany).toHaveBeenCalledWith({
-      where: { teacherId, deletedAt: null },
+      where: { teacherId, deletedAt: null, teacher: { deletedAt: null } },
       include: {
         teacher: { select: { id: true, name: true, deletedAt: true } },
       },

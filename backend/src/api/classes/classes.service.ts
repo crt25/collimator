@@ -57,7 +57,7 @@ export class ClassesService {
       },
       include: {
         teacher: {
-          select: { id: true, name: true },
+          select: { id: true, name: true, deletedAt: true },
         },
       },
     });
