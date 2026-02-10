@@ -50,7 +50,7 @@ export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   @Expose()
   readonly deletedAt!: Date | null;
 
-  static fromQueryResult(data: TaskWithoutData): ExistingTaskDto {
+  static fromQueryResult(data: TaskWithoutDataAndInUse): ExistingTaskDto {
     return plainToInstance(ExistingTaskDto, data, {
       excludeExtraneousValues: true,
     });

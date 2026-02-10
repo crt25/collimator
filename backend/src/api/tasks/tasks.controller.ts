@@ -381,7 +381,7 @@ export class TasksController {
 
     try {
       const deletedTask = await this.tasksService.deleteById(id);
-      return DeletedTaskDto.fromQueryResult(deletedTask);
+      return DeletedTaskDto.fromQueryResult({ ...deletedTask, isInUse: false });
     } catch (error) {
       if (error instanceof TaskInUseError) {
         throw new ConflictException(error.message);
