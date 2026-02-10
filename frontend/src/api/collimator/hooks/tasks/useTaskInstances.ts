@@ -11,7 +11,7 @@ import { ExistingSessionExtended } from "../../models/sessions/existing-session-
 export type GetTasksReturnType = ExistingTask[];
 
 const fetchAndTransform = (options: RequestInit): Promise<GetTasksReturnType> =>
-  tasksControllerFindAllV0(options).then((data) =>
+  tasksControllerFindAllV0({}, options).then((data) =>
     fromDtos(ExistingTask, data),
   );
 

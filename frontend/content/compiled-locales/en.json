@@ -1425,6 +1425,12 @@
       "value": "title"
     }
   ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
+    }
+  ],
   "SessionForm.sharingType.anonymous": [
     {
       "type": 0,
@@ -1897,6 +1903,24 @@
       "value": "The provided file data is invalid"
     }
   ],
+  "TaskForm.changeTypeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, change type"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Change task type"
+    }
+  ],
   "TaskForm.closeConfirmation.body": [
     {
       "type": 0,
@@ -1921,10 +1945,28 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutionsLengthValidation": [
+  "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "The number of reference solutions must match the number of reference solution files"
+      "value": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.destructiveAction.button": [
+    {
+      "type": 0,
+      "value": "Yes, continue"
+    }
+  ],
+  "TaskForm.destructiveAction.title": [
+    {
+      "type": 0,
+      "value": "This action will delete reference solutions"
+    }
+  ],
+  "TaskForm.taskFileRequired": [
+    {
+      "type": 0,
+      "value": "A task file is required before saving."
     }
   ],
   "TaskForm.title": [
@@ -2009,20 +2051,52 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Save Task"
     }
   ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "task bank"
+    }
+  ],
   "TaskInstanceDetails.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Task - "
     },
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "View Task"
     }
   ],
   "TaskInstanceList.title": [
@@ -2408,7 +2482,7 @@
   "TaskTable.successMessage": [
     {
       "type": 0,
-      "value": "Task deleted successfully"
+      "value": "Successfully deleted the task"
     }
   ],
   "TaskTable.viewDetails": [

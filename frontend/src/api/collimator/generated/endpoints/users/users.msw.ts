@@ -34,6 +34,13 @@ export const getUsersControllerCreateV0ResponseMock = (
     null,
   ]),
   publicKeyId: {},
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -61,6 +68,13 @@ export const getUsersControllerFindAllV0ResponseMock = (): ExistingUserDto[] =>
       null,
     ]),
     publicKeyId: {},
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   }));
 
 export const getUsersControllerFindOneV0ResponseMock = (
@@ -81,6 +95,13 @@ export const getUsersControllerFindOneV0ResponseMock = (
     null,
   ]),
   publicKeyId: {},
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -102,6 +123,13 @@ export const getUsersControllerUpdateV0ResponseMock = (
     null,
   ]),
   publicKeyId: {},
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -123,6 +151,13 @@ export const getUsersControllerDeleteV0ResponseMock = (
     null,
   ]),
   publicKeyId: {},
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 

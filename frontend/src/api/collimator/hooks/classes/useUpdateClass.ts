@@ -21,7 +21,7 @@ const fetchAndTransform = (
   id: number,
   updateClassDto: UpdateClassDto,
 ): ReturnType<UpdateClassType> =>
-  classesControllerUpdateV0(id, updateClassDto, options).then(
+  classesControllerUpdateV0(id, updateClassDto, {}, options).then(
     ExistingClass.fromDto,
   );
 

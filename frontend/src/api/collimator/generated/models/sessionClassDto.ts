@@ -11,4 +11,6 @@ export interface SessionClassDto {
   id: number;
   /** The name of the class. */
   name: string;
+  /** @nullable */
+  deletedAt?: string | null;
 }

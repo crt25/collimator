@@ -17,6 +17,8 @@ export interface ExistingSessionExtendedDto {
   title: string;
   description: string;
   isAnonymous: boolean;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The session's status. */
   status: SessionStatus;
   /**

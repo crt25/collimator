@@ -11,4 +11,6 @@ export interface SessionTaskDto {
   id: number;
   /** The title of the task. */
   title: string;
+  /** @nullable */
+  deletedAt?: string | null;
 }

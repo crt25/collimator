@@ -26,6 +26,13 @@ export const getSessionsControllerCreateV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -35,6 +42,13 @@ export const getSessionsControllerCreateV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -61,6 +75,13 @@ export const getSessionsControllerFindAllV0ResponseMock =
       title: faker.string.alpha({ length: { min: 10, max: 20 } }),
       description: faker.string.alpha({ length: { min: 10, max: 20 } }),
       isAnonymous: faker.datatype.boolean(),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
       status: faker.helpers.arrayElement(Object.values(SessionStatus)),
       lesson: {
         ...{
@@ -70,6 +91,13 @@ export const getSessionsControllerFindAllV0ResponseMock =
             fractionDigits: 2,
           }),
           name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+          deletedAt: faker.helpers.arrayElement([
+            faker.helpers.arrayElement([
+              `${faker.date.past().toISOString().split(".")[0]}Z`,
+              null,
+            ]),
+            undefined,
+          ]),
         },
       },
       tasks: Array.from(
@@ -100,6 +128,13 @@ export const getSessionsControllerFindOneV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -109,6 +144,13 @@ export const getSessionsControllerFindOneV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   class: {
@@ -119,6 +161,13 @@ export const getSessionsControllerFindOneV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -131,6 +180,13 @@ export const getSessionsControllerFindOneV0ResponseMock = (
       fractionDigits: 2,
     }),
     title: faker.string.alpha({ length: { min: 10, max: 20 } }),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   })),
   ...overrideResponse,
 });
@@ -143,6 +199,13 @@ export const getSessionsControllerUpdateV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -152,6 +215,13 @@ export const getSessionsControllerUpdateV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -171,6 +241,13 @@ export const getSessionsControllerRemoveV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -180,6 +257,13 @@ export const getSessionsControllerRemoveV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -199,6 +283,13 @@ export const getSessionsControllerStartV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -208,6 +299,13 @@ export const getSessionsControllerStartV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -227,6 +325,13 @@ export const getSessionsControllerPauseV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -236,6 +341,13 @@ export const getSessionsControllerPauseV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
@@ -255,6 +367,13 @@ export const getSessionsControllerFinishV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -264,6 +383,13 @@ export const getSessionsControllerFinishV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(

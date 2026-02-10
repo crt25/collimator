@@ -3,8 +3,8 @@ import { defineMessages } from "react-intl";
 import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import CrtNavigation from "@/components/CrtNavigation";
-import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import PageLayout from "@/components/layout/PageLayout";
+import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 
 const messages = defineMessages({
   title: {
@@ -21,10 +21,26 @@ const CreateTask = () => {
   const createTask = useCreateTask();
   const router = useRouter();
 
+  const returnUrlParam = router.query.returnUrl;
+  const returnUrl =
+    typeof returnUrlParam === "string"
+      ? returnUrlParam
+      : Array.isArray(returnUrlParam)
+        ? returnUrlParam[0]
+        : undefined;
+
+  const isValidReturnUrl = (url: string): boolean =>
+    url.startsWith("/") && !url.startsWith("//");
+
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
+      if (!taskSubmission.taskFile) {
+        return;
+      }
+
       const createdTask = await createTask({
         ...taskSubmission,
+        taskFile: taskSubmission.taskFile,
         referenceSolutions:
           taskSubmission.initialSolution !== null
             ? [taskSubmission.initialSolution]
@@ -34,9 +50,15 @@ const CreateTask = () => {
             ? [taskSubmission.initialSolutionFile]
             : [],
       });
-      router.push(`/task/${createdTask.id}/detail`);
+
+      // Redirect to returnUrl if provided and valid, otherwise to task detail page
+      if (returnUrl && isValidReturnUrl(decodeURIComponent(returnUrl))) {
+        router.push(decodeURIComponent(returnUrl));
+      } else {
+        router.push(`/task/${createdTask.id}/detail`);
+      }
     },
-    [createTask, router],
+    [createTask, router, returnUrl],
   );
 
   return (

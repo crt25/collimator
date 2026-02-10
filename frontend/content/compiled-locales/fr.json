@@ -1596,7 +1596,7 @@
   "ListClasses.heading": [
     {
       "type": 0,
-      "value": "Gestionnaire de classes"
+      "value": "Gestion des classes"
     }
   ],
   "ListClasses.pageDescription": [
@@ -1883,6 +1883,12 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Créer une activité"
     }
   ],
   "SessionForm.sharingType.anonymous": [
@@ -2324,7 +2330,7 @@
   "TaskForm.SaveConflictError": [
     {
       "type": 0,
-      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+      "value": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
     }
   ],
   "TaskForm.SaveError": [
@@ -2357,6 +2363,24 @@
       "value": "Les données du fichier fourni sont invalides"
     }
   ],
+  "TaskForm.changeTypeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, changer le type"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Changer le type de la tâche"
+    }
+  ],
   "TaskForm.closeConfirmation.body": [
     {
       "type": 0,
@@ -2381,10 +2405,28 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutionsLengthValidation": [
+  "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "TaskForm.destructiveAction.button": [
+    {
+      "type": 0,
+      "value": "Oui, continuer"
+    }
+  ],
+  "TaskForm.destructiveAction.title": [
+    {
+      "type": 0,
+      "value": "Cette action supprimera les solutions de référence"
+    }
+  ],
+  "TaskForm.taskFileRequired": [
+    {
+      "type": 0,
+      "value": "Un fichier de tâche est requis avant l’enregistrement."
     }
   ],
   "TaskForm.title": [
@@ -2469,10 +2511,36 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "Cette activité ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "Cette activité ne peut pas être modifiée car elle est déjà utilisée dans une leçon avec des élèves inscrits."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Sauvegarder l'activité"
+    }
+  ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "banque d'activités"
     }
   ],
   "TaskInstanceDetails.title": [
@@ -2483,6 +2551,12 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "Voir l'activité"
     }
   ],
   "TaskInstanceList.title": [
@@ -2820,7 +2894,7 @@
   "TaskTable.conflictErrorMessage": [
     {
       "type": 0,
-      "value": "Impossible de supprimer l'activité car elle est actuellement utilisée."
+      "value": "Impossible de supprimer cette activité car elle est actuellement utilisée."
     }
   ],
   "TaskTable.createTask": [
@@ -2859,6 +2933,7 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
+<<<<<<< HEAD
   "TaskTable.errorMessage": [
     {
       "type": 0,
@@ -2871,6 +2946,21 @@
       "value": "Activité supprimée avec succès"
     }
   ],
+||||||| 1e3e295c
+=======
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "L'activité a été supprimée avec succès"
+    }
+  ],
+>>>>>>> main
   "TaskTable.viewDetails": [
     {
       "type": 0,

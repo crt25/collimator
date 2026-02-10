@@ -13,4 +13,6 @@ export interface ExistingClassWithTeacherDto {
   name: string;
   /** The teacher of the class. */
   teacher: ClassTeacherDto;
+  /** @nullable */
+  deletedAt?: string | null;
 }

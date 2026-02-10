@@ -27,6 +27,13 @@ export const getTasksControllerCreateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -48,6 +55,13 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
       max: undefined,
       fractionDigits: 2,
     }),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   }));
 
 export const getTasksControllerFindOneV0ResponseMock = (
@@ -62,6 +76,13 @@ export const getTasksControllerFindOneV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -77,6 +98,13 @@ export const getTasksControllerUpdateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -92,6 +120,13 @@ export const getTasksControllerRemoveV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -107,6 +142,13 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   referenceSolutions: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -119,6 +161,13 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
     title: faker.string.alpha({ length: { min: 10, max: 20 } }),
     description: faker.string.alpha({ length: { min: 10, max: 20 } }),
     isInitial: faker.datatype.boolean(),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
     mimeType: faker.string.alpha({ length: { min: 10, max: 20 } }),
     solution: faker.string.alpha({ length: { min: 10, max: 20 } }),
     tests: Array.from(
@@ -142,6 +191,13 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
       }),
       referenceSolutionId: {},
       studentSolutionId: {},
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     })),
   })),
   isInUse: faker.datatype.boolean(),
