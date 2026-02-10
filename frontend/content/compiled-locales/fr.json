@@ -2933,21 +2933,7 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
-<<<<<<< HEAD
-  "TaskTable.errorMessage": [
-    {
-      "type": 0,
-      "value": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
-    }
-  ],
-  "TaskTable.successMessage": [
-    {
-      "type": 0,
-      "value": "Activité supprimée avec succès"
-    }
-  ],
-||||||| 1e3e295c
-=======
+
   "TaskTable.errorMessage": [
     {
       "type": 0,
@@ -2960,7 +2946,6 @@
       "value": "L'activité a été supprimée avec succès"
     }
   ],
->>>>>>> main
   "TaskTable.viewDetails": [
     {
       "type": 0,

@@ -17,12 +17,15 @@ const fetchByClassIdAndTransform = (
     fromDtos(ExistingSession, data),
   );
 
+// classId !== null ? getSessionsControllerFindAllV0Url(classId) : null,
+
 export const useAllClassSessions = (
   classId: number,
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getSessionsControllerFindAllV0Url(classId, {}), () =>
-    fetchByClassIdAndTransform(authOptions, classId),
+  return useSWR(
+    classId !== null ? getSessionsControllerFindAllV0Url(classId, {}) : null,
+    () => fetchByClassIdAndTransform(authOptions, classId),
   );
 };

@@ -14,10 +14,12 @@ const copyAndTransform = (
   targetClassId: number,
   sourceSessionId: number,
 ): ReturnType<CopySessionType> =>
-  sessionsControllerCopyV0(targetClassId, { sourceSessionId }, options).then(
-    ExistingSession.fromDto,
-  );
-
+  sessionsControllerCopyV0(
+    targetClassId,
+    { sourceSessionId },
+    { includeSoftDelete: false },
+    options,
+  ).then(ExistingSession.fromDto);
 export const useCopySession = (): CopySessionType => {
   const revalidateList = useRevalidateClassSessionList();
   const authOptions = useAuthenticationOptions();

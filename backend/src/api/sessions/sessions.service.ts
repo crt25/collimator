@@ -204,10 +204,13 @@ export class SessionsService {
   async copy(
     sourceSessionId: SessionId,
     targetClassId: number,
+    includeSoftDelete = false,
   ): Promise<Session> {
     return this.prisma.$transaction(async (tx) => {
       const sourceSession = await tx.session.findUniqueOrThrow({
-        where: { id: sourceSessionId },
+        where: includeSoftDelete
+          ? { id: sourceSessionId }
+          : { id: sourceSessionId, deletedAt: null },
         include: {
           tasks: {
             orderBy: { index: "asc" },

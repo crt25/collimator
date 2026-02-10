@@ -409,6 +409,13 @@ export const getSessionsControllerCopyV0ResponseMock = (
   title: faker.string.alpha({ length: { min: 10, max: 20 } }),
   description: faker.string.alpha({ length: { min: 10, max: 20 } }),
   isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
   lesson: {
     ...{
@@ -418,6 +425,13 @@ export const getSessionsControllerCopyV0ResponseMock = (
         fractionDigits: 2,
       }),
       name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tasks: Array.from(
