@@ -66,9 +66,11 @@ export class SessionsService {
     args?: Prisma.SessionFindManyArgs,
     includeSoftDelete = false,
   ): Promise<Session[]> {
+    const initialWhere = args?.where ?? {};
+
     const whereClause = includeSoftDelete
-      ? args?.where
-      : { ...args?.where, deletedAt: null };
+      ? initialWhere
+      : { ...initialWhere, deletedAt: null };
 
     // construct args separately to avoid typescript deep type comparison issues
     const finalArgs = {
