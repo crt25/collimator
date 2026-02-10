@@ -240,7 +240,8 @@ const TaskForm = ({
 
   // derive if we are in task creation mode from the fact initialValues
   const isTaskCreation = useMemo(
-    () => initialValues?.taskFile === null || initialValues?.taskFile === undefined,
+    () =>
+      initialValues?.taskFile === null || initialValues?.taskFile === undefined,
     [initialValues?.taskFile],
   );
 
