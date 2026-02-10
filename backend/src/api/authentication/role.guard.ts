@@ -29,6 +29,9 @@ export class RoleGuard implements CanActivate {
   // By default we allow only admins and teachers
   protected defaultAllowedRoles: Role[] = [UserType.ADMIN, UserType.TEACHER];
 
+  // By default we allow only admins to soft delete
+  protected defaultSoftDeleteRoles: Role[] = [UserType.ADMIN];
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Get the allowed roles from the metadata
     const allowedRoles =
@@ -90,7 +93,7 @@ export class RoleGuard implements CanActivate {
       SOFT_DELETE_ROLES,
       [context.getHandler(), context.getClass()],
       // fallback to default roles if no roles are specified
-    ) ?? this.defaultAllowedRoles;
+    ) ?? this.defaultSoftDeleteRoles;
 
     const request = context.switchToHttp().getRequest();
     const includeSoftDelete = request.query.includeSoftDelete === "true";
@@ -110,7 +113,7 @@ export class RoleGuard implements CanActivate {
     const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
       SOFT_DELETE_ROLES,
       [context.getHandler(), context.getClass()],
-    ) ?? this.defaultAllowedRoles;
+    ) ?? this.defaultSoftDeleteRoles;
 
     const request = context.switchToHttp().getRequest();
     const includeSoftDelete = request.query.includeSoftDelete === "true";
