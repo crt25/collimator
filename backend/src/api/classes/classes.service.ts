@@ -53,10 +53,11 @@ export class ClassesService {
       where: {
         ...args?.where,
         deletedAt: includeSoftDelete ? undefined : null,
+        teacher: includeSoftDelete ? undefined : { deletedAt: null },
       },
       include: {
         teacher: {
-          select: { id: true, name: true, deletedAt: true },
+          select: { id: true, name: true },
         },
       },
     });

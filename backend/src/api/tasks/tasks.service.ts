@@ -394,16 +394,22 @@ export class TasksService {
       where: {
         taskId: id,
         session: {
+          deletedAt: null,
           OR: [
             {
               anonymousStudents: {
-                some: {},
+                some: {
+                  deletedAt: null,
+                },
               },
             },
             {
               class: {
+                deletedAt: null,
                 students: {
-                  some: {},
+                  some: {
+                    deletedAt: null,
+                  },
                 },
               },
             },

@@ -186,7 +186,13 @@ export class AuthorizationService {
           OR: [
             {
               class: {
-                students: { some: { studentId: authenticatedStudent.id } },
+                deletedAt: null,
+                students: {
+                  some: {
+                    studentId: authenticatedStudent.id,
+                    deletedAt: null
+                  }
+                },
               },
             },
             { isAnonymous: true },
@@ -226,7 +232,7 @@ export class AuthorizationService {
     const session = await this.prisma.session.findUnique({
       where: {
         id: sessionId,
-        class: { teacherId: authenticatedUser.id },
+        class: { teacherId: authenticatedUser.id, deletedAt: null },
         deletedAt: null,
       },
       select: { id: true },
@@ -246,7 +252,7 @@ export class AuthorizationService {
     const session = await this.prisma.session.findUnique({
       where: {
         id: sessionId,
-        class: { teacherId: authenticatedUser.id },
+        class: { teacherId: authenticatedUser.id, deletedAt: null },
         deletedAt: null,
       },
       select: { id: true },
@@ -327,7 +333,7 @@ export class AuthorizationService {
           deletedAt: null,
           studentSolutions: {
             some: {
-              student: { id: authenticatedStudent.id },
+              student: { id: authenticatedStudent.id, deletedAt: null },
               deletedAt: null,
             },
           },
