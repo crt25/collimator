@@ -3,8 +3,8 @@ import { defineMessages } from "react-intl";
 import { useRouter } from "next/router";
 import { useCreateTask } from "@/api/collimator/hooks/tasks/useCreateTask";
 import CrtNavigation from "@/components/CrtNavigation";
-import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 import PageLayout from "@/components/layout/PageLayout";
+import TaskForm, { TaskFormSubmission } from "@/components/task/TaskForm";
 
 const messages = defineMessages({
   title: {
@@ -23,8 +23,13 @@ const CreateTask = () => {
 
   const onSubmit = useCallback(
     async (taskSubmission: TaskFormSubmission) => {
+      if (!taskSubmission.taskFile) {
+        return;
+      }
+
       const createdTask = await createTask({
         ...taskSubmission,
+        taskFile: taskSubmission.taskFile,
         referenceSolutions:
           taskSubmission.initialSolution !== null
             ? [taskSubmission.initialSolution]
@@ -34,6 +39,7 @@ const CreateTask = () => {
             ? [taskSubmission.initialSolutionFile]
             : [],
       });
+
       router.push(`/task/${createdTask.id}/detail`);
     },
     [createTask, router],

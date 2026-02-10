@@ -3,11 +3,11 @@ import { useAdminUser } from "../../authentication-helpers";
 import { SolveTaskPageModel } from "../sessions/solve-task-page-model";
 import { adminUser } from "../../setup/seeding/user";
 import { createClass } from "../classes/class-management";
-import { createTask } from "../task/task-management";
 import { SessionListPageModel } from "../sessions/session-list-page-model";
 import { createSession } from "../sessions/session-management";
 import { createAnonymousSubmission } from "../sessions/submission-management";
-import checkXPositionWithAssertion from "../sessions/tasks/check-x-position-with-assertion";
+import checkXPositionWithAssertion from "../sessions/tasks/scratch/check-x-position-with-assertion";
+import { createTask } from "./task-management";
 import { getTasksControllerDownloadOneV0Url } from "@/api/collimator/generated/endpoints/tasks/tasks";
 import { getSessionsControllerGetSessionTaskSolveV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
 
@@ -81,18 +81,18 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
     });
 
     test("shows an iframe", async ({ page }) => {
-      expect(page.locator("iframe")).toHaveCount(1);
+      await expect(page.locator("iframe")).toHaveCount(1);
     });
 
     test("can open session menu", async ({ page: pwPage }) => {
       page = SolveTaskPageModel.create(pwPage);
       await page.waitForTaskLoad();
 
-      expect(page.getSessionName()).toHaveCount(0);
+      await expect(page.getSessionName()).toHaveCount(0);
 
       await page.openSessionMenu();
       await page.closeSessionMenu();
-      expect(page.getSessionName()).toHaveCount(0);
+      await expect(page.getSessionName()).toHaveCount(0);
     });
 
     test("shows error when save fails", async ({ page: pwPage, apiURL }) => {
@@ -113,7 +113,6 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
       await page.clickSubmitButton();
 
       await expect(page.getSaveErrorMessage()).toBeVisible();
-      await expect(page.getSaveErrorMessage()).toBeDefined();
     });
   });
 });
