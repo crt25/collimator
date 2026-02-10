@@ -133,19 +133,32 @@ export class TasksService {
 
   async findManyWithInUseStatus(
     args?: Prisma.TaskFindManyArgs,
+    includeSoftDelete = false,
   ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
+    const taskArgs = includeSoftDelete
+      ? { ...args }
+      : { ...args, where: { ...args?.where, deletedAt: null } };
+
     const tasks = await this.prisma.task.findMany({
-      ...args,
+      ...taskArgs,
       omit: omitData,
       include: {
         sessions: {
           where: {
-            session: {
-              OR: [
-                { anonymousStudents: { some: {} } },
-                { class: { students: { some: {} } } },
-              ],
-            },
+            session: includeSoftDelete
+              ? {
+                  OR: [
+                    { anonymousStudents: { some: {} } },
+                    { class: { students: { some: {} } } },
+                  ],
+                }
+              : {
+                  deletedAt: null,
+                  OR: [
+                    { anonymousStudents: { some: {} } },
+                    { class: { deletedAt: null, students: { some: {} } } },
+                  ],
+                },
           },
           take: 1,
           select: { taskId: true },
@@ -420,6 +433,9 @@ export class TasksService {
     const sessionWithStudents = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
+        task: {
+          deletedAt: null,
+        },
         session: {
           deletedAt: null,
           OR: [
@@ -456,7 +472,7 @@ export class TasksService {
   }
 
   private async isTaskInUseByOtherUsersTx(
-    tx: Prisma.TransactionClient,
+    tx: PrismaTransactionClient,
     id: TaskId,
     creatorId: number,
   ): Promise<boolean> {
@@ -465,8 +481,10 @@ export class TasksService {
       where: {
         taskId: id,
         session: {
+          deletedAt: null,
           class: {
             teacherId: { not: creatorId },
+            deletedAt: null,
           },
         },
       },
@@ -479,7 +497,7 @@ export class TasksService {
     return this.prisma.$transaction(async (tx) => {
       // Fetch task to check if it's public
       const task = await tx.task.findUniqueOrThrow({
-        where: { id },
+        where: { id, deletedAt: null },
         select: { isPublic: true, creatorId: true },
       });
 
