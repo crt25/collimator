@@ -1,3 +1,5 @@
+export const authenticationStateKey = "authenticationState";
+
 export const backendHostName = process.env
   .NEXT_PUBLIC_BACKEND_HOSTNAME as unknown as string;
 
