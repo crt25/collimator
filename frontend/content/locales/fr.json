@@ -1105,13 +1105,13 @@
     "message": "Les données du fichier fourni sont invalides"
   },
   "TaskForm.changeTypeConfirmation.body": {
-    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    "message": "Changer le type de l'activité vous obligera à recréer l'activité dans le nouveau format. L'activité existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
   },
   "TaskForm.changeTypeConfirmation.button": {
     "message": "Oui, changer le type"
   },
   "TaskForm.changeTypeConfirmation.title": {
-    "message": "Changer le type de la tâche"
+    "message": "Changer le type de l'activité"
   },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
@@ -1126,7 +1126,7 @@
     "message": "Description"
   },
   "TaskForm.destructiveAction.body": {
-    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez l'activité. Êtes-vous sûr de vouloir continuer ?"
   },
   "TaskForm.destructiveAction.button": {
     "message": "Oui, continuer"
@@ -1135,16 +1135,16 @@
     "message": "Cette action supprimera les solutions de référence"
   },
   "TaskForm.isPublic": {
-    "message": "This task is public"
+    "message": "Cette activité est publique"
   },
   "TaskForm.makePublicConfirmation.body": {
-    "message": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+    "message": "Rendre cette activité publique permet à d'autres utilisateurs de la voir et de l'utiliser. Cette action peut être irréversible. Êtes-vous sûr de vouloir continuer?"
   },
   "TaskForm.makePublicConfirmation.button": {
-    "message": "Yes, make it public"
+    "message": "Oui, publiez l'activité"
   },
   "TaskForm.makePublicConfirmation.title": {
-    "message": "Make this task public?"
+    "message": "Rendre cette activité publique?"
   },
   "TaskForm.taskFileRequired": {
     "message": "Un fichier de tâche est requis avant l’enregistrement."
@@ -1552,16 +1552,16 @@
     "message": "Rechercher..."
   },
   "embeddedApp.cannotExport": {
-    "message": "Échec de l'exportation de la tâche : {error}"
+    "message": "Échec de l'exportation de l'activité : {error}"
   },
   "embeddedApp.cannotGetTask": {
-    "message": "Impossible de récupérer la tâche : {error}"
+    "message": "Impossible de récupérer l'activité : {error}"
   },
   "embeddedApp.cannotImportExternalInNonEditMode": {
-    "message": "Impossible d'importer des tâches externes en mode non-édition"
+    "message": "Impossible d'importer des activités externes en mode non-édition"
   },
   "embeddedApp.cannotImportTask": {
-    "message": "Impossible d'importer la tâche : {error}"
+    "message": "Impossible d'importer l'activité : {error}"
   },
   "embeddedApp.cannotLoadProject": {
     "message": "Impossible de charger le projet : {error}"
@@ -1570,25 +1570,25 @@
     "message": "Impossible de charger la soumission : {error}"
   },
   "embeddedApp.cannotLoadTask": {
-    "message": "Impossible de charger le contenu de la tâche : {error}"
+    "message": "Impossible de charger le contenu de l'activité : {error}"
   },
   "embeddedApp.cannotSaveProject": {
     "message": "Impossible de sauvegarder le projet : {error}"
   },
   "embeddedApp.cannotSaveTask": {
-    "message": "Impossible de sauvegarder la tâche : {error}"
+    "message": "Impossible de sauvegarder l'activité : {error}"
   },
   "embeddedApp.savingTask": {
-    "message": "Sauvegarde de la tâche en cours..."
+    "message": "Sauvegarde de l'activité en cours..."
   },
   "embeddedApp.submissionLoaded": {
     "message": "Soumission chargée avec succès"
   },
   "embeddedApp.taskCreated": {
-    "message": "Tâche créée avec succès"
+    "message": "Activité créée avec succès"
   },
   "embeddedApp.taskImported": {
-    "message": "Tâche importée avec succès"
+    "message": "Activité importée avec succès"
   },
   "forms.arrayLength": {
     "message": "$'{path}' doit avoir $'{length}' éléments"

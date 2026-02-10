@@ -2318,7 +2318,7 @@
   "TaskForm.changeTypeConfirmation.body": [
     {
       "type": 0,
-      "value": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+      "value": "Changer le type de l'activité vous obligera à recréer l'activité dans le nouveau format. L'activité existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
     }
   ],
   "TaskForm.changeTypeConfirmation.button": [
@@ -2330,7 +2330,7 @@
   "TaskForm.changeTypeConfirmation.title": [
     {
       "type": 0,
-      "value": "Changer le type de la tâche"
+      "value": "Changer le type de l'activité"
     }
   ],
   "TaskForm.closeConfirmation.body": [
@@ -2360,7 +2360,7 @@
   "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez l'activité. Êtes-vous sûr de vouloir continuer ?"
     }
   ],
   "TaskForm.destructiveAction.button": [
@@ -2378,25 +2378,25 @@
   "TaskForm.isPublic": [
     {
       "type": 0,
-      "value": "This task is public"
+      "value": "Cette activité est publique"
     }
   ],
   "TaskForm.makePublicConfirmation.body": [
     {
       "type": 0,
-      "value": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+      "value": "Rendre cette activité publique permet à d'autres utilisateurs de la voir et de l'utiliser. Cette action peut être irréversible. Êtes-vous sûr de vouloir continuer?"
     }
   ],
   "TaskForm.makePublicConfirmation.button": [
     {
       "type": 0,
-      "value": "Yes, make it public"
+      "value": "Oui, publiez l'activité"
     }
   ],
   "TaskForm.makePublicConfirmation.title": [
     {
       "type": 0,
-      "value": "Make this task public?"
+      "value": "Rendre cette activité publique?"
     }
   ],
   "TaskForm.taskFileRequired": [
@@ -3252,7 +3252,7 @@
   "embeddedApp.cannotExport": [
     {
       "type": 0,
-      "value": "Échec de l'exportation de la tâche : "
+      "value": "Échec de l'exportation de l'activité : "
     },
     {
       "type": 1,
@@ -3262,7 +3262,7 @@
   "embeddedApp.cannotGetTask": [
     {
       "type": 0,
-      "value": "Impossible de récupérer la tâche : "
+      "value": "Impossible de récupérer l'activité : "
     },
     {
       "type": 1,
@@ -3272,13 +3272,13 @@
   "embeddedApp.cannotImportExternalInNonEditMode": [
     {
       "type": 0,
-      "value": "Impossible d'importer des tâches externes en mode non-édition"
+      "value": "Impossible d'importer des activités externes en mode non-édition"
     }
   ],
   "embeddedApp.cannotImportTask": [
     {
       "type": 0,
-      "value": "Impossible d'importer la tâche : "
+      "value": "Impossible d'importer l'activité : "
     },
     {
       "type": 1,
@@ -3308,7 +3308,7 @@
   "embeddedApp.cannotLoadTask": [
     {
       "type": 0,
-      "value": "Impossible de charger le contenu de la tâche : "
+      "value": "Impossible de charger le contenu de l'activité : "
     },
     {
       "type": 1,
@@ -3328,7 +3328,7 @@
   "embeddedApp.cannotSaveTask": [
     {
       "type": 0,
-      "value": "Impossible de sauvegarder la tâche : "
+      "value": "Impossible de sauvegarder l'activité : "
     },
     {
       "type": 1,
@@ -3338,7 +3338,7 @@
   "embeddedApp.savingTask": [
     {
       "type": 0,
-      "value": "Sauvegarde de la tâche en cours..."
+      "value": "Sauvegarde de l'activité en cours..."
     }
   ],
   "embeddedApp.submissionLoaded": [
@@ -3350,13 +3350,13 @@
   "embeddedApp.taskCreated": [
     {
       "type": 0,
-      "value": "Tâche créée avec succès"
+      "value": "Activité créée avec succès"
     }
   ],
   "embeddedApp.taskImported": [
     {
       "type": 0,
-      "value": "Tâche importée avec succès"
+      "value": "Activité importée avec succès"
     }
   ],
   "forms.arrayLength": [
