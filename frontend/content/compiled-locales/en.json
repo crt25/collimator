@@ -311,6 +311,24 @@
       "value": "name"
     }
   ],
+  "ClassForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave without saving your changes. Are you sure this is what you want?"
+    }
+  ],
+  "ClassForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, discard changes"
+    }
+  ],
+  "ClassForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -1375,6 +1393,24 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave without saving your changes. Are you sure this is what you want?"
+    }
+  ],
+  "SessionForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, discard changes"
+    }
+  ],
+  "SessionForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
     }
   ],
   "SessionForm.sharingType.anonymous": [

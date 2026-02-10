@@ -311,6 +311,24 @@
       "value": "name"
     }
   ],
+  "ClassForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "ClassForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, quitter sans sauvegarder"
+    }
+  ],
+  "ClassForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention : vous pourriez perdre votre travail !"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -1799,6 +1817,24 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "SessionForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, quitter sans sauvegarder"
+    }
+  ],
+  "SessionForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention : vous pourriez perdre votre travail !"
     }
   ],
   "SessionForm.sharingType.anonymous": [
