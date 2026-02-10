@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem, Flex } from "@chakra-ui/react";
+import { RiDraggable } from "react-icons/ri";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -17,8 +18,6 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
-import { RiDraggable } from "react-icons/ri";
-import { Flex } from "@chakra-ui/react";
 
 export enum SharingType {
   anonymous = "anonymous",
@@ -225,31 +224,36 @@ const SessionForm = ({
               />
 
               <SortableListWrapper>
-              <SortableListInput
-                items={selectedTasks}
-                updateItems={setSelectedTasks}
-                testId="selected-tasks"
-              >
-                {(task) => (
-                  <TaskListElement>
-                    <Flex align="center" gap={1} data-testid="task-name" key={task.id}>
-                      <RiDraggable />
-                      <span>{task.title}</span>
-                    </Flex>
-                    <RemoveTask
-                      data-testid="remove-task"
-                      onClick={() =>
-                        setSelectedTasks(
-                          selectedTasks.filter((t) => t !== task),
-                        )
-                      }
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </RemoveTask>
-                  </TaskListElement>
-                )}
-              </SortableListInput>
-                </SortableListWrapper>
+                <SortableListInput
+                  items={selectedTasks}
+                  updateItems={setSelectedTasks}
+                  testId="selected-tasks"
+                >
+                  {(task) => (
+                    <TaskListElement>
+                      <Flex
+                        align="center"
+                        gap={1}
+                        data-testid="task-name"
+                        key={task.id}
+                      >
+                        <RiDraggable />
+                        <span>{task.title}</span>
+                      </Flex>
+                      <RemoveTask
+                        data-testid="remove-task"
+                        onClick={() =>
+                          setSelectedTasks(
+                            selectedTasks.filter((t) => t !== task),
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </RemoveTask>
+                    </TaskListElement>
+                  )}
+                </SortableListInput>
+              </SortableListWrapper>
 
               <Select
                 label={messages.addTask}
