@@ -17,6 +17,8 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
+import { RiDraggable } from "react-icons/ri";
+import { Flex } from "@chakra-ui/react";
 
 export enum SharingType {
   anonymous = "anonymous",
@@ -69,6 +71,16 @@ const TaskListElement = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+`;
+
+const SortableListWrapper = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const RemoveTask = styled.span`
@@ -212,6 +224,7 @@ const SessionForm = ({
                 }
               />
 
+              <SortableListWrapper>
               <SortableListInput
                 items={selectedTasks}
                 updateItems={setSelectedTasks}
@@ -219,7 +232,10 @@ const SessionForm = ({
               >
                 {(task) => (
                   <TaskListElement>
-                    <span>{task.title}</span>
+                    <Flex align="center" gap={1} data-testid="task-name" key={task.id}>
+                      <RiDraggable />
+                      <span>{task.title}</span>
+                    </Flex>
                     <RemoveTask
                       data-testid="remove-task"
                       onClick={() =>
@@ -233,6 +249,7 @@ const SessionForm = ({
                   </TaskListElement>
                 )}
               </SortableListInput>
+                </SortableListWrapper>
 
               <Select
                 label={messages.addTask}
