@@ -21,6 +21,8 @@ export interface ExistingTaskWithReferenceSolutionsDto {
   isPublic: boolean;
   /** Whether the task is in use by one or more classes with students. */
   isInUse: boolean;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The list of reference solutions. */
   referenceSolutions: TaskReferenceSolutionDto[];
 }

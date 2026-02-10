@@ -7,6 +7,8 @@ export const useRevalidateUserList = (): (() => void) => {
   const { mutate } = useSWRConfig();
 
   return useCallback(() => {
-    invalidateParameterizedKey(mutate, getUsersControllerFindAllV0Url);
+    invalidateParameterizedKey(mutate, () =>
+      getUsersControllerFindAllV0Url({}),
+    );
   }, [mutate]);
 };

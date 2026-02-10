@@ -28,6 +28,7 @@ model User {
   email                  String
   authenticationProvider AuthenticationProvider
   type                   UserType
+  deletedAt              DateTime?
 
   keyPair              KeyPair?
   registrationToken    RegistrationToken?
@@ -52,24 +53,28 @@ model KeyPair {
   // and derive a symmetric key using the web crypto API which has its limitations.
   salt Bytes
 
+  deletedAt DateTime?
+
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
   teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   Student     AuthenticatedStudent[]
 }
 
 model EncryptedPrivateKey {
-  id                  Int   @id @default(autoincrement())
+  id                  Int       @id @default(autoincrement())
   publicKeyId         Int // The public key this private key corresponds to
   encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
   salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
+  deletedAt           DateTime?
 
   publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
 
 model Class {
-  id        Int    @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   teacherId Int
+  deletedAt DateTime?
 
   teacher  User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   students AuthenticatedStudent[]
@@ -81,6 +86,7 @@ model Student {
 
   authenticatedStudent AuthenticatedStudent?
   anonymousStudent     AnonymousStudent?
+  deletedAt            DateTime?
 
   authenticationTokens AuthenticationToken[]
   solutions            StudentSolution[]
@@ -88,10 +94,11 @@ model Student {
 }
 
 model AuthenticatedStudent {
-  studentId Int   @id
+  studentId Int       @id
   pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
   classId   Int // authenticated students are assigned to a class,
   keyPairId Int? // if null, the respective key is no longer available
+  deletedAt DateTime?
 
   student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   class          Class    @relation(fields: [classId], references: [id], onDelete: Restrict)
@@ -101,8 +108,9 @@ model AuthenticatedStudent {
 }
 
 model AnonymousStudent {
-  studentId Int @id
+  studentId Int       @id
   sessionId Int // anonymous students are always assigned to a session
+  deletedAt DateTime?
 
   student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session Session? @relation(fields: [sessionId], references: [id], onDelete: Restrict)
@@ -120,6 +128,7 @@ model Lesson {
   description String
   visibility  LessonVisibility
   creatorId   Int?
+  deletedAt   DateTime?
 
   tasks    LessonTask[]
   sessions Session[]
@@ -142,6 +151,7 @@ model Session {
   basedOnLessonId Int?
   status          SessionStatus @default(CREATED)
   isAnonymous     Boolean       @default(false)
+  deletedAt       DateTime?
 
   lesson            Lesson?            @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class             Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
@@ -157,7 +167,7 @@ enum TaskType {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String
   type        TaskType
@@ -165,6 +175,7 @@ model Task {
   mimeType    String
   creatorId   Int?
   isPublic    Boolean  @default(false)
+  deletedAt   DateTime?
 
   studentSolutions   StudentSolution[]
   referenceSolutions ReferenceSolution[]
@@ -205,7 +216,8 @@ model Solution {
 
   data           Bytes
   mimeType       String
-  failedAnalyses Int    @default(0)
+  failedAnalyses Int       @default(0)
+  deletedAt      DateTime?
 
   analysis           SolutionAnalysis?
   task               Task                @relation(fields: [taskId], references: [id], onDelete: Restrict)
@@ -217,11 +229,12 @@ model Solution {
 }
 
 model ReferenceSolution {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String
   // Whether this solution is the initial solution for the task (i.e. the empty one provided to the students)
-  isInitial   Boolean @default(false)
+  isInitial   Boolean   @default(false)
+  deletedAt   DateTime?
 
   taskId       Int
   solutionHash Bytes
@@ -235,13 +248,14 @@ model ReferenceSolution {
 }
 
 model StudentSolution {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
   taskId       Int
   solutionHash Bytes
   studentId    Int
   sessionId    Int
-  isReference  Boolean  @default(false)
+  isReference  Boolean   @default(false)
+  deletedAt    DateTime?
 
   tests SolutionTest[]
 
@@ -262,6 +276,7 @@ model SolutionTest {
   name        String
   contextName String?
   passed      Boolean
+  deletedAt   DateTime?
 
   referenceSolution ReferenceSolution? @relation(fields: [referenceSolutionId], references: [id])
   studentSolution   StudentSolution?   @relation(fields: [studentSolutionId], references: [id])
@@ -277,6 +292,7 @@ model SolutionAnalysis {
   solutionHash Bytes
   genericAst   String
   astVersion   AstVersion @default(v0)
+  deletedAt    DateTime?
 
   solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
 
@@ -284,21 +300,23 @@ model SolutionAnalysis {
 }
 
 model RegistrationToken {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  token     String   @unique
-  userId    Int      @unique
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  token     String    @unique
+  userId    Int       @unique
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuthenticationToken {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
   lastUsedAt DateTime
-  token      String   @unique
+  token      String    @unique
   userId     Int?
   studentId  Int?
+  deletedAt  DateTime?
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -321,6 +339,7 @@ model StudentActivity {
   type       StudentActivityType
   // measured by the client and may therefore be completely different from createdAt
   happenedAt DateTime
+  deletedAt  DateTime?
 
   studentId    Int
   sessionId    Int

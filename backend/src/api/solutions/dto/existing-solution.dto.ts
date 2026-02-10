@@ -1,6 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, plainToInstance, Transform } from "class-transformer";
+import {
+  Exclude,
+  Expose,
+  plainToInstance,
+  Transform,
+  Type,
+} from "class-transformer";
 import { Modify } from "src/utilities/modify";
+import { IsDate, IsOptional } from "class-validator";
 import { SolutionWithoutData } from "../solutions.service";
 
 export class ExistingSolutionDto
@@ -27,6 +34,13 @@ export class ExistingSolutionDto
 
   @Exclude()
   readonly failedAnalyses!: number;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   static fromQueryResult(data: SolutionWithoutData): ExistingSolutionDto {
     return plainToInstance(ExistingSolutionDto, data, {

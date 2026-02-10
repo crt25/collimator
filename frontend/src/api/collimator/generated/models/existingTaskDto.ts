@@ -20,4 +20,6 @@ export interface ExistingTaskDto {
   isPublic: boolean;
   /** Whether the task is in use by one or more classes with students. */
   isInUse: boolean;
+  /** @nullable */
+  deletedAt?: string | null;
 }

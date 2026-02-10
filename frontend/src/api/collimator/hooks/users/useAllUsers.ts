@@ -12,7 +12,7 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 export type GetUsersReturnType = ExistingUser[];
 
 const fetchAndTransform = (options: RequestInit): Promise<GetUsersReturnType> =>
-  usersControllerFindAllV0(options).then((data) =>
+  usersControllerFindAllV0({}, options).then((data) =>
     fromDtos(ExistingUser, data),
   );
 

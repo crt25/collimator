@@ -660,6 +660,9 @@
   "SessionDetail.title": {
     "message": "Lesson - {title}"
   },
+  "SessionForm.createTask": {
+    "message": "Create Task"
+  },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
   },
@@ -761,6 +764,9 @@
   },
   "SolveTask.openTaskList": {
     "message": "Open Task List"
+  },
+  "SolveTask.saveError": {
+    "message": "You are currently experiencing network issues, saving may not work."
   },
   "SolveTask.solutionSubmitted": {
     "message": "The solution was submitted successfully."
@@ -867,6 +873,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Yes, change type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Change task type"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
   },
@@ -878,6 +893,15 @@
   },
   "TaskForm.description": {
     "message": "Description"
+  },
+  "TaskForm.destructiveAction.body": {
+    "message": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Yes, continue"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "This action will delete reference solutions"
   },
   "TaskForm.isPublic": {
     "message": "This task is public"
@@ -891,8 +915,8 @@
   "TaskForm.makePublicConfirmation.title": {
     "message": "Make this task public?"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+  "TaskForm.taskFileRequired": {
+    "message": "A task file is required before saving."
   },
   "TaskForm.title": {
     "message": "Title"
@@ -933,11 +957,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analysis - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "This task cannot be edited here. To edit, go to the {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Save Task"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "task bank"
+  },
   "TaskInstanceDetails.title": {
-    "message": "Edit Task - {title}"
+    "message": "Task - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "View Task"
   },
   "TaskInstanceList.title": {
     "message": "Tasks"

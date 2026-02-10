@@ -16,6 +16,8 @@ export interface TaskReferenceSolutionDto {
   description: string;
   /** Whether this reference solution is the task's initial solution. */
   isInitial: boolean;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The solution's mime type. */
   mimeType: string;
   /** The associated solution encoded in base64. */

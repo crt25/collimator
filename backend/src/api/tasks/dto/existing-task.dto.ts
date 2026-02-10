@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, plainToInstance } from "class-transformer";
-import { IsBoolean } from "class-validator";
+import { Exclude, Expose, plainToInstance, Type } from "class-transformer";
+import { IsBoolean, IsDate, IsOptional } from "class-validator";
 import { TaskWithoutData } from "../tasks.service";
 import { TaskDto } from "./task.dto";
 
@@ -43,7 +43,14 @@ export class ExistingTaskDto extends TaskDto implements TaskWithoutData {
   @Expose()
   readonly isInUse!: boolean;
 
-  static fromQueryResult(data: TaskWithoutDataAndInUse): ExistingTaskDto {
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
+
+  static fromQueryResult(data: TaskWithoutData): ExistingTaskDto {
     return plainToInstance(ExistingTaskDto, data, {
       excludeExtraneousValues: true,
     });

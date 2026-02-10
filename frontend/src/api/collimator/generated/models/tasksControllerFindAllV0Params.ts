@@ -8,4 +8,5 @@
 
 export type TasksControllerFindAllV0Params = {
   teacherId?: number;
+  includeSoftDelete?: boolean;
 };

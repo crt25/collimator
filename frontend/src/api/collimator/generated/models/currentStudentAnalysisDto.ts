@@ -14,6 +14,8 @@ export interface CurrentStudentAnalysisDto {
   solutionHash: string;
   /** Whether this solution is marked as a reference solution. */
   isReferenceSolution: boolean;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The tests for the current analysis. */
   tests: ExistingSolutionTestDto[];
   /**

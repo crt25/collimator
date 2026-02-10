@@ -11,7 +11,12 @@ import type {
   DeletedTaskDto,
   ExistingTaskDto,
   ExistingTaskWithReferenceSolutionsDto,
+  TasksControllerDownloadOneV0Params,
   TasksControllerFindAllV0Params,
+  TasksControllerFindOneV0Params,
+  TasksControllerFindOneWithReferenceSolutionsV0Params,
+  TasksControllerRemoveV0Params,
+  TasksControllerUpdateV0Params,
   UpdateTaskDto,
 } from "../../models";
 
@@ -71,27 +76,59 @@ export const tasksControllerFindAllV0 = async (
   });
 };
 
-export const getTasksControllerFindOneV0Url = (id: number) => {
-  return `/api/v0/tasks/${id}`;
+export const getTasksControllerFindOneV0Url = (
+  id: number,
+  params?: TasksControllerFindOneV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/tasks/${id}?${stringifiedParams}`
+    : `/api/v0/tasks/${id}`;
 };
 
 export const tasksControllerFindOneV0 = async (
   id: number,
+  params?: TasksControllerFindOneV0Params,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
-  return fetchApi<ExistingTaskDto>(getTasksControllerFindOneV0Url(id), {
+  return fetchApi<ExistingTaskDto>(getTasksControllerFindOneV0Url(id, params), {
     ...options,
     method: "GET",
   });
 };
 
-export const getTasksControllerUpdateV0Url = (id: number) => {
-  return `/api/v0/tasks/${id}`;
+export const getTasksControllerUpdateV0Url = (
+  id: number,
+  params?: TasksControllerUpdateV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/tasks/${id}?${stringifiedParams}`
+    : `/api/v0/tasks/${id}`;
 };
 
 export const tasksControllerUpdateV0 = async (
   id: number,
   updateTaskDto: UpdateTaskDto,
+  params?: TasksControllerUpdateV0Params,
   options?: RequestInit,
 ): Promise<ExistingTaskDto> => {
   const formData = new FormData();
@@ -107,22 +144,38 @@ export const tasksControllerUpdateV0 = async (
     formData.append(`referenceSolutions`, JSON.stringify(value)),
   );
 
-  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id), {
+  return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id, params), {
     ...options,
     method: "PATCH",
     body: formData,
   });
 };
 
-export const getTasksControllerRemoveV0Url = (id: number) => {
-  return `/api/v0/tasks/${id}`;
+export const getTasksControllerRemoveV0Url = (
+  id: number,
+  params?: TasksControllerRemoveV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/tasks/${id}?${stringifiedParams}`
+    : `/api/v0/tasks/${id}`;
 };
 
 export const tasksControllerRemoveV0 = async (
   id: number,
+  params?: TasksControllerRemoveV0Params,
   options?: RequestInit,
 ): Promise<DeletedTaskDto> => {
-  return fetchApi<DeletedTaskDto>(getTasksControllerRemoveV0Url(id), {
+  return fetchApi<DeletedTaskDto>(getTasksControllerRemoveV0Url(id, params), {
     ...options,
     method: "DELETE",
   });
@@ -130,16 +183,30 @@ export const tasksControllerRemoveV0 = async (
 
 export const getTasksControllerFindOneWithReferenceSolutionsV0Url = (
   id: number,
+  params?: TasksControllerFindOneWithReferenceSolutionsV0Params,
 ) => {
-  return `/api/v0/tasks/${id}/with-reference-solutions`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/tasks/${id}/with-reference-solutions?${stringifiedParams}`
+    : `/api/v0/tasks/${id}/with-reference-solutions`;
 };
 
 export const tasksControllerFindOneWithReferenceSolutionsV0 = async (
   id: number,
+  params?: TasksControllerFindOneWithReferenceSolutionsV0Params,
   options?: RequestInit,
 ): Promise<ExistingTaskWithReferenceSolutionsDto> => {
   return fetchApi<ExistingTaskWithReferenceSolutionsDto>(
-    getTasksControllerFindOneWithReferenceSolutionsV0Url(id),
+    getTasksControllerFindOneWithReferenceSolutionsV0Url(id, params),
     {
       ...options,
       method: "GET",
@@ -147,15 +214,31 @@ export const tasksControllerFindOneWithReferenceSolutionsV0 = async (
   );
 };
 
-export const getTasksControllerDownloadOneV0Url = (id: number) => {
-  return `/api/v0/tasks/${id}/download`;
+export const getTasksControllerDownloadOneV0Url = (
+  id: number,
+  params?: TasksControllerDownloadOneV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/tasks/${id}/download?${stringifiedParams}`
+    : `/api/v0/tasks/${id}/download`;
 };
 
 export const tasksControllerDownloadOneV0 = async (
   id: number,
+  params?: TasksControllerDownloadOneV0Params,
   options?: RequestInit,
 ): Promise<void> => {
-  return fetchApi<void>(getTasksControllerDownloadOneV0Url(id), {
+  return fetchApi<void>(getTasksControllerDownloadOneV0Url(id, params), {
     ...options,
     method: "GET",
   });

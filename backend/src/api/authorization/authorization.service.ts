@@ -12,7 +12,7 @@ export class AuthorizationService {
     classId: number,
   ): Promise<boolean> {
     const klass = await this.prisma.class.findUnique({
-      where: { id: classId, teacherId: userId },
+      where: { id: classId, teacherId: userId, deletedAt: null },
       select: { id: true },
     });
 
@@ -62,7 +62,7 @@ export class AuthorizationService {
     }
 
     const task = await this.prisma.task.findUnique({
-      where: { id: taskId, creatorId: authenticatedUser.id },
+      where: { id: taskId, creatorId: authenticatedUser.id, deletedAt: null },
       select: { id: true },
     });
 
@@ -183,7 +183,15 @@ export class AuthorizationService {
     }
 
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: {
+        id: sessionId,
+        class: {
+          teacherId: authenticatedUser.id,
+          deletedAt: null,
+          teacher: { deletedAt: null },
+        },
+        deletedAt: null,
+      },
       select: { id: true },
     });
 
@@ -203,10 +211,17 @@ export class AuthorizationService {
       const session = await this.prisma.session.findUnique({
         where: {
           id: sessionId,
+          deletedAt: null,
           OR: [
             {
               class: {
-                students: { some: { studentId: authenticatedStudent.id } },
+                deletedAt: null,
+                students: {
+                  some: {
+                    studentId: authenticatedStudent.id,
+                    deletedAt: null
+                  }
+                },
               },
             },
             { isAnonymous: true },
@@ -244,7 +259,11 @@ export class AuthorizationService {
     }
 
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: {
+        id: sessionId,
+        class: { teacherId: authenticatedUser.id, deletedAt: null },
+        deletedAt: null,
+      },
       select: { id: true },
     });
 
@@ -260,7 +279,11 @@ export class AuthorizationService {
     }
 
     const session = await this.prisma.session.findUnique({
-      where: { id: sessionId, class: { teacherId: authenticatedUser.id } },
+      where: {
+        id: sessionId,
+        class: { teacherId: authenticatedUser.id, deletedAt: null },
+        deletedAt: null,
+      },
       select: { id: true },
     });
 
@@ -281,7 +304,16 @@ export class AuthorizationService {
     }
 
     const solution = await this.prisma.studentSolution.findUniqueOrThrow({
-      where: { id: studentSolutionId },
+      where: {
+        id: studentSolutionId,
+        deletedAt: null,
+        session: {
+          deletedAt: null,
+          class: {
+            deletedAt: null,
+          },
+        },
+      },
       include: {
         student: { select: { id: true } },
         session: { select: { class: { select: { teacherId: true } } } },
@@ -317,15 +349,21 @@ export class AuthorizationService {
       return true;
     }
 
+    const baseWhere = {
+      taskId_hash: { taskId, hash: solutionHash },
+    };
+
     if (authenticatedStudent) {
       // students may only view solutions they submitted
       const solution = await this.prisma.solution.findUnique({
         select: {},
         where: {
-          taskId_hash: { taskId, hash: solutionHash },
+          ...baseWhere,
+          deletedAt: null,
           studentSolutions: {
             some: {
-              student: { id: authenticatedStudent.id },
+              student: { id: authenticatedStudent.id, deletedAt: null },
+              deletedAt: null,
             },
           },
         },
@@ -337,18 +375,22 @@ export class AuthorizationService {
     if (authenticatedUser && authenticatedUser.type === UserType.TEACHER) {
       // users may view solutions submitted by students in their class
       // and reference solutions.
-
       const solution = await this.prisma.solution.findUnique({
         select: {},
         where: {
-          taskId_hash: { taskId, hash: solutionHash },
+          ...baseWhere,
+          deletedAt: null,
           OR: [
             {
               studentSolutions: {
                 some: {
+                  deletedAt: null,
                   session: {
+                    deletedAt: null,
                     class: {
                       teacherId: authenticatedUser.id,
+                      deletedAt: null,
+                      teacher: { deletedAt: null },
                     },
                   },
                 },
@@ -356,7 +398,10 @@ export class AuthorizationService {
             },
             {
               referenceSolutions: {
-                some: {},
+                some: {
+                  deletedAt: null,
+                  task: { deletedAt: null },
+                },
               },
             },
           ],
@@ -388,9 +433,12 @@ export class AuthorizationService {
       select: {},
       where: {
         id: studentSolutionId,
+        deletedAt: null,
         session: {
+          deletedAt: null,
           class: {
             teacherId: authenticatedUser.id,
+            deletedAt: null,
           },
         },
       },

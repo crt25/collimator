@@ -10,7 +10,7 @@ const fetchAndTransform = (
   options: RequestInit,
   id: number,
 ): ReturnType<DeleteTaskType> =>
-  tasksControllerRemoveV0(id, options).then(DeletedTask.fromDto);
+  tasksControllerRemoveV0(id, {}, options).then(DeletedTask.fromDto);
 
 export const useDeleteTask = (): DeleteTaskType => {
   const revalidateTaskList = useRevalidateTaskList();

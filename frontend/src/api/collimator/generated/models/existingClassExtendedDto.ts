@@ -14,6 +14,8 @@ export interface ExistingClassExtendedDto {
   name: string;
   /** The teacher of the class. */
   teacher: ClassTeacherDto;
+  /** @nullable */
+  deletedAt?: string | null;
   /** The list of session IDs. */
   sessions: number[];
   /** The students in the class. */

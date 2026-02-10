@@ -11,4 +11,6 @@ export interface SessionLessonDto {
   id: number;
   /** The name of the lesson. */
   name: string;
+  /** @nullable */
+  deletedAt?: string | null;
 }

@@ -227,6 +227,9 @@
   "DEPRECATED: embeddedApp.taskLoaded": {
     "message": "Tâche chargée avec succès"
   },
+  "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": {
+    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -742,7 +745,7 @@
     "message": "Gestion des classes"
   },
   "ListClasses.heading": {
-    "message": "Class Manager"
+    "message": "Gestion des classes"
   },
   "ListClasses.pageDescription": {
     "message": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
@@ -888,6 +891,9 @@
   "SessionDetail.title": {
     "message": "Leçon - {title}"
   },
+  "SessionForm.createTask": {
+    "message": "Créer une activité"
+  },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonyme"
   },
@@ -990,6 +996,9 @@
   "SolveTask.openTaskList": {
     "message": "Ouvrir la liste des activités"
   },
+  "SolveTask.saveError": {
+    "message": "You are currently experiencing network issues, saving may not work."
+  },
   "SolveTask.solutionSubmitted": {
     "message": "La solution a été soumise avec succès."
   },
@@ -1078,7 +1087,7 @@
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
   "TaskForm.SaveConflictError": {
-    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+    "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
   },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
@@ -1095,6 +1104,15 @@
   "TaskForm.blobValidation": {
     "message": "Les données du fichier fourni sont invalides"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Oui, changer le type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Changer le type de la tâche"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
   },
@@ -1106,6 +1124,15 @@
   },
   "TaskForm.description": {
     "message": "Description"
+  },
+  "TaskForm.destructiveAction.body": {
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Oui, continuer"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "Cette action supprimera les solutions de référence"
   },
   "TaskForm.isPublic": {
     "message": "This task is public"
@@ -1119,8 +1146,8 @@
   "TaskForm.makePublicConfirmation.title": {
     "message": "Make this task public?"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  "TaskForm.taskFileRequired": {
+    "message": "Un fichier de tâche est requis avant l’enregistrement."
   },
   "TaskForm.title": {
     "message": "Titre"
@@ -1161,11 +1188,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analyse - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "Cette activité ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "Cette activité ne peut pas être modifiée car elle est déjà utilisée dans une leçon avec des élèves inscrits."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Sauvegarder l'activité"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "banque d'activités"
+  },
   "TaskInstanceDetails.title": {
     "message": "Modifier l'activité - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "Voir l'activité"
   },
   "TaskInstanceList.title": {
     "message": "Activités"
@@ -1324,7 +1363,7 @@
     "message": "Titre"
   },
   "TaskTable.conflictErrorMessage": {
-    "message": "Impossible de supprimer l'activité car elle est actuellement utilisée."
+    "message": "Impossible de supprimer cette activité car elle est actuellement utilisée."
   },
   "TaskTable.createTask": {
     "message": "Créer une activité"
@@ -1345,10 +1384,10 @@
     "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
   },
   "TaskTable.errorMessage": {
-    "message": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer !"
+    "message": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
   },
   "TaskTable.successMessage": {
-    "message": "Activité supprimée avec succès"
+    "message": "L'activité a été supprimée avec succès"
   },
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"
