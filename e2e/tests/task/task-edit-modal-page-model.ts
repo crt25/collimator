@@ -37,6 +37,7 @@ export class TaskEditModalPageModel {
   async cancel(): Promise<void> {
     await this.waitForModal();
     await this.cancelButton.click();
+    await this.modalConfirmButton.click();
   }
 
   async waitForModal(): Promise<void> {
