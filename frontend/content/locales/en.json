@@ -861,6 +861,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Yes, change type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Change task type"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
   },
@@ -873,8 +882,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+  "TaskForm.destructiveAction.body": {
+    "message": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Yes, continue"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "This action will delete reference solutions"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "A task file is required before saving."
   },
   "TaskForm.title": {
     "message": "Title"

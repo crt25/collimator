@@ -1089,6 +1089,15 @@
   "TaskForm.blobValidation": {
     "message": "Les données du fichier fourni sont invalides"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Oui, changer le type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Changer le type de la tâche"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
   },
@@ -1101,8 +1110,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  "TaskForm.destructiveAction.body": {
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Oui, continuer"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "Cette action supprimera les solutions de référence"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "Un fichier de tâche est requis avant l’enregistrement."
   },
   "TaskForm.title": {
     "message": "Titre"

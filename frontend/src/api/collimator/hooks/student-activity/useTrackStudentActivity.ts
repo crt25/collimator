@@ -96,7 +96,7 @@ export const useTrackStudentActivity = (): [
 
     // clean up the event listener on component unmount
     return (): void => window.removeEventListener("online", handleOnline);
-  }, [authOptions]);
+  }, [authOptions, trackActivity]);
 
   return [
     useCallback<TrackActivityType>(
@@ -119,7 +119,7 @@ export const useTrackStudentActivity = (): [
           throw error;
         }
       },
-      [authOptions],
+      [authOptions, trackActivity],
     ),
     activityTrackingError,
   ];
