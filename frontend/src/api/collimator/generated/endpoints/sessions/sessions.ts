@@ -302,14 +302,6 @@ export const getSessionsControllerGetSessionProgressV0Url = (
   return `/api/v0/classes/${classId}/sessions/${id}/progress`;
 };
 
-export const getSessionsControllerGetSessionTaskSolveV0Url = (
-  classId: number,
-  id: number,
-  taskId: number,
-) => {
-  return `/api/v0/classes/${classId}/sessions/${id}/task/${taskId}/solve`;
-};
-
 export const sessionsControllerGetSessionProgressV0 = async (
   classId: number,
   id: number,

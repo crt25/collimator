@@ -121,7 +121,6 @@ export class TasksController {
 
   @Get()
   @Roles([UserType.ADMIN, UserType.TEACHER])
-  @ApiQuery({ name: "teacherId", required: false, type: Number })
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
@@ -130,8 +129,6 @@ export class TasksController {
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
     @AuthenticatedUser() user: User,
-    @Query("teacherId", new ParseIntPipe({ optional: true }))
-    teacherId?: number,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto[]> {
@@ -143,14 +140,7 @@ export class TasksController {
       includeSoftDelete,
     );
 
-    const isAuthorized = await this.authorizationService.canListTasksOfTeacher(
-      user,
-      teacherId,
-    );
-
-    if (!isAuthorized) {
-      return publicTasks.map((task) => ExistingTaskDto.fromQueryResult(task));
-    }
+    const teacherId = user.type === UserType.TEACHER ? user.id : undefined;
 
     const privateTasks = await this.tasksService.findManyWithInUseStatus(
       {

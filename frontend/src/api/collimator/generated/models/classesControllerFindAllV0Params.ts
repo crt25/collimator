@@ -7,6 +7,5 @@
  */
 
 export type ClassesControllerFindAllV0Params = {
-  teacherId?: number;
   includeSoftDelete?: boolean;
 };

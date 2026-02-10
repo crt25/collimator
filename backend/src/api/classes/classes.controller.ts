@@ -20,7 +20,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
-import { User } from "@prisma/client";
+import { User, UserType } from "@prisma/client";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
@@ -54,7 +54,6 @@ export class ClassesController {
   }
 
   @Get()
-  @ApiQuery({ name: "teacherId", required: false, type: Number })
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
@@ -63,11 +62,11 @@ export class ClassesController {
   @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
     @AuthenticatedUser() user: User,
-    @Query("teacherId", new ParseIntPipe({ optional: true }))
-    teacherId?: number,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete = false,
   ): Promise<ExistingClassWithTeacherDto[]> {
+    const teacherId = user.type === UserType.TEACHER ? user.id : undefined;
+
     const isAuthorized =
       await this.authorizationService.canListClassesOfTeacher(user, teacherId);
 

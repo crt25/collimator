@@ -82,22 +82,6 @@ export class AuthorizationService {
     return task !== null;
   }
 
-  async canListTasksOfTeacher(
-    authenticatedUser: User,
-    teacherId?: number,
-  ): Promise<boolean> {
-    if (authenticatedUser.type === UserType.ADMIN) {
-      return true;
-    }
-
-    // teachers can only list their own tasks
-    return (
-      authenticatedUser.type === UserType.TEACHER &&
-      teacherId !== undefined &&
-      authenticatedUser.id === teacherId
-    );
-  }
-
   async canUpdateTask(
     authenticatedUser: User,
     taskId: number,
@@ -219,8 +203,8 @@ export class AuthorizationService {
                 students: {
                   some: {
                     studentId: authenticatedStudent.id,
-                    deletedAt: null
-                  }
+                    deletedAt: null,
+                  },
                 },
               },
             },
