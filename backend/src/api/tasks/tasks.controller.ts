@@ -35,7 +35,6 @@ import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-intercept
 import { fromQueryResults } from "../helpers";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import {
-  RequiresSoftDeletePermission,
   NonUserRoles,
   Roles,
 } from "../authentication/role.decorator";
@@ -126,7 +125,7 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
+  
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
@@ -145,7 +144,7 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
+  
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -165,7 +164,7 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
@@ -203,7 +202,7 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
@@ -240,7 +239,7 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
+  
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,

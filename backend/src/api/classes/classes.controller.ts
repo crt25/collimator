@@ -24,7 +24,6 @@ import { User } from "@prisma/client";
 import { fromQueryResults } from "../helpers";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { RequiresSoftDeletePermission } from "../authentication/role.decorator";
 import {
   CreateClassDto,
   ExistingClassDto,
@@ -61,7 +60,6 @@ export class ClassesController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: ExistingClassWithTeacherDto, isArray: true })
   async findAll(
     @AuthenticatedUser() user: User,
@@ -96,7 +94,6 @@ export class ClassesController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
@@ -133,7 +130,6 @@ export class ClassesController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async update(

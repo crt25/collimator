@@ -22,5 +22,3 @@ export const AdminOnly = (): CustomDecorator<string> => Roles([UserType.ADMIN]);
 export const StudentOnly = (): CustomDecorator<string> =>
   Roles([NonUserRoles.STUDENT]);
 
-export const RequiresSoftDeletePermission = (): CustomDecorator<string> =>
-  SetMetadata(SOFT_DELETE_ROLES, [UserType.TEACHER, UserType.ADMIN]);

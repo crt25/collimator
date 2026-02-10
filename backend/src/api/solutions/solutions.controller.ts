@@ -38,7 +38,6 @@ import { AuthorizationService } from "../authorization/authorization.service";
 import {
   AdminOnly,
   NonUserRoles,
-  RequiresSoftDeletePermission,
   Roles,
   StudentOnly,
 } from "../authentication/role.decorator";
@@ -136,7 +135,6 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: CurrentAnalysesDto })
   async findCurrentAnalyses(
     @AuthenticatedUser() user: User,
@@ -184,7 +182,6 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -216,7 +213,6 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiOkResponse({ type: ExistingStudentSolutionDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -257,7 +253,6 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
@@ -303,7 +298,6 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
-  @RequiresSoftDeletePermission()
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @HttpCode(204)
