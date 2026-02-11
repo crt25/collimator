@@ -103,11 +103,22 @@ const SessionForm = ({
   const intl = useIntl();
 
   const schema = useYupSchema({
-    title: yup.string().required(),
-    description: yup.string().required(),
+    title: yup
+      .string()
+      .label(intl.formatMessage(messages.title))
+      .required()
+      .min(1)
+      .max(200),
+    description: yup
+      .string()
+      .label(intl.formatMessage(messages.description))
+      .required()
+      .min(1)
+      .max(2000),
     taskIds: yup.array().of(yup.number().required()).required(),
     sharingType: yup
       .mixed<SharingType>()
+      .label(intl.formatMessage(messages.sharingType))
       .oneOf(Object.values(SharingType))
       .required(),
   });
