@@ -69,19 +69,6 @@ export class AuthorizationService {
     return task !== null;
   }
 
-  async canViewTask(authenticatedUser: User, taskId: number): Promise<boolean> {
-    if (await this.isAdminOrCreatorOfTask(authenticatedUser, taskId)) {
-      return true;
-    }
-
-    const task = await this.prisma.task.findUnique({
-      where: { id: taskId, isPublic: true },
-      select: { id: true },
-    });
-
-    return task !== null;
-  }
-
   async canUpdateTask(
     authenticatedUser: User,
     taskId: number,
