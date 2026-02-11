@@ -1,8 +1,8 @@
-# Student Identity Management
+# Student identity management
 
 ![](protocol.png "Protocol Visualization")
 
-We consider the collimator server to be honest but curious, i.e. the server will follow the protocols but may store additional information.
+We consider the Collimator server to be honest but curious, i.e. the server will follow the protocols but may store additional information.
 
 Each student will be assigned a long-lived pseudonym that allows the correlation of activity across sessions.
 There is the requirement that teachers need to see who their students are in class meaning a teacher must be able to associate a student's identity with their pseudonym used by the system.
@@ -18,7 +18,7 @@ In order to authenticate, student $S$ then performs the OpenId Connect flow with
 After receiving an id token containing the identifier $\mathrm{id}_{S}$, the student's machine generates a session-specific ephemeral keypair $(\mathrm{pk}_{S,j}, \mathrm{sk}_{S,j})$ and performs a Diffie-Hellman key exchange with the teacher.
 Since student $S$ already knows $\mathrm{pk}_{T}$, it can already derive the shared symmetric ephemeral secret $s_{T,S,j}$ and send both, the public key $\mathrm{pk}_{S,j}$ required for the Diffie-Hellman key exchange and the identity $\mathrm{id}_{S}$ encrypted under the ephemeral shared secret $s_{T,S,j}$, i.e. $\{\mathrm{id}_{S}\}_{s_{T,S,j}}$, to the teacher. 
 
-Note, that this message does not contain any confidential information and the server can therfore be relied upon for forwarding the message.
+Note that this message does not contain any confidential information and the server can therefore be relied upon for forwarding the message.
 An impersonation of a student is not feasible for the server as it would require the server to forge a valid id token which we assume it cannot (i.e. we hope for the student to protect their authentication methods at the OpenId Connect provider).
 
 After $T$ receives $\mathrm{pk}_{S,j}$ and $\{\mathrm{id}_{S}\}_{s_{T,S,j}}$, they can derive $s_{T,S,j}$ from $\mathrm{pk}_{S,j}$ and $\mathrm{sk}_{T}$.
@@ -33,4 +33,4 @@ Finally, $S$ decrypts the authentication token $t_{S'}$ for its pseudonym $S'$ a
 Note that it is advisable to introduce random delays or shuffling of the order of messages to prevent the server from correlating different requests and deducing a student's identity, especially if the server is used for proxying the messages.
 
 By generating an ephemeral key for communication, the student gets the guarantee for perfect forward secrecy with respect to the exchanged messages.
-Note that the teacher does not get this guarantee as it does not generate an ephemeral key (this is different from TLS); although in reality since students have an interest in PFS, they will generate an ephemeral key resulting in PFS for both parties.
+Note that the teacher does not get this guarantee as it does not generate an ephemeral key (this is different from TLS); although in reality, since students have an interest in PFS, they will generate an ephemeral key resulting in PFS for both parties.

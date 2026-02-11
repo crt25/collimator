@@ -118,7 +118,7 @@ await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
 export const installNbConvert = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing nbconver...");
+  console.debug("Installing nbconvert...");
   await executePythonInKernel({
     kernel,
     // Micropip by default installs all dependencies including tornado which is not mandatory,
