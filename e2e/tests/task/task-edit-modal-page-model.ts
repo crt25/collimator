@@ -25,9 +25,6 @@ export class TaskEditModalPageModel {
     return this.page.getByTestId("confirm-button");
   }
 
-  get referenceSolutionsTab(): Locator {
-    return this.modal.getByTestId("task-instance-reference-solutions-tab");
-  }
 
   async import(): Promise<void> {
     await this.importButton.click();
@@ -42,16 +39,8 @@ export class TaskEditModalPageModel {
     await this.cancelButton.click();
   }
 
-  async goToReferenceSolutions(): Promise<void> {
-    await this.referenceSolutionsTab.click();
-  }
-
   async waitForModal(): Promise<void> {
     await this.page.waitForSelector(TaskEditModalPageModel.taskModal);
-  }
-
-  async waitForModalConfirmation(): Promise<void> {
-    await this.page.waitForSelector("[data-testid=confirm-button]");
   }
 
   static async create(page: Page): Promise<TaskEditModalPageModel> {

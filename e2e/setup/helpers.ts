@@ -118,8 +118,8 @@ export const startBackend = (config: {
   jwkEndpoint?: string;
   userInfoEndpoint?: string;
   clientId?: string;
-}): ChildProcessWithoutNullStreams =>
-  spawn("yarn", ["start:built:coverage"], {
+}): ChildProcessWithoutNullStreams => {
+  const backendProcess = spawn("yarn", ["start:built:coverage"], {
     env: {
       ...process.env,
       NODE_ENV: "production",
@@ -134,6 +134,9 @@ export const startBackend = (config: {
     cwd: getBackendPath(),
     shell: true,
   });
+
+  return backendProcess;
+};
 
 export const buildFrontend = (
   config: {

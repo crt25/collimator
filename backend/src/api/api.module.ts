@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
+import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from "@nestjs/core";
 import { SentryGlobalFilter } from "@sentry/nestjs/setup";
 import * as interceptors from "./interceptors";
 import { UsersModule } from "./users/users.module";
@@ -9,6 +9,7 @@ import { SessionsModule } from "./sessions/sessions.module";
 import { SolutionsModule } from "./solutions/solutions.module";
 import { AuthenticationModule } from "./authentication/authentication.module";
 import { StudentActivityModule } from "./student-activity/student-activity.module";
+import { RoleGuard } from "./authentication/role.guard";
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import { StudentActivityModule } from "./student-activity/student-activity.modul
       provide: APP_FILTER,
       useClass: SentryGlobalFilter,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    }
   ],
 })
 export class ApiModule {}

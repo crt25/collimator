@@ -7,9 +7,11 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   StreamableFile,
   UploadedFiles,
   UseInterceptors,
@@ -23,6 +25,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -31,8 +34,12 @@ import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
 import { fromQueryResults } from "../helpers";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import {
+  NonUserRoles,
+  Roles,
+} from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { NonUserRoles, Roles } from "../authentication/role.decorator";
+
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -113,35 +120,63 @@ export class TasksController {
 
   @Get()
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
-  async findAll(): Promise<ExistingTaskDto[]> {
+  async findAll(
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
+  ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
 
-    const tasks = await this.tasksService.findMany({});
+    const tasks = await this.tasksService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingTaskDto, tasks);
   }
 
   @Get(":id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const task = await this.tasksService.findByIdOrThrow(id);
+    const task = await this.tasksService.findByIdOrThrow(id, includeSoftDelete);
     return ExistingTaskDto.fromQueryResult(task);
   }
 
   @Get(":id/with-reference-solutions")
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
     const [task, isInUse] = await Promise.all([
-      this.tasksService.findByIdOrThrowWithReferenceSolutions(id),
+      this.tasksService.findByIdOrThrowWithReferenceSolutions(
+        id,
+        includeSoftDelete,
+      ),
       this.tasksService.isTaskInUse(id),
     ]);
 
@@ -162,12 +197,23 @@ export class TasksController {
   @Get(":id/download")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
-    const task = await this.tasksService.downloadByIdOrThrow(id);
+    const task = await this.tasksService.downloadByIdOrThrow(
+      id,
+      includeSoftDelete,
+    );
     return new StreamableFile(task.data, {
       type: task.mimeType,
     });
@@ -188,6 +234,12 @@ export class TasksController {
     ]),
     JsonToObjectsInterceptor(["referenceSolutions"]),
   )
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -197,6 +249,8 @@ export class TasksController {
       taskFile?: Express.Multer.File[];
       referenceSolutionsFiles?: Express.Multer.File[];
     },
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
     const isAuthorized = await this.authorizationService.canUpdateTask(
       user,
@@ -230,6 +284,7 @@ export class TasksController {
         taskFile.buffer,
         referenceSolutions,
         referenceSolutionsFiles,
+        includeSoftDelete,
       );
 
       return ExistingTaskDto.fromQueryResult(task);
@@ -242,6 +297,11 @@ export class TasksController {
   }
 
   @Delete(":id")
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()

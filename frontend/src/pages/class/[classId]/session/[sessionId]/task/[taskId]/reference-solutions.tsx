@@ -14,7 +14,6 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import SessionNavigation from "@/components/session/SessionNavigation";
-import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import TaskFormReferenceSolutions, {
   TaskFormReferenceSolutionsSubmission,
@@ -113,18 +112,7 @@ const TaskInstanceReferenceSolutions = () => {
         >
           {([klass, session, task, taskFile]) => (
             <>
-              <PageHeading
-                variant="title"
-                actions={
-                  <TaskSessionActions
-                    classId={klass.id}
-                    sessionId={session.id}
-                    taskId={task.id}
-                  />
-                }
-              >
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}

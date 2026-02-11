@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Transform } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
+import { IsDate, IsOptional } from "class-validator";
 import { ClassExtended } from "../classes.service";
 
 export class ClassStudentDto {
@@ -34,4 +35,11 @@ export class ClassStudentDto {
   )
   @Expose()
   readonly pseudonym!: string;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 }

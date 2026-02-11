@@ -20,6 +20,7 @@ export const useRevalidateSolutionList = (): ((
           classId,
           sessionId,
           taskId,
+          {},
         ),
       );
 

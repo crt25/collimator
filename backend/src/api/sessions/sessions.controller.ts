@@ -5,15 +5,18 @@ import {
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import "multer";
@@ -76,9 +79,17 @@ export class SessionsController {
 
   @Get()
   @ApiOkResponse({ type: ExistingSessionDto, isArray: true })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto[]> {
     const isAuthorized = await this.authorizationService.canListSessions(
       user,
@@ -91,9 +102,12 @@ export class SessionsController {
 
     // TODO: add pagination support
 
-    const sessions = await this.sessionsService.findMany({
-      where: { classId },
-    });
+    const sessions = await this.sessionsService.findMany(
+      {
+        where: { classId },
+      },
+      includeSoftDelete,
+    );
     return fromQueryResults(ExistingSessionDto, sessions);
   }
 
@@ -116,6 +130,12 @@ export class SessionsController {
   @Get(":id")
   @ApiOkResponse({ type: ExistingSessionExtendedDto })
   @Roles([UserType.TEACHER, UserType.ADMIN, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
@@ -123,6 +143,8 @@ export class SessionsController {
     @AuthenticatedStudent() student: Student | null,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionExtendedDto> {
     const isAuthorized = await this.authorizationService.canViewSession(
       user,
@@ -137,18 +159,27 @@ export class SessionsController {
     const session = await this.sessionsService.findByIdAndClassOrThrow(
       id,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionExtendedDto.fromQueryResult(session);
   }
 
   @Post(":id/start")
   @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async start(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
@@ -159,31 +190,63 @@ export class SessionsController {
       throw new ForbiddenException();
     }
 
-    return this.changeStatus(user, classId, id, SessionStatus.ONGOING);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.ONGOING,
+      includeSoftDelete,
+    );
   }
 
   @Post(":id/pause")
   @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async pause(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(user, classId, id, SessionStatus.PAUSED);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.PAUSED,
+      includeSoftDelete,
+    );
   }
 
   @Post(":id/finish")
   @ApiOkResponse({ type: ExistingSessionDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async finish(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
-    return this.changeStatus(user, classId, id, SessionStatus.FINISHED);
+    return this.changeStatus(
+      user,
+      classId,
+      id,
+      SessionStatus.FINISHED,
+      includeSoftDelete,
+    );
   }
 
   async changeStatus(
@@ -191,6 +254,7 @@ export class SessionsController {
     classId: number,
     id: SessionId,
     status: SessionStatus,
+    includeSoftDelete = false,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       authenticatedUser,
@@ -205,6 +269,7 @@ export class SessionsController {
       id,
       status,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionDto.fromQueryResult(session);
   }
@@ -212,12 +277,19 @@ export class SessionsController {
   @Patch(":id")
   @ApiCreatedResponse({ type: ExistingSessionDto })
   @ApiForbiddenResponse()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiNotFoundResponse()
   async update(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
     @Param("id", ParseIntPipe) id: SessionId,
     @Body() updateSessionDto: UpdateSessionDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingSessionDto> {
     const isAuthorized = await this.authorizationService.canUpdateSession(
       user,
@@ -234,6 +306,7 @@ export class SessionsController {
       dto,
       taskIds,
       classId,
+      includeSoftDelete,
     );
     return ExistingSessionDto.fromQueryResult(session);
   }

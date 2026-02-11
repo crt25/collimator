@@ -14,7 +14,6 @@ import AnonymizationToggle from "@/components/AnonymizationToggle";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import TaskInstanceProgressList from "@/components/task-instance/TaskInstanceProgressList";
-import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
 
@@ -78,18 +77,7 @@ const TaskInstanceProgress = () => {
         >
           {([klass, session, task]) => (
             <>
-              <PageHeading
-                variant="title"
-                actions={
-                  <TaskSessionActions
-                    classId={klass.id}
-                    sessionId={session.id}
-                    taskId={task.id}
-                  />
-                }
-              >
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}

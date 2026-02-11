@@ -209,6 +209,24 @@
   "DEPRECATED: UserDetail.table.type": {
     "message": "Type"
   },
+  "DEPRECATED: CreateLesson.header": {
+    "message": "Créer une leçon"
+  },
+  "DEPRECATED: CreateSession.header": {
+    "message": "Créer une leçon"
+  },
+  "DEPRECATED: CreateTask.header": {
+    "message": "Créer une activité"
+  },
+  "DEPRECATED: CreateUser.header": {
+    "message": "Créer un Utilisateur"
+  },
+  "DEPRECATED: ListClasses.pageTitle": {
+    "message": "Gestion des classes"
+  },
+  "DEPRECATED: embeddedApp.taskLoaded": {
+    "message": "Tâche chargée avec succès"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -470,9 +488,6 @@
   "CreateClass.title": {
     "message": "Créer une leçon"
   },
-  "CreateLesson.header": {
-    "message": "Créer une leçon"
-  },
   "CreateLesson.submit": {
     "message": "Créer une leçon"
   },
@@ -484,9 +499,6 @@
   },
   "CreateSession.errorMessage": {
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
-  },
-  "CreateSession.header": {
-    "message": "Créer une leçon"
   },
   "CreateSession.returnToSessionList": {
     "message": "Retourner à la liste des leçons"
@@ -518,9 +530,6 @@
   "CreateSessionForm.title": {
     "message": "Titre"
   },
-  "CreateTask.header": {
-    "message": "Créer une activité"
-  },
   "CreateTask.submit": {
     "message": "Créer une activité"
   },
@@ -538,9 +547,6 @@
   },
   "CreateTaskInstance.title": {
     "message": "Créer une activité"
-  },
-  "CreateUser.header": {
-    "message": "Créer un Utilisateur"
   },
   "CreateUser.submit": {
     "message": "Créer un Utilisateur"
@@ -606,10 +612,10 @@
     "message": "Sauvegarder l'activité"
   },
   "EditTask.taskLockedDescription": {
-    "message": "Cette tâche est actuellement utilisée par une ou plusieurs classes et ne peut pas être modifiée ni supprimée."
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut pas être modifiée ou supprimée."
   },
   "EditTask.taskLockedTitle": {
-    "message": "La tâche est verrouillée"
+    "message": "L'activité est verrouillée"
   },
   "EditTask.title": {
     "message": "Modifier l'activité - {title}"
@@ -738,11 +744,11 @@
   "ListClasses.header": {
     "message": "Gestion des classes"
   },
+  "ListClasses.heading": {
+    "message": "Gestion des classes"
+  },
   "ListClasses.pageDescription": {
     "message": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-  },
-  "ListClasses.pageTitle": {
-    "message": "Gestion des classes"
   },
   "ListLessons.header": {
     "message": "Gestion des leçons"
@@ -890,6 +896,9 @@
   },
   "SessionForm.closeConfirmation.title": {
     "message": "Attention : vous pourriez perdre votre travail !"
+  },
+  "SessionForm.createTask": {
+    "message": "Créer une activité"
   },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonyme"
@@ -1081,7 +1090,7 @@
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
   "TaskForm.SaveConflictError": {
-    "message": "La tâche est désormais utilisée par une ou plusieurs classes et ne peut plus être modifiée."
+    "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
   },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
@@ -1170,11 +1179,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analyse - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "Cette activité ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "Cette activité ne peut pas être modifiée car elle est déjà utilisée dans une leçon avec des élèves inscrits."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Sauvegarder l'activité"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "banque d'activités"
+  },
   "TaskInstanceDetails.title": {
     "message": "Modifier l'activité - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "Voir l'activité"
   },
   "TaskInstanceList.title": {
     "message": "Activités"
@@ -1333,7 +1354,7 @@
     "message": "Titre"
   },
   "TaskTable.conflictErrorMessage": {
-    "message": "Impossible de supprimer la tâche car elle est actuellement utilisée."
+    "message": "Impossible de supprimer cette activité car elle est actuellement utilisée."
   },
   "TaskTable.createTask": {
     "message": "Créer une activité"
@@ -1354,10 +1375,10 @@
     "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
   },
   "TaskTable.errorMessage": {
-    "message": "Une erreur s’est produite lors de la suppression de la tâche. Veuillez réessayer."
+    "message": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
   },
   "TaskTable.successMessage": {
-    "message": "La tâche a été supprimée avec succès"
+    "message": "L'activité a été supprimée avec succès"
   },
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"
@@ -1547,9 +1568,6 @@
   },
   "embeddedApp.taskImported": {
     "message": "Tâche importée avec succès"
-  },
-  "embeddedApp.taskLoaded": {
-    "message": "Tâche chargée avec succès"
   },
   "forms.arrayLength": {
     "message": "$'{path}' doit avoir $'{length}' éléments"

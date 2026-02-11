@@ -11,7 +11,7 @@ export const useRevalidateClassSessionList = (): ((
   return useCallback(
     (classId: number) => {
       invalidateParameterizedKey(mutate, () =>
-        getSessionsControllerFindAllV0Url(classId),
+        getSessionsControllerFindAllV0Url(classId, {}),
       );
     },
     [mutate],

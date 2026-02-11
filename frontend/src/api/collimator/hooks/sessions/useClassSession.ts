@@ -9,34 +9,32 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 
 export type GetSessionReturnType = ExistingSessionExtended;
 
-const fetchByClassIdAndTransform = (
+const fetchAndTransform = (
   options: RequestInit,
   classId: number,
   sessionId: number,
 ): Promise<GetSessionReturnType> =>
-  sessionsControllerFindOneV0(classId, sessionId, options).then(
+  sessionsControllerFindOneV0(classId, sessionId, {}, options).then(
     ExistingSessionExtended.fromDto,
   );
 
 export const useClassSession = (
   classId?: number | string,
-  id?: number | string,
+  sessionId?: number | string,
 ): ApiResponse<GetSessionReturnType, Error> => {
   const numericClassId = getIdOrNaN(classId);
-  const numericSessionId = getIdOrNaN(id);
+  const numericSessionId = getIdOrNaN(sessionId);
 
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getSessionsControllerFindOneV0Url(numericClassId, numericSessionId),
+    numericClassId && numericSessionId
+      ? getSessionsControllerFindOneV0Url(numericClassId, numericSessionId, {})
+      : undefined,
     () =>
       isNaN(numericClassId) || isNaN(numericSessionId)
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
           new Promise<GetSessionReturnType>(() => {})
-        : fetchByClassIdAndTransform(
-            authOptions,
-            numericClassId,
-            numericSessionId,
-          ),
+        : fetchAndTransform(authOptions, numericClassId, numericSessionId),
   );
 };

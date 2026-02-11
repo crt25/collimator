@@ -260,9 +260,6 @@
   "CreateClass.title": {
     "message": "Create Class"
   },
-  "CreateLesson.header": {
-    "message": "Create Lesson"
-  },
   "CreateLesson.submit": {
     "message": "Create Lesson"
   },
@@ -274,9 +271,6 @@
   },
   "CreateSession.errorMessage": {
     "message": "There was an error creating the new Lesson. Please try to save again!"
-  },
-  "CreateSession.header": {
-    "message": "Create Lesson"
   },
   "CreateSession.returnToSessionList": {
     "message": "Return to Lesson List"
@@ -308,9 +302,6 @@
   "CreateSessionForm.title": {
     "message": "Title"
   },
-  "CreateTask.header": {
-    "message": "Create Task"
-  },
   "CreateTask.submit": {
     "message": "Create Task"
   },
@@ -328,9 +319,6 @@
   },
   "CreateTaskInstance.title": {
     "message": "Create Task"
-  },
-  "CreateUser.header": {
-    "message": "Create User"
   },
   "CreateUser.submit": {
     "message": "Create User"
@@ -528,11 +516,11 @@
   "ListClasses.header": {
     "message": "Classes"
   },
-  "ListClasses.pageDescription": {
-    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-  },
-  "ListClasses.pageTitle": {
+  "ListClasses.heading": {
     "message": "Class Manager"
+  },
+  "ListClasses.pageDescription": {
+    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
   },
   "ListLessons.header": {
     "message": "Lesson Manager"
@@ -680,6 +668,9 @@
   },
   "SessionForm.closeConfirmation.title": {
     "message": "Attention: you may lose your work!"
+  },
+  "SessionForm.createTask": {
+    "message": "Create Task"
   },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
@@ -960,11 +951,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analysis - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "This task cannot be edited here. To edit, go to the {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Save Task"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "task bank"
+  },
   "TaskInstanceDetails.title": {
-    "message": "Edit Task - {title}"
+    "message": "Task - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "View Task"
   },
   "TaskInstanceList.title": {
     "message": "Tasks"
@@ -1337,9 +1340,6 @@
   },
   "embeddedApp.taskImported": {
     "message": "Task imported successfully"
-  },
-  "embeddedApp.taskLoaded": {
-    "message": "Task loaded successfully"
   },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"

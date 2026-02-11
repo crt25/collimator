@@ -7,6 +7,8 @@ export const useRevalidateTaskList = (): (() => void) => {
   const { mutate } = useSWRConfig();
 
   return useCallback(() => {
-    invalidateParameterizedKey(mutate, getTasksControllerFindAllV0Url);
+    invalidateParameterizedKey(mutate, () =>
+      getTasksControllerFindAllV0Url({}),
+    );
   }, [mutate]);
 };
