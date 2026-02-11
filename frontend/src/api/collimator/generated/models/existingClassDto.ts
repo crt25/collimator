@@ -11,4 +11,6 @@ export interface ExistingClassDto {
   teacherId: number;
   /** The class's unique identifier, a positive integer. */
   id: number;
+  /** @nullable */
+  deletedAt?: string | null;
 }

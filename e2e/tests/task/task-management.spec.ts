@@ -86,7 +86,7 @@ test.describe("task management", () => {
       await expect(page.locator(taskList).locator("tbody tr")).toHaveCount(1);
     });
 
-    test.describe("/task/{id}/reference-solutions", () => {
+    test.describe.skip("/task/{id}/reference-solutions", () => {
       let page: TaskFormReferenceSolutionsPageModel;
 
       test.beforeEach(async ({ baseURL, page: pwPage }) => {

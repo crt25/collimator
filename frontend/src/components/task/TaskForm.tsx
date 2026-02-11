@@ -238,6 +238,13 @@ const TaskForm = ({
     initialValues?.type ?? TaskType.SCRATCH,
   );
 
+  // derive if we are in task creation mode from the fact initialValues
+  const isTaskCreation = useMemo(
+    () =>
+      initialValues?.taskFile === null || initialValues?.taskFile === undefined,
+    [initialValues?.taskFile],
+  );
+
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
     title: string;
     description: string;
@@ -306,6 +313,11 @@ const TaskForm = ({
   });
 
   useEffect(() => {
+    if (isTaskCreation) {
+      // skip the type management logic if we are in task creation mode
+      return;
+    }
+
     if (taskType === originalType) {
       return;
     }
@@ -320,7 +332,7 @@ const TaskForm = ({
     setPendingTypeChange(taskType);
     setValueClean("type", originalType);
     setOpenModal(ModalStates.changeTypeConfirmation);
-  }, [taskType, originalType, hasTypeChanged, setValueClean]);
+  }, [taskType, originalType, hasTypeChanged, setValueClean, isTaskCreation]);
 
   const onConfirmTypeChange = useCallback(() => {
     if (!pendingTypeChange) {
@@ -500,38 +512,40 @@ const TaskForm = ({
               disabled={disabled}
             />
 
-            <Field.Root
-              invalid={
-                !!errors.taskFile ||
-                !!errors.initialSolution ||
-                !!errors.initialSolutionFile
-              }
-            >
-              <EditTaskButton
-                data-testid="edit-task-button"
-                type="button"
-                onClick={handleOpenEditTask}
-                disabled={disabled}
+            {!disabled && (
+              <Field.Root
+                invalid={
+                  !!errors.taskFile ||
+                  !!errors.initialSolution ||
+                  !!errors.initialSolutionFile
+                }
               >
-                {hasTypeChanged || !taskFile ? (
-                  <FormattedMessage
-                    id="TaskForm.blob.create"
-                    defaultMessage="Create task in external application"
-                  />
-                ) : (
-                  <FormattedMessage
-                    id="TaskForm.blob.edit"
-                    defaultMessage="Edit task in external application"
-                  />
-                )}
-              </EditTaskButton>
+                <EditTaskButton
+                  data-testid="edit-task-button"
+                  type="button"
+                  onClick={handleOpenEditTask}
+                  disabled={disabled}
+                >
+                  {hasTypeChanged || !taskFile ? (
+                    <FormattedMessage
+                      id="TaskForm.blob.create"
+                      defaultMessage="Create task in external application"
+                    />
+                  ) : (
+                    <FormattedMessage
+                      id="TaskForm.blob.edit"
+                      defaultMessage="Edit task in external application"
+                    />
+                  )}
+                </EditTaskButton>
 
-              <Field.ErrorText>
-                {errors.taskFile?.message}
-                {errors.initialSolution?.message}
-                {errors.initialSolutionFile?.message}
-              </Field.ErrorText>
-            </Field.Root>
+                <Field.ErrorText>
+                  {errors.taskFile?.message}
+                  {errors.initialSolution?.message}
+                  {errors.initialSolutionFile?.message}
+                </Field.ErrorText>
+              </Field.Root>
+            )}
           </GridItem>
           <GridItem colSpan={{ base: 12, md: 6 }}>
             <Field.Root>

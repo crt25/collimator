@@ -16,4 +16,6 @@ export interface DeletedTaskDto {
   id: number;
   /** The user's unique identifier, a positive integer. */
   creatorId: number;
+  /** @nullable */
+  deletedAt?: string | null;
 }

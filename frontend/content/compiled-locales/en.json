@@ -535,12 +535,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +557,6 @@
     {
       "type": 0,
       "value": "There was an error creating the new Lesson. Please try to save again!"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +619,6 @@
       "value": "Title"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Create Task"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +649,6 @@
     {
       "type": 0,
       "value": "Create Task"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Create User"
     }
   ],
   "CreateUser.submit": [
@@ -1085,16 +1061,16 @@
       "value": "Classes"
     }
   ],
-  "ListClasses.pageDescription": [
-    {
-      "type": 0,
-      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-    }
-  ],
-  "ListClasses.pageTitle": [
+  "ListClasses.heading": [
     {
       "type": 0,
       "value": "Class Manager"
+    }
+  ],
+  "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
     }
   ],
   "ListLessons.header": [
@@ -1375,6 +1351,12 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
     }
   ],
   "SessionForm.sharingType.anonymous": [
@@ -1991,20 +1973,52 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Save Task"
     }
   ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "task bank"
+    }
+  ],
   "TaskInstanceDetails.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Task - "
     },
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "View Task"
     }
   ],
   "TaskInstanceList.title": [
@@ -2805,12 +2819,6 @@
     {
       "type": 0,
       "value": "Task imported successfully"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Task loaded successfully"
     }
   ],
   "forms.arrayLength": [

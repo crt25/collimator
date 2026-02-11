@@ -10,4 +10,6 @@ export interface ExistingSolutionDto {
   /** The base64 encoded solution hash. */
   hash: string;
   taskId: number;
+  /** @nullable */
+  deletedAt?: string | null;
 }

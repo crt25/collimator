@@ -20,18 +20,25 @@ export type ClassWithTeacher = Class & Teacher;
 export class ClassesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findByIdOrThrow(id: ClassId): Promise<ClassExtended> {
+  findByIdOrThrow(
+    id: ClassId,
+    includeSoftDelete = false,
+  ): Promise<ClassExtended> {
+    const classQuery = includeSoftDelete ? { id } : { id, deletedAt: null };
+
     return this.prisma.class.findUniqueOrThrow({
-      where: { id },
+      where: classQuery,
       include: {
         sessions: {
           select: {
             id: true,
           },
+          where: includeSoftDelete ? undefined : { deletedAt: null },
         },
         teacher: { select: { id: true, name: true } },
         students: {
           select: { studentId: true, pseudonym: true, keyPairId: true },
+          where: includeSoftDelete ? undefined : { deletedAt: null },
         },
       },
     });
@@ -39,10 +46,20 @@ export class ClassesService {
 
   listClassesWithTeacher(
     args?: Omit<Prisma.ClassFindManyArgs, "select" | "include">,
+    includeSoftDelete = false,
   ): Promise<ClassWithTeacher[]> {
     return this.prisma.class.findMany({
       ...args,
-      include: { teacher: { select: { id: true, name: true } } },
+      where: {
+        ...args?.where,
+        deletedAt: includeSoftDelete ? undefined : null,
+        teacher: includeSoftDelete ? undefined : { deletedAt: null },
+      },
+      include: {
+        teacher: {
+          select: { id: true, name: true, deletedAt: true },
+        },
+      },
     });
   }
 
@@ -54,14 +71,20 @@ export class ClassesService {
     return this.prisma.class.create({ data: checkedClass });
   }
 
-  update(id: ClassId, klass: Prisma.ClassUpdateInput): Promise<Class> {
+  update(
+    id: ClassId,
+    klass: Prisma.ClassUpdateInput,
+    includeSoftDelete = false,
+  ): Promise<Class> {
     return this.prisma.class.update({
       data: klass,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
   deleteById(id: ClassId): Promise<Class> {
-    return this.prisma.class.delete({ where: { id } });
+    return this.prisma.class.delete({
+      where: { id },
+    });
   }
 }
