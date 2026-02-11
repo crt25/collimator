@@ -33,7 +33,7 @@ import "multer";
 import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { Roles } from "../authentication/role.decorator";
+import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
 import {
   CreateTaskDto,
@@ -157,7 +157,7 @@ export class TasksController {
   }
 
   @Get(":id")
-  @Roles([UserType.ADMIN, UserType.TEACHER])
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
@@ -168,16 +168,9 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
-    @AuthenticatedUser() user: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const isAuthorized = await this.authorizationService.canViewTask(user, id);
-
-    if (!isAuthorized) {
-      throw new ForbiddenException();
-    }
-
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrow(id, includeSoftDelete),
       // todo: probably needs to include soft delete too
@@ -188,7 +181,7 @@ export class TasksController {
   }
 
   @Get(":id/with-reference-solutions")
-  @Roles([UserType.ADMIN, UserType.TEACHER])
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
   @ApiQuery({
     name: "includeSoftDelete",
@@ -199,16 +192,9 @@ export class TasksController {
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
-    @AuthenticatedUser() user: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
-    const isAuthorized = await this.authorizationService.canViewTask(user, id);
-
-    if (!isAuthorized) {
-      throw new ForbiddenException();
-    }
-
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrowWithReferenceSolutions(
         id,
@@ -232,7 +218,7 @@ export class TasksController {
   }
 
   @Get(":id/download")
-  @Roles([UserType.ADMIN, UserType.TEACHER])
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
   @ApiQuery({
     name: "includeSoftDelete",
@@ -243,16 +229,9 @@ export class TasksController {
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
-    @AuthenticatedUser() user: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
-    const isAuthorized = await this.authorizationService.canViewTask(user, id);
-
-    if (!isAuthorized) {
-      throw new ForbiddenException();
-    }
-
     const task = await this.tasksService.downloadByIdOrThrow(
       id,
       includeSoftDelete,
