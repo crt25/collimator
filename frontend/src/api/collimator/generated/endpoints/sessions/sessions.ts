@@ -12,6 +12,12 @@ import type {
   ExistingSessionDto,
   ExistingSessionExtendedDto,
   IsSessionAnonymousDto,
+  SessionsControllerFindAllV0Params,
+  SessionsControllerFindOneV0Params,
+  SessionsControllerFinishV0Params,
+  SessionsControllerPauseV0Params,
+  SessionsControllerStartV0Params,
+  SessionsControllerUpdateV0Params,
   StudentSessionProgressDto,
   UpdateSessionDto,
 } from "../../models";
@@ -36,16 +42,32 @@ export const sessionsControllerCreateV0 = async (
   );
 };
 
-export const getSessionsControllerFindAllV0Url = (classId: number) => {
-  return `/api/v0/classes/${classId}/sessions`;
+export const getSessionsControllerFindAllV0Url = (
+  classId: number,
+  params?: SessionsControllerFindAllV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions`;
 };
 
 export const sessionsControllerFindAllV0 = async (
   classId: number,
+  params?: SessionsControllerFindAllV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionDto[]> => {
   return fetchApi<ExistingSessionDto[]>(
-    getSessionsControllerFindAllV0Url(classId),
+    getSessionsControllerFindAllV0Url(classId, params),
     {
       ...options,
       method: "GET",
@@ -77,17 +99,31 @@ export const sessionsControllerIsAnonymousV0 = async (
 export const getSessionsControllerFindOneV0Url = (
   classId: number,
   id: number,
+  params?: SessionsControllerFindOneV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${id}`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${id}?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${id}`;
 };
 
 export const sessionsControllerFindOneV0 = async (
   classId: number,
   id: number,
+  params?: SessionsControllerFindOneV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionExtendedDto> => {
   return fetchApi<ExistingSessionExtendedDto>(
-    getSessionsControllerFindOneV0Url(classId, id),
+    getSessionsControllerFindOneV0Url(classId, id, params),
     {
       ...options,
       method: "GET",
@@ -98,18 +134,32 @@ export const sessionsControllerFindOneV0 = async (
 export const getSessionsControllerUpdateV0Url = (
   classId: number,
   id: number,
+  params?: SessionsControllerUpdateV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${id}`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${id}?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${id}`;
 };
 
 export const sessionsControllerUpdateV0 = async (
   classId: number,
   id: number,
   updateSessionDto: UpdateSessionDto,
+  params?: SessionsControllerUpdateV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionDto> => {
   return fetchApi<ExistingSessionDto>(
-    getSessionsControllerUpdateV0Url(classId, id),
+    getSessionsControllerUpdateV0Url(classId, id, params),
     {
       ...options,
       method: "PATCH",
@@ -143,17 +193,31 @@ export const sessionsControllerRemoveV0 = async (
 export const getSessionsControllerStartV0Url = (
   classId: number,
   id: number,
+  params?: SessionsControllerStartV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${id}/start`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${id}/start?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${id}/start`;
 };
 
 export const sessionsControllerStartV0 = async (
   classId: number,
   id: number,
+  params?: SessionsControllerStartV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionDto> => {
   return fetchApi<ExistingSessionDto>(
-    getSessionsControllerStartV0Url(classId, id),
+    getSessionsControllerStartV0Url(classId, id, params),
     {
       ...options,
       method: "POST",
@@ -164,17 +228,31 @@ export const sessionsControllerStartV0 = async (
 export const getSessionsControllerPauseV0Url = (
   classId: number,
   id: number,
+  params?: SessionsControllerPauseV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${id}/pause`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${id}/pause?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${id}/pause`;
 };
 
 export const sessionsControllerPauseV0 = async (
   classId: number,
   id: number,
+  params?: SessionsControllerPauseV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionDto> => {
   return fetchApi<ExistingSessionDto>(
-    getSessionsControllerPauseV0Url(classId, id),
+    getSessionsControllerPauseV0Url(classId, id, params),
     {
       ...options,
       method: "POST",
@@ -185,17 +263,31 @@ export const sessionsControllerPauseV0 = async (
 export const getSessionsControllerFinishV0Url = (
   classId: number,
   id: number,
+  params?: SessionsControllerFinishV0Params,
 ) => {
-  return `/api/v0/classes/${classId}/sessions/${id}/finish`;
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${id}/finish?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${id}/finish`;
 };
 
 export const sessionsControllerFinishV0 = async (
   classId: number,
   id: number,
+  params?: SessionsControllerFinishV0Params,
   options?: RequestInit,
 ): Promise<ExistingSessionDto> => {
   return fetchApi<ExistingSessionDto>(
-    getSessionsControllerFinishV0Url(classId, id),
+    getSessionsControllerFinishV0Url(classId, id, params),
     {
       ...options,
       method: "POST",

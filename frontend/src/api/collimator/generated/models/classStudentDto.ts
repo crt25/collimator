@@ -16,4 +16,6 @@ export interface ClassStudentDto {
   keyPairId: number | null;
   /** The pseudonym of the student */
   pseudonym: string;
+  /** @nullable */
+  deletedAt?: string | null;
 }

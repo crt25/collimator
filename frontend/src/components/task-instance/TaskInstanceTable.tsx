@@ -1,8 +1,7 @@
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
-import { MdAdd } from "react-icons/md";
-import { Icon, HStack, Text, chakra } from "@chakra-ui/react";
+import { Icon, Text, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
@@ -212,21 +211,6 @@ const TaskInstanceTable = ({
           />
         )}
       </SwrContent>
-      <Button
-        variant="primary"
-        onClick={() =>
-          router.push(`/class/${klass.id}/session/${session.id}/task/create`)
-        }
-        data-testid="task-create-button"
-        marginTop="md"
-      >
-        <HStack>
-          <Icon>
-            <MdAdd />
-          </Icon>
-          {intl.formatMessage(messages.createTask)}
-        </HStack>
-      </Button>
     </TaskInstanceTableWrapper>
   );
 };
