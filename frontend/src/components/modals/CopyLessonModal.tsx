@@ -13,6 +13,7 @@ import { useYupResolver } from "@/hooks/useYupResolver";
 import { toaster } from "../Toaster";
 import Select from "../form/Select";
 import Button from "../Button";
+import { getIdOrNaN } from "@/api/collimator/hooks/helpers";
 
 const messages = defineMessages({
   title: {
@@ -116,8 +117,8 @@ const CopyLessonModal = ({
   } = useAllClasses();
 
   const selectedClassIdNumber = selectedClassId
-    ? parseInt(selectedClassId, 10)
-    : null;
+    ? getIdOrNaN(selectedClassId)
+    : undefined;
 
   const {
     data: sessions,

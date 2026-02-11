@@ -17,15 +17,16 @@ const fetchByClassIdAndTransform = (
     fromDtos(ExistingSession, data),
   );
 
-// classId !== null ? getSessionsControllerFindAllV0Url(classId) : null,
-
 export const useAllClassSessions = (
-  classId: number,
+  classId?: number,
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    classId !== null ? getSessionsControllerFindAllV0Url(classId, {}) : null,
-    () => fetchByClassIdAndTransform(authOptions, classId),
+    classId ? getSessionsControllerFindAllV0Url(classId, {}) : null,
+    () =>
+      classId
+        ? fetchByClassIdAndTransform(authOptions, classId)
+        : new Promise<GetSessionsReturnType>(() => {}),
   );
 };
