@@ -95,6 +95,24 @@
       "value": "Anonymiser les noms"
     }
   ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,

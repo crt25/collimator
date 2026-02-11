@@ -95,6 +95,24 @@
       "value": "Anonymize Names"
     }
   ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "An unexpected error occurred. Please try again later."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,

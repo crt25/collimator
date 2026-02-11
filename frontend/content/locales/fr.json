@@ -278,6 +278,15 @@
   "AnonymizationToggle.label": {
     "message": "Anonymiser les noms"
   },
+  "ApiError.GENERIC_ERROR": {
+    "message": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+  },
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": {
+    "message": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
+  },
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": {
+    "message": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
+  },
   "AstHeightCriterionFilterForm.count": {
     "message": "Hauteur de l’AST"
   },
