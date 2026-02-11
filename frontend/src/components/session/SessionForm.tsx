@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
-import {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,8 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
@@ -18,8 +20,6 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
-import {AuthenticationContext} from "@/contexts/AuthenticationContext";
-import {useClass} from "@/api/collimator/hooks/classes/useClass";
 
 export enum SharingType {
   anonymous = "anonymous",
@@ -136,11 +136,20 @@ const SessionForm = ({
   const { isLoading, data, error } = useAllTasks();
   const intl = useIntl();
 
-
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
 
+  const { data: klass } = useClass(classId);
+  const authenticationContext = useContext(AuthenticationContext);
+
+  const isOwner = useMemo(() => {
+    return (
+      klass &&
+      "userId" in authenticationContext &&
+      klass.teacher.id === authenticationContext.userId
+    );
+  }, [klass, authenticationContext]);
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
@@ -219,8 +228,8 @@ const SessionForm = ({
   };
 
   const enableSorting = useMemo(
-    () => selectedTasks.length > 1,
-    [selectedTasks],
+    () => (selectedTasks.length > 1 && isOwner),
+    [selectedTasks, isOwner],
   );
 
   return (
@@ -283,28 +292,30 @@ const SessionForm = ({
                 </Field.Root>
               </SortableListWrapper>
 
-              <Select
-                label={messages.addTask}
-                options={[
-                  {
-                    value: addTaskEmptyId.toString(),
-                    label: messages.selectTaskToAdd,
-                  },
-                  // in theory tasks should never be undefined, but it seems to happen sometimes??
-                  // TODO: investigate why this happens
-                  ...(Array.isArray(tasks) ? tasks : [])
-                    // don't list again tasks that are already selected
-                    .filter((t) => !selectedTaskIds.includes(t.id))
-                    .map((t) => ({
-                      value: t.id.toString(),
-                      label: t.title,
-                    })),
-                ]}
-                data-testid="add-task"
-                onValueChange={onAddTask}
-                value={addTaskId.toString()}
-                marginTop="lg"
-              />
+              {isOwner && (
+                <Select
+                  label={messages.addTask}
+                  options={[
+                    {
+                      value: addTaskEmptyId.toString(),
+                      label: messages.selectTaskToAdd,
+                    },
+                    // in theory tasks should never be undefined, but it seems to happen sometimes??
+                    // TODO: investigate why this happens
+                    ...(Array.isArray(tasks) ? tasks : [])
+                      // don't list again tasks that are already selected
+                      .filter((t) => !selectedTaskIds.includes(t.id))
+                      .map((t) => ({
+                        value: t.id.toString(),
+                        label: t.title,
+                      })),
+                  ]}
+                  data-testid="add-task"
+                  onValueChange={onAddTask}
+                  value={addTaskId.toString()}
+                  marginTop="lg"
+                />
+              )}
             </GridItem>
 
             <GridItem colSpan={{ base: 12, md: 6 }}>

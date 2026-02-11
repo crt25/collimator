@@ -89,7 +89,11 @@ const CreateSession = () => {
           // we need the class to submit the form
           _klass,
         ) => (
-          <SessionForm submitMessage={messages.submit} onSubmit={onSubmit} />
+          <SessionForm
+            submitMessage={messages.submit}
+            onSubmit={onSubmit}
+            classId={_klass.id}
+          />
         )}
       </SwrContent>
     </PageLayout>
