@@ -65,8 +65,19 @@ const UserForm = ({
   const intl = useIntl();
 
   const schema = useYupSchema({
-    name: yup.string().required(),
-    email: yup.string().email().required(),
+    name: yup
+      .string()
+      .label(intl.formatMessage(messages.name))
+      .required()
+      .min(1)
+      .max(100),
+    email: yup
+      .string()
+      .label(intl.formatMessage(messages.email))
+      .email()
+      .required()
+      .min(1)
+      .max(255),
     type: yup.string().oneOf(Object.values(UserType)).required(),
     oidcSub: yup.string().optional(),
   });

@@ -1,4 +1,11 @@
-import { IsArray, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { TaskType } from "@prisma/client";
@@ -7,12 +14,16 @@ import { UpdateReferenceSolutionDto } from "./update-reference-solution.dto";
 export class UpdateTaskDto {
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(200)
   @ApiProperty()
   @Expose()
   readonly title!: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(2000)
   @ApiProperty()
   @Expose()
   readonly description!: string;

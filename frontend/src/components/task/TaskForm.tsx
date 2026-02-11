@@ -143,8 +143,18 @@ export type TaskFormSubmission = {
 };
 
 const getYupSchema = (intl: IntlShape) => ({
-  title: yup.string().required(),
-  description: yup.string().defined(),
+  title: yup
+    .string()
+    .label(intl.formatMessage(messages.title))
+    .required()
+    .min(1)
+    .max(200),
+  description: yup
+    .string()
+    .min(1)
+    .label(intl.formatMessage(messages.description))
+    .required()
+    .max(2000),
   type: yup.string().oneOf(Object.values(TaskType)).required(),
   taskFile: yup
     .mixed<Blob>()

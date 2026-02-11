@@ -85,8 +85,24 @@ describe("ExistingUserDto", () => {
       "not_a_number",
       ["id must be a number conforming to the specified constraints"],
     ],
-    ["name", 123, ["name must be a string"]],
-    ["email", 123, ["email must be an email", "email must be a string"]],
+    [
+      "name",
+      123,
+      [
+        "name must be shorter than or equal to 100 characters",
+        "name must be longer than or equal to 1 characters",
+        "name must be a string",
+      ],
+    ],
+    [
+      "email",
+      123,
+      [
+        "email must be shorter than or equal to 255 characters",
+        "email must be an email",
+        "email must be a string",
+      ],
+    ],
     ["oidcSub", 123, ["oidcSub must be a string"]],
     [
       "authenticationProvider",
