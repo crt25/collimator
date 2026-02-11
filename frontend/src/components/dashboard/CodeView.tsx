@@ -96,7 +96,6 @@ const CodeView = ({
             subTaskId: subTaskId,
             language: intl.locale as Language,
           }),
-        intl.formatMessage(taskMessages.submissionLoaded),
         intl.formatMessage(taskMessages.cannotLoadSubmission),
       );
     }

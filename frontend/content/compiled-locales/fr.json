@@ -311,6 +311,24 @@
       "value": "name"
     }
   ],
+  "ClassForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "ClassForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, quitter sans sauvegarder"
+    }
+  ],
+  "ClassForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention : vous pourriez perdre votre travail !"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -497,6 +515,78 @@
       "value": "Nombre de conditions"
     }
   ],
+  "CopyLessonModal.classLabel": [
+    {
+      "type": 0,
+      "value": "Classe"
+    }
+  ],
+  "CopyLessonModal.classPlaceholder": [
+    {
+      "type": 0,
+      "value": "Sélectionner une classe"
+    }
+  ],
+  "CopyLessonModal.copyButton": [
+    {
+      "type": 0,
+      "value": "Copier"
+    }
+  ],
+  "CopyLessonModal.copyError": [
+    {
+      "type": 0,
+      "value": "Échec de la copie de la leçon. Veuillez réessayer."
+    }
+  ],
+  "CopyLessonModal.copySuccess": [
+    {
+      "type": 0,
+      "value": "Leçon copiée avec succès"
+    }
+  ],
+  "CopyLessonModal.description": [
+    {
+      "type": 0,
+      "value": "Sélectionnez une leçon existante à copier depuis une autre classe."
+    }
+  ],
+  "CopyLessonModal.goToLesson": [
+    {
+      "type": 0,
+      "value": "Aller à la leçon"
+    }
+  ],
+  "CopyLessonModal.lessonLabel": [
+    {
+      "type": 0,
+      "value": "Leçon"
+    }
+  ],
+  "CopyLessonModal.lessonPlaceholder": [
+    {
+      "type": 0,
+      "value": "Sélectionner une leçon"
+    }
+  ],
+  "CopyLessonModal.loading": [
+    {
+      "type": 0,
+      "value": "Chargement…"
+    }
+  ],
+  "CopyLessonModal.networkError": [
+    {
+      "type": 0,
+      "value": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
+    }
+  ],
+  "CopyLessonModal.title": [
+    {
+      "type": 0,
+      "value": "Copier une leçon existante"
+    }
+  ],
   "CreateClass.errorMessage": [
     {
       "type": 0,
@@ -535,12 +625,6 @@
       "value": "Créer une leçon"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +647,6 @@
     {
       "type": 0,
       "value": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +709,6 @@
       "value": "Titre"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Créer une activité"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -667,12 +739,6 @@
     {
       "type": 0,
       "value": "Créer une activité"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Créer un Utilisateur"
     }
   ],
   "CreateUser.submit": [
@@ -843,10 +909,34 @@
       "value": "Voir"
     }
   ],
+  "DEPRECATED: CreateLesson.header": [
+    {
+      "type": 0,
+      "value": "Créer une leçon"
+    }
+  ],
+  "DEPRECATED: CreateSession.header": [
+    {
+      "type": 0,
+      "value": "Créer une leçon"
+    }
+  ],
   "DEPRECATED: CreateSessionForm.isAnonymous": [
     {
       "type": 0,
       "value": "Whether students are anonymous when working on tasks."
+    }
+  ],
+  "DEPRECATED: CreateTask.header": [
+    {
+      "type": 0,
+      "value": "Créer une activité"
+    }
+  ],
+  "DEPRECATED: CreateUser.header": [
+    {
+      "type": 0,
+      "value": "Créer un Utilisateur"
     }
   ],
   "DEPRECATED: DissimilarAnalysisPairs.header": [
@@ -960,6 +1050,12 @@
     }
   ],
   "DEPRECATED: ListClasses.description": [
+  ],
+  "DEPRECATED: ListClasses.pageTitle": [
+    {
+      "type": 0,
+      "value": "Gestion des classes"
+    }
   ],
   "DEPRECATED: ListClasses.title": [
     {
@@ -1089,6 +1185,48 @@
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
+  "DEPRECATED: UserDetail.table.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
+  "DEPRECATED: UserDetail.table.type": [
+    {
+      "type": 0,
+      "value": "Type"
+    }
+  ],
+  "DEPRECATED: UserList.columns.actions": [
+    {
+      "type": 0,
+      "value": "Actions"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Effacer l'utilisateur"
+    }
+  ],
+  "DEPRECATED: UserList.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
   "DEPRECATED: criteria.functionCall.name": [
     {
       "type": 0,
@@ -1103,6 +1241,12 @@
     {
       "type": 1,
       "value": "error"
+    }
+  ],
+  "DEPRECATED: embeddedApp.taskLoaded": [
+    {
+      "type": 0,
+      "value": "Tâche chargée avec succès"
     }
   ],
   "DissimilarAnalysisPairs.title": [
@@ -1195,6 +1339,18 @@
       "value": "Sauvegarder l'activité"
     }
   ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut pas être modifiée ou supprimée."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "L'activité est verrouillée"
+    }
+  ],
   "EditTask.title": [
     {
       "type": 0,
@@ -1203,28 +1359,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "EditUser.header": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur"
-    }
-  ],
-  "EditUser.submit": [
-    {
-      "type": 0,
-      "value": "Sauvegarder l'Utilisateur"
-    }
-  ],
-  "EditUser.title": [
-    {
-      "type": 0,
-      "value": "Modifier l'Utilisateur - "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "EditedBadge.edited": [
@@ -1477,16 +1611,16 @@
       "value": "Gestion des classes"
     }
   ],
+  "ListClasses.heading": [
+    {
+      "type": 0,
+      "value": "Gestion des classes"
+    }
+  ],
   "ListClasses.pageDescription": [
     {
       "type": 0,
       "value": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-    }
-  ],
-  "ListClasses.pageTitle": [
-    {
-      "type": 0,
-      "value": "Gestion des classes"
     }
   ],
   "ListLessons.header": [
@@ -1769,6 +1903,30 @@
       "value": "title"
     }
   ],
+  "SessionForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "SessionForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, quitter sans sauvegarder"
+    }
+  ],
+  "SessionForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention : vous pourriez perdre votre travail !"
+    }
+  ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Créer une activité"
+    }
+  ],
   "SessionForm.sharingType.anonymous": [
     {
       "type": 0,
@@ -1839,6 +1997,12 @@
     {
       "type": 0,
       "value": "Titre"
+    }
+  ],
+  "SessionList.copyExistingLesson": [
+    {
+      "type": 0,
+      "value": "Copier une leçon existante"
     }
   ],
   "SessionList.copySessionLink": [
@@ -2199,6 +2363,12 @@
       "value": "). Veuillez signaler ce problème."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -2229,6 +2399,24 @@
       "value": "Les données du fichier fourni sont invalides"
     }
   ],
+  "TaskForm.changeTypeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, changer le type"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Changer le type de la tâche"
+    }
+  ],
   "TaskForm.closeConfirmation.body": [
     {
       "type": 0,
@@ -2253,10 +2441,28 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutionsLengthValidation": [
+  "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "TaskForm.destructiveAction.button": [
+    {
+      "type": 0,
+      "value": "Oui, continuer"
+    }
+  ],
+  "TaskForm.destructiveAction.title": [
+    {
+      "type": 0,
+      "value": "Cette action supprimera les solutions de référence"
+    }
+  ],
+  "TaskForm.taskFileRequired": [
+    {
+      "type": 0,
+      "value": "Un fichier de tâche est requis avant l’enregistrement."
     }
   ],
   "TaskForm.title": [
@@ -2341,10 +2547,36 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "Cette activité ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "Cette activité ne peut pas être modifiée car elle est déjà utilisée dans une leçon avec des élèves inscrits."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Sauvegarder l'activité"
+    }
+  ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "banque d'activités"
     }
   ],
   "TaskInstanceDetails.title": [
@@ -2355,6 +2587,12 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "Voir l'activité"
     }
   ],
   "TaskInstanceList.title": [
@@ -2689,6 +2927,12 @@
       "value": "Titre"
     }
   ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Impossible de supprimer cette activité car elle est actuellement utilisée."
+    }
+  ],
   "TaskTable.createTask": [
     {
       "type": 0,
@@ -2725,6 +2969,19 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
+
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "L'activité a été supprimée avec succès"
+    }
+  ],
   "TaskTable.viewDetails": [
     {
       "type": 0,
@@ -2737,16 +2994,70 @@
       "value": "Nombre de tests réussis"
     }
   ],
-  "UserDetail.table.oidcSub": [
+  "UserActions.deleteCancel": [
     {
       "type": 0,
-      "value": "Identifiant OpenId Connect"
+      "value": "Annuler"
     }
   ],
-  "UserDetail.table.type": [
+  "UserActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Type"
+      "value": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+    }
+  ],
+  "UserActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.deleteError": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression de l'utilisateur. Veuillez réessayer."
+    }
+  ],
+  "UserActions.deleteSuccess": [
+    {
+      "type": 0,
+      "value": "Utilisateur supprimé avec succès"
+    }
+  ],
+  "UserActions.deleteUser": [
+    {
+      "type": 0,
+      "value": "Supprimer l'utilisateur"
+    }
+  ],
+  "UserActions.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Obtenir le lien d'inscription"
+    }
+  ],
+  "UserDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
+    }
+  ],
+  "UserDetail.submit": [
+    {
+      "type": 0,
+      "value": "Sauvegarder l'utilisateur"
+    }
+  ],
+  "UserDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Modifications enregistrées avec succès"
     }
   ],
   "UserDetail.title": [
@@ -2771,16 +3082,22 @@
       "value": "Nom"
     }
   ],
+  "UserForm.oidcSub": [
+    {
+      "type": 0,
+      "value": "Identifiant OpenId Connect"
+    }
+  ],
   "UserForm.role": [
     {
       "type": 0,
       "value": "Rôle"
     }
   ],
-  "UserList.columns.actions": [
+  "UserForm.tooltip.disabledSaveButton": [
     {
       "type": 0,
-      "value": "Actions"
+      "value": "Aucune modification n'a été apportée au formulaire."
     }
   ],
   "UserList.columns.name": [
@@ -2795,28 +3112,16 @@
       "value": "Rôle"
     }
   ],
-  "UserList.deleteConfirmation.body": [
+  "UserList.createUser": [
     {
       "type": 0,
-      "value": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+      "value": "Créer un Utilisateur"
     }
   ],
-  "UserList.deleteConfirmation.confirm": [
+  "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Effacer l'utilisateur"
-    }
-  ],
-  "UserList.generateRegistrationToken": [
-    {
-      "type": 0,
-      "value": "Obtenir le lien d'inscription"
+      "value": "Voir les détails de l'utilisateur"
     }
   ],
   "UserNavigation.userTab": [
@@ -2984,7 +3289,7 @@
   "embeddedApp.cannotExport": [
     {
       "type": 0,
-      "value": "Failed to export task: "
+      "value": "Échec de l'exportation de la tâche : "
     },
     {
       "type": 1,
@@ -2994,7 +3299,7 @@
   "embeddedApp.cannotGetTask": [
     {
       "type": 0,
-      "value": "Cannot get task: "
+      "value": "Impossible de récupérer la tâche : "
     },
     {
       "type": 1,
@@ -3004,7 +3309,7 @@
   "embeddedApp.cannotImportExternalInNonEditMode": [
     {
       "type": 0,
-      "value": "Cannot import external tasks in non-edit mode"
+      "value": "Impossible d'importer des tâches externes en mode non-édition"
     }
   ],
   "embeddedApp.cannotImportTask": [
@@ -3020,7 +3325,7 @@
   "embeddedApp.cannotLoadProject": [
     {
       "type": 0,
-      "value": "Cannot load project: "
+      "value": "Impossible de charger le projet : "
     },
     {
       "type": 1,
@@ -3050,7 +3355,7 @@
   "embeddedApp.cannotSaveProject": [
     {
       "type": 0,
-      "value": "Cannot save project: "
+      "value": "Impossible de sauvegarder le projet : "
     },
     {
       "type": 1,
@@ -3060,7 +3365,7 @@
   "embeddedApp.cannotSaveTask": [
     {
       "type": 0,
-      "value": "Cannot save task: "
+      "value": "Impossible de sauvegarder la tâche : "
     },
     {
       "type": 1,
@@ -3070,7 +3375,7 @@
   "embeddedApp.savingTask": [
     {
       "type": 0,
-      "value": "Saving task..."
+      "value": "Sauvegarde de la tâche en cours..."
     }
   ],
   "embeddedApp.submissionLoaded": [
@@ -3089,12 +3394,6 @@
     {
       "type": 0,
       "value": "Tâche importée avec succès"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Tâche chargée avec succès"
     }
   ],
   "forms.arrayLength": [

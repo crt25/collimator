@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
-import { Box, Breadcrumb, Text } from "@chakra-ui/react";
+import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -10,8 +10,7 @@ import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSol
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import Button from "@/components/Button";
 import { EmbeddedAppRef } from "@/components/EmbeddedApp";
-import StudentHeader from "@/components/header/StudentHeader";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
+import StudentPageLayout from "@/components/layout/StudentPageLayout";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
@@ -104,6 +103,8 @@ const SolveTaskPage = () => {
     setShowSessionMenu((show) => !show);
   }, []);
 
+  const [saveError, setSaveError] = useState(false);
+
   const saveSubmission = useCallback(
     async (
       classId: number,
@@ -163,23 +164,30 @@ const SolveTaskPage = () => {
 
     isScratchMutexAvailable.current = false;
 
-    if (!session || !task) {
-      return;
+    try {
+      if (!session || !task) {
+        return;
+      }
+
+      const response = await embeddedApp.current.sendRequest(
+        "getSubmission",
+        undefined,
+      );
+
+      await saveSubmission(
+        session.klass.id,
+        session.id,
+        task.id,
+        response.result,
+      );
+
+      setSaveError(false);
+    } catch (error) {
+      console.error("Failed to submit solution with", error);
+      setSaveError(true);
+    } finally {
+      isScratchMutexAvailable.current = true;
     }
-
-    const response = await embeddedApp.current.sendRequest(
-      "getSubmission",
-      undefined,
-    );
-
-    await saveSubmission(
-      session.klass.id,
-      session.id,
-      task.id,
-      response.result,
-    );
-
-    isScratchMutexAvailable.current = true;
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
@@ -214,7 +222,6 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.taskLoaded),
           intl.formatMessage(taskMessages.cannotLoadTask),
         );
       } catch {
@@ -230,6 +237,27 @@ const SolveTaskPage = () => {
     // since taskFile is a blob, use its hash as a proxy for its content
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embeddedApp, taskFileHash, session, task]);
+
+  const onReceiveTaskSolution = useCallback(
+    async (solutionBlob: Blob) => {
+      if (!session || !task) {
+        console.error("No session or task available");
+        return;
+      }
+
+      try {
+        await createSolution(session.klass.id, session.id, task.id, {
+          file: solutionBlob,
+          tests: [],
+        });
+        setSaveError(false);
+      } catch (error) {
+        console.error("Failed to receive task solution with", error);
+        setSaveError(true);
+      }
+    },
+    [session, task, createSolution],
+  );
 
   const onReceiveSubmission = useCallback(
     async (submission: Submission) => {
@@ -255,7 +283,6 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.taskImported),
       intl.formatMessage(taskMessages.cannotImportTask),
     );
   }, [intl]);
@@ -267,8 +294,8 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.taskCreated),
       intl.formatMessage(taskMessages.cannotExport),
+      intl.formatMessage(taskMessages.taskCreated),
     );
 
     downloadBlob(response.result.file, "task.sb3");
@@ -282,78 +309,94 @@ const SolveTaskPage = () => {
   const disableImportExport = true;
 
   return (
-    <MaxScreenHeight>
-      <StudentHeader
-        title={messages.title}
-        titleParameters={{ title: task?.title }}
-        logo={
-          task &&
-          session && (
-            <Box>
-              <Breadcrumbs
-                topLevel={
-                  <BreadcrumbItem
-                    onClick={toggleSessionMenu}
-                    icon={<LuSignpost />}
-                    testId="toggle-session-menu-button"
-                  >
-                    {session.title}
-                  </BreadcrumbItem>
-                }
-                marginBottom="0"
-              >
-                <Breadcrumb.Separator />
+    <StudentPageLayout
+      title={messages.title}
+      titleParameters={{ title: task?.title ?? "" }}
+      logo={
+        task &&
+        session && (
+          <Box>
+            <Breadcrumbs
+              topLevel={
                 <BreadcrumbItem
-                  icon={<LuListTodo />}
                   onClick={toggleSessionMenu}
+                  icon={<LuSignpost />}
+                  testId="toggle-session-menu-button"
                 >
-                  {task.title}
+                  {session.title}
                 </BreadcrumbItem>
-              </Breadcrumbs>
-            </Box>
-          )
-        }
-        belowHeader={
-          task && (
-            <Text marginBottom="md" marginX={"lg"}>
-              {task.description}
-            </Text>
-          )
-        }
-      >
-        <li></li>
-        <li>
-          <Button
-            onClick={onSubmitSolution}
-            data-testid="submit-solution-button"
-          >
-            <FormattedMessage
-              id="SolveTask.submitSolution"
-              defaultMessage="Submit Solution"
-            />
-          </Button>
-        </li>
-        {!disableImportExport && (
-          <>
-            <li>
-              <Button onClick={onExport}>
+              }
+              marginBottom="0"
+            >
+              <Breadcrumb.Separator />
+              <BreadcrumbItem icon={<LuListTodo />} onClick={toggleSessionMenu}>
+                {task.title}
+              </BreadcrumbItem>
+            </Breadcrumbs>
+          </Box>
+        )
+      }
+      headerActions={
+        <>
+          <li></li>
+
+          {saveError && (
+            <Alert.Root
+              status="error"
+              data-testid="save-error-message"
+              size="sm"
+            >
+              <Alert.Indicator />
+              <Alert.Title>
                 <FormattedMessage
-                  id="SolveTask.export"
-                  defaultMessage="Export"
+                  data-testid="save-error-message"
+                  id="SolveTask.saveError"
+                  defaultMessage="You are currently experiencing network issues, saving may not work."
                 />
-              </Button>
-            </li>
-            <li>
-              <Button onClick={onImport}>
-                <FormattedMessage
-                  id="SolveTask.import"
-                  defaultMessage="Import"
-                />
-              </Button>
-            </li>
-          </>
-        )}
-      </StudentHeader>
+              </Alert.Title>
+            </Alert.Root>
+          )}
+          {!disableImportExport && (
+            <>
+              <li>
+                <Button onClick={onExport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.export"
+                    defaultMessage="Export"
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button onClick={onImport} variant="subtle">
+                  <FormattedMessage
+                    id="SolveTask.import"
+                    defaultMessage="Import"
+                  />
+                </Button>
+              </li>
+            </>
+          )}
+          <li>
+            <Button
+              onClick={onSubmitSolution}
+              data-testid="submit-solution-button"
+            >
+              <FormattedMessage
+                id="SolveTask.submitSolution"
+                defaultMessage="Submit Solution"
+              />
+            </Button>
+          </li>
+        </>
+      }
+      belowHeader={
+        task && (
+          <Text marginBottom="md" marginX="lg">
+            {task.description}
+          </Text>
+        )
+      }
+    >
       <MultiSwrContent
         data={[session, task, taskFile]}
         errors={[sessionError, taskError, taskFileError]}
@@ -371,6 +414,8 @@ const SolveTaskPage = () => {
               iframeSrc={iframeSrc}
               onAppAvailable={onAppAvailable}
               onReceiveSubmission={onReceiveSubmission}
+              onReceiveTaskSolution={onReceiveTaskSolution}
+              onTrackStudentActivityFailure={setSaveError}
             />
           ) : (
             <FormattedMessage
@@ -381,7 +426,7 @@ const SolveTaskPage = () => {
           )
         }
       </MultiSwrContent>
-    </MaxScreenHeight>
+    </StudentPageLayout>
   );
 };
 

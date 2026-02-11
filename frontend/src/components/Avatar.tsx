@@ -22,12 +22,6 @@ interface AvatarMenuProps {
   icon: React.ReactNode;
 }
 
-const MenuContent = chakra(Menu.Content, {
-  base: {
-    borderColor: "headerBorder",
-  },
-});
-
 const UsernameItem = chakra(Menu.Item, {
   base: {
     fontWeight: "semibold",
@@ -87,7 +81,7 @@ const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <MenuContent>
+          <Menu.Content>
             <UsernameItem
               value="username"
               onClick={handleUsernameClick}
@@ -97,7 +91,7 @@ const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
             </UsernameItem>
             <Menu.Separator />
             {children}
-          </MenuContent>
+          </Menu.Content>
         </Menu.Positioner>
       </Portal>
     </Menu.Root>

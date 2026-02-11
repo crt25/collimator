@@ -166,9 +166,6 @@ export const WithAllFeatures: Story = {
     variant: "outline",
     features: {
       sorting: true,
-      pagination: {
-        pageSize: 10,
-      },
       columnFiltering: {
         columns: [
           { accessorKey: "name", label: "Name" },

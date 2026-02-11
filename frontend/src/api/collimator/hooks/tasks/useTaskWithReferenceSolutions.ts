@@ -13,7 +13,7 @@ const fetchAndTransform = (
   options: RequestInit,
   id: number,
 ): Promise<GetTaskReturnType> =>
-  tasksControllerFindOneWithReferenceSolutionsV0(id, options).then(
+  tasksControllerFindOneWithReferenceSolutionsV0(id, {}, options).then(
     ExistingTaskWithReferenceSolutions.fromDto,
   );
 
@@ -24,7 +24,7 @@ export const useTaskWithReferenceSolutions = (
   const authOptions = useAuthenticationOptions();
 
   return useSWR(
-    getTasksControllerFindOneWithReferenceSolutionsV0Url(numericId),
+    getTasksControllerFindOneWithReferenceSolutionsV0Url(numericId, {}),
     () =>
       isNaN(numericId)
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id

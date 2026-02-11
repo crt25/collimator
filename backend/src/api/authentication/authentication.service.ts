@@ -164,7 +164,7 @@ export class AuthenticationService {
         publicKey: true,
         createdAt: true,
       },
-      where: { publicKeyFingerprint: fingerprint },
+      where: { publicKeyFingerprint: fingerprint, deletedAt: null },
     });
   }
 
@@ -212,6 +212,7 @@ export class AuthenticationService {
           oidcSub,
           authenticationProvider,
         },
+        deletedAt: null,
       },
     });
   }
@@ -230,8 +231,12 @@ export class AuthenticationService {
         },
         registrationToken: {
           token: registrationToken,
-          createdAt: { gte: new Date(Date.now() - registrationTokenLifetime) },
+          createdAt: {
+            gte: new Date(Date.now() - registrationTokenLifetime),
+          },
+          deletedAt: null,
         },
+        deletedAt: null,
       },
     });
   }
@@ -348,6 +353,7 @@ export class AuthenticationService {
       await this.prisma.authenticatedStudent.findUnique({
         where: {
           pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
+          deletedAt: null,
         },
       });
 
@@ -367,6 +373,7 @@ export class AuthenticationService {
         : await this.prisma.student.findUniqueOrThrow({
             where: {
               id: authenticatedStudent.studentId,
+              deletedAt: null,
             },
           });
 
@@ -424,13 +431,15 @@ export class AuthenticationService {
         token,
         // the token must not have expired
         lastUsedAt: { gte: new Date(Date.now() - slidingTokenLifetime) },
+        deletedAt: null,
       },
       include: {
-        user: true,
+        user: { where: { deletedAt: null } },
         student: {
+          where: { deletedAt: null },
           include: {
-            authenticatedStudent: true,
-            anonymousStudent: true,
+            authenticatedStudent: { where: { deletedAt: null } },
+            anonymousStudent: { where: { deletedAt: null } },
           },
         },
       },

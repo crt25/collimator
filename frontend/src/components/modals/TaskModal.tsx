@@ -101,8 +101,8 @@ const TaskModal = ({
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.taskImported),
       intl.formatMessage(taskMessages.cannotImportTask),
+      intl.formatMessage(taskMessages.taskImported),
     );
     setAppLoaded(true);
   }, [intl]);
@@ -114,8 +114,8 @@ const TaskModal = ({
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.taskCreated),
       intl.formatMessage(taskMessages.cannotExport),
+      intl.formatMessage(taskMessages.taskCreated),
     );
 
     downloadBlob(response.result.file, response.result.filename);

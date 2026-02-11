@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { chakra, HStack, Icon, Text, Link } from "@chakra-ui/react";
 import { LuChevronRight, LuSend } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
-import { MdAdd } from "react-icons/md";
+import { MdAdd, MdContentCopy } from "react-icons/md";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
@@ -14,8 +14,9 @@ import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
-import ChakraDataTable from "../ChakraDataTable";
-import { ShareModal } from "../form/ShareModal";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
+import { ShareModal } from "../modals/ShareModal";
+import CopyLessonModal from "../modals/CopyLessonModal";
 import { EmptyState } from "../EmptyState";
 
 const SessionListWrapper = chakra("div", {
@@ -62,6 +63,10 @@ const messages = defineMessages({
     id: "SessionList.columns.createSession",
     defaultMessage: "Create Lesson",
   },
+  copyExistingLesson: {
+    id: "SessionList.copyExistingLesson",
+    defaultMessage: "Copy Existing Lesson",
+  },
   copySessionLink: {
     id: "SessionList.copySessionLink",
     defaultMessage: "Share",
@@ -81,6 +86,7 @@ const SessionList = ({ classId }: { classId: number }) => {
   const intl = useIntl();
   const authenticationContext = useContext(AuthenticationContext);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [selectedSession, setSelectedSession] =
     useState<ExistingSession | null>(null);
   const [sessionLink, setSessionLink] = useState("");
@@ -167,11 +173,11 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
-      size: 32,
+      size: ColumnSize.sm,
     },
     {
       accessorKey: "title",
+      enableSorting: true,
       header: intl.formatMessage(messages.titleColumn),
       cell: (info) => (
         <Text
@@ -190,7 +196,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "startedAt",
       header: intl.formatMessage(messages.startedAtColumn),
-      enableSorting: false,
       cell: (info) => startedAtTemplate(info.row.original),
       meta: {
         columnType: ColumnType.text,
@@ -199,7 +204,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       accessorKey: "isAnonymous",
       header: intl.formatMessage(messages.sharingTypeColumn),
-      enableSorting: false,
       cell: (info) => sharingTypeTemplate(info.row.original),
       meta: {
         columnType: ColumnType.text,
@@ -208,7 +212,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       id: "actions",
       header: intl.formatMessage(messages.actionsColumn),
-      enableSorting: false,
       cell: (info) => actionsTemplate(info.row.original),
       meta: {
         columnType: ColumnType.icon,
@@ -217,7 +220,6 @@ const SessionList = ({ classId }: { classId: number }) => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <Button
           aria-label={intl.formatMessage(messages.actionsColumn)}
@@ -235,7 +237,7 @@ const SessionList = ({ classId }: { classId: number }) => {
           </Icon>
         </Button>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.icon,
       },
@@ -269,9 +271,6 @@ const SessionList = ({ classId }: { classId: number }) => {
                   },
                 ],
               },
-              pagination: {
-                pageSize: 10,
-              },
             }}
             emptyStateElement={
               <EmptyState
@@ -281,19 +280,38 @@ const SessionList = ({ classId }: { classId: number }) => {
           />
         )}
       </MultiSwrContent>
-      <Button
-        variant="primary"
-        onClick={() => router.push(`/class/${classId}/session/create`)}
-        data-testid="session-create-button"
-        marginTop="md"
-      >
-        <HStack>
-          <Icon>
-            <MdAdd />
-          </Icon>
-          {intl.formatMessage(messages.createSession)}
-        </HStack>
-      </Button>
+      <HStack marginTop="md" gap="md">
+        <Button
+          variant="primary"
+          onClick={() => router.push(`/class/${classId}/session/create`)}
+          data-testid="session-create-button"
+        >
+          <HStack>
+            <Icon>
+              <MdAdd />
+            </Icon>
+            {intl.formatMessage(messages.createSession)}
+          </HStack>
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() => setIsCopyModalOpen(true)}
+          data-testid="session-copy-button"
+        >
+          <HStack>
+            <Icon>
+              <MdContentCopy />
+            </Icon>
+            {intl.formatMessage(messages.copyExistingLesson)}
+          </HStack>
+        </Button>
+      </HStack>
+
+      <CopyLessonModal
+        isOpen={isCopyModalOpen}
+        onClose={() => setIsCopyModalOpen(false)}
+        targetClassId={classId}
+      />
 
       <ShareModal
         title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}

@@ -1,4 +1,4 @@
-import { RefObject, useCallback } from "react";
+import { RefObject, useCallback, useEffect } from "react";
 import { chakra, Dialog, Icon } from "@chakra-ui/react";
 import { Submission } from "iframe-rpc-react/src";
 import { FormattedMessage } from "react-intl";
@@ -35,6 +35,8 @@ interface Props {
   embeddedApp: RefObject<EmbeddedAppRef | null>;
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
+  onReceiveTaskSolution?: (solution: Blob) => void;
+  onTrackStudentActivityFailure?: (failing: boolean) => void;
 }
 
 const Task = ({
@@ -47,8 +49,19 @@ const Task = ({
   embeddedApp,
   onAppAvailable,
   onReceiveSubmission,
+  onReceiveTaskSolution,
+  onTrackStudentActivityFailure,
 }: Props) => {
-  const trackStudentActivity = useTrackStudentActivity();
+  const [trackStudentActivity, trackActivityFailed] = useTrackStudentActivity();
+
+  useEffect(() => {
+    if (!onTrackStudentActivityFailure) {
+      return;
+    }
+
+    onTrackStudentActivityFailure(trackActivityFailed);
+  }, [trackActivityFailed, onTrackStudentActivityFailure]);
+
   const onSolutionRun = useCallback(
     (solution: Blob) => {
       trackStudentActivity({
@@ -125,6 +138,7 @@ const Task = ({
         onReceiveSubmission={onReceiveSubmission}
         onSolutionRun={onSolutionRun}
         onStudentAppActivity={onStudentAppActivity}
+        onReceiveTaskSolution={onReceiveTaskSolution}
       />
     </TaskWrapper>
   );

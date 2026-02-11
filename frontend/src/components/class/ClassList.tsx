@@ -9,7 +9,7 @@ import { ExistingClassWithTeacher } from "@/api/collimator/models/classes/existi
 import { ColumnType } from "@/types/tanstack-types";
 import { isClickOnRow } from "@/utilities/table";
 import SwrContent from "../SwrContent";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
 
@@ -65,6 +65,7 @@ const ClassList = () => {
     {
       accessorKey: "name",
       header: intl.formatMessage(messages.nameColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -82,7 +83,6 @@ const ClassList = () => {
     {
       accessorKey: "teacher",
       header: intl.formatMessage(messages.teacherColumn),
-      enableSorting: false,
       cell: (info) => {
         const teacher = info.row.original.teacher;
         return <span>{teacher?.name}</span>;
@@ -94,7 +94,6 @@ const ClassList = () => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <Button
           aria-label={intl.formatMessage(messages.viewDetails)}
@@ -110,7 +109,7 @@ const ClassList = () => {
           </Icon>
         </Button>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.icon,
       },
@@ -140,9 +139,6 @@ const ClassList = () => {
                     label: intl.formatMessage(messages.nameColumn),
                   },
                 ],
-              },
-              pagination: {
-                pageSize: 10,
               },
             }}
             emptyStateElement={

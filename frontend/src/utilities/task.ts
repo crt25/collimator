@@ -4,16 +4,19 @@ const toastDuration = 60 * 1000;
 
 export const executeAsyncWithToasts = async <T>(
   fn: () => Promise<T>,
-  successMessage: string,
   errorMessage: string,
+  successMessage?: string,
 ): Promise<T> => {
   try {
     const response = await fn();
-    toaster.success({
-      title: successMessage,
-      closable: true,
-      duration: toastDuration,
-    });
+    if (successMessage) {
+      toaster.success({
+        title: successMessage,
+        closable: true,
+        duration: toastDuration,
+      });
+    }
+
     return response;
   } catch (error) {
     toaster.error({
@@ -21,22 +24,25 @@ export const executeAsyncWithToasts = async <T>(
       closable: true,
       duration: toastDuration,
     });
+
     throw error;
   }
 };
 
 export const executeWithToasts = <T>(
   fn: () => T,
-  successMessage: string,
   errorMessage: string,
+  successMessage?: string,
 ): T => {
   try {
     const response = fn();
-    toaster.success({
-      title: successMessage,
-      closable: true,
-      duration: toastDuration,
-    });
+    if (successMessage) {
+      toaster.success({
+        title: successMessage,
+        closable: true,
+        duration: toastDuration,
+      });
+    }
     return response;
   } catch (error) {
     toaster.error({

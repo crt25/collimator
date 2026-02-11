@@ -3,7 +3,11 @@ import { ISessionContext } from "@jupyterlab/apputils";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { Contents, ContentsManager, KernelMessage } from "@jupyterlab/services";
-import { addKernelListeners, writeJsonToVirtualFilesystem } from "./utils";
+import {
+  addKernelListeners,
+  executePythonInKernel,
+  writeJsonToVirtualFilesystem,
+} from "./utils";
 import { EmbeddedPythonCallbacks } from "./iframe-api";
 
 const autoInstallPackages =
@@ -59,12 +63,13 @@ const autoInstallPackages =
       );
       console.debug("Finished copying notebook to the virtual filesystem");
 
-      await kernel.requestExecute({
+      await executePythonInKernel({
+        kernel,
         code: `
 import os
 os.chdir("/student")
 `,
-      }).done;
+      });
     }
   };
 
@@ -98,42 +103,41 @@ export const preInstallPackages = async (
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing Otter Grade...");
-  await kernel.requestExecute(
-    {
-      code: `
+  console.debug("Installing Otter Grader...");
+  await executePythonInKernel({
+    kernel,
+    code: `
 import micropip
 await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
       `,
-    },
-    true,
-  ).done;
+
+    disposeOnDone: true,
+  });
 };
 
 export const installNbConvert = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
   console.debug("Installing nbconvert...");
-  await kernel.requestExecute(
-    {
-      // Micropip by default installs all dependencies including tornado which is not mandatory,
-      // especially for the codepaths we need. Since trying to install tornado in jupyterlite will fail,
-      // we disable dependency installation and install the required dependencies manually below.
-      // The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
-      code: `
+  await executePythonInKernel({
+    kernel,
+    // Micropip by default installs all dependencies including tornado which is not mandatory,
+    // especially for the codepaths we need. Since trying to install tornado in jupyterlite will fail,
+    // we disable dependency installation and install the required dependencies manually below.
+    // The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
+    code: `
 import micropip
 
 await micropip.install("nbconvert", deps=False)
 await micropip.install("jupyter_client", deps=False)
       `,
-    },
-    true,
-  ).done;
+    disposeOnDone: true,
+  });
 
   console.debug("Installing remaining dependencies...");
-  await kernel.requestExecute(
-    {
-      code: `
+  await executePythonInKernel({
+    kernel,
+    code: `
 import micropip
 
 await micropip.install([
@@ -154,14 +158,14 @@ await micropip.install([
   "tinycss2"
 ])
 `,
-    },
-    true,
-  ).done;
+    disposeOnDone: true,
+  });
 
   console.debug("Creating nbclient mock...");
-  await kernel.requestExecute(
+  await executePythonInKernel(
     // make nbclient.exceptions available, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
     {
+      kernel,
       code: `
 import sys, types
 
@@ -173,24 +177,23 @@ nbclient_exceptions = types.ModuleType("nbclient.exceptions")
 nbclient_exceptions.CellExecutionError = noop
 sys.modules["nbclient.exceptions"] = nbclient_exceptions
       `,
+      disposeOnDone: true,
     },
-    true,
-  ).done;
+  );
 
   console.debug("Patching nbclient for JupyterLite...");
-  await kernel.requestExecute(
-    {
-      // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
-      // this is because we cannot import the execute module in JupyterLite
-      code: `
+  await executePythonInKernel({
+    kernel,
+    // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
+    // this is because we cannot import the execute module in JupyterLite
+    code: `
 from pathlib import Path
 
-preprocessors = Path("/lib/python3.12/site-packages/nbconvert/preprocessors/__init__.py")
+preprocessors = Path("/lib/python3.13/site-packages/nbconvert/preprocessors/__init__.py")
 preprocessors.write_text(
   preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
 )
 `,
-    },
-    true,
-  ).done;
+    disposeOnDone: true,
+  });
 };

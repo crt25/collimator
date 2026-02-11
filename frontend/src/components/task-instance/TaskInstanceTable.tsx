@@ -1,8 +1,7 @@
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
-import { MdAdd } from "react-icons/md";
-import { Icon, HStack, Text, chakra } from "@chakra-ui/react";
+import { Icon, Text, chakra } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
@@ -13,7 +12,7 @@ import { useTaskInstances } from "@/api/collimator/hooks/tasks/useTaskInstances"
 import { isClickOnRow } from "@/utilities/table";
 import { EmptyState } from "@/components/EmptyState";
 import Button from "../Button";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import SwrContent from "../SwrContent";
 
 const TaskInstanceTableWrapper = chakra("div", {
@@ -82,8 +81,7 @@ const TaskInstanceTable = ({
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
-      size: 32,
+      size: ColumnSize.sm,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
           {info.row.original.id}
@@ -96,6 +94,7 @@ const TaskInstanceTable = ({
     {
       accessorKey: "title",
       header: intl.formatMessage(messages.nameColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -113,7 +112,6 @@ const TaskInstanceTable = ({
     {
       accessorKey: "taskType",
       header: intl.formatMessage(messages.taskTypeColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-taskType`}>
           {capitalizeString(info.row.original.type)}
@@ -128,7 +126,6 @@ const TaskInstanceTable = ({
     {
       id: "actions",
       header: "Quick Actions",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           {
@@ -155,7 +152,6 @@ const TaskInstanceTable = ({
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
@@ -211,28 +207,10 @@ const TaskInstanceTable = ({
                   },
                 ],
               },
-              pagination: {
-                pageSize: 10,
-              },
             }}
           />
         )}
       </SwrContent>
-      <Button
-        variant="primary"
-        onClick={() =>
-          router.push(`/class/${klass.id}/session/${session.id}/task/create`)
-        }
-        data-testid="task-create-button"
-        marginTop="md"
-      >
-        <HStack>
-          <Icon>
-            <MdAdd />
-          </Icon>
-          {intl.formatMessage(messages.createTask)}
-        </HStack>
-      </Button>
     </TaskInstanceTableWrapper>
   );
 };

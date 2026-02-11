@@ -14,7 +14,7 @@ import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/use
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
-import ChakraDataTable from "../ChakraDataTable";
+import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
 import StarSolutionButton from "../solution/StarSolutionButton";
@@ -237,7 +237,6 @@ const TaskInstanceProgressList = ({
       {
         id: "name",
         header: intl.formatMessage(messages.nameColumn),
-        enableSorting: false,
         cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
@@ -248,7 +247,6 @@ const TaskInstanceProgressList = ({
       {
         id: "lastLoginDate",
         header: intl.formatMessage(messages.lastLoginDateColumn),
-        enableSorting: false,
         cell: (info) => nameTemplate(info.row.original),
         meta: {
           columnType: ColumnType.text,
@@ -257,7 +255,6 @@ const TaskInstanceProgressList = ({
       {
         id: "progress",
         header: intl.formatMessage(messages.progressColumn),
-        enableSorting: false,
         cell: (info) => (
           <TaskTemplate
             classId={classId}
@@ -272,7 +269,6 @@ const TaskInstanceProgressList = ({
       {
         id: "inShowcase",
         header: intl.formatMessage(messages.inShowcaseColumn),
-        enableSorting: false,
         cell: (info) => (
           <InShowCaseTemplate classId={classId} progress={info.row.original} />
         ),
@@ -283,7 +279,6 @@ const TaskInstanceProgressList = ({
       {
         id: "details",
         header: "",
-        enableSorting: false,
         cell: (info) => (
           <Button
             aria-label={intl.formatMessage(messages.viewDetails)}
@@ -301,7 +296,7 @@ const TaskInstanceProgressList = ({
             </Icon>
           </Button>
         ),
-        size: 32,
+        size: ColumnSize.sm,
         meta: {
           columnType: ColumnType.icon,
         },
@@ -331,12 +326,6 @@ const TaskInstanceProgressList = ({
                   `/class/${klass.id}/session/${session.id}/task/${taskId}/student/${row.id}`,
                 );
               }
-            }}
-            features={{
-              sorting: true,
-              pagination: {
-                pageSize: 10,
-              },
             }}
           />
         )}

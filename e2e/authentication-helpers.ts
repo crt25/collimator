@@ -4,11 +4,16 @@ import { BrowserContext, Page } from "@playwright/test";
 import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import { jsonResponse } from "./helpers";
 import { mockOidcProviderUrl, mockOidcProxyUrl } from "./setup/config";
+import { ADMIN_USER_NAME } from "./setup/seeding/user";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
   getAuthenticationControllerLoginV0Url,
 } from "@/api/collimator/generated/endpoints/authentication/authentication";
-import { getUsersControllerUpdateKeyV0Url } from "@/api/collimator/generated/endpoints/users/users";
+import {
+  getUsersControllerFindOneV0Url,
+  getUsersControllerUpdateKeyV0Url,
+} from "@/api/collimator/generated/endpoints/users/users";
+import { getUsersControllerFindOneV0ResponseMock } from "@/api/collimator/generated/endpoints/users/users.msw";
 import {
   AuthenticationResponseDto,
   PublicKeyDto,
@@ -118,7 +123,7 @@ const setupMockOidcProvider = async (
 ): Promise<void> => {
   const sub = "some-unique-id";
   const email = "jane@doe.com";
-  const name = "Jane Doe";
+  const name = ADMIN_USER_NAME;
 
   let nonce = "";
 
@@ -504,6 +509,20 @@ export const setupForUserAuthentication = async (
           keyPair: null,
         } as AuthenticationResponseDto),
       }),
+  );
+
+  await page.route(`${apiUrl}${getUsersControllerFindOneV0Url(1)}`, (route) =>
+    route.fulfill({
+      ...jsonResponse,
+      body: JSON.stringify(
+        getUsersControllerFindOneV0ResponseMock({
+          id: 1,
+          email: user.email,
+          name: user.name,
+          type: UserType.ADMIN,
+        }),
+      ),
+    }),
   );
 
   await page.route(`${apiUrl}${getUsersControllerUpdateKeyV0Url(1)}`, (route) =>

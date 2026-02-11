@@ -188,6 +188,45 @@
   "DEPRECATED: embeddedApp.exportError": {
     "message": "Échec de l'exportation de la tâche : {error}"
   },
+  "DEPRECATED: UserList.columns.actions": {
+    "message": "Actions"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.confirm": {
+    "message": "Effacer l'utilisateur"
+  },
+  "DEPRECATED: UserList.deleteConfirmation.title": {
+    "message": "Effacer l'utilisateur"
+  },
+  "DEPRECATED: UserList.generateRegistrationToken": {
+    "message": "Obtenir le lien d'inscription"
+  },
+  "DEPRECATED: UserDetail.table.oidcSub": {
+    "message": "Identifiant OpenId Connect"
+  },
+  "DEPRECATED: UserDetail.table.type": {
+    "message": "Type"
+  },
+  "DEPRECATED: CreateLesson.header": {
+    "message": "Créer une leçon"
+  },
+  "DEPRECATED: CreateSession.header": {
+    "message": "Créer une leçon"
+  },
+  "DEPRECATED: CreateTask.header": {
+    "message": "Créer une activité"
+  },
+  "DEPRECATED: CreateUser.header": {
+    "message": "Créer un Utilisateur"
+  },
+  "DEPRECATED: ListClasses.pageTitle": {
+    "message": "Gestion des classes"
+  },
+  "DEPRECATED: embeddedApp.taskLoaded": {
+    "message": "Tâche chargée avec succès"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -338,6 +377,15 @@
   "ClassDetail.title": {
     "message": "Classe – {name}"
   },
+  "ClassForm.closeConfirmation.body": {
+    "message": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "ClassForm.closeConfirmation.button": {
+    "message": "Oui, quitter sans sauvegarder"
+  },
+  "ClassForm.closeConfirmation.title": {
+    "message": "Attention : vous pourriez perdre votre travail !"
+  },
   "ClassForm.name": {
     "message": "Nom"
   },
@@ -419,6 +467,42 @@
   "ConditionCriterionFilterForm.count": {
     "message": "Nombre de conditions"
   },
+  "CopyLessonModal.classLabel": {
+    "message": "Classe"
+  },
+  "CopyLessonModal.classPlaceholder": {
+    "message": "Sélectionner une classe"
+  },
+  "CopyLessonModal.copyButton": {
+    "message": "Copier"
+  },
+  "CopyLessonModal.copyError": {
+    "message": "La copie de la leçon a échoué. Veuillez réessayer."
+  },
+  "CopyLessonModal.copySuccess": {
+    "message": "Leçon copiée avec succès"
+  },
+  "CopyLessonModal.description": {
+    "message": "Sélectionnez une leçon à copier depuis une autre classe."
+  },
+  "CopyLessonModal.goToLesson": {
+    "message": "Aller à la leçon"
+  },
+  "CopyLessonModal.lessonLabel": {
+    "message": "Leçon"
+  },
+  "CopyLessonModal.lessonPlaceholder": {
+    "message": "Sélectionner une leçon"
+  },
+  "CopyLessonModal.loading": {
+    "message": "Chargement…"
+  },
+  "CopyLessonModal.networkError": {
+    "message": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
+  },
+  "CopyLessonModal.title": {
+    "message": "Copier une leçon existante"
+  },
   "CreateClass.errorMessage": {
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
@@ -440,9 +524,6 @@
   "CreateClass.title": {
     "message": "Créer une leçon"
   },
-  "CreateLesson.header": {
-    "message": "Créer une leçon"
-  },
   "CreateLesson.submit": {
     "message": "Créer une leçon"
   },
@@ -454,9 +535,6 @@
   },
   "CreateSession.errorMessage": {
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
-  },
-  "CreateSession.header": {
-    "message": "Créer une leçon"
   },
   "CreateSession.returnToSessionList": {
     "message": "Retourner à la liste des leçons"
@@ -488,9 +566,6 @@
   "CreateSessionForm.title": {
     "message": "Titre"
   },
-  "CreateTask.header": {
-    "message": "Créer une activité"
-  },
   "CreateTask.submit": {
     "message": "Créer une activité"
   },
@@ -508,9 +583,6 @@
   },
   "CreateTaskInstance.title": {
     "message": "Créer une activité"
-  },
-  "CreateUser.header": {
-    "message": "Créer un Utilisateur"
   },
   "CreateUser.submit": {
     "message": "Créer un Utilisateur"
@@ -575,17 +647,14 @@
   "EditTask.submit": {
     "message": "Sauvegarder l'activité"
   },
+  "EditTask.taskLockedDescription": {
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut pas être modifiée ou supprimée."
+  },
+  "EditTask.taskLockedTitle": {
+    "message": "L'activité est verrouillée"
+  },
   "EditTask.title": {
     "message": "Modifier l'activité - {title}"
-  },
-  "EditUser.header": {
-    "message": "Modifier l'Utilisateur"
-  },
-  "EditUser.submit": {
-    "message": "Sauvegarder l'Utilisateur"
-  },
-  "EditUser.title": {
-    "message": "Modifier l'Utilisateur - {name}"
   },
   "EditedBadge.edited": {
     "message": "Modifié"
@@ -711,11 +780,11 @@
   "ListClasses.header": {
     "message": "Gestion des classes"
   },
+  "ListClasses.heading": {
+    "message": "Gestion des classes"
+  },
   "ListClasses.pageDescription": {
     "message": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-  },
-  "ListClasses.pageTitle": {
-    "message": "Gestion des classes"
   },
   "ListLessons.header": {
     "message": "Gestion des leçons"
@@ -855,6 +924,18 @@
   "SessionDetail.title": {
     "message": "Leçon - {title}"
   },
+  "SessionForm.closeConfirmation.body": {
+    "message": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "SessionForm.closeConfirmation.button": {
+    "message": "Oui, quitter sans sauvegarder"
+  },
+  "SessionForm.closeConfirmation.title": {
+    "message": "Attention : vous pourriez perdre votre travail !"
+  },
+  "SessionForm.createTask": {
+    "message": "Créer une activité"
+  },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonyme"
   },
@@ -890,6 +971,9 @@
   },
   "SessionList.columns.title": {
     "message": "Titre"
+  },
+  "SessionList.copyExistingLesson": {
+    "message": "Copier une leçon existante"
   },
   "SessionList.copySessionLink": {
     "message": "Copier le lien de la leçon"
@@ -1044,6 +1128,16 @@
   "TaskDetail.unsupportedApp": {
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
+<<<<<<< HEAD
+  "TaskForm.SaveConflictError": {
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+  },
+||||||| 1e3e295c
+=======
+  "TaskForm.SaveConflictError": {
+    "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
+  },
+>>>>>>> main
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
   },
@@ -1059,6 +1153,15 @@
   "TaskForm.blobValidation": {
     "message": "Les données du fichier fourni sont invalides"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Oui, changer le type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Changer le type de la tâche"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
   },
@@ -1071,8 +1174,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  "TaskForm.destructiveAction.body": {
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Oui, continuer"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "Cette action supprimera les solutions de référence"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "Un fichier de tâche est requis avant l’enregistrement."
   },
   "TaskForm.title": {
     "message": "Titre"
@@ -1113,11 +1225,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analyse - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "Cette activité ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "Cette activité ne peut pas être modifiée car elle est déjà utilisée dans une leçon avec des élèves inscrits."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Sauvegarder l'activité"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "banque d'activités"
+  },
   "TaskInstanceDetails.title": {
     "message": "Modifier l'activité - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "Voir l'activité"
   },
   "TaskInstanceList.title": {
     "message": "Activités"
@@ -1275,6 +1399,9 @@
   "TaskTable.columns.title": {
     "message": "Titre"
   },
+  "TaskTable.conflictErrorMessage": {
+    "message": "Impossible de supprimer cette activité car elle est actuellement utilisée."
+  },
   "TaskTable.createTask": {
     "message": "Créer une activité"
   },
@@ -1293,17 +1420,50 @@
   "TaskTable.emptyState.title": {
     "message": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
   },
+  "TaskTable.errorMessage": {
+    "message": "Une erreur est survenue lors de la suppression de l'activité. Veuillez réessayer."
+  },
+  "TaskTable.successMessage": {
+    "message": "L'activité a été supprimée avec succès"
+  },
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"
   },
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
   },
-  "UserDetail.table.oidcSub": {
-    "message": "Identifiant OpenId Connect"
+  "UserActions.deleteCancel": {
+    "message": "Annuler"
   },
-  "UserDetail.table.type": {
-    "message": "Type"
+  "UserActions.deleteConfirmation.body": {
+    "message": "Êtes-vous sûr ? Cette action ne peut pas être annulée ensuite."
+  },
+  "UserActions.deleteConfirmation.confirm": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.deleteConfirmation.title": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.deleteError": {
+    "message": "Une erreur est survenue lors de la suppression de l'utilisateur. Veuillez réessayer."
+  },
+  "UserActions.deleteSuccess": {
+    "message": "Utilisateur supprimé avec succès"
+  },
+  "UserActions.deleteUser": {
+    "message": "Supprimer l'utilisateur"
+  },
+  "UserActions.generateRegistrationToken": {
+    "message": "Obtenir le lien d'inscription"
+  },
+  "UserDetail.errorMessage": {
+    "message": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
+  },
+  "UserDetail.submit": {
+    "message": "Sauvegarder l'utilisateur"
+  },
+  "UserDetail.successMessage": {
+    "message": "Modifications enregistrées avec succès"
   },
   "UserDetail.title": {
     "message": "Utilisateur - {name}"
@@ -1314,11 +1474,14 @@
   "UserForm.name": {
     "message": "Nom"
   },
+  "UserForm.oidcSub": {
+    "message": "Identifiant OpenId Connect"
+  },
   "UserForm.role": {
     "message": "Rôle"
   },
-  "UserList.columns.actions": {
-    "message": "Actions"
+  "UserForm.tooltip.disabledSaveButton": {
+    "message": "Aucune modification n'a été apportée au formulaire."
   },
   "UserList.columns.name": {
     "message": "Nom"
@@ -1326,17 +1489,11 @@
   "UserList.columns.role": {
     "message": "Rôle"
   },
-  "UserList.deleteConfirmation.body": {
-    "message": "Êtes-vous sûr de vouloir effacer cet utilisateur ?"
+  "UserList.createUser": {
+    "message": "Créer un Utilisateur"
   },
-  "UserList.deleteConfirmation.confirm": {
-    "message": "Effacer l'utilisateur"
-  },
-  "UserList.deleteConfirmation.title": {
-    "message": "Effacer l'utilisateur"
-  },
-  "UserList.generateRegistrationToken": {
-    "message": "Obtenir le lien d'inscription"
+  "UserList.viewDetails": {
+    "message": "Voir les détails de l'utilisateur"
   },
   "UserNavigation.userTab": {
     "message": "Détails de l'utilisateur"
@@ -1419,7 +1576,7 @@
   "datatable.placeholder.filterBy": {
     "message": "Rechercher..."
   },
-"embeddedApp.cannotExport": {
+  "embeddedApp.cannotExport": {
     "message": "Échec de l'exportation de la tâche : {error}"
   },
   "embeddedApp.cannotGetTask": {
@@ -1457,9 +1614,6 @@
   },
   "embeddedApp.taskImported": {
     "message": "Tâche importée avec succès"
-  },
-  "embeddedApp.taskLoaded": {
-    "message": "Tâche chargée avec succès"
   },
   "forms.arrayLength": {
     "message": "$'{path}' doit avoir $'{length}' éléments"

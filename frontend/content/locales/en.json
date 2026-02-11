@@ -149,6 +149,15 @@
   "ClassDetail.title": {
     "message": "Class - {name}"
   },
+  "ClassForm.closeConfirmation.body": {
+    "message": "You are about to leave without saving your changes. Are you sure this is what you want?"
+  },
+  "ClassForm.closeConfirmation.button": {
+    "message": "Yes, discard changes"
+  },
+  "ClassForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
   "ClassForm.name": {
     "message": "Name"
   },
@@ -230,6 +239,42 @@
   "ConditionCriterionFilterForm.count": {
     "message": "Number of conditions"
   },
+  "CopyLessonModal.classLabel": {
+    "message": "Class"
+  },
+  "CopyLessonModal.classPlaceholder": {
+    "message": "Select a class"
+  },
+  "CopyLessonModal.copyButton": {
+    "message": "Copy"
+  },
+  "CopyLessonModal.copyError": {
+    "message": "Failed to copy lesson. Please try again."
+  },
+  "CopyLessonModal.copySuccess": {
+    "message": "Lesson copied successfully"
+  },
+  "CopyLessonModal.description": {
+    "message": "Select an existing lesson to copy from another class."
+  },
+  "CopyLessonModal.goToLesson": {
+    "message": "Go to lesson"
+  },
+  "CopyLessonModal.lessonLabel": {
+    "message": "Lesson"
+  },
+  "CopyLessonModal.lessonPlaceholder": {
+    "message": "Select a lesson"
+  },
+  "CopyLessonModal.loading": {
+    "message": "Loading…"
+  },
+  "CopyLessonModal.networkError": {
+    "message": "There was a network issue. Please close this dialog and try again later."
+  },
+  "CopyLessonModal.title": {
+    "message": "Copy existing lesson"
+  },
   "CreateClass.errorMessage": {
     "message": "There was an error creating the new Class. Please try to save again!"
   },
@@ -251,9 +296,6 @@
   "CreateClass.title": {
     "message": "Create Class"
   },
-  "CreateLesson.header": {
-    "message": "Create Lesson"
-  },
   "CreateLesson.submit": {
     "message": "Create Lesson"
   },
@@ -265,9 +307,6 @@
   },
   "CreateSession.errorMessage": {
     "message": "There was an error creating the new Lesson. Please try to save again!"
-  },
-  "CreateSession.header": {
-    "message": "Create Lesson"
   },
   "CreateSession.returnToSessionList": {
     "message": "Return to Lesson List"
@@ -299,9 +338,6 @@
   "CreateSessionForm.title": {
     "message": "Title"
   },
-  "CreateTask.header": {
-    "message": "Create Task"
-  },
   "CreateTask.submit": {
     "message": "Create Task"
   },
@@ -319,9 +355,6 @@
   },
   "CreateTaskInstance.title": {
     "message": "Create Task"
-  },
-  "CreateUser.header": {
-    "message": "Create User"
   },
   "CreateUser.submit": {
     "message": "Create User"
@@ -386,17 +419,14 @@
   "EditTask.submit": {
     "message": "Save Task"
   },
+  "EditTask.taskLockedDescription": {
+    "message": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+  },
+  "EditTask.taskLockedTitle": {
+    "message": "Task is locked"
+  },
   "EditTask.title": {
     "message": "Edit Task - {title}"
-  },
-  "EditUser.header": {
-    "message": "Edit User"
-  },
-  "EditUser.submit": {
-    "message": "Save User"
-  },
-  "EditUser.title": {
-    "message": "Edit User - {name}"
   },
   "EditedBadge.edited": {
     "message": "Edited"
@@ -522,11 +552,11 @@
   "ListClasses.header": {
     "message": "Classes"
   },
-  "ListClasses.pageDescription": {
-    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-  },
-  "ListClasses.pageTitle": {
+  "ListClasses.heading": {
     "message": "Class Manager"
+  },
+  "ListClasses.pageDescription": {
+    "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
   },
   "ListLessons.header": {
     "message": "Lesson Manager"
@@ -666,6 +696,18 @@
   "SessionDetail.title": {
     "message": "Lesson - {title}"
   },
+  "SessionForm.closeConfirmation.body": {
+    "message": "You are about to leave without saving your changes. Are you sure this is what you want?"
+  },
+  "SessionForm.closeConfirmation.button": {
+    "message": "Yes, discard changes"
+  },
+  "SessionForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
+  "SessionForm.createTask": {
+    "message": "Create Task"
+  },
   "SessionForm.sharingType.anonymous": {
     "message": "Anonymous"
   },
@@ -701,6 +743,9 @@
   },
   "SessionList.columns.title": {
     "message": "Title"
+  },
+  "SessionList.copyExistingLesson": {
+    "message": "Copy Existing Lesson"
   },
   "SessionList.copySessionLink": {
     "message": "Share"
@@ -855,6 +900,9 @@
   "TaskDetail.unsupportedApp": {
     "message": "The unsupported application type {type} was selected (Task id {taskId}). Please report this issue."
   },
+  "TaskForm.SaveConflictError": {
+    "message": "The task is now in use by one or more classes and can no longer be modified."
+  },
   "TaskForm.SaveError": {
     "message": "An error occurred while saving the task. Try again later."
   },
@@ -870,6 +918,15 @@
   "TaskForm.blobValidation": {
     "message": "The provided file data is invalid"
   },
+  "TaskForm.changeTypeConfirmation.body": {
+    "message": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+  },
+  "TaskForm.changeTypeConfirmation.button": {
+    "message": "Yes, change type"
+  },
+  "TaskForm.changeTypeConfirmation.title": {
+    "message": "Change task type"
+  },
   "TaskForm.closeConfirmation.body": {
     "message": "You are about to leave the task editing interface without saving. Are you sure this is what you want?"
   },
@@ -882,8 +939,17 @@
   "TaskForm.description": {
     "message": "Description"
   },
-  "TaskForm.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+  "TaskForm.destructiveAction.body": {
+    "message": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+  },
+  "TaskForm.destructiveAction.button": {
+    "message": "Yes, continue"
+  },
+  "TaskForm.destructiveAction.title": {
+    "message": "This action will delete reference solutions"
+  },
+  "TaskForm.taskFileRequired": {
+    "message": "A task file is required before saving."
   },
   "TaskForm.title": {
     "message": "Title"
@@ -924,11 +990,23 @@
   "TaskInstanceAnalysis.title": {
     "message": "Analysis - {title}"
   },
+  "TaskInstanceDetails.editInTaskBank": {
+    "message": "This task cannot be edited here. To edit, go to the {link}."
+  },
+  "TaskInstanceDetails.editNotAllowed": {
+    "message": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+  },
   "TaskInstanceDetails.submit": {
     "message": "Save Task"
   },
+  "TaskInstanceDetails.taskBankLink": {
+    "message": "task bank"
+  },
   "TaskInstanceDetails.title": {
-    "message": "Edit Task - {title}"
+    "message": "Task - {title}"
+  },
+  "TaskInstanceDetails.viewTask": {
+    "message": "View Task"
   },
   "TaskInstanceList.title": {
     "message": "Tasks"
@@ -1086,6 +1164,9 @@
   "TaskTable.columns.title": {
     "message": "Title"
   },
+  "TaskTable.conflictErrorMessage": {
+    "message": "Cannot delete task because it is currently in use."
+  },
   "TaskTable.createTask": {
     "message": "Create Task"
   },
@@ -1104,17 +1185,50 @@
   "TaskTable.emptyState.title": {
     "message": "There are no tasks yet. Let's create some!"
   },
+  "TaskTable.errorMessage": {
+    "message": "There was an error deleting the task. Please try again!"
+  },
+  "TaskTable.successMessage": {
+    "message": "Successfully deleted the task"
+  },
   "TaskTable.viewDetails": {
     "message": "View Task Details"
   },
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"
   },
-  "UserDetail.table.oidcSub": {
-    "message": "OpenId Connect Identifier"
+  "UserActions.deleteCancel": {
+    "message": "Cancel"
   },
-  "UserDetail.table.type": {
-    "message": "Type"
+  "UserActions.deleteConfirmation.body": {
+    "message": "Are you sure you want to delete this user?"
+  },
+  "UserActions.deleteConfirmation.confirm": {
+    "message": "Delete User"
+  },
+  "UserActions.deleteConfirmation.title": {
+    "message": "Delete User"
+  },
+  "UserActions.deleteError": {
+    "message": "There was an error deleting the user. Please try again!"
+  },
+  "UserActions.deleteSuccess": {
+    "message": "User deleted successfully"
+  },
+  "UserActions.deleteUser": {
+    "message": "Delete User"
+  },
+  "UserActions.generateRegistrationToken": {
+    "message": "Get registration link"
+  },
+  "UserDetail.errorMessage": {
+    "message": "There was an error saving the changes. Please try to save again!"
+  },
+  "UserDetail.submit": {
+    "message": "Save User"
+  },
+  "UserDetail.successMessage": {
+    "message": "Successfully saved changes"
   },
   "UserDetail.title": {
     "message": "User - {name}"
@@ -1125,11 +1239,14 @@
   "UserForm.name": {
     "message": "Name"
   },
+  "UserForm.oidcSub": {
+    "message": "OpenID Connect Identifier"
+  },
   "UserForm.role": {
     "message": "Role"
   },
-  "UserList.columns.actions": {
-    "message": "Actions"
+  "UserForm.tooltip.disabledSaveButton": {
+    "message": "No changes to save"
   },
   "UserList.columns.name": {
     "message": "Name"
@@ -1137,17 +1254,11 @@
   "UserList.columns.role": {
     "message": "Role"
   },
-  "UserList.deleteConfirmation.body": {
-    "message": "Are you sure you want to delete this user?"
+  "UserList.createUser": {
+    "message": "Create User"
   },
-  "UserList.deleteConfirmation.confirm": {
-    "message": "Delete User"
-  },
-  "UserList.deleteConfirmation.title": {
-    "message": "Delete User"
-  },
-  "UserList.generateRegistrationToken": {
-    "message": "Get registration link"
+  "UserList.viewDetails": {
+    "message": "View user Details"
   },
   "UserNavigation.userTab": {
     "message": "User Details"
@@ -1268,9 +1379,6 @@
   },
   "embeddedApp.taskImported": {
     "message": "Task imported successfully"
-  },
-  "embeddedApp.taskLoaded": {
-    "message": "Task loaded successfully"
   },
   "forms.arrayLength": {
     "message": "$'{path}' must have $'{length}' items"

@@ -13,11 +13,13 @@ import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
+import { ConflictError } from "@/api/fetch";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import { ChakraDataTable } from "../ChakraDataTable";
+import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
+import { toaster } from "../Toaster";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -68,6 +70,18 @@ const messages = defineMessages({
     id: "TaskTable.emptyState.title",
     defaultMessage: "There are no tasks yet. Let's create some!",
   },
+  successMessage: {
+    id: "TaskTable.successMessage",
+    defaultMessage: "Successfully deleted the task",
+  },
+  genericErrorMessage: {
+    id: "TaskTable.errorMessage",
+    defaultMessage: "There was an error deleting the task. Please try again!",
+  },
+  conflictErrorMessage: {
+    id: "TaskTable.conflictErrorMessage",
+    defaultMessage: "Cannot delete task because it is currently in use.",
+  },
 });
 
 const TaskTable = () => {
@@ -85,13 +99,12 @@ const TaskTable = () => {
     {
       accessorKey: "id",
       header: intl.formatMessage(messages.idColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-id`}>
           {info.row.original.id}
         </span>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },
@@ -99,6 +112,7 @@ const TaskTable = () => {
     {
       accessorKey: "title",
       header: intl.formatMessage(messages.titleColumn),
+      enableSorting: true,
       cell: (info) => (
         <Text
           fontWeight="semibold"
@@ -116,7 +130,6 @@ const TaskTable = () => {
     {
       accessorKey: "taskType",
       header: intl.formatMessage(messages.taskTypeColumn),
-      enableSorting: false,
       cell: (info) => (
         <span data-testid={`task-${info.row.original.id}-taskType`}>
           {capitalizeString(info.row.original.type)}
@@ -129,7 +142,6 @@ const TaskTable = () => {
     {
       id: "actions",
       header: intl.formatMessage(messages.actionsColumn),
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
@@ -146,7 +158,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 64,
+      size: ColumnSize.md,
       meta: {
         columnType: ColumnType.text,
       },
@@ -154,7 +166,6 @@ const TaskTable = () => {
     {
       id: "details",
       header: "",
-      enableSorting: false,
       cell: (info) => (
         <div data-testid={`task-${info.row.original.id}-actions`}>
           <Button
@@ -172,7 +183,7 @@ const TaskTable = () => {
           </Button>
         </div>
       ),
-      size: 32,
+      size: ColumnSize.sm,
       meta: {
         columnType: ColumnType.text,
       },
@@ -202,9 +213,6 @@ const TaskTable = () => {
                   },
                 ],
               },
-              pagination: {
-                pageSize: 10,
-              },
             }}
             emptyStateElement={
               <EmptyState
@@ -218,7 +226,27 @@ const TaskTable = () => {
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
         onConfirm={
-          taskIdToDelete ? () => deleteTask(taskIdToDelete) : undefined
+          taskIdToDelete
+            ? async () => {
+                try {
+                  await deleteTask(taskIdToDelete);
+                  toaster.success({
+                    title: intl.formatMessage(messages.successMessage),
+                  });
+                } catch (error) {
+                  if (error instanceof ConflictError) {
+                    toaster.error({
+                      title: intl.formatMessage(messages.conflictErrorMessage),
+                    });
+                    return;
+                  }
+
+                  toaster.error({
+                    title: intl.formatMessage(messages.genericErrorMessage),
+                  });
+                }
+              }
+            : undefined
         }
         isDangerous
         messages={{

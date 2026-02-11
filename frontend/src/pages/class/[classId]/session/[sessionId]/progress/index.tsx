@@ -14,7 +14,7 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import PageHeading from "@/components/PageHeading";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import SessionActions from "@/components/session/SessionActions";
-import { ShareModal } from "@/components/form/ShareModal";
+import { ShareModal } from "@/components/modals/ShareModal";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import Button from "@/components/Button";
@@ -128,26 +128,11 @@ const SessionProgress = () => {
       </Container>
 
       <ShareModal
-        title={
-          <FormattedMessage
-            id={SessionShareMessages.shareModalTitle.id}
-            defaultMessage={SessionShareMessages.shareModalTitle.defaultMessage}
-          />
-        }
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
         subtitle={
-          <FormattedMessage
-            id={SessionShareMessages.shareModalSubtitle.id}
-            defaultMessage={
-              SessionShareMessages.shareModalSubtitle.defaultMessage
-            }
-          />
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
         }
-        description={
-          <FormattedMessage
-            id={shareMessage.id}
-            defaultMessage={shareMessage.defaultMessage}
-          />
-        }
+        description={<FormattedMessage {...shareMessage} />}
         open={isShareModalOpen}
         shareLink={sessionLink}
         onOpenChange={(details) => setIsShareModalOpen(details.open)}

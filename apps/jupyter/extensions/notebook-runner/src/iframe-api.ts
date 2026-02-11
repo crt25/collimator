@@ -2,6 +2,7 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
+import { DEFAULT_SCROLL_HEIGHT } from "./constants";
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -47,7 +48,7 @@ import {
 
 const logModule = "[Embedded Jupyter]";
 
-const initIframeApi = (handleRequest: AppHandleRequestMap): void => {
+const initIframeApi = (handleRequest: AppHandleRequestMap): AppCrtIframeApi => {
   const crtPlatform = new AppCrtIframeApi({
     ...handleRequest,
     loadSubmission: async (
@@ -79,6 +80,8 @@ const initIframeApi = (handleRequest: AppHandleRequestMap): void => {
   for (const msg of bufferedMessages) {
     crtPlatform.handleWindowMessage(msg);
   }
+
+  return crtPlatform;
 };
 
 export class EmbeddedPythonCallbacks {
@@ -102,7 +105,7 @@ export class EmbeddedPythonCallbacks {
   ) {}
 
   async getHeight(): Promise<number> {
-    return document.body.scrollHeight;
+    return document.body.scrollHeight || DEFAULT_SCROLL_HEIGHT;
   }
 
   async getTask(request: GetTask["request"]): Promise<Task> {
@@ -225,8 +228,8 @@ export class EmbeddedPythonCallbacks {
             request.params.task,
           );
 
-          if (this.mode !== Mode.edit) {
-            // cannot import external custom task in non-edit mode
+          if (this.mode !== Mode.edit && this.mode !== Mode.solve) {
+            // cannot import external custom task in show mode
             throw new GenericNotebookTaskImportError();
           }
 
@@ -616,8 +619,10 @@ export class EmbeddedPythonCallbacks {
   }
 }
 
-export const setupIframeApi = (callbacks: EmbeddedPythonCallbacks): void => {
-  initIframeApi({
+export const setupIframeApi = (
+  callbacks: EmbeddedPythonCallbacks,
+): AppCrtIframeApi => {
+  return initIframeApi({
     getHeight: callbacks.getHeight.bind(callbacks),
     getSubmission: callbacks.getSubmission.bind(callbacks),
     getTask: callbacks.getTask.bind(callbacks),

@@ -9,6 +9,7 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { KernelMessage } from "@jupyterlab/services";
 import {
   addKernelListeners,
+  executePythonInKernel,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
 } from "./utils";
@@ -152,28 +153,26 @@ export class NotebookRunnerState {
     console.debug("Preparing Otter kernel:", kernel.name);
 
     console.debug("Importing basic libraries...");
-    await kernel.requestExecute(
-      {
-        code: `
+    await executePythonInKernel({
+      kernel,
+      code: `
 from ipykernel.comm import Comm
 `,
-      },
-      true,
-    ).done;
+      disposeOnDone: true,
+    });
 
     await installOtter(kernel);
     await installNbConvert(kernel);
 
     console.debug("Importing Otter Grader...");
-    await kernel.requestExecute(
-      {
-        code: `
+    await executePythonInKernel({
+      kernel,
+      code: `
 from otter.assign import main as assign
 from otter.run import main as run
       `,
-      },
-      true,
-    ).done;
+      disposeOnDone: true,
+    });
 
     console.debug("Otter Grader is ready to be used!", kernel);
     setKernelIsPrepared(kernel);
@@ -276,9 +275,23 @@ comm.send(data={'results': base64_content})
 
     this.addCommListener(commListener);
 
-    await kernel.requestExecute({
-      code,
-    }).done;
+    try {
+      await executePythonInKernel({
+        kernel,
+        code,
+      });
+    } catch (error) {
+      this.removeCommListener(commListener);
+      clearTimeout(resultTimeout);
+
+      if (error instanceof Error) {
+        rejectResults(error);
+      } else {
+        rejectResults(
+          new Error(`Error executing code to read ${path}: ${error}`),
+        );
+      }
+    }
 
     return waitForResults;
   };

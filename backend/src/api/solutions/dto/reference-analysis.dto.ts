@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, plainToInstance } from "class-transformer";
+import { Expose, plainToInstance, Type } from "class-transformer";
 import { Modify } from "src/utilities/modify";
+import { IsDate, IsOptional } from "class-validator";
 import { ReferenceAnalysis } from "../solutions.service";
 import { CurrentAnalysisDto } from "./current-analysis.dto";
 import { ReferenceSolutionId } from "./existing-reference-solution.dto";
@@ -37,6 +38,13 @@ export class ReferenceAnalysisDto
   })
   @Expose()
   readonly referenceSolutionId!: ReferenceSolutionId;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   static fromQueryResult(data: ReferenceAnalysis): ReferenceAnalysisDto {
     return plainToInstance(ReferenceAnalysisDto, data, {
