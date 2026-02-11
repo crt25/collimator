@@ -142,40 +142,34 @@ export class TasksService {
     args?: Prisma.TaskFindManyArgs,
     includeSoftDelete = false,
   ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
-    const taskArgs = includeSoftDelete
-      ? { ...args }
-      : { ...args, where: { ...args?.where, deletedAt: null } };
+    const deletedAtCondition = includeSoftDelete ? {} : { deletedAt: null };
 
     // construct args separately to avoid typescript deep type comparison issues
     const finalArgs = {
-      ...taskArgs,
+      ...args,
       omit: omitData,
+      where: { ...args?.where, ...deletedAtCondition },
       include: {
         sessions: {
           where: {
-            session: includeSoftDelete
-              ? {
-                  OR: [
-                    { anonymousStudents: { some: { deletedAt: null } } },
-                    { class: { students: { some: { deletedAt: null } } } },
-                  ],
-                }
-              : {
-                  deletedAt: null,
-                  OR: [
-                    { anonymousStudents: { some: { deletedAt: null } } },
-                    {
-                      class: {
-                        deletedAt: null,
-                        students: { some: { deletedAt: null } },
-                      },
+            session: {
+              ...deletedAtCondition,
+              OR: [
+                { anonymousStudents: { some: { deletedAt: null } } },
+                {
+                  class: {
+                    ...deletedAtCondition,
+                    students: {
+                      some: { deletedAt: null },
                     },
-                  ],
+                  },
                 },
+              ],
+            },
           },
-          take: 1,
-          select: { taskId: true },
         },
+        take: 1,
+        select: { taskId: true },
       },
     };
 
