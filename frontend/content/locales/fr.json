@@ -458,6 +458,42 @@
   "ConditionCriterionFilterForm.count": {
     "message": "Nombre de conditions"
   },
+  "CopyLessonModal.classLabel": {
+    "message": "Classe"
+  },
+  "CopyLessonModal.classPlaceholder": {
+    "message": "Sélectionner une classe"
+  },
+  "CopyLessonModal.copyButton": {
+    "message": "Copier"
+  },
+  "CopyLessonModal.copyError": {
+    "message": "La copie de la leçon a échoué. Veuillez réessayer."
+  },
+  "CopyLessonModal.copySuccess": {
+    "message": "Leçon copiée avec succès"
+  },
+  "CopyLessonModal.description": {
+    "message": "Sélectionnez une leçon à copier depuis une autre classe."
+  },
+  "CopyLessonModal.goToLesson": {
+    "message": "Aller à la leçon"
+  },
+  "CopyLessonModal.lessonLabel": {
+    "message": "Leçon"
+  },
+  "CopyLessonModal.lessonPlaceholder": {
+    "message": "Sélectionner une leçon"
+  },
+  "CopyLessonModal.loading": {
+    "message": "Chargement…"
+  },
+  "CopyLessonModal.networkError": {
+    "message": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
+  },
+  "CopyLessonModal.title": {
+    "message": "Copier une leçon existante"
+  },
   "CreateClass.errorMessage": {
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
@@ -918,6 +954,9 @@
   "SessionList.columns.title": {
     "message": "Titre"
   },
+  "SessionList.copyExistingLesson": {
+    "message": "Copier une leçon existante"
+  },
   "SessionList.copySessionLink": {
     "message": "Copier le lien de la leçon"
   },
@@ -1071,9 +1110,16 @@
   "TaskDetail.unsupportedApp": {
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
+<<<<<<< HEAD
+  "TaskForm.SaveConflictError": {
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+  },
+||||||| 1e3e295c
+=======
   "TaskForm.SaveConflictError": {
     "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
   },
+>>>>>>> main
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
   },

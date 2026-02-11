@@ -497,6 +497,78 @@
       "value": "Nombre de conditions"
     }
   ],
+  "CopyLessonModal.classLabel": [
+    {
+      "type": 0,
+      "value": "Classe"
+    }
+  ],
+  "CopyLessonModal.classPlaceholder": [
+    {
+      "type": 0,
+      "value": "Sélectionner une classe"
+    }
+  ],
+  "CopyLessonModal.copyButton": [
+    {
+      "type": 0,
+      "value": "Copier"
+    }
+  ],
+  "CopyLessonModal.copyError": [
+    {
+      "type": 0,
+      "value": "Échec de la copie de la leçon. Veuillez réessayer."
+    }
+  ],
+  "CopyLessonModal.copySuccess": [
+    {
+      "type": 0,
+      "value": "Leçon copiée avec succès"
+    }
+  ],
+  "CopyLessonModal.description": [
+    {
+      "type": 0,
+      "value": "Sélectionnez une leçon existante à copier depuis une autre classe."
+    }
+  ],
+  "CopyLessonModal.goToLesson": [
+    {
+      "type": 0,
+      "value": "Aller à la leçon"
+    }
+  ],
+  "CopyLessonModal.lessonLabel": [
+    {
+      "type": 0,
+      "value": "Leçon"
+    }
+  ],
+  "CopyLessonModal.lessonPlaceholder": [
+    {
+      "type": 0,
+      "value": "Sélectionner une leçon"
+    }
+  ],
+  "CopyLessonModal.loading": [
+    {
+      "type": 0,
+      "value": "Chargement…"
+    }
+  ],
+  "CopyLessonModal.networkError": [
+    {
+      "type": 0,
+      "value": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
+    }
+  ],
+  "CopyLessonModal.title": [
+    {
+      "type": 0,
+      "value": "Copier une leçon existante"
+    }
+  ],
   "CreateClass.errorMessage": [
     {
       "type": 0,
@@ -1891,6 +1963,12 @@
       "value": "Titre"
     }
   ],
+  "SessionList.copyExistingLesson": [
+    {
+      "type": 0,
+      "value": "Copier une leçon existante"
+    }
+  ],
   "SessionList.copySessionLink": [
     {
       "type": 0,
@@ -2855,6 +2933,7 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
+
   "TaskTable.errorMessage": [
     {
       "type": 0,

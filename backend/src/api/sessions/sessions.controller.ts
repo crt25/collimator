@@ -33,6 +33,7 @@ import {
 import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { SessionsService } from "./sessions.service";
 import {
+  CopySessionDto,
   CreateSessionDto,
   ExistingSessionDto,
   UpdateSessionDto,
@@ -84,7 +85,6 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
-  
   async findAll(
     @AuthenticatedUser() user: User,
     @Param("classId", ParseIntPipe) classId: number,
@@ -135,7 +135,6 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
-  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
@@ -171,7 +170,6 @@ export class SessionsController {
     required: false,
     type: Boolean,
   })
-  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async start(
@@ -331,6 +329,44 @@ export class SessionsController {
 
     const session = await this.sessionsService.deletedByIdAndClass(id, classId);
     return DeletedSessionDto.fromQueryResult(session);
+  }
+
+  @Post("copy")
+  @ApiCreatedResponse({ type: ExistingSessionDto })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @ApiQuery({ name: "includeSoftDelete", required: false })
+  async copy(
+    @AuthenticatedUser() user: User,
+    @Param("classId", ParseIntPipe) classId: number,
+    @Body() copySessionDto: CopySessionDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
+  ): Promise<ExistingSessionDto> {
+    const canCreateInTargetClass =
+      await this.authorizationService.canCreateSession(user, classId);
+
+    if (!canCreateInTargetClass) {
+      throw new ForbiddenException();
+    }
+
+    const canViewSourceSession = await this.authorizationService.canViewSession(
+      user,
+      null,
+      copySessionDto.sourceSessionId,
+    );
+
+    if (!canViewSourceSession) {
+      throw new ForbiddenException();
+    }
+
+    const session = await this.sessionsService.copy(
+      copySessionDto.sourceSessionId,
+      classId,
+      includeSoftDelete,
+    );
+
+    return ExistingSessionDto.fromQueryResult(session);
   }
 
   @Get(":id/progress")
