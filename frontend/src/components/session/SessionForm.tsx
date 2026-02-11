@@ -5,9 +5,19 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import {Button, Field, chakra, Grid, GridItem, HStack, Stack, Icon} from "@chakra-ui/react";
+import {
+  Button,
+  Field,
+  chakra,
+  Grid,
+  GridItem,
+  HStack,
+  Stack,
+  Icon,
+} from "@chakra-ui/react";
 import { RiDraggable } from "react-icons/ri";
 import router from "next/router";
+import { MdAdd } from "react-icons/md";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -21,7 +31,6 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
-import {MdAdd} from "react-icons/md";
 
 export enum SharingType {
   anonymous = "anonymous",
@@ -244,7 +253,7 @@ const SessionForm = ({
   };
 
   const enableSorting = useMemo(
-    () => (selectedTasks.length > 1 && isOwner),
+    () => selectedTasks.length > 1 && isOwner,
     [selectedTasks, isOwner],
   );
 
