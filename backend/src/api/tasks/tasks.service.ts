@@ -146,7 +146,8 @@ export class TasksService {
       ? { ...args }
       : { ...args, where: { ...args?.where, deletedAt: null } };
 
-    const tasks = await this.prisma.task.findMany({
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs = {
       ...taskArgs,
       omit: omitData,
       include: {
@@ -176,7 +177,9 @@ export class TasksService {
           select: { taskId: true },
         },
       },
-    });
+    };
+
+    const tasks = await this.prisma.task.findMany(finalArgs);
     return tasks.map(({ sessions, ...task }) => ({
       ...task,
       isInUse: sessions.length > 0,
