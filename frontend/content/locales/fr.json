@@ -377,6 +377,15 @@
   "ClassDetail.title": {
     "message": "Classe – {name}"
   },
+  "ClassForm.closeConfirmation.body": {
+    "message": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "ClassForm.closeConfirmation.button": {
+    "message": "Oui, quitter sans sauvegarder"
+  },
+  "ClassForm.closeConfirmation.title": {
+    "message": "Attention : vous pourriez perdre votre travail !"
+  },
   "ClassForm.name": {
     "message": "Nom"
   },
@@ -914,6 +923,15 @@
   },
   "SessionDetail.title": {
     "message": "Leçon - {title}"
+  },
+  "SessionForm.closeConfirmation.body": {
+    "message": "Vous êtes sur le point de quitter sans enregistrer vos modifications. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "SessionForm.closeConfirmation.button": {
+    "message": "Oui, quitter sans sauvegarder"
+  },
+  "SessionForm.closeConfirmation.title": {
+    "message": "Attention : vous pourriez perdre votre travail !"
   },
   "SessionForm.createTask": {
     "message": "Créer une activité"

@@ -149,6 +149,15 @@
   "ClassDetail.title": {
     "message": "Class - {name}"
   },
+  "ClassForm.closeConfirmation.body": {
+    "message": "You are about to leave without saving your changes. Are you sure this is what you want?"
+  },
+  "ClassForm.closeConfirmation.button": {
+    "message": "Yes, discard changes"
+  },
+  "ClassForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
+  },
   "ClassForm.name": {
     "message": "Name"
   },
@@ -686,6 +695,15 @@
   },
   "SessionDetail.title": {
     "message": "Lesson - {title}"
+  },
+  "SessionForm.closeConfirmation.body": {
+    "message": "You are about to leave without saving your changes. Are you sure this is what you want?"
+  },
+  "SessionForm.closeConfirmation.button": {
+    "message": "Yes, discard changes"
+  },
+  "SessionForm.closeConfirmation.title": {
+    "message": "Attention: you may lose your work!"
   },
   "SessionForm.createTask": {
     "message": "Create Task"
