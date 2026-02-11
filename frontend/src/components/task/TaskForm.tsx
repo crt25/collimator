@@ -174,8 +174,18 @@ export type TaskFormSubmission = {
 };
 
 const getYupSchema = (intl: IntlShape) => ({
-  title: yup.string().required(),
-  description: yup.string().defined(),
+  title: yup
+    .string()
+    .label(intl.formatMessage(messages.title))
+    .required()
+    .min(1)
+    .max(200),
+  description: yup
+    .string()
+    .min(1)
+    .label(intl.formatMessage(messages.description))
+    .required()
+    .max(2000),
   type: yup.string().oneOf(Object.values(TaskType)).required(),
   isPublic: yup.boolean().defined(),
   taskFile: yup
@@ -273,6 +283,13 @@ const TaskForm = ({
     initialValues?.type ?? TaskType.SCRATCH,
   );
 
+  // derive if we are in task creation mode from the fact initialValues
+  const isTaskCreation = useMemo(
+    () =>
+      initialValues?.taskFile === null || initialValues?.taskFile === undefined,
+    [initialValues?.taskFile],
+  );
+
   const schema = useYupSchema(getYupSchema(intl)) satisfies yup.ObjectSchema<{
     title: string;
     description: string;
@@ -359,6 +376,11 @@ const TaskForm = ({
   });
 
   useEffect(() => {
+    if (isTaskCreation) {
+      // skip the type management logic if we are in task creation mode
+      return;
+    }
+
     if (taskType === originalType) {
       return;
     }
@@ -373,7 +395,7 @@ const TaskForm = ({
     setPendingTypeChange(taskType);
     setValueClean("type", originalType);
     setOpenModal(ModalStates.changeTypeConfirmation);
-  }, [taskType, originalType, hasTypeChanged, setValueClean]);
+  }, [taskType, originalType, hasTypeChanged, setValueClean, isTaskCreation]);
 
   const onConfirmTypeChange = useCallback(() => {
     if (!pendingTypeChange) {

@@ -4,6 +4,7 @@ import { BrowserContext, Page } from "@playwright/test";
 import { Encoder, Decoder, Packet, PacketType } from "socket.io-parser";
 import { jsonResponse } from "./helpers";
 import { mockOidcProviderUrl, mockOidcProxyUrl } from "./setup/config";
+import { ADMIN_USER_NAME } from "./setup/seeding/user";
 import {
   getAuthenticationControllerFindPublicKeyV0Url,
   getAuthenticationControllerLoginV0Url,
@@ -122,7 +123,7 @@ const setupMockOidcProvider = async (
 ): Promise<void> => {
   const sub = "some-unique-id";
   const email = "jane@doe.com";
-  const name = "Jane Doe";
+  const name = ADMIN_USER_NAME;
 
   let nonce = "";
 

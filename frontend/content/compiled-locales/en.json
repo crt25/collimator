@@ -515,6 +515,78 @@
       "value": "Number of conditions"
     }
   ],
+  "CopyLessonModal.classLabel": [
+    {
+      "type": 0,
+      "value": "Class"
+    }
+  ],
+  "CopyLessonModal.classPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a class"
+    }
+  ],
+  "CopyLessonModal.copyButton": [
+    {
+      "type": 0,
+      "value": "Copy"
+    }
+  ],
+  "CopyLessonModal.copyError": [
+    {
+      "type": 0,
+      "value": "Failed to copy lesson. Please try again."
+    }
+  ],
+  "CopyLessonModal.copySuccess": [
+    {
+      "type": 0,
+      "value": "Lesson copied successfully"
+    }
+  ],
+  "CopyLessonModal.description": [
+    {
+      "type": 0,
+      "value": "Select an existing lesson to copy from another class."
+    }
+  ],
+  "CopyLessonModal.goToLesson": [
+    {
+      "type": 0,
+      "value": "Go to lesson"
+    }
+  ],
+  "CopyLessonModal.lessonLabel": [
+    {
+      "type": 0,
+      "value": "Lesson"
+    }
+  ],
+  "CopyLessonModal.lessonPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a lesson"
+    }
+  ],
+  "CopyLessonModal.loading": [
+    {
+      "type": 0,
+      "value": "Loading…"
+    }
+  ],
+  "CopyLessonModal.networkError": [
+    {
+      "type": 0,
+      "value": "There was a network issue. Please close this dialog and try again later."
+    }
+  ],
+  "CopyLessonModal.title": [
+    {
+      "type": 0,
+      "value": "Copy existing lesson"
+    }
+  ],
   "CreateClass.errorMessage": [
     {
       "type": 0,
@@ -1465,6 +1537,12 @@
     {
       "type": 0,
       "value": "Title"
+    }
+  ],
+  "SessionList.copyExistingLesson": [
+    {
+      "type": 0,
+      "value": "Copy Existing Lesson"
     }
   ],
   "SessionList.copySessionLink": [

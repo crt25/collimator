@@ -81,6 +81,10 @@ const messages = defineMessages({
     id: "TaskForm.description",
     defaultMessage: "Description",
   },
+  testName: {
+    id: "TaskForm.testName",
+    defaultMessage: "Test name",
+  },
   blobValidation: {
     id: "TaskFormReferenceSolutions.blobValidation",
     defaultMessage: "The provided file data is invalid",
@@ -133,15 +137,30 @@ export type TaskFormReferenceSolutionsSubmission = {
 
 const getYupSchema = (intl: IntlShape) => {
   const referenceSolutionBase = {
-    title: yup.string().defined(),
-    description: yup.string().defined(),
+    title: yup
+      .string()
+      .label(intl.formatMessage(messages.title))
+      .required()
+      .min(1)
+      .max(200),
+    description: yup
+      .string()
+      .label(intl.formatMessage(messages.description))
+      .required()
+      .min(1)
+      .max(2000),
     isInitial: yup.boolean().required(),
     tests: yup
       .array(
         yup
           .object({
             identifier: yup.string().nullable().defined(),
-            name: yup.string().required(),
+            name: yup
+              .string()
+              .label(intl.formatMessage(messages.testName))
+              .required()
+              .min(1)
+              .max(200),
             contextName: yup.string().nullable().defined(),
             passed: yup.boolean().required(),
           })

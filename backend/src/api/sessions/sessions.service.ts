@@ -201,6 +201,50 @@ export class SessionsService {
     return this.deletedByIdAndClass(id);
   }
 
+  async copy(
+    sourceSessionId: SessionId,
+    targetClassId: number,
+    includeSoftDelete = false,
+  ): Promise<Session> {
+    return this.prisma.$transaction(async (tx) => {
+      const sourceSession = await tx.session.findUniqueOrThrow({
+        where: includeSoftDelete
+          ? { id: sourceSessionId }
+          : { id: sourceSessionId, deletedAt: null },
+        include: {
+          tasks: {
+            orderBy: { index: "asc" },
+            select: {
+              taskId: true,
+              index: true,
+            },
+          },
+        },
+      });
+
+      const taskIds = sourceSession.tasks.map((t) => t.taskId);
+
+      const checkedSession: Prisma.SessionCreateInput = {
+        title: sourceSession.title,
+        description: sourceSession.description,
+        isAnonymous: sourceSession.isAnonymous,
+        class: {
+          connect: { id: targetClassId },
+        },
+        tasks: {
+          createMany: {
+            data: taskIds.map((taskId, index) => ({ taskId, index })),
+          },
+        },
+      };
+
+      return tx.session.create({
+        data: checkedSession,
+        include: compactInclude,
+      });
+    });
+  }
+
   async getSessionProgress(
     id: SessionId,
     studentId: StudentId,

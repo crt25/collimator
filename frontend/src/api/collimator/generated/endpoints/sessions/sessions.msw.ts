@@ -401,6 +401,48 @@ export const getSessionsControllerFinishV0ResponseMock = (
   ...overrideResponse,
 });
 
+export const getSessionsControllerCopyV0ResponseMock = (
+  overrideResponse: Partial<ExistingSessionDto> = {},
+): ExistingSessionDto => ({
+  id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  title: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  isAnonymous: faker.datatype.boolean(),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
+  status: faker.helpers.arrayElement(Object.values(SessionStatus)),
+  lesson: {
+    ...{
+      id: faker.number.float({
+        min: undefined,
+        max: undefined,
+        fractionDigits: 2,
+      }),
+      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
+    },
+  },
+  tasks: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() =>
+    faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+  ),
+  ...overrideResponse,
+});
+
 export const getSessionsControllerGetSessionProgressV0ResponseMock = (
   overrideResponse: Partial<StudentSessionProgressDto> = {},
 ): StudentSessionProgressDto => ({
@@ -671,6 +713,34 @@ export const getSessionsControllerFinishV0MockHandler = (
   );
 };
 
+export const getSessionsControllerCopyV0MockHandler = (
+  overrideResponse?:
+    | ExistingSessionDto
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<ExistingSessionDto> | ExistingSessionDto),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    "*/api/v0/classes/:classId/sessions/copy",
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === "function"
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getSessionsControllerCopyV0ResponseMock(),
+        ),
+        { status: 201, headers: { "Content-Type": "application/json" } },
+      );
+    },
+    options,
+  );
+};
+
 export const getSessionsControllerGetSessionProgressV0MockHandler = (
   overrideResponse?:
     | StudentSessionProgressDto
@@ -708,5 +778,6 @@ export const getSessionsMock = () => [
   getSessionsControllerStartV0MockHandler(),
   getSessionsControllerPauseV0MockHandler(),
   getSessionsControllerFinishV0MockHandler(),
+  getSessionsControllerCopyV0MockHandler(),
   getSessionsControllerGetSessionProgressV0MockHandler(),
 ];
