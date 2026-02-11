@@ -239,6 +239,42 @@
   "ConditionCriterionFilterForm.count": {
     "message": "Number of conditions"
   },
+  "CopyLessonModal.classLabel": {
+    "message": "Class"
+  },
+  "CopyLessonModal.classPlaceholder": {
+    "message": "Select a class"
+  },
+  "CopyLessonModal.copyButton": {
+    "message": "Copy"
+  },
+  "CopyLessonModal.copyError": {
+    "message": "Failed to copy lesson. Please try again."
+  },
+  "CopyLessonModal.copySuccess": {
+    "message": "Lesson copied successfully"
+  },
+  "CopyLessonModal.description": {
+    "message": "Select an existing lesson to copy from another class."
+  },
+  "CopyLessonModal.goToLesson": {
+    "message": "Go to lesson"
+  },
+  "CopyLessonModal.lessonLabel": {
+    "message": "Lesson"
+  },
+  "CopyLessonModal.lessonPlaceholder": {
+    "message": "Select a lesson"
+  },
+  "CopyLessonModal.loading": {
+    "message": "Loading…"
+  },
+  "CopyLessonModal.networkError": {
+    "message": "There was a network issue. Please close this dialog and try again later."
+  },
+  "CopyLessonModal.title": {
+    "message": "Copy existing lesson"
+  },
   "CreateClass.errorMessage": {
     "message": "There was an error creating the new Class. Please try to save again!"
   },
@@ -707,6 +743,9 @@
   },
   "SessionList.columns.title": {
     "message": "Title"
+  },
+  "SessionList.copyExistingLesson": {
+    "message": "Copy Existing Lesson"
   },
   "SessionList.copySessionLink": {
     "message": "Share"

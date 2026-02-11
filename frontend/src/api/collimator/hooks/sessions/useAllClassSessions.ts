@@ -18,11 +18,15 @@ const fetchByClassIdAndTransform = (
   );
 
 export const useAllClassSessions = (
-  classId: number,
+  classId?: number,
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getSessionsControllerFindAllV0Url(classId, {}), () =>
-    fetchByClassIdAndTransform(authOptions, classId),
+  return useSWR(
+    classId ? getSessionsControllerFindAllV0Url(classId, {}) : null,
+    () =>
+      classId
+        ? fetchByClassIdAndTransform(authOptions, classId)
+        : new Promise<GetSessionsReturnType>(() => {}),
   );
 };

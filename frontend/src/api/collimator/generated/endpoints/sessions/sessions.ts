@@ -7,11 +7,13 @@
  */
 import { fetchApi } from "../../../../fetch";
 import type {
+  CopySessionDto,
   CreateSessionDto,
   DeletedSessionDto,
   ExistingSessionDto,
   ExistingSessionExtendedDto,
   IsSessionAnonymousDto,
+  SessionsControllerCopyV0Params,
   SessionsControllerFindAllV0Params,
   SessionsControllerFindOneV0Params,
   SessionsControllerFinishV0Params,
@@ -295,19 +297,47 @@ export const sessionsControllerFinishV0 = async (
   );
 };
 
+export const getSessionsControllerCopyV0Url = (
+  classId: number,
+  params?: SessionsControllerCopyV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/copy?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/copy`;
+};
+
+export const sessionsControllerCopyV0 = async (
+  classId: number,
+  copySessionDto: CopySessionDto,
+  params?: SessionsControllerCopyV0Params,
+  options?: RequestInit,
+): Promise<ExistingSessionDto> => {
+  return fetchApi<ExistingSessionDto>(
+    getSessionsControllerCopyV0Url(classId, params),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(copySessionDto),
+    },
+  );
+};
+
 export const getSessionsControllerGetSessionProgressV0Url = (
   classId: number,
   id: number,
 ) => {
   return `/api/v0/classes/${classId}/sessions/${id}/progress`;
-};
-
-export const getSessionsControllerGetSessionTaskSolveV0Url = (
-  classId: number,
-  id: number,
-  taskId: number,
-) => {
-  return `/api/v0/classes/${classId}/sessions/${id}/task/${taskId}/solve`;
 };
 
 export const sessionsControllerGetSessionProgressV0 = async (

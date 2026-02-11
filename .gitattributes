@@ -3,3 +3,6 @@
 # Set the default behavior for .sh files, docker breaks otherwise
 # see https://stackoverflow.com/a/40537078/2897827
 *.sh text eol=lf
+
+# Ignore Orval-generated files
+frontend/src/api/collimator/generated/** linguist-generated

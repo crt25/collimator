@@ -127,6 +127,7 @@ const SessionDetail = () => {
                     : SharingType.private,
                 }}
                 onSubmit={onSubmit}
+                classId={_klass.id}
               />
             </>
           )}

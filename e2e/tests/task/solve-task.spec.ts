@@ -9,7 +9,6 @@ import { createAnonymousSubmission } from "../sessions/submission-management";
 import checkXPositionWithAssertion from "../sessions/tasks/scratch/check-x-position-with-assertion";
 import { createTask } from "./task-management";
 import { getTasksControllerDownloadOneV0Url } from "@/api/collimator/generated/endpoints/tasks/tasks";
-import { getSessionsControllerGetSessionTaskSolveV0Url } from "@/api/collimator/generated/endpoints/sessions/sessions";
 
 const newClassName = "solve task test class";
 let classId: number = -1;
@@ -95,13 +94,13 @@ test.describe("/session/[sessionId]/task/[taskId]/solve", () => {
       await expect(page.getSessionName()).toHaveCount(0);
     });
 
-    test("shows error when save fails", async ({ page: pwPage, apiURL }) => {
+    test("shows error when save fails", async ({ page: pwPage, baseURL }) => {
       const page = SolveTaskPageModel.create(pwPage);
 
       await page.waitForTaskLoad();
 
       await pwPage.route(
-        `${apiURL}${getSessionsControllerGetSessionTaskSolveV0Url(classId, sessionId, taskId)}`,
+        `${baseURL}/class/${classId}/session/${sessionId}/task/${taskId}/solve`,
         (route) =>
           route.fulfill({
             status: 500,

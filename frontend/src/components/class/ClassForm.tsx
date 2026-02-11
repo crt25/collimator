@@ -72,7 +72,12 @@ const ClassForm = ({
   const intl = useIntl();
 
   const schema = useYupSchema({
-    name: yup.string().required(),
+    name: yup
+      .string()
+      .label(intl.formatMessage(messages.name))
+      .required()
+      .min(1)
+      .max(100),
     teacherId: yup.number().required(),
   });
 

@@ -1,34 +1,31 @@
 import { PrismaClient } from "@prisma/client";
 import { match } from "ts-pattern";
-import * as yargs from "yargs";
-import { hideBin } from "yargs/helpers";
 import { seedProduction } from "./production";
 import { seedEndToEndTesting } from "./e2e";
 
 const DEFAULT_FRONTEND_HOSTNAME = "https://[YourClassMosaicInstance]";
+const DEFAULT_ADMIN_EMAIL = "admin@example.com";
+const DEFAULT_ADMIN_USERNAME = "Admin";
 
 enum SeedingMode {
   production = "production",
   e2e = "e2e",
 }
 
-async function parseArgs(): Promise<{ email: string; username: string }> {
-  const args = await yargs(hideBin(process.argv))
-    .option("email", {
-      type: "string",
-      demandOption: true,
-      description: "Admin user email",
-    })
-    .option("username", {
-      type: "string",
-      demandOption: true,
-      description: "Admin username",
-    })
-    .parse();
+function getAdminConfig(): { email: string; username: string } {
+  const adminEmail = process.env.SEED_ADMIN_EMAIL;
+  const adminUsername = process.env.SEED_ADMIN_USERNAME;
+
+  if (!adminEmail || !adminUsername) {
+    return {
+      email: DEFAULT_ADMIN_EMAIL,
+      username: DEFAULT_ADMIN_USERNAME,
+    };
+  }
 
   return {
-    email: args.email,
-    username: args.username,
+    email: adminEmail,
+    username: adminUsername,
   };
 }
 
@@ -42,7 +39,7 @@ async function main(): Promise<void> {
 
   await match(mode)
     .with(SeedingMode.production, async () => {
-      const options = await parseArgs();
+      const options = getAdminConfig();
       return seedProduction(
         prisma,
         options.email,
