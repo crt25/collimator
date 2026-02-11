@@ -29,7 +29,6 @@ const IFrameWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 `;
 
 const StyledIFrame = styled.iframe`
