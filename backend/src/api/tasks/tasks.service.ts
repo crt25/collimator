@@ -155,15 +155,20 @@ export class TasksService {
             session: includeSoftDelete
               ? {
                   OR: [
-                    { anonymousStudents: { some: {} } },
-                    { class: { students: { some: {} } } },
+                    { anonymousStudents: { some: { deletedAt: null } } },
+                    { class: { students: { some: { deletedAt: null } } } },
                   ],
                 }
               : {
                   deletedAt: null,
                   OR: [
-                    { anonymousStudents: { some: {} } },
-                    { class: { deletedAt: null, students: { some: {} } } },
+                    { anonymousStudents: { some: { deletedAt: null } } },
+                    {
+                      class: {
+                        deletedAt: null,
+                        students: { some: { deletedAt: null } },
+                      },
+                    },
                   ],
                 },
           },
