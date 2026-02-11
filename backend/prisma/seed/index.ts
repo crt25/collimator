@@ -4,6 +4,8 @@ import { seedProduction } from "./production";
 import { seedEndToEndTesting } from "./e2e";
 
 const DEFAULT_FRONTEND_HOSTNAME = "https://[YourClassMosaicInstance]";
+const DEFAULT_ADMIN_EMAIL = "admin@example.com";
+const DEFAULT_ADMIN_USERNAME = "Admin";
 
 enum SeedingMode {
   production = "production",
@@ -11,9 +13,19 @@ enum SeedingMode {
 }
 
 function getAdminConfig(): { email: string; username: string } {
+  const adminEmail = process.env.SEED_ADMIN_EMAIL;
+  const adminUsername = process.env.SEED_ADMIN_USERNAME;
+
+  if (!adminEmail || !adminUsername) {
+    return {
+      email: DEFAULT_ADMIN_EMAIL,
+      username: DEFAULT_ADMIN_USERNAME,
+    };
+  }
+
   return {
-    email: process.env.SEED_ADMIN_EMAIL ?? "admin@example.com",
-    username: process.env.SEED_ADMIN_USERNAME ?? "Admin",
+    email: adminEmail,
+    username: adminUsername,
   };
 }
 
