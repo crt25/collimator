@@ -1,17 +1,29 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Button, chakra, Grid, GridItem, HStack, Icon } from "@chakra-ui/react";
+import {
+  Button,
+  Field,
+  chakra,
+  Grid,
+  GridItem,
+  HStack,
+  Stack,
+  Icon,
+} from "@chakra-ui/react";
+import { RiDraggable } from "react-icons/ri";
 import router from "next/router";
 import { MdAdd } from "react-icons/md";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
@@ -79,10 +91,19 @@ export interface SessionFormValues {
   sharingType: SharingType;
 }
 
-const TaskListElement = styled.div`
+const StyledTaskListElement = styled.div<{ enableSorting: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  cursor: ${(props) => (props.enableSorting ? "grab" : "default")};
+  &:active {
+    cursor: ${(props) => (props.enableSorting ? "grabbing" : "default")};
+  }
+`;
+
+const SortableListWrapper = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const RemoveTask = styled.span`
@@ -95,10 +116,12 @@ const SessionForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  classId,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
+  classId: number;
 }) => {
   const intl = useIntl();
 
@@ -151,6 +174,17 @@ const SessionForm = ({
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
+
+  const { data: klass } = useClass(classId);
+  const authenticationContext = useContext(AuthenticationContext);
+
+  const isOwner = useMemo(() => {
+    return (
+      klass &&
+      "userId" in authenticationContext &&
+      klass.teacher.id === authenticationContext.userId
+    );
+  }, [klass, authenticationContext]);
 
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
@@ -207,6 +241,33 @@ const SessionForm = ({
     }
   }, [data, selectedTaskIds, selectedTasks, setSelectedTasks]);
 
+  const TaskListElement = ({
+    task,
+    enableSorting,
+    onRemove,
+  }: {
+    task: ExistingTask;
+    enableSorting: boolean;
+    onRemove: () => void;
+  }) => {
+    return (
+      <StyledTaskListElement enableSorting={enableSorting}>
+        <HStack>
+          {enableSorting && <RiDraggable />}
+          <span>{task.title}</span>
+        </HStack>
+        <RemoveTask data-testid="remove-task" onClick={onRemove}>
+          <FontAwesomeIcon icon={faTrash} />
+        </RemoveTask>
+      </StyledTaskListElement>
+    );
+  };
+
+  const enableSorting = useMemo(
+    () => selectedTasks.length > 1 && isOwner,
+    [selectedTasks, isOwner],
+  );
+
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
@@ -239,50 +300,58 @@ const SessionForm = ({
                 }
               />
 
-              <SortableListInput
-                items={selectedTasks}
-                updateItems={setSelectedTasks}
-                testId="selected-tasks"
-              >
-                {(task) => (
-                  <TaskListElement>
-                    <span>{task.title}</span>
-                    <RemoveTask
-                      data-testid="remove-task"
-                      onClick={() =>
-                        setSelectedTasks(
-                          selectedTasks.filter((t) => t !== task),
-                        )
-                      }
+              <SortableListWrapper>
+                <Field.Root>
+                  <Stack>
+                    <Field.Label>
+                      {intl.formatMessage(messages.tasks)}
+                    </Field.Label>
+                    <SortableListInput
+                      items={selectedTasks}
+                      updateItems={setSelectedTasks}
+                      testId="selected-tasks"
+                      enableSorting={enableSorting}
                     >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </RemoveTask>
-                  </TaskListElement>
-                )}
-              </SortableListInput>
+                      {(task, _, enableSorting) => (
+                        <TaskListElement
+                          task={task}
+                          enableSorting={enableSorting}
+                          onRemove={() =>
+                            setSelectedTasks(
+                              selectedTasks.filter((t) => t !== task),
+                            )
+                          }
+                        />
+                      )}
+                    </SortableListInput>
+                  </Stack>
+                </Field.Root>
+              </SortableListWrapper>
 
-              <Select
-                label={messages.addTask}
-                options={[
-                  {
-                    value: addTaskEmptyId.toString(),
-                    label: messages.selectTaskToAdd,
-                  },
-                  // in theory tasks should never be undefined, but it seems to happen sometimes??
-                  // TODO: investigate why this happens
-                  ...(Array.isArray(tasks) ? tasks : [])
-                    // don't list again tasks that are already selected
-                    .filter((t) => !selectedTaskIds.includes(t.id))
-                    .map((t) => ({
-                      value: t.id.toString(),
-                      label: t.title,
-                    })),
-                ]}
-                data-testid="add-task"
-                onValueChange={onAddTask}
-                value={addTaskId.toString()}
-                marginTop="lg"
-              />
+              {isOwner && (
+                <Select
+                  label={messages.addTask}
+                  options={[
+                    {
+                      value: addTaskEmptyId.toString(),
+                      label: messages.selectTaskToAdd,
+                    },
+                    // in theory tasks should never be undefined, but it seems to happen sometimes??
+                    // TODO: investigate why this happens
+                    ...(Array.isArray(tasks) ? tasks : [])
+                      // don't list again tasks that are already selected
+                      .filter((t) => !selectedTaskIds.includes(t.id))
+                      .map((t) => ({
+                        value: t.id.toString(),
+                        label: t.title,
+                      })),
+                  ]}
+                  data-testid="add-task"
+                  onValueChange={onAddTask}
+                  value={addTaskId.toString()}
+                  marginTop="lg"
+                />
+              )}
             </GridItem>
 
             <GridItem colSpan={{ base: 12, md: 6 }}>
