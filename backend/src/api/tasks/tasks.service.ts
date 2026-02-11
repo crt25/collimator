@@ -146,40 +146,39 @@ export class TasksService {
       ? { ...args }
       : { ...args, where: { ...args?.where, deletedAt: null } };
 
-    // construct args separately to avoid typescript deep type comparison issues
-    const finalArgs = {
+    const includeClause = {
+      sessions: {
+        where: {
+          session: includeSoftDelete
+            ? {
+                OR: [
+                  { anonymousStudents: { some: {} } },
+                  { class: { students: { some: {} } } },
+                ],
+              }
+            : {
+                deletedAt: null,
+                OR: [
+                  { anonymousStudents: { some: { deletedAt: null } } },
+                  {
+                    class: {
+                      deletedAt: null,
+                      students: { some: { deletedAt: null } },
+                    },
+                  },
+                ],
+              },
+        },
+        take: 1,
+        select: { taskId: true },
+      },
+    } as const;
+
+    const tasks = await this.prisma.task.findMany({
       ...taskArgs,
       omit: omitData,
-      include: {
-        sessions: {
-          where: {
-            session: includeSoftDelete
-              ? {
-                  OR: [
-                    { anonymousStudents: { some: { deletedAt: null } } },
-                    { class: { students: { some: { deletedAt: null } } } },
-                  ],
-                }
-              : {
-                  deletedAt: null,
-                  OR: [
-                    { anonymousStudents: { some: { deletedAt: null } } },
-                    {
-                      class: {
-                        deletedAt: null,
-                        students: { some: { deletedAt: null } },
-                      },
-                    },
-                  ],
-                },
-          },
-          take: 1,
-          select: { taskId: true },
-        },
-      },
-    };
-
-    const tasks = await this.prisma.task.findMany(finalArgs);
+      include: includeClause,
+    });
     return tasks.map(({ sessions, ...task }) => ({
       ...task,
       isInUse: sessions.length > 0,
