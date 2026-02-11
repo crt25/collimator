@@ -1,0 +1,1 @@
+export const DEFAULT_SCROLL_HEIGHT = 800;

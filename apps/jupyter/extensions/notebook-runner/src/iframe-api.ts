@@ -2,6 +2,7 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
+import { DEFAULT_SCROLL_HEIGHT } from "./constants";
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
@@ -104,7 +105,7 @@ export class EmbeddedPythonCallbacks {
   ) {}
 
   async getHeight(): Promise<number> {
-    return document.body.scrollHeight;
+    return document.body.scrollHeight || DEFAULT_SCROLL_HEIGHT;
   }
 
   async getTask(request: GetTask["request"]): Promise<Task> {
