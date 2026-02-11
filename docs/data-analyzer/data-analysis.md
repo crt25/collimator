@@ -1,8 +1,8 @@
 # Data analysis
 
-After AST conversion, ClassMosaic can handle task results and make some analysis.
+After AST conversion, ClassMosaic can handle task results and perform analysis.
 
-ClassMosaic implements two algorithms to compute a distances between trees:
+ClassMosaic implements two algorithms to compute distances between trees:
 
-- **[pqGrams](https://github.com/hoonto/jqgram)** provides an very fast approximation of tree edit distance.
-- **[Zangh-Shasha](https://github.com/schulzch/edit-distance-js)** computes the exact tree edit distance by decomposing trees into substructures (like puzzle pieces) and comparing them.
+- **[pqGrams](https://github.com/hoonto/jqgram)** provides a very fast approximation of tree edit distance.
+- **[Zhang-Shasha](https://github.com/schulzch/edit-distance-js)** computes the exact tree edit distance by decomposing trees into substructures (like puzzle pieces) and comparing them.

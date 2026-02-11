@@ -38,11 +38,11 @@ export const countConditions = (
 };
 ```
 
-Here, `walkAst` is an utility function that recursively walks the AST and calls `statementCallback` for each statement node.
+Here, `walkAst` is a utility function that recursively walks the AST and calls `statementCallback` for each statement node.
 
 The enum `AstCriterionType`, as well as the types `CriteriaBasedAnalyzerInput` and `CriteriaBasedAnalyzerOutput`, are defined in `frontend/src/data-analyzer/analyze-asts.ts`.
 
-This file also defines the global `analyzeAst` function. Given an G-AST and a criterion input, this function runs the corresponding analyzer and returns its output.
+This file also defines the global `analyzeAst` function. Given a G-AST and a criterion input, this function runs the corresponding analyzer and returns its output.
 
 In `frontend/src/components/dashboard/criteria` the `analyzeAst` function is used for:
 
@@ -116,7 +116,7 @@ To add a new axis, you must:
 
 ### Filter
 
-To use a criterion as a filter, you must define an instance of `CriterionFilterDefinition<>` must in `frontend/src/components/dashboard/criteria`.
+To use a criterion as a filter, you must define an instance of `CriterionFilterDefinition<>` in `frontend/src/components/dashboard/criteria`.
 
 For the example that counts condition statements, this may look like:
 
@@ -150,8 +150,8 @@ export const ConditionCriterionFilter: CriterionFilterDefinition<
   },
 
   // The function which runs the filter on a set of analyses.
-  run: (config, analyes) => {
-    const numberOfConditionsList = analyes.map(
+  run: (config, analyses) => {
+    const numberOfConditionsList = analyses.map(
       (analysis) =>
         analyzeAst(analysis.generalAst, toAnalysisInput(config)).output
     );
@@ -247,7 +247,7 @@ This hook relies on `getAutomaticGroups`, which accepts:
 
 To add a new algorithm for automatic grouping, you must:
 
-1. Add a new to the `AutomaticGroupingType` enum defined in `src/components/dashboard/hooks/automatic-grouping/grouping-type.ts`.
+1. Add a new value to the `AutomaticGroupingType` enum defined in `src/components/dashboard/hooks/automatic-grouping/grouping-type.ts`.
 2. Create a new file in `src/components/dashboard/hooks/automatic-grouping/`
 3. Implement a function with the signature
 
@@ -255,7 +255,7 @@ To add a new algorithm for automatic grouping, you must:
    (analyses: CurrentAnalysis[], distanceType: DistanceType): Promise<AnalysisGroup[]>
    ```
 
-   If your algorithm does not rely on a distance metric, consider [adding a custom  `None` distance metric](#how-to-add-a-new-distance-metric) that always throws.
+   If your algorithm does not rely on a distance metric, consider [adding a custom `None` distance metric](#how-to-add-a-new-distance-metric) that always throws.
 
 4. Update `src/components/dashboard/hooks/automatic-grouping/index.ts` so that `getAutomaticGroups` calls your algorithm.
 5. (Optionally) Update `useAutomaticGrouping` to expose your algorithm.
@@ -370,8 +370,8 @@ To add a new distance metric for automatic grouping, you must:
   (a: AstNode, b: AstNode): Promise<number>
   ```
 
-1. Update `src/components/dashboard/hooks/ast-distance/index.ts` so that `getAstDistance` calls your new metric.
-2. (Optionally) Update `useAutomaticGrouping` hook to expose your metric.
+4. Update `src/components/dashboard/hooks/ast-distance/index.ts` so that `getAstDistance` calls your new metric.
+5. (Optionally) Update `useAutomaticGrouping` hook to expose your metric.
 
 ##### Example for distance metric (Zhang-Shasha)
 
@@ -426,7 +426,7 @@ const getInputForNode = (
   cfn: getAstNodeChildren,
 });
 
-// The actal distance metric function.
+// The actual distance metric function.
 export const computePqGramsDistance = (
   a: AstNode,
   b: AstNode,

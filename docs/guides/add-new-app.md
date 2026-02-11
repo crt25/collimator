@@ -26,7 +26,7 @@ Additional steps depend on the application you are integrating. For example:
 
 To integrate the app into ClassMosaic, you must implement the [`iframe-rpc` API](../architecture/iframe-rpc.md).
 
-This includes declaring the events exchanged between the app and the backend (e.g. `GetTask`, `LoadTask`).
+This includes declaring the events exchanged between the app and the frontend (e.g. `GetTask`, `LoadTask`).
 
 As an example, to retrieve the height of the embedded iframe, you must implement the `GetHeight` event.
 
@@ -79,7 +79,7 @@ Edit  `backend/prisma/schema.prisma` and add a new value to the `TaskType` enum:
 enum TaskType {
   SCRATCH
   JUPYTER
-  NEWTASKTYPE
+  NEW_TASK_TYPE
 }
 ```
 
@@ -91,9 +91,9 @@ prisma migrate dev --name added_my_new_task_type
 
 ### AST converter
 
-The AST converter is responsible for transforming solutions from their original format (e.g., Scratch project JSON) into a standardized, language-agnostic General AST. See [AST conversion](../data-analyzer/ast-conversion.md) to going deeper.
+The AST converter is responsible for transforming solutions from their original format (e.g., Scratch project JSON) into a standardized, language-agnostic General AST. See [AST conversion](../data-analyzer/ast-conversion.md) to go deeper.
 
-First step, create a folder for the app (and/or the language) in `backend/src/ast/converters`.
+As a first step, create a folder for the app (and/or the language) in `backend/src/ast/converters`.
 
 #### Nodes converters
 
@@ -111,7 +111,7 @@ The Python implementation can be used as a reference. Review the files in `backe
 
 ## Frontend
 
-1. Add the application hostname to environment files:
+1. Add the application hostname to the environment files:
    - `.env.development`
    - `.env.test.sample`
 2. Declare the hostname constant in `frontend/src/utilities/constants.ts`:

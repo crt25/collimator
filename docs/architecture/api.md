@@ -1,6 +1,6 @@
 # API reference
 
-The NestJS backend follows OpenAPI principes and is documented directly in the code.
+The NestJS backend follows OpenAPI principles and is documented directly in the code.
 
 The generated OpenAPI specification is then used by Orval to generate a REST client for the Next.js frontend.
 
@@ -40,4 +40,4 @@ This configuration generates an OpenAPI specification that is available at:
 
 Orval generates type-safe JavaScript and TypeScript clients from any valid OpenAPI v3 specification.
 
-The command `yarn update:api` in the `frontend` folderThis reads the OpenAPI JSON specification and generates a client in `frontend/api/collimator/generated`.
+The command `yarn update:api` in the `frontend` folder reads the OpenAPI JSON specification and generates a client in `frontend/api/collimator/generated`. Note that the backend must be running for this command to work (`cd backend && yarn dev`).

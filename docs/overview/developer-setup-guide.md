@@ -2,7 +2,7 @@
 
 ## Developer setup guide
 
-This guide provides instructions for setting up the ClassMosaic project for local development. The project is a monorepo project and uses git submodules too.
+This guide provides instructions for setting up the ClassMosaic project for local development. The project is a monorepo and uses Git submodules as well.
 
 The repository is structured into several key directories, including `backend`, `frontend`, `apps` for the applications, `e2e` for end-to-end tests, and `terraform` for infrastructure as code.
 
@@ -137,6 +137,9 @@ git submodule update --init --recursive --progress
     $ yarn dev
     ```
 
+### Jupyter setup
+See [apps/jupyter/README.md](../../apps/jupyter/README.md) for detailed instructions.
+
 ### Visit the frontend
 
 1. Open your browser at `http://localhost:3000/`.
@@ -185,7 +188,7 @@ This process creates two Docker containers:
     - Port: 5432 (default postgres port)
     - Username: postgres
     - Password: password (value from step 1)
-9. Save. Update the `backend/.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public"`.
+9. Save. Update the `backend/.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public`.
 
 ## Infrastructure and deployment
 

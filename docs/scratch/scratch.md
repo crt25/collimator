@@ -13,7 +13,7 @@ The conversion process is handled by two main functions :
 - `convertBlockTreeToStatement`
 - `convertBlockTreeToExpression`
 
-Both functions first branch based on th Scratch block category, such as:
+Both functions first branch based on the Scratch block category, such as:
 
 - Motion
 - Looks
@@ -50,7 +50,7 @@ Instead, they may be found in the [respective block definition on the scratch-bl
 
 This document is intended for developers working on this project and who may need to update or maintain the Scratch integration.
 
-This project modified Scratch, the scope of the changes and their purpose are described below.
+This project modifies Scratch; the scope of the changes and their purpose are described below.
 
 ### Edit and solve mode
 
@@ -96,7 +96,7 @@ The current number of used blocks is counted by iterating over the Scratch VM's 
 When pressing any block config button (e.g., to change the maximum number of allowed blocks), we dispatch on the Window object a `ModifyBlockConfigEvent` event containing the opcode of the block whose config we want to modify.
 The `BlockConfig` React component listens for this event and, upon being triggered, renders a modal with a form to configure how often the block can be used.
 
-When submitting the form, it directly updates th Scratch VM's config and then dispatches a `UpdateBlockToolboxEvent` event on the Window object. The (modified) Scratch component `Blocks` listens to this event.
+When submitting the form, it directly updates the Scratch VM's config and then dispatches an `UpdateBlockToolboxEvent` event on the Window object. The (modified) Scratch component `Blocks` listens to this event.
 Whenever it sees this event, it re-renders the toolbox resulting in updated numbers.
 
 To reduce the number of available blocks of a given type, we add an event listener to listen for workspace changes in the modified `Blocks` component.

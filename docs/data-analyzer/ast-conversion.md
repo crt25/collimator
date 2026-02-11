@@ -6,7 +6,7 @@ The process is initiated when a solution is submitted. The resulting General AST
 
 ## Overview
 
-In the `backend`, ClassMosaic converts each result in a Generalized Abstract Syntax Tree (G-AST). This structure makes it possible to calculate similarities and differences between solutions.
+In the `backend`, ClassMosaic converts each result into a Generalized Abstract Syntax Tree (G-AST). This structure makes it possible to calculate similarities and differences between solutions.
 
 The `/frontend` then performs the analysis and displays the results to the teacher.
 
@@ -39,7 +39,7 @@ For instance a literal is an expression whereas a control structure such as a co
 
 ?> The conversion is not a one-to-one process.
 
-For example, the block `while not( ... ){ ... }` will be converted in two blocks `while( not( ... ) ) { ... }`.
+For example, the block `while not( ... ){ ... }` will be converted into two blocks `while( not( ... ) ) { ... }`.
 
 ### Structure
 
@@ -129,7 +129,7 @@ classDiagram
 
 ### Example
 
-If each programming language has its own features and needs a specific converter, we purpose a simple example to illustrate a conversion.
+Since each programming language has its own features and requires a specific converter, we present a simple example to illustrate a conversion.
 
 ```c#
 func sum(a, 3):

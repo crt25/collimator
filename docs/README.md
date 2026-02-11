@@ -2,7 +2,7 @@
 
 ClassMosaic is a web-based platform designed for building and managing programming tasks, primarily for educational purposes. It enables teachers to create classes, manage sessions, and design tasks that students can solve directly in the browser.
 
-A core feature is its deep integrations of different languages, allowing for the creation, submission, and analysis of programming projects.
+A core feature is its deep integration with different languages, allowing for the creation, submission, and analysis of programming projects.
 
 The system supports features like user management (teachers, admins), class and session management, task creation with reference solutions, student progress tracking, and advanced solution analysis, including dissimilarity analysis. Authentication is handled via OpenID Connect, with Microsoft being a specified provider.
 

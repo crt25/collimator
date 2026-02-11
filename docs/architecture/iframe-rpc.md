@@ -22,7 +22,7 @@ The React package builds on top of the core, providing hooks for integration in 
 
 It defines strict types for requests and responses, ensuring reliability and security.
 
-### Uses cases
+### Use cases
 
 - Exchange data between the frontend ClassMosaic and an iframe hosting an app (like Scratch).
 - Call methods defined inside the iframe from the frontend.
@@ -34,7 +34,7 @@ It defines strict types for requests and responses, ensuring reliability and sec
 
 The library is installed with ClassMosaic.
 
-Only for development purpose, you can install it via yarn:
+Only for development purposes, you can install it via yarn:
 
 ```sh
 # From: collimator/
@@ -55,7 +55,7 @@ Defined in `methods/index.ts`:
 
 | Method            | Description                             |
 | ----------------- | --------------------------------------- |
-| `getHeight`       | Retrieves the the embedded app’s height |
+| `getHeight`       | Retrieves the embedded app's height     |
 | `getSubmission`   | Retrieves the current submission        |
 | `getTask`         | Retrieves the current task              |
 | `loadSubmission`  | Loads a submission in the embedded app  |
@@ -79,14 +79,14 @@ yarn demo
 
 ### Overview
 
-`iframe-rpc-react` is build on top of `iframe-rpc` to provide React hooks that simplify integration.
+`iframe-rpc-react` is built on top of `iframe-rpc` to provide React hooks that simplify integration.
 It encapsulates origin validation, lifecycle handling, and communication setup for a React environment.
 
 ### Installation and setup
 
 The library is installed with ClassMosaic.
 
-Only for development purpose on the library, you can install it via yarn:
+Only for development purposes when working on the library, you can install it via yarn:
 
 ```sh
 # From: collimator/
@@ -119,7 +119,7 @@ const { isInIframe, hasLoaded, sendRequest } = useIframeParent(handleRequest);
 Used inside the host application (frontend)
 
 ```ts
-const { sendRequest. iframeRef } = useIframeChild(handleRequest, onAppAvailable);
+const { sendRequest, iframeRef } = useIframeChild(handleRequest, onAppAvailable);
 ```
 
 ##### Parameters

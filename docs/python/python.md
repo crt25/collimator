@@ -1,22 +1,22 @@
 # Jupyterlite modifications
 
-This document is intended for developers working on this project and who may need to update or maintain the Jupyterlite integration.
+This document is intended for developers who may need to update or maintain the Jupyterlite integration of this project.
 
 To be compatible with the ClassMosaic platform, Jupyterlite was modified. The scope of the changes and their purpose are described below.
 
 All modifications are made either through the jupyterlite configuration files `jupyter-lite.json` and `overrides.json` or through the custom extension `notebook-runner`.
-The only exception is described in [the next section](#iframe-communication) because it requires to load custom javascript code before Jupyterlite finishes loading.
+The only exception is described in [the next section](#iframe-communication) because it requires loading custom JavaScript code before Jupyterlite finishes loading.
 
 ## `iframe` communication
 
 To support the integration into ClassMosaic, we need to implement its `iframe-rpc` API for applications.
 
-To ensure no messages are missed, we load custom javascript code (`iframe-message-buffering.js`) before the page finishes loading which immediately attaches a listener and starts buffering incoming `iframe-rpc` messages.
+To ensure no messages are missed, we load custom JavaScript code (`iframe-message-buffering.js`) before the page finishes loading which immediately attaches a listener and starts buffering incoming `iframe-rpc` messages.
 The `notebook-runner` extension then later retrieves the buffered messages and stops the buffering process.
 
 ## Mode detection
 
-Analogous to the scratch application, the jupyter application supports three modes.
+Analogous to the Scratch application, the jupyter application supports three modes.
 The three modes are detected based on the query parameter `mode`.
 
 1. Edit mode through `?mode=edit` (default)
@@ -36,10 +36,10 @@ This listener pre-installs [our modified version of `otter-grader`](https://gith
 The modifications on top of the upstream code are minimal and could be contributed back.
 What needs to be modified is the execution of the notebook and the logging server used during the execution.
 In `otter-grader`, a logging server is always started before executing a notebook.
-Because Jupyterlite runs in a browser environment, we cannot do so and therefore need an way to disable it.
+Because Jupyterlite runs in a browser environment, we cannot do so and therefore need a way to disable it.
 Moreover, `otter-grader` executes notebooks using `nbconvert.preprocessors.ExecutePreprocessor`.
 
-Because `ExecutePreprocessor` seems to spin up a jupyter server and communicate through a network protocol to execute the notebok, it is again infeasible to run this in a Jupyterlite environment.
+Because `ExecutePreprocessor` seems to spin up a Jupyter server and communicate through a network protocol to execute the notebook, it is again infeasible to run this in a Jupyterlite environment.
 To work around this, we need 1) a way to execute the notebook at the correct time and 2) a way to provide the results computed outside of `otter-grader`.
 
 To cover both use cases, we add the following two options
@@ -71,7 +71,7 @@ On top of `otter-grader`, we also install `nbconvert` which is necessary for exe
 
 ### Virtual file system
 
-Because Jupyterlite simulates a full Jupyter environment in a browser, `pyodide` (the software used to execute python on a browser) provides a virtual filesystem.
+Because Jupyterlite simulates a full Jupyter environment in a browser, `pyodide` (the software used to execute Python on a browser) provides a virtual filesystem.
 
 By default, the files visible in the file inspector are mounted on `/drive`.
 Unfortunately we observed spurious and transient issues when reading from and writing to `/drive` from pyodide.
@@ -93,7 +93,7 @@ Finally, unless we are in `edit` mode, we also hide the [Grading folders](#jupyt
 
 ### Additional UI elements
 
-To allow users to run all cells in a notebook, the additional command `notebook-runner:run-all-cells` is added which is trigerred by a play button displayed in the toolbar.
+To allow users to run all cells in a notebook, the additional command `notebook-runner:run-all-cells` has been added and can be triggered by a play button displayed in the toolbar.
 
 ## Jupyterlite project structure
 

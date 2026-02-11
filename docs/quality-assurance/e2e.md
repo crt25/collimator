@@ -30,7 +30,7 @@ If they match, the fixture does not do anything.
 If they do not, the fixture resets the database to the initial state.
 
 For (3) we need each worker to operate on their own database.
-Because of this, we also need a different backend instance per instance (each backend instance communicates with a single database).
+Because of this, we also need a different backend instance per worker (each backend instance communicates with a single database).
 We can avoid recompiling the frontend for each different backend instance (the backend URL is a compilation option) by compiling it once using a relative URL.
 However, with the relative URL we still need a separate frontend process per worker where `/api` and websocket requests are forwarded to the respective backend instance and all other requests are served by the frontend compilation output directory.
 Summarized, each worker creates their own database and starts their own backend and frontend processes.

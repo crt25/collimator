@@ -23,7 +23,7 @@ It is responsible for:
 
 ## Backend
 
-The backend is a server-side application built with the NestJS framework and TypeScript. It provides the API that the frontend consumes for all data operation.
+The backend is a server-side application built with the NestJS framework and TypeScript. It provides the API that the frontend consumes for all data operations.
 
 It has three main responsibilities:
 
@@ -40,8 +40,8 @@ An app is embedded into the frontend using an `<iframe>` and communicates with t
 Each app must:
 
 - implement the `iframe-rpc` interface,
-- provide tools to create, edit, and solve tasks,
-- and support displaying submissions.
+- provide tools to create, edit, and solve tasks and
+- support displaying submissions.
 
 Currently supported apps:
 
