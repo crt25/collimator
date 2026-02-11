@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
+import {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Grid, GridItem, Flex } from "@chakra-ui/react";
+import { Field, Grid, GridItem, HStack, Stack } from "@chakra-ui/react";
 import { RiDraggable } from "react-icons/ri";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
@@ -18,6 +18,8 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
+import {AuthenticationContext} from "@/contexts/AuthenticationContext";
+import {useClass} from "@/api/collimator/hooks/classes/useClass";
 
 export enum SharingType {
   anonymous = "anonymous",
@@ -66,15 +68,14 @@ export interface SessionFormValues {
   sharingType: SharingType;
 }
 
-const TaskListElement = styled.div`
+const StyledTaskListElement = styled.div<{ enableSorting: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 
-  cursor: grab;
-
+  cursor: ${(props) => (props.enableSorting ? "grab" : "default")};
   &:active {
-    cursor: grabbing;
+    cursor: ${(props) => (props.enableSorting ? "grabbing" : "default")};
   }
 `;
 
@@ -92,10 +93,12 @@ const SessionForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  classId,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
+  classId: number;
 }) => {
   const schema = useYupSchema({
     title: yup.string().required(),
@@ -131,6 +134,8 @@ const SessionForm = ({
   });
 
   const { isLoading, data, error } = useAllTasks();
+  const intl = useIntl();
+
 
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
@@ -191,6 +196,33 @@ const SessionForm = ({
     }
   }, [data, selectedTaskIds, selectedTasks, setSelectedTasks]);
 
+  const TaskListElement = ({
+    task,
+    enableSorting,
+    onRemove,
+  }: {
+    task: ExistingTask;
+    enableSorting: boolean;
+    onRemove: () => void;
+  }) => {
+    return (
+      <StyledTaskListElement enableSorting={enableSorting}>
+        <HStack>
+          {enableSorting && <RiDraggable />}
+          <span>{task.title}</span>
+        </HStack>
+        <RemoveTask data-testid="remove-task" onClick={onRemove}>
+          <FontAwesomeIcon icon={faTrash} />
+        </RemoveTask>
+      </StyledTaskListElement>
+    );
+  };
+
+  const enableSorting = useMemo(
+    () => selectedTasks.length > 1,
+    [selectedTasks],
+  );
+
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
@@ -224,35 +256,31 @@ const SessionForm = ({
               />
 
               <SortableListWrapper>
-                <SortableListInput
-                  items={selectedTasks}
-                  updateItems={setSelectedTasks}
-                  testId="selected-tasks"
-                >
-                  {(task) => (
-                    <TaskListElement>
-                      <Flex
-                        align="center"
-                        gap={1}
-                        data-testid="task-name"
-                        key={task.id}
-                      >
-                        <RiDraggable />
-                        <span>{task.title}</span>
-                      </Flex>
-                      <RemoveTask
-                        data-testid="remove-task"
-                        onClick={() =>
-                          setSelectedTasks(
-                            selectedTasks.filter((t) => t !== task),
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </RemoveTask>
-                    </TaskListElement>
-                  )}
-                </SortableListInput>
+                <Field.Root>
+                  <Stack>
+                    <Field.Label>
+                      {intl.formatMessage(messages.tasks)}
+                    </Field.Label>
+                    <SortableListInput
+                      items={selectedTasks}
+                      updateItems={setSelectedTasks}
+                      testId="selected-tasks"
+                      enableSorting={enableSorting}
+                    >
+                      {(task, _, enableSorting) => (
+                        <TaskListElement
+                          task={task}
+                          enableSorting={enableSorting}
+                          onRemove={() =>
+                            setSelectedTasks(
+                              selectedTasks.filter((t) => t !== task),
+                            )
+                          }
+                        />
+                      )}
+                    </SortableListInput>
+                  </Stack>
+                </Field.Root>
               </SortableListWrapper>
 
               <Select

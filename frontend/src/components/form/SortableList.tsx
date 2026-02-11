@@ -27,9 +27,10 @@ const SortableItem = (props: {
   id: number | string;
   testId?: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+    useSortable({ id: props.id, disabled: props.disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -41,7 +42,7 @@ const SortableItem = (props: {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
+      {...(props.disabled ? {} : listeners)}
       data-testid={props.testId}
     >
       {props.children}
@@ -55,12 +56,18 @@ const SortableListInput = <TItem extends { id: number | string }>({
   children: renderItemContent,
   testId,
   noGap,
+  enableSorting = true,
 }: {
   items: TItem[];
   updateItems: (items: TItem[]) => void;
-  children: (item: TItem, index: number) => React.ReactNode;
+  children: (
+    item: TItem,
+    index: number,
+    enableSorting: boolean,
+  ) => React.ReactNode;
   testId?: string;
   noGap?: boolean;
+  enableSorting?: boolean;
 }) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -96,9 +103,10 @@ const SortableListInput = <TItem extends { id: number | string }>({
               <SortableItem
                 key={`${item.id}`}
                 id={item.id}
+                disabled={!enableSorting}
                 testId={`${testId}-item-${item.id}`}
               >
-                {renderItemContent(item, index)}
+                {renderItemContent(item, index, enableSorting)}
               </SortableItem>
             ))}
           </ItemList>
