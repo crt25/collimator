@@ -8,7 +8,12 @@ import {
 import { Student, User, UserType } from "@prisma/client";
 import { Reflector } from "@nestjs/core";
 import { AuthenticationService } from "./authentication.service";
-import { ALLOWED_ROLES, NonUserRoles, Role } from "./role.decorator";
+import {
+  ALLOWED_ROLES,
+  NonUserRoles,
+  Role,
+  SOFT_DELETE_ROLES,
+} from "./role.decorator";
 import { getTokenFromExecutionContext } from "./helpers";
 
 export const userRequestKey = "user";
@@ -23,6 +28,9 @@ export class RoleGuard implements CanActivate {
 
   // By default we allow only admins and teachers
   protected defaultAllowedRoles: Role[] = [UserType.ADMIN, UserType.TEACHER];
+
+  // By default we allow only admins to soft delete
+  protected defaultSoftDeleteRoles: Role[] = [UserType.ADMIN];
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Get the allowed roles from the metadata
@@ -54,6 +62,8 @@ export class RoleGuard implements CanActivate {
           studentRequestKey,
           user,
         );
+
+        this.canSoftDeleteForStudent(context);
       } else {
         if (!allowedRoles.includes(user.type)) {
           throw new ForbiddenException();
@@ -64,6 +74,8 @@ export class RoleGuard implements CanActivate {
           userRequestKey,
           user,
         );
+
+        this.canSoftDelete(context, user);
       }
     } catch (e) {
       if (e instanceof ForbiddenException) {
@@ -74,5 +86,46 @@ export class RoleGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private canSoftDelete(context: ExecutionContext, user: User): void {
+    const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
+      SOFT_DELETE_ROLES,
+      [context.getHandler(), context.getClass()],
+      // fallback to default roles if no roles are specified
+    ) ?? this.defaultSoftDeleteRoles;
+
+    const request = context.switchToHttp().getRequest();
+    const includeSoftDelete = request.query.includeSoftDelete === "true";
+
+    if (!includeSoftDelete) {
+      return;
+    }
+
+    if (!softDeleteRoles || !softDeleteRoles.includes(user.type)) {
+      throw new ForbiddenException(
+        "You do not have permission to view soft-deleted items",
+      );
+    }
+  }
+
+  private canSoftDeleteForStudent(context: ExecutionContext): void {
+    const softDeleteRoles = this.reflector.getAllAndOverride<UserType[]>(
+      SOFT_DELETE_ROLES,
+      [context.getHandler(), context.getClass()],
+    ) ?? this.defaultSoftDeleteRoles;
+
+    const request = context.switchToHttp().getRequest();
+    const includeSoftDelete = request.query.includeSoftDelete === "true";
+
+    if (!includeSoftDelete) {
+      return;
+    }
+
+    if (softDeleteRoles) {
+      throw new ForbiddenException(
+        "You do not have permission to view soft-deleted items",
+      );
+    }
   }
 }

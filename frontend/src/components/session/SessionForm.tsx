@@ -5,8 +5,9 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Field, Grid, GridItem, HStack, Stack } from "@chakra-ui/react";
+import {Button, Field, chakra, Grid, GridItem, HStack, Stack, Icon} from "@chakra-ui/react";
 import { RiDraggable } from "react-icons/ri";
+import router from "next/router";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -20,11 +21,20 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
+import {MdAdd} from "react-icons/md";
 
 export enum SharingType {
   anonymous = "anonymous",
   private = "private",
 }
+
+const ButtonWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "flex-start",
+    marginBottom: "xl",
+  },
+});
 
 const messages = defineMessages({
   title: {
@@ -58,6 +68,10 @@ const messages = defineMessages({
   sharingTypePrivate: {
     id: "SessionForm.sharingType.private",
     defaultMessage: "Private",
+  },
+  createTask: {
+    id: "SessionForm.createTask",
+    defaultMessage: "Create Task",
   },
 });
 
@@ -100,6 +114,8 @@ const SessionForm = ({
   onSubmit: (data: SessionFormValues) => void;
   classId: number;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
     title: yup.string().required(),
     description: yup.string().required(),
@@ -134,7 +150,6 @@ const SessionForm = ({
   });
 
   const { isLoading, data, error } = useAllTasks();
-  const intl = useIntl();
 
   const [selectedTasks, _setSelectedTasks] = useState<ExistingTask[]>([]);
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
@@ -150,6 +165,7 @@ const SessionForm = ({
       klass.teacher.id === authenticationContext.userId
     );
   }, [klass, authenticationContext]);
+
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
@@ -336,6 +352,27 @@ const SessionForm = ({
                   },
                 ]}
               />
+            </GridItem>
+            <GridItem colSpan={{ base: 12, md: 6 }}>
+              <ButtonWrapper>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const currentUrl = router.asPath;
+                    const returnUrl = encodeURIComponent(currentUrl);
+                    router.push(`/task/create?returnUrl=${returnUrl}`);
+                  }}
+                  data-testid="task-create-button"
+                  marginTop="md"
+                >
+                  <HStack>
+                    <Icon>
+                      <MdAdd />
+                    </Icon>
+                    {intl.formatMessage(messages.createTask)}
+                  </HStack>
+                </Button>
+              </ButtonWrapper>
             </GridItem>
           </Grid>
 

@@ -12,7 +12,6 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import DissimilarPairs from "@/components/dashboard/DissimilarPairs";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
-import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
@@ -78,18 +77,7 @@ const DissimilarAnalysisPairs = () => {
         >
           {([klass, session, task]) => (
             <>
-              <PageHeading
-                variant="title"
-                actions={
-                  <TaskSessionActions
-                    classId={klass.id}
-                    sessionId={session.id}
-                    taskId={task.id}
-                  />
-                }
-              >
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}

@@ -33,4 +33,6 @@ export interface ExistingUserDto {
    * @nullable
    */
   publicKeyId: ExistingUserDtoPublicKeyId;
+  /** @nullable */
+  deletedAt?: string | null;
 }

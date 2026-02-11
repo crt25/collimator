@@ -35,6 +35,13 @@ export const getSolutionsControllerCreateStudentSolutionV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
   solution: {
     ...{
@@ -44,6 +51,13 @@ export const getSolutionsControllerCreateStudentSolutionV0ResponseMock = (
         max: undefined,
         fractionDigits: 2,
       }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tests: Array.from(
@@ -67,6 +81,13 @@ export const getSolutionsControllerCreateStudentSolutionV0ResponseMock = (
     }),
     referenceSolutionId: {},
     studentSolutionId: {},
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   })),
   ...overrideResponse,
 });
@@ -99,6 +120,13 @@ export const getSolutionsControllerFindAllStudentSolutionsV0ResponseMock =
         max: undefined,
         fractionDigits: 2,
       }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
       solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
       solution: {
         ...{
@@ -108,6 +136,13 @@ export const getSolutionsControllerFindAllStudentSolutionsV0ResponseMock =
             max: undefined,
             fractionDigits: 2,
           }),
+          deletedAt: faker.helpers.arrayElement([
+            faker.helpers.arrayElement([
+              `${faker.date.past().toISOString().split(".")[0]}Z`,
+              null,
+            ]),
+            undefined,
+          ]),
         },
       },
       tests: Array.from(
@@ -131,6 +166,13 @@ export const getSolutionsControllerFindAllStudentSolutionsV0ResponseMock =
         }),
         referenceSolutionId: {},
         studentSolutionId: {},
+        deletedAt: faker.helpers.arrayElement([
+          faker.helpers.arrayElement([
+            `${faker.date.past().toISOString().split(".")[0]}Z`,
+            null,
+          ]),
+          undefined,
+        ]),
       })),
     }));
 
@@ -148,6 +190,13 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
     }),
     solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
     isReferenceSolution: faker.datatype.boolean(),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
     tests: Array.from(
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
@@ -169,6 +218,13 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       }),
       referenceSolutionId: {},
       studentSolutionId: {},
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     })),
     studentKeyPairId: faker.helpers.arrayElement([
       faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
@@ -207,6 +263,13 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
     }),
     solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
     isReferenceSolution: faker.datatype.boolean(),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
     tests: Array.from(
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
@@ -228,6 +291,13 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       }),
       referenceSolutionId: {},
       studentSolutionId: {},
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     })),
     studentKeyPairId: faker.helpers.arrayElement([
       faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
@@ -273,6 +343,13 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0ResponseMock =
       max: undefined,
       fractionDigits: 2,
     }),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
     solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
     solution: {
       ...{
@@ -282,6 +359,13 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0ResponseMock =
           max: undefined,
           fractionDigits: 2,
         }),
+        deletedAt: faker.helpers.arrayElement([
+          faker.helpers.arrayElement([
+            `${faker.date.past().toISOString().split(".")[0]}Z`,
+            null,
+          ]),
+          undefined,
+        ]),
       },
     },
     tests: Array.from(
@@ -305,6 +389,13 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0ResponseMock =
       }),
       referenceSolutionId: {},
       studentSolutionId: {},
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     })),
     ...overrideResponse,
   });
@@ -330,6 +421,13 @@ export const getSolutionsControllerFindOneStudentSolutionV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   solutionHash: faker.string.alpha({ length: { min: 10, max: 20 } }),
   solution: {
     ...{
@@ -339,6 +437,13 @@ export const getSolutionsControllerFindOneStudentSolutionV0ResponseMock = (
         max: undefined,
         fractionDigits: 2,
       }),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
   tests: Array.from(
@@ -362,6 +467,13 @@ export const getSolutionsControllerFindOneStudentSolutionV0ResponseMock = (
     }),
     referenceSolutionId: {},
     studentSolutionId: {},
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   })),
   ...overrideResponse,
 });

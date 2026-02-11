@@ -50,6 +50,15 @@ export type TaskDataOnly = Pick<Task, "data" | "mimeType">;
 
 const omitData = { data: true };
 
+// When using Prisma extensions with client.$extends(), the transaction callback
+// receives a client type that excludes certain top-level methods like $use, $transaction, etc.
+// This type matches both the extended PrismaService and transaction clients by only
+// requiring the model access methods we actually need, and not the full TransactionClient interface.
+type PrismaTransactionClient = Omit<
+  PrismaService,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$extends"
+>;
+
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
@@ -58,46 +67,68 @@ export class TasksService {
     return createHash("sha256").update(data).digest();
   }
 
-  findByIdOrThrow(id: TaskId): Promise<TaskWithoutData> {
+  findByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData> {
     return this.prisma.task.findUniqueOrThrow({
       omit: omitData,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
   findByIdOrThrowWithReferenceSolutions(
     id: TaskId,
+    includeSoftDelete = false,
   ): Promise<TaskWithReferenceSolutions> {
     return this.prisma.task.findUniqueOrThrow({
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
       include: {
         referenceSolutions: {
+          where: includeSoftDelete ? undefined : { deletedAt: null },
           include: {
             solution: {
               select: {
                 data: true,
                 mimeType: true,
+                deletedAt: true,
               },
             },
-            tests: true,
+            tests: {
+              where: includeSoftDelete ? undefined : { deletedAt: null },
+            },
           },
         },
       },
     });
   }
 
-  downloadByIdOrThrow(id: TaskId): Promise<TaskDataOnly> {
+  downloadByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskDataOnly> {
     return this.prisma.task.findUniqueOrThrow({
       select: { data: true, mimeType: true },
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
-  findMany(args?: Prisma.TaskFindManyArgs): Promise<TaskWithoutData[]> {
-    return this.prisma.task.findMany({
+  findMany(
+    args?: Prisma.TaskFindManyArgs,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData[]> {
+    const where = includeSoftDelete
+      ? args?.where
+      : { ...args?.where, deletedAt: null };
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs: Prisma.TaskFindManyArgs = {
       ...args,
+      where,
       omit: omitData,
-    });
+    };
+
+    return this.prisma.task.findMany(finalArgs);
   }
 
   async create(
@@ -160,6 +191,7 @@ export class TasksService {
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
+    includeSoftDelete = false,
   ): Promise<Task> {
     const solutionsWithFile = referenceSolutions.map(
       (referenceSolution, index) => ({
@@ -187,13 +219,43 @@ export class TasksService {
       (
         referenceSolution,
       ): referenceSolution is {
-        solution: ReferenceSolutionInput & { id: ReferenceSolution };
+        solution: ReferenceSolutionInput & { id: ReferenceSolutionId };
         file: Express.Multer.File;
         fileHash: Buffer;
       } =>
         referenceSolution.solution.id !== undefined &&
         referenceSolution.solution.id !== null,
     );
+
+    const referenceSolutionWhere = includeSoftDelete
+      ? {
+          taskId: id,
+          id: {
+            notIn: referenceSolutions
+              .map(({ id }) => id)
+              .filter((id) => id !== undefined && id !== null),
+          },
+        }
+      : {
+          taskId: id,
+          deletedAt: null,
+          id: {
+            notIn: referenceSolutions
+              .map(({ id }) => id)
+              .filter((id) => id !== undefined && id !== null),
+          },
+        };
+
+    const orphanedSolutionsWhere = includeSoftDelete
+      ? {
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        }
+      : {
+          deletedAt: null,
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        };
 
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
@@ -205,22 +267,12 @@ export class TasksService {
 
       // delete all reference solutions that are not in the new list
       await tx.referenceSolution.deleteMany({
-        where: {
-          taskId: id,
-          id: {
-            notIn: referenceSolutions
-              .map(({ id }) => id)
-              .filter((id) => id !== undefined && id !== null),
-          },
-        },
+        where: referenceSolutionWhere,
       });
 
       // delete all solutions without any reference
       await tx.solution.deleteMany({
-        where: {
-          referenceSolutions: { none: {} },
-          studentSolutions: { none: {} },
-        },
+        where: orphanedSolutionsWhere,
       });
 
       // update the task
@@ -335,23 +387,29 @@ export class TasksService {
   }
 
   private async isTaskInUseTx(
-    tx: Prisma.TransactionClient,
+    tx: PrismaTransactionClient,
     id: TaskId,
   ): Promise<boolean> {
     const sessionWithStudents = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
         session: {
+          deletedAt: null,
           OR: [
             {
               anonymousStudents: {
-                some: {},
+                some: {
+                  deletedAt: null,
+                },
               },
             },
             {
               class: {
+                deletedAt: null,
                 students: {
-                  some: {},
+                  some: {
+                    deletedAt: null,
+                  },
                 },
               },
             },

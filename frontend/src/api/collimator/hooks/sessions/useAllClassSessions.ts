@@ -12,19 +12,17 @@ export type GetSessionsReturnType = ExistingSession[];
 const fetchByClassIdAndTransform = (
   options: RequestInit,
   classId: number,
-  _params?: undefined,
 ): Promise<GetSessionsReturnType> =>
-  sessionsControllerFindAllV0(classId, options).then((data) =>
+  sessionsControllerFindAllV0(classId, {}, options).then((data) =>
     fromDtos(ExistingSession, data),
   );
 
 export const useAllClassSessions = (
   classId: number,
-  params?: undefined,
 ): ApiResponse<GetSessionsReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getSessionsControllerFindAllV0Url(classId), () =>
-    fetchByClassIdAndTransform(authOptions, classId, params),
+  return useSWR(getSessionsControllerFindAllV0Url(classId, {}), () =>
+    fetchByClassIdAndTransform(authOptions, classId),
   );
 };

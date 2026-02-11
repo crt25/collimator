@@ -26,7 +26,7 @@ export const useAuthExpirationCheck = (): void => {
     const userId = context.userId;
 
     function checkAuthenticationExpiration(): void {
-      usersControllerFindOneV0(userId, authOptions).catch((error) => {
+      usersControllerFindOneV0(userId, {}, authOptions).catch((error) => {
         console.error(
           "[useAuthExpirationCheck] Error while checking authentication expiration",
           error,

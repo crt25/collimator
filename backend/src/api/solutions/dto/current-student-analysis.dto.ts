@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, plainToInstance, Transform } from "class-transformer";
+import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { Modify } from "src/utilities/modify";
 import { SessionId } from "src/api/sessions/dto";
+import { IsDate, IsOptional } from "class-validator";
 import { CurrentStudentAnalysis, StudentId } from "../solutions.service";
 import { StudentSolutionId } from "./existing-student-solution.dto";
 import { CurrentAnalysisDto } from "./current-analysis.dto";
@@ -21,6 +22,13 @@ export class CurrentStudentAnalysisDto
   })
   @Expose()
   readonly studentId!: StudentId;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @ApiProperty({
     example: 318,

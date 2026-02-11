@@ -26,6 +26,13 @@ export const getClassesControllerCreateV0ResponseMock = (
     fractionDigits: 2,
   }),
   id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -52,8 +59,22 @@ export const getClassesControllerFindAllV0ResponseMock =
             faker.string.alpha({ length: { min: 10, max: 20 } }),
             null,
           ]),
+          deletedAt: faker.helpers.arrayElement([
+            faker.helpers.arrayElement([
+              `${faker.date.past().toISOString().split(".")[0]}Z`,
+              null,
+            ]),
+            undefined,
+          ]),
         },
       },
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     }));
 
 export const getClassesControllerFindOneV0ResponseMock = (
@@ -72,8 +93,22 @@ export const getClassesControllerFindOneV0ResponseMock = (
         faker.string.alpha({ length: { min: 10, max: 20 } }),
         null,
       ]),
+      deletedAt: faker.helpers.arrayElement([
+        faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split(".")[0]}Z`,
+          null,
+        ]),
+        undefined,
+      ]),
     },
   },
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   sessions: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -94,6 +129,13 @@ export const getClassesControllerFindOneV0ResponseMock = (
       null,
     ]),
     pseudonym: faker.string.alpha({ length: { min: 10, max: 20 } }),
+    deletedAt: faker.helpers.arrayElement([
+      faker.helpers.arrayElement([
+        `${faker.date.past().toISOString().split(".")[0]}Z`,
+        null,
+      ]),
+      undefined,
+    ]),
   })),
   ...overrideResponse,
 });
@@ -108,6 +150,13 @@ export const getClassesControllerUpdateV0ResponseMock = (
     fractionDigits: 2,
   }),
   id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -121,6 +170,13 @@ export const getClassesControllerRemoveV0ResponseMock = (
     fractionDigits: 2,
   }),
   id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+  deletedAt: faker.helpers.arrayElement([
+    faker.helpers.arrayElement([
+      `${faker.date.past().toISOString().split(".")[0]}Z`,
+      null,
+    ]),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
