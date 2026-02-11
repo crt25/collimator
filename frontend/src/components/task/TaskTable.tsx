@@ -14,6 +14,7 @@ import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
 import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
@@ -275,7 +276,9 @@ const TaskTable = () => {
                 } catch (error) {
                   if (error instanceof ConflictError) {
                     toaster.error({
-                      title: intl.formatMessage(messages.conflictErrorMessage),
+                      title: intl.formatMessage(
+                        getErrorMessageDescriptor(error.errorCode),
+                      ),
                     });
                     return;
                   }

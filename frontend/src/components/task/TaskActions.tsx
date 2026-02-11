@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
@@ -54,10 +55,9 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
       });
       router.push(`/task`);
     } catch (error) {
-      // Show the specific error message if it's a conflict (task in use)
       if (error instanceof ConflictError) {
         toaster.error({
-          title: error.message,
+          title: intl.formatMessage(getErrorMessageDescriptor(error.errorCode)),
         });
       } else {
         toaster.error({

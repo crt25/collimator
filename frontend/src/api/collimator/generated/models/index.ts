@@ -33,6 +33,8 @@ export * from "./deletedSessionDtoLesson";
 export * from "./deletedTaskDto";
 export * from "./deletedUserDto";
 export * from "./deletedUserDtoPublicKeyId";
+export * from "./errorCode";
+export * from "./errorCodeDto";
 export * from "./existingClassDto";
 export * from "./existingClassExtendedDto";
 export * from "./existingClassWithTeacherDto";

@@ -22,6 +22,7 @@ import {
   ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -35,6 +36,7 @@ import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-intercept
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
+import { ErrorCode, ErrorCodeDto } from "../error-codes/error-codes";
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -42,11 +44,16 @@ import {
   DeletedTaskDto,
   TaskId,
 } from "./dto";
-import { TaskInUseError, TasksService } from "./tasks.service";
+import {
+  TaskInUseByClassOrLessonWithStudentsError,
+  TasksService,
+  TaskInOtherUsersLessonError,
+} from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
 @Controller("tasks")
 @ApiTags("tasks")
+@ApiExtraModels(ErrorCodeDto)
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
@@ -316,8 +323,10 @@ export class TasksController {
       // If update succeeded, task was not in use (service throws if in use)
       return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
     } catch (error) {
-      if (error instanceof TaskInUseError) {
-        throw new ConflictException(error.message);
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
       }
       throw error;
     }
@@ -352,8 +361,15 @@ export class TasksController {
       const deletedTask = await this.tasksService.deleteById(id);
       return DeletedTaskDto.fromQueryResult({ ...deletedTask, isInUse: false });
     } catch (error) {
-      if (error instanceof TaskInUseError) {
-        throw new ConflictException(error.message);
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      if (error instanceof TaskInOtherUsersLessonError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+        });
       }
       throw error;
     }

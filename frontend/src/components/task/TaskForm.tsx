@@ -30,6 +30,7 @@ import {
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
 import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
@@ -500,7 +501,9 @@ const TaskForm = ({
 
           if (err instanceof ConflictError) {
             toaster.error({
-              title: intl.formatMessage(messages.saveConflictError),
+              title: intl.formatMessage(
+                getErrorMessageDescriptor(err.errorCode),
+              ),
               closable: true,
             });
             onConflictError?.();

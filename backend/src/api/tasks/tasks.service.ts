@@ -12,10 +12,17 @@ import { Modify } from "src/utilities/modify";
 import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
 import { TaskId } from "./dto";
 
-export class TaskInUseError extends Error {
-  constructor(message: string) {
+export class TaskInUseByClassOrLessonWithStudentsError extends Error {
+  constructor(message?: string) {
     super(message);
-    this.name = "TaskInUseError";
+    this.name = "TaskInUseByClassOrLessonWithStudentsError";
+  }
+}
+
+export class TaskInOtherUsersLessonError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "TaskInOtherUsersLessonError";
   }
 }
 
@@ -300,9 +307,7 @@ export class TasksService {
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
-        throw new TaskInUseError(
-          "Task is in use by one or more classes and cannot be modified",
-        );
+        throw new TaskInUseByClassOrLessonWithStudentsError();
       }
 
       // delete all reference solutions that are not in the new list
@@ -505,9 +510,7 @@ export class TasksService {
       if (!task.isPublic) {
         const isInUse = await this.isTaskInUseTx(tx, id);
         if (isInUse) {
-          throw new TaskInUseError(
-            "Task is in use by one or more classes and cannot be deleted",
-          );
+          throw new TaskInUseByClassOrLessonWithStudentsError();
         }
       }
 
@@ -519,9 +522,7 @@ export class TasksService {
           task.creatorId,
         );
         if (isInUseByOthers) {
-          throw new TaskInUseError(
-            "Cannot delete this task because it is currently used in another user's lesson",
-          );
+          throw new TaskInOtherUsersLessonError();
         }
       }
 
