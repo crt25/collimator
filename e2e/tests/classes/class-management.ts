@@ -28,9 +28,7 @@ export const createClass = async (
   expect(teacherOptions.length).toBeGreaterThanOrEqual(1);
 
   const connectedTeacher = teacherOptions.find(
-    (teacher) =>
-      teacher.name.includes(ADMIN_USER_NAME) ||
-      ADMIN_USER_NAME.includes(teacher.name),
+    (teacher) => teacher.name === ADMIN_USER_NAME,
   );
 
   const newClassTeacherId =
