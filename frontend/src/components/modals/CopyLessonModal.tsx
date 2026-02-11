@@ -10,10 +10,10 @@ import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClass
 import { useCopySession } from "@/api/collimator/hooks/sessions/useCopySession";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
+import { getIdOrNaN } from "@/api/collimator/hooks/helpers";
 import { toaster } from "../Toaster";
 import Select from "../form/Select";
 import Button from "../Button";
-import { getIdOrNaN } from "@/api/collimator/hooks/helpers";
 
 const messages = defineMessages({
   title: {
