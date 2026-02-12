@@ -2490,13 +2490,13 @@
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Save Task"
+      "value": "Save Reference Solution(s)"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Edit Reference Solution - "
     },
     {
       "type": 1,

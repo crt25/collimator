@@ -21,11 +21,11 @@ import PageFooter from "@/components/PageFooter";
 const messages = defineMessages({
   title: {
     id: "TaskReferenceSolutions.title",
-    defaultMessage: "Edit Task - {title}",
+    defaultMessage: "Edit Reference Solution - {title}",
   },
   submit: {
     id: "TaskReferenceSolutions.submit",
-    defaultMessage: "Save Task",
+    defaultMessage: "Save Reference Solution(s)",
   },
 });
 

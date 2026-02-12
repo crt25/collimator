@@ -1415,10 +1415,10 @@
     "message": "Ouvert"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Enregistrer l'activité"
+    "message": "Enregistrer les/la solution(s) de référence"
   },
   "TaskReferenceSolutions.title": {
-    "message": "Modifier l'activité - {title}"
+    "message": "Modifier la solution de référence - {title}"
   },
   "TaskSessionActions.deleteTask": {
     "message": "Effacer l'activité"
