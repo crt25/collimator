@@ -95,6 +95,24 @@
       "value": "Anonymiser les noms"
     }
   ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,
@@ -1183,6 +1201,12 @@
   ],
   "DEPRECATED: Task.sessionMenu.heading.description": [
   ],
+  "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": [
+    {
+      "type": 0,
+      "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+    }
+  ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
   "DEPRECATED: UserDetail.table.oidcSub": [
@@ -1342,13 +1366,25 @@
   "EditTask.taskLockedDescription": [
     {
       "type": 0,
-      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut pas être modifiée ou supprimée."
+      "value": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
     }
   ],
   "EditTask.taskLockedTitle": [
     {
       "type": 0,
-      "value": "L'activité est verrouillée"
+      "value": "Activité verrouillée"
+    }
+  ],
+  "EditTask.taskReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une activité publique créée par un autre utilisateur. Seul le créateur peut modifier cette activité."
+    }
+  ],
+  "EditTask.taskReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Lecture seule"
     }
   ],
   "EditTask.title": [
@@ -1827,6 +1863,12 @@
       "value": "Pas commencé"
     }
   ],
+  "PublicBadge.public": [
+    {
+      "type": 0,
+      "value": "Publique"
+    }
+  ],
   "SessionActions.copySessionLink": [
     {
       "type": 0,
@@ -2141,6 +2183,12 @@
       "value": "Ouvrir la liste des activités"
     }
   ],
+  "SolveTask.saveError": [
+    {
+      "type": 0,
+      "value": "You are currently experiencing network issues, saving may not work."
+    }
+  ],
   "SolveTask.solutionSubmitted": [
     {
       "type": 0,
@@ -2402,7 +2450,7 @@
   "TaskForm.changeTypeConfirmation.body": [
     {
       "type": 0,
-      "value": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+      "value": "Changer le type de l'activité vous obligera à recréer l'activité dans le nouveau format. L'activité existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
     }
   ],
   "TaskForm.changeTypeConfirmation.button": [
@@ -2414,7 +2462,7 @@
   "TaskForm.changeTypeConfirmation.title": [
     {
       "type": 0,
-      "value": "Changer le type de la tâche"
+      "value": "Changer le type de l'activité"
     }
   ],
   "TaskForm.closeConfirmation.body": [
@@ -2444,7 +2492,7 @@
   "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+      "value": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez l'activité. Êtes-vous sûr de vouloir continuer ?"
     }
   ],
   "TaskForm.destructiveAction.button": [
@@ -2457,6 +2505,30 @@
     {
       "type": 0,
       "value": "Cette action supprimera les solutions de référence"
+    }
+  ],
+  "TaskForm.isPublic": [
+    {
+      "type": 0,
+      "value": "Cette activité est publique"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Rendre cette activité publique permet à d'autres utilisateurs de la voir et de l'utiliser. Cette action peut être irréversible. Êtes-vous sûr de vouloir continuer?"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Oui, publiez l'activité"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Rendre cette activité publique?"
     }
   ],
   "TaskForm.taskFileRequired": [
@@ -2988,6 +3060,30 @@
       "value": "Voir les détails de l'activité"
     }
   ],
+  "TaskVisibilityFilter.allTasks": [
+    {
+      "type": 0,
+      "value": "Toutes les activités"
+    }
+  ],
+  "TaskVisibilityFilter.filterLabel": [
+    {
+      "type": 0,
+      "value": "Filtrer par visibilité"
+    }
+  ],
+  "TaskVisibilityFilter.privateOnly": [
+    {
+      "type": 0,
+      "value": "Privée uniquement"
+    }
+  ],
+  "TaskVisibilityFilter.publicOnly": [
+    {
+      "type": 0,
+      "value": "Publique uniquement"
+    }
+  ],
   "TestCriterionFilterForm.count": [
     {
       "type": 0,
@@ -3289,7 +3385,7 @@
   "embeddedApp.cannotExport": [
     {
       "type": 0,
-      "value": "Échec de l'exportation de la tâche : "
+      "value": "Échec de l'exportation de l'activité : "
     },
     {
       "type": 1,
@@ -3299,7 +3395,7 @@
   "embeddedApp.cannotGetTask": [
     {
       "type": 0,
-      "value": "Impossible de récupérer la tâche : "
+      "value": "Impossible de récupérer l'activité : "
     },
     {
       "type": 1,
@@ -3309,13 +3405,13 @@
   "embeddedApp.cannotImportExternalInNonEditMode": [
     {
       "type": 0,
-      "value": "Impossible d'importer des tâches externes en mode non-édition"
+      "value": "Impossible d'importer des activités externes en mode non-édition"
     }
   ],
   "embeddedApp.cannotImportTask": [
     {
       "type": 0,
-      "value": "Impossible d'importer la tâche : "
+      "value": "Impossible d'importer l'activité : "
     },
     {
       "type": 1,
@@ -3345,7 +3441,7 @@
   "embeddedApp.cannotLoadTask": [
     {
       "type": 0,
-      "value": "Impossible de charger le contenu de la tâche : "
+      "value": "Impossible de charger le contenu de l'activité : "
     },
     {
       "type": 1,
@@ -3365,7 +3461,7 @@
   "embeddedApp.cannotSaveTask": [
     {
       "type": 0,
-      "value": "Impossible de sauvegarder la tâche : "
+      "value": "Impossible de sauvegarder l'activité : "
     },
     {
       "type": 1,
@@ -3375,7 +3471,7 @@
   "embeddedApp.savingTask": [
     {
       "type": 0,
-      "value": "Sauvegarde de la tâche en cours..."
+      "value": "Sauvegarde de l'activité en cours..."
     }
   ],
   "embeddedApp.submissionLoaded": [
@@ -3387,13 +3483,13 @@
   "embeddedApp.taskCreated": [
     {
       "type": 0,
-      "value": "Tâche créée avec succès"
+      "value": "Activité créée avec succès"
     }
   ],
   "embeddedApp.taskImported": [
     {
       "type": 0,
-      "value": "Tâche importée avec succès"
+      "value": "Activité importée avec succès"
     }
   ],
   "forms.arrayLength": [

@@ -16,9 +16,9 @@ const fetchAndTransform = (options: RequestInit): Promise<GetTasksReturnType> =>
 
 export const useAllTasks = (): ApiResponse<GetTasksReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
-
-  // use the URL with the params as the first entry in the key for easier invalidation
-  return useSWR(getTasksControllerFindAllV0Url({}), () =>
-    fetchAndTransform(authOptions),
+  return useSWR(
+    // use the URL with the params as the first entry in the key for easier invalidation
+    getTasksControllerFindAllV0Url,
+    () => fetchAndTransform(authOptions),
   );
 };

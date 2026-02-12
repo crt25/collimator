@@ -36,6 +36,7 @@ const tasksControllerUpdate = async (
     "referenceSolutions",
     JSON.stringify(updateTaskDto.referenceSolutions),
   );
+  formData.append("isPublic", JSON.stringify(updateTaskDto.isPublic));
 
   return fetchApi<ExistingTaskDto>(getTasksControllerUpdateV0Url(id), {
     ...options,

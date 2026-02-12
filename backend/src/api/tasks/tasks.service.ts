@@ -12,10 +12,17 @@ import { Modify } from "src/utilities/modify";
 import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
 import { TaskId } from "./dto";
 
-export class TaskInUseError extends Error {
-  constructor(message: string) {
+export class TaskInUseByClassOrLessonWithStudentsError extends Error {
+  constructor(message?: string) {
     super(message);
-    this.name = "TaskInUseError";
+    this.name = "TaskInUseByClassOrLessonWithStudentsError";
+  }
+}
+
+export class TaskInOtherUsersLessonError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "TaskInOtherUsersLessonError";
   }
 }
 
@@ -129,6 +136,53 @@ export class TasksService {
     };
 
     return this.prisma.task.findMany(finalArgs);
+  }
+
+  async findManyWithInUseStatus(
+    isPublic: boolean,
+    creatorId: number | undefined = undefined,
+    includeSoftDelete = false,
+  ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
+    // when enabling "strictUndefinedChecks", use Prisma.skip instead of `undefined` here
+    const deletedAtCondition = includeSoftDelete ? undefined : null;
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs = {
+      omit: omitData,
+      where: {
+        isPublic: isPublic,
+        creatorId: creatorId,
+        deletedAt: deletedAtCondition,
+      } satisfies Prisma.TaskWhereInput,
+      include: {
+        sessions: {
+          where: {
+            session: {
+              deletedAt: deletedAtCondition,
+              OR: [
+                { anonymousStudents: { some: { deletedAt: null } } },
+                {
+                  class: {
+                    deletedAt: deletedAtCondition,
+                    students: {
+                      some: { deletedAt: null },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          take: 1,
+          select: { taskId: true },
+        },
+      },
+    };
+
+    const tasks = await this.prisma.task.findMany(finalArgs);
+    return tasks.map(({ sessions, ...task }) => ({
+      ...task,
+      isInUse: sessions.length > 0,
+    }));
   }
 
   async create(
@@ -260,9 +314,7 @@ export class TasksService {
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
-        throw new TaskInUseError(
-          "Task is in use by one or more classes and cannot be modified",
-        );
+        throw new TaskInUseByClassOrLessonWithStudentsError();
       }
 
       // delete all reference solutions that are not in the new list
@@ -393,6 +445,9 @@ export class TasksService {
     const sessionWithStudents = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
+        task: {
+          deletedAt: null,
+        },
         session: {
           deletedAt: null,
           OR: [
@@ -421,13 +476,61 @@ export class TasksService {
     return sessionWithStudents !== null;
   }
 
+  async isTaskInUseByOtherUsers(
+    id: TaskId,
+    creatorId: number,
+  ): Promise<boolean> {
+    return this.isTaskInUseByOtherUsersTx(this.prisma, id, creatorId);
+  }
+
+  private async isTaskInUseByOtherUsersTx(
+    tx: PrismaTransactionClient,
+    id: TaskId,
+    creatorId: number,
+  ): Promise<boolean> {
+    // Check if task is used in any lesson belonging to a different user
+    const sessionTask = await tx.sessionTask.findFirst({
+      where: {
+        taskId: id,
+        session: {
+          deletedAt: null,
+          class: {
+            teacherId: { not: creatorId },
+            deletedAt: null,
+          },
+        },
+      },
+    });
+
+    return sessionTask !== null;
+  }
+
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
     return this.prisma.$transaction(async (tx) => {
-      const isInUse = await this.isTaskInUseTx(tx, id);
-      if (isInUse) {
-        throw new TaskInUseError(
-          "Task is in use by one or more classes and cannot be deleted",
+      // Fetch task to check if it's public
+      const task = await tx.task.findUniqueOrThrow({
+        where: { id, deletedAt: null },
+        select: { isPublic: true, creatorId: true },
+      });
+
+      // For private tasks, check if task is in use by any class with students
+      if (!task.isPublic) {
+        const isInUse = await this.isTaskInUseTx(tx, id);
+        if (isInUse) {
+          throw new TaskInUseByClassOrLessonWithStudentsError();
+        }
+      }
+
+      // For public tasks, check if task is used in any lesson by other users
+      if (task.isPublic && task.creatorId !== null) {
+        const isInUseByOthers = await this.isTaskInUseByOtherUsersTx(
+          tx,
+          id,
+          task.creatorId,
         );
+        if (isInUseByOthers) {
+          throw new TaskInOtherUsersLessonError();
+        }
       }
 
       // delete all reference solutions for this task

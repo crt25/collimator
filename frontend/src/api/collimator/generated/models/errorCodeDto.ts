@@ -5,7 +5,8 @@
  * The Collimator API description (multi-version)
  * OpenAPI spec version: 1.0.0
  */
+import type { ErrorCode } from "./errorCode";
 
-export type ClassesControllerFindAllV0Params = {
-  includeSoftDelete?: boolean;
-};
+export interface ErrorCodeDto {
+  errorCode: ErrorCode;
+}

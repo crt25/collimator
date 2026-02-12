@@ -27,6 +27,8 @@ export const getTasksControllerCreateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   deletedAt: faker.helpers.arrayElement([
     faker.helpers.arrayElement([
       `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -55,6 +57,8 @@ export const getTasksControllerFindAllV0ResponseMock = (): ExistingTaskDto[] =>
       max: undefined,
       fractionDigits: 2,
     }),
+    isPublic: faker.datatype.boolean(),
+    isInUse: faker.datatype.boolean(),
     deletedAt: faker.helpers.arrayElement([
       faker.helpers.arrayElement([
         `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -76,6 +80,8 @@ export const getTasksControllerFindOneV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   deletedAt: faker.helpers.arrayElement([
     faker.helpers.arrayElement([
       `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -98,6 +104,8 @@ export const getTasksControllerUpdateV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   deletedAt: faker.helpers.arrayElement([
     faker.helpers.arrayElement([
       `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -120,6 +128,8 @@ export const getTasksControllerRemoveV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   deletedAt: faker.helpers.arrayElement([
     faker.helpers.arrayElement([
       `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -142,6 +152,8 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  isPublic: faker.datatype.boolean(),
+  isInUse: faker.datatype.boolean(),
   deletedAt: faker.helpers.arrayElement([
     faker.helpers.arrayElement([
       `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -200,7 +212,6 @@ export const getTasksControllerFindOneWithReferenceSolutionsV0ResponseMock = (
       ]),
     })),
   })),
-  isInUse: faker.datatype.boolean(),
   ...overrideResponse,
 });
 

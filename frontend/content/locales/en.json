@@ -47,6 +47,15 @@
   "AnonymizationToggle.label": {
     "message": "Anonymize Names"
   },
+  "ApiError.GENERIC_ERROR": {
+    "message": "An unexpected error occurred. Please try again later."
+  },
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": {
+    "message": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
+  },
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": {
+    "message": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
+  },
   "AstHeightCriterionFilterForm.count": {
     "message": "Height of the AST"
   },
@@ -425,6 +434,12 @@
   "EditTask.taskLockedTitle": {
     "message": "Task is locked"
   },
+  "EditTask.taskReadOnlyDescription": {
+    "message": "You are viewing a public task created by another user. Only the creator can edit this task."
+  },
+  "EditTask.taskReadOnlyTitle": {
+    "message": "View only"
+  },
   "EditTask.title": {
     "message": "Edit Task - {title}"
   },
@@ -660,6 +675,9 @@
   "ProgressList.notStartedStatus": {
     "message": "Not Started"
   },
+  "PublicBadge.public": {
+    "message": "Public"
+  },
   "SessionActions.copySessionLink": {
     "message": "Copy Lesson Link"
   },
@@ -813,6 +831,9 @@
   "SolveTask.openTaskList": {
     "message": "Open Task List"
   },
+  "SolveTask.saveError": {
+    "message": "You are currently experiencing network issues, saving may not work."
+  },
   "SolveTask.solutionSubmitted": {
     "message": "The solution was submitted successfully."
   },
@@ -947,6 +968,18 @@
   },
   "TaskForm.destructiveAction.title": {
     "message": "This action will delete reference solutions"
+  },
+  "TaskForm.isPublic": {
+    "message": "This task is public"
+  },
+  "TaskForm.makePublicConfirmation.body": {
+    "message": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+  },
+  "TaskForm.makePublicConfirmation.button": {
+    "message": "Yes, make it public"
+  },
+  "TaskForm.makePublicConfirmation.title": {
+    "message": "Make this task public?"
   },
   "TaskForm.taskFileRequired": {
     "message": "A task file is required before saving."
@@ -1193,6 +1226,18 @@
   },
   "TaskTable.viewDetails": {
     "message": "View Task Details"
+  },
+  "TaskVisibilityFilter.allTasks": {
+    "message": "All Tasks"
+  },
+  "TaskVisibilityFilter.filterLabel": {
+    "message": "Filter by visibility"
+  },
+  "TaskVisibilityFilter.privateOnly": {
+    "message": "Private Only"
+  },
+  "TaskVisibilityFilter.publicOnly": {
+    "message": "Public Only"
   },
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"

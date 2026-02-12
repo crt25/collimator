@@ -227,6 +227,9 @@
   "DEPRECATED: embeddedApp.taskLoaded": {
     "message": "Tâche chargée avec succès"
   },
+  "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": {
+    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -274,6 +277,15 @@
   },
   "AnonymizationToggle.label": {
     "message": "Anonymiser les noms"
+  },
+  "ApiError.GENERIC_ERROR": {
+    "message": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+  },
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": {
+    "message": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
+  },
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": {
+    "message": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
   },
   "AstHeightCriterionFilterForm.count": {
     "message": "Hauteur de l’AST"
@@ -648,10 +660,16 @@
     "message": "Sauvegarder l'activité"
   },
   "EditTask.taskLockedDescription": {
-    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut pas être modifiée ou supprimée."
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
   },
   "EditTask.taskLockedTitle": {
-    "message": "L'activité est verrouillée"
+    "message": "Activité verrouillée"
+  },
+  "EditTask.taskReadOnlyDescription": {
+    "message": "Vous consultez une activité publique créée par un autre utilisateur. Seul le créateur peut modifier cette activité."
+  },
+  "EditTask.taskReadOnlyTitle": {
+    "message": "Lecture seule"
   },
   "EditTask.title": {
     "message": "Modifier l'activité - {title}"
@@ -888,6 +906,9 @@
   "ProgressList.notStartedStatus": {
     "message": "Pas commencé"
   },
+  "PublicBadge.public": {
+    "message": "Publique"
+  },
   "SessionActions.copySessionLink": {
     "message": "Copier le lien de la leçon"
   },
@@ -1041,6 +1062,9 @@
   "SolveTask.openTaskList": {
     "message": "Ouvrir la liste des activités"
   },
+  "SolveTask.saveError": {
+    "message": "You are currently experiencing network issues, saving may not work."
+  },
   "SolveTask.solutionSubmitted": {
     "message": "La solution a été soumise avec succès."
   },
@@ -1154,13 +1178,13 @@
     "message": "Les données du fichier fourni sont invalides"
   },
   "TaskForm.changeTypeConfirmation.body": {
-    "message": "Changer le type de la tâche vous obligera à recréer la tâche dans le nouveau format. La tâche existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    "message": "Changer le type de l'activité vous obligera à recréer l'activité dans le nouveau format. L'activité existante ainsi que toutes les solutions de référence seront supprimées lors de l’enregistrement. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
   },
   "TaskForm.changeTypeConfirmation.button": {
     "message": "Oui, changer le type"
   },
   "TaskForm.changeTypeConfirmation.title": {
-    "message": "Changer le type de la tâche"
+    "message": "Changer le type de l'activité"
   },
   "TaskForm.closeConfirmation.body": {
     "message": "Vous allez quitter l'interface d'édition de l'activité sans enregistrer. Êtes-vous sûr de vouloir continuer ?"
@@ -1175,13 +1199,25 @@
     "message": "Description"
   },
   "TaskForm.destructiveAction.body": {
-    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez la tâche. Êtes-vous sûr de vouloir continuer ?"
+    "message": "Cette action supprimera toutes les solutions de référence lorsque vous enregistrerez l'activité. Êtes-vous sûr de vouloir continuer ?"
   },
   "TaskForm.destructiveAction.button": {
     "message": "Oui, continuer"
   },
   "TaskForm.destructiveAction.title": {
     "message": "Cette action supprimera les solutions de référence"
+  },
+  "TaskForm.isPublic": {
+    "message": "Cette activité est publique"
+  },
+  "TaskForm.makePublicConfirmation.body": {
+    "message": "Rendre cette activité publique permet à d'autres utilisateurs de la voir et de l'utiliser. Cette action peut être irréversible. Êtes-vous sûr de vouloir continuer?"
+  },
+  "TaskForm.makePublicConfirmation.button": {
+    "message": "Oui, publiez l'activité"
+  },
+  "TaskForm.makePublicConfirmation.title": {
+    "message": "Rendre cette activité publique?"
   },
   "TaskForm.taskFileRequired": {
     "message": "Un fichier de tâche est requis avant l’enregistrement."
@@ -1429,6 +1465,18 @@
   "TaskTable.viewDetails": {
     "message": "Voir les détails de l'activité"
   },
+  "TaskVisibilityFilter.allTasks": {
+    "message": "Toutes les activités"
+  },
+  "TaskVisibilityFilter.filterLabel": {
+    "message": "Filtrer par visibilité"
+  },
+  "TaskVisibilityFilter.privateOnly": {
+    "message": "Privée uniquement"
+  },
+  "TaskVisibilityFilter.publicOnly": {
+    "message": "Publique uniquement"
+  },
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
   },
@@ -1577,16 +1625,16 @@
     "message": "Rechercher..."
   },
   "embeddedApp.cannotExport": {
-    "message": "Échec de l'exportation de la tâche : {error}"
+    "message": "Échec de l'exportation de l'activité : {error}"
   },
   "embeddedApp.cannotGetTask": {
-    "message": "Impossible de récupérer la tâche : {error}"
+    "message": "Impossible de récupérer l'activité : {error}"
   },
   "embeddedApp.cannotImportExternalInNonEditMode": {
-    "message": "Impossible d'importer des tâches externes en mode non-édition"
+    "message": "Impossible d'importer des activités externes en mode non-édition"
   },
   "embeddedApp.cannotImportTask": {
-    "message": "Impossible d'importer la tâche : {error}"
+    "message": "Impossible d'importer l'activité : {error}"
   },
   "embeddedApp.cannotLoadProject": {
     "message": "Impossible de charger le projet : {error}"
@@ -1595,25 +1643,25 @@
     "message": "Impossible de charger la soumission : {error}"
   },
   "embeddedApp.cannotLoadTask": {
-    "message": "Impossible de charger le contenu de la tâche : {error}"
+    "message": "Impossible de charger le contenu de l'activité : {error}"
   },
   "embeddedApp.cannotSaveProject": {
     "message": "Impossible de sauvegarder le projet : {error}"
   },
   "embeddedApp.cannotSaveTask": {
-    "message": "Impossible de sauvegarder la tâche : {error}"
+    "message": "Impossible de sauvegarder l'activité : {error}"
   },
   "embeddedApp.savingTask": {
-    "message": "Sauvegarde de la tâche en cours..."
+    "message": "Sauvegarde de l'activité en cours..."
   },
   "embeddedApp.submissionLoaded": {
     "message": "Soumission chargée avec succès"
   },
   "embeddedApp.taskCreated": {
-    "message": "Tâche créée avec succès"
+    "message": "Activité créée avec succès"
   },
   "embeddedApp.taskImported": {
-    "message": "Tâche importée avec succès"
+    "message": "Activité importée avec succès"
   },
   "forms.arrayLength": {
     "message": "$'{path}' doit avoir $'{length}' éléments"

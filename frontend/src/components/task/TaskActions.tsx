@@ -3,6 +3,8 @@ import { LuTrash } from "react-icons/lu";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
+import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
@@ -52,10 +54,16 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
         title: intl.formatMessage(messages.deleteSuccessMessage),
       });
       router.push(`/task`);
-    } catch {
-      toaster.error({
-        title: intl.formatMessage(messages.deleteErrorMessage),
-      });
+    } catch (error) {
+      if (error instanceof ConflictError) {
+        toaster.error({
+          title: intl.formatMessage(getErrorMessageDescriptor(error.errorCode)),
+        });
+      } else {
+        toaster.error({
+          title: intl.formatMessage(messages.deleteErrorMessage),
+        });
+      }
     }
   };
 

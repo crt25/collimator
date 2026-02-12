@@ -95,6 +95,24 @@
       "value": "Anonymize Names"
     }
   ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "An unexpected error occurred. Please try again later."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,
@@ -891,6 +909,18 @@
       "value": "Task is locked"
     }
   ],
+  "EditTask.taskReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a public task created by another user. Only the creator can edit this task."
+    }
+  ],
+  "EditTask.taskReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
   "EditTask.title": [
     {
       "type": 0,
@@ -1367,6 +1397,12 @@
       "value": "Not Started"
     }
   ],
+  "PublicBadge.public": [
+    {
+      "type": 0,
+      "value": "Public"
+    }
+  ],
   "SessionActions.copySessionLink": [
     {
       "type": 0,
@@ -1679,6 +1715,12 @@
     {
       "type": 0,
       "value": "Open Task List"
+    }
+  ],
+  "SolveTask.saveError": [
+    {
+      "type": 0,
+      "value": "You are currently experiencing network issues, saving may not work."
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -1997,6 +2039,30 @@
     {
       "type": 0,
       "value": "This action will delete reference solutions"
+    }
+  ],
+  "TaskForm.isPublic": [
+    {
+      "type": 0,
+      "value": "This task is public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, make it public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Make this task public?"
     }
   ],
   "TaskForm.taskFileRequired": [
@@ -2525,6 +2591,30 @@
     {
       "type": 0,
       "value": "View Task Details"
+    }
+  ],
+  "TaskVisibilityFilter.allTasks": [
+    {
+      "type": 0,
+      "value": "All Tasks"
+    }
+  ],
+  "TaskVisibilityFilter.filterLabel": [
+    {
+      "type": 0,
+      "value": "Filter by visibility"
+    }
+  ],
+  "TaskVisibilityFilter.privateOnly": [
+    {
+      "type": 0,
+      "value": "Private Only"
+    }
+  ],
+  "TaskVisibilityFilter.publicOnly": [
+    {
+      "type": 0,
+      "value": "Public Only"
     }
   ],
   "TestCriterionFilterForm.count": [

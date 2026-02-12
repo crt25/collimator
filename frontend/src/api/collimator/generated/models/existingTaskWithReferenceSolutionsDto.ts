@@ -17,10 +17,12 @@ export interface ExistingTaskWithReferenceSolutionsDto {
   id: number;
   /** The user's unique identifier, a positive integer. */
   creatorId: number;
+  /** Whether the task is public and visible to all teachers/admins. */
+  isPublic: boolean;
+  /** Whether the task is in use by one or more classes with students. */
+  isInUse: boolean;
   /** @nullable */
   deletedAt?: string | null;
   /** The list of reference solutions. */
   referenceSolutions: TaskReferenceSolutionDto[];
-  /** Whether the task is in use by one or more classes with students. */
-  isInUse: boolean;
 }

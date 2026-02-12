@@ -22,6 +22,7 @@ import {
   ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -32,14 +33,10 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import "multer";
 import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
-import { fromQueryResults } from "../helpers";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import {
-  NonUserRoles,
-  Roles,
-} from "../authentication/role.decorator";
+import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-
+import { ErrorCode, ErrorCodeDto } from "../error-codes/error-codes";
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -47,11 +44,16 @@ import {
   DeletedTaskDto,
   TaskId,
 } from "./dto";
-import { TaskInUseError, TasksService } from "./tasks.service";
+import {
+  TaskInUseByClassOrLessonWithStudentsError,
+  TasksService,
+  TaskInOtherUsersLessonError,
+} from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
 @Controller("tasks")
 @ApiTags("tasks")
+@ApiExtraModels(ErrorCodeDto)
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
@@ -104,6 +106,11 @@ export class TasksController {
       );
     }
 
+    // Only admins can create public tasks
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can create public tasks");
+    }
+
     const task = await this.tasksService.create(
       {
         ...rest,
@@ -115,26 +122,41 @@ export class TasksController {
       referenceSolutionsFiles,
     );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    // Newly created task cannot be in use
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
   }
 
   @Get()
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
     type: Boolean,
   })
-  
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() user: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
+    const publicTasks = await this.tasksService.findManyWithInUseStatus(
+      true,
+      undefined,
+      includeSoftDelete,
+    );
 
-    const tasks = await this.tasksService.findMany({}, includeSoftDelete);
-    return fromQueryResults(ExistingTaskDto, tasks);
+    const teacherId = user.type === UserType.TEACHER ? user.id : undefined;
+
+    const privateTasks = await this.tasksService.findManyWithInUseStatus(
+      false,
+      teacherId || undefined,
+      includeSoftDelete,
+    );
+
+    return privateTasks
+      .concat(publicTasks)
+      .map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 
   @Get(":id")
@@ -144,7 +166,6 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
@@ -153,18 +174,23 @@ export class TasksController {
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const task = await this.tasksService.findByIdOrThrow(id, includeSoftDelete);
-    return ExistingTaskDto.fromQueryResult(task);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrow(id, includeSoftDelete),
+      // todo: probably needs to include soft delete too
+      this.tasksService.isTaskInUse(id),
+    ]);
+
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse });
   }
 
   @Get(":id/with-reference-solutions")
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
     type: Boolean,
   })
-  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
@@ -202,7 +228,6 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
@@ -239,7 +264,6 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
-  
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -276,6 +300,11 @@ export class TasksController {
       );
     }
 
+    // Only admins can make tasks public
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can make tasks public");
+    }
+
     try {
       const task = await this.tasksService.update(
         id,
@@ -287,10 +316,13 @@ export class TasksController {
         includeSoftDelete,
       );
 
-      return ExistingTaskDto.fromQueryResult(task);
+      // If update succeeded, task was not in use (service throws if in use)
+      return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
     } catch (error) {
-      if (error instanceof TaskInUseError) {
-        throw new ConflictException(error.message);
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
       }
       throw error;
     }
@@ -322,11 +354,18 @@ export class TasksController {
     }
 
     try {
-      const task = await this.tasksService.deleteById(id);
-      return DeletedTaskDto.fromQueryResult(task);
+      const deletedTask = await this.tasksService.deleteById(id);
+      return DeletedTaskDto.fromQueryResult({ ...deletedTask, isInUse: false });
     } catch (error) {
-      if (error instanceof TaskInUseError) {
-        throw new ConflictException(error.message);
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      if (error instanceof TaskInOtherUsersLessonError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+        });
       }
       throw error;
     }

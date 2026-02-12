@@ -25,6 +25,7 @@ export const tasksControllerCreate = async (
   createTaskDto.referenceSolutionsFiles.forEach((value) =>
     formData.append("referenceSolutionsFiles", value),
   );
+  formData.append("isPublic", String(createTaskDto.isPublic));
 
   return fetchApi<ExistingTaskDto>(getTasksControllerCreateV0Url(), {
     ...options,

@@ -13,6 +13,8 @@ export interface CreateTaskDto {
   description: string;
   /** The task's type. */
   type: TaskType;
+  /** Whether the task is public and visible to all teachers/admins. */
+  isPublic: boolean;
   /** Task file */
   taskFile: Blob;
   /** Reference solution files */

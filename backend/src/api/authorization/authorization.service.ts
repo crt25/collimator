@@ -190,8 +190,8 @@ export class AuthorizationService {
                 students: {
                   some: {
                     studentId: authenticatedStudent.id,
-                    deletedAt: null
-                  }
+                    deletedAt: null,
+                  },
                 },
               },
             },

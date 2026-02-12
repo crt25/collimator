@@ -50,22 +50,6 @@ describe("ClassesController (e2e)", () => {
     checkClassesInList(classes, returnedClasses);
   });
 
-  test("/classes?teacherId (GET)", async () => {
-    const response = await request(app.getHttpServer())
-      .get(`/classes/?teacherId=${defaultTeacher.id}`)
-      .expect(200);
-
-    const returnedClasses = response.body;
-    checkClassesInList(classes, returnedClasses);
-  });
-
-  test("/classes?teacherId for admin (GET)", () => {
-    return request(app.getHttpServer())
-      .get(`/classes/?teacherId=${defaultAdmin.id}`)
-      .expect(200)
-      .expect([]);
-  });
-
   test("/classes/:id (GET)", async () => {
     const klass = classes[0];
     const response = await request(app.getHttpServer())

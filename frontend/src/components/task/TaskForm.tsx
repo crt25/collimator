@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   defineMessages,
   FormattedMessage,
@@ -11,6 +18,8 @@ import * as yup from "yup";
 import styled from "@emotion/styled";
 import { Submission } from "iframe-rpc-react/src";
 import { Box, Field, Grid, GridItem } from "@chakra-ui/react";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { UserRole } from "@/types/user/user-role";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
@@ -21,11 +30,13 @@ import {
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
 import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
 import Select from "../form/Select";
+import Checkbox from "../form/Checkbox";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
 import { EditedBadge } from "../EditedBadge";
@@ -111,6 +122,24 @@ const messages = defineMessages({
     defaultMessage:
       "The task is now in use by one or more classes and can no longer be modified.",
   },
+  isPublicLabel: {
+    id: "TaskForm.isPublic",
+    defaultMessage: "This task is public",
+  },
+  makePublicConfirmationTitle: {
+    id: "TaskForm.makePublicConfirmation.title",
+    defaultMessage: "Make this task public?",
+  },
+  makePublicConfirmationBody: {
+    id: "TaskForm.makePublicConfirmation.body",
+    defaultMessage:
+      "Making a task public allows other users to view and use it. This action may be irreversible.\n" +
+      "Are you sure you want to continue?",
+  },
+  makePublicConfirmationButton: {
+    id: "TaskForm.makePublicConfirmation.button",
+    defaultMessage: "Yes, make it public",
+  },
 });
 
 enum ModalStates {
@@ -128,6 +157,7 @@ type TaskFormValues = {
   taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  isPublic: boolean;
 };
 
 type TaskFile = Blob | undefined | null;
@@ -139,6 +169,7 @@ export type TaskFormSubmission = {
   taskFile: Blob | null;
   initialSolution: UpdateReferenceSolutionDto | null;
   initialSolutionFile: Blob | null;
+  isPublic: boolean;
   clearAllReferenceSolutions: boolean;
 };
 
@@ -156,6 +187,7 @@ const getYupSchema = (intl: IntlShape) => ({
     .required()
     .max(2000),
   type: yup.string().oneOf(Object.values(TaskType)).required(),
+  isPublic: yup.boolean().defined(),
   taskFile: yup
     .mixed<Blob>()
     .test(
@@ -226,6 +258,9 @@ const TaskForm = ({
   disabled?: boolean;
 }) => {
   const intl = useIntl();
+  const authenticationContext = useContext(AuthenticationContext);
+  const isAdmin = authenticationContext.role === UserRole.admin;
+  const [showMakePublicModal, setShowMakePublicModal] = useState(false);
 
   const [clearSolutionsOnSave, setClearSolutionsOnSave] = useState(false);
 
@@ -262,6 +297,7 @@ const TaskForm = ({
     taskFile: Blob | null;
     initialSolution: UpdateReferenceSolutionDto | null;
     initialSolutionFile: Blob | null;
+    isPublic: boolean;
   }>;
 
   const resolver = useYupResolver(schema);
@@ -271,6 +307,7 @@ const TaskForm = ({
       type: TaskType.SCRATCH,
       title: "",
       description: "",
+      isPublic: false,
       taskFile: null,
       initialSolution: null,
       initialSolutionFile: null,
@@ -316,6 +353,22 @@ const TaskForm = ({
   const onNavigate = useCallback(() => {
     setOpenModal(ModalStates.quitNoSave);
   }, []);
+
+  const handleIsPublicBeforeChange = useCallback((newValue: boolean) => {
+    // Only show confirmation when trying to make the task public
+    if (newValue === true) {
+      setShowMakePublicModal(true);
+      return false; // Prevent immediate change, wait for confirmation
+    }
+    return true; // Allow unchecking without confirmation
+  }, []);
+
+  const handleConfirmMakePublic = useCallback(() => {
+    setValue("isPublic", true, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }, [setValue]);
 
   const navigate = useNavigationObserver({
     shouldStopNavigation,
@@ -427,6 +480,7 @@ const TaskForm = ({
           taskFile: data.taskFile,
           initialSolution: data.initialSolution,
           initialSolutionFile: data.initialSolutionFile,
+          isPublic: data.isPublic,
           clearAllReferenceSolutions: clearSolutionsOnSave,
         } satisfies TaskFormSubmission);
       })(e)
@@ -469,7 +523,9 @@ const TaskForm = ({
 
           if (err instanceof ConflictError) {
             toaster.error({
-              title: intl.formatMessage(messages.saveConflictError),
+              title: intl.formatMessage(
+                getErrorMessageDescriptor(err.errorCode),
+              ),
               closable: true,
             });
             onConflictError?.();
@@ -522,6 +578,17 @@ const TaskForm = ({
               disabled={disabled}
             />
 
+            {isAdmin && (
+              <Checkbox
+                name="isPublic"
+                control={control}
+                label={messages.isPublicLabel}
+                showEditedBadge={showEditedBadges}
+                data-testid="isPublic"
+                disabled={disabled}
+                onBeforeChange={handleIsPublicBeforeChange}
+              />
+            )}
             {!disabled && (
               <Field.Root
                 invalid={
@@ -599,6 +666,17 @@ const TaskForm = ({
           title: messages.closeConfirmationTitle,
           body: messages.closeConfirmationBody,
           confirmButton: messages.closeConfirmationButton,
+        }}
+      />
+      <ConfirmationModal
+        isShown={showMakePublicModal}
+        setIsShown={setShowMakePublicModal}
+        onConfirm={handleConfirmMakePublic}
+        isDangerous
+        messages={{
+          title: messages.makePublicConfirmationTitle,
+          body: messages.makePublicConfirmationBody,
+          confirmButton: messages.makePublicConfirmationButton,
         }}
       />
 
