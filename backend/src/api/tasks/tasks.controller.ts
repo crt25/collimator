@@ -141,20 +141,16 @@ export class TasksController {
   ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
     const publicTasks = await this.tasksService.findManyWithInUseStatus(
-      {
-        where: { isPublic: true },
-      },
+      true,
+      undefined,
       includeSoftDelete,
     );
 
     const teacherId = user.type === UserType.TEACHER ? user.id : undefined;
 
     const privateTasks = await this.tasksService.findManyWithInUseStatus(
-      {
-        where: teacherId
-          ? { creatorId: teacherId, isPublic: false }
-          : { isPublic: false },
-      },
+      false,
+      teacherId || undefined,
       includeSoftDelete,
     );
 

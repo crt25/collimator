@@ -139,26 +139,31 @@ export class TasksService {
   }
 
   async findManyWithInUseStatus(
-    args?: Prisma.TaskFindManyArgs,
+    isPublic: boolean,
+    creatorId: number | undefined = undefined,
     includeSoftDelete = false,
   ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
-    const deletedAtCondition = includeSoftDelete ? {} : { deletedAt: null };
+    // when enabling "strictUndefinedChecks", use Prisma.skip instead of `undefined` here
+    const deletedAtCondition = includeSoftDelete ? undefined : null;
 
     // construct args separately to avoid typescript deep type comparison issues
     const finalArgs = {
-      ...args,
       omit: omitData,
-      where: { ...args?.where, ...deletedAtCondition },
+      where: {
+        isPublic: isPublic,
+        creatorId: creatorId,
+        deletedAt: deletedAtCondition,
+      } satisfies Prisma.TaskWhereInput,
       include: {
         sessions: {
           where: {
             session: {
-              ...deletedAtCondition,
+              deletedAt: deletedAtCondition,
               OR: [
                 { anonymousStudents: { some: { deletedAt: null } } },
                 {
                   class: {
-                    ...deletedAtCondition,
+                    deletedAt: deletedAtCondition,
                     students: {
                       some: { deletedAt: null },
                     },
@@ -167,9 +172,9 @@ export class TasksService {
               ],
             },
           },
+          take: 1,
+          select: { taskId: true },
         },
-        take: 1,
-        select: { taskId: true },
       },
     };
 
