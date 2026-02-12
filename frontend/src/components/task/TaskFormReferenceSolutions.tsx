@@ -383,6 +383,13 @@ const TaskFormReferenceSolutions = ({
     [showSolveTaskModalForId],
   );
 
+  const shouldShowSaveButton = useMemo(() => {
+    if (referenceSolutions.some((s) => !s.isInitial)) {
+      return true;
+    }
+    return false;
+  }, [referenceSolutions]);
+
   return (
     <>
       <form
@@ -548,11 +555,13 @@ const TaskFormReferenceSolutions = ({
         />
 
         <Box display="flex" justifyContent="flex-end">
-          <SubmitFormButton
-            label={submitMessage}
-            disabled={!isDirty || !isValid}
-            data-testid="task-reference-solutions-form-submit"
-          />
+          {shouldShowSaveButton && (
+            <SubmitFormButton
+              label={submitMessage}
+              disabled={!isDirty || !isValid}
+              data-testid="task-reference-solutions-form-submit"
+            />
+          )}
         </Box>
       </form>
       <ConfirmationModal
