@@ -47,7 +47,7 @@ export const registerGradeCommand = (
   documentManager: IDocumentManager,
 ): void => {
   app.commands.addCommand(runGradingCommand, {
-    label: "Run Grading",
+    isVisible: () => false,
     execute: async (): Promise<OtterGradingResults> => {
       try {
         console.debug("Saving all open notebooks...");

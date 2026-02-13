@@ -15,7 +15,7 @@ export const registerAssignCommand = (
   contentsManager: ContentsManager,
 ): void => {
   app.commands.addCommand(runAssignCommand, {
-    label: "Run Assign",
+    isVisible: () => false,
     execute: async () => {
       try {
         console.debug("Saving all open notebooks...");
