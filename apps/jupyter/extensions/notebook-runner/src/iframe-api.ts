@@ -352,7 +352,10 @@ export class EmbeddedPythonCallbacks {
       return;
     }
 
-    await translationSettings.set("locale", targetLocale);
+    await translationSettings.set(
+      "locale",
+      this._getNormalizedLocale(targetLocale),
+    );
     this.isInitialLoad = false;
 
     // reload the page to apply the new locale to all UI elements
