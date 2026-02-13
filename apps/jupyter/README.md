@@ -159,7 +159,7 @@ Try this first, if the build process results in weird error messages.
 
 ### 1. JupyterLite Core Configuration
 
-**File**: `jupyter-lite.json`
+**File**: `jupyter-lite.jsonc`
 
 - Memory-only storage, loading and saving is handled by the ClassMosaic platform
 - Custom branding (ClassMosaic)
@@ -244,7 +244,7 @@ For Python-related development within the project:
 
 ### JupyterLite Configuration
 
-**Primary file**: [`jupyter-lite.json`](https://jupyterlite.readthedocs.io/en/latest/howto/configure/config_files.html#jupyter-lite-json)
+**Primary file**: [`jupyter-lite.jsonc`](https://jupyterlite.readthedocs.io/en/latest/howto/configure/config_files.html#jupyter-lite-json)
 
 Key configuration options:
 
