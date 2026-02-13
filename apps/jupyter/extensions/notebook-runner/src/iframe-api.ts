@@ -2,12 +2,16 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
+import { ReadonlyPartialJSONValue } from "@lumino/coreutils";
 import { DEFAULT_SCROLL_HEIGHT } from "./constants";
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
   GetTask,
+  JupyterLanguageLocales,
   Language,
+  LanguageCommands,
   LoadSubmission,
   LoadTask,
   SetLocale,
@@ -96,12 +100,16 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingDataLocation: string = "/grading_data";
   public static readonly srcLocation: string = "/src";
   public static readonly gradingSrcLocation: string = "/grading_src";
+  public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
+
+  private isInitialLoad = true;
 
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
+    private readonly settingRegistry: ISettingRegistry,
   ) {}
 
   async getHeight(): Promise<number> {
@@ -184,7 +192,7 @@ export class EmbeddedPythonCallbacks {
 
   async loadTask(request: LoadTask["request"]): Promise<undefined> {
     try {
-      this.setJupyterLocale(request.params.language);
+      await this.applyLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
       const importedFiles = await importCrtInternalTask(request.params.task);
@@ -206,7 +214,7 @@ export class EmbeddedPythonCallbacks {
 
   async importTask(request: ImportTask["request"]): Promise<undefined> {
     try {
-      this.setJupyterLocale(request.params.language);
+      await this.applyLocale(request.params.language);
 
       const fileFormat = await detectTaskFormat(request.params.task);
 
@@ -257,7 +265,7 @@ export class EmbeddedPythonCallbacks {
   }
 
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
-    this.setJupyterLocale(request.params.language);
+    await this.applyLocale(request.params.language);
 
     try {
       console.debug(`${logModule} Loading project`);
@@ -291,23 +299,76 @@ export class EmbeddedPythonCallbacks {
   }
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
-    this.setJupyterLocale(request.params);
+    // the jupyterLab translation extension uses commands to switch languages
+    // each command corresponds to a specific language locale, for example "jupyterlab-translation:fr_FR" for French.
+    // here we map the requested language to the appropriate command and execute it to change the language of the UI.
+    const command = this._getTranslationCommand(request.params);
+
+    const translationSettings = await this.settingRegistry.load(
+      EmbeddedPythonCallbacks.pluginId,
+    );
+
+    const setLocale = this._getNormalizedLocale(
+      translationSettings.get("locale").composite,
+    );
+
+    if (setLocale !== request.params) {
+      await this.app.commands.execute(command);
+    }
 
     return undefined;
   }
 
-  private async setJupyterLocale(_language: Language): Promise<void> {
-    // TODO: needs to be implemented
+  private _getNormalizedLocale(
+    string: ReadonlyPartialJSONValue | undefined,
+  ): Language {
+    switch (string) {
+      case JupyterLanguageLocales.fr:
+        return Language.fr;
+      case JupyterLanguageLocales.en:
+      case "default":
+      default:
+        return Language.en;
+    }
   }
 
-  // @ts-expect-error will be needed in the future
-  private _getJupyterLocale(language: Language): string {
+  private async applyLocale(language: Language): Promise<void> {
+    if (!this.isInitialLoad) {
+      return;
+    }
+
+    const targetLocale = language === Language.fr ? Language.fr : Language.en;
+
+    const translationSettings = await this.settingRegistry.load(
+      EmbeddedPythonCallbacks.pluginId,
+    );
+
+    const setLocale = this._getNormalizedLocale(
+      translationSettings.get("locale").composite,
+    );
+
+    if (setLocale === targetLocale) {
+      // if the current locale is already the target locale, we don't need to do anything
+      return;
+    }
+
+    await translationSettings.set(
+      "locale",
+      this._getNormalizedLocale(targetLocale),
+    );
+    this.isInitialLoad = false;
+
+    // reload the page to apply the new locale to all UI elements
+    window.location.reload();
+  }
+
+  private _getTranslationCommand(language: Language): string {
     switch (language) {
       case Language.fr:
-        return "fr-FR";
+        return LanguageCommands.fr;
       case Language.en:
       default:
-        return "en-US";
+        return LanguageCommands.en;
     }
   }
 

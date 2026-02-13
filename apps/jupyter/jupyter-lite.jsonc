@@ -6,7 +6,9 @@
     "enableMemoryStorage": true,
     "contentsStorageDrivers": ["memoryStorageDriver"],
     "workspacesStorageDrivers": ["memoryStorageDriver"],
-    "settingsStorageDrivers": ["memoryStorageDriver"],
+    // jupyterlab translation extensions needs to restart the application to apply the new locale
+    // there is no other straightforward way to do this without persisting settings across sessions
+    "settingsStorageDrivers": ["localStorageWrapper"],
     "disabledExtensions": [
       "@jupyterlite/application-extension:service-worker-manager"
     ]
