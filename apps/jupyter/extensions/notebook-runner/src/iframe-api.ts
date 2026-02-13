@@ -299,7 +299,22 @@ export class EmbeddedPythonCallbacks {
   }
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
-    this.setJupyterLocale(request.params);
+    // the jupyterLab translation extension uses commands to switch languages
+    // each command corresponds to a specific language locale, for example "jupyterlab-translation:fr_FR" for French.
+    // here we map the requested language to the appropriate command and execute it to change the language of the UI.
+    const command = this._getTranslationCommand(request.params);
+
+    const translationSettings = await this.settingRegistry.load(
+      EmbeddedPythonCallbacks.pluginId,
+    );
+
+    const setLocale = this._getNormalizedLocale(
+      translationSettings.get("locale").composite,
+    );
+
+    if (setLocale !== request.params) {
+      await this.app.commands.execute(command);
+    }
 
     return undefined;
   }
