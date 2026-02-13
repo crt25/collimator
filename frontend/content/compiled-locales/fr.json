@@ -2956,13 +2956,13 @@
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Enregistrer l'activité"
+      "value": "Enregistrer les/la solution(s) de référence"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Modifier l'activité - "
+      "value": "Modifier la solution de référence - "
     },
     {
       "type": 1,

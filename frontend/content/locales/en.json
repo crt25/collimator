@@ -1177,10 +1177,10 @@
     "message": "Opened"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Save Task"
+    "message": "Save Reference Solution(s)"
   },
   "TaskReferenceSolutions.title": {
-    "message": "Edit Task - {title}"
+    "message": "Edit Reference Solution - {title}"
   },
   "TaskSessionActions.deleteTask": {
     "message": "Delete Task"
