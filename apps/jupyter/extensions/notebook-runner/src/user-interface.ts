@@ -7,7 +7,13 @@ import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
 
-export const hiddenFolders = ["grading_src", "grading_data"];
+export const hiddenFolders = [
+  "grading_src",
+  "grading_data",
+  "student",
+  "autograder",
+];
+
 export type CustomRename = (
   oldPath: string,
   newPath: string,
