@@ -81,7 +81,7 @@ const ClassList = () => {
       },
     },
     {
-      accessorKey: "teacher",
+      accessorKey: "teacher.name",
       header: intl.formatMessage(messages.teacherColumn),
       enableSorting: true,
       cell: (info) => {
