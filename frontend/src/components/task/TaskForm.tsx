@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import styled from "@emotion/styled";
 import { Submission } from "iframe-rpc-react/src";
-import { Box, Field, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Field, Grid, GridItem, Stack } from "@chakra-ui/react";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
 import { useYupSchema } from "@/hooks/useYupSchema";
@@ -40,10 +40,12 @@ import Checkbox from "../form/Checkbox";
 import Button from "../Button";
 import EditTaskModal from "../modals/EditTaskModal";
 import { EditedBadge } from "../EditedBadge";
+
 import { toaster } from "../Toaster";
 
 const EditTaskButton = styled(Button)`
   margin-top: 1rem;
+  align-self: flex-start;
 `;
 
 const logModule = "[TaskForm]";
@@ -182,9 +184,9 @@ const getYupSchema = (intl: IntlShape) => ({
     .max(200),
   description: yup
     .string()
-    .min(1)
     .label(intl.formatMessage(messages.description))
     .required()
+    .min(1)
     .max(2000),
   type: yup.string().oneOf(Object.values(TaskType)).required(),
   isPublic: yup.boolean().defined(),
@@ -319,10 +321,11 @@ const TaskForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isValid, dirtyFields },
+    formState: { errors, isDirty, dirtyFields },
     watch,
     reset,
     setValue,
+    setError,
     control,
   } = useForm<TaskFormValues>({
     resolver,
@@ -470,6 +473,10 @@ const TaskForm = ({
         // but more critically, the API requires a non-null taskFile for persistence.
         // Therefore, we block submission if taskFile is null.
         if (data.taskFile === null) {
+          setError("taskFile", {
+            type: "manual",
+            message: intl.formatMessage(messages.taskFileRequired),
+          });
           return Promise.reject(new NoTaskFileError());
         }
 
@@ -597,30 +604,32 @@ const TaskForm = ({
                   !!errors.initialSolutionFile
                 }
               >
-                <EditTaskButton
-                  data-testid="edit-task-button"
-                  type="button"
-                  onClick={handleOpenEditTask}
-                  disabled={disabled}
-                >
-                  {hasTypeChanged || !taskFile ? (
-                    <FormattedMessage
-                      id="TaskForm.blob.create"
-                      defaultMessage="Create task in external application"
-                    />
-                  ) : (
-                    <FormattedMessage
-                      id="TaskForm.blob.edit"
-                      defaultMessage="Edit task in external application"
-                    />
-                  )}
-                </EditTaskButton>
+                <Stack>
+                  <EditTaskButton
+                    data-testid="edit-task-button"
+                    type="button"
+                    onClick={handleOpenEditTask}
+                    disabled={disabled}
+                  >
+                    {hasTypeChanged || !taskFile ? (
+                      <FormattedMessage
+                        id="TaskForm.blob.create"
+                        defaultMessage="Create task in external application"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="TaskForm.blob.edit"
+                        defaultMessage="Edit task in external application"
+                      />
+                    )}
+                  </EditTaskButton>
 
-                <Field.ErrorText>
-                  {errors.taskFile?.message}
-                  {errors.initialSolution?.message}
-                  {errors.initialSolutionFile?.message}
-                </Field.ErrorText>
+                  <Field.ErrorText>
+                    {errors.taskFile?.message}
+                    {errors.initialSolution?.message}
+                    {errors.initialSolutionFile?.message}
+                  </Field.ErrorText>
+                </Stack>
               </Field.Root>
             )}
           </GridItem>
