@@ -83,6 +83,7 @@ const ClassList = () => {
     {
       accessorKey: "teacher",
       header: intl.formatMessage(messages.teacherColumn),
+      enableSorting: true,
       cell: (info) => {
         const teacher = info.row.original.teacher;
         return <span>{teacher?.name}</span>;
