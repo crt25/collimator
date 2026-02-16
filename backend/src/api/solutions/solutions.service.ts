@@ -412,9 +412,7 @@ export class SolutionsService {
           solution: { select: { data: true, mimeType: true } },
           createdAt: true,
         },
-        where: includeSoftDelete
-          ? { studentId, taskId, sessionId }
-          : { studentId, taskId, sessionId, deletedAt: null },
+        where: { studentId, taskId, sessionId },
         orderBy: {
           createdAt: "desc",
         },
