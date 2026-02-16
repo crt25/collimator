@@ -21,7 +21,7 @@ export class TaskAutoSaver {
     INotebookModel,
     ExecutionScheduledCallback
   >();
-  public static readonly debounceInterval = 5000;
+  public static readonly debounceInterval = 30000;
 
   constructor(
     notebookTracker: INotebookTracker,
