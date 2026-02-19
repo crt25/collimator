@@ -3,15 +3,12 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
 import { ISettingRegistry } from "@jupyterlab/settingregistry";
-import { ReadonlyPartialJSONValue } from "@lumino/coreutils";
 import { DEFAULT_SCROLL_HEIGHT } from "./constants";
 import {
   AppCrtIframeApi,
   AppHandleRequestMap,
   GetTask,
-  JupyterLanguageLocales,
   Language,
-  LanguageCommands,
   LoadSubmission,
   LoadTask,
   SetLocale,
@@ -49,6 +46,7 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "./iframe-rpc/src/methods/export-task";
+import { JupyterLanguageLocales } from "./languages";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -102,7 +100,18 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
-  private isInitialLoad = true;
+  private readonly localeConfig = {
+    crtToJupyterLocales: new Map<Language, JupyterLanguageLocales>([
+      [Language.en, JupyterLanguageLocales.en],
+      [Language.fr, JupyterLanguageLocales.fr],
+    ]),
+    jupyterToCrtLocales: new Map<string, Language>([
+      [JupyterLanguageLocales.fr, Language.fr],
+      [JupyterLanguageLocales.en, Language.en],
+      // sometimes the jupyter locale can also be default instead of explicitly en
+      ["default", Language.en],
+    ]),
+  };
 
   constructor(
     private readonly mode: Mode,
@@ -197,7 +206,7 @@ export class EmbeddedPythonCallbacks {
 
   async loadTask(request: LoadTask["request"]): Promise<undefined> {
     try {
-      await this.applyLocale(request.params.language);
+      await this.setJupyterLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
       const importedFiles = await importCrtInternalTask(request.params.task);
@@ -219,7 +228,7 @@ export class EmbeddedPythonCallbacks {
 
   async importTask(request: ImportTask["request"]): Promise<undefined> {
     try {
-      await this.applyLocale(request.params.language);
+      await this.setJupyterLocale(request.params.language);
 
       const fileFormat = await detectTaskFormat(request.params.task);
 
@@ -270,7 +279,7 @@ export class EmbeddedPythonCallbacks {
   }
 
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
-    await this.applyLocale(request.params.language);
+    await this.setJupyterLocale(request.params.language);
 
     try {
       console.debug(`${logModule} Loading project`);
@@ -302,77 +311,42 @@ export class EmbeddedPythonCallbacks {
   }
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
-    // the jupyterLab translation extension uses commands to switch languages
-    // each command corresponds to a specific language locale, for example "jupyterlab-translation:fr_FR" for French.
-    // here we map the requested language to the appropriate command and execute it to change the language of the UI.
-    const command = this._getTranslationCommand(request.params);
-
-    const translationSettings = await this.settingRegistry.load(
-      EmbeddedPythonCallbacks.pluginId,
-    );
-
-    const setLocale = this._getNormalizedLocale(
-      translationSettings.get("locale").composite,
-    );
-
-    if (setLocale !== request.params) {
-      await this.app.commands.execute(command);
-    }
-
+    await this.setJupyterLocale(request.params);
     return undefined;
   }
 
-  private _getNormalizedLocale(
-    string: ReadonlyPartialJSONValue | undefined,
-  ): Language {
-    switch (string) {
-      case JupyterLanguageLocales.fr:
-        return Language.fr;
-      case JupyterLanguageLocales.en:
-      case "default":
-      default:
-        return Language.en;
-    }
-  }
-
-  private async applyLocale(language: Language): Promise<void> {
-    if (!this.isInitialLoad) {
-      return;
-    }
-
-    const targetLocale = language === Language.fr ? Language.fr : Language.en;
-
-    const translationSettings = await this.settingRegistry.load(
+  private async setJupyterLocale(locale: Language): Promise<void> {
+    const settings = await this.settingRegistry.load(
       EmbeddedPythonCallbacks.pluginId,
     );
 
-    const setLocale = this._getNormalizedLocale(
-      translationSettings.get("locale").composite,
-    );
+    let rawLocale = settings.get("locale").composite;
 
-    if (setLocale === targetLocale) {
-      // if the current locale is already the target locale, we don't need to do anything
+    if (typeof rawLocale !== "string") {
+      // if the locale setting is somehow not a string we default to English
+      rawLocale = Language.en;
+    }
+
+    const jupyterLocaleAsCrt =
+      this.localeConfig.jupyterToCrtLocales.get(rawLocale) ?? Language.en;
+
+    if (jupyterLocaleAsCrt === locale) {
+      // if the locale is already set to the desired value, we can skip
       return;
     }
 
-    await translationSettings.set(
-      "locale",
-      this._getNormalizedLocale(targetLocale),
-    );
-    this.isInitialLoad = false;
+    const jupyterLocale =
+      this.localeConfig.crtToJupyterLocales.get(locale) ??
+      JupyterLanguageLocales.en;
 
-    // reload the page to apply the new locale to all UI elements
-    window.location.reload();
-  }
+    await settings.set("locale", jupyterLocale);
 
-  private _getTranslationCommand(language: Language): string {
-    switch (language) {
-      case Language.fr:
-        return LanguageCommands.fr;
-      case Language.en:
-      default:
-        return LanguageCommands.en;
-    }
+    // we force-navigate to the current URL with the desired mode param
+    // instead of using window.location.reload(), because the jupyter loaded
+    // with a different mode that gets reapplied on a plain reload, which overrides our custom mode.
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", Mode[this.mode]);
+    window.location.href = url.toString();
   }
 
   private async closeAllDocuments(): Promise<void> {
