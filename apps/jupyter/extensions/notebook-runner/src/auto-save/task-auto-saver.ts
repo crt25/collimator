@@ -28,7 +28,7 @@ export class TaskAutoSaver {
     private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
-      this.registerNotebook(panel, panel.context.model);
+      this.registerNotebook(notebookTracker, panel, panel.context.model);
     });
   }
 
@@ -39,7 +39,11 @@ export class TaskAutoSaver {
     return new TaskAutoSaver(notebookTracker, sendRequest);
   }
 
-  private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
+  private registerNotebook(
+    notebookTracker: INotebookTracker,
+    panel: NotebookPanel,
+    model: INotebookModel,
+  ): void {
     panel.context.model.contentChanged.connect(() => {
       this.handleContentChange(panel, model);
     });
@@ -51,6 +55,10 @@ export class TaskAutoSaver {
     };
 
     this.executionListeners.set(model, executionListener);
+
+    addEventListener("beforeunload", () => {
+      this.handlePageUnload(notebookTracker);
+    });
 
     NotebookActions.executionScheduled.connect(executionListener);
 
@@ -71,6 +79,33 @@ export class TaskAutoSaver {
     }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(model, timer);
+  }
+
+  private handlePageUnload(notebookTracker: INotebookTracker): void {
+    for (const [model, _] of this.contentChangeTimers.entries()) {
+      NotebookActions.executionScheduled.disconnect(
+        this.executionListeners.get(model)!,
+      );
+
+      this.contentChangeTimers.delete(model);
+    }
+
+    notebookTracker.forEach((panel) => {
+      const model = panel.context.model;
+
+      if (model.dirty) {
+        const saver = new TaskAutoSaver(
+          notebookTracker,
+          this.sendRequest.bind(this),
+        );
+
+        try {
+          saver.saveNotebook(panel, model);
+        } catch (error) {
+          console.error(`Failed to save notebook ${model.toString()}:`, error);
+        }
+      }
+    });
   }
 
   private async handleExecutionScheduled(
