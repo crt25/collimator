@@ -25,8 +25,14 @@ const useNavigationObserver = ({
   onNavigate,
 }: Props): (() => void) => {
   const router = useRouter();
-  const currentPath = router.asPath;
   const nextPath = useRef("");
+
+  // Do not replace this ref with router.asPath as a direct dependency.
+  // router.asPath updates even when we block navigation via the killRouterEvent() method
+  // If this is used as a useEffect dependency, React would see the value changed and
+  // remove the old routeChangeStart listener, then attach a new one. During
+  // the teardown, there's a brief window where no listener is attached, this can cause missed events
+  const currentPathRef = useRef(router.asPath);
   const navigationConfirmed = useRef(false);
 
   const killRouterEvent = useCallback(() => {
@@ -35,19 +41,27 @@ const useNavigationObserver = ({
   }, [router]);
 
   useEffect(() => {
+    currentPathRef.current = router.asPath;
+  }, [router.asPath]);
+
+  useEffect(() => {
     navigationConfirmed.current = false;
 
     const onRouteChange = (url: string): void => {
-      if (currentPath !== url) {
+      if (currentPathRef.current !== url) {
         // if the user clicked on the browser back button then the url displayed in the browser gets incorrectly updated
         // This is needed to restore the correct url.
         // note: history.pushState does not trigger a page reload
-        window.history.pushState(null, "", router.basePath + currentPath);
+        window.history.pushState(
+          null,
+          "",
+          router.basePath + currentPathRef.current,
+        );
       }
 
       if (
         shouldStopNavigation() &&
-        url !== currentPath &&
+        url !== currentPathRef.current &&
         !navigationConfirmed.current
       ) {
         // removing the basePath from the url as it will be added by the router
@@ -65,7 +79,7 @@ const useNavigationObserver = ({
       window.removeEventListener("unhandledrejection", rejectionHandler);
     };
   }, [
-    currentPath,
+    currentPathRef,
     killRouterEvent,
     onNavigate,
     router.basePath,
