@@ -116,6 +116,11 @@ export class EmbeddedPythonCallbacks {
     return document.body.scrollHeight || DEFAULT_SCROLL_HEIGHT;
   }
 
+  private readonly notebookToOpen =
+    this.mode === Mode.edit
+      ? EmbeddedPythonCallbacks.taskTemplateLocation
+      : EmbeddedPythonCallbacks.studentTaskLocation;
+
   async getTask(request: GetTask["request"]): Promise<Task> {
     try {
       // generate student task and autograder
@@ -286,9 +291,7 @@ export class EmbeddedPythonCallbacks {
         request.params.submission,
       );
 
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-      );
+      this.documentManager.openOrReveal(this.notebookToOpen);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -618,13 +621,9 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.gradingSrcLocation,
         task.gradingSrc,
       );
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.taskTemplateLocation,
-      );
+      this.documentManager.openOrReveal(this.notebookToOpen);
     } else {
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-      );
+      this.documentManager.openOrReveal(this.notebookToOpen);
     }
   }
 
@@ -656,9 +655,7 @@ export class EmbeddedPythonCallbacks {
       task.gradingSrc,
     );
 
-    this.documentManager.openOrReveal(
-      EmbeddedPythonCallbacks.taskTemplateLocation,
-    );
+    this.documentManager.openOrReveal(this.notebookToOpen);
   }
 
   private async getAllFolderContents(): Promise<{
