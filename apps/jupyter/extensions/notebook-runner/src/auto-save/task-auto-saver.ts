@@ -83,6 +83,9 @@ export class TaskAutoSaver {
 
   private handlePageUnload(notebookTracker: INotebookTracker): void {
     for (const [model, _] of this.contentChangeTimers.entries()) {
+      // The listener/timer cleanup is technically unnecessary since the page is unloading
+      // but we do it for good measure and to avoid any potential side effects
+      // if the unload gets canceled for some reason.
       NotebookActions.executionScheduled.disconnect(
         this.executionListeners.get(model)!,
       );
@@ -93,17 +96,15 @@ export class TaskAutoSaver {
     notebookTracker.forEach((panel) => {
       const model = panel.context.model;
 
-      if (model.dirty) {
-        const saver = new TaskAutoSaver(
-          notebookTracker,
-          this.sendRequest.bind(this),
-        );
+      const saver = new TaskAutoSaver(
+        notebookTracker,
+        this.sendRequest.bind(this),
+      );
 
-        try {
-          saver.saveNotebook(panel, model);
-        } catch (error) {
-          console.error(`Failed to save notebook ${model.toString()}:`, error);
-        }
+      try {
+        saver.saveNotebook(panel, model);
+      } catch (error) {
+        console.error(`Failed to save notebook ${model.toString()}:`, error);
       }
     });
   }
