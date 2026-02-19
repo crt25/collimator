@@ -559,6 +559,8 @@ const TaskForm = ({
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
+  const canSubmit = isDirty;
+
   return (
     <>
       <form onSubmit={onSubmitWrapper} data-testid="task-form">
@@ -655,7 +657,7 @@ const TaskForm = ({
         </Grid>
         {!disabled && (
           <Box display="flex" justifyContent="flex-end">
-            <SubmitFormButton label={submitMessage} />
+            <SubmitFormButton label={submitMessage} disabled={!canSubmit} />
           </Box>
         )}
         <EditTaskModal

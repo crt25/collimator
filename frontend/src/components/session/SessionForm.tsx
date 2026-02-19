@@ -188,7 +188,7 @@ const SessionForm = ({
     watch,
     setValue,
     reset,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, dirtyFields, isDirty, isValid },
     control,
   } = useForm<SessionFormValues>({
     resolver,
@@ -222,6 +222,7 @@ const SessionForm = ({
       setValue(
         "taskIds",
         tasks.map((t) => t.id),
+        { shouldDirty: true },
       );
     },
     [setValue],
@@ -440,7 +441,10 @@ const SessionForm = ({
               </GridItem>
             </Grid>
 
-            <SubmitFormButton label={submitMessage} />
+            <SubmitFormButton
+              label={submitMessage}
+              disabled={!isDirty || !isValid}
+            />
           </form>
           <ConfirmationModal
             isShown={showQuitNoSaveModal}
