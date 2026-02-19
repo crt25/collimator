@@ -516,7 +516,7 @@
     "message": "Il n'y a pas d'autres classes disponibles pour copier une leçon."
   },
   "CopyLessonModal.noLessonsAvailable": {
-    "message": "Il n'y a pas de leçons disponibles à copier dans la classe sélectionnée."
+    "message": "Il n'y a pas de leçons à copier dans la classe sélectionnée."
   },
   "CopyLessonModal.title": {
     "message": "Copier une leçon existante"

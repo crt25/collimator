@@ -608,7 +608,7 @@
   "CopyLessonModal.noLessonsAvailable": [
     {
       "type": 0,
-      "value": "Il n'y a pas de leçons disponibles à copier dans la classe sélectionnée."
+      "value": "Il n'y a pas de leçons à copier dans la classe sélectionnée."
     }
   ],
   "CopyLessonModal.title": [
