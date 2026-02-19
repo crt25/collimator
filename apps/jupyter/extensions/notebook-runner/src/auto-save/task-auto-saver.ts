@@ -30,6 +30,10 @@ export class TaskAutoSaver {
     notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
       this.registerNotebook(notebookTracker, panel, panel.context.model);
     });
+
+    addEventListener("beforeunload", () => {
+      this.handlePageUnload(notebookTracker);
+    });
   }
 
   public static trackNotebook(
@@ -55,10 +59,6 @@ export class TaskAutoSaver {
     };
 
     this.executionListeners.set(model, executionListener);
-
-    addEventListener("beforeunload", () => {
-      this.handlePageUnload(notebookTracker);
-    });
 
     NotebookActions.executionScheduled.connect(executionListener);
 
