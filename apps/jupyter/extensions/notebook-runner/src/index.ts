@@ -21,7 +21,6 @@ import { enableSentry } from "./sentry";
 
 enableSentry();
 
-const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
  * Initialization data for the notebook-runner extension.
  */
@@ -79,7 +78,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     if (mode === Mode.solve) {
-      TaskAutoSaver.trackNotebook(notebookTracker, platform.sendRequest);
+      TaskAutoSaver.trackNotebook(
+        notebookTracker,
+        platform.sendRequest.bind(platform),
+      );
     }
 
     simplifyUserInterface(
@@ -92,8 +94,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     registerCommands(app, notebookTracker, contentsManager, documentManager);
 
-    // Open the default notebook (if it exists) once the application has loaded
-    app.restored.then(() => documentManager.openOrReveal(defaultNotebookPath));
+    app.restored.then(async () => {
+      // Only open the template notebook in edit mode.
+      // In solve or show mode, the correct notebook (student task) will be
+      // opened by the loadTask/loadSubmission RPC call from the parent.
+      if (mode === Mode.edit) {
+        try {
+          await documentManager.openOrReveal(
+            EmbeddedPythonCallbacks.taskTemplateLocation,
+          );
+        } catch (error) {
+          console.error("Could not open template in edit mode:", error);
+        }
+      }
+    });
   },
 };
 
