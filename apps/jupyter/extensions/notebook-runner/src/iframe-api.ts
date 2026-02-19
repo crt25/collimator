@@ -629,7 +629,9 @@ export class EmbeddedPythonCallbacks {
       task.gradingSrc,
     );
 
-    this.documentManager.openOrReveal(this.notebookToOpen);
+    this.documentManager.openOrReveal(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+    );
   }
 
   private async getAllFolderContents(): Promise<{
