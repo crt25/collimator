@@ -85,7 +85,6 @@ const SessionDetail = () => {
 
   const cannotEdit = session?.hasStudents || !isCreator;
 
-  console.log("session?.hasStudents", session?.hasStudents);
   const updateSession = useUpdateClassSession();
 
   const onSubmit = useCallback(

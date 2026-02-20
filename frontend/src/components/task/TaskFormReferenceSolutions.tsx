@@ -281,14 +281,10 @@ const TaskFormReferenceSolutions = ({
     (index: number, solution: CreateReferenceSolutionDtoWithId) => {
       const newReferenceSolutions = [...referenceSolutions];
       newReferenceSolutions[index] = solution;
-      console.log(
-        "length of solution files",
-        Object.keys(watch("referenceSolutionFiles")).length,
-      );
 
       setReferenceSolutions(newReferenceSolutions);
     },
-    [referenceSolutions, setReferenceSolutions, watch],
+    [referenceSolutions, setReferenceSolutions],
   );
 
   const onAddReferenceSolution = useCallback(
