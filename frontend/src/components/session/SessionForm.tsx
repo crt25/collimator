@@ -139,11 +139,13 @@ const SessionForm = ({
   initialValues,
   onSubmit,
   classId,
+  disabled,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
   classId: number;
+  disabled?: boolean;
 }) => {
   const intl = useIntl();
 
@@ -222,6 +224,7 @@ const SessionForm = ({
       setValue(
         "taskIds",
         tasks.map((t) => t.id),
+        { shouldDirty: true },
       );
     },
     [setValue],
@@ -298,16 +301,18 @@ const SessionForm = ({
           {enableSorting && <RiDraggable />}
           <span>{task.title}</span>
         </HStack>
-        <RemoveTask data-testid="remove-task" onClick={onRemove}>
-          <FontAwesomeIcon icon={faTrash} />
-        </RemoveTask>
+        {!disabled && (
+          <RemoveTask data-testid="remove-task" onClick={onRemove}>
+            <FontAwesomeIcon icon={faTrash} />
+          </RemoveTask>
+        )}
       </StyledTaskListElement>
     );
   };
 
   const enableSorting = useMemo(
-    () => selectedTasks.length > 1 && isOwner,
-    [selectedTasks, isOwner],
+    () => !disabled && selectedTasks.length > 1 && isOwner,
+    [selectedTasks, isOwner, disabled],
   );
 
   return (
@@ -328,6 +333,7 @@ const SessionForm = ({
                   {...register("title")}
                   data-testid="title"
                   errorText={errors.title?.message}
+                  disabled={disabled}
                   labelBadge={
                     showEditedBadges && dirtyFields.title && <EditedBadge />
                   }
@@ -338,6 +344,7 @@ const SessionForm = ({
                   {...register("description")}
                   data-testid="description"
                   errorText={errors.description?.message}
+                  disabled={disabled}
                   labelBadge={
                     showEditedBadges &&
                     dirtyFields.description && <EditedBadge />
@@ -372,7 +379,7 @@ const SessionForm = ({
                   </Field.Root>
                 </SortableListWrapper>
 
-                {isOwner && (
+                {!disabled && (
                   <Select
                     label={messages.addTask}
                     options={[
@@ -405,6 +412,7 @@ const SessionForm = ({
                   showEditedBadge={showEditedBadges}
                   label={messages.sharingType}
                   data-testid="sharing-type"
+                  disabled={disabled}
                   options={[
                     {
                       value: SharingType.anonymous,
@@ -417,30 +425,37 @@ const SessionForm = ({
                   ]}
                 />
               </GridItem>
-              <GridItem colSpan={{ base: 12, md: 6 }}>
-                <ButtonWrapper>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      const currentUrl = router.asPath;
-                      const returnUrl = encodeURIComponent(currentUrl);
-                      router.push(`/task/create?returnUrl=${returnUrl}`);
-                    }}
-                    data-testid="task-create-button"
-                    marginTop="md"
-                  >
-                    <HStack>
-                      <Icon>
-                        <MdAdd />
-                      </Icon>
-                      {intl.formatMessage(messages.createTask)}
-                    </HStack>
-                  </Button>
-                </ButtonWrapper>
-              </GridItem>
+              {!disabled && (
+                <GridItem colSpan={{ base: 12, md: 6 }}>
+                  <ButtonWrapper>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        const currentUrl = router.asPath;
+                        const returnUrl = encodeURIComponent(currentUrl);
+                        router.push(`/task/create?returnUrl=${returnUrl}`);
+                      }}
+                      data-testid="task-create-button"
+                      marginTop="md"
+                    >
+                      <HStack>
+                        <Icon>
+                          <MdAdd />
+                        </Icon>
+                        {intl.formatMessage(messages.createTask)}
+                      </HStack>
+                    </Button>
+                  </ButtonWrapper>
+                </GridItem>
+              )}
             </Grid>
 
-            <SubmitFormButton label={submitMessage} />
+            {!disabled && (
+              <SubmitFormButton
+                label={submitMessage}
+                disabled={!isDirty || disabled}
+              />
+            )}
           </form>
           <ConfirmationModal
             isShown={showQuitNoSaveModal}
