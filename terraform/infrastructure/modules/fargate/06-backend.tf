@@ -14,6 +14,9 @@ module "ecs_service" {
   # Task Definition
   enable_execute_command = true
 
+  # Grant task execution role permission to read secrets from Secrets Manager
+  task_exec_secret_arns = [var.database_url_arn]
+
   container_definitions = {
     (local.container_name) = {
       image                  = module.ecr_backend.repository_url
