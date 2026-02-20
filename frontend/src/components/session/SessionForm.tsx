@@ -188,7 +188,7 @@ const SessionForm = ({
     watch,
     setValue,
     reset,
-    formState: { errors, dirtyFields, isDirty, isValid },
+    formState: { errors, dirtyFields, isDirty },
     control,
   } = useForm<SessionFormValues>({
     resolver,
@@ -441,10 +441,7 @@ const SessionForm = ({
               </GridItem>
             </Grid>
 
-            <SubmitFormButton
-              label={submitMessage}
-              disabled={!isDirty || !isValid}
-            />
+            <SubmitFormButton label={submitMessage} disabled={!isDirty} />
           </form>
           <ConfirmationModal
             isShown={showQuitNoSaveModal}

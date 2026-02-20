@@ -53,7 +53,7 @@ const UserSignInForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
     setError,
   } = useForm<UserSignInFormValues>({
     resolver,
@@ -86,7 +86,7 @@ const UserSignInForm = ({
           <SubmitFormButton
             label={submitMessage}
             width="auto"
-            disabled={!isDirty || !isValid}
+            disabled={!isDirty}
           />
         </ButtonWrapper>
       </Stack>
