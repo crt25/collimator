@@ -230,6 +230,9 @@
   "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": {
     "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
   },
+  "DEPRECATED: TaskSessionActions.deleteTask": {
+    "message": "Effacer l'activité"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -1159,7 +1162,7 @@
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
   "TaskForm.SaveConflictError": {
-    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+    "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
   },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
@@ -1418,9 +1421,6 @@
   },
   "TaskReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
-  },
-  "TaskSessionActions.deleteTask": {
-    "message": "Effacer l'activité"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Actions rapides"
