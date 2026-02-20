@@ -512,6 +512,12 @@
   "CopyLessonModal.networkError": {
     "message": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
   },
+  "CopyLessonModal.noClassesAvailable": {
+    "message": "Il n'y a pas d'autres classes disponibles pour copier une leçon."
+  },
+  "CopyLessonModal.noLessonsAvailable": {
+    "message": "Il n'y a pas de leçons à copier dans la classe sélectionnée."
+  },
   "CopyLessonModal.title": {
     "message": "Copier une leçon existante"
   },
@@ -1165,7 +1171,11 @@
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
   "TaskForm.SaveConflictError": {
+<<<<<<< bugfix/CRT-290_reference_solutions_button_displays_save_task
     "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
+=======
+    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
+>>>>>>> main
   },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
