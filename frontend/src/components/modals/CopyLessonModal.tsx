@@ -65,6 +65,14 @@ const messages = defineMessages({
     id: "CopyLessonModal.goToLesson",
     defaultMessage: "Go to lesson",
   },
+  noClassesAvailable: {
+    id: "CopyLessonModal.noClassesAvailable",
+    defaultMessage: "No classes available to copy lessons from.",
+  },
+  noLessonsAvailable: {
+    id: "CopyLessonModal.noLessonsAvailable",
+    defaultMessage: "No lessons available in the selected class.",
+  },
 });
 
 interface CopyLessonFormValues {
@@ -191,7 +199,12 @@ const CopyLessonModal = ({
     [targetClassId, copySession, handleClose, intl, router],
   );
 
-  const canSubmit = isValid && !isSubmitting && !hasError;
+  const canSubmit =
+    isValid &&
+    !isSubmitting &&
+    !hasError &&
+    classOptions.length > 0 &&
+    sessionOptions.length > 0;
 
   return (
     <Dialog.Root
@@ -218,37 +231,53 @@ const CopyLessonModal = ({
                     <FormattedMessage {...messages.description} />
                   </Text>
 
-                  <Select
-                    name="classId"
-                    control={control}
-                    options={classOptions}
-                    label={messages.classLabel}
-                    placeholder={
-                      isLoadingClasses
-                        ? messages.loading
-                        : messages.classPlaceholder
-                    }
-                    disabled={isLoadingClasses}
-                    alwaysShow
-                    insideDialog
-                    data-testid="copy-lesson-class-select"
-                  />
+                  {!isLoadingClasses && classOptions.length === 0 ? (
+                    <Text color="gray.600" textAlign="center" py="lg">
+                      <FormattedMessage {...messages.noClassesAvailable} />
+                    </Text>
+                  ) : (
+                    <>
+                      <Select
+                        name="classId"
+                        control={control}
+                        options={classOptions}
+                        label={messages.classLabel}
+                        placeholder={
+                          isLoadingClasses
+                            ? messages.loading
+                            : messages.classPlaceholder
+                        }
+                        disabled={isLoadingClasses}
+                        alwaysShow
+                        insideDialog
+                        data-testid="copy-lesson-class-select"
+                      />
 
-                  <Select
-                    name="sessionId"
-                    control={control}
-                    options={sessionOptions}
-                    label={messages.lessonLabel}
-                    placeholder={
-                      isLoadingSessions
-                        ? messages.loading
-                        : messages.lessonPlaceholder
-                    }
-                    disabled={!selectedClassId || isLoadingSessions}
-                    alwaysShow
-                    insideDialog
-                    data-testid="copy-lesson-session-select"
-                  />
+                      {selectedClassId &&
+                      !isLoadingSessions &&
+                      sessionOptions.length === 0 ? (
+                        <Text color="gray.600" textAlign="center" py="md">
+                          <FormattedMessage {...messages.noLessonsAvailable} />
+                        </Text>
+                      ) : (
+                        <Select
+                          name="sessionId"
+                          control={control}
+                          options={sessionOptions}
+                          label={messages.lessonLabel}
+                          placeholder={
+                            isLoadingSessions
+                              ? messages.loading
+                              : messages.lessonPlaceholder
+                          }
+                          disabled={!selectedClassId || isLoadingSessions}
+                          alwaysShow
+                          insideDialog
+                          data-testid="copy-lesson-session-select"
+                        />
+                      )}
+                    </>
+                  )}
                 </>
               )}
             </Dialog.Body>

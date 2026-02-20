@@ -78,9 +78,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     if (mode === Mode.solve) {
+<<<<<<< bugfix/CRT-329_jupyter_isnt_translated
       TaskAutoSaver.trackNotebook(
         notebookTracker,
         platform.sendRequest.bind(platform),
+=======
+      TaskAutoSaver.trackNotebook(notebookTracker, (...args) =>
+        platform.sendRequest(...args),
+>>>>>>> main
       );
     }
 
