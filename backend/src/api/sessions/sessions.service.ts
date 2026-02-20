@@ -168,25 +168,32 @@ export class SessionsService {
     sessionId: SessionId,
     includeSoftDelete = false,
   ): Promise<boolean> {
-    const sessionWithStudent = await tx.session.findFirst({
+    const sessionWithStudents = await tx.session.findFirst({
       where: {
         id: sessionId,
         deletedAt: includeSoftDelete ? undefined : null,
-        tasks: {
-          some: {
-            solutions: {
+        OR: [
+          {
+            anonymousStudents: {
               some: {
-                solution: {
+                deletedAt: includeSoftDelete ? undefined : null,
+              },
+            },
+          },
+          {
+            class: {
+              students: {
+                some: {
                   deletedAt: includeSoftDelete ? undefined : null,
                 },
               },
             },
           },
-        },
+        ],
       },
     });
 
-    return sessionWithStudent !== null;
+    return sessionWithStudents !== null;
   }
 
   changeStatusByIdAndClass(
