@@ -27,8 +27,8 @@ export class TaskAutoSaver {
     notebookTracker: INotebookTracker,
     private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
-    notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
-      this.registerNotebook(notebookTracker, panel, panel.context.model);
+    notebookTracker.widgetAdded.connect((_, panel: NotebookPanel) => {
+      this.registerNotebook(panel, panel.context.model);
     });
 
     addEventListener("beforeunload", () => {
@@ -43,11 +43,7 @@ export class TaskAutoSaver {
     return new TaskAutoSaver(notebookTracker, sendRequest);
   }
 
-  private registerNotebook(
-    notebookTracker: INotebookTracker,
-    panel: NotebookPanel,
-    model: INotebookModel,
-  ): void {
+  private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
     panel.context.model.contentChanged.connect(() => {
       this.handleContentChange(panel, model);
     });
