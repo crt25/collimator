@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Alert, Container, Link } from "@chakra-ui/react";
+import { Container, Link } from "@chakra-ui/react";
 import { LuCircleAlert } from "react-icons/lu";
 import CrtNavigation from "@/components/CrtNavigation";
 import Header from "@/components/header/Header";
@@ -18,6 +18,7 @@ import SessionNavigation from "@/components/session/SessionNavigation";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import Alert from "@/components/Alert";
 
 const messages = defineMessages({
   title: {
@@ -114,10 +115,10 @@ const TaskInstanceDetails = () => {
                   sessionId={session.id}
                   taskId={task.id}
                 />
-                <Alert.Root status="info" mb={4}>
-                  <LuCircleAlert />
-                  <Alert.Description>
-                    {task.isInUse ? (
+                <Alert
+                  icon={LuCircleAlert}
+                  title={
+                    task.isInUse ? (
                       <FormattedMessage {...messages.editNotAllowed} />
                     ) : (
                       <FormattedMessage
@@ -137,9 +138,9 @@ const TaskInstanceDetails = () => {
                           ),
                         }}
                       />
-                    )}
-                  </Alert.Description>
-                </Alert.Root>
+                    )
+                  }
+                />
 
                 <TaskForm
                   initialValues={{
