@@ -2503,12 +2503,6 @@
       "value": "title"
     }
   ],
-  "TaskSessionActions.deleteTask": [
-    {
-      "type": 0,
-      "value": "Delete Task"
-    }
-  ],
   "TaskTable.columns.actionsColumn": [
     {
       "type": 0,
