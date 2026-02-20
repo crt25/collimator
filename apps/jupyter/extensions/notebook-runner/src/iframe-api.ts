@@ -585,7 +585,7 @@ export class EmbeddedPythonCallbacks {
       task.src,
     );
 
-    if (this.mode == Mode.edit) {
+    if (this.mode === Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
         task.taskTemplateFile,
@@ -598,10 +598,9 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.gradingSrcLocation,
         task.gradingSrc,
       );
-      this.documentManager.openOrReveal(this.notebookToOpen);
-    } else {
-      this.documentManager.openOrReveal(this.notebookToOpen);
     }
+
+    this.documentManager.openOrReveal(this.notebookToOpen);
   }
 
   private async writeGenericNotebookTask(
