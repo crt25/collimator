@@ -31,8 +31,8 @@ export class TaskAutoSaver {
       this.registerNotebook(panel, panel.context.model);
     });
 
-    addEventListener("beforeunload", () => {
-      this.handlePageUnload(notebookTracker);
+    addEventListener("beforeunload", async () => {
+      await this.handlePageUnload(notebookTracker);
     });
   }
 
@@ -69,15 +69,15 @@ export class TaskAutoSaver {
   ): void {
     this.cancelContentChangeTimer(model);
 
-    const timer = setTimeout(() => {
-      this.saveNotebook(panel, model);
+    const timer = setTimeout(async () => {
+      await this.saveNotebook(panel, model);
       this.contentChangeTimers.delete(model);
     }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(model, timer);
   }
 
-  private handlePageUnload(notebookTracker: INotebookTracker): void {
+  private async handlePageUnload(notebookTracker: INotebookTracker): void {
     for (const [model, _] of this.contentChangeTimers.entries()) {
       // The listener/timer cleanup is technically unnecessary since the page is unloading
       // but we do it for good measure and to avoid any potential side effects
@@ -89,7 +89,7 @@ export class TaskAutoSaver {
       this.contentChangeTimers.delete(model);
     }
 
-    notebookTracker.forEach((panel) => {
+    notebookTracker.forEach(async (panel) => {
       const model = panel.context.model;
 
       const saver = new TaskAutoSaver(
@@ -98,7 +98,7 @@ export class TaskAutoSaver {
       );
 
       try {
-        saver.saveNotebook(panel, model);
+        await saver.saveNotebook(panel, model);
       } catch (error) {
         console.error(`Failed to save notebook ${model.toString()}:`, error);
       }
