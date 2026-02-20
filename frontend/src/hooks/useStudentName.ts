@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import useIntl from "react-intl/src/components/useIntl";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { decodeBase64 } from "@/utilities/crypto";
@@ -20,6 +21,7 @@ export const useStudentName = ({
   isDecrypting: boolean;
 } => {
   const authContext = useContext(AuthenticationContext);
+  const intl = useIntl();
 
   const [anonymizationState] = useStudentAnonymization();
   const [isDecrypting, setIsDecrypting] = useState(true);
@@ -81,9 +83,15 @@ export const useStudentName = ({
 
   const name = useMemo(() => {
     return !anonymizationState.showActualName || !pseudonym
-      ? getStudentNickname(studentId, pseudonym)
+      ? getStudentNickname(studentId, pseudonym, intl.locale)
       : decryptedName;
-  }, [anonymizationState.showActualName, decryptedName, studentId, pseudonym]);
+  }, [
+    anonymizationState.showActualName,
+    decryptedName,
+    studentId,
+    pseudonym,
+    intl.locale,
+  ]);
 
   return {
     name,
