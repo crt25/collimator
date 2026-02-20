@@ -515,6 +515,12 @@
   "CopyLessonModal.networkError": {
     "message": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
   },
+  "CopyLessonModal.noClassesAvailable": {
+    "message": "Il n'y a pas d'autres classes disponibles pour copier une leçon."
+  },
+  "CopyLessonModal.noLessonsAvailable": {
+    "message": "Il n'y a pas de leçons à copier dans la classe sélectionnée."
+  },
   "CopyLessonModal.title": {
     "message": "Copier une leçon existante"
   },

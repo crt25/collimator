@@ -599,6 +599,18 @@
       "value": "Un problème de réseau est survenu. Veuillez fermer cette fenêtre et réessayer plus tard."
     }
   ],
+  "CopyLessonModal.noClassesAvailable": [
+    {
+      "type": 0,
+      "value": "Il n'y a pas d'autres classes disponibles pour copier une leçon."
+    }
+  ],
+  "CopyLessonModal.noLessonsAvailable": [
+    {
+      "type": 0,
+      "value": "Il n'y a pas de leçons à copier dans la classe sélectionnée."
+    }
+  ],
   "CopyLessonModal.title": [
     {
       "type": 0,
