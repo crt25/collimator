@@ -51,7 +51,7 @@ export const StudentName = ({
   if (name === null) {
     return (
       <NameWrapper data-testid={testId}>
-        {getStudentNickname(studentId, pseudonym)}{" "}
+        {getStudentNickname(studentId, pseudonym, intl.locale)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}
