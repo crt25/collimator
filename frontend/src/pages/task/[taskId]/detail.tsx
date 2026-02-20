@@ -22,7 +22,7 @@ import TaskActions from "@/components/task/TaskActions";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
-import { useIsCreator } from "@/hooks/useIsCreator";
+import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
 
 const messages = defineMessages({
   title: {
@@ -106,7 +106,7 @@ const EditTask = () => {
     [task.data, updateTask],
   );
 
-  const isCreator = useIsCreator(task.data?.creatorId);
+  const isCreatorOrAdmin = useIsCreatorOrAdmin(task.data?.creatorId);
 
   return (
     <MaxScreenHeight>
@@ -135,14 +135,15 @@ const EditTask = () => {
               <>
                 <PageHeading
                   actions={
-                    !isLocked && isCreator && <TaskActions taskId={task?.id} />
+                    !isLocked &&
+                    isCreatorOrAdmin && <TaskActions taskId={task?.id} />
                   }
                   description={task.description}
                 >
                   {task.title}
                 </PageHeading>
                 <TaskNavigation taskId={task?.id} />
-                {isLocked && isCreator && (
+                {isLocked && isCreatorOrAdmin && (
                   <Alert
                     icon={LuLock}
                     title={<FormattedMessage {...messages.taskLockedTitle} />}
@@ -151,7 +152,7 @@ const EditTask = () => {
                     }
                   />
                 )}
-                {!isCreator && (
+                {!isCreatorOrAdmin && (
                   <Alert
                     icon={LuEye}
                     title={<FormattedMessage {...messages.taskReadOnlyTitle} />}
@@ -177,7 +178,7 @@ const EditTask = () => {
                   }
                   onSubmit={onSubmit}
                   onConflictError={handleConflictError}
-                  disabled={isLocked || !isCreator}
+                  disabled={isLocked || !isCreatorOrAdmin}
                 />
               </>
             );

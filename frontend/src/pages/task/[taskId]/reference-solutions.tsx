@@ -19,7 +19,7 @@ import TaskFormReferenceSolutions, {
 } from "@/components/task/TaskFormReferenceSolutions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
-import { useIsCreator } from "@/hooks/useIsCreator";
+import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
 
 const messages = defineMessages({
   title: {
@@ -58,7 +58,7 @@ const TaskReferenceSolutions = () => {
 
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
-  const isCreator = useIsCreator(task.data?.creatorId);
+  const isCreatorOrAdmin = useIsCreatorOrAdmin(task.data?.creatorId);
   const updateTask = useUpdateTask();
 
   const onSubmit = useCallback(
@@ -114,7 +114,7 @@ const TaskReferenceSolutions = () => {
                 {task.title}
               </PageHeading>
               <TaskNavigation taskId={task.id} />
-              {task.isInUse && isCreator && (
+              {task.isInUse && isCreatorOrAdmin && (
                 <Alert
                   icon={LuLock}
                   title={
@@ -127,7 +127,7 @@ const TaskReferenceSolutions = () => {
                   }
                 />
               )}
-              {!isCreator && (
+              {!isCreatorOrAdmin && (
                 <Alert
                   icon={LuEye}
                   title={
@@ -159,7 +159,7 @@ const TaskReferenceSolutions = () => {
                 }}
                 submitMessage={messages.submit}
                 onSubmit={onSubmit}
-                disabled={!isCreator || task.isInUse}
+                disabled={!isCreatorOrAdmin || task.isInUse}
               />
             </>
           )}

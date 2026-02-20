@@ -21,8 +21,8 @@ import { toaster } from "@/components/Toaster";
 import SessionActions from "@/components/session/SessionActions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
-import { useIsCreator } from "@/hooks/useIsCreator";
 import Alert from "@/components/Alert";
+import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
 
 const messages = defineMessages({
   title: {
@@ -75,7 +75,7 @@ const SessionDetail = () => {
     isLoading: isLoadingKlass,
   } = useClass(classId);
 
-  const isCreator = useIsCreator(klass?.teacher.id);
+  const isCreatorOrAdmin = useIsCreatorOrAdmin(klass?.teacher.id);
 
   const {
     data: session,
@@ -83,7 +83,7 @@ const SessionDetail = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const cannotEdit = session?.hasStudents || !isCreator;
+  const cannotEdit = session?.hasStudents || !isCreatorOrAdmin;
 
   const updateSession = useUpdateClassSession();
 
@@ -140,7 +140,7 @@ const SessionDetail = () => {
                 {session.title}
               </PageHeading>
               <SessionNavigation classId={klass?.id} sessionId={session?.id} />
-              {!isCreator && (
+              {!isCreatorOrAdmin && (
                 <Alert
                   icon={LuEye}
                   title={<FormattedMessage {...messages.readOnlyTitle} />}
