@@ -46,7 +46,10 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "./iframe-rpc/src/methods/export-task";
-import { JupyterLanguageLocales } from "./languages";
+import {
+  JupyterLanguageLocales,
+  JupyterLanguageLocalesType,
+} from "./languages";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -101,7 +104,7 @@ export class EmbeddedPythonCallbacks {
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
   private readonly localeConfig = {
-    crtToJupyterLocales: new Map<Language, JupyterLanguageLocales>([
+    crtToJupyterLocales: new Map<Language, JupyterLanguageLocalesType>([
       [Language.en, JupyterLanguageLocales.en],
       [Language.fr, JupyterLanguageLocales.fr],
     ]),
@@ -109,7 +112,7 @@ export class EmbeddedPythonCallbacks {
       [JupyterLanguageLocales.fr, Language.fr],
       [JupyterLanguageLocales.en, Language.en],
       // sometimes the jupyter locale can also be default instead of explicitly en
-      ["default", Language.en],
+      [JupyterLanguageLocales.default, Language.en],
     ]),
   };
 
