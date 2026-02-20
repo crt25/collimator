@@ -2,6 +2,7 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { DEFAULT_SCROLL_HEIGHT } from "./constants";
 import {
   AppCrtIframeApi,
@@ -45,6 +46,10 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "./iframe-rpc/src/methods/export-task";
+import {
+  JupyterLanguageLocales,
+  JupyterLanguageLocalesType,
+} from "./languages";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -96,17 +101,37 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingDataLocation: string = "/grading_data";
   public static readonly srcLocation: string = "/src";
   public static readonly gradingSrcLocation: string = "/grading_src";
+  public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
+
+  private readonly localeConfig = {
+    crtToJupyterLocales: new Map<Language, JupyterLanguageLocalesType>([
+      [Language.en, JupyterLanguageLocales.en],
+      [Language.fr, JupyterLanguageLocales.fr],
+    ]),
+    jupyterToCrtLocales: new Map<string, Language>([
+      [JupyterLanguageLocales.fr, Language.fr],
+      [JupyterLanguageLocales.en, Language.en],
+      // sometimes the jupyter locale can also be default instead of explicitly en
+      [JupyterLanguageLocales.default, Language.en],
+    ]),
+  };
 
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
     private readonly documentManager: IDocumentManager,
     private readonly fileBrowser: FileBrowser,
+    private readonly settingRegistry: ISettingRegistry,
   ) {}
 
   async getHeight(): Promise<number> {
     return document.body.scrollHeight || DEFAULT_SCROLL_HEIGHT;
   }
+
+  private readonly notebookToOpen =
+    this.mode === Mode.edit
+      ? EmbeddedPythonCallbacks.taskTemplateLocation
+      : EmbeddedPythonCallbacks.studentTaskLocation;
 
   async getTask(request: GetTask["request"]): Promise<Task> {
     try {
@@ -184,7 +209,7 @@ export class EmbeddedPythonCallbacks {
 
   async loadTask(request: LoadTask["request"]): Promise<undefined> {
     try {
-      this.setJupyterLocale(request.params.language);
+      await this.setJupyterLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
       const importedFiles = await importCrtInternalTask(request.params.task);
@@ -206,7 +231,7 @@ export class EmbeddedPythonCallbacks {
 
   async importTask(request: ImportTask["request"]): Promise<undefined> {
     try {
-      this.setJupyterLocale(request.params.language);
+      await this.setJupyterLocale(request.params.language);
 
       const fileFormat = await detectTaskFormat(request.params.task);
 
@@ -257,7 +282,7 @@ export class EmbeddedPythonCallbacks {
   }
 
   async loadSubmission(request: LoadSubmission["request"]): Promise<undefined> {
-    this.setJupyterLocale(request.params.language);
+    await this.setJupyterLocale(request.params.language);
 
     try {
       console.debug(`${logModule} Loading project`);
@@ -278,9 +303,7 @@ export class EmbeddedPythonCallbacks {
         request.params.submission,
       );
 
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-      );
+      this.documentManager.openOrReveal(this.notebookToOpen);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -291,24 +314,42 @@ export class EmbeddedPythonCallbacks {
   }
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
-    this.setJupyterLocale(request.params);
-
+    await this.setJupyterLocale(request.params);
     return undefined;
   }
 
-  private async setJupyterLocale(_language: Language): Promise<void> {
-    // TODO: needs to be implemented
-  }
+  private async setJupyterLocale(locale: Language): Promise<void> {
+    const settings = await this.settingRegistry.load(
+      EmbeddedPythonCallbacks.pluginId,
+    );
 
-  // @ts-expect-error will be needed in the future
-  private _getJupyterLocale(language: Language): string {
-    switch (language) {
-      case Language.fr:
-        return "fr-FR";
-      case Language.en:
-      default:
-        return "en-US";
+    let rawLocale = settings.get("locale").composite;
+
+    if (typeof rawLocale !== "string") {
+      // if the locale setting is somehow not a string we default to English
+      rawLocale = Language.en;
     }
+
+    const jupyterLocaleAsCrt =
+      this.localeConfig.jupyterToCrtLocales.get(rawLocale) ?? Language.en;
+
+    if (jupyterLocaleAsCrt === locale) {
+      // if the locale is already set to the desired value, we can skip
+      return;
+    }
+
+    const jupyterLocale =
+      this.localeConfig.crtToJupyterLocales.get(locale) ??
+      JupyterLanguageLocales.en;
+
+    await settings.set("locale", jupyterLocale);
+
+    // we force-navigate to the current URL with the desired mode param
+    // instead of using window.location.reload(), because the jupyter loaded
+    // with a different mode that gets reapplied on a plain reload, which overrides our custom mode.
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", Mode[this.mode]);
+    window.location.href = url.toString();
   }
 
   private async closeAllDocuments(): Promise<void> {
@@ -544,7 +585,7 @@ export class EmbeddedPythonCallbacks {
       task.src,
     );
 
-    if (this.mode == Mode.edit) {
+    if (this.mode === Mode.edit) {
       await this.putFileContents(
         EmbeddedPythonCallbacks.taskTemplateLocation,
         task.taskTemplateFile,
@@ -557,14 +598,9 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.gradingSrcLocation,
         task.gradingSrc,
       );
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.taskTemplateLocation,
-      );
-    } else {
-      this.documentManager.openOrReveal(
-        EmbeddedPythonCallbacks.studentTaskLocation,
-      );
     }
+
+    this.documentManager.openOrReveal(this.notebookToOpen);
   }
 
   private async writeGenericNotebookTask(
