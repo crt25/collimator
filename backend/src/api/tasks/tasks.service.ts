@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Modify } from "src/utilities/modify";
+import { PrismaTransactionClient } from "src/prisma/types";
 import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
 import { TaskId } from "./dto";
 
@@ -56,15 +57,6 @@ export type TaskWithReferenceSolutions = Omit<Task, "data"> & {
 export type TaskDataOnly = Pick<Task, "data" | "mimeType">;
 
 const omitData = { data: true };
-
-// When using Prisma extensions with client.$extends(), the transaction callback
-// receives a client type that excludes certain top-level methods like $use, $transaction, etc.
-// This type matches both the extended PrismaService and transaction clients by only
-// requiring the model access methods we actually need, and not the full TransactionClient interface.
-type PrismaTransactionClient = Omit<
-  PrismaService,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$extends"
->;
 
 @Injectable()
 export class TasksService {
