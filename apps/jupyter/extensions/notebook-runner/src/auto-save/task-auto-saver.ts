@@ -27,7 +27,7 @@ export class TaskAutoSaver {
     notebookTracker: INotebookTracker,
     private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
-    notebookTracker.widgetAdded.connect((_, panel: NotebookPanel) => {
+    notebookTracker.widgetAdded.connect((_sender, panel: NotebookPanel) => {
       this.registerNotebook(panel, panel.context.model);
     });
 
