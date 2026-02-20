@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
-import { useCallback, useContext, useState } from "react";
-import { Alert, Container, Icon } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
+import { Container } from "@chakra-ui/react";
 import { defineMessages, FormattedMessage } from "react-intl";
 import { LuEye, LuLock } from "react-icons/lu";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import Alert from "@/components/Alert";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import {
   useUpdateTask,
@@ -22,6 +22,7 @@ import TaskActions from "@/components/task/TaskActions";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import { useIsCreator } from "@/hooks/useIsCreator";
 
 const messages = defineMessages({
   title: {
@@ -58,7 +59,6 @@ const EditTask = () => {
     taskId?: string;
   };
 
-  const authContext = useContext(AuthenticationContext);
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
   const updateTask = useUpdateTask();
@@ -106,6 +106,8 @@ const EditTask = () => {
     [task.data, updateTask],
   );
 
+  const isCreator = useIsCreator(task.data?.creatorId);
+
   return (
     <MaxScreenHeight>
       <Header
@@ -128,10 +130,6 @@ const EditTask = () => {
               (s) => s.isInitial,
             );
             const isLocked = task.isInUse;
-            const isCreator =
-              authContext.role !== undefined &&
-              "userId" in authContext &&
-              authContext.userId === task.creatorId;
 
             return (
               <>
@@ -144,28 +142,23 @@ const EditTask = () => {
                   {task.title}
                 </PageHeading>
                 <TaskNavigation taskId={task?.id} />
-                {(isLocked || !isCreator) && (
-                  <Alert.Root status="info" mb={4}>
-                    <Alert.Indicator>
-                      <Icon as={isLocked ? LuLock : LuEye} />
-                    </Alert.Indicator>
-                    <Alert.Content>
-                      <Alert.Title>
-                        <FormattedMessage
-                          {...(isLocked
-                            ? messages.taskLockedTitle
-                            : messages.taskReadOnlyTitle)}
-                        />
-                      </Alert.Title>
-                      <Alert.Description>
-                        <FormattedMessage
-                          {...(isLocked
-                            ? messages.taskLockedDescription
-                            : messages.taskReadOnlyDescription)}
-                        />
-                      </Alert.Description>
-                    </Alert.Content>
-                  </Alert.Root>
+                {isLocked && isCreator && (
+                  <Alert
+                    icon={LuLock}
+                    title={<FormattedMessage {...messages.taskLockedTitle} />}
+                    description={
+                      <FormattedMessage {...messages.taskLockedDescription} />
+                    }
+                  />
+                )}
+                {!isCreator && (
+                  <Alert
+                    icon={LuEye}
+                    title={<FormattedMessage {...messages.taskReadOnlyTitle} />}
+                    description={
+                      <FormattedMessage {...messages.taskReadOnlyDescription} />
+                    }
+                  />
                 )}
                 {/* key={formKey} forces React to remount TaskForm when formKey changes,
                     resetting all form state to initialValues after a conflict error */}

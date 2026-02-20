@@ -214,12 +214,14 @@ const TaskFormReferenceSolutions = ({
   submitMessage,
   initialValues,
   onSubmit,
+  disabled,
 }: {
   taskType: TaskType;
   taskFile: Blob;
   submitMessage: MessageDescriptor;
   initialValues?: Partial<TaskFormReferenceSolutionsValues>;
   onSubmit: (data: TaskFormReferenceSolutionsSubmission) => Promise<void>;
+  disabled?: boolean;
 }) => {
   const intl = useIntl();
   const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
@@ -279,10 +281,14 @@ const TaskFormReferenceSolutions = ({
     (index: number, solution: CreateReferenceSolutionDtoWithId) => {
       const newReferenceSolutions = [...referenceSolutions];
       newReferenceSolutions[index] = solution;
+      console.log(
+        "length of solution files",
+        Object.keys(watch("referenceSolutionFiles")).length,
+      );
 
       setReferenceSolutions(newReferenceSolutions);
     },
-    [referenceSolutions, setReferenceSolutions],
+    [referenceSolutions, setReferenceSolutions, watch],
   );
 
   const onAddReferenceSolution = useCallback(
@@ -383,12 +389,15 @@ const TaskFormReferenceSolutions = ({
     [showSolveTaskModalForId],
   );
 
-  const shouldShowSaveButton = useMemo(() => {
-    if (referenceSolutions.some((s) => !s.isInitial)) {
-      return true;
-    }
-    return false;
-  }, [referenceSolutions]);
+  const shouldShowSaveButton = useMemo(
+    () =>
+      !disabled &&
+      // only show the save button if there are reference solutions
+      (referenceSolutions.length > 0 ||
+        // or if there were initially reference solutions
+        (initialValues?.referenceSolutions?.length ?? 0) > 0),
+    [referenceSolutions, disabled, initialValues],
+  );
 
   return (
     <>
@@ -405,6 +414,7 @@ const TaskFormReferenceSolutions = ({
             items={referenceSolutions}
             updateItems={setReferenceSolutions}
             testId="reference-solutions"
+            enableSorting={!disabled}
           >
             {(solution, index) => (
               <ReferenceSolutionListElement
@@ -450,47 +460,51 @@ const TaskFormReferenceSolutions = ({
                       }
                     />
                   </Field.Root>
-                  <Button
-                    data-testid={`edit-solution-button-${solution.id}`}
-                    type="button"
-                    onClick={() =>
-                      openSolutionModal(
-                        solution.id,
-                        referenceSolutionFiles[solution.id] ?? null,
-                      )
-                    }
-                  >
-                    {referenceSolutionFiles[solution.id] ? (
-                      <FormattedMessage
-                        id="TaskFormReferenceSolutions.solution.edit"
-                        defaultMessage="Edit reference solution in external application"
-                      />
-                    ) : (
-                      <FormattedMessage
-                        id="TaskFormReferenceSolutions.solution.create"
-                        defaultMessage="Create reference solution in external application"
-                      />
-                    )}
-                  </Button>
+                  {!disabled && (
+                    <Button
+                      data-testid={`edit-solution-button-${solution.id}`}
+                      type="button"
+                      onClick={() =>
+                        openSolutionModal(
+                          solution.id,
+                          referenceSolutionFiles[solution.id] ?? null,
+                        )
+                      }
+                    >
+                      {referenceSolutionFiles[solution.id] ? (
+                        <FormattedMessage
+                          id="TaskFormReferenceSolutions.solution.edit"
+                          defaultMessage="Edit reference solution in external application"
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id="TaskFormReferenceSolutions.solution.create"
+                          defaultMessage="Create reference solution in external application"
+                        />
+                      )}
+                    </Button>
+                  )}
                 </div>
-                <RemoveTask
-                  data-testid={`remove-task-${solution.id}`}
-                  onClick={() => {
-                    setReferenceSolutions(
-                      referenceSolutions.filter((s) => s !== solution),
-                    );
+                {!disabled && (
+                  <RemoveTask
+                    data-testid={`remove-task-${solution.id}`}
+                    onClick={() => {
+                      setReferenceSolutions(
+                        referenceSolutions.filter((s) => s !== solution),
+                      );
 
-                    const newObject = { ...referenceSolutionFiles };
-                    delete newObject[solution.id];
+                      const newObject = { ...referenceSolutionFiles };
+                      delete newObject[solution.id];
 
-                    setValue("referenceSolutionFiles", newObject, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </RemoveTask>
+                      setValue("referenceSolutionFiles", newObject, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </RemoveTask>
+                )}
               </ReferenceSolutionListElement>
             )}
           </SortableListInput>
@@ -499,60 +513,67 @@ const TaskFormReferenceSolutions = ({
             {errors.referenceSolutionFiles?.message}
           </Field.ErrorText>
         </Field.Root>
-        <AddReferenceSolutionButton
-          onClick={onAddReferenceSolution}
-          type="button"
-        >
-          <HStack>
-            <Icon>
-              <LuPlus />
-            </Icon>
-            <FormattedMessage
-              id="TaskFormReferenceSolutions.addReferenceSolution"
-              defaultMessage="Add reference solution"
+
+        {!disabled && (
+          <>
+            <AddReferenceSolutionButton
+              onClick={onAddReferenceSolution}
+              type="button"
+            >
+              <HStack>
+                <Icon>
+                  <LuPlus />
+                </Icon>
+                <FormattedMessage
+                  id="TaskFormReferenceSolutions.addReferenceSolution"
+                  defaultMessage="Add reference solution"
+                />
+              </HStack>
+            </AddReferenceSolutionButton>
+            <SolveTaskModal
+              isShown={showSolveTaskModalForId !== null}
+              setIsShown={(isShown) =>
+                setShowSolveTaskModalForId(
+                  isShown ? showSolveTaskModalForId : null,
+                )
+              }
+              taskType={taskType}
+              task={taskFile}
+              solution={solutionFile}
+              onSave={(solution) => {
+                if (showSolveTaskModalForId === null) {
+                  throw new Error(
+                    `Modal onSave was called while showSolveTaskModalForIndex is ${showSolveTaskModalForId}`,
+                  );
+                }
+
+                const index = referenceSolutions.findIndex(
+                  (s) => s.id === showSolveTaskModalForId,
+                );
+
+                updateReferenceSolution(index, {
+                  ...referenceSolutions[index],
+                  tests: createSubmissionTests(solution),
+                });
+
+                setValue(
+                  "referenceSolutionFiles",
+                  {
+                    ...referenceSolutionFiles,
+                    [showSolveTaskModalForId]: solution.file,
+                  },
+                  { shouldDirty: true, shouldValidate: true },
+                );
+
+                // react hook form does not detect the file change, so we need to set it manually
+                setValue("_fileChanged", true, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }}
             />
-          </HStack>
-        </AddReferenceSolutionButton>
-        <SolveTaskModal
-          isShown={showSolveTaskModalForId !== null}
-          setIsShown={(isShown) =>
-            setShowSolveTaskModalForId(isShown ? showSolveTaskModalForId : null)
-          }
-          taskType={taskType}
-          task={taskFile}
-          solution={solutionFile}
-          onSave={(solution) => {
-            if (showSolveTaskModalForId === null) {
-              throw new Error(
-                `Modal onSave was called while showSolveTaskModalForIndex is ${showSolveTaskModalForId}`,
-              );
-            }
-
-            const index = referenceSolutions.findIndex(
-              (s) => s.id === showSolveTaskModalForId,
-            );
-
-            updateReferenceSolution(index, {
-              ...referenceSolutions[index],
-              tests: createSubmissionTests(solution),
-            });
-
-            setValue(
-              "referenceSolutionFiles",
-              {
-                ...referenceSolutionFiles,
-                [showSolveTaskModalForId]: solution.file,
-              },
-              { shouldDirty: true, shouldValidate: true },
-            );
-
-            // react hook form does not detect the file change, so we need to set it manually
-            setValue("_fileChanged", true, {
-              shouldDirty: true,
-              shouldValidate: true,
-            });
-          }}
-        />
+          </>
+        )}
 
         <Box display="flex" justifyContent="flex-end">
           {shouldShowSaveButton && (

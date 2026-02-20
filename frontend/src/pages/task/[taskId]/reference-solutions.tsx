@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { defineMessages } from "react-intl";
+import { defineMessages, FormattedMessage } from "react-intl";
 import { Container } from "@chakra-ui/react";
+import { LuEye, LuLock } from "react-icons/lu";
+import Alert from "@/components/Alert";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -17,6 +19,7 @@ import TaskFormReferenceSolutions, {
 } from "@/components/task/TaskFormReferenceSolutions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import { useIsCreator } from "@/hooks/useIsCreator";
 
 const messages = defineMessages({
   title: {
@@ -26,6 +29,24 @@ const messages = defineMessages({
   submit: {
     id: "TaskReferenceSolutions.submit",
     defaultMessage: "Save Reference Solution(s)",
+  },
+  referenceReadOnlyTitle: {
+    id: "TaskReferenceSolutions.referenceReadOnlyTitle",
+    defaultMessage: "View only",
+  },
+  referenceReadOnlyDescription: {
+    id: "TaskReferenceSolutions.referenceReadOnlyDescription",
+    defaultMessage:
+      "You are viewing a public reference solution created by another user. Only the creator can edit this task.",
+  },
+  referenceLockedTitle: {
+    id: "TaskReferenceSolutions.referenceLockedTitle",
+    defaultMessage: "Reference solution is locked",
+  },
+  referenceLockedDescription: {
+    id: "TaskReferenceSolutions.referenceLockedDescription",
+    defaultMessage:
+      "This reference solution cannot be edited because it is already in use in a task used in a class with enrolled students.",
   },
 });
 
@@ -37,6 +58,7 @@ const TaskReferenceSolutions = () => {
 
   const task = useTaskWithReferenceSolutions(taskId);
   const taskFile = useTaskFile(taskId);
+  const isCreator = useIsCreator(task.data?.creatorId);
   const updateTask = useUpdateTask();
 
   const onSubmit = useCallback(
@@ -92,6 +114,32 @@ const TaskReferenceSolutions = () => {
                 {task.title}
               </PageHeading>
               <TaskNavigation taskId={task.id} />
+              {task.isInUse && isCreator && (
+                <Alert
+                  icon={LuLock}
+                  title={
+                    <FormattedMessage {...messages.referenceLockedTitle} />
+                  }
+                  description={
+                    <FormattedMessage
+                      {...messages.referenceLockedDescription}
+                    />
+                  }
+                />
+              )}
+              {!isCreator && (
+                <Alert
+                  icon={LuEye}
+                  title={
+                    <FormattedMessage {...messages.referenceReadOnlyTitle} />
+                  }
+                  description={
+                    <FormattedMessage
+                      {...messages.referenceReadOnlyDescription}
+                    />
+                  }
+                />
+              )}
               <TaskFormReferenceSolutions
                 taskType={task.type}
                 taskFile={taskFile}
@@ -111,6 +159,7 @@ const TaskReferenceSolutions = () => {
                 }}
                 submitMessage={messages.submit}
                 onSubmit={onSubmit}
+                disabled={!isCreator || task.isInUse}
               />
             </>
           )}
