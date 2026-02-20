@@ -79,7 +79,6 @@ const useNavigationObserver = ({
       window.removeEventListener("unhandledrejection", rejectionHandler);
     };
   }, [
-    currentPathRef,
     killRouterEvent,
     onNavigate,
     router.basePath,
