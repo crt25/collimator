@@ -1923,6 +1923,30 @@
       "value": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
     }
   ],
+  "SessionDetail.readOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une leçon créée par un autre utilisateur. Seul le créateur peut modifier cette leçon."
+    }
+  ],
+  "SessionDetail.readOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Consultation uniquement"
+    }
+  ],
+  "SessionDetail.sessionLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette session a des étudiants inscrits et ne peut pas être modifiée."
+    }
+  ],
+  "SessionDetail.sessionLockedTitle": [
+    {
+      "type": 0,
+      "value": "La session est verrouillée"
+    }
+  ],
   "SessionDetail.submit": [
     {
       "type": 0,
@@ -2537,6 +2561,12 @@
       "value": "Un fichier de tâche est requis avant l’enregistrement."
     }
   ],
+  "TaskForm.testName": [
+    {
+      "type": 0,
+      "value": "Nom du test"
+    }
+  ],
   "TaskForm.title": [
     {
       "type": 0,
@@ -2761,10 +2791,44 @@
       "value": "View student solution"
     }
   ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "lien"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "lien"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
       "value": "Enregistrer l'activité"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": [
+    {
+      "type": 0,
+      "value": "détails des solutions de référence"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
@@ -2951,6 +3015,30 @@
     {
       "type": 0,
       "value": "Ouvert"
+    }
+  ],
+  "TaskReferenceSolutions.referenceLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée car elle est déjà utilisée dans une tâche utilisée dans une classe avec des étudiants inscrits."
+    }
+  ],
+  "TaskReferenceSolutions.referenceLockedTitle": [
+    {
+      "type": 0,
+      "value": "La solution de référence est verrouillée"
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une solution de référence publique créée par un autre utilisateur. Seul le créateur peut modifier cette tâche."
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Consultation uniquement"
     }
   ],
   "TaskReferenceSolutions.submit": [

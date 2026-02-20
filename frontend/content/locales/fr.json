@@ -936,6 +936,18 @@
   "SessionDetail.errorMessage": {
     "message": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
   },
+  "SessionDetail.readOnlyDescription": {
+    "message": "Vous consultez une leçon créée par un autre utilisateur. Seul le créateur peut modifier cette leçon."
+  },
+  "SessionDetail.readOnlyTitle": {
+    "message": "Consultation uniquement"
+  },
+  "SessionDetail.sessionLockedDescription": {
+    "message": "Cette session a des étudiants inscrits et ne peut pas être modifiée."
+  },
+  "SessionDetail.sessionLockedTitle": {
+    "message": "La session est verrouillée"
+  },
   "SessionDetail.submit": {
     "message": "Sauvegarder la leçon"
   },
@@ -1152,16 +1164,9 @@
   "TaskDetail.unsupportedApp": {
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
-<<<<<<< HEAD
-  "TaskForm.SaveConflictError": {
-    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
-  },
-||||||| 1e3e295c
-=======
   "TaskForm.SaveConflictError": {
     "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
   },
->>>>>>> main
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
   },
@@ -1221,6 +1226,9 @@
   },
   "TaskForm.taskFileRequired": {
     "message": "Un fichier de tâche est requis avant l’enregistrement."
+  },
+  "TaskForm.testName": {
+    "message": "Nom du test"
   },
   "TaskForm.title": {
     "message": "Titre"
@@ -1322,10 +1330,19 @@
     "message": "Il n'y a pas encore d'élèves."
   },
   "TaskInstanceProgressList.viewDetails": {
-    "message": "View student solution"
+    "message": "Voir la solution de l'élève"
+  },
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
+    "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
+  },
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
+    "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
   },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Enregistrer l'activité"
+  },
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": {
+    "message": "Détails des solutions de référence"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
@@ -1413,6 +1430,18 @@
   },
   "TaskProgressList.status.opened": {
     "message": "Ouvert"
+  },
+  "TaskReferenceSolutions.referenceLockedDescription": {
+    "message": "Cette solution de référence ne peut pas être modifiée car elle est déjà utilisée dans une activité utilisée dans une classe avec des étudiants inscrits."
+  },
+  "TaskReferenceSolutions.referenceLockedTitle": {
+    "message": "La solution de référence est verrouillée"
+  },
+  "TaskReferenceSolutions.referenceReadOnlyDescription": {
+    "message": "Vous consultez une solution de référence publique créée par un autre utilisateur. Seul le créateur peut modifier cette activité."
+  },
+  "TaskReferenceSolutions.referenceReadOnlyTitle": {
+    "message": "Consultation uniquement"
   },
   "TaskReferenceSolutions.submit": {
     "message": "Enregistrer les/la solution(s) de référence"
