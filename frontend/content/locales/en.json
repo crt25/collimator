@@ -1209,9 +1209,6 @@
   "TaskReferenceSolutions.title": {
     "message": "Edit Reference Solution - {title}"
   },
-  "TaskSessionActions.deleteTask": {
-    "message": "Delete Task"
-  },
   "TaskTable.columns.actionsColumn": {
     "message": "Quick Actions"
   },

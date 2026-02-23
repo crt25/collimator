@@ -230,6 +230,9 @@
   "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": {
     "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
   },
+  "DEPRECATED: TaskSessionActions.deleteTask": {
+    "message": "Effacer l'activité"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -1171,11 +1174,7 @@
     "message": "Le type d'application non pris en charge {type} a été sélectionné (ID de l'activité {taskId}). Veuillez signaler ce problème."
   },
   "TaskForm.SaveConflictError": {
-<<<<<<< bugfix/CRT-290_reference_solutions_button_displays_save_task
     "message": "Cette activité est maintenant utilisée par une ou plusieurs classes et ne peut plus être modifiée ou supprimée."
-=======
-    "message": "Cette activité est actuellement utilisée activement par une ou plusieurs classes et ne peut plus être modifiée."
->>>>>>> main
   },
   "TaskForm.SaveError": {
     "message": "Une erreur s'est produite lors de l'enregistrement de l'activité. Réessayez plus tard."
@@ -1457,10 +1456,7 @@
     "message": "Enregistrer les/la solution(s) de référence"
   },
   "TaskReferenceSolutions.title": {
-    "message": "Modifier la solution de référence - {title}"
-  },
-  "TaskSessionActions.deleteTask": {
-    "message": "Effacer l'activité"
+    "message": "Modifier l'activité - {title}"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Actions rapides"
