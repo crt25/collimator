@@ -65,14 +65,14 @@ jobs:
       # Build application and prepare deployment
 
       - name: Git clone the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
           lfs: 'true'
           fetch-depth: 0
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
             role-to-assume: ${{ env.ROLE_TO_ASSUME }}
             aws-region: ${{ env.AWS_REGION }}
