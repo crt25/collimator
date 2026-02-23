@@ -115,7 +115,7 @@ module "cloudfront" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
 
-    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
     lambda_function_association = {
@@ -160,7 +160,7 @@ module "cloudfront" {
       cached_methods         = ["GET", "HEAD"]
       compress               = true
 
-      cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+      cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
       lambda_function_association = {
@@ -178,7 +178,7 @@ module "cloudfront" {
       cached_methods         = ["GET", "HEAD"]
       compress               = true
 
-      cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+      cache_policy_id            = data.aws_cloudfront_cache_policy.no_caching.id
       response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers_policy.id
 
       lambda_function_association = {
