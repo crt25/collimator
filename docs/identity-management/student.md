@@ -4,7 +4,7 @@
 
 ## Overview
 
-The system uses pseudonyms to track student activity across sessions while protecting student identities from the server. The server is "honest but curious", i.e. it follows the protocol but may store additional information.
+The system uses pseudonyms to track student activity across sessions while protecting student identities from the server. The server is assumed to be an "honest-but-curious" (semi-honest) adversary: it follows the protocol but may try to learn extra information from what it stores.
 
 The goal is to ensure that teachers can associate a student's identity with their pseudonym, without allowing the server to link the two.
 
