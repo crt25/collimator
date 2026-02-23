@@ -72,7 +72,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     if (mode === Mode.solve) {
-      TaskAutoSaver.trackNotebook(notebookTracker, platform.sendRequest);
+      TaskAutoSaver.trackNotebook(notebookTracker, (...args) =>
+        platform.sendRequest(...args),
+      );
     }
 
     simplifyUserInterface(

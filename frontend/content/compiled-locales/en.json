@@ -599,6 +599,18 @@
       "value": "There was a network issue. Please close this dialog and try again later."
     }
   ],
+  "CopyLessonModal.noClassesAvailable": [
+    {
+      "type": 0,
+      "value": "No classes available to copy lessons from."
+    }
+  ],
+  "CopyLessonModal.noLessonsAvailable": [
+    {
+      "type": 0,
+      "value": "No lessons available in the selected class."
+    }
+  ],
   "CopyLessonModal.title": [
     {
       "type": 0,
@@ -2501,12 +2513,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "TaskSessionActions.deleteTask": [
-    {
-      "type": 0,
-      "value": "Delete Task"
     }
   ],
   "TaskTable.columns.actionsColumn": [
