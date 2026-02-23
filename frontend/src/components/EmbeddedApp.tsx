@@ -59,13 +59,11 @@ export class IFrameUnavailableError extends Error {
   }
 }
 
-const LoadingState = {
-  loading: "loading",
-  available: "available",
-  error: "error",
-} as const;
-
-type LoadingState = (typeof LoadingState)[keyof typeof LoadingState];
+enum LoadingState {
+  loading = "loading",
+  available = "available",
+  error = "error",
+}
 
 export interface EmbeddedAppRef {
   sendRequest: ReturnType<typeof useIframeChild>["sendRequest"];
