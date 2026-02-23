@@ -11,6 +11,7 @@ import {
   writeBinaryToVirtualFilesystem,
   writeJsonToVirtualFilesystem,
 } from "../utils";
+import { DEBUG_NOTEBOOK_RUNNER } from "../constants";
 import {
   copyRequiredFoldersToKernel,
   handleOtterCommandError,
@@ -47,7 +48,8 @@ export const registerGradeCommand = (
   documentManager: IDocumentManager,
 ): void => {
   app.commands.addCommand(runGradingCommand, {
-    isVisible: () => false,
+    label: "Run Grading",
+    isVisible: () => (DEBUG_NOTEBOOK_RUNNER ? true : false),
     execute: async (): Promise<OtterGradingResults> => {
       try {
         console.debug("Saving all open notebooks...");
