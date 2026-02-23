@@ -77,7 +77,9 @@ export class TaskAutoSaver {
     this.contentChangeTimers.set(model, timer);
   }
 
-  private async handlePageUnload(notebookTracker: INotebookTracker): void {
+  private async handlePageUnload(
+    notebookTracker: INotebookTracker,
+  ): Promise<void> {
     for (const [model, _] of this.contentChangeTimers.entries()) {
       // The listener/timer cleanup is technically unnecessary since the page is unloading
       // but we do it for good measure and to avoid any potential side effects
