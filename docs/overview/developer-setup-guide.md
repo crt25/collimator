@@ -43,24 +43,15 @@ git submodule update --init --recursive --progress
     $ yarn install
     ```
 
-4. Customize the admin account by editing `prisma/seed/production.ts`:
+4. Configure the admin account by setting environment variables in your `.env` file:
 
-    ```ts
-    export const seedProduction = async (prisma: PrismaClient): Promise<void> => {
-      const count = await prisma.user.count({
-          where: { email: "yourMicrosoftAccountEmail" },
-    });
-    if (count === 0) {
-        const admin = await prisma.user.create({
-        data: {
-            email: "yourMicrosoftAccountEmail",
-            authenticationProvider: AuthenticationProvider.MICROSOFT,
-            name: "yourName",
-            type: "ADMIN",
-        },
-        });
-
+    ```sh
+    SEED_ADMIN_EMAIL=yourMicrosoftAccountEmail
+    SEED_ADMIN_USERNAME=yourName
+    FRONTEND_HOSTNAME=http://localhost:3000
     ```
+
+    If not set, the seeding will use default values (`admin@example.com` and `Admin`).
 
 5. Apply migrations and generate the Prisma client:
 
@@ -85,21 +76,13 @@ git submodule update --init --recursive --progress
     In the console, you should see:
 
     ```sh
-    [
-    'admin',
-    {
-        id: 1,
-        name: 'yourName',
-        oidcSub: null,
-        email: 'yourMicrosoftAccountEmail',
-        authenticationProvider: 'MICROSOFT',
-        type: 'ADMIN'
-    },
-    'yourRegistrationToken'
-    ]
+    Created admin user with email yourMicrosoftAccountEmail.
+    Visit the following URL to complete your registration: http://localhost:3000/login?registrationToken=yourRegistrationToken
     ```
 
-    Keep your registration token. You will need it to log in from the frontend.
+    Keep this URL. You will need it to log in from the frontend.
+
+    ?> If an admin user with the specified email already exists, seeding will be skipped.
 
 8. Start the backend in development mode:
 
@@ -142,9 +125,8 @@ See [apps/jupyter/README.md](../../apps/jupyter/README.md) for detailed instruct
 
 ### Visit the frontend
 
-1. Open your browser at `http://localhost:3000/`.
-2. Modify the URL to `http://localhost:3000/login?registrationToken=XXXX`, replacing XXXX with your registration token.
-3. Click "Authenticate using Microsoft".
+1. Open the registration URL displayed after seeding (e.g., `http://localhost:3000/login?registrationToken=XXXX`).
+2. Click "Authenticate using Microsoft".
 
 ### Appendices
 
