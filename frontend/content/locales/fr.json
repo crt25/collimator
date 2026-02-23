@@ -683,6 +683,9 @@
   "EditedBadge.edited": {
     "message": "Modifié"
   },
+  "EmbeddedApp.errorMessage": {
+    "message": "Échec du chargement de l’application. Veuillez réessayer plus tard."
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Nombre d'expressions"
   },
