@@ -14,6 +14,8 @@ import {
 import { FormattedMessage } from "react-intl";
 import ProgressSpinner from "./ProgressSpinner";
 
+const APP_IFRAME_LOAD_TIMEOUT = 30000;
+
 const LoadingWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -104,7 +106,6 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     setPrevSrc(src);
     setLoadingState(LoadingState.loading);
   }
-  const iframeTimeoutTs = 30000;
 
   const onAvailable = useCallback(
     async (iframe: HTMLIFrameElement, api: PlatformCrtIframeApi) => {
@@ -152,7 +153,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         setLoadingState(LoadingState.error);
         onAppError?.(error);
       }
-    }, iframeTimeoutTs);
+    }, APP_IFRAME_LOAD_TIMEOUT);
 
     return () => clearTimeout(timeout);
   }, [loadingState, onAppError]);
