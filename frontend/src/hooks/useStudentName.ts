@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { Language } from "iframe-rpc-react/src";
+import { isLanguage } from "iframe-rpc-react/src";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { decodeBase64 } from "@/utilities/crypto";
@@ -82,16 +82,18 @@ export const useStudentName = ({
     });
   }, [authContext, pseudonym, keyPairId]);
 
+  const locale = isLanguage(intl.locale) ? intl.locale : undefined;
+
   const name = useMemo(() => {
     return !anonymizationState.showActualName || !pseudonym
-      ? getStudentNickname(studentId, pseudonym, intl.locale as Language)
+      ? getStudentNickname(studentId, pseudonym, locale)
       : decryptedName;
   }, [
     anonymizationState.showActualName,
     decryptedName,
     studentId,
     pseudonym,
-    intl.locale,
+    locale,
   ]);
 
   return {
