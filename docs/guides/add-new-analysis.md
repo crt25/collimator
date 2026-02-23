@@ -255,7 +255,7 @@ To add a new algorithm for automatic grouping, you must:
    (analyses: CurrentAnalysis[], distanceType: DistanceType): Promise<AnalysisGroup[]>
    ```
 
-   If your algorithm does not rely on a distance metric, consider [adding a custom `None` distance metric](#how-to-add-a-new-distance-metric) that always throws.
+   If your algorithm does not rely on a distance metric, consider [adding a custom `None` distance metric](#adding-a-new-distance-metric) that always throws.
 
 4. Update `src/components/dashboard/hooks/automatic-grouping/index.ts` so that `getAutomaticGroups` calls your algorithm.
 5. (Optionally) Update `useAutomaticGrouping` to expose your algorithm.
@@ -405,7 +405,7 @@ Similarly, `getAstNodeLabel` returns a unique `string` label for any provided `A
 
 Note that the implementation of `getAstNodeChildren` and `getAstNodeLabel` is fully independent of the distance metric algorithm and may be used by many.
 
-For example, see the similarity of the implementation of the [PQ-Grams distance](#example-distance-metric-pq-grams).
+For example, see the similarity of the implementation of the [PQ-Grams distance](#example-for-distance-metric-pq-grams).
 
 In both examples, we use external libraries that provide the `treeEditDistance` or `jqgram` functions.
 
