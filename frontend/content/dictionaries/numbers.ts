@@ -13,7 +13,7 @@ const excludedNumbers = new Set([
 ]);
 
 // Static list of numbers 0-99, excluding problematic numbers
-const numbers: string[] = Array.from({ length: 100 }, (_, i) => i)
+const numbers: string[] = Array.from({ length: 100 }, (_value, i) => i)
   .filter((n) => !excludedNumbers.has(n))
   .map(String);
 
