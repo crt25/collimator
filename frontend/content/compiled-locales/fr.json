@@ -1221,6 +1221,12 @@
   ],
   "DEPRECATED: TaskInstanceList.description": [
   ],
+  "DEPRECATED: TaskSessionActions.deleteTask": [
+    {
+      "type": 0,
+      "value": "Effacer l'activité"
+    }
+  ],
   "DEPRECATED: UserDetail.table.oidcSub": [
     {
       "type": 0,
@@ -2979,12 +2985,6 @@
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "TaskSessionActions.deleteTask": [
-    {
-      "type": 0,
-      "value": "Effacer l'activité"
     }
   ],
   "TaskTable.columns.actionsColumn": [
