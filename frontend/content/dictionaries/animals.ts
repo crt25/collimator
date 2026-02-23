@@ -1,4 +1,6 @@
-const animals = [
+import { Language } from "iframe-rpc-react/src";
+
+const animals: Record<Language, string>[] = [
   { en: "aardvark", fr: "oryctérope" },
   { en: "aardwolf", fr: "protèle" },
   { en: "albatross", fr: "albatros" },
@@ -15,7 +17,6 @@ const animals = [
   { en: "aphid", fr: "puceron" },
   { en: "armadillo", fr: "tatou" },
   { en: "asp", fr: "aspic" },
-  { en: "badger", fr: "blaireau" },
   { en: "bandicoot", fr: "bandicoot" },
   { en: "barnacle", fr: "bernacle" },
   { en: "barracuda", fr: "barracuda" },
@@ -31,7 +32,6 @@ const animals = [
   { en: "boa", fr: "boa" },
   { en: "boar", fr: "sanglier" },
   { en: "bobolink", fr: "goglu" },
-  { en: "bonobo", fr: "bonobo" },
   { en: "booby", fr: "fou" },
   { en: "bovid", fr: "bovidé" },
   { en: "bug", fr: "insecte" },
@@ -51,14 +51,12 @@ const animals = [
   { en: "cheetah", fr: "guépard" },
   { en: "chickadee", fr: "mésange" },
   { en: "chicken", fr: "poulet" },
-  { en: "chimpanzee", fr: "chimpanzé" },
   { en: "chinchilla", fr: "chinchilla" },
   { en: "chipmunk", fr: "tamia" },
   { en: "cicada", fr: "cigale" },
   { en: "clam", fr: "palourde" },
   { en: "clownfish", fr: "poisson-clown" },
   { en: "cobra", fr: "cobra" },
-  { en: "cod", fr: "morue" },
   { en: "condor", fr: "condor" },
   { en: "constrictor", fr: "constricteur" },
   { en: "coral", fr: "corail" },
@@ -106,12 +104,10 @@ const animals = [
   { en: "gazelle", fr: "gazelle" },
   { en: "gecko", fr: "gecko" },
   { en: "gerbil", fr: "gerbille" },
-  { en: "gibbon", fr: "gibbon" },
   { en: "giraffe", fr: "girafe" },
   { en: "goldfish", fr: "poisson rouge" },
   { en: "goose", fr: "oie" },
   { en: "gopher", fr: "gaufre" },
-  { en: "gorilla", fr: "gorille" },
   { en: "grasshopper", fr: "sauterelle" },
   { en: "grouse", fr: "tétras" },
   { en: "guan", fr: "pénélope" },
@@ -182,7 +178,6 @@ const animals = [
   { en: "mite", fr: "acarien" },
   { en: "mockingbird", fr: "moqueur" },
   { en: "mole", fr: "taupe" },
-  { en: "mollusk", fr: "mollusque" },
   { en: "mongoose", fr: "mangouste" },
   { en: "moose", fr: "orignal" },
   { en: "mosquito", fr: "moustique" },
@@ -214,7 +209,6 @@ const animals = [
   { en: "penguin", fr: "manchot" },
   { en: "perch", fr: "perche" },
   { en: "pheasant", fr: "faisan" },
-  { en: "pigeon", fr: "pigeon" },
   { en: "pike", fr: "brochet" },
   { en: "pinniped", fr: "pinnipède" },
   { en: "piranha", fr: "piranha" },
@@ -225,7 +219,6 @@ const animals = [
   { en: "porpoise", fr: "marsouin" },
   { en: "possum", fr: "possum" },
   { en: "prawn", fr: "crevette" },
-  { en: "primate", fr: "primate" },
   { en: "ptarmigan", fr: "lagopède" },
   { en: "puffin", fr: "macareux" },
   { en: "puma", fr: "puma" },
@@ -234,7 +227,6 @@ const animals = [
   { en: "quelea", fr: "quéléa" },
   { en: "quokka", fr: "quokka" },
   { en: "rabbit", fr: "lapin" },
-  { en: "raccoon", fr: "raton laveur" },
   { en: "reindeer", fr: "renne" },
   { en: "reptile", fr: "reptile" },
   { en: "rhinoceros", fr: "rhinocéros" },
@@ -280,7 +272,6 @@ const animals = [
   { en: "termite", fr: "termite" },
   { en: "tern", fr: "sterne" },
   { en: "thrush", fr: "grive" },
-  { en: "tick", fr: "tique" },
   { en: "tiger", fr: "tigre" },
   { en: "tiglon", fr: "tiglon" },
   { en: "tortoise", fr: "tortue" },
@@ -314,9 +305,5 @@ const animals = [
   { en: "yak", fr: "yak" },
   { en: "zebra", fr: "zèbre" },
 ] as const;
-
-export type AnimalLocale = keyof (typeof animals)[number];
-
-export const animalLocales = Object.keys(animals[0]) as AnimalLocale[];
 
 export default animals;

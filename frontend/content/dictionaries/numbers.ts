@@ -3,6 +3,7 @@ const excludedNumbers = new Set([
   9, // unlucky in Japanese (sounds like "suffering")
   13, // unlucky in Western cultures
   14, // white supremacist reference ("14 words" slogan)
+  17, // unlucky in some wester cultures
   18, // neo-Nazi code (1=A, 8=H → "Adolf Hitler")
   28, // neo-Nazi code ("Blood & Honour")
   43, // unlucky in Japanese (sounds like "stillbirth")
