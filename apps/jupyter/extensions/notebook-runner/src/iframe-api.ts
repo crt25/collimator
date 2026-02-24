@@ -22,12 +22,12 @@ import { runAssignCommand, runGradingCommand } from "./command";
 import { Mode } from "./mode";
 import {
   CrtInternalTask,
-  GenericNotebookTask,
   Directory,
-  importCrtInternalTask,
-  importGenericNotebookTask,
   exportCrtInternalTask,
   exportExternalCustomTask,
+  GenericNotebookTask,
+  importCrtInternalTask,
+  importGenericNotebookTask,
   SharedDirectories,
 } from "./task-converter";
 
@@ -46,10 +46,7 @@ import {
   ExportTask,
   ExportTaskResult,
 } from "./iframe-rpc/src/methods/export-task";
-import {
-  JupyterLanguageLocales,
-  JupyterLanguageLocalesType,
-} from "./languages";
+import { toCrtLocale, toJupyterLocale } from "./languages";
 
 const logModule = "[Embedded Jupyter]";
 
@@ -102,19 +99,6 @@ export class EmbeddedPythonCallbacks {
   public static readonly srcLocation: string = "/src";
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
-
-  private readonly localeConfig = {
-    crtToJupyterLocales: new Map<Language, JupyterLanguageLocalesType>([
-      [Language.en, JupyterLanguageLocales.en],
-      [Language.fr, JupyterLanguageLocales.fr],
-    ]),
-    jupyterToCrtLocales: new Map<string, Language>([
-      [JupyterLanguageLocales.fr, Language.fr],
-      [JupyterLanguageLocales.en, Language.en],
-      // sometimes the jupyter locale can also be default instead of explicitly en
-      [JupyterLanguageLocales.default, Language.en],
-    ]),
-  };
 
   constructor(
     private readonly mode: Mode,
@@ -330,19 +314,12 @@ export class EmbeddedPythonCallbacks {
       rawLocale = Language.en;
     }
 
-    const jupyterLocaleAsCrt =
-      this.localeConfig.jupyterToCrtLocales.get(rawLocale) ?? Language.en;
-
-    if (jupyterLocaleAsCrt === locale) {
+    if (toCrtLocale(rawLocale) === locale) {
       // if the locale is already set to the desired value, we can skip
       return;
     }
 
-    const jupyterLocale =
-      this.localeConfig.crtToJupyterLocales.get(locale) ??
-      JupyterLanguageLocales.en;
-
-    await settings.set("locale", jupyterLocale);
+    await settings.set("locale", toJupyterLocale(locale));
 
     // we force-navigate to the current URL with the desired mode param
     // instead of using window.location.reload(), because the jupyter loaded
