@@ -34,17 +34,21 @@ const messages = defineMessages({
   },
   editInTaskReferenceSolutionsTitle: {
     id: "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle",
+    description: "Title for the alert when trying to edit reference solutions",
     defaultMessage:
-      "This reference solution cannot be edited here. To edit, go to the {link}.",
+      "This reference solution cannot be edited here. To edit, go to {link}.",
   },
   editInTaskReferenceSolutionsDescription: {
     id: "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions",
+    description: "Title for the alert when trying to edit reference solutions",
     defaultMessage:
-      "This reference solution cannot be edited here. To edit, go to the {link}.",
+      "This reference solution cannot be edited here. To edit, go to {link}.",
   },
   taskReferenceSolutionsLink: {
     id: "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink",
-    defaultMessage: "reference solutions detail",
+    description:
+      "Link text for the alert when trying to edit reference solutions",
+    defaultMessage: "the reference solutions detail",
   },
 });
 

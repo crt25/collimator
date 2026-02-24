@@ -1093,16 +1093,19 @@
     "message": "View student solution"
   },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
-    "message": "This reference solution cannot be edited here. To edit, go to the {link}."
+    "description": "Title for the alert when trying to edit reference solutions",
+    "message": "This reference solution cannot be edited here. To edit, go to {link}."
   },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
-    "message": "This reference solution cannot be edited here. To edit, go to the {link}."
+    "description": "Title for the alert when trying to edit reference solutions",
+    "message": "This reference solution cannot be edited here. To edit, go to {link}."
   },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Save Task"
   },
   "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": {
-    "message": "reference solutions detail"
+    "description": "Link text for the alert when trying to edit reference solutions",
+    "message": "the reference solutions detail"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Edit Task - {title}"

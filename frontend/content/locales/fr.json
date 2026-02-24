@@ -1342,16 +1342,19 @@
     "message": "Voir la solution de l'élève"
   },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
+    "description": "Titre de l’alerte lors de la tentative de modification des solutions de référence",
     "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
   },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
+    "description": "Titre de l’alerte lors de la tentative de modification des solutions de référence",
     "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
   },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Enregistrer l'activité"
   },
   "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": {
-    "message": "Détails des solutions de référence"
+    "description": "Texte du lien pour l’alerte lors de la tentative de modification des solutions de référence",
+    "message": "le détail des solutions de référence"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
