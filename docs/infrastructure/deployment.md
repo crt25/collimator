@@ -1,6 +1,6 @@
 # Deployment
 
-ClassMosaic uses Github workflows and Terraform for deployment and tests.
+ClassMosaic uses GitHub workflows and Terraform for deployment and tests.
 
 ## Overview
 
