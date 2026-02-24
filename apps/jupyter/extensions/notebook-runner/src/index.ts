@@ -100,7 +100,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       // opened by the loadTask/loadSubmission RPC call from the parent.
       if (mode === Mode.edit) {
         try {
-          await documentManager.openOrReveal(
+          documentManager.openOrReveal(
             EmbeddedPythonCallbacks.taskTemplateLocation,
           );
         } catch (error) {
