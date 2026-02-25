@@ -6,6 +6,7 @@ import { runAssignCommand } from "../command";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
 import { executePythonInKernel, writeJsonToVirtualFilesystem } from "../utils";
 import { CannotReadNotebookException } from "../errors/otter-errors";
+import { DEBUG_NOTEBOOK_RUNNER } from "../constants";
 import { copyRequiredFoldersToKernel, handleOtterCommandError } from "./helper";
 
 export const registerAssignCommand = (
@@ -16,6 +17,7 @@ export const registerAssignCommand = (
 ): void => {
   app.commands.addCommand(runAssignCommand, {
     label: "Run Assign",
+    isVisible: () => DEBUG_NOTEBOOK_RUNNER,
     execute: async () => {
       try {
         console.debug("Saving all open notebooks...");
