@@ -252,8 +252,20 @@ export class EmbeddedScratchCallbacks {
       const task = await saveCrtProject(this.vm);
       const submission = await getSubmission(this.vm, this.intl);
 
+      // On every task creation, Scratch internally loads empty, hardcoded assets. See: https://github.com/scratchfoundation/scratch-storage/blob/ec078d15666743d4ec4ebba5d6bceda85143f095/src/WebHelper.ts#L142
+      // it replaces them and re-generates new asset ids, which causes the saved task to have different asset ids than the ones in the submission.
+      // Moreover, if teachers were to add more assets to the task, those would also initially have different ids.
+      // These new assets are affected by SVG sanitization, which adds whitespace to the SVG content and causes the asset ids to change.
+      // See: https://github.com/scratchfoundation/scratch-editor/blob/d6da8b32af0aa702c989bb077551c8a33d421413/packages/scratch-svg-renderer/src/sanitize-svg.js#L129
+      // To work around this, we re-load the project we just saved, which ensures that the asset ids in the task and the submission are the same.
+      const exportedTask = await task.arrayBuffer();
+
+      await loadCrtProject(this.vm, exportedTask);
+
+      const reExportedTask = await saveCrtProject(this.vm);
+
       return {
-        file: task,
+        file: reExportedTask,
         initialSolution: submission,
       };
     } catch (e) {
