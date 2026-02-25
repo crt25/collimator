@@ -89,7 +89,7 @@ To avoid confusing users with dozens of redundant UI elements, we try to remove 
 
 On top, we enable Jupyterlite's simple mode and hide the status bar.
 
-Finally, unless we are in `edit` mode, we also hide the [Grading folders](#jupyterlite-file-format) from the file browser.
+Finally, unless we are in `edit` mode, we also hide the [Grading folders](#jupyterlite-project-structure) from the file browser.
 
 ### Additional UI elements
 

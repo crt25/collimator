@@ -82,7 +82,7 @@ model Class {
 }
 
 model Student {
-  id Int @id @default(autoincrement()) // auto-inceremented ID for clustering - avoids fragmentation
+  id Int @id @default(autoincrement()) // auto-incremented ID for clustering - avoids fragmentation
 
   authenticatedStudent AuthenticatedStudent?
   anonymousStudent     AnonymousStudent?
