@@ -1,7 +1,7 @@
 import path from 'path';
 
-const dynamicRoutesPattern = /\/([A-z]+)\/\d+\//g;
-const dynamicRoutesReplacement = '/$1/[$1Id]/';
+const dynamicRoutesPattern = /\/([A-z]+)\/\d+(?=\/)/g;
+const dynamicRoutesReplacement = '/$1/[$1Id]';
 
 export const handler = async (evt) => {
   const request = evt.Records[0].cf.request;
