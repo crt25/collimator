@@ -1,6 +1,6 @@
 import path from 'path';
 
-const dynamicRoutesPattern = /\/([A-z]+)\/\d+(?=\/)/g;
+const dynamicRoutesPattern = /\/([A-Za-z]+)\/\d+(?=\/)/g;
 const dynamicRoutesReplacement = '/$1/[$1Id]';
 
 export const handler = async (evt) => {
