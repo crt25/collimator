@@ -147,7 +147,7 @@ export class AuthenticationService {
     }
 
     if (!microsoftJwkEndpoint) {
-      throw new Error("OPEN_ID_CONNECT_MICROSOFT_SERVER is not defined");
+      throw new Error("OPEN_ID_CONNECT_JWK_ENDPOINT is not defined");
     }
 
     this.microsoftClientId = microsoftClientId;
