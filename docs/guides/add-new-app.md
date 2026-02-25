@@ -128,7 +128,7 @@ Testing is highly application-specific and is not covered in this documentation.
 
 ## Deployment
 
-ClassMosaic uses Github workflows and Terraform for deployment. 
+ClassMosaic uses GitHub workflows and Terraform for deployment.
 
 To deploy a new app, update the workflow `.github/workflows/deployment.yml` and Terraform files to:
 
