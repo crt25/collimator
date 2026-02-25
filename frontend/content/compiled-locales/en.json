@@ -949,6 +949,12 @@
       "value": "Edited"
     }
   ],
+  "EmbeddedApp.errorMessage": [
+    {
+      "type": 0,
+      "value": "Failed to load the app. Please try again later."
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,
