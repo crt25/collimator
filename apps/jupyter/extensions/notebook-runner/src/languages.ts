@@ -3,8 +3,7 @@ import { Language } from "./iframe-rpc/src";
 export enum JupyterLanguageLocale {
   en = "en",
   fr = "fr_FR",
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
-  default = "en",
+  default = "default",
 }
 
 export const crtToJupyter = new Map<Language, JupyterLanguageLocale>([
