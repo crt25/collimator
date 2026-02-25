@@ -476,26 +476,20 @@ export class TasksService {
     return sessionWithStudents !== null;
   }
 
-  async isTaskInUseByOtherUsers(
-    id: TaskId,
-    creatorId: number,
-  ): Promise<boolean> {
-    return this.isTaskInUseByOtherUsersTx(this.prisma, id, creatorId);
-  }
-
   private async isTaskInUseByOtherUsersTx(
     tx: PrismaTransactionClient,
     id: TaskId,
-    creatorId: number,
+    creatorId: number | null,
   ): Promise<boolean> {
     // Check if task is used in any lesson belonging to a different user
+    const teacherId = creatorId !== null ? { not: creatorId } : undefined;
     const sessionTask = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
         session: {
           deletedAt: null,
           class: {
-            teacherId: { not: creatorId },
+            teacherId,
             deletedAt: null,
           },
         },
@@ -513,16 +507,8 @@ export class TasksService {
         select: { isPublic: true, creatorId: true },
       });
 
-      // For private tasks, check if task is in use by any class with students
-      if (!task.isPublic) {
-        const isInUse = await this.isTaskInUseTx(tx, id);
-        if (isInUse) {
-          throw new TaskInUseByClassOrLessonWithStudentsError();
-        }
-      }
-
       // For public tasks, check if task is used in any lesson by other users
-      if (task.isPublic && task.creatorId !== null) {
+      if (task.isPublic) {
         const isInUseByOthers = await this.isTaskInUseByOtherUsersTx(
           tx,
           id,
@@ -531,6 +517,12 @@ export class TasksService {
         if (isInUseByOthers) {
           throw new TaskInOtherUsersLessonError();
         }
+      }
+
+      // Also check if task is in use by any class with students
+      const isInUse = await this.isTaskInUseTx(tx, id);
+      if (isInUse) {
+        throw new TaskInUseByClassOrLessonWithStudentsError();
       }
 
       // delete all reference solutions for this task
