@@ -30,7 +30,7 @@ data "archive_file" "lambda_function" {
 # create the lambda function based on the package
 module "spa_lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 7.0"
+  version = "~> 8.5"
 
   providers = {
     aws = aws.cloudfront_region_provider
@@ -40,15 +40,17 @@ module "spa_lambda_function" {
   description   = "A lambda function to rewrite URLs for CloudFront"
   handler       = "index.handler"
 
-  # see https://docs.aws.amazon.com/lambda/latest/api/API_CreateFunction.html#API_CreateFunction_RequestBody
+  # see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported
   # for a list of supported runtimes
-  runtime = "nodejs20.x"
+  runtime = "nodejs24.x"
 
   publish        = true
   lambda_at_edge = true
 
   create_package         = false
   local_existing_package = data.archive_file.lambda_function.output_path
+
+  cloudwatch_logs_retention_in_days = 90
 
   tags = var.tags
 }

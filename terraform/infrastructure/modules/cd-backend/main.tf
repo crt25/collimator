@@ -1,4 +1,4 @@
-﻿resource "aws_s3_bucket" "terraform_state" {
+resource "aws_s3_bucket" "terraform_state" {
   bucket = var.name
 
   # block delete unless the bucket is empty

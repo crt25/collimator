@@ -1,4 +1,4 @@
-﻿locals {
+locals {
   lambda_function_output_directory = "./lambdas/build"
 }
 
@@ -19,8 +19,8 @@ module "frontend" {
   name   = "${var.name}-${var.environment}-static-frontend"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/next/index.js"
-  lambda_function_output_zip  = "${local.lambda_function_output_directory}/next.zip"
+  nodejs_lambda_function_path = "./lambdas/src/frontend/index.mjs"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/frontend.zip"
 
   tags = var.tags
 }
@@ -31,8 +31,8 @@ module "scratchapp" {
   name   = "${var.name}-${var.environment}-app-scratch"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/spa/index.js"
-  lambda_function_output_zip  = "${local.lambda_function_output_directory}/spa.zip"
+  nodejs_lambda_function_path = "./lambdas/src/scratch/index.mjs"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/scratch.zip"
 
   tags = var.tags
 }
@@ -43,8 +43,8 @@ module "jupyterapp" {
   name   = "${var.name}-${var.environment}-app-jupyter"
   region = var.region
 
-  nodejs_lambda_function_path = "./lambdas/src/spa/index.js"
-  lambda_function_output_zip  = "${local.lambda_function_output_directory}/spa.zip"
+  nodejs_lambda_function_path = "./lambdas/src/jupyter/index.mjs"
+  lambda_function_output_zip  = "${local.lambda_function_output_directory}/jupyter.zip"
 
   tags = var.tags
 }
@@ -78,8 +78,8 @@ module "backend" {
   public_subnet_ids      = module.network.public_subnet_ids
 
   open_id_connect_microsoft_client_id = var.open_id_connect_microsoft_client_id
-  sentry_dsn                          = var.sentry_dsn_backend 
-  database_url                        = module.database.database_url
+  sentry_dsn                          = var.sentry_dsn_backend
+  database_url_arn                    = module.database.database_url_arn
 
   tags = var.tags
 }

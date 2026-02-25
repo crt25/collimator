@@ -4,7 +4,7 @@ variable "name" {
 }
 
 variable "region" {
-  type = string
+  type    = string
   default = "eu-central-2"
 }
 
