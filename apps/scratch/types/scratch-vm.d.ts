@@ -300,8 +300,6 @@ declare class VMExtended extends VM {
   flyoutBlockListener: Function;
   monitorBlockListener: Function;
 
-  bind(thisArg: VMExtended): VMExtended;
-
   // add a custom config
   crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }

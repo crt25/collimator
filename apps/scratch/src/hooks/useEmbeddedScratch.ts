@@ -253,7 +253,7 @@ export class EmbeddedScratchCallbacks {
   async getTask(request: GetTask["request"]): Promise<Task> {
     try {
       const submission = await getSubmission(this.vm, this.intl);
-      const file = await prepareCrtProjectForExport(this.vm.bind(this.vm));
+      const file = await prepareCrtProjectForExport(this.vm);
 
       return {
         file: file,
