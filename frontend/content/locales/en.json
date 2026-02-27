@@ -446,6 +446,9 @@
   "EditedBadge.edited": {
     "message": "Edited"
   },
+  "EmbeddedApp.errorMessage": {
+    "message": "Failed to load the app. Please try again later."
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },
@@ -1181,9 +1184,6 @@
   },
   "TaskReferenceSolutions.title": {
     "message": "Edit Task - {title}"
-  },
-  "TaskSessionActions.deleteTask": {
-    "message": "Delete Task"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Quick Actions"

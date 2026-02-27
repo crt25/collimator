@@ -54,6 +54,14 @@ const ButtonWrapper = chakra("div", {
   },
 });
 
+const SubmitButtonWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "xl",
+  },
+});
+
 const messages = defineMessages({
   title: {
     id: "CreateSessionForm.title",
@@ -440,7 +448,9 @@ const SessionForm = ({
               </GridItem>
             </Grid>
 
-            <SubmitFormButton label={submitMessage} />
+            <SubmitButtonWrapper>
+              <SubmitFormButton label={submitMessage} />
+            </SubmitButtonWrapper>
           </form>
           <ConfirmationModal
             isShown={showQuitNoSaveModal}

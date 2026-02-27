@@ -1,5 +1,4 @@
 import { authenticationStateKey, backendHostName } from "@/utilities/constants";
-import { ErrorCode } from "./collimator/generated/models";
 
 export class ApiError extends Error {
   public readonly errorCode?: string;
@@ -44,7 +43,10 @@ export const fetchApi = async <T>(
     const errorBody = await response.json();
     throw new ConflictError(
       errorBody?.message,
-      errorBody?.errorCode || ErrorCode.GENERIC_ERROR,
+      // Hardcoded to avoid importing from generated models - orval parses this
+      // file as a mutator before generation, causing errors if it imports
+      // the ErrorCode enum from the generated output folder.
+      errorBody?.errorCode || "GENERIC_ERROR",
     );
   }
 
