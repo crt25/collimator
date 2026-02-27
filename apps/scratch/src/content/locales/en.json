@@ -95,6 +95,9 @@
     "description": "Label shown next to the input field for setting the maximum execution time.",
     "message": "Maximum execution time in seconds."
   },
+  "crt.useEmbeddedScratch.cannotGetTask": {
+    "message": "Could not get the task."
+  },
   "crt.useEmbeddedScratch.cannotLoadProject": {
     "message": "Could not load the project."
   },

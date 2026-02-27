@@ -53,4 +53,4 @@ export const messages = defineMessages({
     id: "embeddedApp.savingTask",
     defaultMessage: "Saving task...",
   },
-});
+} as const);

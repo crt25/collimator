@@ -15,7 +15,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
-import { executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 
 const messages = defineMessages({
@@ -67,13 +67,13 @@ const TaskDetail = () => {
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile) {
-      executeWithToasts(
+      executeAsyncWithToasts(
         () =>
           embeddedApp.current!.sendRequest("loadTask", {
             task: taskFile,
             language: intl.locale as Language,
           }),
-        intl.formatMessage(taskMessages.cannotLoadTask),
+        { intl, descriptor: taskMessages.cannotLoadTask },
       );
     }
     // since taskFileHash is a blob, use its hash as a proxy for its content

@@ -1,6 +1,5 @@
 import VM from "@scratch/scratch-vm";
 import { useMemo } from "react";
-import toast from "react-hot-toast";
 import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
@@ -21,9 +20,14 @@ import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reduce
 import { loadCrtProject } from "../vm/load-crt-project";
 
 import {
+  CannotExportProjectError,
+  CannotGetTaskError,
+  CannotLoadProjectError,
+  CannotSaveProjectError,
   MissingAssetsError,
   ScratchProjectError,
   ScratchProjectErrorCode,
+  TimeoutExceededError,
 } from "../errors/scratch/index";
 
 import {
@@ -92,6 +96,10 @@ const messages = defineMessages({
     id: "crt.useEmbeddedScratch.unknownError",
     defaultMessage: "An unknown error occurred.",
   },
+  cannotGetTask: {
+    id: "crt.useEmbeddedScratch.cannotGetTask",
+    defaultMessage: "Could not get the task.",
+  },
 });
 
 const areAssertionsEnabled = (vm: VM): boolean => {
@@ -147,7 +155,7 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
     const waitForAssertions = new Promise<{
       passedAssertions: Assertion[];
       failedAssertions: Assertion[];
-    }>((resolve) => {
+    }>((resolve, reject) => {
       let finishedRunning = false;
       vm.runtime.once(
         "ASSERTIONS_CHECKED",
@@ -175,7 +183,11 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
 
         console.error(`${logModule} Maximum execution time exceeded`);
 
-        toast.error(intl.formatMessage(messages.timeoutExceeded));
+        reject(
+          new TimeoutExceededError(
+            intl.formatMessage(messages.timeoutExceeded),
+          ),
+        );
       }, maximumExecutionTimeInMs);
     });
 
@@ -195,9 +207,10 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
     );
   } catch (e) {
     console.error(`${logModule} RPC: getSubmission failed with error:`, e);
-    toast.error(intl.formatMessage(messages.cannotSaveProject));
 
-    throw e;
+    throw new CannotSaveProjectError(
+      intl.formatMessage(messages.cannotSaveProject),
+    );
   } finally {
     if (!assertionsEnabled) {
       vm.runtime.emit("DISABLE_ASSERTIONS");
@@ -224,6 +237,11 @@ export class EmbeddedScratchCallbacks {
     [ScratchProjectErrorCode.MissingAssets]: messages.missingAssets,
     [ScratchProjectErrorCode.InvalidFormat]: messages.invalidScratchProject,
     [ScratchProjectErrorCode.Unknown]: messages.unknownError,
+    [ScratchProjectErrorCode.CannotExportProject]: messages.cannotExportProject,
+    [ScratchProjectErrorCode.CannotLoadProject]: messages.cannotLoadProject,
+    [ScratchProjectErrorCode.CannotSaveProject]: messages.cannotSaveProject,
+    [ScratchProjectErrorCode.TimeoutExceeded]: messages.timeoutExceeded,
+    [ScratchProjectErrorCode.CannotGetTask]: messages.cannotGetTask,
   };
 
   private getErrorMessage(e: unknown): string {
@@ -264,9 +282,8 @@ export class EmbeddedScratchCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      toast.error(this.intl.formatMessage(messages.cannotSaveProject));
 
-      throw e;
+      throw new CannotGetTaskError(this.getErrorMessage(e));
     }
   }
 
@@ -284,9 +301,7 @@ export class EmbeddedScratchCallbacks {
         e,
       );
 
-      toast.error(this.getErrorMessage(e));
-
-      throw e;
+      throw new CannotLoadProjectError(this.getErrorMessage(e));
     }
   }
 
@@ -308,9 +323,8 @@ export class EmbeddedScratchCallbacks {
       };
     } catch (e) {
       console.error(`Failed to export task:`, e);
-      toast.error(this.intl.formatMessage(messages.cannotExportProject));
 
-      throw e;
+      throw new CannotExportProjectError(this.getErrorMessage(e));
     }
   }
 
@@ -354,9 +368,8 @@ export class EmbeddedScratchCallbacks {
       }
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
-      toast.error(this.intl.formatMessage(messages.cannotLoadProject));
 
-      throw e;
+      throw new CannotLoadProjectError(this.getErrorMessage(e));
     }
   }
 

@@ -54,3 +54,45 @@ export class CrtConfigParseError extends ScratchProjectError {
     );
   }
 }
+
+export class CannotExportProjectError extends ScratchProjectError {
+  constructor(public originalError: unknown) {
+    super(
+      ScratchProjectErrorCode.CannotExportProject,
+      "Failed to export the project",
+    );
+  }
+}
+
+export class CannotLoadProjectError extends ScratchProjectError {
+  constructor(public originalError: unknown) {
+    super(
+      ScratchProjectErrorCode.CannotLoadProject,
+      "Failed to load the project",
+    );
+  }
+}
+
+export class CannotSaveProjectError extends ScratchProjectError {
+  constructor(public originalError: unknown) {
+    super(
+      ScratchProjectErrorCode.CannotSaveProject,
+      "Failed to save the project",
+    );
+  }
+}
+
+export class TimeoutExceededError extends ScratchProjectError {
+  constructor(public originalError: unknown) {
+    super(
+      ScratchProjectErrorCode.TimeoutExceeded,
+      "Maximum execution time exceeded",
+    );
+  }
+}
+
+export class CannotGetTaskError extends ScratchProjectError {
+  constructor(public originalError: unknown) {
+    super(ScratchProjectErrorCode.CannotGetTask, "Failed to get the task");
+  }
+}

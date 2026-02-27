@@ -153,6 +153,12 @@
       "value": "Temps d’exécution maximal (en secondes)."
     }
   ],
+  "crt.useEmbeddedScratch.cannotGetTask": [
+    {
+      "type": 0,
+      "value": "Impossible d'obtenir la tâche."
+    }
+  ],
   "crt.useEmbeddedScratch.cannotLoadProject": [
     {
       "type": 0,

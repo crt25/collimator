@@ -1,5 +1,4 @@
 import "../index.global.css";
-import { Toaster } from "react-hot-toast";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { useEffect } from "react";
@@ -71,7 +70,6 @@ const App = ({ Component, pageProps }: AppProps) => {
         />
       </Head>
       <CacheProvider value={cache}>
-        <Toaster />
         <Component {...pageProps} />
       </CacheProvider>
     </div>

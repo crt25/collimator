@@ -222,7 +222,7 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.cannotLoadTask),
+          { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
@@ -283,7 +283,7 @@ const SolveTaskPage = () => {
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.cannotImportTask),
+      { intl, descriptor: taskMessages.cannotImportTask },
     );
   }, [intl]);
 
@@ -294,7 +294,7 @@ const SolveTaskPage = () => {
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.cannotExport),
+      { intl, descriptor: taskMessages.cannotExport },
       intl.formatMessage(taskMessages.taskCreated),
     );
 
