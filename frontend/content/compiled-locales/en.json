@@ -95,24 +95,6 @@
       "value": "Anonymize Names"
     }
   ],
-  "ApiError.GENERIC_ERROR": [
-    {
-      "type": 0,
-      "value": "An unexpected error occurred. Please try again later."
-    }
-  ],
-  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
-    {
-      "type": 0,
-      "value": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
-    }
-  ],
-  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
-    {
-      "type": 0,
-      "value": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
-    }
-  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,
@@ -566,7 +548,7 @@
   "CopyLessonModal.description": [
     {
       "type": 0,
-      "value": "Select an existing lesson to copy from another class."
+      "value": "Select a lesson to copy from another class."
     }
   ],
   "CopyLessonModal.goToLesson": [
@@ -629,8 +611,7 @@
       "value": "Create Class"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -751,8 +732,7 @@
       "value": "Create Task"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -1475,6 +1455,30 @@
       "value": "There was an error saving the changes. Please try to save again!"
     }
   ],
+  "SessionDetail.readOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a lesson created by another user. Only the creator can edit this lesson."
+    }
+  ],
+  "SessionDetail.readOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
+  "SessionDetail.sessionLockedDescription": [
+    {
+      "type": 0,
+      "value": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
+    }
+  ],
+  "SessionDetail.sessionLockedTitle": [
+    {
+      "type": 0,
+      "value": "Session is locked"
+    }
+  ],
   "SessionDetail.submit": [
     {
       "type": 0,
@@ -2089,6 +2093,12 @@
       "value": "A task file is required before saving."
     }
   ],
+  "TaskForm.testName": [
+    {
+      "type": 0,
+      "value": "Test name"
+    }
+  ],
   "TaskForm.title": [
     {
       "type": 0,
@@ -2313,10 +2323,44 @@
       "value": "View student solution"
     }
   ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": [
+    {
+      "type": 0,
+      "value": "reference solutions detail"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
@@ -2505,16 +2549,40 @@
       "value": "Opened"
     }
   ],
+  "TaskReferenceSolutions.referenceLockedDescription": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited because it is already in use in a task used in a class with enrolled students."
+    }
+  ],
+  "TaskReferenceSolutions.referenceLockedTitle": [
+    {
+      "type": 0,
+      "value": "Reference solution is locked"
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a public reference solution created by another user. Only the creator can edit this task."
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Save Task"
+      "value": "Save Reference Solution(s)"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Edit Reference Solution - "
     },
     {
       "type": 1,
