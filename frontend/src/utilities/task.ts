@@ -12,7 +12,7 @@ type ErrorMessage =
   | {
       intl: IntlShape;
       descriptor: MessageDescriptorWithError;
-      values?: Record<string, string | number>;
+      values?: Record<string, unknown>;
     };
 
 const getErrorDetail = (error: unknown): string => {
