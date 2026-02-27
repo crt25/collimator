@@ -8,7 +8,7 @@ import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
-import { executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import Button from "../Button";
 import ViewSolutionModal from "../modals/ViewSolutionModal";
@@ -88,7 +88,7 @@ const CodeView = ({
 
   const onAppAvailable = useCallback(() => {
     if (embeddedApp.current && taskFile && solutionFile) {
-      executeWithToasts(
+      executeAsyncWithToasts(
         () =>
           embeddedApp.current!.sendRequest("loadSubmission", {
             task: taskFile,
@@ -96,7 +96,7 @@ const CodeView = ({
             subTaskId: subTaskId,
             language: intl.locale as Language,
           }),
-        intl.formatMessage(taskMessages.cannotLoadSubmission),
+        { intl, descriptor: taskMessages.cannotLoadSubmission },
       );
     }
     // since solutionFileHash is a blob, use its hash as a proxy for its content

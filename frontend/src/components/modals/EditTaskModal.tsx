@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Language, Task } from "iframe-rpc-react/src";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
-import { executeAsyncWithToasts, executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
@@ -50,19 +50,22 @@ const EditTaskModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (wasInitialized.current) {
-        embeddedApp.sendRequest("setLocale", intl.locale as Language);
+        executeAsyncWithToasts(
+          () => embeddedApp.sendRequest("setLocale", intl.locale as Language),
+          { intl, descriptor: taskMessages.cannotLoadTask },
+        );
         return;
       }
       wasInitialized.current = true;
 
       if (initialTask) {
-        executeWithToasts(
+        executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task: initialTask,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.cannotLoadTask),
+          { intl, descriptor: taskMessages.cannotLoadTask },
         );
       }
     },

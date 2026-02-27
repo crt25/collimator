@@ -73,7 +73,7 @@ const TaskDetail = () => {
             task: taskFile,
             language: intl.locale as Language,
           }),
-        intl.formatMessage(taskMessages.cannotLoadTask),
+        { intl, descriptor: taskMessages.cannotLoadTask },
       );
     }
     // since taskFileHash is a blob, use its hash as a proxy for its content

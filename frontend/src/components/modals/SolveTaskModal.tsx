@@ -59,7 +59,7 @@ const SolveTaskModal = ({
               submission: solution,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.cannotLoadTask),
+          { intl, descriptor: taskMessages.cannotLoadTask },
         );
         return;
       }
@@ -71,7 +71,7 @@ const SolveTaskModal = ({
               task,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.cannotLoadTask),
+          { intl, descriptor: taskMessages.cannotLoadTask },
         );
       }
     },
