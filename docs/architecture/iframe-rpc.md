@@ -51,18 +51,29 @@ yarn install
 
 #### Available methods
 
-Defined in `methods/index.ts`:
+Defined in `methods/index.ts`. Methods are organized by caller (who initiates the request).
 
-| Method            | Description                             |
-| ----------------- | --------------------------------------- |
-| `getHeight`       | Retrieves the embedded app's height     |
-| `getSubmission`   | Retrieves the current submission        |
-| `getTask`         | Retrieves the current task              |
-| `loadSubmission`  | Loads a submission in the embedded app  |
-| `loadTask`        | Loads a task in the embedded app        |
-| `postSolutionRun` | Sends a solution to execute             |
-| `postSubmission`  | Submits a solution                      |
-| `setLocale`       | Sets the interface language             |
+**Frontend → Embedded application**
+
+| Method           | Description                               |
+|------------------|-------------------------------------------|
+| `getHeight`      | Retrieves the embedded app's height       |
+| `getSubmission`  | Retrieves the current submission          |
+| `getTask`        | Retrieves the current task                |
+| `loadSubmission` | Loads a submission in the embedded app    |
+| `loadTask`       | Loads a task in the embedded app          |
+| `setLocale`      | Sets the interface language               |
+| `exportTask`     | Exports the current task as a file        |
+| `importTask`     | Imports a task file into the embedded app |
+
+**Embedded application → Frontend**
+
+| Method                   | Description                                           |
+|--------------------------|-------------------------------------------------------|
+| `postSubmission`         | Sends a submission                                    |
+| `postSolutionRun`        | Sends a solution to execute                           |
+| `postTaskSolution`       | Sends a task solution                                 |
+| `postStudentAppActivity` | Reports student activity (action, data, and solution) |
 
 Each method is strongly typed for parameters and return values.
 

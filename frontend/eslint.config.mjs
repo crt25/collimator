@@ -102,6 +102,14 @@ export default defineConfig([
     },
   },
   {
+    // In this particular mock, Orval separately imports types and classes from `msw`, which causes `import/no-duplicates` to error. This cannot be autofixed by eslint, so we disable the rule for this file.
+    files: ["src/api/**/generated/**/student-activity.msw.ts"],
+
+    rules: {
+      "import/no-duplicates": "off",
+    },
+  },
+  {
     // According to https://github.com/storybookjs/storybook/tree/next/code/lib/eslint-plugin#installation
     ignores: ["!.storybook"],
   },
