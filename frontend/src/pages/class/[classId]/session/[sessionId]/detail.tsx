@@ -14,6 +14,7 @@ import { useUpdateClassSession } from "@/api/collimator/hooks/sessions/useUpdate
 import SessionNavigation from "@/components/session/SessionNavigation";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import SessionForm, {
+  EditingMode,
   SessionFormValues,
   SharingType,
 } from "@/components/session/SessionForm";
@@ -57,7 +58,8 @@ const messages = defineMessages({
   },
   sessionLockedDescription: {
     id: "SessionDetail.sessionLockedDescription",
-    defaultMessage: "This session has enrolled students and cannot be edited.",
+    defaultMessage:
+      "This session has enrolled students. You cannot remove existing tasks or change the sharing type.",
   },
 });
 
@@ -83,8 +85,6 @@ const SessionDetail = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const cannotEdit = session?.hasStudents || !isCreatorOrAdmin;
-
   const updateSession = useUpdateClassSession();
 
   const onSubmit = useCallback(
@@ -109,6 +109,20 @@ const SessionDetail = () => {
     },
     [intl, klass, session, updateSession],
   );
+
+  const getEditingMode = (): EditingMode => {
+    if (!isCreatorOrAdmin) {
+      return EditingMode.readOnly;
+    }
+
+    if (session?.hasStudents) {
+      return EditingMode.restricted;
+    }
+
+    return EditingMode.full;
+  };
+
+  const editingMode = getEditingMode();
 
   return (
     <MaxScreenHeight>
@@ -149,7 +163,7 @@ const SessionDetail = () => {
                   }
                 />
               )}
-              {cannotEdit && (
+              {isCreatorOrAdmin && (
                 <Alert
                   icon={LuLock}
                   title={<FormattedMessage {...messages.sessionLockedTitle} />}
@@ -170,7 +184,7 @@ const SessionDetail = () => {
                 }}
                 onSubmit={onSubmit}
                 classId={_klass.id}
-                disabled={cannotEdit}
+                editingMode={editingMode}
               />
             </>
           )}

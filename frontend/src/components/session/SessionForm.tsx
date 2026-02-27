@@ -6,21 +6,21 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
   useRef,
+  useState,
 } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
-  Field,
   chakra,
+  Field,
   Grid,
   GridItem,
   HStack,
-  Stack,
   Icon,
+  Stack,
 } from "@chakra-ui/react";
 import { RiDraggable } from "react-icons/ri";
 import router from "next/router";
@@ -44,6 +44,12 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 export enum SharingType {
   anonymous = "anonymous",
   private = "private",
+}
+
+export enum EditingMode {
+  full = "full",
+  restricted = "restricted",
+  readOnly = "readOnly",
 }
 
 const ButtonWrapper = chakra("div", {
@@ -147,13 +153,13 @@ const SessionForm = ({
   initialValues,
   onSubmit,
   classId,
-  disabled,
+  editingMode = EditingMode.full,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
   classId: number;
-  disabled?: boolean;
+  editingMode?: EditingMode;
 }) => {
   const intl = useIntl();
 
@@ -213,6 +219,10 @@ const SessionForm = ({
 
   const { data: klass } = useClass(classId);
   const authenticationContext = useContext(AuthenticationContext);
+
+  const isReadOnly = editingMode === EditingMode.readOnly;
+  const canDeleteTasks = editingMode === EditingMode.full;
+  const canChangeSharingType = editingMode === EditingMode.full;
 
   const isOwner = useMemo(() => {
     return (
@@ -282,6 +292,11 @@ const SessionForm = ({
     onNavigate,
   });
 
+  const initialTaskIds = useMemo(
+    () => new Set(initialValues?.taskIds ?? []),
+    [initialValues],
+  );
+
   useEffect(() => {
     // initialize the selected tasks if we have data and the form is empty
     if (data && selectedTasks.length === 0 && selectedTaskIds.length > 0) {
@@ -298,10 +313,12 @@ const SessionForm = ({
     task,
     enableSorting,
     onRemove,
+    canRemoveTask,
   }: {
     task: ExistingTask;
     enableSorting: boolean;
     onRemove: () => void;
+    canRemoveTask: boolean;
   }) => {
     return (
       <StyledTaskListElement enableSorting={enableSorting}>
@@ -309,7 +326,7 @@ const SessionForm = ({
           {enableSorting && <RiDraggable />}
           <span>{task.title}</span>
         </HStack>
-        {!disabled && (
+        {canRemoveTask && (
           <RemoveTask data-testid="remove-task" onClick={onRemove}>
             <FontAwesomeIcon icon={faTrash} />
           </RemoveTask>
@@ -319,8 +336,8 @@ const SessionForm = ({
   };
 
   const enableSorting = useMemo(
-    () => !disabled && selectedTasks.length > 1 && isOwner,
-    [selectedTasks, isOwner, disabled],
+    () => !isReadOnly && selectedTasks.length > 1 && isOwner,
+    [selectedTasks, isOwner, isReadOnly],
   );
 
   return (
@@ -341,7 +358,7 @@ const SessionForm = ({
                   {...register("title")}
                   data-testid="title"
                   errorText={errors.title?.message}
-                  disabled={disabled}
+                  disabled={isReadOnly}
                   labelBadge={
                     showEditedBadges && dirtyFields.title && <EditedBadge />
                   }
@@ -352,7 +369,7 @@ const SessionForm = ({
                   {...register("description")}
                   data-testid="description"
                   errorText={errors.description?.message}
-                  disabled={disabled}
+                  disabled={isReadOnly}
                   labelBadge={
                     showEditedBadges &&
                     dirtyFields.description && <EditedBadge />
@@ -375,6 +392,10 @@ const SessionForm = ({
                           <TaskListElement
                             task={task}
                             enableSorting={enableSorting}
+                            // allow removal if unrestricted, or if the task was newly added
+                            canRemoveTask={
+                              canDeleteTasks || !initialTaskIds.has(task.id)
+                            }
                             onRemove={() =>
                               setSelectedTasks(
                                 selectedTasks.filter((t) => t !== task),
@@ -387,7 +408,7 @@ const SessionForm = ({
                   </Field.Root>
                 </SortableListWrapper>
 
-                {!disabled && (
+                {!isReadOnly && (
                   <Select
                     label={messages.addTask}
                     options={[
@@ -420,7 +441,7 @@ const SessionForm = ({
                   showEditedBadge={showEditedBadges}
                   label={messages.sharingType}
                   data-testid="sharing-type"
-                  disabled={disabled}
+                  disabled={!canChangeSharingType}
                   options={[
                     {
                       value: SharingType.anonymous,
@@ -433,7 +454,7 @@ const SessionForm = ({
                   ]}
                 />
               </GridItem>
-              {!disabled && (
+              {!isReadOnly && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <ButtonWrapper>
                     <Button
@@ -457,12 +478,9 @@ const SessionForm = ({
                 </GridItem>
               )}
             </Grid>
-            {!disabled && (
+            {!isReadOnly && (
               <SubmitButtonWrapper>
-                <SubmitFormButton
-                  label={submitMessage}
-                  disabled={!isDirty || disabled}
-                />
+                <SubmitFormButton label={submitMessage} disabled={!isDirty} />
               </SubmitButtonWrapper>
             )}
           </form>

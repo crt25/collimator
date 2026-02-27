@@ -629,8 +629,7 @@
       "value": "Créer une leçon"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -751,8 +750,7 @@
       "value": "Créer une activité"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -1079,8 +1077,7 @@
       "value": "Activités"
     }
   ],
-  "DEPRECATED: ListClasses.description": [
-  ],
+  "DEPRECATED: ListClasses.description": [],
   "DEPRECATED: ListClasses.pageTitle": [
     {
       "type": 0,
@@ -1211,16 +1208,14 @@
       "value": "Afficher la leçon"
     }
   ],
-  "DEPRECATED: Task.sessionMenu.heading.description": [
-  ],
+  "DEPRECATED: Task.sessionMenu.heading.description": [],
   "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": [
     {
       "type": 0,
       "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
     }
   ],
-  "DEPRECATED: TaskInstanceList.description": [
-  ],
+  "DEPRECATED: TaskInstanceList.description": [],
   "DEPRECATED: TaskSessionActions.deleteTask": [
     {
       "type": 0,
@@ -1956,7 +1951,7 @@
   "SessionDetail.sessionLockedDescription": [
     {
       "type": 0,
-      "value": "Cette session a des étudiants inscrits et ne peut pas être modifiée."
+      "value": "Cette session a des étudiants inscrits. Vous ne pouvez pas supprimer les tâches existantes ni modifier le type de partage."
     }
   ],
   "SessionDetail.sessionLockedTitle": [

@@ -611,8 +611,7 @@
       "value": "Create Class"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -733,8 +732,7 @@
       "value": "Create Task"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -1466,7 +1464,7 @@
   "SessionDetail.sessionLockedDescription": [
     {
       "type": 0,
-      "value": "This session has enrolled students and cannot be edited."
+      "value": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
     }
   ],
   "SessionDetail.sessionLockedTitle": [

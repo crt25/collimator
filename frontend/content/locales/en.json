@@ -703,7 +703,7 @@
     "message": "View only"
   },
   "SessionDetail.sessionLockedDescription": {
-    "message": "This session has enrolled students and cannot be edited."
+    "message": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
   },
   "SessionDetail.sessionLockedTitle": {
     "message": "Session is locked"

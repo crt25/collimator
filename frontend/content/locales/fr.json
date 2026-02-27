@@ -952,7 +952,7 @@
     "message": "Consultation uniquement"
   },
   "SessionDetail.sessionLockedDescription": {
-    "message": "Cette session a des étudiants inscrits et ne peut pas être modifiée."
+    "message": "Cette session a des étudiants inscrits. Vous ne pouvez pas supprimer les tâches existantes ni modifier le type de partage."
   },
   "SessionDetail.sessionLockedTitle": {
     "message": "La session est verrouillée"
