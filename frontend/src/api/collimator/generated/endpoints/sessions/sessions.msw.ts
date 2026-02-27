@@ -188,6 +188,7 @@ export const getSessionsControllerFindOneV0ResponseMock = (
       undefined,
     ]),
   })),
+  hasStudents: faker.datatype.boolean(),
   ...overrideResponse,
 });
 
