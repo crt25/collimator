@@ -23,13 +23,13 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
     select: { id: true },
   });
 
-  const existingIds = existingUsers.map((user) => user.id);
+  const existingIds = new Set(existingUsers.map((user) => user.id));
 
   const filteredRegistered = registeredUsers.filter(
-    (user) => !existingIds.includes(user.id),
+    (user) => !existingIds.has(user.id),
   );
   const filteredUnregistered = unregisteredUsers.filter(
-    (user) => !existingIds.includes(user.id),
+    (user) => !existingIds.has(user.id),
   );
 
   await Promise.all([
