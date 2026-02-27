@@ -63,28 +63,3 @@ export const executeAsyncWithToasts = async <T>(
     throw error;
   }
 };
-
-export const executeWithToasts = <T>(
-  fn: () => T,
-  errorMessage: ErrorMessage,
-  successMessage?: string,
-): T => {
-  try {
-    const response = fn();
-    if (successMessage) {
-      toaster.success({
-        title: successMessage,
-        closable: true,
-        duration: toastDuration,
-      });
-    }
-    return response;
-  } catch (error) {
-    toaster.error({
-      title: formatErrorMessage(errorMessage, error),
-      closable: true,
-      duration: toastDuration,
-    });
-    throw error;
-  }
-};

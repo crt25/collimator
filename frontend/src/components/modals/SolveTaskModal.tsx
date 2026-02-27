@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { Language, Submission } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
-import { executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
@@ -52,7 +52,7 @@ const SolveTaskModal = ({
   const loadContent = useCallback(
     (embeddedApp: EmbeddedAppRef) => {
       if (solution && task) {
-        executeWithToasts(
+        executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadSubmission", {
               task,
@@ -65,7 +65,7 @@ const SolveTaskModal = ({
       }
 
       if (task) {
-        executeWithToasts(
+        executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task,
