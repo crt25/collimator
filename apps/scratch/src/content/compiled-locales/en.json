@@ -153,6 +153,12 @@
       "value": "Maximum execution time in seconds."
     }
   ],
+  "crt.useEmbeddedScratch.cannotGetTask": [
+    {
+      "type": 0,
+      "value": "Could not get the task."
+    }
+  ],
   "crt.useEmbeddedScratch.cannotLoadProject": [
     {
       "type": 0,
