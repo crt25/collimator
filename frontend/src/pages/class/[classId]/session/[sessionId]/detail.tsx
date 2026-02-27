@@ -163,7 +163,7 @@ const SessionDetail = () => {
                   }
                 />
               )}
-              {isCreatorOrAdmin && (
+              {isCreatorOrAdmin && session?.hasStudents && (
                 <Alert
                   icon={LuLock}
                   title={<FormattedMessage {...messages.sessionLockedTitle} />}
