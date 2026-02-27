@@ -1,7 +1,7 @@
 import { Page, Request } from "@playwright/test";
 import {
-  test as testBase,
   expect as expectBase,
+  test as testBase,
 } from "playwright-test-coverage";
 import pg from "pg";
 import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
@@ -109,12 +109,6 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       };
 
       const testUrl = getUrl(testConfig);
-
-      const seedResult = seedE2eDatabase({ databaseUrl: testUrl });
-
-      if (seedResult.status !== 0) {
-        throw new Error(`e2e seed failed: ${seedResult.stderr?.toString()}`);
-      }
 
       // the frontend port must be different from the backend port
       // and we cannot sequentially start them using automatic port allocation
