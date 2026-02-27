@@ -1,0 +1,26 @@
+import {Language} from "./iframe-rpc/src";
+
+export enum JupyterLanguageLocale {
+  en = "en",
+  fr = "fr_FR",
+  default = "default",
+}
+
+export const crtToJupyter = new Map<Language, JupyterLanguageLocale>([
+  [Language.en, JupyterLanguageLocale.en],
+  [Language.fr, JupyterLanguageLocale.fr],
+]) satisfies Map<Language, JupyterLanguageLocale>;
+
+export const jupyterToCrt = new Map<string, Language>([
+  [JupyterLanguageLocale.fr, Language.fr],
+  [JupyterLanguageLocale.en, Language.en],
+  [JupyterLanguageLocale.default, Language.en],
+]);
+
+export const toJupyterLocale = (locale: Language): JupyterLanguageLocale => {
+  return crtToJupyter.get(locale) ?? JupyterLanguageLocale.en;
+};
+
+export const toCrtLocale = (locale: string): Language => {
+  return jupyterToCrt.get(locale) ?? Language.en;
+};

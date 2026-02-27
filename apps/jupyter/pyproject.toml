@@ -13,6 +13,7 @@ dependencies = [
     "libarchive-c (>=5.3,<6.0)",
     "copier (>=9.10.1,<10.0.0)",
     "jinja2-time (>=0.2.0,<0.3.0)",
+    "jupyterlab-language-pack-fr-FR",
 ]
 
 
