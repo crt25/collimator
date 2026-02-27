@@ -3,6 +3,7 @@ import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { SessionStatus } from ".prisma/client";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { PrismaTransactionClient } from "src/prisma/types";
 import { ClassId } from "../classes/dto";
 import { StudentId } from "../solutions/solutions.service";
 import { SessionId } from "./dto";
@@ -153,6 +154,46 @@ export class SessionsService {
       ),
     ]);
     return update;
+  }
+
+  async hasStudents(
+    sessionId: SessionId,
+    includeSoftDelete = false,
+  ): Promise<boolean> {
+    return this.hasStudentsTx(this.prisma, sessionId, includeSoftDelete);
+  }
+
+  private async hasStudentsTx(
+    tx: PrismaTransactionClient,
+    sessionId: SessionId,
+    includeSoftDelete = false,
+  ): Promise<boolean> {
+    const sessionWithStudents = await tx.session.findFirst({
+      where: {
+        id: sessionId,
+        deletedAt: includeSoftDelete ? undefined : null,
+        OR: [
+          {
+            anonymousStudents: {
+              some: {
+                deletedAt: includeSoftDelete ? undefined : null,
+              },
+            },
+          },
+          {
+            class: {
+              students: {
+                some: {
+                  deletedAt: includeSoftDelete ? undefined : null,
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return sessionWithStudents !== null;
   }
 
   changeStatusByIdAndClass(
