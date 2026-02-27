@@ -1,30 +1,25 @@
 import VM from "@scratch/scratch-vm";
 import { useMemo } from "react";
-import toast from "react-hot-toast";
 import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import {
-  useIframeParent,
-  Language,
-  Submission,
-  Test,
   GetTask,
-  LoadTask,
-  LoadSubmission,
-  SetLocale,
   ImportTask,
+  Language,
+  LoadSubmission,
+  LoadTask,
+  SetLocale,
+  Submission,
   Task,
+  Test,
+  useIframeParent
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
 import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { loadCrtProject } from "../vm/load-crt-project";
 
-import {
-  MissingAssetsError,
-  ScratchProjectError,
-  ScratchProjectErrorCode,
-} from "../errors/scratch/index";
+import { MissingAssetsError, ScratchProjectError, ScratchProjectErrorCode } from "../errors/scratch/index";
 
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
@@ -172,7 +167,7 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
 
         console.error(`${logModule} Maximum execution time exceeded`);
 
-        toast.error(intl.formatMessage(messages.timeoutExceeded));
+        throw new Error(intl.formatMessage(messages.timeoutExceeded));
       }, maximumExecutionTimeInMs);
     });
 
@@ -192,9 +187,8 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
     );
   } catch (e) {
     console.error(`${logModule} RPC: getSubmission failed with error:`, e);
-    toast.error(intl.formatMessage(messages.cannotSaveProject));
 
-    throw e;
+    throw new Error(intl.formatMessage(messages.cannotSaveProject));
   } finally {
     if (!assertionsEnabled) {
       vm.runtime.emit("DISABLE_ASSERTIONS");
@@ -261,9 +255,8 @@ export class EmbeddedScratchCallbacks {
         `${logModule} RPC: ${request.method} failed with error:`,
         e,
       );
-      toast.error(this.intl.formatMessage(messages.cannotSaveProject));
 
-      throw e;
+      throw new Error(this.getErrorMessage(e));
     }
   }
 
@@ -281,9 +274,7 @@ export class EmbeddedScratchCallbacks {
         e,
       );
 
-      toast.error(this.getErrorMessage(e));
-
-      throw e;
+      throw new Error(this.getErrorMessage(e));
     }
   }
 
@@ -305,9 +296,8 @@ export class EmbeddedScratchCallbacks {
       };
     } catch (e) {
       console.error(`Failed to export task:`, e);
-      toast.error(this.intl.formatMessage(messages.cannotExportProject));
 
-      throw e;
+      throw new Error(this.getErrorMessage(e));
     }
   }
 
@@ -351,9 +341,8 @@ export class EmbeddedScratchCallbacks {
       }
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
-      toast.error(this.intl.formatMessage(messages.cannotLoadProject));
 
-      throw e;
+      throw new Error(this.getErrorMessage(e));
     }
   }
 
