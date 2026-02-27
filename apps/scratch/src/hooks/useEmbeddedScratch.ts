@@ -13,13 +13,17 @@ import {
   Submission,
   Task,
   Test,
-  useIframeParent
+  useIframeParent,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
 import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { loadCrtProject } from "../vm/load-crt-project";
 
-import { MissingAssetsError, ScratchProjectError, ScratchProjectErrorCode } from "../errors/scratch/index";
+import {
+  MissingAssetsError,
+  ScratchProjectError,
+  ScratchProjectErrorCode,
+} from "../errors/scratch/index";
 
 import { saveCrtProject } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
