@@ -1,10 +1,40 @@
+import { IntlShape, MessageDescriptor } from "react-intl";
 import { toaster } from "@/components/Toaster";
 
 const toastDuration = 60 * 1000;
 
+type MessageDescriptorWithError = MessageDescriptor & {
+  defaultMessage: `${string}{error}${string}`;
+};
+
+type ErrorMessage =
+  | string
+  | { intl: IntlShape; descriptor: MessageDescriptorWithError };
+
+const getErrorDetail = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
+};
+
+const formatErrorMessage = (
+  errorMessage: ErrorMessage,
+  error: unknown,
+): string => {
+  if (typeof errorMessage === "string") {
+    return errorMessage;
+  }
+
+  return errorMessage.intl.formatMessage(errorMessage.descriptor, {
+    error: getErrorDetail(error),
+  });
+};
+
 export const executeAsyncWithToasts = async <T>(
   fn: () => Promise<T>,
-  errorMessage: string,
+  errorMessage: ErrorMessage,
   successMessage?: string,
 ): Promise<T> => {
   try {
@@ -20,7 +50,7 @@ export const executeAsyncWithToasts = async <T>(
     return response;
   } catch (error) {
     toaster.error({
-      title: errorMessage,
+      title: formatErrorMessage(errorMessage, error),
       closable: true,
       duration: toastDuration,
     });
@@ -31,7 +61,7 @@ export const executeAsyncWithToasts = async <T>(
 
 export const executeWithToasts = <T>(
   fn: () => T,
-  errorMessage: string,
+  errorMessage: ErrorMessage,
   successMessage?: string,
 ): T => {
   try {
@@ -46,7 +76,7 @@ export const executeWithToasts = <T>(
     return response;
   } catch (error) {
     toaster.error({
-      title: errorMessage,
+      title: formatErrorMessage(errorMessage, error),
       closable: true,
       duration: toastDuration,
     });
