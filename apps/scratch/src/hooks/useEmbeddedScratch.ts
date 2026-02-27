@@ -152,7 +152,7 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
     const waitForAssertions = new Promise<{
       passedAssertions: Assertion[];
       failedAssertions: Assertion[];
-    }>((resolve) => {
+    }>((resolve, reject) => {
       let finishedRunning = false;
       vm.runtime.once(
         "ASSERTIONS_CHECKED",
@@ -180,7 +180,11 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
 
         console.error(`${logModule} Maximum execution time exceeded`);
 
-        throw new Error(intl.formatMessage(messages.timeoutExceeded));
+        reject(
+          new TimeoutExceededError(
+            intl.formatMessage(messages.timeoutExceeded),
+          ),
+        );
       }, maximumExecutionTimeInMs);
     });
 
