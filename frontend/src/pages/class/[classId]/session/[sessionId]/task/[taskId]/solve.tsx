@@ -222,7 +222,7 @@ const SolveTaskPage = () => {
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          { intl, descriptor: taskMessages.cannotLoadTask },
+          { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       } catch {
         // if we cannot fetch the latest solution file we load the task from scratch
