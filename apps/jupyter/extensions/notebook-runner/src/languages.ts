@@ -1,4 +1,4 @@
-import { Language } from "./iframe-rpc/src";
+import {Language} from "./iframe-rpc/src";
 
 export enum JupyterLanguageLocale {
   en = "en",
@@ -9,7 +9,7 @@ export enum JupyterLanguageLocale {
 export const crtToJupyter = new Map<Language, JupyterLanguageLocale>([
   [Language.en, JupyterLanguageLocale.en],
   [Language.fr, JupyterLanguageLocale.fr],
-]);
+]) satisfies Map<Language, JupyterLanguageLocale>;
 
 export const jupyterToCrt = new Map<string, Language>([
   [JupyterLanguageLocale.fr, Language.fr],
