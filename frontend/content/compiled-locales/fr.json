@@ -1421,6 +1421,12 @@
       "value": "Modifié"
     }
   ],
+  "EmbeddedApp.errorMessage": [
+    {
+      "type": 0,
+      "value": "Échec du chargement de l’application. Veuillez réessayer plus tard."
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,
