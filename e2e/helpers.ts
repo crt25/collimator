@@ -12,6 +12,7 @@ import {
   gracefullyStopBackend,
   killProcessByPid,
   PostgresConfig,
+  seedE2eDatabase,
   setupBackendPort,
   setupFrontendPort,
   setupProjectNamePrefix,
@@ -108,6 +109,12 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       };
 
       const testUrl = getUrl(testConfig);
+
+      const seedResult = seedE2eDatabase({ databaseUrl: testUrl });
+
+      if (seedResult.status !== 0) {
+        throw new Error(`e2e seed failed: ${seedResult.stderr?.toString()}`);
+      }
 
       // the frontend port must be different from the backend port
       // and we cannot sequentially start them using automatic port allocation
@@ -282,6 +289,17 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
           `CREATE DATABASE "${workerConfig.uniqueDbName}" TEMPLATE "${workerConfig.postgresConfig.database}"`,
         );
         await client.end();
+      }
+
+      const resetTestUrl = getUrl({
+        ...workerConfig.postgresConfig,
+        database: workerConfig.uniqueDbName,
+      });
+
+      const seedResult = seedE2eDatabase({ databaseUrl: resetTestUrl });
+
+      if (seedResult.status !== 0) {
+        throw new Error(`e2e seed failed: ${seedResult.stderr?.toString()}`);
       }
 
       const anyFingerprint = await getPublicKeyFingerprint(adminUser.publicKey);
