@@ -20,9 +20,14 @@ import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reduce
 import { loadCrtProject } from "../vm/load-crt-project";
 
 import {
+  CannotExportProjectError,
+  CannotGetTaskError,
+  CannotLoadProjectError,
+  CannotSaveProjectError,
   MissingAssetsError,
   ScratchProjectError,
   ScratchProjectErrorCode,
+  TimeoutExceededError,
 } from "../errors/scratch/index";
 
 import { saveCrtProject } from "../vm/save-crt-project";
@@ -87,6 +92,10 @@ const messages = defineMessages({
   unknownError: {
     id: "crt.useEmbeddedScratch.unknownError",
     defaultMessage: "An unknown error occurred.",
+  },
+  cannotGetTask: {
+    id: "crt.useEmbeddedScratch.cannotGetTask",
+    defaultMessage: "Could not get the task.",
   },
 });
 
@@ -192,7 +201,9 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
   } catch (e) {
     console.error(`${logModule} RPC: getSubmission failed with error:`, e);
 
-    throw new Error(intl.formatMessage(messages.cannotSaveProject));
+    throw new CannotSaveProjectError(
+      intl.formatMessage(messages.cannotSaveProject),
+    );
   } finally {
     if (!assertionsEnabled) {
       vm.runtime.emit("DISABLE_ASSERTIONS");
@@ -219,6 +230,11 @@ export class EmbeddedScratchCallbacks {
     [ScratchProjectErrorCode.MissingAssets]: messages.missingAssets,
     [ScratchProjectErrorCode.InvalidFormat]: messages.invalidScratchProject,
     [ScratchProjectErrorCode.Unknown]: messages.unknownError,
+    [ScratchProjectErrorCode.CannotExportProject]: messages.cannotExportProject,
+    [ScratchProjectErrorCode.CannotLoadProject]: messages.cannotLoadProject,
+    [ScratchProjectErrorCode.CannotSaveProject]: messages.cannotSaveProject,
+    [ScratchProjectErrorCode.TimeoutExceeded]: messages.timeoutExceeded,
+    [ScratchProjectErrorCode.CannotGetTask]: messages.cannotGetTask,
   };
 
   private getErrorMessage(e: unknown): string {
@@ -260,7 +276,7 @@ export class EmbeddedScratchCallbacks {
         e,
       );
 
-      throw new Error(this.getErrorMessage(e));
+      throw new CannotGetTaskError(this.getErrorMessage(e));
     }
   }
 
@@ -278,7 +294,7 @@ export class EmbeddedScratchCallbacks {
         e,
       );
 
-      throw new Error(this.getErrorMessage(e));
+      throw new CannotLoadProjectError(this.getErrorMessage(e));
     }
   }
 
@@ -301,7 +317,7 @@ export class EmbeddedScratchCallbacks {
     } catch (e) {
       console.error(`Failed to export task:`, e);
 
-      throw new Error(this.getErrorMessage(e));
+      throw new CannotExportProjectError(this.getErrorMessage(e));
     }
   }
 
@@ -346,7 +362,7 @@ export class EmbeddedScratchCallbacks {
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
-      throw new Error(this.getErrorMessage(e));
+      throw new CannotLoadProjectError(this.getErrorMessage(e));
     }
   }
 
