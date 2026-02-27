@@ -437,6 +437,9 @@
   "EditedBadge.edited": {
     "message": "Edited"
   },
+  "EmbeddedApp.errorMessage": {
+    "message": "Failed to load the app. Please try again later."
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },

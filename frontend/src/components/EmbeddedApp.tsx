@@ -1,11 +1,20 @@
 import styled from "@emotion/styled";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import {
   useIframeChild,
   PlatformCrtIframeApi,
   Submission,
 } from "iframe-rpc-react/src";
+import { FormattedMessage } from "react-intl";
 import ProgressSpinner from "./ProgressSpinner";
+
+const APP_IFRAME_LOAD_TIMEOUT = 30000;
 
 const LoadingWrapper = styled.div`
   position: absolute;
@@ -19,6 +28,12 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const ErrorMessage = styled.div`
+  color: #dc2626;
+  text-align: center;
+  padding: 16px;
 `;
 
 const IFrameWrapper = styled.div`
@@ -44,6 +59,12 @@ export class IFrameUnavailableError extends Error {
   }
 }
 
+enum LoadingState {
+  loading = "loading",
+  available = "available",
+  error = "error",
+}
+
 export interface EmbeddedAppRef {
   sendRequest: ReturnType<typeof useIframeChild>["sendRequest"];
 }
@@ -51,6 +72,7 @@ export interface EmbeddedAppRef {
 export interface Props {
   src: string;
   onAppAvailable?: () => void;
+  onAppError?: (error: Error) => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
   onReceiveTaskSolution?: (solution: Blob) => void;
@@ -65,6 +87,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   {
     src,
     onAppAvailable,
+    onAppError,
     onReceiveSubmission,
     onSolutionRun,
     onStudentAppActivity,
@@ -72,7 +95,15 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   },
   ref,
 ) {
-  const [isAppAvailable, setIsAppAvailable] = useState<boolean>(false);
+  const [loadingState, setLoadingState] = useState<LoadingState>(
+    LoadingState.loading,
+  );
+  const [prevSrc, setPrevSrc] = useState(src);
+
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setLoadingState(LoadingState.loading);
+  }
 
   const onAvailable = useCallback(
     async (iframe: HTMLIFrameElement, api: PlatformCrtIframeApi) => {
@@ -80,11 +111,8 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
 
       iframe.style.height = `${response.result}px`;
 
-      setIsAppAvailable(true);
-
-      if (onAppAvailable) {
-        onAppAvailable();
-      }
+      setLoadingState(LoadingState.available);
+      onAppAvailable?.();
     },
     [onAppAvailable],
   );
@@ -111,6 +139,23 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     onAvailable,
   );
 
+  useEffect(() => {
+    if (loadingState !== LoadingState.loading) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      if (loadingState === LoadingState.loading) {
+        const error = new IFrameUnavailableError();
+
+        setLoadingState(LoadingState.error);
+        onAppError?.(error);
+      }
+    }, APP_IFRAME_LOAD_TIMEOUT);
+
+    return () => clearTimeout(timeout);
+  }, [loadingState, onAppError]);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -132,9 +177,19 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
         referrerPolicy="no-referrer-when-downgrade"
         loading="lazy"
       />
-      {!isAppAvailable && (
+      {loadingState === LoadingState.loading && (
         <LoadingWrapper>
           <ProgressSpinner />
+        </LoadingWrapper>
+      )}
+      {loadingState === LoadingState.error && (
+        <LoadingWrapper>
+          <ErrorMessage>
+            <FormattedMessage
+              id="EmbeddedApp.errorMessage"
+              defaultMessage="Failed to load the app. Please try again later."
+            />
+          </ErrorMessage>
         </LoadingWrapper>
       )}
     </IFrameWrapper>

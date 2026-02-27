@@ -1,4 +1,4 @@
-# Welcome to ClassMosaic - A classroom reflection tool
+# Welcome to ClassMosaic: a classroom reflection tool
 
 ClassMosaic is a web-based platform designed for building and managing programming tasks, primarily for educational purposes. It enables teachers to create classes, manage sessions, and design tasks that students can solve directly in the browser.
 

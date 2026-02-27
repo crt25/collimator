@@ -1,4 +1,4 @@
-- [Welcome to ClassMosaic!](/)
+- [Welcome to ClassMosaic](/)
 - [Installation](/overview/developer-setup-guide.md)
 - [Overview](/overview/overview.md)
 
