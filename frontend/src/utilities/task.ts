@@ -9,7 +9,11 @@ type MessageDescriptorWithError = MessageDescriptor & {
 
 type ErrorMessage =
   | string
-  | { intl: IntlShape; descriptor: MessageDescriptorWithError };
+  | {
+      intl: IntlShape;
+      descriptor: MessageDescriptorWithError;
+      values?: Record<string, string | number>;
+    };
 
 const getErrorDetail = (error: unknown): string => {
   if (error instanceof Error) {
@@ -28,6 +32,7 @@ const formatErrorMessage = (
   }
 
   return errorMessage.intl.formatMessage(errorMessage.descriptor, {
+    ...errorMessage.values,
     error: getErrorDetail(error),
   });
 };
