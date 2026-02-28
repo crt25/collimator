@@ -1,4 +1,6 @@
 #!/bin/bash
+# exit immediately if any command fails
+set -e
 
 # migrate the database
 yarn prisma migrate deploy

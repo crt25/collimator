@@ -92,6 +92,20 @@ export const resetDatabase = (config: {
     shell: true,
   });
 
+export const seedE2eDatabase = (config: {
+  databaseUrl: string;
+}): SpawnSyncReturns<Buffer> =>
+  spawnSync("yarn", ["prisma:seed:e2e"], {
+    env: {
+      ...process.env,
+      DATABASE_URL: config.databaseUrl,
+    },
+    cwd: getBackendPath(),
+    // since we want 'yarn' to be used from the PATH, we need to set shell to true
+    // also not a security problem since we are not using any user input, this is a test script
+    shell: true,
+  });
+
 export const startMockOidcServer = (config: {
   port?: number | string;
   frontendHostname?: string;

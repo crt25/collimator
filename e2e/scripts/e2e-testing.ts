@@ -1,6 +1,7 @@
 import { writeFileSync } from "fs";
 import {
   resetDatabase,
+  seedE2eDatabase,
   setupFrontendPort,
   startBackend,
   startFrontendWithBackendProxy,
@@ -55,6 +56,19 @@ const main = async (): Promise<void> => {
 
   if (reset.status !== 0) {
     throw new Error("Could not reset the database");
+  }
+
+  const seed = seedE2eDatabase({
+    databaseUrl: process.env.DATABASE_URL,
+  });
+
+  if (isDebug) {
+    console.log(seed.stdout.toString("utf-8"));
+  }
+
+  if (seed.status !== 0) {
+    console.error(seed.stderr.toString("utf-8"));
+    throw new Error("Could not seed the e2e database");
   }
 
   // start mock OIDC server
