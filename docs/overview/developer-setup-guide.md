@@ -70,7 +70,7 @@ git submodule update --init --recursive --progress
 7. Seed the database:
 
     ```sh
-    $ yarn prisma:seed
+    $ yarn prisma:seed:all
     ```
 
     In the console, you should see:
