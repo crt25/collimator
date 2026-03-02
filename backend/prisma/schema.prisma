@@ -151,7 +151,7 @@ model Session {
   deletedAt       DateTime?
 
   lesson            Lesson?            @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
-  class             Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  class             Class              @relation(fields: [classId], references: [id], onDelete: Restrict)
   tasks             SessionTask[]
   solutions         StudentSolution[]
   anonymousStudents AnonymousStudent[]
@@ -198,8 +198,9 @@ model SessionTask {
   sessionId Int
   taskId    Int
   index     Int
+  deletedAt DateTime?
 
-  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task              Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
   solutions         StudentSolution[]
   studentActivities StudentActivity[]
@@ -238,8 +239,8 @@ model ReferenceSolution {
 
   tests SolutionTest[]
 
-  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
-  task     Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
+  task     Task     @relation(fields: [taskId], references: [id], onDelete: Restrict)
 
   @@unique([taskId, solutionHash])
 }
@@ -256,7 +257,7 @@ model StudentSolution {
 
   tests SolutionTest[]
 
-  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
@@ -341,11 +342,11 @@ model StudentActivity {
   taskId       Int
   solutionHash Bytes
 
-  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
-  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
 
   appActivity StudentActivityApp?
 
