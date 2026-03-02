@@ -2,29 +2,20 @@ import { ScratchProjectError } from "./base";
 import { ScratchProjectErrorCode } from "./codes";
 
 export class InvalidZipError extends ScratchProjectError {
-  constructor(public originalError: Error) {
-    super(
-      ScratchProjectErrorCode.InvalidZip,
-      "Invalid project file: not a valid ZIP archive",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.InvalidZip, message);
   }
 }
 
 export class MissingProjectJsonError extends ScratchProjectError {
-  constructor() {
-    super(
-      ScratchProjectErrorCode.MissingProjectJson,
-      "project.json missing from the ZIP",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.MissingProjectJson, message);
   }
 }
 
 export class InvalidProjectJsonError extends ScratchProjectError {
-  constructor(public originalError: Error) {
-    super(
-      ScratchProjectErrorCode.InvalidProjectJson,
-      "project.json is invalid JSON",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.InvalidProjectJson, message);
   }
 }
 
@@ -38,61 +29,43 @@ export class MissingAssetsError extends ScratchProjectError {
 }
 
 export class VmLoadError extends ScratchProjectError {
-  constructor(public originalError: Error) {
-    super(
-      ScratchProjectErrorCode.VmLoadError,
-      "Scratch VM failed to load project",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.VmLoadError, message);
   }
 }
 
 export class CrtConfigParseError extends ScratchProjectError {
-  constructor(public originalError: Error) {
-    super(
-      ScratchProjectErrorCode.CrtConfigParseError,
-      "crt.json is not valid JSON",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.CrtConfigParseError, message);
   }
 }
 
 export class CannotExportProjectError extends ScratchProjectError {
-  constructor(public originalError: unknown) {
-    super(
-      ScratchProjectErrorCode.CannotExportProject,
-      "Failed to export the project",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.CannotExportProject, message);
   }
 }
 
 export class CannotLoadProjectError extends ScratchProjectError {
-  constructor(public originalError: unknown) {
-    super(
-      ScratchProjectErrorCode.CannotLoadProject,
-      "Failed to load the project",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.CannotLoadProject, message);
   }
 }
 
 export class CannotSaveProjectError extends ScratchProjectError {
-  constructor(public originalError: unknown) {
-    super(
-      ScratchProjectErrorCode.CannotSaveProject,
-      "Failed to save the project",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.CannotSaveProject, message);
   }
 }
 
 export class TimeoutExceededError extends ScratchProjectError {
-  constructor(public originalError: unknown) {
-    super(
-      ScratchProjectErrorCode.TimeoutExceeded,
-      "Maximum execution time exceeded",
-    );
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.TimeoutExceeded, message);
   }
 }
 
 export class CannotGetTaskError extends ScratchProjectError {
-  constructor(public originalError: unknown) {
-    super(ScratchProjectErrorCode.CannotGetTask, "Failed to get the task");
+  constructor(public message: string) {
+    super(ScratchProjectErrorCode.CannotGetTask, message);
   }
 }
