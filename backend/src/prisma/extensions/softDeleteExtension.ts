@@ -83,7 +83,7 @@ async function cascadeDelete(
     // Delete all children of this type
     if (mode === CascadeMode.Soft) {
       await tx[clientModel].updateMany({
-        where: buildForeignKeyWhereClause(child, parentModel, parentId, false),
+        where: buildForeignKeyWhereClause(child, parentModel, parentId, true),
         data: { [SOFT_DELETE_FIELD]: deletedAt },
       });
     } else {

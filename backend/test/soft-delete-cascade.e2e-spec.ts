@@ -780,6 +780,52 @@ describe("Soft Delete Cascade (e2e)", () => {
   // =========================================================================
 
   describe("Timestamp consistency", () => {
+    it("preserves original deletedAt on already-deleted children", async () => {
+      // Setup: Class -> Session (where Session is already soft-deleted)
+      const user = await createUser(app, { id: 10000 });
+      const klass = await createClassWithId(app, {
+        id: 10000,
+        teacherId: user.id,
+      });
+      const session = await createSessionWithId(app, {
+        id: 10000,
+        classId: klass.id,
+      });
+
+      // First, soft-delete the Session directly
+      await prisma.session.delete({ where: { id: session.id } });
+
+      // Capture the Session's original deletedAt timestamp
+      const deletedSession = await prisma.session.findFirst({
+        where: { id: session.id },
+      });
+      expect(deletedSession!.deletedAt).not.toBeNull();
+      const originalSessionDeletedAt = deletedSession!.deletedAt!.getTime();
+
+      // Wait a bit to ensure different timestamp if bug exists
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      // Now delete the parent Class - this should NOT overwrite Session's deletedAt
+      await prisma.class.delete({ where: { id: klass.id } });
+
+      // Verify Class is soft-deleted with a newer timestamp
+      const deletedClass = await prisma.class.findFirst({
+        where: { id: klass.id },
+      });
+      expect(deletedClass!.deletedAt).not.toBeNull();
+      expect(deletedClass!.deletedAt!.getTime()).toBeGreaterThan(
+        originalSessionDeletedAt,
+      );
+
+      // Verify Session's deletedAt was NOT overwritten - it should keep original timestamp
+      const sessionAfterClassDelete = await prisma.session.findFirst({
+        where: { id: session.id },
+      });
+      expect(sessionAfterClassDelete!.deletedAt!.getTime()).toBe(
+        originalSessionDeletedAt,
+      );
+    });
+
     it("uses identical deletedAt for entire cascade tree", async () => {
       // Create deep hierarchy: Class -> Session -> StudentSolution
       const user = await createUser(app, { id: 10001 });
