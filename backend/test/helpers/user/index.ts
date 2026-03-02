@@ -1,6 +1,14 @@
 import { INestApplication } from "@nestjs/common";
+import {
+  AuthenticationProvider,
+  AuthenticationToken,
+  RegistrationToken,
+  User,
+  UserType,
+} from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { User } from "@prisma/client";
+
+export const adminUserToken = "adminUserToken";
 
 export const ensureUserExists = async (
   app: INestApplication,
@@ -11,14 +19,8 @@ export const ensureUserExists = async (
 
   await prisma.user.upsert({
     where: { id: user.id },
-    create: {
-      ...user,
-      deletedAt: null,
-    },
-    update: {
-      ...user,
-      deletedAt: null,
-    },
+    create: { ...user, deletedAt: null },
+    update: { ...user, deletedAt: null },
   });
 
   // NOTE: Prisma does not let us specify the index predicate in ON CONFLICT
@@ -26,17 +28,13 @@ export const ensureUserExists = async (
   // Since AuthenticationToken.token only has a partial unique index, we cannot use upsert() here.
   // See here: https://www.postgresql.org/docs/9.6/sql-insert.html#SQL-ON-CONFLICT
   const token = await prisma.authenticationToken.findFirst({
-    where: { token: userToken, deletedAt: null },
+    where: { token: userToken },
   });
 
   if (token) {
     await prisma.authenticationToken.update({
-      where: {
-        id: token.id,
-      },
-      data: {
-        lastUsedAt: new Date(),
-      },
+      where: { id: token.id },
+      data: { lastUsedAt: new Date() },
     });
   } else {
     await prisma.authenticationToken.create({
@@ -44,65 +42,71 @@ export const ensureUserExists = async (
         token: userToken,
         userId: user.id,
         lastUsedAt: new Date(),
-        deletedAt: null,
       },
     });
   }
 };
 
-export const ensureSoftDeletedUserExists = async (
+export const createUser = async (
   app: INestApplication,
-  user: User,
-): Promise<void> => {
+  options: {
+    id: number;
+    name?: string;
+    email?: string;
+    type?: UserType;
+    authenticationProvider?: AuthenticationProvider;
+  },
+): Promise<User> => {
   const prisma = app.get(PrismaService);
-  const now = new Date();
 
-  await prisma.user.upsert({
-    where: { id: user.id },
-    create: {
-      ...user,
-      deletedAt: now,
+  return prisma.user.create({
+    data: {
+      id: options.id,
+      name: options.name ?? `Test User ${options.id}`,
+      email: options.email ?? `user${options.id}@test.com`,
+      authenticationProvider:
+        options.authenticationProvider ?? AuthenticationProvider.MICROSOFT,
+      type: options.type ?? UserType.TEACHER,
+      deletedAt: null,
     },
-    update: {
-      ...user,
-      deletedAt: now,
+  });
+};
+
+export const createAuthenticationToken = async (
+  app: INestApplication,
+  options: {
+    id: number;
+    userId?: number | null;
+    studentId?: number | null;
+  },
+): Promise<AuthenticationToken> => {
+  const prisma = app.get(PrismaService);
+
+  return prisma.authenticationToken.create({
+    data: {
+      id: options.id,
+      token: `token-${options.id}`,
+      userId: options.userId ?? null,
+      studentId: options.studentId ?? null,
+      lastUsedAt: new Date(),
     },
   });
 };
 
-export const softDeleteUser = async (
+export const createRegistrationToken = async (
   app: INestApplication,
-  userId: number,
-): Promise<void> => {
-  const prisma = app.get(PrismaService);
-  const now = new Date();
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: { deletedAt: now },
-  });
-
-  await prisma.authenticationToken.updateMany({
-    where: { userId },
-    data: { deletedAt: now },
-  });
-};
-
-export const restoreUser = async (
-  app: INestApplication,
-  userId: number,
-): Promise<void> => {
+  options: {
+    id: number;
+    userId: number;
+  },
+): Promise<RegistrationToken> => {
   const prisma = app.get(PrismaService);
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { deletedAt: null },
-  });
-
-  await prisma.authenticationToken.updateMany({
-    where: { userId },
-    data: { deletedAt: null },
+  return prisma.registrationToken.create({
+    data: {
+      id: options.id,
+      token: `registration-${options.id}`,
+      userId: options.userId,
+    },
   });
 };
-
-export const adminUserToken = "adminUserToken";

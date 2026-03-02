@@ -4,6 +4,7 @@
   "modulePaths": ["<rootDir>"],
   "testEnvironment": "@quramy/jest-prisma-node/environment",
   "testRegex": ".e2e-spec.ts$",
+  "maxWorkers": 1,
   "transform": {
     "\\.js$": "babel-jest",
     "\\.ts$": "ts-jest"
