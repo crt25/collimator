@@ -32,6 +32,10 @@ describe("UsersController", () => {
   beforeEach(async () => {
     prismaMock = mockDeep<PrismaClient>();
 
+    prismaMock.$transaction.mockImplementation((callback) =>
+      callback(prismaMock),
+    );
+
     module = await Test.createTestingModule({
       imports: [CoreModule, mockConfigModule],
       controllers: [UsersController],
@@ -138,6 +142,8 @@ describe("UsersController", () => {
       type: UserType.TEACHER,
       deletedAt: new Date(),
     };
+    prismaMock.class.findFirst.mockResolvedValue(null);
+    prismaMock.task.updateMany.mockResolvedValue({ count: 0 });
     prismaMock.user.delete.mockResolvedValue(user);
 
     const result = await controller.delete(user.id);
@@ -267,6 +273,8 @@ describe("UsersController", () => {
       type: UserType.TEACHER,
       deletedAt: null,
     };
+    prismaMock.class.findFirst.mockResolvedValue(null);
+    prismaMock.task.updateMany.mockResolvedValue({ count: 0 });
     prismaMock.user.delete.mockResolvedValue(user);
 
     const result = await controller.delete(user.id);
