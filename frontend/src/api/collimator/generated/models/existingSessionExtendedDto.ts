@@ -30,4 +30,6 @@ export interface ExistingSessionExtendedDto {
   class: SessionClassDto;
   /** The session's tasks. */
   tasks: SessionTaskDto[];
+  /** Indicates whether the session has any students. */
+  hasStudents: boolean;
 }

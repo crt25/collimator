@@ -27,8 +27,12 @@ export class TaskAutoSaver {
     notebookTracker: INotebookTracker,
     private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
-    notebookTracker.widgetAdded.connect((sender, panel: NotebookPanel) => {
+    notebookTracker.widgetAdded.connect((_sender, panel: NotebookPanel) => {
       this.registerNotebook(panel, panel.context.model);
+    });
+
+    addEventListener("beforeunload", async () => {
+      await this.handlePageUnload(notebookTracker);
     });
   }
 
@@ -65,12 +69,42 @@ export class TaskAutoSaver {
   ): void {
     this.cancelContentChangeTimer(model);
 
-    const timer = setTimeout(() => {
-      this.saveNotebook(panel, model);
+    const timer = setTimeout(async () => {
+      await this.saveNotebook(panel, model);
       this.contentChangeTimers.delete(model);
     }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(model, timer);
+  }
+
+  private async handlePageUnload(
+    notebookTracker: INotebookTracker,
+  ): Promise<void> {
+    for (const [model, _] of this.contentChangeTimers.entries()) {
+      // The listener/timer cleanup is technically unnecessary since the page is unloading
+      // but we do it for good measure and to avoid any potential side effects
+      // if the unload gets canceled for some reason.
+      NotebookActions.executionScheduled.disconnect(
+        this.executionListeners.get(model)!,
+      );
+
+      this.contentChangeTimers.delete(model);
+    }
+
+    notebookTracker.forEach(async (panel) => {
+      const model = panel.context.model;
+
+      const saver = new TaskAutoSaver(
+        notebookTracker,
+        this.sendRequest.bind(this),
+      );
+
+      try {
+        await saver.saveNotebook(panel, model);
+      } catch (error) {
+        console.error(`Failed to save notebook ${model.toString()}:`, error);
+      }
+    });
   }
 
   private async handleExecutionScheduled(

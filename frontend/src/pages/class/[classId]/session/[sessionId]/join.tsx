@@ -302,7 +302,6 @@ const JoinSession = () => {
 
   if (isSessionAnonymous === undefined) {
     // as long as we do not know whether the session is anonymous, show a loading spinner
-    // then, when we know that the session is anonymous, show a form to enter a pseudonym
     return (
       <>
         <Header title={messages.title} />
@@ -334,7 +333,7 @@ const JoinSession = () => {
 
   return (
     <MaxScreenHeight>
-      <Header title={messages.title} />
+      <Header title={messages.title} hideSignIn={isSessionAnonymous} />
       <VerticalSpacing />
 
       <RemainingHeightContainer>

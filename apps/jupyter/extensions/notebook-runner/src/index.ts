@@ -5,11 +5,11 @@ import {
 import { ICommandPalette } from "@jupyterlab/apputils";
 import { ContentsManager, IContentsManager } from "@jupyterlab/services";
 import { IStatusBar } from "@jupyterlab/statusbar";
-import { ITranslator } from "@jupyterlab/translation";
 import { IRunningSessionSidebar } from "@jupyterlab/running";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
+import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
 import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
@@ -21,7 +21,6 @@ import { enableSentry } from "./sentry";
 
 enableSentry();
 
-const defaultNotebookPath = EmbeddedPythonCallbacks.taskTemplateLocation;
 /**
  * Initialization data for the notebook-runner extension.
  */
@@ -39,7 +38,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     ICommandPalette,
     IPropertyInspectorProvider,
     IFileBrowserFactory,
-    ITranslator,
+    ISettingRegistry,
   ],
   activate: async (
     app: JupyterFrontEnd,
@@ -51,6 +50,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     _commandPalette: ICommandPalette,
     propertyInspectorProvider: IPropertyInspectorProvider,
     factory: IFileBrowserFactory,
+    settingRegistry: ISettingRegistry,
   ) => {
     console.debug("JupyterLab extension notebook-runner is activated!");
 
@@ -68,12 +68,19 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     preInstallPackages(app, contentsManager, notebookTracker);
     const platform = setupIframeApi(
-      new EmbeddedPythonCallbacks(mode, app, documentManager, fileBrowser),
+      new EmbeddedPythonCallbacks(
+        mode,
+        app,
+        documentManager,
+        fileBrowser,
+        settingRegistry,
+      ),
     );
 
     if (mode === Mode.solve) {
-      TaskAutoSaver.trackNotebook(notebookTracker, (...args) =>
-        platform.sendRequest(...args),
+      TaskAutoSaver.trackNotebook(
+        notebookTracker,
+        platform.sendRequest.bind(platform),
       );
     }
 
@@ -87,8 +94,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     registerCommands(app, notebookTracker, contentsManager, documentManager);
 
-    // Open the default notebook (if it exists) once the application has loaded
-    app.restored.then(() => documentManager.openOrReveal(defaultNotebookPath));
+    app.restored.then(async () => {
+      // Only open the template notebook in edit mode.
+      // In solve or show mode, the correct notebook (student task) will be
+      // opened by the loadTask/loadSubmission RPC call from the parent.
+      if (mode === Mode.edit) {
+        try {
+          documentManager.openOrReveal(
+            EmbeddedPythonCallbacks.taskTemplateLocation,
+          );
+        } catch (error) {
+          console.error("Could not open template in edit mode:", error);
+        }
+      }
+    });
   },
 };
 
