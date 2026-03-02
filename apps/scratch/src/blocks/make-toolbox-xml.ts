@@ -42,7 +42,7 @@ const xmlEscape = function (unsafe: string): string {
 const xmlOpen = '<xml style="display: none">';
 const xmlClose = "</xml>";
 
-const allBlocksAreDisabled = `<category name="${formatMessage(messages.allBlocksDisabled)}" />`;
+const allBlocksAreDisabled = `<category name="${xmlEscape(formatMessage(messages.allBlocksDisabled))}" />`;
 
 /**
  * The number of blocks that are allowed to be used for a given task.
