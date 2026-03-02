@@ -164,7 +164,7 @@ export class AuthenticationService {
         publicKey: true,
         createdAt: true,
       },
-      where: { publicKeyFingerprint: fingerprint, deletedAt: null },
+      where: { publicKeyFingerprint: fingerprint },
     });
   }
 
@@ -234,7 +234,6 @@ export class AuthenticationService {
           createdAt: {
             gte: new Date(Date.now() - registrationTokenLifetime),
           },
-          deletedAt: null,
         },
         deletedAt: null,
       },
@@ -431,7 +430,6 @@ export class AuthenticationService {
         token,
         // the token must not have expired
         lastUsedAt: { gte: new Date(Date.now() - slidingTokenLifetime) },
-        deletedAt: null,
       },
       include: {
         user: { where: { deletedAt: null } },
