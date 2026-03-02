@@ -205,6 +205,10 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
   } catch (e) {
     console.error(`${logModule} RPC: getSubmission failed with error:`, e);
 
+    if (e instanceof ScratchProjectError) {
+      throw e;
+    }
+
     throw new CannotSaveProjectError(
       intl.formatMessage(messages.cannotSaveProject),
     );
