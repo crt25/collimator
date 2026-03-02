@@ -53,19 +53,16 @@ model KeyPair {
   // and derive a symmetric key using the web crypto API which has its limitations.
   salt Bytes
 
-  deletedAt DateTime?
-
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
-  teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   Student     AuthenticatedStudent[]
 }
 
 model EncryptedPrivateKey {
-  id                  Int       @id @default(autoincrement())
+  id                  Int   @id @default(autoincrement())
   publicKeyId         Int // The public key this private key corresponds to
   encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
   salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
-  deletedAt           DateTime?
 
   publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
@@ -300,23 +297,21 @@ model SolutionAnalysis {
 }
 
 model RegistrationToken {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  token     String    @unique
-  userId    Int       @unique
-  deletedAt DateTime?
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  token     String   @unique
+  userId    Int      @unique
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuthenticationToken {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now())
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
   lastUsedAt DateTime
-  token      String    @unique
+  token      String   @unique
   userId     Int?
   studentId  Int?
-  deletedAt  DateTime?
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
