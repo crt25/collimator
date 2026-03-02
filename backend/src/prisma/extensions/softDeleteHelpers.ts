@@ -134,6 +134,9 @@ function buildRelationCaches(): void {
         const childRelation: ChildRelation = {
           model: model.name as Prisma.ModelName,
           foreignKey: field.relationFromFields[0],
+          compositeFields: compositeKeyModels.has(parentModelName)
+            ? field.relationFromFields
+            : undefined,
         };
 
         if (!hardDeleteCache.has(parentModelName)) {
