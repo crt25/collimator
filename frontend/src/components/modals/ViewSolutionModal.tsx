@@ -68,7 +68,7 @@ const ViewSolutionModal = ({
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          { intl, descriptor: taskMessages.cannotLoadTask },
+          { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       }
     },
