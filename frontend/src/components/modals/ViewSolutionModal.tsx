@@ -59,9 +59,9 @@ const ViewSolutionModal = ({
   } = useSolutionFile(classId, sessionId, taskId, solutionHash);
 
   const loadContent = useCallback(
-    (embeddedApp: EmbeddedAppRef) => {
+    async (embeddedApp: EmbeddedAppRef) => {
       if (taskFile && solutionFile) {
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadSubmission", {
               task: taskFile,

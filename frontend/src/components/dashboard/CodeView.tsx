@@ -86,9 +86,9 @@ const CodeView = ({
 
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
 
-  const onAppAvailable = useCallback(() => {
+  const onAppAvailable = useCallback(async () => {
     if (embeddedApp.current && taskFile && solutionFile) {
-      executeAsyncWithToasts(
+      await executeAsyncWithToasts(
         () =>
           embeddedApp.current!.sendRequest("loadSubmission", {
             task: taskFile,

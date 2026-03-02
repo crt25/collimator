@@ -65,9 +65,9 @@ const TaskDetail = () => {
 
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
 
-  const onAppAvailable = useCallback(() => {
+  const onAppAvailable = useCallback(async () => {
     if (embeddedApp.current && taskFile) {
-      executeAsyncWithToasts(
+      await executeAsyncWithToasts(
         () =>
           embeddedApp.current!.sendRequest("loadTask", {
             task: taskFile,

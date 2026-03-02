@@ -215,7 +215,7 @@ const SolveTaskPage = () => {
 
         isScratchMutexAvailable.current = false;
 
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.current!.sendRequest("loadSubmission", {
               task: taskFile,

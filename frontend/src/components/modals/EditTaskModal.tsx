@@ -48,9 +48,9 @@ const EditTaskModal = ({
   );
 
   const loadContent = useCallback(
-    (embeddedApp: EmbeddedAppRef) => {
+    async (embeddedApp: EmbeddedAppRef) => {
       if (wasInitialized.current) {
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () => embeddedApp.sendRequest("setLocale", intl.locale as Language),
           { intl, descriptor: taskMessages.cannotLoadTask },
         );
@@ -59,7 +59,7 @@ const EditTaskModal = ({
       wasInitialized.current = true;
 
       if (initialTask) {
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task: initialTask,

@@ -50,9 +50,9 @@ const SolveTaskModal = ({
   );
 
   const loadContent = useCallback(
-    (embeddedApp: EmbeddedAppRef) => {
+    async (embeddedApp: EmbeddedAppRef) => {
       if (solution && task) {
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadSubmission", {
               task,
@@ -65,7 +65,7 @@ const SolveTaskModal = ({
       }
 
       if (task) {
-        executeAsyncWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task,
