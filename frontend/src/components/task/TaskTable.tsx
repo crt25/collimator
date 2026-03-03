@@ -16,6 +16,7 @@ import { isClickOnRow } from "@/utilities/table";
 import { ConflictError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { UserRole } from "@/types/user/user-role";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
@@ -110,6 +111,8 @@ const TaskTable = () => {
       ? authContext.userId
       : undefined;
 
+  const isAdmin = authContext.role === UserRole.admin;
+
   const filteredData = useMemo(() => {
     if (!data) return [];
 
@@ -118,13 +121,14 @@ const TaskTable = () => {
         return data.filter((task) => task.isPublic);
       case VisibilityFilterValue.PrivateOnly:
         return data.filter(
-          (task) => !task.isPublic && task.creatorId === currentUserId,
+          (task) =>
+            !task.isPublic && (isAdmin || task.creatorId === currentUserId),
         );
       case VisibilityFilterValue.All:
       default:
         return data;
     }
-  }, [data, visibilityFilter, currentUserId]);
+  }, [data, visibilityFilter, currentUserId, isAdmin]);
 
   const columns: ColumnDef<ExistingTask>[] = [
     {
