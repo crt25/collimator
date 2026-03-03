@@ -2,16 +2,19 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Transform } from "class-transformer";
 import { Modify } from "src/utilities/modify";
 import { TaskWithReferenceSolutions } from "../tasks.service";
-import { ExistingTaskDto } from "./existing-task.dto";
+import { ExistingTaskDto, TaskWithoutDataAndInUse } from "./existing-task.dto";
 import { TaskReferenceSolutionDto } from "./task-reference-solution.dto";
 
 export type TaskId = number;
+
+export type TaskWithReferenceSolutionsAndInUse = TaskWithReferenceSolutions &
+  Pick<TaskWithoutDataAndInUse, "isInUse">;
 
 export class ExistingTaskWithReferenceSolutionsDto
   extends ExistingTaskDto
   implements
     Modify<
-      TaskWithReferenceSolutions,
+      TaskWithReferenceSolutionsAndInUse,
       { referenceSolutions: TaskReferenceSolutionDto[] }
     >
 {
@@ -32,7 +35,7 @@ export class ExistingTaskWithReferenceSolutionsDto
   readonly referenceSolutions!: TaskReferenceSolutionDto[];
 
   static fromQueryResult(
-    data: TaskWithReferenceSolutions,
+    data: TaskWithReferenceSolutionsAndInUse,
   ): ExistingTaskWithReferenceSolutionsDto {
     return plainToInstance(ExistingTaskWithReferenceSolutionsDto, data, {
       excludeExtraneousValues: true,

@@ -3,6 +3,7 @@ import { expect } from "../../helpers";
 import { TaskTemplateWithSolutions } from "../sessions/tasks/task-template-with-solutions";
 import { TaskFormPageModel } from "./task-form-page-model";
 import { TaskListPageModel } from "./task-list-page-model";
+import { TaskFormReferenceSolutionsPageModel } from "./task-form-reference-solutions-page-model";
 
 export const createTask = async (
   baseUrl: string,
@@ -48,5 +49,51 @@ export const createTask = async (
 
   return {
     id: taskId,
+  };
+};
+
+export const createReferenceSolutionForTask = async (
+  page: TaskFormReferenceSolutionsPageModel,
+  pwPage: Page,
+  solution: {
+    title: string;
+    description: string;
+    template: TaskTemplateWithSolutions;
+  },
+): Promise<{ id: number }> => {
+  await page.addReferenceSolution();
+
+  const solutionId = await page.lastSolutionId();
+  await expect(solutionId).not.toBe(-1);
+
+  await page.fillReferenceSolution(solutionId, {
+    title: solution.title,
+    description: solution.description,
+  });
+
+  await page.openEditSolutionModal(solutionId);
+
+  await page.importSolution(
+    "solution template",
+    solution.template.mimeType.solution,
+    await solution.template.solutions.correct[0](),
+  );
+
+  await page.saveSolution();
+  await page.submitForm();
+  await expect(page.getSubmitButton()).toBeDisabled();
+
+  // A reload is required for the ids to be persisted to the frontend from the backend
+  await pwPage.reload();
+
+  await pwPage.waitForSelector("[data-testid=task-reference-solutions-form]");
+
+  const refreshedPage =
+    await TaskFormReferenceSolutionsPageModel.create(pwPage);
+  const actualSolutionId = await refreshedPage.lastSolutionId();
+  await expect(actualSolutionId).not.toBe(-1);
+
+  return {
+    id: actualSolutionId,
   };
 };

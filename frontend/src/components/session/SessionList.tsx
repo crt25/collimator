@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { chakra, HStack, Icon, Text, Link } from "@chakra-ui/react";
 import { LuChevronRight, LuSend } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
-import { MdAdd } from "react-icons/md";
+import { MdAdd, MdContentCopy } from "react-icons/md";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
@@ -16,6 +16,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { ShareModal } from "../modals/ShareModal";
+import CopyLessonModal from "../modals/CopyLessonModal";
 import { EmptyState } from "../EmptyState";
 
 const SessionListWrapper = chakra("div", {
@@ -62,6 +63,10 @@ const messages = defineMessages({
     id: "SessionList.columns.createSession",
     defaultMessage: "Create Lesson",
   },
+  copyExistingLesson: {
+    id: "SessionList.copyExistingLesson",
+    defaultMessage: "Copy Existing Lesson",
+  },
   copySessionLink: {
     id: "SessionList.copySessionLink",
     defaultMessage: "Share",
@@ -81,6 +86,7 @@ const SessionList = ({ classId }: { classId: number }) => {
   const intl = useIntl();
   const authenticationContext = useContext(AuthenticationContext);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [selectedSession, setSelectedSession] =
     useState<ExistingSession | null>(null);
   const [sessionLink, setSessionLink] = useState("");
@@ -274,19 +280,38 @@ const SessionList = ({ classId }: { classId: number }) => {
           />
         )}
       </MultiSwrContent>
-      <Button
-        variant="primary"
-        onClick={() => router.push(`/class/${classId}/session/create`)}
-        data-testid="session-create-button"
-        marginTop="md"
-      >
-        <HStack>
-          <Icon>
-            <MdAdd />
-          </Icon>
-          {intl.formatMessage(messages.createSession)}
-        </HStack>
-      </Button>
+      <HStack marginTop="md" gap="md">
+        <Button
+          variant="primary"
+          onClick={() => router.push(`/class/${classId}/session/create`)}
+          data-testid="session-create-button"
+        >
+          <HStack>
+            <Icon>
+              <MdAdd />
+            </Icon>
+            {intl.formatMessage(messages.createSession)}
+          </HStack>
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() => setIsCopyModalOpen(true)}
+          data-testid="session-copy-button"
+        >
+          <HStack>
+            <Icon>
+              <MdContentCopy />
+            </Icon>
+            {intl.formatMessage(messages.copyExistingLesson)}
+          </HStack>
+        </Button>
+      </HStack>
+
+      <CopyLessonModal
+        isOpen={isCopyModalOpen}
+        onClose={() => setIsCopyModalOpen(false)}
+        targetClassId={classId}
+      />
 
       <ShareModal
         title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}

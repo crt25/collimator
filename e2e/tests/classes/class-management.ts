@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { expect } from "../../helpers";
+import { ADMIN_USER_NAME } from "../../setup/seeding/user";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 
@@ -23,10 +24,15 @@ export const createClass = async (
 
   await form.inputs.className.fill(klass.name);
 
-  const teacherIds = await form.getTeacherIds();
-  expect(teacherIds.length).toBeGreaterThanOrEqual(1);
+  const teacherOptions = await form.getTeacherOptions();
+  expect(teacherOptions.length).toBeGreaterThanOrEqual(1);
 
-  const newClassTeacherId = klass.teacherId ?? teacherIds[0];
+  const connectedTeacher = teacherOptions.find(
+    (teacher) => teacher.name === ADMIN_USER_NAME,
+  );
+
+  const newClassTeacherId =
+    klass.teacherId ?? connectedTeacher?.id ?? teacherOptions[0].id;
 
   await form.inputs.teacherId.click();
   await pwPage.locator(`[data-value="${newClassTeacherId}"]`).click();

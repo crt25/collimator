@@ -8,6 +8,7 @@ describe("ExistingClassWithTeacherDto", () => {
     name: "Test Class",
     teacherId: 5,
     teacher: { ...teacher, spuriousField: 3 },
+    deletedAt: null,
   };
 
   it("can be constructed", () => {

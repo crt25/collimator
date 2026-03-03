@@ -7,7 +7,10 @@ import {
 import { ExistingSession } from "../../models/sessions/existing-session";
 import { ExistingSessionExtended } from "../../models/sessions/existing-session-extended";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { UpdateSessionDto } from "../../generated/models";
+import {
+  SessionsControllerFindAllV0Params,
+  UpdateSessionDto,
+} from "../../generated/models";
 import { useRevalidateClassSessionList } from "./useRevalidateClassSessionList";
 import { GetSessionReturnType } from "./useClassSession";
 
@@ -22,10 +25,15 @@ const fetchAndTransform = (
   classId: number,
   id: number,
   updateSessionDto: UpdateSessionDto,
+  params?: SessionsControllerFindAllV0Params,
 ): ReturnType<UpdateSessionType> =>
-  sessionsControllerUpdateV0(classId, id, updateSessionDto, options).then(
-    ExistingSession.fromDto,
-  );
+  sessionsControllerUpdateV0(
+    classId,
+    id,
+    updateSessionDto,
+    params || {},
+    options,
+  ).then(ExistingSession.fromDto);
 
 export const useUpdateClassSession = (): UpdateSessionType => {
   const authOptions = useAuthenticationOptions();
@@ -36,7 +44,7 @@ export const useUpdateClassSession = (): UpdateSessionType => {
     (classId, id, updateSessionDto) =>
       fetchAndTransform(authOptions, classId, id, updateSessionDto).then(
         (result) => {
-          const key = getSessionsControllerFindOneV0Url(classId, result.id);
+          const key = getSessionsControllerFindOneV0Url(classId, result.id, {});
 
           const cachedData: GetSessionReturnType | undefined =
             cache.get(key)?.data;

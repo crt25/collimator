@@ -17,8 +17,23 @@ const PBKDF2Iterations = 250_000;
 const salt = randomBytes(32);
 
 export const createUsers = async (prisma: PrismaClient): Promise<void> => {
+  const allUsers = [...registeredUsers, ...unregisteredUsers];
+  const existingUsers = await prisma.user.findMany({
+    where: { id: { in: allUsers.map((user) => user.id) } },
+    select: { id: true },
+  });
+
+  const existingIds = new Set(existingUsers.map((user) => user.id));
+
+  const filteredRegistered = registeredUsers.filter(
+    (user) => !existingIds.has(user.id),
+  );
+  const filteredUnregistered = unregisteredUsers.filter(
+    (user) => !existingIds.has(user.id),
+  );
+
   await Promise.all([
-    ...registeredUsers.map(async (user) => {
+    ...filteredRegistered.map(async (user) => {
       const privateKey = new TextEncoder().encode(
         JSON.stringify(user.privateKey),
       );
@@ -114,7 +129,7 @@ export const createUsers = async (prisma: PrismaClient): Promise<void> => {
         },
       });
     }),
-    ...unregisteredUsers.map((user) =>
+    ...filteredUnregistered.map((user) =>
       prisma.user.create({
         data: {
           id: user.id,

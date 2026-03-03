@@ -1,11 +1,20 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { AuthenticationProvider, UserType } from "@prisma/client";
-import { IsNotEmpty, IsString, IsEnum, IsEmail } from "class-validator";
+import {
+  IsNotEmpty,
+  IsString,
+  IsEnum,
+  IsEmail,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 import { Expose } from "class-transformer";
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(100)
   @ApiProperty({
     example: "John Doe",
     description: "The user's full name (optional).",
@@ -17,6 +26,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsEmail()
+  @MaxLength(255)
   @IsNotEmpty()
   @ApiProperty({
     example: "john.doe@example.com",

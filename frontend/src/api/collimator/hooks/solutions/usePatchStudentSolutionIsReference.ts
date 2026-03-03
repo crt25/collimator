@@ -33,6 +33,7 @@ const patchAndTransform = (
     taskId,
     studentSolutionId,
     patchSolutionDto,
+    {},
     options,
   );
 
@@ -66,6 +67,7 @@ export const usePatchStudentSolutionIsReference = (): PatchSolutionType => {
           classId,
           sessionId,
           taskId,
+          {},
         );
 
         const cachedData: GetCurrentAnalysisReturnType | undefined =

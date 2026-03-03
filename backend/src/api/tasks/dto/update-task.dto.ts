@@ -1,18 +1,30 @@
-import { IsArray, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { TaskType } from "@prisma/client";
 import { UpdateReferenceSolutionDto } from "./update-reference-solution.dto";
 
 export class UpdateTaskDto {
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(200)
   @ApiProperty()
   @Expose()
   readonly title!: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(2000)
   @ApiProperty()
   @Expose()
   readonly description!: string;
@@ -27,6 +39,18 @@ export class UpdateTaskDto {
   })
   @Expose()
   readonly type!: TaskType;
+
+  @ApiProperty({
+    description:
+      "Whether the task is public and visible to all teachers/admins.",
+    example: false,
+  })
+  @Transform(({ value }) =>
+    value === undefined ? undefined : value === "true" || value === true,
+  )
+  @IsBoolean()
+  @Expose()
+  readonly isPublic!: boolean;
 
   // The following property is used for Swagger documentation purposes.
   @ApiProperty({

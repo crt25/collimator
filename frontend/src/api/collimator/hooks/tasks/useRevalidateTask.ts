@@ -14,8 +14,8 @@ export const useRevalidateTask = (): ((
 
   return useCallback(
     (taskId: number, newTask?: GetTaskReturnType) => {
-      mutate(getTasksControllerFindOneV0Url(taskId), newTask);
-      mutate(getTasksControllerFindOneWithReferenceSolutionsV0Url(taskId));
+      mutate(getTasksControllerFindOneV0Url(taskId, {}), newTask);
+      mutate(getTasksControllerFindOneWithReferenceSolutionsV0Url(taskId, {}));
     },
     [mutate],
   );

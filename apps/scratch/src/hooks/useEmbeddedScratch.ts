@@ -5,16 +5,16 @@ import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
 import {
-  useIframeParent,
-  Language,
-  Submission,
-  Test,
   GetTask,
-  LoadTask,
-  LoadSubmission,
-  SetLocale,
   ImportTask,
+  Language,
+  LoadSubmission,
+  LoadTask,
+  SetLocale,
+  Submission,
   Task,
+  Test,
+  useIframeParent,
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
 import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
@@ -26,7 +26,10 @@ import {
   ScratchProjectErrorCode,
 } from "../errors/scratch/index";
 
-import { saveCrtProject } from "../vm/save-crt-project";
+import {
+  prepareCrtProjectForExport,
+  saveCrtProject,
+} from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
 import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
 import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer";
@@ -249,11 +252,11 @@ export class EmbeddedScratchCallbacks {
 
   async getTask(request: GetTask["request"]): Promise<Task> {
     try {
-      const task = await saveCrtProject(this.vm);
       const submission = await getSubmission(this.vm, this.intl);
+      const file = await prepareCrtProjectForExport(this.vm);
 
       return {
-        file: task,
+        file: file,
         initialSolution: submission,
       };
     } catch (e) {

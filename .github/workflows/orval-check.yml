@@ -1,0 +1,118 @@
+name: Orval Generation Check
+
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches:
+      - main
+
+jobs:
+  orval-check:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      GENERATED_API_DIR: "frontend/src/api/collimator/generated"
+      OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: "dummy-client-id"
+      OPEN_ID_CONNECT_JWK_ENDPOINT: "https://login.microsoftonline.com/common/discovery/v2.0/keys"
+      PORT: "3001"
+      BACKEND_API_URL: "http://localhost:3001/api-json"
+
+    steps:
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+          lfs: "true"
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: yarn install
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: yarn install
+
+      - name: Prepare database
+        working-directory: ./backend
+        run: yarn prisma migrate deploy
+
+      - name: Build backend
+        working-directory: ./backend
+        run: yarn prisma:generate && yarn build
+
+      - name: Verify Orval generated files are up to date
+        run: |
+          # Start backend in background
+          cd backend
+          yarn start &
+          BACKEND_PID=$!
+          cd ..
+
+          # Wait for backend to be ready (max 60 seconds)
+          echo "Waiting for backend to start..."
+          for i in {1..60}; do
+            if curl -s $BACKEND_API_URL > /dev/null 2>&1; then
+              echo "Backend is ready"
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Backend failed to start within 60 seconds"
+              kill $BACKEND_PID 2>/dev/null || true
+              exit 1
+            fi
+            sleep 1
+          done
+
+          echo "Generating API client..."
+
+          # Generate API client
+          cd frontend
+          yarn update:api
+          cd ..
+
+          # Stop backend
+          kill $BACKEND_PID 2>/dev/null || true
+
+          # Check for uncommitted changes in generated files
+          if ! git diff --exit-code $GENERATED_API_DIR; then
+            echo ""
+            echo "=========================================="
+            echo "ERROR: Generated API client is out of sync!"
+            echo "=========================================="
+            echo ""
+            echo "The committed API client files do not match what orval generates."
+            echo "This usually means the backend OpenAPI spec changed but the frontend"
+            echo "API client was not regenerated."
+            echo ""
+            echo "To fix this:"
+            echo "  1. Start the backend: cd backend && yarn dev"
+            echo "  2. Regenerate the API client: cd frontend && yarn update:api"
+            echo "  3. Commit the changes"
+            echo ""
+            exit 1
+          fi
+          echo "Generated API client is up to date"

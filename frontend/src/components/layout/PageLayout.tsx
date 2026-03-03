@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Container } from "@chakra-ui/react";
-import { FormattedMessage, MessageDescriptor } from "react-intl";
+import { FormattedMessage, MessageDescriptor, PrimitiveType } from "react-intl";
 import Header from "@/components/header/Header";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -9,6 +9,7 @@ import PageHeading from "@/components/PageHeading";
 
 interface PageLayoutProps {
   title: MessageDescriptor;
+  titleParameters?: Record<string, PrimitiveType>;
   heading: MessageDescriptor;
   description?: ReactNode;
   breadcrumbs?: ReactNode;
@@ -17,6 +18,7 @@ interface PageLayoutProps {
 
 const PageLayout = ({
   title,
+  titleParameters,
   heading,
   description,
   breadcrumbs,
@@ -24,7 +26,7 @@ const PageLayout = ({
 }: PageLayoutProps) => {
   return (
     <MaxScreenHeight>
-      <Header title={title} />
+      <Header title={title} titleParameters={titleParameters} />
       <Container>
         {breadcrumbs && <Breadcrumbs>{breadcrumbs}</Breadcrumbs>}
         <PageHeading description={description}>

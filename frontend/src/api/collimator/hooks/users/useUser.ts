@@ -13,13 +13,12 @@ const fetchAndTransform = (
   options: RequestInit,
   id: number,
 ): Promise<GetUserReturnType> =>
-  usersControllerFindOneV0(id, options).then(ExistingUser.fromDto);
+  usersControllerFindOneV0(id, {}, options).then(ExistingUser.fromDto);
 
 export const useUser = (
   id?: number | string,
 ): ApiResponse<GetUserReturnType, Error> => {
   const numericId = getIdOrNaN(id);
-
   const authOptions = useAuthenticationOptions();
 
   return useSWR(getUsersControllerFindOneV0Url(numericId), () =>

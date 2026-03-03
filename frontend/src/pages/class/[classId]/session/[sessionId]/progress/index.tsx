@@ -128,26 +128,11 @@ const SessionProgress = () => {
       </Container>
 
       <ShareModal
-        title={
-          <FormattedMessage
-            id={SessionShareMessages.shareModalTitle.id}
-            defaultMessage={SessionShareMessages.shareModalTitle.defaultMessage}
-          />
-        }
+        title={<FormattedMessage {...SessionShareMessages.shareModalTitle} />}
         subtitle={
-          <FormattedMessage
-            id={SessionShareMessages.shareModalSubtitle.id}
-            defaultMessage={
-              SessionShareMessages.shareModalSubtitle.defaultMessage
-            }
-          />
+          <FormattedMessage {...SessionShareMessages.shareModalSubtitle} />
         }
-        description={
-          <FormattedMessage
-            id={shareMessage.id}
-            defaultMessage={shareMessage.defaultMessage}
-          />
-        }
+        description={<FormattedMessage {...shareMessage} />}
         open={isShareModalOpen}
         shareLink={sessionLink}
         onOpenChange={(details) => setIsShareModalOpen(details.open)}

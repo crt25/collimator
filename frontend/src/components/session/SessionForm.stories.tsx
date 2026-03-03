@@ -30,6 +30,7 @@ export const Default = {
       defaultMessage: "Submit",
     },
     onSubmit: fn(),
+    classId: 1,
   } as Args,
 };
 
@@ -40,6 +41,7 @@ export const WithCustomSubmitButton = {
       defaultMessage: "Press me",
     },
     onSubmit: fn(),
+    classId: 1,
   } as Args,
 };
 
@@ -53,5 +55,6 @@ export const WithInitialValues = {
     initialValues: {
       name: "The name",
     },
+    classId: 1,
   } as Args,
 };

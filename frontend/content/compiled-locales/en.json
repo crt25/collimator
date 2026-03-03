@@ -311,6 +311,24 @@
       "value": "name"
     }
   ],
+  "ClassForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave without saving your changes. Are you sure this is what you want?"
+    }
+  ],
+  "ClassForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, discard changes"
+    }
+  ],
+  "ClassForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
+    }
+  ],
   "ClassForm.name": [
     {
       "type": 0,
@@ -497,6 +515,90 @@
       "value": "Number of conditions"
     }
   ],
+  "CopyLessonModal.classLabel": [
+    {
+      "type": 0,
+      "value": "Class"
+    }
+  ],
+  "CopyLessonModal.classPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a class"
+    }
+  ],
+  "CopyLessonModal.copyButton": [
+    {
+      "type": 0,
+      "value": "Copy"
+    }
+  ],
+  "CopyLessonModal.copyError": [
+    {
+      "type": 0,
+      "value": "Failed to copy lesson. Please try again."
+    }
+  ],
+  "CopyLessonModal.copySuccess": [
+    {
+      "type": 0,
+      "value": "Lesson copied successfully"
+    }
+  ],
+  "CopyLessonModal.description": [
+    {
+      "type": 0,
+      "value": "Select a lesson to copy from another class."
+    }
+  ],
+  "CopyLessonModal.goToLesson": [
+    {
+      "type": 0,
+      "value": "Go to lesson"
+    }
+  ],
+  "CopyLessonModal.lessonLabel": [
+    {
+      "type": 0,
+      "value": "Lesson"
+    }
+  ],
+  "CopyLessonModal.lessonPlaceholder": [
+    {
+      "type": 0,
+      "value": "Select a lesson"
+    }
+  ],
+  "CopyLessonModal.loading": [
+    {
+      "type": 0,
+      "value": "Loading…"
+    }
+  ],
+  "CopyLessonModal.networkError": [
+    {
+      "type": 0,
+      "value": "There was a network issue. Please close this dialog and try again later."
+    }
+  ],
+  "CopyLessonModal.noClassesAvailable": [
+    {
+      "type": 0,
+      "value": "No classes available to copy lessons from."
+    }
+  ],
+  "CopyLessonModal.noLessonsAvailable": [
+    {
+      "type": 0,
+      "value": "No lessons available in the selected class."
+    }
+  ],
+  "CopyLessonModal.title": [
+    {
+      "type": 0,
+      "value": "Copy existing lesson"
+    }
+  ],
   "CreateClass.errorMessage": [
     {
       "type": 0,
@@ -509,8 +611,7 @@
       "value": "Create Class"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -535,12 +636,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
   "CreateLesson.submit": [
     {
       "type": 0,
@@ -563,12 +658,6 @@
     {
       "type": 0,
       "value": "There was an error creating the new Lesson. Please try to save again!"
-    }
-  ],
-  "CreateSession.header": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
     }
   ],
   "CreateSession.returnToSessionList": [
@@ -631,12 +720,6 @@
       "value": "Title"
     }
   ],
-  "CreateTask.header": [
-    {
-      "type": 0,
-      "value": "Create Task"
-    }
-  ],
   "CreateTask.submit": [
     {
       "type": 0,
@@ -649,8 +732,7 @@
       "value": "Create Task"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -667,12 +749,6 @@
     {
       "type": 0,
       "value": "Create Task"
-    }
-  ],
-  "CreateUser.header": [
-    {
-      "type": 0,
-      "value": "Create User"
     }
   ],
   "CreateUser.submit": [
@@ -813,6 +889,30 @@
       "value": "Save Task"
     }
   ],
+  "EditTask.taskLockedDescription": [
+    {
+      "type": 0,
+      "value": "This task is currently in active use by one or more classes and cannot be modified or deleted."
+    }
+  ],
+  "EditTask.taskLockedTitle": [
+    {
+      "type": 0,
+      "value": "Task is locked"
+    }
+  ],
+  "EditTask.taskReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a public task created by another user. Only the creator can edit this task."
+    }
+  ],
+  "EditTask.taskReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
   "EditTask.title": [
     {
       "type": 0,
@@ -823,32 +923,16 @@
       "value": "title"
     }
   ],
-  "EditUser.header": [
-    {
-      "type": 0,
-      "value": "Edit User"
-    }
-  ],
-  "EditUser.submit": [
-    {
-      "type": 0,
-      "value": "Save User"
-    }
-  ],
-  "EditUser.title": [
-    {
-      "type": 0,
-      "value": "Edit User - "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
   "EditedBadge.edited": [
     {
       "type": 0,
       "value": "Edited"
+    }
+  ],
+  "EmbeddedApp.errorMessage": [
+    {
+      "type": 0,
+      "value": "Failed to load the app. Please try again later."
     }
   ],
   "ExpressionCriterionFilterForm.count": [
@@ -1095,16 +1179,16 @@
       "value": "Classes"
     }
   ],
-  "ListClasses.pageDescription": [
-    {
-      "type": 0,
-      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students’ progress."
-    }
-  ],
-  "ListClasses.pageTitle": [
+  "ListClasses.heading": [
     {
       "type": 0,
       "value": "Class Manager"
+    }
+  ],
+  "ListClasses.pageDescription": [
+    {
+      "type": 0,
+      "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
     }
   ],
   "ListLessons.header": [
@@ -1311,6 +1395,12 @@
       "value": "Not Started"
     }
   ],
+  "PublicBadge.public": [
+    {
+      "type": 0,
+      "value": "Public"
+    }
+  ],
   "SessionActions.copySessionLink": [
     {
       "type": 0,
@@ -1365,6 +1455,30 @@
       "value": "There was an error saving the changes. Please try to save again!"
     }
   ],
+  "SessionDetail.readOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a lesson created by another user. Only the creator can edit this lesson."
+    }
+  ],
+  "SessionDetail.readOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
+  "SessionDetail.sessionLockedDescription": [
+    {
+      "type": 0,
+      "value": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
+    }
+  ],
+  "SessionDetail.sessionLockedTitle": [
+    {
+      "type": 0,
+      "value": "Session is locked"
+    }
+  ],
   "SessionDetail.submit": [
     {
       "type": 0,
@@ -1385,6 +1499,30 @@
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "SessionForm.closeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "You are about to leave without saving your changes. Are you sure this is what you want?"
+    }
+  ],
+  "SessionForm.closeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, discard changes"
+    }
+  ],
+  "SessionForm.closeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Attention: you may lose your work!"
+    }
+  ],
+  "SessionForm.createTask": [
+    {
+      "type": 0,
+      "value": "Create Task"
     }
   ],
   "SessionForm.sharingType.anonymous": [
@@ -1457,6 +1595,12 @@
     {
       "type": 0,
       "value": "Title"
+    }
+  ],
+  "SessionList.copyExistingLesson": [
+    {
+      "type": 0,
+      "value": "Copy Existing Lesson"
     }
   ],
   "SessionList.copySessionLink": [
@@ -1593,6 +1737,12 @@
     {
       "type": 0,
       "value": "Open Task List"
+    }
+  ],
+  "SolveTask.saveError": [
+    {
+      "type": 0,
+      "value": "You are currently experiencing network issues, saving may not work."
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -1817,6 +1967,12 @@
       "value": "). Please report this issue."
     }
   ],
+  "TaskForm.SaveConflictError": [
+    {
+      "type": 0,
+      "value": "The task is now in use by one or more classes and can no longer be modified."
+    }
+  ],
   "TaskForm.SaveError": [
     {
       "type": 0,
@@ -1847,6 +2003,24 @@
       "value": "The provided file data is invalid"
     }
   ],
+  "TaskForm.changeTypeConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Changing the task type will require you to recreate the task in the new format. The existing task and any existing reference solutions will be deleted when you save. This action cannot be undone. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, change type"
+    }
+  ],
+  "TaskForm.changeTypeConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Change task type"
+    }
+  ],
   "TaskForm.closeConfirmation.body": [
     {
       "type": 0,
@@ -1871,10 +2045,58 @@
       "value": "Description"
     }
   ],
-  "TaskForm.referenceSolutionsLengthValidation": [
+  "TaskForm.destructiveAction.body": [
     {
       "type": 0,
-      "value": "The number of reference solutions must match the number of reference solution files"
+      "value": "This action will delete all reference solutions when you save the task. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.destructiveAction.button": [
+    {
+      "type": 0,
+      "value": "Yes, continue"
+    }
+  ],
+  "TaskForm.destructiveAction.title": [
+    {
+      "type": 0,
+      "value": "This action will delete reference solutions"
+    }
+  ],
+  "TaskForm.isPublic": [
+    {
+      "type": 0,
+      "value": "This task is public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.body": [
+    {
+      "type": 0,
+      "value": "Making a task public allows other users to view and use it. This action may be irreversible. Are you sure you want to continue?"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.button": [
+    {
+      "type": 0,
+      "value": "Yes, make it public"
+    }
+  ],
+  "TaskForm.makePublicConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Make this task public?"
+    }
+  ],
+  "TaskForm.taskFileRequired": [
+    {
+      "type": 0,
+      "value": "A task file is required before saving."
+    }
+  ],
+  "TaskForm.testName": [
+    {
+      "type": 0,
+      "value": "Test name"
     }
   ],
   "TaskForm.title": [
@@ -1959,20 +2181,52 @@
       "value": "title"
     }
   ],
+  "TaskInstanceDetails.editInTaskBank": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceDetails.editNotAllowed": [
+    {
+      "type": 0,
+      "value": "This task cannot be edited because it is already in use in a lesson with enrolled students."
+    }
+  ],
   "TaskInstanceDetails.submit": [
     {
       "type": 0,
       "value": "Save Task"
     }
   ],
+  "TaskInstanceDetails.taskBankLink": [
+    {
+      "type": 0,
+      "value": "task bank"
+    }
+  ],
   "TaskInstanceDetails.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Task - "
     },
     {
       "type": 1,
       "value": "title"
+    }
+  ],
+  "TaskInstanceDetails.viewTask": [
+    {
+      "type": 0,
+      "value": "View Task"
     }
   ],
   "TaskInstanceList.title": [
@@ -2069,10 +2323,44 @@
       "value": "View student solution"
     }
   ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited here. To edit, go to the "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
       "value": "Save Task"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": [
+    {
+      "type": 0,
+      "value": "reference solutions detail"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
@@ -2261,26 +2549,44 @@
       "value": "Opened"
     }
   ],
+  "TaskReferenceSolutions.referenceLockedDescription": [
+    {
+      "type": 0,
+      "value": "This reference solution cannot be edited because it is already in use in a task used in a class with enrolled students."
+    }
+  ],
+  "TaskReferenceSolutions.referenceLockedTitle": [
+    {
+      "type": 0,
+      "value": "Reference solution is locked"
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "You are viewing a public reference solution created by another user. Only the creator can edit this task."
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "View only"
+    }
+  ],
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Save Task"
+      "value": "Save Reference Solution(s)"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Edit Task - "
+      "value": "Edit Reference Solution - "
     },
     {
       "type": 1,
       "value": "title"
-    }
-  ],
-  "TaskSessionActions.deleteTask": [
-    {
-      "type": 0,
-      "value": "Delete Task"
     }
   ],
   "TaskTable.columns.actionsColumn": [
@@ -2305,6 +2611,12 @@
     {
       "type": 0,
       "value": "Title"
+    }
+  ],
+  "TaskTable.conflictErrorMessage": [
+    {
+      "type": 0,
+      "value": "Cannot delete task because it is currently in use."
     }
   ],
   "TaskTable.createTask": [
@@ -2343,10 +2655,46 @@
       "value": "There are no tasks yet. Let's create some!"
     }
   ],
+  "TaskTable.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the task. Please try again!"
+    }
+  ],
+  "TaskTable.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully deleted the task"
+    }
+  ],
   "TaskTable.viewDetails": [
     {
       "type": 0,
       "value": "View Task Details"
+    }
+  ],
+  "TaskVisibilityFilter.allTasks": [
+    {
+      "type": 0,
+      "value": "All Tasks"
+    }
+  ],
+  "TaskVisibilityFilter.filterLabel": [
+    {
+      "type": 0,
+      "value": "Filter by visibility"
+    }
+  ],
+  "TaskVisibilityFilter.privateOnly": [
+    {
+      "type": 0,
+      "value": "Private Only"
+    }
+  ],
+  "TaskVisibilityFilter.publicOnly": [
+    {
+      "type": 0,
+      "value": "Public Only"
     }
   ],
   "TestCriterionFilterForm.count": [
@@ -2355,16 +2703,70 @@
       "value": "Number of passed tests"
     }
   ],
-  "UserDetail.table.oidcSub": [
+  "UserActions.deleteCancel": [
     {
       "type": 0,
-      "value": "OpenId Connect Identifier"
+      "value": "Cancel"
     }
   ],
-  "UserDetail.table.type": [
+  "UserActions.deleteConfirmation.body": [
     {
       "type": 0,
-      "value": "Type"
+      "value": "Are you sure you want to delete this user?"
+    }
+  ],
+  "UserActions.deleteConfirmation.confirm": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.deleteConfirmation.title": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.deleteError": [
+    {
+      "type": 0,
+      "value": "There was an error deleting the user. Please try again!"
+    }
+  ],
+  "UserActions.deleteSuccess": [
+    {
+      "type": 0,
+      "value": "User deleted successfully"
+    }
+  ],
+  "UserActions.deleteUser": [
+    {
+      "type": 0,
+      "value": "Delete User"
+    }
+  ],
+  "UserActions.generateRegistrationToken": [
+    {
+      "type": 0,
+      "value": "Get registration link"
+    }
+  ],
+  "UserDetail.errorMessage": [
+    {
+      "type": 0,
+      "value": "There was an error saving the changes. Please try to save again!"
+    }
+  ],
+  "UserDetail.submit": [
+    {
+      "type": 0,
+      "value": "Save User"
+    }
+  ],
+  "UserDetail.successMessage": [
+    {
+      "type": 0,
+      "value": "Successfully saved changes"
     }
   ],
   "UserDetail.title": [
@@ -2389,16 +2791,22 @@
       "value": "Name"
     }
   ],
+  "UserForm.oidcSub": [
+    {
+      "type": 0,
+      "value": "OpenID Connect Identifier"
+    }
+  ],
   "UserForm.role": [
     {
       "type": 0,
       "value": "Role"
     }
   ],
-  "UserList.columns.actions": [
+  "UserForm.tooltip.disabledSaveButton": [
     {
       "type": 0,
-      "value": "Actions"
+      "value": "No changes to save"
     }
   ],
   "UserList.columns.name": [
@@ -2413,28 +2821,16 @@
       "value": "Role"
     }
   ],
-  "UserList.deleteConfirmation.body": [
+  "UserList.createUser": [
     {
       "type": 0,
-      "value": "Are you sure you want to delete this user?"
+      "value": "Create User"
     }
   ],
-  "UserList.deleteConfirmation.confirm": [
+  "UserList.viewDetails": [
     {
       "type": 0,
-      "value": "Delete User"
-    }
-  ],
-  "UserList.deleteConfirmation.title": [
-    {
-      "type": 0,
-      "value": "Delete User"
-    }
-  ],
-  "UserList.generateRegistrationToken": [
-    {
-      "type": 0,
-      "value": "Get registration link"
+      "value": "View user Details"
     }
   ],
   "UserNavigation.userTab": [
@@ -2707,12 +3103,6 @@
     {
       "type": 0,
       "value": "Task imported successfully"
-    }
-  ],
-  "embeddedApp.taskLoaded": [
-    {
-      "type": 0,
-      "value": "Task loaded successfully"
     }
   ],
   "forms.arrayLength": [

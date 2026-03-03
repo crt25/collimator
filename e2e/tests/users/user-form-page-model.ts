@@ -3,14 +3,14 @@ import { Page } from "@playwright/test";
 import { FormPageModel } from "../../page-models/form-page-model";
 
 export class UserFormPageModel extends FormPageModel {
-  private static readonly classForm = '[data-testid="user-form"]';
+  private static readonly userForm = '[data-testid="user-form"]';
 
   protected constructor(page: Page) {
     super(page);
   }
 
   get form() {
-    return this.page.locator(UserFormPageModel.classForm);
+    return this.page.locator(UserFormPageModel.userForm);
   }
 
   get inputs() {
@@ -18,6 +18,7 @@ export class UserFormPageModel extends FormPageModel {
       name: this.form.locator('[data-testid="name"]'),
       email: this.form.locator('[data-testid="email"]'),
       type: this.form.locator('[data-testid="type"]'),
+      oidcSub: this.form.locator('[data-testid="oidcSub"]'),
     };
   }
 
@@ -30,7 +31,7 @@ export class UserFormPageModel extends FormPageModel {
   }
 
   static async create(page: Page) {
-    await page.waitForSelector(UserFormPageModel.classForm);
+    await page.waitForSelector(UserFormPageModel.userForm);
 
     return new UserFormPageModel(page);
   }

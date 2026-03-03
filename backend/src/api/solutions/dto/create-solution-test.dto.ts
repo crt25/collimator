@@ -1,13 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance, Type } from "class-transformer";
 import { SolutionTest } from "@prisma/client";
-import { IsBoolean, IsString } from "class-validator";
+import { IsBoolean, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateSolutionTestDto {
   // @Type converts the input to the given type - necessary because this may be submitted as part of a multipart/form-data
 
   @Type(() => String)
   @IsString()
+  @MaxLength(255)
   @ApiProperty({
     example: "MyAssemblyNamespace.MyClass.MyMethod",
     description:
@@ -20,6 +21,8 @@ export class CreateSolutionTestDto {
 
   @Type(() => String)
   @IsString()
+  @MinLength(1)
+  @MaxLength(200)
   @ApiProperty({
     example: "Check that the function's return value is positive",
     description: "The name of the test",
@@ -30,6 +33,7 @@ export class CreateSolutionTestDto {
 
   @Type(() => String)
   @IsString()
+  @MaxLength(255)
   @ApiProperty({
     example: "SomeFolder/MyClass.cs",
     description: "A name for the context the test is in, e.g. the filename.",

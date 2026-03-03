@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useContext, useMemo } from "react";
 import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack, Text } from "@chakra-ui/react";
+import { Icon, HStack, Text, Box } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -13,11 +13,20 @@ import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { capitalizeString } from "@/utilities/strings";
 import { isClickOnRow } from "@/utilities/table";
+import { ConflictError } from "@/api/fetch";
+import { getErrorMessageDescriptor } from "@/errors/errorMessages";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
 import Button from "../Button";
 import { EmptyState } from "../EmptyState";
+import { toaster } from "../Toaster";
+import { PublicBadge } from "./PublicBadge";
+import {
+  TaskVisibilityFilter,
+  VisibilityFilterValue,
+} from "./TaskVisibilityFilter";
 
 const TaskTableWrapper = styled.div`
   margin: 1rem 0;
@@ -68,6 +77,18 @@ const messages = defineMessages({
     id: "TaskTable.emptyState.title",
     defaultMessage: "There are no tasks yet. Let's create some!",
   },
+  successMessage: {
+    id: "TaskTable.successMessage",
+    defaultMessage: "Successfully deleted the task",
+  },
+  genericErrorMessage: {
+    id: "TaskTable.errorMessage",
+    defaultMessage: "There was an error deleting the task. Please try again!",
+  },
+  conflictErrorMessage: {
+    id: "TaskTable.conflictErrorMessage",
+    defaultMessage: "Cannot delete task because it is currently in use.",
+  },
 });
 
 const TaskTable = () => {
@@ -80,6 +101,30 @@ const TaskTable = () => {
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<number | null>(null);
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<VisibilityFilterValue>(VisibilityFilterValue.All);
+  const authContext = useContext(AuthenticationContext);
+
+  const currentUserId =
+    authContext.role !== undefined && "userId" in authContext
+      ? authContext.userId
+      : undefined;
+
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+
+    switch (visibilityFilter) {
+      case VisibilityFilterValue.PublicOnly:
+        return data.filter((task) => task.isPublic);
+      case VisibilityFilterValue.PrivateOnly:
+        return data.filter(
+          (task) => !task.isPublic && task.creatorId === currentUserId,
+        );
+      case VisibilityFilterValue.All:
+      default:
+        return data;
+    }
+  }, [data, visibilityFilter, currentUserId]);
 
   const columns: ColumnDef<ExistingTask>[] = [
     {
@@ -100,14 +145,17 @@ const TaskTable = () => {
       header: intl.formatMessage(messages.titleColumn),
       enableSorting: true,
       cell: (info) => (
-        <Text
-          fontWeight="semibold"
-          fontSize="lg"
-          data-testid={`task-${info.row.original.id}-title`}
-          margin={0}
-        >
-          {info.row.original.title}
-        </Text>
+        <HStack>
+          <Text
+            fontWeight="semibold"
+            fontSize="lg"
+            data-testid={`task-${info.row.original.id}-title`}
+            margin={0}
+          >
+            {info.row.original.title}
+          </Text>
+          {info.row.original.isPublic && <PublicBadge />}
+        </HStack>
       ),
       meta: {
         columnType: ColumnType.text,
@@ -178,10 +226,16 @@ const TaskTable = () => {
 
   return (
     <TaskTableWrapper data-testid="task-list">
+      <Box marginBottom="md">
+        <TaskVisibilityFilter
+          value={visibilityFilter}
+          onChange={setVisibilityFilter}
+        />
+      </Box>
       <SwrContent data={data} isLoading={isLoading} error={error}>
-        {(data) => (
+        {() => (
           <ChakraDataTable
-            data={data}
+            data={filteredData}
             columns={columns}
             isLoading={isLoading}
             onRowClick={(row, e) => {
@@ -212,7 +266,29 @@ const TaskTable = () => {
         isShown={showDeleteConfirmationModal}
         setIsShown={setShowDeleteConfirmationModal}
         onConfirm={
-          taskIdToDelete ? () => deleteTask(taskIdToDelete) : undefined
+          taskIdToDelete
+            ? async () => {
+                try {
+                  await deleteTask(taskIdToDelete);
+                  toaster.success({
+                    title: intl.formatMessage(messages.successMessage),
+                  });
+                } catch (error) {
+                  if (error instanceof ConflictError) {
+                    toaster.error({
+                      title: intl.formatMessage(
+                        getErrorMessageDescriptor(error.errorCode),
+                      ),
+                    });
+                    return;
+                  }
+
+                  toaster.error({
+                    title: intl.formatMessage(messages.genericErrorMessage),
+                  });
+                }
+              }
+            : undefined
         }
         isDangerous
         messages={{

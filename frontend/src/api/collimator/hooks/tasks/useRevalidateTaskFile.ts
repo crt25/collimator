@@ -10,7 +10,7 @@ export const useRevalidateTaskFile = (): ((
 
   return useCallback(
     (taskId: number, newFile?: Blob) => {
-      mutate(getTasksControllerDownloadOneV0Url(taskId), newFile);
+      mutate(getTasksControllerDownloadOneV0Url(taskId, {}), newFile);
     },
     [mutate],
   );

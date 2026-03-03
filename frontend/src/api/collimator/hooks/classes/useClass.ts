@@ -13,7 +13,9 @@ export const fetchSingleClassAndTransform = (
   options: RequestInit,
   id: number,
 ): Promise<GetClassReturnType> =>
-  classesControllerFindOneV0(id, options).then(ExistingClassExtended.fromDto);
+  classesControllerFindOneV0(id, {}, options).then(
+    ExistingClassExtended.fromDto,
+  );
 
 export const useClass = (
   id?: number | string,
@@ -21,7 +23,7 @@ export const useClass = (
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getClassesControllerFindOneV0Url(numericId), () =>
+  return useSWR(getClassesControllerFindOneV0Url(numericId, {}), () =>
     isNaN(numericId)
       ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
         new Promise<GetClassReturnType>(() => {})

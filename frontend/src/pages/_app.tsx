@@ -25,6 +25,7 @@ import {
   UpdateLocalizationContext,
 } from "@/contexts/LocalizationContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { authenticationStateKey } from "@/utilities/constants";
 import WebSocketProvider from "@/contexts/WebSocketProvider";
 import English from "../../content/compiled-locales/en.json";
 import French from "../../content/compiled-locales/fr.json";
@@ -38,7 +39,6 @@ fontAwesomeConfig.autoAddCss = false;
 
 const logModule = "[App]";
 
-const authenticationStateKey = "authenticationState";
 const localizationStateKey = "localizationState";
 
 const cache = createCache({ key: "next" });
@@ -99,13 +99,29 @@ const App = ({ Component, pageProps }: AppProps) => {
     [],
   );
 
-  useEffect(() => {
-    // load the stored authentication state from localStorage
+  function fetchAndSetAuthState() {
     getInitialAuthenticationState().then((authenticationState) => {
       updateAuthenticationState(authenticationState);
       setAuthenticationStateLoaded(true);
     });
+  }
+
+  useEffect(() => {
+    // load the stored authentication state from localStorage
+    fetchAndSetAuthState();
     // we only want to run this effect once when mounting the component
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key !== authenticationStateKey) return;
+
+      fetchAndSetAuthState();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

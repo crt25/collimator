@@ -9,8 +9,23 @@ import {
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Modify } from "src/utilities/modify";
+import { PrismaTransactionClient } from "src/prisma/types";
 import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
 import { TaskId } from "./dto";
+
+export class TaskInUseByClassOrLessonWithStudentsError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "TaskInUseByClassOrLessonWithStudentsError";
+  }
+}
+
+export class TaskInOtherUsersLessonError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "TaskInOtherUsersLessonError";
+  }
+}
 
 export type TaskCreateInput = Omit<
   Prisma.TaskUncheckedCreateInput,
@@ -51,46 +66,115 @@ export class TasksService {
     return createHash("sha256").update(data).digest();
   }
 
-  findByIdOrThrow(id: TaskId): Promise<TaskWithoutData> {
+  findByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData> {
     return this.prisma.task.findUniqueOrThrow({
       omit: omitData,
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
   findByIdOrThrowWithReferenceSolutions(
     id: TaskId,
+    includeSoftDelete = false,
   ): Promise<TaskWithReferenceSolutions> {
     return this.prisma.task.findUniqueOrThrow({
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
       include: {
         referenceSolutions: {
+          where: includeSoftDelete ? undefined : { deletedAt: null },
           include: {
             solution: {
               select: {
                 data: true,
                 mimeType: true,
+                deletedAt: true,
               },
             },
-            tests: true,
+            tests: {
+              where: includeSoftDelete ? undefined : { deletedAt: null },
+            },
           },
         },
       },
     });
   }
 
-  downloadByIdOrThrow(id: TaskId): Promise<TaskDataOnly> {
+  downloadByIdOrThrow(
+    id: TaskId,
+    includeSoftDelete = false,
+  ): Promise<TaskDataOnly> {
     return this.prisma.task.findUniqueOrThrow({
       select: { data: true, mimeType: true },
-      where: { id },
+      where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
   }
 
-  findMany(args?: Prisma.TaskFindManyArgs): Promise<TaskWithoutData[]> {
-    return this.prisma.task.findMany({
+  findMany(
+    args?: Prisma.TaskFindManyArgs,
+    includeSoftDelete = false,
+  ): Promise<TaskWithoutData[]> {
+    const where = includeSoftDelete
+      ? args?.where
+      : { ...args?.where, deletedAt: null };
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs: Prisma.TaskFindManyArgs = {
       ...args,
+      where,
       omit: omitData,
-    });
+    };
+
+    return this.prisma.task.findMany(finalArgs);
+  }
+
+  async findManyWithInUseStatus(
+    isPublic: boolean,
+    creatorId: number | undefined = undefined,
+    includeSoftDelete = false,
+  ): Promise<(TaskWithoutData & { isInUse: boolean })[]> {
+    // when enabling "strictUndefinedChecks", use Prisma.skip instead of `undefined` here
+    const deletedAtCondition = includeSoftDelete ? undefined : null;
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs = {
+      omit: omitData,
+      where: {
+        isPublic: isPublic,
+        creatorId: creatorId,
+        deletedAt: deletedAtCondition,
+      } satisfies Prisma.TaskWhereInput,
+      include: {
+        sessions: {
+          where: {
+            session: {
+              deletedAt: deletedAtCondition,
+              OR: [
+                { anonymousStudents: { some: { deletedAt: null } } },
+                {
+                  class: {
+                    deletedAt: deletedAtCondition,
+                    students: {
+                      some: { deletedAt: null },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          take: 1,
+          select: { taskId: true },
+        },
+      },
+    };
+
+    const tasks = await this.prisma.task.findMany(finalArgs);
+    return tasks.map(({ sessions, ...task }) => ({
+      ...task,
+      isInUse: sessions.length > 0,
+    }));
   }
 
   async create(
@@ -153,6 +237,7 @@ export class TasksService {
     data: Uint8Array,
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
+    includeSoftDelete = false,
   ): Promise<Task> {
     const solutionsWithFile = referenceSolutions.map(
       (referenceSolution, index) => ({
@@ -180,7 +265,7 @@ export class TasksService {
       (
         referenceSolution,
       ): referenceSolution is {
-        solution: ReferenceSolutionInput & { id: ReferenceSolution };
+        solution: ReferenceSolutionInput & { id: ReferenceSolutionId };
         file: Express.Multer.File;
         fileHash: Buffer;
       } =>
@@ -188,27 +273,54 @@ export class TasksService {
         referenceSolution.solution.id !== null,
     );
 
-    const [_, __, updatedTask] = await this.prisma.$transaction([
-      // delete all reference solutions that are not in the new list
-      this.prisma.referenceSolution.deleteMany({
-        where: {
+    const referenceSolutionWhere = includeSoftDelete
+      ? {
           taskId: id,
           id: {
             notIn: referenceSolutions
               .map(({ id }) => id)
               .filter((id) => id !== undefined && id !== null),
           },
-        },
-      }),
-      // delete all solutions without any reference
-      this.prisma.solution.deleteMany({
-        where: {
+        }
+      : {
+          taskId: id,
+          deletedAt: null,
+          id: {
+            notIn: referenceSolutions
+              .map(({ id }) => id)
+              .filter((id) => id !== undefined && id !== null),
+          },
+        };
+
+    const orphanedSolutionsWhere = includeSoftDelete
+      ? {
           referenceSolutions: { none: {} },
           studentSolutions: { none: {} },
-        },
-      }),
+        }
+      : {
+          deletedAt: null,
+          referenceSolutions: { none: {} },
+          studentSolutions: { none: {} },
+        };
+
+    return this.prisma.$transaction(async (tx) => {
+      const isInUse = await this.isTaskInUseTx(tx, id);
+      if (isInUse) {
+        throw new TaskInUseByClassOrLessonWithStudentsError();
+      }
+
+      // delete all reference solutions that are not in the new list
+      await tx.referenceSolution.deleteMany({
+        where: referenceSolutionWhere,
+      });
+
+      // delete all solutions without any reference
+      await tx.solution.deleteMany({
+        where: orphanedSolutionsWhere,
+      });
+
       // update the task
-      this.prisma.task.update({
+      return tx.task.update({
         data: {
           ...task,
           mimeType,
@@ -294,10 +406,8 @@ export class TasksService {
         },
         where: { id },
         omit: omitData,
-      }),
-    ]);
-
-    return updatedTask;
+      });
+    });
   }
 
   private getNewTests(
@@ -316,10 +426,107 @@ export class TasksService {
     ) as (Prisma.SolutionTestUncheckedCreateInput & { id: number })[];
   }
 
+  async isTaskInUse(id: TaskId): Promise<boolean> {
+    return this.isTaskInUseTx(this.prisma, id);
+  }
+
+  private async isTaskInUseTx(
+    tx: PrismaTransactionClient,
+    id: TaskId,
+  ): Promise<boolean> {
+    const sessionWithStudents = await tx.sessionTask.findFirst({
+      where: {
+        taskId: id,
+        task: {
+          deletedAt: null,
+        },
+        session: {
+          deletedAt: null,
+          OR: [
+            {
+              anonymousStudents: {
+                some: {
+                  deletedAt: null,
+                },
+              },
+            },
+            {
+              class: {
+                deletedAt: null,
+                students: {
+                  some: {
+                    deletedAt: null,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return sessionWithStudents !== null;
+  }
+
+  async isTaskInUseByOtherUsers(
+    id: TaskId,
+    creatorId: number,
+  ): Promise<boolean> {
+    return this.isTaskInUseByOtherUsersTx(this.prisma, id, creatorId);
+  }
+
+  private async isTaskInUseByOtherUsersTx(
+    tx: PrismaTransactionClient,
+    id: TaskId,
+    creatorId: number,
+  ): Promise<boolean> {
+    // Check if task is used in any lesson belonging to a different user
+    const sessionTask = await tx.sessionTask.findFirst({
+      where: {
+        taskId: id,
+        session: {
+          deletedAt: null,
+          class: {
+            teacherId: { not: creatorId },
+            deletedAt: null,
+          },
+        },
+      },
+    });
+
+    return sessionTask !== null;
+  }
+
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
-    const [_, __, deletedTask] = await this.prisma.$transaction([
+    return this.prisma.$transaction(async (tx) => {
+      // Fetch task to check if it's public
+      const task = await tx.task.findUniqueOrThrow({
+        where: { id, deletedAt: null },
+        select: { isPublic: true, creatorId: true },
+      });
+
+      // For private tasks, check if task is in use by any class with students
+      if (!task.isPublic) {
+        const isInUse = await this.isTaskInUseTx(tx, id);
+        if (isInUse) {
+          throw new TaskInUseByClassOrLessonWithStudentsError();
+        }
+      }
+
+      // For public tasks, check if task is used in any lesson by other users
+      if (task.isPublic && task.creatorId !== null) {
+        const isInUseByOthers = await this.isTaskInUseByOtherUsersTx(
+          tx,
+          id,
+          task.creatorId,
+        );
+        if (isInUseByOthers) {
+          throw new TaskInOtherUsersLessonError();
+        }
+      }
+
       // delete all reference solutions for this task
-      this.prisma.solution.deleteMany({
+      await tx.solution.deleteMany({
         where: {
           taskId: id,
           referenceSolutions: {
@@ -328,19 +535,19 @@ export class TasksService {
             },
           },
         },
-      }),
-      this.prisma.referenceSolution.deleteMany({
+      });
+
+      await tx.referenceSolution.deleteMany({
         where: {
           taskId: id,
         },
-      }),
+      });
+
       // and the task itself
-      this.prisma.task.delete({
+      return tx.task.delete({
         where: { id },
         omit: omitData,
-      }),
-    ]);
-
-    return deletedTask;
+      });
+    });
   }
 }

@@ -1,13 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
-import { IsEnum, IsNotEmpty } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { SessionClassDto } from "./session-class.dto";
 import { SessionLessonDto } from "./session-lesson.dto";
 import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
 
 type TaskList = { task: { id: number; name: string } }[];
+export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
 
 export class ExistingSessionExtendedDto
   implements Omit<Session, "classId" | "basedOnLessonId">
@@ -35,6 +36,13 @@ export class ExistingSessionExtendedDto
   @ApiProperty()
   @Expose()
   readonly isAnonymous!: boolean;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @IsEnum(SessionStatus)
   @IsNotEmpty()
@@ -80,7 +88,16 @@ export class ExistingSessionExtendedDto
   @Expose()
   readonly tasks!: SessionTaskDto[];
 
-  static fromQueryResult(data: Session): ExistingSessionExtendedDto {
+  @ApiProperty({
+    description: "Indicates whether the session has any students.",
+    type: Boolean,
+  })
+  @Expose()
+  readonly hasStudents!: boolean;
+
+  static fromQueryResult(
+    data: SessionWithStudentIndicator,
+  ): ExistingSessionExtendedDto {
     return plainToInstance(ExistingSessionExtendedDto, data, {
       excludeExtraneousValues: true,
     });

@@ -1,14 +1,17 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   ForbiddenException,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   StreamableFile,
   UploadedFiles,
   UseInterceptors,
@@ -16,21 +19,24 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import "multer";
 import { User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
-import { fromQueryResults } from "../helpers";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
-import { AuthorizationService } from "../authorization/authorization.service";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
+import { AuthorizationService } from "../authorization/authorization.service";
+import { ErrorCode, ErrorCodeDto } from "../error-codes/error-codes";
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -38,11 +44,16 @@ import {
   DeletedTaskDto,
   TaskId,
 } from "./dto";
-import { TasksService } from "./tasks.service";
+import {
+  TaskInUseByClassOrLessonWithStudentsError,
+  TasksService,
+  TaskInOtherUsersLessonError,
+} from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
 @Controller("tasks")
 @ApiTags("tasks")
+@ApiExtraModels(ErrorCodeDto)
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
@@ -95,6 +106,11 @@ export class TasksController {
       );
     }
 
+    // Only admins can create public tasks
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can create public tasks");
+    }
+
     const task = await this.tasksService.create(
       {
         ...rest,
@@ -106,40 +122,89 @@ export class TasksController {
       referenceSolutionsFiles,
     );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    // Newly created task cannot be in use
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
   }
 
   @Get()
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @Roles([UserType.ADMIN, UserType.TEACHER])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingTaskDto, isArray: true })
-  async findAll(): Promise<ExistingTaskDto[]> {
+  async findAll(
+    @AuthenticatedUser() user: User,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
+  ): Promise<ExistingTaskDto[]> {
     // TODO: add pagination support
+    const publicTasks = await this.tasksService.findManyWithInUseStatus(
+      true,
+      undefined,
+      includeSoftDelete,
+    );
 
-    const tasks = await this.tasksService.findMany({});
-    return fromQueryResults(ExistingTaskDto, tasks);
+    const teacherId = user.type === UserType.TEACHER ? user.id : undefined;
+
+    const privateTasks = await this.tasksService.findManyWithInUseStatus(
+      false,
+      teacherId || undefined,
+      includeSoftDelete,
+    );
+
+    return privateTasks
+      .concat(publicTasks)
+      .map((task) => ExistingTaskDto.fromQueryResult(task));
   }
 
   @Get(":id")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
-    const task = await this.tasksService.findByIdOrThrow(id);
-    return ExistingTaskDto.fromQueryResult(task);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrow(id, includeSoftDelete),
+      // todo: probably needs to include soft delete too
+      this.tasksService.isTaskInUse(id),
+    ]);
+
+    return ExistingTaskDto.fromQueryResult({ ...task, isInUse });
   }
 
   @Get(":id/with-reference-solutions")
+  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
-    const task =
-      await this.tasksService.findByIdOrThrowWithReferenceSolutions(id);
+    const [task, isInUse] = await Promise.all([
+      this.tasksService.findByIdOrThrowWithReferenceSolutions(
+        id,
+        includeSoftDelete,
+      ),
+      this.tasksService.isTaskInUse(id),
+    ]);
 
     // workaround for bug where class-transformer loses the Uint8Array type
     // see https://github.com/typestack/class-transformer/issues/1815
@@ -149,18 +214,31 @@ export class TasksController {
         (solution.solution.data = Buffer.from(solution.solution.data)),
     );
 
-    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult(task);
+    return ExistingTaskWithReferenceSolutionsDto.fromQueryResult({
+      ...task,
+      isInUse,
+    });
   }
 
   @Get(":id/download")
   @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
   @ApiOkResponse(/*??*/)
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
     @Param("id", ParseIntPipe) id: TaskId,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
-    const task = await this.tasksService.downloadByIdOrThrow(id);
+    const task = await this.tasksService.downloadByIdOrThrow(
+      id,
+      includeSoftDelete,
+    );
     return new StreamableFile(task.data, {
       type: task.mimeType,
     });
@@ -171,6 +249,9 @@ export class TasksController {
   @ApiCreatedResponse({ type: ExistingTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be modified",
+  })
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: "taskFile", maxCount: 1 },
@@ -178,6 +259,11 @@ export class TasksController {
     ]),
     JsonToObjectsInterceptor(["referenceSolutions"]),
   )
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -187,6 +273,8 @@ export class TasksController {
       taskFile?: Express.Multer.File[];
       referenceSolutionsFiles?: Express.Multer.File[];
     },
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
     const isAuthorized = await this.authorizationService.canUpdateTask(
       user,
@@ -211,22 +299,47 @@ export class TasksController {
         "The number of reference solutions must match the number of files",
       );
     }
-    const task = await this.tasksService.update(
-      id,
-      rest,
-      taskFile.mimetype,
-      taskFile.buffer,
-      referenceSolutions,
-      referenceSolutionsFiles,
-    );
 
-    return ExistingTaskDto.fromQueryResult(task);
+    // Only admins can make tasks public
+    if (rest.isPublic && user.type !== UserType.ADMIN) {
+      throw new ForbiddenException("Only admins can make tasks public");
+    }
+
+    try {
+      const task = await this.tasksService.update(
+        id,
+        rest,
+        taskFile.mimetype,
+        taskFile.buffer,
+        referenceSolutions,
+        referenceSolutionsFiles,
+        includeSoftDelete,
+      );
+
+      // If update succeeded, task was not in use (service throws if in use)
+      return ExistingTaskDto.fromQueryResult({ ...task, isInUse: false });
+    } catch (error) {
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      throw error;
+    }
   }
 
   @Delete(":id")
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: DeletedTaskDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "Task is in use by one or more classes and cannot be deleted",
+  })
   async remove(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -240,7 +353,21 @@ export class TasksController {
       throw new ForbiddenException();
     }
 
-    const task = await this.tasksService.deleteById(id);
-    return DeletedTaskDto.fromQueryResult(task);
+    try {
+      const deletedTask = await this.tasksService.deleteById(id);
+      return DeletedTaskDto.fromQueryResult({ ...deletedTask, isInUse: false });
+    } catch (error) {
+      if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      if (error instanceof TaskInOtherUsersLessonError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+        });
+      }
+      throw error;
+    }
   }
 }

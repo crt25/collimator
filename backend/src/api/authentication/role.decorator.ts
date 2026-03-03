@@ -2,6 +2,7 @@ import { CustomDecorator, SetMetadata } from "@nestjs/common";
 import { UserType } from "@prisma/client";
 
 export const ALLOWED_ROLES = "allowedRoles";
+export const SOFT_DELETE_ROLES = "softDeleteRoles";
 
 export enum NonUserRoles {
   UNAUTHENTICATED = "UNAUTHENTICATED",

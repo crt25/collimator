@@ -17,6 +17,7 @@ export class ExistingSessionExtended {
   readonly lesson: SessionLesson | null;
   readonly status: SessionStatus;
   readonly tasks: SessionTask[];
+  readonly hasStudents: boolean;
 
   protected constructor({
     id,
@@ -28,6 +29,7 @@ export class ExistingSessionExtended {
     lesson,
     status,
     tasks,
+    hasStudents,
   }: ClassProperties<ExistingSessionExtended>) {
     this.id = id;
     this.title = title;
@@ -38,6 +40,7 @@ export class ExistingSessionExtended {
     this.lesson = lesson;
     this.status = status;
     this.tasks = tasks;
+    this.hasStudents = hasStudents;
   }
 
   equals(other?: ExistingSessionExtended): boolean {
@@ -52,6 +55,7 @@ export class ExistingSessionExtended {
         this.lesson?.equals(other.lesson ?? undefined) === true) &&
       this.status === other.status &&
       this.tasks.length === other.tasks.length &&
+      this.hasStudents === other.hasStudents &&
       this.tasks.every((task, idx) => task.equals(other.tasks[idx]))
     );
   }
@@ -62,6 +66,7 @@ export class ExistingSessionExtended {
       tasks: dto.tasks.map(SessionTask.fromDto),
       klass: SessionClass.fromDto(dto.class),
       lesson: dto.lesson ? SessionLesson.fromDto(dto.lesson) : null,
+      hasStudents: dto.hasStudents,
     });
   }
 }

@@ -3,6 +3,7 @@ import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { SessionStatus } from ".prisma/client";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { PrismaTransactionClient } from "src/prisma/types";
 import { ClassId } from "../classes/dto";
 import { StudentId } from "../solutions/solutions.service";
 import { SessionId } from "./dto";
@@ -32,7 +33,7 @@ const fullInclude = {
       },
     },
   },
-  class: { select: { id: true, name: true } },
+  class: { select: { id: true, name: true, deletedAt: true } },
   lesson: { select: { id: true, title: true } },
 };
 
@@ -49,18 +50,37 @@ export class SessionsService {
     return this.findByIdAndClassOrThrow(id);
   }
 
-  findByIdAndClassOrThrow(id: SessionId, classId?: number): Promise<Session> {
+  findByIdAndClassOrThrow(
+    id: SessionId,
+    classId?: number,
+    includeSoftDelete = false,
+  ): Promise<Session> {
     return this.prisma.session.findUniqueOrThrow({
-      where: { classId, id },
+      where: includeSoftDelete
+        ? { classId, id }
+        : { classId, id, deletedAt: null },
       include: fullInclude,
     });
   }
 
-  findMany(args?: Prisma.SessionFindManyArgs): Promise<Session[]> {
-    return this.prisma.session.findMany({
+  findMany(
+    args?: Prisma.SessionFindManyArgs,
+    includeSoftDelete = false,
+  ): Promise<Session[]> {
+    const initialWhere = args?.where ?? {};
+
+    const whereClause = includeSoftDelete
+      ? initialWhere
+      : { ...initialWhere, deletedAt: null };
+
+    // construct args separately to avoid typescript deep type comparison issues
+    const finalArgs = {
       ...args,
       include: compactInclude,
-    });
+      where: whereClause,
+    };
+
+    return this.prisma.session.findMany(finalArgs);
   }
 
   create(
@@ -91,11 +111,14 @@ export class SessionsService {
     session: Prisma.SessionUpdateInput,
     taskIds: number[],
     classId?: number,
+    includeSoftDelete = false,
   ): Promise<Session> {
     const [_find, _del, update] = await this.prisma.$transaction([
       // ensure the session exists and hasn't started yet
       this.prisma.session.findUniqueOrThrow({
-        where: { classId, id, status: "CREATED" },
+        where: includeSoftDelete
+          ? { classId, id, status: "CREATED" }
+          : { classId, id, deletedAt: null, status: "CREATED" },
       }),
       // we could do `deleteMany` and `createMany` within the same update(),
       // however we need a transaction because of this open bug:
@@ -133,10 +156,51 @@ export class SessionsService {
     return update;
   }
 
+  async hasStudents(
+    sessionId: SessionId,
+    includeSoftDelete = false,
+  ): Promise<boolean> {
+    return this.hasStudentsTx(this.prisma, sessionId, includeSoftDelete);
+  }
+
+  private async hasStudentsTx(
+    tx: PrismaTransactionClient,
+    sessionId: SessionId,
+    includeSoftDelete = false,
+  ): Promise<boolean> {
+    const sessionWithStudents = await tx.session.findFirst({
+      where: {
+        id: sessionId,
+        deletedAt: includeSoftDelete ? undefined : null,
+        OR: [
+          {
+            anonymousStudents: {
+              some: {
+                deletedAt: includeSoftDelete ? undefined : null,
+              },
+            },
+          },
+          {
+            class: {
+              students: {
+                some: {
+                  deletedAt: includeSoftDelete ? undefined : null,
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return sessionWithStudents !== null;
+  }
+
   changeStatusByIdAndClass(
     id: SessionId,
     status: SessionStatus,
     classId?: number,
+    includeSoftDelete = false,
   ): Promise<Session> {
     let allowedStates: SessionStatus[] = [];
     switch (status) {
@@ -151,13 +215,18 @@ export class SessionsService {
         break;
     }
 
+    const where = includeSoftDelete
+      ? { classId, id, OR: allowedStates.map((s) => ({ status: s })) }
+      : {
+          classId,
+          id,
+          deletedAt: null,
+          OR: allowedStates.map((s) => ({ status: s })),
+        };
+
     return this.prisma.session.update({
       data: { status: status },
-      where: {
-        id,
-        classId,
-        OR: allowedStates.map((s) => ({ status: s })),
-      },
+      where,
       include: compactInclude,
     });
   }
@@ -171,6 +240,50 @@ export class SessionsService {
 
   deleteById(id: SessionId): Promise<Session> {
     return this.deletedByIdAndClass(id);
+  }
+
+  async copy(
+    sourceSessionId: SessionId,
+    targetClassId: number,
+    includeSoftDelete = false,
+  ): Promise<Session> {
+    return this.prisma.$transaction(async (tx) => {
+      const sourceSession = await tx.session.findUniqueOrThrow({
+        where: includeSoftDelete
+          ? { id: sourceSessionId }
+          : { id: sourceSessionId, deletedAt: null },
+        include: {
+          tasks: {
+            orderBy: { index: "asc" },
+            select: {
+              taskId: true,
+              index: true,
+            },
+          },
+        },
+      });
+
+      const taskIds = sourceSession.tasks.map((t) => t.taskId);
+
+      const checkedSession: Prisma.SessionCreateInput = {
+        title: sourceSession.title,
+        description: sourceSession.description,
+        isAnonymous: sourceSession.isAnonymous,
+        class: {
+          connect: { id: targetClassId },
+        },
+        tasks: {
+          createMany: {
+            data: taskIds.map((taskId, index) => ({ taskId, index })),
+          },
+        },
+      };
+
+      return tx.session.create({
+        data: checkedSession,
+        include: compactInclude,
+      });
+    });
   }
 
   async getSessionProgress(

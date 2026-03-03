@@ -1,9 +1,7 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
-import Header from "@/components/header/Header";
 import SessionForm, {
   SessionFormValues,
 } from "@/components/session/SessionForm";
@@ -11,11 +9,8 @@ import { useCreateSession } from "@/api/collimator/hooks/sessions/useCreateSessi
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import SwrContent from "@/components/SwrContent";
 import ClassNavigation from "@/components/class/ClassNavigation";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import PageHeading from "@/components/PageHeading";
 import { toaster } from "@/components/Toaster";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {
@@ -83,30 +78,25 @@ const CreateSession = () => {
   );
 
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <Breadcrumbs>
-          <CrtNavigation breadcrumb klass={klass} />
-        </Breadcrumbs>
-        <ClassNavigation classId={klass?.id} />
-        <PageHeading>
-          <FormattedMessage
-            id="CreateSession.header"
-            defaultMessage="Create Lesson"
+    <PageLayout
+      title={messages.title}
+      heading={messages.title}
+      breadcrumbs={<CrtNavigation breadcrumb klass={klass} />}
+    >
+      <ClassNavigation classId={klass?.id} />
+      <SwrContent error={error} isLoading={isLoading} data={klass}>
+        {(
+          // we need the class to submit the form
+          _klass,
+        ) => (
+          <SessionForm
+            submitMessage={messages.submit}
+            onSubmit={onSubmit}
+            classId={_klass.id}
           />
-        </PageHeading>
-        <SwrContent error={error} isLoading={isLoading} data={klass}>
-          {(
-            // we need the class to submit the form
-            _klass,
-          ) => (
-            <SessionForm submitMessage={messages.submit} onSubmit={onSubmit} />
-          )}
-        </SwrContent>
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+        )}
+      </SwrContent>
+    </PageLayout>
   );
 };
 

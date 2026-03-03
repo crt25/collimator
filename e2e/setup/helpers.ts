@@ -20,6 +20,7 @@ export type PostgresConfig = {
 
 export enum CrtApp {
   scratch = "scratch",
+  jupyter = "jupyter",
 }
 
 export const portLockDirectory = "playwright/.port";
@@ -91,6 +92,20 @@ export const resetDatabase = (config: {
     shell: true,
   });
 
+export const seedE2eDatabase = (config: {
+  databaseUrl: string;
+}): SpawnSyncReturns<Buffer> =>
+  spawnSync("yarn", ["prisma:seed:e2e"], {
+    env: {
+      ...process.env,
+      DATABASE_URL: config.databaseUrl,
+    },
+    cwd: getBackendPath(),
+    // since we want 'yarn' to be used from the PATH, we need to set shell to true
+    // also not a security problem since we are not using any user input, this is a test script
+    shell: true,
+  });
+
 export const startMockOidcServer = (config: {
   port?: number | string;
   frontendHostname?: string;
@@ -117,8 +132,8 @@ export const startBackend = (config: {
   jwkEndpoint?: string;
   userInfoEndpoint?: string;
   clientId?: string;
-}): ChildProcessWithoutNullStreams =>
-  spawn("yarn", ["start:built:coverage"], {
+}): ChildProcessWithoutNullStreams => {
+  const backendProcess = spawn("yarn", ["start:built:coverage"], {
     env: {
       ...process.env,
       NODE_ENV: "production",
@@ -133,6 +148,9 @@ export const startBackend = (config: {
     cwd: getBackendPath(),
     shell: true,
   });
+
+  return backendProcess;
+};
 
 export const buildFrontend = (
   config: {
@@ -151,6 +169,7 @@ export const buildFrontend = (
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: config.oidcClientId,
       NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "/scratch",
+      NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: "/jupyter/lab/index.html",
     },
     cwd: getFrontendPath(),
     shell: true,
@@ -163,7 +182,10 @@ export const buildApp = (
   stdout: "pipe" | "ignore" = "pipe",
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
-  spawnSync("yarn", ["build"], {
+  const isScratch = app === CrtApp.scratch;
+  const command = isScratch ? "yarn" : "make";
+
+  spawnSync(command, ["build"], {
     env: {
       ...process.env,
       NODE_ENV: "production",

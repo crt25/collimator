@@ -26,6 +26,7 @@ export const useRevalidateStudentSolution = (): ((
           sessionId,
           taskId,
           solutionId,
+          {},
         ),
         newSolution,
       );

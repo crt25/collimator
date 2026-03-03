@@ -32,6 +32,15 @@ export class ClassFormPageModel extends FormPageModel {
     );
   }
 
+  getTeacherOptions() {
+    return this.inputs.teacherId.evaluate(() =>
+      [...document.querySelectorAll('[role="option"]')].map((option) => ({
+        id: parseInt(option.getAttribute("data-value") || "0"),
+        name: option.textContent?.trim() || "",
+      })),
+    );
+  }
+
   getForm() {
     return this.form;
   }

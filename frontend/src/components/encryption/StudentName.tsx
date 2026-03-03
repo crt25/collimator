@@ -2,6 +2,7 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { isLanguage } from "iframe-rpc-react/src";
 import { getStudentNickname } from "@/utilities/student-name";
 import { useStudentName } from "@/hooks/useStudentName";
 
@@ -49,9 +50,11 @@ export const StudentName = ({
   }
 
   if (name === null) {
+    const locale = isLanguage(intl.locale) ? intl.locale : undefined;
+
     return (
       <NameWrapper data-testid={testId}>
-        {getStudentNickname(studentId, pseudonym)}{" "}
+        {getStudentNickname(studentId, pseudonym, locale)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}

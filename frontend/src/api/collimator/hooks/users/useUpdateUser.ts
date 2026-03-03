@@ -17,7 +17,7 @@ const fetchAndTransform = (
   id: number,
   updateUserDto: UpdateUserDto,
 ): ReturnType<UpdateUserType> =>
-  usersControllerUpdateV0(id, updateUserDto, options).then(
+  usersControllerUpdateV0(id, updateUserDto, {}, options).then(
     ExistingUser.fromDto,
   );
 

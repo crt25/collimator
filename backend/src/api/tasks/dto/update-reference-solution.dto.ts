@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsOptional,
   IsBoolean,
+  MaxLength,
+  MinLength,
 } from "class-validator";
 import { Type } from "class-transformer";
 import { ReferenceSolutionId } from "src/api/solutions/dto/existing-reference-solution.dto";
@@ -25,11 +27,15 @@ export class UpdateReferenceSolutionDto {
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(200)
   @ApiProperty()
   readonly title!: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(2000)
   @ApiProperty()
   readonly description!: string;
 

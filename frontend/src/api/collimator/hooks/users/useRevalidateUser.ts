@@ -11,7 +11,7 @@ export const useRevalidateUser = (): ((
 
   return useCallback(
     (userId: number, newUser?: GetUserReturnType) => {
-      mutate(getUsersControllerFindOneV0Url(userId), newUser);
+      mutate(getUsersControllerFindOneV0Url(userId, {}), newUser);
     },
     [mutate],
   );

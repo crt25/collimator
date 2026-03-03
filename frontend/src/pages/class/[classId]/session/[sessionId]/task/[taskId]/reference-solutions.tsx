@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { defineMessages } from "react-intl";
-import { Container } from "@chakra-ui/react";
+import { defineMessages, FormattedMessage } from "react-intl";
+import { Container, Link } from "@chakra-ui/react";
+import { LuCircleAlert } from "react-icons/lu";
+import Alert from "@/components/Alert";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useUpdateTask } from "@/api/collimator/hooks/tasks/useUpdateTask";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -14,7 +16,6 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import ClassNavigation from "@/components/class/ClassNavigation";
 import SessionNavigation from "@/components/session/SessionNavigation";
-import TaskSessionActions from "@/components/task-instance/TaskSessionActions";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import TaskFormReferenceSolutions, {
   TaskFormReferenceSolutionsSubmission,
@@ -30,6 +31,24 @@ const messages = defineMessages({
   submit: {
     id: "TaskInstanceReferenceSolutions.submit",
     defaultMessage: "Save Task",
+  },
+  editInTaskReferenceSolutionsTitle: {
+    id: "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle",
+    description: "Title for the alert when trying to edit reference solutions",
+    defaultMessage:
+      "This reference solution cannot be edited here. To edit, go to {link}.",
+  },
+  editInTaskReferenceSolutionsDescription: {
+    id: "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions",
+    description: "Title for the alert when trying to edit reference solutions",
+    defaultMessage:
+      "This reference solution cannot be edited here. To edit, go to {link}.",
+  },
+  taskReferenceSolutionsLink: {
+    id: "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink",
+    description:
+      "Link text for the alert when trying to edit reference solutions",
+    defaultMessage: "the reference solutions detail",
   },
 });
 
@@ -113,22 +132,40 @@ const TaskInstanceReferenceSolutions = () => {
         >
           {([klass, session, task, taskFile]) => (
             <>
-              <PageHeading
-                variant="title"
-                actions={
-                  <TaskSessionActions
-                    classId={klass.id}
-                    sessionId={session.id}
-                    taskId={task.id}
-                  />
-                }
-              >
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}
                 taskId={task.id}
+              />
+              <Alert
+                icon={LuCircleAlert}
+                title={
+                  <FormattedMessage
+                    {...messages.editInTaskReferenceSolutionsTitle}
+                  />
+                }
+                description={
+                  <FormattedMessage
+                    {...messages.editInTaskReferenceSolutionsDescription}
+                    values={{
+                      link: (
+                        <Link
+                          color="blue.500"
+                          textDecoration="underline"
+                          cursor="pointer"
+                          onClick={() =>
+                            router.push(`/task/${taskId}/reference-solutions`)
+                          }
+                        >
+                          <FormattedMessage
+                            {...messages.taskReferenceSolutionsLink}
+                          />
+                        </Link>
+                      ),
+                    }}
+                  />
+                }
               />
               <TaskFormReferenceSolutions
                 taskType={task.type}
@@ -149,6 +186,7 @@ const TaskInstanceReferenceSolutions = () => {
                 }}
                 submitMessage={messages.submit}
                 onSubmit={onSubmit}
+                disabled={true} // This form is read-only in this page, so it's always disabled
               />
             </>
           )}

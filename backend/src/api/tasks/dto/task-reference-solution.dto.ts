@@ -3,6 +3,7 @@ import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { Modify } from "src/utilities/modify";
 import { ReferenceSolutionId } from "src/api/solutions/dto/existing-reference-solution.dto";
 import { ExistingSolutionTestDto } from "src/api/solutions/dto/existing-solution-test.dto";
+import { IsDate, IsOptional } from "class-validator";
 import { TaskWithReferenceSolutions } from "../tasks.service";
 
 type Input = TaskWithReferenceSolutions["referenceSolutions"][0];
@@ -35,6 +36,13 @@ export class TaskReferenceSolutionDto
   })
   @Expose()
   readonly isInitial!: boolean;
+
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  @ApiProperty({ type: Date, nullable: true, required: false })
+  @Expose()
+  readonly deletedAt!: Date | null;
 
   @ApiProperty({
     description: "The solution's mime type.",

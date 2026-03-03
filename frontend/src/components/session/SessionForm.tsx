@@ -1,15 +1,37 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { defineMessages, MessageDescriptor } from "react-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { defineMessages, MessageDescriptor, useIntl } from "react-intl";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Grid, GridItem } from "@chakra-ui/react";
+import {
+  Button,
+  chakra,
+  Field,
+  Grid,
+  GridItem,
+  HStack,
+  Icon,
+  Stack,
+} from "@chakra-ui/react";
+import { RiDraggable } from "react-icons/ri";
+import router from "next/router";
+import { MdAdd } from "react-icons/md";
 import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { useNavigationObserver } from "@/utilities/navigation-observer";
+import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import Select from "../form/Select";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";
@@ -17,11 +39,34 @@ import Input from "../form/Input";
 import SwrContent from "../SwrContent";
 import SortableListInput from "../form/SortableList";
 import { EditedBadge } from "../EditedBadge";
+import ConfirmationModal from "../modals/ConfirmationModal";
 
 export enum SharingType {
   anonymous = "anonymous",
   private = "private",
 }
+
+export enum EditingMode {
+  full = "full",
+  restricted = "restricted",
+  readOnly = "readOnly",
+}
+
+const ButtonWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "flex-start",
+    marginBottom: "xl",
+  },
+});
+
+const SubmitButtonWrapper = chakra("div", {
+  base: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "xl",
+  },
+});
 
 const messages = defineMessages({
   title: {
@@ -56,6 +101,23 @@ const messages = defineMessages({
     id: "SessionForm.sharingType.private",
     defaultMessage: "Private",
   },
+  closeConfirmationTitle: {
+    id: "SessionForm.closeConfirmation.title",
+    defaultMessage: "Attention: you may lose your work!",
+  },
+  closeConfirmationBody: {
+    id: "SessionForm.closeConfirmation.body",
+    defaultMessage:
+      "You are about to leave without saving your changes.\nAre you sure this is what you want?",
+  },
+  closeConfirmationButton: {
+    id: "SessionForm.closeConfirmation.button",
+    defaultMessage: "Yes, discard changes",
+  },
+  createTask: {
+    id: "SessionForm.createTask",
+    defaultMessage: "Create Task",
+  },
 });
 
 export interface SessionFormValues {
@@ -65,10 +127,19 @@ export interface SessionFormValues {
   sharingType: SharingType;
 }
 
-const TaskListElement = styled.div`
+const StyledTaskListElement = styled.div<{ enableSorting: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  cursor: ${(props) => (props.enableSorting ? "grab" : "default")};
+  &:active {
+    cursor: ${(props) => (props.enableSorting ? "grabbing" : "default")};
+  }
+`;
+
+const SortableListWrapper = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const RemoveTask = styled.span`
@@ -81,20 +152,41 @@ const SessionForm = ({
   submitMessage,
   initialValues,
   onSubmit,
+  classId,
+  editingMode = EditingMode.full,
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
   onSubmit: (data: SessionFormValues) => void;
+  classId: number;
+  editingMode?: EditingMode;
 }) => {
+  const intl = useIntl();
+
   const schema = useYupSchema({
-    title: yup.string().required(),
-    description: yup.string().required(),
+    title: yup
+      .string()
+      .label(intl.formatMessage(messages.title))
+      .required()
+      .min(1)
+      .max(200),
+    description: yup
+      .string()
+      .label(intl.formatMessage(messages.description))
+      .required()
+      .min(1)
+      .max(2000),
     taskIds: yup.array().of(yup.number().required()).required(),
     sharingType: yup
       .mixed<SharingType>()
+      .label(intl.formatMessage(messages.sharingType))
       .oneOf(Object.values(SharingType))
       .required(),
   });
+
+  const cannotNavigate = useRef(false);
+
+  const [showQuitNoSaveModal, setShowQuitNoSaveModal] = useState(false);
 
   const resolver = useYupResolver(schema);
 
@@ -112,7 +204,7 @@ const SessionForm = ({
     watch,
     setValue,
     reset,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields, isDirty },
     control,
   } = useForm<SessionFormValues>({
     resolver,
@@ -125,6 +217,21 @@ const SessionForm = ({
   const [addTaskId, setAddTaskId] = useState(addTaskEmptyId);
   const selectedTaskIds = watch("taskIds");
 
+  const { data: klass } = useClass(classId);
+  const authenticationContext = useContext(AuthenticationContext);
+
+  const isReadOnly = editingMode === EditingMode.readOnly;
+  const canDeleteTasks = editingMode === EditingMode.full;
+  const canChangeSharingType = editingMode === EditingMode.full;
+
+  const isOwner = useMemo(() => {
+    return (
+      klass &&
+      "userId" in authenticationContext &&
+      klass.teacher.id === authenticationContext.userId
+    );
+  }, [klass, authenticationContext]);
+
   // If the initialValues are provided, show the EditedBadge for fields that have been modified
   const showEditedBadges = !!initialValues;
 
@@ -135,6 +242,7 @@ const SessionForm = ({
       setValue(
         "taskIds",
         tasks.map((t) => t.id),
+        { shouldDirty: true },
       );
     },
     [setValue],
@@ -168,6 +276,27 @@ const SessionForm = ({
     [selectedTaskIds, data, selectedTasks, setSelectedTasks],
   );
 
+  // when the form becomes dirty, we do not allow navigation
+  const shouldStopNavigation = useCallback(() => {
+    cannotNavigate.current = isDirty;
+
+    return cannotNavigate.current;
+  }, [isDirty]);
+
+  const onNavigate = useCallback(() => {
+    setShowQuitNoSaveModal(true);
+  }, []);
+
+  const confirmNavigation = useNavigationObserver({
+    shouldStopNavigation,
+    onNavigate,
+  });
+
+  const initialTaskIds = useMemo(
+    () => new Set(initialValues?.taskIds ?? []),
+    [initialValues],
+  );
+
   useEffect(() => {
     // initialize the selected tasks if we have data and the form is empty
     if (data && selectedTasks.length === 0 && selectedTaskIds.length > 0) {
@@ -180,107 +309,193 @@ const SessionForm = ({
     }
   }, [data, selectedTaskIds, selectedTasks, setSelectedTasks]);
 
+  const TaskListElement = ({
+    task,
+    enableSorting,
+    onRemove,
+    canRemoveTask,
+  }: {
+    task: ExistingTask;
+    enableSorting: boolean;
+    onRemove: () => void;
+    canRemoveTask: boolean;
+  }) => {
+    return (
+      <StyledTaskListElement enableSorting={enableSorting}>
+        <HStack>
+          {enableSorting && <RiDraggable />}
+          <span>{task.title}</span>
+        </HStack>
+        {canRemoveTask && (
+          <RemoveTask data-testid="remove-task" onClick={onRemove}>
+            <FontAwesomeIcon icon={faTrash} />
+          </RemoveTask>
+        )}
+      </StyledTaskListElement>
+    );
+  };
+
+  const enableSorting = useMemo(
+    () => !isReadOnly && selectedTasks.length > 1 && isOwner,
+    [selectedTasks, isOwner, isReadOnly],
+  );
+
   return (
     <SwrContent isLoading={isLoading} error={error} data={data}>
       {(tasks) => (
-        <form
-          onSubmit={handleSubmit((values) => {
-            onSubmit(values);
-            reset(values);
-          })}
-          data-testid="session-form"
-        >
-          <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-            <GridItem colSpan={{ base: 12, md: 6 }}>
-              <Input
-                label={messages.title}
-                {...register("title")}
-                data-testid="title"
-                errorText={errors.title?.message}
-                labelBadge={
-                  showEditedBadges && dirtyFields.title && <EditedBadge />
-                }
-              />
+        <>
+          <form
+            onSubmit={handleSubmit((values) => {
+              onSubmit(values);
+              reset(values);
+            })}
+            data-testid="session-form"
+          >
+            <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+              <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Input
+                  label={messages.title}
+                  {...register("title")}
+                  data-testid="title"
+                  errorText={errors.title?.message}
+                  disabled={isReadOnly}
+                  labelBadge={
+                    showEditedBadges && dirtyFields.title && <EditedBadge />
+                  }
+                />
 
-              <TextArea
-                label={messages.description}
-                {...register("description")}
-                data-testid="description"
-                errorText={errors.description?.message}
-                labelBadge={
-                  showEditedBadges && dirtyFields.description && <EditedBadge />
-                }
-              />
+                <TextArea
+                  label={messages.description}
+                  {...register("description")}
+                  data-testid="description"
+                  errorText={errors.description?.message}
+                  disabled={isReadOnly}
+                  labelBadge={
+                    showEditedBadges &&
+                    dirtyFields.description && <EditedBadge />
+                  }
+                />
 
-              <SortableListInput
-                items={selectedTasks}
-                updateItems={setSelectedTasks}
-                testId="selected-tasks"
-              >
-                {(task) => (
-                  <TaskListElement>
-                    <span>{task.title}</span>
-                    <RemoveTask
-                      data-testid="remove-task"
-                      onClick={() =>
-                        setSelectedTasks(
-                          selectedTasks.filter((t) => t !== task),
-                        )
-                      }
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </RemoveTask>
-                  </TaskListElement>
+                <SortableListWrapper>
+                  <Field.Root>
+                    <Stack>
+                      <Field.Label>
+                        {intl.formatMessage(messages.tasks)}
+                      </Field.Label>
+                      <SortableListInput
+                        items={selectedTasks}
+                        updateItems={setSelectedTasks}
+                        testId="selected-tasks"
+                        enableSorting={enableSorting}
+                      >
+                        {(task, _, enableSorting) => (
+                          <TaskListElement
+                            task={task}
+                            enableSorting={enableSorting}
+                            // allow removal if unrestricted, or if the task was newly added
+                            canRemoveTask={
+                              canDeleteTasks || !initialTaskIds.has(task.id)
+                            }
+                            onRemove={() =>
+                              setSelectedTasks(
+                                selectedTasks.filter((t) => t !== task),
+                              )
+                            }
+                          />
+                        )}
+                      </SortableListInput>
+                    </Stack>
+                  </Field.Root>
+                </SortableListWrapper>
+
+                {!isReadOnly && (
+                  <Select
+                    label={messages.addTask}
+                    options={[
+                      {
+                        value: addTaskEmptyId.toString(),
+                        label: messages.selectTaskToAdd,
+                      },
+                      // in theory tasks should never be undefined, but it seems to happen sometimes??
+                      // TODO: investigate why this happens
+                      ...(Array.isArray(tasks) ? tasks : [])
+                        // don't list again tasks that are already selected
+                        .filter((t) => !selectedTaskIds.includes(t.id))
+                        .map((t) => ({
+                          value: t.id.toString(),
+                          label: t.title,
+                        })),
+                    ]}
+                    data-testid="add-task"
+                    onValueChange={onAddTask}
+                    value={addTaskId.toString()}
+                    marginTop="lg"
+                  />
                 )}
-              </SortableListInput>
+              </GridItem>
 
-              <Select
-                label={messages.addTask}
-                options={[
-                  {
-                    value: addTaskEmptyId.toString(),
-                    label: messages.selectTaskToAdd,
-                  },
-                  // in theory tasks should never be undefined, but it seems to happen sometimes??
-                  // TODO: investigate why this happens
-                  ...(Array.isArray(tasks) ? tasks : [])
-                    // don't list again tasks that are already selected
-                    .filter((t) => !selectedTaskIds.includes(t.id))
-                    .map((t) => ({
-                      value: t.id.toString(),
-                      label: t.title,
-                    })),
-                ]}
-                data-testid="add-task"
-                onValueChange={onAddTask}
-                value={addTaskId.toString()}
-                marginTop="lg"
-              />
-            </GridItem>
-
-            <GridItem colSpan={{ base: 12, md: 6 }}>
-              <Select
-                name="sharingType"
-                control={control}
-                showEditedBadge={showEditedBadges}
-                label={messages.sharingType}
-                data-testid="sharing-type"
-                options={[
-                  {
-                    value: SharingType.anonymous,
-                    label: messages.sharingTypeAnonymous,
-                  },
-                  {
-                    value: SharingType.private,
-                    label: messages.sharingTypePrivate,
-                  },
-                ]}
-              />
-            </GridItem>
-          </Grid>
-
-          <SubmitFormButton label={submitMessage} />
-        </form>
+              <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Select
+                  name="sharingType"
+                  control={control}
+                  showEditedBadge={showEditedBadges}
+                  label={messages.sharingType}
+                  data-testid="sharing-type"
+                  disabled={!canChangeSharingType}
+                  options={[
+                    {
+                      value: SharingType.anonymous,
+                      label: messages.sharingTypeAnonymous,
+                    },
+                    {
+                      value: SharingType.private,
+                      label: messages.sharingTypePrivate,
+                    },
+                  ]}
+                />
+              </GridItem>
+              {!isReadOnly && (
+                <GridItem colSpan={{ base: 12, md: 6 }}>
+                  <ButtonWrapper>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        const currentUrl = router.asPath;
+                        const returnUrl = encodeURIComponent(currentUrl);
+                        router.push(`/task/create?returnUrl=${returnUrl}`);
+                      }}
+                      data-testid="task-create-button"
+                      marginTop="md"
+                    >
+                      <HStack>
+                        <Icon>
+                          <MdAdd />
+                        </Icon>
+                        {intl.formatMessage(messages.createTask)}
+                      </HStack>
+                    </Button>
+                  </ButtonWrapper>
+                </GridItem>
+              )}
+            </Grid>
+            {!isReadOnly && (
+              <SubmitButtonWrapper>
+                <SubmitFormButton label={submitMessage} disabled={!isDirty} />
+              </SubmitButtonWrapper>
+            )}
+          </form>
+          <ConfirmationModal
+            isShown={showQuitNoSaveModal}
+            setIsShown={setShowQuitNoSaveModal}
+            onConfirm={confirmNavigation}
+            isDangerous
+            messages={{
+              title: messages.closeConfirmationTitle,
+              body: messages.closeConfirmationBody,
+              confirmButton: messages.closeConfirmationButton,
+            }}
+          />
+        </>
       )}
     </SwrContent>
   );

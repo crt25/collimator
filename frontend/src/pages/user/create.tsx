@@ -1,15 +1,11 @@
-import { Container } from "@chakra-ui/react";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
-import Header from "@/components/header/Header";
 import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
-import PageHeading from "@/components/PageHeading";
-import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
-import PageFooter from "@/components/PageFooter";
+import PageLayout from "@/components/layout/PageLayout";
 
 const messages = defineMessages({
   title: {
@@ -41,20 +37,13 @@ const CreateUser = () => {
   );
 
   return (
-    <MaxScreenHeight>
-      <Header title={messages.title} />
-      <Container>
-        <CrtNavigation />
-        <PageHeading>
-          <FormattedMessage
-            id="CreateUser.header"
-            defaultMessage="Create User"
-          />
-        </PageHeading>
-        <UserForm submitMessage={messages.submit} onSubmit={onSubmit} />
-      </Container>
-      <PageFooter />
-    </MaxScreenHeight>
+    <PageLayout
+      title={messages.title}
+      heading={messages.title}
+      breadcrumbs={<CrtNavigation breadcrumb />}
+    >
+      <UserForm submitMessage={messages.submit} onSubmit={onSubmit} />
+    </PageLayout>
   );
 };
 

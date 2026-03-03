@@ -24,6 +24,7 @@ const fetchAndTransform = (
     sessionId,
     taskId,
     id,
+    {},
   ).then(ExistingStudentSolution.fromDto);
 
 export const useSolution = (
@@ -78,6 +79,7 @@ export const useSolutionFile = (
       numericSessionId,
       numericTaskId,
       solutionHash ?? "",
+      {},
     ),
     () =>
       isNaN(numericClassId) ||
@@ -92,6 +94,7 @@ export const useSolutionFile = (
               numericSessionId,
               numericTaskId,
               solutionHash,
+              {},
             ),
             {
               ...authOptions,
@@ -115,6 +118,7 @@ export const useFetchLatestSolutionFile = (): ((
           classId,
           sessionId,
           taskId,
+          {},
         ),
         {
           ...authOptions,

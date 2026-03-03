@@ -12,7 +12,10 @@ export const useRevalidateClassSession = (): ((
 
   return useCallback(
     (classId: number, sessionId: number, newSession?: GetSessionReturnType) => {
-      mutate(getSessionsControllerFindOneV0Url(classId, sessionId), newSession);
+      mutate(
+        getSessionsControllerFindOneV0Url(classId, sessionId, {}),
+        newSession,
+      );
     },
     [mutate],
   );

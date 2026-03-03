@@ -38,6 +38,8 @@ export const adminUser = {
   privateKey: adminPrivateKey,
 };
 
+export const ADMIN_USER_NAME = adminUser.name;
+
 export const newTeacher = {
   id: 10_001,
   oidcSub: "5678",

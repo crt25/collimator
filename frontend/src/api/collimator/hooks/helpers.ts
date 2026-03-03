@@ -32,7 +32,7 @@ export const transformToLazyTableResult = <TData>(
  * @param params The params for the getUrl function.
  * @returns A swr key consisting of two strings.
  */
-export const getSwrParamererizedKey = <TParams>(
+export const getSwrParametrizedKey = <TParams>(
   getUrl: (params?: TParams) => string,
   params?: TParams,
 ): [string, string] => [getUrl(), getUrl(params)];
@@ -49,6 +49,7 @@ type Mutate = typeof mutate;
 export const invalidateParameterizedKey = <TParams>(
   mutate: Mutate,
   getUrl: (params?: TParams) => string,
+  params?: TParams,
 ): void => {
   const baseUrl = getUrl();
 
@@ -60,7 +61,7 @@ export const invalidateParameterizedKey = <TParams>(
         typeof key[0] === "string" &&
         key[0].startsWith(baseUrl))
     );
-  });
+  }, params);
 };
 
 export const getIdOrNaN = (id?: string | number): number =>

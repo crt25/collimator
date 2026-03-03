@@ -1,4 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import { useIntl } from "react-intl";
+import { isLanguage } from "iframe-rpc-react/src";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
 import { StudentIdentity } from "@/api/collimator/models/classes/class-student";
 import { decodeBase64 } from "@/utilities/crypto";
@@ -20,6 +22,7 @@ export const useStudentName = ({
   isDecrypting: boolean;
 } => {
   const authContext = useContext(AuthenticationContext);
+  const intl = useIntl();
 
   const [anonymizationState] = useStudentAnonymization();
   const [isDecrypting, setIsDecrypting] = useState(true);
@@ -79,11 +82,19 @@ export const useStudentName = ({
     });
   }, [authContext, pseudonym, keyPairId]);
 
+  const locale = isLanguage(intl.locale) ? intl.locale : undefined;
+
   const name = useMemo(() => {
     return !anonymizationState.showActualName || !pseudonym
-      ? getStudentNickname(studentId, pseudonym)
+      ? getStudentNickname(studentId, pseudonym, locale)
       : decryptedName;
-  }, [anonymizationState.showActualName, decryptedName, studentId, pseudonym]);
+  }, [
+    anonymizationState.showActualName,
+    decryptedName,
+    studentId,
+    pseudonym,
+    locale,
+  ]);
 
   return {
     name,
