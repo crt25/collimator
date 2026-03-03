@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import {
   KeyPair,
   Prisma,
@@ -7,6 +7,7 @@ import {
   User,
   UserType,
 } from "@prisma/client";
+
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
@@ -20,6 +21,8 @@ export class UserOwnsClassesError extends Error {
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   findByIdOrThrow(id: UserId, includeSoftDelete?: boolean): Promise<User> {
@@ -53,8 +56,10 @@ export class UsersService {
       : await this.findMany({}, includeSoftDelete);
   }
 
-  create(user: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({ data: user });
+  async create(user: Prisma.UserCreateInput): Promise<User> {
+    const created = await this.prisma.user.create({ data: user });
+    this.logger.log(`Created user (id: ${created.id}, type: ${created.type})`);
+    return created;
   }
 
   update(
@@ -92,7 +97,7 @@ export class UsersService {
     });
 
     // Create a new public key and add the new private keys
-    return await this.prisma.keyPair.create({
+    const keyPair = await this.prisma.keyPair.create({
       data: {
         publicKey,
         publicKeyFingerprint: teacherKey.publicKeyFingerprint,
@@ -103,6 +108,11 @@ export class UsersService {
         salt,
       },
     });
+
+    this.logger.log(
+      `Key pair updated for user (id: ${userId}, keyPairId: ${keyPair.id})`,
+    );
+    return keyPair;
   }
 
   async createRegistrationTokenOrThrow(
@@ -113,6 +123,9 @@ export class UsersService {
     });
 
     if (user.oidcSub !== null) {
+      this.logger.warn(
+        `Cannot create registration token for user (id: ${userId}): user already registered`,
+      );
       throw new ForbiddenException();
     }
 
@@ -126,12 +139,15 @@ export class UsersService {
       },
     });
 
-    return await this.prisma.registrationToken.create({
+    const registrationToken = await this.prisma.registrationToken.create({
       data: {
         token,
         userId,
       },
     });
+
+    this.logger.log(`Created registration token for user (id: ${userId})`);
+    return registrationToken;
   }
 
   async deleteById(id: UserId): Promise<User> {

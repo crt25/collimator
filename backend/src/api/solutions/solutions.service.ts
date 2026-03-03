@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import {
   Solution,
   Prisma,
@@ -97,6 +97,8 @@ const latestAstVersion = AstVersion.v1;
 
 @Injectable()
 export class SolutionsService {
+  private readonly logger = new Logger(SolutionsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
@@ -383,6 +385,9 @@ export class SolutionsService {
             deletedAt: null,
           },
     });
+    this.logger.log(
+      `Updated student solution (id: ${studentSolutionId}) isReference=${isReference}`,
+    );
   }
 
   async downloadLatestStudentSolutionOrThrow(
@@ -488,6 +493,12 @@ export class SolutionsService {
     );
     const deletedRows = result[0]?.count ?? 0;
 
+    if (deletedRows > 0) {
+      this.logger.log(
+        `Deleted ${deletedRows} student solutions for session (id: ${sessionId}), task (id: ${taskId})`,
+      );
+    }
+
     return deletedRows > 0;
   }
 
@@ -535,6 +546,10 @@ export class SolutionsService {
       },
     });
 
+    this.logger.log(
+      `Created student solution (id: ${studentSolution.id}) for student (id: ${studentId}), session (id: ${sessionId}), task (id: ${taskId})`,
+    );
+
     // perform the analysis but do *not* wait for the promise to resolve
     // this will happen in the background
     this.analysisService.performAnalysis(
@@ -573,6 +588,10 @@ export class SolutionsService {
         ],
       },
     });
+
+    if (solutionsWithoutAnalysis.length > 0) {
+      this.logger.log(`Running ${solutionsWithoutAnalysis.length} analyses`);
+    }
 
     // run all of them
     await Promise.all(
@@ -622,6 +641,12 @@ export class SolutionsService {
           solution: true,
         },
       });
+
+    if (solutionsWithoutAnalysis.length > 0) {
+      this.logger.log(
+        `Upgrading ${solutionsWithoutAnalysis.length} analyses to latest AST version`,
+      );
+    }
 
     // run all of them
     await Promise.all(
