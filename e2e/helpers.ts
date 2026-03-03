@@ -1,7 +1,7 @@
 import { Page, Request } from "@playwright/test";
 import {
-  test as testBase,
   expect as expectBase,
+  test as testBase,
 } from "playwright-test-coverage";
 import pg from "pg";
 import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
@@ -12,6 +12,7 @@ import {
   gracefullyStopBackend,
   killProcessByPid,
   PostgresConfig,
+  seedE2eDatabase,
   setupBackendPort,
   setupFrontendPort,
   setupProjectNamePrefix,
@@ -282,6 +283,17 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
           `CREATE DATABASE "${workerConfig.uniqueDbName}" TEMPLATE "${workerConfig.postgresConfig.database}"`,
         );
         await client.end();
+      }
+
+      const resetTestUrl = getUrl({
+        ...workerConfig.postgresConfig,
+        database: workerConfig.uniqueDbName,
+      });
+
+      const seedResult = seedE2eDatabase({ databaseUrl: resetTestUrl });
+
+      if (seedResult.status !== 0) {
+        throw new Error(`e2e seed failed: ${seedResult.stderr?.toString()}`);
       }
 
       const anyFingerprint = await getPublicKeyFingerprint(adminUser.publicKey);
