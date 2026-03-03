@@ -172,6 +172,8 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
       // once the project is backed up, run the project
       vm.greenFlag();
 
+      const stopGracePeriodMs = 1000;
+
       setTimeout(() => {
         if (finishedRunning) {
           return;
@@ -181,13 +183,19 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
         vm.stopAll();
         vm.runtime.emit("PROJECT_RUN_STOP");
 
-        console.error(`${logModule} Maximum execution time exceeded`);
+        // Give the VM time to process the stop signal and emit ASSERTIONS_CHECKED before rejecting
+        setTimeout(() => {
+          if (finishedRunning) {
+            return;
+          }
 
-        reject(
-          new TimeoutExceededError(
-            intl.formatMessage(messages.timeoutExceeded),
-          ),
-        );
+          console.error(`${logModule} Maximum execution time exceeded`);
+          reject(
+            new TimeoutExceededError(
+              intl.formatMessage(messages.timeoutExceeded),
+            ),
+          );
+        }, stopGracePeriodMs);
       }, maximumExecutionTimeInMs);
     });
 
