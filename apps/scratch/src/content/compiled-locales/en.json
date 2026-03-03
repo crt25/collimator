@@ -105,6 +105,12 @@
       "value": "Unnamed Assertion"
     }
   ],
+  "crt.gui.toolbox.allBlocksDisabled": [
+    {
+      "type": 0,
+      "value": "All blocks are disabled"
+    }
+  ],
   "crt.taskConfig.allowAllStandardBlocks": [
     {
       "type": 0,

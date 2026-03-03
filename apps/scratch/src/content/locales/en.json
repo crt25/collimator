@@ -63,6 +63,10 @@
   "crt.extensions.assertions.unnamedAssertion": {
     "message": "Unnamed Assertion"
   },
+  "crt.gui.toolbox.allBlocksDisabled": {
+    "description": "Message shown in the toolbox when all blocks are disabled.",
+    "message": "All blocks are disabled"
+  },
   "crt.taskConfig.allowAllStandardBlocks": {
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
     "message": "Allow all standard blocks to be used"

@@ -63,6 +63,10 @@
   "crt.extensions.assertions.unnamedAssertion": {
     "message": "Affirmation sans nom"
   },
+  "crt.gui.toolbox.allBlocksDisabled": {
+    "description": "Message affiché dans la boîte à outils lorsque tous les blocs sont désactivés.",
+    "message": "Tous les blocs sont désactivés"
+  },
   "crt.taskConfig.allowAllStandardBlocks": {
     "description": "Label shown on the button that, when clicked, allows all standard blocks to be used by students.",
     "message": "Permettre l'utilisation de tous les blocs standard"

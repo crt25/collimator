@@ -1,4 +1,6 @@
+import { defineMessages } from "react-intl";
 import { Colors } from "@scratch-submodule/packages/scratch-gui/src/lib/themes";
+import { formatMessage } from "../i18n";
 import { buildMotionXml, MotionOpCode } from "./xml/motion";
 import { buildLooksXml, LooksOpCode } from "./xml/looks";
 import { buildSoundXml, SoundOpCode } from "./xml/sound";
@@ -9,6 +11,14 @@ import { buildOperatorsXml, OperatorsOpCode } from "./xml/operators";
 import { buildVariablesXml } from "./xml/data";
 import { buildMyBlocksXml } from "./xml/my-blocks";
 import { categorySeparator } from "./xml/constants";
+
+const messages = defineMessages({
+  allBlocksDisabled: {
+    defaultMessage: "All blocks are disabled",
+    description: "Message shown in the toolbox when all blocks are disabled.",
+    id: "crt.gui.toolbox.allBlocksDisabled",
+  },
+});
 
 const xmlEscape = function (unsafe: string): string {
   return unsafe.replace(/[<>&'"]/g, (c: string) => {
@@ -32,7 +42,7 @@ const xmlEscape = function (unsafe: string): string {
 const xmlOpen = '<xml style="display: none">';
 const xmlClose = "</xml>";
 
-const allBlocksAreDisabled = `<category name="All blocks are disabled" />`;
+const allBlocksAreDisabled = `<category name="${xmlEscape(formatMessage(messages.allBlocksDisabled))}" />`;
 
 /**
  * The number of blocks that are allowed to be used for a given task.

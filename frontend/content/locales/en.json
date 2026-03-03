@@ -47,15 +47,6 @@
   "AnonymizationToggle.label": {
     "message": "Anonymize Names"
   },
-  "ApiError.GENERIC_ERROR": {
-    "message": "An unexpected error occurred. Please try again later."
-  },
-  "ApiError.TASK_IN_OTHER_USERS_LESSON": {
-    "message": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
-  },
-  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": {
-    "message": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
-  },
   "AstHeightCriterionFilterForm.count": {
     "message": "Height of the AST"
   },
@@ -264,7 +255,7 @@
     "message": "Lesson copied successfully"
   },
   "CopyLessonModal.description": {
-    "message": "Select an existing lesson to copy from another class."
+    "message": "Select a lesson to copy from another class."
   },
   "CopyLessonModal.goToLesson": {
     "message": "Go to lesson"
@@ -708,6 +699,18 @@
   "SessionDetail.errorMessage": {
     "message": "There was an error saving the changes. Please try to save again!"
   },
+  "SessionDetail.readOnlyDescription": {
+    "message": "You are viewing a lesson created by another user. Only the creator can edit this lesson."
+  },
+  "SessionDetail.readOnlyTitle": {
+    "message": "View only"
+  },
+  "SessionDetail.sessionLockedDescription": {
+    "message": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
+  },
+  "SessionDetail.sessionLockedTitle": {
+    "message": "Session is locked"
+  },
   "SessionDetail.submit": {
     "message": "Save Lesson"
   },
@@ -987,6 +990,9 @@
   "TaskForm.taskFileRequired": {
     "message": "A task file is required before saving."
   },
+  "TaskForm.testName": {
+    "message": "Test name"
+  },
   "TaskForm.title": {
     "message": "Title"
   },
@@ -1089,8 +1095,20 @@
   "TaskInstanceProgressList.viewDetails": {
     "message": "View student solution"
   },
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
+    "description": "Title for the alert when trying to edit reference solutions",
+    "message": "This reference solution cannot be edited here. To edit, go to {link}."
+  },
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
+    "description": "Title for the alert when trying to edit reference solutions",
+    "message": "This reference solution cannot be edited here. To edit, go to {link}."
+  },
   "TaskInstanceReferenceSolutions.submit": {
     "message": "Save Task"
+  },
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": {
+    "description": "Link text for the alert when trying to edit reference solutions",
+    "message": "the reference solutions detail"
   },
   "TaskInstanceReferenceSolutions.title": {
     "message": "Edit Task - {title}"
@@ -1179,11 +1197,23 @@
   "TaskProgressList.status.opened": {
     "message": "Opened"
   },
+  "TaskReferenceSolutions.referenceLockedDescription": {
+    "message": "This reference solution cannot be edited because it is already in use in a task used in a class with enrolled students."
+  },
+  "TaskReferenceSolutions.referenceLockedTitle": {
+    "message": "Reference solution is locked"
+  },
+  "TaskReferenceSolutions.referenceReadOnlyDescription": {
+    "message": "You are viewing a public reference solution created by another user. Only the creator can edit this task."
+  },
+  "TaskReferenceSolutions.referenceReadOnlyTitle": {
+    "message": "View only"
+  },
   "TaskReferenceSolutions.submit": {
-    "message": "Save Task"
+    "message": "Save Reference Solution(s)"
   },
   "TaskReferenceSolutions.title": {
-    "message": "Edit Task - {title}"
+    "message": "Edit Reference Solution - {title}"
   },
   "TaskTable.columns.actionsColumn": {
     "message": "Quick Actions"

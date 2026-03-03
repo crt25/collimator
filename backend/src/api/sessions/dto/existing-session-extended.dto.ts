@@ -8,6 +8,7 @@ import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
 
 type TaskList = { task: { id: number; name: string } }[];
+export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
 
 export class ExistingSessionExtendedDto
   implements Omit<Session, "classId" | "basedOnLessonId">
@@ -87,7 +88,16 @@ export class ExistingSessionExtendedDto
   @Expose()
   readonly tasks!: SessionTaskDto[];
 
-  static fromQueryResult(data: Session): ExistingSessionExtendedDto {
+  @ApiProperty({
+    description: "Indicates whether the session has any students.",
+    type: Boolean,
+  })
+  @Expose()
+  readonly hasStudents!: boolean;
+
+  static fromQueryResult(
+    data: SessionWithStudentIndicator,
+  ): ExistingSessionExtendedDto {
     return plainToInstance(ExistingSessionExtendedDto, data, {
       excludeExtraneousValues: true,
     });

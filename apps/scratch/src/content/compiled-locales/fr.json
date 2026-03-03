@@ -105,6 +105,12 @@
       "value": "Assertion sans nom"
     }
   ],
+  "crt.gui.toolbox.allBlocksDisabled": [
+    {
+      "type": 0,
+      "value": "Tous les blocs sont désactivés"
+    }
+  ],
   "crt.taskConfig.allowAllStandardBlocks": [
     {
       "type": 0,

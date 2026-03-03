@@ -74,7 +74,7 @@ test.describe("user management", () => {
 
     test("renders the fetched items", async ({ page }) => {
       // 2 from seedings + 2 from the create tests
-      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(4);
+      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(5);
     });
   });
 

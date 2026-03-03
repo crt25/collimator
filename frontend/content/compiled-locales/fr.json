@@ -629,8 +629,7 @@
       "value": "Créer une leçon"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -751,8 +750,7 @@
       "value": "Créer une activité"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -1079,8 +1077,7 @@
       "value": "Activités"
     }
   ],
-  "DEPRECATED: ListClasses.description": [
-  ],
+  "DEPRECATED: ListClasses.description": [],
   "DEPRECATED: ListClasses.pageTitle": [
     {
       "type": 0,
@@ -1211,16 +1208,14 @@
       "value": "Afficher la leçon"
     }
   ],
-  "DEPRECATED: Task.sessionMenu.heading.description": [
-  ],
+  "DEPRECATED: Task.sessionMenu.heading.description": [],
   "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": [
     {
       "type": 0,
       "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
     }
   ],
-  "DEPRECATED: TaskInstanceList.description": [
-  ],
+  "DEPRECATED: TaskInstanceList.description": [],
   "DEPRECATED: TaskSessionActions.deleteTask": [
     {
       "type": 0,
@@ -1947,6 +1942,30 @@
       "value": "Une erreur s'est produite lors de l'enregistrement des modifications. Veuillez essayer de sauvegarder à nouveau !"
     }
   ],
+  "SessionDetail.readOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une leçon créée par un autre utilisateur. Seul le créateur peut modifier cette leçon."
+    }
+  ],
+  "SessionDetail.readOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Consultation uniquement"
+    }
+  ],
+  "SessionDetail.sessionLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette session a des étudiants inscrits. Vous ne pouvez pas supprimer les tâches existantes ni modifier le type de partage."
+    }
+  ],
+  "SessionDetail.sessionLockedTitle": [
+    {
+      "type": 0,
+      "value": "La session est verrouillée"
+    }
+  ],
   "SessionDetail.submit": [
     {
       "type": 0,
@@ -2561,6 +2580,12 @@
       "value": "Un fichier de tâche est requis avant l’enregistrement."
     }
   ],
+  "TaskForm.testName": [
+    {
+      "type": 0,
+      "value": "Nom du test"
+    }
+  ],
   "TaskForm.title": [
     {
       "type": 0,
@@ -2785,10 +2810,44 @@
       "value": "View student solution"
     }
   ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
+    },
+    {
+      "type": 1,
+      "value": "lien"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
       "value": "Enregistrer l'activité"
+    }
+  ],
+  "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": [
+    {
+      "type": 0,
+      "value": "détails des solutions de référence"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
@@ -2977,16 +3036,40 @@
       "value": "Ouvert"
     }
   ],
+  "TaskReferenceSolutions.referenceLockedDescription": [
+    {
+      "type": 0,
+      "value": "Cette solution de référence ne peut pas être modifiée car elle est déjà utilisée dans une tâche utilisée dans une classe avec des étudiants inscrits."
+    }
+  ],
+  "TaskReferenceSolutions.referenceLockedTitle": [
+    {
+      "type": 0,
+      "value": "La solution de référence est verrouillée"
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyDescription": [
+    {
+      "type": 0,
+      "value": "Vous consultez une solution de référence publique créée par un autre utilisateur. Seul le créateur peut modifier cette tâche."
+    }
+  ],
+  "TaskReferenceSolutions.referenceReadOnlyTitle": [
+    {
+      "type": 0,
+      "value": "Consultation uniquement"
+    }
+  ],
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Enregistrer l'activité"
+      "value": "Enregistrer les/la solution(s) de référence"
     }
   ],
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Modifier l'activité - "
+      "value": "Modifier la solution de référence - "
     },
     {
       "type": 1,
