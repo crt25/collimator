@@ -12,7 +12,7 @@ export const handler = async (evt) => {
     // ensure /class/123 is rewritten to /class/[classId]
     .replace(dynamicRoutesPattern, dynamicRoutesReplacement);
 
-  if (uri === '/') {
+  if (uri === '/' || uri === '') {
     request.uri = '/index.html';
   } else if (!path.extname(uri)) {
     request.uri = `${uri}.html`;
