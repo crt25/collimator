@@ -528,7 +528,7 @@
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
   "CreateClass.header": {
-    "message": "Créer une leçon"
+    "message": "Créer une classe"
   },
   "CreateClass.pageDescription": {
     "message": ""
@@ -537,13 +537,13 @@
     "message": "Retourner à la liste des classes"
   },
   "CreateClass.submit": {
-    "message": "Créer une leçon"
+    "message": "Créer une classe"
   },
   "CreateClass.successMessage": {
-    "message": "Leçon créée avec succès"
+    "message": "Classe créée avec succès"
   },
   "CreateClass.title": {
-    "message": "Créer une leçon"
+    "message": "Créer une classe"
   },
   "CreateLesson.submit": {
     "message": "Créer une leçon"
