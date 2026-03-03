@@ -521,11 +521,7 @@ const TaskForm = ({
               title: intl.formatMessage(messages.taskFileRequired),
               closable: true,
             });
-          } else {
-            toaster.error({
-              title: intl.formatMessage(messages.saveError),
-              closable: true,
-            });
+            return;
           }
 
           if (err instanceof ConflictError) {
@@ -536,12 +532,13 @@ const TaskForm = ({
               closable: true,
             });
             onConflictError?.();
-          } else {
-            toaster.error({
-              title: intl.formatMessage(messages.saveError),
-              closable: true,
-            });
+            return;
           }
+
+          toaster.error({
+            title: intl.formatMessage(messages.saveError),
+            closable: true,
+          });
         });
     },
     [
