@@ -101,7 +101,7 @@ const TaskModal = ({
           task,
           language: intl.locale as Language,
         }),
-      intl.formatMessage(taskMessages.cannotImportTask),
+      { intl, descriptor: taskMessages.cannotImportTask },
       intl.formatMessage(taskMessages.taskImported),
     );
     setAppLoaded(true);
@@ -114,7 +114,7 @@ const TaskModal = ({
 
     const response = await executeAsyncWithToasts(
       () => embeddedApp.current!.sendRequest("exportTask", undefined),
-      intl.formatMessage(taskMessages.cannotExport),
+      { intl, descriptor: taskMessages.cannotExport },
       intl.formatMessage(taskMessages.taskCreated),
     );
 

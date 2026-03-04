@@ -9,3 +9,15 @@ export abstract class ScratchProjectError extends Error {
     this.name = new.target.name;
   }
 }
+
+export abstract class ScratchInnerError extends ScratchProjectError {
+  constructor(code: ScratchProjectErrorCode, defaultMessage: string) {
+    super(code, defaultMessage);
+  }
+}
+
+export abstract class ScratchWrapperError extends ScratchProjectError {
+  constructor(code: ScratchProjectErrorCode, message: string) {
+    super(code, message);
+  }
+}
