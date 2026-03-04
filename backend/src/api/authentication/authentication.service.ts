@@ -159,8 +159,8 @@ export class AuthenticationService {
   }
 
   async findPublicKeyByFingerprint(fingerprint: string): Promise<PublicKey> {
-    this.logger.debug(`Looking up public key by fingerprint`);
-    return await this.prisma.keyPair.findUniqueOrThrow({
+    this.logger.debug(`Looking up public key with fingerprint ${fingerprint}`);
+    const publicKey = await this.prisma.keyPair.findUniqueOrThrow({
       select: {
         id: true,
         teacherId: true,
@@ -169,6 +169,11 @@ export class AuthenticationService {
       },
       where: { publicKeyFingerprint: fingerprint },
     });
+
+    this.logger.log(
+      `Found public key (id: ${publicKey.id}) for fingerprint ${fingerprint}`,
+    );
+    return publicKey;
   }
 
   async deleteExpiredTokens(): Promise<void> {
@@ -185,6 +190,8 @@ export class AuthenticationService {
         createdAt: { lt: new Date(Date.now() - registrationTokenLifetime) },
       },
     });
+
+    this.logger.log(`Expired tokens cleanup complete`);
   }
 
   protected verifyToken(
@@ -257,13 +264,16 @@ export class AuthenticationService {
     provider: AuthenticationProvider,
     registrationToken?: string | null,
   ): Promise<UserIdentityWithKeyAndToken> {
-    this.logger.log(`Sign-in attempt with provider ${provider}`);
+    this.logger.debug(`Sign-in attempt with provider ${provider}`);
 
     const verifiedToken = await this.verifyToken(jwt, provider);
 
     const sub = verifiedToken.payload["sub"];
 
     if (!sub) {
+      this.logger.error(
+        `Sign-in failed: No sub claim provided in JWT token for provider ${provider}`,
+      );
       throw new Error("Sub not found in JWT token");
     }
 
@@ -280,11 +290,11 @@ export class AuthenticationService {
     );
 
     if (oidcUser) {
-      this.logger.log(`Found existing user (id: ${oidcUser.id})`);
+      this.logger.debug(`Found existing user (id: ${oidcUser.id})`);
       user = oidcUser;
     } else {
       this.logger.debug(
-        `User not found by OIDC sub, attempting registration flow`,
+        `User not found by OIDC sub, attempting registration flow ${sub} with provider ${provider}`,
       );
       const email = verifiedToken.payload["email"] as string | undefined;
 
@@ -309,7 +319,7 @@ export class AuthenticationService {
         registrationToken,
       );
 
-      this.logger.log(`Registering user (id: ${user.id})`);
+      this.logger.debug(`Registering user (id: ${user.id})`);
 
       await this.prisma.user.update({
         where: { id: user.id },
@@ -331,7 +341,7 @@ export class AuthenticationService {
     const email = verifiedToken.payload["email"] as string | undefined;
     if (email && user.email !== email) {
       // update user email address
-      this.logger.log(
+      this.logger.debug(
         `Updating email for user (id: ${user.id}) based on JWT claim`,
       );
       await this.prisma.user.update({
@@ -340,6 +350,9 @@ export class AuthenticationService {
           email,
         },
       });
+      this.logger.log(
+        `Email for user (id: ${user.id}) updated to ${email} based on JWT claim`,
+      );
     }
 
     const randomToken = generateToken();
@@ -375,7 +388,7 @@ export class AuthenticationService {
     classId: number,
     keyPairId: number,
   ): Promise<AuthToken> {
-    this.logger.log(`Student sign-in attempt for class (id: ${classId})`);
+    this.logger.debug(`Student sign-in attempt for class (id: ${classId})`);
 
     const rawPseudonym = Buffer.from(pseudonym, "base64");
 
@@ -431,7 +444,7 @@ export class AuthenticationService {
    * @returns A new authentication token.
    */
   async signInAnonymousStudent(sessionId: number): Promise<AuthToken> {
-    this.logger.log(
+    this.logger.debug(
       `Anonymous student sign-in attempt for session (id: ${sessionId})`,
     );
 
@@ -457,6 +470,10 @@ export class AuthenticationService {
         lastUsedAt: new Date(),
       },
     });
+
+    this.logger.log(
+      `Anonymous student sign-in successful (student id: ${student.id})`,
+    );
 
     return authToken.token;
   }
