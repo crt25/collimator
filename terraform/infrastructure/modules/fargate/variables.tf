@@ -22,7 +22,7 @@ variable "private_dns_arn" {
   type = string
 }
 
-variable "database_url" {
+variable "database_url_arn" {
   type      = string
   sensitive = true
 }

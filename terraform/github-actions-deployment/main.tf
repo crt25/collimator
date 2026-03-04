@@ -1,4 +1,4 @@
-﻿# allow github actions to provide identities to AWS
+# allow github actions to provide identities to AWS
 resource "aws_iam_openid_connect_provider" "this" {
   url = "https://token.actions.githubusercontent.com"
 
