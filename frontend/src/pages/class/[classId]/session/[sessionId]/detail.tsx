@@ -54,12 +54,12 @@ const messages = defineMessages({
   },
   sessionLockedTitle: {
     id: "SessionDetail.sessionLockedTitle",
-    defaultMessage: "Session is locked",
+    defaultMessage: "Lesson is locked",
   },
   sessionLockedDescription: {
     id: "SessionDetail.sessionLockedDescription",
     defaultMessage:
-      "This session has enrolled students. You cannot remove existing tasks or change the sharing type.",
+      "This lesson has enrolled students. You cannot remove existing tasks or change the sharing type.",
   },
 });
 
