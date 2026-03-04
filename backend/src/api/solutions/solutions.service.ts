@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import {
-  Solution,
-  Prisma,
-  SolutionAnalysis,
   AstVersion,
-  StudentSolution,
-  SolutionTest,
+  Prisma,
   ReferenceSolution,
+  Solution,
+  SolutionAnalysis,
+  SolutionTest,
+  StudentSolution,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import {
@@ -496,6 +496,10 @@ export class SolutionsService {
     if (deletedRows > 0) {
       this.logger.log(
         `Deleted ${deletedRows} student solutions for session (id: ${sessionId}), task (id: ${taskId})`,
+      );
+    } else {
+      this.logger.log(
+        `No student solutions deleted for session (id: ${sessionId}), task (id: ${taskId}) and student solution id (id: ${id})`,
       );
     }
 
