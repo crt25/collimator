@@ -59,7 +59,7 @@ export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
 export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
   isAnonymous: false;
   idToken: string;
-  studentId: number;
+  studentId: number | undefined;
   authenticationToken: undefined;
   name: string;
   role: UserRole.student;

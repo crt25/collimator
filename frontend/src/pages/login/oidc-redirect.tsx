@@ -101,6 +101,7 @@ const OpenIdConnectRedirect = () => {
               version: latestAuthenticationContextVersion,
               idToken: idToken,
               authenticationToken: undefined,
+              studentId: undefined,
               role: UserRole.student,
               name,
             });
