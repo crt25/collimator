@@ -1,4 +1,4 @@
-﻿data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {}
 
 locals {
   # 3 availability zones to limit the costs

@@ -1,4 +1,4 @@
-﻿# upload the static files to the S3 buckets
+# upload the static files to the S3 buckets
 
 module "frontend" {
   source = "./modules/s3-upload-directory"

@@ -1,4 +1,4 @@
-﻿resource "aws_service_discovery_private_dns_namespace" "this" {
+resource "aws_service_discovery_private_dns_namespace" "this" {
   name = "default.${var.name}.local"
   vpc  = module.vpc.vpc_id
 
@@ -20,9 +20,11 @@ resource "aws_service_discovery_service" "this" {
     routing_policy = "MULTIVALUE"
   }
 
-  health_check_custom_config {
-    failure_threshold = 1
-  }
+  health_check_custom_config {}
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [health_check_custom_config]
+  }
 }
