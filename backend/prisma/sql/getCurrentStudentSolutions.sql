@@ -15,6 +15,7 @@ LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution."id"
   AND test."deletedAt" IS NULL
 WHERE sessionTask."sessionId" = $1
+AND sessionTask."deletedAt" IS NULL
 AND studentSolution."studentId" = $2
 GROUP BY studentSolution."taskId", studentSolution."id"
 ORDER BY studentSolution."taskId", studentSolution."createdAt" DESC;
