@@ -51,16 +51,19 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
     try {
       await deleteTask(taskId);
       toaster.success({
+        id: `task-delete-success-${taskId}`,
         title: intl.formatMessage(messages.deleteSuccessMessage),
       });
       router.push(`/task`);
     } catch (error) {
       if (error instanceof ConflictError) {
         toaster.error({
+          id: `task-delete-conflict-${taskId}`,
           title: intl.formatMessage(getErrorMessageDescriptor(error.errorCode)),
         });
       } else {
         toaster.error({
+          id: `task-delete-error-${taskId}`,
           title: intl.formatMessage(messages.deleteErrorMessage),
         });
       }

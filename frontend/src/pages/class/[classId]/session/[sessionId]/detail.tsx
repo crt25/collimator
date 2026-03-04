@@ -98,10 +98,12 @@ const SessionDetail = () => {
             isAnonymous: formValues.sharingType === SharingType.anonymous,
           });
           toaster.success({
+            id: `session-update-success-${session.id}`,
             title: intl.formatMessage(messages.successMessage),
           });
         } catch {
           toaster.error({
+            id: `session-update-error-${session.id}`,
             title: intl.formatMessage(messages.errorMessage),
           });
         }

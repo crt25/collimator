@@ -271,11 +271,13 @@ const TaskTable = () => {
                 try {
                   await deleteTask(taskIdToDelete);
                   toaster.success({
+                    id: `task-delete-success-${taskIdToDelete}`,
                     title: intl.formatMessage(messages.successMessage),
                   });
                 } catch (error) {
                   if (error instanceof ConflictError) {
                     toaster.error({
+                      id: `task-delete-conflict-${taskIdToDelete}`,
                       title: intl.formatMessage(
                         getErrorMessageDescriptor(error.errorCode),
                       ),
@@ -284,6 +286,7 @@ const TaskTable = () => {
                   }
 
                   toaster.error({
+                    id: `task-delete-error-${taskIdToDelete}`,
                     title: intl.formatMessage(messages.genericErrorMessage),
                   });
                 }

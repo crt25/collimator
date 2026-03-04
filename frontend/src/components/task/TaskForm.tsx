@@ -509,6 +509,7 @@ const TaskForm = ({
           reset(data);
 
           toaster.success({
+            id: "task-save-success",
             title: intl.formatMessage(messages.saveSuccess),
             closable: true,
           });
@@ -518,6 +519,7 @@ const TaskForm = ({
 
           if (err instanceof NoTaskFileError) {
             toaster.error({
+              id: "task-file-required",
               title: intl.formatMessage(messages.taskFileRequired),
               closable: true,
             });
@@ -526,6 +528,7 @@ const TaskForm = ({
 
           if (err instanceof ConflictError) {
             toaster.error({
+              id: "task-conflict-error",
               title: intl.formatMessage(
                 getErrorMessageDescriptor(err.errorCode),
               ),
@@ -536,6 +539,7 @@ const TaskForm = ({
           }
 
           toaster.error({
+            id: "task-save-error",
             title: intl.formatMessage(messages.saveError),
             closable: true,
           });

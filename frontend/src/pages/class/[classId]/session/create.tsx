@@ -56,6 +56,7 @@ const CreateSession = () => {
             isAnonymous: formValues.sharingType === "anonymous",
           });
           toaster.success({
+            id: `create-session-success-${session.id}`,
             title: intl.formatMessage(messages.successMessage),
             action: {
               label: intl.formatMessage(messages.returnToSessionList),
@@ -69,6 +70,7 @@ const CreateSession = () => {
           router.push(`/class/${klass.id}/session/${session.id}/detail`);
         } catch {
           toaster.error({
+            id: "create-session-error",
             title: intl.formatMessage(messages.errorMessage),
           });
         }

@@ -88,10 +88,12 @@ const ClassDetail = () => {
             teacherId: formValues.teacherId,
           });
           toaster.success({
+            id: `class-update-success-${klass.id}`,
             title: intl.formatMessage(messages.successMessage),
           });
         } catch {
           toaster.error({
+            id: `class-update-error-${klass.id}`,
             title: intl.formatMessage(messages.errorMessage),
           });
         }

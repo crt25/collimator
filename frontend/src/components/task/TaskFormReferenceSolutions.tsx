@@ -354,6 +354,7 @@ const TaskFormReferenceSolutions = ({
           reset(data);
 
           toaster.success({
+            id: `task-reference-solutions-save-success-${Date.now()}`,
             title: intl.formatMessage(messages.saveSuccess),
             closable: true,
           });
@@ -361,6 +362,7 @@ const TaskFormReferenceSolutions = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
           toaster.error({
+            id: "task-reference-solutions-save-error",
             title: intl.formatMessage(messages.saveError),
             closable: true,
           });

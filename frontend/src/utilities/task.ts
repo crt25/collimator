@@ -11,6 +11,7 @@ export const executeAsyncWithToasts = async <T>(
     const response = await fn();
     if (successMessage) {
       toaster.success({
+        id: `success-${Date.now()}`,
         title: successMessage,
         closable: true,
         duration: toastDuration,
@@ -20,6 +21,7 @@ export const executeAsyncWithToasts = async <T>(
     return response;
   } catch (error) {
     toaster.error({
+      id: `error-${Date.now()}`,
       title: errorMessage,
       closable: true,
       duration: toastDuration,
@@ -38,6 +40,7 @@ export const executeWithToasts = <T>(
     const response = fn();
     if (successMessage) {
       toaster.success({
+        id: `success-${Date.now()}`,
         title: successMessage,
         closable: true,
         duration: toastDuration,
@@ -46,6 +49,7 @@ export const executeWithToasts = <T>(
     return response;
   } catch (error) {
     toaster.error({
+      id: `error-${Date.now()}`,
       title: errorMessage,
       closable: true,
       duration: toastDuration,

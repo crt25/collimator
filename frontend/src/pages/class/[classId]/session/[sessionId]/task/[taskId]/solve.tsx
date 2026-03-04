@@ -134,6 +134,7 @@ const SolveTaskPage = () => {
         submission.passedTests.length > 0
       ) {
         toaster.success({
+          id: `correct-solution-submitted-${Date.now()}`,
           title: intl.formatMessage(messages.correctSolutionSubmitted),
           action: {
             label: intl.formatMessage(messages.openTaskList),
@@ -144,6 +145,7 @@ const SolveTaskPage = () => {
         });
       } else {
         toaster.info({
+          id: `solution-submitted-${Date.now()}`,
           title: intl.formatMessage(messages.solutionSubmitted),
           action: {
             label: intl.formatMessage(messages.openTaskList),
