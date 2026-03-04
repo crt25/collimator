@@ -112,7 +112,7 @@ const Task = ({
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body>
-                <PageHeading testId="session-name">
+                <PageHeading testId="student-name">
                   <FormattedMessage
                     id="Task.sessionMenu.heading.studentName"
                     defaultMessage="Student: {studentName}"
