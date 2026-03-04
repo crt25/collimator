@@ -13,7 +13,7 @@ export const toaster = createToaster({
   placement: "top",
   pauseOnPageIdle: true,
   duration: 5000,
-  // max: 1,
+  max: 1,
 });
 
 const StyledCloseTrigger = chakra(Toast.CloseTrigger, {
