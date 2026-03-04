@@ -626,7 +626,7 @@
   "CreateClass.header": [
     {
       "type": 0,
-      "value": "Créer une leçon"
+      "value": "Créer une classe"
     }
   ],
   "CreateClass.pageDescription": [],
@@ -639,7 +639,7 @@
   "CreateClass.submit": [
     {
       "type": 0,
-      "value": "Créer une leçon"
+      "value": "Créer une classe"
     }
   ],
   "CreateClass.successMessage": [
@@ -651,7 +651,7 @@
   "CreateClass.title": [
     {
       "type": 0,
-      "value": "Créer une leçon"
+      "value": "Créer une classe"
     }
   ],
   "CreateLesson.submit": [
