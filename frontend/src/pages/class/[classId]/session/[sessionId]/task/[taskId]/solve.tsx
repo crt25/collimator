@@ -33,6 +33,8 @@ import { messages as taskMessages } from "@/i18n/task-messages";
 import {
   AuthenticationContext,
   isStudentFullyAuthenticated,
+  StudentAuthenticated,
+  StudentAuthenticatedAnonymous,
 } from "@/contexts/AuthenticationContext";
 import { getStudentNickname } from "@/utilities/student-name";
 
@@ -67,15 +69,22 @@ const getSolveUrl = (taskType: TaskType) => {
   }
 };
 
-const SolveTaskPage = () => {
-  const router = useRouter();
+const SolveTaskPageContent = ({
+  classId,
+  sessionId,
+  taskId,
+  authenticationContext,
+}: {
+  classId: string | undefined;
+  sessionId: string;
+  taskId: string;
+  authenticationContext: StudentAuthenticated | StudentAuthenticatedAnonymous;
+}) => {
   const intl = useIntl();
 
-  const { classId, sessionId, taskId } = router.query as {
-    classId?: string;
-    sessionId?: string;
-    taskId?: string;
-  };
+  const studentName = authenticationContext.isAnonymous
+    ? getStudentNickname(authenticationContext.studentId)
+    : authenticationContext.name;
 
   const {
     data: session,
@@ -168,17 +177,6 @@ const SolveTaskPage = () => {
     },
     [createSolution, intl, setShowSessionMenu],
   );
-
-  const authenticationContext = useContext(AuthenticationContext);
-
-  const studentName = isStudentFullyAuthenticated(
-    authenticationContext,
-    parseInt(sessionId!),
-  )
-    ? authenticationContext.isAnonymous
-      ? getStudentNickname(authenticationContext.studentId)
-      : authenticationContext.name
-    : null;
 
   const onSubmitSolution = useCallback(async () => {
     if (!embeddedApp.current || !isScratchMutexAvailable.current) {
@@ -324,10 +322,6 @@ const SolveTaskPage = () => {
     downloadBlob(response.result.file, "task.sb3");
   }, [intl]);
 
-  if (!sessionId || !taskId) {
-    return null;
-  }
-
   // FEATURE FLAG: Disable import/export for now
   const disableImportExport = true;
 
@@ -452,6 +446,35 @@ const SolveTaskPage = () => {
         }
       </MultiSwrContent>
     </StudentPageLayout>
+  );
+};
+
+const SolveTaskPage = () => {
+  const router = useRouter();
+
+  const { classId, sessionId, taskId } = router.query as {
+    classId?: string;
+    sessionId?: string;
+    taskId?: string;
+  };
+
+  const authenticationContext = useContext(AuthenticationContext);
+
+  if (
+    !sessionId ||
+    !taskId ||
+    !isStudentFullyAuthenticated(authenticationContext, parseInt(sessionId))
+  ) {
+    return null;
+  }
+
+  return (
+    <SolveTaskPageContent
+      classId={classId}
+      sessionId={sessionId}
+      taskId={taskId}
+      authenticationContext={authenticationContext}
+    />
   );
 };
 

@@ -82,14 +82,13 @@ const JoinSessionContent = ({
     );
   }, [classId, session, authenticationContext, router]);
 
-  const studentName = isStudentFullyAuthenticated(
-    authenticationContext,
-    sessionId,
-  )
-    ? authenticationContext.isAnonymous
-      ? getStudentNickname(authenticationContext.studentId)
-      : authenticationContext.name
-    : null;
+  if (!isStudentFullyAuthenticated(authenticationContext, sessionId)) {
+    return null;
+  }
+
+  const studentName = authenticationContext.isAnonymous
+    ? getStudentNickname(authenticationContext.studentId)
+    : authenticationContext.name;
 
   return (
     <MultiSwrContent
@@ -100,15 +99,13 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
-            {studentName && (
-              <PageHeading>
-                <FormattedMessage
-                  id="JoinSession.welcomeStudent"
-                  defaultMessage="Welcome, {name}"
-                  values={{ name: studentName }}
-                />
-              </PageHeading>
-            )}
+            <PageHeading>
+              <FormattedMessage
+                id="JoinSession.welcomeStudent"
+                defaultMessage="Welcome, {name}"
+                values={{ name: studentName }}
+              />
+            </PageHeading>
             <PageHeading description={session.description}>
               {session.title}
             </PageHeading>

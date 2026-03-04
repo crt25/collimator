@@ -28,7 +28,7 @@ export interface TaskRef {
 interface Props {
   session: ExistingSessionExtended;
   classId: number;
-  studentName: string | null;
+  studentName: string;
   task: ExistingTask;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
