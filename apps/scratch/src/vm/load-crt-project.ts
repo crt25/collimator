@@ -67,7 +67,9 @@ const loadZip = async (input: ArrayBuffer): Promise<JSZip> => {
   try {
     await zip.loadAsync(input);
   } catch (e) {
-    throw new InvalidZipError(e as Error);
+    console.error("Error loading ZIP file:", e);
+
+    throw new InvalidZipError();
   }
 
   return zip;
@@ -90,7 +92,8 @@ const parseProjectJson = async (zip: JSZip): Promise<ScratchProject> => {
   try {
     project = await projectFile.async("text").then((text) => JSON.parse(text));
   } catch (e) {
-    throw new InvalidProjectJsonError(e as Error);
+    console.log("Error parsing project.json:", e);
+    throw new InvalidProjectJsonError();
   }
 
   return project;
@@ -130,7 +133,8 @@ const loadCrtConfig = async (vm: VM, zip: JSZip): Promise<void> => {
     try {
       config = await configFile.async("text").then((text) => JSON.parse(text));
     } catch (e) {
-      throw new CrtConfigParseError(e as Error);
+      console.error("Error parsing crt.json:", e);
+      throw new CrtConfigParseError();
     }
 
     // merge with default config s.t. all keys are always present
@@ -178,7 +182,8 @@ export const loadCrtProject = async (
       throw e;
     }
 
-    throw new VmLoadError(e as Error);
+    console.error("Error loading project in VM:", e);
+    throw new VmLoadError();
   } finally {
     isLoading = false;
   }
