@@ -525,6 +525,9 @@
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the session",
     "message": "Waiting for the teacher's machine to admit you to the lesson..."
   },
+  "JoinSession.welcomeStudent": {
+    "message": "Welcome, {name}"
+  },
   "LanguageChooser.english": {
     "message": "English"
   },
@@ -896,6 +899,9 @@
   },
   "StudentTaskInstance.title": {
     "message": "Student Solution - {name}"
+  },
+  "Task.sessionMenu.heading.studentName": {
+    "message": "Student: {studentName}"
   },
   "Task.sessionMenu.heading.title": {
     "message": "{sessionName} - Tasks"

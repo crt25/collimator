@@ -1146,6 +1146,9 @@
   "StudentTaskInstance.title": {
     "message": "Student Solution - {name}"
   },
+  "Task.sessionMenu.heading.studentName": {
+    "message": "Élève: {studentName}"
+  },
   "Task.sessionMenu.heading.title": {
     "message": "{sessionName} - Activités"
   },

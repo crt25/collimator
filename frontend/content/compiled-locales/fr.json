@@ -2370,6 +2370,16 @@
       "value": "name"
     }
   ],
+  "Task.sessionMenu.heading.studentName": [
+    {
+      "type": 0,
+      "value": "Élève: "
+    },
+    {
+      "type": 1,
+      "value": "studentName"
+    }
+  ],
   "Task.sessionMenu.heading.title": [
     {
       "type": 1,
