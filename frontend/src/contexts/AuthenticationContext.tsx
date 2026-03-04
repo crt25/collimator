@@ -70,6 +70,7 @@ export type StudentAuthenticated = Omit<
 > & {
   // a student is always authenticated with respect to a session
   sessionId: number;
+  studentId: number;
   teacherPublicKey: JsonWebKey;
   authenticationToken: string;
   keyPair: StudentKeyPair;

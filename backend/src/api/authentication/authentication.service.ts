@@ -13,6 +13,10 @@ import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
 
 export type AuthToken = string;
+export type AuthTokenWithStudentId = {
+  token: AuthToken;
+  studentId: number;
+};
 
 // we use a sliding window for token expiration checked against the last used timestamp
 const slidingTokenLifetime = 1000 * 60 * 60 * 4; // 4 hours
@@ -340,13 +344,13 @@ export class AuthenticationService {
    * @param pseudonym The student's pseudonym encoded in Base64.
    * @param classId The class id the student is in.
    * @param keyPairId The key pair id used to encrypt the pseudonym.
-   * @returns A new authentication token.
+   * @returns A new authentication token with the student id.
    */
   async signInStudent(
     pseudonym: string,
     classId: number,
     keyPairId: number,
-  ): Promise<AuthToken> {
+  ): Promise<AuthTokenWithStudentId> {
     const rawPseudonym = Buffer.from(pseudonym, "base64");
 
     const authenticatedStudent =
@@ -390,15 +394,17 @@ export class AuthenticationService {
       },
     });
 
-    return authToken.token;
+    return { token: authToken.token, studentId: student.id };
   }
 
   /**
    * Create a new authentication token for a student with the given pseudonym and class id.
    * @param sessionId The id of the session the student is signed in to.
-   * @returns A new authentication token.
+   * @returns A new authentication token with the student id.
    */
-  async signInAnonymousStudent(sessionId: number): Promise<AuthToken> {
+  async signInAnonymousStudent(
+    sessionId: number,
+  ): Promise<AuthTokenWithStudentId> {
     const student = await this.prisma.student.create({
       data: {
         anonymousStudent: {
@@ -422,7 +428,7 @@ export class AuthenticationService {
       },
     });
 
-    return authToken.token;
+    return { token: authToken.token, studentId: student.id };
   }
 
   async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {

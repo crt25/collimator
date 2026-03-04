@@ -76,6 +76,11 @@ export const getAuthenticationControllerLoginStudentV0ResponseMock = (
   overrideResponse: Partial<StudentAuthenticationResponseDto> = {},
 ): StudentAuthenticationResponseDto => ({
   authenticationToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  studentId: faker.number.float({
+    min: undefined,
+    max: undefined,
+    fractionDigits: 2,
+  }),
   ...overrideResponse,
 });
 
@@ -83,6 +88,11 @@ export const getAuthenticationControllerLoginAnonymousStudentV0ResponseMock = (
   overrideResponse: Partial<StudentAuthenticationResponseDto> = {},
 ): StudentAuthenticationResponseDto => ({
   authenticationToken: faker.string.alpha({ length: { min: 10, max: 20 } }),
+  studentId: faker.number.float({
+    min: undefined,
+    max: undefined,
+    fractionDigits: 2,
+  }),
   ...overrideResponse,
 });
 
