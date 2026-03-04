@@ -1,11 +1,11 @@
-import { useState, useContext, useMemo } from "react";
-import { defineMessages, useIntl, FormattedMessage } from "react-intl";
+import { useContext, useMemo, useState } from "react";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack, Text, Box } from "@chakra-ui/react";
+import { Box, HStack, Icon, Text } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -16,7 +16,6 @@ import { isClickOnRow } from "@/utilities/table";
 import { ConflictError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { AuthenticationContext } from "@/contexts/AuthenticationContext";
-import { UserRole } from "@/types/user/user-role";
 import SwrContent from "../SwrContent";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { ChakraDataTable, ColumnSize } from "../ChakraDataTable";
@@ -111,8 +110,6 @@ const TaskTable = () => {
       ? authContext.userId
       : undefined;
 
-  const isAdmin = authContext.role === UserRole.admin;
-
   const filteredData = useMemo(() => {
     if (!data) return [];
 
@@ -120,15 +117,12 @@ const TaskTable = () => {
       case VisibilityFilterValue.PublicOnly:
         return data.filter((task) => task.isPublic);
       case VisibilityFilterValue.PrivateOnly:
-        return data.filter(
-          (task) =>
-            !task.isPublic && (isAdmin || task.creatorId === currentUserId),
-        );
+        return data.filter((task) => !task.isPublic);
       case VisibilityFilterValue.All:
       default:
         return data;
     }
-  }, [data, visibilityFilter, currentUserId, isAdmin]);
+  }, [data, visibilityFilter, currentUserId]);
 
   const columns: ColumnDef<ExistingTask>[] = [
     {
