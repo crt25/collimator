@@ -21,9 +21,11 @@ const Menu = chakra("menu", {
 const HeaderMenu = ({
   children,
   hideSignIn = false,
+  displayName,
 }: {
   children?: React.ReactNode;
   hideSignIn?: boolean;
+  displayName?: string;
 }) => {
   const isAuthenticated = useIsAuthenticated();
 
@@ -36,7 +38,11 @@ const HeaderMenu = ({
       {!hideSignIn && (
         <li>
           {isAuthenticated ? (
-            <AvatarMenu icon={<FaRegUser />} testId="user-menu">
+            <AvatarMenu
+              icon={<FaRegUser />}
+              testId="user-menu"
+              displayName={displayName}
+            >
               <AvatarMenu.Item href="/logout">
                 <FormattedMessage
                   id="Header.signOut"

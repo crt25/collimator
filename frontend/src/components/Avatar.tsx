@@ -20,6 +20,7 @@ interface AvatarMenuProps {
   children: React.ReactNode;
   testId?: string;
   icon: React.ReactNode;
+  displayName?: string;
 }
 
 const UsernameItem = chakra(Menu.Item, {
@@ -59,10 +60,17 @@ const AvatarMenuItem = ({
   );
 };
 
-const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
+const AvatarMenu = ({
+  children,
+  testId,
+  icon,
+  displayName,
+}: AvatarMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const username = useUserName();
   const router = useRouter();
+
+  const avatarName = displayName ?? username;
 
   const handleUsernameClick = () => {
     router.push("/");
@@ -87,7 +95,7 @@ const AvatarMenu = ({ children, testId, icon }: AvatarMenuProps) => {
               onClick={handleUsernameClick}
               data-testid="current-username"
             >
-              {username}
+              {avatarName}
             </UsernameItem>
             <Menu.Separator />
             {children}

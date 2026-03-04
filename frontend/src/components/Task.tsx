@@ -28,6 +28,7 @@ export interface TaskRef {
 interface Props {
   session: ExistingSessionExtended;
   classId: number;
+  studentName: string | null;
   task: ExistingTask;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
@@ -41,6 +42,7 @@ interface Props {
 
 const Task = ({
   classId,
+  studentName,
   session,
   task,
   showSessionMenu,
@@ -110,6 +112,13 @@ const Task = ({
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body>
+                <PageHeading testId="session-name">
+                  <FormattedMessage
+                    id="Task.sessionMenu.heading.studentName"
+                    defaultMessage="Student: {studentName}"
+                    values={{ studentName: studentName }}
+                  />
+                </PageHeading>
                 <PageHeading
                   testId="session-name"
                   description={session.description}

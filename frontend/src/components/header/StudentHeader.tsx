@@ -1,10 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import { MessageDescriptor, PrimitiveType } from "react-intl";
 import { chakra } from "@chakra-ui/react";
-import {
-  AuthenticationContext,
-  isStudentAuthenticated,
-} from "@/contexts/AuthenticationContext";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
 import HtmlHead from "./HtmlHead";
@@ -31,6 +27,7 @@ const StudentHeader = ({
   logo,
   children,
   belowHeader,
+  studentName,
 }: {
   title: MessageDescriptor;
   titleParameters?: Record<string, PrimitiveType>;
@@ -38,12 +35,8 @@ const StudentHeader = ({
   logo?: React.ReactNode;
   children?: React.ReactNode;
   belowHeader?: React.ReactNode;
+  studentName?: string | null;
 }) => {
-  const authContext = useContext(AuthenticationContext);
-
-  const isAnonymous =
-    isStudentAuthenticated(authContext) && authContext.isAnonymous;
-
   return (
     <>
       <HtmlHead
@@ -55,7 +48,9 @@ const StudentHeader = ({
       <StyledHeader>
         <HeaderInner>
           {logo ?? <HeaderLogo variant="small" />}
-          <HeaderMenu hideSignIn={isAnonymous}>{children}</HeaderMenu>
+          <HeaderMenu displayName={studentName || undefined}>
+            {children}
+          </HeaderMenu>
         </HeaderInner>
         {belowHeader}
       </StyledHeader>

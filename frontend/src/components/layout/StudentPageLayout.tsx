@@ -9,6 +9,7 @@ interface StudentPageLayoutProps {
   logo?: ReactNode;
   belowHeader?: ReactNode;
   headerActions?: ReactNode;
+  studentName?: string | null;
   children: ReactNode;
 }
 
@@ -18,6 +19,7 @@ const StudentPageLayout = ({
   logo,
   belowHeader,
   headerActions,
+  studentName,
   children,
 }: StudentPageLayoutProps) => {
   return (
@@ -27,6 +29,7 @@ const StudentPageLayout = ({
         titleParameters={titleParameters}
         logo={logo}
         belowHeader={belowHeader}
+        studentName={studentName}
       >
         {headerActions}
       </StudentHeader>

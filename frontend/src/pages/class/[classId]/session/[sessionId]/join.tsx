@@ -31,6 +31,7 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
 import PageHeading from "@/components/PageHeading";
 import PageFooter from "@/components/PageFooter";
+import { getStudentNickname } from "@/utilities/student-name";
 
 const logModule = "[JoinSession]";
 
@@ -81,6 +82,15 @@ const JoinSessionContent = ({
     );
   }, [classId, session, authenticationContext, router]);
 
+  const studentName = isStudentFullyAuthenticated(
+    authenticationContext,
+    sessionId,
+  )
+    ? authenticationContext.isAnonymous
+      ? getStudentNickname(authenticationContext.studentId)
+      : authenticationContext.name
+    : null;
+
   return (
     <MultiSwrContent
       data={[session]}
@@ -90,6 +100,15 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
+            {studentName && (
+              <PageHeading>
+                <FormattedMessage
+                  id="JoinSession.welcomeStudent"
+                  defaultMessage="Welcome, {name}"
+                  values={{ name: studentName }}
+                />
+              </PageHeading>
+            )}
             <PageHeading description={session.description}>
               {session.title}
             </PageHeading>

@@ -1,5 +1,12 @@
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
@@ -23,6 +30,11 @@ import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
+import {
+  AuthenticationContext,
+  isStudentFullyAuthenticated,
+} from "@/contexts/AuthenticationContext";
+import { getStudentNickname } from "@/utilities/student-name";
 
 const messages = defineMessages({
   title: {
@@ -156,6 +168,17 @@ const SolveTaskPage = () => {
     },
     [createSolution, intl, setShowSessionMenu],
   );
+
+  const authenticationContext = useContext(AuthenticationContext);
+
+  const studentName = isStudentFullyAuthenticated(
+    authenticationContext,
+    parseInt(sessionId!),
+  )
+    ? authenticationContext.isAnonymous
+      ? getStudentNickname(authenticationContext.studentId)
+      : authenticationContext.name
+    : null;
 
   const onSubmitSolution = useCallback(async () => {
     if (!embeddedApp.current || !isScratchMutexAvailable.current) {
@@ -396,6 +419,7 @@ const SolveTaskPage = () => {
           </Text>
         )
       }
+      studentName={studentName}
     >
       <MultiSwrContent
         data={[session, task, taskFile]}
@@ -407,6 +431,7 @@ const SolveTaskPage = () => {
             <Task
               classId={session.klass.id}
               session={session}
+              studentName={studentName}
               task={task}
               showSessionMenu={showSessionMenu}
               setShowSessionMenu={setShowSessionMenu}
