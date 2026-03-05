@@ -2282,6 +2282,16 @@
       "value": "Nombre de déclarations"
     }
   ],
+  "StudentHeader.studentLabel": [
+    {
+      "type": 0,
+      "value": "Élève : "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "StudentList.columns.name": [
     {
       "type": 0,

@@ -1107,6 +1107,9 @@
   "StatementCriterionFilterForm.count": {
     "message": "Nombre de déclarations"
   },
+  "StudentHeader.studentLabel": {
+    "message": "Élève : {name}"
+  },
   "StudentList.columns.name": {
     "message": "Nom"
   },

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { MessageDescriptor, PrimitiveType } from "react-intl";
+import { FormattedMessage, MessageDescriptor, PrimitiveType } from "react-intl";
 import { chakra } from "@chakra-ui/react";
 import {
   AuthenticationContext,
@@ -66,7 +66,13 @@ const StudentHeader = ({
         <HeaderInner>
           {logo ?? <HeaderLogo variant="small" />}
           <HeaderMenu hideSignIn={isAnonymous}>{children}</HeaderMenu>
-          <StudentUsername>{studentName}</StudentUsername>
+          <StudentUsername>
+            <FormattedMessage
+              id="StudentHeader.studentLabel"
+              defaultMessage="Student: {name}"
+              values={{ name: studentName }}
+            />
+          </StudentUsername>
         </HeaderInner>
         {belowHeader}
       </StyledHeader>
