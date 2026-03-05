@@ -33,19 +33,17 @@ type SerializedStudentKeyPair<
   teacherPublicKey: JsonWebKey;
 };
 
-type AuthenticationContextVersion = "1";
-
-type AuthenticationVersion1 = {
-  version: "1";
+type AuthenticationVersion2 = {
+  version: "2";
 };
 
-type Unauthenticated = AuthenticationVersion1 & {
+type Unauthenticated = AuthenticationVersion2 & {
   idToken: undefined;
   authenticationToken: undefined;
   role: undefined;
 };
 
-export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
+export type AdminOrTeacherAuthenticated = AuthenticationVersion2 & {
   idToken: string;
   authenticationToken: string;
   userId: number;
@@ -56,7 +54,7 @@ export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
   keyPairId: number;
 };
 
-export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
+export type StudentLocallyAuthenticated = AuthenticationVersion2 & {
   isAnonymous: false;
   idToken: string;
   studentId: number | undefined;
@@ -104,8 +102,7 @@ type SerializedAuthenticationContextTypeV1 =
 export type SerializedAuthenticationContextType =
   SerializedAuthenticationContextTypeV1;
 
-export const latestAuthenticationContextVersion: AuthenticationContextVersion =
-  "1";
+export const latestAuthenticationContextVersion = "2" as const;
 
 export const isStudentLocallyAuthenticated = (
   authContext: AuthenticationContextType,
@@ -212,13 +209,14 @@ export const deserializeAuthenticationContext = async (
     importedSaltPublicKey,
   );
 
-  if (rest.role === UserRole.student) {
-    const { studentId, name } = rest;
+  if (rest.version !== latestAuthenticationContextVersion) {
+    // if the version does not match, we cannot be sure that the deserialization is correct
+    // we return the default unauthenticated context, which will trigger a new authentication flow
+    return authenticationContextDefaultValue;
+  }
 
-    // todo: build a proper versioned migration system for auth contexts
-    if (studentId === undefined || name === undefined) {
-      return authenticationContextDefaultValue;
-    }
+  if (rest.role === UserRole.student) {
+    const { studentId } = rest;
 
     if (rest.isAnonymous) {
       return {
