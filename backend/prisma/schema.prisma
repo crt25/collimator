@@ -53,19 +53,16 @@ model KeyPair {
   // and derive a symmetric key using the web crypto API which has its limitations.
   salt Bytes
 
-  deletedAt DateTime?
-
   privateKeys EncryptedPrivateKey[] // the private key corresponding to this public key encrypted using different password-derived keys
-  teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  teacher     User                   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   Student     AuthenticatedStudent[]
 }
 
 model EncryptedPrivateKey {
-  id                  Int       @id @default(autoincrement())
+  id                  Int   @id @default(autoincrement())
   publicKeyId         Int // The public key this private key corresponds to
   encryptedPrivateKey Bytes // A teacher's private key encrypted with a password-derived key
   salt                Bytes // The salt used to derive the password key that was used to encrypt the private key
-  deletedAt           DateTime?
 
   publicKey KeyPair @relation(fields: [publicKeyId], references: [id], onDelete: Cascade)
 }
@@ -154,7 +151,7 @@ model Session {
   deletedAt       DateTime?
 
   lesson            Lesson?            @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
-  class             Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  class             Class              @relation(fields: [classId], references: [id], onDelete: Restrict)
   tasks             SessionTask[]
   solutions         StudentSolution[]
   anonymousStudents AnonymousStudent[]
@@ -201,8 +198,9 @@ model SessionTask {
   sessionId Int
   taskId    Int
   index     Int
+  deletedAt DateTime?
 
-  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task              Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
   solutions         StudentSolution[]
   studentActivities StudentActivity[]
@@ -241,8 +239,8 @@ model ReferenceSolution {
 
   tests SolutionTest[]
 
-  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
-  task     Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
+  task     Task     @relation(fields: [taskId], references: [id], onDelete: Restrict)
 
   @@unique([taskId, solutionHash])
 }
@@ -259,7 +257,7 @@ model StudentSolution {
 
   tests SolutionTest[]
 
-  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
@@ -300,23 +298,21 @@ model SolutionAnalysis {
 }
 
 model RegistrationToken {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  token     String    @unique
-  userId    Int       @unique
-  deletedAt DateTime?
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  token     String   @unique
+  userId    Int      @unique
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AuthenticationToken {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now())
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
   lastUsedAt DateTime
-  token      String    @unique
+  token      String   @unique
   userId     Int?
   studentId  Int?
-  deletedAt  DateTime?
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -346,11 +342,11 @@ model StudentActivity {
   taskId       Int
   solutionHash Bytes
 
-  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
-  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Cascade)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
 
   appActivity StudentActivityApp?
 

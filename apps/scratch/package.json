@@ -84,7 +84,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-draggable": "^4.4.6",
-    "react-hot-toast": "^2.5.2",
     "react-intl": "6.8.9",
     "react-intl-redux": "^2.4.1",
     "react-modal": "^3.16.3",

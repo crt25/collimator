@@ -1,11 +1,11 @@
-import { useState, useContext, useMemo } from "react";
-import { defineMessages, useIntl, FormattedMessage } from "react-intl";
+import { useContext, useMemo, useState } from "react";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { Icon, HStack, Text, Box } from "@chakra-ui/react";
+import { Box, HStack, Icon, Text } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllTasks } from "@/api/collimator/hooks/tasks/useAllTasks";
@@ -117,9 +117,7 @@ const TaskTable = () => {
       case VisibilityFilterValue.PublicOnly:
         return data.filter((task) => task.isPublic);
       case VisibilityFilterValue.PrivateOnly:
-        return data.filter(
-          (task) => !task.isPublic && task.creatorId === currentUserId,
-        );
+        return data.filter((task) => !task.isPublic);
       case VisibilityFilterValue.All:
       default:
         return data;
@@ -271,11 +269,13 @@ const TaskTable = () => {
                 try {
                   await deleteTask(taskIdToDelete);
                   toaster.success({
+                    id: `task-delete-success-${taskIdToDelete}`,
                     title: intl.formatMessage(messages.successMessage),
                   });
                 } catch (error) {
                   if (error instanceof ConflictError) {
                     toaster.error({
+                      id: `task-delete-conflict-${taskIdToDelete}`,
                       title: intl.formatMessage(
                         getErrorMessageDescriptor(error.errorCode),
                       ),
@@ -284,6 +284,7 @@ const TaskTable = () => {
                   }
 
                   toaster.error({
+                    id: `task-delete-error-${taskIdToDelete}`,
                     title: intl.formatMessage(messages.genericErrorMessage),
                   });
                 }

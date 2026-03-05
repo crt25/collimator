@@ -5,6 +5,13 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
 
+export class UserOwnsClassesError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "UserOwnsClassesError";
+  }
+}
+
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -111,7 +118,28 @@ export class UsersService {
     });
   }
 
-  deleteById(id: UserId): Promise<User> {
-    return this.prisma.user.delete({ where: { id } });
+  async deleteById(id: UserId): Promise<User> {
+    return this.prisma.$transaction(async (tx) => {
+      // BLOCK: Check if user owns any classes
+      const ownedClass = await tx.class.findFirst({
+        where: { teacherId: id, deletedAt: null },
+        select: { id: true },
+      });
+
+      if (ownedClass) {
+        throw new UserOwnsClassesError(
+          `User ${id} owns classes and cannot be deleted`,
+        );
+      }
+
+      // Orphan public tasks by setting creatorId to null
+      await tx.task.updateMany({
+        where: { creatorId: id, isPublic: true },
+        data: { creatorId: null },
+      });
+
+      // Proceed with soft-delete (cascade extension handles children)
+      return tx.user.delete({ where: { id } });
+    });
   }
 }
