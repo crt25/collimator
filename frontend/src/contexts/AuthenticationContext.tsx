@@ -74,15 +74,18 @@ export type StudentAuthenticated = Omit<
   authenticationToken: string;
   keyPair: StudentKeyPair;
   ephemeralKey: EphemeralKey;
+  // the encrypted pseudonym (base64), used to generate the student's nickname
+  pseudonym: string;
 };
 
 export type StudentAuthenticatedAnonymous = Omit<
   StudentAuthenticated,
-  "idToken" | "ephemeralKey" | "isAnonymous"
+  "idToken" | "ephemeralKey" | "isAnonymous" | "pseudonym"
 > & {
   isAnonymous: true;
   idToken: undefined;
   ephemeralKey: undefined;
+  pseudonym: undefined;
 };
 
 export type AuthenticationContextType =

@@ -29,6 +29,7 @@ const mockStudentContext = {
   teacherPublicKey: {} as JsonWebKey,
   keyPair: {} as StudentKeyPair,
   ephemeralKey: undefined,
+  pseudonym: undefined,
 };
 
 const meta: MetaType<typeof Task> = {

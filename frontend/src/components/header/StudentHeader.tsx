@@ -8,10 +8,10 @@ import {
   isFullyAuthenticated,
 } from "@/contexts/AuthenticationContext";
 import { UserRole } from "@/types/user/user-role";
+import { getStudentNickname } from "@/utilities/student-name";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
 import HtmlHead from "./HtmlHead";
-import { getStudentNickname } from "@/utilities/student-name";
 
 const StyledHeader = chakra("header", {
   base: {
@@ -67,7 +67,9 @@ const StudentHeader = ({
     }
 
     const locale = isLanguage(intl.locale) ? intl.locale : undefined;
-    const pseudonym = authContext.isAnonymous ? undefined : authContext.name;
+    const pseudonym = authContext.isAnonymous
+      ? undefined
+      : authContext.pseudonym;
 
     return getStudentNickname(authContext.studentId, pseudonym, locale);
   }, [authContext, intl.locale]);

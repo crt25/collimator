@@ -209,6 +209,7 @@ const JoinSession = () => {
             idToken: undefined,
             name: studentNickname,
             ephemeralKey: undefined,
+            pseudonym: undefined,
           } satisfies StudentAuthenticatedAnonymous);
         } else {
           // then generate a shared secret using the teacher's public key and the student's private key (this also verifies the fingerprint)
@@ -253,7 +254,10 @@ const JoinSession = () => {
                 decodeBase64(data.authenticationToken),
               );
 
-              const studentNickname = getStudentNickname(data.studentId);
+              const studentNickname = getStudentNickname(
+                data.studentId,
+                data.pseudonym,
+              );
 
               updateAuthenticationContext({
                 ...studentContext,
@@ -264,6 +268,7 @@ const JoinSession = () => {
                 name: studentNickname,
                 teacherPublicKey,
                 ephemeralKey,
+                pseudonym: data.pseudonym,
               });
 
               isAuthenticating.current = false;
