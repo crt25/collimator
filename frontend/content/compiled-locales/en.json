@@ -1103,16 +1103,6 @@
       "value": "Waiting for the teacher's machine to admit you to the lesson..."
     }
   ],
-  "JoinSession.welcomeStudent": [
-    {
-      "type": 0,
-      "value": "Welcome, "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
   "LanguageChooser.english": [
     {
       "type": 0,
@@ -1891,16 +1881,6 @@
     {
       "type": 1,
       "value": "name"
-    }
-  ],
-  "Task.sessionMenu.heading.studentName": [
-    {
-      "type": 0,
-      "value": "Student: "
-    },
-    {
-      "type": 1,
-      "value": "studentName"
     }
   ],
   "Task.sessionMenu.heading.title": [

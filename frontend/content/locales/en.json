@@ -525,9 +525,6 @@
     "description": "Displayed when the student is waiting for the teacher's machine to admit them to the lesson",
     "message": "Waiting for the teacher's machine to admit you to the lesson..."
   },
-  "JoinSession.welcomeStudent": {
-    "message": "Welcome, {name}"
-  },
   "LanguageChooser.english": {
     "message": "English"
   },

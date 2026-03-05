@@ -233,6 +233,9 @@
   "DEPRECATED: TaskSessionActions.deleteTask": {
     "message": "Effacer l'activité"
   },
+  "DEPRECATED: Task.sessionMenu.heading.studentName": {
+    "message": "Élève: {studentName}"
+  },
   "Analysis.groupName": {
     "message": "Groupe"
   },
@@ -1145,9 +1148,6 @@
   },
   "StudentTaskInstance.title": {
     "message": "Solution de l'élève - {name}"
-  },
-  "Task.sessionMenu.heading.studentName": {
-    "message": "Élève: {studentName}"
   },
   "Task.sessionMenu.heading.title": {
     "message": "{sessionName} - Activités"
