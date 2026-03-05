@@ -8,7 +8,6 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
 import { StudentActivityType } from "@/api/collimator/generated/models";
-import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
 import VerticalSpacing from "./layout/VerticalSpacing";
 import TaskList from "./TaskList";
 import PageHeading from "./PageHeading";
@@ -63,8 +62,6 @@ const Task = ({
     onTrackStudentActivityFailure(trackActivityFailed);
   }, [trackActivityFailed, onTrackStudentActivityFailure]);
 
-  const studentName = useStudentDisplayName();
-
   const onSolutionRun = useCallback(
     (solution: Blob) => {
       trackStudentActivity({
@@ -113,13 +110,6 @@ const Task = ({
                 </Dialog.CloseTrigger>
               </Dialog.Header>
               <Dialog.Body>
-                <PageHeading testId="student-name">
-                  <FormattedMessage
-                    id="Task.sessionMenu.heading.studentName"
-                    defaultMessage="Student: {studentName}"
-                    values={{ studentName: studentName }}
-                  />
-                </PageHeading>
                 <PageHeading
                   testId="session-name"
                   description={session.description}

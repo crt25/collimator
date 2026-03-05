@@ -1,12 +1,5 @@
 import { useRouter } from "next/router";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test } from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
@@ -30,10 +23,6 @@ import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
-import {
-  AuthenticationContext,
-  isStudentFullyAuthenticated,
-} from "@/contexts/AuthenticationContext";
 
 const messages = defineMessages({
   title: {
@@ -66,16 +55,15 @@ const getSolveUrl = (taskType: TaskType) => {
   }
 };
 
-const SolveTaskPageContent = ({
-  classId,
-  sessionId,
-  taskId,
-}: {
-  classId: string | undefined;
-  sessionId: string;
-  taskId: string;
-}) => {
+const SolveTaskPage = () => {
+  const router = useRouter();
   const intl = useIntl();
+
+  const { classId, sessionId, taskId } = router.query as {
+    classId?: string;
+    sessionId?: string;
+    taskId?: string;
+  };
 
   const {
     data: session,
@@ -315,6 +303,10 @@ const SolveTaskPageContent = ({
     downloadBlob(response.result.file, "task.sb3");
   }, [intl]);
 
+  if (!sessionId || !taskId) {
+    return null;
+  }
+
   // FEATURE FLAG: Disable import/export for now
   const disableImportExport = true;
 
@@ -437,34 +429,6 @@ const SolveTaskPageContent = ({
         }
       </MultiSwrContent>
     </StudentPageLayout>
-  );
-};
-
-const SolveTaskPage = () => {
-  const router = useRouter();
-
-  const { classId, sessionId, taskId } = router.query as {
-    classId?: string;
-    sessionId?: string;
-    taskId?: string;
-  };
-
-  const authenticationContext = useContext(AuthenticationContext);
-
-  if (
-    !sessionId ||
-    !taskId ||
-    !isStudentFullyAuthenticated(authenticationContext, parseInt(sessionId))
-  ) {
-    return null;
-  }
-
-  return (
-    <SolveTaskPageContent
-      classId={classId}
-      sessionId={sessionId}
-      taskId={taskId}
-    />
   );
 };
 

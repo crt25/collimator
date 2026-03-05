@@ -31,7 +31,6 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
 import PageHeading from "@/components/PageHeading";
 import PageFooter from "@/components/PageFooter";
-import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
 import { getStudentNickname } from "@/utilities/student-name";
 
 const logModule = "[JoinSession]";
@@ -67,8 +66,6 @@ const JoinSessionContent = ({
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const studentName = useStudentDisplayName();
-
   const onJoinSession = useCallback(async () => {
     if (
       !classId ||
@@ -94,13 +91,6 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
-            <PageHeading>
-              <FormattedMessage
-                id="JoinSession.welcomeStudent"
-                defaultMessage="Welcome, {name}"
-                values={{ name: studentName }}
-              />
-            </PageHeading>
             <PageHeading description={session.description}>
               {session.title}
             </PageHeading>
