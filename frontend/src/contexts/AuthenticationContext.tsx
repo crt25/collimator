@@ -190,6 +190,12 @@ export const deserializeAuthenticationContext = async (
 
   const { keyPair, saltPublicKey, ...rest } = serializedContext;
 
+  if (rest.version !== latestAuthenticationContextVersion) {
+    // if the version does not match, we cannot be sure that the deserialization is correct
+    // we return the default unauthenticated context, which will trigger a new authentication flow
+    return authenticationContextDefaultValue;
+  }
+
   const importedCryptoKeyPair = await KeyPair.importUnprotected(
     crypto,
     keyPair,
@@ -208,12 +214,6 @@ export const deserializeAuthenticationContext = async (
     importedCryptoKeyPair,
     importedSaltPublicKey,
   );
-
-  if (rest.version !== latestAuthenticationContextVersion) {
-    // if the version does not match, we cannot be sure that the deserialization is correct
-    // we return the default unauthenticated context, which will trigger a new authentication flow
-    return authenticationContextDefaultValue;
-  }
 
   if (rest.role === UserRole.student) {
     const { studentId } = rest;
