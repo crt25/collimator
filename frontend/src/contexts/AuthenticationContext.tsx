@@ -80,10 +80,9 @@ export type StudentAuthenticated = Omit<
 
 export type StudentAuthenticatedAnonymous = Omit<
   StudentAuthenticated,
-  "idToken" | "ephemeralKey" | "isAnonymous" | "name"
+  "idToken" | "ephemeralKey" | "isAnonymous"
 > & {
   isAnonymous: true;
-  name: undefined;
   idToken: undefined;
   ephemeralKey: undefined;
 };

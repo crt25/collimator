@@ -208,6 +208,10 @@ const JoinSession = () => {
             sessionId,
           });
 
+          const studentNickname = getStudentNickname(
+            authenticationResponse.studentId,
+          );
+
           updateAuthenticationContext({
             version: latestAuthenticationContextVersion,
             role: UserRole.student,
@@ -218,7 +222,7 @@ const JoinSession = () => {
             teacherPublicKey,
             isAnonymous: true,
             idToken: undefined,
-            name: undefined,
+            name: studentNickname,
             ephemeralKey: undefined,
           } satisfies StudentAuthenticatedAnonymous);
         } else {
@@ -264,12 +268,15 @@ const JoinSession = () => {
                 decodeBase64(data.authenticationToken),
               );
 
+              const studentNickname = getStudentNickname(data.studentId);
+
               updateAuthenticationContext({
                 ...studentContext,
                 keyPair,
                 authenticationToken,
                 studentId: data.studentId,
                 sessionId: sessionId,
+                name: studentNickname,
                 teacherPublicKey,
                 ephemeralKey,
               });
