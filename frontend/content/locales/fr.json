@@ -1036,10 +1036,10 @@
     "message": "Activités"
   },
   "SessionProgress.canOnlyShareOwnSessions": {
-    "message": "You can only share lessons belonging to your classes."
+    "message": "Vous ne pouvez partager que les leçons appartenant à vos classes."
   },
   "SessionProgress.shareLesson": {
-    "message": "Invite Student"
+    "message": "Inviter un élève"
   },
   "SessionProgress.title": {
     "message": "Progression - {title}"
@@ -1087,7 +1087,7 @@
     "message": "Ouvrir la liste des activités"
   },
   "SolveTask.saveError": {
-    "message": "You are currently experiencing network issues, saving may not work."
+    "message": "Vous rencontrez actuellement des problèmes de réseau, la sauvegarde pourrait ne pas fonctionner."
   },
   "SolveTask.solutionSubmitted": {
     "message": "La solution a été soumise avec succès."
@@ -1126,7 +1126,7 @@
     "message": "Vous ne pouvez vous connecter en tant qu'étudiant que pour rejoindre une leçon. Veuillez ouvrir le lien que vous avez reçu de votre professeur."
   },
   "StudentLoginPage.subtitle": {
-    "message": "You're about to join your lesson as a student."
+    "message": "Vous êtes sur le point de rejoindre votre leçon en tant qu'élève."
   },
   "StudentLoginPage.title": {
     "message": "Connexion Étudiant"
@@ -1141,10 +1141,10 @@
     "message": "Déchiffrement..."
   },
   "StudentTaskInstance.solutionNotFound": {
-    "message": "No solution found."
+    "message": "Aucune solution trouvée."
   },
   "StudentTaskInstance.title": {
-    "message": "Student Solution - {name}"
+    "message": "Solution de l'élève - {name}"
   },
   "Task.sessionMenu.heading.studentName": {
     "message": "Élève: {studentName}"
