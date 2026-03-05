@@ -31,6 +31,7 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
 import PageHeading from "@/components/PageHeading";
 import PageFooter from "@/components/PageFooter";
+import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
 import { getStudentNickname } from "@/utilities/student-name";
 
 const logModule = "[JoinSession]";
@@ -66,6 +67,8 @@ const JoinSessionContent = ({
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
+  const studentName = useStudentDisplayName();
+
   const onJoinSession = useCallback(async () => {
     if (
       !classId ||
@@ -81,14 +84,6 @@ const JoinSessionContent = ({
       `/class/${classId}/session/${session.id}/task/${session.tasks[0].id}/solve`,
     );
   }, [classId, session, authenticationContext, router]);
-
-  if (!isStudentFullyAuthenticated(authenticationContext, sessionId)) {
-    return null;
-  }
-
-  const studentName = authenticationContext.isAnonymous
-    ? getStudentNickname(authenticationContext.studentId)
-    : authenticationContext.name;
 
   return (
     <MultiSwrContent

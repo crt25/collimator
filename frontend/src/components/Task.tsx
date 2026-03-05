@@ -8,6 +8,7 @@ import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existi
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
 import { StudentActivityType } from "@/api/collimator/generated/models";
+import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
 import VerticalSpacing from "./layout/VerticalSpacing";
 import TaskList from "./TaskList";
 import PageHeading from "./PageHeading";
@@ -28,7 +29,6 @@ export interface TaskRef {
 interface Props {
   session: ExistingSessionExtended;
   classId: number;
-  studentName: string;
   task: ExistingTask;
   showSessionMenu: boolean;
   setShowSessionMenu: (show: boolean) => void;
@@ -42,7 +42,6 @@ interface Props {
 
 const Task = ({
   classId,
-  studentName,
   session,
   task,
   showSessionMenu,
@@ -63,6 +62,8 @@ const Task = ({
 
     onTrackStudentActivityFailure(trackActivityFailed);
   }, [trackActivityFailed, onTrackStudentActivityFailure]);
+
+  const studentName = useStudentDisplayName();
 
   const onSolutionRun = useCallback(
     (solution: Blob) => {

@@ -33,10 +33,7 @@ import { messages as taskMessages } from "@/i18n/task-messages";
 import {
   AuthenticationContext,
   isStudentFullyAuthenticated,
-  StudentAuthenticated,
-  StudentAuthenticatedAnonymous,
 } from "@/contexts/AuthenticationContext";
-import { getStudentNickname } from "@/utilities/student-name";
 
 const messages = defineMessages({
   title: {
@@ -73,18 +70,12 @@ const SolveTaskPageContent = ({
   classId,
   sessionId,
   taskId,
-  authenticationContext,
 }: {
   classId: string | undefined;
   sessionId: string;
   taskId: string;
-  authenticationContext: StudentAuthenticated | StudentAuthenticatedAnonymous;
 }) => {
   const intl = useIntl();
-
-  const studentName = authenticationContext.isAnonymous
-    ? getStudentNickname(authenticationContext.studentId)
-    : authenticationContext.name;
 
   const {
     data: session,
@@ -413,7 +404,6 @@ const SolveTaskPageContent = ({
           </Text>
         )
       }
-      studentName={studentName}
     >
       <MultiSwrContent
         data={[session, task, taskFile]}
@@ -425,7 +415,6 @@ const SolveTaskPageContent = ({
             <Task
               classId={session.klass.id}
               session={session}
-              studentName={studentName}
               task={task}
               showSessionMenu={showSessionMenu}
               setShowSessionMenu={setShowSessionMenu}
@@ -473,7 +462,6 @@ const SolveTaskPage = () => {
       classId={classId}
       sessionId={sessionId}
       taskId={taskId}
-      authenticationContext={authenticationContext}
     />
   );
 };

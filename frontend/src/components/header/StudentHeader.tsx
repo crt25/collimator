@@ -1,6 +1,7 @@
 import React from "react";
 import { MessageDescriptor, PrimitiveType } from "react-intl";
 import { chakra } from "@chakra-ui/react";
+import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
 import HtmlHead from "./HtmlHead";
@@ -27,7 +28,6 @@ const StudentHeader = ({
   logo,
   children,
   belowHeader,
-  studentName,
 }: {
   title: MessageDescriptor;
   titleParameters?: Record<string, PrimitiveType>;
@@ -35,8 +35,9 @@ const StudentHeader = ({
   logo?: React.ReactNode;
   children?: React.ReactNode;
   belowHeader?: React.ReactNode;
-  studentName?: string | null;
 }) => {
+  const studentName = useStudentDisplayName();
+
   return (
     <>
       <HtmlHead
@@ -48,9 +49,7 @@ const StudentHeader = ({
       <StyledHeader>
         <HeaderInner>
           {logo ?? <HeaderLogo variant="small" />}
-          <HeaderMenu displayName={studentName || undefined}>
-            {children}
-          </HeaderMenu>
+          <HeaderMenu displayName={studentName}>{children}</HeaderMenu>
         </HeaderInner>
         {belowHeader}
       </StyledHeader>
