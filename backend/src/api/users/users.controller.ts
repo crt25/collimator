@@ -21,7 +21,7 @@ import {
   ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
-import { User } from "@prisma/client";
+import { User, UserType } from "@prisma/client";
 import { fromQueryResults } from "../helpers";
 import { AdminOnly } from "../authentication/role.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
@@ -57,7 +57,6 @@ export class UsersController {
   }
 
   @Get()
-  @AdminOnly()
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
@@ -65,11 +64,22 @@ export class UsersController {
   })
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() authenticatedUser: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
-    const users = await this.usersService.findMany({}, includeSoftDelete);
+
+    // teachers can only see themselves, admins can see all users
+    const users =
+      authenticatedUser.type == UserType.TEACHER
+        ? [
+            await this.usersService.findByIdOrThrow(
+              authenticatedUser.id,
+              includeSoftDelete,
+            ),
+          ]
+        : await this.usersService.findMany({}, includeSoftDelete);
     return fromQueryResults(ExistingUserDto, users);
   }
 
