@@ -53,6 +53,7 @@ const CreateClass = () => {
         });
 
         toaster.success({
+          id: `create-class-success-${response.id}`,
           title: intl.formatMessage(messages.successMessage),
           action: {
             label: intl.formatMessage(messages.returnToClassList),
@@ -67,6 +68,7 @@ const CreateClass = () => {
         router.push(`/class/${response.id}/detail`);
       } catch {
         toaster.error({
+          id: "create-class-error",
           title: intl.formatMessage(messages.errorMessage),
         });
       }

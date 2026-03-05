@@ -49,11 +49,13 @@ const SessionActions = ({
     try {
       await deleteSession(klass.id, session.id);
       toaster.success({
+        id: `session-delete-success-${session.id}`,
         title: intl.formatMessage(SessionDeleteModalMessages.success),
       });
       router.push(`/class/${klass.id}/session`);
     } catch {
       toaster.error({
+        id: `session-delete-error-${session.id}`,
         title: intl.formatMessage(SessionDeleteModalMessages.error),
       });
     }

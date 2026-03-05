@@ -178,6 +178,7 @@ const CopyLessonModal = ({
         handleClose();
 
         toaster.success({
+          id: `copy-lesson-success-${newSession.id}`,
           title: intl.formatMessage(messages.copySuccess),
           action: {
             label: intl.formatMessage(messages.goToLesson),
@@ -191,6 +192,7 @@ const CopyLessonModal = ({
         });
       } catch {
         toaster.error({
+          id: "copy-lesson-error",
           title: intl.formatMessage(messages.copyError),
           closable: true,
         });
