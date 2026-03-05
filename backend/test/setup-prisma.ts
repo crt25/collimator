@@ -36,6 +36,7 @@ async function clearDatabase(prisma: PrismaClient): Promise<void> {
         FROM   information_schema.tables
         WHERE  table_schema = 'public'
         AND    table_type = 'BASE TABLE'
+        AND    table_name != '_prisma_migrations'
       );
     END
     $func$;

@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decora
 export enum ErrorCode {
   TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS = "TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS",
   TASK_IN_OTHER_USERS_LESSON = "TASK_IN_OTHER_USERS_LESSON",
+  USER_OWNS_CLASSES = "USER_OWNS_CLASSES",
   GENERIC_ERROR = "GENERIC_ERROR",
 }
 
