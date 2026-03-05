@@ -1480,13 +1480,13 @@
   "SessionDetail.sessionLockedDescription": [
     {
       "type": 0,
-      "value": "This session has enrolled students. You cannot remove existing tasks or change the sharing type."
+      "value": "This lesson has enrolled students. You cannot remove existing tasks or change the sharing type."
     }
   ],
   "SessionDetail.sessionLockedTitle": [
     {
       "type": 0,
-      "value": "Session is locked"
+      "value": "Lesson is locked"
     }
   ],
   "SessionDetail.submit": [

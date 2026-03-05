@@ -1,16 +1,22 @@
-﻿module "ecs_cluster" {
+module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
-  version = "~> 5.6"
+  version = "~> 7.3"
 
-  cluster_name = var.name
+  name = var.name
 
-  cluster_service_connect_defaults = {
+  service_connect_defaults = {
     namespace = var.private_dns_arn
   }
 
-  fargate_capacity_providers = {
-    FARGATE      = {}
-    FARGATE_SPOT = {}
+  cluster_capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+  default_capacity_provider_strategy = {
+    FARGATE = {
+      weight = 50
+      base   = 1
+    }
+    FARGATE_SPOT = {
+      weight = 50
+    }
   }
 
   tags = var.tags

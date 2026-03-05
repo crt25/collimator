@@ -54,12 +54,12 @@ const messages = defineMessages({
   },
   sessionLockedTitle: {
     id: "SessionDetail.sessionLockedTitle",
-    defaultMessage: "Session is locked",
+    defaultMessage: "Lesson is locked",
   },
   sessionLockedDescription: {
     id: "SessionDetail.sessionLockedDescription",
     defaultMessage:
-      "This session has enrolled students. You cannot remove existing tasks or change the sharing type.",
+      "This lesson has enrolled students. You cannot remove existing tasks or change the sharing type.",
   },
 });
 
@@ -98,10 +98,12 @@ const SessionDetail = () => {
             isAnonymous: formValues.sharingType === SharingType.anonymous,
           });
           toaster.success({
+            id: `session-update-success-${session.id}`,
             title: intl.formatMessage(messages.successMessage),
           });
         } catch {
           toaster.error({
+            id: `session-update-error-${session.id}`,
             title: intl.formatMessage(messages.errorMessage),
           });
         }

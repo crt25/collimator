@@ -63,11 +63,13 @@ const UserDetail = () => {
         });
 
         toaster.success({
+          id: `user-update-success-${user.id}`,
           title: intl.formatMessage(messages.successMessage),
         });
       } catch (e) {
         console.error("Failed to update user:", e);
         toaster.error({
+          id: `user-update-error-${user.id}`,
           title: intl.formatMessage(messages.errorMessage),
         });
       }

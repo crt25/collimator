@@ -9,6 +9,10 @@ export const patchScratchVm = (vm: VM): void => {
   ): Promise<number> => {
     // modified logic from https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/extension-support/extension-manager.js#L142
 
+    if (vm.extensionManager._loadedExtensions.has(id)) {
+      return Promise.resolve(0);
+    }
+
     switch (id) {
       case ExtensionId.Assertions: {
         const extensionInstance = new AssertionExtension(vm);

@@ -58,11 +58,13 @@ const UserActions = ({ user }: { user: ExistingUser }) => {
     try {
       await deleteUser(user.id);
       toaster.success({
+        id: `user-delete-success-${user.id}`,
         title: intl.formatMessage(messages.deleteSuccess),
       });
       router.push(`/user`);
     } catch {
       toaster.error({
+        id: `user-delete-error-${user.id}`,
         title: intl.formatMessage(messages.deleteError),
       });
     }

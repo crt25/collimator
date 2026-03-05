@@ -5,7 +5,7 @@ import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
-import { executeWithToasts } from "@/utilities/task";
+import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import MultiSwrContent from "../MultiSwrContent";
@@ -59,16 +59,16 @@ const ViewSolutionModal = ({
   } = useSolutionFile(classId, sessionId, taskId, solutionHash);
 
   const loadContent = useCallback(
-    (embeddedApp: EmbeddedAppRef) => {
+    async (embeddedApp: EmbeddedAppRef) => {
       if (taskFile && solutionFile) {
-        executeWithToasts(
+        await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadSubmission", {
               task: taskFile,
               submission: solutionFile,
               language: intl.locale as Language,
             }),
-          intl.formatMessage(taskMessages.cannotLoadTask),
+          { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       }
     },

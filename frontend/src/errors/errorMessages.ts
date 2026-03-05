@@ -16,6 +16,11 @@ const errorMessages = defineMessages({
     defaultMessage:
       "Cannot perform this action because the task is currently in use by one or more other users' lessons.",
   },
+  USER_OWNS_CLASSES: {
+    id: "ApiError.USER_OWNS_CLASSES",
+    defaultMessage:
+      "Cannot perform this action because the user owns one or more classes.",
+  },
   GENERIC_ERROR: {
     id: "ApiError.GENERIC_ERROR",
     defaultMessage: "An unexpected error occurred. Please try again later.",

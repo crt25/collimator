@@ -8,11 +8,13 @@ import {
   Delete,
   ParseIntPipe,
   ForbiddenException,
+  ConflictException,
   ParseBoolPipe,
   Query,
 } from "@nestjs/common";
 import {
   ApiCreatedResponse,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -24,6 +26,7 @@ import { fromQueryResults } from "../helpers";
 import { AdminOnly } from "../authentication/role.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
+import { ErrorCode } from "../error-codes/error-codes";
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -31,7 +34,7 @@ import {
   DeletedUserDto,
   UserId,
 } from "./dto";
-import { UsersService } from "./users.service";
+import { UsersService, UserOwnsClassesError } from "./users.service";
 import { UpdateUserKeyDto } from "./dto/update-user-key.dto";
 import { RegistrationTokenDto } from "./dto/registration-token.dto";
 
@@ -174,8 +177,20 @@ export class UsersController {
   @ApiOkResponse({ type: DeletedUserDto })
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
+  @ApiConflictResponse({
+    description: "User owns classes and cannot be deleted",
+  })
   async delete(@Param("id", ParseIntPipe) id: UserId): Promise<DeletedUserDto> {
-    const deletedUser = await this.usersService.deleteById(id);
-    return DeletedUserDto.fromQueryResult(deletedUser);
+    try {
+      const deletedUser = await this.usersService.deleteById(id);
+      return DeletedUserDto.fromQueryResult(deletedUser);
+    } catch (error) {
+      if (error instanceof UserOwnsClassesError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.USER_OWNS_CLASSES,
+        });
+      }
+      throw error;
+    }
   }
 }

@@ -1,5 +1,6 @@
 module "ecr_backend" {
-  source = "terraform-aws-modules/ecr/aws"
+  source  = "terraform-aws-modules/ecr/aws"
+  version = "~> 3.2"
 
   repository_name                 = var.name
   repository_image_tag_mutability = "MUTABLE"
@@ -11,12 +12,11 @@ module "ecr_backend" {
     rules = [
       {
         rulePriority = 1,
-        description  = "Keep last two images",
+        description  = "Keep last ten images",
         selection = {
-          tagStatus     = "tagged",
-          tagPrefixList = ["latest"],
-          countType     = "imageCountMoreThan",
-          countNumber   = 2
+          tagStatus   = "untagged",
+          countType   = "imageCountMoreThan",
+          countNumber = 10
         },
         action = {
           type = "expire"
@@ -26,7 +26,7 @@ module "ecr_backend" {
   })
 
   # allow the ECR repository to be deleted even if it is not empty
-  repository_force_delete = true
+  repository_force_delete = false
 
   tags = var.tags
 }

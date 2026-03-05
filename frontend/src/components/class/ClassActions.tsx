@@ -28,11 +28,13 @@ const ClassActions = ({ klass }: { klass: ExistingClassExtended }) => {
     try {
       await deleteClass(klass.id);
       toaster.success({
+        id: `class-delete-success-${klass.id}`,
         title: intl.formatMessage(ClassDeleteModalMessages.success),
       });
       router.push(`/class`);
     } catch {
       toaster.error({
+        id: `class-delete-error-${klass.id}`,
         title: intl.formatMessage(ClassDeleteModalMessages.error),
       });
     }
