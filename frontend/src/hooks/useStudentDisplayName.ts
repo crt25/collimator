@@ -25,7 +25,7 @@ export const useStudentDisplayName = (): string => {
 
   const locale = isLanguage(intl.locale) ? intl.locale : undefined;
   const pseudonym = authenticationContext.isAnonymous
-    ? undefined
+    ? null
     : authenticationContext.pseudonym;
 
   return getStudentNickname(authenticationContext.studentId, pseudonym, locale);
