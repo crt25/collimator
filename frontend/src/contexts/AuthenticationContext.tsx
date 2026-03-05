@@ -213,10 +213,10 @@ export const deserializeAuthenticationContext = async (
   );
 
   if (rest.role === UserRole.student) {
-    const { studentId } = rest;
+    const { studentId, name } = rest;
 
     // todo: build a proper versioned migration system for auth contexts
-    if (studentId === undefined) {
+    if (studentId === undefined || name === undefined) {
       return authenticationContextDefaultValue;
     }
 
