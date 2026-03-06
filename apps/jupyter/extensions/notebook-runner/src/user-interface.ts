@@ -14,6 +14,10 @@ export type CustomRename = (
   newPath: string,
   allowHiddenFolders?: boolean,
 ) => Promise<Contents.IModel>;
+export type CustomUpload = (
+  file: File,
+  path?: string,
+) => Promise<Contents.IModel>;
 
 const allowedWidgets: Record<Mode, KnownWidget[]> = {
   [Mode.edit]: [
@@ -94,6 +98,19 @@ const restrictFileOperations = (fileBrowser: FileBrowser): void => {
 
     return originalRename(oldPath, newPath);
   }) satisfies CustomRename;
+
+  const originalUpload = fileBrowser.model.upload.bind(fileBrowser.model);
+
+  fileBrowser.model.upload = (async (
+    file: File,
+    path?: string,
+  ): Promise<Contents.IModel> => {
+    if (protectedFiles.includes(file.name)) {
+      throw new ProtectedFileError(file.name);
+    }
+
+    return originalUpload(file, path);
+  }) satisfies CustomUpload;
 };
 
 /**
