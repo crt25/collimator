@@ -2703,6 +2703,12 @@
       "value": "Number of passed tests"
     }
   ],
+  "UserActions.copyRegistrationTokenSuccess": [
+    {
+      "type": 0,
+      "value": "Registration link copied to clipboard"
+    }
+  ],
   "UserActions.deleteCancel": [
     {
       "type": 0,

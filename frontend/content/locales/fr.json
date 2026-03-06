@@ -1521,6 +1521,9 @@
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
   },
+  "UserActions.copyRegistrationTokenSuccess": {
+    "message": "Lien d’inscription copié dans le presse-papiers"
+  },
   "UserActions.deleteCancel": {
     "message": "Annuler"
   },
