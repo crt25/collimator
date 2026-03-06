@@ -7,11 +7,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MdAdd, MdContentCopy } from "react-icons/md";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import {
+  AuthenticationContextType,
+  AdminOrTeacherAuthenticated,
+  isFullyAuthenticated,
+  AuthenticationContext,
+} from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
+import { UserRole } from "@/types/user/user-role";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
@@ -120,17 +126,19 @@ const SessionList = ({ classId }: { classId: number }) => {
     [intl],
   );
 
+  const isAdminOrTeacher = (
+    context: AuthenticationContextType,
+  ): context is AdminOrTeacherAuthenticated =>
+    isFullyAuthenticated(context) &&
+    (context.role === UserRole.teacher || context.role === UserRole.admin);
+
   const actionsTemplate = useCallback(
     (rowData: ExistingSession) => {
       if (!klass) {
         return null;
       }
 
-      const canGetSessionLink =
-        "userId" in authenticationContext &&
-        klass.teacher.id === authenticationContext.userId;
-
-      return canGetSessionLink ? (
+      return isAdminOrTeacher(authenticationContext) ? (
         <Button
           onClick={async () => {
             const fingerprint =
@@ -158,7 +166,7 @@ const SessionList = ({ classId }: { classId: number }) => {
         </Button>
       );
     },
-    [intl, authenticationContext, klass, handleShareClick, classId],
+    [intl, klass, authenticationContext, handleShareClick, classId],
   );
 
   const sharingTypeTemplate = useCallback(
