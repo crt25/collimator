@@ -3,12 +3,20 @@ import { IRunningSessionSidebar } from "@jupyterlab/running";
 import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 import { Contents } from "@jupyterlab/services";
+import { IDocumentManager } from "@jupyterlab/docmanager";
+import { DocumentRegistry } from "@jupyterlab/docregistry";
+import { Kernel } from "@jupyterlab/services";
 import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
 
-export const hiddenFolders = ["grading_src", "grading_data"];
 export const protectedFiles = ["task.ipynb"];
+export const hiddenFolders = [
+  "autograder",
+  "student",
+  "grading_src",
+  "grading_data",
+];
 export type CustomRename = (
   oldPath: string,
   newPath: string,
@@ -56,6 +64,7 @@ export const simplifyUserInterface = async (
   runningSessions: IRunningSessionSidebar,
   propertyInspectorProvider: IPropertyInspectorProvider,
   fileBrowser: FileBrowser,
+  documentManager?: IDocumentManager,
 ): Promise<void> => {
   if (mode !== Mode.edit) {
     // @ts-expect-error The exposed type is not complete
@@ -65,6 +74,10 @@ export const simplifyUserInterface = async (
 
     throwOnRestrictedFileOperation(fileBrowser);
     hideGradingFolders(fileBrowser);
+
+    if (mode === Mode.solve && documentManager) {
+      redirectTaskFileOpensToStudentVersion(documentManager);
+    }
   }
 
   // activate simple mode
@@ -139,6 +152,31 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
   });
 
   fileBrowser.model.refresh();
+};
+
+const redirectTaskFileOpensToStudentVersion = (
+  documentManager: IDocumentManager,
+): void => {
+  const originalOpenOrReveal =
+    documentManager.openOrReveal.bind(documentManager);
+
+  documentManager.openOrReveal = (
+    path: string,
+    widgetName?: string,
+    kernel?: Partial<Kernel.IModel>,
+    options?: DocumentRegistry.IOpenOptions,
+  ): ReturnType<IDocumentManager["openOrReveal"]> => {
+    if (path === "/task.ipynb" || path === "task.ipynb") {
+      return originalOpenOrReveal(
+        "/student/task.ipynb",
+        widgetName,
+        kernel,
+        options,
+      );
+    }
+
+    return originalOpenOrReveal(path, widgetName, kernel, options);
+  };
 };
 
 class HiddenFolderError extends Error {
