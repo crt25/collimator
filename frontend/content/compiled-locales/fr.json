@@ -2824,20 +2824,6 @@
       "value": "."
     }
   ],
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
-    {
-      "type": 0,
-      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
-    },
-    {
-      "type": 1,
-      "value": "lien"
-    },
-    {
-      "type": 0,
-      "value": "."
-    }
-  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
