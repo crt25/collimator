@@ -1,4 +1,4 @@
-import { defineMessages } from "react-intl";
+import { defineMessages, useIntl } from "react-intl";
 import { useCallback } from "react";
 import { useRouter } from "next/router";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -6,6 +6,7 @@ import UserForm, { UserFormValues } from "@/components/user/UserForm";
 import { useCreateUser } from "@/api/collimator/hooks/users/useCreateUser";
 import { AuthenticationProvider } from "@/api/collimator/generated/models";
 import PageLayout from "@/components/layout/PageLayout";
+import { executeAsyncWithToasts } from "@/utilities/task";
 
 const messages = defineMessages({
   title: {
@@ -16,24 +17,37 @@ const messages = defineMessages({
     id: "CreateUser.submit",
     defaultMessage: "Create User",
   },
+  createUserSuccess: {
+    id: "CreateUser.errorMessage",
+    defaultMessage: "Failed to create user",
+  },
+  createUserError: {
+    id: "CreateUser.successMessage",
+    defaultMessage: "User created successfully",
+  },
 });
 
 const CreateUser = () => {
   const router = useRouter();
   const createUser = useCreateUser();
+  const intl = useIntl();
 
   const onSubmit = useCallback(
     async (formValues: UserFormValues) => {
-      await createUser({
-        name: formValues.name,
-        email: formValues.email,
-        authenticationProvider: AuthenticationProvider.MICROSOFT,
-        type: formValues.type,
-      });
-
+      await executeAsyncWithToasts(
+        () =>
+          createUser({
+            name: formValues.name,
+            email: formValues.email,
+            authenticationProvider: AuthenticationProvider.MICROSOFT,
+            type: formValues.type,
+          }),
+        intl.formatMessage(messages.createUserSuccess),
+        intl.formatMessage(messages.createUserError),
+      );
       router.back();
     },
-    [createUser, router],
+    [createUser, router, intl],
   );
 
   return (

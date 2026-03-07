@@ -1268,6 +1268,9 @@
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"
   },
+  "UserActions.copyRegistrationTokenSuccess": {
+    "message": "Registration link copied to clipboard"
+  },
   "UserActions.deleteCancel": {
     "message": "Cancel"
   },
