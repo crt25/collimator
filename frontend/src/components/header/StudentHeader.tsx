@@ -1,11 +1,20 @@
 import React, { useContext } from "react";
-import { FormattedMessage, MessageDescriptor, PrimitiveType } from "react-intl";
+import {
+  FormattedMessage,
+  MessageDescriptor,
+  PrimitiveType,
+  useIntl,
+} from "react-intl";
+
+import { isLanguage } from "iframe-rpc/src";
 import { chakra } from "@chakra-ui/react";
 import {
   AuthenticationContext,
+  isFullyAuthenticated,
   isStudentAuthenticated,
 } from "@/contexts/AuthenticationContext";
-import { useStudentDisplayName } from "@/hooks/useStudentDisplayName";
+import { UserRole } from "@/types/user/user-role";
+import { getStudentNickname } from "@/utilities/student-name";
 import HeaderMenu from "./HeaderMenu";
 import HeaderLogo from "./HeaderLogo";
 import HtmlHead from "./HtmlHead";
@@ -49,10 +58,21 @@ const StudentHeader = ({
   belowHeader?: React.ReactNode;
 }) => {
   const authContext = useContext(AuthenticationContext);
-  const studentName = useStudentDisplayName();
-
+  const intl = useIntl();
   const isAnonymous =
     isStudentAuthenticated(authContext) && authContext.isAnonymous;
+
+  let studentName = "";
+
+  if (
+    authContext.role === UserRole.student &&
+    isFullyAuthenticated(authContext)
+  ) {
+    const locale = isLanguage(intl.locale) ? intl.locale : undefined;
+    const pseudonym = authContext.isAnonymous ? null : authContext.pseudonym;
+
+    studentName = getStudentNickname(authContext.studentId, pseudonym, locale);
+  }
 
   return (
     <>
