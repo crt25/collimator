@@ -34,7 +34,7 @@ const CreateUser = () => {
 
   const onSubmit = useCallback(
     async (formValues: UserFormValues) => {
-      executeAsyncWithToasts(
+      await executeAsyncWithToasts(
         () =>
           createUser({
             name: formValues.name,
