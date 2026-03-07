@@ -90,6 +90,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       runningSessions,
       propertyInspectorProvider,
       fileBrowser,
+      documentManager,
     );
 
     registerCommands(app, notebookTracker, contentsManager, documentManager);
