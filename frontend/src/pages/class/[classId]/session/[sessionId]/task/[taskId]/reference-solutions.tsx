@@ -38,12 +38,6 @@ const messages = defineMessages({
     defaultMessage:
       "This reference solution cannot be edited here. To edit, go to {link}.",
   },
-  editInTaskReferenceSolutionsDescription: {
-    id: "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions",
-    description: "Title for the alert when trying to edit reference solutions",
-    defaultMessage:
-      "This reference solution cannot be edited here. To edit, go to {link}.",
-  },
   taskReferenceSolutionsLink: {
     id: "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink",
     description:
@@ -143,11 +137,6 @@ const TaskInstanceReferenceSolutions = () => {
                 title={
                   <FormattedMessage
                     {...messages.editInTaskReferenceSolutionsTitle}
-                  />
-                }
-                description={
-                  <FormattedMessage
-                    {...messages.editInTaskReferenceSolutionsDescription}
                     values={{
                       link: (
                         <Link
