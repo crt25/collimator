@@ -3177,6 +3177,12 @@
       "value": "Nombre de tests réussis"
     }
   ],
+  "UserActions.copyRegistrationTokenSuccess": [
+    {
+      "type": 0,
+      "value": "Lien d’inscription copié dans le presse-papiers"
+    }
+  ],
   "UserActions.deleteCancel": [
     {
       "type": 0,
