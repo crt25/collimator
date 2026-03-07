@@ -566,7 +566,7 @@
   "CopyLessonModal.description": [
     {
       "type": 0,
-      "value": "Sélectionnez une leçon existante à copier depuis une autre classe."
+      "value": "Sélectionnez une leçon existante à copier."
     }
   ],
   "CopyLessonModal.goToLesson": [

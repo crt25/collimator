@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   description: {
     id: "CopyLessonModal.description",
-    defaultMessage: "Select a lesson to copy from another class.",
+    defaultMessage: "Select a lesson to copy.",
   },
   classLabel: {
     id: "CopyLessonModal.classLabel",
