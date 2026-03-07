@@ -126,19 +126,27 @@ const SessionList = ({ classId }: { classId: number }) => {
     [intl],
   );
 
-  const isAdminOrTeacher = (
-    context: AuthenticationContextType,
-  ): context is AdminOrTeacherAuthenticated =>
-    isFullyAuthenticated(context) &&
-    (context.role === UserRole.teacher || context.role === UserRole.admin);
-
   const actionsTemplate = useCallback(
     (rowData: ExistingSession) => {
       if (!klass) {
         return null;
       }
 
-      return isAdminOrTeacher(authenticationContext) ? (
+      const isAdminOrTeacher = (
+        context: AuthenticationContextType,
+      ): context is AdminOrTeacherAuthenticated =>
+        isFullyAuthenticated(context) &&
+        (context.role === UserRole.teacher || context.role === UserRole.admin);
+
+      const isAdminOrClassTeacher = (
+        context: AuthenticationContextType,
+        klass: { teacher: { id: number } },
+      ): context is AdminOrTeacherAuthenticated =>
+        isAdminOrTeacher(context) &&
+        (context.role === UserRole.admin ||
+          klass.teacher.id === context.userId);
+
+      return isAdminOrClassTeacher(authenticationContext, klass) ? (
         <Button
           onClick={async () => {
             const fingerprint =
