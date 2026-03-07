@@ -548,7 +548,7 @@
   "CopyLessonModal.description": [
     {
       "type": 0,
-      "value": "Select a lesson to copy from another class."
+      "value": "Select a lesson to copy."
     }
   ],
   "CopyLessonModal.goToLesson": [

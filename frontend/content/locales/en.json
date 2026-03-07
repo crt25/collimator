@@ -255,7 +255,7 @@
     "message": "Lesson copied successfully"
   },
   "CopyLessonModal.description": {
-    "message": "Select a lesson to copy from another class."
+    "message": "Select a lesson to copy."
   },
   "CopyLessonModal.goToLesson": {
     "message": "Go to lesson"
