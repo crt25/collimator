@@ -2323,20 +2323,6 @@
       "value": "View student solution"
     }
   ],
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
-    {
-      "type": 0,
-      "value": "This reference solution cannot be edited here. To edit, go to the "
-    },
-    {
-      "type": 1,
-      "value": "link"
-    },
-    {
-      "type": 0,
-      "value": "."
-    }
-  ],
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
     {
       "type": 0,

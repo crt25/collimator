@@ -1095,10 +1095,6 @@
   "TaskInstanceProgressList.viewDetails": {
     "message": "View student solution"
   },
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
-    "description": "Title for the alert when trying to edit reference solutions",
-    "message": "This reference solution cannot be edited here. To edit, go to {link}."
-  },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
     "description": "Title for the alert when trying to edit reference solutions",
     "message": "This reference solution cannot be edited here. To edit, go to {link}."
