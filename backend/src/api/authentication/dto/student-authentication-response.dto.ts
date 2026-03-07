@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, plainToInstance } from "class-transformer";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsNumber } from "class-validator";
 
 export class StudentAuthenticationResponseDto {
   @IsString()
@@ -11,6 +11,15 @@ export class StudentAuthenticationResponseDto {
   })
   @Expose()
   readonly authenticationToken!: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 123,
+    description: "The id of the student.",
+  })
+  @Expose()
+  readonly studentId!: number;
 
   static fromQueryResult(
     data: StudentAuthenticationResponseDto,

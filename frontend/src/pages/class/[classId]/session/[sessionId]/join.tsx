@@ -31,6 +31,7 @@ import StudentKeyPair from "@/utilities/crypto/StudentKeyPair";
 import { useAuthenticateAnonymousStudent } from "@/api/collimator/hooks/authentication/useAuthenticateAnonymousStudent";
 import PageHeading from "@/components/PageHeading";
 import PageFooter from "@/components/PageFooter";
+import { getStudentNickname } from "@/utilities/student-name";
 
 const logModule = "[JoinSession]";
 
@@ -192,17 +193,23 @@ const JoinSession = () => {
             sessionId,
           });
 
+          const studentNickname = getStudentNickname(
+            authenticationResponse.studentId,
+          );
+
           updateAuthenticationContext({
             version: latestAuthenticationContextVersion,
             role: UserRole.student,
             keyPair,
             authenticationToken: authenticationResponse.authenticationToken,
+            studentId: authenticationResponse.studentId,
             sessionId: sessionId,
             teacherPublicKey,
             isAnonymous: true,
             idToken: undefined,
-            name: undefined,
+            name: studentNickname,
             ephemeralKey: undefined,
+            pseudonym: undefined,
           } satisfies StudentAuthenticatedAnonymous);
         } else {
           // then generate a shared secret using the teacher's public key and the student's private key (this also verifies the fingerprint)
@@ -251,9 +258,11 @@ const JoinSession = () => {
                 ...studentContext,
                 keyPair,
                 authenticationToken,
+                studentId: data.studentId,
                 sessionId: sessionId,
                 teacherPublicKey,
                 ephemeralKey,
+                pseudonym: data.pseudonym,
               });
 
               isAuthenticating.current = false;

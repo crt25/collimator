@@ -855,6 +855,9 @@
   "StatementCriterionFilterForm.count": {
     "message": "Number of statements"
   },
+  "StudentHeader.studentLabel": {
+    "message": "Student: {name}"
+  },
   "StudentList.columns.name": {
     "message": "Name"
   },

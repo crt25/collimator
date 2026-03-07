@@ -145,6 +145,8 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
         authenticationToken: encodeBase64(
           await ephemeralKey.encryptString(response.authenticationToken),
         ),
+        studentId: response.studentId,
+        pseudonym,
       };
     },
     [authenticateStudent, fetchClass],

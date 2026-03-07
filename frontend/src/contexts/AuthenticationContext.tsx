@@ -33,19 +33,17 @@ type SerializedStudentKeyPair<
   teacherPublicKey: JsonWebKey;
 };
 
-type AuthenticationContextVersion = "1";
-
-type AuthenticationVersion1 = {
-  version: "1";
+type AuthenticationVersion2 = {
+  version: "2";
 };
 
-type Unauthenticated = AuthenticationVersion1 & {
+type Unauthenticated = AuthenticationVersion2 & {
   idToken: undefined;
   authenticationToken: undefined;
   role: undefined;
 };
 
-export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
+export type AdminOrTeacherAuthenticated = AuthenticationVersion2 & {
   idToken: string;
   authenticationToken: string;
   userId: number;
@@ -56,9 +54,10 @@ export type AdminOrTeacherAuthenticated = AuthenticationVersion1 & {
   keyPairId: number;
 };
 
-export type StudentLocallyAuthenticated = AuthenticationVersion1 & {
+export type StudentLocallyAuthenticated = AuthenticationVersion2 & {
   isAnonymous: false;
   idToken: string;
+  studentId: number | undefined;
   authenticationToken: undefined;
   name: string;
   role: UserRole.student;
@@ -70,20 +69,23 @@ export type StudentAuthenticated = Omit<
 > & {
   // a student is always authenticated with respect to a session
   sessionId: number;
+  studentId: number;
   teacherPublicKey: JsonWebKey;
   authenticationToken: string;
   keyPair: StudentKeyPair;
   ephemeralKey: EphemeralKey;
+  // the encrypted pseudonym (base64), used to generate the student's nickname
+  pseudonym: string;
 };
 
 export type StudentAuthenticatedAnonymous = Omit<
   StudentAuthenticated,
-  "idToken" | "ephemeralKey" | "isAnonymous" | "name"
+  "idToken" | "ephemeralKey" | "isAnonymous" | "pseudonym"
 > & {
   isAnonymous: true;
-  name: undefined;
   idToken: undefined;
   ephemeralKey: undefined;
+  pseudonym: undefined;
 };
 
 export type AuthenticationContextType =
@@ -103,8 +105,7 @@ type SerializedAuthenticationContextTypeV1 =
 export type SerializedAuthenticationContextType =
   SerializedAuthenticationContextTypeV1;
 
-export const latestAuthenticationContextVersion: AuthenticationContextVersion =
-  "1";
+export const latestAuthenticationContextVersion = "2" as const;
 
 export const isStudentLocallyAuthenticated = (
   authContext: AuthenticationContextType,
@@ -192,6 +193,12 @@ export const deserializeAuthenticationContext = async (
 
   const { keyPair, saltPublicKey, ...rest } = serializedContext;
 
+  if (rest.version !== latestAuthenticationContextVersion) {
+    // if the version does not match, we cannot be sure that the deserialization is correct
+    // we return the default unauthenticated context, which will trigger a new authentication flow
+    return authenticationContextDefaultValue;
+  }
+
   const importedCryptoKeyPair = await KeyPair.importUnprotected(
     crypto,
     keyPair,
@@ -212,9 +219,12 @@ export const deserializeAuthenticationContext = async (
   );
 
   if (rest.role === UserRole.student) {
+    const { studentId } = rest;
+
     if (rest.isAnonymous) {
       return {
         ...rest,
+        studentId,
         teacherPublicKey: rest.teacherPublicKey,
         keyPair: importedKeyPair,
       } satisfies StudentAuthenticatedAnonymous;
@@ -222,6 +232,7 @@ export const deserializeAuthenticationContext = async (
 
     return {
       ...rest,
+      studentId,
       ephemeralKey: await importedKeyPair.deriveSharedEphemeralKey(
         rest.teacherPublicKey,
         // we already authenticated the teacher's public key

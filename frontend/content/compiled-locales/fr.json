@@ -2282,6 +2282,16 @@
       "value": "Nombre de déclarations"
     }
   ],
+  "StudentHeader.studentLabel": [
+    {
+      "type": 0,
+      "value": "Élève : "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
   "StudentList.columns.name": [
     {
       "type": 0,
@@ -2357,13 +2367,13 @@
   "StudentTaskInstance.solutionNotFound": [
     {
       "type": 0,
-      "value": "No solution found."
+      "value": "Aucune solution trouvée."
     }
   ],
   "StudentTaskInstance.title": [
     {
       "type": 0,
-      "value": "Student Solution - "
+      "value": "Solution de l'élève - "
     },
     {
       "type": 1,
