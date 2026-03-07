@@ -140,13 +140,11 @@ const CopyLessonModal = ({
 
   const classOptions = useMemo(
     () =>
-      classes
-        ?.filter((c) => c.id !== targetClassId)
-        .map((c) => ({
-          value: c.id.toString(),
-          label: c.name,
-        })) ?? [],
-    [classes, targetClassId],
+      classes?.map((c) => ({
+        value: c.id.toString(),
+        label: c.name,
+      })) ?? [],
+    [classes],
   );
 
   const sessionOptions = useMemo(
