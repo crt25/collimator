@@ -63,7 +63,7 @@ export const simplifyUserInterface = async (
     // @ts-expect-error The exposed type is not complete
     runningSessions.dispose();
 
-    restrictFileOperations(fileBrowser);
+    throwOnRestrictedFileOperation(fileBrowser);
     hideGradingFolders(fileBrowser);
   }
 
@@ -75,7 +75,7 @@ export const simplifyUserInterface = async (
   hideDisallowedWidgets(mode, app);
 };
 
-const restrictFileOperations = (fileBrowser: FileBrowser): void => {
+const throwOnRestrictedFileOperation = (fileBrowser: FileBrowser): void => {
   const contents = fileBrowser.model.manager;
 
   const originalRename = contents.rename.bind(contents);
@@ -92,8 +92,10 @@ const restrictFileOperations = (fileBrowser: FileBrowser): void => {
       throw new HiddenFolderError(newName);
     }
 
-    if (protectedFiles.includes(oldName)) {
-      throw new ProtectedFileError(oldName);
+    if (protectedFiles.includes(oldName) || protectedFiles.includes(newName)) {
+      throw new ProtectedFileError(
+        protectedFiles.includes(oldName) ? oldName : newName,
+      );
     }
 
     return originalRename(oldPath, newPath);
