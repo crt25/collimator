@@ -429,6 +429,7 @@ const TaskFormReferenceSolutions = ({
                     <Input
                       variant="subtle"
                       value={solution.title}
+                      disabled={disabled}
                       data-testid={`reference-solution-${solution.id}-title-input`}
                       onChange={(e) =>
                         updateReferenceSolution(index, {
@@ -449,6 +450,7 @@ const TaskFormReferenceSolutions = ({
                       variant="subtle"
                       rows={5}
                       value={solution.description}
+                      disabled={disabled}
                       data-testid={`reference-solution-${solution.id}-description-input`}
                       onChange={(e) =>
                         updateReferenceSolution(index, {

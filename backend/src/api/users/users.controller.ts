@@ -1,20 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  ForbiddenException,
   ConflictException,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
   ParseBoolPipe,
+  ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from "@nestjs/common";
 import {
-  ApiCreatedResponse,
   ApiConflictResponse,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -29,12 +29,12 @@ import { AuthorizationService } from "../authorization/authorization.service";
 import { ErrorCode } from "../error-codes/error-codes";
 import {
   CreateUserDto,
-  UpdateUserDto,
-  ExistingUserDto,
   DeletedUserDto,
+  ExistingUserDto,
+  UpdateUserDto,
   UserId,
 } from "./dto";
-import { UsersService, UserOwnsClassesError } from "./users.service";
+import { UserOwnsClassesError, UsersService } from "./users.service";
 import { UpdateUserKeyDto } from "./dto/update-user-key.dto";
 import { RegistrationTokenDto } from "./dto/registration-token.dto";
 
@@ -57,7 +57,6 @@ export class UsersController {
   }
 
   @Get()
-  @AdminOnly()
   @ApiQuery({
     name: "includeSoftDelete",
     required: false,
@@ -65,11 +64,17 @@ export class UsersController {
   })
   @ApiOkResponse({ type: ExistingUserDto, isArray: true })
   async findAll(
+    @AuthenticatedUser() authenticatedUser: User,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingUserDto[]> {
     // TODO: add pagination support
-    const users = await this.usersService.findMany({}, includeSoftDelete);
+
+    const users = await this.usersService.findManyForUser(
+      authenticatedUser,
+      includeSoftDelete,
+    );
+
     return fromQueryResults(ExistingUserDto, users);
   }
 

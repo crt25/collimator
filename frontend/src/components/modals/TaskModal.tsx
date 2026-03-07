@@ -93,18 +93,21 @@ const TaskModal = ({
 
     setAppLoaded(false);
 
-    const task = await readSingleFileFromDisk();
+    try {
+      const task = await readSingleFileFromDisk();
 
-    await executeAsyncWithToasts(
-      () =>
-        embeddedApp.current!.sendRequest("importTask", {
-          task,
-          language: intl.locale as Language,
-        }),
-      { intl, descriptor: taskMessages.cannotImportTask },
-      intl.formatMessage(taskMessages.taskImported),
-    );
-    setAppLoaded(true);
+      await executeAsyncWithToasts(
+        () =>
+          embeddedApp.current!.sendRequest("importTask", {
+            task,
+            language: intl.locale as Language,
+          }),
+        { intl, descriptor: taskMessages.cannotImportTask },
+        intl.formatMessage(taskMessages.taskImported),
+      );
+    } finally {
+      setAppLoaded(true);
+    }
   }, [intl]);
 
   const onExportTask = useCallback(async () => {

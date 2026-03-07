@@ -2834,20 +2834,6 @@
       "value": "."
     }
   ],
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
-    {
-      "type": 0,
-      "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
-    },
-    {
-      "type": 1,
-      "value": "lien"
-    },
-    {
-      "type": 0,
-      "value": "."
-    }
-  ],
   "TaskInstanceReferenceSolutions.submit": [
     {
       "type": 0,
@@ -3199,6 +3185,12 @@
     {
       "type": 0,
       "value": "Nombre de tests réussis"
+    }
+  ],
+  "UserActions.copyRegistrationTokenSuccess": [
+    {
+      "type": 0,
+      "value": "Lien d’inscription copié dans le presse-papiers"
     }
   ],
   "UserActions.deleteCancel": [
