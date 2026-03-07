@@ -254,18 +254,12 @@ const JoinSession = () => {
                 decodeBase64(data.authenticationToken),
               );
 
-              const studentNickname = getStudentNickname(
-                data.studentId,
-                data.pseudonym,
-              );
-
               updateAuthenticationContext({
                 ...studentContext,
                 keyPair,
                 authenticationToken,
                 studentId: data.studentId,
                 sessionId: sessionId,
-                name: studentNickname,
                 teacherPublicKey,
                 ephemeralKey,
                 pseudonym: data.pseudonym,
