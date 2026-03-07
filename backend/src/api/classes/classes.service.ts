@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Class, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ClassId } from "./dto";
@@ -18,6 +18,8 @@ export type ClassWithTeacher = Class & Teacher;
 
 @Injectable()
 export class ClassesService {
+  private readonly logger = new Logger(ClassesService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   findByIdOrThrow(
@@ -63,28 +65,36 @@ export class ClassesService {
     });
   }
 
-  create(klass: Prisma.ClassUncheckedCreateInput): Promise<Class> {
+  async create(klass: Prisma.ClassUncheckedCreateInput): Promise<Class> {
     const checkedClass: Prisma.ClassCreateInput = {
       name: klass.name,
       teacher: { connect: { id: klass.teacherId } },
     };
-    return this.prisma.class.create({ data: checkedClass });
+    const created = await this.prisma.class.create({ data: checkedClass });
+    this.logger.log(
+      `Created class (id: ${created.id}) for teacher (id: ${klass.teacherId})`,
+    );
+    return created;
   }
 
-  update(
+  async update(
     id: ClassId,
     klass: Prisma.ClassUpdateInput,
     includeSoftDelete = false,
   ): Promise<Class> {
-    return this.prisma.class.update({
+    const updated = await this.prisma.class.update({
       data: klass,
       where: includeSoftDelete ? { id } : { id, deletedAt: null },
     });
+    this.logger.log(`Updated class (id: ${id})`);
+    return updated;
   }
 
-  deleteById(id: ClassId): Promise<Class> {
-    return this.prisma.class.delete({
+  async deleteById(id: ClassId): Promise<Class> {
+    const deleted = await this.prisma.class.delete({
       where: { id },
     });
+    this.logger.log(`Deleted class (id: ${id})`);
+    return deleted;
   }
 }

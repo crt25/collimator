@@ -139,6 +139,8 @@ export const startBackend = (config: {
       NODE_ENV: "production",
       DATABASE_URL: config.databaseUrl,
       PORT: config.port?.toString(),
+      // only log errors to reduce overhead in test execution
+      LOG_LEVEL: "false",
       STOP_PORT: config.stopPort?.toString(),
       FRONTEND_HOSTNAME: config.frontendHostname,
       OPEN_ID_CONNECT_JWK_ENDPOINT: config.jwkEndpoint,
@@ -168,6 +170,7 @@ export const buildFrontend = (
       NEXT_PUBLIC_BACKEND_HOSTNAME: config.backendHostname,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: config.oidcUrl,
       NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: config.oidcClientId,
+      LOG_LEVEL: "false",
       NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: "/scratch",
       NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: "/jupyter/lab/index.html",
     },
