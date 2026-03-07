@@ -201,13 +201,14 @@ describe("UsersController", () => {
         deletedAt: null,
       },
     ];
-    prismaMock.user.findMany.mockResolvedValue(users);
 
-    const result = await controller.findAll();
+    prismaMock.user.findUniqueOrThrow.mockResolvedValue(users[0]);
+
+    const result = await controller.findAll(users[0]);
 
     expect(result).toHaveLength(1);
-    expect(prismaMock.user.findMany).toHaveBeenCalledWith({
-      where: { deletedAt: null },
+    expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: users[0].id, deletedAt: null },
     });
   });
 
@@ -234,7 +235,7 @@ describe("UsersController", () => {
     ];
     prismaMock.user.findMany.mockResolvedValue(users);
 
-    const result = await controller.findAll(true);
+    const result = await controller.findAll(adminUser, true);
 
     expect(result).toHaveLength(2);
     expect(prismaMock.user.findMany).toHaveBeenCalledWith({
@@ -346,9 +347,11 @@ describe("UsersController", () => {
 
     prismaMock.user.findMany.mockResolvedValue(users);
 
-    const result = await controller.findAll();
+    const result = await controller.findAll(adminUser);
 
-    expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1);
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: null },
+    });
     expect(Array.isArray(result)).toBe(true);
     expect(result.every((user) => user instanceof ExistingUserDto)).toBe(true);
     expect(result).toEqual(users);

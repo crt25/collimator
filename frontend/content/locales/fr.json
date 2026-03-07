@@ -1350,10 +1350,6 @@
   "TaskInstanceProgressList.viewDetails": {
     "message": "Voir la solution de l'élève"
   },
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": {
-    "description": "Titre de l’alerte lors de la tentative de modification des solutions de référence",
-    "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
-  },
   "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": {
     "description": "Titre de l’alerte lors de la tentative de modification des solutions de référence",
     "message": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à {link}."
@@ -1526,6 +1522,9 @@
   },
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
+  },
+  "UserActions.copyRegistrationTokenSuccess": {
+    "message": "Lien d’inscription copié dans le presse-papiers"
   },
   "UserActions.deleteCancel": {
     "message": "Annuler"

@@ -1,6 +1,12 @@
 import { randomBytes } from "crypto";
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { User, Prisma, KeyPair, RegistrationToken } from "@prisma/client";
+import {
+  KeyPair,
+  Prisma,
+  RegistrationToken,
+  User,
+  UserType,
+} from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
@@ -35,6 +41,16 @@ export class UsersService {
     };
 
     return this.prisma.user.findMany(finalArgs);
+  }
+
+  async findManyForUser(
+    authenticatedUser: User,
+    includeSoftDelete?: boolean,
+  ): Promise<User[]> {
+    // teachers can only see themselves, admins can see all users
+    return authenticatedUser.type === UserType.TEACHER
+      ? [await this.findByIdOrThrow(authenticatedUser.id, includeSoftDelete)]
+      : await this.findMany({}, includeSoftDelete);
   }
 
   create(user: Prisma.UserCreateInput): Promise<User> {
