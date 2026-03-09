@@ -97,7 +97,8 @@ const useNavigationObserver = ({
 
   const confirmNavigation = (): void => {
     navigationConfirmed.current = true;
-    router.push(nextPath.current);
+    // avoid pushing a new entry to the history stack, we want to replace the current url with the next url
+    router.replace(nextPath.current);
   };
 
   return confirmNavigation;
