@@ -17,6 +17,7 @@ import { useFileHash } from "@/hooks/useFileHash";
 import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
+import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
 
 const messages = defineMessages({
   title: {
@@ -61,6 +62,8 @@ const TaskDetail = () => {
     [task],
   );
 
+  const isCreatorOrAdmin = useIsCreatorOrAdmin(task?.creatorId);
+
   const taskFileHash = useFileHash(taskFile);
 
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
@@ -100,7 +103,7 @@ const TaskDetail = () => {
           {([task, _taskFile]) => (
             <>
               <PageHeading
-                actions={<TaskActions taskId={task.id} />}
+                actions={isCreatorOrAdmin && <TaskActions taskId={task.id} />}
                 description={task.description}
               >
                 {task.title}
