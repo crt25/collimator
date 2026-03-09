@@ -196,12 +196,7 @@ export class SolutionsService {
     contextName: string | null;
     passed: boolean | null;
   }): test is Test {
-    return (
-      test.identifier !== null &&
-      test.name !== null &&
-      test.contextName !== null &&
-      test.passed !== null
-    );
+    return test.name !== null && test.passed !== null;
   }
 
   private groupByStudentAnalysis(
