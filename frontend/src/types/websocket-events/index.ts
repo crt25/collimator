@@ -17,6 +17,10 @@ export type StudentAuthenticationRequest = {
 export type StudentAuthenticationResponse = {
   // the encrypted authentication token, encoded in base64
   authenticationToken: AuthenticationToken;
+  // the student ID
+  studentId: number;
+  // the encrypted pseudonym, encoded in base64
+  pseudonym: string;
 };
 
 export interface ServerToClientEvents {

@@ -10,6 +10,7 @@ import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
 
+export const protectedFiles = ["task.ipynb"];
 export const hiddenFolders = [
   "autograder",
   "student",
@@ -20,6 +21,10 @@ export type CustomRename = (
   oldPath: string,
   newPath: string,
   allowHiddenFolders?: boolean,
+) => Promise<Contents.IModel>;
+export type CustomUpload = (
+  file: File,
+  path?: string,
 ) => Promise<Contents.IModel>;
 
 const allowedWidgets: Record<Mode, KnownWidget[]> = {
@@ -67,7 +72,7 @@ export const simplifyUserInterface = async (
     // @ts-expect-error The exposed type is not complete
     runningSessions.dispose();
 
-    throwWhenCreatingGradingFolders(fileBrowser);
+    throwOnRestrictedFileOperation(fileBrowser);
     hideGradingFolders(fileBrowser);
 
     if (mode === Mode.solve && documentManager) {
@@ -83,7 +88,7 @@ export const simplifyUserInterface = async (
   hideDisallowedWidgets(mode, app);
 };
 
-const throwWhenCreatingGradingFolders = (fileBrowser: FileBrowser): void => {
+const throwOnRestrictedFileOperation = (fileBrowser: FileBrowser): void => {
   const contents = fileBrowser.model.manager;
 
   const originalRename = contents.rename.bind(contents);
@@ -93,14 +98,34 @@ const throwWhenCreatingGradingFolders = (fileBrowser: FileBrowser): void => {
     // this allows internal calls to rename to bypass the check
     allowHiddenFolders = false,
   ): Promise<Contents.IModel> => {
+    const oldName = oldPath.split("/").pop() || "";
     const newName = newPath.split("/").pop() || "";
 
     if (!allowHiddenFolders && hiddenFolders.includes(newName)) {
       throw new HiddenFolderError(newName);
     }
 
+    if (protectedFiles.includes(oldName) || protectedFiles.includes(newName)) {
+      throw new ProtectedFileError(
+        protectedFiles.includes(oldName) ? oldName : newName,
+      );
+    }
+
     return originalRename(oldPath, newPath);
   }) satisfies CustomRename;
+
+  const originalUpload = fileBrowser.model.upload.bind(fileBrowser.model);
+
+  fileBrowser.model.upload = (async (
+    file: File,
+    path?: string,
+  ): Promise<Contents.IModel> => {
+    if (protectedFiles.includes(file.name)) {
+      throw new ProtectedFileError(file.name);
+    }
+
+    return originalUpload(file, path);
+  }) satisfies CustomUpload;
 };
 
 /**
@@ -129,19 +154,6 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
   fileBrowser.model.refresh();
 };
 
-class HiddenFolderError extends Error {
-  // Ensure that the error object is compatible with the format expected by JupyterLite.
-  // See https://github.com/jupyterlab/jupyterlab/blob/35e1551dbd31104d76834848ce3c620a82921839/packages/docmanager/src/dialogs.ts#L210.
-  public readonly response = {
-    status: 400,
-    statusText: "Bad Request",
-  };
-
-  constructor(folderName: string) {
-    super(`The folder name ${folderName} is not allowed.`);
-  }
-}
-
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
 ): void => {
@@ -166,3 +178,29 @@ const redirectTaskFileOpensToStudentVersion = (
     return originalOpenOrReveal(path, widgetName, kernel, options);
   };
 };
+
+class HiddenFolderError extends Error {
+  // Ensure that the error object is compatible with the format expected by JupyterLite.
+  // See https://github.com/jupyterlab/jupyterlab/blob/35e1551dbd31104d76834848ce3c620a82921839/packages/docmanager/src/dialogs.ts#L210.
+  public readonly response = {
+    status: 400,
+    statusText: "Bad Request",
+  };
+
+  constructor(folderName: string) {
+    super(`The folder name ${folderName} is not allowed.`);
+  }
+}
+
+class ProtectedFileError extends Error {
+  // Ensure that the error object is compatible with the format expected by JupyterLite.
+  // See https://github.com/jupyterlab/jupyterlab/blob/35e1551dbd31104d76834848ce3c620a82921839/packages/docmanager/src/dialogs.ts#L210.
+  public readonly response = {
+    status: 400,
+    statusText: "Bad Request",
+  };
+
+  constructor(fileName: string) {
+    super(`The file name ${fileName} is not allowed.`);
+  }
+}

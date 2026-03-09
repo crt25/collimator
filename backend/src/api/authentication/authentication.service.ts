@@ -13,6 +13,10 @@ import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
 
 export type AuthToken = string;
+export type AuthTokenWithStudentId = {
+  token: AuthToken;
+  studentId: number;
+};
 
 // we use a sliding window for token expiration checked against the last used timestamp
 const slidingTokenLifetime = 1000 * 60 * 60 * 4; // 4 hours
@@ -381,13 +385,13 @@ export class AuthenticationService {
    * @param pseudonym The student's pseudonym encoded in Base64.
    * @param classId The class id the student is in.
    * @param keyPairId The key pair id used to encrypt the pseudonym.
-   * @returns A new authentication token.
+   * @returns A new authentication token with the student id.
    */
   async signInStudent(
     pseudonym: string,
     classId: number,
     keyPairId: number,
-  ): Promise<AuthToken> {
+  ): Promise<AuthTokenWithStudentId> {
     this.logger.debug(`Student sign-in attempt for class (id: ${classId})`);
 
     const rawPseudonym = Buffer.from(pseudonym, "base64");
@@ -435,15 +439,17 @@ export class AuthenticationService {
 
     this.logger.log(`Student sign-in successful (student id: ${student.id})`);
 
-    return authToken.token;
+    return { token: authToken.token, studentId: student.id };
   }
 
   /**
    * Create a new authentication token for a student with the given pseudonym and class id.
    * @param sessionId The id of the session the student is signed in to.
-   * @returns A new authentication token.
+   * @returns A new authentication token with the student id.
    */
-  async signInAnonymousStudent(sessionId: number): Promise<AuthToken> {
+  async signInAnonymousStudent(
+    sessionId: number,
+  ): Promise<AuthTokenWithStudentId> {
     this.logger.debug(
       `Anonymous student sign-in attempt for session (id: ${sessionId})`,
     );
@@ -475,7 +481,7 @@ export class AuthenticationService {
       `Anonymous student sign-in successful (student id: ${student.id})`,
     );
 
-    return authToken.token;
+    return { token: authToken.token, studentId: student.id };
   }
 
   async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {

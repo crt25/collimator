@@ -548,7 +548,7 @@
   "CopyLessonModal.description": [
     {
       "type": 0,
-      "value": "Select a lesson to copy from another class."
+      "value": "Select a lesson to copy."
     }
   ],
   "CopyLessonModal.goToLesson": [
@@ -1793,6 +1793,16 @@
     {
       "type": 0,
       "value": "Number of statements"
+    }
+  ],
+  "StudentHeader.studentLabel": [
+    {
+      "type": 0,
+      "value": "Student: "
+    },
+    {
+      "type": 1,
+      "value": "name"
     }
   ],
   "StudentList.columns.name": [

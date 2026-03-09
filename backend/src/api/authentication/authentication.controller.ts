@@ -79,7 +79,8 @@ export class AuthenticationController {
     );
 
     return StudentAuthenticationResponseDto.fromQueryResult({
-      authenticationToken,
+      authenticationToken: authenticationToken.token,
+      studentId: authenticationToken.studentId,
     });
   }
 
@@ -105,7 +106,8 @@ export class AuthenticationController {
       );
 
     return StudentAuthenticationResponseDto.fromQueryResult({
-      authenticationToken,
+      authenticationToken: authenticationToken.token,
+      studentId: authenticationToken.studentId,
     });
   }
 }

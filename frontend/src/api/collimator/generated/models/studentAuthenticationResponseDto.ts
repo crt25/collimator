@@ -9,4 +9,6 @@
 export interface StudentAuthenticationResponseDto {
   /** The id of a student in a class. */
   authenticationToken: string;
+  /** The id of the student. */
+  studentId: number;
 }
