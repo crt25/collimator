@@ -51,8 +51,17 @@ const useNavigationObserver = ({
       if (currentPathRef.current !== url) {
         // if the user clicked on the browser back button then the url displayed in the browser gets incorrectly updated
         // This is needed to restore the correct url.
-        // note: history.pushState does not trigger a page reload
-        window.history.pushState(
+
+        // We use replaceState instead of pushState because it does not create a new entry in the browser history.
+
+        // let's say the sequence is:
+        // 1. history: [A, B, C] (current page)
+        // 2. user clicks back -> [A, B, C] the cursor is now at B, the forward to C is still available
+        // 3. push a new state D after B -> [A, B, D] then C is removed from the history
+        // 4. the forward button will not be available
+
+        // with replaceSate, 3. becomes [A, D, C] the cursor is at D but the forward to C is still available
+        window.history.replaceState(
           null,
           "",
           router.basePath + currentPathRef.current,
