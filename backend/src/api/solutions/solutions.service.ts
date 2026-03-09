@@ -499,7 +499,7 @@ export class SolutionsService {
       );
     } else {
       this.logger.log(
-        `No student solutions deleted for session (id: ${sessionId}), task (id: ${taskId}) and student solution id (id: ${id})`,
+        `Unexpected: attempted to delete student solution (id: ${id}) for session (id: ${sessionId}), task (id: ${taskId}), but it no longer exists`
       );
     }
 

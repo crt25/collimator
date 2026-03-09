@@ -16,7 +16,7 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(AppModule, {
     logger:
-      // log everything in production, but only errors and warnings in development mode
+      // log everything when LOG_LEVEL is set to true, and only errors and warnings otherwise
       process.env.LOG_LEVEL === "true" ? undefined : ["error", "warn", "fatal"],
   });
 

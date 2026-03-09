@@ -23,7 +23,7 @@ export class AuthorizationService {
 
   async canSignInStudent(teacher: User, classId: number): Promise<boolean> {
     if (teacher.type !== UserType.ADMIN && teacher.type !== UserType.TEACHER) {
-      this.logger.debug(
+      this.logger.warn(
         `Authorization denied: user (id: ${teacher.id}) cannot sign in students - not admin or teacher`,
       );
       return false;
@@ -31,7 +31,7 @@ export class AuthorizationService {
 
     const canSignIn = await this.isUserTeacherOfClass(teacher.id, classId);
     if (!canSignIn) {
-      this.logger.debug(
+      this.logger.warn(
         `Authorization denied: user (id: ${teacher.id}) cannot sign in students for class (id: ${classId})`,
       );
     }
