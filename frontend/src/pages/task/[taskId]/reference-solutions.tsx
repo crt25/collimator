@@ -114,7 +114,7 @@ const TaskReferenceSolutions = () => {
                 {task.title}
               </PageHeading>
               <TaskNavigation taskId={task.id} />
-              {task.isInUse && (
+              {isCreatorOrAdmin && task.isInUse && (
                 <Alert
                   icon={LuLock}
                   title={
@@ -127,7 +127,7 @@ const TaskReferenceSolutions = () => {
                   }
                 />
               )}
-              {!task.isInUse && !isCreatorOrAdmin && (
+              {!isCreatorOrAdmin && (
                 <Alert
                   icon={LuEye}
                   title={
