@@ -146,6 +146,7 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
     vm.runtime.emit("ENABLE_ASSERTIONS");
   }
 
+  await prepareCrtProjectForExport(vm);
   try {
     // then save project state
     const json = vm.toJSON();
