@@ -89,12 +89,7 @@ export type ReferenceAnalysis = AnalysisWithoutId & {
   referenceSolutionId: ReferenceSolutionId;
 };
 
-type Test = {
-  identifier: string;
-  name: string;
-  contextName: string;
-  passed: boolean;
-};
+type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
 
 const maximumNumberOfAnalysisRetries = 3;
 
@@ -190,13 +185,15 @@ export class SolutionsService {
     return [groupedStudentAnalyses, groupedReferenceAnalyses];
   }
 
-  private isTest(test: {
-    identifier: string | null;
-    name: string | null;
-    contextName: string | null;
-    passed: boolean | null;
-  }): test is Test {
-    return test.name !== null && test.passed !== null;
+  private isTest(test: NullablePartial<SolutionTest>): test is SolutionTest {
+    return (
+      test.name !== null &&
+      test.passed !== null &&
+      test.name !== undefined &&
+      test.passed !== undefined &&
+      test.identifier !== undefined &&
+      test.contextName !== undefined
+    );
   }
 
   private groupByStudentAnalysis(
