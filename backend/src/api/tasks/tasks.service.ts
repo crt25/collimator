@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import {
   Task,
   Prisma,
@@ -10,7 +10,7 @@ import {
 import { PrismaService } from "src/prisma/prisma.service";
 import { Modify } from "src/utilities/modify";
 import { PrismaTransactionClient } from "src/prisma/types";
-import { ReferenceSolutionId } from "../solutions/dto/existing-reference-solution.dto";
+import { ReferenceSolutionId } from "../solutions/dto";
 import { TaskId } from "./dto";
 
 export class TaskInUseByClassOrLessonWithStudentsError extends Error {
@@ -60,6 +60,8 @@ const omitData = { data: true };
 
 @Injectable()
 export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   computeSolutionHash(data: Solution["data"]): Buffer {
@@ -184,6 +186,8 @@ export class TasksService {
     referenceSolutions: ReferenceSolutionInput[],
     referenceSolutionFiles: Express.Multer.File[],
   ): Promise<TaskWithoutData> {
+    this.logger.log(`Creating task with title: ${task.title}`);
+
     return this.prisma.$transaction(async (tx) => {
       const createdTask = await tx.task.create({
         data: {
@@ -306,6 +310,7 @@ export class TasksService {
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
+        this.logger.warn(`Cannot update task (id: ${id}): task is in use`);
         throw new TaskInUseByClassOrLessonWithStudentsError();
       }
 
@@ -492,6 +497,8 @@ export class TasksService {
   }
 
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
+    this.logger.log(`Deleting task (id: ${id})`);
+
     return this.prisma.$transaction(async (tx) => {
       // Fetch task to check if it's public
       const task = await tx.task.findUniqueOrThrow({
@@ -507,6 +514,9 @@ export class TasksService {
           task.creatorId,
         );
         if (isInUseByOthers) {
+          this.logger.warn(
+            `Cannot delete task (id: ${id}): public task is in use by other users`,
+          );
           throw new TaskInOtherUsersLessonError();
         }
       }
