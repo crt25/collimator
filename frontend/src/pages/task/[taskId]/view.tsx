@@ -100,7 +100,7 @@ const TaskDetail = () => {
           {([task, taskFile]) => (
             <>
               <PageHeading
-                actions={<TaskActions taskId={task.id} taskFile={taskFile} />}
+                actions={<TaskActions task={task} taskFile={taskFile} />}
                 description={task.description}
               >
                 {task.title}

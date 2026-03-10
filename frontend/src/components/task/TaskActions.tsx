@@ -9,6 +9,8 @@ import { ButtonMessages } from "@/i18n/button-messages";
 import { downloadBlob } from "@/utilities/download";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { defaultTaskExportFilename } from "@/utilities/constants";
+import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
+import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
@@ -50,34 +52,35 @@ const messages = defineMessages({
 });
 
 const TaskActions = ({
-  taskId,
+  task,
   taskFile,
 }: {
-  taskId: number;
+  task: ExistingTask;
   taskFile: Blob;
 }) => {
   const intl = useIntl();
   const router = useRouter();
   const deleteTask = useDeleteTask();
+  const isCreatorOrAdmin = useIsCreatorOrAdmin(task.creatorId);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteTask(taskId);
+      await deleteTask(task.id);
       toaster.success({
-        id: `task-delete-success-${taskId}`,
+        id: `task-delete-success-${task.id}`,
         title: intl.formatMessage(messages.deleteSuccessMessage),
       });
       router.push(`/task`);
     } catch (error) {
       if (error instanceof ConflictError) {
         toaster.error({
-          id: `task-delete-conflict-${taskId}`,
+          id: `task-delete-conflict-${task.id}`,
           title: intl.formatMessage(getErrorMessageDescriptor(error.errorCode)),
         });
       } else {
         toaster.error({
-          id: `task-delete-error-${taskId}`,
+          id: `task-delete-error-${task.id}`,
           title: intl.formatMessage(messages.deleteErrorMessage),
         });
       }
@@ -89,7 +92,7 @@ const TaskActions = ({
       downloadBlob(taskFile, defaultTaskExportFilename);
     } catch {
       toaster.error({
-        id: `task-export-error-${taskId}`,
+        id: `task-export-error-${task.id}`,
         title: intl.formatMessage(messages.exportError),
       });
     }
@@ -100,22 +103,24 @@ const TaskActions = ({
       <DropdownMenu
         trigger={intl.formatMessage(ButtonMessages.actions)}
         variant="emphasized"
-        testId={`task-${taskId}-actions-dropdown-button`}
+        testId={`task-${task.id}-actions-dropdown-button`}
       >
         <DropdownMenu.Item
           onClick={onExportTask}
           icon={<LuDownload />}
-          testId={`task-${taskId}-export-button`}
+          testId={`task-${task.id}-export-button`}
         >
           {intl.formatMessage(taskMessages.exportTask)}
         </DropdownMenu.Item>
-        <DropdownMenu.Item
-          onClick={() => setIsDeleteModalOpen(true)}
-          icon={<LuTrash />}
-          testId={`task-${taskId}-delete-button`}
-        >
-          {intl.formatMessage(messages.deleteTask)}
-        </DropdownMenu.Item>
+        {isCreatorOrAdmin && !task.isInUse && (
+          <DropdownMenu.Item
+            onClick={() => setIsDeleteModalOpen(true)}
+            icon={<LuTrash />}
+            testId={`task-${task.id}-delete-button`}
+          >
+            {intl.formatMessage(messages.deleteTask)}
+          </DropdownMenu.Item>
+        )}
       </DropdownMenu>
       <Modal
         title={intl.formatMessage(messages.deleteConfirmationTitle)}
