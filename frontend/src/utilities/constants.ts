@@ -15,7 +15,5 @@ export const openIdConnectMicrosoftServer = process.env
 export const openIdConnectMicrosoftClientId = process.env
   .NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID as unknown as string;
 
-export const defaultTaskExportFilename = "ClassMosaicExportedScratchTask.sb3";
-
 export const sentryDsn = process.env
   .NEXT_PUBLIC_SENTRY_DSN as unknown as string;

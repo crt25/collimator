@@ -8,9 +8,9 @@ import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { downloadBlob } from "@/utilities/download";
 import { messages as taskMessages } from "@/i18n/task-messages";
-import { defaultTaskExportFilename } from "@/utilities/constants";
 import { useIsCreatorOrAdmin } from "@/hooks/useIsCreatorOrAdmin";
 import { ExistingTask } from "@/api/collimator/models/tasks/existing-task";
+import { TaskType } from "@/api/collimator/generated/models";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
@@ -69,6 +69,15 @@ const TaskActions = ({
   const isCreatorOrAdmin = useIsCreatorOrAdmin(task.creatorId);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const getTaskExportFilename = (taskType: TaskType): string => {
+    switch (taskType) {
+      case TaskType.SCRATCH:
+        return "ClassMosaicExportedScratchTask.sb3";
+      case TaskType.JUPYTER:
+        return "ClassMosaicExportedJupyterTask.zip";
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     try {
       if (task?.isInUse) {
@@ -103,7 +112,7 @@ const TaskActions = ({
 
   const onExportTask = () => {
     try {
-      downloadBlob(taskFile, defaultTaskExportFilename);
+      downloadBlob(taskFile, getTaskExportFilename(task.type));
     } catch {
       toaster.error({
         id: `task-export-error-${task.id}`,

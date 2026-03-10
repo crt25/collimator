@@ -300,7 +300,7 @@ const SolveTaskPage = () => {
       intl.formatMessage(taskMessages.taskCreated),
     );
 
-    downloadBlob(response.result.file, "task.sb3");
+    downloadBlob(response.result.file, response.result.filename);
   }, [intl]);
 
   if (!sessionId || !taskId) {
