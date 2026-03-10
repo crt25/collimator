@@ -2432,6 +2432,12 @@
       "value": "Effacer l'activité"
     }
   ],
+  "TaskActions.taskIsAlreadyInUseMessage": [
+    {
+      "type": 0,
+      "value": "Impossible de supprimer cette tâche : elle est actuellement utilisée par une ou plusieurs classes."
+    }
+  ],
   "TaskDetail.title": [
     {
       "type": 0,

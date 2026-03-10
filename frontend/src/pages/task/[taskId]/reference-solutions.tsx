@@ -108,13 +108,13 @@ const TaskReferenceSolutions = () => {
             <>
               <PageHeading
                 variant="title"
-                actions={<TaskActions taskId={task.id} />}
+                actions={isCreatorOrAdmin && <TaskActions taskId={task.id} />}
                 description={task.description}
               >
                 {task.title}
               </PageHeading>
               <TaskNavigation taskId={task.id} />
-              {task.isInUse && isCreatorOrAdmin && (
+              {isCreatorOrAdmin && task.isInUse && (
                 <Alert
                   icon={LuLock}
                   title={

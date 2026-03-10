@@ -6,6 +6,7 @@ import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ConflictError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
+import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
@@ -39,6 +40,11 @@ const messages = defineMessages({
     id: "TaskActions.deleteErrorMessage",
     defaultMessage: "There was an error deleting the task. Please try again!",
   },
+  taskIsAlreadyInUseMessage: {
+    id: "TaskActions.taskIsAlreadyInUseMessage",
+    defaultMessage:
+      "This task cannot be deleted because it is currently in use by one or more classes.",
+  },
 });
 
 const TaskActions = ({ taskId }: { taskId: number }) => {
@@ -46,10 +52,20 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
   const router = useRouter();
   const deleteTask = useDeleteTask();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { data: task } = useTask(taskId);
 
   const handleDeleteConfirm = async () => {
     try {
+      if (task?.isInUse) {
+        toaster.error({
+          id: `task-delete-in-use-${taskId}`,
+          title: intl.formatMessage(messages.taskIsAlreadyInUseMessage),
+        });
+        return;
+      }
+
       await deleteTask(taskId);
+
       toaster.success({
         id: `task-delete-success-${taskId}`,
         title: intl.formatMessage(messages.deleteSuccessMessage),

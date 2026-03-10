@@ -1176,6 +1176,9 @@
   "TaskActions.deleteTask": {
     "message": "Effacer l'activité"
   },
+  "TaskActions.taskIsAlreadyInUseMessage": {
+    "message": "Impossible de supprimer cette tâche : elle est actuellement utilisée par une ou plusieurs classes."
+  },
   "TaskDetail.title": {
     "message": "Activité - {title}"
   },
