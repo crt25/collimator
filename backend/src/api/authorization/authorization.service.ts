@@ -1,10 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { StudentSolutionId } from "../solutions/dto/existing-student-solution.dto";
 
 @Injectable()
 export class AuthorizationService {
+  private readonly logger = new Logger(AuthorizationService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   protected async isUserTeacherOfClass(
@@ -19,12 +21,21 @@ export class AuthorizationService {
     return klass !== null;
   }
 
-  canSignInStudent(teacher: User, classId: number): Promise<boolean> {
+  async canSignInStudent(teacher: User, classId: number): Promise<boolean> {
     if (teacher.type !== UserType.ADMIN && teacher.type !== UserType.TEACHER) {
-      return Promise.resolve(false);
+      this.logger.warn(
+        `Authorization denied: user (id: ${teacher.id}) cannot sign in students - not admin or teacher`,
+      );
+      return false;
     }
 
-    return this.isUserTeacherOfClass(teacher.id, classId);
+    const canSignIn = await this.isUserTeacherOfClass(teacher.id, classId);
+    if (!canSignIn) {
+      this.logger.warn(
+        `Authorization denied: user (id: ${teacher.id}) cannot sign in students for class (id: ${classId})`,
+      );
+    }
+    return canSignIn;
   }
 
   async canUpdateUser(
@@ -38,10 +49,15 @@ export class AuthorizationService {
 
     // if the user is not an admin, they can only update their own user type
     // but not change their own user type
+    const canUpdate =
+      authenticatedUser.id === userId && authenticatedUser.type === newUserType;
 
-    return (
-      authenticatedUser.id === userId && authenticatedUser.type === newUserType
-    );
+    if (!canUpdate) {
+      this.logger.warn(
+        `Authorization denied: user (id: ${authenticatedUser.id}) cannot update user (id: ${userId})`,
+      );
+    }
+    return canUpdate;
   }
 
   async canViewUser(authenticatedUser: User, userId: number): Promise<boolean> {
@@ -128,7 +144,16 @@ export class AuthorizationService {
     authenticatedUser: User,
     classId: number,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfClass(authenticatedUser, classId);
+    const canDelete = await this.isAdminOrTeacherOfClass(
+      authenticatedUser,
+      classId,
+    );
+    if (!canDelete) {
+      this.logger.warn(
+        `Authorization denied: user (id: ${authenticatedUser.id}) cannot delete class (id: ${classId})`,
+      );
+    }
+    return canDelete;
   }
 
   async canCreateSession(
@@ -218,7 +243,16 @@ export class AuthorizationService {
     authenticatedUser: User,
     sessionId: number,
   ): Promise<boolean> {
-    return this.isAdminOrTeacherOfSession(authenticatedUser, sessionId);
+    const canDelete = await this.isAdminOrTeacherOfSession(
+      authenticatedUser,
+      sessionId,
+    );
+    if (!canDelete) {
+      this.logger.warn(
+        `Authorization denied: user (id: ${authenticatedUser.id}) cannot delete session (id: ${sessionId})`,
+      );
+    }
+    return canDelete;
   }
 
   async canListSolutions(

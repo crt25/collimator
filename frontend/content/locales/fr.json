@@ -1179,6 +1179,9 @@
   "TaskActions.exportError": {
     "message": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
   },
+  "TaskActions.taskIsAlreadyInUseMessage": {
+    "message": "Impossible de supprimer cette tâche : elle est actuellement utilisée par une ou plusieurs classes."
+  },
   "TaskDetail.title": {
     "message": "Activité - {title}"
   },

@@ -49,6 +49,11 @@ const messages = defineMessages({
     defaultMessage:
       "An unexpected error happened while exporting the task. Please try again!",
   },
+  taskIsAlreadyInUseMessage: {
+    id: "TaskActions.taskIsAlreadyInUseMessage",
+    defaultMessage:
+      "This task cannot be deleted because it is currently in use by one or more classes.",
+  },
 });
 
 const TaskActions = ({
@@ -66,7 +71,16 @@ const TaskActions = ({
 
   const handleDeleteConfirm = async () => {
     try {
+      if (task?.isInUse) {
+        toaster.error({
+          id: `task-delete-in-use-${task.id}`,
+          title: intl.formatMessage(messages.taskIsAlreadyInUseMessage),
+        });
+        return;
+      }
+
       await deleteTask(task.id);
+
       toaster.success({
         id: `task-delete-success-${task.id}`,
         title: intl.formatMessage(messages.deleteSuccessMessage),

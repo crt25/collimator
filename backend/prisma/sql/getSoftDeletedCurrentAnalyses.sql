@@ -38,7 +38,7 @@ INNER JOIN "SolutionAnalysis" analysis
 LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = studentSolutions."studentId"
   AND student."deletedAt" IS NOT NULL
-INNER JOIN "SolutionTest" test
+LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolutions.id AND test."deletedAt" IS NOT NULL
   -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
 WHERE studentSolutions."isReference" = false
@@ -73,7 +73,7 @@ INNER JOIN "SolutionAnalysis" analysis
 LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = studentSolution."studentId"
   AND student."deletedAt" IS NOT NULL
-INNER JOIN "SolutionTest" test
+LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution.id AND test."deletedAt" IS NOT NULL
 WHERE studentSolution."sessionId" = $1
 AND studentSolution."taskId" = $2
@@ -107,7 +107,7 @@ INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = referenceSolution."taskId"
   AND analysis."solutionHash" = referenceSolution."solutionHash"
   AND "analysis"."deletedAt" IS NOT NULL
-INNER JOIN "SolutionTest" test
+LEFT JOIN "SolutionTest" test
   ON test."referenceSolutionId" = referenceSolution.id AND test."deletedAt" IS NOT NULL
 WHERE referenceSolution."taskId" = $2
 AND referenceSolution."deletedAt" IS NOT NULL

@@ -1,12 +1,12 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import {
-  Solution,
-  Prisma,
-  SolutionAnalysis,
   AstVersion,
-  StudentSolution,
-  SolutionTest,
+  Prisma,
   ReferenceSolution,
+  Solution,
+  SolutionAnalysis,
+  SolutionTest,
+  StudentSolution,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import {
@@ -89,6 +89,8 @@ export type ReferenceAnalysis = AnalysisWithoutId & {
   referenceSolutionId: ReferenceSolutionId;
 };
 
+type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
+
 const maximumNumberOfAnalysisRetries = 3;
 
 const omitData = { data: true };
@@ -97,6 +99,8 @@ const latestAstVersion = AstVersion.v1;
 
 @Injectable()
 export class SolutionsService {
+  private readonly logger = new Logger(SolutionsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
@@ -183,6 +187,17 @@ export class SolutionsService {
     return [groupedStudentAnalyses, groupedReferenceAnalyses];
   }
 
+  private isTest(test: NullablePartial<SolutionTest>): test is SolutionTest {
+    return (
+      test.name !== null &&
+      test.passed !== null &&
+      test.name !== undefined &&
+      test.passed !== undefined &&
+      test.identifier !== undefined &&
+      test.contextName !== undefined
+    );
+  }
+
   private groupByStudentAnalysis(
     byAnalysisId: TupleMap<StudentKey, CurrentStudentAnalysis>,
     analysis: getCurrentAnalyses.Result,
@@ -207,16 +222,16 @@ export class SolutionsService {
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined) {
+    if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else {
+    } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
         isReferenceSolution: analysis.isReference,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [test],
+        tests: this.isTest(test) ? [test] : [],
         studentId: analysis.studentId,
         sessionId: analysis.sessionId,
         studentPseudonym: analysis.studentPseudonym,
@@ -224,7 +239,6 @@ export class SolutionsService {
         studentKeyPairId: analysis.studentKeyPairId,
       });
     }
-
     return byAnalysisId;
   }
 
@@ -238,8 +252,8 @@ export class SolutionsService {
     sessionId: SessionId;
     isReference: boolean;
     solutionHash: Uint8Array;
-    testName: string;
-    testPassed: boolean;
+    testName: string | null;
+    testPassed: boolean | null;
     genericAst: string;
     astVersion: AstVersion;
   } {
@@ -250,8 +264,6 @@ export class SolutionsService {
       analysis.sessionId !== null &&
       analysis.isReference !== null &&
       analysis.solutionHash !== null &&
-      analysis.testName !== null &&
-      analysis.testPassed !== null &&
       analysis.genericAst !== null &&
       analysis.astVersion !== null
     );
@@ -277,9 +289,9 @@ export class SolutionsService {
     const key: ReferenceKey = [analysis.taskId, analysis.referenceSolutionId];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined) {
+    if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else {
+    } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
@@ -287,8 +299,7 @@ export class SolutionsService {
         isInitialTaskSolution: analysis.isInitialTaskSolution,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [test],
-
+        tests: this.isTest(test) ? [test] : [],
         referenceSolutionId: analysis.referenceSolutionId,
         title: analysis.referenceSolutionTitle,
         description: analysis.referenceSolutionDescription,
@@ -307,8 +318,8 @@ export class SolutionsService {
     isInitialTaskSolution: boolean;
     taskId: TaskId;
     solutionHash: Uint8Array;
-    testName: string;
-    testPassed: boolean;
+    testName: string | null;
+    testPassed: boolean | null;
     genericAst: string;
     astVersion: AstVersion;
   } {
@@ -319,8 +330,6 @@ export class SolutionsService {
       analysis.isInitialTaskSolution !== null &&
       analysis.taskId !== null &&
       analysis.solutionHash !== null &&
-      analysis.testName !== null &&
-      analysis.testPassed !== null &&
       analysis.genericAst !== null &&
       analysis.astVersion !== null
     );
@@ -383,6 +392,9 @@ export class SolutionsService {
             deletedAt: null,
           },
     });
+    this.logger.log(
+      `Updated student solution (id: ${studentSolutionId}) isReference=${isReference}`,
+    );
   }
 
   async downloadLatestStudentSolutionOrThrow(
@@ -488,6 +500,16 @@ export class SolutionsService {
     );
     const deletedRows = result[0]?.count ?? 0;
 
+    if (deletedRows > 0) {
+      this.logger.log(
+        `Deleted ${deletedRows} student solutions for session (id: ${sessionId}), task (id: ${taskId})`,
+      );
+    } else {
+      this.logger.log(
+        `Unexpected: attempted to delete student solution (id: ${id}) for session (id: ${sessionId}), task (id: ${taskId}), but it no longer exists`
+      );
+    }
+
     return deletedRows > 0;
   }
 
@@ -535,6 +557,10 @@ export class SolutionsService {
       },
     });
 
+    this.logger.log(
+      `Created student solution (id: ${studentSolution.id}) for student (id: ${studentId}), session (id: ${sessionId}), task (id: ${taskId})`,
+    );
+
     // perform the analysis but do *not* wait for the promise to resolve
     // this will happen in the background
     this.analysisService.performAnalysis(
@@ -573,6 +599,10 @@ export class SolutionsService {
         ],
       },
     });
+
+    if (solutionsWithoutAnalysis.length > 0) {
+      this.logger.log(`Running ${solutionsWithoutAnalysis.length} analyses`);
+    }
 
     // run all of them
     await Promise.all(
@@ -622,6 +652,12 @@ export class SolutionsService {
           solution: true,
         },
       });
+
+    if (solutionsWithoutAnalysis.length > 0) {
+      this.logger.log(
+        `Upgrading ${solutionsWithoutAnalysis.length} analyses to latest AST version`,
+      );
+    }
 
     // run all of them
     await Promise.all(

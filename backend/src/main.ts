@@ -14,7 +14,11 @@ async function bootstrap(): Promise<void> {
   const API_PREFIX = "api";
   const API_VERSIONS = ["0"];
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger:
+      // log everything when LOG_LEVEL is set to true, and only errors and warnings otherwise
+      process.env.LOG_LEVEL === "true" ? undefined : ["error", "warn", "fatal"],
+  });
 
   app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

@@ -2438,6 +2438,12 @@
       "value": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
     }
   ],
+  "TaskActions.taskIsAlreadyInUseMessage": [
+    {
+      "type": 0,
+      "value": "Impossible de supprimer cette tâche : elle est actuellement utilisée par une ou plusieurs classes."
+    }
+  ],
   "TaskDetail.title": [
     {
       "type": 0,

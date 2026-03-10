@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Session, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { SessionStatus } from ".prisma/client";
@@ -44,6 +44,8 @@ interface StudentTaskProgress {
 
 @Injectable()
 export class SessionsService {
+  private readonly logger = new Logger(SessionsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   findByIdOrThrow(id: SessionId): Promise<Session> {
@@ -83,7 +85,7 @@ export class SessionsService {
     return this.prisma.session.findMany(finalArgs);
   }
 
-  create(
+  async create(
     classId: number,
     session: Omit<Prisma.SessionUncheckedCreateInput, "classId">,
     taskIds: number[],
@@ -100,10 +102,15 @@ export class SessionsService {
       },
     };
 
-    return this.prisma.session.create({
+    const created = await this.prisma.session.create({
       data: checkedSession,
       include: compactInclude,
     });
+
+    this.logger.log(
+      `Created lesson (id: ${created.id}) for class (id: ${classId}) with ${taskIds.length} tasks`,
+    );
+    return created;
   }
 
   async update(
@@ -153,6 +160,8 @@ export class SessionsService {
         }),
       ),
     ]);
+
+    this.logger.log(`Updated lesson (id: ${id}) with ${taskIds.length} tasks`);
     return update;
   }
 
@@ -196,7 +205,7 @@ export class SessionsService {
     return sessionWithStudents !== null;
   }
 
-  changeStatusByIdAndClass(
+  async changeStatusByIdAndClass(
     id: SessionId,
     status: SessionStatus,
     classId?: number,
@@ -224,18 +233,26 @@ export class SessionsService {
           OR: allowedStates.map((s) => ({ status: s })),
         };
 
-    return this.prisma.session.update({
+    const updated = await this.prisma.session.update({
       data: { status: status },
       where,
       include: compactInclude,
     });
+
+    this.logger.log(`Lesson (id: ${id}) status changed to ${status}`);
+    return updated;
   }
 
-  deletedByIdAndClass(id: SessionId, classId?: ClassId): Promise<Session> {
-    return this.prisma.session.delete({
+  async deletedByIdAndClass(
+    id: SessionId,
+    classId?: ClassId,
+  ): Promise<Session> {
+    const deleted = await this.prisma.session.delete({
       where: { classId, id, status: "CREATED" },
       include: compactInclude,
     });
+    this.logger.log(`Deleted lesson (id: ${id})`);
+    return deleted;
   }
 
   deleteById(id: SessionId): Promise<Session> {
@@ -279,10 +296,15 @@ export class SessionsService {
         },
       };
 
-      return tx.session.create({
+      const copied = await tx.session.create({
         data: checkedSession,
         include: compactInclude,
       });
+
+      this.logger.log(
+        `Copied lesson (id: ${sourceSessionId}) to new lesson (id: ${copied.id}) in class (id: ${targetClassId})`,
+      );
+      return copied;
     });
   }
 
