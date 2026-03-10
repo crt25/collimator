@@ -136,7 +136,9 @@ const EditTask = () => {
                 <PageHeading
                   actions={
                     !isLocked &&
-                    isCreatorOrAdmin && <TaskActions taskId={task?.id} />
+                    isCreatorOrAdmin && (
+                      <TaskActions taskId={task?.id} taskFile={taskFile} />
+                    )
                   }
                   description={task.description}
                 >

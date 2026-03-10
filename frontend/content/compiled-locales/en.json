@@ -3083,6 +3083,12 @@
       "value": "error"
     }
   ],
+  "embeddedApp.exportTask": [
+    {
+      "type": 0,
+      "value": "Export Task"
+    }
+  ],
   "embeddedApp.savingTask": [
     {
       "type": 0,

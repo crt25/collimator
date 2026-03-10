@@ -1697,6 +1697,9 @@
   "embeddedApp.cannotSaveTask": {
     "message": "Impossible de sauvegarder l'activité : {error}"
   },
+  "embeddedApp.exportTask": {
+    "message": "Exporter l'activité"
+  },
   "embeddedApp.savingTask": {
     "message": "Sauvegarde de l'activité en cours..."
   },

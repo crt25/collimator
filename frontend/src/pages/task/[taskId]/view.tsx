@@ -97,10 +97,10 @@ const TaskDetail = () => {
           errors={[taskError, taskFileError]}
           isLoading={[isLoadingTask, isLoadingTaskFile]}
         >
-          {([task, _taskFile]) => (
+          {([task, taskFile]) => (
             <>
               <PageHeading
-                actions={<TaskActions taskId={task.id} />}
+                actions={<TaskActions taskId={task.id} taskFile={taskFile} />}
                 description={task.description}
               >
                 {task.title}

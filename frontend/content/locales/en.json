@@ -1445,6 +1445,9 @@
   "embeddedApp.cannotSaveTask": {
     "message": "Cannot save task: {error}"
   },
+  "embeddedApp.exportTask": {
+    "message": "Export Task"
+  },
   "embeddedApp.savingTask": {
     "message": "Saving task..."
   },

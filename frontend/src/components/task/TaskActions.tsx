@@ -1,11 +1,14 @@
 import { defineMessages, useIntl } from "react-intl";
-import { LuTrash } from "react-icons/lu";
+import { LuDownload, LuTrash } from "react-icons/lu";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { ConflictError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
+import { downloadBlob } from "@/utilities/download";
+import { messages as taskMessages } from "@/i18n/task-messages";
+import { defaultTaskExportFilename } from "@/utilities/constants";
 import DropdownMenu from "../DropdownMenu";
 import { toaster } from "../Toaster";
 import { Modal } from "../form/Modal";
@@ -41,7 +44,13 @@ const messages = defineMessages({
   },
 });
 
-const TaskActions = ({ taskId }: { taskId: number }) => {
+const TaskActions = ({
+  taskId,
+  taskFile,
+}: {
+  taskId: number;
+  taskFile: Blob;
+}) => {
   const intl = useIntl();
   const router = useRouter();
   const deleteTask = useDeleteTask();
@@ -70,6 +79,10 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
     }
   };
 
+  const onExportTask = () => {
+    downloadBlob(taskFile, defaultTaskExportFilename);
+  };
+
   return (
     <>
       <DropdownMenu
@@ -77,6 +90,13 @@ const TaskActions = ({ taskId }: { taskId: number }) => {
         variant="emphasized"
         testId={`task-${taskId}-actions-dropdown-button`}
       >
+        <DropdownMenu.Item
+          onClick={onExportTask}
+          icon={<LuDownload />}
+          testId={`task-${taskId}-export-button`}
+        >
+          {intl.formatMessage(taskMessages.exportTask)}
+        </DropdownMenu.Item>
         <DropdownMenu.Item
           onClick={() => setIsDeleteModalOpen(true)}
           icon={<LuTrash />}

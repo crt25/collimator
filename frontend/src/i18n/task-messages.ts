@@ -53,4 +53,12 @@ export const messages = defineMessages({
     id: "embeddedApp.savingTask",
     defaultMessage: "Saving task...",
   },
+  taskExported: {
+    id: "embeddedApp.taskExported",
+    defaultMessage: "Task exported successfully",
+  },
+  exportTask: {
+    id: "embeddedApp.exportTask",
+    defaultMessage: "Export Task",
+  },
 } as const);
