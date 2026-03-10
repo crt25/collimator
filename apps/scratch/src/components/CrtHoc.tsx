@@ -6,8 +6,8 @@ import scratchMessages from "scratch-l10n/locales/editor-msgs";
 import { setLocales } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
 import { patchScratchVm } from "../vm";
 import { useEmbeddedScratch } from "../hooks/useEmbeddedScratch";
-import en from "../content/compiled-locales/en.json";
-import fr from "../content/compiled-locales/fr.json";
+import en from "../content/locales/en.json";
+import fr from "../content/locales/fr.json";
 import { ExtensionId } from "../extensions";
 import { CrtContext } from "../contexts/CrtContext";
 import { useCrtConfig } from "../hooks/useCrtConfig";
@@ -22,10 +22,7 @@ const customLocales: { [locale: string]: { [key: string]: string } } =
     }).map(([locale, messages]) => [
       locale,
       Object.fromEntries(
-        Object.entries(messages).map(([key, message]) => [
-          key,
-          message[0].value,
-        ]),
+        Object.entries(messages).map(([key, entry]) => [key, entry.message]),
       ),
     ]),
   );
