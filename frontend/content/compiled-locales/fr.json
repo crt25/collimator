@@ -95,6 +95,24 @@
       "value": "Anonymiser les noms"
     }
   ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,
@@ -536,7 +554,7 @@
   "CopyLessonModal.copyError": [
     {
       "type": 0,
-      "value": "La copie de la leçon a échoué. Veuillez réessayer."
+      "value": "Échec de la copie de la leçon. Veuillez réessayer."
     }
   ],
   "CopyLessonModal.copySuccess": [
@@ -548,7 +566,7 @@
   "CopyLessonModal.description": [
     {
       "type": 0,
-      "value": "Sélectionnez une leçon à copier."
+      "value": "Sélectionnez une leçon existante à copier."
     }
   ],
   "CopyLessonModal.goToLesson": [
@@ -611,8 +629,7 @@
       "value": "Créer une classe"
     }
   ],
-  "CreateClass.pageDescription": [
-  ],
+  "CreateClass.pageDescription": [],
   "CreateClass.returnToClassList": [
     {
       "type": 0,
@@ -628,7 +645,7 @@
   "CreateClass.successMessage": [
     {
       "type": 0,
-      "value": "Classe créée avec succès"
+      "value": "Leçon créée avec succès"
     }
   ],
   "CreateClass.title": [
@@ -733,8 +750,7 @@
       "value": "Créer une activité"
     }
   ],
-  "CreateTaskInstance.description": [
-  ],
+  "CreateTaskInstance.description": [],
   "CreateTaskInstance.header": [
     {
       "type": 0,
@@ -753,22 +769,10 @@
       "value": "Créer une activité"
     }
   ],
-  "CreateUser.errorMessage": [
-    {
-      "type": 0,
-      "value": "Failed to create user"
-    }
-  ],
   "CreateUser.submit": [
     {
       "type": 0,
       "value": "Créer un Utilisateur"
-    }
-  ],
-  "CreateUser.successMessage": [
-    {
-      "type": 0,
-      "value": "User created successfully"
     }
   ],
   "CreateUser.title": [
@@ -847,24 +851,6 @@
     {
       "type": 0,
       "value": "Task Selection"
-    }
-  ],
-  "DEPRECATED: ApiError.GENERIC_ERROR": [
-    {
-      "type": 0,
-      "value": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
-    }
-  ],
-  "DEPRECATED: ApiError.TASK_IN_OTHER_USERS_LESSON": [
-    {
-      "type": 0,
-      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons d'autres utilisateurs."
-    }
-  ],
-  "DEPRECATED: ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
-    {
-      "type": 0,
-      "value": "Impossible d'effectuer cette action car l'activité est actuellement utilisée par une ou plusieurs leçons ou classes avec des élèves."
     }
   ],
   "DEPRECATED: Category.filteredOut": [
@@ -1091,8 +1077,7 @@
       "value": "Activités"
     }
   ],
-  "DEPRECATED: ListClasses.description": [
-  ],
+  "DEPRECATED: ListClasses.description": [],
   "DEPRECATED: ListClasses.pageTitle": [
     {
       "type": 0,
@@ -1223,36 +1208,18 @@
       "value": "Afficher la leçon"
     }
   ],
-  "DEPRECATED: Task.sessionMenu.heading.description": [
-  ],
-  "DEPRECATED: Task.sessionMenu.heading.studentName": [
-    {
-      "type": 0,
-      "value": "Élève: "
-    },
-    {
-      "type": 1,
-      "value": "studentName"
-    }
-  ],
+  "DEPRECATED: Task.sessionMenu.heading.description": [],
   "DEPRECATED: TaskForm.referenceSolutionsLengthValidation": [
     {
       "type": 0,
       "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
     }
   ],
-  "DEPRECATED: TaskInstanceList.description": [
-  ],
+  "DEPRECATED: TaskInstanceList.description": [],
   "DEPRECATED: TaskSessionActions.deleteTask": [
     {
       "type": 0,
       "value": "Effacer l'activité"
-    }
-  ],
-  "DEPRECATED: UserActions.copyRegistrationTokenSuccess": [
-    {
-      "type": 0,
-      "value": "Lien d’inscription copié dans le presse-papiers"
     }
   ],
   "DEPRECATED: UserDetail.table.oidcSub": [
@@ -2156,13 +2123,13 @@
   "SessionProgress.canOnlyShareOwnSessions": [
     {
       "type": 0,
-      "value": "Vous ne pouvez partager que les leçons appartenant à vos classes."
+      "value": "You can only share lessons belonging to your classes."
     }
   ],
   "SessionProgress.shareLesson": [
     {
       "type": 0,
-      "value": "Inviter un élève"
+      "value": "Invite Student"
     }
   ],
   "SessionProgress.title": [
@@ -2262,7 +2229,7 @@
   "SolveTask.saveError": [
     {
       "type": 0,
-      "value": "Vous rencontrez actuellement des problèmes de réseau, la sauvegarde pourrait ne pas fonctionner."
+      "value": "You are currently experiencing network issues, saving may not work."
     }
   ],
   "SolveTask.solutionSubmitted": [
@@ -2370,7 +2337,7 @@
   "StudentLoginPage.subtitle": [
     {
       "type": 0,
-      "value": "Vous êtes sur le point de rejoindre votre leçon en tant qu'élève."
+      "value": "You're about to join your lesson as a student."
     }
   ],
   "StudentLoginPage.title": [
@@ -2856,10 +2823,10 @@
   "TaskInstanceProgressList.viewDetails": [
     {
       "type": 0,
-      "value": "Voir la solution de l'élève"
+      "value": "View student solution"
     }
   ],
-  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutionsTitle": [
+  "TaskInstanceReferenceSolutions.editInTaskReferenceSolutions": [
     {
       "type": 0,
       "value": "Cette solution de référence ne peut pas être modifiée ici. Pour la modifier, allez à "
@@ -2882,7 +2849,7 @@
   "TaskInstanceReferenceSolutions.taskReferenceSolutionsLink": [
     {
       "type": 0,
-      "value": "le détail des solutions de référence"
+      "value": "détails des solutions de référence"
     }
   ],
   "TaskInstanceReferenceSolutions.title": [
@@ -3074,7 +3041,7 @@
   "TaskReferenceSolutions.referenceLockedDescription": [
     {
       "type": 0,
-      "value": "Cette solution de référence ne peut pas être modifiée car elle est déjà utilisée dans une activité utilisée dans une classe avec des étudiants inscrits."
+      "value": "Cette solution de référence ne peut pas être modifiée car elle est déjà utilisée dans une tâche utilisée dans une classe avec des étudiants inscrits."
     }
   ],
   "TaskReferenceSolutions.referenceLockedTitle": [
@@ -3086,7 +3053,7 @@
   "TaskReferenceSolutions.referenceReadOnlyDescription": [
     {
       "type": 0,
-      "value": "Vous consultez une solution de référence publique créée par un autre utilisateur. Seul le créateur peut modifier cette activité."
+      "value": "Vous consultez une solution de référence publique créée par un autre utilisateur. Seul le créateur peut modifier cette tâche."
     }
   ],
   "TaskReferenceSolutions.referenceReadOnlyTitle": [
@@ -3104,7 +3071,7 @@
   "TaskReferenceSolutions.title": [
     {
       "type": 0,
-      "value": "Modifier l'activité - "
+      "value": "Modifier la solution de référence - "
     },
     {
       "type": 1,
@@ -3177,6 +3144,7 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
+
   "TaskTable.errorMessage": [
     {
       "type": 0,
@@ -3223,6 +3191,12 @@
     {
       "type": 0,
       "value": "Nombre de tests réussis"
+    }
+  ],
+  "UserActions.copyRegistrationTokenSuccess": [
+    {
+      "type": 0,
+      "value": "Lien d’inscription copié dans le presse-papiers"
     }
   ],
   "UserActions.deleteCancel": [
