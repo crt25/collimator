@@ -3,6 +3,8 @@ import { Page } from "@playwright/test";
 import { userList } from "../../selectors";
 import { ListPageModel } from "../../page-models/list-page-model";
 import { getItemIdFromTableTestId } from "../../helpers";
+import { UserFormPageModel } from "./user-form-page-model";
+import { UserType } from "@/api/collimator/generated/models";
 
 export class UserListPageModel extends ListPageModel {
   protected constructor(page: Page) {
@@ -37,5 +39,28 @@ export class UserListPageModel extends ListPageModel {
     await page.waitForSelector(userList);
 
     return new UserListPageModel(page);
+  }
+
+  /**
+   * Creates a user via the UI and returns the created user's ID.
+   * Navigates to the create form, fills it, submits, and returns to the list.
+   */
+  async createUser(
+    name: string,
+    email: string,
+    type: UserType,
+  ): Promise<number> {
+    await this.createItem();
+
+    const form = await UserFormPageModel.create(this.page);
+    await form.inputs.name.fill(name);
+    await form.inputs.email.fill(email);
+    await form.setUserType(type);
+    await form.submitButton.click();
+
+    // Wait for navigation back to list
+    await this.page.waitForSelector(userList);
+
+    return this.getIdByName(name);
   }
 }

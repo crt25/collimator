@@ -147,6 +147,7 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
   }
 
   try {
+    await prepareCrtProjectForExport(vm);
     // then save project state
     const json = vm.toJSON();
 

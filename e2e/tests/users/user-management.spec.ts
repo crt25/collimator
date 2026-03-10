@@ -5,16 +5,11 @@ import { UserFormPageModel } from "./user-form-page-model";
 import { UserListPageModel } from "./user-list-page-model";
 import { UserType } from "@/api/collimator/generated/models";
 
-const newTeacherName = "new teacher name";
-const newTeacherEmail = "teacher.new@example.com";
-let newTeacherId: number = -1;
+// Use unique suffixes to avoid conflicts between parallel test runs
+const uniqueSuffix = (): string => Date.now().toString(36);
 
 const updatedTeacherName = "updated teacher name";
 const updatedTeacherEmail = "teacher.updated@example.com";
-
-const newAdminName = "new admin name";
-const newAdminEmail = "admin.new@example.com";
-let newAdminId: number = -1;
 
 const updatedAdminName = "updated admin name";
 const updatedAdminEmail = "admin.updated@example.com";
@@ -33,10 +28,13 @@ test.describe("user management", () => {
     });
 
     test("can create a new teacher", async ({ page: pwPage, baseURL }) => {
+      const teacherName = `new teacher ${uniqueSuffix()}`;
+      const teacherEmail = `teacher.new.${uniqueSuffix()}@example.com`;
+
       const page = await UserFormPageModel.create(pwPage);
 
-      await page.inputs.name.fill(newTeacherName);
-      await page.inputs.email.fill(newTeacherEmail);
+      await page.inputs.name.fill(teacherName);
+      await page.inputs.email.fill(teacherEmail);
       await page.setUserType(UserType.TEACHER);
       await page.submitButton.click();
 
@@ -44,16 +42,17 @@ test.describe("user management", () => {
 
       const list = await UserListPageModel.create(pwPage);
 
-      await expect(list.getNameElementByName(newTeacherName)).toHaveCount(1);
-
-      newTeacherId = await list.getIdByName(newTeacherName);
+      await expect(list.getNameElementByName(teacherName)).toHaveCount(1);
     });
 
     test("can create a new admin", async ({ page: pwPage, baseURL }) => {
+      const adminName = `new admin ${uniqueSuffix()}`;
+      const adminEmail = `admin.new.${uniqueSuffix()}@example.com`;
+
       const page = await UserFormPageModel.create(pwPage);
 
-      await page.inputs.name.fill(newAdminName);
-      await page.inputs.email.fill(newAdminEmail);
+      await page.inputs.name.fill(adminName);
+      await page.inputs.email.fill(adminEmail);
       await page.setUserType(UserType.ADMIN);
       await page.submitButton.click();
 
@@ -61,20 +60,22 @@ test.describe("user management", () => {
 
       const list = await UserListPageModel.create(pwPage);
 
-      await expect(list.getNameElementByName(newAdminName)).toHaveCount(1);
-
-      newAdminId = await list.getIdByName(newAdminName);
+      await expect(list.getNameElementByName(adminName)).toHaveCount(1);
     });
   });
 
   test.describe("/user", () => {
-    test.beforeEach(async ({ page }) => {
-      await UserListPageModel.create(page);
-    });
-
     test("renders the fetched items", async ({ page }) => {
-      // 2 from seedings + 2 from the create tests
-      await expect(page.locator(userList).locator("tbody tr")).toHaveCount(5);
+      const list = await UserListPageModel.create(page);
+
+      // Create a user to ensure the list has at least one item
+      const userName = `list test user ${uniqueSuffix()}`;
+      const userEmail = `list.test.${uniqueSuffix()}@example.com`;
+      await list.createUser(userName, userEmail, UserType.TEACHER);
+
+      // Verify the list contains at least the user we just created
+      const rowCount = await page.locator(userList).locator("tbody tr").count();
+      expect(rowCount).toBeGreaterThan(0);
     });
   });
 
@@ -83,15 +84,24 @@ test.describe("user management", () => {
       page: pwPage,
       baseURL,
     }) => {
+      // Create a teacher to update
+      const teacherName = `teacher to update ${uniqueSuffix()}`;
+      const teacherEmail = `teacher.update.${uniqueSuffix()}@example.com`;
+
       const list = await UserListPageModel.create(pwPage);
-      await list.editItem(newTeacherId);
+      const teacherId = await list.createUser(
+        teacherName,
+        teacherEmail,
+        UserType.TEACHER,
+      );
+
+      await list.editItem(teacherId);
 
       const form = await UserFormPageModel.create(pwPage);
 
       // expect the form to be pre-filled
-
-      expect(await form.inputs.name.inputValue()).toBe(newTeacherName);
-      expect(await form.inputs.email.inputValue()).toBe(newTeacherEmail);
+      expect(await form.inputs.name.inputValue()).toBe(teacherName);
+      expect(await form.inputs.email.inputValue()).toBe(teacherEmail);
       expect(await form.inputs.type.inputValue()).toBe(UserType.TEACHER);
 
       await form.inputs.name.fill(updatedTeacherName);
@@ -112,8 +122,18 @@ test.describe("user management", () => {
       page: pwPage,
       baseURL,
     }) => {
+      // Create a teacher to promote
+      const teacherName = `teacher to promote ${uniqueSuffix()}`;
+      const teacherEmail = `teacher.promote.${uniqueSuffix()}@example.com`;
+
       const list = await UserListPageModel.create(pwPage);
-      await list.editItem(newTeacherId);
+      const teacherId = await list.createUser(
+        teacherName,
+        teacherEmail,
+        UserType.TEACHER,
+      );
+
+      await list.editItem(teacherId);
 
       const form = await UserFormPageModel.create(pwPage);
 
@@ -124,21 +144,30 @@ test.describe("user management", () => {
 
       const updatedList = await UserListPageModel.create(pwPage);
 
-      await expect(
-        updatedList.getNameElementByName(updatedTeacherName),
-      ).toHaveCount(1);
+      await expect(updatedList.getNameElementByName(teacherName)).toHaveCount(
+        1,
+      );
     });
 
     test("can update an existing admin", async ({ page: pwPage, baseURL }) => {
+      // Create an admin to update
+      const adminName = `admin to update ${uniqueSuffix()}`;
+      const adminEmail = `admin.update.${uniqueSuffix()}@example.com`;
+
       const list = await UserListPageModel.create(pwPage);
-      await list.editItem(newAdminId);
+      const adminId = await list.createUser(
+        adminName,
+        adminEmail,
+        UserType.ADMIN,
+      );
+
+      await list.editItem(adminId);
 
       const form = await UserFormPageModel.create(pwPage);
 
       // expect the form to be pre-filled
-
-      expect(await form.inputs.name.inputValue()).toBe(newAdminName);
-      expect(await form.inputs.email.inputValue()).toBe(newAdminEmail);
+      expect(await form.inputs.name.inputValue()).toBe(adminName);
+      expect(await form.inputs.email.inputValue()).toBe(adminEmail);
       expect(await form.inputs.type.inputValue()).toBe(UserType.ADMIN);
 
       await form.inputs.name.fill(updatedAdminName);
@@ -159,8 +188,18 @@ test.describe("user management", () => {
       page: pwPage,
       baseURL,
     }) => {
+      // Create an admin to demote
+      const adminName = `admin to demote ${uniqueSuffix()}`;
+      const adminEmail = `admin.demote.${uniqueSuffix()}@example.com`;
+
       const list = await UserListPageModel.create(pwPage);
-      await list.editItem(newAdminId);
+      const adminId = await list.createUser(
+        adminName,
+        adminEmail,
+        UserType.ADMIN,
+      );
+
+      await list.editItem(adminId);
 
       const form = await UserFormPageModel.create(pwPage);
 
@@ -172,21 +211,29 @@ test.describe("user management", () => {
 
       const updatedList = await UserListPageModel.create(pwPage);
 
-      await expect(
-        updatedList.getNameElementByName(updatedAdminName),
-      ).toHaveCount(1);
+      await expect(updatedList.getNameElementByName(adminName)).toHaveCount(1);
     });
-    test("can delete items", async ({ page: pwPage }) => {
-      const page = await UserListPageModel.create(pwPage);
 
-      await page.editItem(newAdminId);
-      await page.deleteItemAndConfirm(newAdminId);
+    test("can delete items", async ({ page: pwPage }) => {
+      // Create a user to delete
+      const userName = `user to delete ${uniqueSuffix()}`;
+      const userEmail = `user.delete.${uniqueSuffix()}@example.com`;
+
+      const list = await UserListPageModel.create(pwPage);
+      const userId = await list.createUser(
+        userName,
+        userEmail,
+        UserType.TEACHER,
+      );
+
+      await list.editItem(userId);
+      await list.deleteItemAndConfirm(userId);
 
       // expect to be redirected back to the list page
       await pwPage.waitForURL(/\/user$/);
 
       // expect the deleted item to no longer be in the list
-      await expect(page.getName(newAdminId)).toHaveCount(0);
+      await expect(list.getName(userId)).toHaveCount(0);
     });
   });
 });

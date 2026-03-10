@@ -327,7 +327,7 @@ export class AuthorizationService {
     if (authenticatedStudent) {
       // students may only view solutions they submitted
       const solution = await this.prisma.solution.findUnique({
-        select: {},
+        select: { taskId: true },
         where: {
           ...baseWhere,
           deletedAt: null,
@@ -347,7 +347,7 @@ export class AuthorizationService {
       // users may view solutions submitted by students in their class
       // and reference solutions.
       const solution = await this.prisma.solution.findUnique({
-        select: {},
+        select: { taskId: true },
         where: {
           ...baseWhere,
           deletedAt: null,
@@ -401,7 +401,7 @@ export class AuthorizationService {
 
     // teachers may updated the field for solutions submitted by students in their class
     const solution = await this.prisma.studentSolution.findUnique({
-      select: {},
+      select: { id: true },
       where: {
         id: studentSolutionId,
         deletedAt: null,
