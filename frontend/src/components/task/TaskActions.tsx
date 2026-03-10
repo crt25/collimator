@@ -113,7 +113,8 @@ const TaskActions = ({
   const onExportTask = () => {
     try {
       downloadBlob(taskFile, getTaskExportFilename(task.type));
-    } catch {
+    } catch (error) {
+      console.error(error);
       toaster.error({
         id: `task-export-error-${task.id}`,
         title: intl.formatMessage(messages.exportError),

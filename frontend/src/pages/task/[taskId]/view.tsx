@@ -62,8 +62,6 @@ const TaskDetail = () => {
     [task],
   );
 
-  const isCreatorOrAdmin = useIsCreatorOrAdmin(task?.creatorId);
-
   const taskFileHash = useFileHash(taskFile);
 
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
