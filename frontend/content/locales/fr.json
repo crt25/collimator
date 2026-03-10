@@ -1176,6 +1176,9 @@
   "TaskActions.deleteTask": {
     "message": "Effacer l'activité"
   },
+  "TaskActions.exportError": {
+    "message": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
+  },
   "TaskDetail.title": {
     "message": "Activité - {title}"
   },
@@ -1708,6 +1711,9 @@
   },
   "embeddedApp.taskCreated": {
     "message": "Activité créée avec succès"
+  },
+  "embeddedApp.taskExported": {
+    "message": "Activité exportée avec succès"
   },
   "embeddedApp.taskImported": {
     "message": "Activité importée avec succès"

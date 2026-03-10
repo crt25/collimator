@@ -1945,6 +1945,12 @@
       "value": "Delete Task"
     }
   ],
+  "TaskActions.exportError": [
+    {
+      "type": 0,
+      "value": "An unexpected error happened while exporting the task. Please try again!"
+    }
+  ],
   "TaskDetail.title": [
     {
       "type": 0,
@@ -3105,6 +3111,12 @@
     {
       "type": 0,
       "value": "Task created successfully"
+    }
+  ],
+  "embeddedApp.taskExported": [
+    {
+      "type": 0,
+      "value": "Task exported successfully"
     }
   ],
   "embeddedApp.taskImported": [

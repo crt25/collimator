@@ -42,6 +42,11 @@ const messages = defineMessages({
     id: "TaskActions.deleteErrorMessage",
     defaultMessage: "There was an error deleting the task. Please try again!",
   },
+  exportError: {
+    id: "TaskActions.exportError",
+    defaultMessage:
+      "An unexpected error happened while exporting the task. Please try again!",
+  },
 });
 
 const TaskActions = ({
@@ -80,7 +85,14 @@ const TaskActions = ({
   };
 
   const onExportTask = () => {
-    downloadBlob(taskFile, defaultTaskExportFilename);
+    try {
+      downloadBlob(taskFile, defaultTaskExportFilename);
+    } catch {
+      toaster.error({
+        id: `task-export-error-${taskId}`,
+        title: intl.formatMessage(messages.exportError),
+      });
+    }
   };
 
   return (

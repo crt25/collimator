@@ -924,6 +924,9 @@
   "TaskActions.deleteTask": {
     "message": "Delete Task"
   },
+  "TaskActions.exportError": {
+    "message": "An unexpected error happened while exporting the task. Please try again!"
+  },
   "TaskDetail.title": {
     "message": "Task - {title}"
   },
@@ -1456,6 +1459,9 @@
   },
   "embeddedApp.taskCreated": {
     "message": "Task created successfully"
+  },
+  "embeddedApp.taskExported": {
+    "message": "Task exported successfully"
   },
   "embeddedApp.taskImported": {
     "message": "Task imported successfully"

@@ -2432,6 +2432,12 @@
       "value": "Effacer l'activité"
     }
   ],
+  "TaskActions.exportError": [
+    {
+      "type": 0,
+      "value": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
+    }
+  ],
   "TaskDetail.title": [
     {
       "type": 0,
