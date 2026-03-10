@@ -34,7 +34,7 @@ const useNavigationObserver = ({
   // the teardown, there's a brief window where no listener is attached, this can cause missed events
   const currentPathRef = useRef(router.asPath);
   const navigationConfirmed = useRef(false);
-  const isPopstateEventNavigation = useRef(false);
+  const isPopStateEventNavigation = useRef(false);
 
   const killRouterEvent = useCallback(() => {
     router.events.emit("routeChangeError", "", "", { shallow: false });
