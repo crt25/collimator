@@ -89,6 +89,8 @@ export type ReferenceAnalysis = AnalysisWithoutId & {
   referenceSolutionId: ReferenceSolutionId;
 };
 
+type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
+
 const maximumNumberOfAnalysisRetries = 3;
 
 const omitData = { data: true };
@@ -183,6 +185,17 @@ export class SolutionsService {
     return [groupedStudentAnalyses, groupedReferenceAnalyses];
   }
 
+  private isTest(test: NullablePartial<SolutionTest>): test is SolutionTest {
+    return (
+      test.name !== null &&
+      test.passed !== null &&
+      test.name !== undefined &&
+      test.passed !== undefined &&
+      test.identifier !== undefined &&
+      test.contextName !== undefined
+    );
+  }
+
   private groupByStudentAnalysis(
     byAnalysisId: TupleMap<StudentKey, CurrentStudentAnalysis>,
     analysis: getCurrentAnalyses.Result,
@@ -207,16 +220,16 @@ export class SolutionsService {
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined) {
+    if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else {
+    } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
         isReferenceSolution: analysis.isReference,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [test],
+        tests: this.isTest(test) ? [test] : [],
         studentId: analysis.studentId,
         sessionId: analysis.sessionId,
         studentPseudonym: analysis.studentPseudonym,
@@ -224,7 +237,6 @@ export class SolutionsService {
         studentKeyPairId: analysis.studentKeyPairId,
       });
     }
-
     return byAnalysisId;
   }
 
@@ -238,8 +250,8 @@ export class SolutionsService {
     sessionId: SessionId;
     isReference: boolean;
     solutionHash: Uint8Array;
-    testName: string;
-    testPassed: boolean;
+    testName: string | null;
+    testPassed: boolean | null;
     genericAst: string;
     astVersion: AstVersion;
   } {
@@ -250,8 +262,6 @@ export class SolutionsService {
       analysis.sessionId !== null &&
       analysis.isReference !== null &&
       analysis.solutionHash !== null &&
-      analysis.testName !== null &&
-      analysis.testPassed !== null &&
       analysis.genericAst !== null &&
       analysis.astVersion !== null
     );
@@ -277,9 +287,9 @@ export class SolutionsService {
     const key: ReferenceKey = [analysis.taskId, analysis.referenceSolutionId];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined) {
+    if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else {
+    } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
@@ -287,8 +297,7 @@ export class SolutionsService {
         isInitialTaskSolution: analysis.isInitialTaskSolution,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [test],
-
+        tests: this.isTest(test) ? [test] : [],
         referenceSolutionId: analysis.referenceSolutionId,
         title: analysis.referenceSolutionTitle,
         description: analysis.referenceSolutionDescription,
@@ -307,8 +316,8 @@ export class SolutionsService {
     isInitialTaskSolution: boolean;
     taskId: TaskId;
     solutionHash: Uint8Array;
-    testName: string;
-    testPassed: boolean;
+    testName: string | null;
+    testPassed: boolean | null;
     genericAst: string;
     astVersion: AstVersion;
   } {
@@ -319,8 +328,6 @@ export class SolutionsService {
       analysis.isInitialTaskSolution !== null &&
       analysis.taskId !== null &&
       analysis.solutionHash !== null &&
-      analysis.testName !== null &&
-      analysis.testPassed !== null &&
       analysis.genericAst !== null &&
       analysis.astVersion !== null
     );
