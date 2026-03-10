@@ -222,20 +222,6 @@ export class SolutionsService {
 
     if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else if (this.isTest(test)) {
-      byAnalysisId.set(key, {
-        taskId: analysis.taskId,
-        solutionHash: analysis.solutionHash,
-        isReferenceSolution: analysis.isReference,
-        genericAst: analysis.genericAst,
-        astVersion: analysis.astVersion,
-        tests: [test],
-        studentId: analysis.studentId,
-        sessionId: analysis.sessionId,
-        studentPseudonym: analysis.studentPseudonym,
-        studentSolutionId: analysis.studentSolutionId,
-        studentKeyPairId: analysis.studentKeyPairId,
-      });
     } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
@@ -243,7 +229,7 @@ export class SolutionsService {
         isReferenceSolution: analysis.isReference,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [],
+        tests: this.isTest(test) ? [test] : [],
         studentId: analysis.studentId,
         sessionId: analysis.sessionId,
         studentPseudonym: analysis.studentPseudonym,
@@ -303,20 +289,6 @@ export class SolutionsService {
 
     if (currentAnalysis !== undefined && this.isTest(test)) {
       currentAnalysis.tests.push(test);
-    } else if (this.isTest(test)) {
-      byAnalysisId.set(key, {
-        taskId: analysis.taskId,
-        solutionHash: analysis.solutionHash,
-        isReferenceSolution: true,
-        isInitialTaskSolution: analysis.isInitialTaskSolution,
-        genericAst: analysis.genericAst,
-        astVersion: analysis.astVersion,
-        tests: [test],
-
-        referenceSolutionId: analysis.referenceSolutionId,
-        title: analysis.referenceSolutionTitle,
-        description: analysis.referenceSolutionDescription,
-      });
     } else if (currentAnalysis === undefined) {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
@@ -325,8 +297,7 @@ export class SolutionsService {
         isInitialTaskSolution: analysis.isInitialTaskSolution,
         genericAst: analysis.genericAst,
         astVersion: analysis.astVersion,
-        tests: [],
-
+        tests: this.isTest(test) ? [test] : [],
         referenceSolutionId: analysis.referenceSolutionId,
         title: analysis.referenceSolutionTitle,
         description: analysis.referenceSolutionDescription,
