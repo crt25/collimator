@@ -1945,6 +1945,12 @@
       "value": "Delete Task"
     }
   ],
+  "TaskActions.exportError": [
+    {
+      "type": 0,
+      "value": "An unexpected error happened while exporting the task. Please try again!"
+    }
+  ],
   "TaskActions.taskIsAlreadyInUseMessage": [
     {
       "type": 0,
@@ -3089,6 +3095,12 @@
       "value": "error"
     }
   ],
+  "embeddedApp.exportTask": [
+    {
+      "type": 0,
+      "value": "Export Task"
+    }
+  ],
   "embeddedApp.savingTask": [
     {
       "type": 0,
@@ -3105,6 +3117,12 @@
     {
       "type": 0,
       "value": "Task created successfully"
+    }
+  ],
+  "embeddedApp.taskExported": [
+    {
+      "type": 0,
+      "value": "Task exported successfully"
     }
   ],
   "embeddedApp.taskImported": [
