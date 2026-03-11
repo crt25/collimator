@@ -47,7 +47,7 @@ const useNavigationObserver = ({
 
   useEffect(() => {
     const onPopState = (): void => {
-      isPopstateEventNavigation.current = true;
+      isPopStateEventNavigation.current = true;
     };
 
     window.addEventListener("popstate", onPopState);
@@ -61,8 +61,8 @@ const useNavigationObserver = ({
     navigationConfirmed.current = false;
 
     const onRouteChange = (url: string): void => {
-      const wasPopStateEvent = isPopstateEventNavigation.current;
-      isPopstateEventNavigation.current = false;
+      const wasPopStateEvent = isPopStateEventNavigation.current;
+      isPopStateEventNavigation.current = false;
 
       if (
         shouldStopNavigation() &&
@@ -116,7 +116,7 @@ const useNavigationObserver = ({
   const confirmNavigation = (): void => {
     navigationConfirmed.current = true;
     router.push(nextPath.current);
-    isPopstateEventNavigation.current = false;
+    isPopStateEventNavigation.current = false;
   };
 
   return confirmNavigation;
