@@ -284,6 +284,9 @@
   "AnonymizationToggle.label": {
     "message": "Anonymiser les noms"
   },
+  "ApiError.DUPLICATE_REFERENCE_SOLUTION": {
+    "message": "Des solutions de référence en double ont été détectées. Veuillez vous assurer que toutes les solutions de référence sont uniques."
+  },
   "ApiError.GENERIC_ERROR": {
     "message": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
   },

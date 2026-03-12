@@ -95,6 +95,36 @@
       "value": "Anonymize Names"
     }
   ],
+  "ApiError.DUPLICATE_REFERENCE_SOLUTION": [
+    {
+      "type": 0,
+      "value": "Duplicate reference solutions detected. Please ensure all reference solutions are unique."
+    }
+  ],
+  "ApiError.GENERIC_ERROR": [
+    {
+      "type": 0,
+      "value": "An unexpected error occurred. Please try again later."
+    }
+  ],
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
+    }
+  ],
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
+    }
+  ],
+  "ApiError.USER_OWNS_CLASSES": [
+    {
+      "type": 0,
+      "value": "Cannot perform this action because the user owns one or more classes."
+    }
+  ],
   "AstHeightCriterionFilterForm.count": [
     {
       "type": 0,

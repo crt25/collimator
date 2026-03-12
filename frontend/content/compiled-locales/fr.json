@@ -95,6 +95,12 @@
       "value": "Anonymiser les noms"
     }
   ],
+  "ApiError.DUPLICATE_REFERENCE_SOLUTION": [
+    {
+      "type": 0,
+      "value": "Des solutions de référence en double ont été détectées. Veuillez vous assurer que toutes les solutions de référence sont uniques."
+    }
+  ],
   "ApiError.GENERIC_ERROR": [
     {
       "type": 0,

@@ -47,6 +47,21 @@
   "AnonymizationToggle.label": {
     "message": "Anonymize Names"
   },
+  "ApiError.DUPLICATE_REFERENCE_SOLUTION": {
+    "message": "Duplicate reference solutions detected. Please ensure all reference solutions are unique."
+  },
+  "ApiError.GENERIC_ERROR": {
+    "message": "An unexpected error occurred. Please try again later."
+  },
+  "ApiError.TASK_IN_OTHER_USERS_LESSON": {
+    "message": "Cannot perform this action because the task is currently in use by one or more other users' lessons."
+  },
+  "ApiError.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS": {
+    "message": "Cannot perform this action because the task is currently in use by one or more lessons or classes with students."
+  },
+  "ApiError.USER_OWNS_CLASSES": {
+    "message": "Cannot perform this action because the user owns one or more classes."
+  },
   "AstHeightCriterionFilterForm.count": {
     "message": "Height of the AST"
   },
