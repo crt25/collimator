@@ -21,6 +21,16 @@ export class ConflictError extends ApiError {
   }
 }
 
+export class DuplicateReferenceSolutionError extends ApiError {
+  constructor(
+    message: string = "Duplicate reference solution",
+    errorCode?: string,
+  ) {
+    super(400, message, errorCode);
+    this.name = "DuplicateReferenceSolutionError";
+  }
+}
+
 export const fetchApi = async <T>(
   url: string,
   options: RequestInit,
@@ -51,6 +61,13 @@ export const fetchApi = async <T>(
   }
 
   if (response.status >= 400) {
+    const errorBody = await response.json();
+    if (errorBody?.errorCode === "DUPLICATE_REFERENCE_SOLUTION") {
+      throw new DuplicateReferenceSolutionError(
+        errorBody?.message,
+        errorBody?.errorCode,
+      );
+    }
     throw new ApiError(
       response.status,
       `Unexpected response code ${response.status}`,

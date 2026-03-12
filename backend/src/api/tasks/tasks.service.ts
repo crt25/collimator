@@ -20,6 +20,13 @@ export class TaskInUseByClassOrLessonWithStudentsError extends Error {
   }
 }
 
+export class DuplicateReferenceSolutionError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "DuplicateReferenceSolutionError";
+  }
+}
+
 export class TaskInOtherUsersLessonError extends Error {
   constructor(message?: string) {
     super(message);
@@ -307,6 +314,15 @@ export class TasksService {
           studentSolutions: { none: {} },
         };
 
+    const fileHashes = solutionsWithFile.map(({ fileHash }) =>
+      fileHash.toString("hex"),
+    );
+
+    const uniqueFileHashes = new Set(fileHashes);
+    if (uniqueFileHashes.size !== fileHashes.length) {
+      throw new DuplicateReferenceSolutionError();
+    }
+
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
@@ -324,6 +340,31 @@ export class TasksService {
         where: orphanedSolutionsWhere,
       });
 
+      const allReferenceSolutionInputs = [
+        ...newReferenceSolutions,
+        ...updatedReferenceSolutions,
+      ];
+
+      await Promise.all(
+        allReferenceSolutionInputs.map(({ file, fileHash }) =>
+          tx.solution.upsert({
+            where: {
+              taskId_hash: {
+                hash: fileHash,
+                taskId: id,
+              },
+            },
+            create: {
+              data: file.buffer,
+              mimeType: file.mimetype,
+              hash: fileHash,
+              taskId: id,
+            },
+            update: {},
+          }),
+        ),
+      );
+
       // update the task
       return tx.task.update({
         data: {
@@ -331,82 +372,60 @@ export class TasksService {
           mimeType,
           data,
           referenceSolutions: {
-            create: newReferenceSolutions.map(
-              ({ solution, file, fileHash }) => ({
+            create: newReferenceSolutions.map(({ solution, fileHash }) => ({
+              title: solution.title,
+              description: solution.description,
+              isInitial: solution.isInitial,
+              tests: {
+                connectOrCreate: this.getExistingTests(solution.tests).map(
+                  (test) => ({
+                    where: { id: test.id },
+                    create: test,
+                  }),
+                ),
+                create: this.getNewTests(solution.tests),
+              },
+              solution: {
+                connect: {
+                  taskId_hash: {
+                    hash: fileHash,
+                    taskId: id,
+                  },
+                },
+              },
+            })),
+            update: updatedReferenceSolutions.map(({ solution, fileHash }) => ({
+              where: { id: solution.id },
+              data: {
                 title: solution.title,
                 description: solution.description,
                 isInitial: solution.isInitial,
                 tests: {
-                  connectOrCreate: this.getExistingTests(solution.tests).map(
-                    (test) => ({
-                      where: { id: test.id },
-                      create: test,
-                    }),
-                  ),
+                  deleteMany: {
+                    id: {
+                      notIn: this.getExistingTests(solution.tests).map(
+                        ({ id }) => id,
+                      ),
+                    },
+                  },
+                  update: this.getExistingTests(solution.tests).map((test) => ({
+                    where: {
+                      id: test.id,
+                    },
+                    data: test,
+                  })),
                   create: this.getNewTests(solution.tests),
                 },
                 solution: {
-                  connectOrCreate: {
-                    where: {
-                      taskId_hash: {
-                        hash: fileHash,
-                        taskId: id,
-                      },
-                    },
-                    create: {
-                      data: file.buffer,
-                      mimeType: file.mimetype,
+                  connect: {
+                    taskId_hash: {
                       hash: fileHash,
                       taskId: id,
                     },
                   },
                 },
-              }),
-            ),
-            update: updatedReferenceSolutions.map(
-              ({ solution, file, fileHash }) => ({
-                where: { id: solution.id },
-                data: {
-                  title: solution.title,
-                  description: solution.description,
-                  isInitial: solution.isInitial,
-                  tests: {
-                    deleteMany: {
-                      id: {
-                        notIn: this.getExistingTests(solution.tests).map(
-                          ({ id }) => id,
-                        ),
-                      },
-                    },
-                    update: this.getExistingTests(solution.tests).map(
-                      (test) => ({
-                        where: {
-                          id: test.id,
-                        },
-                        data: test,
-                      }),
-                    ),
-                    create: this.getNewTests(solution.tests),
-                  },
-                  solution: {
-                    connectOrCreate: {
-                      where: {
-                        taskId_hash: {
-                          hash: fileHash,
-                          taskId: id,
-                        },
-                      },
-                      create: {
-                        data: file.buffer,
-                        mimeType: file.mimetype,
-                        hash: fileHash,
-                        taskId: id,
-                      },
-                    },
-                  },
-                },
-              }),
-            ),
+              },
+            })),
           },
         },
         where: { id },
