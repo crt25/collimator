@@ -20,6 +20,13 @@ export class TaskInUseByClassOrLessonWithStudentsError extends Error {
   }
 }
 
+export class DuplicateReferenceSolutionError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = "DuplicateReferenceSolutionError";
+  }
+}
+
 export class TaskInOtherUsersLessonError extends Error {
   constructor(message?: string) {
     super(message);
@@ -306,6 +313,15 @@ export class TasksService {
           referenceSolutions: { none: {} },
           studentSolutions: { none: {} },
         };
+
+    const fileHashes = solutionsWithFile.map(({ fileHash }) =>
+      fileHash.toString("hex"),
+    );
+
+    const uniqueFileHashes = new Set(fileHashes);
+    if (uniqueFileHashes.size !== fileHashes.length) {
+      throw new DuplicateReferenceSolutionError();
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
