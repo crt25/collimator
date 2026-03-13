@@ -349,8 +349,6 @@ model StudentActivity {
   solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
 
   appActivity StudentActivityApp?
-
-  @@unique([studentId, type, happenedAt], name: "uniqueStudentActivityPerTypeAndTime")
 }
 
 model StudentActivityApp {
