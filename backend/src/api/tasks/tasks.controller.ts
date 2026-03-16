@@ -36,7 +36,7 @@ import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-intercept
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { ErrorCode, ErrorCodeDto } from "../error-codes/error-codes";
+import { ErrorCode, ErrorCodeDto } from "../exceptions/error-codes";
 import {
   CreateTaskDto,
   ExistingTaskDto,

@@ -11,26 +11,34 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Modify } from "src/utilities/modify";
 import { PrismaTransactionClient } from "src/prisma/types";
 import { ReferenceSolutionId } from "../solutions/dto";
+import { ErrorCode } from "../exceptions/error-codes";
+import { ApiError } from "../exceptions/exceptions";
 import { TaskId } from "./dto";
 
-export class TaskInUseByClassOrLessonWithStudentsError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "TaskInUseByClassOrLessonWithStudentsError";
+export class TaskInUseByClassOrLessonWithStudentsError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+  ) {
+    super(message, errorCode);
   }
 }
 
-export class DuplicateReferenceSolutionError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "DuplicateReferenceSolutionError";
+export class DuplicateReferenceSolutionError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
+  ) {
+    super(message, errorCode);
   }
 }
 
-export class TaskInOtherUsersLessonError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "TaskInOtherUsersLessonError";
+export class TaskInOtherUsersLessonError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+  ) {
+    super(message, errorCode);
   }
 }
 
@@ -320,7 +328,9 @@ export class TasksService {
 
     const uniqueFileHashes = new Set(fileHashes);
     if (uniqueFileHashes.size !== fileHashes.length) {
-      throw new DuplicateReferenceSolutionError();
+      throw new DuplicateReferenceSolutionError(
+        ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
+      );
     }
 
     return this.prisma.$transaction(async (tx) => {
