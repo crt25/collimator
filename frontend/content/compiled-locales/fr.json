@@ -2438,6 +2438,12 @@
       "value": "Effacer l'activité"
     }
   ],
+  "TaskActions.exportError": [
+    {
+      "type": 0,
+      "value": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
+    }
+  ],
   "TaskActions.taskIsAlreadyInUseMessage": [
     {
       "type": 0,
@@ -3583,6 +3589,12 @@
       "value": "error"
     }
   ],
+  "embeddedApp.exportTask": [
+    {
+      "type": 0,
+      "value": "Exporter l'activité"
+    }
+  ],
   "embeddedApp.savingTask": [
     {
       "type": 0,
@@ -3599,6 +3611,12 @@
     {
       "type": 0,
       "value": "Activité créée avec succès"
+    }
+  ],
+  "embeddedApp.taskExported": [
+    {
+      "type": 0,
+      "value": "Activité exportée avec succès"
     }
   ],
   "embeddedApp.taskImported": [

@@ -1179,6 +1179,9 @@
   "TaskActions.deleteTask": {
     "message": "Effacer l'activité"
   },
+  "TaskActions.exportError": {
+    "message": "Une erreur inattendue s’est produite lors de l’exportation de la tâche. Veuillez réessayer !"
+  },
   "TaskActions.taskIsAlreadyInUseMessage": {
     "message": "Impossible de supprimer cette tâche : elle est actuellement utilisée par une ou plusieurs classes."
   },
@@ -1703,6 +1706,9 @@
   "embeddedApp.cannotSaveTask": {
     "message": "Impossible de sauvegarder l'activité : {error}"
   },
+  "embeddedApp.exportTask": {
+    "message": "Exporter l'activité"
+  },
   "embeddedApp.savingTask": {
     "message": "Sauvegarde de l'activité en cours..."
   },
@@ -1711,6 +1717,9 @@
   },
   "embeddedApp.taskCreated": {
     "message": "Activité créée avec succès"
+  },
+  "embeddedApp.taskExported": {
+    "message": "Activité exportée avec succès"
   },
   "embeddedApp.taskImported": {
     "message": "Activité importée avec succès"

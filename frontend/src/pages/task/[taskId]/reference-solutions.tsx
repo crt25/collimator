@@ -108,7 +108,7 @@ const TaskReferenceSolutions = () => {
             <>
               <PageHeading
                 variant="title"
-                actions={isCreatorOrAdmin && <TaskActions taskId={task.id} />}
+                actions={<TaskActions task={task} taskFile={taskFile} />}
                 description={task.description}
               >
                 {task.title}

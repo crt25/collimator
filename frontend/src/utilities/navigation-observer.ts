@@ -34,6 +34,7 @@ const useNavigationObserver = ({
   // the teardown, there's a brief window where no listener is attached, this can cause missed events
   const currentPathRef = useRef(router.asPath);
   const navigationConfirmed = useRef(false);
+  const isPopStateEventNavigation = useRef(false);
 
   const killRouterEvent = useCallback(() => {
     router.events.emit("routeChangeError", "", "", { shallow: false });
@@ -45,25 +46,51 @@ const useNavigationObserver = ({
   }, [router.asPath]);
 
   useEffect(() => {
+    const onPopState = (): void => {
+      isPopStateEventNavigation.current = true;
+    };
+
+    window.addEventListener("popstate", onPopState);
+
+    return (): void => {
+      window.removeEventListener("popstate", onPopState);
+    };
+  }, []);
+
+  useEffect(() => {
     navigationConfirmed.current = false;
 
     const onRouteChange = (url: string): void => {
-      if (currentPathRef.current !== url) {
-        // if the user clicked on the browser back button then the url displayed in the browser gets incorrectly updated
-        // This is needed to restore the correct url.
-        // note: history.pushState does not trigger a page reload
-        window.history.pushState(
-          null,
-          "",
-          router.basePath + currentPathRef.current,
-        );
-      }
+      const wasPopStateEvent = isPopStateEventNavigation.current;
+      isPopStateEventNavigation.current = false;
 
       if (
         shouldStopNavigation() &&
         url !== currentPathRef.current &&
         !navigationConfirmed.current
       ) {
+        // if the user clicked on the browser back button then the url displayed in the browser gets incorrectly updated
+        // This is needed to restore the correct url.
+
+        // We use replaceState instead of pushState because it does not create a new entry in the browser history.
+
+        // let's say the sequence is:
+        // 1. history: [A, B, C] (current page)
+        // 2. user clicks back -> [A, B, C] the cursor is now at B, the forward to C is still available
+        // 3. push a new state D after B -> [A, B, D] then C is removed from the history
+        // 4. the forward button will not be available
+
+        // with replaceState, 3. becomes [A, D, C] the cursor is at D but the forward to C is still available
+
+        // only replace the url for back and forward navigation where the browser has already updated the url, for other types of navigation, the url is not updated yet so we can just push the new url
+        if (wasPopStateEvent) {
+          window.history.replaceState(
+            null,
+            "",
+            router.basePath + currentPathRef.current,
+          );
+        }
+
         // removing the basePath from the url as it will be added by the router
         nextPath.current = url.replace(router.basePath, "");
         onNavigate();
@@ -89,6 +116,7 @@ const useNavigationObserver = ({
   const confirmNavigation = (): void => {
     navigationConfirmed.current = true;
     router.push(nextPath.current);
+    isPopStateEventNavigation.current = false;
   };
 
   return confirmNavigation;
