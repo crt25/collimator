@@ -18,13 +18,14 @@ import { useYupSchema } from "@/hooks/useYupSchema";
 import { useYupResolver } from "@/hooks/useYupResolver";
 import {
   CreateSolutionTestDto,
+  ErrorCode,
   TaskType,
   UpdateReferenceSolutionDto,
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { DuplicateReferenceSolutionError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
+import { isApiErrorWithCode } from "@/errors/api";
 import SubmitFormButton from "../form/SubmitFormButton";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
@@ -364,7 +365,7 @@ const TaskFormReferenceSolutions = ({
         .catch((err) => {
           console.error(`${logModule} Error saving task`, err);
 
-          if (err instanceof DuplicateReferenceSolutionError) {
+          if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
             toaster.error({
               id: `duplicate-reference-solution-${Date.now()}`,
               title: intl.formatMessage(
