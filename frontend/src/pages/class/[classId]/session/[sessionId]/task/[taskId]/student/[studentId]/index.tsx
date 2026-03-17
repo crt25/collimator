@@ -15,6 +15,7 @@ import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
+import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import AnonymizationToggle from "@/components/AnonymizationToggle";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -104,8 +105,12 @@ const StudentTaskInstance = () => {
           data={[klass, session, task, solutions]}
         >
           {([klass, session, task, solutions]) => {
-            const hash = solutions.find((s) => s.studentId === studentId)
-              ?.solution.hash;
+            const studentSolutions = solutions.filter(
+              (s) => s.studentId === studentId,
+            );
+            const solutionToDisplay =
+              ExistingStudentSolution.findSolutionToDisplay(studentSolutions);
+            const hash = solutionToDisplay?.solution.hash;
 
             return (
               <>

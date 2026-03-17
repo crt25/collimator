@@ -924,6 +924,9 @@
   "TaskActions.deleteTask": {
     "message": "Delete Task"
   },
+  "TaskActions.exportError": {
+    "message": "An unexpected error happened while exporting the task. Please try again!"
+  },
   "TaskActions.taskIsAlreadyInUseMessage": {
     "message": "This task cannot be deleted because it is currently in use by one or more classes."
   },
@@ -1448,6 +1451,9 @@
   "embeddedApp.cannotSaveTask": {
     "message": "Cannot save task: {error}"
   },
+  "embeddedApp.exportTask": {
+    "message": "Export Task"
+  },
   "embeddedApp.savingTask": {
     "message": "Saving task..."
   },
@@ -1456,6 +1462,9 @@
   },
   "embeddedApp.taskCreated": {
     "message": "Task created successfully"
+  },
+  "embeddedApp.taskExported": {
+    "message": "Task exported successfully"
   },
   "embeddedApp.taskImported": {
     "message": "Task imported successfully"
