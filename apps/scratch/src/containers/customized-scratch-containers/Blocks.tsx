@@ -78,6 +78,7 @@ import {
   mapScratchEventTypeToStudentActionType,
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
+import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -285,6 +286,10 @@ class Blocks extends React.Component<Props, State> {
 
     this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
 
+    overrideBlockDuplicateOption({
+      canEditTask: this.props.canEditTask ?? true,
+    });
+
     // Register buttons under new callback keys for creating variables,
     // lists, and procedures from extensions.
     const toolboxWorkspace = this.getWorkspaceFlyout().getWorkspace();
@@ -408,6 +413,12 @@ class Blocks extends React.Component<Props, State> {
     // If any modals are open, call hideChaff to close z-indexed field editors
     if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
       this.ScratchBlocks.hideChaff();
+    }
+
+    if (this.props.canEditTask !== prevProps.canEditTask) {
+      overrideBlockDuplicateOption({
+        canEditTask: this.props.canEditTask ?? true,
+      });
     }
 
     // Only rerender the toolbox when the blocks are visible and the xml is
