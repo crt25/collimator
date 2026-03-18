@@ -32,9 +32,4 @@ export const overrideBlockDuplicateOption = (
 
     return option;
   };
-
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return () => {
-    ScratchBlocks.ContextMenu.blockDuplicateOption = originalDuplicateOption;
-  };
 };
