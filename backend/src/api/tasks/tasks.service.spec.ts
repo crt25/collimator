@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CoreModule } from "src/core/core.module";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
+import { PrismaService } from "src/prisma/prisma.service";
 import { ErrorCode } from "../exceptions/error-codes";
 import {
   TasksService,
@@ -10,6 +11,7 @@ import {
 
 describe("TasksService", () => {
   let service: TasksService;
+  let taskId: number;
   let module: TestingModule;
 
   beforeEach(async () => {
@@ -19,6 +21,18 @@ describe("TasksService", () => {
     }).compile();
 
     service = module.get<TasksService>(TasksService);
+    const prisma = module.get<PrismaService>(PrismaService);
+
+    const task = await prisma.task.create({
+      data: {
+        title: "Test Task",
+        description: "A task for testing",
+        type: "SCRATCH",
+        mimeType: "application/pdf",
+        data: Buffer.from("test-data"),
+      },
+    });
+    taskId = task.id;
   });
 
   afterEach(() => {
@@ -30,7 +44,6 @@ describe("TasksService", () => {
   });
 
   describe("update", () => {
-    const taskId = 1;
     const duplicateBuffer = Buffer.from("same-content");
 
     const makeMulterFile = (content: Buffer): Express.Multer.File => ({
