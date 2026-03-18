@@ -171,7 +171,7 @@ model Task {
   data        Bytes
   mimeType    String
   creatorId   Int?
-  isPublic    Boolean  @default(false)
+  isPublic    Boolean   @default(false)
   deletedAt   DateTime?
 
   studentSolutions   StudentSolution[]
@@ -332,10 +332,11 @@ model StudentActivity {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 
-  type       StudentActivityType
+  type              StudentActivityType
   // measured by the client and may therefore be completely different from createdAt
-  happenedAt DateTime
-  deletedAt  DateTime?
+  happenedAt        DateTime
+  happenedAtCounter Int                 @default(0)
+  deletedAt         DateTime?
 
   studentId    Int
   sessionId    Int
@@ -350,7 +351,7 @@ model StudentActivity {
 
   appActivity StudentActivityApp?
 
-  @@unique([studentId, type, happenedAt], name: "uniqueStudentActivityPerTypeAndTime")
+  @@unique([studentId, type, happenedAt, happenedAtCounter], name: "uniqueStudentActivityPerTypeAndTime")
 }
 
 model StudentActivityApp {

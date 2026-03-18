@@ -4,14 +4,22 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 import { TrackStudentActivityDto } from "../../generated/models";
 import { getStudentActivityControllerTrackV0Url } from "../../generated/endpoints/student-activity/student-activity";
 
-type ActivityDto = Omit<TrackStudentActivityDto, "happenedAt"> & {
+type ActivityDto = Omit<
+  TrackStudentActivityDto,
+  "happenedAt" | "happenedAtCounter"
+> & {
   solution: Blob;
 };
-type ActivityDtoWithDate = ActivityDto & { happenedAt: Date };
+type ActivityDtoWithDate = ActivityDto & {
+  happenedAt: Date;
+  happenedAtCounter: number;
+};
 type TrackActivityType = (trackActivityDto: ActivityDto) => Promise<void>;
 type TrackActivityFailure = boolean;
 
 let activitiesToTrack: ActivityDtoWithDate[] = [];
+let lastTimestamp = 0;
+let counter = 0;
 
 export const studentActivityControllerTrack = async (
   activities: ActivityDtoWithDate[],
@@ -29,6 +37,7 @@ export const studentActivityControllerTrack = async (
             sessionId: activity.sessionId,
             appActivity: activity.appActivity,
             happenedAt: activity.happenedAt.toISOString(),
+            happenedAtCounter: activity.happenedAtCounter,
           }) satisfies TrackStudentActivityDto,
       ),
     ),
@@ -43,6 +52,22 @@ export const studentActivityControllerTrack = async (
     method: "POST",
     body: formData,
   });
+};
+
+const getActivityTimestamp = (): {
+  happenedAt: Date;
+  happenedAtCounter: number;
+} => {
+  const now = Date.now();
+
+  if (now === lastTimestamp) {
+    counter++;
+  } else {
+    lastTimestamp = now;
+    counter = 0;
+  }
+
+  return { happenedAt: new Date(now), happenedAtCounter: counter };
 };
 
 export const useTrackStudentActivity = (): [
@@ -104,7 +129,7 @@ export const useTrackStudentActivity = (): [
         // create new array with activities that should be tracked
         const activities = [
           ...activitiesToTrack,
-          { ...newActivity, happenedAt: new Date() },
+          { ...newActivity, ...getActivityTimestamp() },
         ];
         // clear the array to avoid duplicate tracking
         activitiesToTrack = [];
@@ -114,7 +139,13 @@ export const useTrackStudentActivity = (): [
         } catch (error) {
           // on error, ensure the activities are tracked again the next time
           // we send a request by appending them
-          activitiesToTrack = [...activitiesToTrack, ...activities];
+          activitiesToTrack = [
+            ...activitiesToTrack,
+            ...activities.map((activity) => ({
+              ...activity,
+              ...getActivityTimestamp(),
+            })),
+          ];
 
           throw error;
         }
