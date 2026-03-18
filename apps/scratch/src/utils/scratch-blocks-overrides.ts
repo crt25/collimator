@@ -4,18 +4,23 @@ interface OverrideOptions {
   canEditTask: boolean;
 }
 
-export const overrideBlockDuplicateOption = (options: OverrideOptions) => {
+type OriginalDuplicateOptionType = ReturnType<
+  typeof ScratchBlocks.ContextMenu.blockDuplicateOption
+>;
+
+export const overrideBlockDuplicateOption = (
+  options: OverrideOptions,
+): void => {
   const { canEditTask } = options;
 
   const originalDuplicateOption =
     ScratchBlocks.ContextMenu.blockDuplicateOption;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   ScratchBlocks.ContextMenu.blockDuplicateOption = function (
     block: ScratchBlocks.Block,
     event: Event,
-  ) {
-    const option = originalDuplicateOption.call(
+  ): OriginalDuplicateOptionType {
+    const option: OriginalDuplicateOptionType = originalDuplicateOption.call(
       ScratchBlocks.ContextMenu,
       block,
       event,
