@@ -4,7 +4,10 @@ import { useAuthenticationOptions } from "../authentication/useAuthenticationOpt
 import { TrackStudentActivityDto } from "../../generated/models";
 import { getStudentActivityControllerTrackV0Url } from "../../generated/endpoints/student-activity/student-activity";
 
-type ActivityDto = Omit<TrackStudentActivityDto, "happenedAt"> & {
+type ActivityDto = Omit<
+  TrackStudentActivityDto,
+  "happenedAt" | "happenedAtCounter"
+> & {
   solution: Blob;
 };
 type ActivityDtoWithDate = ActivityDto & {
