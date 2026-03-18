@@ -54,6 +54,17 @@ export const convertPythonToGeneralAst = (
 export const convertPythonV3ToStatement = (
   input: string,
 ): StatementWithFunctions => {
+  if (input === "") {
+    return {
+      node: {
+        nodeType: AstNodeType.statement,
+        statementType: StatementNodeType.sequence,
+        statements: [],
+      },
+      functionDeclarations: [],
+    };
+  }
+
   const chars = new CharStream(input);
   const lexer = new PythonLexer(chars);
   const tokens = new CommonTokenStream(lexer);
