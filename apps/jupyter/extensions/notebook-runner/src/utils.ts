@@ -191,6 +191,7 @@ export const writeJsonToVirtualFilesystem = async (
     // it seems as if the encoding here does not allow us to put JSON.stringify directly
     code: `
 import base64
+from pathlib import Path
 
 json_content = base64.b64decode("${btoa(binaryString)}")
 
@@ -211,6 +212,7 @@ export const writeBinaryToVirtualFilesystem = async (
     kernel,
     code: `
 import base64
+from pathlib import Path
 
 base64_content = "${bas64Binary}"
 binary_content = base64.b64decode(base64_content)
