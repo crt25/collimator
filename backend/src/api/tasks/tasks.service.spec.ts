@@ -89,18 +89,14 @@ describe("TasksService", () => {
         makeMulterFile(Buffer.from("content-b")),
       ];
 
-      try {
-        await service.update(
-          taskId,
-          { title: "Updated Task" },
-          "application/pdf",
-          new Uint8Array(Buffer.from("task-data")),
-          duplicateReferenceSolutions,
-          files,
-        );
-      } catch (error) {
-        expect(error).not.toBeInstanceOf(DuplicateReferenceSolutionError);
-      }
+      await service.update(
+        taskId,
+        { title: "Updated Task" },
+        "application/pdf",
+        new Uint8Array(Buffer.from("task-data")),
+        duplicateReferenceSolutions,
+        files,
+      );
     });
   });
 });
