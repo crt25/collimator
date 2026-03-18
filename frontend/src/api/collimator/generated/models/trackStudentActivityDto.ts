@@ -17,6 +17,8 @@ export interface TrackStudentActivityDto {
   taskId: number;
   /** The time the activity happened at. */
   happenedAt: string;
+  /** The counter for activities that happened at the same time. */
+  happenedAtCounter: number;
   /**
    * Optional app activity object for this activity. Can only be set if the type is set to app activity.
    * @nullable
