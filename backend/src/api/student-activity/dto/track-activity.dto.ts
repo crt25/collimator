@@ -47,6 +47,14 @@ export class TrackStudentActivityDto {
   })
   readonly happenedAt!: Date;
 
+  @Type(() => Number)
+  @IsInt()
+  @ApiProperty({
+    example: 0,
+    description: "The counter for activities that happened at the same time.",
+  })
+  readonly happenedAtCounter!: number;
+
   @Type(() => TrackAppStudentActivityDto)
   @ApiProperty({
     description:

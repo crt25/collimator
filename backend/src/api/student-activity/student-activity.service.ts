@@ -79,6 +79,7 @@ export class StudentActivityService {
     return {
       type: activity.type,
       happenedAt: activity.happenedAt,
+      happenedAtCounter: activity.happenedAtCounter,
       appActivity: appActivityInput,
       student: {
         connect: { id: student.id },
