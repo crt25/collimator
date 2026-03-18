@@ -203,7 +203,7 @@ with open("${path}", "wb") as f:
 ${
   chdir
     ? `import os
-        os.chdir("${chdir}")
+os.chdir("${chdir}")
 `
     : ""
 }
