@@ -10,6 +10,21 @@ import {
 } from "./utils";
 import { EmbeddedPythonCallbacks } from "./iframe-api";
 
+let _packagesReady: Promise<void>;
+let _setPackagesReady: () => void;
+
+const resetPackagesReady = (): void => {
+  _packagesReady = new Promise<void>((resolve) => {
+    _setPackagesReady = resolve;
+  });
+};
+
+resetPackagesReady();
+
+export const waitForPackagesReady = (): Promise<void> => _packagesReady;
+
+const studentWorkingDirectory = "/student";
+
 const autoInstallPackages =
   (contentsManager: ContentsManager, notebookPath: string) =>
   async (kernel: IKernelConnection): Promise<void> => {
@@ -35,6 +50,7 @@ const autoInstallPackages =
 
     console.debug("Installing packages...", kernel.id);
     await installOtter(kernel);
+
     console.debug("Finished installing packages", kernel.id);
 
     if (
@@ -56,20 +72,23 @@ const autoInstallPackages =
         );
       }
 
+      console.debug(
+        `Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+        kernel.id,
+      );
+
       await writeJsonToVirtualFilesystem(
         kernel,
         EmbeddedPythonCallbacks.studentTaskLocation,
         notebook.content,
+        studentWorkingDirectory,
       );
-      console.debug("Finished copying notebook to the virtual filesystem");
+      console.debug(
+        `Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+        kernel.id,
+      );
 
-      await executePythonInKernel({
-        kernel,
-        code: `
-import os
-os.chdir("/student")
-`,
-      });
+      _setPackagesReady();
     }
   };
 

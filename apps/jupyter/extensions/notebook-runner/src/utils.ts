@@ -179,6 +179,7 @@ export const writeJsonToVirtualFilesystem = async (
   kernel: IKernelConnection,
   path: string,
   json: unknown,
+  chdir: string | null = null,
 ): Promise<void> => {
   const jsonString = JSON.stringify(json);
   const utf8Bytes = new TextEncoder().encode(jsonString);
@@ -198,6 +199,14 @@ Path("${path}").parent.mkdir(parents=True, exist_ok=True)
 
 with open("${path}", "wb") as f:
   f.write(json_content)
+
+${
+  chdir
+    ? `import os
+        os.chdir("${chdir}")
+`
+    : ""
+}
 `,
   });
 };
