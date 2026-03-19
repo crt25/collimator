@@ -19,15 +19,17 @@ export const registerRunAllCellsCommand = (
         return;
       }
 
-      console.log("awaiting for packages to be ready before running cells...");
+      console.debug(
+        "awaiting for packages to be ready before running cells...",
+      );
       await waitForPackagesReady();
-      console.log("packages are ready, running cells...");
+      console.debug("packages are ready, running cells...");
 
       await NotebookActions.runAll(
         currentNotebook.content,
         currentNotebook.context.sessionContext,
       );
-      console.log("finished running cells");
+      console.debug("finished running cells");
     },
   });
 };
