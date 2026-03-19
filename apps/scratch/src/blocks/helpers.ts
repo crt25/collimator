@@ -84,7 +84,9 @@ export const wouldExceedLimits = (vm: VMExtended): boolean => {
     const hasLimit = typeof allowed === "number";
 
     if (hasLimit && count >= allowed) {
-      console.debug(`Block limit reached for ${opcode}: ${count} > ${allowed}`);
+      console.debug(
+        `Block limit reached for ${opcode}: ${count} >= ${allowed}`,
+      );
       return true;
     }
   }
