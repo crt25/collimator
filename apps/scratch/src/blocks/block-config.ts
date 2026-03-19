@@ -2,6 +2,7 @@ import VM from "@scratch/scratch-vm";
 import { ModifyBlockConfigEvent } from "../events/modify-block-config";
 import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
+import { ScratchBlocksExtended } from "../../types/scratch-blocks";
 import { ignoreEvent, svgNamespace } from "./helpers";
 
 const buttonHeight = 20;
@@ -94,6 +95,59 @@ export const countUsedBlocks = (
     },
     {} as Record<string, number>,
   );
+
+/**
+ * Check if adding blocks from the flyout would exceed the limits set in the config.
+ * It checks the number of blocks currently used in the workspace and the number of blocks being added, and compares it to the limits set in the config.
+ */
+export const wouldExceedLimits = (
+  vm: VM,
+  workspace: ScratchBlocksExtended.Workspace,
+): boolean => {
+  const config = vm.crtConfig;
+  if (!config) {
+    console.debug("No config found, not blocking any blocks");
+    return false;
+  }
+
+  const blockElements = workspace.getAllBlocks();
+  const typeCounts: Record<string, number> = {};
+  for (const block of blockElements) {
+    if (block.type) {
+      typeCounts[block.type] = (typeCounts[block.type] ?? 0) + 1;
+    }
+  }
+
+  const usedBlocks = countUsedBlocks(vm);
+  for (const [opcode, count] of Object.entries(typeCounts)) {
+    const allowed = config.allowedBlocks[opcode];
+
+    const isBlockedEntirely =
+      allowed === undefined || allowed === 0 || allowed === false;
+
+    if (isBlockedEntirely) {
+      console.debug(
+        `Block ${opcode} is not allowed, blocking addition of blocks`,
+      );
+      return true;
+    }
+
+    // if allowed is a number, the block has a limit, it doesn't for every other type
+    const hasLimit = typeof allowed === "number";
+
+    if (hasLimit) {
+      const used = usedBlocks[opcode];
+      if (used + count > allowed) {
+        console.debug(
+          `Block limit exceeded for ${opcode}: ${used + count} > ${allowed}`,
+        );
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
 
 const getBlockElements = (container: HTMLElement): SVGGElement[] => [
   ...container.querySelectorAll<SVGGElement>(isBlockInFlyoutCanvas),
