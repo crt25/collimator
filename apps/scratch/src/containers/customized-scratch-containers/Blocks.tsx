@@ -55,7 +55,6 @@ import makeToolboxXML from "../../blocks/make-toolbox-xml";
 import {
   addBlockConfigButtons,
   updateSingleBlockConfigButton,
-  wouldExceedLimits,
 } from "../../blocks/block-config";
 import BlockConfig from "../../components/block-config/BlockConfig";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
@@ -80,6 +79,7 @@ import {
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
+import { shouldPreventBlockCreation } from "../../blocks/helpers";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -1072,8 +1072,6 @@ class Blocks extends React.Component<Props, State> {
           throw new Error("No editing target found");
         }
 
-        console.log(blocks, "blocks dropped on workspace");
-
         return this.props.vm.shareBlocksToTarget(
           blocks,
           this.props.vm.editingTarget.id,
@@ -1112,24 +1110,14 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    // when a block is dragged outside the workspace onto a sprite thumbnail, scratch-blocks fires an endDrag event with the serialized block XML
-    // the vm uses this event to copy the blocks to the target sprite's workspace
-    const isBlockDraggedToSprite =
-      event.type === "endDrag" &&
-      // see EndBlockDrag in /scratch_blocks/core/scratch_events.js
-      "isOutside" in event &&
-      event.isOutside &&
-      // see BlockDragger.prototype.endBlockDrag in /scratch_blocks/core/block_dragger.js
-      "xml" in event &&
-      event.xml;
-
-    if (!this.props.canEditTask && isBlockDraggedToSprite) {
-      if (wouldExceedLimits(this.props.vm, this.getWorkspace())) {
-        console.log(
-          "Block limits exceeded, not allowing block to be dragged to sprite",
-        );
-        return;
-      }
+    if (
+      shouldPreventBlockCreation(event, {
+        canEditTask: this.props.canEditTask,
+        vm: this.props.vm,
+        workspace: this.getWorkspace(),
+      })
+    ) {
+      return;
     }
 
     this.props.vm.blockListener(event);
