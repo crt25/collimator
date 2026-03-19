@@ -110,6 +110,9 @@ describe("TasksService", () => {
         duplicateReferenceSolutions,
         files,
       );
+
+      const updatedTask = await service.findByIdOrThrow(taskId);
+      expect(updatedTask.title).toBe("Updated Task");
     });
   });
 });
