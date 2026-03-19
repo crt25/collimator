@@ -79,6 +79,7 @@ import {
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
+import { shouldPreventBlockCreation } from "../../blocks/helpers";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -627,7 +628,6 @@ class Blocks extends React.Component<Props, State> {
     const blockId =
       workspace
         .getAllBlocks()
-        // @ts-expect-error The typing is not correct for getAllBlocks
         .find((b) => b["type"] === "event_whenflagclicked")?.id ??
       // @ts-expect-error The typing is not correct for getAllBlocks
       workspace.getAllBlocks()?.id;
@@ -1107,6 +1107,16 @@ class Blocks extends React.Component<Props, State> {
     ) {
       // suppress stack click events
       // https://github.com/scratchfoundation/scratch-vm/blob/bea39123bd3001a054981bfcd4ad2233f99d63aa/src/engine/blocks.js#L327
+      return;
+    }
+
+    if (
+      shouldPreventBlockCreation(event, {
+        canEditTask: this.props.canEditTask,
+        vm: this.props.vm,
+        workspace: this.getWorkspace(),
+      })
+    ) {
       return;
     }
 

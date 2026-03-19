@@ -58,6 +58,7 @@ declare namespace ScratchBlocksExtended {
   class Workspace extends ScratchBlocks.Workspace {
     getFlyout(): Flyout | null;
     getBlockById(id: string): Block | null;
+    getAllBlocks(): Block[];
 
     /**
      * Register a callback function associated with a given key, for clicks on
