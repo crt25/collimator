@@ -29,9 +29,9 @@ import {
 } from "@/api/collimator/generated/models";
 import { useNavigationObserver } from "@/utilities/navigation-observer";
 import { getTaskTypeMessage } from "@/i18n/task-type-messages";
-import { ConflictError } from "@/api/fetch";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import { ConflictError } from "@/errors/api";
 import Input from "../form/Input";
 import SubmitFormButton from "../form/SubmitFormButton";
 import TextArea from "../form/TextArea";

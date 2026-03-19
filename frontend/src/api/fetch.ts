@@ -1,25 +1,5 @@
+import { ApiError, ConflictError } from "@/errors/api";
 import { authenticationStateKey, backendHostName } from "@/utilities/constants";
-
-export class ApiError extends Error {
-  public readonly errorCode?: string;
-
-  constructor(
-    public readonly status: number,
-    message: string,
-    errorCode?: string,
-  ) {
-    super(message);
-    this.name = "ApiError";
-    this.errorCode = errorCode;
-  }
-}
-
-export class ConflictError extends ApiError {
-  constructor(message: string = "Conflict", errorCode?: string) {
-    super(409, message, errorCode);
-    this.name = "ConflictError";
-  }
-}
 
 export const fetchApi = async <T>(
   url: string,
@@ -51,9 +31,12 @@ export const fetchApi = async <T>(
   }
 
   if (response.status >= 400) {
+    const errorBody = await response.json();
+
     throw new ApiError(
       response.status,
-      `Unexpected response code ${response.status}`,
+      errorBody?.message,
+      errorBody?.errorCode,
     );
   }
 
