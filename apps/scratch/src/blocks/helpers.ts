@@ -27,10 +27,8 @@ export const shouldPreventBlockCreation = (
   const isBlockDraggedToSprite =
     event.type === "endDrag" &&
     // see EndBlockDrag in /scratch_blocks/core/scratch_events.js
-    "isOutside" in event &&
     event.isOutside &&
     // see BlockDragger.prototype.endBlockDrag in /scratch_blocks/core/block_dragger.js
-    "xml" in event &&
     event.xml;
 
   const isBlockCreated = event.type === "create";
