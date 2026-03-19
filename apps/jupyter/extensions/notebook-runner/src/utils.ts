@@ -175,6 +175,14 @@ export const addKernelListeners = async (
   sessionContext.kernelChanged.connect(restartListener);
 };
 
+/**
+ * Writes a JSON object to the virtual filesystem of the given kernel.
+ *
+ * @param kernel - The kernel connection to execute the write on.
+ * @param path - The file path to write the JSON to.
+ * @param json - The JSON-serializable object to write.
+ * @param chdir - Optional directory to change to after writing.
+ */
 export const writeJsonToVirtualFilesystem = async (
   kernel: IKernelConnection,
   path: string,
