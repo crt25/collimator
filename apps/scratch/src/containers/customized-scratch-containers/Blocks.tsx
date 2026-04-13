@@ -79,7 +79,7 @@ import {
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
-import { shouldPreventBlockCreation } from "../../blocks/helpers";
+import { preventBlockActions } from "../../blocks/helpers";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -1111,10 +1111,11 @@ class Blocks extends React.Component<Props, State> {
     }
 
     if (
-      shouldPreventBlockCreation(event, {
+      preventBlockActions(event, {
         canEditTask: this.props.canEditTask,
         vm: this.props.vm,
         workspace: this.getWorkspace(),
+        blockId: event.blockId,
       })
     ) {
       return;
