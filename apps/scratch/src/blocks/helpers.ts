@@ -69,10 +69,6 @@ export const wouldExceedLimits = (vm: VMExtended): boolean => {
   for (const [opcode, count] of Object.entries(usedBlocks)) {
     const allowed = config.allowedBlocks[opcode];
 
-    console.log(
-      `Checking block limits for ${opcode}: ${count} used, ${allowed} allowed`,
-    );
-
     const isBlockedEntirely = allowed === 0 || allowed === false;
 
     if (isBlockedEntirely) {
