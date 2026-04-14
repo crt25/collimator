@@ -58,7 +58,6 @@ const findBlockInRuntime = (
 const shouldPreventBlockDeletion = (
   event: WorkspaceChangeEvent,
   vm: VMExtended,
-  workspace: ScratchBlocksExtended.Workspace,
   blockId: string,
 ): boolean => {
   if (event.type !== "delete") {
@@ -71,19 +70,18 @@ const shouldPreventBlockDeletion = (
   }
 
   if (block.isTaskBlock) {
-    workspace.undo(false);
     return true;
   }
 
   return false;
 };
 
-export const preventBlockActions = (
+export const shouldPreventBlocksActions = (
   event: WorkspaceChangeEvent,
   props: {
     canEditTask: boolean | undefined;
     vm: VMExtended;
-    workspace: ScratchBlocksExtended.Workspace;
+    workspace: ScratchBlocksExtended.Workspace | null;
     blockId: string | undefined;
   },
 ): boolean => {
@@ -93,11 +91,20 @@ export const preventBlockActions = (
     return false;
   }
 
+  if (!workspace) {
+    return false;
+  }
+
   if (shouldPreventBlockCreation(event, vm, workspace)) {
     return true;
   }
 
-  if (blockId && shouldPreventBlockDeletion(event, vm, workspace, blockId)) {
+  if (!blockId) {
+    return false;
+  }
+
+  if (shouldPreventBlockDeletion(event, vm, blockId)) {
+    workspace.undo(false);
     return true;
   }
 
