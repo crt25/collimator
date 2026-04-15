@@ -206,7 +206,7 @@ test.describe("/solve", () => {
     );
   });
 
-  test("removing student-added blocks increases the limit", async ({
+  test.only("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {
     const { page, task } = await TestTaskPage.load(pwPage);
@@ -231,6 +231,10 @@ test.describe("/solve", () => {
 
     const addedBlock = page.blocksOfCurrentTarget.last();
     await page.removeBlock(addedBlock);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget + 1,
+    );
 
     await expect(moveSteps).toHaveText(
       getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
