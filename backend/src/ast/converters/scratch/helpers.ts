@@ -234,7 +234,7 @@ export const convertChildWithReferenceId = <T extends TreeNode, ReturnType>(
 ): ReturnType => {
   const reference = getReference(block);
   if (!reference) {
-    if (fallbackValue) {
+    if (fallbackValue !== undefined) {
       return fallbackValue;
     }
 
@@ -245,7 +245,7 @@ export const convertChildWithReferenceId = <T extends TreeNode, ReturnType>(
   const child = block.__children.find((b) => b.__id === id);
 
   if (!child) {
-    if (fallbackValue) {
+    if (fallbackValue !== undefined) {
       return fallbackValue;
     }
 
