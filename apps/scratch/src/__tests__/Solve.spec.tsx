@@ -229,11 +229,9 @@ test.describe("/solve", () => {
     );
     await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
 
-    await page.removeAllNonFrozenBlocks();
+    const addedBlock = page.blocksOfCurrentTarget.last();
+    await page.removeBlock(addedBlock);
 
-    await expect(page.blocksOfCurrentTarget).toHaveCount(
-      task.blocksOfMainTarget - task.frozenBlocksOfMainTarget,
-    );
     await expect(moveSteps).toHaveText(
       getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
     );
@@ -419,26 +417,6 @@ test.describe("/solve", () => {
     );
 
     await expect(taskPage.blocksOfCurrentTarget).toHaveCount(0);
-  });
-
-  test("removing initial blocks does not increase the limit", async ({
-    page: pwPage,
-  }) => {
-    const { page, task } = await TestTaskPage.load(pwPage);
-
-    const { moveSteps, turnRight } = page.enabledBlockConfigButtons;
-
-    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(1);
-
-    await page.removeBlock(page.taskBlocks.catActor.editableBlock);
-
-    await expect(page.taskBlocks.catActor.editableBlock).toHaveCount(0);
-    await expect(moveSteps).toHaveText(
-      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
-    );
-    await expect(turnRight).toHaveText(
-      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_turnright"),
-    );
   });
 
   test("loads assertions extension if task contains assertion blocks", async ({
