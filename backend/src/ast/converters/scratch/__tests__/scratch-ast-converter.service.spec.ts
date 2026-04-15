@@ -313,7 +313,7 @@ describe("Scratch AST converter", () => {
             {
               opcode: "control_stop",
               inputs: {},
-              fields: { STOP_OPTION: ["all", null] },
+              fields: { STOP_OPTION: ["all"] },
               shadow: false,
               topLevel: false,
               mutation: {
@@ -3650,6 +3650,29 @@ describe("Scratch AST converter", () => {
                 value: "q",
               },
             ],
+          }),
+        );
+      });
+
+      it("can convert 'sensing_keyoptions' blocks with single-element KEY_OPTION to general AST nodes", () => {
+        const ast = convertScratchToGeneralAst(
+          createScratchExpressionInput([
+            {
+              opcode: "sensing_keyoptions",
+              inputs: {},
+              fields: { KEY_OPTION: ["space"] },
+              shadow: false,
+              topLevel: false,
+            },
+          ]),
+        );
+
+        expect(ast).toEqual(
+          createScratchExpressionOutput({
+            nodeType: AstNodeType.expression,
+            expressionType: ExpressionNodeType.literal,
+            type: "string",
+            value: "space",
           }),
         );
       });

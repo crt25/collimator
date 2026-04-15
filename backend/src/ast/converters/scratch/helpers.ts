@@ -216,6 +216,7 @@ const getParametersFromFields = (fields: Block["fields"]): ExpressionNode[] => {
           .with([P.string, P.string], (value) =>
             createVariableExpressionBlock(value[0]),
           )
+          .with([P.string], (value) => createLiteralNode("string", value[0]))
           .otherwise(() => {
             throw new Error(
               `Unexpected values for name '${parameterName}': '${JSON.stringify(value)}'`,
