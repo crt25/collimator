@@ -10,7 +10,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import PageHeading from "@/components/PageHeading";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import TaskInstanceProgressList from "@/components/task-instance/TaskInstanceProgressList";
@@ -57,9 +57,8 @@ const TaskInstanceProgress = () => {
         titleParameters={{
           title: task?.title ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

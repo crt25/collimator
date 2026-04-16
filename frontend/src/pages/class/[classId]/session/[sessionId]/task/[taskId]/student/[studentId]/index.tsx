@@ -16,7 +16,7 @@ import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
 
@@ -81,9 +81,8 @@ const StudentTaskInstance = () => {
         titleParameters={{
           name: name ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

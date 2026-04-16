@@ -12,7 +12,7 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import Showcase from "@/components/dashboard/Showcase";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -57,9 +57,8 @@ const TaskInstanceShowcase = () => {
         titleParameters={{
           title: task?.title ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
