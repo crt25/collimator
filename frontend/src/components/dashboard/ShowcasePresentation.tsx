@@ -50,7 +50,7 @@ const ShowcasePresentationInternal = ({
     slideCount: selectedAnalyses.length,
     allowMouseDrag: true,
     slidesPerPage: 1,
-    loop: true,
+    loop: false,
   });
 
   const selectedSolution = useMemo(
@@ -66,7 +66,10 @@ const ShowcasePresentationInternal = ({
         justifyContent="space-between"
         gap="md"
       >
-        <Button onClick={() => carousel.scrollPrev()}>
+        <Button
+          onClick={() => carousel.scrollPrev()}
+          disabled={carousel.page === 0}
+        >
           <HStack>
             <Icon>
               <LuArrowLeft />
@@ -100,7 +103,10 @@ const ShowcasePresentationInternal = ({
             </Carousel.ItemGroup>
           </Carousel.RootProvider>
         </Box>
-        <Button onClick={() => carousel.scrollNext()}>
+        <Button
+          onClick={() => carousel.scrollNext()}
+          disabled={carousel.page === selectedAnalyses.length - 1}
+        >
           <HStack>
             <FormattedMessage
               id="ShowcasePresentation.next"
