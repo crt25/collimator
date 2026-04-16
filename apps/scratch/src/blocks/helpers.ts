@@ -8,20 +8,11 @@ export const ignoreEvent = (event: MouseEvent): void => {
   event.preventDefault();
 };
 
-export const shouldPreventBlockCreation = (
+const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
-  props: {
-    canEditTask: boolean | undefined;
-    vm: VMExtended;
-    workspace: ScratchBlocksExtended.Workspace;
-  },
+  vm: VMExtended,
+  workspace: ScratchBlocksExtended.Workspace,
 ): boolean => {
-  const { canEditTask, vm, workspace } = props;
-
-  if (canEditTask) {
-    return false;
-  }
-
   // when a block is dragged outside the workspace onto a sprite thumbnail, scratch-blocks fires an endDrag event with the serialized block XML
   // the vm uses this event to copy the blocks to the target sprite's workspace
   const isBlockDraggedToSprite =
@@ -54,6 +45,76 @@ export const shouldPreventBlockCreation = (
   }
 
   return true;
+};
+
+const findBlockInRuntime = (
+  vm: VMExtended,
+  blockId: string,
+): VMExtended.BlockExtended | undefined => {
+  for (const target of vm.runtime.targets) {
+    const block = target.blocks._blocks[blockId];
+    if (block) {
+      return block;
+    }
+  }
+
+  return undefined;
+};
+
+const shouldPreventBlockDeletion = (
+  event: WorkspaceChangeEvent,
+  vm: VMExtended,
+  blockId: string,
+): boolean => {
+  if (event.type !== "delete") {
+    return false;
+  }
+
+  const block = findBlockInRuntime(vm, blockId);
+  if (!block) {
+    return false;
+  }
+
+  if (block.isTaskBlock) {
+    return true;
+  }
+
+  return false;
+};
+
+export const shouldPreventBlocksActions = (
+  event: WorkspaceChangeEvent,
+  props: {
+    canEditTask: boolean | undefined;
+    vm: VMExtended;
+    workspace: ScratchBlocksExtended.Workspace | null;
+    blockId: string | undefined;
+  },
+): boolean => {
+  const { canEditTask, vm, workspace, blockId } = props;
+
+  if (canEditTask) {
+    return false;
+  }
+
+  if (!workspace) {
+    return false;
+  }
+
+  if (shouldPreventBlockCreation(event, vm, workspace)) {
+    return true;
+  }
+
+  if (!blockId) {
+    return false;
+  }
+
+  if (shouldPreventBlockDeletion(event, vm, blockId)) {
+    workspace.undo(false);
+    return true;
+  }
+
+  return false;
 };
 
 /**
