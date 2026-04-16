@@ -79,6 +79,7 @@ import {
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
+import { shouldPreventBlocksActions } from "../../blocks/helpers";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -239,7 +240,6 @@ class Blocks extends React.Component<Props, State> {
       "setLocale",
       "requestToolboxUpdate",
       "onWorkspaceChange",
-      "blockListener",
       "reAttachWorkspaceListeners",
       "removeWorkspaceListeners",
       "onBlocksChange",
@@ -607,9 +607,6 @@ class Blocks extends React.Component<Props, State> {
 
     // Blockly does not provide a way to check if a listener is already attached.
     // We remove and reattach to avoid duplicates without having to track attachment state
-    workspace.removeChangeListener(this.blockListener);
-    workspace.addChangeListener(this.blockListener);
-
     workspace.removeChangeListener(this.onWorkspaceChange);
     workspace.addChangeListener(this.onWorkspaceChange);
   }
@@ -617,7 +614,6 @@ class Blocks extends React.Component<Props, State> {
   removeWorkspaceListeners() {
     const workspace = this.getWorkspace();
 
-    workspace.removeChangeListener(this.blockListener);
     workspace.removeChangeListener(this.onWorkspaceChange);
   }
 
@@ -627,7 +623,6 @@ class Blocks extends React.Component<Props, State> {
     const blockId =
       workspace
         .getAllBlocks()
-        // @ts-expect-error The typing is not correct for getAllBlocks
         .find((b) => b["type"] === "event_whenflagclicked")?.id ??
       // @ts-expect-error The typing is not correct for getAllBlocks
       workspace.getAllBlocks()?.id;
@@ -1100,7 +1095,7 @@ class Blocks extends React.Component<Props, State> {
     return flyout;
   }
 
-  blockListener(event: WorkspaceChangeEvent) {
+  onWorkspaceChange(event: WorkspaceChangeEvent) {
     if (
       "element" in event &&
       (event.element === "stackclick" || event.element === "click")
@@ -1110,10 +1105,17 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    this.props.vm.blockListener(event);
-  }
+    const isBlocked = shouldPreventBlocksActions(event, {
+      canEditTask: this.props.canEditTask,
+      vm: this.props.vm,
+      workspace: this.getWorkspace(),
+      blockId: event.blockId,
+    });
 
-  onWorkspaceChange(event: WorkspaceChangeEvent) {
+    if (!isBlocked) {
+      this.props.vm.blockListener(event);
+    }
+
     if (!this.blocks) {
       // if the blocks are not yet mounted, ignore the event
       return;
@@ -1127,6 +1129,10 @@ class Blocks extends React.Component<Props, State> {
       filterNonNull,
       updateSingleBlockConfigButton,
     });
+
+    if (isBlocked) {
+      return;
+    }
 
     const eventAction = mapScratchEventTypeToStudentActionType(event.type);
 

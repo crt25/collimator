@@ -22,4 +22,5 @@ export interface WorkspaceChangeEvent {
   oldXml?: Element;
   oldParentId?: string | null;
   newParentId?: string | null;
+  isOutside?: boolean;
 }
