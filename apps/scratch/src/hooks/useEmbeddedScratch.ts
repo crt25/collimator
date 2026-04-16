@@ -25,6 +25,7 @@ import {
   CannotLoadProjectError,
   CannotSaveProjectError,
   MissingAssetsError,
+  MissingProjectJsonError,
   ScratchProjectError,
   ScratchProjectErrorCode,
   TimeoutExceededError,
@@ -349,6 +350,22 @@ export class EmbeddedScratchCallbacks {
 
     const zip = new JSZip();
     await zip.loadAsync(sb3Project);
+
+    const taskProjectFile = zip.file("project.json");
+
+    if (!taskProjectFile) {
+      throw new MissingProjectJsonError();
+    }
+
+    const taskProjectJson = await taskProjectFile.async("string");
+    const taskProject = JSON.parse(taskProjectJson);
+
+    // collect all block ids in the project before merging the initial task with the submission
+    const taskBlockIds = new Set<string>(
+      taskProject.targets.flatMap((target) => Object.keys(target.blocks ?? {})),
+    );
+
+    this.vm.taskBlockIds = taskBlockIds;
 
     zip.remove("project.json");
     zip.file("project.json", submission);
