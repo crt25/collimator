@@ -96,11 +96,17 @@ const trackSession = (
   contentsManager: ContentsManager,
   sessionContext: ISessionContext,
   notebookPath: string,
-): Promise<void> =>
-  addKernelListeners(
+): Promise<void> => {
+  // start the kernel so the install runs in the background, instead of waiting for something else to trigger it.
+  sessionContext.initialize().catch((error) => {
+    console.error("Failed to initialize session for", notebookPath, error);
+  });
+
+  return addKernelListeners(
     sessionContext,
     autoInstallPackages(contentsManager, notebookPath),
   );
+};
 
 export const preInstallPackages = async (
   _app: JupyterFrontEnd,
