@@ -4,7 +4,7 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { Contents, ContentsManager, KernelMessage } from "@jupyterlab/services";
 import {
-  addKernelListeners,
+  setupKernel,
   executePythonInKernel,
   writeJsonToVirtualFilesystem,
 } from "./utils";
@@ -108,7 +108,7 @@ const trackSession = (
     console.error("Failed to initialize session for", notebookPath, error);
   });
 
-  return addKernelListeners(
+  return setupKernel(
     sessionContext,
     autoInstallPackages(contentsManager, notebookPath),
   );

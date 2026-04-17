@@ -102,9 +102,9 @@ export const setKernelIsPrepared = (
   }
 };
 
-export const addKernelListeners = async (
+export const setupKernel = async (
   sessionContext: ISessionContext,
-  addListeners: (kernel: IKernelConnection) => Promise<void>,
+  setup: (kernel: IKernelConnection) => Promise<void>,
 ): Promise<void> => {
   console.debug("Waiting for session context to be ready...");
   await sessionContext.ready;
@@ -129,7 +129,7 @@ export const addKernelListeners = async (
   }
 
   await kernel.info;
-  await addListeners(kernel);
+  await setup(kernel);
 
   const restartListener = async (
     sessionCtx: ISessionContext,
@@ -169,7 +169,7 @@ export const addKernelListeners = async (
     console.debug("Kernel changed:", kernel.name);
     await kernel.info;
 
-    return addListeners(kernel);
+    return setup(kernel);
   };
 
   sessionContext.kernelChanged.connect(restartListener);
