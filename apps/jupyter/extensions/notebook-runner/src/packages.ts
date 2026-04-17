@@ -10,16 +10,22 @@ import {
 } from "./utils";
 import { EmbeddedPythonCallbacks } from "./iframe-api";
 
-let _packagesReady: Promise<void>;
-let _setPackagesReady: () => void;
+/**
+ * resolver for `_packagesReady`. it is called once the student-task notebook's
+ * kernel has finished installing packages and copying the notebook content
+ * into the virtual filesystem.
+ */
+let _setPackagesReady: () => void = () => {};
 
-const resetPackagesReady = (): void => {
-  _packagesReady = new Promise<void>((resolve) => {
-    _setPackagesReady = resolve;
-  });
-};
-
-resetPackagesReady();
+/**
+ * this resolves when the student task notebook is ready to run cells against.
+ * this exists because the install runs asynchronously in the background as
+ * soon as the panel opens, but the user can click 'run all' at any point
+ * during that window.
+ */
+const _packagesReady = new Promise<void>((resolve) => {
+  _setPackagesReady = resolve;
+});
 
 export const waitForPackagesReady = (): Promise<void> => _packagesReady;
 
