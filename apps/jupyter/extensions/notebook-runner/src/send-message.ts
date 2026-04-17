@@ -15,7 +15,7 @@ export const sendMessage = async (
     });
   } catch (error) {
     throw new FailedToSendMessageError(
-      `Failed to send message: ${error instanceof Error ? error.message : error}`,
+      error instanceof Error ? error.message : error,
     );
   }
 };
