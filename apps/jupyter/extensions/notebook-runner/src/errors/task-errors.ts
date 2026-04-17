@@ -130,3 +130,9 @@ export class FailedToSendTaskSolutionError extends Error {
     super(`Failed to send task solution: ${originalError}`);
   }
 }
+
+export class FailedToSendMessageError extends Error {
+  constructor(originalError: unknown) {
+    super(`Failed to send message: ${originalError}`);
+  }
+}

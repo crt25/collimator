@@ -93,7 +93,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       documentManager,
     );
 
-    registerCommands(app, notebookTracker, contentsManager, documentManager);
+    registerCommands(
+      app,
+      notebookTracker,
+      contentsManager,
+      documentManager,
+      platform,
+    );
 
     app.restored.then(async () => {
       // Only open the template notebook in edit mode.
