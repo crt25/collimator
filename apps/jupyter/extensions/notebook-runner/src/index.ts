@@ -19,6 +19,8 @@ import { installPackagesWithLoadingState } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 import { enableSentry } from "./sentry";
 import { LoadingStateManager } from "./loading-state";
+import { sendMessage } from "./send-message";
+import { ToastType } from "./iframe-rpc/src";
 
 enableSentry();
 
@@ -106,14 +108,28 @@ const plugin: JupyterFrontEndPlugin<void> = {
       platform.sendRequest.bind(platform),
     );
 
-    void installPackagesWithLoadingState(
-      app,
-      contentsManager,
-      notebookTracker,
-      loadingStateManager,
-    ).catch((error) => {
+    try {
+      await installPackagesWithLoadingState(
+        app,
+        contentsManager,
+        notebookTracker,
+        loadingStateManager,
+      );
+    } catch (error) {
       console.error("Failed to initialize package installation flow:", error);
-    });
+
+      await sendMessage(
+        "Initialization Failed",
+        "Failed to initialize the notebook environment. Please reload the page to try again.",
+        ToastType.Error,
+        platform.sendRequest.bind(platform),
+      ).catch((messageError) => {
+        console.error(
+          "Failed to show initialization error notification:",
+          messageError,
+        );
+      });
+    }
 
     app.restored.then(() => {
       // Only open the template notebook in edit mode.
