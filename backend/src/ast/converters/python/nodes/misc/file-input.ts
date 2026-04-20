@@ -5,5 +5,12 @@ import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 export const convertFileInput = (
   visitor: IPythonAstVisitor,
   ctx: File_inputContext,
-): PythonVisitorReturnValue =>
-  visitor.getStatements(ctx.statements().statement_list());
+): PythonVisitorReturnValue => {
+  const statements = ctx.statements();
+
+  if (!statements) {
+    return visitor.getStatements([]);
+  }
+
+  return visitor.getStatements(statements.statement_list());
+};
