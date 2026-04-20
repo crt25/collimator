@@ -15,9 +15,10 @@ import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
-import { preInstallPackages } from "./packages";
+import { installPackagesWithLoadingState } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 import { enableSentry } from "./sentry";
+import { LoadingStateManager } from "./loading-state";
 
 enableSentry();
 
@@ -66,7 +67,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    preInstallPackages(app, contentsManager, notebookTracker);
     const platform = setupIframeApi(
       new EmbeddedPythonCallbacks(
         mode,
@@ -93,12 +93,18 @@ const plugin: JupyterFrontEndPlugin<void> = {
       documentManager,
     );
 
-    registerCommands(
+    registerCommands(app, notebookTracker, contentsManager, documentManager);
+
+    const loadingStateManager = new LoadingStateManager(
+      settingRegistry,
+      platform.sendRequest.bind(platform),
+    );
+
+    installPackagesWithLoadingState(
       app,
-      notebookTracker,
       contentsManager,
-      documentManager,
-      platform,
+      notebookTracker,
+      loadingStateManager,
     );
 
     app.restored.then(() => {

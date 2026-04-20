@@ -3,14 +3,11 @@ import { INotebookTracker, NotebookActions } from "@jupyterlab/notebook";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { runAllCellsCommand } from "../command";
 import { waitForPackagesReady } from "../packages";
-import { sendMessage } from "../send-message";
-import { AppCrtIframeApi, ToastType } from "../iframe-rpc/src";
 
 export const registerRunAllCellsCommand = (
   state: NotebookRunnerState,
   app: JupyterFrontEnd,
   notebookTracker: INotebookTracker,
-  sendRequest: AppCrtIframeApi["sendRequest"],
 ): void => {
   app.commands.addCommand(runAllCellsCommand, {
     iconClass: "fa fa-play-circle",
@@ -24,13 +21,6 @@ export const registerRunAllCellsCommand = (
 
       console.debug(
         "awaiting for packages to be ready before running cells...",
-      );
-
-      await sendMessage(
-        "Running Cells",
-        "Please wait while the required packages are being set up...",
-        ToastType.Info,
-        sendRequest,
       );
 
       await waitForPackagesReady();

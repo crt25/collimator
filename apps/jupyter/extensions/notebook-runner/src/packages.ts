@@ -131,6 +131,26 @@ export const preInstallPackages = async (
   });
 };
 
+export const installPackagesWithLoadingState = async (
+  app: JupyterFrontEnd,
+  contentsManager: ContentsManager,
+  notebookTracker: INotebookTracker,
+  loadingStateManager: LoadingStateManager,
+): Promise<void> => {
+  await loadingStateManager.startLoading();
+
+  preInstallPackages(app, contentsManager, notebookTracker).catch((error) => {
+    console.error("preInstallPackages failed:", error);
+  });
+
+  waitForPackagesReady()
+    .then(() => loadingStateManager.finishLoading(true))
+    .catch((error) => {
+      console.error("Error waiting for packages to be ready:", error);
+      return loadingStateManager.finishLoading(false);
+    });
+};
+
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
