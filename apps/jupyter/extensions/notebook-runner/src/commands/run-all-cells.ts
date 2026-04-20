@@ -3,11 +3,14 @@ import { INotebookTracker, NotebookActions } from "@jupyterlab/notebook";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { runAllCellsCommand } from "../command";
 import { waitForPackagesReady } from "../packages";
+import { sendMessage } from "../send-message";
+import { AppCrtIframeApi, ToastType } from "../iframe-rpc/src";
 
 export const registerRunAllCellsCommand = (
   state: NotebookRunnerState,
   app: JupyterFrontEnd,
   notebookTracker: INotebookTracker,
+  sendRequest: AppCrtIframeApi["sendRequest"],
 ): void => {
   app.commands.addCommand(runAllCellsCommand, {
     iconClass: "fa fa-play-circle",
@@ -27,6 +30,16 @@ export const registerRunAllCellsCommand = (
         await waitForPackagesReady();
       } catch (error) {
         console.error("Cannot run cells, package installation failed:", error);
+
+        await sendMessage(
+          "Package Installation Failed",
+          "Cannot run cells because package installation failed. Please reload the page and try again.",
+          ToastType.Error,
+          sendRequest,
+        ).catch((messageError) => {
+          console.error("Failed to show error notification:", messageError);
+        });
+
         return;
       }
 

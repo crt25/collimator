@@ -3,6 +3,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "../notebook-runner-state";
+import { AppCrtIframeApi } from "../iframe-rpc/src";
 import { registerAssignCommand } from "./assign";
 import { registerGradeCommand } from "./grade";
 import { registerRunAllCellsCommand } from "./run-all-cells";
@@ -12,6 +13,7 @@ export const registerCommands = (
   notebookTracker: INotebookTracker,
   contentsManager: ContentsManager,
   documentManager: IDocumentManager,
+  sendRequest: AppCrtIframeApi["sendRequest"],
 ): void => {
   const state = new NotebookRunnerState(app, documentManager, notebookTracker);
 
@@ -23,5 +25,5 @@ export const registerCommands = (
     contentsManager,
     documentManager,
   );
-  registerRunAllCellsCommand(state, app, notebookTracker);
+  registerRunAllCellsCommand(state, app, notebookTracker, sendRequest);
 };

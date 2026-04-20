@@ -93,7 +93,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       documentManager,
     );
 
-    registerCommands(app, notebookTracker, contentsManager, documentManager);
+    registerCommands(
+      app,
+      notebookTracker,
+      contentsManager,
+      documentManager,
+      platform.sendRequest.bind(platform),
+    );
 
     const loadingStateManager = new LoadingStateManager(
       settingRegistry,
