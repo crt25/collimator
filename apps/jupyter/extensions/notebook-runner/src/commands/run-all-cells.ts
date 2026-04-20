@@ -23,7 +23,13 @@ export const registerRunAllCellsCommand = (
         "awaiting for packages to be ready before running cells...",
       );
 
-      await waitForPackagesReady();
+      try {
+        await waitForPackagesReady();
+      } catch (error) {
+        console.error("Cannot run cells, package installation failed:", error);
+        return;
+      }
+
       console.debug("packages are ready, running cells...");
 
       await NotebookActions.runAll(

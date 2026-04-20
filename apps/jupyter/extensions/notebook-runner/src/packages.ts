@@ -17,6 +17,12 @@ import { LoadingStateManager } from "./loading-state";
  * into the virtual filesystem.
  */
 let _setPackagesReady: () => void = () => {};
+/**
+ * resolver for `_packagesReady`. it is called if the student-task notebook's
+ * kernel has ran into an error while installing packages and copying the notebook content
+ * into the virtual filesystem.
+ */
+let _setPackagesFailed: (error: unknown) => void = () => {};
 
 /**
  * this resolves when the student task notebook is ready to run cells against.
@@ -24,8 +30,9 @@ let _setPackagesReady: () => void = () => {};
  * soon as the panel opens, but the user can click 'run all' at any point
  * during that window.
  */
-const _packagesReady = new Promise<void>((resolve) => {
+const _packagesReady = new Promise<void>((resolve, reject) => {
   _setPackagesReady = resolve;
+  _setPackagesFailed = reject;
 });
 
 export const waitForPackagesReady = (): Promise<void> => _packagesReady;
@@ -99,7 +106,7 @@ const autoInstallPackages =
 
       _setPackagesReady();
     } catch (error) {
-      _setPackagesReady();
+      _setPackagesFailed(error);
       throw error;
     }
   };
