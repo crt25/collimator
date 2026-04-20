@@ -40,7 +40,7 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
       .split("\n")
       // check if there's any line that isn't empty or a comment
       .map((line) => line.trim())
-      .some((line) => line && !line.startsWith("#"));
+      .some((line) => !!line && !line.startsWith("#"));
 
   const codeCells = input.cells.filter(
     (c) => c.cell_type === "code" && hasExecutableCode(getCellSource(c)),
