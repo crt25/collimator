@@ -308,40 +308,60 @@ describe("Scratch AST converter", () => {
   describe("Code blocks", () => {
     describe("Control Blocks", () => {
       it("can convert 'control_stop' blocks to general AST nodes", () => {
-        const ast = convertScratchToGeneralAst(
-          createScratchCodeInput([
-            {
-              opcode: "control_stop",
-              inputs: {},
-              fields: { STOP_OPTION: ["all", null] },
-              shadow: false,
-              topLevel: false,
-              mutation: {
-                tagName: "mutation",
-                children: [],
-                hasnext: "false",
-              },
-            },
-          ]),
-        );
-
-        expect(ast).toEqual(
-          createScratchCodeOutput([
-            {
-              nodeType: AstNodeType.statement,
-              statementType: StatementNodeType.functionCall,
-              name: "control_stop",
-              arguments: [
-                {
-                  nodeType: AstNodeType.expression,
-                  expressionType: ExpressionNodeType.literal,
-                  type: "string",
-                  value: "all",
+        const asts = [
+          convertScratchToGeneralAst(
+            createScratchCodeInput([
+              {
+                opcode: "control_stop",
+                inputs: {},
+                fields: { STOP_OPTION: ["all"] },
+                shadow: false,
+                topLevel: false,
+                mutation: {
+                  tagName: "mutation",
+                  children: [],
+                  hasnext: "false",
                 },
-              ],
-            },
-          ]),
-        );
+              },
+            ]),
+          ),
+          convertScratchToGeneralAst(
+            createScratchCodeInput([
+              {
+                opcode: "control_stop",
+                inputs: {},
+                fields: { STOP_OPTION: ["all", null] },
+                shadow: false,
+                topLevel: false,
+                mutation: {
+                  tagName: "mutation",
+                  children: [],
+                  hasnext: "false",
+                },
+              },
+            ]),
+          ),
+        ];
+
+        asts.forEach((ast) => {
+          expect(ast).toEqual(
+            createScratchCodeOutput([
+              {
+                nodeType: AstNodeType.statement,
+                statementType: StatementNodeType.functionCall,
+                name: "control_stop",
+                arguments: [
+                  {
+                    nodeType: AstNodeType.expression,
+                    expressionType: ExpressionNodeType.literal,
+                    type: "string",
+                    value: "all",
+                  },
+                ],
+              },
+            ]),
+          );
+        });
       });
 
       it("can convert 'control_delete_this_clone' blocks to general AST nodes", () => {
@@ -3650,6 +3670,29 @@ describe("Scratch AST converter", () => {
                 value: "q",
               },
             ],
+          }),
+        );
+      });
+
+      it("can convert 'sensing_keyoptions' blocks with single-element KEY_OPTION to general AST nodes", () => {
+        const ast = convertScratchToGeneralAst(
+          createScratchExpressionInput([
+            {
+              opcode: "sensing_keyoptions",
+              inputs: {},
+              fields: { KEY_OPTION: ["space"] },
+              shadow: false,
+              topLevel: false,
+            },
+          ]),
+        );
+
+        expect(ast).toEqual(
+          createScratchExpressionOutput({
+            nodeType: AstNodeType.expression,
+            expressionType: ExpressionNodeType.literal,
+            type: "string",
+            value: "space",
           }),
         );
       });

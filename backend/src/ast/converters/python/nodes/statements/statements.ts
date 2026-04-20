@@ -5,4 +5,12 @@ import { IPythonAstVisitor } from "../../python-ast-visitor-interface";
 export const convertStatements = (
   visitor: IPythonAstVisitor,
   ctx: StatementsContext,
-): PythonVisitorReturnValue => visitor.getStatements(ctx.statement_list());
+): PythonVisitorReturnValue => {
+  const statementList = ctx.statement_list();
+
+  if (!statementList) {
+    return visitor.getStatements([]);
+  }
+
+  return visitor.getStatements(statementList);
+};

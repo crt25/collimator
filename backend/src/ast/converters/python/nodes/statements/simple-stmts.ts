@@ -5,4 +5,12 @@ import { Simple_stmtsContext } from "../../generated/PythonParser";
 export const convertSimpleStmts = (
   visitor: IPythonAstVisitor,
   ctx: Simple_stmtsContext,
-): PythonVisitorReturnValue => visitor.getStatements(ctx.simple_stmt_list());
+): PythonVisitorReturnValue => {
+  const simpleStmtList = ctx.simple_stmt_list();
+
+  if (!simpleStmtList) {
+    return visitor.getStatements([]);
+  }
+
+  return visitor.getStatements(simpleStmtList);
+};
