@@ -101,7 +101,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       platform,
     );
 
-    app.restored.then(async () => {
+    app.restored.then(() => {
       // Only open the template notebook in edit mode.
       // In solve or show mode, the correct notebook (student task) will be
       // opened by the loadTask/loadSubmission RPC call from the parent.
