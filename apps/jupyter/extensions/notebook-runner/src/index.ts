@@ -100,12 +100,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
       platform.sendRequest.bind(platform),
     );
 
-    installPackagesWithLoadingState(
+    void installPackagesWithLoadingState(
       app,
       contentsManager,
       notebookTracker,
       loadingStateManager,
-    );
+    ).catch((error) => {
+      console.error("Failed to initialize package installation flow:", error);
+    });
 
     app.restored.then(() => {
       // Only open the template notebook in edit mode.
