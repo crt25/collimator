@@ -32,7 +32,19 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
     throw new Error(`Language version ${version} is not supported`);
   }
 
-  const codeCells = input.cells.filter((c) => c.cell_type === "code");
+  const getCellSource = (cell: { source: string | string[] }): string =>
+    Array.isArray(cell.source) ? cell.source.join("\n") : cell.source;
+
+  const hasExecutableCode = (source: string): boolean =>
+    source
+      .split("\n")
+      // check if there's any line that isn't empty or a comment
+      .map((line) => line.trim())
+      .some((line) => line && !line.startsWith("#"));
+
+  const codeCells = input.cells.filter(
+    (c) => c.cell_type === "code" && hasExecutableCode(getCellSource(c)),
+  );
 
   const conversionFunction = match(language)
     .returnType<(input: string, version?: string) => StatementWithFunctions>()
@@ -41,7 +53,7 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
 
   const convertedCodeCells = codeCells.map((cell) => {
     const { node, functionDeclarations } = conversionFunction(
-      Array.isArray(cell.source) ? cell.source.join("\n") : cell.source,
+      getCellSource(cell),
       version,
     );
 
