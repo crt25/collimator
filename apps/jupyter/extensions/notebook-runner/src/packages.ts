@@ -9,6 +9,7 @@ import {
   writeJsonToVirtualFilesystem,
 } from "./utils";
 import { EmbeddedPythonCallbacks } from "./iframe-api";
+import { LoadingStateManager } from "./loading-state";
 
 /**
  * resolver for `_packagesReady`. it is called once the student-task notebook's
@@ -54,47 +55,52 @@ const autoInstallPackages =
       }
     });
 
-    console.debug("Installing packages...", kernel.id);
-    await installOtter(kernel);
+    try {
+      console.debug("Installing packages...", kernel.id);
+      await installOtter(kernel);
+      console.debug("Finished installing packages", kernel.id);
 
-    console.debug("Finished installing packages", kernel.id);
+      const isStudentNotebook =
+        // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
+        // the two checks here.
+        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
+        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
 
-    if (
-      // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
-      // the two checks here.
-      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
-      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1)
-    ) {
-      console.debug(
-        "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
-      );
+      if (isStudentNotebook) {
+        console.debug(
+          "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
+        );
 
-      let notebook: Contents.IModel | null = null;
-      try {
-        notebook = await contentsManager.get(notebookPath, { content: true });
-      } catch (error) {
-        throw new Error(
-          `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
+        let notebook: Contents.IModel | null = null;
+        try {
+          notebook = await contentsManager.get(notebookPath, { content: true });
+        } catch (error) {
+          throw new Error(
+            `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
+          );
+        }
+
+        console.debug(
+          `Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+          kernel.id,
+        );
+
+        await writeJsonToVirtualFilesystem(
+          kernel,
+          EmbeddedPythonCallbacks.studentTaskLocation,
+          notebook.content,
+          studentWorkingDirectory,
+        );
+        console.debug(
+          `Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+          kernel.id,
         );
       }
 
-      console.debug(
-        `Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
-        kernel.id,
-      );
-
-      await writeJsonToVirtualFilesystem(
-        kernel,
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        notebook.content,
-        studentWorkingDirectory,
-      );
-      console.debug(
-        `Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
-        kernel.id,
-      );
-
       _setPackagesReady();
+    } catch (error) {
+      _setPackagesReady();
+      throw error;
     }
   };
 
