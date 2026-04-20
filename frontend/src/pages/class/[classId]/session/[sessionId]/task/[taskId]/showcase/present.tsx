@@ -8,7 +8,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import ShowcasePresentation from "@/components/dashboard/ShowcasePresentation";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -66,9 +66,8 @@ const TaskInstanceShowcasePresent = () => {
         titleParameters={{
           title: task?.title ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Button variant="subtle" onClick={() => router.back()}>
           <HStack>

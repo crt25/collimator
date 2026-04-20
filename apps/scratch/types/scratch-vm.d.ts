@@ -300,6 +300,11 @@ declare class VMExtended extends VM {
   flyoutBlockListener: Function;
   monitorBlockListener: Function;
 
+    /**
+   * Set of block ids that are considered as task blocks.
+    */
+  taskBlockIds?: Set<string>;
+
   // add a custom config
   crtConfig?: import("../src/types/scratch-vm-custom").ScratchCrtConfig;
 }

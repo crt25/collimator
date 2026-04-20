@@ -1,5 +1,5 @@
 {
-  "allowedBlocks": { "motion_movesteps": -1 },
+  "allowedBlocks": { "motion_movesteps": 6 },
   "freezeStateByBlockId": {
     "4_e9[GL:|#*oG]X]FdQm": "frozen",
     "HN(hP9y9,$[q0=u7VklJ": "appendable"

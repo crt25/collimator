@@ -355,25 +355,17 @@ export class TasksService {
         ...updatedReferenceSolutions,
       ];
 
-      await Promise.all(
-        allReferenceSolutionInputs.map(({ file, fileHash }) =>
-          tx.solution.upsert({
-            where: {
-              taskId_hash: {
-                hash: fileHash,
-                taskId: id,
-              },
-            },
-            create: {
-              data: file.buffer,
-              mimeType: file.mimetype,
-              hash: fileHash,
-              taskId: id,
-            },
-            update: {},
-          }),
-        ),
-      );
+      if (allReferenceSolutionInputs.length > 0) {
+        await tx.solution.createMany({
+          data: allReferenceSolutionInputs.map(({ file, fileHash }) => ({
+            taskId: id,
+            hash: fileHash,
+            data: file.buffer,
+            mimeType: file.mimetype,
+          })),
+          skipDuplicates: true,
+        });
+      }
 
       // update the task
       return tx.task.update({

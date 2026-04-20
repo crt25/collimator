@@ -35,7 +35,9 @@ export const patchScratchVm = (vm: VM): void => {
     // and mark them as initial blocks
     for (const target of vm.runtime.targets) {
       for (const block of Object.values(target.blocks._blocks)) {
-        block.isTaskBlock = true;
+        block.isTaskBlock = vm.taskBlockIds
+          ? vm.taskBlockIds.has(block.id)
+          : true;
       }
     }
   });

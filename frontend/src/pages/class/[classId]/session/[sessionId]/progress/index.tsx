@@ -12,7 +12,7 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import PageHeading from "@/components/PageHeading";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import SessionActions from "@/components/session/SessionActions";
 import { ShareModal } from "@/components/modals/ShareModal";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
@@ -87,9 +87,8 @@ const SessionProgress = () => {
         titleParameters={{
           title: session?.title ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />
