@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Language, Submission, Test } from "iframe-rpc-react/src";
+import { Language, Submission, Test, ToastType } from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -261,6 +261,21 @@ const SolveTaskPage = () => {
     [session, task, createSolution],
   );
 
+  const onReceiveMessage = useCallback(
+    (title: string, message: string, type: ToastType) => {
+      if (!title && !message) {
+        return;
+      }
+
+      toaster.create({
+        title,
+        description: message,
+        type,
+      });
+    },
+    [],
+  );
+
   const onReceiveSubmission = useCallback(
     async (submission: Submission) => {
       if (!session || !task) {
@@ -418,6 +433,7 @@ const SolveTaskPage = () => {
               onReceiveSubmission={onReceiveSubmission}
               onReceiveTaskSolution={onReceiveTaskSolution}
               onTrackStudentActivityFailure={setSaveError}
+              onReceiveMessage={onReceiveMessage}
             />
           ) : (
             <FormattedMessage

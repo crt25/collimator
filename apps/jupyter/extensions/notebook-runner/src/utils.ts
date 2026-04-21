@@ -102,9 +102,9 @@ export const setKernelIsPrepared = (
   }
 };
 
-export const addKernelListeners = async (
+export const setupKernel = async (
   sessionContext: ISessionContext,
-  addListeners: (kernel: IKernelConnection) => Promise<void>,
+  setup: (kernel: IKernelConnection) => Promise<void>,
 ): Promise<void> => {
   console.debug("Waiting for session context to be ready...");
   await sessionContext.ready;
@@ -129,7 +129,7 @@ export const addKernelListeners = async (
   }
 
   await kernel.info;
-  await addListeners(kernel);
+  await setup(kernel);
 
   const restartListener = async (
     sessionCtx: ISessionContext,
@@ -169,16 +169,25 @@ export const addKernelListeners = async (
     console.debug("Kernel changed:", kernel.name);
     await kernel.info;
 
-    return addListeners(kernel);
+    return setup(kernel);
   };
 
   sessionContext.kernelChanged.connect(restartListener);
 };
 
+/**
+ * Writes a JSON object to the virtual filesystem of the given kernel.
+ *
+ * @param kernel - The kernel connection to execute the write on.
+ * @param path - The file path to write the JSON to.
+ * @param json - The JSON-serializable object to write.
+ * @param chdir - Optional directory to change to after writing.
+ */
 export const writeJsonToVirtualFilesystem = async (
   kernel: IKernelConnection,
   path: string,
   json: unknown,
+  chdir: string | null = null,
 ): Promise<void> => {
   const jsonString = JSON.stringify(json);
   const utf8Bytes = new TextEncoder().encode(jsonString);
@@ -199,6 +208,14 @@ Path("${path}").parent.mkdir(parents=True, exist_ok=True)
 
 with open("${path}", "wb") as f:
   f.write(json_content)
+
+${
+  chdir
+    ? `import os
+os.chdir("${chdir}")
+`
+    : ""
+}
 `,
   });
 };

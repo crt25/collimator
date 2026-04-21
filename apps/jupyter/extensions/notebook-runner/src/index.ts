@@ -15,9 +15,10 @@ import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
-import { preInstallPackages } from "./packages";
+import { installPackagesWithLoadingState } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 import { enableSentry } from "./sentry";
+import { LoadingStateManager } from "./loading-state";
 
 enableSentry();
 
@@ -66,7 +67,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    preInstallPackages(app, contentsManager, notebookTracker);
     const platform = setupIframeApi(
       new EmbeddedPythonCallbacks(
         mode,
@@ -95,7 +95,21 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     registerCommands(app, notebookTracker, contentsManager, documentManager);
 
-    app.restored.then(async () => {
+    const loadingStateManager = new LoadingStateManager(
+      settingRegistry,
+      platform.sendRequest.bind(platform),
+    );
+
+    void installPackagesWithLoadingState(
+      app,
+      contentsManager,
+      notebookTracker,
+      loadingStateManager,
+    ).catch((error) => {
+      console.error("Failed to initialize package installation flow:", error);
+    });
+
+    app.restored.then(() => {
       // Only open the template notebook in edit mode.
       // In solve or show mode, the correct notebook (student task) will be
       // opened by the loadTask/loadSubmission RPC call from the parent.

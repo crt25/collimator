@@ -12,6 +12,7 @@ import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 import { PostStudentAppActivity } from "./post-student-activity";
 import { ExportTask } from "./export-task";
+import { PostMessage } from "./post-message";
 
 export type { GetHeight } from "./get-height";
 export type { GetSubmission, Submission, Test } from "./get-submission";
@@ -19,6 +20,7 @@ export type { GetTask, Task } from "./get-task";
 export type { LoadSubmission } from "./load-submission";
 export type { LoadTask } from "./load-task";
 export type { PostSubmission } from "./post-submission";
+export { ToastType } from "./post-message";
 export type { SetLocale } from "./set-locale";
 export type { ImportTask } from "./import-task";
 export type { PostStudentAppActivity } from "./post-student-activity";
@@ -35,6 +37,7 @@ type Methods =
   | ImportTask
   | PostStudentAppActivity
   | PostSolutionRun
+  | PostMessage
   | PostTaskSolution;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {

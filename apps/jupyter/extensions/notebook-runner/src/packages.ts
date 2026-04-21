@@ -4,11 +4,40 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { Contents, ContentsManager, KernelMessage } from "@jupyterlab/services";
 import {
-  addKernelListeners,
+  setupKernel,
   executePythonInKernel,
   writeJsonToVirtualFilesystem,
 } from "./utils";
 import { EmbeddedPythonCallbacks } from "./iframe-api";
+import { LoadingStateManager } from "./loading-state";
+
+/**
+ * resolver for `_packagesReady`. it is called once the student-task notebook's
+ * kernel has finished installing packages and copying the notebook content
+ * into the virtual filesystem.
+ */
+let _setPackagesReady: () => void = () => {};
+/**
+ * resolver for `_packagesReady`. it is called if the student-task notebook's
+ * kernel has ran into an error while installing packages and copying the notebook content
+ * into the virtual filesystem.
+ */
+let _setPackagesFailed: (error: unknown) => void = () => {};
+
+/**
+ * this resolves when the student task notebook is ready to run cells against.
+ * this exists because the install runs asynchronously in the background as
+ * soon as the panel opens, but the user can click 'run all' at any point
+ * during that window.
+ */
+const _packagesReady = new Promise<void>((resolve, reject) => {
+  _setPackagesReady = resolve;
+  _setPackagesFailed = reject;
+});
+
+export const waitForPackagesReady = (): Promise<void> => _packagesReady;
+
+const studentWorkingDirectory = "/student";
 
 const autoInstallPackages =
   (contentsManager: ContentsManager, notebookPath: string) =>
@@ -33,43 +62,52 @@ const autoInstallPackages =
       }
     });
 
-    console.debug("Installing packages...", kernel.id);
-    await installOtter(kernel);
-    console.debug("Finished installing packages", kernel.id);
+    try {
+      console.debug("Installing packages...", kernel.id);
+      await installOtter(kernel);
+      console.debug("Finished installing packages", kernel.id);
 
-    if (
-      // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
-      // the two checks here.
-      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
-      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1)
-    ) {
-      console.debug(
-        "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
-      );
+      const isStudentNotebook =
+        // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
+        // the two checks here.
+        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
+        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
 
-      let notebook: Contents.IModel | null = null;
-      try {
-        notebook = await contentsManager.get(notebookPath, { content: true });
-      } catch (error) {
-        throw new Error(
-          `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
+      if (isStudentNotebook) {
+        console.debug(
+          "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
+        );
+
+        let notebook: Contents.IModel | null = null;
+        try {
+          notebook = await contentsManager.get(notebookPath, { content: true });
+        } catch (error) {
+          throw new Error(
+            `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
+          );
+        }
+
+        console.debug(
+          `Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+          kernel.id,
+        );
+
+        await writeJsonToVirtualFilesystem(
+          kernel,
+          EmbeddedPythonCallbacks.studentTaskLocation,
+          notebook.content,
+          studentWorkingDirectory,
+        );
+        console.debug(
+          `Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+          kernel.id,
         );
       }
 
-      await writeJsonToVirtualFilesystem(
-        kernel,
-        EmbeddedPythonCallbacks.studentTaskLocation,
-        notebook.content,
-      );
-      console.debug("Finished copying notebook to the virtual filesystem");
-
-      await executePythonInKernel({
-        kernel,
-        code: `
-import os
-os.chdir("/student")
-`,
-      });
+      _setPackagesReady();
+    } catch (error) {
+      _setPackagesFailed(error);
+      throw error;
     }
   };
 
@@ -77,11 +115,17 @@ const trackSession = (
   contentsManager: ContentsManager,
   sessionContext: ISessionContext,
   notebookPath: string,
-): Promise<void> =>
-  addKernelListeners(
+): Promise<void> => {
+  // start the kernel so the install runs in the background, instead of waiting for something else to trigger it.
+  sessionContext.initialize().catch((error) => {
+    console.error("Failed to initialize session for", notebookPath, error);
+  });
+
+  return setupKernel(
     sessionContext,
     autoInstallPackages(contentsManager, notebookPath),
   );
+};
 
 export const preInstallPackages = async (
   _app: JupyterFrontEnd,
@@ -98,6 +142,26 @@ export const preInstallPackages = async (
 
     trackSession(contentsManager, panel.sessionContext, notebookPath);
   });
+};
+
+export const installPackagesWithLoadingState = async (
+  app: JupyterFrontEnd,
+  contentsManager: ContentsManager,
+  notebookTracker: INotebookTracker,
+  loadingStateManager: LoadingStateManager,
+): Promise<void> => {
+  await loadingStateManager.startLoading();
+
+  preInstallPackages(app, contentsManager, notebookTracker).catch((error) => {
+    console.error("preInstallPackages failed:", error);
+  });
+
+  waitForPackagesReady()
+    .then(() => loadingStateManager.finishLoading(true))
+    .catch((error) => {
+      console.error("Error waiting for packages to be ready:", error);
+      return loadingStateManager.finishLoading(false);
+    });
 };
 
 export const installOtter = async (
