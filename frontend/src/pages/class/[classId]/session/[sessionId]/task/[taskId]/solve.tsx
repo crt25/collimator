@@ -20,7 +20,7 @@ import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
-import { toaster } from "@/components/Toaster";
+import { toastDuration, toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 
@@ -141,7 +141,7 @@ const SolveTaskPage = () => {
             onClick: () => setShowSessionMenu(true),
           },
           closable: true,
-          duration: 60 * 1000,
+          duration: toastDuration,
         });
       } else {
         toaster.info({
@@ -152,7 +152,7 @@ const SolveTaskPage = () => {
             onClick: () => setShowSessionMenu(true),
           },
           closable: true,
-          duration: 60 * 1000,
+          duration: toastDuration,
         });
       }
     },
@@ -271,6 +271,8 @@ const SolveTaskPage = () => {
         title,
         description: message,
         type,
+        duration: toastDuration,
+        closable: true,
       });
     },
     [],
