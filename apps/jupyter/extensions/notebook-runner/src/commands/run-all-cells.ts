@@ -4,6 +4,8 @@ import { NotebookRunnerState } from "../notebook-runner-state";
 import { runAllCellsCommand } from "../command";
 import { waitForPackagesReady } from "../packages";
 import { sendMessage } from "../send-message";
+import { messages } from "../i18n/messages";
+import { formatMessage } from "../i18n/intl";
 import { AppCrtIframeApi, ToastType } from "../iframe-rpc/src";
 
 export const registerRunAllCellsCommand = (
@@ -32,8 +34,8 @@ export const registerRunAllCellsCommand = (
         console.error("Cannot run cells, package installation failed:", error);
 
         await sendMessage(
-          "Package Installation Failed",
-          "Cannot run cells because package installation failed. Please reload the page and try again.",
+          formatMessage(messages.packageInstallationFailedTitle),
+          formatMessage(messages.packageInstallationFailedBody),
           ToastType.Error,
           sendRequest,
         ).catch((messageError) => {

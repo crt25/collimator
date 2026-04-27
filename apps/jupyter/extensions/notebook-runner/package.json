@@ -38,7 +38,11 @@
     "watch": "run-p watch:src watch:labextension",
     "watch:src": "tsc -w --sourceMap",
     "watch:labextension": "jupyter labextension watch .",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\" ./lib && sentry-cli sourcemaps upload --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\"  ./lib"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\" ./lib && sentry-cli sourcemaps upload --org hep-vaud --project crt-jupyter --ignore \"__tests__/**/*\"  ./lib",
+    "i18n:extract": "formatjs extract 'src/**/*.{ts,tsx}' --ignore='src/__tests__/**' --ignore='src/iframe-rpc/**' --format crowdin --out-file src/content/locales/en.json",
+    "i18n:compile": "formatjs compile-folder --ast --format crowdin src/content/locales src/content/compiled-locales",
+    "i18n:fill": "node ./scripts/fill-locales.mjs",
+    "i18n:update": "jlpm i18n:extract && jlpm i18n:fill && jlpm i18n:compile"
   },
   "dependencies": {
     "@jupyterlab/application": "^4.0.0",
@@ -49,11 +53,13 @@
     "@jupyterlab/services": "^7.4.4",
     "@sentry/browser": "^10.32.1",
     "eslint-plugin-import": "^2.32.0",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "react-intl": "^7.1.10"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
+    "@formatjs/cli": "^6.10.0",
     "@jupyterlab/builder": "^4.0.0",
     "@jupyterlab/testutils": "^4.0.0",
     "@sentry/cli": "2",

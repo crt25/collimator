@@ -21,6 +21,9 @@ import { enableSentry } from "./sentry";
 import { LoadingStateManager } from "./loading-state";
 import { sendMessage } from "./send-message";
 import { ToastType } from "./iframe-rpc/src";
+import { messages } from "./i18n/messages";
+import { formatMessage, setIntlLocale } from "./i18n/intl";
+import { toCrtLocale } from "./languages";
 
 enableSentry();
 
@@ -79,6 +82,25 @@ const plugin: JupyterFrontEndPlugin<void> = {
       ),
     );
 
+    try {
+      const translationSettings = await settingRegistry.load(
+        EmbeddedPythonCallbacks.pluginId,
+      );
+
+      const rawLocale = translationSettings.get("locale").composite;
+      if (typeof rawLocale === "string") {
+        setIntlLocale(toCrtLocale(rawLocale));
+      }
+    } catch (error) {
+      console.error("Failed to read locale for notebook-runner i18n:", error);
+      await sendMessage(
+        formatMessage(messages.localeReadFailedTitle),
+        formatMessage(messages.localeReadFailedBody),
+        ToastType.Error,
+        platform.sendRequest.bind(platform),
+      );
+    }
+
     if (mode === Mode.solve) {
       TaskAutoSaver.trackNotebook(
         notebookTracker,
@@ -119,8 +141,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       console.error("Failed to initialize package installation flow:", error);
 
       await sendMessage(
-        "Initialization Failed",
-        "Failed to initialize the notebook environment. Please reload the page to try again.",
+        formatMessage(messages.initFailedTitle),
+        formatMessage(messages.initFailedBody),
         ToastType.Error,
         platform.sendRequest.bind(platform),
       ).catch((messageError) => {

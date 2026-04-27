@@ -1,0 +1,38 @@
+{
+  "crt.notebookRunner.initFailedBody": {
+    "message": "Échec de l'initialisation de l'environnement du notebook. Veuillez recharger la page pour réessayer."
+  },
+  "crt.notebookRunner.initFailedTitle": {
+    "message": "Échec de l'initialisation"
+  },
+  "crt.notebookRunner.loadingTaskBody": {
+    "message": "Veuillez patienter pendant la préparation de la tâche. L'exécution du code est temporairement désactivée pendant l'installation des paquets..."
+  },
+  "crt.notebookRunner.loadingTaskTitle": {
+    "message": "Chargement de la tâche"
+  },
+  "crt.notebookRunner.localeReadFailedBody": {
+    "message": "Une erreur s'est produite lors de la lecture de la locale pour la traduction. Veuillez recharger la page ou contacter le support."
+  },
+  "crt.notebookRunner.localeReadFailedTitle": {
+    "message": "Échec de la traduction"
+  },
+  "crt.notebookRunner.packageInstallationFailedBody": {
+    "message": "Impossible d'exécuter les cellules car l'installation des paquets a échoué. Veuillez recharger la page et réessayer."
+  },
+  "crt.notebookRunner.packageInstallationFailedTitle": {
+    "message": "Échec de l'installation des paquets"
+  },
+  "crt.notebookRunner.taskReadyBody": {
+    "message": "Tous les paquets ont été installés avec succès. L'exécution du code est désormais activée."
+  },
+  "crt.notebookRunner.taskReadyTitle": {
+    "message": "Tâche prête"
+  },
+  "crt.notebookRunner.taskSetupFailedBody": {
+    "message": "Une erreur s'est produite lors de la préparation de la tâche. Veuillez recharger la page ou contacter le support."
+  },
+  "crt.notebookRunner.taskSetupFailedTitle": {
+    "message": "Échec de la configuration de la tâche"
+  }
+}

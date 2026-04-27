@@ -1,7 +1,10 @@
 import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { NotebookActions } from "@jupyterlab/notebook";
+import { MessageDescriptor } from "react-intl";
 import { AppCrtIframeApi, ToastType } from "./iframe-rpc/src";
 import { sendMessage } from "./send-message";
+import { messages } from "./i18n/messages";
+import { formatMessage } from "./i18n/intl";
 
 const executionToolbarButtons = new Set(["run", "advance"]);
 const alwaysDisabledToolbarButtons = new Set([
@@ -10,9 +13,6 @@ const alwaysDisabledToolbarButtons = new Set([
   "save",
   "interrupt",
 ]);
-
-const loadingMessage =
-  "Please wait while the task is being prepared. Code execution is temporarily disabled while packages are being installed...";
 
 // these are the methods on NotebookActions we want to block while packages install.
 // every keyboard shortcut, toolbar click, and command palette action ends up calling one of them.
@@ -63,9 +63,18 @@ export class LoadingStateManager {
     await settings.set("toolbar", updated);
   }
 
-  private notify(title: string, body: string, type: ToastType): Promise<void> {
-    return sendMessage(title, body, type, this.sendRequest).catch((error) => {
-      console.error(`Failed to show "${title}" notification:`, error);
+  private notify(
+    title: MessageDescriptor,
+    body: MessageDescriptor,
+    type: ToastType,
+  ): Promise<void> {
+    return sendMessage(
+      formatMessage(title),
+      formatMessage(body),
+      type,
+      this.sendRequest,
+    ).catch((error) => {
+      console.error(`Failed to show "${title.id}" notification:`, error);
     });
   }
 
@@ -75,7 +84,11 @@ export class LoadingStateManager {
       this.originalActions[name] = original;
 
       NotebookActions[name] = async (..._args: unknown[]): Promise<boolean> => {
-        await this.notify("Loading Task", loadingMessage, ToastType.Info);
+        await this.notify(
+          messages.loadingTaskTitle,
+          messages.loadingTaskBody,
+          ToastType.Info,
+        );
         return Promise.resolve(false);
       };
     }
@@ -103,7 +116,11 @@ export class LoadingStateManager {
     this.blockNotebookActions();
 
     await this.setExecutionButtonsDisabled(true);
-    await this.notify("Loading Task", loadingMessage, ToastType.Info);
+    await this.notify(
+      messages.loadingTaskTitle,
+      messages.loadingTaskBody,
+      ToastType.Info,
+    );
   }
 
   async finishLoading(success: boolean): Promise<void> {
@@ -119,15 +136,15 @@ export class LoadingStateManager {
       await this.setExecutionButtonsDisabled(false);
 
       await this.notify(
-        "Task Ready",
-        "All packages installed successfully. Code execution is now enabled.",
+        messages.taskReadyTitle,
+        messages.taskReadyBody,
         ToastType.Success,
       );
     } else {
       // leave the buttons disabled as running cells on a broken setup is worse than not being able to run them
       await this.notify(
-        "Task Setup Failed",
-        "An error occurred while preparing the task. Please reload the page or contact support.",
+        messages.taskSetupFailedTitle,
+        messages.taskSetupFailedBody,
         ToastType.Error,
       );
     }
