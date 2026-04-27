@@ -98,7 +98,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
         formatMessage(messages.localeReadFailedBody),
         ToastType.Error,
         platform.sendRequest.bind(platform),
-      );
+      ).catch((error) => {
+        console.error("Failed to show locale read error notification", error);
+      });
     }
 
     if (mode === Mode.solve) {
