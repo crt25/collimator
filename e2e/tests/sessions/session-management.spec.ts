@@ -98,6 +98,30 @@ test.describe("session management", () => {
           updatedSessionName,
         );
       });
+
+      test("removed task is not surfaced when the session is re-fetched", async ({
+        page: pwPage,
+      }) => {
+        const form = await SessionFormPageModel.create(pwPage);
+        const before = await form.getSelectedTaskIds();
+        expect(before.length).toBeGreaterThan(0);
+
+        const removedTaskId = before[before.length - 1];
+        await form.removeTask(removedTaskId);
+        expect((await form.getSelectedTaskIds()).length).toBe(
+          before.length - 1,
+        );
+
+        await form.submitButton.click();
+
+        await pwPage.reload();
+
+        const refreshedForm = await SessionFormPageModel.create(pwPage);
+        const after = await refreshedForm.getSelectedTaskIds();
+
+        expect(after).not.toContain(removedTaskId);
+        expect(after.length).toBe(before.length - 1);
+      });
     });
 
     test.describe("/class/{id}/session/{id}/progress", () => {
