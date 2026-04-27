@@ -37,6 +37,18 @@ declare namespace ScratchBlocksExtended {
     type: string;
   }
 
+  interface ContextMenuOption {
+    text: string;
+    enabled: boolean;
+    callback: () => void;
+  }
+
+  interface ContextMenuStatic {
+    blockDuplicateOption: (block: Block, event: Event) => ContextMenuOption;
+  }
+
+  const ContextMenu: ContextMenuStatic;
+
   class Flyout extends ScratchBlocks.Flyout {
     getWorkspace(): Workspace;
     setRecyclingEnabled(enabled: boolean);
@@ -46,6 +58,7 @@ declare namespace ScratchBlocksExtended {
   class Workspace extends ScratchBlocks.Workspace {
     getFlyout(): Flyout | null;
     getBlockById(id: string): Block | null;
+    getAllBlocks(): Block[];
 
     /**
      * Register a callback function associated with a given key, for clicks on

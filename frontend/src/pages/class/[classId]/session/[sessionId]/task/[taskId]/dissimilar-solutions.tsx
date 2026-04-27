@@ -13,7 +13,7 @@ import DissimilarityAnalysis from "@/components/dashboard/DissimilarityAnalysis"
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
-import AnonymizationToggle from "@/components/AnonymizationToggle";
+
 import PageFooter from "@/components/PageFooter";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 
@@ -57,9 +57,8 @@ const DissimilarSolutions = () => {
         titleParameters={{
           title: task?.title ?? "",
         }}
-      >
-        <AnonymizationToggle />
-      </Header>
+        showAnonymizationToggle={session?.isAnonymous === false}
+      />
       <Container>
         <Breadcrumbs>
           <CrtNavigation breadcrumb klass={klass} />

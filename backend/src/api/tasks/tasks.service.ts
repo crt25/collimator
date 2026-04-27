@@ -11,19 +11,34 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Modify } from "src/utilities/modify";
 import { PrismaTransactionClient } from "src/prisma/types";
 import { ReferenceSolutionId } from "../solutions/dto";
+import { ErrorCode } from "../exceptions/error-codes";
+import { ApiError } from "../exceptions/exceptions";
 import { TaskId } from "./dto";
 
-export class TaskInUseByClassOrLessonWithStudentsError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "TaskInUseByClassOrLessonWithStudentsError";
+export class TaskInUseByClassOrLessonWithStudentsError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+  ) {
+    super(message, errorCode);
   }
 }
 
-export class TaskInOtherUsersLessonError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = "TaskInOtherUsersLessonError";
+export class DuplicateReferenceSolutionError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
+  ) {
+    super(message, errorCode);
+  }
+}
+
+export class TaskInOtherUsersLessonError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+  ) {
+    super(message, errorCode);
   }
 }
 
@@ -307,6 +322,17 @@ export class TasksService {
           studentSolutions: { none: {} },
         };
 
+    const fileHashes = solutionsWithFile.map(({ fileHash }) =>
+      fileHash.toString("hex"),
+    );
+
+    const uniqueFileHashes = new Set(fileHashes);
+    if (uniqueFileHashes.size !== fileHashes.length) {
+      throw new DuplicateReferenceSolutionError(
+        ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
+      );
+    }
+
     return this.prisma.$transaction(async (tx) => {
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
@@ -324,6 +350,23 @@ export class TasksService {
         where: orphanedSolutionsWhere,
       });
 
+      const allReferenceSolutionInputs = [
+        ...newReferenceSolutions,
+        ...updatedReferenceSolutions,
+      ];
+
+      if (allReferenceSolutionInputs.length > 0) {
+        await tx.solution.createMany({
+          data: allReferenceSolutionInputs.map(({ file, fileHash }) => ({
+            taskId: id,
+            hash: fileHash,
+            data: file.buffer,
+            mimeType: file.mimetype,
+          })),
+          skipDuplicates: true,
+        });
+      }
+
       // update the task
       return tx.task.update({
         data: {
@@ -331,82 +374,60 @@ export class TasksService {
           mimeType,
           data,
           referenceSolutions: {
-            create: newReferenceSolutions.map(
-              ({ solution, file, fileHash }) => ({
+            create: newReferenceSolutions.map(({ solution, fileHash }) => ({
+              title: solution.title,
+              description: solution.description,
+              isInitial: solution.isInitial,
+              tests: {
+                connectOrCreate: this.getExistingTests(solution.tests).map(
+                  (test) => ({
+                    where: { id: test.id },
+                    create: test,
+                  }),
+                ),
+                create: this.getNewTests(solution.tests),
+              },
+              solution: {
+                connect: {
+                  taskId_hash: {
+                    hash: fileHash,
+                    taskId: id,
+                  },
+                },
+              },
+            })),
+            update: updatedReferenceSolutions.map(({ solution, fileHash }) => ({
+              where: { id: solution.id },
+              data: {
                 title: solution.title,
                 description: solution.description,
                 isInitial: solution.isInitial,
                 tests: {
-                  connectOrCreate: this.getExistingTests(solution.tests).map(
-                    (test) => ({
-                      where: { id: test.id },
-                      create: test,
-                    }),
-                  ),
+                  deleteMany: {
+                    id: {
+                      notIn: this.getExistingTests(solution.tests).map(
+                        ({ id }) => id,
+                      ),
+                    },
+                  },
+                  update: this.getExistingTests(solution.tests).map((test) => ({
+                    where: {
+                      id: test.id,
+                    },
+                    data: test,
+                  })),
                   create: this.getNewTests(solution.tests),
                 },
                 solution: {
-                  connectOrCreate: {
-                    where: {
-                      taskId_hash: {
-                        hash: fileHash,
-                        taskId: id,
-                      },
-                    },
-                    create: {
-                      data: file.buffer,
-                      mimeType: file.mimetype,
+                  connect: {
+                    taskId_hash: {
                       hash: fileHash,
                       taskId: id,
                     },
                   },
                 },
-              }),
-            ),
-            update: updatedReferenceSolutions.map(
-              ({ solution, file, fileHash }) => ({
-                where: { id: solution.id },
-                data: {
-                  title: solution.title,
-                  description: solution.description,
-                  isInitial: solution.isInitial,
-                  tests: {
-                    deleteMany: {
-                      id: {
-                        notIn: this.getExistingTests(solution.tests).map(
-                          ({ id }) => id,
-                        ),
-                      },
-                    },
-                    update: this.getExistingTests(solution.tests).map(
-                      (test) => ({
-                        where: {
-                          id: test.id,
-                        },
-                        data: test,
-                      }),
-                    ),
-                    create: this.getNewTests(solution.tests),
-                  },
-                  solution: {
-                    connectOrCreate: {
-                      where: {
-                        taskId_hash: {
-                          hash: fileHash,
-                          taskId: id,
-                        },
-                      },
-                      create: {
-                        data: file.buffer,
-                        mimeType: file.mimetype,
-                        hash: fileHash,
-                        taskId: id,
-                      },
-                    },
-                  },
-                },
-              }),
-            ),
+              },
+            })),
           },
         },
         where: { id },

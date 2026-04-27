@@ -26,7 +26,7 @@ import { fromQueryResults } from "../helpers";
 import { AdminOnly } from "../authentication/role.decorator";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { ErrorCode } from "../error-codes/error-codes";
+import { ErrorCode } from "../exceptions/error-codes";
 import {
   CreateUserDto,
   DeletedUserDto,

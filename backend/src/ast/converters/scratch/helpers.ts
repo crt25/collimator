@@ -216,6 +216,7 @@ const getParametersFromFields = (fields: Block["fields"]): ExpressionNode[] => {
           .with([P.string, P.string], (value) =>
             createVariableExpressionBlock(value[0]),
           )
+          .with([P.string], (value) => createLiteralNode("string", value[0]))
           .otherwise(() => {
             throw new Error(
               `Unexpected values for name '${parameterName}': '${JSON.stringify(value)}'`,
@@ -233,7 +234,7 @@ export const convertChildWithReferenceId = <T extends TreeNode, ReturnType>(
 ): ReturnType => {
   const reference = getReference(block);
   if (!reference) {
-    if (fallbackValue) {
+    if (fallbackValue !== undefined) {
       return fallbackValue;
     }
 
@@ -244,7 +245,7 @@ export const convertChildWithReferenceId = <T extends TreeNode, ReturnType>(
   const child = block.__children.find((b) => b.__id === id);
 
   if (!child) {
-    if (fallbackValue) {
+    if (fallbackValue !== undefined) {
       return fallbackValue;
     }
 

@@ -25,6 +25,11 @@ const errorMessages = defineMessages({
     id: "ApiError.GENERIC_ERROR",
     defaultMessage: "An unexpected error occurred. Please try again later.",
   },
+  DUPLICATE_REFERENCE_SOLUTION: {
+    id: "ApiError.DUPLICATE_REFERENCE_SOLUTION",
+    defaultMessage:
+      "Duplicate reference solutions detected. Please ensure all reference solutions are unique.",
+  },
 }) satisfies ErrorMessages;
 
 export function getErrorMessageDescriptor(

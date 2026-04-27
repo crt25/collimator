@@ -28,12 +28,14 @@ const Header = ({
   description,
   children,
   hideSignIn = false,
+  showAnonymizationToggle = false,
 }: {
   title: MessageDescriptor;
   titleParameters?: Record<string, PrimitiveType>;
   description?: MessageDescriptor;
   children?: React.ReactNode;
   hideSignIn?: boolean;
+  showAnonymizationToggle?: boolean;
 }) => {
   return (
     <>
@@ -47,7 +49,12 @@ const Header = ({
         <Container>
           <HeaderInner>
             <HeaderLogo />
-            <HeaderMenu hideSignIn={hideSignIn}>{children}</HeaderMenu>
+            <HeaderMenu
+              hideSignIn={hideSignIn}
+              showAnonymizationToggle={showAnonymizationToggle}
+            >
+              {children}
+            </HeaderMenu>
           </HeaderInner>
         </Container>
       </StyledHeader>

@@ -1,10 +1,17 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CoreModule } from "src/core/core.module";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
-import { TasksService } from "./tasks.service";
+import { PrismaService } from "src/prisma/prisma.service";
+import { ErrorCode } from "../exceptions/error-codes";
+import {
+  TasksService,
+  DuplicateReferenceSolutionError,
+  ReferenceSolutionInput,
+} from "./tasks.service";
 
 describe("TasksService", () => {
   let service: TasksService;
+  let taskId: number;
   let module: TestingModule;
 
   beforeEach(async () => {
@@ -14,6 +21,18 @@ describe("TasksService", () => {
     }).compile();
 
     service = module.get<TasksService>(TasksService);
+    const prisma = module.get<PrismaService>(PrismaService);
+
+    const task = await prisma.task.create({
+      data: {
+        title: "Test Task",
+        description: "A task for testing",
+        type: "SCRATCH",
+        mimeType: "application/pdf",
+        data: Buffer.from("test-data"),
+      },
+    });
+    taskId = task.id;
   });
 
   afterEach(() => {
@@ -22,5 +41,78 @@ describe("TasksService", () => {
 
   it("should be defined", () => {
     expect(service).toBeDefined();
+  });
+
+  describe("update", () => {
+    const duplicateBuffer = Buffer.from("same-content");
+
+    const makeMulterFile = (content: Buffer): Express.Multer.File => ({
+      buffer: content,
+      mimetype: "application/octet-stream",
+      fieldname: "file",
+      originalname: "solution.txt",
+      encoding: "utf-8",
+      size: content.length,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      stream: null as any,
+      destination: "",
+      filename: "",
+      path: "",
+    });
+
+    const makeReferenceSolution = (
+      overrides: Partial<ReferenceSolutionInput> = {},
+    ): ReferenceSolutionInput => ({
+      title: "Solution",
+      description: "A solution",
+      isInitial: false,
+      tests: [],
+      ...overrides,
+    });
+
+    const duplicateReferenceSolutions = [
+      makeReferenceSolution({ title: "Solution A" }),
+      makeReferenceSolution({ title: "Solution B" }),
+    ];
+
+    const duplicateFiles = [
+      makeMulterFile(duplicateBuffer),
+      makeMulterFile(duplicateBuffer),
+    ];
+
+    it("should throw DuplicateReferenceSolutionError with correct error code when two reference solutions have the same file content", async () => {
+      const promise = service.update(
+        taskId,
+        { title: "Updated Task" },
+        "application/pdf",
+        new Uint8Array(duplicateBuffer),
+        duplicateReferenceSolutions,
+        duplicateFiles,
+      );
+
+      await expect(promise).rejects.toThrow(DuplicateReferenceSolutionError);
+      await expect(promise).rejects.toMatchObject({
+        errorCode: ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
+      });
+    });
+
+    it("should not throw DuplicateReferenceSolutionError when reference solutions have different file content", async () => {
+      const files = [
+        makeMulterFile(Buffer.from("content-a")),
+        makeMulterFile(Buffer.from("content-b")),
+      ];
+
+      await service.update(
+        taskId,
+        { title: "Updated Task" },
+        "application/pdf",
+        new Uint8Array(Buffer.from("task-data")),
+        duplicateReferenceSolutions,
+        files,
+      );
+
+      const updatedTask = await service.findByIdOrThrow(taskId);
+      expect(updatedTask.title).toBe("Updated Task");
+    });
   });
 });

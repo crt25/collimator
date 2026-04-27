@@ -6,6 +6,7 @@ import { chakra } from "@chakra-ui/react";
 import { useIsAuthenticated } from "@/hooks/useIsAuthenticated";
 import AvatarMenu from "../Avatar";
 import LanguageChooser from "../LanguageChooser";
+import AnonymizationToggle from "../AnonymizationToggle";
 
 const Menu = chakra("menu", {
   base: {
@@ -21,15 +22,22 @@ const Menu = chakra("menu", {
 const HeaderMenu = ({
   children,
   hideSignIn = false,
+  showAnonymizationToggle = false,
 }: {
   children?: React.ReactNode;
   hideSignIn?: boolean;
+  showAnonymizationToggle?: boolean;
 }) => {
   const isAuthenticated = useIsAuthenticated();
 
   return (
     <Menu>
       {children ?? null}
+      {showAnonymizationToggle && (
+        <li>
+          <AnonymizationToggle />
+        </li>
+      )}
       <li>
         <LanguageChooser />
       </li>

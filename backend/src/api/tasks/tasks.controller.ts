@@ -36,7 +36,7 @@ import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-intercept
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { ErrorCode, ErrorCodeDto } from "../error-codes/error-codes";
+import { ErrorCode, ErrorCodeDto } from "../exceptions/error-codes";
 import {
   CreateTaskDto,
   ExistingTaskDto,
@@ -48,6 +48,7 @@ import {
   TaskInUseByClassOrLessonWithStudentsError,
   TasksService,
   TaskInOtherUsersLessonError,
+  DuplicateReferenceSolutionError,
 } from "./tasks.service";
 import { ExistingTaskWithReferenceSolutionsDto } from "./dto/existing-task-with-reference-solutions.dto";
 
@@ -264,6 +265,9 @@ export class TasksController {
     required: false,
     type: Boolean,
   })
+  @ApiBadRequestResponse({
+    description: "Duplicate reference solution file content",
+  })
   async update(
     @AuthenticatedUser() user: User,
     @Param("id", ParseIntPipe) id: TaskId,
@@ -322,6 +326,11 @@ export class TasksController {
       if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
         throw new ConflictException({
           errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      if (error instanceof DuplicateReferenceSolutionError) {
+        throw new BadRequestException({
+          errorCode: ErrorCode.DUPLICATE_REFERENCE_SOLUTION,
         });
       }
       throw error;
