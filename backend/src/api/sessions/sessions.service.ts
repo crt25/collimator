@@ -11,6 +11,7 @@ import { TaskProgress } from "./task-progress";
 
 const compactInclude = {
   tasks: {
+    where: { deletedAt: null },
     orderBy: { index: "asc" as Prisma.SortOrder },
     select: {
       taskId: true,
@@ -22,6 +23,7 @@ const compactInclude = {
 
 const fullInclude = {
   tasks: {
+    where: { deletedAt: null },
     orderBy: { index: "asc" as Prisma.SortOrder },
     select: {
       index: true,
@@ -151,7 +153,7 @@ export class SessionsService {
               taskId,
             },
           },
-          update: { index },
+          update: { index, deletedAt: null },
           create: {
             taskId,
             index,
@@ -271,6 +273,7 @@ export class SessionsService {
           : { id: sourceSessionId, deletedAt: null },
         include: {
           tasks: {
+            where: { deletedAt: null },
             orderBy: { index: "asc" },
             select: {
               taskId: true,
