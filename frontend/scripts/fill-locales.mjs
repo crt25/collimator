@@ -36,7 +36,7 @@ for (const locale of locales) {
     ...deprecatedMessages,
     ...defaultMessagesKeys.map((key) => [
       key,
-      messages[key] || defaultMessages[key],
+      messages[key] ?? defaultMessages[key],
     ]),
   ]);
 

@@ -10,6 +10,7 @@ import {
   useIframeChild,
   PlatformCrtIframeApi,
   Submission,
+  ToastType,
 } from "iframe-rpc-react/src";
 import { FormattedMessage } from "react-intl";
 import ProgressSpinner from "./ProgressSpinner";
@@ -75,6 +76,7 @@ export interface Props {
   onAppError?: (error: Error) => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
+  onReceiveMessage?: (title: string, message: string, type: ToastType) => void;
   onReceiveTaskSolution?: (solution: Blob) => void;
   onStudentAppActivity?: (
     action: string,
@@ -91,6 +93,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     onReceiveSubmission,
     onSolutionRun,
     onStudentAppActivity,
+    onReceiveMessage,
     onReceiveTaskSolution,
   },
   ref,
@@ -127,6 +130,13 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       },
       postSolutionRun: async (request) => {
         onSolutionRun?.(request.params);
+      },
+      postMessage: async (request) => {
+        onReceiveMessage?.(
+          request.params.title,
+          request.params.message,
+          request.params.type,
+        );
       },
       postStudentAppActivity: async (request) => {
         onStudentAppActivity?.(

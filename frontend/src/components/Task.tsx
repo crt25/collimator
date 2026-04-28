@@ -1,6 +1,6 @@
 import { RefObject, useCallback, useEffect } from "react";
 import { chakra, Dialog, Icon } from "@chakra-ui/react";
-import { Submission } from "iframe-rpc-react/src";
+import { Submission, ToastType } from "iframe-rpc-react/src";
 import { FormattedMessage } from "react-intl";
 import { IoMdClose } from "react-icons/io";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
@@ -36,6 +36,7 @@ interface Props {
   onAppAvailable?: () => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onReceiveTaskSolution?: (solution: Blob) => void;
+  onReceiveMessage?: (title: string, message: string, type: ToastType) => void;
   onTrackStudentActivityFailure?: (failing: boolean) => void;
 }
 
@@ -50,6 +51,7 @@ const Task = ({
   onAppAvailable,
   onReceiveSubmission,
   onReceiveTaskSolution,
+  onReceiveMessage,
   onTrackStudentActivityFailure,
 }: Props) => {
   const [trackStudentActivity, trackActivityFailed] = useTrackStudentActivity();
@@ -139,6 +141,7 @@ const Task = ({
         onSolutionRun={onSolutionRun}
         onStudentAppActivity={onStudentAppActivity}
         onReceiveTaskSolution={onReceiveTaskSolution}
+        onReceiveMessage={onReceiveMessage}
       />
     </TaskWrapper>
   );

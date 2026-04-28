@@ -1,0 +1,74 @@
+{
+  "crt.notebookRunner.initFailedBody": [
+    {
+      "type": 0,
+      "value": "Échec de l'initialisation de l'environnement du notebook. Veuillez recharger la page pour réessayer."
+    }
+  ],
+  "crt.notebookRunner.initFailedTitle": [
+    {
+      "type": 0,
+      "value": "Échec de l'initialisation"
+    }
+  ],
+  "crt.notebookRunner.loadingTaskBody": [
+    {
+      "type": 0,
+      "value": "Veuillez patienter pendant la préparation de la tâche. L'exécution du code est temporairement désactivée pendant l'installation des paquets..."
+    }
+  ],
+  "crt.notebookRunner.loadingTaskTitle": [
+    {
+      "type": 0,
+      "value": "Chargement de la tâche"
+    }
+  ],
+  "crt.notebookRunner.localeReadFailedBody": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de la lecture de la locale pour la traduction. Veuillez recharger la page ou contacter le support."
+    }
+  ],
+  "crt.notebookRunner.localeReadFailedTitle": [
+    {
+      "type": 0,
+      "value": "Échec de la traduction"
+    }
+  ],
+  "crt.notebookRunner.packageInstallationFailedBody": [
+    {
+      "type": 0,
+      "value": "Impossible d'exécuter les cellules car l'installation des paquets a échoué. Veuillez recharger la page et réessayer."
+    }
+  ],
+  "crt.notebookRunner.packageInstallationFailedTitle": [
+    {
+      "type": 0,
+      "value": "Échec de l'installation des paquets"
+    }
+  ],
+  "crt.notebookRunner.taskReadyBody": [
+    {
+      "type": 0,
+      "value": "Tous les paquets ont été installés avec succès. L'exécution du code est désormais activée."
+    }
+  ],
+  "crt.notebookRunner.taskReadyTitle": [
+    {
+      "type": 0,
+      "value": "Tâche prête"
+    }
+  ],
+  "crt.notebookRunner.taskSetupFailedBody": [
+    {
+      "type": 0,
+      "value": "Une erreur s'est produite lors de la préparation de la tâche. Veuillez recharger la page ou contacter le support."
+    }
+  ],
+  "crt.notebookRunner.taskSetupFailedTitle": [
+    {
+      "type": 0,
+      "value": "Échec de la configuration de la tâche"
+    }
+  ]
+}

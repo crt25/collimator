@@ -9,10 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io";
 
+export const toastDuration = 2500;
+
 export const toaster = createToaster({
   placement: "top",
   pauseOnPageIdle: true,
-  duration: 5000,
+  duration: toastDuration,
 });
 
 const StyledCloseTrigger = chakra(Toast.CloseTrigger, {

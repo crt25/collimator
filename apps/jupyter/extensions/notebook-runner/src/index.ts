@@ -15,9 +15,15 @@ import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
 import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
-import { preInstallPackages } from "./packages";
+import { installPackagesWithLoadingState } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
 import { enableSentry } from "./sentry";
+import { LoadingStateManager } from "./loading-state";
+import { sendMessage } from "./send-message";
+import { ToastType } from "./iframe-rpc/src";
+import { messages } from "./i18n/messages";
+import { formatMessage, setIntlLocale } from "./i18n/intl";
+import { toCrtLocale } from "./languages";
 
 enableSentry();
 
@@ -66,7 +72,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    preInstallPackages(app, contentsManager, notebookTracker);
     const platform = setupIframeApi(
       new EmbeddedPythonCallbacks(
         mode,
@@ -76,6 +81,27 @@ const plugin: JupyterFrontEndPlugin<void> = {
         settingRegistry,
       ),
     );
+
+    try {
+      const translationSettings = await settingRegistry.load(
+        EmbeddedPythonCallbacks.pluginId,
+      );
+
+      const rawLocale = translationSettings.get("locale").composite;
+      if (typeof rawLocale === "string") {
+        setIntlLocale(toCrtLocale(rawLocale));
+      }
+    } catch (error) {
+      console.error("Failed to read locale for notebook-runner i18n:", error);
+      await sendMessage(
+        formatMessage(messages.localeReadFailedTitle),
+        formatMessage(messages.localeReadFailedBody),
+        ToastType.Error,
+        platform.sendRequest.bind(platform),
+      ).catch((error) => {
+        console.error("Failed to show locale read error notification", error);
+      });
+    }
 
     if (mode === Mode.solve) {
       TaskAutoSaver.trackNotebook(
@@ -93,9 +119,43 @@ const plugin: JupyterFrontEndPlugin<void> = {
       documentManager,
     );
 
-    registerCommands(app, notebookTracker, contentsManager, documentManager);
+    registerCommands(
+      app,
+      notebookTracker,
+      contentsManager,
+      documentManager,
+      platform.sendRequest.bind(platform),
+    );
 
-    app.restored.then(async () => {
+    const loadingStateManager = new LoadingStateManager(
+      settingRegistry,
+      platform.sendRequest.bind(platform),
+    );
+
+    try {
+      await installPackagesWithLoadingState(
+        app,
+        contentsManager,
+        notebookTracker,
+        loadingStateManager,
+      );
+    } catch (error) {
+      console.error("Failed to initialize package installation flow:", error);
+
+      await sendMessage(
+        formatMessage(messages.initFailedTitle),
+        formatMessage(messages.initFailedBody),
+        ToastType.Error,
+        platform.sendRequest.bind(platform),
+      ).catch((messageError) => {
+        console.error(
+          "Failed to show initialization error notification:",
+          messageError,
+        );
+      });
+    }
+
+    app.restored.then(() => {
       // Only open the template notebook in edit mode.
       // In solve or show mode, the correct notebook (student task) will be
       // opened by the loadTask/loadSubmission RPC call from the parent.

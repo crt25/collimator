@@ -1,0 +1,38 @@
+{
+  "crt.notebookRunner.initFailedBody": {
+    "message": "Failed to initialize the notebook environment. Please reload the page to try again."
+  },
+  "crt.notebookRunner.initFailedTitle": {
+    "message": "Initialization Failed"
+  },
+  "crt.notebookRunner.loadingTaskBody": {
+    "message": "Please wait while the task is being prepared. Code execution is temporarily disabled while packages are being installed..."
+  },
+  "crt.notebookRunner.loadingTaskTitle": {
+    "message": "Loading Task"
+  },
+  "crt.notebookRunner.localeReadFailedBody": {
+    "message": "An error occurred while reading the locale for translation. Please reload the page or contact support."
+  },
+  "crt.notebookRunner.localeReadFailedTitle": {
+    "message": "Translation Failed"
+  },
+  "crt.notebookRunner.packageInstallationFailedBody": {
+    "message": "Cannot run cells because package installation failed. Please reload the page and try again."
+  },
+  "crt.notebookRunner.packageInstallationFailedTitle": {
+    "message": "Package Installation Failed"
+  },
+  "crt.notebookRunner.taskReadyBody": {
+    "message": "All packages installed successfully. Code execution is now enabled."
+  },
+  "crt.notebookRunner.taskReadyTitle": {
+    "message": "Task Ready"
+  },
+  "crt.notebookRunner.taskSetupFailedBody": {
+    "message": "An error occurred while preparing the task. Please reload the page or contact support."
+  },
+  "crt.notebookRunner.taskSetupFailedTitle": {
+    "message": "Task Setup Failed"
+  }
+}

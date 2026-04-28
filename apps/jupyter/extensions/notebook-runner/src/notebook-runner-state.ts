@@ -8,7 +8,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { KernelMessage } from "@jupyterlab/services";
 import {
-  addKernelListeners,
+  setupKernel,
   executePythonInKernel,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
@@ -93,7 +93,7 @@ export class NotebookRunnerState {
 
       console.debug("Adding kernel listeners to otter context...");
 
-      await addKernelListeners(sessionContext, async (kernel) => {
+      await setupKernel(sessionContext, async (kernel) => {
         console.debug(
           "Kernel is ready:",
           kernel.name,

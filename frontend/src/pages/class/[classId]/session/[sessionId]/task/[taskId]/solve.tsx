@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Language, Submission, Test } from "iframe-rpc-react/src";
+import { Language, Submission, Test, ToastType } from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
@@ -20,7 +20,7 @@ import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
-import { toaster } from "@/components/Toaster";
+import { toastDuration, toaster } from "@/components/Toaster";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 
@@ -141,7 +141,7 @@ const SolveTaskPage = () => {
             onClick: () => setShowSessionMenu(true),
           },
           closable: true,
-          duration: 60 * 1000,
+          duration: toastDuration,
         });
       } else {
         toaster.info({
@@ -152,7 +152,7 @@ const SolveTaskPage = () => {
             onClick: () => setShowSessionMenu(true),
           },
           closable: true,
-          duration: 60 * 1000,
+          duration: toastDuration,
         });
       }
     },
@@ -259,6 +259,23 @@ const SolveTaskPage = () => {
       }
     },
     [session, task, createSolution],
+  );
+
+  const onReceiveMessage = useCallback(
+    (title: string, message: string, type: ToastType) => {
+      if (!title && !message) {
+        return;
+      }
+
+      toaster.create({
+        title,
+        description: message,
+        type,
+        duration: toastDuration,
+        closable: true,
+      });
+    },
+    [],
   );
 
   const onReceiveSubmission = useCallback(
@@ -418,6 +435,7 @@ const SolveTaskPage = () => {
               onReceiveSubmission={onReceiveSubmission}
               onReceiveTaskSolution={onReceiveTaskSolution}
               onTrackStudentActivityFailure={setSaveError}
+              onReceiveMessage={onReceiveMessage}
             />
           ) : (
             <FormattedMessage
