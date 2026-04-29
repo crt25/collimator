@@ -100,6 +100,8 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
+  private readonly beforeReloadCallbacks: Array<() => Promise<void>> = [];
+
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
@@ -107,6 +109,10 @@ export class EmbeddedPythonCallbacks {
     private readonly fileBrowser: FileBrowser,
     private readonly settingRegistry: ISettingRegistry,
   ) {}
+
+  addBeforeReloadCallback(callback: () => Promise<void>): void {
+    this.beforeReloadCallbacks.push(callback);
+  }
 
   async getHeight(): Promise<number> {
     return document.body.scrollHeight || DEFAULT_SCROLL_HEIGHT;
@@ -321,12 +327,45 @@ export class EmbeddedPythonCallbacks {
 
     await settings.set("locale", toJupyterLocale(locale));
 
+    for (const callback of this.beforeReloadCallbacks) {
+      try {
+        await callback();
+      } catch (error) {
+        console.error(`${logModule} before-reload hook failed:`, error);
+      }
+    }
+
+    await this.saveAllDocuments();
+
     // we force-navigate to the current URL with the desired mode param
     // instead of using window.location.reload(), because the jupyter loaded
     // with a different mode that gets reapplied on a plain reload, which overrides our custom mode.
     const url = new URL(window.location.href);
     url.searchParams.set("mode", Mode[this.mode]);
     window.location.href = url.toString();
+  }
+
+  private async saveAllDocuments(): Promise<void> {
+    const widgets = Array.from(this.app.shell.widgets("main"));
+
+    await Promise.all(
+      widgets.map(async (widget) => {
+        const context = this.documentManager.contextForWidget(widget);
+
+        if (!context?.model.dirty) {
+          return;
+        }
+
+        try {
+          await context.save();
+        } catch (error) {
+          console.error(
+            `${logModule} Failed to save ${context.path} before locale change:`,
+            error,
+          );
+        }
+      }),
+    );
   }
 
   private async closeAllDocuments(): Promise<void> {

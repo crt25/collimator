@@ -24,7 +24,7 @@ export class TaskAutoSaver {
   public static readonly debounceInterval = 30000;
 
   constructor(
-    notebookTracker: INotebookTracker,
+    private readonly notebookTracker: INotebookTracker,
     private readonly sendRequest: AppCrtIframeApi["sendRequest"],
   ) {
     notebookTracker.widgetAdded.connect((_sender, panel: NotebookPanel) => {
@@ -41,6 +41,16 @@ export class TaskAutoSaver {
     sendRequest: AppCrtIframeApi["sendRequest"],
   ): TaskAutoSaver {
     return new TaskAutoSaver(notebookTracker, sendRequest);
+  }
+
+  public async saveAllNotebooks(): Promise<void> {
+    const saves: Promise<void>[] = [];
+
+    this.notebookTracker.forEach((panel) => {
+      saves.push(this.saveNotebook(panel, panel.context.model));
+    });
+
+    await Promise.all(saves);
   }
 
   private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {

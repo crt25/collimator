@@ -72,15 +72,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     const mode = getModeFromUrl();
 
-    const platform = setupIframeApi(
-      new EmbeddedPythonCallbacks(
-        mode,
-        app,
-        documentManager,
-        fileBrowser,
-        settingRegistry,
-      ),
+    const callbacks = new EmbeddedPythonCallbacks(
+      mode,
+      app,
+      documentManager,
+      fileBrowser,
+      settingRegistry,
     );
+    const platform = setupIframeApi(callbacks);
 
     try {
       const translationSettings = await settingRegistry.load(
@@ -104,10 +103,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     if (mode === Mode.solve) {
-      TaskAutoSaver.trackNotebook(
+      const taskAutoSaver = TaskAutoSaver.trackNotebook(
         notebookTracker,
         platform.sendRequest.bind(platform),
       );
+
+      callbacks.addBeforeReloadCallback(() => taskAutoSaver.saveAllNotebooks());
     }
 
     simplifyUserInterface(
