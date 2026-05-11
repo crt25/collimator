@@ -8,6 +8,8 @@ export const ignoreEvent = (event: MouseEvent): void => {
   event.preventDefault();
 };
 
+const pendingRejectionBlockIds = new Set<string>();
+
 const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
   vm: VMExtended,
@@ -23,6 +25,20 @@ const shouldPreventBlockCreation = (
     event.xml;
 
   const isBlockCreated = event.type === "create";
+  const isEndDrag = event.type === "endDrag" && !event.isOutside;
+
+  // remove the block on endDrag rather than during the flyout drag to prevent weird behaviors
+  if (isEndDrag) {
+    const blockId = event.blockId ?? "";
+
+    if (pendingRejectionBlockIds.has(blockId)) {
+      pendingRejectionBlockIds.delete(blockId);
+      workspace.undo(false);
+      return true;
+    }
+
+    return false;
+  }
 
   if (!isBlockDraggedToSprite && !isBlockCreated) {
     return false;
@@ -39,9 +55,21 @@ const shouldPreventBlockCreation = (
   }
 
   if (isBlockCreated) {
-    // the block is already on the workspace, so we must explicitly undo to remove it
-    // see Blockly.onKeyDown_ in scratch-blocks/core/blockly.js
-    workspace.undo(false);
+    // Calling workspace.undo() while a flyout drag gesture is active disposes the block,
+    // but the gesture still holds a reference to it and calls moveDuringDrag() on the disposed block
+    // This caused the workspace.blockDragSurface_ to be null and throwing on every mouse move
+    // To avoid this, we skip the undo when there's an active gesture and store the block id in a set to be removed on the endDrag event
+    // by which time the gesture is gone and undo becomes safe.
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hasActiveGesture = !!(workspace as any).currentGesture_;
+    if (hasActiveGesture) {
+      pendingRejectionBlockIds.add(event.blockId ?? "");
+    } else {
+      // the block is already on the workspace, so we must explicitly undo to remove it
+      // see Blockly.onKeyDown_ in scratch-blocks/core/blockly.js
+      workspace.undo(false);
+    }
   }
 
   return true;
