@@ -16,6 +16,10 @@ const errorMessages = defineMessages({
     defaultMessage:
       "Cannot perform this action because the task is currently in use by one or more other users' lessons.",
   },
+  TASK_NOT_FOUND: {
+    id: "ApiError.TASK_NOT_FOUND",
+    defaultMessage: "The task could not be found.",
+  },
   USER_OWNS_CLASSES: {
     id: "ApiError.USER_OWNS_CLASSES",
     defaultMessage:

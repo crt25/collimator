@@ -33,6 +33,15 @@ export class DuplicateReferenceSolutionError extends ApiError {
   }
 }
 
+export class TaskNotFoundError extends ApiError {
+  constructor(
+    message?: string,
+    errorCode: ErrorCode = ErrorCode.TASK_NOT_FOUND,
+  ) {
+    super(message, errorCode);
+  }
+}
+
 export class TaskInOtherUsersLessonError extends ApiError {
   constructor(
     message?: string,
@@ -333,13 +342,43 @@ export class TasksService {
       );
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      const isInUse = await this.isTaskInUseTx(tx, id);
-      if (isInUse) {
-        this.logger.warn(`Cannot update task (id: ${id}): task is in use`);
-        throw new TaskInUseByClassOrLessonWithStudentsError();
+    if (task.isPublic === false) {
+      const currentTask = await this.prisma.task.findUnique({
+        where: { id, deletedAt: null },
+        select: { isPublic: true, creatorId: true },
+      });
+
+      if (currentTask === null) {
+        throw new TaskNotFoundError(
+          `Task with id ${id} not found or has been deleted`,
+        );
       }
 
+      if (currentTask.isPublic === true) {
+        const isInUseByOthers = await this.isTaskInUseByOtherUsersTx(
+          this.prisma,
+          id,
+          currentTask.creatorId,
+        );
+
+        if (isInUseByOthers) {
+          this.logger.warn(
+            `Cannot make task private (id: ${id}): public task is in use by other users`,
+          );
+
+          throw new TaskInOtherUsersLessonError();
+        }
+      }
+    }
+
+    const isInUse = await this.isTaskInUse(id);
+
+    if (isInUse) {
+      this.logger.warn(`Cannot update task (id: ${id}): task is in use`);
+      throw new TaskInUseByClassOrLessonWithStudentsError();
+    }
+
+    return this.prisma.$transaction(async (tx) => {
       // delete all reference solutions that are not in the new list
       await tx.referenceSolution.deleteMany({
         where: referenceSolutionWhere,
