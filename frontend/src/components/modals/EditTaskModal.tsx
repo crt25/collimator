@@ -58,18 +58,29 @@ const EditTaskModal = ({
       }
       wasInitialized.current = true;
 
-      if (initialTask) {
+      const language = intl.locale as Language;
+
+      if (taskType === TaskType.SCRATCH && initialTask) {
         await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task: initialTask,
-              language: intl.locale as Language,
+              language,
+            }),
+          { intl, descriptor: taskMessages.cannotLoadTask },
+        );
+      } else {
+        await executeAsyncWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadTask", {
+              useDefaultTask: true,
+              language,
             }),
           { intl, descriptor: taskMessages.cannotLoadTask },
         );
       }
     },
-    [initialTask, intl],
+    [initialTask, intl, taskType],
   );
 
   useEffect(() => {

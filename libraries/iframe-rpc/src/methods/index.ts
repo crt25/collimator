@@ -18,7 +18,12 @@ export type { GetHeight } from "./get-height";
 export type { GetSubmission, Submission, Test } from "./get-submission";
 export type { GetTask, Task } from "./get-task";
 export type { LoadSubmission } from "./load-submission";
-export type { LoadTask } from "./load-task";
+export type {
+  LoadTask,
+  LoadTaskParamsWithTask,
+  LoadTaskParamsWithoutTask,
+} from "./load-task";
+export { isLoadTaskWithTask } from "./load-task";
 export type { PostSubmission } from "./post-submission";
 export { ToastType } from "./post-message";
 export type { SetLocale } from "./set-locale";

@@ -221,6 +221,12 @@
       "value": "."
     }
   ],
+  "crt.useEmbeddedScratch.missingTask": [
+    {
+      "type": 0,
+      "value": "Aucun fichier de projet n'a été fourni."
+    }
+  ],
   "crt.useEmbeddedScratch.projectJsonMissing": [
     {
       "type": 0,
