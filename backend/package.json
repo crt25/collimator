@@ -21,6 +21,7 @@
     "prisma:seed:e2e": "dotenv -c -- ts-node --project tsconfig.seed.json prisma/seed/e2e/index.ts",
     "prisma:seed:all": "yarn prisma:seed && yarn prisma:seed:e2e",
     "start:prod": "node dist/main",
+    "api:generate": "node dist/main --generate-swagger-only",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest",
@@ -39,7 +40,7 @@
     "antlr:generate:python:parser": "java -cp ./antlr/antlr-4.13.2-complete.jar org.antlr.v4.Tool -Dlanguage=TypeScript ./src/ast/antlr-grammars/python/python3_13/PythonLexer.g4 ./src/ast/antlr-grammars/python/python3_13/PythonParser.g4 -o ./src/ast/converters/python/generated -visitor",
     "antlr:generate:python:copy": "shx cp ./src/ast/antlr-grammars/python/python3_13/TypeScript/* ./src/ast/converters/python/generated",
     "antlr:generate:python": "yarn antlr:generate:python:parser && yarn antlr:generate:python:copy",
-    "antlr:generate": "yarn antlr:download:grammers && yarn antlr:generate:python",
+    "antlr:generate": "yarn antlr:generate:python && yarn lint",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org hep-vaud --project crt-backend ./dist && sentry-cli sourcemaps upload --org hep-vaud --project crt-backend ./dist"
   },
   "c8": {
@@ -142,7 +143,8 @@
     "coveragePathIgnorePatterns": [
       "__tests__",
       "\\.d\\.ts$",
-      "\\.spec\\.(t|j)s$"
+      "\\.spec\\.(t|j)s$",
+      "<rootDir>/src/ast/antlr-grammars/"
     ],
     "coverageDirectory": "./coverage",
     "transformIgnorePatterns": [

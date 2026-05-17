@@ -63,6 +63,12 @@ async function bootstrap(): Promise<void> {
     }).listen(stopPort);
   }
 
+  if (process.argv.some((v) => v === "--generate-swagger-only")) {
+    console.info("Swagger file has been generated. Stopping...");
+    await app.close();
+    return;
+  }
+
   const port = app.get(ConfigService).get<number>("PORT") ?? 3000;
   await app.listen(port);
 }
