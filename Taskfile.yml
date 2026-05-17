@@ -1,0 +1,602 @@
+version: '3'
+
+tasks:
+  setup:
+    desc: Full setup (repo, deps, db)
+    deps: [submodules:setup]
+    cmds:
+      - task: deps:setup
+      - task: backend:envfile
+      - task: db:migrate:deploy
+
+  setup:dev:
+    desc: Full development setup (repo, deps, db)
+    deps: [submodules:setup]
+    cmds:
+      - task: deps:setup
+      - task: backend:envfile
+      - task: db:migrate:dev
+
+  submodules:setup:
+    desc: Update submodules
+    cmds:
+      - git submodule update --init --recursive
+
+  deps:setup:
+    desc: Install all dependencies
+    deps:
+      - backend:setup
+      - frontend:setup
+      - apps:setup
+      - libs:setup
+      - test:e2e:setup
+
+  build:
+    desc: Build all packages
+    deps: [frontend:build, backend:build, apps:build]
+
+  test:
+    desc: Run unit and e2e tests
+    deps: [test:unit, test:e2e]
+
+  test:unit:
+    desc: Run all unit tests
+    deps: [frontend:test, backend:test, apps:test, storybook:test]
+
+  test:coverage:
+    desc: Run unit and e2e tests
+    deps:
+      - backend:test:coverage
+      - frontend:test:coverage
+      - storybook:test:coverage
+      - apps:test
+
+  lint:
+    desc: Lint all packages
+    deps: [frontend:lint, backend:lint, apps:scratch:lint, apps:jupyter:lint]
+
+  lint:fix:
+    desc: Lint all packages
+    deps: [frontend:lint:fix, backend:lint:fix, apps:scratch:lint:fix, apps:jupyter:lint:fix]
+
+  i18n:update:
+    desc: Update i18n strings
+    deps: [frontend:i18n:update, apps:scratch:i18n:update]
+
+  clean:
+    desc: Remove node_modules and build artifacts
+    deps: [backend:clean, frontend:clean, apps:clean, db:clean, test:e2e:clean, libs:clean]
+
+  #############################
+  # Database
+  #############################
+
+  db:migrate:deploy:
+    desc: Run database migrations
+    dir: ./backend
+    cmds:
+      - yarn prisma:migrate deploy
+
+  db:migrate:dev:
+    desc: Run database migrations
+    deps: [db:run]
+    dir: ./backend
+    cmds:
+      - yarn prisma:migrate:dev
+
+  db:run:
+    desc: Run database
+    cmds:
+      - docker compose -f docker/docker-compose.yml up -d database
+
+  db:stop:
+    desc: Stop database
+    cmds:
+      - docker compose -f docker/docker-compose.yml stop
+
+  db:clean:
+    desc: Clean the database
+    cmds:
+      - docker compose -f docker/docker-compose.yml rm -f -s -v
+
+  #############################
+  # Libraries
+  #############################
+
+  libs:setup:
+    desc: Install library dependencies
+    deps: [libs:iframe-rpc:setup, libs:iframe-rpc-react:setup]
+
+  libs:clean:
+    desc: Clean library dependencies
+    deps: [libs:iframe-rpc:clean, libs:iframe-rpc-react:clean]
+
+  # iframe-rpc
+  libs:iframe-rpc:setup:
+    desc: Install iframe-rpc dependencies
+    dir: ./libraries/iframe-rpc
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+
+  libs:iframe-rpc:clean:
+    desc: Clean iframe-rpc dependencies
+    dir: ./libraries/iframe-rpc
+    cmds:
+      - rm -rf node_modules
+
+  # iframe-rpc-react
+  libs:iframe-rpc-react:setup:
+    desc: Install iframe-rpc dependencies
+    dir: ./libraries/iframe-rpc-react
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+
+  libs:iframe-rpc-react:clean:
+    desc: Clean iframe-rpc dependencies
+    dir: ./libraries/iframe-rpc-react
+    cmds:
+      - rm -rf node_modules
+
+  #############################
+  # Backend
+  #############################
+
+  backend:setup:
+    desc: Install backend dependencies
+    dir: ./backend
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+
+  backend:envfile:
+    desc: Setup default env file
+    dir: ./backend
+    sources:
+      - .env.sample
+    generates:
+      - .env.local
+    cmds:
+      - python -c "from pathlib import Path; import shutil; b=Path('.env.local'); b.exists() or shutil.copy('.env.sample', b)"
+
+  backend:build:
+    desc: Build backend
+    dir: ./backend
+    deps: [backend:setup, backend:envfile]
+    dotenv:
+      - .env.local
+      - .env
+    sources:
+      - .env.local
+      - .env
+      - src/**/*
+      - prisma/**/*
+      - node_modules/@prisma/client/**/*
+      - package.json
+      - yarn.lock
+    generates:
+      - dist/**/*
+      - docs/api.json
+    cmds:
+      - yarn prisma:generate
+      - yarn build
+      - yarn api:generate
+
+  backend:lint:
+    desc: Lint backend
+    dir: ./backend
+    deps: [backend:setup]
+    cmds:
+      - yarn lint
+
+  backend:lint:fix:
+    desc: Lint backend
+    dir: ./backend
+    deps: [backend:setup]
+    cmds:
+      - yarn lint:fix
+
+  backend:test:
+    desc: Run backend tests
+    dir: ./backend
+    deps: [backend:setup]
+    cmds:
+      - yarn test
+
+  backend:test:coverage:
+    desc: Run backend tests with coverage
+    dir: ./backend
+    deps: [backend:setup]
+    env:
+      CI: true
+    cmds:
+      - yarn test:cov
+      - yarn test:e2e:cov
+
+  backend:sourcemap:upload:
+    desc: Upload sourcemap to Sentry
+    dir: ./backend
+    deps: [backend:setup]
+    requires:
+      vars:
+        - name: SENTRY_AUTH_TOKEN
+    cmds:
+      - yarn sentry:sourcemaps
+
+  backend:clean:
+    desc: Clean backend
+    dir: ./backend
+    cmds:
+      - rm -rf node_modules
+      - rm -rf dist
+      - rm -rf docs/*.json
+
+  #############################
+  # Frontend
+  #############################
+
+  frontend:setup:
+    desc: Install frontend dependencies
+    dir: ./frontend
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+
+  frontend:setup:playwright:
+    desc: Install Playwright dependencies
+    dir: ./frontend
+    deps: [frontend:setup]
+    cmd: yarn playwright install --with-deps
+
+  frontend:api:generate:
+    desc: Generate API client
+    dir: ./frontend
+    deps: [frontend:setup, backend:build]
+    cmds:
+      - yarn update:api
+
+  frontend:build:
+    desc: Build frontend
+    dir: ./frontend
+    deps: [frontend:setup, frontend:api:generate]
+    cmds:
+      - yarn build
+
+  frontend:lint:
+    desc: Lint frontend
+    dir: ./frontend
+    deps: [frontend:setup]
+    cmds:
+      - yarn lint
+
+  frontend:lint:fix:
+    desc: Lint frontend
+    dir: ./frontend
+    deps: [frontend:setup]
+    cmds:
+      - yarn lint:fix
+
+  frontend:test:
+    desc: Run frontend tests
+    dir: ./frontend
+    deps: [frontend:setup:playwright]
+    cmds:
+      - yarn test
+
+  frontend:test:coverage:
+    desc: Run frontend tests with coverage
+    dir: ./frontend
+    deps: [frontend:setup:playwright]
+    cmds:
+      - yarn test:cov
+
+  frontend:i18n:update:
+    desc: Update frontend i18n strings
+    dir: ./frontend
+    deps: [frontend:setup]
+    cmds:
+      - yarn i18n:update
+
+  frontend:sourcemap:upload:
+    desc: Upload sourcemap to Sentry
+    dir: ./frontend
+    deps: [frontend:setup]
+    cmds:
+      - echo "Handled automatically by Next.JS build"
+
+  frontend:clean:
+    desc: Clean frontend
+    dir: ./frontend
+    cmds:
+      - rm -rf node_modules
+      - rm -rf dist
+
+  #############################
+  # App helpers
+  #############################
+
+  apps:setup:
+    desc: Install app dependencies
+    deps: [apps:scratch:setup, apps:jupyter:setup]
+
+  apps:build:
+    desc: Build apps
+    deps: [apps:scratch:build, apps:jupyter:build]
+
+  apps:test:
+    desc: Test apps
+    deps: [apps:scratch:test, apps:jupyter:test]
+
+  apps:clean:
+    desc: Clean app dependencies
+    deps: [apps:scratch:clean, apps:jupyter:clean]
+
+  #############################
+  # apps: Scratch
+  #############################
+
+  apps:scratch:setup:
+    desc: Install scratch app dependencies
+    dir: ./apps/scratch
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+
+  apps:scratch:setup:playwright:
+    desc: Install Playwright dependencies
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    cmd: yarn playwright install --with-deps
+
+  apps:scratch:build:
+    desc: Build scratch app
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    cmds:
+      - yarn build
+
+  apps:scratch:i18n:update:
+    desc: Update Scratch i18n strings
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    cmds:
+      - yarn i18n:update
+
+  apps:scratch:lint:
+    desc: Lint scratch
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    cmds:
+      - yarn lint
+
+  apps:scratch:lint:fix:
+    desc: Lint scratch
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    cmds:
+      - yarn lint:fix
+
+  apps:scratch:test:
+    desc: Run scratch tests
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup:playwright]
+    cmds:
+      - yarn test
+
+  apps:scratch:sourcemap:upload:
+    desc: Upload sourcemap to Sentry
+    dir: ./apps/scratch
+    deps: [apps:scratch:setup]
+    requires:
+      vars:
+        - name: SENTRY_AUTH_TOKEN
+    cmds:
+      - yarn sentry:sourcemaps
+
+  apps:scratch:clean:
+    desc: Clean scratch
+    dir: ./apps/scratch
+    cmds:
+      - rm -rf node_modules
+      - rm -rf dist
+
+  #############################
+  # apps: Jupyter
+  #############################
+
+  apps:jupyter:setup:
+    desc: Install jupyter app dependencies
+    cmds:
+      - task -d apps/jupyter setup
+
+  apps:jupyter:build:
+    desc: Build jupyter app
+    cmds:
+      - task -d apps/jupyter build
+
+  apps:jupyter:lint:
+    desc: Lint jupyter app
+    cmds:
+      - task -d apps/jupyter lint
+
+  apps:jupyter:lint:fix:
+    desc: Lint jupyter app
+    cmds:
+      - task -d apps/jupyter lint:fix
+
+  apps:jupyter:test:
+    desc: Test jupyter app
+    cmds:
+      - task -d apps/jupyter test
+
+  apps:jupyter:sourcemap:upload:
+    desc: Upload sourcemap to Sentry
+    requires:
+      vars:
+        - name: SENTRY_AUTH_TOKEN
+    cmds:
+      - task -d apps/jupyter sourcemap:upload
+
+  apps:jupyter:clean:
+    desc: Clean jupyter build artifacts
+    cmds:
+      - task -d apps/jupyter clean
+
+  #############################
+  # Storybook
+  #############################
+
+  storybook:test:
+    desc: Run storybook tests
+    dir: ./frontend
+    cmds:
+      - yarn test:storybook
+
+  storybook:test:coverage:
+    desc: Run full Storybook tests with coverage
+    dir: ./frontend
+    cmds:
+      # Register cleanup first so it runs even if a later step fails.
+      - defer:
+          task: storybook:stop
+
+      - task: storybook:start
+      - task: storybook:test
+
+  storybook:start:
+    desc: Start storybook
+    dir: ./frontend
+    cmds:
+      - cmd: yarn storybook:background:start
+
+  storybook:stop:
+    desc: Stop storybook
+    dir: ./frontend
+    cmds:
+      - cmd: yarn storybook:background:stop
+
+  #############################
+  # Tests E2E
+  #############################
+
+  test:e2e:setup:
+    desc: Install e2e dependencies
+    dir: ./e2e
+    sources:
+      - package.json
+      - yarn.lock
+    generates:
+      - node_modules/.yarn-state.yml
+    cmds:
+      - yarn install
+      - yarn playwright install --with-deps
+
+  test:e2e:
+    desc: Run e2e tests
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn test
+
+  test:e2e:nobuild:
+    desc: Run e2e tests without rebuild
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn test:nobuild
+
+  test:e2e:build:
+    desc: Build all e2e targets
+    deps: [test:e2e:build:frontend, test:e2e:build:backend, test:e2e:build:scratch]
+
+  test:e2e:build:frontend:
+    desc: Build e2e frontend
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn build:frontend
+
+  test:e2e:build:backend:
+    desc: Build e2e backend
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn build:backend
+
+  test:e2e:build:apps:scratch:
+    desc: Build e2e scratch
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn build:scratch
+
+  test:e2e:clean:
+    desc: Clean e2e tests
+    dir: ./e2e
+    cmds:
+      - rm -rf node_modules
+
+  #############################
+  # HELPER FUNCTIONS FOR DEVIN
+  #############################
+
+  devin:pull:
+    desc: Devin - pull latest
+    cmds:
+      - git pull
+
+  devin:deps:
+    desc: Devin - install deps and migrate db
+    deps: [setup:dev]
+
+  devin:lint:
+    desc: Devin - lint
+    deps: [lint]
+
+  devin:test:
+    desc: Devin - run unit tests
+    deps: [test:unit]
+
+  #############################
+  # HELPER FUNCTIONS FOR INFRA
+  #############################
+
+  infrastructure:ssh:dev:
+    desc: Setup an SSH tunnel to the database, on localhost:5555
+    vars:
+      DEPLOYMENT: collimator-dev
+      TASK_ARN:
+        sh: aws ecs list-tasks --cluster {{.DEPLOYMENT}}-backend --service {{.DEPLOYMENT}}-backend --query 'taskArns[0]' --output text
+      TASK_ID:
+        sh: python -c 'import sys; print(sys.argv[1].split("/")[-1])' "{{.TASK_ARN}}"
+      RUNTIME_ID:
+        sh: aws ecs describe-tasks --cluster {{.DEPLOYMENT}}-backend --tasks {{.TASK_ARN}} --query 'tasks[0].containers[0].runtimeId'
+      ENDPOINT_DB:
+        sh: aws rds describe-db-instances --db-instance-identifier {{.DEPLOYMENT}}-database --query 'DBInstances[0].Endpoint.Address' --output text
+    cmd: |
+      aws ssm start-session \
+        --target ecs:{{.DEPLOYMENT}}-backend_{{.TASK_ID}}_{{.RUNTIME_ID}} \
+        --document-name AWS-StartPortForwardingSessionToRemoteHost \
+        --parameters '{"host": [ "{{.ENDPOINT_DB}}" ], "portNumber": [ "5432" ], "localPortNumber": [ "5555" ] }' \
+        --region eu-central-2

@@ -1,0 +1,182 @@
+version: '3'
+
+vars:
+  OUTPUT_DIR: '{{.OUTPUT_DIR | default "./dist/app"}}'
+  PORT: '{{.PORT | default "8000"}}'
+  BASE_URL: '{{.BASE_URL | default "/jupyter/"}}'
+  JUPYTER_LITE_ARGS: '--piplite-wheels=./dist/otter_grader-6.1.3-py3-none-any.whl --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+
+tasks:
+  default:
+    desc: Setup and build (equivalent to `all`)
+    cmds:
+      - task: setup
+      - task: build
+
+  setup:
+    desc: Initialize the JupyterLite project
+    cmds:
+      - task: submodules:init
+      - task: deps:install
+      - task: build:otter
+      - task: extensions:setup
+
+  submodules:init:
+    desc: Initialize git submodules
+    cmds:
+      - git submodule update --init --recursive
+
+  deps:install:
+    desc: Install Python dependencies via poetry
+    sources:
+      - pyproject.toml
+      - poetry.lock
+    cmds:
+      - pip install pipx
+      - pipx install poetry
+      - pipx run poetry install
+
+  #############################
+  # Extension wrappers — delegate to ./extensions/Taskfile.yml. The venv is
+  # already on PATH via the top-level `env:` block, so no `poetry run` shim
+  # is needed: the child Task subprocess inherits the activated environment.
+  #############################
+
+  extensions:setup:
+    desc: Initialize JupyterLite extensions
+    deps: [deps:install]
+    cmds:
+      - task -d ./extensions init
+
+  extensions:link:
+    desc: Link JupyterLite extensions
+    deps: [deps:install]
+    cmds:
+      - task -d ./extensions link
+
+  extensions:build:
+    desc: Build JupyterLite extensions
+    deps: [deps:install]
+    cmds:
+      - task -d ./extensions build
+
+  extensions:test:
+    desc: Run extension tests
+    deps: [deps:install]
+    cmds:
+      - task -d ./extensions test
+
+  sourcemap:upload:
+    desc: Upload extension sourcemap
+    deps: [deps:install]
+    cmds:
+      - task -d ./extensions sourcemap:upload
+
+  #############################
+  # Build / serve / clean
+  #############################
+
+  build:
+    desc: Build the JupyterLite project
+    deps: [deps:install]
+    cmds:
+      - task: build:restore-cache
+      - jupyter lite build {{.JUPYTER_LITE_ARGS}}
+      - task: build:save-cache
+      - task: build:inject-iframe-script
+
+  lint:
+    desc: Lint the JupyterLite project
+    deps: [deps:install]
+    cmds:
+      - echo "No lint in Jupyter"
+
+  lint:fix:
+    deps: [lint]
+
+  test:
+    desc: Test the JupyterLite project
+    deps: [deps:install]
+    cmds:
+      - echo "No test in Jupyter"
+
+  serve:
+    desc: Serve the JupyterLite project (run `task build` first)
+    deps: [deps:install]
+    cmds:
+      - jupyter lite serve {{.JUPYTER_LITE_ARGS}}
+
+  build:otter:
+    desc: Build the customized otter grader wheel
+    deps: [submodules:init, deps:install, build:otter:check-submodule]
+    sources:
+      - otter-grader/**/*
+    generates:
+      - dist/otter_grader-*.whl
+    cmds:
+      - pip wheel ./otter-grader -w dist --no-deps
+      - task: build:otter:check-wheel
+
+  clean:
+    desc: Clean the JupyterLite project
+    cmds:
+      - cmd: pwsh -Command "if (Test-Path {{.OUTPUT_DIR}}) { rm -r -fo {{.OUTPUT_DIR}} }"
+        platforms: [windows]
+      - cmd: pwsh -Command "if (Test-Path .cache) { rm -r -fo .cache }"
+        platforms: [windows]
+      - cmd: pwsh -Command "if (Test-Path .jupyterlite.doit.db) { rm .jupyterlite.doit.db }"
+        platforms: [windows]
+      - cmd: rm -rf {{.OUTPUT_DIR}}
+        platforms: [linux, darwin]
+      - cmd: rm -rf .cache
+        platforms: [linux, darwin]
+      - cmd: rm -f .jupyterlite.doit.db
+        platforms: [linux, darwin]
+
+  #############################
+  # Internal helpers (hidden from `task --list`).
+  #############################
+
+  build:restore-cache:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "if ((Test-Path .cache/lab.html) -and (Test-Path {{.OUTPUT_DIR}}/lab/index.html)) { cp .cache/lab.html {{.OUTPUT_DIR}}/lab/index.html }"
+        platforms: [windows]
+      - cmd: bash -c "if [ -f .cache/lab.html ] && [ -f {{.OUTPUT_DIR}}/lab/index.html ]; then cp .cache/lab.html {{.OUTPUT_DIR}}/lab/index.html; fi"
+        platforms: [linux, darwin]
+
+  build:save-cache:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "cp {{.OUTPUT_DIR}}/lab/index.html .cache/lab.html"
+        platforms: [windows]
+      - cmd: cp {{.OUTPUT_DIR}}/lab/index.html .cache/lab.html
+        platforms: [linux, darwin]
+
+  build:inject-iframe-script:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "echo '<script>' $(Get-Content iframe-message-buffering.js) '</script>' | Out-File -Append -FilePath {{.OUTPUT_DIR}}/lab/index.html -Encoding utf8 -Force"
+        platforms: [windows]
+      - cmd: echo '<script>' >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
+      - cmd: cat iframe-message-buffering.js >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
+      - cmd: echo '</script>' >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
+
+  build:otter:check-submodule:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "if (-not (Test-Path otter-grader)) { Write-Error 'The otter-grader directory does not exist. Please initialize the submodules first.'; exit 1 }"
+        platforms: [windows]
+      - cmd: test -d otter-grader || (echo "The otter-grader directory does not exist. Please initialize the submodules first." && exit 1)
+        platforms: [linux, darwin]
+
+  build:otter:check-wheel:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "if (-not (Test-Path dist/otter_grader-6.1.3-py3-none-any.whl)) { Write-Host 'The otter grader wheel was not built successfully. Please check the output for errors.' }"
+        platforms: [windows]
+      - cmd: test -f dist/otter_grader-6.1.3-py3-none-any.whl || echo "The otter grader wheel was not built successfully. Please check the output for errors."
+        platforms: [linux, darwin]
