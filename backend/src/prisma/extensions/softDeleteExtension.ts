@@ -2,13 +2,11 @@ import { Prisma } from "@prisma/client";
 import { withNestedOperations } from "prisma-extension-nested-operations";
 import { getModelName, prismaOperations } from "./common";
 import {
-  buildForeignKeyWhereClause,
+  AnyModelWhereInput,
+  buildChildWhereClause,
   CascadeMode,
-  EntityId,
-  extractEntityId,
-  fieldsToSelect,
+  flattenCompoundUniqueSelectors,
   getChildRelations,
-  getModelPrimaryKeyFields,
   SOFT_DELETE_FIELD,
 } from "./softDeleteHelpers";
 
@@ -21,78 +19,134 @@ const MAX_CASCADE_DEPTH = 10;
 type TxClient = any;
 
 /**
- * Recursively cascade delete to all children of a parent entity.
- * Uses depth-first traversal to ensure grandchildren are deleted before children.
+ * Soft- or hard-deletes all rows of `model` matching `where`, and recursively
+ * cascades the same operation to all descendants.
+ *
+ * Instead of materializing parent IDs at every level (which required
+ * `findMany` per level and per-row recursion -- O(rows * relations * depth)
+ * round-trips), this implementation cascades the parent's `where` clause down
+ * through Prisma relation filters. Each descendant model therefore needs only
+ * a single `updateMany` / `deleteMany` whose `where` chains back to the root
+ * through `EXISTS` subqueries on the FK columns. Total query count is bounded
+ * by the schema topology (edges in the descendant subgraph), independent of
+ * the data size.
+ *
+ * Traversal is post-order at the schema-graph level: descendants are processed
+ * before this level, so each statement sees the chain still alive
+ * (`deletedAt: null` is required at every soft-deletable hop). The same
+ * deepest-first order makes the cascade idempotent on repeated deletions.
  *
  * @param tx - Transaction client for all operations
- * @param parentModel - Name of the parent model (e.g., "Task", "Solution")
- * @param parentId - ID of the parent record (number or composite key object)
- * @param mode - 'soft' for soft-deletable children (updateMany with deletedAt),
- *               'hard' for non-soft-deletable children (deleteMany)
+ * @param model - The model to delete (e.g., "Task", "Solution")
+ * @param where - Where clause matching the row(s) of `model` to delete.
+ *                For soft mode this should already include `deletedAt: null`.
+ * @param mode - 'soft' for soft-deletable models (updateMany with deletedAt),
+ *               'hard' for non-soft-deletable models (deleteMany)
  * @param deletedAt - Timestamp for soft-deletes (required for soft mode, ignored for hard)
  * @param depth - Current recursion depth (starts at 0)
  * @throws Error if cascade depth limit is exceeded
  */
 async function cascadeDelete(
   tx: TxClient,
-  parentModel: Prisma.ModelName,
-  parentId: EntityId,
+  model: Prisma.ModelName,
+  where: AnyModelWhereInput,
   mode: CascadeMode,
   deletedAt: Date | null,
   depth: number = 0,
 ): Promise<void> {
   if (depth >= MAX_CASCADE_DEPTH) {
     throw new Error(
-      `Cascade depth limit (${MAX_CASCADE_DEPTH}) exceeded at ${parentModel}. This may indicate a circular reference.`,
+      `Cascade depth limit (${MAX_CASCADE_DEPTH}) exceeded at ${model}. This may indicate a circular reference.`,
     );
   }
 
-  const children = getChildRelations(parentModel, mode);
+  // Descendants first (post-order).
+  await cascadeDeleteChildrenOf(tx, model, where, mode, deletedAt, depth);
 
-  if (children.length === 0) return;
-
-  // For soft-delete, filter by deletedAt: null to only find non-deleted children
-  const filterByDeletedAt = mode === CascadeMode.Soft;
-
-  for (const child of children) {
-    const clientModel = getModelName(child.model);
-    const childPkFields = getModelPrimaryKeyFields(child.model);
-
-    const childRecords = await tx[clientModel].findMany({
-      where: buildForeignKeyWhereClause(
-        child,
-        parentModel,
-        parentId,
-        filterByDeletedAt,
-      ),
-      select: fieldsToSelect(childPkFields),
+  // Then this level.
+  const clientModel = getModelName(model);
+  if (mode === CascadeMode.Soft) {
+    await tx[clientModel].updateMany({
+      where,
+      data: { [SOFT_DELETE_FIELD]: deletedAt },
     });
-
-    // Depth-first: recurse BEFORE deleting this level
-    for (const record of childRecords) {
-      await cascadeDelete(
-        tx,
-        child.model,
-        extractEntityId(record, childPkFields),
-        mode,
-        deletedAt,
-        depth + 1,
-      );
-    }
-
-    // Delete all children of this type
-    if (mode === CascadeMode.Soft) {
-      await tx[clientModel].updateMany({
-        where: buildForeignKeyWhereClause(child, parentModel, parentId, true),
-        data: { [SOFT_DELETE_FIELD]: deletedAt },
-      });
-    } else {
-      await tx[clientModel].deleteMany({
-        where: buildForeignKeyWhereClause(child, parentModel, parentId, false),
-      });
-    }
+  } else {
+    await tx[clientModel].deleteMany({ where });
   }
 }
+
+/**
+ * Cascades deletion only to the descendants of `parentModel` matching
+ * `parentWhere`, without touching `parentModel` itself. Used at the top level
+ * because the root row is updated separately by the caller (to preserve
+ * `include` / `select` semantics for `delete`).
+ *
+ * For soft cascade, each hop is gated on `deletedAt: null` so that:
+ *  - already-deleted rows keep their original timestamp
+ *  - a previously-broken (already-deleted) intermediate ancestor stops the
+ *    cascade at that branch (preserves prior behavior)
+ */
+async function cascadeDeleteChildrenOf(
+  tx: TxClient,
+  parentModel: Prisma.ModelName,
+  parentWhere: AnyModelWhereInput,
+  mode: CascadeMode,
+  deletedAt: Date | null,
+  depth: number = 0,
+): Promise<void> {
+  const isSoftCascade = mode === CascadeMode.Soft;
+
+  for (const child of getChildRelations(parentModel, mode)) {
+    const childWhere = buildChildWhereClause(child, parentWhere, isSoftCascade);
+    await cascadeDelete(
+      tx,
+      child.model,
+      childWhere,
+      mode,
+      deletedAt,
+      depth + 1,
+    );
+  }
+}
+
+/**
+ * Top-level entry point for cascading a delete from a soft-deletable root.
+ *
+ * Builds the cascade seed (the user's `where` with `deletedAt: null` so we
+ * only walk descendants whose ancestor chain is still alive), then cascades
+ * into all soft- and hard-deletable descendants. The root row itself is NOT
+ * touched here -- callers update it separately (via `update` to preserve
+ * `include` / `select` for `delete`, or via `updateMany` for `deleteMany`).
+ *
+ * Returns the seed so `deleteMany` callers can reuse it for the final
+ * `updateMany` on the root.
+ */
+const startCascadeDelete = async (
+  tx: TxClient,
+  model: Prisma.ModelName,
+  where: AnyModelWhereInput | undefined,
+  deletedAt: Date,
+): Promise<AnyModelWhereInput> => {
+  // The user's `where` may be a `WhereUniqueInput` containing compound
+  // selectors (e.g., `taskId_hash` for an `@@id([taskId, hash])`). Those are
+  // valid for the root row but rejected by Prisma inside relation filters,
+  // which the cascade nests this seed into. Flatten them upfront.
+  const flattenedWhere = flattenCompoundUniqueSelectors(model, where);
+
+  // The double cast widens away the model-specific where type: the literal
+  // `deletedAt: null` is incompatible with non-soft-deletable members of the
+  // `AnyModelWhereInput` union, and TS can't narrow on the soft-deletable
+  // ones from this context.
+  const seed = {
+    ...flattenedWhere,
+    [SOFT_DELETE_FIELD]: null,
+  } as unknown as AnyModelWhereInput;
+
+  await cascadeDeleteChildrenOf(tx, model, seed, CascadeMode.Soft, deletedAt);
+  await cascadeDeleteChildrenOf(tx, model, seed, CascadeMode.Hard, null);
+
+  return seed;
+};
 
 // ============================================================================
 // Extension Definition
@@ -136,31 +190,16 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
             const deletedAt = new Date();
             const clientModel = getModelName(model);
             const modelName = model as Prisma.ModelName;
-            const pkFields = getModelPrimaryKeyFields(modelName);
 
             switch (operation) {
               case prismaOperations.delete: {
-                // Get the parent ID for cascading
-                const entityId = extractEntityId(args.where, pkFields);
-
-                // Cascade to children BEFORE soft-deleting parent
-                // This ensures child records still have valid FK references during cascade
-                await cascadeDelete(
+                await startCascadeDelete(
                   txClient,
                   modelName,
-                  entityId,
-                  CascadeMode.Soft,
+                  args.where,
                   deletedAt,
                 );
-                await cascadeDelete(
-                  txClient,
-                  modelName,
-                  entityId,
-                  CascadeMode.Hard,
-                  null,
-                );
 
-                // Now soft-delete the parent
                 return await txClient[clientModel].update({
                   where: args.where,
                   include: args.include,
@@ -170,34 +209,15 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
               }
 
               case prismaOperations.deleteMany: {
-                // Find all records matching the where clause (only non-deleted)
-                const records = await txClient[clientModel].findMany({
-                  where: { ...args.where, deletedAt: null },
-                  select: fieldsToSelect(pkFields),
-                });
+                const seed = await startCascadeDelete(
+                  txClient,
+                  modelName,
+                  args.where,
+                  deletedAt,
+                );
 
-                // Cascade for each record before bulk soft-delete
-                for (const record of records) {
-                  const entityId = extractEntityId(record, pkFields);
-                  await cascadeDelete(
-                    txClient,
-                    modelName,
-                    entityId,
-                    CascadeMode.Soft,
-                    deletedAt,
-                  );
-                  await cascadeDelete(
-                    txClient,
-                    modelName,
-                    entityId,
-                    CascadeMode.Hard,
-                    null,
-                  );
-                }
-
-                // Bulk soft-delete all parents
                 return await txClient[clientModel].updateMany({
-                  where: { ...args.where, deletedAt: null },
+                  where: seed,
                   data: { deletedAt },
                 });
               }
