@@ -479,7 +479,6 @@ tasks:
 
   apps:jupyter:dev:
     desc: Run the development frontend
-    dir: ./apps/jupyter
     cmds:
       - task -d apps/jupyter serve
 
