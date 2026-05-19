@@ -193,6 +193,17 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
 
             switch (operation) {
               case prismaOperations.delete: {
+                const existing = await txClient[clientModel].findUnique({
+                  where: args.where,
+                  include: args.include,
+                  select: args.select,
+                });
+
+                // Idempotent: deleting an already soft-deleted row returns it unchanged.
+                if (!!existing?.deletedAt) {
+                  return existing;
+                }
+
                 await startCascadeDelete(
                   txClient,
                   modelName,
