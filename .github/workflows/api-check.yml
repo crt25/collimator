@@ -1,4 +1,4 @@
-name: Orval Generation Check
+name: API Client Generation Check
 
 on:
   pull_request:
