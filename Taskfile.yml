@@ -25,11 +25,11 @@ tasks:
   deps:setup:
     desc: Install all dependencies
     deps:
+      - test:e2e:setup
       - backend:setup
       - frontend:setup
       - apps:setup
       - libs:setup
-      - test:e2e:setup
 
   build:
     desc: Build all packages
@@ -226,14 +226,20 @@ tasks:
   backend:test:
     desc: Run backend tests
     dir: ./backend
-    deps: [backend:setup]
+    deps: [backend:build]
+    dotenv:
+      - .env.local
+      - .env
     cmds:
       - yarn test
 
   backend:test:coverage:
     desc: Run backend tests with coverage
     dir: ./backend
-    deps: [backend:setup]
+    deps: [backend:build]
+    dotenv:
+      - .env.local
+      - .env
     env:
       CI: true
     cmds:

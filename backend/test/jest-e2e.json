@@ -13,7 +13,8 @@
   "coveragePathIgnorePatterns": [
     "__tests__",
     "\\.d\\.ts$",
-    "\\.spec\\.(t|j)s$"
+    "\\.spec\\.(t|j)s$",
+    "<rootDir>/src/ast/antlr-grammars/"
   ],
   "coverageDirectory": "./coverage-nest-e2e",
   "transformIgnorePatterns": ["/node_modules/(?!(jose)/)"],

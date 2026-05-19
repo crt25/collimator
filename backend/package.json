@@ -49,6 +49,9 @@
     "src": [
       "src/"
     ],
+    "exclude": [
+      "src/ast/antlr-grammars/**"
+    ],
     "reporter": [
       "lcov"
     ]
