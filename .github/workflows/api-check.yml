@@ -1,0 +1,72 @@
+name: Orval Generation Check
+
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches:
+      - main
+
+jobs:
+  api-check:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      GENERATED_API_DIR: "frontend/src/api/collimator/generated"
+      OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: "dummy-client-id"
+      OPEN_ID_CONNECT_JWK_ENDPOINT: "https://login.microsoftonline.com/common/discovery/v2.0/keys"
+      PORT: "3001"
+      BACKEND_API_URL: "http://localhost:3001/api-json"
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+          lfs: "true"
+          fetch-depth: 0
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Setup dependencies
+        run: task setup
+
+      - name: Update API-generated files
+        run: task frontend:api:generate
+
+      - name: Verify API generated files are up to date
+        run: |
+          # Check for uncommitted changes in generated files
+          if ! git diff --exit-code $GENERATED_API_DIR; then
+            echo ""
+            echo "=========================================="
+            echo "ERROR: Generated API client is out of sync!"
+            echo "=========================================="
+            echo ""
+            echo "The committed API client files do not match what is generated."
+            echo "This usually means the backend OpenAPI spec changed but the frontend"
+            echo "API client was not regenerated."
+            echo ""
+            echo "To fix this:"
+            echo "  1. Run: task frontend:api:generate"
+            echo "  3. Commit the changes"
+            echo ""
+            exit 1
+          fi
+          echo "Generated API client is up to date"
