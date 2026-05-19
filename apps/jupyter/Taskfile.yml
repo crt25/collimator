@@ -1,10 +1,21 @@
 version: '3'
 
 vars:
+  OTTER_VERSION: '6.1.3'
+  PIPX_VERSION: '1.12.0'
+  POETRY_VERSION: '2.4.1'
   OUTPUT_DIR: '{{.OUTPUT_DIR | default "./dist/app"}}'
   PORT: '{{.PORT | default "8000"}}'
   BASE_URL: '{{.BASE_URL | default "/jupyter/"}}'
-  JUPYTER_LITE_ARGS: '--piplite-wheels=./dist/otter_grader-6.1.3-py3-none-any.whl --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+  OTTER_DIST: 'dist/otter_grader-{{.OTTER_VERSION}}-py3-none-any.whl'
+  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+  JUPYTER_EXT_FILES:
+    - ./schema/**/*
+    - ./scripts/**/*
+    - ./src/**/*
+    - ./style/**/*
+    - ./ui-tests/**/*
+    - ./*
 
 tasks:
   default:
@@ -19,7 +30,7 @@ tasks:
       - task: submodules:init
       - task: deps:install
       - task: build:otter
-      - task: extensions:setup
+      - task: exts:setup
 
   submodules:init:
     desc: Initialize git submodules
@@ -32,45 +43,9 @@ tasks:
       - pyproject.toml
       - poetry.lock
     cmds:
-      - pip install pipx
-      - pipx install poetry
+      - pip install pipx@{{.PIPX_VERSION}}
+      - pipx install poetry@{{.POETRY_VERSION}}
       - pipx run poetry install
-
-  #############################
-  # Extension wrappers — delegate to ./extensions/Taskfile.yml. The venv is
-  # already on PATH via the top-level `env:` block, so no `poetry run` shim
-  # is needed: the child Task subprocess inherits the activated environment.
-  #############################
-
-  extensions:setup:
-    desc: Initialize JupyterLite extensions
-    deps: [deps:install]
-    cmds:
-      - task -d ./extensions init
-
-  extensions:link:
-    desc: Link JupyterLite extensions
-    deps: [deps:install]
-    cmds:
-      - task -d ./extensions link
-
-  extensions:build:
-    desc: Build JupyterLite extensions
-    deps: [deps:install]
-    cmds:
-      - task -d ./extensions build
-
-  extensions:test:
-    desc: Run extension tests
-    deps: [deps:install]
-    cmds:
-      - task -d ./extensions test
-
-  sourcemap:upload:
-    desc: Upload extension sourcemap
-    deps: [deps:install]
-    cmds:
-      - task -d ./extensions sourcemap:upload
 
   #############################
   # Build / serve / clean
@@ -80,6 +55,7 @@ tasks:
     desc: Build the JupyterLite project
     deps: [deps:install]
     cmds:
+      - task: exts:nbrunner:build
       - task: build:restore-cache
       - jupyter lite build {{.JUPYTER_LITE_ARGS}}
       - task: build:save-cache
@@ -96,26 +72,17 @@ tasks:
 
   test:
     desc: Test the JupyterLite project
-    deps: [deps:install]
-    cmds:
-      - echo "No test in Jupyter"
+    deps: [exts:nbrunner:test]
+
+  sourcemap:upload:
+    desc: Upload sourcemaps
+    deps: [exts:nbrunner:sourcemap:upload]
 
   serve:
-    desc: Serve the JupyterLite project (run `task build` first)
-    deps: [deps:install]
+    desc: Serve the JupyterLite project
+    deps: [build]
     cmds:
       - jupyter lite serve {{.JUPYTER_LITE_ARGS}}
-
-  build:otter:
-    desc: Build the customized otter grader wheel
-    deps: [submodules:init, deps:install, build:otter:check-submodule]
-    sources:
-      - otter-grader/**/*
-    generates:
-      - dist/otter_grader-*.whl
-    cmds:
-      - pip wheel ./otter-grader -w dist --no-deps
-      - task: build:otter:check-wheel
 
   clean:
     desc: Clean the JupyterLite project
@@ -132,6 +99,132 @@ tasks:
         platforms: [linux, darwin]
       - cmd: rm -f .jupyterlite.doit.db
         platforms: [linux, darwin]
+
+  #############################
+  # All extensions
+  #############################
+
+  exts:setup:
+    desc: Bootstrap the extensions
+    deps: [exts:nbrunner:setup]
+
+  exts:build:
+    desc: Build the extensions
+    deps: [exts:nbrunner:build]
+
+  exts:test:
+    desc: Test the extensions
+    deps: [exts:nbrunner:test]
+
+  exts:sourcemap:upload:
+    desc: Upload the extensions' sourcemaps
+    deps: [exts:nbrunner:sourcemap:upload]
+
+  #############################
+  # Extension: notebook-runner
+  #############################
+
+  exts:nbrunner:setup:
+    desc: Bootstrap the notebook-runner extension (symlinks, version, pip install, labextension link)
+    dir: ./extensions/notebook-runner
+    deps: [deps:install]
+    cmds:
+      - node scripts/create-symlink.js
+      - node scripts/create-version.js
+      - task: exts:nbrunner:pip
+      - task: exts:nbrunner:link
+
+  exts:nbrunner:pip:
+    internal: true
+    dir: ./extensions/notebook-runner
+    status:
+      - pip show notebook-runner
+    sources: [JUPYTER_EXT_FILES]
+    cmds:
+      - pip install -e "."
+
+  exts:nbrunner:link:
+    internal: true
+    dir: ./extensions/notebook-runner
+    status:
+      - jupyter labextension check notebook-runner
+    sources: [JUPYTER_EXT_FILES]
+    cmds:
+      - jupyter labextension develop . --overwrite
+      - jupyter labextension link .
+
+  exts:nbrunner:build:
+    desc: Build the notebook-runner extension
+    deps: [exts:nbrunner:setup]
+    dir: ./extensions/notebook-runner
+    sources: [JUPYTER_EXT_FILES]
+    cmds:
+      - jlpm build
+
+  exts:nbrunner:test:
+    desc: Run notebook-runner tests
+    deps: [exts:nbrunner:setup]
+    dir: ./extensions/notebook-runner
+    sources: [JUPYTER_EXT_FILES]
+    cmds:
+      - jlpm test
+
+  exts:nbrunner:sourcemap:upload:
+    desc: Upload notebook-runner sourcemap to Sentry
+    deps: [exts:nbrunner:build]
+    dir: ./extensions/notebook-runner
+    sources: [JUPYTER_EXT_FILES]
+    requires:
+      vars:
+        - name: SENTRY_AUTH_TOKEN
+    cmds:
+      - jlpm sentry:sourcemaps
+
+  #############################
+  # Otter
+  #############################
+
+  build:otter:
+    desc: Build the customized otter grader wheel
+    deps: [submodules:init, deps:install]
+    sources:
+      - otter-grader/**/*
+    generates:
+      - dist/otter_grader-*.whl
+    cmds:
+      - task: build:otter:check-submodule
+      - pip wheel ./otter-grader -w dist --no-deps
+      - task: build:otter:check-wheel
+
+  build:otter:check-submodule:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "Test-Path otter-grader"
+        platforms: [windows]
+      - cmd: test -d otter-grader
+        platforms: [linux, darwin]
+
+  build:otter:check-wheel:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "Test-Path {{.OTTER_DIST}}"
+        platforms: [windows]
+      - cmd: test -f {{.OTTER_DIST}}
+        platforms: [linux, darwin]
+
+  #############################
+  # Extension scaffolding helpers (require EXTENSION=<name>)
+  #############################
+
+  exts:create:
+    desc: Scaffold a new extension via the JupyterLab copier template
+    requires:
+      vars: [EXTENSION]
+    dir: ./extensions/
+    cmds:
+      - mkdir -p {{.EXTENSION}}
+      - cd {{.EXTENSION}} && copier copy --trust https://github.com/jupyterlab/extension-template .
+      - echo "Refer to the existing Taskfile (exts:nbrunner:*) to configure appropriate build steps"
 
   #############################
   # Internal helpers (hidden from `task --list`).
@@ -163,20 +256,4 @@ tasks:
       - cmd: cat iframe-message-buffering.js >> {{.OUTPUT_DIR}}/lab/index.html
         platforms: [linux, darwin]
       - cmd: echo '</script>' >> {{.OUTPUT_DIR}}/lab/index.html
-        platforms: [linux, darwin]
-
-  build:otter:check-submodule:
-    internal: true
-    cmds:
-      - cmd: pwsh -Command "if (-not (Test-Path otter-grader)) { Write-Error 'The otter-grader directory does not exist. Please initialize the submodules first.'; exit 1 }"
-        platforms: [windows]
-      - cmd: test -d otter-grader || (echo "The otter-grader directory does not exist. Please initialize the submodules first." && exit 1)
-        platforms: [linux, darwin]
-
-  build:otter:check-wheel:
-    internal: true
-    cmds:
-      - cmd: pwsh -Command "if (-not (Test-Path dist/otter_grader-6.1.3-py3-none-any.whl)) { Write-Host 'The otter grader wheel was not built successfully. Please check the output for errors.' }"
-        platforms: [windows]
-      - cmd: test -f dist/otter_grader-6.1.3-py3-none-any.whl || echo "The otter grader wheel was not built successfully. Please check the output for errors."
         platforms: [linux, darwin]
