@@ -8,7 +8,7 @@ import {
   flattenCompoundUniqueSelectors,
   getChildRelations,
   SOFT_DELETE_FIELD,
-} from "./softDeleteHelpers";
+} from "./soft-delete-helper";
 
 const MAX_CASCADE_DEPTH = 10;
 
@@ -193,7 +193,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
 
             switch (operation) {
               case prismaOperations.delete: {
-                const where = await startCascadeDelete(
+                await startCascadeDelete(
                   txClient,
                   modelName,
                   args.where,
@@ -201,7 +201,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
                 );
 
                 return await txClient[clientModel].update({
-                  where: where,
+                  where: { ...args.where, deletedAt: null },
                   include: args.include,
                   select: args.select,
                   data: { deletedAt },
