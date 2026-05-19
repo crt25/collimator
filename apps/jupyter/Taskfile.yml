@@ -18,12 +18,6 @@ vars:
     - ./*
 
 tasks:
-  default:
-    desc: Setup and build (equivalent to `all`)
-    cmds:
-      - task: setup
-      - task: build
-
   setup:
     desc: Initialize the JupyterLite project
     cmds:
@@ -53,9 +47,9 @@ tasks:
 
   build:
     desc: Build the JupyterLite project
-    deps: [deps:install]
+    deps: [setup]
     cmds:
-      - task: exts:nbrunner:build
+      - task: exts:build
       - task: build:restore-cache
       - jupyter lite build {{.JUPYTER_LITE_ARGS}}
       - task: build:save-cache
