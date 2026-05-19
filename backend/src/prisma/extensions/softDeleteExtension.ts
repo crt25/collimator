@@ -193,7 +193,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
 
             switch (operation) {
               case prismaOperations.delete: {
-                await startCascadeDelete(
+                const where = await startCascadeDelete(
                   txClient,
                   modelName,
                   args.where,
@@ -201,7 +201,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
                 );
 
                 return await txClient[clientModel].update({
-                  where: args.where,
+                  where: where,
                   include: args.include,
                   select: args.select,
                   data: { deletedAt },
@@ -209,7 +209,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
               }
 
               case prismaOperations.deleteMany: {
-                const seed = await startCascadeDelete(
+                const where = await startCascadeDelete(
                   txClient,
                   modelName,
                   args.where,
@@ -217,7 +217,7 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
                 );
 
                 return await txClient[clientModel].updateMany({
-                  where: seed,
+                  where: where,
                   data: { deletedAt },
                 });
               }

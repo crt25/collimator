@@ -31,6 +31,12 @@ async function bootstrap(): Promise<void> {
 
   swagger.setup(app, API_PREFIX, API_VERSIONS);
 
+  if (swagger.isSwaggerOnlyRun()) {
+    console.info("Swagger file has been generated. Stopping...");
+    await app.close();
+    process.exit(0);
+  }
+
   // enable CORS for the frontend
   const frontendHostname = app
     .get(ConfigService)
@@ -61,12 +67,6 @@ async function bootstrap(): Promise<void> {
       app.close();
       stopServer.close();
     }).listen(stopPort);
-  }
-
-  if (process.argv.some((v) => v === "--generate-swagger-only")) {
-    console.info("Swagger file has been generated. Stopping...");
-    await app.close();
-    return;
   }
 
   const port = app.get(ConfigService).get<number>("PORT") ?? 3000;

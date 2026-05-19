@@ -2,6 +2,12 @@ import * as fs from "fs";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { INestApplication } from "@nestjs/common";
 
+const generateApiJsonFlag = "--generate-swagger-only";
+
+export function isSwaggerOnlyRun(): boolean {
+  return process.argv.includes(generateApiJsonFlag);
+}
+
 export function setup(
   app: INestApplication,
   API_PREFIX: string,
@@ -14,7 +20,9 @@ export function setup(
 
   const document = SwaggerModule.createDocument(app, config);
 
-  exportApiDocumentation();
+  if (isSwaggerOnlyRun()) {
+    exportApiDocumentation();
+  }
 
   SwaggerModule.setup(API_PREFIX, app, document, {
     explorer: true,

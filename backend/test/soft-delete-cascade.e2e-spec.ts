@@ -1011,7 +1011,7 @@ describe("Soft Delete Cascade (e2e)", () => {
     it("cascades for deleteMany with a lot of records", async () => {
       // 5 classes × 10 sessions each — verifies deleteMany cascade across many rows
       const classCount = 5;
-      const sessionsPerClasss = 10;
+      const sessionsPerClass = 10;
       const classStartId = 20001;
       const sessionStartId = 20001;
 
@@ -1031,22 +1031,22 @@ describe("Soft Delete Cascade (e2e)", () => {
 
       for (let i = 0; i < classCount; i++) {
         await createSessions(app, {
-          count: sessionsPerClasss,
-          startId: sessionStartId + i * sessionsPerClasss,
+          count: sessionsPerClass,
+          startId: sessionStartId + i * sessionsPerClass,
           classId: classIds[i],
           namePrefix: "CascadeTestSession",
         });
       }
 
       const sessionIds = Array.from(
-        { length: classCount * sessionsPerClasss },
+        { length: classCount * sessionsPerClass },
         (_, i) => sessionStartId + i,
       );
 
       const sessions = await prisma.session.findMany({
         where: { id: { in: sessionIds } },
       });
-      expect(sessions.length).toBe(classCount * sessionsPerClasss);
+      expect(sessions.length).toBe(classCount * sessionsPerClass);
 
       await prisma.class.deleteMany({ where: { id: { in: classIds } } });
 
