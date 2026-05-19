@@ -193,6 +193,16 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
 
             switch (operation) {
               case prismaOperations.delete: {
+                if (
+                  args?.where &&
+                  "deletedAt" in args.where &&
+                  args.where.deletedAt
+                ) {
+                  throw new Error(
+                    "Can't soft-delete items that were already deleted",
+                  );
+                }
+
                 const existing = await txClient[clientModel].findUnique({
                   where: args.where,
                   include: args.include,
@@ -220,6 +230,16 @@ export const softDeleteExtension = Prisma.defineExtension((client) => {
               }
 
               case prismaOperations.deleteMany: {
+                if (
+                  args?.where &&
+                  "deletedAt" in args.where &&
+                  args.where.deletedAt
+                ) {
+                  throw new Error(
+                    "Can't soft-delete items that were already deleted",
+                  );
+                }
+
                 const where = await startCascadeDelete(
                   txClient,
                   modelName,
