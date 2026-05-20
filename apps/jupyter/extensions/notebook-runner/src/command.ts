@@ -10,7 +10,7 @@ export const runGradingCommand = "notebook-runner:run-grading";
 export const runAllCellsCommand = "notebook-runner:run-all-cells";
 
 export enum CommandType {
-  RunNotebook = "run_notebook",
+  RunNotebook =  "run_notebook",
 }
 
 export const executeRunNotebookCommand = async (

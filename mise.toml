@@ -1,0 +1,16 @@
+[tools]
+docker-cli = "29.4.0"
+node = { version = "24.15.0", postinstall = "corepack enable" }
+task = "3.50.0"
+opentofu = "1.11.6"
+python = "3.14"
+tflint = "0.62.0"
+
+[env]
+# Load env from the dotenv file after tools have defined environment variables
+_.file = { path = '{{cwd}}/.env', tools = true }
+
+_.python.venv = {
+    path = "apps/jupyter/.venv", # relative to this file's directory
+    create = true,
+}

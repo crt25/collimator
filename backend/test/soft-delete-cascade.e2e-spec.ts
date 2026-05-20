@@ -6,8 +6,8 @@ import {
   createAuthenticationToken,
   createRegistrationToken,
 } from "./helpers/user";
-import { createClassWithId } from "./helpers/class";
-import { createSessionWithId } from "./helpers/session";
+import { createClasses, createClassWithId } from "./helpers/class";
+import { createSessions, createSessionWithId } from "./helpers/session";
 import {
   createTask,
   createSolution,
@@ -826,6 +826,78 @@ describe("Soft Delete Cascade (e2e)", () => {
       );
     });
 
+    it("does not delete children when parent is soft-deleted", async () => {
+      // Setup: Class -> Session -> StudentSolution (Session is pre-deleted before Class)
+      const user = await createUser(app, { id: 10100 });
+      const klass = await createClassWithId(app, {
+        id: 10100,
+        teacherId: user.id,
+      });
+      const session = await createSessionWithId(app, {
+        id: 10100,
+        classId: klass.id,
+      });
+
+      const task = await createTask(app, { id: 10100, creatorId: user.id });
+      const hash = Buffer.from("solution-hash-10100");
+      await createSolution(app, { taskId: task.id, hash });
+
+      const student = await createStudent(app, { id: 10100 });
+
+      await createStudentSolution(app, {
+        id: 10100,
+        taskId: task.id,
+        solutionHash: hash,
+        studentId: student.id,
+        sessionId: session.id,
+      });
+
+      // First, soft-delete the Session directly — cascades to StudentSolution
+      await prisma.session.delete({ where: { id: session.id } });
+
+      // Capture the Session's original deletedAt timestamp
+      const deletedSession = await prisma.session.findFirst({
+        where: { id: session.id },
+      });
+      expect(deletedSession!.deletedAt).not.toBeNull();
+      const originalSessionDeletedAt = deletedSession!.deletedAt!.getTime();
+
+      // Wait a bit to ensure different timestamp if bug exists
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      // Now delete the parent Class - this should NOT overwrite Session's deletedAt
+      await prisma.class.delete({ where: { id: klass.id } });
+
+      // Verify Class is soft-deleted with a newer timestamp
+      const deletedClass = await prisma.class.findFirst({
+        where: { id: klass.id },
+      });
+      expect(deletedClass!.deletedAt).not.toBeNull();
+      expect(deletedClass!.deletedAt!.getTime()).toBeGreaterThan(
+        originalSessionDeletedAt,
+      );
+
+      // Verify Session's deletedAt was NOT overwritten - it should keep original timestamp
+      const sessionAfterClassDelete = await prisma.session.findFirst({
+        where: { id: session.id },
+      });
+
+      expect(sessionAfterClassDelete!.deletedAt!.getTime()).toBe(
+        originalSessionDeletedAt,
+      );
+
+      // Verify StudentSolution was cascade-deleted when Session was deleted,
+      // and its timestamp was NOT overwritten by the later Class cascade
+      const studentSolution = await prisma.studentSolution.findFirst({
+        where: { sessionId: session.id },
+      });
+
+      expect(studentSolution!.deletedAt).not.toBeNull();
+      expect(studentSolution!.deletedAt!.getTime()).toBe(
+        originalSessionDeletedAt,
+      );
+    });
+
     it("uses identical deletedAt for entire cascade tree", async () => {
       // Create deep hierarchy: Class -> Session -> StudentSolution
       const user = await createUser(app, { id: 10001 });
@@ -934,6 +1006,110 @@ describe("Soft Delete Cascade (e2e)", () => {
       expect(deletedSession2!.deletedAt!.getTime()).toBe(
         deletedClass1!.deletedAt!.getTime(),
       );
+    });
+
+    it("cascades for deleteMany with a lot of records", async () => {
+      // 5 classes × 10 sessions each — verifies deleteMany cascade across many rows
+      const classCount = 5;
+      const sessionsPerClass = 10;
+      const classStartId = 20001;
+      const sessionStartId = 20001;
+
+      const user = await createUser(app, { id: 20001 });
+
+      await createClasses(app, {
+        count: classCount,
+        startId: classStartId,
+        teacherId: user.id,
+        namePrefix: "CascadeTestClass",
+      });
+
+      const classIds = Array.from(
+        { length: classCount },
+        (_, i) => classStartId + i,
+      );
+
+      for (let i = 0; i < classCount; i++) {
+        await createSessions(app, {
+          count: sessionsPerClass,
+          startId: sessionStartId + i * sessionsPerClass,
+          classId: classIds[i],
+          namePrefix: "CascadeTestSession",
+        });
+      }
+
+      const sessionIds = Array.from(
+        { length: classCount * sessionsPerClass },
+        (_, i) => sessionStartId + i,
+      );
+
+      const sessions = await prisma.session.findMany({
+        where: { id: { in: sessionIds } },
+      });
+      expect(sessions.length).toBe(classCount * sessionsPerClass);
+
+      await prisma.class.deleteMany({ where: { id: { in: classIds } } });
+
+      const notDeletedClass = await prisma.class.findFirst({
+        where: { id: { in: classIds }, deletedAt: null },
+      });
+
+      const notDeletedSession = await prisma.session.findFirst({
+        where: { id: { in: sessionIds }, deletedAt: null },
+      });
+
+      expect(notDeletedClass).toBeNull();
+      expect(notDeletedSession).toBeNull();
+    });
+
+    it("deleting Task A leaves Task B's children intact", async () => {
+      const user = await createUser(app, { id: 12006 });
+      const taskA = await createTask(app, { id: 12006, creatorId: user.id });
+      const taskB = await createTask(app, { id: 12007, creatorId: user.id });
+      const hashA = Buffer.from("solution-hash-12006");
+      const hashB = Buffer.from("solution-hash-12007");
+
+      await createSolution(app, { taskId: taskA.id, hash: hashA });
+      await createSolution(app, { taskId: taskB.id, hash: hashB });
+
+      const refSolutionA = await createReferenceSolution(app, {
+        id: 12006,
+        taskId: taskA.id,
+        solutionHash: hashA,
+      });
+
+      const refSolutionB = await createReferenceSolution(app, {
+        id: 12007,
+        taskId: taskB.id,
+        solutionHash: hashB,
+      });
+
+      // only delete Task A
+      await prisma.task.delete({ where: { id: taskA.id } });
+
+      // task A and its child must be soft-deleted
+      const deletedTaskA = await prisma.task.findFirst({
+        where: { id: taskA.id },
+      });
+
+      const deletedRefSolutionA = await prisma.referenceSolution.findFirst({
+        where: { id: refSolutionA.id },
+      });
+
+      expect(deletedTaskA!.deletedAt).not.toBeNull();
+      expect(deletedRefSolutionA!.deletedAt).not.toBeNull();
+
+      // task B here and its child must be completely untouched
+      const intactTaskB = await prisma.task.findFirst({
+        where: { id: taskB.id },
+      });
+
+      const intactRefSolutionB = await prisma.referenceSolution.findFirst({
+        where: { id: refSolutionB.id },
+      });
+
+      expect(intactTaskB!.deletedAt).toBeNull();
+      expect(intactRefSolutionB!.deletedAt).toBeNull();
     });
   });
 });

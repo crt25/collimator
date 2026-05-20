@@ -1,5 +1,12 @@
+import * as fs from "fs";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { INestApplication } from "@nestjs/common";
+
+const generateApiJsonFlag = "--generate-swagger-only";
+
+export function isSwaggerOnlyRun(): boolean {
+  return process.argv.includes(generateApiJsonFlag);
+}
 
 export function setup(
   app: INestApplication,
@@ -12,6 +19,11 @@ export function setup(
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
+  if (isSwaggerOnlyRun()) {
+    exportApiDocumentation();
+  }
+
   SwaggerModule.setup(API_PREFIX, app, document, {
     explorer: true,
     swaggerOptions: {
@@ -51,4 +63,12 @@ export function setup(
       },
     });
   });
+
+  function exportApiDocumentation(): void {
+    const outputDir = "docs";
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    fs.writeFileSync("./docs/api.json", JSON.stringify(document));
+  }
 }

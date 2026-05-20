@@ -21,3 +21,25 @@ export const createClassWithId = async (
     },
   });
 };
+
+export const createClasses = async (
+  app: INestApplication,
+  options: {
+    count: number;
+    startId: number;
+    teacherId: number;
+    namePrefix: string;
+  },
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+  const classesData = Array.from({ length: options.count }, (_, i) => ({
+    id: options.startId + i,
+    name: `${options.namePrefix} ${options.startId + i}`,
+    teacherId: options.teacherId,
+    deletedAt: null,
+  }));
+
+  await prisma.class.createMany({
+    data: classesData,
+  });
+};

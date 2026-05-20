@@ -8,13 +8,13 @@ The repository is structured into several key directories, including `backend`, 
 
 ### Prerequisites
 
-Make sure the following tools are installed:
+You will need the tool [Mise](https://mise.jdx.dev/) to be installed.
 
-- [Yarn](https://yarnpkg.com/) (via corepack)
-- [Node.js](https://nodejs.org/fr) `^22.0`
-- [PostgreSQL](https://www.postgresql.org/)
+You will also need a Microsoft account to log in. It can be either a personal account or an organizational account, provided the organization has allowed its users to access the application.
 
-You need a Microsoft account to log in. It can be either a personal account or an organizational account, provided the organization has allowed its users to access the application.
+Furthermore, on Windows, you may need:
+- [Developer Mode](https://learn.microsoft.com/en-us/windows/advanced-settings/developer-mode) to be active
+- `pwsh` (PowerShell 7+) to be installed 
 
 ### Clone the repository
 
@@ -26,24 +26,31 @@ cd collimator
 git submodule update --init --recursive --progress
 ```
 
+### Installing the development tools
+
+```sh
+mise trust
+mise install
+task setup:dev
+```
+
+### Runtime environment
+
+You can start and stop the PostgreSQL-based database system required by ClassMosaic through the following commands:
+```sh
+task db:run   # start the PostgreSQL container
+task db:stop  # stop the PostgreSQL container
+task db:clean # erase the database 
+```
+
+By default, when you run `task setup:dev` the PostgreSQL container will be running.
+
 ### Backend setup
 
-?> The `docker/` folder and `backend/Dockerfile` are only used for deployment. For local development, use the native setup described below.
+1. By running the commands above, a `.env` file will have been created in your `backend` folder,
+   with a `DATABASE_URL` matching the PostgreSQL container configuration. 
 
-1. Create a PostgreSQL database for ClassMosaic.
-
-   You can either use the [Postgres Docker](#postgres-docker) instructions in the appendices, or install PostgreSQL directly (see the [official documentation](https://www.postgresql.org/docs/current/)).
-
-2. In the `backend` folder, copy `.env.sample` to `.env` and set `DATABASE_URL` to match your database, if needed.
-
-3. Install dependencies:
-
-    ```sh
-    $ cd backend
-    $ yarn install
-    ```
-
-4. Configure the admin account by setting environment variables in your `.env` file:
+2. Configure the admin account by setting environment variables in your `backend/.env` file:
 
     ```sh
     SEED_ADMIN_EMAIL=yourMicrosoftAccountEmail
@@ -53,24 +60,10 @@ git submodule update --init --recursive --progress
 
     If not set, the seeding will use default values (`admin@example.com` and `Admin`).
 
-5. Apply migrations and generate the Prisma client:
+3. Seed the database:
 
     ```sh
-    # From: backend/
-    $ yarn prisma migrate deploy
-    $ yarn prisma:generate
-    ```
-
-6. Build the backend:
-
-    ```sh
-    $ yarn build
-    ```
-
-7. Seed the database:
-
-    ```sh
-    $ yarn prisma:seed:all
+    $ task db:seed:dev
     ```
 
     In the console, you should see:
@@ -84,44 +77,39 @@ git submodule update --init --recursive --progress
 
     ?> If an admin user with the specified email already exists, seeding will be skipped.
 
-8. Start the backend in development mode:
+4. Start the backend in development mode:
 
     ```sh
-    $ yarn dev
+    $ task backend:dev
     ```
 
 ### Frontend setup
 
-1. Move to the `frontend` folder.
+1. If you changed the backend URI, you will need to update it in `frontend/.env`.
 
-2. If you changed the backend URI, copy `.env.development` to `.env` and update it. If not, you can keep `.env.development` as is.
-
-3. Install dependencies, then start the frontend:
+2. Start the frontend in development mode:
 
     ```sh
-    $ yarn install
-    $ yarn dev
+    $ task frontend:dev
     ```
 
 ### Scratch setup
 
-1. Move to the `apps/scratch` folder.
-
-2. Ensure submodules are initialized:
+1. Start the app in development mode:
 
     ```sh
-    $ git submodule update --init --recursive
-    ```
-
-3. Install dependencies and start the app:
-
-    ```sh
-    $ yarn install
-    $ yarn dev
+    $ task apps:scratch:dev
     ```
 
 ### Jupyter setup
-See [apps/jupyter/README.md](../../apps/jupyter/README.md) for detailed instructions.
+1. 
+2. Start the app in development mode:
+
+    ```sh
+    $ task apps:jupyter:dev
+    ```
+
+See [apps/jupyter/README.md](../../apps/jupyter/README.md) for more information.
 
 ### Visit the frontend
 

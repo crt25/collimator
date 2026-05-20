@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { softDeleteExtension } from "./extensions/softDeleteExtension";
+import { softDeleteExtension } from "./extensions/soft-delete-extension";
 import { prismaOptions } from "./options";
 
 @Injectable()

@@ -506,7 +506,7 @@ export class SolutionsService {
       );
     } else {
       this.logger.log(
-        `Unexpected: attempted to delete student solution (id: ${id}) for session (id: ${sessionId}), task (id: ${taskId}), but it no longer exists`
+        `Unexpected: attempted to delete student solution (id: ${id}) for session (id: ${sessionId}), task (id: ${taskId}), but it no longer exists`,
       );
     }
 
