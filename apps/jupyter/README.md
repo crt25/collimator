@@ -29,57 +29,49 @@ The ClassMosaic Jupyter Application is a customized JupyterLite deployment that 
 - **Autograding support**: Built-in testing and validation capabilities
 - **Cross-platform compatibility**: Works on Windows, macOS, and Linux
 
-## Prerequisites
-
-### System Requirements
-
-- **Python 3.8+**: Required for building and development
-- **Node.js 16+**: Required for extension development
-- **Git**: For submodule management
-- **Make**: For build automation (on Windows, consider using WSL or install make via chocolatey)
-
-### Platform-Specific Notes
-
-**Windows:**
-
-- PowerShell 7+ (`pwsh`) is assumed to used as a shell
-
 ## Building and Running
+
+All build automation lives in [`Taskfile.yml`](./Taskfile.yml). Run `task --list` from this directory to see every available task with its description.
 
 ### Quick Start
 
 1. **Initialize the project** (first time setup):
 
    ```bash
-   make init
+   task setup
    ```
 
    This command:
 
    - Initializes git submodules (otter-grader)
-   - Installs all required dependencies
-   - Initializes JupyterLab extensions
+   - Installs all required Python dependencies via `pipx`/`poetry`
    - Builds the custom otter grader wheel
+   - Bootstraps the JupyterLab extensions (symlinks, version stamping, `pip install -e`, `jupyter labextension develop/link`)
 
 2. **Build the application**:
 
    ```bash
-   make build
+   task build
    ```
 
+   `task build` depends on `task setup`, so it will (re)run setup steps that are out of date before producing the bundle.
+
 3. **Serve the application locally**:
+
    ```bash
-   make serve
+   task serve
    ```
 
 The application will be available at `http://localhost:8000/jupyter/lab/`
 
 ### Step-by-Step Build Process
 
+Each high-level task above is composed of smaller, individually-callable tasks. Most of them declare `sources:`/`generates:` so Task will skip work that is already up to date.
+
 #### 1. Init Submodules
 
 ```bash
-make init-submodules
+task submodules:init
 ```
 
 This only needs to be run once after cloning the repo.
@@ -87,25 +79,25 @@ This only needs to be run once after cloning the repo.
 #### 2. Install Dependencies
 
 ```bash
-make install-deps
+task deps:install
 ```
 
-Re-run whenever the `pyproject.toml` / `poetry.lock` dependencies change.
+Installs `pipx`, `poetry` (pinned versions from `Taskfile.yml`) and then `pipx run poetry install`. Re-run whenever the `pyproject.toml` / `poetry.lock` dependencies change.
 
 #### 3. Build Otter Grader Wheel
 
 ```bash
-make build-otter
+task build:otter
 ```
 
 This creates a custom wheel file (`otter_grader-6.1.3-py3-none-any.whl`) in the `dist/` directory.
 
-Re-run this command whenever the otter submodule changes.
+Re-run this command whenever the otter submodule changes (the task tracks `otter-grader/**/*` as sources, so it is a no-op otherwise).
 
 #### 4. Initialize and build jupyter extensions
 
 ```bash
-make init-extensions
+task exts:setup
 ```
 
 This runs some initialization scripts for the different extensions.
@@ -116,7 +108,7 @@ This only needs to be run once when setting up the project.
 #### 5. Build JupyterLite Extensions
 
 ```bash
-make build-extensions
+task exts:build
 ```
 
 Builds all the custom extensions.
@@ -126,16 +118,17 @@ Since this scales with the number of extensions, it is faster to just re-build a
 #### 6. Build JupyterLite Application
 
 ```bash
-make build
+task build
 ```
 
 The build process:
 
-1. Restores cached lab.html if available
-2. Runs `jupyter lite build` with custom arguments
-3. Caches the built lab.html file
-4. Injects iframe message buffering JavaScript
-5. Outputs to `./dist/app/` directory
+1. Builds the extensions (`task exts:build`)
+2. Restores cached `lab.html` if available
+3. Runs `jupyter lite build` with the arguments from `JUPYTER_LITE_ARGS`
+4. Caches the built `lab.html` file
+5. Injects iframe message buffering JavaScript
+6. Outputs to `./dist/app/` directory
 
 Note that it does **not** re-build the extensions, this must be done manually whenever they change.
 
@@ -144,7 +137,7 @@ Re-run whenever you change an extension or a JupyterLite configuration.
 ### Cleaning the Build
 
 ```bash
-make clean
+task clean
 ```
 
 This removes:
@@ -154,6 +147,12 @@ This removes:
 - JupyterLite database (`.jupyterlite.doit.db`)
 
 Try this first, if the build process results in weird error messages.
+
+### Other Useful Tasks
+
+- `task lint` / `task lint:fix` — lint hooks (currently a no-op for the Jupyter app, present for monorepo parity).
+- `task test` — runs the notebook-runner extension test suite (`task exts:nbrunner:test`).
+- `task sourcemap:upload` — uploads the notebook-runner sourcemap to Sentry (requires `SENTRY_AUTH_TOKEN`).
 
 ## Components
 
@@ -217,8 +216,7 @@ The project includes a custom JupyterLab extension located in `extensions/notebo
 #### Building the Extension
 
 ```bash
-cd extensions/notebook-runner
-jlpm build
+task exts:build
 ```
 
 ### Creating New Extensions
@@ -226,10 +224,10 @@ jlpm build
 The Makefile includes utilities for creating new JupyterLab extensions:
 
 ```bash
-make create-extension EXTENSION='path/to/my/extension'
+task exts:create EXTENSION='path/to/my/extension'
 ```
 
-This uses the official JupyterLab extension template via Copier.
+This uses the official JupyterLab extension template via Copier. After scaffolding, add a matching set of `exts:<name>:*` tasks to `Taskfile.yml` (use the `exts:nbrunner:*` tasks as a reference).
 
 ### Python Development
 
@@ -267,7 +265,7 @@ Currently empty but can be used to override default JupyterLab settings such as:
 
 ### Build Configuration
 
-**File**: `Makefile`
+**File**: `Taskfile.yml`
 
 Environment variables for customization:
 

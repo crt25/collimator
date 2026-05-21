@@ -1,0 +1,251 @@
+version: '3'
+
+# helper to avoid repeating the dependencies of Jupyter extension files
+x-jupyter-ext-files: &jupyter_ext_files
+  - ./schema/**/*
+  - ./scripts/**/*
+  - ./src/**/*
+  - ./style/**/*
+  - ./ui-tests/**/*
+  - ./*
+
+vars:
+  OTTER_VERSION: '6.1.3'
+  PIPX_VERSION: '1.12.0'
+  POETRY_VERSION: '2.4.1'
+  OUTPUT_DIR: '{{.OUTPUT_DIR | default "./dist/app"}}'
+  PORT: '{{.PORT | default "8000"}}'
+  BASE_URL: '{{.BASE_URL | default "/jupyter/"}}'
+  OTTER_DIST: 'dist/otter_grader-{{.OTTER_VERSION}}-py3-none-any.whl'
+  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+
+tasks:
+  setup:
+    desc: Initialize the JupyterLite project
+    cmds:
+      - task: submodules:init
+      - task: deps:install
+      - task: build:otter
+      - task: exts:setup
+
+  submodules:init:
+    desc: Initialize git submodules
+    cmds:
+      - git submodule update --init --recursive
+
+  deps:install:
+    desc: Install Python dependencies via poetry
+    sources:
+      - pyproject.toml
+      - poetry.lock
+    cmds:
+      - pip install "pipx=={{.PIPX_VERSION}}"
+      - pipx install "poetry=={{.POETRY_VERSION}}"
+      - pipx run poetry install
+
+  #############################
+  # Build / serve / clean
+  #############################
+
+  build:
+    desc: Build the JupyterLite project
+    deps: [setup]
+    cmds:
+      - task: exts:build
+      - task: build:restore-cache
+      - jupyter lite build {{.JUPYTER_LITE_ARGS}}
+      - task: build:save-cache
+      - task: build:inject-iframe-script
+
+  lint:
+    desc: Lint the JupyterLite project
+    deps: [deps:install]
+    cmds:
+      - echo "No lint in Jupyter"
+
+  lint:fix:
+    deps: [lint]
+
+  test:
+    desc: Test the JupyterLite project
+    deps: [exts:nbrunner:test]
+
+  sourcemap:upload:
+    desc: Upload sourcemaps
+    deps: [exts:nbrunner:sourcemap:upload]
+
+  serve:
+    desc: Serve the JupyterLite project
+    deps: [build]
+    cmds:
+      - jupyter lite serve {{.JUPYTER_LITE_ARGS}}
+
+  clean:
+    desc: Clean the JupyterLite project
+    cmds:
+      - cmd: pwsh -Command "if (Test-Path {{.OUTPUT_DIR}}) { rm -r -fo {{.OUTPUT_DIR}} }"
+        platforms: [windows]
+      - cmd: pwsh -Command "if (Test-Path .cache) { rm -r -fo .cache }"
+        platforms: [windows]
+      - cmd: pwsh -Command "if (Test-Path .jupyterlite.doit.db) { rm .jupyterlite.doit.db }"
+        platforms: [windows]
+      - cmd: rm -rf {{.OUTPUT_DIR}}
+        platforms: [linux, darwin]
+      - cmd: rm -rf .cache
+        platforms: [linux, darwin]
+      - cmd: rm -f .jupyterlite.doit.db
+        platforms: [linux, darwin]
+
+  #############################
+  # All extensions
+  #############################
+
+  exts:setup:
+    desc: Bootstrap the extensions
+    deps: [exts:nbrunner:setup]
+
+  exts:build:
+    desc: Build the extensions
+    deps: [exts:nbrunner:build]
+
+  exts:test:
+    desc: Test the extensions
+    deps: [exts:nbrunner:test]
+
+  exts:sourcemap:upload:
+    desc: Upload the extensions' sourcemaps
+    deps: [exts:nbrunner:sourcemap:upload]
+
+  #############################
+  # Extension: notebook-runner
+  #############################
+
+  exts:nbrunner:setup:
+    desc: Bootstrap the notebook-runner extension (symlinks, version, pip install, labextension link)
+    dir: ./extensions/notebook-runner
+    deps: [deps:install]
+    cmds:
+      - node scripts/create-symlink.js
+      - node scripts/create-version.js
+      - task: exts:nbrunner:pip
+      - task: exts:nbrunner:link
+
+  exts:nbrunner:pip:
+    internal: true
+    dir: ./extensions/notebook-runner
+    status:
+      - pip show notebook-runner
+    sources: *jupyter_ext_files
+    cmds:
+      - pip install -e "."
+
+  exts:nbrunner:link:
+    internal: true
+    dir: ./extensions/notebook-runner
+    status:
+      - jupyter labextension check notebook-runner
+    sources: *jupyter_ext_files
+    cmds:
+      - jupyter labextension develop . --overwrite
+      - jupyter labextension link .
+
+  exts:nbrunner:build:
+    desc: Build the notebook-runner extension
+    deps: [exts:nbrunner:setup]
+    dir: ./extensions/notebook-runner
+    sources: *jupyter_ext_files
+    cmds:
+      - jlpm build
+
+  exts:nbrunner:test:
+    desc: Run notebook-runner tests
+    deps: [exts:nbrunner:setup]
+    dir: ./extensions/notebook-runner
+    sources: *jupyter_ext_files
+    cmds:
+      - jlpm test
+
+  exts:nbrunner:sourcemap:upload:
+    desc: Upload notebook-runner sourcemap to Sentry
+    deps: [exts:nbrunner:build]
+    dir: ./extensions/notebook-runner
+    sources: *jupyter_ext_files
+    requires:
+      vars:
+        - name: SENTRY_AUTH_TOKEN
+    cmds:
+      - jlpm sentry:sourcemaps
+
+  #############################
+  # Otter
+  #############################
+
+  build:otter:
+    desc: Build the customized otter grader wheel
+    deps: [submodules:init, deps:install]
+    sources:
+      - otter-grader/**/*
+    generates:
+      - dist/otter_grader-*.whl
+    cmds:
+      - task: build:otter:check-submodule
+      - pip wheel ./otter-grader -w dist --no-deps
+      - task: build:otter:check-wheel
+
+  build:otter:check-submodule:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "Test-Path otter-grader"
+        platforms: [windows]
+      - cmd: test -d otter-grader
+        platforms: [linux, darwin]
+
+  build:otter:check-wheel:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "Test-Path {{.OTTER_DIST}}"
+        platforms: [windows]
+      - cmd: test -f {{.OTTER_DIST}}
+        platforms: [linux, darwin]
+
+  #############################
+  # Extension scaffolding helpers (require EXTENSION=<name>)
+  #############################
+
+  exts:create:
+    desc: Scaffold a new extension via the JupyterLab copier template
+    requires:
+      vars: [EXTENSION]
+    dir: ./extensions/
+    cmds:
+      - mkdir -p {{.EXTENSION}}
+      - cd {{.EXTENSION}} && copier copy --trust https://github.com/jupyterlab/extension-template .
+      - echo "Refer to the existing Taskfile (exts:nbrunner:*) to configure appropriate build steps"
+
+  #############################
+  # Internal helpers (hidden from `task --list`).
+  #############################
+
+  build:restore-cache:
+    internal: true
+    cmds:
+      - cmd: pwsh -Command "if ((Test-Path .cache/lab.html) -and (Test-Path {{.OUTPUT_DIR}}/lab/index.html)) { cp .cache/lab.html {{.OUTPUT_DIR}}/lab/index.html }"
+        platforms: [windows]
+      - cmd: bash -c "if [ -f .cache/lab.html ] && [ -f {{.OUTPUT_DIR}}/lab/index.html ]; then cp .cache/lab.html {{.OUTPUT_DIR}}/lab/index.html; fi"
+        platforms: [linux, darwin]
+
+  build:save-cache:
+    internal: true
+    cmds:
+      - cp {{.OUTPUT_DIR}}/lab/index.html .cache/lab.html
+
+  build:inject-iframe-script:
+    cmds:
+      - cmd: pwsh -Command "echo '<script>' (Get-Content iframe-message-buffering.js) '</script>' | Out-File -Append -FilePath {{.OUTPUT_DIR}}/lab/index.html -Encoding utf8 -Force"
+        platforms: [windows]
+      - cmd: echo '<script>' >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
+      - cmd: cat iframe-message-buffering.js >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
+      - cmd: echo '</script>' >> {{.OUTPUT_DIR}}/lab/index.html
+        platforms: [linux, darwin]
