@@ -125,6 +125,15 @@ export class GetTaskError extends TaskError {
   }
 }
 
+export class UnexpectedKernelCountError extends TaskError {
+  constructor(public readonly availableKernels: string[]) {
+    super(
+      `Expected exactly 1 kernel spec but found ${availableKernels.length}: [${availableKernels.join(", ")}]. ` +
+        `This extension assumes a single pyodide kernel is available.`,
+    );
+  }
+}
+
 export class FailedToSendTaskSolutionError extends Error {
   constructor(originalError: unknown) {
     super(`Failed to send task solution: ${originalError}`);

@@ -7,6 +7,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { DocumentRegistry } from "@jupyterlab/docregistry";
 import { Kernel } from "@jupyterlab/services";
 import { ISessionContext, ISessionContextDialogs } from "@jupyterlab/apputils";
+import { UnexpectedKernelCountError } from "./errors/task-errors";
 import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
@@ -196,13 +197,13 @@ export const selectKernelByDefault = async (
     return;
   }
 
-  const pyodideKernelName = Object.keys(specs.kernelspecs).find(
-    (kernelName) =>
-      specs.kernelspecs[kernelName]?.display_name.includes("pyodide") ||
-      kernelName.includes("pyodide"),
-  );
+  const availableKernels = Object.keys(specs.kernelspecs);
 
-  const kernelName = pyodideKernelName ?? specs.default;
+  if (availableKernels.length !== 1) {
+    throw new UnexpectedKernelCountError(availableKernels);
+  }
+
+  const kernelName = availableKernels[0];
 
   await sessionContext.changeKernel({ name: kernelName });
 
