@@ -13,7 +13,6 @@ export class CannotLoadProjectError extends ScratchWrapperError {
   }
 }
 
-
 export class CannotSaveProjectError extends ScratchWrapperError {
   constructor(message: string) {
     super(ScratchProjectErrorCode.CannotSaveProject, message);
