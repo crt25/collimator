@@ -80,7 +80,7 @@ const EditTaskModal = ({
         );
       }
     },
-    [initialTask, intl, taskType],
+    [initialTask, intl],
   );
 
   useEffect(() => {
