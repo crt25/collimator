@@ -1,7 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Session, Prisma } from "@prisma/client";
+import { Session, Prisma, SessionStatus } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { SessionStatus } from ".prisma/client";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
 import { PrismaTransactionClient } from "src/prisma/types";
 import { ClassId } from "../classes/dto";
@@ -9,7 +8,7 @@ import { StudentId } from "../solutions/solutions.service";
 import { SessionId } from "./dto";
 import { TaskProgress } from "./task-progress";
 
-const compactInclude = {
+const compactInclude: Prisma.SessionInclude = {
   tasks: {
     where: { deletedAt: null },
     orderBy: { index: "asc" as Prisma.SortOrder },
@@ -21,7 +20,7 @@ const compactInclude = {
   lesson: { select: { id: true, title: true } },
 };
 
-const fullInclude = {
+const fullInclude: Prisma.SessionInclude = {
   tasks: {
     where: { deletedAt: null },
     orderBy: { index: "asc" as Prisma.SortOrder },

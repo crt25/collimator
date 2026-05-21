@@ -12,7 +12,7 @@ env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECR_REGISTRY_URI: ${{ vars.ECR_REGISTRY_URI }}
   ROLE_TO_ASSUME: ${{ vars.DEV_ROLE_TO_ASSUME }}
-  DEPLOY_URL : ${{ vars.DEPLOY_URL }}
+  DEPLOY_URL: ${{ vars.DEPLOY_URL }}
   ENTRA_ID_CLIENT_ID: ${{ vars.ENTRA_ID_CLIENT_ID }}
   BACKEND_IMAGE_NAME: collimator-dev-backend
   FRONTEND_BUCKET_ID: collimator-dev-static-frontend
@@ -23,6 +23,8 @@ env:
   # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
   SENTRY_RELEASE: ${{ github.sha }}
   SENTRY_ENVIRONMENT: development
+  FRONTEND_SENTRY_DSN: ${{ vars.FRONTEND_SENTRY_DSN }}
+  APP_SCRATCH_SENTRY_DSN: ${{ vars.APP_SCRATCH_SENTRY_DSN }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -34,7 +36,6 @@ jobs:
     secrets: inherit
 
   deploy:
-    # For now, we deploy even if tests fail. CHANGE THIS ASAP.
     needs: [tests]
     runs-on: ubuntu-latest
 
@@ -43,7 +44,7 @@ jobs:
         # Label used to access the service container
         postgres:
             # Docker Hub image
-            image: postgres
+            image: postgres:18
             # Provide the password for postgres
             env:
                 POSTGRES_PASSWORD: postgres
@@ -61,9 +62,6 @@ jobs:
         DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
 
     steps:
-    
-      # Build application and prepare deployment
-
       - name: Git clone the repository
         uses: actions/checkout@v4
         with:
@@ -76,41 +74,15 @@ jobs:
         with:
             role-to-assume: ${{ env.ROLE_TO_ASSUME }}
             aws-region: ${{ env.AWS_REGION }}
-        
-      - name: Enable Corepack
-        run: corepack enable
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: yarn install
+      - name: Setup CI environment
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
 
-      - name: Install library dependencies
-        working-directory: ./libraries
-        run: |
-          cd iframe-rpc && yarn install && cd ..
-          cd iframe-rpc-react && yarn install
-
-      - name: Install scratch app dependencies
-        working-directory: ./apps/scratch
-        run: yarn install
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Install jupyter app dependencies
-        working-directory: ./apps/jupyter
-        run: |
-          make install-deps
-          make build-otter
-          make init-extensions
-
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: yarn install
+      - name: Setup dependencies
+        run: task setup
 
       - name: Build frontend
-        working-directory: ./frontend
-        run: yarn build
+        run: task frontend:build
         env:
           NEXT_PUBLIC_BACKEND_HOSTNAME: ${{ env.DEPLOY_URL }}
           NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/scratch
@@ -121,31 +93,22 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.FRONTEND_SENTRY_AUTH_TOKEN }}
 
       - name: Build scratch app
-        working-directory: ./apps/scratch
-        run: yarn build
+        run: task apps:scratch:build
         env:
           NEXT_PUBLIC_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
 
       - name: Upload scratch app source maps
-        working-directory: ./apps/scratch
-        run: yarn sentry:sourcemaps
+        run: task apps:scratch:sourcemap:upload
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
 
       - name: Build jupyter app
-        working-directory: ./apps/jupyter
-        run: |
-          make build-extensions
-          make build
+        run: task apps:jupyter:build
 
       - name: Upload jupyter app source maps
-        working-directory: ./apps/jupyter
-        run: make upload-sourcemaps
+        run: task apps:jupyter:sourcemap:upload
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
-        
-      - name: Install OpenTofu
-        uses: opentofu/setup-opentofu@v1
 
       - name: Init terraform
         run: tofu init -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
@@ -154,16 +117,13 @@ jobs:
       # the database must be fully migrated before running prisma:generate
       # we build the backend so that we can upload the source maps to sentry
       - name: Prepare test database
-        working-directory: ./backend
-        run: yarn prisma migrate deploy
+        run: task db:migrate:deploy
 
       - name: Build backend
-        working-directory: ./backend
-        run: yarn prisma:generate && yarn build
+        run: task backend:build
 
       - name: Upload backend source maps
-        working-directory: ./backend
-        run: yarn sentry:sourcemaps
+        run: task backend:sourcemap:upload
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
 

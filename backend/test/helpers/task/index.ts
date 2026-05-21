@@ -137,6 +137,28 @@ export const createStudentSolution = async (
   });
 };
 
+export const createStudentSolutions = async (
+  app: INestApplication,
+  options: {
+    count: number;
+    id: number;
+    taskId: number;
+    solutionHash: Buffer;
+    studentId: number;
+    sessionId: number;
+  },
+): Promise<void> => {
+  for (let i = 0; i < options.count; i++) {
+    await createStudentSolution(app, {
+      id: options.id + i,
+      taskId: options.taskId,
+      solutionHash: options.solutionHash,
+      studentId: options.studentId,
+      sessionId: options.sessionId,
+    });
+  }
+};
+
 export const createSolutionTest = async (
   app: INestApplication,
   options: {

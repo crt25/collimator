@@ -29,6 +29,8 @@ export default defineConfig([
     "**/node_modules",
   ]),
   {
+    files: ["**/*.ts", "**/*.tsx"],
+
     extends: compat.extends("../.eslintrc.js"),
 
     plugins: {

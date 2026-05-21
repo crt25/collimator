@@ -27,3 +27,29 @@ export const createSessionWithId = async (
     },
   });
 };
+
+export const createSessions = async (
+  app: INestApplication,
+  options: {
+    count: number;
+    startId: number;
+    classId: number;
+    namePrefix: string;
+  },
+): Promise<void> => {
+  const prisma = app.get(PrismaService);
+
+  const sessionsData = Array.from({ length: options.count }, (_, i) => ({
+    id: options.startId + i,
+    title: `${options.namePrefix} ${options.startId + i}`,
+    description: "Test description",
+    classId: options.classId,
+    status: SessionStatus.CREATED,
+    isAnonymous: false,
+    deletedAt: null,
+  }));
+
+  await prisma.session.createMany({
+    data: sessionsData,
+  });
+};
