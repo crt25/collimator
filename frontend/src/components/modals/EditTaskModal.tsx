@@ -60,7 +60,7 @@ const EditTaskModal = ({
 
       const language = intl.locale as Language;
 
-      if (taskType === TaskType.SCRATCH && initialTask) {
+      if (initialTask) {
         await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {

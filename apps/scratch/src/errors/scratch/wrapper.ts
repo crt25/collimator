@@ -13,11 +13,6 @@ export class CannotLoadProjectError extends ScratchWrapperError {
   }
 }
 
-export class MissingTaskError extends ScratchWrapperError {
-  constructor(message: string) {
-    super(ScratchProjectErrorCode.MissingTask, message);
-  }
-}
 
 export class CannotSaveProjectError extends ScratchWrapperError {
   constructor(message: string) {

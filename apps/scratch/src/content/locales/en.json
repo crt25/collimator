@@ -126,9 +126,6 @@
   "crt.useEmbeddedScratch.missingAssets": {
     "message": "The project is missing the following assets: {assets}."
   },
-  "crt.useEmbeddedScratch.missingTask": {
-    "message": "No project file was provided."
-  },
   "crt.useEmbeddedScratch.projectJsonMissing": {
     "message": "The project file is missing project.json."
   },

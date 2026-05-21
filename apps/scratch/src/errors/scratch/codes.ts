@@ -12,5 +12,4 @@ export enum ScratchProjectErrorCode {
   CannotGetTask = "CannotGetTask",
   TimeoutExceeded = "TimeoutExceeded",
   Unknown = "Unknown",
-  MissingTask = "MissingTask",
 }

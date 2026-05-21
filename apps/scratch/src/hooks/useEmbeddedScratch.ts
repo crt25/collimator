@@ -27,7 +27,6 @@ import {
   CannotSaveProjectError,
   MissingAssetsError,
   MissingProjectJsonError,
-  MissingTaskError,
   ScratchProjectError,
   ScratchProjectErrorCode,
   TimeoutExceededError,
@@ -49,10 +48,6 @@ const messages = defineMessages({
   cannotLoadProject: {
     id: "crt.useEmbeddedScratch.cannotLoadProject",
     defaultMessage: "Could not load the project.",
-  },
-  missingTask: {
-    id: "crt.useEmbeddedScratch.missingTask",
-    defaultMessage: "No project file was provided.",
   },
   projectJsonMissing: {
     id: "crt.useEmbeddedScratch.projectJsonMissing",
@@ -262,7 +257,6 @@ export class EmbeddedScratchCallbacks {
     [ScratchProjectErrorCode.CannotSaveProject]: messages.cannotSaveProject,
     [ScratchProjectErrorCode.TimeoutExceeded]: messages.timeoutExceeded,
     [ScratchProjectErrorCode.CannotGetTask]: messages.cannotGetTask,
-    [ScratchProjectErrorCode.MissingTask]: messages.missingTask,
   };
 
   private getErrorMessage(e: unknown): string {
@@ -315,9 +309,7 @@ export class EmbeddedScratchCallbacks {
       console.debug(`${logModule} Loading project`);
 
       if (!isLoadTaskWithTask(request.params)) {
-        throw new MissingTaskError(
-          this.intl.formatMessage(messages.missingTask),
-        );
+        return;
       }
 
       const sb3Project = await request.params.task.arrayBuffer();
