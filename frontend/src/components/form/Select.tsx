@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { TaskType } from "@/api/collimator/generated/models";
 import { EditedBadge } from "../EditedBadge";
 
 const InputWrapper = styled.label<{ isShown?: boolean; noMargin?: boolean }>`
@@ -38,6 +39,7 @@ type InternalSelectProps = {
   variant?: ChakraSelectProps["variant"];
   children?: React.ReactNode;
   onValueChange?: (value: string) => void;
+  onBeforeChange?: (newValue: TaskType) => boolean;
   onInteractOutside?: () => void;
   isDirty?: boolean;
   showEditedBadge?: boolean;
@@ -79,6 +81,7 @@ const InternalSelect = (
     name,
     value,
     onValueChange,
+    onBeforeChange,
     onInteractOutside,
     label,
     placeholder,
@@ -98,7 +101,13 @@ const InternalSelect = (
         {...rest}
         name={name}
         value={value !== undefined ? [value.toString()] : []}
-        onValueChange={(v) => onValueChange?.(v.value[0])}
+        onValueChange={(v) => {
+          const newValue = v.value[0] as TaskType;
+          if (onBeforeChange && !onBeforeChange(newValue)) {
+            return;
+          }
+          onValueChange?.(newValue);
+        }}
         onInteractOutside={onInteractOutside}
         variant={variant ?? "subtle"}
         collection={collection}
@@ -196,6 +205,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               name={field.name}
               value={field.value}
               onValueChange={field.onChange}
+              onBeforeChange={props.onBeforeChange}
               isDirty={fieldState.isDirty}
               errorMessage={fieldState.error?.message}
               onInteractOutside={() => field.onBlur()}

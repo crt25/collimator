@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import {
   defineMessages,
   FormattedMessage,
@@ -115,6 +108,19 @@ const messages = defineMessages({
     id: "TaskForm.changeTypeConfirmation.button",
     defaultMessage: "Yes, change type",
   },
+  taskCreationChangeTypeConfirmationTitle: {
+    id: "TaskForm.taskCreationChangeTypeConfirmation.title",
+    defaultMessage: "Change task type",
+  },
+  taskCreationChangeTypeConfirmationBody: {
+    id: "TaskForm.taskCreationChangeTypeConfirmation.body",
+    defaultMessage:
+      "Changing the task type will require you to recreate the task in the new format. This action cannot be undone. Are you sure you want to continue?",
+  },
+  taskCreationChangeTypeConfirmationButton: {
+    id: "TaskForm.taskCreationChangeTypeConfirmation.button",
+    defaultMessage: "Yes, change type",
+  },
   taskFileRequired: {
     id: "TaskForm.taskFileRequired",
     defaultMessage: "A task file is required before saving.",
@@ -150,6 +156,7 @@ enum ModalStates {
   changeTypeConfirmation = "changeTypeConfirmation",
   changeTaskFileConfirmation = "changeTaskFileConfirmation",
   taskEdit = "taskEdit",
+  taskCreateChangeTaskFileConfirmation = "taskCreateChangeTaskFileConfirmation",
 }
 
 type TaskFormValues = {
@@ -281,10 +288,6 @@ const TaskForm = ({
   const cannotNavigate = useRef(false);
   const confirmedActionRef = useRef(false);
 
-  const [originalType, setOriginalType] = useState(
-    initialValues?.type ?? TaskType.SCRATCH,
-  );
-
   // derive if we are in task creation mode from the fact initialValues
   const isTaskCreation = useMemo(
     () =>
@@ -378,27 +381,22 @@ const TaskForm = ({
     onNavigate,
   });
 
-  useEffect(() => {
-    if (isTaskCreation) {
-      // skip the type management logic if we are in task creation mode
-      return;
-    }
+  const handleTypeBeforeChange = useCallback(
+    (newType: TaskType) => {
+      if (!taskFile) {
+        return true;
+      }
 
-    if (taskType === originalType) {
-      return;
-    }
-
-    if (hasTypeChanged) {
-      // at this point, if the user has already changed the type and confirmed,
-      // we can just allow switching without further confirmation
-
-      return;
-    }
-
-    setPendingTypeChange(taskType);
-    setValueClean("type", originalType);
-    setOpenModal(ModalStates.changeTypeConfirmation);
-  }, [taskType, originalType, hasTypeChanged, setValueClean, isTaskCreation]);
+      setPendingTypeChange(newType);
+      setOpenModal(
+        isTaskCreation
+          ? ModalStates.taskCreateChangeTaskFileConfirmation
+          : ModalStates.changeTypeConfirmation,
+      );
+      return false;
+    },
+    [isTaskCreation, taskFile],
+  );
 
   const onConfirmTypeChange = useCallback(() => {
     if (!pendingTypeChange) {
@@ -495,11 +493,6 @@ const TaskForm = ({
           // allow navigation after the task has been saved
           cannotNavigate.current = false;
 
-          if (data.type !== originalType) {
-            // Update the "original" type to the newly saved type
-            setOriginalType(data.type);
-          }
-
           setHasTypeChanged(false);
           setClearSolutionsOnSave(false);
 
@@ -553,7 +546,6 @@ const TaskForm = ({
       clearSolutionsOnSave,
       onConflictError,
       setError,
-      originalType,
     ],
   );
 
@@ -614,7 +606,7 @@ const TaskForm = ({
                     onClick={handleOpenEditTask}
                     disabled={disabled}
                   >
-                    {hasTypeChanged || !taskFile ? (
+                    {!taskFile ? (
                       <FormattedMessage
                         id="TaskForm.blob.create"
                         defaultMessage="Create task in external application"
@@ -644,6 +636,7 @@ const TaskForm = ({
                 alwaysShow
                 label={messages.type}
                 showEditedBadge={showEditedBadges}
+                onBeforeChange={handleTypeBeforeChange}
                 options={Object.values(TaskType).map((taskType) => ({
                   value: taskType,
                   label: getTaskTypeMessage(taskType as TaskType),
@@ -709,6 +702,26 @@ const TaskForm = ({
           title: messages.changeTypeConfirmationTitle,
           body: messages.changeTypeConfirmationBody,
           confirmButton: messages.changeTypeConfirmationButton,
+        }}
+      />
+
+      <ConfirmationModal
+        isShown={openModal === ModalStates.taskCreateChangeTaskFileConfirmation}
+        setIsShown={(isShown) => {
+          if (!isShown) {
+            if (confirmedActionRef.current) {
+              confirmedActionRef.current = false;
+            } else {
+              onCancelTypeChange();
+            }
+          }
+        }}
+        onConfirm={onConfirmTypeChange}
+        isDangerous
+        messages={{
+          title: messages.taskCreationChangeTypeConfirmationTitle,
+          body: messages.taskCreationChangeTypeConfirmationBody,
+          confirmButton: messages.taskCreationChangeTypeConfirmationButton,
         }}
       />
 
