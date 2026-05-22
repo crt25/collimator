@@ -8,7 +8,8 @@ import { CurrentAnalysis } from "./current-analysis";
 export class CurrentStudentAnalysis extends CurrentAnalysis {
   readonly sessionId: number;
   readonly studentId: number;
-  readonly studentSolutionId: number;
+  // null when the latest solution came from tracking student activities since it has no link to StudentSolution, so no studentSolutionId is available
+  readonly studentSolutionId: number | null;
   readonly studentPseudonym: string | null;
   readonly studentKeyPairId: number | null;
 
@@ -30,7 +31,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
   }
 
   public override get solutionId(): string {
-    return `STUDENT:${this.studentSolutionId}`;
+    return `STUDENT:${this.studentSolutionId ?? this.solutionHash}`;
   }
 
   protected override withAst(ast: GeneralAst): CurrentStudentAnalysis {

@@ -57,7 +57,7 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
-type StudentKey = [StudentId, TaskId, StudentSolutionId];
+type StudentKey = [StudentId, TaskId, StudentSolutionId | null];
 type ReferenceKey = [TaskId, ReferenceSolutionId];
 
 export type AnalysisWithoutId = {
@@ -77,7 +77,7 @@ export type AnalysisWithoutId = {
 export type CurrentStudentAnalysis = AnalysisWithoutId & {
   studentId: number;
   sessionId: number;
-  studentSolutionId: StudentSolutionId;
+  studentSolutionId: StudentSolutionId | null;
   studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
 };
@@ -153,7 +153,7 @@ export class SolutionsService {
     const referenceAnalyses: getCurrentAnalyses.Result[] = [];
 
     for (const analysis of filteredAnalyses) {
-      if (analysis.studentSolutionId) {
+      if (analysis.studentId !== null) {
         studentAnalyses.push(analysis);
       } else {
         referenceAnalyses.push(analysis);
@@ -246,7 +246,7 @@ export class SolutionsService {
     analysis: getCurrentAnalyses.Result,
   ): analysis is getCurrentAnalyses.Result & {
     taskId: TaskId;
-    studentSolutionId: StudentSolutionId;
+    studentSolutionId: StudentSolutionId | null;
     studentId: StudentId;
     studentPseudonym: Uint8Array | null;
     sessionId: SessionId;
@@ -259,7 +259,6 @@ export class SolutionsService {
   } {
     return (
       analysis.taskId !== null &&
-      analysis.studentSolutionId !== null &&
       analysis.studentId !== null &&
       analysis.sessionId !== null &&
       analysis.isReference !== null &&
