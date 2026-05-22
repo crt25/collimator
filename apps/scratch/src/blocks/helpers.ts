@@ -177,7 +177,7 @@ export const wouldExceedLimits = (
   }
 
   // if allowed is a number, the block has a limit, it doesn't for every other type
-  const hasLimit = typeof allowed === "number";
+  const hasLimit = typeof allowed === "number" && allowed >= 0;
 
   // the create event fires on the main workspace before vm.blockListener updates target.blocks._blocks, so
   // countUsedBlocks does not yet include the new block.
