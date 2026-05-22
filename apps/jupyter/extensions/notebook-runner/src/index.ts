@@ -2,7 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
 } from "@jupyterlab/application";
-import { ICommandPalette, ISessionContextDialogs } from "@jupyterlab/apputils";
+import { ICommandPalette } from "@jupyterlab/apputils";
 import { ContentsManager, IContentsManager } from "@jupyterlab/services";
 import { IStatusBar } from "@jupyterlab/statusbar";
 import { IRunningSessionSidebar } from "@jupyterlab/running";
@@ -13,10 +13,7 @@ import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
 import { getModeFromUrl, Mode } from "./mode";
 import { EmbeddedPythonCallbacks, setupIframeApi } from "./iframe-api";
-import {
-  simplifyUserInterface,
-  patchSelectKernelDialog,
-} from "./user-interface";
+import { simplifyUserInterface } from "./user-interface";
 import { registerCommands } from "./commands";
 import { installPackagesWithLoadingState } from "./packages";
 import { TaskAutoSaver } from "./auto-save/task-auto-saver";
@@ -48,7 +45,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     IPropertyInspectorProvider,
     IFileBrowserFactory,
     ISettingRegistry,
-    ISessionContextDialogs,
   ],
   activate: async (
     app: JupyterFrontEnd,
@@ -61,7 +57,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     propertyInspectorProvider: IPropertyInspectorProvider,
     factory: IFileBrowserFactory,
     settingRegistry: ISettingRegistry,
-    sessionContextDialogs: ISessionContextDialogs,
   ) => {
     console.debug("JupyterLab extension notebook-runner is activated!");
 
@@ -107,6 +102,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
+    notebookTracker.widgetAdded.connect((_, panel) => {
+      panel.sessionContext.kernelPreference = {
+        ...panel.sessionContext.kernelPreference,
+        autoStartDefault: true,
+      };
+    });
+
     if (mode === Mode.solve) {
       const taskAutoSaver = TaskAutoSaver.trackNotebook(
         notebookTracker,
@@ -124,8 +126,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
       fileBrowser,
       documentManager,
     );
-
-    patchSelectKernelDialog(sessionContextDialogs, app);
 
     registerCommands(
       app,

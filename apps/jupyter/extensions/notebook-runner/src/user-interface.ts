@@ -6,8 +6,6 @@ import { Contents } from "@jupyterlab/services";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { DocumentRegistry } from "@jupyterlab/docregistry";
 import { Kernel } from "@jupyterlab/services";
-import { ISessionContext, ISessionContextDialogs } from "@jupyterlab/apputils";
-import { UnexpectedKernelCountError } from "./errors/task-errors";
 import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
 import { WidgetArea } from "./widget-area";
@@ -179,44 +177,6 @@ const redirectTaskFileOpensToStudentVersion = (
 
     return originalOpenOrReveal(path, widgetName, kernel, options);
   };
-};
-
-export const selectKernelByDefault = async (
-  sessionContext: ISessionContext,
-  app: JupyterFrontEnd,
-): Promise<void> => {
-  if (!sessionContext.hasNoKernel) {
-    return;
-  }
-
-  await app.serviceManager.kernelspecs.refreshSpecs();
-  const specs = app.serviceManager.kernelspecs.specs;
-
-  if (!specs) {
-    console.debug("No kernel specs found, cannot auto-select kernel");
-    return;
-  }
-
-  const availableKernels = Object.keys(specs.kernelspecs);
-
-  if (availableKernels.length !== 1) {
-    throw new UnexpectedKernelCountError(availableKernels);
-  }
-
-  const kernelName = availableKernels[0];
-
-  await sessionContext.changeKernel({ name: kernelName });
-
-  console.debug(`Current kernel: ${sessionContext.kernelDisplayName}`);
-};
-
-export const patchSelectKernelDialog = (
-  sessionContextDialogs: ISessionContextDialogs,
-  app: JupyterFrontEnd,
-): void => {
-  sessionContextDialogs.selectKernel = (
-    sessionContext: ISessionContext,
-  ): Promise<void> => selectKernelByDefault(sessionContext, app);
 };
 
 class HiddenFolderError extends Error {
