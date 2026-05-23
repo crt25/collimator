@@ -35,8 +35,10 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
@@ -65,7 +67,7 @@ jobs:
             echo ""
             echo "To fix this:"
             echo "  1. Run: task frontend:api:generate"
-            echo "  3. Commit the changes"
+            echo "  2. Commit the changes"
             echo ""
             exit 1
           fi
