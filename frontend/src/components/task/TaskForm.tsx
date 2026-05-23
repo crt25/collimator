@@ -588,7 +588,7 @@ const TaskForm = ({
                 showEditedBadge={showEditedBadges}
                 data-testid="isPublic"
                 disabled={disabled}
-                onBeforeChange={handleIsPublicBeforeChange}
+                shouldAllowValueChange={handleIsPublicBeforeChange}
               />
             )}
             {!disabled && (
@@ -636,7 +636,7 @@ const TaskForm = ({
                 alwaysShow
                 label={messages.type}
                 showEditedBadge={showEditedBadges}
-                onBeforeChange={handleTypeBeforeChange}
+                shouldAllowValueChange={handleTypeBeforeChange}
                 options={Object.values(TaskType).map((taskType) => ({
                   value: taskType,
                   label: getTaskTypeMessage(taskType as TaskType),

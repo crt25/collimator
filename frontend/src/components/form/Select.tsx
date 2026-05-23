@@ -39,7 +39,7 @@ type InternalSelectProps = {
   variant?: ChakraSelectProps["variant"];
   children?: React.ReactNode;
   onValueChange?: (value: string) => void;
-  onBeforeChange?: (newValue: TaskType) => boolean;
+  shouldAllowValueChange?: (newValue: TaskType) => boolean;
   onInteractOutside?: () => void;
   isDirty?: boolean;
   showEditedBadge?: boolean;
@@ -81,7 +81,7 @@ const InternalSelect = (
     name,
     value,
     onValueChange,
-    onBeforeChange,
+    shouldAllowValueChange,
     onInteractOutside,
     label,
     placeholder,
@@ -103,7 +103,7 @@ const InternalSelect = (
         value={value !== undefined ? [value.toString()] : []}
         onValueChange={(v) => {
           const newValue = v.value[0] as TaskType;
-          if (onBeforeChange && !onBeforeChange(newValue)) {
+          if (shouldAllowValueChange && !shouldAllowValueChange(newValue)) {
             return;
           }
           onValueChange?.(newValue);
@@ -205,7 +205,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               name={field.name}
               value={field.value}
               onValueChange={field.onChange}
-              onBeforeChange={props.onBeforeChange}
+              shouldAllowValueChange={props.shouldAllowValueChange}
               isDirty={fieldState.isDirty}
               errorMessage={fieldState.error?.message}
               onInteractOutside={() => field.onBlur()}
