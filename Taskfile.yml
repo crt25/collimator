@@ -306,7 +306,7 @@ tasks:
   frontend:build:
     desc: Build frontend
     dir: ./frontend
-    deps: [frontend:setup, frontend:api:generate]
+    deps: [frontend:api:generate]
     cmds:
       - yarn build
 
@@ -541,6 +541,7 @@ tasks:
   storybook:start:
     desc: Start storybook
     dir: ./frontend
+    deps: [frontend:setup]
     cmds:
       - cmd: yarn storybook:background:start
 
