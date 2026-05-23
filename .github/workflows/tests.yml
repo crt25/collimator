@@ -8,12 +8,16 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
 
     # Postgres is required because `task setup` runs `db:migrate:deploy`.
-    services:
+    services: &services
       postgres:
         image: postgres:18
         env:
@@ -28,7 +32,7 @@ jobs:
           # Maps TCP port 5433 on the host to Postgres
           - 5433:5432
 
-    env:
+    env: &job_env
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
       NODE_OPTIONS: "--max-old-space-size=4096"
 
@@ -40,8 +44,10 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v6
-        with:
+        uses: actions/checkout@v5
+        with: &checkout_options
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
@@ -94,23 +100,8 @@ jobs:
 
   app-tests:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:18
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5433:5432
-
-    env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
-      NODE_OPTIONS: "--max-old-space-size=4096"
+    services: *services
+    env: *job_env
 
     steps:
       - name: Maximise disk space
@@ -120,11 +111,8 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v6
-        with:
-          submodules: "true"
-          lfs: "true"
-          fetch-depth: 0
+        uses: actions/checkout@v5
+        with: *checkout_options
 
       - name: Setup CI environment
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
@@ -159,23 +147,8 @@ jobs:
 
   e2e-tests:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:18
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5433:5432
-
-    env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
-      NODE_OPTIONS: "--max-old-space-size=4096"
+    services: *services
+    env: *job_env
 
     steps:
       - name: Maximise disk space
@@ -185,11 +158,8 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v6
-        with:
-          submodules: "true"
-          lfs: "true"
-          fetch-depth: 0
+        uses: actions/checkout@v5
+        with: *checkout_options
 
       - name: Setup CI environment
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
@@ -234,8 +204,10 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
