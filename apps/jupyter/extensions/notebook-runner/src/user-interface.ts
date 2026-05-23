@@ -4,7 +4,7 @@ import { IPropertyInspectorProvider } from "@jupyterlab/property-inspector";
 import { FileBrowser } from "@jupyterlab/filebrowser";
 import { Contents } from "@jupyterlab/services";
 import { IDocumentManager } from "@jupyterlab/docmanager";
-import { DocumentRegistry } from "@jupyterlab/docregistry";
+import { DocumentRegistry, IDocumentWidget } from "@jupyterlab/docregistry";
 import { Kernel } from "@jupyterlab/services";
 import { KnownWidget } from "./known-widget";
 import { Mode } from "./mode";
@@ -157,26 +157,29 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
 ): void => {
+  const redirect = (path: string): string =>
+    path === "/task.ipynb" || path === "task.ipynb"
+      ? "/student/task.ipynb"
+      : path;
+
   const originalOpenOrReveal =
     documentManager.openOrReveal.bind(documentManager);
-
   documentManager.openOrReveal = (
     path: string,
     widgetName?: string,
     kernel?: Partial<Kernel.IModel>,
     options?: DocumentRegistry.IOpenOptions,
-  ): ReturnType<IDocumentManager["openOrReveal"]> => {
-    if (path === "/task.ipynb" || path === "task.ipynb") {
-      return originalOpenOrReveal(
-        "/student/task.ipynb",
-        widgetName,
-        kernel,
-        options,
-      );
-    }
+  ): ReturnType<IDocumentManager["openOrReveal"]> =>
+    originalOpenOrReveal(redirect(path), widgetName, kernel, options);
 
-    return originalOpenOrReveal(path, widgetName, kernel, options);
-  };
+  const originalOpen = documentManager.open.bind(documentManager);
+  documentManager.open = (
+    path,
+    widgetName,
+    kernel,
+    options,
+  ): IDocumentWidget | undefined =>
+    originalOpen(redirect(path), widgetName, kernel, options);
 };
 
 class HiddenFolderError extends Error {
