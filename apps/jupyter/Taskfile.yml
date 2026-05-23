@@ -240,6 +240,7 @@ tasks:
       - cp {{.OUTPUT_DIR}}/lab/index.html .cache/lab.html
 
   build:inject-iframe-script:
+    internal: true
     cmds:
       - cmd: pwsh -Command "echo '<script>' (Get-Content iframe-message-buffering.js) '</script>' | Out-File -Append -FilePath {{.OUTPUT_DIR}}/lab/index.html -Encoding utf8 -Force"
         platforms: [windows]
