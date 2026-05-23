@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import {
   GetTask,
   ImportTask,
+  isLoadTaskWithTask,
   Language,
   LoadSubmission,
   LoadTask,
@@ -306,6 +307,10 @@ export class EmbeddedScratchCallbacks {
       this.setScratchLocale(request.params.language);
 
       console.debug(`${logModule} Loading project`);
+
+      if (!isLoadTaskWithTask(request.params)) {
+        return;
+      }
 
       const sb3Project = await request.params.task.arrayBuffer();
       await loadCrtProject(this.vm, sb3Project);
