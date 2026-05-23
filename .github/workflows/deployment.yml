@@ -27,8 +27,8 @@ env:
   APP_SCRATCH_SENTRY_DSN: ${{ vars.APP_SCRATCH_SENTRY_DSN }}
 
 permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
+  contents: read
+  pull-requests: read
 
 jobs:
   tests:
@@ -61,10 +61,15 @@ jobs:
     env:
         DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
 
+    permissions:
+      id-token: write # This is required for requesting the JWT
+
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
           submodules: 'true'
           lfs: 'true'
           fetch-depth: 0
