@@ -174,7 +174,7 @@ const ShowcaseInternal = ({
               {(item) => {
                 const analysis = item.analysis;
                 const studentAnalysisId =
-                  analysis instanceof CurrentStudentAnalysis
+                  CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)
                     ? analysis.studentSolutionId
                     : null;
 

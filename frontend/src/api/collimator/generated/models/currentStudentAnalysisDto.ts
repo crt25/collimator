@@ -32,9 +32,10 @@ export interface CurrentStudentAnalysisDto {
    */
   studentId: number;
   /**
-   * The student solutions's unique identifier, a positive integer.
+   * The student solutions's unique identifier. Null when the latest solution came from activity tracking rather than an explicit submission.
+   * @nullable
    */
-  studentSolutionId: number;
+  studentSolutionId: number | null;
   /**
    * The pseudonym of the student
    * @nullable

@@ -12,7 +12,9 @@ import { PrismaService } from "src/prisma/prisma.service";
 import {
   deleteStudentSolutions,
   getCurrentAnalyses,
+  getCurrentAnalysesWithActivities,
   getSoftDeletedCurrentAnalyses,
+  getSoftDeletedCurrentAnalysesWithActivities,
 } from "@prisma/client/sql";
 
 import { Cron } from "@nestjs/schedule";
@@ -57,7 +59,7 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
-type StudentKey = [StudentId, TaskId, StudentSolutionId | null];
+type StudentKey = [StudentId, TaskId, StudentSolutionId | null]; // null when the row originates from StudentActivity
 type ReferenceKey = [TaskId, ReferenceSolutionId];
 
 export type AnalysisWithoutId = {
@@ -133,18 +135,32 @@ export class SolutionsService {
     taskId: number,
     includeSoftDelete = false,
   ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
-    let analyses;
+    const analyses = await this.prisma.$queryRawTyped(
+      includeSoftDelete
+        ? getSoftDeletedCurrentAnalyses(sessionId, taskId)
+        : getCurrentAnalyses(sessionId, taskId),
+    );
 
-    if (includeSoftDelete) {
-      analyses = await this.prisma.$queryRawTyped(
-        getSoftDeletedCurrentAnalyses(sessionId, taskId),
-      );
-    } else {
-      analyses = await this.prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-    }
+    return this.groupAnalyses(analyses);
+  }
 
+  async findCurrentAnalysesWithActivities(
+    sessionId: number,
+    taskId: number,
+    includeSoftDelete = false,
+  ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
+    const analyses = await this.prisma.$queryRawTyped(
+      includeSoftDelete
+        ? getSoftDeletedCurrentAnalysesWithActivities(sessionId, taskId)
+        : getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
+
+    return this.groupAnalyses(analyses);
+  }
+
+  private groupAnalyses(
+    analyses: getCurrentAnalyses.Result[],
+  ): [CurrentStudentAnalysis[], ReferenceAnalysis[]] {
     const filteredAnalyses = analyses.filter(
       (analysis) => analysis.astVersion === latestAstVersion,
     );
@@ -153,7 +169,7 @@ export class SolutionsService {
     const referenceAnalyses: getCurrentAnalyses.Result[] = [];
 
     for (const analysis of filteredAnalyses) {
-      if (analysis.studentId !== null) {
+      if (analysis.studentId) {
         studentAnalyses.push(analysis);
       } else {
         referenceAnalyses.push(analysis);

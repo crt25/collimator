@@ -17,7 +17,7 @@ const StarAnalysisButton = ({
   const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
 
   const toggleIsReferenceSolution = () => {
-    if (!(analysis instanceof CurrentStudentAnalysis)) {
+    if (!CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)) {
       return;
     }
 
@@ -32,7 +32,7 @@ const StarAnalysisButton = ({
     );
   };
 
-  if (!(analysis instanceof CurrentStudentAnalysis)) {
+  if (!CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)) {
     return null;
   }
 

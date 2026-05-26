@@ -33,11 +33,11 @@ export class CurrentStudentAnalysisDto
   @ApiProperty({
     example: 318,
     description:
-      "The student solutions's unique identifier, a positive integer.",
-    nullable: false,
+      "The student solutions's unique identifier. Null when the latest solution came from activity tracking rather than an explicit submission.",
+    nullable: true,
   })
   @Expose()
-  readonly studentSolutionId!: StudentSolutionId;
+  readonly studentSolutionId!: StudentSolutionId | null;
 
   @ApiProperty({
     example: "John Doe",

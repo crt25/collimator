@@ -52,4 +52,14 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
       tests: fromDtos(ExistingSolutionTest, dto.tests),
     });
   }
+
+  static isSubmittedStudentAnalysis(
+    analysis: CurrentAnalysis,
+  ): analysis is CurrentStudentAnalysis & { studentSolutionId: number } {
+    return (
+      analysis instanceof CurrentStudentAnalysis &&
+      // if the studentSolutionId is null, it means the analysis is based on activity tracking data
+      analysis.studentSolutionId !== null
+    );
+  }
 }

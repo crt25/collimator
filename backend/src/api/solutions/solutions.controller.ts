@@ -153,11 +153,12 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const solutions = await this.solutionsService.findCurrentAnalyses(
-      sessionId,
-      taskId,
-      includeSoftDelete,
-    );
+    const solutions =
+      await this.solutionsService.findCurrentAnalysesWithActivities(
+        sessionId,
+        taskId,
+        includeSoftDelete,
+      );
 
     const studentAnalyses: CurrentStudentAnalysisDto[] = fromQueryResults(
       CurrentStudentAnalysisDto,
