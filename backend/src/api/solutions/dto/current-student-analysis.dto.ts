@@ -35,6 +35,7 @@ export class CurrentStudentAnalysisDto
     description:
       "The student solutions's unique identifier. Null when the latest solution came from activity tracking rather than an explicit submission.",
     nullable: true,
+    type: "number",
   })
   @Expose()
   readonly studentSolutionId!: StudentSolutionId | null;

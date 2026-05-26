@@ -237,11 +237,10 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       max: undefined,
       fractionDigits: 2,
     }),
-    studentSolutionId: faker.number.float({
-      min: undefined,
-      max: undefined,
-      fractionDigits: 2,
-    }),
+    studentSolutionId: faker.helpers.arrayElement([
+      faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+      null,
+    ]),
     studentPseudonym: faker.helpers.arrayElement([
       faker.string.alpha({ length: { min: 10, max: 20 } }),
       null,
