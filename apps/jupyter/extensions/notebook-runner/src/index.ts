@@ -102,6 +102,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
+    notebookTracker.widgetAdded.connect((_, panel) => {
+      panel.sessionContext.kernelPreference = {
+        ...panel.sessionContext.kernelPreference,
+        autoStartDefault: true,
+      };
+    });
+
     if (mode === Mode.solve) {
       const taskAutoSaver = TaskAutoSaver.trackNotebook(
         notebookTracker,
@@ -155,21 +162,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
         );
       });
     }
-
-    app.restored.then(() => {
-      // Only open the template notebook in edit mode.
-      // In solve or show mode, the correct notebook (student task) will be
-      // opened by the loadTask/loadSubmission RPC call from the parent.
-      if (mode === Mode.edit) {
-        try {
-          documentManager.openOrReveal(
-            EmbeddedPythonCallbacks.taskTemplateLocation,
-          );
-        } catch (error) {
-          console.error("Could not open template in edit mode:", error);
-        }
-      }
-    });
   },
 };
 

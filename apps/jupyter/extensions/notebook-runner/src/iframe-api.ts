@@ -33,6 +33,7 @@ import {
 
 import { detectTaskFormat } from "./format-detector";
 import { ImportTask } from "./iframe-rpc/src/methods/import-task";
+import { isLoadTaskWithTask } from "./iframe-rpc/src/methods/load-task";
 import { TaskFormat } from "./task-format";
 
 import {
@@ -201,6 +202,11 @@ export class EmbeddedPythonCallbacks {
     try {
       await this.setJupyterLocale(request.params.language);
 
+      if (!isLoadTaskWithTask(request.params)) {
+        this.documentManager.openOrReveal(this.notebookToOpen);
+        return undefined;
+      }
+
       console.debug(`${logModule} Loading project`);
       const importedFiles = await importCrtInternalTask(request.params.task);
 
@@ -305,6 +311,7 @@ export class EmbeddedPythonCallbacks {
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
     await this.setJupyterLocale(request.params);
+    this.documentManager.openOrReveal(this.notebookToOpen);
     return undefined;
   }
 

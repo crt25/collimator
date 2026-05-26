@@ -40,7 +40,7 @@ const EditTaskModal = ({
     async (embeddedApp: EmbeddedAppRef) => {
       const task = await executeAsyncWithToasts(
         () => embeddedApp.sendRequest("getTask", undefined),
-        intl.formatMessage(taskMessages.cannotSaveTask),
+        { intl, descriptor: taskMessages.cannotSaveTask },
       );
       onSave(task.result);
     },
@@ -58,12 +58,23 @@ const EditTaskModal = ({
       }
       wasInitialized.current = true;
 
+      const language = intl.locale as Language;
+
       if (initialTask) {
         await executeAsyncWithToasts(
           () =>
             embeddedApp.sendRequest("loadTask", {
               task: initialTask,
-              language: intl.locale as Language,
+              language,
+            }),
+          { intl, descriptor: taskMessages.cannotLoadTask },
+        );
+      } else {
+        await executeAsyncWithToasts(
+          () =>
+            embeddedApp.sendRequest("loadTask", {
+              useDefaultTask: true,
+              language,
             }),
           { intl, descriptor: taskMessages.cannotLoadTask },
         );

@@ -33,7 +33,18 @@ tasks:
 
   build:
     desc: Build all packages
-    deps: [frontend:build, backend:build, apps:build]
+    deps: [backend:build]
+    cmds:
+      - task: build:ui
+
+  # we need this split because the frontend depends on the backend,
+  # so we can't build the backend and the frontend at the same time.
+  # Taskfiles don't seem to deal well with parallelizing dependencies
+  # which have transitive dependencies between themselves.
+  build:ui:
+    desc: Build non-backend packages
+    internal: true
+    deps: [frontend:build, apps:build]
 
   test:
     desc: Run unit and e2e tests
@@ -295,7 +306,7 @@ tasks:
   frontend:build:
     desc: Build frontend
     dir: ./frontend
-    deps: [frontend:setup, frontend:api:generate]
+    deps: [frontend:api:generate]
     cmds:
       - yarn build
 
@@ -530,6 +541,7 @@ tasks:
   storybook:start:
     desc: Start storybook
     dir: ./frontend
+    deps: [frontend:setup]
     cmds:
       - cmd: yarn storybook:background:start
 
