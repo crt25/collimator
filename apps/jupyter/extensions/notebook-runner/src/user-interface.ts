@@ -73,12 +73,13 @@ export const simplifyUserInterface = async (
     runningSessions.dispose();
 
     throwOnRestrictedFileOperation(fileBrowser);
-    hideGradingFolders(fileBrowser);
 
     if (mode === Mode.solve && documentManager) {
       redirectTaskFileOpensToStudentVersion(documentManager);
     }
   }
+
+  hideGradingFolders(fileBrowser);
 
   // activate simple mode
   await app.commands.execute("application:toggle-mode");
