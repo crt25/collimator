@@ -34,6 +34,7 @@ type InternalProps = {
   isDirty?: boolean;
   showEditedBadge?: boolean;
   disabled?: boolean;
+  "data-testid"?: string;
 };
 
 type SharedProps = InternalProps;
@@ -61,10 +62,12 @@ const InternalCheckbox = (
     isDirty,
     showEditedBadge,
     disabled = false,
+    "data-testid": testId,
   } = props;
 
   return (
     <ChakraCheckbox.Root
+      data-testid={testId}
       name={name}
       checked={checked}
       variant={variant}
@@ -103,6 +106,7 @@ const Checkbox = <TValues extends FieldValues, TField extends Path<TValues>>(
           render={({ field, fieldState }) => (
             <Field.Root>
               <InternalCheckbox
+                data-testid={rest["data-testid"]}
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={field.onChange}
