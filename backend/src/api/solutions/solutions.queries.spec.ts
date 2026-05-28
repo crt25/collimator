@@ -102,6 +102,7 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
     solutionHash: Buffer,
     happenedAt: Date,
     createdAt?: Date,
+    isReference = false,
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   ) =>
     prisma.studentActivity.create({
@@ -112,6 +113,7 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
         sessionId,
         taskId,
         solutionHash,
+        isReference,
         ...(createdAt && { createdAt }),
       },
     });
@@ -320,6 +322,32 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
       );
 
       expect(rows.some((r) => r.referenceSolutionId !== null)).toBe(true);
+    });
+
+    it("returns a starred activity as a showcase row with isReference=true and no studentSolutionId", async () => {
+      const student = await createStudent();
+      const hash = Buffer.from("hash-starred-act");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      await createStudentActivity(
+        student.id,
+        hash,
+        new Date(),
+        undefined,
+        true,
+      );
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId),
+      );
+
+      const match = rows.find(
+        (r) => r.studentId === student.id && r.isReference,
+      );
+      expect(match).toBeDefined();
+      expect(match!.studentSolutionId).toBeNull();
+      expect(match!.isReference).toBe(true);
     });
   });
 });
