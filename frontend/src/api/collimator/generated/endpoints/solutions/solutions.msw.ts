@@ -241,6 +241,7 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
       null,
     ]),
+    isStudentSolution: faker.datatype.boolean(),
     studentPseudonym: faker.helpers.arrayElement([
       faker.string.alpha({ length: { min: 10, max: 20 } }),
       null,
@@ -683,6 +684,28 @@ export const getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler 
       options,
     );
   };
+
+export const getSolutionsControllerPatchStudentActivityIsReferenceV0MockHandler =
+  (
+    overrideResponse?:
+      | void
+      | ((
+          info: Parameters<Parameters<typeof http.patch>[1]>[0],
+        ) => Promise<void> | void),
+    options?: RequestHandlerOptions,
+  ) => {
+    return http.patch(
+      "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/student/:studentId/activity/isReference",
+      async (info) => {
+        await delay(1000);
+        if (typeof overrideResponse === "function") {
+          await overrideResponse(info);
+        }
+        return new HttpResponse(null, { status: 200 });
+      },
+      options,
+    );
+  };
 export const getSolutionsMock = () => [
   getSolutionsControllerCreateStudentSolutionV0MockHandler(),
   getSolutionsControllerFindAllStudentSolutionsV0MockHandler(),
@@ -692,4 +715,5 @@ export const getSolutionsMock = () => [
   getSolutionsControllerDeleteOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
   getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler(),
+  getSolutionsControllerPatchStudentActivityIsReferenceV0MockHandler(),
 ];

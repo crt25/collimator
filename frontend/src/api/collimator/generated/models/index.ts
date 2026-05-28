@@ -74,6 +74,7 @@ export * from "./solutionsControllerDownloadLatestStudentSolutionV0Params";
 export * from "./solutionsControllerDownloadOneV0Params";
 export * from "./solutionsControllerFindCurrentAnalysesV0Params";
 export * from "./solutionsControllerFindOneStudentSolutionV0Params";
+export * from "./solutionsControllerPatchStudentActivityIsReferenceV0Params";
 export * from "./solutionsControllerPatchStudentSolutionIsReferenceV0Params";
 export * from "./studentActivityType";
 export * from "./studentAuthenticationRequestDto";

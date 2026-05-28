@@ -15,6 +15,7 @@ import type {
   SolutionsControllerDownloadOneV0Params,
   SolutionsControllerFindCurrentAnalysesV0Params,
   SolutionsControllerFindOneStudentSolutionV0Params,
+  SolutionsControllerPatchStudentActivityIsReferenceV0Params,
   SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
 } from "../../models";
 
@@ -346,8 +347,22 @@ export const getSolutionsControllerPatchStudentActivityIsReferenceV0Url = (
   sessionId: number,
   taskId: number,
   studentId: number,
-) =>
-  `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference`;
+  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference`;
+};
 
 export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
   classId: number,
@@ -355,6 +370,7 @@ export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
   taskId: number,
   studentId: number,
   patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
+  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
   options?: RequestInit,
 ): Promise<void> => {
   return fetchApi<void>(
@@ -363,6 +379,7 @@ export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
       sessionId,
       taskId,
       studentId,
+      params,
     ),
     {
       ...options,

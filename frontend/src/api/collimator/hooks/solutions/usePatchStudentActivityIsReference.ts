@@ -31,6 +31,7 @@ export const usePatchStudentActivityIsReference = (): PatchActivityType => {
         taskId,
         studentId,
         patchDto,
+        undefined, // pass undefined as params
         authOptions,
       ).then(() => {
         revalidateSolutionList(classId, sessionId, taskId);
