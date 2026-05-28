@@ -37,6 +37,10 @@ export interface CurrentStudentAnalysisDto {
    */
   studentSolutionId: number | null;
   /**
+   * True when the analysis is backed by a StudentSolution row and can therefore be starred. False for activity-tracked analyses that have no associated submission.
+   */
+  isStudentSolution: boolean;
+  /**
    * The pseudonym of the student
    * @nullable
    */

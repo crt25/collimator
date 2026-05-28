@@ -10,6 +10,8 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
   readonly studentId: number;
   // null when the latest solution came from tracking student activities since it has no link to StudentSolution, so no studentSolutionId is available
   readonly studentSolutionId: number | null;
+  // true when backed by a StudentSolution row; false for activity-tracked analyses
+  readonly isStudentSolution: boolean;
   readonly studentPseudonym: string | null;
   readonly studentKeyPairId: number | null;
 
@@ -19,6 +21,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentPseudonym,
     studentKeyPairId,
     studentSolutionId,
+    isStudentSolution,
     ...rest
   }: Omit<ClassProperties<CurrentStudentAnalysis>, "solutionId">) {
     super(rest);
@@ -26,6 +29,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     this.sessionId = sessionId;
     this.studentId = studentId;
     this.studentSolutionId = studentSolutionId;
+    this.isStudentSolution = isStudentSolution;
     this.studentPseudonym = studentPseudonym;
     this.studentKeyPairId = studentKeyPairId;
   }
@@ -57,9 +61,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     analysis: CurrentAnalysis,
   ): analysis is CurrentStudentAnalysis & { studentSolutionId: number } {
     return (
-      analysis instanceof CurrentStudentAnalysis &&
-      // if the studentSolutionId is null, it means the analysis is based on activity tracking data
-      analysis.studentSolutionId !== null
+      analysis instanceof CurrentStudentAnalysis && analysis.isStudentSolution
     );
   }
 }
