@@ -41,6 +41,16 @@ export class CurrentStudentAnalysisDto
   readonly studentSolutionId!: StudentSolutionId | null;
 
   @ApiProperty({
+    example: true,
+    description:
+      "True when the analysis is backed by a StudentSolution row and can therefore be starred. False for activity-tracked analyses that have no associated submission.",
+    nullable: false,
+    type: "boolean",
+  })
+  @Expose()
+  readonly isStudentSolution!: boolean;
+
+  @ApiProperty({
     example: "John Doe",
     description: "The pseudonym of the student",
     type: "string",

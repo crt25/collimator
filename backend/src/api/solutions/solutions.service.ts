@@ -80,6 +80,7 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
   studentId: number;
   sessionId: number;
   studentSolutionId: StudentSolutionId | null;
+  isStudentSolution: boolean;
   studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
 };
@@ -169,7 +170,7 @@ export class SolutionsService {
     const referenceAnalyses: getCurrentAnalyses.Result[] = [];
 
     for (const analysis of filteredAnalyses) {
-      if (analysis.studentId) {
+      if (analysis.studentId !== null) {
         studentAnalyses.push(analysis);
       } else {
         referenceAnalyses.push(analysis);
@@ -252,6 +253,7 @@ export class SolutionsService {
         sessionId: analysis.sessionId,
         studentPseudonym: analysis.studentPseudonym,
         studentSolutionId: analysis.studentSolutionId,
+        isStudentSolution: analysis.isStudentSolution ?? false,
         studentKeyPairId: analysis.studentKeyPairId,
       });
     }
@@ -263,6 +265,7 @@ export class SolutionsService {
   ): analysis is getCurrentAnalyses.Result & {
     taskId: TaskId;
     studentSolutionId: StudentSolutionId | null;
+    isStudentSolution: boolean;
     studentId: StudentId;
     studentPseudonym: Uint8Array | null;
     sessionId: SessionId;
