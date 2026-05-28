@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
     webpackConfig.resolve.alias = {
       ...webpackConfig.resolve.alias,
       "@scratch-submodule": resolvePath("src/scratch-editor"),
+      // Force all imports of iframe-rpc to resolve to a single path.
+      // With resolve.symlinks=false, webpack treats different symlink paths
+      // to the same library as distinct modules.
+      "iframe-rpc": resolvePath("node_modules/iframe-rpc"),
     };
 
     webpackConfig.resolve.symlinks = false;
