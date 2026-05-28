@@ -14,8 +14,9 @@ import CodeView from "@/components/dashboard/CodeView";
 import { useTask } from "@/api/collimator/hooks/tasks/useTask";
 import PageHeading from "@/components/PageHeading";
 import TaskInstanceNavigation from "@/components/task-instance/TaskInstanceNavigation";
-import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
-import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { getIdOrNaN } from "@/api/collimator/hooks/helpers";
 
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -63,7 +64,11 @@ const StudentTaskInstance = () => {
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionTaskSolutions(classId, sessionId, taskId);
+  } = useCurrentSessionTaskSolutions(
+    getIdOrNaN(classId),
+    getIdOrNaN(sessionId),
+    getIdOrNaN(taskId),
+  );
 
   const studentId = parseInt(studentIdString, 10);
   const student = klass?.students.find((s) => s.studentId === studentId);
@@ -104,12 +109,10 @@ const StudentTaskInstance = () => {
           data={[klass, session, task, solutions]}
         >
           {([klass, session, task, solutions]) => {
-            const studentSolutions = solutions.filter(
-              (s) => s.studentId === studentId,
-            );
-            const solutionToDisplay =
-              ExistingStudentSolution.findSolutionToDisplay(studentSolutions);
-            const hash = solutionToDisplay?.solution.hash;
+            const hash = CurrentStudentAnalysis.findAnalysisToDisplay(
+              solutions,
+              studentId,
+            )?.solutionHash;
 
             return (
               <>

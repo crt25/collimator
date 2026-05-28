@@ -64,4 +64,23 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
       analysis instanceof CurrentStudentAnalysis && analysis.isStudentSolution
     );
   }
+
+  /**
+   * Returns the most relevant analysis for a student: the starred one if it
+   * exists, otherwise the latest non-starred one (so the teacher can star it).
+   */
+  static findAnalysisToDisplay(
+    analyses: CurrentAnalysis[],
+    studentId: number,
+  ): CurrentStudentAnalysis | null {
+    const studentAnalyses = analyses.filter(
+      (a): a is CurrentStudentAnalysis =>
+        a instanceof CurrentStudentAnalysis && a.studentId === studentId,
+    );
+
+    const starred = studentAnalyses.find((a) => a.isReferenceSolution);
+    const current = studentAnalyses.find((a) => !a.isReferenceSolution);
+
+    return starred ?? current ?? null;
+  }
 }
