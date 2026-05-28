@@ -1,35 +1,17 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import "@testing-library/jest-dom";
-import { screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { waitFor } from "@testing-library/react";
 import { TaskType } from "@/api/collimator/generated/models";
 import { ConflictError } from "@/errors/api";
 import { UserRole } from "@/types/user/user-role";
 import TaskForm from "@/components/task/TaskForm";
 import { toaster } from "@/components/Toaster";
 import { renderWithProviders } from "@/__tests__/helpers/render-with-providers";
+import { ignoreConsoleErrors } from "@/__tests__/helpers/ignore-console-errors";
+import { TaskFormPageObject } from "./TaskForm.PageObject";
 
-// useNavigationObserver calls useRouter() internally and registers listeners
-// on router.events, window popstate, and window unhandledrejection. None of
-// these exist in jsdom, so the real hook would crash.
-jest.mock("@/utilities/navigation-observer", () => ({
-  useNavigationObserver: jest.fn(() => jest.fn()),
-}));
-
-// The real toaster is a Chakra UI object whose .success/.error methods are not
-// Jest mock functions, so assertions like toHaveBeenCalledWith would throw. Which is why we mock it.
-jest.mock("@/components/Toaster", () => ({
-  toaster: { success: jest.fn(), error: jest.fn() },
-}));
-
-// EditTaskModal embeds an external app in an iframe and communicates with it
-// over an RPC channel. The real modal would wait for RPC responses that
-// never arrive in jsdom. The mock bypasses the iframe entirely and calls
-// onSave directly with a hardcoded payload, simulating a completed edit.
-jest.mock("@/components/modals/EditTaskModal", () => ({
-  __esModule: true,
-  default: require("@/__tests__/mocks/components/EditTaskModal").default,
-}));
+jest.mock("@/utilities/navigation-observer");
+jest.mock("@/components/Toaster");
+jest.mock("@/components/modals/EditTaskModal");
 
 const submitMessage = { id: "submit", defaultMessage: "Save" };
 
@@ -43,14 +25,6 @@ const withTaskFileValues = {
   initialSolutionFile: null,
 };
 
-const selectType = async (
-  user: ReturnType<typeof userEvent.setup>,
-  type: TaskType,
-) => {
-  await user.click(screen.getByTestId("type"));
-  await user.click(screen.getByTestId(`select-option-${type}`));
-};
-
 describe("TaskForm UI Interactions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -62,30 +36,26 @@ describe("TaskForm UI Interactions", () => {
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
-      expect(submitButton.disabled).toBe(true);
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
     });
 
     it("should be enabled when form becomes dirty", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      const titleInput = screen.getByTestId("title") as HTMLInputElement;
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
 
-      expect(submitButton.disabled).toBe(true);
-
-      await user.type(titleInput, "Task Title");
+      await form.typeTitle("Task Title");
 
       await waitFor(() => {
-        expect(submitButton.disabled).toBe(false);
+        expect(form.submitButton.disabled).toBe(false);
       });
     });
 
     it("should be disabled and show success toast after successful save", async () => {
-      const user = userEvent.setup();
       const onSubmit = jest.fn().mockResolvedValue(undefined);
 
       renderWithProviders(
@@ -96,138 +66,154 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
-      expect(submitButton.disabled).toBe(true);
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
 
-      const titleInput = screen.getByTestId("title") as HTMLInputElement;
-      await user.clear(titleInput);
-      await user.type(titleInput, "Updated Title");
+      await form.clearAndTypeTitle("Updated Title");
 
       await waitFor(() => {
-        expect(submitButton.disabled).toBe(false);
+        expect(form.submitButton.disabled).toBe(false);
       });
 
-      await user.click(submitButton);
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(onSubmit).toHaveBeenCalled();
       });
 
       await waitFor(() => {
-        expect(submitButton.disabled).toBe(true);
+        expect(form.submitButton.disabled).toBe(true);
       });
 
       expect(toaster.success).toHaveBeenCalledWith(
         expect.objectContaining({ id: "task-save-success" }),
       );
     });
+
+    it("should not call onSubmit when required fields are missing", async () => {
+      const onSubmit = jest.fn();
+
+      renderWithProviders(
+        <TaskForm submitMessage={submitMessage} onSubmit={onSubmit} />,
+      );
+
+      const form = new TaskFormPageObject();
+
+      // Typing only the title to make isDirty=true (enabling the button) while
+      // leaving description empty, which fails Yup validation and prevents
+      // handleSubmit from ever calling onSubmit.
+      await form.typeTitle("Task Title");
+
+      await waitFor(() => {
+        expect(form.submitButton.disabled).toBe(false);
+      });
+
+      await form.clickSubmit();
+
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
   });
 
   describe("Type change in create mode (no task file)", () => {
     it("should change type without confirmation modal when no task file exists", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Scratch");
+      const form = new TaskFormPageObject();
+      expect(form.typeSelect).toHaveTextContent("Scratch");
 
-      await selectType(user, TaskType.JUPYTER);
+      await form.selectType(TaskType.JUPYTER);
 
-      expect(
-        screen.queryByTestId("confirmation-modal"),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId("type")).toHaveTextContent("Jupyter");
-
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
-      expect(submitButton.disabled).toBe(false);
+      expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      expect(form.typeSelect).toHaveTextContent("Jupyter");
+      expect(form.submitButton.disabled).toBe(false);
     });
   });
 
   describe("Type change in create mode (after task file was created via EditTaskModal)", () => {
     it("should show confirmation modal when changing type after task file was created", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+      expect(form.typeSelect).toHaveTextContent("Scratch");
+
+      await form.clickEditTaskButton();
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
-      await selectType(user, TaskType.JUPYTER);
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Scratch");
+      expect(form.typeSelect).toHaveTextContent("Scratch");
     });
 
     it("should change type when confirming after task file was created", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
-      await selectType(user, TaskType.JUPYTER);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Jupyter");
+      await form.confirmModal();
+
+      await waitFor(() => {
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.typeSelect).toHaveTextContent("Jupyter");
     });
 
     it("should not change type when canceling after task file was created", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
-      await selectType(user, TaskType.JUPYTER);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("cancel-button"));
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Scratch");
+      await form.cancelModal();
+
+      await waitFor(() => {
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.typeSelect).toHaveTextContent("Scratch");
     });
   });
 
   describe("Type change in edit mode (with task file)", () => {
     it("should show confirmation modal when changing type in edit mode", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -237,17 +223,20 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await selectType(user, TaskType.JUPYTER);
+      const form = new TaskFormPageObject();
+
+      expect(form.typeSelect).toHaveTextContent("Scratch");
+
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Scratch");
+      expect(form.typeSelect).toHaveTextContent("Scratch");
     });
 
     it("should change type when confirming type change in edit mode", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -257,29 +246,28 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
-      expect(submitButton.disabled).toBe(true);
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
 
-      await selectType(user, TaskType.JUPYTER);
+      expect(form.typeSelect).toHaveTextContent("Scratch");
 
-      await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Jupyter");
-      expect(submitButton.disabled).toBe(false);
+      await form.confirmModal();
+
+      await waitFor(() => {
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.typeSelect).toHaveTextContent("Jupyter");
+      expect(form.submitButton.disabled).toBe(false);
     });
 
     it("should not change type when canceling type change confirmation", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -289,28 +277,25 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
 
-      await selectType(user, TaskType.JUPYTER);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("cancel-button"));
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("type")).toHaveTextContent("Scratch");
-      expect(submitButton.disabled).toBe(true);
+      await form.cancelModal();
+
+      await waitFor(() => {
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.typeSelect).toHaveTextContent("Scratch");
+      expect(form.submitButton.disabled).toBe(true);
     });
 
     it("should pass clearAllReferenceSolutions=true to onSubmit after confirming type change", async () => {
-      const user = userEvent.setup();
       const onSubmit = jest.fn().mockResolvedValue(undefined);
 
       renderWithProviders(
@@ -322,28 +307,28 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await selectType(user, TaskType.JUPYTER);
+      const form = new TaskFormPageObject();
+
+      await form.selectType(TaskType.JUPYTER);
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.confirmModal();
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
       });
 
-      // After type change taskFile is cleared, create a new one via EditTaskModal
-      await user.click(screen.getByTestId("edit-task-button"));
+      // After type change taskFile is cleared; create a new one via EditTaskModal
+      await form.clickEditTaskButton();
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
-      await user.click(screen.getByTestId("submit") as HTMLInputElement);
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(onSubmit).toHaveBeenCalledWith(
@@ -355,91 +340,79 @@ describe("TaskForm UI Interactions", () => {
 
   describe("Creating task via EditTaskModal", () => {
     it("should create task and enable save button", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      const editTaskButton = screen.getByTestId("edit-task-button");
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
 
-      expect(submitButton.disabled).toBe(true);
-
-      await user.click(editTaskButton);
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(screen.getByTestId("mock-save-task-button")).toBeInTheDocument();
+        expect(form.mockSaveTaskButton).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
-      expect(
-        screen.queryByTestId("mock-edit-task-modal"),
-      ).not.toBeInTheDocument();
+      expect(form.queryMockEditTaskModal()).not.toBeInTheDocument();
 
       await waitFor(() => {
-        expect(submitButton.disabled).toBe(false);
+        expect(form.submitButton.disabled).toBe(false);
       });
     });
 
     it("should change button label from create to edit after task is created", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      const editTaskButton = screen.getByTestId("edit-task-button");
-
-      expect(editTaskButton).toHaveTextContent(
+      const form = new TaskFormPageObject();
+      expect(form.editTaskButton).toHaveTextContent(
         "Create task in external application",
       );
 
-      await user.click(editTaskButton);
+      await form.clickEditTaskButton();
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
-      await user.click(screen.getByTestId("mock-save-task-button"));
+      await form.saveTaskInModal();
 
       await waitFor(() => {
-        expect(editTaskButton).toHaveTextContent(
+        expect(form.editTaskButton).toHaveTextContent(
           "Edit task in external application",
         );
       });
     });
 
     it("should not update form when EditTaskModal is closed without saving", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm submitMessage={submitMessage} onSubmit={jest.fn()} />,
       );
 
-      const editTaskButton = screen.getByTestId("edit-task-button");
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
 
-      await user.click(editTaskButton);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("mock-close-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("mock-close-modal"));
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("mock-edit-task-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.mockCloseModal).toBeInTheDocument();
       });
 
-      expect(editTaskButton).toHaveTextContent(
+      await form.closeTaskModal();
+
+      await waitFor(() => {
+        expect(form.queryMockEditTaskModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.editTaskButton).toHaveTextContent(
         "Create task in external application",
       );
-      expect(submitButton.disabled).toBe(true);
+      expect(form.submitButton.disabled).toBe(true);
     });
   });
 
   describe("Editing task file with reference solutions (hasReferenceSolutions=true)", () => {
     it("should show confirmation modal when clicking edit task button", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -449,19 +422,18 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(
-        screen.queryByTestId("mock-edit-task-modal"),
-      ).not.toBeInTheDocument();
+      expect(form.queryMockEditTaskModal()).not.toBeInTheDocument();
     });
 
     it("should open EditTaskModal after confirming file replacement", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -471,21 +443,22 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.confirmModal();
 
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
     });
 
     it("should not open EditTaskModal when canceling file replacement", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -495,27 +468,24 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("cancel-button"));
+      await form.cancelModal();
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
       });
 
-      expect(
-        screen.queryByTestId("mock-edit-task-modal"),
-      ).not.toBeInTheDocument();
+      expect(form.queryMockEditTaskModal()).not.toBeInTheDocument();
     });
 
     it("should pass clearAllReferenceSolutions=true to onSubmit after confirming file replacement", async () => {
-      const user = userEvent.setup();
       const onSubmit = jest.fn().mockResolvedValue(undefined);
 
       renderWithProviders(
@@ -527,21 +497,22 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      await user.click(screen.getByTestId("edit-task-button"));
+      const form = new TaskFormPageObject();
+
+      await form.clickEditTaskButton();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.confirmModal();
 
       await waitFor(() => {
-        expect(screen.getByTestId("mock-edit-task-modal")).toBeInTheDocument();
+        expect(form.mockEditTaskModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("mock-save-task-button"));
-
-      await user.click(screen.getByTestId("submit") as HTMLInputElement);
+      await form.saveTaskInModal();
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(onSubmit).toHaveBeenCalledWith(
@@ -553,7 +524,6 @@ describe("TaskForm UI Interactions", () => {
 
   describe("Making task public (admin only)", () => {
     it("should show confirmation modal when checking isPublic", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -563,7 +533,7 @@ describe("TaskForm UI Interactions", () => {
         { role: UserRole.admin },
       );
 
-      const isPublicCheckbox = screen.getByTestId("isPublic");
+      const form = new TaskFormPageObject();
 
       // Why we use not.toHaveAttribute("data-state", ...) instead of toBeChecked():
       // data-testid is placed on ChakraCheckbox.Root (a <label>), not on
@@ -572,19 +542,18 @@ describe("TaskForm UI Interactions", () => {
       //
       // Zag.js always writes the correct controlled state to Root as a `data-state` attribute ("checked" / "unchecked"), regardless
       // of what the uncontrolled DOM input holds. We therefore use not.toHaveAttribute("data-state", "checked") as the negation bypass which is the opposite of not.toBeChecked().
-      expect(isPublicCheckbox).not.toHaveAttribute("data-state", "checked");
+      expect(form.isPublic).not.toHaveAttribute("data-state", "checked");
 
-      await user.click(isPublicCheckbox);
+      await form.clickIsPublic();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(isPublicCheckbox).not.toHaveAttribute("data-state", "checked");
+      expect(form.isPublic).not.toHaveAttribute("data-state", "checked");
     });
 
     it("should tick isPublic and enable save on confirm", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -594,33 +563,28 @@ describe("TaskForm UI Interactions", () => {
         { role: UserRole.admin },
       );
 
-      const isPublicCheckbox = screen.getByTestId("isPublic");
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
+      expect(form.submitButton.disabled).toBe(true);
 
-      expect(submitButton.disabled).toBe(true);
-
-      await user.click(isPublicCheckbox);
+      await form.clickIsPublic();
 
       await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      await user.click(screen.getByTestId("confirm-button"));
+      await form.confirmModal();
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
       });
 
       await waitFor(() => {
-        expect(isPublicCheckbox).not.toHaveAttribute("data-state", "unchecked");
+        expect(form.isPublic).not.toHaveAttribute("data-state", "unchecked");
       });
-      expect(submitButton.disabled).toBe(false);
+      expect(form.submitButton.disabled).toBe(false);
     });
 
     it("should leave isPublic unchecked and save disabled on cancel", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -630,29 +594,25 @@ describe("TaskForm UI Interactions", () => {
         { role: UserRole.admin },
       );
 
-      const isPublicCheckbox = screen.getByTestId("isPublic");
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
 
-      await user.click(isPublicCheckbox);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId("cancel-button"));
+      await form.clickIsPublic();
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("confirmation-modal"),
-        ).not.toBeInTheDocument();
+        expect(form.confirmationModal).toBeInTheDocument();
       });
 
-      expect(isPublicCheckbox).not.toHaveAttribute("data-state", "checked");
-      expect(submitButton.disabled).toBe(true);
+      await form.cancelModal();
+
+      await waitFor(() => {
+        expect(form.queryConfirmationModal()).not.toBeInTheDocument();
+      });
+
+      expect(form.isPublic).not.toHaveAttribute("data-state", "checked");
+      expect(form.submitButton.disabled).toBe(true);
     });
 
     it("should uncheck isPublic without showing a confirmation modal", async () => {
-      const user = userEvent.setup();
       renderWithProviders(
         <TaskForm
           submitMessage={submitMessage}
@@ -662,21 +622,17 @@ describe("TaskForm UI Interactions", () => {
         { role: UserRole.admin },
       );
 
-      const isPublicCheckbox = screen.getByTestId("isPublic");
-      const submitButton = screen.getByTestId("submit") as HTMLInputElement;
+      const form = new TaskFormPageObject();
+      expect(form.isPublic).not.toHaveAttribute("data-state", "unchecked");
 
-      expect(isPublicCheckbox).not.toHaveAttribute("data-state", "unchecked");
+      await form.clickIsPublic();
 
-      await user.click(isPublicCheckbox);
-
-      expect(
-        screen.queryByTestId("confirmation-modal"),
-      ).not.toBeInTheDocument();
+      expect(form.queryConfirmationModal()).not.toBeInTheDocument();
 
       await waitFor(() => {
-        expect(isPublicCheckbox).not.toHaveAttribute("data-state", "checked");
+        expect(form.isPublic).not.toHaveAttribute("data-state", "checked");
       });
-      expect(submitButton.disabled).toBe(false);
+      expect(form.submitButton.disabled).toBe(false);
     });
 
     it("should not show isPublic checkbox for non-admin users", () => {
@@ -689,15 +645,15 @@ describe("TaskForm UI Interactions", () => {
         { role: UserRole.teacher },
       );
 
-      expect(screen.queryByTestId("isPublic")).not.toBeInTheDocument();
+      const form = new TaskFormPageObject();
+      expect(form.queryIsPublic()).not.toBeInTheDocument();
     });
   });
 
   describe("Save with no task file", () => {
     it("should show error toast and not call onSubmit", async () => {
-      const user = userEvent.setup();
       const onSubmit = jest.fn().mockResolvedValue(null);
-      jest.spyOn(console, "error").mockImplementation(() => {});
+      ignoreConsoleErrors();
 
       renderWithProviders(
         <TaskForm
@@ -715,11 +671,9 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const titleInput = screen.getByTestId("title") as HTMLInputElement;
-      await user.clear(titleInput);
-      await user.type(titleInput, "Updated Title");
-
-      await user.click(screen.getByTestId("submit") as HTMLInputElement);
+      const form = new TaskFormPageObject();
+      await form.clearAndTypeTitle("Updated Title");
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(toaster.error).toHaveBeenCalledWith(
@@ -732,11 +686,13 @@ describe("TaskForm UI Interactions", () => {
   });
 
   describe("Save errors", () => {
+    beforeEach(() => {
+      ignoreConsoleErrors();
+    });
+
     it("should show conflict error toast and call onConflictError when ConflictError is thrown", async () => {
-      const user = userEvent.setup();
       const onConflictError = jest.fn();
       const onSubmit = jest.fn().mockRejectedValue(new ConflictError());
-      jest.spyOn(console, "error").mockImplementation(() => {});
 
       renderWithProviders(
         <TaskForm
@@ -747,11 +703,9 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const titleInput = screen.getByTestId("title") as HTMLInputElement;
-      await user.clear(titleInput);
-      await user.type(titleInput, "Updated Title");
-
-      await user.click(screen.getByTestId("submit") as HTMLInputElement);
+      const form = new TaskFormPageObject();
+      await form.clearAndTypeTitle("Updated Title");
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(toaster.error).toHaveBeenCalledWith(
@@ -763,9 +717,7 @@ describe("TaskForm UI Interactions", () => {
     });
 
     it("should show generic error toast when an unexpected error is thrown", async () => {
-      const user = userEvent.setup();
       const onSubmit = jest.fn().mockRejectedValue(new Error("Unexpected"));
-      jest.spyOn(console, "error").mockImplementation(() => {});
 
       renderWithProviders(
         <TaskForm
@@ -775,11 +727,9 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      const titleInput = screen.getByTestId("title") as HTMLInputElement;
-      await user.clear(titleInput);
-      await user.type(titleInput, "Updated Title");
-
-      await user.click(screen.getByTestId("submit") as HTMLInputElement);
+      const form = new TaskFormPageObject();
+      await form.clearAndTypeTitle("Updated Title");
+      await form.clickSubmit();
 
       await waitFor(() => {
         expect(toaster.error).toHaveBeenCalledWith(
@@ -800,8 +750,9 @@ describe("TaskForm UI Interactions", () => {
         />,
       );
 
-      expect(screen.queryByTestId("edit-task-button")).not.toBeInTheDocument();
-      expect(screen.queryByTestId("submit")).not.toBeInTheDocument();
+      const form = new TaskFormPageObject();
+      expect(form.queryEditTaskButton()).not.toBeInTheDocument();
+      expect(form.querySubmitButton()).not.toBeInTheDocument();
     });
   });
 });

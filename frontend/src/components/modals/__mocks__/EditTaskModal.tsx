@@ -3,6 +3,10 @@ import type EditTaskModal from "@/components/modals/EditTaskModal";
 
 type Props = React.ComponentProps<typeof EditTaskModal>;
 
+// EditTaskModal embeds an external app in an iframe and communicates with it
+// over an RPC channel. The real modal would wait for RPC responses that
+// never arrive in jsdom. The mock bypasses the iframe entirely and calls
+// onSave directly with a hardcoded payload, simulating a completed edit.
 const EditTaskModalMock = ({ isShown, onSave, setIsShown }: Props) => {
   if (!isShown) {
     return null;

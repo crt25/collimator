@@ -586,7 +586,7 @@ const TaskForm = ({
                 control={control}
                 label={messages.isPublicLabel}
                 showEditedBadge={showEditedBadges}
-                data-testid="isPublic"
+                testID="isPublic"
                 disabled={disabled}
                 shouldAllowValueChange={handleIsPublicBeforeChange}
               />
@@ -641,7 +641,7 @@ const TaskForm = ({
                   value: taskType,
                   label: getTaskTypeMessage(taskType as TaskType),
                 }))}
-                data-testid="type"
+                testID="type"
                 disabled={disabled}
               >
                 <Field.ErrorText>{errors.type?.message}</Field.ErrorText>

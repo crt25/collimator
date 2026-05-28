@@ -44,7 +44,7 @@ type InternalSelectProps = {
   isDirty?: boolean;
   showEditedBadge?: boolean;
   errorMessage?: string;
-  "data-testid"?: string;
+  testID?: string;
 };
 
 type SharedSelectProps = InternalSelectProps & {
@@ -93,7 +93,7 @@ const InternalSelect = (
     errorMessage,
     children,
     insideDialog,
-    "data-testid": testId,
+    testID,
     ...rest
   } = props;
 
@@ -123,7 +123,7 @@ const InternalSelect = (
         )}
 
         <ChakraSelect.Control>
-          <ChakraSelect.Trigger data-testid={testId}>
+          <ChakraSelect.Trigger data-testid={testID}>
             <ChakraSelect.ValueText
               placeholder={
                 placeholder ? intl.formatMessage(placeholder) : undefined
