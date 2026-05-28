@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
+import { usePatchStudentActivityIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentActivityIsReference";
 
 const StarAnalysisButton = ({
   classId,
@@ -15,26 +16,31 @@ const StarAnalysisButton = ({
   testId?: string;
 }) => {
   const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
+  const patchStudentActivityIsReference = usePatchStudentActivityIsReference();
 
-  const toggleIsReferenceSolution = () => {
-    if (!CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)) {
-      return;
-    }
-
-    patchStudentSolutionIsReference(
-      classId,
-      analysis.sessionId,
-      analysis.taskId,
-      analysis.studentSolutionId,
-      {
-        isReference: !analysis.isReferenceSolution,
-      },
-    );
-  };
-
-  if (!CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)) {
+  if (!(analysis instanceof CurrentStudentAnalysis)) {
     return null;
   }
+
+  const toggleIsReferenceSolution = () => {
+    if (analysis.isStudentSolution) {
+      patchStudentSolutionIsReference(
+        classId,
+        analysis.sessionId,
+        analysis.taskId,
+        analysis.studentSolutionId!,
+        { isReference: !analysis.isReferenceSolution },
+      );
+    } else {
+      patchStudentActivityIsReference(
+        classId,
+        analysis.sessionId,
+        analysis.taskId,
+        analysis.studentId,
+        { isReference: !analysis.isReferenceSolution },
+      );
+    }
+  };
 
   return (
     <Tag.Root

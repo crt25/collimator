@@ -337,3 +337,38 @@ export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
     },
   );
 };
+
+/**
+ * @summary Updates the isReference field of the latest activity-tracked solution for a student
+ */
+export const getSolutionsControllerPatchStudentActivityIsReferenceV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  studentId: number,
+) =>
+  `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference`;
+
+export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  studentId: number,
+  patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
+  options?: RequestInit,
+): Promise<void> => {
+  return fetchApi<void>(
+    getSolutionsControllerPatchStudentActivityIsReferenceV0Url(
+      classId,
+      sessionId,
+      taskId,
+      studentId,
+    ),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchStudentSolutionIsReferenceDto),
+    },
+  );
+};

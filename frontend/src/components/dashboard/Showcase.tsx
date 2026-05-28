@@ -20,6 +20,7 @@ import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/curren
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
 import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
+import { usePatchStudentActivityIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentActivityIsReference";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
@@ -143,6 +144,7 @@ const ShowcaseInternal = ({
   );
 
   const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
+  const patchStudentActivityIsReference = usePatchStudentActivityIsReference();
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap="md" marginBottom="md">
@@ -173,10 +175,8 @@ const ShowcaseInternal = ({
             >
               {(item) => {
                 const analysis = item.analysis;
-                const studentAnalysisId =
-                  CurrentStudentAnalysis.isSubmittedStudentAnalysis(analysis)
-                    ? analysis.studentSolutionId
-                    : null;
+                const isStudentAnalysis =
+                  analysis instanceof CurrentStudentAnalysis;
 
                 return (
                   <Listbox.Item
@@ -195,33 +195,37 @@ const ShowcaseInternal = ({
                           <span>{item.index + 1}. </span>
                           <AnalysisName analysis={analysis} />
                         </HStack>
-                        {
-                          // Only student solutions can be removed from the showcase.
-                          studentAnalysisId ? (
-                            <CloseButton
-                              variant="ghost"
-                              padding="0"
-                              backgroundColor={{ _hover: "gray.300" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-
+                        {isStudentAnalysis ? (
+                          <CloseButton
+                            variant="ghost"
+                            padding="0"
+                            backgroundColor={{ _hover: "gray.300" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (analysis.isStudentSolution) {
                                 patchStudentSolutionIsReference(
                                   klass.id,
-                                  session.id,
-                                  task.id,
-                                  studentAnalysisId,
-                                  {
-                                    isReference: false,
-                                  },
+                                  analysis.sessionId,
+                                  analysis.taskId,
+                                  analysis.studentSolutionId!,
+                                  { isReference: false },
                                 );
-                              }}
-                            />
-                          ) : (
-                            <CloseButton variant="ghost" disabled>
-                              𝓡
-                            </CloseButton>
-                          )
-                        }
+                              } else {
+                                patchStudentActivityIsReference(
+                                  klass.id,
+                                  analysis.sessionId,
+                                  analysis.taskId,
+                                  analysis.studentId,
+                                  { isReference: false },
+                                );
+                              }
+                            }}
+                          />
+                        ) : (
+                          <CloseButton variant="ghost" disabled>
+                            𝓡
+                          </CloseButton>
+                        )}
                       </HStack>
                     </Listbox.ItemText>
                   </Listbox.Item>
