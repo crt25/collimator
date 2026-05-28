@@ -415,6 +415,61 @@ export class SolutionsService {
     );
   }
 
+  async updateStudentActivityIsReference(
+    sessionId: SessionId,
+    taskId: TaskId,
+    studentId: StudentId,
+    isReference: boolean,
+    includeSoftDelete = false,
+  ): Promise<void> {
+    const baseWhere = includeSoftDelete
+      ? { sessionId, taskId, studentId }
+      : { sessionId, taskId, studentId, deletedAt: null };
+
+    if (isReference) {
+      // a student produces many activity rows over time but we only want to star the most recent one that has a completed analysis
+      const latestActivity = await this.prisma.studentActivity.findFirst({
+        select: { id: true },
+        where: {
+          ...baseWhere,
+          solution: {
+            analysis: { isNot: null },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!latestActivity) {
+        throw new NotFoundException(
+          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId}`,
+        );
+      }
+
+      // we use updateMany here because we clear the old flag without knowing its ID upfront.
+      // the transaction makes the clear + new assignment atomic so readers never see zero or two starred rows.
+      await this.prisma.$transaction([
+        this.prisma.studentActivity.updateMany({
+          data: { isReference: false },
+          where: { ...baseWhere, isReference: true },
+        }),
+        this.prisma.studentActivity.update({
+          data: { isReference: true },
+          where: { id: latestActivity.id },
+        }),
+      ]);
+    } else {
+      // no specific row to target, so we use updateMany to clear all reference flags for this student/task/session in one go.
+      await this.prisma.studentActivity.updateMany({
+        data: { isReference: false },
+        where: { ...baseWhere, isReference: true },
+      });
+    }
+
+    this.logger.log(
+      `Updated student activity (studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+    );
+  }
+
   async downloadLatestStudentSolutionOrThrow(
     sessionId: number,
     taskId: number,

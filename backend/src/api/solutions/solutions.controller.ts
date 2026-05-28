@@ -317,6 +317,7 @@ export class SolutionsController {
       await this.authorizationService.canUpdateStudentSolutionIsReference(
         user,
         id,
+        includeSoftDelete,
       );
 
     if (!isAuthorized) {
@@ -325,6 +326,53 @@ export class SolutionsController {
 
     return this.solutionsService.updateStudentSolutionIsReference(
       id,
+      dto.isReference,
+      includeSoftDelete,
+    );
+  }
+
+  @Patch("student/:studentId/activity/isReference")
+  @ApiOperation({
+    summary:
+      "Updates the isReference field of the latest activity-tracked solution for a student",
+  })
+  @ApiOkResponse()
+  @ApiQuery({
+    name: "includeSoftDelete",
+    required: false,
+    type: Boolean,
+  })
+  @ApiForbiddenResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(204)
+  @ApiBody({ type: PatchStudentSolutionIsReferenceDto })
+  async patchStudentActivityIsReference(
+    @AuthenticatedUser() user: User | null,
+    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("sessionId", ParseIntPipe) sessionId: SessionId,
+    @Param("taskId", ParseIntPipe) taskId: TaskId,
+    @Param("studentId", ParseIntPipe) studentId: number,
+    @Body() dto: PatchStudentSolutionIsReferenceDto,
+    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
+    includeSoftDelete?: boolean,
+  ): Promise<void> {
+    const isAuthorized =
+      await this.authorizationService.canUpdateStudentActivityIsReference(
+        user,
+        sessionId,
+        taskId,
+        studentId,
+        includeSoftDelete,
+      );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
+    return this.solutionsService.updateStudentActivityIsReference(
+      sessionId,
+      taskId,
+      studentId,
       dto.isReference,
       includeSoftDelete,
     );
