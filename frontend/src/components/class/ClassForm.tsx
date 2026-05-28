@@ -67,7 +67,7 @@ const ClassForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: ClassFormValues;
-  onSubmit: (data: ClassFormValues) => void;
+  onSubmit: (data: ClassFormValues) => void | Promise<void>;
 }) => {
   const intl = useIntl();
 
@@ -127,8 +127,8 @@ const ClassForm = ({
         <>
           <FormContainer
             as="form"
-            onSubmit={handleSubmit((values) => {
-              onSubmit(values);
+            onSubmit={handleSubmit(async (values) => {
+              await onSubmit(values);
               reset(values);
             })}
             data-testid="class-form"
