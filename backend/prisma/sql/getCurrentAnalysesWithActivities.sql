@@ -26,7 +26,7 @@ WITH allStudentSolutions AS (
       studentActivity."solutionHash",
       studentActivity."createdAt",
       NULL::int AS "studentSolutionId",
-      false AS "isReference"
+      studentActivity."isReference"
     FROM "StudentActivity" studentActivity
     WHERE studentActivity."sessionId" = $1
     AND studentActivity."taskId" = $2
@@ -117,6 +117,42 @@ AND studentSolution."taskId" = $2
 AND studentSolution."isReference" = true
 AND studentSolution."deletedAt" IS NULL
 
+)
+
+UNION ALL
+
+-- select all student activity reference solutions
+(
+SELECT
+  analysis.*,
+  test."identifier" AS "testIdentifier",
+  test."name" AS "testName",
+  test."contextName" AS "testContextName",
+  test."passed" AS "testPassed",
+  studentActivity."studentId" AS "studentId",
+  student.pseudonym AS "studentPseudonym",
+  student."keyPairId" AS "studentKeyPairId",
+  true AS "isReference",
+  NULL::int AS "studentSolutionId",
+  false AS "isStudentSolution",
+  studentActivity."sessionId" AS "sessionId",
+  NULL::int AS "referenceSolutionId",
+  NULL::text AS "referenceSolutionTitle",
+  NULL::text AS "referenceSolutionDescription",
+  NULL::boolean AS "isInitialTaskSolution"
+FROM "StudentActivity" studentActivity
+INNER JOIN "SolutionAnalysis" analysis
+  ON  analysis."taskId"       = studentActivity."taskId"
+  AND analysis."solutionHash" = studentActivity."solutionHash"
+  AND analysis."deletedAt" IS NULL
+LEFT JOIN "AuthenticatedStudent" student
+  ON student."studentId" = studentActivity."studentId"
+  AND student."deletedAt" IS NULL
+LEFT JOIN "SolutionTest" test ON false -- activities have no SolutionTest rows
+WHERE studentActivity."sessionId" = $1
+AND studentActivity."taskId" = $2
+AND studentActivity."isReference" = true
+AND studentActivity."deletedAt" IS NULL
 )
 
 UNION ALL
