@@ -1,4 +1,10 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import VM from "@scratch/scratch-vm";
 import { FormattedMessage } from "react-intl";
@@ -6,6 +12,7 @@ import styled from "@emotion/styled";
 import {
   allowAllStandardBlocks,
   allowNoBlocks,
+  BlockLimits,
 } from "../blocks/make-toolbox-xml";
 import { UpdateBlockToolboxEvent } from "../events/update-block-toolbox";
 import { useAssertionsEnabled } from "../hooks/useAssertionsEnabled";
@@ -49,6 +56,11 @@ const TaskConfig = ({
     useState(false);
   const [allowVariableBlocks, setAllowVariableBlocks] = useState(false);
   const [enableStageInteractions, setEnableStageInteractions] = useState(true);
+
+  const configSnapshot = useRef<{
+    allowedBlocks: BlockLimits;
+    enableStageInteractions: boolean;
+  } | null>(null);
 
   const updateConfig = useCallback(
     (
@@ -155,10 +167,34 @@ const TaskConfig = ({
     );
 
     setEnableAssertions(assertionsEnabled);
+
+    if (isShown && vm.crtConfig) {
+      configSnapshot.current = {
+        allowedBlocks: { ...vm.crtConfig.allowedBlocks },
+        enableStageInteractions: vm.crtConfig.enableStageInteractions ?? true,
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShown]);
 
+  const onCancel = useCallback(() => {
+    if (!configSnapshot.current || !vm.crtConfig) {
+      console.error("No config snapshot or task config found");
+      hideModal();
+      return;
+    }
+
+    vm.crtConfig.allowedBlocks = configSnapshot.current.allowedBlocks;
+    vm.crtConfig.enableStageInteractions =
+      configSnapshot.current.enableStageInteractions;
+
+    window.dispatchEvent(new UpdateBlockToolboxEvent());
+
+    hideModal();
+  }, [vm, hideModal]);
+
   return (
-    <Modal isShown={isShown} onHide={hideModal}>
+    <Modal isShown={isShown} onHide={onCancel}>
       <h1>
         <FormattedMessage
           defaultMessage="Task Config"
