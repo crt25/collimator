@@ -188,6 +188,36 @@ describe("SolutionsService", () => {
       expect(studentAnalyses[0].studentSolutionId).toBeNull();
     });
 
+    it("keeps multiple starred activity solutions for the same student as separate analyses", async () => {
+      const firstStarred = buildStudentAnalysisRow({
+        studentSolutionId: null,
+        isReference: true,
+        solutionHash: new Uint8Array([10, 20, 30]),
+      });
+      const secondStarred = buildStudentAnalysisRow({
+        studentSolutionId: null,
+        isReference: true,
+        solutionHash: new Uint8Array([40, 50, 60]),
+      });
+      prismaMock.$queryRawTyped.mockResolvedValue([
+        firstStarred,
+        secondStarred,
+      ]);
+
+      const [studentAnalyses] = await service.findCurrentAnalysesWithActivities(
+        sessionId,
+        taskId,
+      );
+
+      expect(studentAnalyses).toHaveLength(2);
+      expect(studentAnalyses.map((analysis) => analysis.solutionHash)).toEqual(
+        expect.arrayContaining([
+          firstStarred.solutionHash,
+          secondStarred.solutionHash,
+        ]),
+      );
+    });
+
     it("merges multiple rows for the same reference solution into one analysis with all tests", async () => {
       const rowWithFirstTest = buildReferenceAnalysisRow({
         testName: "ref1",
