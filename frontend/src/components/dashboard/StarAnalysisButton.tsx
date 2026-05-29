@@ -3,8 +3,7 @@ import { LuStar, LuStarOff } from "react-icons/lu";
 import { FormattedMessage } from "react-intl";
 import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
-import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
-import { usePatchStudentActivityIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentActivityIsReference";
+import { useStarAnalysis } from "@/api/collimator/hooks/solutions/useStarAnalysis";
 
 const StarAnalysisButton = ({
   classId,
@@ -15,39 +14,20 @@ const StarAnalysisButton = ({
   analysis: CurrentAnalysis;
   testId?: string;
 }) => {
-  const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
-  const patchStudentActivityIsReference = usePatchStudentActivityIsReference();
+  const starAnalysis = useStarAnalysis();
 
   if (!(analysis instanceof CurrentStudentAnalysis)) {
     return null;
   }
-
-  const toggleIsReferenceSolution = () => {
-    if (analysis.isStudentSolution) {
-      patchStudentSolutionIsReference(
-        classId,
-        analysis.sessionId,
-        analysis.taskId,
-        analysis.studentSolutionId!,
-        { isReference: !analysis.isReferenceSolution },
-      );
-    } else {
-      patchStudentActivityIsReference(
-        classId,
-        analysis.sessionId,
-        analysis.taskId,
-        analysis.studentId,
-        { isReference: !analysis.isReferenceSolution },
-      );
-    }
-  };
 
   return (
     <Tag.Root
       size="lg"
       as="button"
       cursor="pointer"
-      onClick={toggleIsReferenceSolution}
+      onClick={() =>
+        starAnalysis(classId, analysis, !analysis.isReferenceSolution)
+      }
       colorPalette="yellow"
       data-testid={testId}
     >

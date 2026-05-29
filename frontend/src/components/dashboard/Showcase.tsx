@@ -19,8 +19,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
-import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
-import { usePatchStudentActivityIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentActivityIsReference";
+import { useStarAnalysis } from "@/api/collimator/hooks/solutions/useStarAnalysis";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
@@ -143,8 +142,7 @@ const ShowcaseInternal = ({
     [items],
   );
 
-  const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
-  const patchStudentActivityIsReference = usePatchStudentActivityIsReference();
+  const starAnalysis = useStarAnalysis();
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap="md" marginBottom="md">
@@ -202,23 +200,8 @@ const ShowcaseInternal = ({
                             backgroundColor={{ _hover: "gray.300" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (analysis.isStudentSolution) {
-                                patchStudentSolutionIsReference(
-                                  klass.id,
-                                  analysis.sessionId,
-                                  analysis.taskId,
-                                  analysis.studentSolutionId!,
-                                  { isReference: false },
-                                );
-                              } else {
-                                patchStudentActivityIsReference(
-                                  klass.id,
-                                  analysis.sessionId,
-                                  analysis.taskId,
-                                  analysis.studentId,
-                                  { isReference: false },
-                                );
-                              }
+                              // The showcase list only contains already-starred analyses, so this button always unstars.
+                              starAnalysis(klass.id, analysis, false);
                             }}
                           />
                         ) : (
