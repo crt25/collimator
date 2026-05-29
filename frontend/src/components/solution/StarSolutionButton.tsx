@@ -1,36 +1,26 @@
 import { LuStar } from "react-icons/lu";
-import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
-import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { useStarAnalysis } from "@/api/collimator/hooks/solutions/useStarAnalysis";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import Button from "../Button";
 
 const StarSolutionButton = ({
   classId,
-  solution,
+  analysis,
   testId,
 }: {
   classId: number;
-  solution: ExistingStudentSolution;
+  analysis: CurrentStudentAnalysis;
   testId?: string;
 }) => {
-  const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
-
-  const toggleIsReferenceSolution = () => {
-    patchStudentSolutionIsReference(
-      classId,
-      solution.sessionId,
-      solution.taskId,
-      solution.id,
-      {
-        isReference: !solution.isReference,
-      },
-    );
-  };
+  const starAnalysis = useStarAnalysis();
 
   return (
     <Button
-      onClick={toggleIsReferenceSolution}
-      colorPalette={solution.isReference ? "yellow" : undefined}
-      variant={solution.isReference ? "solid" : "ghost"}
+      onClick={() =>
+        starAnalysis(classId, analysis, !analysis.isReferenceSolution)
+      }
+      colorPalette={analysis.isReferenceSolution ? "yellow" : undefined}
+      variant={analysis.isReferenceSolution ? "solid" : "ghost"}
       data-testid={testId}
       padding="0"
     >

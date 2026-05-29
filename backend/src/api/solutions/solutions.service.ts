@@ -12,7 +12,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 import {
   deleteStudentSolutions,
   getCurrentAnalyses,
-  getSoftDeletedCurrentAnalyses,
+  getCurrentAnalysesWithActivities,
+  getSoftDeletedCurrentAnalysesWithActivities,
 } from "@prisma/client/sql";
 
 import { Cron } from "@nestjs/schedule";
@@ -57,7 +58,13 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
-type StudentKey = [StudentId, TaskId, StudentSolutionId];
+type StudentKey = [
+  studentId: StudentId,
+  taskId: TaskId,
+  studentSolutionId: StudentSolutionId | null,
+  solutionHash: string,
+  isReference: boolean,
+];
 type ReferenceKey = [TaskId, ReferenceSolutionId];
 
 export type AnalysisWithoutId = {
@@ -77,7 +84,8 @@ export type AnalysisWithoutId = {
 export type CurrentStudentAnalysis = AnalysisWithoutId & {
   studentId: number;
   sessionId: number;
-  studentSolutionId: StudentSolutionId;
+  studentSolutionId: StudentSolutionId | null;
+  isStudentSolution: boolean;
   studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
 };
@@ -128,23 +136,23 @@ export class SolutionsService {
     });
   }
 
-  async findCurrentAnalyses(
+  async findCurrentAnalysesWithActivities(
     sessionId: number,
     taskId: number,
     includeSoftDelete = false,
   ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
-    let analyses;
+    const analyses = await this.prisma.$queryRawTyped(
+      includeSoftDelete
+        ? getSoftDeletedCurrentAnalysesWithActivities(sessionId, taskId)
+        : getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
 
-    if (includeSoftDelete) {
-      analyses = await this.prisma.$queryRawTyped(
-        getSoftDeletedCurrentAnalyses(sessionId, taskId),
-      );
-    } else {
-      analyses = await this.prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-    }
+    return this.groupAnalyses(analyses);
+  }
 
+  private groupAnalyses(
+    analyses: getCurrentAnalyses.Result[],
+  ): [CurrentStudentAnalysis[], ReferenceAnalysis[]] {
     const filteredAnalyses = analyses.filter(
       (analysis) => analysis.astVersion === latestAstVersion,
     );
@@ -153,7 +161,7 @@ export class SolutionsService {
     const referenceAnalyses: getCurrentAnalyses.Result[] = [];
 
     for (const analysis of filteredAnalyses) {
-      if (analysis.studentSolutionId) {
+      if (analysis.studentId !== null) {
         studentAnalyses.push(analysis);
       } else {
         referenceAnalyses.push(analysis);
@@ -165,8 +173,8 @@ export class SolutionsService {
         .reduce(
           this.groupByStudentAnalysis.bind(this),
           new TupleMap<StudentKey, CurrentStudentAnalysis>(
-            ([studentId, taskId, solutionId]) =>
-              `${studentId?.toString()};${taskId};${solutionId}`,
+            ([studentId, taskId, solutionId, solutionHash, isReference]) =>
+              `${studentId?.toString()};${taskId};${solutionId};${solutionHash};${isReference}`,
           ),
         )
         .values(),
@@ -219,6 +227,8 @@ export class SolutionsService {
       analysis.studentId,
       analysis.taskId,
       analysis.studentSolutionId,
+      Buffer.from(analysis.solutionHash).toString("base64"),
+      analysis.isReference,
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
@@ -236,6 +246,7 @@ export class SolutionsService {
         sessionId: analysis.sessionId,
         studentPseudonym: analysis.studentPseudonym,
         studentSolutionId: analysis.studentSolutionId,
+        isStudentSolution: analysis.isStudentSolution ?? false,
         studentKeyPairId: analysis.studentKeyPairId,
       });
     }
@@ -246,7 +257,8 @@ export class SolutionsService {
     analysis: getCurrentAnalyses.Result,
   ): analysis is getCurrentAnalyses.Result & {
     taskId: TaskId;
-    studentSolutionId: StudentSolutionId;
+    studentSolutionId: StudentSolutionId | null;
+    isStudentSolution: boolean;
     studentId: StudentId;
     studentPseudonym: Uint8Array | null;
     sessionId: SessionId;
@@ -259,7 +271,6 @@ export class SolutionsService {
   } {
     return (
       analysis.taskId !== null &&
-      analysis.studentSolutionId !== null &&
       analysis.studentId !== null &&
       analysis.sessionId !== null &&
       analysis.isReference !== null &&
@@ -395,6 +406,47 @@ export class SolutionsService {
     this.logger.log(
       `Updated student solution (id: ${studentSolutionId}) isReference=${isReference}`,
     );
+  }
+
+  async updateStudentActivityIsReference(
+    sessionId: SessionId,
+    taskId: TaskId,
+    studentId: StudentId,
+    solutionHash: Uint8Array,
+    isReference: boolean,
+    includeSoftDelete = false,
+  ): Promise<void> {
+    const baseWhere = includeSoftDelete
+      ? { sessionId, taskId, studentId }
+      : { sessionId, taskId, studentId, deletedAt: null };
+
+    await this.prisma.$transaction(async (tx) => {
+      const targetActivity = await tx.studentActivity.findFirst({
+        select: { id: true },
+        where: {
+          ...baseWhere,
+          solutionHash,
+          solution: {
+            analysis: { isNot: null },
+          },
+        },
+      });
+
+      if (!targetActivity) {
+        throw new NotFoundException(
+          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+        );
+      }
+
+      await tx.studentActivity.update({
+        data: { isReference },
+        where: { id: targetActivity.id },
+      });
+
+      this.logger.log(
+        `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+      );
+    });
   }
 
   async downloadLatestStudentSolutionOrThrow(

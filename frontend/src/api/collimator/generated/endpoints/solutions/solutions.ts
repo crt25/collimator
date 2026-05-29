@@ -10,11 +10,13 @@ import type {
   CreateSolutionDto,
   CurrentAnalysesDto,
   ExistingStudentSolutionDto,
+  PatchStudentActivityIsReferenceDto,
   PatchStudentSolutionIsReferenceDto,
   SolutionsControllerDownloadLatestStudentSolutionV0Params,
   SolutionsControllerDownloadOneV0Params,
   SolutionsControllerFindCurrentAnalysesV0Params,
   SolutionsControllerFindOneStudentSolutionV0Params,
+  SolutionsControllerPatchStudentActivityIsReferenceV0Params,
   SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
 } from "../../models";
 
@@ -334,6 +336,57 @@ export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
       body: JSON.stringify(patchStudentSolutionIsReferenceDto),
+    },
+  );
+};
+
+/**
+ * @summary Updates the isReference field of a specific activity-tracked solution for a student
+ */
+export const getSolutionsControllerPatchStudentActivityIsReferenceV0Url = (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  studentId: number,
+  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
+) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference`;
+};
+
+export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
+  classId: number,
+  sessionId: number,
+  taskId: number,
+  studentId: number,
+  patchStudentActivityIsReferenceDto: PatchStudentActivityIsReferenceDto,
+  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
+  options?: RequestInit,
+): Promise<void> => {
+  return fetchApi<void>(
+    getSolutionsControllerPatchStudentActivityIsReferenceV0Url(
+      classId,
+      sessionId,
+      taskId,
+      studentId,
+      params,
+    ),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(patchStudentActivityIsReferenceDto),
     },
   );
 };

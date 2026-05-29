@@ -337,6 +337,7 @@ model StudentActivity {
   happenedAt        DateTime
   happenedAtCounter Int                 @default(0)
   deletedAt         DateTime?
+  isReference       Boolean             @default(false)
 
   studentId    Int
   sessionId    Int

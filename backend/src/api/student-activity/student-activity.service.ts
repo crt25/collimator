@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Student, StudentActivity } from "@prisma/client";
+import { AstVersion, Prisma, Student, StudentActivity } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
+import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
+
+const latestAstVersion = AstVersion.v1;
 
 export type SolutionInput = Pick<
   Prisma.SolutionUncheckedCreateInput,
@@ -27,35 +30,49 @@ export class StudentActivityService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
+    private readonly analysisService: SolutionAnalysisService,
   ) {}
 
-  createMany(
+  async createMany(
     student: Student,
     activityWithSolution: {
       activity: StudentActivityInput;
       solution: SolutionInput;
     }[],
   ): Promise<StudentActivity[]> {
-    const inputs: Prisma.StudentActivityCreateInput[] =
+    const results = await this.prisma.$transaction(
       activityWithSolution.map(({ activity, solution }) =>
-        this.buildActivityInput(student, activity, solution),
-      );
-
-    return this.prisma.$transaction(
-      inputs.map((input) =>
-        this.prisma.studentActivity.create({ data: input }),
+        this.prisma.studentActivity.create({
+          data: this.buildActivityInput(student, activity, solution),
+          include: { solution: true },
+        }),
       ),
     );
+
+    results.forEach((result) =>
+      // do not wait for the promise to resolve
+      // this will happen in the background
+      this.analysisService.performAnalysis(result.solution, latestAstVersion),
+    );
+
+    return results;
   }
 
-  create(
+  async create(
     student: Student,
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    const input = this.buildActivityInput(student, activity, solution);
+    const result = await this.prisma.studentActivity.create({
+      data: this.buildActivityInput(student, activity, solution),
+      include: { solution: true },
+    });
 
-    return this.prisma.studentActivity.create({ data: input });
+    // do not wait for the promise to resolve
+    // this will happen in the background
+    this.analysisService.performAnalysis(result.solution, latestAstVersion);
+
+    return result;
   }
 
   private buildActivityInput(
