@@ -38,7 +38,10 @@ const config: Config = {
 
   setupFiles: ["<rootDir>/src/tests/polyfill.ts"],
 
-  setupFilesAfterEnv: ["jest-extended/all"],
+  setupFilesAfterEnv: [
+    "jest-extended/all",
+    "<rootDir>/src/tests/chakra-mocks.ts",
+  ],
 };
 
 export default createJestConfig(config);

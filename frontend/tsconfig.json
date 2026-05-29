@@ -51,7 +51,8 @@
       ]
     },
     "target": "esnext",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest", "node"]
   },
   "include": [
     "next-env.d.ts",

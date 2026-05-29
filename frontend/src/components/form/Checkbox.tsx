@@ -30,10 +30,11 @@ type InternalProps = {
   variant?: ChakraProps["variant"];
   children?: React.ReactNode;
   onCheckedChange?: (checked: boolean) => void;
-  onBeforeChange?: (newValue: boolean) => boolean;
+  shouldAllowValueChange?: (newValue: boolean) => boolean;
   isDirty?: boolean;
   showEditedBadge?: boolean;
   disabled?: boolean;
+  testID?: string;
 };
 
 type SharedProps = InternalProps;
@@ -56,21 +57,23 @@ const InternalCheckbox = (
     checked,
     label,
     onCheckedChange,
-    onBeforeChange,
+    shouldAllowValueChange,
     variant,
     isDirty,
     showEditedBadge,
     disabled = false,
+    testID,
   } = props;
 
   return (
     <ChakraCheckbox.Root
+      data-testid={testID}
       name={name}
       checked={checked}
       variant={variant}
       onCheckedChange={({ checked: newChecked }) => {
         const newValue = !!newChecked;
-        if (onBeforeChange && !onBeforeChange(newValue)) {
+        if (shouldAllowValueChange && !shouldAllowValueChange(newValue)) {
           return;
         }
         onCheckedChange?.(newValue);
@@ -103,10 +106,11 @@ const Checkbox = <TValues extends FieldValues, TField extends Path<TValues>>(
           render={({ field, fieldState }) => (
             <Field.Root>
               <InternalCheckbox
+                testID={rest.testID}
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={field.onChange}
-                onBeforeChange={props.onBeforeChange}
+                shouldAllowValueChange={props.shouldAllowValueChange}
                 isDirty={fieldState.isDirty}
                 variant={variant}
                 label={label}

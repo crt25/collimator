@@ -1,6 +1,7 @@
 import { useAdminUser } from "../../authentication-helpers";
 import { expect, test } from "../../helpers";
 import { classList, emptyStateContent } from "../../selectors";
+import { ClassDetailPageModel } from "./class-detail-page-model";
 import { ClassFormPageModel } from "./class-form-page-model";
 import { ClassListPageModel } from "./class-list-page-model";
 import { createClass } from "./class-management";
@@ -105,17 +106,17 @@ test.describe("class management", () => {
     });
 
     test("can delete listed items", async ({ page: pwPage, baseURL }) => {
-      const page = await ClassListPageModel.create(pwPage);
+      const detail = await ClassDetailPageModel.create(pwPage, newClassId);
 
-      await expect(page.getItemActionsDropdownButton(newClassId)).toHaveCount(
-        1,
-      );
+      await expect(detail.getActionsDropdownButton(newClassId)).toHaveCount(1);
 
-      await page.deleteItemAndConfirm(newClassId);
+      await detail.deleteAndConfirm(newClassId);
 
       await pwPage.waitForURL(`${baseURL}/class`);
 
-      await expect(page.getItemName(newClassId)).toHaveCount(0);
+      const list = await ClassListPageModel.create(pwPage);
+
+      await expect(list.getItemName(newClassId)).toHaveCount(0);
     });
   });
 });

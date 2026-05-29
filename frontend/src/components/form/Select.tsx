@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { MessageDescriptor, useIntl } from "react-intl";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { TaskType } from "@/api/collimator/generated/models";
 import { EditedBadge } from "../EditedBadge";
 
 const InputWrapper = styled.label<{ isShown?: boolean; noMargin?: boolean }>`
@@ -38,10 +39,12 @@ type InternalSelectProps = {
   variant?: ChakraSelectProps["variant"];
   children?: React.ReactNode;
   onValueChange?: (value: string) => void;
+  shouldAllowValueChange?: (newValue: TaskType) => boolean;
   onInteractOutside?: () => void;
   isDirty?: boolean;
   showEditedBadge?: boolean;
   errorMessage?: string;
+  testID?: string;
 };
 
 type SharedSelectProps = InternalSelectProps & {
@@ -79,6 +82,7 @@ const InternalSelect = (
     name,
     value,
     onValueChange,
+    shouldAllowValueChange,
     onInteractOutside,
     label,
     placeholder,
@@ -89,6 +93,7 @@ const InternalSelect = (
     errorMessage,
     children,
     insideDialog,
+    testID,
     ...rest
   } = props;
 
@@ -98,7 +103,13 @@ const InternalSelect = (
         {...rest}
         name={name}
         value={value !== undefined ? [value.toString()] : []}
-        onValueChange={(v) => onValueChange?.(v.value[0])}
+        onValueChange={(v) => {
+          const newValue = v.value[0] as TaskType;
+          if (shouldAllowValueChange && !shouldAllowValueChange(newValue)) {
+            return;
+          }
+          onValueChange?.(newValue);
+        }}
         onInteractOutside={onInteractOutside}
         variant={variant ?? "subtle"}
         collection={collection}
@@ -112,7 +123,7 @@ const InternalSelect = (
         )}
 
         <ChakraSelect.Control>
-          <ChakraSelect.Trigger>
+          <ChakraSelect.Trigger data-testid={testID}>
             <ChakraSelect.ValueText
               placeholder={
                 placeholder ? intl.formatMessage(placeholder) : undefined
@@ -196,6 +207,7 @@ const Select = <TValues extends FieldValues, TField extends Path<TValues>>(
               name={field.name}
               value={field.value}
               onValueChange={field.onChange}
+              shouldAllowValueChange={props.shouldAllowValueChange}
               isDirty={fieldState.isDirty}
               errorMessage={fieldState.error?.message}
               onInteractOutside={() => field.onBlur()}
