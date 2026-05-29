@@ -13,7 +13,6 @@ import {
   deleteStudentSolutions,
   getCurrentAnalyses,
   getCurrentAnalysesWithActivities,
-  getSoftDeletedCurrentAnalyses,
   getSoftDeletedCurrentAnalysesWithActivities,
 } from "@prisma/client/sql";
 
