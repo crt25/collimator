@@ -32,9 +32,14 @@ export interface CurrentStudentAnalysisDto {
    */
   studentId: number;
   /**
-   * The student solutions's unique identifier, a positive integer.
+   * The student solutions's unique identifier. Null when the latest solution came from activity tracking rather than an explicit submission.
+   * @nullable
    */
-  studentSolutionId: number;
+  studentSolutionId: number | null;
+  /**
+   * True when the analysis is backed by a StudentSolution row and can therefore be starred. False for activity-tracked analyses that have no associated submission.
+   */
+  isStudentSolution: boolean;
   /**
    * The pseudonym of the student
    * @nullable

@@ -9,8 +9,10 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
+import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
@@ -59,6 +61,7 @@ type StudentProgress = {
   id: number;
   student: ClassStudent | AnonymousStudent;
   taskSolutions: ExistingStudentSolution[];
+  currentAnalysis: CurrentStudentAnalysis | null;
 };
 
 enum TaskStatus {
@@ -87,16 +90,13 @@ const InShowCaseTemplate = ({
   classId: number;
   progress: StudentProgress;
 }) => {
-  const solutionToDisplay = useMemo(
-    () => ExistingStudentSolution.findSolutionToDisplay(progress.taskSolutions),
-    [progress],
-  );
-
-  if (!solutionToDisplay) {
+  if (!progress.currentAnalysis) {
     return null;
   }
 
-  return <StarSolutionButton classId={classId} solution={solutionToDisplay} />;
+  return (
+    <StarSolutionButton classId={classId} analysis={progress.currentAnalysis} />
+  );
 };
 
 const TaskTemplate = ({
@@ -190,6 +190,12 @@ const TaskInstanceProgressList = ({
     isLoading: isLoadingSolutions,
   } = useAllSessionTaskSolutions(classId, sessionId, taskId);
 
+  const { data: currentAnalyses } = useCurrentSessionTaskSolutions(
+    classId,
+    sessionId,
+    taskId,
+  );
+
   const studentIds = useMemo(() => {
     if (!klass || !solutions) {
       return [];
@@ -224,13 +230,23 @@ const TaskInstanceProgressList = ({
         (solution) => solution.studentId === student.studentId,
       );
 
+      // A student is either already in the showcase (teacher needs to unstar)
+      // or not yet (teacher needs to star). findShowcaseAnalysis prefers the
+      // starred analysis so the button reflects the current state and allows
+      // removal; falls back to the latest non-reference analysis to add it.
+      const currentAnalysis = CurrentStudentAnalysis.findAnalysisToDisplay(
+        currentAnalyses ?? [],
+        student.studentId,
+      );
+
       return {
         id: student.studentId,
         student,
-        taskSolutions: taskSolutions,
+        taskSolutions,
+        currentAnalysis,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, studentIds]);
+  }, [klass, session, solutions, currentAnalyses, studentIds]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
     return [
