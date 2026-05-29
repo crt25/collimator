@@ -8,7 +8,10 @@ import { CurrentAnalysis } from "./current-analysis";
 export class CurrentStudentAnalysis extends CurrentAnalysis {
   readonly sessionId: number;
   readonly studentId: number;
-  readonly studentSolutionId: number;
+  // null when the latest solution came from tracking student activities since it has no link to StudentSolution, so no studentSolutionId is available
+  readonly studentSolutionId: number | null;
+  // true when backed by a StudentSolution row; false for activity-tracked analyses
+  readonly isStudentSolution: boolean;
   readonly studentPseudonym: string | null;
   readonly studentKeyPairId: number | null;
 
@@ -18,6 +21,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentPseudonym,
     studentKeyPairId,
     studentSolutionId,
+    isStudentSolution,
     ...rest
   }: Omit<ClassProperties<CurrentStudentAnalysis>, "solutionId">) {
     super(rest);
@@ -25,12 +29,13 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     this.sessionId = sessionId;
     this.studentId = studentId;
     this.studentSolutionId = studentSolutionId;
+    this.isStudentSolution = isStudentSolution;
     this.studentPseudonym = studentPseudonym;
     this.studentKeyPairId = studentKeyPairId;
   }
 
   public override get solutionId(): string {
-    return `STUDENT:${this.studentSolutionId}`;
+    return `STUDENT:${this.studentSolutionId ?? this.solutionHash}`;
   }
 
   protected override withAst(ast: GeneralAst): CurrentStudentAnalysis {
@@ -50,5 +55,31 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
       generalAst: JSON.parse(dto.genericAst),
       tests: fromDtos(ExistingSolutionTest, dto.tests),
     });
+  }
+
+  /**
+   * Returns the most relevant analysis for a student for the progress list and
+   * student-result page: the current (non-starred) work so the teacher can see
+   * whether the latest submission is already in the showcase and act on it.
+   * Falls back to the starred analysis only when no unstarred entry exists.
+   *
+   * This relies on the SQL query guaranteeing that there is at most one non-reference row per
+   * student (with DISTINCT ON ... ORDER BY createdAt DESC), so 'find' always
+   * picks the most recent unstarred solution without needing the array to be
+   * sorted.
+   */
+  static findAnalysisToDisplay(
+    analyses: CurrentAnalysis[],
+    studentId: number,
+  ): CurrentStudentAnalysis | null {
+    const studentAnalyses = analyses.filter(
+      (a): a is CurrentStudentAnalysis =>
+        a instanceof CurrentStudentAnalysis && a.studentId === studentId,
+    );
+
+    const current = studentAnalyses.find((a) => !a.isReferenceSolution);
+    const starred = studentAnalyses.find((a) => a.isReferenceSolution);
+
+    return current ?? starred ?? null;
   }
 }

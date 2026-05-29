@@ -33,11 +33,22 @@ export class CurrentStudentAnalysisDto
   @ApiProperty({
     example: 318,
     description:
-      "The student solutions's unique identifier, a positive integer.",
-    nullable: false,
+      "The student solutions's unique identifier. Null when the latest solution came from activity tracking rather than an explicit submission.",
+    nullable: true,
+    type: "number",
   })
   @Expose()
-  readonly studentSolutionId!: StudentSolutionId;
+  readonly studentSolutionId!: StudentSolutionId | null;
+
+  @ApiProperty({
+    example: true,
+    description:
+      "True when the analysis is backed by a StudentSolution row and can therefore be starred. False for activity-tracked analyses that have no associated submission.",
+    nullable: false,
+    type: "boolean",
+  })
+  @Expose()
+  readonly isStudentSolution!: boolean;
 
   @ApiProperty({
     example: "John Doe",

@@ -421,9 +421,12 @@ export class AuthorizationService {
     return false;
   }
 
-  async canUpdateStudentSolutionIsReference(
+  async canUpdateStudentActivityIsReference(
     authenticatedUser: User | null,
-    studentSolutionId: StudentSolutionId,
+    sessionId: number,
+    taskId: number,
+    studentId: number,
+    includeSoftDelete = false,
   ): Promise<boolean> {
     if (authenticatedUser === null) {
       return false;
@@ -433,17 +436,54 @@ export class AuthorizationService {
       return true;
     }
 
-    // teachers may updated the field for solutions submitted by students in their class
+    const softDeleteFilter = includeSoftDelete ? {} : { deletedAt: null };
+
+    const activity = await this.prisma.studentActivity.findFirst({
+      select: { id: true },
+      where: {
+        studentId,
+        taskId,
+        sessionId,
+        ...softDeleteFilter,
+        session: {
+          ...softDeleteFilter,
+          class: {
+            teacherId: authenticatedUser.id,
+            ...softDeleteFilter,
+          },
+        },
+      },
+    });
+
+    return authenticatedUser.type === UserType.TEACHER && activity !== null;
+  }
+
+  async canUpdateStudentSolutionIsReference(
+    authenticatedUser: User | null,
+    studentSolutionId: StudentSolutionId,
+    includeSoftDelete = false,
+  ): Promise<boolean> {
+    if (authenticatedUser === null) {
+      return false;
+    }
+
+    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
+      return true;
+    }
+
+    // teachers may update the field for solutions submitted by students in their class
+    const softDeleteFilter = includeSoftDelete ? {} : { deletedAt: null };
+
     const solution = await this.prisma.studentSolution.findUnique({
       select: { id: true },
       where: {
         id: studentSolutionId,
-        deletedAt: null,
+        ...softDeleteFilter,
         session: {
-          deletedAt: null,
+          ...softDeleteFilter,
           class: {
             teacherId: authenticatedUser.id,
-            deletedAt: null,
+            ...softDeleteFilter,
           },
         },
       },

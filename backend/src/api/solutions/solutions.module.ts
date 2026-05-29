@@ -9,5 +9,6 @@ import { SolutionAnalysisService } from "./solution-analysis.service";
   imports: [TasksModule, AstModule],
   providers: [SolutionsService, SolutionAnalysisService],
   controllers: [SolutionsController],
+  exports: [SolutionAnalysisService],
 })
 export class SolutionsModule {}

@@ -19,7 +19,7 @@ import { CurrentAnalysis } from "@/api/collimator/models/solutions/current-analy
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ReferenceAnalysis } from "@/api/collimator/models/solutions/reference-analysis";
 import { useShowcaseOrder } from "@/hooks/useShowcaseOrder";
-import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
+import { useStarAnalysis } from "@/api/collimator/hooks/solutions/useStarAnalysis";
 import SwrContent from "../SwrContent";
 import Button from "../Button";
 import SortableListInput from "../form/SortableList";
@@ -142,7 +142,7 @@ const ShowcaseInternal = ({
     [items],
   );
 
-  const patchStudentSolutionIsReference = usePatchStudentSolutionIsReference();
+  const starAnalysis = useStarAnalysis();
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" gap="md" marginBottom="md">
@@ -173,10 +173,8 @@ const ShowcaseInternal = ({
             >
               {(item) => {
                 const analysis = item.analysis;
-                const studentAnalysisId =
-                  analysis instanceof CurrentStudentAnalysis
-                    ? analysis.studentSolutionId
-                    : null;
+                const isStudentAnalysis =
+                  analysis instanceof CurrentStudentAnalysis;
 
                 return (
                   <Listbox.Item
@@ -195,33 +193,22 @@ const ShowcaseInternal = ({
                           <span>{item.index + 1}. </span>
                           <AnalysisName analysis={analysis} />
                         </HStack>
-                        {
-                          // Only student solutions can be removed from the showcase.
-                          studentAnalysisId ? (
-                            <CloseButton
-                              variant="ghost"
-                              padding="0"
-                              backgroundColor={{ _hover: "gray.300" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-
-                                patchStudentSolutionIsReference(
-                                  klass.id,
-                                  session.id,
-                                  task.id,
-                                  studentAnalysisId,
-                                  {
-                                    isReference: false,
-                                  },
-                                );
-                              }}
-                            />
-                          ) : (
-                            <CloseButton variant="ghost" disabled>
-                              𝓡
-                            </CloseButton>
-                          )
-                        }
+                        {isStudentAnalysis ? (
+                          <CloseButton
+                            variant="ghost"
+                            padding="0"
+                            backgroundColor={{ _hover: "gray.300" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // The showcase list only contains already-starred analyses, so this button always unstars.
+                              starAnalysis(klass.id, analysis, false);
+                            }}
+                          />
+                        ) : (
+                          <CloseButton variant="ghost" disabled>
+                            𝓡
+                          </CloseButton>
+                        )}
                       </HStack>
                     </Listbox.ItemText>
                   </Listbox.Item>
