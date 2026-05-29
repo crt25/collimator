@@ -10,6 +10,7 @@ import type {
   CreateSolutionDto,
   CurrentAnalysesDto,
   ExistingStudentSolutionDto,
+  PatchStudentActivityIsReferenceDto,
   PatchStudentSolutionIsReferenceDto,
   SolutionsControllerDownloadLatestStudentSolutionV0Params,
   SolutionsControllerDownloadOneV0Params,
@@ -369,7 +370,7 @@ export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
   sessionId: number,
   taskId: number,
   studentId: number,
-  patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
+  patchStudentActivityIsReferenceDto: PatchStudentActivityIsReferenceDto,
   params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
   options?: RequestInit,
 ): Promise<void> => {
@@ -385,7 +386,7 @@ export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
       ...options,
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchStudentSolutionIsReferenceDto),
+      body: JSON.stringify(patchStudentActivityIsReferenceDto),
     },
   );
 };

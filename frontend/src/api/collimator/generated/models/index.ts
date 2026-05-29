@@ -54,6 +54,7 @@ export * from "./existingUserDto";
 export * from "./existingUserDtoPublicKeyId";
 export * from "./isSessionAnonymousDto";
 export * from "./keyPairDto";
+export * from "./patchStudentActivityIsReferenceDto";
 export * from "./patchStudentSolutionIsReferenceDto";
 export * from "./privateKeyDto";
 export * from "./publicKeyDto";

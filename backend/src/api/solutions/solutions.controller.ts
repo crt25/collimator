@@ -56,6 +56,7 @@ import { CurrentStudentAnalysisDto } from "./dto/current-student-analysis.dto";
 import { ReferenceAnalysisDto } from "./dto/reference-analysis.dto";
 import { CurrentAnalysesDto } from "./dto/current-analyses.dto";
 import { PatchStudentSolutionIsReferenceDto } from "./dto/patch-student-solution-is-reference.dto";
+import { PatchStudentActivityIsReferenceDto } from "./dto/patch-student-activity-is-reference.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
@@ -334,7 +335,7 @@ export class SolutionsController {
   @Patch("student/:studentId/activity/isReference")
   @ApiOperation({
     summary:
-      "Updates the isReference field of the latest activity-tracked solution for a student",
+      "Updates the isReference field of a specific activity-tracked solution for a student",
   })
   @ApiOkResponse()
   @ApiQuery({
@@ -345,14 +346,14 @@ export class SolutionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @HttpCode(204)
-  @ApiBody({ type: PatchStudentSolutionIsReferenceDto })
+  @ApiBody({ type: PatchStudentActivityIsReferenceDto })
   async patchStudentActivityIsReference(
     @AuthenticatedUser() user: User | null,
     @Param("classId", ParseIntPipe) _classId: number,
     @Param("sessionId", ParseIntPipe) sessionId: SessionId,
     @Param("taskId", ParseIntPipe) taskId: TaskId,
     @Param("studentId", ParseIntPipe) studentId: number,
-    @Body() dto: PatchStudentSolutionIsReferenceDto,
+    @Body() dto: PatchStudentActivityIsReferenceDto,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<void> {
@@ -369,10 +370,13 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
+    const solutionHash = Buffer.from(dto.solutionHash, "base64url");
+
     return this.solutionsService.updateStudentActivityIsReference(
       sessionId,
       taskId,
       studentId,
+      solutionHash,
       dto.isReference,
       includeSoftDelete,
     );

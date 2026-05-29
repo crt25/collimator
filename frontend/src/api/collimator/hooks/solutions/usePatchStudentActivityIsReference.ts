@@ -5,7 +5,6 @@ import {
   solutionsControllerPatchStudentActivityIsReferenceV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
-import { PatchStudentSolutionIsReferenceDto } from "../../generated/models";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
 import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
@@ -15,7 +14,8 @@ type PatchActivityType = (
   sessionId: number,
   taskId: number,
   studentId: number,
-  patchDto: PatchStudentSolutionIsReferenceDto,
+  solutionHash: string,
+  isReference: boolean,
 ) => Promise<void>;
 
 export const usePatchStudentActivityIsReference = (): PatchActivityType => {
@@ -24,14 +24,14 @@ export const usePatchStudentActivityIsReference = (): PatchActivityType => {
   const authOptions = useAuthenticationOptions();
 
   return useCallback<PatchActivityType>(
-    (classId, sessionId, taskId, studentId, patchDto) =>
+    (classId, sessionId, taskId, studentId, solutionHash, isReference) =>
       solutionsControllerPatchStudentActivityIsReferenceV0(
         classId,
         sessionId,
         taskId,
         studentId,
-        patchDto,
-        undefined, // pass undefined as params
+        { isReference, solutionHash },
+        undefined,
         authOptions,
       ).then(() => {
         revalidateSolutionList(classId, sessionId, taskId);
@@ -53,8 +53,9 @@ export const usePatchStudentActivityIsReference = (): PatchActivityType => {
             cachedData.map((a) =>
               a instanceof CurrentStudentAnalysis &&
               !a.isStudentSolution &&
-              a.studentId === studentId
-                ? a.withIsReference(patchDto.isReference)
+              a.studentId === studentId &&
+              a.solutionHash === solutionHash
+                ? a.withIsReference(isReference)
                 : a,
             ),
           );

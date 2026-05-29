@@ -59,7 +59,13 @@ export type SolutionAnalysisCreateInput = Omit<
   "id"
 >;
 
-type StudentKey = [StudentId, TaskId, StudentSolutionId | null]; // null when the row originates from StudentActivity
+type StudentKey = [
+  studentId: StudentId,
+  taskId: TaskId,
+  studentSolutionId: StudentSolutionId | null,
+  solutionHash: string,
+  isReference: boolean,
+];
 type ReferenceKey = [TaskId, ReferenceSolutionId];
 
 export type AnalysisWithoutId = {
@@ -131,20 +137,6 @@ export class SolutionsService {
     });
   }
 
-  async findCurrentAnalyses(
-    sessionId: number,
-    taskId: number,
-    includeSoftDelete = false,
-  ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
-    const analyses = await this.prisma.$queryRawTyped(
-      includeSoftDelete
-        ? getSoftDeletedCurrentAnalyses(sessionId, taskId)
-        : getCurrentAnalyses(sessionId, taskId),
-    );
-
-    return this.groupAnalyses(analyses);
-  }
-
   async findCurrentAnalysesWithActivities(
     sessionId: number,
     taskId: number,
@@ -182,8 +174,8 @@ export class SolutionsService {
         .reduce(
           this.groupByStudentAnalysis.bind(this),
           new TupleMap<StudentKey, CurrentStudentAnalysis>(
-            ([studentId, taskId, solutionId]) =>
-              `${studentId?.toString()};${taskId};${solutionId}`,
+            ([studentId, taskId, solutionId, solutionHash, isReference]) =>
+              `${studentId?.toString()};${taskId};${solutionId};${solutionHash};${isReference}`,
           ),
         )
         .values(),
@@ -236,6 +228,8 @@ export class SolutionsService {
       analysis.studentId,
       analysis.taskId,
       analysis.studentSolutionId,
+      Buffer.from(analysis.solutionHash).toString("base64"),
+      analysis.isReference,
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
@@ -419,6 +413,7 @@ export class SolutionsService {
     sessionId: SessionId,
     taskId: TaskId,
     studentId: StudentId,
+    solutionHash: Uint8Array,
     isReference: boolean,
     includeSoftDelete = false,
   ): Promise<void> {
@@ -426,47 +421,30 @@ export class SolutionsService {
       ? { sessionId, taskId, studentId }
       : { sessionId, taskId, studentId, deletedAt: null };
 
-    if (isReference) {
-      // a student produces many activity rows over time but we only want to star the most recent one that has a completed analysis
-      const latestActivity = await this.prisma.studentActivity.findFirst({
-        select: { id: true },
-        where: {
-          ...baseWhere,
-          solution: {
-            analysis: { isNot: null },
-          },
+    const targetActivity = await this.prisma.studentActivity.findFirst({
+      select: { id: true },
+      where: {
+        ...baseWhere,
+        solutionHash,
+        solution: {
+          analysis: { isNot: null },
         },
-        orderBy: { createdAt: "desc" },
-      });
+      },
+    });
 
-      if (!latestActivity) {
-        throw new NotFoundException(
-          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId}`,
-        );
-      }
-
-      // we use updateMany here because we clear the old flag without knowing its ID upfront.
-      // the transaction makes the clear + new assignment atomic so readers never see zero or two starred rows.
-      await this.prisma.$transaction([
-        this.prisma.studentActivity.updateMany({
-          data: { isReference: false },
-          where: { ...baseWhere, isReference: true },
-        }),
-        this.prisma.studentActivity.update({
-          data: { isReference: true },
-          where: { id: latestActivity.id },
-        }),
-      ]);
-    } else {
-      // no specific row to target, so we use updateMany to clear all reference flags for this student/task/session in one go.
-      await this.prisma.studentActivity.updateMany({
-        data: { isReference: false },
-        where: { ...baseWhere, isReference: true },
-      });
+    if (!targetActivity) {
+      throw new NotFoundException(
+        `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+      );
     }
 
+    await this.prisma.studentActivity.update({
+      data: { isReference },
+      where: { id: targetActivity.id },
+    });
+
     this.logger.log(
-      `Updated student activity (studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+      `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
     );
   }
 
