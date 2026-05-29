@@ -420,31 +420,33 @@ export class SolutionsService {
       ? { sessionId, taskId, studentId }
       : { sessionId, taskId, studentId, deletedAt: null };
 
-    const targetActivity = await this.prisma.studentActivity.findFirst({
-      select: { id: true },
-      where: {
-        ...baseWhere,
-        solutionHash,
-        solution: {
-          analysis: { isNot: null },
+    await this.prisma.$transaction(async (tx) => {
+      const targetActivity = await tx.studentActivity.findFirst({
+        select: { id: true },
+        where: {
+          ...baseWhere,
+          solutionHash,
+          solution: {
+            analysis: { isNot: null },
+          },
         },
-      },
-    });
+      });
 
-    if (!targetActivity) {
-      throw new NotFoundException(
-        `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+      if (!targetActivity) {
+        throw new NotFoundException(
+          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+        );
+      }
+
+      await tx.studentActivity.update({
+        data: { isReference },
+        where: { id: targetActivity.id },
+      });
+
+      this.logger.log(
+        `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
       );
-    }
-
-    await this.prisma.studentActivity.update({
-      data: { isReference },
-      where: { id: targetActivity.id },
     });
-
-    this.logger.log(
-      `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
-    );
   }
 
   async downloadLatestStudentSolutionOrThrow(
