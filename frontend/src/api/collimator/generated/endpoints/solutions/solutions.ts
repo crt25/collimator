@@ -341,7 +341,7 @@ export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
 };
 
 /**
- * @summary Updates the isReference field of the latest activity-tracked solution for a student
+ * @summary Updates the isReference field of a specific activity-tracked solution for a student
  */
 export const getSolutionsControllerPatchStudentActivityIsReferenceV0Url = (
   classId: number,
