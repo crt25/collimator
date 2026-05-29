@@ -57,14 +57,6 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     });
   }
 
-  static isSubmittedStudentAnalysis(
-    analysis: CurrentAnalysis,
-  ): analysis is CurrentStudentAnalysis & { studentSolutionId: number } {
-    return (
-      analysis instanceof CurrentStudentAnalysis && analysis.isStudentSolution
-    );
-  }
-
   /**
    * Returns the most relevant analysis for a student: the starred one if it
    * exists, otherwise the latest non-starred one (so the teacher can star it).
