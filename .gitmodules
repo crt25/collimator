@@ -1,6 +1,9 @@
 [submodule "frontend/collimator-storybook"]
 	path = frontend/storybook-submodule
-	url = git@github.com:crt25/collimator-storybook.git
+	url = https://github.com/crt25/collimator-storybook.git
+[submodule "collimator-infrastructure"]
+	path = infrastructure
+	url = https://github.com/crt25/collimator-infrastructure.git
 [submodule "apps/jupyter/otter-grader"]
 	path = apps/jupyter/otter-grader
 	url = https://github.com/crt25/otter-grader
@@ -11,5 +14,5 @@
 	shallow = true
 [submodule "apps/scratch/src/scratch-editor"]
 	path = apps/scratch/src/scratch-editor
-	url = git@github.com:crt25/scratch-editor.git
+	url = https://github.com/crt25/scratch-editor.git
 	shallow = true
