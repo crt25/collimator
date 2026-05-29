@@ -58,8 +58,10 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
   }
 
   /**
-   * Returns the most relevant analysis for a student: the starred one if it
-   * exists, otherwise the latest non-starred one (so the teacher can star it).
+   * Returns the most relevant analysis for a student for the progress list and
+   * student-result page: the current (non-starred) work so the teacher can see
+   * whether the latest submission is already in the showcase and act on it.
+   * Falls back to the starred analysis only when no unstarred entry exists
    */
   static findAnalysisToDisplay(
     analyses: CurrentAnalysis[],
@@ -70,9 +72,9 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
         a instanceof CurrentStudentAnalysis && a.studentId === studentId,
     );
 
-    const starred = studentAnalyses.find((a) => a.isReferenceSolution);
     const current = studentAnalyses.find((a) => !a.isReferenceSolution);
+    const starred = studentAnalyses.find((a) => a.isReferenceSolution);
 
-    return starred ?? current ?? null;
+    return current ?? starred ?? null;
   }
 }
