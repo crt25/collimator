@@ -142,7 +142,7 @@ const UserForm = ({
               value: userType,
               label: getUserTypeMessage(userType as UserType),
             }))}
-            testID="type"
+            data-testid="type"
           >
             <ValidationErrorMessage>
               {errors.type?.message}
