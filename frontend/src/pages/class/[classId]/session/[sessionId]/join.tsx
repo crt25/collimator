@@ -97,6 +97,7 @@ const JoinSessionContent = ({
             <TaskList classId={classId} session={session} />
             <Button
               onClick={onJoinSession}
+              disabled={session.tasks.length <= 0}
               data-testid="join-session-button"
               marginTop="1rem"
             >
