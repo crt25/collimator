@@ -25,7 +25,7 @@ const LessonForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: LessonFormProps;
-  onSubmit: (data: LessonFormProps) => void;
+  onSubmit: (data: LessonFormProps) => void | Promise<void>;
 }) => {
   const schema = useYupSchema({
     name: yup.string().required(),
@@ -37,7 +37,7 @@ const LessonForm = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields, isSubmitting },
   } = useForm<LessonFormProps>({
     resolver,
     defaultValues: initialValues,
@@ -48,8 +48,8 @@ const LessonForm = ({
 
   return (
     <form
-      onSubmit={handleSubmit((values) => {
-        onSubmit(values);
+      onSubmit={handleSubmit(async (values) => {
+        await onSubmit(values);
         reset(values);
       })}
     >
@@ -59,7 +59,7 @@ const LessonForm = ({
         {...register("name")}
         labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
       />
-      <SubmitFormButton label={submitMessage} />
+      <SubmitFormButton label={submitMessage} disabled={isSubmitting} />
     </form>
   );
 };

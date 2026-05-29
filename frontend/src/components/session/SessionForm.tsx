@@ -157,7 +157,7 @@ const SessionForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: Partial<SessionFormValues>;
-  onSubmit: (data: SessionFormValues) => void;
+  onSubmit: (data: SessionFormValues) => void | Promise<void>;
   classId: number;
   editingMode?: EditingMode;
 }) => {
@@ -204,7 +204,7 @@ const SessionForm = ({
     watch,
     setValue,
     reset,
-    formState: { errors, dirtyFields, isDirty },
+    formState: { errors, dirtyFields, isDirty, isSubmitting },
     control,
   } = useForm<SessionFormValues>({
     resolver,
@@ -345,8 +345,8 @@ const SessionForm = ({
       {(tasks) => (
         <>
           <form
-            onSubmit={handleSubmit((values) => {
-              onSubmit(values);
+            onSubmit={handleSubmit(async (values) => {
+              await onSubmit(values);
               reset(values);
             })}
             data-testid="session-form"
@@ -480,7 +480,10 @@ const SessionForm = ({
             </Grid>
             {!isReadOnly && (
               <SubmitButtonWrapper>
-                <SubmitFormButton label={submitMessage} disabled={!isDirty} />
+                <SubmitFormButton
+                  label={submitMessage}
+                  disabled={!isDirty || isSubmitting}
+                />
               </SubmitButtonWrapper>
             )}
           </form>
