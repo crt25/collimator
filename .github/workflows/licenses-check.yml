@@ -1,0 +1,51 @@
+name: Third-party licenses
+
+on:
+  pull_request:
+    paths: &licenses-paths
+      - "**/package.json"
+      - "**/yarn.lock"
+      - "**/poetry.lock"
+      - "**/pyproject.toml"
+      - "infrastructure/**"
+      - "**/Dockerfile"
+
+      - "Taskfile.yml"
+      - "mise.toml"
+      - "mise.lock"
+
+      - ".gitmodules"
+      - "scripts/licenses/**"
+      - "scripts/policy.toml"
+      - "scripts/*.licenses.toml"
+      - "THIRD_PARTY_LICENSES.md"
+
+      - ".github/workflows/licenses-check.yml"
+
+  merge_group:
+    paths: *licenses-paths
+
+  push:
+    branches:
+      - main
+    paths: *licenses-paths
+
+permissions:
+  contents: read
+
+jobs:
+  licenses-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+          lfs: true
+          fetch-depth: 0
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Verify THIRD_PARTY_LICENSES.md is up to date
+        run: task licenses:check

@@ -6,7 +6,7 @@ concurrency: development-deployment
 on:
   push:
     branches:
-      - main
+      - NOPE
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}

@@ -1,0 +1,217 @@
+name: Deployment
+run-name: Deployment to ${{ inputs.ENVIRONMENT }}
+
+# only allow one workflow running at a given point that deploys a given environment
+concurrency: deployment-${{ inputs.ENVIRONMENT }}
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+
+      AWS_REGION:
+        required: true
+        type: string
+      ROLE_TO_ASSUME:
+        required: true
+        type: string
+
+      BACKEND_ECR_REGISTRY_URI:
+        required: true
+        type: string
+      BACKEND_CLUSTER_NAME:
+        required: true
+        type: string
+      BACKEND_SERVICE_NAME:
+        required: true
+        type: string
+
+      DEPLOY_URL:
+        required: true
+        type: string
+      BACKEND_IMAGE_NAME:
+        required: true
+        type: string
+
+      FRONTEND_BUCKET_ID:
+        required: true
+        type: string
+      SCRATCH_APP_BUCKET_ID:
+        required: true
+        type: string
+      JUPYTER_APP_BUCKET_ID:
+        required: true
+        type: string
+
+      ENTRA_ID_CLIENT_ID:
+        required: true
+        type: string
+
+      SENTRY_RELEASE:
+        required: true
+        type: string
+      FRONTEND_SENTRY_DSN:
+        required: true
+        type: string
+      APP_SCRATCH_SENTRY_DSN:
+        required: true
+        type: string
+
+    secrets:
+      BACKEND_SENTRY_AUTH_TOKEN:
+        required: true
+      FRONTEND_SENTRY_AUTH_TOKEN:
+        required: true
+      APP_SCRATCH_SENTRY_AUTH_TOKEN:
+        required: true
+      APP_JUPYTER_SENTRY_AUTH_TOKEN:
+        required: true
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    # Service containers required by `task db:migrate:deploy` (needed before
+    # `task backend:build` so that Prisma can generate against a live schema).
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/classmosaic?schema=public"
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.AWS_REGION }}
+
+      - name: Check out repository code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+          submodules: "true"
+          lfs: "true"
+          fetch-depth: 0
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          install_args: "--locked"
+
+      - name: Setup dependencies
+        run: task setup
+
+      - name: Build frontend
+        run: task frontend:build
+        env:
+          NEXT_PUBLIC_BACKEND_HOSTNAME: ${{ inputs.DEPLOY_URL }}
+          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ inputs.DEPLOY_URL }}/scratch
+          NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: ${{ inputs.DEPLOY_URL }}/jupyter/lab/index.html
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ inputs.ENTRA_ID_CLIENT_ID }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ inputs.FRONTEND_SENTRY_DSN }}
+          SENTRY_RELEASE: ${{ inputs.SENTRY_RELEASE }}
+          SENTRY_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.FRONTEND_SENTRY_AUTH_TOKEN }}
+
+      - name: Build scratch app
+        run: task apps:scratch:build
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ inputs.APP_SCRATCH_SENTRY_DSN }}
+          SENTRY_RELEASE: ${{ inputs.SENTRY_RELEASE }}
+          SENTRY_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+
+      - name: Upload scratch app source maps
+        run: task apps:scratch:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
+
+      - name: Build jupyter app
+        run: task apps:jupyter:build
+        env:
+          SENTRY_RELEASE: ${{ inputs.SENTRY_RELEASE }}
+          SENTRY_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+
+      - name: Upload jupyter app source maps
+        run: task apps:jupyter:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
+
+      # the database must be fully migrated before running prisma:generate
+      # (which `task backend:build` triggers), so we use the postgres service.
+      - name: Prepare test database
+        run: task db:migrate:deploy
+
+      - name: Build backend
+        run: task backend:build
+
+      - name: Upload backend source maps
+        run: task backend:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
+
+      - name: Build backend docker image
+        run: docker build -t $BACKEND_IMAGE_NAME .
+        working-directory: ./backend
+        env:
+          BACKEND_IMAGE_NAME: ${{ inputs.BACKEND_IMAGE_NAME }}
+
+      - name: Tag docker image
+        run: docker tag $BACKEND_IMAGE_NAME:latest $REGISTRY:latest
+        working-directory: ./backend
+        env:
+          BACKEND_IMAGE_NAME: ${{ inputs.BACKEND_IMAGE_NAME }}
+          REGISTRY: ${{ inputs.BACKEND_ECR_REGISTRY_URI }}
+
+      # Actual deployment
+
+      - name: Authenticate to ECR
+        run: aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REGISTRY
+        env:
+          REGION: ${{ inputs.AWS_REGION }}
+          REGISTRY: ${{ inputs.BACKEND_ECR_REGISTRY_URI }}
+
+      - name: Upload docker image
+        run: docker push $REGISTRY:latest
+        working-directory: ./backend
+        env:
+          REGISTRY: ${{ inputs.BACKEND_ECR_REGISTRY_URI }}
+
+      - name: Deploy frontend to S3
+        run: aws s3 sync ./frontend/dist/ s3://$BUCKET/ --delete
+        env:
+          BUCKET: ${{ inputs.FRONTEND_BUCKET_ID }}
+
+      - name: Deploy scratch app to S3
+        run: aws s3 sync ./apps/scratch/build/ s3://$BUCKET/ --delete
+        env:
+          BUCKET: ${{ inputs.SCRATCH_APP_BUCKET_ID }}
+
+      - name: Deploy jupyter app to S3
+        run: aws s3 sync ./apps/jupyter/dist/app/ s3://$BUCKET/ --delete
+        env:
+          BUCKET: ${{ inputs.JUPYTER_APP_BUCKET_ID }}
+
+      - name: Deploy new docker image
+        run: aws ecs update-service --cluster $CLUSTER --service $SERVICE --force-new-deployment
+        env:
+          CLUSTER: ${{ inputs.BACKEND_CLUSTER_NAME }}
+          SERVICE: ${{ inputs.BACKEND_SERVICE_NAME }}
