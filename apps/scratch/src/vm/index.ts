@@ -2,6 +2,108 @@ import VM from "@scratch/scratch-vm";
 import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
 
+export interface TargetStartState {
+  x: number;
+  y: number;
+  direction: number;
+  size: number;
+  visible: boolean;
+}
+
+const startStateByVm = new Map<VM, Map<string, TargetStartState>>();
+
+const snapshotTarget = (target: VM.Target): TargetStartState =>
+  ({
+    x: target.x,
+    y: target.y,
+    direction: target.direction,
+    size: target.size,
+    visible: target.visible,
+  }) satisfies TargetStartState;
+
+/**
+ * Snapshot on project load and on user-initiated postSpriteInfo calls
+ * (stage drag, sprite-info pane). Used by saveCrtProject so that running
+ * a script and then saving doesn't introduce runtime differences into the
+ * project as the new starting point.
+ */
+export const getTargetStartState = (vm: VM): Map<string, TargetStartState> => {
+  let map = startStateByVm.get(vm);
+
+  if (!map) {
+    map = new Map();
+    startStateByVm.set(vm, map);
+  }
+
+  return map;
+};
+
+const assignIfPosted = <K extends keyof TargetStartState>(
+  data: VM.PostedSpriteInfo,
+  snap: TargetStartState,
+  target: VM.Target,
+  key: K,
+  expectedType: "number" | "boolean",
+): void => {
+  if (typeof data[key] === expectedType) {
+    snap[key] = target[key];
+  }
+};
+
+/**
+ * Temporarily set each target's mutable sprite state to its tracked
+ * starting state so the serializer doesn't capture runtime drift caused
+ * by scripts. Returns a restore callback.
+ *
+ * Fields are assigned directly (rather than via target.setXY/setDirection/
+ * setSize/setVisible) so we don't trigger renderer updates or pen draws —
+ * the sprite stays visually where the runtime had it.
+ */
+export const swapToStartState = (vm: VM): (() => void) => {
+  const snapshot = getTargetStartState(vm);
+  if (snapshot.size === 0) {
+    return () => {};
+  }
+
+  const runtimeState: Array<{ target: VM.Target; runtime: TargetStartState }> =
+    [];
+
+  for (const target of vm.runtime.targets) {
+    const start = snapshot.get(target.id);
+
+    if (!start) {
+      continue;
+    }
+
+    runtimeState.push({
+      target,
+      runtime: {
+        x: target.x,
+        y: target.y,
+        direction: target.direction,
+        size: target.size,
+        visible: target.visible,
+      },
+    });
+
+    target.x = start.x;
+    target.y = start.y;
+    target.direction = start.direction;
+    target.size = start.size;
+    target.visible = start.visible;
+  }
+
+  return () => {
+    for (const { target, runtime } of runtimeState) {
+      target.x = runtime.x;
+      target.y = runtime.y;
+      target.direction = runtime.direction;
+      target.size = runtime.size;
+      target.visible = runtime.visible;
+    }
+  };
+};
+
 export const patchScratchVm = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
   vm.extensionManager.loadExtensionURL = async (
@@ -30,6 +132,16 @@ export const patchScratchVm = (vm: VM): void => {
     return 0;
   };
 
+  const startState = getTargetStartState(vm);
+
+  const trackTargetStartState = (target: VM.Target): void => {
+    if (target.isStage || target.isOriginal === false) {
+      return;
+    }
+
+    startState.set(target.id, snapshotTarget(target));
+  };
+
   vm.runtime.on("PROJECT_LOADED", () => {
     // iterate over all the blocks in the runtime
     // and mark them as initial blocks
@@ -40,5 +152,55 @@ export const patchScratchVm = (vm: VM): void => {
           : true;
       }
     }
+
+    startState.clear();
+    for (const target of vm.runtime.targets) {
+      trackTargetStartState(target);
+    }
   });
+
+  // Sprites added or duplicated after project load also need a starting snapshot
+  vm.runtime.on("targetWasCreated", (newTarget: VM.Target) => {
+    trackTargetStartState(newTarget);
+  });
+
+  const originalPostSpriteInfo = vm.postSpriteInfo.bind(vm);
+  vm.postSpriteInfo = (data: VM.PostedSpriteInfo): void => {
+    originalPostSpriteInfo(data);
+
+    const target = vm._dragTarget ?? vm.editingTarget;
+
+    if (!target || target.isStage) {
+      return;
+    }
+
+    const snap = startState.get(target.id);
+
+    if (!snap) {
+      return;
+    }
+
+    assignIfPosted(data, snap, target, "x", "number");
+    assignIfPosted(data, snap, target, "y", "number");
+    assignIfPosted(data, snap, target, "direction", "number");
+    assignIfPosted(data, snap, target, "size", "number");
+    assignIfPosted(data, snap, target, "visible", "boolean");
+  };
+
+  // Wrap vm.toJSON so every serialisation path uses the tracked starting
+  // state: saveProjectSb3 (calls this.toJSON internally), exportSprite,
+  // and the direct callers in Controls.tsx (postSolutionRun) and
+  // Blocks.tsx (student activity tracking). Without this, those direct
+  // callers serialise runtime drift caused by scripts and end up sending
+  // the runtime sprite position to the backend as the new starting point.
+  const originalToJSON = vm.toJSON.bind(vm);
+  vm.toJSON = (optTargetId?: string): string => {
+    const restore = swapToStartState(vm);
+
+    try {
+      return originalToJSON(optTargetId);
+    } finally {
+      restore();
+    }
+  };
 };
