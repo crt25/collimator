@@ -240,9 +240,9 @@ const TaskInstanceProgressList = ({
       );
 
       // A student is either already in the showcase (teacher needs to unstar)
-      // or not yet (teacher needs to star). findShowcaseAnalysis prefers the
-      // starred analysis so the button reflects the current state and allows
-      // removal; falls back to the latest non-reference analysis to add it.
+      // or not yet (teacher needs to star). findAnalysisToDisplay returns the
+      // latest non-starred analysis so the button is starrable.
+      // It falls back to the starred analysis when that's all the student has.
       const currentAnalysis = CurrentStudentAnalysis.findAnalysisToDisplay(
         currentAnalyses ?? [],
         student.studentId,
