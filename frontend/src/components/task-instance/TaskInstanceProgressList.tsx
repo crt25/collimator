@@ -204,9 +204,15 @@ const TaskInstanceProgressList = ({
     const studentIdsSet = new Set([
       ...klass.students.map((student) => student.studentId),
       ...solutions.map((s) => s.studentId),
+      ...(currentAnalyses ?? [])
+        .filter(
+          (a): a is CurrentStudentAnalysis =>
+            a instanceof CurrentStudentAnalysis,
+        )
+        .map((a) => a.studentId),
     ]);
     return [...studentIdsSet];
-  }, [klass, solutions]);
+  }, [klass, solutions, currentAnalyses]);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
