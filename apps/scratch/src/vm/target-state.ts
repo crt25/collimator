@@ -1,0 +1,115 @@
+import VM from "@scratch/scratch-vm";
+
+/**
+ * https://github.com/scratchfoundation/scratch-vm/blob/766c767c7a2f3da432480ade515de0a9f98804ba/src/serialization/sb3.js#L470-L500
+ */
+export interface RememberedTargetState {
+  currentCostume: number;
+  volume: number;
+  customState: Partial<VM.CustomState>;
+}
+
+export interface RememberedStageState extends RememberedTargetState {
+  tempo: number;
+  videoTransparency: number;
+}
+
+export interface RememberedSpriteState extends RememberedTargetState {
+  name: string;
+  x: number;
+  y: number;
+  size: number;
+  direction: number;
+  visible: boolean;
+  draggable: boolean;
+  rotationStyle: VM.RotationStyle;
+  layerOrder: number;
+}
+
+export const rememberStageState = (
+  target: VM.Target,
+): RememberedStageState => ({
+  currentCostume: target.currentCostume,
+  volume: target.volume,
+  tempo: target.tempo,
+  videoTransparency: target.videoTransparency,
+  customState: target._customState,
+});
+
+export const rememberSpriteState = (
+  target: VM.Target,
+): RememberedSpriteState => ({
+  currentCostume: target.currentCostume,
+  volume: target.volume,
+  name: target.getName(),
+  x: target.x,
+  y: target.y,
+  size: target.size,
+  direction: target.direction,
+  visible: target.visible,
+  draggable: target.draggable,
+  rotationStyle: target.rotationStyle,
+  layerOrder: target.getLayerOrder(),
+  customState: target._customState,
+});
+
+export const restoreStageStateForExecution = (
+  target: VM.Target,
+  state: RememberedStageState,
+): void => {
+  target.setCostume(state.currentCostume);
+  target.volume = state.volume;
+  target.tempo = state.tempo;
+  target.videoTransparency = state.videoTransparency;
+  target._customState = state.customState;
+};
+
+export const restoreSpriteStateForExecution = (
+  target: VM.Target,
+  state: RememberedSpriteState,
+): void => {
+  target.setCostume(state.currentCostume);
+  target.volume = state.volume;
+  target.sprite.name = state.name;
+  target.setXY(state.x, state.y);
+  target.setSize(state.size);
+  target.setDirection(state.direction);
+  target.setVisible(state.visible);
+  target.setDraggable(state.draggable);
+  target.setRotationStyle(state.rotationStyle);
+  // see https://github.com/scratchfoundation/scratch-vm/blob/bb1659e1f42de5bd28d7233c8e418c4e536a2bf0/src/sprites/rendered-target.js#L850
+  target.renderer?.setDrawableOrder(
+    target.drawableID,
+    state.layerOrder,
+    "sprite",
+  );
+  target._customState = state.customState;
+};
+
+export const restoreStageStateForSerialization = (
+  target: VM.Target,
+  state: RememberedStageState,
+): void => {
+  target.currentCostume = state.currentCostume;
+  target.volume = state.volume;
+  target.tempo = state.tempo;
+  target.videoTransparency = state.videoTransparency;
+  target._customState = state.customState;
+};
+
+export const restoreSpriteStateForSerialization = (
+  target: VM.Target,
+  state: RememberedSpriteState,
+): void => {
+  target.currentCostume = state.currentCostume;
+  target.volume = state.volume;
+  target.sprite.name = state.name;
+  target.x = state.x;
+  target.y = state.y;
+  target.size = state.size;
+  target.direction = state.direction;
+  target.visible = state.visible;
+  target.draggable = state.draggable;
+  target.rotationStyle = state.rotationStyle;
+  target._customState = state.customState;
+};

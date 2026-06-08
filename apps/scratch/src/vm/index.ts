@@ -1,33 +1,24 @@
 import VM from "@scratch/scratch-vm";
 import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
+import {
+  RememberedSpriteState,
+  rememberSpriteState,
+  restoreSpriteStateForSerialization,
+} from "./target-state";
 
-export interface TargetStartState {
-  x: number;
-  y: number;
-  direction: number;
-  size: number;
-  visible: boolean;
-}
-
-const startStateByVm = new Map<VM, Map<string, TargetStartState>>();
-
-const snapshotTarget = (target: VM.Target): TargetStartState =>
-  ({
-    x: target.x,
-    y: target.y,
-    direction: target.direction,
-    size: target.size,
-    visible: target.visible,
-  }) satisfies TargetStartState;
+const startStateByVm = new Map<VM, Map<string, RememberedSpriteState>>();
 
 /**
- * Snapshot on project load and on user-initiated postSpriteInfo calls
- * (stage drag, sprite-info pane). Used by saveCrtProject so that running
- * a script and then saving doesn't introduce runtime differences into the
+ * Snapshot on project load, on `targetWasCreated`, and on user-initiated
+ * postSpriteInfo calls (stage drag, sprite-info pane). Used by the
+ * vm.toJSON wrap below so that running a script and then serialising
+ * doesn't introduce runtime differences into the
  * project as the new starting point.
  */
-export const getTargetStartState = (vm: VM): Map<string, TargetStartState> => {
+export const getTargetStartState = (
+  vm: VM,
+): Map<string, RememberedSpriteState> => {
   let map = startStateByVm.get(vm);
 
   if (!map) {
@@ -38,26 +29,10 @@ export const getTargetStartState = (vm: VM): Map<string, TargetStartState> => {
   return map;
 };
 
-const assignIfPosted = <K extends keyof TargetStartState>(
-  data: VM.PostedSpriteInfo,
-  snap: TargetStartState,
-  target: VM.Target,
-  key: K,
-  expectedType: "number" | "boolean",
-): void => {
-  if (typeof data[key] === expectedType) {
-    snap[key] = target[key];
-  }
-};
-
 /**
  * Temporarily set each target's mutable sprite state to its tracked
  * starting state so the serializer doesn't capture runtime drift caused
  * by scripts. Returns a restore callback.
- *
- * Fields are assigned directly (rather than via target.setXY/setDirection/
- * setSize/setVisible) so we don't trigger renderer updates or pen draws —
- * the sprite stays visually where the runtime had it.
  */
 export const swapToStartState = (vm: VM): (() => void) => {
   const snapshot = getTargetStartState(vm);
@@ -65,8 +40,10 @@ export const swapToStartState = (vm: VM): (() => void) => {
     return () => {};
   }
 
-  const runtimeState: Array<{ target: VM.Target; runtime: TargetStartState }> =
-    [];
+  const runtimeState: Array<{
+    target: VM.Target;
+    runtime: RememberedSpriteState;
+  }> = [];
 
   for (const target of vm.runtime.targets) {
     const start = snapshot.get(target.id);
@@ -77,29 +54,15 @@ export const swapToStartState = (vm: VM): (() => void) => {
 
     runtimeState.push({
       target,
-      runtime: {
-        x: target.x,
-        y: target.y,
-        direction: target.direction,
-        size: target.size,
-        visible: target.visible,
-      },
+      runtime: rememberSpriteState(target),
     });
 
-    target.x = start.x;
-    target.y = start.y;
-    target.direction = start.direction;
-    target.size = start.size;
-    target.visible = start.visible;
+    restoreSpriteStateForSerialization(target, start);
   }
 
   return () => {
     for (const { target, runtime } of runtimeState) {
-      target.x = runtime.x;
-      target.y = runtime.y;
-      target.direction = runtime.direction;
-      target.size = runtime.size;
-      target.visible = runtime.visible;
+      restoreSpriteStateForSerialization(target, runtime);
     }
   };
 };
@@ -139,7 +102,7 @@ export const patchScratchVm = (vm: VM): void => {
       return;
     }
 
-    startState.set(target.id, snapshotTarget(target));
+    startState.set(target.id, rememberSpriteState(target));
   };
 
   vm.runtime.on("PROJECT_LOADED", () => {
@@ -180,11 +143,33 @@ export const patchScratchVm = (vm: VM): void => {
       return;
     }
 
-    assignIfPosted(data, snap, target, "x", "number");
-    assignIfPosted(data, snap, target, "y", "number");
-    assignIfPosted(data, snap, target, "direction", "number");
-    assignIfPosted(data, snap, target, "size", "number");
-    assignIfPosted(data, snap, target, "visible", "boolean");
+    if (typeof data.x === "number") {
+      snap.x = target.x;
+    }
+
+    if (typeof data.y === "number") {
+      snap.y = target.y;
+    }
+
+    if (typeof data.direction === "number") {
+      snap.direction = target.direction;
+    }
+
+    if (typeof data.size === "number") {
+      snap.size = target.size;
+    }
+
+    if (typeof data.visible === "boolean") {
+      snap.visible = target.visible;
+    }
+
+    if (typeof data.draggable === "boolean") {
+      snap.draggable = target.draggable;
+    }
+
+    if (typeof data.rotationStyle === "string") {
+      snap.rotationStyle = target.rotationStyle;
+    }
   };
 
   // Wrap vm.toJSON so every serialisation path uses the tracked starting
