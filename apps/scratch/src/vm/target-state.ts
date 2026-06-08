@@ -26,6 +26,10 @@ export interface RememberedSpriteState extends RememberedTargetState {
   layerOrder: number;
 }
 
+const cloneCustomState = (
+  customState: Partial<VM.CustomState>,
+): Partial<VM.CustomState> => structuredClone(customState);
+
 export const rememberStageState = (
   target: VM.Target,
 ): RememberedStageState => ({
@@ -33,7 +37,7 @@ export const rememberStageState = (
   volume: target.volume,
   tempo: target.tempo,
   videoTransparency: target.videoTransparency,
-  customState: target._customState,
+  customState: cloneCustomState(target._customState),
 });
 
 export const rememberSpriteState = (
@@ -50,7 +54,7 @@ export const rememberSpriteState = (
   draggable: target.draggable,
   rotationStyle: target.rotationStyle,
   layerOrder: target.getLayerOrder(),
-  customState: target._customState,
+  customState: cloneCustomState(target._customState),
 });
 
 export const restoreStageStateForExecution = (
@@ -61,7 +65,7 @@ export const restoreStageStateForExecution = (
   target.volume = state.volume;
   target.tempo = state.tempo;
   target.videoTransparency = state.videoTransparency;
-  target._customState = state.customState;
+  target._customState = cloneCustomState(state.customState);
 };
 
 export const restoreSpriteStateForExecution = (
@@ -83,7 +87,7 @@ export const restoreSpriteStateForExecution = (
     state.layerOrder,
     "sprite",
   );
-  target._customState = state.customState;
+  target._customState = cloneCustomState(state.customState);
 };
 
 export const restoreStageStateForSerialization = (
@@ -94,7 +98,7 @@ export const restoreStageStateForSerialization = (
   target.volume = state.volume;
   target.tempo = state.tempo;
   target.videoTransparency = state.videoTransparency;
-  target._customState = state.customState;
+  target._customState = cloneCustomState(state.customState);
 };
 
 export const restoreSpriteStateForSerialization = (
@@ -111,5 +115,5 @@ export const restoreSpriteStateForSerialization = (
   target.visible = state.visible;
   target.draggable = state.draggable;
   target.rotationStyle = state.rotationStyle;
-  target._customState = state.customState;
+  target._customState = cloneCustomState(state.customState);
 };
