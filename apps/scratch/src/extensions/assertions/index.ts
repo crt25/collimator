@@ -7,6 +7,14 @@ import { BlockType } from "../../blocks/block-type";
 import { ArgumentType } from "../../blocks/argument-type";
 import { formatMessage } from "../../i18n";
 import { Assertion } from "../../types/scratch-vm-custom";
+import {
+  RememberedSpriteState,
+  RememberedStageState,
+  rememberSpriteState,
+  rememberStageState,
+  restoreSpriteStateForExecution,
+  restoreStageStateForExecution,
+} from "../../vm/target-state";
 import testIconWhite from "./test-icon-white.svg";
 import testIconBlack from "./test-icon-black.svg";
 
@@ -87,28 +95,6 @@ const setCustomState = (
     state,
   );
 };
-
-interface RememberedTargetState {
-  currentCostume: number;
-  volume: number;
-  customState: Partial<VM.CustomState>;
-}
-
-interface RememberedStageState extends RememberedTargetState {
-  tempo: number;
-  videoTransparency: number;
-}
-
-interface RememberedSpriteState extends RememberedTargetState {
-  name: string;
-  x: number;
-  y: number;
-  size: number;
-  direction: number;
-  draggable: boolean;
-  rotationStyle: VM.RotationStyle;
-  layerOrder: number;
-}
 
 /**
  * Adds assertions to the Scratch VM.
@@ -257,27 +243,9 @@ class AssertionExtension {
 
     for (const target of this.runtime.targets) {
       if (target.isStage) {
-        this.rememberedStageState = {
-          currentCostume: target.currentCostume,
-          volume: target.volume,
-          tempo: target.tempo,
-          videoTransparency: target.videoTransparency,
-          customState: target._customState,
-        };
+        this.rememberedStageState = rememberStageState(target);
       } else if (target.isSprite()) {
-        this.rememberedSpriteState[target.id] = {
-          currentCostume: target.currentCostume,
-          volume: target.volume,
-          name: target.getName(),
-          x: target.x,
-          y: target.y,
-          size: target.size,
-          direction: target.direction,
-          draggable: target.draggable,
-          rotationStyle: target.rotationStyle,
-          layerOrder: target.getLayerOrder(),
-          customState: target._customState,
-        };
+        this.rememberedSpriteState[target.id] = rememberSpriteState(target);
       }
     }
   };
@@ -293,32 +261,12 @@ class AssertionExtension {
       // reset the state for each target
 
       if (target.isStage && this.rememberedStageState) {
-        target.setCostume(this.rememberedStageState.currentCostume);
-        target.volume = this.rememberedStageState.volume;
-        target.tempo = this.rememberedStageState.tempo;
-        target.videoTransparency = this.rememberedStageState.videoTransparency;
-
-        target._customState = this.rememberedStageState.customState;
+        restoreStageStateForExecution(target, this.rememberedStageState);
       } else if (target.isSprite() && this.rememberedSpriteState[target.id]) {
-        const state = this.rememberedSpriteState[target.id];
-
-        target.setCostume(state.currentCostume);
-        target.volume = state.volume;
-        target.sprite.name = state.name;
-        target.setXY(state.x, state.y);
-        target.setSize(state.size);
-        target.setDirection(state.direction);
-        target.setDraggable(state.draggable);
-        target.setRotationStyle(state.rotationStyle);
-
-        // see https://github.com/scratchfoundation/scratch-vm/blob/bb1659e1f42de5bd28d7233c8e418c4e536a2bf0/src/sprites/rendered-target.js#L850C71-L850C97
-        target.renderer?.setDrawableOrder(
-          target.drawableID,
-          state.layerOrder,
-          "sprite",
+        restoreSpriteStateForExecution(
+          target,
+          this.rememberedSpriteState[target.id],
         );
-
-        target._customState = state.customState;
       }
 
       // reset the assertions state for each target
