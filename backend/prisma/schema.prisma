@@ -353,7 +353,8 @@ model StudentActivity {
   appActivity StudentActivityApp?
 
   @@unique([studentId, type, happenedAt, happenedAtCounter], name: "uniqueStudentActivityPerTypeAndTime")
-  @@index([solutionHash])
+  @@index([studentId, solutionHash])
+  @@index([taskId, solutionHash])
 }
 
 model StudentActivityApp {
