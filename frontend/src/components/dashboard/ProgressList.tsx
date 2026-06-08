@@ -5,7 +5,6 @@ import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
 import { LuHand } from "react-icons/lu";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
-import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
@@ -17,6 +16,7 @@ import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
+import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
