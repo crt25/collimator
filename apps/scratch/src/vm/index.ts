@@ -176,6 +176,12 @@ const snapshotBeforeHats = (vm: VM): void => {
   };
 };
 
+const clearOnStopAll = (vm: VM): void => {
+  vm.runtime.on("PROJECT_STOP_ALL", () => {
+    clearStartState(vm);
+  });
+};
+
 // temporarily swap to start state during serialization to ensure
 // the project is saved with original positions, not changes occured in runtime.
 // immediately restore the current runtime state after serialization.
@@ -196,5 +202,6 @@ export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
   initializeTaskBlocksOnLoad(vm);
   snapshotBeforeHats(vm);
+  clearOnStopAll(vm);
   patchSerialization(vm);
 };
