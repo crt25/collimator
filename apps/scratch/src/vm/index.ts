@@ -176,6 +176,23 @@ const snapshotBeforeHats = (vm: VM): void => {
   };
 };
 
+/**
+ * Clears the start state snapshot on PROJECT_STOP_ALL rather than PROJECT_RUN_STOP because
+ * PROJECT_RUN_STOP only fires inside the runtime's step loop,
+ * not synchronously from stopAll(). This matters because getSubmission
+ * calls stopAll() and then vm.toJSON() in the same turn, before the next
+ * step, so a stale snapshot would still be in the map and cause toJSON
+ * to serialize the wrong starting state.
+ *
+ * PROJECT_STOP_ALL fires synchronously inside stopAll() itself, so the
+ * snapshot is cleared before toJSON runs. It also covers the green-flag
+ * path: greenFlag() calls stopAll() first, so the subsequent startHats
+ * always captures a fresh snapshot.
+ *
+ * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2249 stopAll()}
+ * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2251 emits PROJECT_STOP_ALL}
+ * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2235 greenFlag() calls stopAll()}
+ */
 const clearOnStopAll = (vm: VM): void => {
   vm.runtime.on("PROJECT_STOP_ALL", () => {
     clearStartState(vm);
