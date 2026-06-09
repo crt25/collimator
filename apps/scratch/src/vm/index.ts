@@ -136,8 +136,17 @@ const snapshotBeforeHats = (vm: VM, startState: StartState): void => {
     optMatchFields?: Record<string, unknown>,
     optTarget?: VM.Target,
   ): globalThis.VM.Thread[] | undefined => {
-    // snapshot only on the first hat-start of a new run sequence
-    if (startState.sprites.size === 0 && !startState.stage) {
+    const wasIdle = vm.runtime.threads.length === 0;
+    const startedThreads = originalStartHats(
+      requestedHatOpcode,
+      optMatchFields,
+      optTarget,
+    );
+
+    // if the runtime is idle and the threads started by this hat are not empty
+    // we should refresh the start state to reflect the state right before the hat starts running
+    if (wasIdle && startedThreads && startedThreads.length > 0) {
+      clearStartState(startState);
       for (const target of vm.runtime.targets) {
         if (target.isStage) {
           startState.stage = rememberStageState(target);
@@ -152,31 +161,8 @@ const snapshotBeforeHats = (vm: VM, startState: StartState): void => {
       }
     }
 
-    return originalStartHats(requestedHatOpcode, optMatchFields, optTarget);
+    return startedThreads;
   };
-};
-
-/**
- * Clears the start state snapshot on PROJECT_STOP_ALL rather than PROJECT_RUN_STOP because
- * PROJECT_RUN_STOP only fires inside the runtime's step loop,
- * not synchronously from stopAll(). This matters because getSubmission
- * calls stopAll() and then vm.toJSON() in the same turn, before the next
- * step, so a stale snapshot would still be in the map and cause toJSON
- * to serialize the wrong starting state.
- *
- * PROJECT_STOP_ALL fires synchronously inside stopAll() itself, so the
- * snapshot is cleared before toJSON runs. It also covers the green-flag
- * path: greenFlag() calls stopAll() first, so the subsequent startHats
- * always captures a fresh snapshot.
- *
- * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2249 stopAll()}
- * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2251 emits PROJECT_STOP_ALL}
- * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2235 greenFlag() calls stopAll()}
- */
-const clearOnStopAll = (vm: VM, startState: StartState): void => {
-  vm.runtime.on("PROJECT_STOP_ALL", () => {
-    clearStartState(startState);
-  });
 };
 
 // temporarily swap to start state during serialization to ensure
@@ -204,6 +190,5 @@ export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
   initializeTaskBlocksOnLoad(vm, startState);
   snapshotBeforeHats(vm, startState);
-  clearOnStopAll(vm, startState);
   patchSerialization(vm, startState);
 };
