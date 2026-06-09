@@ -10,43 +10,24 @@ import {
   restoreStageStateForSerialization,
 } from "./target-state";
 
-const spriteStartStateByVm = new Map<VM, Map<string, RememberedSpriteState>>();
-const stageStartStateByVm = new Map<VM, RememberedStageState>();
+interface StartState {
+  sprites: Map<string, RememberedSpriteState>;
+  stage: RememberedStageState | undefined;
+}
 
-export const getSpriteStartState = (
-  vm: VM,
-): Map<string, RememberedSpriteState> => {
-  let map = spriteStartStateByVm.get(vm);
-
-  if (!map) {
-    map = new Map();
-    spriteStartStateByVm.set(vm, map);
-  }
-
-  return map;
-};
-
-export const getStageStartState = (vm: VM): RememberedStageState | undefined =>
-  stageStartStateByVm.get(vm);
-
-const clearStartState = (vm: VM): void => {
-  getSpriteStartState(vm).clear();
-  stageStartStateByVm.delete(vm);
+const clearStartState = (startState: StartState): void => {
+  startState.sprites.clear();
+  startState.stage = undefined;
 };
 
 const isStageWithStartState = (
   target: VM.Target,
-  vm: VM,
   stage: RememberedStageState | undefined,
-): stage is RememberedStageState =>
-  target.isStage && stageStartStateByVm.has(vm) && stage !== undefined;
+): stage is RememberedStageState => target.isStage && stage !== undefined;
 
-export const swapToStartState = (vm: VM): (() => void) => {
-  const sprites = getSpriteStartState(vm);
-  const stage = getStageStartState(vm);
-
+const swapToStartState = (vm: VM, startState: StartState): (() => void) => {
   // if there is no stage or trackable sprites with start state, we don't need to do anything
-  if (sprites.size === 0 && !stage) {
+  if (startState.sprites.size === 0 && !startState.stage) {
     return () => {};
   }
 
@@ -61,14 +42,14 @@ export const swapToStartState = (vm: VM): (() => void) => {
   } | null = null;
 
   for (const target of vm.runtime.targets) {
-    if (isStageWithStartState(target, vm, stage)) {
+    if (isStageWithStartState(target, startState.stage)) {
       // store the current stage state before restoring so we can put it back later
       stageRuntime = { target, runtime: rememberStageState(target) };
-      restoreStageStateForSerialization(target, stage);
+      restoreStageStateForSerialization(target, startState.stage);
       continue;
     }
 
-    const start = sprites.get(target.id);
+    const start = startState.sprites.get(target.id);
 
     if (!start) {
       continue;
@@ -131,7 +112,7 @@ const patchExtensionManager = (vm: VM): void => {
   };
 };
 
-const initializeTaskBlocksOnLoad = (vm: VM): void => {
+const initializeTaskBlocksOnLoad = (vm: VM, startState: StartState): void => {
   vm.runtime.on("PROJECT_LOADED", () => {
     // iterate over all the blocks in the runtime
     // and mark them as initial blocks
@@ -143,12 +124,11 @@ const initializeTaskBlocksOnLoad = (vm: VM): void => {
       }
     }
 
-    clearStartState(vm);
+    clearStartState(startState);
   });
 };
 
-const snapshotBeforeHats = (vm: VM): void => {
-  const sprites = getSpriteStartState(vm);
+const snapshotBeforeHats = (vm: VM, startState: StartState): void => {
   const originalStartHats = vm.runtime.startHats.bind(vm.runtime);
 
   vm.runtime.startHats = (
@@ -157,10 +137,10 @@ const snapshotBeforeHats = (vm: VM): void => {
     optTarget?: VM.Target,
   ): globalThis.VM.Thread[] | undefined => {
     // snapshot only on the first hat-start of a new run sequence
-    if (sprites.size === 0 && !stageStartStateByVm.has(vm)) {
+    if (startState.sprites.size === 0 && !startState.stage) {
       for (const target of vm.runtime.targets) {
         if (target.isStage) {
-          stageStartStateByVm.set(vm, rememberStageState(target));
+          startState.stage = rememberStageState(target);
           continue;
         }
 
@@ -168,7 +148,7 @@ const snapshotBeforeHats = (vm: VM): void => {
           continue;
         }
 
-        sprites.set(target.id, rememberSpriteState(target));
+        startState.sprites.set(target.id, rememberSpriteState(target));
       }
     }
 
@@ -193,19 +173,19 @@ const snapshotBeforeHats = (vm: VM): void => {
  * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2251 emits PROJECT_STOP_ALL}
  * @see {@link https://github.com/scratchfoundation/scratch-vm/blob/b3266a0cfe5122f20b72ccd738a3dd4dff4fc5a5/src/engine/runtime.js#L2235 greenFlag() calls stopAll()}
  */
-const clearOnStopAll = (vm: VM): void => {
+const clearOnStopAll = (vm: VM, startState: StartState): void => {
   vm.runtime.on("PROJECT_STOP_ALL", () => {
-    clearStartState(vm);
+    clearStartState(startState);
   });
 };
 
 // temporarily swap to start state during serialization to ensure
 // the project is saved with original positions, not changes occured in runtime.
 // immediately restore the current runtime state after serialization.
-const patchSerialization = (vm: VM): void => {
+const patchSerialization = (vm: VM, startState: StartState): void => {
   const originalToJSON = vm.toJSON.bind(vm);
   vm.toJSON = (optTargetId?: string): string => {
-    const restore = swapToStartState(vm);
+    const restore = swapToStartState(vm, startState);
 
     try {
       return originalToJSON(optTargetId);
@@ -216,9 +196,14 @@ const patchSerialization = (vm: VM): void => {
 };
 
 export const patchScratchVm = (vm: VM): void => {
+  const startState: StartState = {
+    sprites: new Map(),
+    stage: undefined,
+  };
+
   patchExtensionManager(vm);
-  initializeTaskBlocksOnLoad(vm);
-  snapshotBeforeHats(vm);
-  clearOnStopAll(vm);
-  patchSerialization(vm);
+  initializeTaskBlocksOnLoad(vm, startState);
+  snapshotBeforeHats(vm, startState);
+  clearOnStopAll(vm, startState);
+  patchSerialization(vm, startState);
 };
