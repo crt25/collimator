@@ -3,7 +3,6 @@ import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
 import {
   RememberedSpriteState,
-  refreshSpriteEditorState,
   rememberSpriteState,
   restoreSpriteStateForSerialization,
 } from "./target-state";
@@ -148,32 +147,8 @@ const wrapPostSpriteInfo = (vm: VM): void => {
   };
 };
 
-const mirrorEditsOnTargetsUpdate = (vm: VM): void => {
-  const startState = getTargetStartState(vm);
-  // rename and costume changes trigger a TARGETS_UPDATE
-  vm.runtime.on("TARGETS_UPDATE", () => {
-    if (vm.runtime.threads.length > 0) {
-      return;
-    }
-
-    for (const target of vm.runtime.targets) {
-      // skip original and stage targets
-      if (!isTrackableSprite(target)) {
-        continue;
-      }
-
-      const snap = startState.get(target.id);
-
-      if (snap) {
-        refreshSpriteEditorState(snap, target);
-      }
-    }
-  });
-};
-
 const wrapEditorMutators = (vm: VM): void => {
   wrapPostSpriteInfo(vm);
-  mirrorEditsOnTargetsUpdate(vm);
 };
 
 const snapshotOnTargetLifecycle = (vm: VM): void => {

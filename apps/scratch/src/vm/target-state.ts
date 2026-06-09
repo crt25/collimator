@@ -101,15 +101,6 @@ export const restoreStageStateForSerialization = (
   target._customState = cloneCustomState(state.customState);
 };
 
-export const refreshSpriteEditorState = (
-  snap: RememberedSpriteState,
-  target: VM.Target,
-): void => {
-  snap.name = target.getName();
-  snap.currentCostume = target.currentCostume;
-  snap.volume = target.volume;
-};
-
 export const restoreSpriteStateForSerialization = (
   target: VM.Target,
   state: RememberedSpriteState,
