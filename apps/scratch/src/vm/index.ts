@@ -67,10 +67,6 @@ export const swapToStartState = (vm: VM): (() => void) => {
   };
 };
 
-const isTrackableSprite = (target: VM.Target): boolean =>
-  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
-  !target.isStage && target.isOriginal !== false;
-
 const patchExtensionManager = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
   vm.extensionManager.loadExtensionURL = async (
@@ -147,6 +143,10 @@ const wrapPostSpriteInfo = (vm: VM): void => {
     }
   };
 };
+
+const isTrackableSprite = (target: VM.Target): boolean =>
+  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
+  !target.isStage && target.isOriginal !== false;
 
 const snapshotOnTargetLifecycle = (vm: VM): void => {
   const startState = getTargetStartState(vm);
