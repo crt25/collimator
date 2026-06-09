@@ -6,9 +6,7 @@ import {
   RememberedStageState,
   rememberSpriteState,
   rememberStageState,
-  restoreSpriteStateForExecution,
   restoreSpriteStateForSerialization,
-  restoreStageStateForExecution,
   restoreStageStateForSerialization,
 } from "./target-state";
 
@@ -178,30 +176,6 @@ const snapshotBeforeHats = (vm: VM): void => {
   };
 };
 
-const resetOnRunStop = (vm: VM): void => {
-  const sprites = getSpriteStartState(vm);
-
-  vm.runtime.on("PROJECT_RUN_STOP", () => {
-    const stage = stageStartStateByVm.get(vm);
-
-    for (const target of vm.runtime.targets) {
-      if (isStageWithStartState(target, vm, stage)) {
-        restoreStageStateForExecution(target, stage);
-        continue;
-      }
-
-      const snap = sprites.get(target.id);
-
-      if (snap) {
-        // restore all sprites & stage to the state they had when the project started running
-        restoreSpriteStateForExecution(target, snap);
-      }
-    }
-
-    clearStartState(vm);
-  });
-};
-
 // temporarily swap to start state during serialization to ensure
 // the project is saved with original positions, not changes occured in runtime.
 // immediately restore the current runtime state after serialization.
@@ -222,6 +196,5 @@ export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
   initializeTaskBlocksOnLoad(vm);
   snapshotBeforeHats(vm);
-  resetOnRunStop(vm);
   patchSerialization(vm);
 };
