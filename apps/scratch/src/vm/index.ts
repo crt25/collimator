@@ -4,18 +4,12 @@ import AssertionExtension from "../extensions/assertions";
 import {
   RememberedSpriteState,
   rememberSpriteState,
+  restoreSpriteStateForExecution,
   restoreSpriteStateForSerialization,
 } from "./target-state";
 
 const startStateByVm = new Map<VM, Map<string, RememberedSpriteState>>();
 
-/**
- * Snapshot on project load, on `targetWasCreated`, and on user-initiated
- * postSpriteInfo calls (stage drag, sprite-info pane). Used by the
- * vm.toJSON wrap below so that running a script and then serialising
- * doesn't introduce runtime differences into the
- * project as the new starting point.
- */
 export const getTargetStartState = (
   vm: VM,
 ): Map<string, RememberedSpriteState> => {
@@ -27,6 +21,10 @@ export const getTargetStartState = (
   }
 
   return map;
+};
+
+const clearStartState = (vm: VM): void => {
+  getTargetStartState(vm).clear();
 };
 
 /**
@@ -67,6 +65,10 @@ export const swapToStartState = (vm: VM): (() => void) => {
   };
 };
 
+const isTrackableSprite = (target: VM.Target): boolean =>
+  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
+  !target.isStage && target.isOriginal !== false;
+
 const patchExtensionManager = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
   vm.extensionManager.loadExtensionURL = async (
@@ -96,58 +98,6 @@ const patchExtensionManager = (vm: VM): void => {
   };
 };
 
-const wrapPostSpriteInfo = (vm: VM): void => {
-  const startState = getTargetStartState(vm);
-  const originalPostSpriteInfo = vm.postSpriteInfo.bind(vm);
-  vm.postSpriteInfo = (data: VM.PostedSpriteInfo): void => {
-    originalPostSpriteInfo(data);
-
-    const target = vm._dragTarget ?? vm.editingTarget;
-
-    if (!target || target.isStage) {
-      return;
-    }
-
-    const snap = startState.get(target.id);
-
-    if (!snap) {
-      return;
-    }
-
-    if (typeof data.x === "number") {
-      snap.x = target.x;
-    }
-
-    if (typeof data.y === "number") {
-      snap.y = target.y;
-    }
-
-    if (typeof data.direction === "number") {
-      snap.direction = target.direction;
-    }
-
-    if (typeof data.size === "number") {
-      snap.size = target.size;
-    }
-
-    if (typeof data.visible === "boolean") {
-      snap.visible = target.visible;
-    }
-
-    if (typeof data.draggable === "boolean") {
-      snap.draggable = target.draggable;
-    }
-
-    if (typeof data.rotationStyle === "string") {
-      snap.rotationStyle = target.rotationStyle;
-    }
-  };
-};
-
-const isTrackableSprite = (target: VM.Target): boolean =>
-  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
-  !target.isStage && target.isOriginal !== false;
-
 const initializeTaskBlocksOnLoad = (vm: VM): void => {
   vm.runtime.on("PROJECT_LOADED", () => {
     // iterate over all the blocks in the runtime
@@ -159,39 +109,46 @@ const initializeTaskBlocksOnLoad = (vm: VM): void => {
           : true;
       }
     }
+
+    clearStartState(vm);
   });
 };
 
-const snapshotOnTargetLifecycle = (vm: VM): void => {
+const snapshotOnRunStart = (vm: VM): void => {
   const startState = getTargetStartState(vm);
 
-  const trackTargetStartState = (target: VM.Target): void => {
-    if (!isTrackableSprite(target)) {
-      return;
-    }
-
-    startState.set(target.id, rememberSpriteState(target));
-  };
-
-  vm.runtime.on("PROJECT_LOADED", () => {
+  vm.runtime.on("PROJECT_RUN_START", () => {
     startState.clear();
     for (const target of vm.runtime.targets) {
-      trackTargetStartState(target);
-    }
-  });
+      if (!isTrackableSprite(target)) {
+        continue;
+      }
 
-  // Sprites added or duplicated after project load also need a starting snapshot
-  vm.runtime.on("targetWasCreated", (newTarget: VM.Target) => {
-    trackTargetStartState(newTarget);
+      startState.set(target.id, rememberSpriteState(target));
+    }
   });
 };
 
-// Wrap vm.toJSON so every serialisation path uses the tracked starting
-// state: saveProjectSb3 (calls this.toJSON internally), exportSprite,
-// and the direct callers in Controls.tsx (postSolutionRun) and
-// Blocks.tsx (student activity tracking). Without this, those direct
-// callers serialise runtime drift caused by scripts and end up sending
-// the runtime sprite position to the backend as the new starting point.
+const resetOnRunStop = (vm: VM): void => {
+  const startState = getTargetStartState(vm);
+
+  vm.runtime.on("PROJECT_RUN_STOP", () => {
+    for (const target of vm.runtime.targets) {
+      const snap = startState.get(target.id);
+
+      if (snap) {
+        // restore all sprites to the state they had when the project started running
+        restoreSpriteStateForExecution(target, snap);
+      }
+    }
+
+    clearStartState(vm);
+  });
+};
+
+// temporarily swap to start state during serialization to ensure
+// the project is saved with original positions, not changes occured in runtime.
+// immediately restore the current runtime state after serialization.
 const patchSerialization = (vm: VM): void => {
   const originalToJSON = vm.toJSON.bind(vm);
   vm.toJSON = (optTargetId?: string): string => {
@@ -208,7 +165,7 @@ const patchSerialization = (vm: VM): void => {
 export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
   initializeTaskBlocksOnLoad(vm);
-  snapshotOnTargetLifecycle(vm);
-  wrapPostSpriteInfo(vm);
+  snapshotOnRunStart(vm);
+  resetOnRunStop(vm);
   patchSerialization(vm);
 };
