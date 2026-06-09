@@ -3,6 +3,7 @@ import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
 import {
   RememberedSpriteState,
+  refreshSpriteEditorState,
   rememberSpriteState,
   restoreSpriteStateForSerialization,
 } from "./target-state";
@@ -125,6 +126,26 @@ export const patchScratchVm = (vm: VM): void => {
   // Sprites added or duplicated after project load also need a starting snapshot
   vm.runtime.on("targetWasCreated", (newTarget: VM.Target) => {
     trackTargetStartState(newTarget);
+  });
+
+  // rename and costume changes trigger a TARGETS_UPDATE
+  vm.runtime.on("TARGETS_UPDATE", () => {
+    if (vm.runtime.threads.length > 0) {
+      return;
+    }
+
+    for (const target of vm.runtime.targets) {
+      // skip original and stage targets
+      if (target.isStage || target.isOriginal === false) {
+        continue;
+      }
+
+      const snap = startState.get(target.id);
+
+      if (snap) {
+        refreshSpriteEditorState(snap, target);
+      }
+    }
   });
 
   const originalPostSpriteInfo = vm.postSpriteInfo.bind(vm);
