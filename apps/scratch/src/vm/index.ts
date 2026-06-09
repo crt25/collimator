@@ -147,10 +147,6 @@ const wrapPostSpriteInfo = (vm: VM): void => {
   };
 };
 
-const wrapEditorMutators = (vm: VM): void => {
-  wrapPostSpriteInfo(vm);
-};
-
 const snapshotOnTargetLifecycle = (vm: VM): void => {
   const startState = getTargetStartState(vm);
 
@@ -207,6 +203,6 @@ const patchSerialization = (vm: VM): void => {
 export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
   snapshotOnTargetLifecycle(vm);
-  wrapEditorMutators(vm);
+  wrapPostSpriteInfo(vm);
   patchSerialization(vm);
 };
