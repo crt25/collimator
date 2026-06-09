@@ -148,6 +148,20 @@ const isTrackableSprite = (target: VM.Target): boolean =>
   // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
   !target.isStage && target.isOriginal !== false;
 
+const initializeTaskBlocksOnLoad = (vm: VM): void => {
+  vm.runtime.on("PROJECT_LOADED", () => {
+    // iterate over all the blocks in the runtime
+    // and mark them as initial blocks
+    for (const target of vm.runtime.targets) {
+      for (const block of Object.values(target.blocks._blocks)) {
+        block.isTaskBlock = vm.taskBlockIds
+          ? vm.taskBlockIds.has(block.id)
+          : true;
+      }
+    }
+  });
+};
+
 const snapshotOnTargetLifecycle = (vm: VM): void => {
   const startState = getTargetStartState(vm);
 
@@ -160,16 +174,6 @@ const snapshotOnTargetLifecycle = (vm: VM): void => {
   };
 
   vm.runtime.on("PROJECT_LOADED", () => {
-    // iterate over all the blocks in the runtime
-    // and mark them as initial blocks
-    for (const target of vm.runtime.targets) {
-      for (const block of Object.values(target.blocks._blocks)) {
-        block.isTaskBlock = vm.taskBlockIds
-          ? vm.taskBlockIds.has(block.id)
-          : true;
-      }
-    }
-
     startState.clear();
     for (const target of vm.runtime.targets) {
       trackTargetStartState(target);
@@ -203,6 +207,7 @@ const patchSerialization = (vm: VM): void => {
 
 export const patchScratchVm = (vm: VM): void => {
   patchExtensionManager(vm);
+  initializeTaskBlocksOnLoad(vm);
   snapshotOnTargetLifecycle(vm);
   wrapPostSpriteInfo(vm);
   patchSerialization(vm);
