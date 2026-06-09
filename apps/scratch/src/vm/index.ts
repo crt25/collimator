@@ -33,10 +33,6 @@ export const getTargetStartState = (
  * Temporarily set each target's mutable sprite state to its tracked
  * starting state so the serializer doesn't capture runtime drift caused
  * by scripts. Returns a restore callback.
- *
- * Uses `restoreSpriteStateForSerialization`, which assignes directly (rather than via target.setXY/setDirection/
- * setSize/setVisible) so we don't trigger renderer updates or pen draws —
- * the sprite stays visually where the runtime had it.
  */
 export const swapToStartState = (vm: VM): (() => void) => {
   const snapshot = getTargetStartState(vm);
