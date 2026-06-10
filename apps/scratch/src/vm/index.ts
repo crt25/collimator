@@ -152,7 +152,7 @@ const snapshotOnGreenFlag = (vm: VM, startState: StartState): void => {
 };
 
 // temporarily swap to start state during serialization to ensure
-// the project is saved with original positions, not changes occured in runtime.
+// the project is saved with original positions, not changes occurred at runtime.
 // immediately restore the current runtime state after serialization.
 const patchSerialization = (vm: VM, startState: StartState): void => {
   const originalToJSON = vm.toJSON.bind(vm);
