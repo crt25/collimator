@@ -96,6 +96,10 @@ export interface ScratchAsset {
 }
 
 export interface ScratchTarget {
+  /**
+   * Map from block id to the serialized block.
+   */
+  blocks?: Record<string, unknown>;
   costumes?: ScratchAsset[];
   sounds?: ScratchAsset[];
 }

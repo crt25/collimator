@@ -61,7 +61,7 @@ const clearNextProject = (): void => {
  * @param input The ArrayBuffer representing the ZIP file.
  * @return A promise that resolves to the JSZip instance.
  */
-const loadZip = async (input: ArrayBuffer): Promise<JSZip> => {
+export const loadZip = async (input: ArrayBuffer): Promise<JSZip> => {
   const zip = new JSZip();
 
   try {

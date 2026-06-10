@@ -18,7 +18,7 @@ import {
 } from "iframe-rpc-react/src";
 import { AnyAction, Dispatch } from "redux";
 import { selectLocale } from "@scratch-submodule/packages/scratch-gui/src/reducers/locales";
-import { loadCrtProject } from "../vm/load-crt-project";
+import { loadCrtProject, loadZip } from "../vm/load-crt-project";
 
 import {
   CannotExportProjectError,
@@ -36,7 +36,7 @@ import {
   prepareCrtProjectForExport,
   saveCrtProject,
 } from "../vm/save-crt-project";
-import { Assertion } from "../types/scratch-vm-custom";
+import { Assertion, ScratchProject } from "../types/scratch-vm-custom";
 import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
 import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer";
 
@@ -103,6 +103,35 @@ const messages = defineMessages({
     defaultMessage: "Could not get the task.",
   },
 });
+
+/**
+ * Collect the ids of all blocks defined in a task's project.json.
+ * These are the blocks belonging to the task itself, as opposed to blocks
+ * added later by a student.
+ *
+ * This must be assigned to `vm.taskBlockIds` before every task load:
+ * PROJECT_LOADED fires again whenever the project is saved and re-loaded
+ * mid-session (prepareCrtProjectForExport during getSubmission/getTask, and
+ * setLocale). Without `vm.taskBlockIds`, the re-marking in patchScratchVm
+ * (src/vm/index.ts) falls back to flagging every block — including
+ * student-added ones — as a task block, silently making them undeletable
+ * for the rest of the session.
+ */
+const getTaskBlockIds = async (taskZip: JSZip): Promise<Set<string>> => {
+  const projectFile = taskZip.file("project.json");
+
+  if (!projectFile) {
+    throw new MissingProjectJsonError();
+  }
+
+  const taskProject: ScratchProject = JSON.parse(
+    await projectFile.async("string"),
+  );
+
+  return new Set<string>(
+    taskProject.targets.flatMap((target) => Object.keys(target.blocks ?? {})),
+  );
+};
 
 const areAssertionsEnabled = (vm: VM): boolean => {
   let assertionsEnabled = false;
@@ -353,24 +382,10 @@ export class EmbeddedScratchCallbacks {
     const sb3Project = await request.params.task.arrayBuffer();
     const submission = await request.params.submission.text();
 
-    const zip = new JSZip();
-    await zip.loadAsync(sb3Project);
+    const zip = await loadZip(sb3Project);
 
-    const taskProjectFile = zip.file("project.json");
-
-    if (!taskProjectFile) {
-      throw new MissingProjectJsonError();
-    }
-
-    const taskProjectJson = await taskProjectFile.async("string");
-    const taskProject = JSON.parse(taskProjectJson);
-
-    // collect all block ids in the project before merging the initial task with the submission
-    const taskBlockIds = new Set<string>(
-      taskProject.targets.flatMap((target) => Object.keys(target.blocks ?? {})),
-    );
-
-    this.vm.taskBlockIds = taskBlockIds;
+    // collect all block ids in the task before merging it with the submission
+    this.vm.taskBlockIds = await getTaskBlockIds(zip);
 
     zip.remove("project.json");
     zip.file("project.json", submission);
