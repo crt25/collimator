@@ -1341,8 +1341,11 @@
   "TaskInstanceProgress.title": {
     "message": "Progrès - {title}"
   },
-  "TaskInstanceProgressList.columns.inShowcaseColumn": {
-    "message": "Dans la vitrine"
+  "TaskInstanceProgressList.columns.currentVersionColumn": {
+    "message": "Version actuelle"
+  },
+  "TaskInstanceProgressList.columns.previousVersionColumn": {
+    "message": "Version précédente"
   },
   "TaskInstanceProgressList.columns.lastLoginDateColumn": {
     "message": "Dernière date de connexion"
@@ -1531,6 +1534,27 @@
   },
   "TestCriterionFilterForm.count": {
     "message": "Nombre de tests réussis"
+  },
+  "UnstarPastSolutionsButton.ariaLabel": {
+    "message": "Supprimer toutes les solutions précédemment étoilées"
+  },
+  "UnstarPastSolutionsButton.confirm.body": {
+    "message": "Cette action supprimera toutes les solutions précédemment étoilées pour cet élève. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+  },
+  "UnstarPastSolutionsButton.confirm.cancel": {
+    "message": "Annuler"
+  },
+  "UnstarPastSolutionsButton.confirm.confirm": {
+    "message": "Supprimer"
+  },
+  "UnstarPastSolutionsButton.confirm.title": {
+    "message": "Supprimer les solutions précédemment étoilées"
+  },
+  "UnstarPastSolutionsButton.errorToast": {
+    "message": "Une erreur est survenue lors de la suppression des solutions précédemment étoilées. Veuillez réessayer !"
+  },
+  "UnstarPastSolutionsButton.successToast": {
+    "message": "Solutions précédemment étoilées supprimées."
   },
   "UserActions.copyRegistrationTokenSuccess": {
     "message": "Lien d’inscription copié dans le presse-papiers"

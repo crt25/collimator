@@ -2802,10 +2802,16 @@
       "value": "title"
     }
   ],
-  "TaskInstanceProgressList.columns.inShowcaseColumn": [
+  "TaskInstanceProgressList.columns.currentVersionColumn": [
     {
       "type": 0,
-      "value": "Dans la vitrine"
+      "value": "Version actuelle"
+    }
+  ],
+  "TaskInstanceProgressList.columns.previousVersionColumn": [
+    {
+      "type": 0,
+      "value": "Version précédente"
     }
   ],
   "TaskInstanceProgressList.columns.lastLoginDateColumn": [
@@ -3203,6 +3209,48 @@
     {
       "type": 0,
       "value": "Nombre de tests réussis"
+    }
+  ],
+  "UnstarPastSolutionsButton.ariaLabel": [
+    {
+      "type": 0,
+      "value": "Supprimer toutes les solutions précédemment étoilées"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.body": [
+    {
+      "type": 0,
+      "value": "Cette action supprimera toutes les solutions précédemment étoilées pour cet élève. Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.cancel": [
+    {
+      "type": 0,
+      "value": "Annuler"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.confirm": [
+    {
+      "type": 0,
+      "value": "Supprimer"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.title": [
+    {
+      "type": 0,
+      "value": "Supprimer les solutions précédemment étoilées"
+    }
+  ],
+  "UnstarPastSolutionsButton.errorToast": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors de la suppression des solutions précédemment étoilées. Veuillez réessayer !"
+    }
+  ],
+  "UnstarPastSolutionsButton.successToast": [
+    {
+      "type": 0,
+      "value": "Solutions précédemment étoilées supprimées."
     }
   ],
   "UserActions.copyRegistrationTokenSuccess": [

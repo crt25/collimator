@@ -20,6 +20,7 @@ import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
 import StarSolutionButton from "../solution/StarSolutionButton";
+import UnstarPastSolutionsButton from "../solution/UnstarPastSolutionsButton";
 
 const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -38,9 +39,13 @@ const messages = defineMessages({
     id: "TaskInstanceProgressList.columns.lastLoginDateColumn",
     defaultMessage: "Last Login Date",
   },
-  inShowcaseColumn: {
-    id: "TaskInstanceProgressList.columns.inShowcaseColumn",
-    defaultMessage: "In Showcase",
+  currentVersionColumn: {
+    id: "TaskInstanceProgressList.columns.currentVersionColumn",
+    defaultMessage: "Current Version",
+  },
+  previousVersionColumn: {
+    id: "TaskInstanceProgressList.columns.previousVersionColumn",
+    defaultMessage: "Previous Version",
   },
   emptyStateTitle: {
     id: "TaskInstanceProgressList.emptyState.title",
@@ -83,7 +88,7 @@ const nameTemplate = (progress: StudentProgress) =>
     />
   );
 
-const InShowCaseTemplate = ({
+const CurrentVersionTemplate = ({
   classId,
   progress,
 }: {
@@ -98,6 +103,25 @@ const InShowCaseTemplate = ({
     <StarSolutionButton classId={classId} analysis={progress.currentAnalysis} />
   );
 };
+
+const PreviousVersionTemplate = ({
+  classId,
+  sessionId,
+  taskId,
+  progress,
+}: {
+  classId: number;
+  sessionId: number;
+  taskId: number;
+  progress: StudentProgress;
+}) => (
+  <UnstarPastSolutionsButton
+    classId={classId}
+    sessionId={sessionId}
+    taskId={taskId}
+    taskSolutions={progress.taskSolutions}
+  />
+);
 
 const TaskTemplate = ({
   classId: _classId,
@@ -291,10 +315,28 @@ const TaskInstanceProgressList = ({
         },
       },
       {
-        id: "inShowcase",
-        header: intl.formatMessage(messages.inShowcaseColumn),
+        id: "currentVersion",
+        header: intl.formatMessage(messages.currentVersionColumn),
         cell: (info) => (
-          <InShowCaseTemplate classId={classId} progress={info.row.original} />
+          <CurrentVersionTemplate
+            classId={classId}
+            progress={info.row.original}
+          />
+        ),
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+      {
+        id: "previousVersion",
+        header: intl.formatMessage(messages.previousVersionColumn),
+        cell: (info) => (
+          <PreviousVersionTemplate
+            classId={classId}
+            sessionId={sessionId}
+            taskId={taskId}
+            progress={info.row.original}
+          />
         ),
         meta: {
           columnType: ColumnType.text,

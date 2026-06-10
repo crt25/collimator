@@ -1101,8 +1101,11 @@
   "TaskInstanceProgress.title": {
     "message": "Progress - {title}"
   },
-  "TaskInstanceProgressList.columns.inShowcaseColumn": {
-    "message": "In Showcase"
+  "TaskInstanceProgressList.columns.currentVersionColumn": {
+    "message": "Current Version"
+  },
+  "TaskInstanceProgressList.columns.previousVersionColumn": {
+    "message": "Previous Version"
   },
   "TaskInstanceProgressList.columns.lastLoginDateColumn": {
     "message": "Last Login Date"
@@ -1291,6 +1294,27 @@
   },
   "TestCriterionFilterForm.count": {
     "message": "Number of passed tests"
+  },
+  "UnstarPastSolutionsButton.ariaLabel": {
+    "message": "Remove all previously starred solutions"
+  },
+  "UnstarPastSolutionsButton.confirm.body": {
+    "message": "This will remove all previously starred solutions for this student. This action cannot be undone. Are you sure you want to continue?"
+  },
+  "UnstarPastSolutionsButton.confirm.cancel": {
+    "message": "Cancel"
+  },
+  "UnstarPastSolutionsButton.confirm.confirm": {
+    "message": "Remove"
+  },
+  "UnstarPastSolutionsButton.confirm.title": {
+    "message": "Remove previously starred solutions"
+  },
+  "UnstarPastSolutionsButton.errorToast": {
+    "message": "There was an error removing previously starred solutions. Please try again!"
+  },
+  "UnstarPastSolutionsButton.successToast": {
+    "message": "Previously starred solutions removed."
   },
   "UserActions.copyRegistrationTokenSuccess": {
     "message": "Registration link copied to clipboard"
