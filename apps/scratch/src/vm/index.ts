@@ -31,13 +31,21 @@ export const patchScratchVm = (vm: VM): void => {
   };
 
   vm.runtime.on("PROJECT_LOADED", () => {
-    // iterate over all the blocks in the runtime
-    // and mark them as initial blocks
+    // iterate over all the blocks in the runtime and mark the ones that belong
+    // to the task itself. PROJECT_LOADED fires on the initial load AND again
+    // whenever the project is saved and re-loaded mid-session
+    // (prepareCrtProjectForExport during getSubmission/getTask, and setLocale).
+    //
+    // vm.taskBlockIds is assigned before every load (see loadTask /
+    // loadSubmission in src/hooks/useEmbeddedScratch.ts). If it is somehow
+    // missing we must default to `false`: marking an unknown block as a task
+    // block makes it permanently undeletable (shouldPreventBlockDeletion undoes
+    // the deletion), so we fail safe and treat unknown blocks as student blocks.
     for (const target of vm.runtime.targets) {
       for (const block of Object.values(target.blocks._blocks)) {
         block.isTaskBlock = vm.taskBlockIds
           ? vm.taskBlockIds.has(block.id)
-          : true;
+          : false;
       }
     }
   });
