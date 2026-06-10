@@ -132,20 +132,19 @@ const snapshotOnGreenFlag = (vm: VM, startState: StartState): void => {
   const originalGreenFlag = vm.greenFlag.bind(vm);
 
   vm.greenFlag = (): void => {
-    // refresh the snapshot to reflect the target state at the moment the
-    // user pressed the green flag, before any script has run
-    clearStartState(startState);
-    for (const target of vm.runtime.targets) {
-      if (target.isStage) {
-        startState.stage = rememberStageState(target);
-        continue;
-      }
+    if (startState.sprites.size === 0 && !startState.stage) {
+      for (const target of vm.runtime.targets) {
+        if (target.isStage) {
+          startState.stage = rememberStageState(target);
+          continue;
+        }
 
-      if (!isTrackableSprite(target)) {
-        continue;
-      }
+        if (!isTrackableSprite(target)) {
+          continue;
+        }
 
-      startState.sprites.set(target.id, rememberSpriteState(target));
+        startState.sprites.set(target.id, rememberSpriteState(target));
+      }
     }
 
     originalGreenFlag();
