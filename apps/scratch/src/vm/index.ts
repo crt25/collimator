@@ -2,12 +2,9 @@ import VM from "@scratch/scratch-vm";
 import { ExtensionId } from "../extensions";
 import AssertionExtension from "../extensions/assertions";
 import {
-  RememberedSpriteState,
   RememberedStageState,
   StartState,
   backupTargetsState,
-  rememberSpriteState,
-  rememberStageState,
   restoreSpriteStateForSerialization,
   restoreStageStateForSerialization,
 } from "./target-state";
@@ -22,58 +19,35 @@ const isStageWithStartState = (
   stage: RememberedStageState | undefined,
 ): stage is RememberedStageState => target.isStage && stage !== undefined;
 
+const resetTargetsForSerialization = (vm: VM, state: StartState): void => {
+  for (const target of vm.runtime.targets) {
+    if (isStageWithStartState(target, state.stage)) {
+      restoreStageStateForSerialization(target, state.stage);
+      continue;
+    }
+
+    const sprite = state.sprites.get(target.id);
+    if (!sprite) {
+      continue;
+    }
+
+    restoreSpriteStateForSerialization(target, sprite);
+  }
+};
+
 const resetToStartState = (vm: VM, startState: StartState): (() => void) => {
   // if there is no stage or trackable sprites with start state, we don't need to do anything
   if (startState.sprites.size === 0 && !startState.stage) {
     return () => {};
   }
 
-  const spriteRuntimeState: Array<{
-    target: VM.Target;
-    runtime: RememberedSpriteState;
-  }> = [];
+  // snapshot the live runtime so we can put it back after serialization
+  const runtimeState: StartState = { sprites: new Map(), stage: undefined };
+  backupTargetsState(vm, runtimeState);
 
-  let stageRuntime: {
-    target: VM.Target;
-    runtime: RememberedStageState;
-  } | null = null;
+  resetTargetsForSerialization(vm, startState);
 
-  for (const target of vm.runtime.targets) {
-    if (isStageWithStartState(target, startState.stage)) {
-      // store the current stage state before restoring so we can put it back later
-      stageRuntime = { target, runtime: rememberStageState(target) };
-      restoreStageStateForSerialization(target, startState.stage);
-      continue;
-    }
-
-    const start = startState.sprites.get(target.id);
-
-    if (!start) {
-      continue;
-    }
-
-    spriteRuntimeState.push({
-      target,
-      runtime: rememberSpriteState(target),
-    });
-
-    restoreSpriteStateForSerialization(target, start);
-  }
-
-  return () => {
-    // restore the current runtime state after serialisation
-    for (const { target, runtime } of spriteRuntimeState) {
-      restoreSpriteStateForSerialization(target, runtime);
-    }
-
-    // restore the stage state after serialisation if we modified it
-    if (stageRuntime) {
-      restoreStageStateForSerialization(
-        stageRuntime.target,
-        stageRuntime.runtime,
-      );
-    }
-  };
+  return () => resetTargetsForSerialization(vm, runtimeState);
 };
 
 const patchExtensionManager = (vm: VM): void => {
