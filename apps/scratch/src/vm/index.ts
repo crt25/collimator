@@ -28,7 +28,7 @@ const resetTargetsForSerialization = (vm: VM, state: StartState): void => {
 
     const sprite = state.sprites.get(target.id);
     if (!sprite) {
-      return;
+      continue;
     }
 
     restoreSpriteStateForSerialization(target, sprite);
