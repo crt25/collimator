@@ -117,3 +117,28 @@ export const restoreSpriteStateForSerialization = (
   target.rotationStyle = state.rotationStyle;
   target._customState = cloneCustomState(state.customState);
 };
+
+export interface StartState {
+  sprites: Map<string, RememberedSpriteState>;
+  stage: RememberedStageState | undefined;
+}
+
+export const backupTargetsState = (vm: VM, startState: StartState): void => {
+  if (startState.sprites.size !== 0 || startState.stage) {
+    return;
+  }
+
+  for (const target of vm.runtime.targets) {
+    if (target.isStage) {
+      startState.stage = rememberStageState(target);
+      continue;
+    }
+
+    // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
+    if (target.isOriginal === false) {
+      continue;
+    }
+
+    startState.sprites.set(target.id, rememberSpriteState(target));
+  }
+};

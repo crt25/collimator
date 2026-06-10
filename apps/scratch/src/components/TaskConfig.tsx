@@ -55,7 +55,7 @@ const TaskConfig = ({
   const [allowCustomProcedureBlocks, setAllowCustomProcedureBlocks] =
     useState(false);
   const [allowVariableBlocks, setAllowVariableBlocks] = useState(false);
-  const [enableStageInteractions, setEnableStageInteractions] = useState(true);
+  const [enableStageInteractions, setEnableStageInteractions] = useState(false);
 
   const configSnapshot = useRef<{
     allowedBlocks: BlockLimits;
@@ -112,7 +112,7 @@ const TaskConfig = ({
       (vm.crtConfig?.maximumExecutionTimeInMs ??
         defaultMaximumExecutionTimeInMs) / 1000,
     );
-    setEnableStageInteractions(vm.crtConfig?.enableStageInteractions ?? true);
+    setEnableStageInteractions(vm.crtConfig?.enableStageInteractions ?? false);
   }, [
     vm.crtConfig,
     vm.crtConfig?.allowedBlocks.customBlocks,
@@ -171,7 +171,7 @@ const TaskConfig = ({
     if (isShown && vm.crtConfig) {
       configSnapshot.current = {
         allowedBlocks: { ...vm.crtConfig.allowedBlocks },
-        enableStageInteractions: vm.crtConfig.enableStageInteractions ?? true,
+        enableStageInteractions: vm.crtConfig.enableStageInteractions ?? false,
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
