@@ -1341,8 +1341,11 @@
   "TaskInstanceProgress.title": {
     "message": "Progrès - {title}"
   },
-  "TaskInstanceProgressList.columns.inShowcaseColumn": {
-    "message": "Dans la vitrine"
+  "TaskInstanceProgressList.columns.currentVersionColumn": {
+    "message": "Version actuelle"
+  },
+  "TaskInstanceProgressList.columns.previousVersionColumn": {
+    "message": "Version précédente"
   },
   "TaskInstanceProgressList.columns.lastLoginDateColumn": {
     "message": "Dernière date de connexion"

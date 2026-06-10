@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { Button, HStack, Icon, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/router";
-import { LuChevronRight } from "react-icons/lu";
+import { LuChevronRight, LuStar } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
@@ -38,9 +38,13 @@ const messages = defineMessages({
     id: "TaskInstanceProgressList.columns.lastLoginDateColumn",
     defaultMessage: "Last Login Date",
   },
-  inShowcaseColumn: {
-    id: "TaskInstanceProgressList.columns.inShowcaseColumn",
-    defaultMessage: "In Showcase",
+  currentVersionColumn: {
+    id: "TaskInstanceProgressList.columns.currentVersionColumn",
+    defaultMessage: "Current Version",
+  },
+  previousVersionColumn: {
+    id: "TaskInstanceProgressList.columns.previousVersionColumn",
+    defaultMessage: "Previous Version",
   },
   emptyStateTitle: {
     id: "TaskInstanceProgressList.emptyState.title",
@@ -83,7 +87,7 @@ const nameTemplate = (progress: StudentProgress) =>
     />
   );
 
-const InShowCaseTemplate = ({
+const CurrentVersionTemplate = ({
   classId,
   progress,
 }: {
@@ -96,6 +100,26 @@ const InShowCaseTemplate = ({
 
   return (
     <StarSolutionButton classId={classId} analysis={progress.currentAnalysis} />
+  );
+};
+
+const PreviousVersionTemplate = ({
+  progress,
+}: {
+  progress: StudentProgress;
+}) => {
+  const hasStarredPastSolution = progress.taskSolutions.some(
+    (s) => s.isReference,
+  );
+
+  if (!hasStarredPastSolution) {
+    return null;
+  }
+
+  return (
+    <Icon size="lg" color="orange.500">
+      <LuStar />
+    </Icon>
   );
 };
 
@@ -291,10 +315,23 @@ const TaskInstanceProgressList = ({
         },
       },
       {
-        id: "inShowcase",
-        header: intl.formatMessage(messages.inShowcaseColumn),
+        id: "currentVersion",
+        header: intl.formatMessage(messages.currentVersionColumn),
         cell: (info) => (
-          <InShowCaseTemplate classId={classId} progress={info.row.original} />
+          <CurrentVersionTemplate
+            classId={classId}
+            progress={info.row.original}
+          />
+        ),
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+      {
+        id: "previousVersion",
+        header: intl.formatMessage(messages.previousVersionColumn),
+        cell: (info) => (
+          <PreviousVersionTemplate progress={info.row.original} />
         ),
         meta: {
           columnType: ColumnType.text,

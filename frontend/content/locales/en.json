@@ -1101,8 +1101,11 @@
   "TaskInstanceProgress.title": {
     "message": "Progress - {title}"
   },
-  "TaskInstanceProgressList.columns.inShowcaseColumn": {
-    "message": "In Showcase"
+  "TaskInstanceProgressList.columns.currentVersionColumn": {
+    "message": "Current Version"
+  },
+  "TaskInstanceProgressList.columns.previousVersionColumn": {
+    "message": "Previous Version"
   },
   "TaskInstanceProgressList.columns.lastLoginDateColumn": {
     "message": "Last Login Date"

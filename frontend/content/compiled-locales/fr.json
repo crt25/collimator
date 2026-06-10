@@ -2802,10 +2802,16 @@
       "value": "title"
     }
   ],
-  "TaskInstanceProgressList.columns.inShowcaseColumn": [
+  "TaskInstanceProgressList.columns.currentVersionColumn": [
     {
       "type": 0,
-      "value": "Dans la vitrine"
+      "value": "Version actuelle"
+    }
+  ],
+  "TaskInstanceProgressList.columns.previousVersionColumn": [
+    {
+      "type": 0,
+      "value": "Version précédente"
     }
   ],
   "TaskInstanceProgressList.columns.lastLoginDateColumn": [
