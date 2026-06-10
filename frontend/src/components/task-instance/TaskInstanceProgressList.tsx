@@ -115,11 +115,13 @@ const TaskTemplate = ({
   );
 
   const status = useMemo(() => {
-    if (!solutionToDisplay) {
+    if (!solutionToDisplay && !rowData.currentAnalysis) {
       // if solution has an analysis then it should be displayed as in progress
-      return rowData.currentAnalysis
-        ? TaskStatus.incomplete
-        : TaskStatus.notStarted;
+      return TaskStatus.notStarted;
+    }
+
+    if (!solutionToDisplay) {
+      return TaskStatus.incomplete;
     }
 
     if (solutionToDisplay.tests.every((test) => test.passed)) {
@@ -130,8 +132,13 @@ const TaskTemplate = ({
   }, [solutionToDisplay, rowData.currentAnalysis]);
 
   const color = useMemo((): StatusColor => {
+    if (!solutionToDisplay && !rowData.currentAnalysis) {
+      // if solution has an analysis then it should be displayed as in progress
+      return "neutral";
+    }
+
     if (!solutionToDisplay) {
-      return rowData.currentAnalysis ? "error" : "neutral";
+      return "error";
     }
 
     if (solutionToDisplay.tests.every((test) => test.passed)) {

@@ -12,11 +12,11 @@ import { ExistingStudentSolution } from "@/api/collimator/models/solutions/exist
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
+import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
-import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 
 const ProgressListWrapper = styled.div`
   margin: 1rem 0;
