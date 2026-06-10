@@ -9,8 +9,10 @@ import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
+import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
@@ -195,6 +197,11 @@ const ProgressList = ({
     isLoading: isLoadingSolutions,
   } = useAllSessionSolutions(classId, sessionId);
 
+  const { data: currentAnalyses } = useAllSessionCurrentAnalyses(
+    classId,
+    sessionId,
+  );
+
   const studentIds = useMemo(() => {
     if (!klass || !solutions) {
       return [];
@@ -203,9 +210,17 @@ const ProgressList = ({
     const studentIdsSet = new Set([
       ...klass.students.map((student) => student.studentId),
       ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
+      ...(currentAnalyses ?? []).flatMap((s) =>
+        s.analyses
+          .filter(
+            (a): a is CurrentStudentAnalysis =>
+              a instanceof CurrentStudentAnalysis,
+          )
+          .map((a) => a.studentId),
+      ),
     ]);
     return [...studentIdsSet];
-  }, [klass, solutions]);
+  }, [klass, solutions, currentAnalyses]);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {

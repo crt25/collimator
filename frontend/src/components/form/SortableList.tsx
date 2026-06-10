@@ -13,6 +13,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import { useCallback } from "react";
 import styled from "@emotion/styled";
 
@@ -96,6 +100,7 @@ const SortableListInput = <TItem extends { id: number | string }>({
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
           <ItemList noGap={noGap}>

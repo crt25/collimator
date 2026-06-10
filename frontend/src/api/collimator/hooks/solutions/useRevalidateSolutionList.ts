@@ -39,6 +39,15 @@ export const useRevalidateSolutionList = (): ((
           allTasksPlaceholder,
         ),
       );
+
+      mutate(
+        getSolutionsControllerFindCurrentAnalysesV0Url(
+          classId,
+          sessionId,
+          allTasksPlaceholder,
+          {},
+        ),
+      );
     },
     [mutate],
   );
