@@ -2,11 +2,11 @@ import { useMemo, useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import { Icon } from "@chakra-ui/react";
 import { LuStar } from "react-icons/lu";
-import Button from "../Button";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
 import { Modal } from "@/components/form/Modal";
 import { toaster } from "@/components/Toaster";
+import Button from "../Button";
 
 const messages = defineMessages({
   ariaLabel: {
