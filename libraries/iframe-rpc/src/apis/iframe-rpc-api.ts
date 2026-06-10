@@ -200,15 +200,61 @@ export abstract class IframeRpcApi<
     });
   }
 
+  /**
+   * Decides whether an incoming window message belongs to this RPC channel.
+   *
+   * We cannot rely on strict `event.source === requestTarget` identity alone:
+   * the counterpart window can be legitimately re-created (e.g. the host swaps
+   * the iframe via a `key` change, or the iframe navigates and gets a fresh
+   * `contentWindow`), which invalidates the cached reference even though the
+   * message is genuine. Conversely, unrelated posters (browser extensions,
+   * dev-server HMR, devtools) post to the same `window` and must be rejected.
+   *
+   * The authoritative trust boundary for `postMessage` is the origin, so we
+   * accept a message when EITHER:
+   *  - its source is exactly the cached target (fast path, no origin needed), OR
+   *  - a `requestOrigin` has been configured and the message's origin matches it.
+   *
+   * When neither matches the source is genuinely unknown and is ignored.
+   */
+  private isExpectedSource(event: MessageEvent): boolean {
+    if (this.requestTarget !== null && event.source === this.requestTarget) {
+      return true;
+    }
+
+    // Fall back to the origin check only when an expected origin is known.
+    // An empty/"null" origin (opaque origins) never satisfies this and is
+    // therefore not trusted.
+    if (
+      this.requestOrigin !== null &&
+      this.requestOrigin !== "*" &&
+      event.origin !== "" &&
+      event.origin === this.requestOrigin
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   public async handleWindowMessage(event: MessageEvent): Promise<void> {
-    if (event.source !== this.requestTarget) {
-      console.debug(
-        "Received message from unknown source",
-        event.source,
-        "expected",
-        this.requestTarget,
-      );
+    if (!this.isExpectedSource(event)) {
+      // Genuinely-unknown source: ignore silently. These messages arrive on
+      // every keystroke from extensions/HMR/devtools, so logging here would
+      // flood the console in a continuous loop without indicating a real fault.
       return;
+    }
+
+    // Self-heal the cached target when the trusted counterpart has been
+    // re-created (matched via origin above but a different Window object).
+    // Without this, later `sendRequest` calls would post to a stale/detached
+    // window. `event.source` is only ever a Window for window-message events.
+    if (
+      event.source !== null &&
+      event.source !== this.requestTarget &&
+      event.source instanceof Window
+    ) {
+      this.requestTarget = event.source;
     }
 
     const message = event.data as
