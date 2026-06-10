@@ -2747,6 +2747,48 @@
       "value": "Number of passed tests"
     }
   ],
+  "UnstarPastSolutionsButton.ariaLabel": [
+    {
+      "type": 0,
+      "value": "Remove all previously starred solutions"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.body": [
+    {
+      "type": 0,
+      "value": "This will remove all previously starred solutions for this student. This action cannot be undone. Are you sure you want to continue?"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.cancel": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.confirm": [
+    {
+      "type": 0,
+      "value": "Remove"
+    }
+  ],
+  "UnstarPastSolutionsButton.confirm.title": [
+    {
+      "type": 0,
+      "value": "Remove previously starred solutions"
+    }
+  ],
+  "UnstarPastSolutionsButton.errorToast": [
+    {
+      "type": 0,
+      "value": "There was an error removing previously starred solutions. Please try again!"
+    }
+  ],
+  "UnstarPastSolutionsButton.successToast": [
+    {
+      "type": 0,
+      "value": "Previously starred solutions removed."
+    }
+  ],
   "UserActions.copyRegistrationTokenSuccess": [
     {
       "type": 0,

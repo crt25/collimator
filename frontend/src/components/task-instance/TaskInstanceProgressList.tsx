@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { Button, HStack, Icon, Status } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/router";
-import { LuChevronRight, LuStar } from "react-icons/lu";
+import { LuChevronRight } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
@@ -20,6 +20,7 @@ import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
 import StarSolutionButton from "../solution/StarSolutionButton";
+import UnstarPastSolutionsButton from "../solution/UnstarPastSolutionsButton";
 
 const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
@@ -104,24 +105,23 @@ const CurrentVersionTemplate = ({
 };
 
 const PreviousVersionTemplate = ({
+  classId,
+  sessionId,
+  taskId,
   progress,
 }: {
+  classId: number;
+  sessionId: number;
+  taskId: number;
   progress: StudentProgress;
-}) => {
-  const hasStarredPastSolution = progress.taskSolutions.some(
-    (s) => s.isReference,
-  );
-
-  if (!hasStarredPastSolution) {
-    return null;
-  }
-
-  return (
-    <Icon size="lg" color="orange.500">
-      <LuStar />
-    </Icon>
-  );
-};
+}) => (
+  <UnstarPastSolutionsButton
+    classId={classId}
+    sessionId={sessionId}
+    taskId={taskId}
+    taskSolutions={progress.taskSolutions}
+  />
+);
 
 const TaskTemplate = ({
   classId: _classId,
@@ -331,7 +331,12 @@ const TaskInstanceProgressList = ({
         id: "previousVersion",
         header: intl.formatMessage(messages.previousVersionColumn),
         cell: (info) => (
-          <PreviousVersionTemplate progress={info.row.original} />
+          <PreviousVersionTemplate
+            classId={classId}
+            sessionId={sessionId}
+            taskId={taskId}
+            progress={info.row.original}
+          />
         ),
         meta: {
           columnType: ColumnType.text,
