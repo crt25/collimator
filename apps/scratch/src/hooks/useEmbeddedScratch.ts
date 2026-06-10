@@ -342,6 +342,12 @@ export class EmbeddedScratchCallbacks {
       }
 
       const sb3Project = await request.params.task.arrayBuffer();
+
+      // remember which blocks belong to the task itself so that mid-session
+      // re-loads (getSubmission/getTask/setLocale save and re-load the
+      // project) do not mark student-added blocks as undeletable task blocks
+      this.vm.taskBlockIds = await getTaskBlockIds(await loadZip(sb3Project));
+
       await loadCrtProject(this.vm, sb3Project);
     } catch (e) {
       console.error(
