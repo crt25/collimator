@@ -128,40 +128,27 @@ const initializeTaskBlocksOnLoad = (vm: VM, startState: StartState): void => {
   });
 };
 
-const snapshotBeforeHats = (vm: VM, startState: StartState): void => {
-  const originalStartHats = vm.runtime.startHats.bind(vm.runtime);
+const snapshotOnGreenFlag = (vm: VM, startState: StartState): void => {
+  const originalGreenFlag = vm.greenFlag.bind(vm);
 
-  vm.runtime.startHats = (
-    requestedHatOpcode: string,
-    optMatchFields?: Record<string, unknown>,
-    optTarget?: VM.Target,
-  ): globalThis.VM.Thread[] | undefined => {
-    const wasIdle = vm.runtime.threads.length === 0;
-    const startedThreads = originalStartHats(
-      requestedHatOpcode,
-      optMatchFields,
-      optTarget,
-    );
-
-    // if the runtime is idle and the threads started by this hat are not empty
-    // we should refresh the start state to reflect the state right before the hat starts running
-    if (wasIdle && startedThreads && startedThreads.length > 0) {
-      clearStartState(startState);
-      for (const target of vm.runtime.targets) {
-        if (target.isStage) {
-          startState.stage = rememberStageState(target);
-          continue;
-        }
-
-        if (!isTrackableSprite(target)) {
-          continue;
-        }
-
-        startState.sprites.set(target.id, rememberSpriteState(target));
+  vm.greenFlag = (): void => {
+    // refresh the snapshot to reflect the target state at the moment the
+    // user pressed the green flag, before any script has run
+    clearStartState(startState);
+    for (const target of vm.runtime.targets) {
+      if (target.isStage) {
+        startState.stage = rememberStageState(target);
+        continue;
       }
+
+      if (!isTrackableSprite(target)) {
+        continue;
+      }
+
+      startState.sprites.set(target.id, rememberSpriteState(target));
     }
 
-    return startedThreads;
+    originalGreenFlag();
   };
 };
 
@@ -189,6 +176,6 @@ export const patchScratchVm = (vm: VM): void => {
 
   patchExtensionManager(vm);
   initializeTaskBlocksOnLoad(vm, startState);
-  snapshotBeforeHats(vm, startState);
+  snapshotOnGreenFlag(vm, startState);
   patchSerialization(vm, startState);
 };
