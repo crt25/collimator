@@ -1,11 +1,7 @@
 import { StudentActionType } from "../../../types/scratch-student-activities";
 import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 
-const trackedActions = [
-  StudentActionType.Create,
-  StudentActionType.Move,
-  StudentActionType.Delete,
-] as const;
+const trackedActions: StudentActionType[] = Object.values(StudentActionType);
 
 export const isTrackableStudentAction = (
   action: StudentActionType,
