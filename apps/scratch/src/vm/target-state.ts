@@ -123,10 +123,6 @@ export interface StartState {
   stage: RememberedStageState | undefined;
 }
 
-export const isTrackableSprite = (target: VM.Target): boolean =>
-  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
-  !target.isStage && target.isOriginal !== false;
-
 export const backupTargetsState = (vm: VM, startState: StartState): void => {
   if (startState.sprites.size !== 0 || startState.stage) {
     return;
@@ -138,7 +134,8 @@ export const backupTargetsState = (vm: VM, startState: StartState): void => {
       continue;
     }
 
-    if (!isTrackableSprite(target)) {
+    // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
+    if (!target.isStage && target.isOriginal !== false) {
       continue;
     }
 
