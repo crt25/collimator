@@ -98,6 +98,18 @@ declare namespace ScratchBlocksExtended {
     centerOnBlock: (id: string) => void;
     zoomToFit: () => void;
 
+    /**
+     * The gesture (drag/click) currently being processed on this workspace,
+     * if any. Truthy while a block or workspace drag is in progress.
+     */
+    currentGesture_: unknown;
+
+    /**
+     * Cancel the gesture currently in progress on this workspace, if any.
+     * Safe no-op when no gesture is active.
+     */
+    cancelCurrentGesture: () => void;
+
     getMetrics: () =>
       | {
           absoluteLeft: number;

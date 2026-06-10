@@ -770,6 +770,22 @@ class Blocks extends React.Component<Props, State> {
 
     // Remove and reattach the workspace listener (but allow flyout events)
     this.removeWorkspaceListeners();
+
+    // If a block-drag gesture is in progress, terminate it *before* clearing
+    // the workspace. clearWorkspaceAndLoadFromXml below calls Workspace.clear(),
+    // which disposes the dragged block and makes Blockly cancel the gesture
+    // mid-disposal — by which point the insertion-marker block's SVG root has
+    // already been torn down, so the gesture's cleanup throws
+    // ("Cannot read properties of null (reading 'setAttribute')"). The error is
+    // swallowed by the try/catch below, but it leaves the gesture half-disposed,
+    // which breaks drag-to-delete for the rest of the session. Cancelling here,
+    // while every block's DOM is still intact, lets the gesture unwind cleanly.
+    // Listeners are already detached, so the abandoned drag is not forwarded to
+    // the VM; the workspace is about to be reloaded from the saved XML anyway.
+    if (workspace.currentGesture_) {
+      workspace.cancelCurrentGesture();
+    }
+
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
       this.ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
