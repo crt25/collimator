@@ -4,16 +4,13 @@ import AssertionExtension from "../extensions/assertions";
 import {
   RememberedSpriteState,
   RememberedStageState,
+  StartState,
+  backupTargetsState,
   rememberSpriteState,
   rememberStageState,
   restoreSpriteStateForSerialization,
   restoreStageStateForSerialization,
 } from "./target-state";
-
-interface StartState {
-  sprites: Map<string, RememberedSpriteState>;
-  stage: RememberedStageState | undefined;
-}
 
 const clearStartState = (startState: StartState): void => {
   startState.sprites.clear();
@@ -79,10 +76,6 @@ const swapToStartState = (vm: VM, startState: StartState): (() => void) => {
   };
 };
 
-const isTrackableSprite = (target: VM.Target): boolean =>
-  // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
-  !target.isStage && target.isOriginal !== false;
-
 const patchExtensionManager = (vm: VM): void => {
   // patch extension manager load function with a custom implementation
   vm.extensionManager.loadExtensionURL = async (
@@ -131,22 +124,11 @@ const initializeTaskBlocksOnLoad = (vm: VM, startState: StartState): void => {
 const snapshotOnGreenFlag = (vm: VM, startState: StartState): void => {
   const originalGreenFlag = vm.greenFlag.bind(vm);
 
+  // depends on the fact that we listen on PROJECT_STOP_ALL in the assertion extension to reset the position of the sprite
+  // this ensures that when the green flag is clicked, we snapshot the position of the sprites when the project is in its original state
+  vm.runtime.emit("PROJECT_STOP_ALL");
   vm.greenFlag = (): void => {
-    if (startState.sprites.size === 0 && !startState.stage) {
-      for (const target of vm.runtime.targets) {
-        if (target.isStage) {
-          startState.stage = rememberStageState(target);
-          continue;
-        }
-
-        if (!isTrackableSprite(target)) {
-          continue;
-        }
-
-        startState.sprites.set(target.id, rememberSpriteState(target));
-      }
-    }
-
+    backupTargetsState(vm, startState);
     originalGreenFlag();
   };
 };
