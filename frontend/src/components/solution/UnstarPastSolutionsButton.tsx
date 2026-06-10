@@ -56,19 +56,23 @@ const UnstarPastSolutionsButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const patchSolution = usePatchStudentSolutionIsReference();
 
-  const starredSolutions = useMemo(
-    () => taskSolutions.filter((s) => s.isReference),
-    [taskSolutions],
-  );
+  const starredPastSolutions = useMemo(() => {
+    const latestSolution =
+      ExistingStudentSolution.findSolutionToDisplay(taskSolutions);
 
-  if (starredSolutions.length === 0) {
+    return taskSolutions.filter(
+      (s) => s.isReference && s.id !== latestSolution?.id,
+    );
+  }, [taskSolutions]);
+
+  if (starredPastSolutions.length === 0) {
     return null;
   }
 
   const handleConfirm = async () => {
     try {
       await Promise.all(
-        starredSolutions.map((s) =>
+        starredPastSolutions.map((s) =>
           patchSolution(classId, sessionId, taskId, s.id, {
             isReference: false,
           }),
