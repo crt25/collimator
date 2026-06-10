@@ -25,6 +25,7 @@ export enum StudentActionType {
   Create = "create",
   Move = "move",
   Delete = "delete",
+  GreenFlag = "greenFlag",
 }
 
 export interface BasePipelineParams {
