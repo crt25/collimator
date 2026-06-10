@@ -7,8 +7,7 @@ import {
   fetchSolutionsAndTransform,
   GetCurrentAnalysisReturnType,
 } from "./useCurrentSessionTaskSolutions";
-
-export const allTasksPlaceholder = -1;
+import { allTasksPlaceholder } from "./useAllSessionSolutions";
 
 type SessionAnalyses = {
   taskId: number;
