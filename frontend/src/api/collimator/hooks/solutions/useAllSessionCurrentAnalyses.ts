@@ -1,0 +1,50 @@
+import useSWR from "swr";
+import { ApiResponse } from "../helpers";
+import { getSolutionsControllerFindCurrentAnalysesV0Url } from "../../generated/endpoints/solutions/solutions";
+import { useClassSession } from "../sessions/useClassSession";
+import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
+import {
+  fetchSolutionsAndTransform,
+  GetCurrentAnalysisReturnType,
+} from "./useCurrentSessionTaskSolutions";
+
+export const allTasksPlaceholder = -1;
+
+type SessionAnalyses = {
+  taskId: number;
+  analyses: GetCurrentAnalysisReturnType;
+};
+
+export const useAllSessionCurrentAnalyses = (
+  classId: number,
+  sessionId: number,
+): ApiResponse<SessionAnalyses[], Error> => {
+  const authOptions = useAuthenticationOptions();
+  const { data } = useClassSession(classId, sessionId);
+
+  return useSWR(
+    data &&
+      getSolutionsControllerFindCurrentAnalysesV0Url(
+        classId,
+        sessionId,
+        allTasksPlaceholder /* use placeholder to represent 'all'*/,
+        {},
+      ),
+    () =>
+      data
+        ? Promise.all(
+            data.tasks.map((task) =>
+              fetchSolutionsAndTransform(
+                authOptions,
+                classId,
+                sessionId,
+                task.id,
+              ).then(
+                (analyses) =>
+                  ({ taskId: task.id, analyses }) as SessionAnalyses,
+              ),
+            ),
+          )
+        : Promise.resolve([] as SessionAnalyses[]),
+  );
+};
