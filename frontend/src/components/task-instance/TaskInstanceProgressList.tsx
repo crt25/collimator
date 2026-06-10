@@ -120,11 +120,7 @@ const TaskTemplate = ({
       return TaskStatus.notStarted;
     }
 
-    if (!solutionToDisplay) {
-      return TaskStatus.incomplete;
-    }
-
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
+    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
       return TaskStatus.complete;
     }
 
@@ -137,11 +133,7 @@ const TaskTemplate = ({
       return "neutral";
     }
 
-    if (!solutionToDisplay) {
-      return "error";
-    }
-
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
+    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
       return "success";
     }
 
