@@ -135,7 +135,7 @@ export const backupTargetsState = (vm: VM, startState: StartState): void => {
     }
 
     // track every sprite the project file defines whether shown or hidden, skip the stage and runtime clones.
-    if (!target.isStage && target.isOriginal !== false) {
+    if (target.isOriginal === false) {
       continue;
     }
 
