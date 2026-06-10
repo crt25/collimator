@@ -115,28 +115,30 @@ const TaskTemplate = ({
   );
 
   const status = useMemo(() => {
-    if (!solutionToDisplay) {
+    if (!solutionToDisplay && !rowData.currentAnalysis) {
+      // if solution has an analysis then it should be displayed as in progress
       return TaskStatus.notStarted;
     }
 
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
+    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
       return TaskStatus.complete;
     }
 
     return TaskStatus.incomplete;
-  }, [solutionToDisplay]);
+  }, [solutionToDisplay, rowData.currentAnalysis]);
 
   const color = useMemo((): StatusColor => {
-    if (!solutionToDisplay) {
+    if (!solutionToDisplay && !rowData.currentAnalysis) {
+      // if solution has an analysis then it should be displayed as in progress
       return "neutral";
     }
 
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
+    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
       return "success";
     }
 
     return "error";
-  }, [solutionToDisplay]);
+  }, [solutionToDisplay, rowData.currentAnalysis]);
 
   const statusText = useMemo(() => {
     switch (status) {
@@ -204,9 +206,15 @@ const TaskInstanceProgressList = ({
     const studentIdsSet = new Set([
       ...klass.students.map((student) => student.studentId),
       ...solutions.map((s) => s.studentId),
+      ...(currentAnalyses ?? [])
+        .filter(
+          (a): a is CurrentStudentAnalysis =>
+            a instanceof CurrentStudentAnalysis,
+        )
+        .map((a) => a.studentId),
     ]);
     return [...studentIdsSet];
-  }, [klass, solutions]);
+  }, [klass, solutions, currentAnalyses]);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
@@ -231,9 +239,9 @@ const TaskInstanceProgressList = ({
       );
 
       // A student is either already in the showcase (teacher needs to unstar)
-      // or not yet (teacher needs to star). findShowcaseAnalysis prefers the
-      // starred analysis so the button reflects the current state and allows
-      // removal; falls back to the latest non-reference analysis to add it.
+      // or not yet (teacher needs to star). findAnalysisToDisplay returns the
+      // latest non-starred analysis so the button is starrable.
+      // It falls back to the starred analysis when that's all the student has.
       const currentAnalysis = CurrentStudentAnalysis.findAnalysisToDisplay(
         currentAnalyses ?? [],
         student.studentId,
