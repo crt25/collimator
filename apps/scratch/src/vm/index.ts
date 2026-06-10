@@ -22,7 +22,7 @@ const isStageWithStartState = (
   stage: RememberedStageState | undefined,
 ): stage is RememberedStageState => target.isStage && stage !== undefined;
 
-const swapToStartState = (vm: VM, startState: StartState): (() => void) => {
+const resetToStartState = (vm: VM, startState: StartState): (() => void) => {
   // if there is no stage or trackable sprites with start state, we don't need to do anything
   if (startState.sprites.size === 0 && !startState.stage) {
     return () => {};
@@ -133,18 +133,18 @@ const snapshotOnGreenFlag = (vm: VM, startState: StartState): void => {
   };
 };
 
-// temporarily swap to start state during serialization to ensure
+// temporarily reset to start state during serialization to ensure
 // the project is saved with original positions, not changes occured in runtime.
 // immediately restore the current runtime state after serialization.
 const patchSerialization = (vm: VM, startState: StartState): void => {
   const originalToJSON = vm.toJSON.bind(vm);
   vm.toJSON = (optTargetId?: string): string => {
-    const restore = swapToStartState(vm, startState);
+    const undo = resetToStartState(vm, startState);
 
     try {
       return originalToJSON(optTargetId);
     } finally {
-      restore();
+      undo();
     }
   };
 };
