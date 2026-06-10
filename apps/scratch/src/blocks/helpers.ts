@@ -10,6 +10,17 @@ export const ignoreEvent = (event: MouseEvent): void => {
 
 const pendingRejectionBlockIds = new Set<string>();
 
+/**
+ * Forget any over-limit block removals that were deferred to a future endDrag
+ * (see shouldPreventBlockCreation). A workspace reload disposes the affected
+ * blocks and cancels any in-flight flyout gesture, so those deferred rejections
+ * can never be drained by their endDrag — clear them here so the module-level
+ * set cannot leak across reloads.
+ */
+export const clearPendingBlockRejections = (): void => {
+  pendingRejectionBlockIds.clear();
+};
+
 const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
   vm: VMExtended,
@@ -25,19 +36,32 @@ const shouldPreventBlockCreation = (
     event.xml;
 
   const isBlockCreated = event.type === "create";
-  const isEndDrag = event.type === "endDrag" && !event.isOutside;
+  const isEndDrag = event.type === "endDrag";
+  const isEndDragInside = isEndDrag && !event.isOutside;
 
   // remove the block on endDrag rather than during the flyout drag to prevent weird behaviors
   if (isEndDrag) {
     const blockId = event.blockId ?? "";
 
-    if (pendingRejectionBlockIds.has(blockId)) {
-      pendingRejectionBlockIds.delete(blockId);
-      workspace.undo(false);
-      return true;
-    }
+    // Always drain the deferred-rejection id on endDrag — including drags that
+    // end outside the workspace. Otherwise an over-limit block whose drag ends
+    // outside (dropped on a sprite / out of bounds), or whose gesture is
+    // cancelled by a mid-drag workspace reload, leaves its id stranded in this
+    // module-level set for the rest of the session.
+    const wasPendingRejection = pendingRejectionBlockIds.delete(blockId);
 
-    return false;
+    if (isEndDragInside) {
+      if (wasPendingRejection) {
+        // the block is still on the workspace; now that the gesture is gone,
+        // undo to remove it
+        workspace.undo(false);
+        return true;
+      }
+
+      return false;
+    }
+    // endDrag outside the workspace falls through to the dragged-to-sprite
+    // handling below; the pending id (if any) has already been drained
   }
 
   if (!isBlockDraggedToSprite && !isBlockCreated) {

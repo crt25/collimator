@@ -79,7 +79,10 @@ import {
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
 import { overrideBlockDuplicateOption } from "../../utils/scratch-blocks-overrides";
-import { shouldPreventBlocksActions } from "../../blocks/helpers";
+import {
+  clearPendingBlockRejections,
+  shouldPreventBlocksActions,
+} from "../../blocks/helpers";
 import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
@@ -785,6 +788,12 @@ class Blocks extends React.Component<Props, State> {
     if (workspace.currentGesture_) {
       workspace.cancelCurrentGesture();
     }
+
+    // The workspace is about to be rebuilt from XML, disposing every block.
+    // Drop any over-limit block removals that were deferred to a future endDrag
+    // (see shouldPreventBlockCreation): those blocks are being disposed now and
+    // their endDrag may never arrive, which would otherwise leak their ids.
+    clearPendingBlockRejections();
 
     const dom = this.ScratchBlocks.Xml.textToDom(data.xml);
     try {
