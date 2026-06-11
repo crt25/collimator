@@ -60,12 +60,9 @@ const getActivityTimestamp = (): {
 } => {
   const now = Date.now();
 
-  if (now === lastTimestamp) {
-    counter++;
-  } else {
-    lastTimestamp = now;
-    counter = 0;
-  }
+  // use a monotonically increasing counter, such that a single session
+  // will record all activities in-order, even across tasks.
+  counter++;
 
   return { happenedAt: new Date(now), happenedAtCounter: counter };
 };
