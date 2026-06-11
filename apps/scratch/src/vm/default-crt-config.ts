@@ -5,5 +5,5 @@ export const defaultCrtConfig: ScratchCrtConfig = {
   allowedBlocks: {},
   freezeStateByBlockId: {},
   maximumExecutionTimeInMs: defaultMaximumExecutionTimeInMs,
-  enableStageInteractions: true,
+  enableStageInteractions: false,
 };

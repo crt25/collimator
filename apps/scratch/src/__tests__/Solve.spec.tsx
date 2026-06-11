@@ -457,13 +457,13 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() => window.postedMessages.length > 2);
+    await pwPage.waitForFunction(() => window.postedMessages.length > 3);
 
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(3);
+    expect(messages).toHaveLength(4);
 
-    expect(messages[2].message).toEqual({
+    expect(messages[3].message).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",

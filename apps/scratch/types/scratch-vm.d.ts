@@ -112,6 +112,8 @@ declare namespace VMExtended {
   }
 
   export type RotationStyle = VM.RotationStyle;
+  export type Target = VM.Target;
+  export type PostedSpriteInfo = VM.PostedSpriteInfo;
 
   type CrtBlock = import("../src/types/scratch-vm-custom").CrtBlock;
 
