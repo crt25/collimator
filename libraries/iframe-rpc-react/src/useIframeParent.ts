@@ -8,6 +8,12 @@ import {
 import { ParametersOf } from "iframe-rpc/src/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+// We cache the parent origin as a workaround to prevent transient, reload bugs.
+// During an iframe reload, no RPC is called by the parent, which in turn means
+// that no origin is set in the crtPlatform and we become unable to communicate
+// with the parent. This fixes CRT-425 and similar classes of bugs.
+let cachedParentOrigin: string | null = null;
+
 export const useIframeParent = (
   handleRequest: AppHandleRequestMap | null,
   initialMessages?: MessageEvent<unknown>[],
@@ -26,26 +32,34 @@ export const useIframeParent = (
 } => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isInIframe, setIsInIframe] = useState(false);
-  const [taskOrigin, setTaskOrigin] = useState<string | null>(null);
+  const [taskOrigin, setTaskOrigin] = useState<string | null>(
+    cachedParentOrigin,
+  );
 
   const modifiedHandleRequest = useMemo(
-    () => handleRequest !== null ?({
-      ...handleRequest,
-      loadSubmission: async (
-        ...args: Parameters<typeof handleRequest.loadSubmission>
-      ): ReturnType<typeof handleRequest.loadSubmission> => {
-        setTaskOrigin(args[1].origin);
+    () =>
+      handleRequest !== null
+        ? {
+            ...handleRequest,
+            loadSubmission: async (
+              ...args: Parameters<typeof handleRequest.loadSubmission>
+            ): ReturnType<typeof handleRequest.loadSubmission> => {
+              // cache the parent origin and set it in state
+              cachedParentOrigin = args[1].origin;
+              setTaskOrigin(args[1].origin);
 
-        return handleRequest.loadSubmission(...args);
-      },
-      loadTask: async (
-        ...args: Parameters<typeof handleRequest.loadTask>
-      ): ReturnType<typeof handleRequest.loadTask> => {
-        setTaskOrigin(args[1].origin);
+              return handleRequest.loadSubmission(...args);
+            },
+            loadTask: async (
+              ...args: Parameters<typeof handleRequest.loadTask>
+            ): ReturnType<typeof handleRequest.loadTask> => {
+              cachedParentOrigin = args[1].origin;
+              setTaskOrigin(args[1].origin);
 
-        return handleRequest.loadTask(...args);
-      },
-    }) : null,
+              return handleRequest.loadTask(...args);
+            },
+          }
+        : null,
     [handleRequest],
   );
 
