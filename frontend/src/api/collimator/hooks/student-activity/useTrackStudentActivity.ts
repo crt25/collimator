@@ -18,7 +18,6 @@ type TrackActivityType = (trackActivityDto: ActivityDto) => Promise<void>;
 type TrackActivityFailure = boolean;
 
 let activitiesToTrack: ActivityDtoWithDate[] = [];
-let lastTimestamp = 0;
 let counter = 0;
 
 export const studentActivityControllerTrack = async (
