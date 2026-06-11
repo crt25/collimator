@@ -409,12 +409,7 @@ export class EmbeddedScratchCallbacks {
   }
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
-    // save content
-    const sb3Project = await saveCrtProject(this.vm);
-
-    // change language - apparently scratch resets the content with this?
     this.setScratchLocale(request.params);
-    await loadCrtProject(this.vm, await sb3Project.arrayBuffer());
   }
 
   private setScratchLocale(language: Language): void {
