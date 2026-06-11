@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import ControlsComponent from "@scratch-submodule/packages/scratch-gui/src/components/controls/controls.jsx";
 import { CrtContext } from "../../contexts/CrtContext";
+import { sendGreenFlagActivity } from "../../utilities/scratch-student-activities/senders";
 
 interface Props {
   isStarted: boolean;
@@ -34,13 +35,13 @@ const Controls = ({
         }
 
         if (!canEditTask) {
+          const solution = new Blob([vm.toJSON()], {
+            type: "application/json",
+          });
+
           // do not wait for this request to succeed
-          sendRequest(
-            "postSolutionRun",
-            new Blob([vm.toJSON()], {
-              type: "application/json",
-            }),
-          );
+          sendRequest("postSolutionRun", solution);
+          sendGreenFlagActivity(sendRequest, solution);
         }
 
         vm.greenFlag();
