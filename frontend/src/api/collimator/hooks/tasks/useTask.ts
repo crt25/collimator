@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import { fetchFile } from "@/api/fetch";
 import { ApiResponse, getIdOrNaN } from "../helpers";
 import { ExistingTask } from "../../models/tasks/existing-task";
@@ -19,29 +19,39 @@ const fetchAndTransform = (
 
 export const useTask = (
   id?: number | string,
+  swrConfig?: SWRConfiguration<GetTaskReturnType, Error>,
 ): ApiResponse<GetTaskReturnType, Error> => {
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getTasksControllerFindOneV0Url(numericId, {}), () =>
-    isNaN(numericId)
-      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-        new Promise<GetTaskReturnType>(() => {})
-      : fetchAndTransform(authOptions, numericId),
+  return useSWR(
+    getTasksControllerFindOneV0Url(numericId, {}),
+    () =>
+      isNaN(numericId)
+        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+          new Promise<GetTaskReturnType>(() => {})
+        : fetchAndTransform(authOptions, numericId),
+    swrConfig,
   );
 };
 
-export const useTaskFile = (id?: number | string): ApiResponse<Blob, Error> => {
+export const useTaskFile = (
+  id?: number | string,
+  swrConfig?: SWRConfiguration<Blob, Error>,
+): ApiResponse<Blob, Error> => {
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getTasksControllerDownloadOneV0Url(numericId, {}), () =>
-    isNaN(numericId)
-      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-        new Promise<Blob>(() => {})
-      : fetchFile(getTasksControllerDownloadOneV0Url(numericId, {}), {
-          ...authOptions,
-          method: "GET",
-        }),
+  return useSWR(
+    getTasksControllerDownloadOneV0Url(numericId, {}),
+    () =>
+      isNaN(numericId)
+        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+          new Promise<Blob>(() => {})
+        : fetchFile(getTasksControllerDownloadOneV0Url(numericId, {}), {
+            ...authOptions,
+            method: "GET",
+          }),
+    swrConfig,
   );
 };

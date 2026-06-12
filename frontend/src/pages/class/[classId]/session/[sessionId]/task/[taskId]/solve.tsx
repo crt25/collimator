@@ -71,17 +71,27 @@ const SolveTaskPage = () => {
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
+  // do not revalidate the task and task file while solving to prevent app reloads
+  const noTaskRevalidation = useMemo(
+    () => ({
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }),
+    [],
+  );
+
   const {
     data: task,
     error: taskError,
     isLoading: isLoadingTask,
-  } = useTask(taskId);
+  } = useTask(taskId, noTaskRevalidation);
 
   const {
     data: taskFile,
     error: taskFileError,
     isLoading: isLoadingTaskFile,
-  } = useTaskFile(taskId);
+  } = useTaskFile(taskId, noTaskRevalidation);
 
   const fetchLatestSolutionFile = useFetchLatestSolutionFile();
 
