@@ -214,7 +214,8 @@ const ProgressList = ({
         s.analyses
           .filter(
             (a): a is CurrentStudentAnalysis =>
-              a instanceof CurrentStudentAnalysis,
+              // only consider non-reference entries
+              a instanceof CurrentStudentAnalysis && !a.isReferenceSolution,
           )
           .map((a) => a.studentId),
       ),
