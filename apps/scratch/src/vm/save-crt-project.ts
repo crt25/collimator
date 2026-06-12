@@ -35,7 +35,26 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
   // To work around this, we re-load the project we just saved, which ensures that the asset ids in the task and the submission are the same.
   const exportedTask = await task.arrayBuffer();
 
+  const isTaskBlockById = new Map<string, boolean | undefined>();
+
+  for (const target of vm.runtime.targets) {
+    for (const block of Object.values(target.blocks._blocks)) {
+      // the round trip reload here calls the PROJECT_LOADED listener
+      // in the assertion extension, which re mark every block in the workspace as a task block and makes them undeletable.
+      // snapshot isTaskBlock here for every block and restore it after the reload to work around this.
+      isTaskBlockById.set(block.id, block.isTaskBlock);
+    }
+  }
+
   await loadCrtProject(vm, exportedTask);
+
+  for (const target of vm.runtime.targets) {
+    for (const block of Object.values(target.blocks._blocks)) {
+      if (isTaskBlockById.has(block.id)) {
+        block.isTaskBlock = isTaskBlockById.get(block.id);
+      }
+    }
+  }
 
   const reExportedTask = await saveCrtProject(vm);
 
