@@ -50,9 +50,8 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
 
   for (const target of vm.runtime.targets) {
     for (const block of Object.values(target.blocks._blocks)) {
-      const previous = isTaskBlockById.get(block.id);
-      if (previous !== undefined) {
-        block.isTaskBlock = previous;
+      if (isTaskBlockById.has(block.id)) {
+        block.isTaskBlock = isTaskBlockById.get(block.id);
       }
     }
   }
