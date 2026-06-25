@@ -427,7 +427,11 @@ const TaskFormReferenceSolutions = ({
                 data-testid={`solution-${solution.id}`}
               >
                 <div>
-                  <Field.Root>
+                  <Field.Root
+                    invalid={
+                      !!errors.referenceSolutions?.[index]?.title?.message
+                    }
+                  >
                     <Field.Label
                       data-testid={`reference-solution-${solution.id}-title`}
                     >
@@ -445,28 +449,27 @@ const TaskFormReferenceSolutions = ({
                         })
                       }
                     />
+                    <Field.ErrorText>
+                      {errors.referenceSolutions?.[index]?.title?.message}
+                    </Field.ErrorText>
                   </Field.Root>
-                  <Field.Root>
-                    <Field.Label
-                      data-testid={`reference-solution-${solution.id}-description`}
-                    >
-                      {intl.formatMessage(messages.description)}
-                    </Field.Label>
-
-                    <TextArea
-                      variant="subtle"
-                      rows={5}
-                      value={solution.description}
-                      disabled={disabled}
-                      data-testid={`reference-solution-${solution.id}-description-input`}
-                      onChange={(e) =>
-                        updateReferenceSolution(index, {
-                          ...referenceSolutions[index],
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                  </Field.Root>
+                  <TextArea
+                    label={messages.description}
+                    variant="subtle"
+                    rows={5}
+                    value={solution.description}
+                    disabled={disabled}
+                    data-testid={`reference-solution-${solution.id}-description-input`}
+                    errorText={
+                      errors.referenceSolutions?.[index]?.description?.message
+                    }
+                    onChange={(e) =>
+                      updateReferenceSolution(index, {
+                        ...referenceSolutions[index],
+                        description: e.target.value,
+                      })
+                    }
+                  />
                   {!disabled && (
                     <Button
                       data-testid={`edit-solution-button-${solution.id}`}
