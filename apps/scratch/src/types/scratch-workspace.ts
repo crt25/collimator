@@ -4,6 +4,7 @@ export interface WorkspaceChangeEvent {
   type:
     | "create"
     | "change"
+    | "block_field_intermediate_change"
     | "move"
     | "dragOutside"
     | "endDrag"

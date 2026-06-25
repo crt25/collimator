@@ -5,6 +5,7 @@ import {
   trackChangeActivity,
   trackCreateActivity,
   trackDeleteActivity,
+  trackIntermediateChangeActivity,
   trackMoveActivity,
 } from ".";
 
@@ -13,6 +14,7 @@ const scratchToStudentActionType: Record<string, StudentActionType> = {
   move: StudentActionType.Move,
   delete: StudentActionType.Delete,
   change: StudentActionType.ConfirmedChange,
+  block_field_intermediate_change: StudentActionType.IntermediateChange,
 };
 
 export const mapScratchEventTypeToStudentActionType = (
@@ -90,6 +92,22 @@ export const handleStudentActivityTracking = ({
       }
 
       trackChangeActivity({
+        block,
+        sendRequest,
+        solution,
+        event,
+        canEditTask,
+      });
+
+      break;
+    }
+
+    case StudentActionType.IntermediateChange: {
+      if (!block) {
+        return;
+      }
+
+      trackIntermediateChangeActivity({
         block,
         sendRequest,
         solution,
