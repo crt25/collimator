@@ -5,7 +5,7 @@ import {
   trackChangeActivity,
   trackCreateActivity,
   trackDeleteActivity,
-  trackIntermediateChangeActivity,
+  // trackIntermediateChangeActivity,
   trackMoveActivity,
 } from ".";
 
@@ -102,21 +102,21 @@ export const handleStudentActivityTracking = ({
       break;
     }
 
-    case StudentActionType.IntermediateChange: {
-      if (!block) {
-        return;
-      }
+    // case StudentActionType.IntermediateChange: {
+    //   if (!block) {
+    //     return;
+    //   }
 
-      trackIntermediateChangeActivity({
-        block,
-        sendRequest,
-        solution,
-        event,
-        canEditTask,
-      });
+    //   trackIntermediateChangeActivity({
+    //     block,
+    //     sendRequest,
+    //     solution,
+    //     event,
+    //     canEditTask,
+    //   });
 
-      break;
-    }
+    //   break;
+    // }
 
     default:
       throw new Error(`Unhandled student action type: ${action}`);
