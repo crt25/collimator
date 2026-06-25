@@ -258,7 +258,7 @@ const TaskFormReferenceSolutions = ({
 
   const {
     handleSubmit,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
     watch,
     reset,
     setValue,
@@ -324,11 +324,7 @@ const TaskFormReferenceSolutions = ({
 
   const onSubmitWrapper = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
-      let data: TaskFormReferenceSolutionsValues;
-
-      handleSubmit((v: TaskFormReferenceSolutionsValues) => {
-        data = v;
-
+      handleSubmit(async (data: TaskFormReferenceSolutionsValues) => {
         const referenceSolutions = data.referenceSolutions
           .toSorted((a, b) => a.id - b.id)
           .map((solution) => ({
@@ -342,46 +338,42 @@ const TaskFormReferenceSolutions = ({
           .toSorted(([a, _], [b, __]) => parseInt(a) - parseInt(b))
           .map(([_id, file]) => file);
 
-        return onSubmit({
+        await onSubmit({
           referenceSolutions,
           referenceSolutionsFiles,
         } satisfies TaskFormReferenceSolutionsSubmission);
-      })(e)
-        .then(() => {
-          // allow navigation after the task has been saved
-          cannotNavigate.current = false;
 
-          // reset the form to the updated values
-          // and mark the blob as not changed
-          // so the user can navigate without confirmation
-          reset(data);
+        // allow navigation after the task has been saved
+        cannotNavigate.current = false;
 
-          toaster.success({
-            id: `task-reference-solutions-save-success-${Date.now()}`,
-            title: intl.formatMessage(messages.saveSuccess),
-            closable: true,
-          });
-        })
-        .catch((err) => {
-          console.error(`${logModule} Error saving task`, err);
+        // reset the form to the updated values
+        // and mark the blob as not changed
+        // so the user can navigate without confirmation
+        reset(data);
 
-          if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
-            toaster.error({
-              id: `duplicate-reference-solution-${Date.now()}`,
-              title: intl.formatMessage(
-                getErrorMessageDescriptor(err.errorCode),
-              ),
-              closable: true,
-            });
-            return;
-          }
-
-          toaster.error({
-            id: "task-reference-solutions-save-error",
-            title: intl.formatMessage(messages.saveError),
-            closable: true,
-          });
+        toaster.success({
+          id: `task-reference-solutions-save-success-${Date.now()}`,
+          title: intl.formatMessage(messages.saveSuccess),
+          closable: true,
         });
+      })(e).catch((err) => {
+        console.error(`${logModule} Error saving task`, err);
+
+        if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
+          toaster.error({
+            id: `duplicate-reference-solution-${Date.now()}`,
+            title: intl.formatMessage(getErrorMessageDescriptor(err.errorCode)),
+            closable: true,
+          });
+          return;
+        }
+
+        toaster.error({
+          id: "task-reference-solutions-save-error",
+          title: intl.formatMessage(messages.saveError),
+          closable: true,
+        });
+      });
     },
     [handleSubmit, onSubmit, reset, intl],
   );
@@ -594,7 +586,7 @@ const TaskFormReferenceSolutions = ({
           {shouldShowSaveButton && (
             <SubmitFormButton
               label={submitMessage}
-              disabled={!isDirty || !isValid}
+              disabled={!isDirty}
               data-testid="task-reference-solutions-form-submit"
             />
           )}
