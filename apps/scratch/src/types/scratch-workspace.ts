@@ -23,4 +23,10 @@ export interface WorkspaceChangeEvent {
   oldParentId?: string | null;
   newParentId?: string | null;
   isOutside?: boolean;
+
+  group?: string;
+  element?: string;
+  name?: string;
+  oldValue?: unknown;
+  newValue?: unknown;
 }

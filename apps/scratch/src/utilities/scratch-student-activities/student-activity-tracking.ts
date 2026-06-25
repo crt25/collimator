@@ -1,12 +1,18 @@
 import { StudentActionType } from "../../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
 import { mapDeletedBlock } from "./scratch-block";
-import { trackCreateActivity, trackDeleteActivity, trackMoveActivity } from ".";
+import {
+  trackChangeActivity,
+  trackCreateActivity,
+  trackDeleteActivity,
+  trackMoveActivity,
+} from ".";
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
   create: StudentActionType.Create,
   move: StudentActionType.Move,
   delete: StudentActionType.Delete,
+  change: StudentActionType.ConfirmedChange,
 };
 
 export const mapScratchEventTypeToStudentActionType = (
@@ -68,6 +74,22 @@ export const handleStudentActivityTracking = ({
       }
 
       trackMoveActivity({
+        block,
+        sendRequest,
+        solution,
+        event,
+        canEditTask,
+      });
+
+      break;
+    }
+
+    case StudentActionType.ConfirmedChange: {
+      if (!block) {
+        return;
+      }
+
+      trackChangeActivity({
         block,
         sendRequest,
         solution,
