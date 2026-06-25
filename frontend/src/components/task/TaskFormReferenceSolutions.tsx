@@ -274,7 +274,6 @@ const TaskFormReferenceSolutions = ({
     (referenceSolutions: CreateReferenceSolutionDtoWithId[]) => {
       setValue("referenceSolutions", referenceSolutions, {
         shouldDirty: true,
-        shouldValidate: true,
       });
     },
     [setValue],
@@ -508,7 +507,6 @@ const TaskFormReferenceSolutions = ({
 
                       setValue("referenceSolutionFiles", newObject, {
                         shouldDirty: true,
-                        shouldValidate: true,
                       });
                     }}
                   >
@@ -572,13 +570,12 @@ const TaskFormReferenceSolutions = ({
                     ...referenceSolutionFiles,
                     [showSolveTaskModalForId]: solution.file,
                   },
-                  { shouldDirty: true, shouldValidate: true },
+                  { shouldDirty: true },
                 );
 
                 // react hook form does not detect the file change, so we need to set it manually
                 setValue("_fileChanged", true, {
                   shouldDirty: true,
-                  shouldValidate: true,
                 });
               }}
             />
