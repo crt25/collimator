@@ -95,7 +95,7 @@ const messages = defineMessages({
   referenceSolutionsLengthValidation: {
     id: "TaskFormReferenceSolutions.referenceSolutionsLengthValidation",
     defaultMessage:
-      "The number of reference solutions must match the number of reference solution files",
+      "Please create a reference solution in the external application for each entry before saving.",
   },
   closeConfirmationTitle: {
     id: "TaskFormReferenceSolutions.closeConfirmation.title",
