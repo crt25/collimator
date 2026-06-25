@@ -78,7 +78,6 @@
     "socket.io-client": "^4.8.1",
     "swr": "^2.3.3",
     "ts-pattern": "^5.7.0",
-    "unique-names-generator": "^4.7.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {

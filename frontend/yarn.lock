@@ -8004,7 +8004,6 @@ __metadata:
     ts-node: "npm:^10.9.2"
     ts-pattern: "npm:^5.7.0"
     typescript: "npm:^5.9.3"
-    unique-names-generator: "npm:^4.7.1"
     vitest: "npm:^4.0.16"
     wait-for-expect: "npm:^4.0.0"
     yup: "npm:^1.6.1"
@@ -15804,13 +15803,6 @@ __metadata:
   dependencies:
     unique-slug: "npm:^5.0.0"
   checksum: 10c0/38ae681cceb1408ea0587b6b01e29b00eee3c84baee1e41fd5c16b9ed443b80fba90c40e0ba69627e30855570a34ba8b06702d4a35035d4b5e198bf5a64c9ddc
-  languageName: node
-  linkType: hard
-
-"unique-names-generator@npm:^4.7.1":
-  version: 4.7.1
-  resolution: "unique-names-generator@npm:4.7.1"
-  checksum: 10c0/db07b9a0fee6eac4a21cf567c9744ee97895aa744d51ec913557205173a65c1a7a4d12470295796acb7247e6646e7975c340bb634c7adf41e5d950fa5cf94375
   languageName: node
   linkType: hard
 
