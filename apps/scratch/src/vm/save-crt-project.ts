@@ -1,6 +1,7 @@
 import VM from "@scratch/scratch-vm";
 import JSZip from "jszip";
 import { loadCrtProject } from "./load-crt-project";
+import { allBlocks } from "./utils";
 
 /**
  * @returns Project in a Scratch 3.0 JSON representation.
@@ -37,22 +38,18 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
 
   const isTaskBlockById = new Map<string, boolean | undefined>();
 
-  for (const target of vm.runtime.targets) {
-    for (const block of Object.values(target.blocks._blocks)) {
-      // the round trip reload here calls the PROJECT_LOADED listener
-      // in the assertion extension, which re mark every block in the workspace as a task block and makes them undeletable.
-      // snapshot isTaskBlock here for every block and restore it after the reload to work around this.
-      isTaskBlockById.set(block.id, block.isTaskBlock);
-    }
+  for (const block of allBlocks(vm.runtime)) {
+    // the round trip reload here calls the PROJECT_LOADED listener
+    // in the assertion extension, which re mark every block in the workspace as a task block and makes them undeletable.
+    // snapshot isTaskBlock here for every block and restore it after the reload to work around this.
+    isTaskBlockById.set(block.id, block.isTaskBlock);
   }
 
   await loadCrtProject(vm, exportedTask);
 
-  for (const target of vm.runtime.targets) {
-    for (const block of Object.values(target.blocks._blocks)) {
-      if (isTaskBlockById.has(block.id)) {
-        block.isTaskBlock = isTaskBlockById.get(block.id);
-      }
+  for (const block of allBlocks(vm.runtime)) {
+    if (isTaskBlockById.has(block.id)) {
+      block.isTaskBlock = isTaskBlockById.get(block.id);
     }
   }
 
