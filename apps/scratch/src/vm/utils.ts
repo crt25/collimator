@@ -1,6 +1,6 @@
 import { BlockExtended } from "@scratch/scratch-vm";
 
-export function* allBlocks(
+export function* iterateAllBlocks(
   runtime: VMExtended.RuntimeExtended,
 ): Generator<BlockExtended> {
   for (const target of runtime.targets) {

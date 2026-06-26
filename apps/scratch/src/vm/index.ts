@@ -8,7 +8,7 @@ import {
   restoreSpriteStateForSerialization,
   restoreStageStateForSerialization,
 } from "./target-state";
-import { allBlocks } from "./utils";
+import { iterateAllBlocks } from "./utils";
 
 const clearStartState = (startState: StartState): void => {
   startState.sprites.clear();
@@ -84,7 +84,7 @@ const initializeTaskBlocksOnLoad = (vm: VM, startState: StartState): void => {
   vm.runtime.on("PROJECT_LOADED", () => {
     // iterate over all the blocks in the runtime
     // and mark them as initial blocks
-    for (const block of allBlocks(vm.runtime)) {
+    for (const block of iterateAllBlocks(vm.runtime)) {
       block.isTaskBlock = vm.taskBlockIds
         ? vm.taskBlockIds.has(block.id)
         : true;
