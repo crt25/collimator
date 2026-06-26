@@ -462,7 +462,7 @@ const TaskForm = ({
     (e: React.FormEvent<HTMLFormElement>) => {
       let data: TaskFormValues;
 
-      handleSubmit((v: TaskFormValues) => {
+      handleSubmit(async (v: TaskFormValues) => {
         data = v;
 
         // A null taskFile affects UI state:
@@ -478,7 +478,7 @@ const TaskForm = ({
           return Promise.reject(new NoTaskFileError());
         }
 
-        return onSubmit({
+        await onSubmit({
           title: data.title,
           description: data.description,
           type: data.type,
@@ -488,55 +488,51 @@ const TaskForm = ({
           isPublic: data.isPublic,
           clearAllReferenceSolutions: clearSolutionsOnSave,
         } satisfies TaskFormSubmission);
-      })(e)
-        .then(() => {
-          // allow navigation after the task has been saved
-          cannotNavigate.current = false;
 
-          setHasTypeChanged(false);
-          setClearSolutionsOnSave(false);
+        // allow navigation after the task has been saved
+        cannotNavigate.current = false;
 
-          // reset the form to the updated values
-          // and mark the blob as not changed
-          // so the user can navigate without confirmation
-          reset(data);
+        setHasTypeChanged(false);
+        setClearSolutionsOnSave(false);
 
-          toaster.success({
-            id: "task-save-success",
-            title: intl.formatMessage(messages.saveSuccess),
-            closable: true,
-          });
-        })
-        .catch((err) => {
-          console.error(`${logModule} Error saving task`, err);
+        // reset the form to the updated values
+        // and mark the blob as not changed
+        // so the user can navigate without confirmation
+        reset(data);
 
-          if (err instanceof NoTaskFileError) {
-            toaster.error({
-              id: "task-file-required",
-              title: intl.formatMessage(messages.taskFileRequired),
-              closable: true,
-            });
-            return;
-          }
-
-          if (err instanceof ConflictError) {
-            toaster.error({
-              id: "task-conflict-error",
-              title: intl.formatMessage(
-                getErrorMessageDescriptor(err.errorCode),
-              ),
-              closable: true,
-            });
-            onConflictError?.();
-            return;
-          }
-
-          toaster.error({
-            id: "task-save-error",
-            title: intl.formatMessage(messages.saveError),
-            closable: true,
-          });
+        toaster.success({
+          id: "task-save-success",
+          title: intl.formatMessage(messages.saveSuccess),
+          closable: true,
         });
+      })(e).catch((err) => {
+        console.error(`${logModule} Error saving task`, err);
+
+        if (err instanceof NoTaskFileError) {
+          toaster.error({
+            id: "task-file-required",
+            title: intl.formatMessage(messages.taskFileRequired),
+            closable: true,
+          });
+          return;
+        }
+
+        if (err instanceof ConflictError) {
+          toaster.error({
+            id: "task-conflict-error",
+            title: intl.formatMessage(getErrorMessageDescriptor(err.errorCode)),
+            closable: true,
+          });
+          onConflictError?.();
+          return;
+        }
+
+        toaster.error({
+          id: "task-save-error",
+          title: intl.formatMessage(messages.saveError),
+          closable: true,
+        });
+      });
     },
     [
       handleSubmit,
