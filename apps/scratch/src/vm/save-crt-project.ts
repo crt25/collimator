@@ -40,7 +40,7 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
 
   for (const block of allBlocks(vm.runtime)) {
     // the round trip reload here calls the PROJECT_LOADED listener
-    // in the assertion extension, which re mark every block in the workspace as a task block and makes them undeletable.
+    // in the assertion extension, which re-marks every block in the workspace as a task block and makes them undeletable.
     // snapshot isTaskBlock here for every block and restore it after the reload to work around this.
     isTaskBlockById.set(block.id, block.isTaskBlock);
   }
