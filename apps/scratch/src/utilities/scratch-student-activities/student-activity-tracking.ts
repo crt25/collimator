@@ -14,7 +14,7 @@ const scratchToStudentActionType: Record<string, StudentActionType> = {
   move: StudentActionType.Move,
   delete: StudentActionType.Delete,
   change: StudentActionType.ConfirmedChange,
-  block_field_intermediate_change: StudentActionType.IntermediateChange,
+  // block_field_intermediate_change: StudentActionType.IntermediateChange,
 };
 
 export const mapScratchEventTypeToStudentActionType = (
