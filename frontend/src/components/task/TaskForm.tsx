@@ -475,7 +475,7 @@ const TaskForm = ({
             type: "manual",
             message: intl.formatMessage(messages.taskFileRequired),
           });
-          return Promise.reject(new NoTaskFileError());
+          throw new NoTaskFileError();
         }
 
         await onSubmit({
