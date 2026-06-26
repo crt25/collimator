@@ -262,6 +262,7 @@ const TaskFormReferenceSolutions = ({
     watch,
     reset,
     setValue,
+    trigger,
   } = useForm<TaskFormReferenceSolutionsValues & { _fileChanged: boolean }>({
     resolver,
     defaultValues,
@@ -499,8 +500,10 @@ const TaskFormReferenceSolutions = ({
                   <RemoveTask
                     data-testid={`remove-task-${solution.id}`}
                     onClick={() => {
-                      setReferenceSolutions(
+                      setValue(
+                        "referenceSolutions",
                         referenceSolutions.filter((s) => s !== solution),
+                        { shouldDirty: true },
                       );
 
                       const newObject = { ...referenceSolutionFiles };
@@ -508,8 +511,11 @@ const TaskFormReferenceSolutions = ({
 
                       setValue("referenceSolutionFiles", newObject, {
                         shouldDirty: true,
-                        shouldValidate: isSubmitted,
                       });
+
+                      if (isSubmitted) {
+                        trigger();
+                      }
                     }}
                   >
                     <FontAwesomeIcon icon={faTrash} />
