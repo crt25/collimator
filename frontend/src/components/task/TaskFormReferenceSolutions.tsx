@@ -258,7 +258,7 @@ const TaskFormReferenceSolutions = ({
 
   const {
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitted },
     watch,
     reset,
     setValue,
@@ -274,9 +274,10 @@ const TaskFormReferenceSolutions = ({
     (referenceSolutions: CreateReferenceSolutionDtoWithId[]) => {
       setValue("referenceSolutions", referenceSolutions, {
         shouldDirty: true,
+        shouldValidate: isSubmitted,
       });
     },
-    [setValue],
+    [setValue, isSubmitted],
   );
 
   const updateReferenceSolution = useCallback(
@@ -507,6 +508,7 @@ const TaskFormReferenceSolutions = ({
 
                       setValue("referenceSolutionFiles", newObject, {
                         shouldDirty: true,
+                        shouldValidate: isSubmitted,
                       });
                     }}
                   >
@@ -570,7 +572,7 @@ const TaskFormReferenceSolutions = ({
                     ...referenceSolutionFiles,
                     [showSolveTaskModalForId]: solution.file,
                   },
-                  { shouldDirty: true },
+                  { shouldDirty: true, shouldValidate: isSubmitted },
                 );
 
                 // react hook form does not detect the file change, so we need to set it manually
