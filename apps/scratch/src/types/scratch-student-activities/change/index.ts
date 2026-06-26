@@ -1,1 +1,1 @@
-export type { StudentChangeActivity } from "./types";
+export type { StudentBlockChangeActivity } from "./types";

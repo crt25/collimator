@@ -2,12 +2,12 @@ import { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 import { hasValidBlockContext } from "../scratch-block";
 import { MissingAttributeError } from "../../../exceptions";
 import type { Block } from "scratch-blocks";
-import type { StudentChangeActivity } from "../../../types/scratch-student-activities";
+import type { StudentBlockChangeActivity } from "../../../types/scratch-student-activities";
 
 export const getChangePayload = (
   block: Block,
   event: WorkspaceChangeEvent,
-): StudentChangeActivity => {
+): StudentBlockChangeActivity => {
   if (!hasValidBlockContext(event)) {
     throw new MissingAttributeError(event, "blockId");
   }

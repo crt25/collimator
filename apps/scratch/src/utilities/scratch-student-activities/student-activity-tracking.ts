@@ -13,8 +13,19 @@ const scratchToStudentActionType: Record<string, StudentActionType> = {
   create: StudentActionType.Create,
   move: StudentActionType.Move,
   delete: StudentActionType.Delete,
-  change: StudentActionType.ConfirmedChange,
-  // block_field_intermediate_change: StudentActionType.IntermediateChange,
+  /**
+   * Note:
+   *
+   * In the Scratch version we currently have, 'change' is emitted per keystroke
+   * while editing a field, not just on commit. So it already covers the
+   * keystroke sequence, which is why intermediate tracking is left off
+   *
+   * A newer Scratch version adds 'block_field_intermediate_change' for
+   * the per-keystroke edits and makes `change` commit-only. Once we upgrade,
+   * uncomment it.
+   */
+  change: StudentActionType.BlockChange,
+  // block_field_intermediate_change: StudentActionType.IntermediateFieldChange,
 };
 
 export const mapScratchEventTypeToStudentActionType = (
@@ -86,7 +97,7 @@ export const handleStudentActivityTracking = ({
       break;
     }
 
-    case StudentActionType.ConfirmedChange: {
+    case StudentActionType.BlockChange: {
       if (!block) {
         return;
       }
@@ -102,7 +113,7 @@ export const handleStudentActivityTracking = ({
       break;
     }
 
-    // case StudentActionType.IntermediateChange: {
+    // case StudentActionType.IntermediateFieldChange: {
     //   if (!block) {
     //     return;
     //   }

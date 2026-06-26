@@ -7,11 +7,7 @@ export const shouldTrackChange = (
   canEditTask: boolean | undefined,
 ): boolean => {
   if (
-    !isTrackableStudentAction(
-      StudentActionType.ConfirmedChange,
-      event,
-      canEditTask,
-    )
+    !isTrackableStudentAction(StudentActionType.BlockChange, event, canEditTask)
   ) {
     return false;
   }

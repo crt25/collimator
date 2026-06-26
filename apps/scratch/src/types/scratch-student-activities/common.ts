@@ -26,8 +26,8 @@ export enum StudentActionType {
   Move = "move",
   Delete = "delete",
   GreenFlag = "greenFlag",
-  ConfirmedChange = "confirmedChange",
-  IntermediateChange = "intermediateChange",
+  BlockChange = "blockChange",
+  IntermediateFieldChange = "intermediateFieldChange",
 }
 
 export interface BasePipelineParams {

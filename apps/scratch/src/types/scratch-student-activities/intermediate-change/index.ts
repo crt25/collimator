@@ -1,1 +1,1 @@
-export type { StudentIntermediateChangeActivity } from "./types";
+export type { StudentIntermediateFieldChangeActivity } from "./types";

@@ -1,6 +1,7 @@
 import { StudentAppActivity } from "../common";
 
-export interface StudentIntermediateChangeActivity extends StudentAppActivity {
+export interface StudentIntermediateFieldChangeActivity
+  extends StudentAppActivity {
   group: string | null;
   name: string | null;
   oldValue: unknown;

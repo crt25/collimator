@@ -8,7 +8,7 @@ export const shouldTrackIntermediateChange = (
 ): boolean => {
   if (
     !isTrackableStudentAction(
-      StudentActionType.IntermediateChange,
+      StudentActionType.IntermediateFieldChange,
       event,
       canEditTask,
     )

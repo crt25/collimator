@@ -1,17 +1,17 @@
 import {
   StudentActionType,
-  type StudentChangeActivity,
+  type StudentBlockChangeActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
 
 export async function sendChangeActivity(
-  data: StudentChangeActivity,
+  data: StudentBlockChangeActivity,
   sendRequest: CrtContextValue["sendRequest"],
   solution: Blob,
 ): Promise<void> {
   try {
     await sendRequest("postStudentAppActivity", {
-      action: StudentActionType.ConfirmedChange,
+      action: StudentActionType.BlockChange,
       data,
       solution,
     });
