@@ -1,6 +1,7 @@
 import VM from "@scratch/scratch-vm";
 import JSZip from "jszip";
 import { loadCrtProject } from "./load-crt-project";
+import { iterateAllBlocks } from "./utils";
 
 /**
  * @returns Project in a Scratch 3.0 JSON representation.
@@ -35,7 +36,24 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
   // To work around this, we re-load the project we just saved, which ensures that the asset ids in the task and the submission are the same.
   const exportedTask = await task.arrayBuffer();
 
-  await loadCrtProject(vm, exportedTask);
+  const isTaskBlockById = new Map<string, boolean | undefined>();
+
+  for (const block of iterateAllBlocks(vm.runtime)) {
+    // the round trip reload here calls the PROJECT_LOADED listener
+    // in the assertion extension, which re-marks every block in the workspace as a task block and makes them undeletable.
+    // snapshot isTaskBlock here for every block and restore it after the reload to work around this.
+    isTaskBlockById.set(block.id, block.isTaskBlock);
+  }
+
+  try {
+    await loadCrtProject(vm, exportedTask);
+  } finally {
+    for (const block of iterateAllBlocks(vm.runtime)) {
+      if (isTaskBlockById.has(block.id)) {
+        block.isTaskBlock = isTaskBlockById.get(block.id);
+      }
+    }
+  }
 
   const reExportedTask = await saveCrtProject(vm);
 
