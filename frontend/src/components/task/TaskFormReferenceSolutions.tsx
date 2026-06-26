@@ -263,6 +263,7 @@ const TaskFormReferenceSolutions = ({
     reset,
     setValue,
     trigger,
+    clearErrors,
   } = useForm<TaskFormReferenceSolutionsValues & { _fileChanged: boolean }>({
     resolver,
     defaultValues,
@@ -270,15 +271,24 @@ const TaskFormReferenceSolutions = ({
 
   const referenceSolutions = watch("referenceSolutions");
 
+  // after the first submit, every mutation should re-evaluate the full schema
+  // so cross-field errors and stale per-index errors get refreshed
+  const revalidate = useCallback(() => {
+    if (isSubmitted) {
+      clearErrors();
+      trigger();
+    }
+  }, [isSubmitted, clearErrors, trigger]);
+
   // ensure that the selected tasks are always in sync with the form
   const setReferenceSolutions = useCallback(
     (referenceSolutions: CreateReferenceSolutionDtoWithId[]) => {
       setValue("referenceSolutions", referenceSolutions, {
         shouldDirty: true,
-        shouldValidate: isSubmitted,
       });
+      revalidate();
     },
-    [setValue, isSubmitted],
+    [setValue, revalidate],
   );
 
   const updateReferenceSolution = useCallback(
@@ -293,19 +303,23 @@ const TaskFormReferenceSolutions = ({
 
   const onAddReferenceSolution = useCallback(
     () =>
-      setReferenceSolutions([
-        ...referenceSolutions,
-        {
-          // add unique synthetic id that will be removed later
-          id: Math.max(...referenceSolutions.map((s) => s.id), 0) + 1,
-          isNew: true,
-          isInitial: false,
-          title: "",
-          description: "",
-          tests: [],
-        },
-      ]),
-    [referenceSolutions, setReferenceSolutions],
+      setValue(
+        "referenceSolutions",
+        [
+          ...referenceSolutions,
+          {
+            // add unique synthetic id that will be removed later
+            id: Math.max(...referenceSolutions.map((s) => s.id), 0) + 1,
+            isNew: true,
+            isInitial: false,
+            title: "",
+            description: "",
+            tests: [],
+          },
+        ],
+        { shouldDirty: true },
+      ),
+    [referenceSolutions, setValue],
   );
 
   const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
@@ -444,10 +458,14 @@ const TaskFormReferenceSolutions = ({
                       disabled={disabled}
                       data-testid={`reference-solution-${solution.id}-title-input`}
                       onChange={(e) =>
-                        updateReferenceSolution(index, {
-                          ...referenceSolutions[index],
-                          title: e.target.value,
-                        })
+                        setValue(
+                          `referenceSolutions.${index}.title`,
+                          e.target.value,
+                          {
+                            shouldDirty: true,
+                            shouldValidate: isSubmitted,
+                          },
+                        )
                       }
                     />
                     <Field.ErrorText>
@@ -465,10 +483,14 @@ const TaskFormReferenceSolutions = ({
                       errors.referenceSolutions?.[index]?.description?.message
                     }
                     onChange={(e) =>
-                      updateReferenceSolution(index, {
-                        ...referenceSolutions[index],
-                        description: e.target.value,
-                      })
+                      setValue(
+                        `referenceSolutions.${index}.description`,
+                        e.target.value,
+                        {
+                          shouldDirty: true,
+                          shouldValidate: isSubmitted,
+                        },
+                      )
                     }
                   />
                   {!disabled && (
@@ -513,9 +535,7 @@ const TaskFormReferenceSolutions = ({
                         shouldDirty: true,
                       });
 
-                      if (isSubmitted) {
-                        trigger();
-                      }
+                      revalidate();
                     }}
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -578,13 +598,15 @@ const TaskFormReferenceSolutions = ({
                     ...referenceSolutionFiles,
                     [showSolveTaskModalForId]: solution.file,
                   },
-                  { shouldDirty: true, shouldValidate: isSubmitted },
+                  { shouldDirty: true },
                 );
 
                 // react hook form does not detect the file change, so we need to set it manually
                 setValue("_fileChanged", true, {
                   shouldDirty: true,
                 });
+
+                revalidate();
               }}
             />
           </>
