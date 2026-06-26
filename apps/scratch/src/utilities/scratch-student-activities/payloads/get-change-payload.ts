@@ -7,7 +7,7 @@ import type { StudentChangeActivity } from "../../../types/scratch-student-activ
 export const getChangePayload = (
   block: Block,
   event: WorkspaceChangeEvent,
-): StudentChangeActivity | null => {
+): StudentChangeActivity => {
   if (!hasValidBlockContext(event)) {
     throw new MissingAttributeError(event, "blockId");
   }

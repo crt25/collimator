@@ -16,10 +16,5 @@ export const trackChangeActivity = ({
 
   const data = getChangePayload(block, event);
 
-  if (!data) {
-    console.error("Could not create payload for changed block", block, event);
-    return;
-  }
-
   sendChangeActivity(data, sendRequest, solution);
 };
