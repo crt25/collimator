@@ -45,11 +45,13 @@ export const prepareCrtProjectForExport = async (vm: VM): Promise<Blob> => {
     isTaskBlockById.set(block.id, block.isTaskBlock);
   }
 
-  await loadCrtProject(vm, exportedTask);
-
-  for (const block of allBlocks(vm.runtime)) {
-    if (isTaskBlockById.has(block.id)) {
-      block.isTaskBlock = isTaskBlockById.get(block.id);
+  try {
+    await loadCrtProject(vm, exportedTask);
+  } finally {
+    for (const block of allBlocks(vm.runtime)) {
+      if (isTaskBlockById.has(block.id)) {
+        block.isTaskBlock = isTaskBlockById.get(block.id);
+      }
     }
   }
 
