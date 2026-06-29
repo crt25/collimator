@@ -213,7 +213,7 @@ class Blocks extends React.Component<Props, State> {
     string,
     { timer: ReturnType<typeof setTimeout>; flush: () => void }
   >();
-  private static readonly FIELD_CHANGE_DEBOUNCE_MS = 500;
+  private static readonly FIELD_CHANGE_DEBOUNCE_MS = 1000;
 
   constructor(props: Props) {
     super(props);
