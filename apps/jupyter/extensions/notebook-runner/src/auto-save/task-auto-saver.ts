@@ -8,6 +8,8 @@ import {
 import { AppCrtIframeApi } from "../iframe-rpc/src";
 import { sendTaskSolution } from "./send-task-solution";
 
+const logModule = "[Jupyter][Auto Save]";
+
 export type ExecutionScheduledCallback = Parameters<
   typeof NotebookActions.executionScheduled.connect
 >[0];
@@ -112,7 +114,10 @@ export class TaskAutoSaver {
       try {
         await saver.saveNotebook(panel, model);
       } catch (error) {
-        console.error(`Failed to save notebook ${model.toString()}:`, error);
+        console.error(
+          `${logModule} Failed to save notebook ${model.toString()}:`,
+          error,
+        );
       }
     });
   }
@@ -152,7 +157,7 @@ export class TaskAutoSaver {
       await panel.context.save();
       await this.postCurrentSolution(panel);
     } catch (error) {
-      console.error(`Save failed:`, error);
+      console.error(`${logModule} Save failed:`, error);
     }
   }
 
@@ -166,7 +171,7 @@ export class TaskAutoSaver {
 
       await sendTaskSolution(solution, this.sendRequest);
     } catch (error) {
-      console.warn("Failed to post solution to parent:", error);
+      console.warn(`${logModule} Failed to post solution to parent:`, error);
     }
   }
 

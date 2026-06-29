@@ -5,6 +5,8 @@ import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
 
+const logModule = "[Jupyter][Utils]";
+
 const isPreparedKey = "__isPrepared";
 const preparedKey = "__prepared";
 const preparedResolveKey = "__preparedResolve";
@@ -106,7 +108,7 @@ export const setupKernel = async (
   sessionContext: ISessionContext,
   setup: (kernel: IKernelConnection) => Promise<void>,
 ): Promise<void> => {
-  console.debug("Waiting for session context to be ready...");
+  console.debug(`${logModule} Waiting for session context to be ready...`);
   await sessionContext.ready;
 
   let kernel = sessionContext.session?.kernel;
@@ -141,7 +143,9 @@ export const setupKernel = async (
   ): Promise<void> => {
     let kernel = change.newValue;
     if (kernel === null) {
-      console.warn("Kernel is not available in session context, restarting...");
+      console.warn(
+        `${logModule} Kernel is not available in session context, restarting...`,
+      );
 
       try {
         sessionCtx.kernelChanged.disconnect(restartListener);
@@ -150,7 +154,7 @@ export const setupKernel = async (
           name: "python",
         });
       } catch (error) {
-        console.error("Error restarting kernel:", error);
+        console.error(`${logModule} Error restarting kernel:`, error);
         return;
       } finally {
         sessionCtx.kernelChanged.connect(restartListener);
@@ -166,7 +170,7 @@ export const setupKernel = async (
       }
     }
 
-    console.debug("Kernel changed:", kernel.name);
+    console.debug(`${logModule} Kernel changed:`, kernel.name);
     await kernel.info;
 
     return setup(kernel);

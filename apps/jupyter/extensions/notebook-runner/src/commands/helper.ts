@@ -12,6 +12,8 @@ import {
   CannotReadNotebookException,
 } from "../errors/otter-errors";
 
+const logModule = "[Jupyter][Command Helper]";
+
 export const kernelPaths = {
   data: "/data",
   src: "/src",
@@ -67,7 +69,7 @@ const copyFolderToKernelIfExists = async (
   } catch (error) {
     if (error instanceof DirectoryNotFoundError) {
       console.warn(
-        `Warning: ${error.message}. Continuing without copying ${sourcePath} folder.`,
+        `${logModule} Warning: ${error.message}. Continuing without copying ${sourcePath} folder.`,
       );
     } else {
       throw error; // Re-throw if it's a different error
@@ -87,7 +89,7 @@ const copyFolderToKernel = async (
     folder = await contents.get(sourcePath, { content: true });
   } catch (e) {
     console.debug(
-      `Error accessing ${sourcePath}:`,
+      `${logModule} Error accessing ${sourcePath}:`,
       e,
       ". Treating as not found.",
     );

@@ -9,6 +9,8 @@ import { CannotReadNotebookException } from "../errors/otter-errors";
 import { DEBUG_NOTEBOOK_RUNNER } from "../constants";
 import { copyRequiredFoldersToKernel, handleOtterCommandError } from "./helper";
 
+const logModule = "[Jupyter][Assign]";
+
 export const registerAssignCommand = (
   state: NotebookRunnerState,
   app: JupyterFrontEnd,
@@ -20,7 +22,7 @@ export const registerAssignCommand = (
     isVisible: () => DEBUG_NOTEBOOK_RUNNER,
     execute: async () => {
       try {
-        console.debug("Saving all open notebooks...");
+        console.debug(`${logModule} Saving all open notebooks...`);
         const widgets = app.shell.widgets("main");
 
         const savePromises: Promise<void>[] = [];
@@ -32,10 +34,12 @@ export const registerAssignCommand = (
         }
         await Promise.all(savePromises);
 
-        console.debug(`Waiting for otter session kernel to be available`);
+        console.debug(
+          `${logModule} Waiting for otter session kernel to be available`,
+        );
         const kernel = await state.getOtterKernel();
 
-        console.debug(`Generating student task and autograder...`);
+        console.debug(`${logModule} Generating student task and autograder...`);
 
         // read notebook template
         let template: Contents.IModel | null = null;
@@ -46,7 +50,7 @@ export const registerAssignCommand = (
           );
         } catch (error) {
           console.debug(
-            `Cannot read notebook: ${EmbeddedPythonCallbacks.taskTemplateLocation}`,
+            `${logModule} Cannot read notebook: ${EmbeddedPythonCallbacks.taskTemplateLocation}`,
             error,
           );
           throw new CannotReadNotebookException(
@@ -75,7 +79,7 @@ assign(
           `,
         });
 
-        console.debug("Retrieving generated files...");
+        console.debug(`${logModule} Retrieving generated files...`);
 
         await executePythonInKernel({
           kernel,
@@ -92,7 +96,7 @@ def first_file_with_extension(directory, extension):
         });
 
         console.debug(
-          "Looking for first file with extension .zip in /autograder",
+          `${logModule} Looking for first file with extension .zip in /autograder`,
         );
 
         // there should now be an 'autograder' directory containing a zip file with a random name
@@ -109,7 +113,7 @@ shutil.move(
       `,
         });
 
-        console.debug("Retrieving autograder...");
+        console.debug(`${logModule} Retrieving autograder...`);
 
         await app.serviceManager.contents.save("/autograder", {
           type: "directory",
@@ -135,7 +139,7 @@ shutil.move(
           },
         );
 
-        console.debug("Retrieving student notebook...");
+        console.debug(`${logModule} Retrieving student notebook...`);
 
         // and a 'student' directory containing a jupyter notebook.
         const studentNotebook =
