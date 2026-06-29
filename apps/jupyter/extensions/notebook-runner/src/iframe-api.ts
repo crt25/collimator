@@ -186,7 +186,7 @@ export class EmbeddedPythonCallbacks {
 
       return {
         file: taskBlob,
-        filename: "task.zip",
+        filename: "ClassMosaicExportedJupyterTask.zip",
       };
     } catch (e) {
       console.error(
