@@ -1,5 +1,6 @@
 import { StudentActionType } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
+import { logModule } from "../log-module";
 
 export async function sendGreenFlagActivity(
   sendRequest: CrtContextValue["sendRequest"],
@@ -12,6 +13,6 @@ export async function sendGreenFlagActivity(
       solution,
     });
   } catch (error) {
-    console.error("Error sending green flag activity:", error);
+    console.error(`${logModule} Error sending green flag activity:`, error);
   }
 }

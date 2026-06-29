@@ -2,6 +2,7 @@ import { StudentActionType } from "../../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
 import { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import { mapDeletedBlock } from "./scratch-block";
+import { logModule } from "./log-module";
 import {
   trackChangeActivity,
   trackCreateActivity,
@@ -48,14 +49,14 @@ export const handleStudentActivityTracking = ({
   switch (action) {
     case StudentActionType.Delete: {
       if (!event.oldXml) {
-        console.error("Could not find xml in event", event);
+        console.error(`${logModule} Could not find xml in event`, event);
         return;
       }
 
       const block = mapDeletedBlock(event.oldXml);
 
       if (!block) {
-        console.error("Could not retrieve deleted block");
+        console.error(`${logModule} Could not retrieve deleted block`);
         return;
       }
 

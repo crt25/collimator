@@ -21,6 +21,8 @@ import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { defaultMaximumExecutionTimeInMs } from "../utilities/constants";
 import Modal from "./modal/Modal";
 
+const logModule = "[Scratch][Task Config]";
+
 const Label = styled.label`
   display: flex !important;
 
@@ -73,7 +75,7 @@ const TaskConfig = ({
       const config = vm.crtConfig;
 
       if (!config) {
-        console.error("No task config found");
+        console.error(`${logModule} No task config found`);
         return;
       }
 
@@ -100,7 +102,7 @@ const TaskConfig = ({
 
   useEffect(() => {
     if (!vm.crtConfig) {
-      console.error("No task config found");
+      console.error(`${logModule} No task config found`);
       return;
     }
 
@@ -179,7 +181,7 @@ const TaskConfig = ({
 
   const onCancel = useCallback(() => {
     if (!configSnapshot.current || !vm.crtConfig) {
-      console.error("No config snapshot or task config found");
+      console.error(`${logModule} No config snapshot or task config found`);
       hideModal();
       return;
     }

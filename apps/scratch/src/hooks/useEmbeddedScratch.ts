@@ -42,7 +42,7 @@ import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer"
 
 export const scratchIdentifierSeparator = "$";
 
-const logModule = "[Embedded Scratch]";
+const logModule = "[Scratch][Embedded]";
 
 const messages = defineMessages({
   cannotLoadProject: {
@@ -341,7 +341,7 @@ export class EmbeddedScratchCallbacks {
         filename: "task.sb3",
       };
     } catch (e) {
-      console.error(`Failed to export task:`, e);
+      console.error(`${logModule} Failed to export task:`, e);
 
       throw new CannotExportProjectError(this.getErrorMessage(e));
     }

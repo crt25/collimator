@@ -39,6 +39,8 @@ import HashParserHOC from "../../components/customized-scratch-components/HashPa
 import { ScratchCrtConfig } from "../../types/scratch-vm-custom";
 import AppStateHOC from "./AppStateHOC";
 
+const logModule = "[Scratch][Gui]";
+
 const GUIComponentTyped = GUIComponent as unknown as React.ComponentType<
   React.ComponentProps<typeof GUIComponent> & {
     children?: React.ReactNode;
@@ -211,7 +213,7 @@ class GUI extends React.Component<Props> {
         }
       })
       .catch((err) => {
-        console.error(err);
+        console.error(logModule, err);
       });
   }
 

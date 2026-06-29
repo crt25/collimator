@@ -6,6 +6,8 @@ import { ModifyBlockConfigEvent } from "../../events/modify-block-config";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
 import Modal from "../modal/Modal";
 
+const logModule = "[Scratch][Block Config]";
+
 const cannotBeUsed = 0;
 const infiniteUses = -1;
 
@@ -26,7 +28,7 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
 
       if (typeof currentConfig === "boolean") {
         console.error(
-          `Trying to limit the number of blocks for ${e.blockId} which is not configured for this`,
+          `${logModule} Trying to limit the number of blocks for ${e.blockId} which is not configured for this`,
         );
         return;
       }
@@ -67,12 +69,12 @@ const BlockConfig = ({ vm }: { vm: VM }) => {
       const config = vm.crtConfig;
 
       if (!config) {
-        console.error("No task config found");
+        console.error(`${logModule} No task config found`);
         return;
       }
 
       if (!blockId) {
-        console.error("Block ID not found", blockId);
+        console.error(`${logModule} Block ID not found`, blockId);
         return;
       }
 

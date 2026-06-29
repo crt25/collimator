@@ -1,5 +1,6 @@
 import VM from "@scratch/scratch-vm";
 import { filterNonNull } from "../../filter-non-null";
+import { logModule } from "../log-module";
 import type { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 
 interface BlockLifecycleParams {
@@ -69,7 +70,7 @@ const getXmlFromEvent = (
       return event.oldXml;
 
     default:
-      console.error("Could not find xml in event", event);
+      console.error(`${logModule} Could not find xml in event`, event);
       return xmlElement;
   }
 };

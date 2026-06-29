@@ -3,6 +3,7 @@ import {
   StudentActionType,
   type StudentDeleteActivity,
 } from "../../../types/scratch-student-activities";
+import { logModule } from "../log-module";
 
 export async function sendDeleteActivity(
   data: StudentDeleteActivity,
@@ -16,6 +17,6 @@ export async function sendDeleteActivity(
       solution,
     });
   } catch (error) {
-    console.error("Error sending delete activity:", error);
+    console.error(`${logModule} Error sending delete activity:`, error);
   }
 }

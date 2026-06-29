@@ -2,6 +2,7 @@ import { DeleteStudentAction } from "../../types/scratch-student-activities";
 import { shouldTrackDeleteBlock } from "./filters/should-track-delete";
 import { getDeletePayload } from "./payloads";
 import { sendDeleteActivity } from "./senders/send-delete-activity";
+import { logModule } from "./log-module";
 
 export const trackDeleteActivity = ({
   block,
@@ -18,7 +19,11 @@ export const trackDeleteActivity = ({
   const data = getDeletePayload(block, event);
 
   if (!data) {
-    console.error("Could not create payload for deleted block", block, event);
+    console.error(
+      `${logModule} Could not create payload for deleted block`,
+      block,
+      event,
+    );
     return;
   }
 

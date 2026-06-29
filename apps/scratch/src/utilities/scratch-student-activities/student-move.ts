@@ -2,6 +2,7 @@ import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackMoveBlock } from "./filters/should-track-move";
 import { getMovePayload } from "./payloads";
 import { sendMoveActivity } from "./senders/send-move-activity";
+import { logModule } from "./log-module";
 
 export const trackMoveActivity = ({
   block,
@@ -18,7 +19,11 @@ export const trackMoveActivity = ({
   const data = getMovePayload(block, event);
 
   if (!data) {
-    console.error("Could not create payload for moved block", block, event);
+    console.error(
+      `${logModule} Could not create payload for moved block`,
+      block,
+      event,
+    );
     return;
   }
 
