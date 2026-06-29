@@ -1,5 +1,6 @@
 import { StudentActionType } from "../../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
+import { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import { mapDeletedBlock } from "./scratch-block";
 import {
   trackChangeActivity,
@@ -32,6 +33,9 @@ const scratchToStudentActionType: Record<string, StudentActionType> = {
 export const mapScratchEventTypeToStudentActionType = (
   type: string,
 ): StudentActionType | null => scratchToStudentActionType[type] || null;
+
+export const isFieldChangeEvent = (event: WorkspaceChangeEvent): boolean =>
+  event.type === "change" && event.element === "field";
 
 export const handleStudentActivityTracking = ({
   event,

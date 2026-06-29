@@ -75,6 +75,7 @@ import { getCrtColorsTheme } from "../../blocks/colors";
 import { StudentActionType } from "../../types/scratch-student-activities";
 import {
   handleStudentActivityTracking,
+  isFieldChangeEvent,
   mapScratchEventTypeToStudentActionType,
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
@@ -1112,6 +1113,10 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
+    if (!isFieldChangeEvent(event)) {
+      this.flushPendingFieldChanges();
+    }
+
     const isBlocked = shouldPreventBlocksActions(event, {
       canEditTask: this.props.canEditTask,
       vm: this.props.vm,
@@ -1156,11 +1161,7 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
-    if (
-      eventAction === StudentActionType.BlockChange &&
-      event.element === "field" &&
-      block
-    ) {
+    if (isFieldChangeEvent(event) && block) {
       this.scheduleFieldChangeTracking(event, block);
       return;
     }
