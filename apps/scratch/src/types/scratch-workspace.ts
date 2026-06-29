@@ -4,6 +4,7 @@ export interface WorkspaceChangeEvent {
   type:
     | "create"
     | "change"
+    | "block_field_intermediate_change"
     | "move"
     | "dragOutside"
     | "endDrag"
@@ -23,4 +24,10 @@ export interface WorkspaceChangeEvent {
   oldParentId?: string | null;
   newParentId?: string | null;
   isOutside?: boolean;
+
+  group?: string;
+  element?: string;
+  name?: string;
+  oldValue?: unknown;
+  newValue?: unknown;
 }

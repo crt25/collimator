@@ -10,7 +10,7 @@ import VM, {
 } from "@scratch/scratch-vm";
 
 import { connect } from "react-redux";
-import ScratchBlocks, { Flyout, Workspace } from "scratch-blocks";
+import ScratchBlocks, { Block, Flyout, Workspace } from "scratch-blocks";
 import { Action, Dispatch } from "redux";
 import log from "@scratch-submodule/packages/scratch-gui/src/lib/log.js";
 import Prompt from "@scratch-submodule/packages/scratch-gui/src/containers/prompt.jsx";
@@ -75,6 +75,7 @@ import { getCrtColorsTheme } from "../../blocks/colors";
 import { StudentActionType } from "../../types/scratch-student-activities";
 import {
   handleStudentActivityTracking,
+  isFieldChangeEvent,
   mapScratchEventTypeToStudentActionType,
 } from "../../utilities/scratch-student-activities/student-activity-tracking";
 import { handleBlockLifecycle } from "../../utilities/scratch-student-activities/scratch-block";
@@ -207,6 +208,12 @@ class Blocks extends React.Component<Props, State> {
   private _renderedToolboxXML?: string;
   private setToolboxRefreshEnabled?: (enabled: boolean) => void;
   private toolboxUpdateTimeout?: number;
+
+  private fieldChangeDebouncers = new Map<
+    string,
+    { timer: ReturnType<typeof setTimeout>; flush: () => void }
+  >();
+  private static readonly FIELD_CHANGE_DEBOUNCE_MS = 1000;
 
   constructor(props: Props) {
     super(props);
@@ -461,6 +468,7 @@ class Blocks extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    this.flushPendingFieldChanges();
     this.detachVM();
     this.getWorkspace().dispose();
     clearTimeout(this.toolboxUpdateTimeout);
@@ -1105,6 +1113,10 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
+    if (!isFieldChangeEvent(event)) {
+      this.flushPendingFieldChanges();
+    }
+
     const isBlocked = shouldPreventBlocksActions(event, {
       canEditTask: this.props.canEditTask,
       vm: this.props.vm,
@@ -1149,17 +1161,65 @@ class Blocks extends React.Component<Props, State> {
       return;
     }
 
+    if (isFieldChangeEvent(event) && block) {
+      this.scheduleFieldChangeTracking(event, block);
+      return;
+    }
+
+    this.trackActivity(event, eventAction, block);
+  }
+
+  private trackActivity(
+    event: WorkspaceChangeEvent,
+    action: StudentActionType,
+    block: Block | null,
+  ) {
     const json = this.props.vm.toJSON();
     const solution = new Blob([json], { type: "application/json" });
 
     handleStudentActivityTracking({
       event,
-      action: eventAction,
+      action,
       canEditTask: this.props.canEditTask,
       sendRequest: this.props.sendRequest,
       solution,
       block,
     });
+  }
+
+  private scheduleFieldChangeTracking(
+    event: WorkspaceChangeEvent,
+    block: Block,
+  ) {
+    const key = `${event.blockId}:${event.name ?? ""}`;
+    const existing = this.fieldChangeDebouncers.get(key);
+
+    if (existing) {
+      clearTimeout(existing.timer);
+    }
+
+    const flush = () => {
+      this.fieldChangeDebouncers.delete(key);
+      this.trackActivity(event, StudentActionType.BlockChange, block);
+    };
+
+    const timer = setTimeout(flush, Blocks.FIELD_CHANGE_DEBOUNCE_MS);
+
+    this.fieldChangeDebouncers.set(key, { timer, flush });
+  }
+
+  private flushPendingFieldChanges() {
+    const pending = Array.from(this.fieldChangeDebouncers.values());
+    this.fieldChangeDebouncers.clear();
+
+    for (const { timer, flush } of pending) {
+      clearTimeout(timer);
+      try {
+        flush();
+      } catch (error) {
+        console.error("Error flushing pending field change activity:", error);
+      }
+    }
   }
 
   render() {

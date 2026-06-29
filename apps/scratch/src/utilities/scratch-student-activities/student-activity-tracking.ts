@@ -1,17 +1,41 @@
 import { StudentActionType } from "../../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
+import { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import { mapDeletedBlock } from "./scratch-block";
-import { trackCreateActivity, trackDeleteActivity, trackMoveActivity } from ".";
+import {
+  trackChangeActivity,
+  trackCreateActivity,
+  trackDeleteActivity,
+  // trackIntermediateChangeActivity,
+  trackMoveActivity,
+} from ".";
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
   create: StudentActionType.Create,
   move: StudentActionType.Move,
   delete: StudentActionType.Delete,
+  /**
+   * Note:
+   *
+   * In the current scratch version (scratch-editor 11.6.0-react-18, see
+   * src/scratch-editor/package.json), 'change' is emitted per keystroke while
+   * editing a field, not just on commit. So it already covers the keystroke
+   * sequence, which is why intermediate tracking is left off.
+   *
+   * A newer Scratch version adds 'block_field_intermediate_change' for
+   * the per-keystroke edits and makes `change` commit-only. Once we upgrade,
+   * uncomment it.
+   */
+  change: StudentActionType.BlockChange,
+  // block_field_intermediate_change: StudentActionType.IntermediateFieldChange,
 };
 
 export const mapScratchEventTypeToStudentActionType = (
   type: string,
 ): StudentActionType | null => scratchToStudentActionType[type] || null;
+
+export const isFieldChangeEvent = (event: WorkspaceChangeEvent): boolean =>
+  event.type === "change" && event.element === "field";
 
 export const handleStudentActivityTracking = ({
   event,
@@ -77,6 +101,38 @@ export const handleStudentActivityTracking = ({
 
       break;
     }
+
+    case StudentActionType.BlockChange: {
+      if (!block) {
+        return;
+      }
+
+      trackChangeActivity({
+        block,
+        sendRequest,
+        solution,
+        event,
+        canEditTask,
+      });
+
+      break;
+    }
+
+    // case StudentActionType.IntermediateFieldChange: {
+    //   if (!block) {
+    //     return;
+    //   }
+
+    //   trackIntermediateChangeActivity({
+    //     block,
+    //     sendRequest,
+    //     solution,
+    //     event,
+    //     canEditTask,
+    //   });
+
+    //   break;
+    // }
 
     default:
       throw new Error(`Unhandled student action type: ${action}`);

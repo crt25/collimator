@@ -12,4 +12,8 @@ export type { StudentDeleteActivity, DeleteStudentAction } from "./delete";
 
 export type { StudentMoveActivity } from "./move";
 
+export type { StudentBlockChangeActivity } from "./change";
+
+export type { StudentIntermediateFieldChangeActivity } from "./intermediate-change";
+
 export { StudentActionType } from "./common";
