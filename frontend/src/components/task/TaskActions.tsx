@@ -2,6 +2,10 @@ import { defineMessages, useIntl } from "react-intl";
 import { LuDownload, LuTrash } from "react-icons/lu";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import {
+  JUPYTER_TASK_EXPORT_FILENAME,
+  SCRATCH_TASK_EXPORT_FILENAME,
+} from "iframe-rpc-react/src";
 import { useDeleteTask } from "@/api/collimator/hooks/tasks/useDeleteTask";
 import { getErrorMessageDescriptor } from "@/errors/errorMessages";
 import { ButtonMessages } from "@/i18n/button-messages";
@@ -72,9 +76,9 @@ const TaskActions = ({
   const getTaskExportFilename = (taskType: TaskType): string => {
     switch (taskType) {
       case TaskType.SCRATCH:
-        return "ClassMosaicExportedScratchTask.sb3";
+        return SCRATCH_TASK_EXPORT_FILENAME;
       case TaskType.JUPYTER:
-        return "ClassMosaicExportedJupyterTask.zip";
+        return JUPYTER_TASK_EXPORT_FILENAME;
     }
   };
 

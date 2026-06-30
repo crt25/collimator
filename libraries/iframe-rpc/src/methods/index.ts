@@ -29,6 +29,10 @@ export { ToastType } from "./post-message";
 export type { SetLocale } from "./set-locale";
 export type { ImportTask } from "./import-task";
 export type { PostStudentAppActivity } from "./post-student-activity";
+export {
+  SCRATCH_TASK_EXPORT_FILENAME,
+  JUPYTER_TASK_EXPORT_FILENAME,
+} from "./export-task";
 
 type Methods =
   | GetHeight

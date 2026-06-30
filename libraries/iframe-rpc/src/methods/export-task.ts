@@ -1,6 +1,11 @@
 import { IframeRpcMethod } from "../remote-procedure-call";
 import { RpcCaller } from "../rpc-caller";
 
+export const SCRATCH_TASK_EXPORT_FILENAME =
+  "ClassMosaicExportedScratchTask.sb3";
+export const JUPYTER_TASK_EXPORT_FILENAME =
+  "ClassMosaicExportedJupyterTask.zip";
+
 export interface ExportTaskResult {
   file: Blob;
   filename: string;

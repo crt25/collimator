@@ -37,7 +37,10 @@ import {
   saveCrtProject,
 } from "../vm/save-crt-project";
 import { Assertion } from "../types/scratch-vm-custom";
-import { ExportTaskResult } from "../../../../libraries/iframe-rpc/src/methods/export-task";
+import {
+  ExportTaskResult,
+  SCRATCH_TASK_EXPORT_FILENAME,
+} from "../../../../libraries/iframe-rpc/src/methods/export-task";
 import { stopBufferingIframeMessages } from "../utilities/iframe-message-buffer";
 
 export const scratchIdentifierSeparator = "$";
@@ -338,7 +341,7 @@ export class EmbeddedScratchCallbacks {
 
       return {
         file: task,
-        filename: "task.sb3",
+        filename: SCRATCH_TASK_EXPORT_FILENAME,
       };
     } catch (e) {
       console.error(`Failed to export task:`, e);
