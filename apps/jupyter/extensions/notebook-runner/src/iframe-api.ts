@@ -46,6 +46,7 @@ import { hasStatus } from "./utils";
 import {
   ExportTask,
   ExportTaskResult,
+  JUPYTER_TASK_EXPORT_FILENAME,
 } from "./iframe-rpc/src/methods/export-task";
 import { toCrtLocale, toJupyterLocale } from "./languages";
 
@@ -186,7 +187,7 @@ export class EmbeddedPythonCallbacks {
 
       return {
         file: taskBlob,
-        filename: "ClassMosaicExportedJupyterTask.zip",
+        filename: JUPYTER_TASK_EXPORT_FILENAME,
       };
     } catch (e) {
       console.error(
