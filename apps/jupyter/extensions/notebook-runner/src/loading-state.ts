@@ -6,7 +6,7 @@ import { sendMessage } from "./send-message";
 import { messages } from "./i18n/messages";
 import { formatMessage } from "./i18n/intl";
 
-const logModule = "[Jupyter][Loading State]";
+const logModule = "[Jupyter][loading-state]";
 
 const executionToolbarButtons = new Set(["run", "advance"]);
 const alwaysDisabledToolbarButtons = new Set([

@@ -25,7 +25,7 @@ import { messages } from "./i18n/messages";
 import { formatMessage, setIntlLocale } from "./i18n/intl";
 import { toCrtLocale } from "./languages";
 
-const logModule = "[Jupyter][Notebook Runner]";
+const logModule = "[Jupyter][index]";
 
 enableSentry();
 

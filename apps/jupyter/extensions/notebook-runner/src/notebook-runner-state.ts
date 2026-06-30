@@ -15,7 +15,7 @@ import {
 } from "./utils";
 import { installNbConvert, installOtter } from "./packages";
 
-const logModule = "[Jupyter][Runner State]";
+const logModule = "[Jupyter][notebook-runner-state]";
 
 /**
  * A listener that is called when a comm message is received from the kernel.

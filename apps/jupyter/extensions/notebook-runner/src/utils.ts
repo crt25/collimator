@@ -5,7 +5,7 @@ import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
 
-const logModule = "[Jupyter][Utils]";
+const logModule = "[Jupyter][utils]";
 
 const isPreparedKey = "__isPrepared";
 const preparedKey = "__prepared";

@@ -1,1 +1,1 @@
-export const logModule = "[Scratch][Student Activity]";
+export const logBaseModule = "[Scratch][Student Activity]";

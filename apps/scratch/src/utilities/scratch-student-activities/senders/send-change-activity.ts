@@ -3,7 +3,9 @@ import {
   type StudentBlockChangeActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-change-activity]`;
 
 export async function sendChangeActivity(
   data: StudentBlockChangeActivity,

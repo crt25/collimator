@@ -3,7 +3,9 @@ import {
   type StudentIntermediateFieldChangeActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-intermediate-change-activity]`;
 
 export async function sendIntermediateChangeActivity(
   data: StudentIntermediateFieldChangeActivity,

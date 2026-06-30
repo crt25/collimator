@@ -2,7 +2,9 @@ import { DeleteStudentAction } from "../../types/scratch-student-activities";
 import { shouldTrackDeleteBlock } from "./filters/should-track-delete";
 import { getDeletePayload } from "./payloads";
 import { sendDeleteActivity } from "./senders/send-delete-activity";
-import { logModule } from "./log-module";
+import { logBaseModule } from "./log-module";
+
+const logModule = `${logBaseModule}[student-delete]`;
 
 export const trackDeleteActivity = ({
   block,

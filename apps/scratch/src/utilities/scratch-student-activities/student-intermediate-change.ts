@@ -2,7 +2,9 @@ import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackIntermediateChange } from "./filters/should-track-intermediate-change";
 import { getIntermediateChangePayload } from "./payloads";
 import { sendIntermediateChangeActivity } from "./senders/send-intermediate-change-activity";
-import { logModule } from "./log-module";
+import { logBaseModule } from "./log-module";
+
+const logModule = `${logBaseModule}[student-intermediate-change]`;
 
 export const trackIntermediateChangeActivity = ({
   block,

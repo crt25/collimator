@@ -5,7 +5,7 @@ import { Contents, ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "./notebook-runner-state";
 import { executePythonInKernel, writeJsonToVirtualFilesystem } from "./utils";
 
-const logModule = "[Jupyter][Command]";
+const logModule = "[Jupyter][command]";
 
 export const runAssignCommand = "notebook-runner:run-assign";
 export const runGradingCommand = "notebook-runner:run-grading";

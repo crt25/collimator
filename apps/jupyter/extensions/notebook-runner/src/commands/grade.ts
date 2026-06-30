@@ -18,7 +18,7 @@ import {
   kernelPaths,
 } from "./helper";
 
-const logModule = "[Jupyter][Grade]";
+const logModule = "[Jupyter][commands/grade]";
 
 const createOnNewNotebookListener =
   (app: JupyterFrontEnd, state: NotebookRunnerState) =>

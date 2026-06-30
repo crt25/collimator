@@ -12,7 +12,7 @@ import {
   CannotReadNotebookException,
 } from "../errors/otter-errors";
 
-const logModule = "[Jupyter][Command Helper]";
+const logModule = "[Jupyter][commands/helper]";
 
 export const kernelPaths = {
   data: "/data",

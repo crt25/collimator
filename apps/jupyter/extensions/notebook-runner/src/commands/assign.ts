@@ -9,7 +9,7 @@ import { CannotReadNotebookException } from "../errors/otter-errors";
 import { DEBUG_NOTEBOOK_RUNNER } from "../constants";
 import { copyRequiredFoldersToKernel, handleOtterCommandError } from "./helper";
 
-const logModule = "[Jupyter][Assign]";
+const logModule = "[Jupyter][commands/assign]";
 
 export const registerAssignCommand = (
   state: NotebookRunnerState,

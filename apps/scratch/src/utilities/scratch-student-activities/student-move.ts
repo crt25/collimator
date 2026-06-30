@@ -2,7 +2,9 @@ import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackMoveBlock } from "./filters/should-track-move";
 import { getMovePayload } from "./payloads";
 import { sendMoveActivity } from "./senders/send-move-activity";
-import { logModule } from "./log-module";
+import { logBaseModule } from "./log-module";
+
+const logModule = `${logBaseModule}[student-move]`;
 
 export const trackMoveActivity = ({
   block,

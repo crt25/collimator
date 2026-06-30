@@ -8,7 +8,7 @@ import { messages } from "../i18n/messages";
 import { formatMessage } from "../i18n/intl";
 import { AppCrtIframeApi, ToastType } from "../iframe-rpc/src";
 
-const logModule = "[Jupyter][Run All Cells]";
+const logModule = "[Jupyter][commands/run-all-cells]";
 
 export const registerRunAllCellsCommand = (
   state: NotebookRunnerState,

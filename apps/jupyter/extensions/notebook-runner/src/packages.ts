@@ -11,7 +11,7 @@ import {
 import { EmbeddedPythonCallbacks } from "./iframe-api";
 import { LoadingStateManager } from "./loading-state";
 
-const logModule = "[Jupyter][Packages]";
+const logModule = "[Jupyter][packages]";
 
 /**
  * resolver for `_packagesReady`. it is called once the student-task notebook's
@@ -165,7 +165,10 @@ export const installPackagesWithLoadingState = async (
   waitForPackagesReady()
     .then(() => loadingStateManager.finishLoading(true))
     .catch((error) => {
-      console.error(`${logModule} Error waiting for packages to be ready:`, error);
+      console.error(
+        `${logModule} Error waiting for packages to be ready:`,
+        error,
+      );
       return loadingStateManager.finishLoading(false);
     });
 };

@@ -2,7 +2,9 @@ import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackCreateBlock } from "./filters/should-track-create";
 import { getCreatePayload } from "./payloads";
 import { sendCreateActivity } from "./senders/send-create-activity";
-import { logModule } from "./log-module";
+import { logBaseModule } from "./log-module";
+
+const logModule = `${logBaseModule}[student-create]`;
 
 export const trackCreateActivity = ({
   block,

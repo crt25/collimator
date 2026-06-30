@@ -1,7 +1,9 @@
 import { StudentActionType } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
 import { StudentMoveActivity } from "../../../types/scratch-student-activities/move";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-move-activity]`;
 
 export async function sendMoveActivity(
   data: StudentMoveActivity,

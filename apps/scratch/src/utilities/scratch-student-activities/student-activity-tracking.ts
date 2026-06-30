@@ -2,7 +2,7 @@ import { StudentActionType } from "../../types/scratch-student-activities";
 import { StudentActivityHandlerParams } from "../../types/scratch-student-activities";
 import { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import { mapDeletedBlock } from "./scratch-block";
-import { logModule } from "./log-module";
+import { logBaseModule } from "./log-module";
 import {
   trackChangeActivity,
   trackCreateActivity,
@@ -10,6 +10,8 @@ import {
   // trackIntermediateChangeActivity,
   trackMoveActivity,
 } from ".";
+
+const logModule = `${logBaseModule}[student-activity-tracking]`;
 
 const scratchToStudentActionType: Record<string, StudentActionType> = {
   create: StudentActionType.Create,

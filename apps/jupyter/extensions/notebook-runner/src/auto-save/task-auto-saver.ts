@@ -8,7 +8,7 @@ import {
 import { AppCrtIframeApi } from "../iframe-rpc/src";
 import { sendTaskSolution } from "./send-task-solution";
 
-const logModule = "[Jupyter][Auto Save]";
+const logModule = "[Jupyter][auto-save/task-auto-saver]";
 
 export type ExecutionScheduledCallback = Parameters<
   typeof NotebookActions.executionScheduled.connect

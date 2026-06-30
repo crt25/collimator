@@ -1,7 +1,9 @@
 import VM from "@scratch/scratch-vm";
 import { filterNonNull } from "../../filter-non-null";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
 import type { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
+
+const logModule = `${logBaseModule}[scratch-block/lifecycle]`;
 
 interface BlockLifecycleParams {
   event: WorkspaceChangeEvent;

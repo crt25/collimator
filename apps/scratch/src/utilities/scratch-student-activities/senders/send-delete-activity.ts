@@ -3,7 +3,9 @@ import {
   StudentActionType,
   type StudentDeleteActivity,
 } from "../../../types/scratch-student-activities";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-delete-activity]`;
 
 export async function sendDeleteActivity(
   data: StudentDeleteActivity,

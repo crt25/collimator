@@ -1,6 +1,8 @@
 import { StudentActionType } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
-import { logModule } from "../log-module";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-green-flag-activity]`;
 
 export async function sendGreenFlagActivity(
   sendRequest: CrtContextValue["sendRequest"],
