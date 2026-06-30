@@ -69,9 +69,8 @@ const StudentHeader = ({
     isFullyAuthenticated(authContext)
   ) {
     const locale = isLanguage(intl.locale) ? intl.locale : undefined;
-    const pseudonym = authContext.isAnonymous ? null : authContext.pseudonym;
 
-    studentName = getStudentNickname(authContext.studentId, pseudonym, locale);
+    studentName = getStudentNickname(authContext.studentId, locale);
   }
 
   return (

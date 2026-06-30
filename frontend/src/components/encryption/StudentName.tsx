@@ -54,7 +54,7 @@ export const StudentName = ({
 
     return (
       <NameWrapper data-testid={testId}>
-        {getStudentNickname(studentId, pseudonym, locale)}{" "}
+        {getStudentNickname(studentId, locale)}{" "}
         <FontAwesomeIcon
           icon={faInfoCircle}
           title={intl.formatMessage(messages.cannotDecrypt)}
