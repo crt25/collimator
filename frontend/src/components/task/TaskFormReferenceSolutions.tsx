@@ -286,9 +286,8 @@ const TaskFormReferenceSolutions = ({
       setValue("referenceSolutions", referenceSolutions, {
         shouldDirty: true,
       });
-      revalidate();
     },
-    [setValue, revalidate],
+    [setValue],
   );
 
   const updateReferenceSolution = useCallback(
