@@ -85,16 +85,10 @@ export const useStudentName = ({
   const locale = isLanguage(intl.locale) ? intl.locale : undefined;
 
   const name = useMemo(() => {
-    return !anonymizationState.showActualName || !pseudonym
-      ? getStudentNickname(studentId, pseudonym, locale)
+    return !anonymizationState.showActualName
+      ? getStudentNickname(studentId, locale)
       : decryptedName;
-  }, [
-    anonymizationState.showActualName,
-    decryptedName,
-    studentId,
-    pseudonym,
-    locale,
-  ]);
+  }, [anonymizationState.showActualName, decryptedName, studentId, locale]);
 
   return {
     name,
