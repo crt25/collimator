@@ -4,6 +4,8 @@ import { isBlockInFlyoutCanvas } from "../utilities/scratch-selectors";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { ignoreEvent, svgNamespace } from "./helpers";
 
+const logModule = "[Scratch][Block Config]";
+
 const buttonHeight = 20;
 const buttonWidth = 60;
 
@@ -109,7 +111,7 @@ const updateBlockConfigButton = (
 
   if (typeof allowedCount === "boolean") {
     console.error(
-      `Trying to limit the number of visible blocks for ${blockId} which is not configured for this`,
+      `${logModule} Trying to limit the number of visible blocks for ${blockId} which is not configured for this`,
     );
     return;
   }

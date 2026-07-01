@@ -2,6 +2,9 @@ import { StudentActionContext } from "../../types/scratch-student-activities";
 import { shouldTrackCreateBlock } from "./filters/should-track-create";
 import { getCreatePayload } from "./payloads";
 import { sendCreateActivity } from "./senders/send-create-activity";
+import { logBaseModule } from "./log-module";
+
+const logModule = `${logBaseModule}[student-create]`;
 
 export const trackCreateActivity = ({
   block,
@@ -17,7 +20,11 @@ export const trackCreateActivity = ({
   const data = getCreatePayload(block, event);
 
   if (!data) {
-    console.error("Could not create payload for created block", block, event);
+    console.error(
+      `${logModule} Could not create payload for created block`,
+      block,
+      event,
+    );
     return;
   }
 

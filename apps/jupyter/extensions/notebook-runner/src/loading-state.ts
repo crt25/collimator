@@ -6,6 +6,8 @@ import { sendMessage } from "./send-message";
 import { messages } from "./i18n/messages";
 import { formatMessage } from "./i18n/intl";
 
+const logModule = "[Jupyter][loading-state]";
+
 const executionToolbarButtons = new Set(["run", "advance"]);
 const alwaysDisabledToolbarButtons = new Set([
   "restart",
@@ -74,7 +76,10 @@ export class LoadingStateManager {
       type,
       this.sendRequest,
     ).catch((error) => {
-      console.error(`Failed to show "${title.id}" notification:`, error);
+      console.error(
+        `${logModule} Failed to show "${title.id}" notification:`,
+        error,
+      );
     });
   }
 

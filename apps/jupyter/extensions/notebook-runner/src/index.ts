@@ -25,6 +25,8 @@ import { messages } from "./i18n/messages";
 import { formatMessage, setIntlLocale } from "./i18n/intl";
 import { toCrtLocale } from "./languages";
 
+const logModule = "[Jupyter][index]";
+
 enableSentry();
 
 /**
@@ -58,7 +60,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     factory: IFileBrowserFactory,
     settingRegistry: ISettingRegistry,
   ) => {
-    console.debug("JupyterLab extension notebook-runner is activated!");
+    console.debug(
+      `${logModule} JupyterLab extension notebook-runner is activated!`,
+    );
 
     // The default file browser instance
     const fileBrowser = factory.tracker.find(
@@ -66,7 +70,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     );
 
     if (!fileBrowser) {
-      console.warn("No default file browser found");
+      console.warn(`${logModule} No default file browser found`);
       return;
     }
 
@@ -91,14 +95,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
         setIntlLocale(toCrtLocale(rawLocale));
       }
     } catch (error) {
-      console.error("Failed to read locale for notebook-runner i18n:", error);
+      console.error(
+        `${logModule} Failed to read locale for notebook-runner i18n:`,
+        error,
+      );
       await sendMessage(
         formatMessage(messages.localeReadFailedTitle),
         formatMessage(messages.localeReadFailedBody),
         ToastType.Error,
         platform.sendRequest.bind(platform),
       ).catch((error) => {
-        console.error("Failed to show locale read error notification", error);
+        console.error(
+          `${logModule} Failed to show locale read error notification`,
+          error,
+        );
       });
     }
 
@@ -148,7 +158,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
         loadingStateManager,
       );
     } catch (error) {
-      console.error("Failed to initialize package installation flow:", error);
+      console.error(
+        `${logModule} Failed to initialize package installation flow:`,
+        error,
+      );
 
       await sendMessage(
         formatMessage(messages.initFailedTitle),
@@ -157,7 +170,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         platform.sendRequest.bind(platform),
       ).catch((messageError) => {
         console.error(
-          "Failed to show initialization error notification:",
+          `${logModule} Failed to show initialization error notification:`,
           messageError,
         );
       });

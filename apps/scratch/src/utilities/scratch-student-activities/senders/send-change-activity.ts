@@ -3,6 +3,9 @@ import {
   type StudentBlockChangeActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-change-activity]`;
 
 export async function sendChangeActivity(
   data: StudentBlockChangeActivity,
@@ -16,6 +19,6 @@ export async function sendChangeActivity(
       solution,
     });
   } catch (error) {
-    console.error("Error sending change activity:", error);
+    console.error(`${logModule} Error sending change activity:`, error);
   }
 }

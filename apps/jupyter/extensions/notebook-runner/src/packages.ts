@@ -11,6 +11,8 @@ import {
 import { EmbeddedPythonCallbacks } from "./iframe-api";
 import { LoadingStateManager } from "./loading-state";
 
+const logModule = "[Jupyter][packages]";
+
 /**
  * resolver for `_packagesReady`. it is called once the student-task notebook's
  * kernel has finished installing packages and copying the notebook content
@@ -46,26 +48,26 @@ const autoInstallPackages =
       if (KernelMessage.isStatusMsg(msg)) {
         // ignore status messages
       } else if (KernelMessage.isStreamMsg(msg)) {
-        console.debug(`[${kernel.id}]`, msg.content.text);
+        console.debug(`${logModule} [${kernel.id}]`, msg.content.text);
       } else if (KernelMessage.isExecuteInputMsg(msg)) {
         console.debug(
-          `[${kernel.id}] Executing code (${msg.content.execution_count}):\n`,
+          `${logModule} [${kernel.id}] Executing code (${msg.content.execution_count}):\n`,
           msg.content.code,
         );
       } else if (KernelMessage.isExecuteResultMsg(msg)) {
         console.debug(
-          `[${kernel.id}] Finished executing code (${msg.content.execution_count}):`,
+          `${logModule} [${kernel.id}] Finished executing code (${msg.content.execution_count}):`,
           msg.content.data,
         );
       } else {
-        console.debug(`[${kernel.id}] IOPub message:`, msg);
+        console.debug(`${logModule} [${kernel.id}] IOPub message:`, msg);
       }
     });
 
     try {
-      console.debug("Installing packages...", kernel.id);
+      console.debug(`${logModule} Installing packages...`, kernel.id);
       await installOtter(kernel);
-      console.debug("Finished installing packages", kernel.id);
+      console.debug(`${logModule} Finished installing packages`, kernel.id);
 
       const isStudentNotebook =
         // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
@@ -75,7 +77,7 @@ const autoInstallPackages =
 
       if (isStudentNotebook) {
         console.debug(
-          "Opened student notebook - copying notebook to the virtual filesystem to make tests available.",
+          `${logModule} Opened student notebook - copying notebook to the virtual filesystem to make tests available.`,
         );
 
         let notebook: Contents.IModel | null = null;
@@ -88,7 +90,7 @@ const autoInstallPackages =
         }
 
         console.debug(
-          `Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+          `${logModule} Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
           kernel.id,
         );
 
@@ -99,7 +101,7 @@ const autoInstallPackages =
           studentWorkingDirectory,
         );
         console.debug(
-          `Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+          `${logModule} Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
           kernel.id,
         );
       }
@@ -118,7 +120,11 @@ const trackSession = (
 ): Promise<void> => {
   // start the kernel so the install runs in the background, instead of waiting for something else to trigger it.
   sessionContext.initialize().catch((error) => {
-    console.error("Failed to initialize session for", notebookPath, error);
+    console.error(
+      `${logModule} Failed to initialize session for`,
+      notebookPath,
+      error,
+    );
   });
 
   return setupKernel(
@@ -153,13 +159,16 @@ export const installPackagesWithLoadingState = async (
   await loadingStateManager.startLoading();
 
   preInstallPackages(app, contentsManager, notebookTracker).catch((error) => {
-    console.error("preInstallPackages failed:", error);
+    console.error(`${logModule} preInstallPackages failed:`, error);
   });
 
   waitForPackagesReady()
     .then(() => loadingStateManager.finishLoading(true))
     .catch((error) => {
-      console.error("Error waiting for packages to be ready:", error);
+      console.error(
+        `${logModule} Error waiting for packages to be ready:`,
+        error,
+      );
       return loadingStateManager.finishLoading(false);
     });
 };
@@ -167,7 +176,7 @@ export const installPackagesWithLoadingState = async (
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing Otter Grader...");
+  console.debug(`${logModule} Installing Otter Grader...`);
   await executePythonInKernel({
     kernel,
     code: `
@@ -182,7 +191,7 @@ await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
 export const installNbConvert = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
-  console.debug("Installing nbconvert...");
+  console.debug(`${logModule} Installing nbconvert...`);
   await executePythonInKernel({
     kernel,
     // Micropip by default installs all dependencies including tornado which is not mandatory,
@@ -198,7 +207,7 @@ await micropip.install("jupyter_client", deps=False)
     disposeOnDone: true,
   });
 
-  console.debug("Installing remaining dependencies...");
+  console.debug(`${logModule} Installing remaining dependencies...`);
   await executePythonInKernel({
     kernel,
     code: `
@@ -225,7 +234,7 @@ await micropip.install([
     disposeOnDone: true,
   });
 
-  console.debug("Creating nbclient mock...");
+  console.debug(`${logModule} Creating nbclient mock...`);
   await executePythonInKernel(
     // make nbclient.exceptions available, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
     {
@@ -245,7 +254,7 @@ sys.modules["nbclient.exceptions"] = nbclient_exceptions
     },
   );
 
-  console.debug("Patching nbclient for JupyterLite...");
+  console.debug(`${logModule} Patching nbclient for JupyterLite...`);
   await executePythonInKernel({
     kernel,
     // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb

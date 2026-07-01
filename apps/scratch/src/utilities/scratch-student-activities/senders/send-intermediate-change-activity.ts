@@ -3,6 +3,9 @@ import {
   type StudentIntermediateFieldChangeActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-intermediate-change-activity]`;
 
 export async function sendIntermediateChangeActivity(
   data: StudentIntermediateFieldChangeActivity,
@@ -16,6 +19,9 @@ export async function sendIntermediateChangeActivity(
       solution,
     });
   } catch (error) {
-    console.error("Error sending intermediate change activity:", error);
+    console.error(
+      `${logModule} Error sending intermediate change activity:`,
+      error,
+    );
   }
 }

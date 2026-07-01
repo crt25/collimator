@@ -50,7 +50,7 @@ import {
 } from "./iframe-rpc/src/methods/export-task";
 import { toCrtLocale, toJupyterLocale } from "./languages";
 
-const logModule = "[Embedded Jupyter]";
+const logModule = "[Jupyter][iframe-api]";
 
 const initIframeApi = (handleRequest: AppHandleRequestMap): AppCrtIframeApi => {
   const crtPlatform = new AppCrtIframeApi({

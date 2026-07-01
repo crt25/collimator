@@ -1,6 +1,8 @@
 import { WorkspaceChangeEvent } from "../types/scratch-workspace";
 import { countUsedBlocks } from "./block-config";
 
+const logModule = "[Scratch][Block Helpers]";
+
 export const svgNamespace = "http://www.w3.org/2000/svg";
 
 export const ignoreEvent = (event: MouseEvent): void => {
@@ -155,7 +157,7 @@ export const wouldExceedLimits = (
 ): boolean => {
   const config = vm.crtConfig;
   if (!config) {
-    console.debug("No config found, not blocking any blocks");
+    console.debug(`${logModule} No config found, not blocking any blocks`);
     return false;
   }
 
@@ -171,7 +173,7 @@ export const wouldExceedLimits = (
 
   if (isPreventedEntirely) {
     console.debug(
-      `Block ${block.type} is not allowed, blocking addition of blocks`,
+      `${logModule} Block ${block.type} is not allowed, blocking addition of blocks`,
     );
     return true;
   }
@@ -184,7 +186,7 @@ export const wouldExceedLimits = (
   // we use >= to prevent going over the limit by one.
   if (hasLimit && count >= allowed) {
     console.debug(
-      `Block limit reached for ${block.type}: ${count} >= ${allowed}`,
+      `${logModule} Block limit reached for ${block.type}: ${count} >= ${allowed}`,
     );
     return true;
   }

@@ -85,6 +85,8 @@ import ExtensionLibrary from "./ExtensionLibrary";
 import type { WorkspaceChangeEvent } from "../../types/scratch-workspace";
 import type { CrtContextValue } from "../../contexts/CrtContext";
 
+const logModule = "[Scratch][Blocks]";
+
 const addFunctionListener = (
   object: unknown,
   property: string,
@@ -1217,7 +1219,10 @@ class Blocks extends React.Component<Props, State> {
       try {
         flush();
       } catch (error) {
-        console.error("Error flushing pending field change activity:", error);
+        console.error(
+          `${logModule} Error flushing pending field change activity:`,
+          error,
+        );
       }
     }
   }

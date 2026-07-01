@@ -18,6 +18,8 @@ import {
   kernelPaths,
 } from "./helper";
 
+const logModule = "[Jupyter][commands/grade]";
+
 const createOnNewNotebookListener =
   (app: JupyterFrontEnd, state: NotebookRunnerState) =>
   async (
@@ -30,7 +32,7 @@ const createOnNewNotebookListener =
 
       for (const widget of widgets) {
         if (widget instanceof NotebookPanel && widget !== notebookPanel) {
-          console.debug("Closing notebook: ", widget);
+          console.debug(`${logModule} Closing notebook: `, widget);
           await widget.context.save();
           await widget.sessionContext.shutdown();
           widget.close();
@@ -52,7 +54,7 @@ export const registerGradeCommand = (
     isVisible: () => DEBUG_NOTEBOOK_RUNNER,
     execute: async (): Promise<OtterGradingResults> => {
       try {
-        console.debug("Saving all open notebooks...");
+        console.debug(`${logModule} Saving all open notebooks...`);
         const widgets = app.shell.widgets("main");
 
         const savePromises: Promise<void>[] = [];
@@ -64,10 +66,12 @@ export const registerGradeCommand = (
         }
         await Promise.all(savePromises);
 
-        console.debug(`Waiting for otter session kernel to be available`);
+        console.debug(
+          `${logModule} Waiting for otter session kernel to be available`,
+        );
         const kernel = await state.getOtterKernel();
 
-        console.debug(`Transferring autograder for grading...`);
+        console.debug(`${logModule} Transferring autograder for grading...`);
 
         let autograder: Contents.IModel | null = null;
         try {
@@ -85,7 +89,9 @@ export const registerGradeCommand = (
           autograder.content,
         );
 
-        console.debug(`Unpack tests from autograder.zip to student/`);
+        console.debug(
+          `${logModule} Unpack tests from autograder.zip to student/`,
+        );
 
         await executePythonInKernel({
           kernel,
@@ -101,7 +107,9 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
 `,
         });
 
-        console.debug(`Executing notebook before submitting it for grading`);
+        console.debug(
+          `${logModule} Executing notebook before submitting it for grading`,
+        );
 
         await executeRunNotebookCommand(
           app,
@@ -127,7 +135,7 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         }
 
         console.debug(
-          `Transfering executed notebook to virtual filesystem to '${EmbeddedPythonCallbacks.studentTaskLocation}'`,
+          `${logModule} Transfering executed notebook to virtual filesystem to '${EmbeddedPythonCallbacks.studentTaskLocation}'`,
         );
 
         await writeJsonToVirtualFilesystem(
@@ -137,7 +145,7 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         );
 
         console.debug(
-          "Running notebook with autograder: ",
+          `${logModule} Running notebook with autograder: `,
           EmbeddedPythonCallbacks.autograderLocation,
         );
 
@@ -161,10 +169,10 @@ run(
         try {
           await run;
         } catch (error) {
-          console.error("Error running notebook:", error);
+          console.error(`${logModule} Error running notebook:`, error);
         }
 
-        console.debug("Retrieving results...");
+        console.debug(`${logModule} Retrieving results...`);
 
         const results =
           await state.readJsonFromVirtualFilesystem<OtterGradingResults>(
@@ -172,7 +180,7 @@ run(
             "/results.json",
           );
 
-        console.debug("Grading results:", results);
+        console.debug(`${logModule} Grading results:`, results);
 
         return results;
       } catch (error) {

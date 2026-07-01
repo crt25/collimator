@@ -5,6 +5,8 @@ import { Contents, ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "./notebook-runner-state";
 import { executePythonInKernel, writeJsonToVirtualFilesystem } from "./utils";
 
+const logModule = "[Jupyter][command]";
+
 export const runAssignCommand = "notebook-runner:run-assign";
 export const runGradingCommand = "notebook-runner:run-grading";
 export const runAllCellsCommand = "notebook-runner:run-all-cells";
@@ -22,7 +24,7 @@ export const executeRunNotebookCommand = async (
   notebookPath: string,
   binaryResultsPath: string,
 ): Promise<void> => {
-  console.debug("Opening notebook at path:", notebookPath);
+  console.debug(`${logModule} Opening notebook at path:`, notebookPath);
 
   state.allowNextNotebookInParallel = true;
   const newNotebookPanel = documentManager.open(
@@ -53,10 +55,12 @@ export const executeRunNotebookCommand = async (
 
   // Connect to existing kernel if available
   const otterKernel = await state.getOtterKernel();
-  console.debug("Reusing existing otter kernel:", otterKernel);
+  console.debug(`${logModule} Reusing existing otter kernel:`, otterKernel);
 
   // copying the notebook to the virtual filesystem on the kernel in the same location
-  console.debug("Copying notebook to virtual filesystem before running");
+  console.debug(
+    `${logModule} Copying notebook to virtual filesystem before running`,
+  );
   let notebook: Contents.IModel | null = null;
   try {
     notebook = await contentsManager.get(notebookPath, { content: true });
@@ -79,7 +83,7 @@ export const executeRunNotebookCommand = async (
 
   // get parent directory of the notebook
   const parentDir = notebookPath.split("/").slice(0, -1).join("/");
-  console.debug("Change working directory to ", parentDir);
+  console.debug(`${logModule} Change working directory to `, parentDir);
 
   await executePythonInKernel({
     kernel: otterKernel,
@@ -94,7 +98,7 @@ nb.init_grading_mode("./tests")
 
   // Run all cells silently
   console.debug(
-    "Running all cells in the new notebook:",
+    `${logModule} Running all cells in the new notebook:`,
     newNotebookPanel.title.label,
   );
 
@@ -103,7 +107,9 @@ nb.init_grading_mode("./tests")
     newNotebookPanel.context.sessionContext,
   );
 
-  console.debug("All cells executed in the new notebook. Now running tests...");
+  console.debug(
+    `${logModule} All cells executed in the new notebook. Now running tests...`,
+  );
 
   await executePythonInKernel({
     kernel: otterKernel,
@@ -122,15 +128,15 @@ with open("${binaryResultsPath}", "wb") as f:
     `,
   });
 
-  console.debug("Tests executed, saving notebook...");
+  console.debug(`${logModule} Tests executed, saving notebook...`);
 
   await newNotebookPanel.context.save();
 
-  console.debug("Notebook saved. Closing notebook...");
+  console.debug(`${logModule} Notebook saved. Closing notebook...`);
 
   const waitUntilClosed = new Promise<void>((resolve) => {
     newNotebookPanel.disposed.connect(() => {
-      console.debug("Closed notebook that was run");
+      console.debug(`${logModule} Closed notebook that was run`);
       resolve();
     });
   });
@@ -140,5 +146,5 @@ with open("${binaryResultsPath}", "wb") as f:
   // wait until the widget is closed
   await waitUntilClosed;
 
-  console.debug("Notebook closed.");
+  console.debug(`${logModule} Notebook closed.`);
 };

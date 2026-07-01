@@ -14,6 +14,8 @@ import {
 
 import { defaultCrtConfig } from "./default-crt-config";
 
+const logModule = "[Scratch][Load CRT Project]";
+
 let nextProject: ArrayBuffer | undefined = undefined;
 let isLoading = false;
 
@@ -67,7 +69,7 @@ const loadZip = async (input: ArrayBuffer): Promise<JSZip> => {
   try {
     await zip.loadAsync(input);
   } catch (e) {
-    console.error("Error loading ZIP file:", e);
+    console.error(`${logModule} Error loading ZIP file:`, e);
 
     throw new InvalidZipError();
   }
@@ -92,7 +94,7 @@ const parseProjectJson = async (zip: JSZip): Promise<ScratchProject> => {
   try {
     project = await projectFile.async("text").then((text) => JSON.parse(text));
   } catch (e) {
-    console.log("Error parsing project.json:", e);
+    console.log(`${logModule} Error parsing project.json:`, e);
     throw new InvalidProjectJsonError();
   }
 
@@ -133,7 +135,7 @@ const loadCrtConfig = async (vm: VM, zip: JSZip): Promise<void> => {
     try {
       config = await configFile.async("text").then((text) => JSON.parse(text));
     } catch (e) {
-      console.error("Error parsing crt.json:", e);
+      console.error(`${logModule} Error parsing crt.json:`, e);
       throw new CrtConfigParseError();
     }
 
@@ -182,7 +184,7 @@ export const loadCrtProject = async (
       throw e;
     }
 
-    console.error("Error loading project in VM:", e);
+    console.error(`${logModule} Error loading project in VM:`, e);
     throw new VmLoadError();
   } finally {
     isLoading = false;

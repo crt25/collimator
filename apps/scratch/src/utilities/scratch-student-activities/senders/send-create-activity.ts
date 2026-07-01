@@ -3,6 +3,9 @@ import {
   type StudentCreateActivity,
 } from "../../../types/scratch-student-activities";
 import { CrtContextValue } from "../../../contexts/CrtContext";
+import { logBaseModule } from "../log-module";
+
+const logModule = `${logBaseModule}[senders/send-create-activity]`;
 
 export async function sendCreateActivity(
   data: StudentCreateActivity,
@@ -16,6 +19,6 @@ export async function sendCreateActivity(
       solution,
     });
   } catch (error) {
-    console.error("Error sending create activity:", error);
+    console.error(`${logModule} Error sending create activity:`, error);
   }
 }

@@ -15,6 +15,8 @@ import {
 } from "./utils";
 import { installNbConvert, installOtter } from "./packages";
 
+const logModule = "[Jupyter][notebook-runner-state]";
+
 /**
  * A listener that is called when a comm message is received from the kernel.
  */
@@ -74,7 +76,7 @@ export class NotebookRunnerState {
     try {
       const serviceManager = this.app.serviceManager;
 
-      console.debug("Initializing Otter session context...");
+      console.debug(`${logModule} Initializing Otter session context...`);
       sessionContext = new SessionContext({
         sessionManager: serviceManager.sessions,
         specsManager: serviceManager.kernelspecs,
@@ -88,14 +90,14 @@ export class NotebookRunnerState {
       });
 
       // Initialize the session
-      console.debug("Initializing otter context...");
+      console.debug(`${logModule} Initializing otter context...`);
       await sessionContext.initialize();
 
-      console.debug("Adding kernel listeners to otter context...");
+      console.debug(`${logModule} Adding kernel listeners to otter context...`);
 
       await setupKernel(sessionContext, async (kernel) => {
         console.debug(
-          "Kernel is ready:",
+          `${logModule} Kernel is ready:`,
           kernel.name,
           "attaching listeners...",
         );
@@ -103,7 +105,7 @@ export class NotebookRunnerState {
         await this.prepareOtterKernel(kernel);
       });
 
-      console.debug("Otter context initialized:", sessionContext);
+      console.debug(`${logModule} Otter context initialized:`, sessionContext);
 
       this._resolveOtterSessionContext(sessionContext);
 
@@ -120,7 +122,11 @@ export class NotebookRunnerState {
         await isDisposed;
       }
 
-      console.error("Error initializing otter context:", e, ". Restarting...");
+      console.error(
+        `${logModule} Error initializing otter context:`,
+        e,
+        ". Restarting...",
+      );
       return this.init();
     }
   }
@@ -150,9 +156,9 @@ export class NotebookRunnerState {
   }
 
   private async prepareOtterKernel(kernel: IKernelConnection): Promise<void> {
-    console.debug("Preparing Otter kernel:", kernel.name);
+    console.debug(`${logModule} Preparing Otter kernel:`, kernel.name);
 
-    console.debug("Importing basic libraries...");
+    console.debug(`${logModule} Importing basic libraries...`);
     await executePythonInKernel({
       kernel,
       code: `
@@ -164,7 +170,7 @@ from ipykernel.comm import Comm
     await installOtter(kernel);
     await installNbConvert(kernel);
 
-    console.debug("Importing Otter Grader...");
+    console.debug(`${logModule} Importing Otter Grader...`);
     await executePythonInKernel({
       kernel,
       code: `
@@ -174,7 +180,7 @@ from otter.run import main as run
       disposeOnDone: true,
     });
 
-    console.debug("Otter Grader is ready to be used!", kernel);
+    console.debug(`${logModule} Otter Grader is ready to be used!`, kernel);
     setKernelIsPrepared(kernel);
   }
 
@@ -189,14 +195,14 @@ from otter.run import main as run
 
     while (!sessionContext.session?.kernel) {
       console.debug(
-        "No kernel available in otter session context, restarting the kernel...",
+        `${logModule} No kernel available in otter session context, restarting the kernel...`,
         sessionContext.session,
       );
       await sessionContext.startKernel();
     }
 
     console.debug(
-      "Kernel is available in otter session, waiting for it to be prepared:",
+      `${logModule} Kernel is available in otter session, waiting for it to be prepared:`,
       sessionContext.session.kernel,
     );
     await waitForKernelToBePrepared(sessionContext.session.kernel);
