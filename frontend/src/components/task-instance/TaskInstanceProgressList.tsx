@@ -1,4 +1,4 @@
-import { ComponentProps, useMemo } from "react";
+import { useMemo } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
 import { Button, HStack, Icon, Status } from "@chakra-ui/react";
@@ -19,6 +19,11 @@ import { isClickOnRow } from "@/utilities/table";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
+import {
+  getTaskStatus,
+  getTaskStatusColor,
+  TaskStatus,
+} from "../task-progress";
 import StarSolutionButton from "../solution/StarSolutionButton";
 import UnstarPastSolutionsButton from "../solution/UnstarPastSolutionsButton";
 
@@ -68,14 +73,6 @@ type StudentProgress = {
   taskSolutions: ExistingStudentSolution[];
   currentAnalysis: CurrentStudentAnalysis | null;
 };
-
-enum TaskStatus {
-  notStarted,
-  incomplete,
-  complete,
-}
-
-type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
 
 const nameTemplate = (progress: StudentProgress) =>
   "isAnonymous" in progress.student ? (
@@ -138,31 +135,12 @@ const TaskTemplate = ({
     [rowData],
   );
 
-  const status = useMemo(() => {
-    if (!solutionToDisplay && !rowData.currentAnalysis) {
-      // if solution has an analysis then it should be displayed as in progress
-      return TaskStatus.notStarted;
-    }
+  const status = useMemo(
+    () => getTaskStatus(solutionToDisplay, rowData.currentAnalysis),
+    [solutionToDisplay, rowData.currentAnalysis],
+  );
 
-    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
-      return TaskStatus.complete;
-    }
-
-    return TaskStatus.incomplete;
-  }, [solutionToDisplay, rowData.currentAnalysis]);
-
-  const color = useMemo((): StatusColor => {
-    if (!solutionToDisplay && !rowData.currentAnalysis) {
-      // if solution has an analysis then it should be displayed as in progress
-      return "neutral";
-    }
-
-    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
-      return "success";
-    }
-
-    return "error";
-  }, [solutionToDisplay, rowData.currentAnalysis]);
+  const color = useMemo(() => getTaskStatusColor(status), [status]);
 
   const statusText = useMemo(() => {
     switch (status) {
