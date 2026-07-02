@@ -23,7 +23,7 @@ export const getTaskStatus = (
 
   const tests = solutionToDisplay?.tests ?? currentAnalysis?.tests;
 
-  if (tests && tests.length >= 0 && tests.every((test) => test.passed)) {
+  if (tests && tests.length > 0 && tests.every((test) => test.passed)) {
     return TaskStatus.complete;
   }
 
