@@ -134,7 +134,10 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
           klass,
           authContext.keyPair,
         ),
-        authContext.keyPair.deriveStudentIdentifier(longTermIdentifier),
+        authContext.keyPair.deriveStudentIdentifier(
+          klass.id,
+          longTermIdentifier,
+        ),
       ]);
 
       const response = await authenticateStudent({

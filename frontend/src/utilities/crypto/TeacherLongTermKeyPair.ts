@@ -107,7 +107,10 @@ export default class TeacherLongTermKeyPair extends KeyPair {
     );
   }
 
-  async deriveStudentIdentifier(subClaim: string): Promise<string> {
+  async deriveStudentIdentifier(
+    classId: number,
+    subClaim: string,
+  ): Promise<string> {
     // the derived key is ephemeral and never leaves this call
     const extractable = false;
 
@@ -122,7 +125,9 @@ export default class TeacherLongTermKeyPair extends KeyPair {
     const identifier = await this.crypto.sign(
       "HMAC",
       hmacKey,
-      new TextEncoder().encode(`collimator:student-identifier:${subClaim}`),
+      new TextEncoder().encode(
+        `collimator:student-identifier:${classId}:${subClaim}`,
+      ),
     );
 
     return encodeBase64Url(identifier);
