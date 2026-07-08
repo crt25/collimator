@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 
-export type AnonymousStudent = {
+type AnonymousStudent = {
   isAnonymous: true;
   studentId: number;
 };
