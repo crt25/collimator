@@ -149,8 +149,8 @@ export const shouldPreventBlocksActions = (
 const getAllowedBlockCount = (
   config: ScratchCrtConfig,
   blockType: string,
-  // negative number means unlimited, 0 or false means not allowed, undefined means not listed in config
-): number | boolean | undefined => {
+  // negative number means unlimited, 0 means not allowed (including not listed in config)
+): number | boolean => {
   if (blockType.startsWith("data_")) {
     return config.allowedBlocks.variables ? -1 : 0;
   }
@@ -159,7 +159,7 @@ const getAllowedBlockCount = (
     return config.allowedBlocks.customBlocks ? -1 : 0;
   }
 
-  return config.allowedBlocks[blockType];
+  return config.allowedBlocks[blockType] || 0;
 };
 
 /**
@@ -184,8 +184,7 @@ export const wouldExceedLimits = (
   const allowed = getAllowedBlockCount(config, block.type);
   const count = usedBlocks[block.type];
 
-  const isPreventedEntirely =
-    allowed === undefined || allowed === 0 || allowed === false;
+  const isPreventedEntirely = allowed === 0;
 
   if (isPreventedEntirely) {
     console.debug(
