@@ -18,22 +18,20 @@ export const useStudentProgress = (
       return [];
     }
 
+    const studentsById = new Map(
+      klass.students.map((student) => [student.studentId, student]),
+    );
+
     const studentIds = [
-      ...new Set([
-        ...klass.students.map((student) => student.studentId),
-        ...activeStudentIds,
-      ]),
+      ...new Set([...studentsById.keys(), ...activeStudentIds]),
     ];
 
-    return studentIds.map<ResolvedStudent>((studentId) => {
-      const student = klass.students.find((s) => s.studentId === studentId);
-
-      return (
-        student ??
+    return studentIds.map<ResolvedStudent>(
+      (studentId) =>
+        studentsById.get(studentId) ??
         ({
           isAnonymous: true,
           studentId,
-        } satisfies AnonymousStudent)
-      );
-    });
+        } satisfies AnonymousStudent),
+    );
   }, [klass, activeStudentIds]);
