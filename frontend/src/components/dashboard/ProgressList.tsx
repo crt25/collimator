@@ -7,12 +7,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
+import {
+  ResolvedStudent,
+  useStudentProgress,
+} from "@/hooks/useStudentProgress";
 import {
   getTaskStatus,
   getTaskStatusColor,
@@ -56,14 +59,9 @@ type TaskSolutions = {
   currentAnalysis: CurrentStudentAnalysis | null;
 };
 
-type AnonymousStudent = {
-  isAnonymous: true;
-  studentId: number;
-};
-
 type StudentProgress = {
   id: number;
-  student: ClassStudent | AnonymousStudent;
+  student: ResolvedStudent;
   taskSolutions: TaskSolutions[];
 };
 
@@ -188,14 +186,10 @@ const ProgressList = ({
     sessionId,
   );
 
-  const studentIds = useMemo(() => {
-    if (!klass || !solutions) {
-      return [];
-    }
-
-    const studentIdsSet = new Set([
-      ...klass.students.map((student) => student.studentId),
-      ...solutions.flatMap((s) => s.solutions.map((s) => s.studentId)),
+  const activeStudentIds = useMemo(
+    () => [
+      ...(solutions?.flatMap((s) => s.solutions.map((sol) => sol.studentId)) ??
+        []),
       ...(currentAnalyses ?? []).flatMap((s) =>
         s.analyses
           .filter(
@@ -204,26 +198,16 @@ const ProgressList = ({
           )
           .map((a) => a.studentId),
       ),
-    ]);
-    return [...studentIdsSet];
-  }, [klass, solutions, currentAnalyses]);
+    ],
+    [solutions, currentAnalyses],
+  );
+
+  const students = useStudentProgress(klass, activeStudentIds);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
       return [];
     }
-
-    const students = studentIds.map((studentId) => {
-      const student = klass.students.find((s) => s.studentId === studentId);
-
-      return (
-        student ??
-        ({
-          isAnonymous: true,
-          studentId,
-        } satisfies AnonymousStudent)
-      );
-    });
 
     return students.map<StudentProgress>((student) => {
       // group solutions of this student by task
@@ -256,7 +240,7 @@ const ProgressList = ({
         taskSolutions: taskSolutions,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, currentAnalyses, studentIds]);
+  }, [klass, session, solutions, currentAnalyses, students]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
     const firstColumns: ColumnDef<StudentProgress>[] = [

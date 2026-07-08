@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { LuChevronRight } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
@@ -16,6 +15,10 @@ import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
+import {
+  ResolvedStudent,
+  useStudentProgress,
+} from "@/hooks/useStudentProgress";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
@@ -62,14 +65,9 @@ const messages = defineMessages({
   },
 });
 
-type AnonymousStudent = {
-  isAnonymous: true;
-  studentId: number;
-};
-
 type StudentProgress = {
   id: number;
-  student: ClassStudent | AnonymousStudent;
+  student: ResolvedStudent;
   taskSolutions: ExistingStudentSolution[];
   currentAnalysis: CurrentStudentAnalysis | null;
 };
@@ -200,40 +198,25 @@ const TaskInstanceProgressList = ({
     taskId,
   );
 
-  const studentIds = useMemo(() => {
-    if (!klass || !solutions) {
-      return [];
-    }
-
-    const studentIdsSet = new Set([
-      ...klass.students.map((student) => student.studentId),
-      ...solutions.map((s) => s.studentId),
+  const activeStudentIds = useMemo(
+    () => [
+      ...(solutions?.map((s) => s.studentId) ?? []),
       ...(currentAnalyses ?? [])
         .filter(
           (a): a is CurrentStudentAnalysis =>
             a instanceof CurrentStudentAnalysis,
         )
         .map((a) => a.studentId),
-    ]);
-    return [...studentIdsSet];
-  }, [klass, solutions, currentAnalyses]);
+    ],
+    [solutions, currentAnalyses],
+  );
+
+  const students = useStudentProgress(klass, activeStudentIds);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
       return [];
     }
-
-    const students = studentIds.map((studentId) => {
-      const student = klass.students.find((s) => s.studentId === studentId);
-
-      return (
-        student ??
-        ({
-          isAnonymous: true,
-          studentId,
-        } satisfies AnonymousStudent)
-      );
-    });
 
     return students.map<StudentProgress>((student) => {
       const taskSolutions = solutions.filter(
@@ -256,7 +239,7 @@ const TaskInstanceProgressList = ({
         currentAnalysis,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, currentAnalyses, studentIds]);
+  }, [klass, session, solutions, currentAnalyses, students]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
     return [
