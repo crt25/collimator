@@ -127,16 +127,20 @@ export const useHandleStudentAuthenticationRequest = (): CallbackType => {
         );
       }
 
-      const pseudonym = await findOrCreatePseudonym(
-        longTermIdentifier,
-        name,
-        klass,
-        authContext.keyPair,
-      );
+      const [pseudonym, studentIdentifier] = await Promise.all([
+        findOrCreatePseudonym(
+          longTermIdentifier,
+          name,
+          klass,
+          authContext.keyPair,
+        ),
+        authContext.keyPair.deriveStudentIdentifier(longTermIdentifier),
+      ]);
 
       const response = await authenticateStudent({
         classId: klass.id,
         pseudonym,
+        studentIdentifier,
         keyPairId: authContext.keyPairId,
       });
 

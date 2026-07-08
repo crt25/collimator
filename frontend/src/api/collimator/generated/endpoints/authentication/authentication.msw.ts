@@ -81,6 +81,10 @@ export const getAuthenticationControllerLoginStudentV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  studentIdentifier: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -93,6 +97,10 @@ export const getAuthenticationControllerLoginAnonymousStudentV0ResponseMock = (
     max: undefined,
     fractionDigits: 2,
   }),
+  studentIdentifier: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 

@@ -4,6 +4,7 @@ import {
   AnonymousStudent,
   AuthenticatedStudent,
   AuthenticationProvider,
+  Prisma,
   Student as PrismaStudent,
   User,
   UserType,
@@ -16,6 +17,8 @@ export type AuthToken = string;
 export type AuthTokenWithStudentId = {
   token: AuthToken;
   studentId: number;
+  // the deterministic student identifier stored for the student, encoded in Base64url
+  studentIdentifier?: string;
 };
 
 // we use a sliding window for token expiration checked against the last used timestamp
@@ -380,49 +383,123 @@ export class AuthenticationService {
     };
   }
 
+  private async findAuthenticatedStudent(
+    classId: number,
+    rawPseudonym: Buffer,
+    rawIdentifier: Buffer | null, // may be null for older students in existing classes
+  ): Promise<AuthenticatedStudent | null> {
+    if (rawIdentifier) {
+      const byIdentifier = await this.prisma.authenticatedStudent.findUnique({
+        where: {
+          studentIdentifierUniquePerClass: {
+            classId,
+            studentIdentifier: rawIdentifier,
+          },
+          deletedAt: null,
+        },
+      });
+
+      if (byIdentifier) {
+        return byIdentifier;
+      }
+    }
+
+    const byPseudonym = await this.prisma.authenticatedStudent.findUnique({
+      where: {
+        pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
+        deletedAt: null,
+      },
+    });
+
+    if (
+      byPseudonym &&
+      rawIdentifier &&
+      byPseudonym.studentIdentifier === null
+    ) {
+      return this.prisma.authenticatedStudent.update({
+        where: { studentId: byPseudonym.studentId },
+        data: { studentIdentifier: rawIdentifier },
+      });
+    }
+
+    return byPseudonym;
+  }
+
   /**
    * Create a new authentication token for a student with the given pseudonym and class id.
    * @param pseudonym The student's pseudonym encoded in Base64.
    * @param classId The class id the student is in.
    * @param keyPairId The key pair id used to encrypt the pseudonym.
+   * @param studentIdentifier The deterministic student identifier encoded in Base64url.
    * @returns A new authentication token with the student id.
    */
   async signInStudent(
     pseudonym: string,
     classId: number,
     keyPairId: number,
+    studentIdentifier?: string,
   ): Promise<AuthTokenWithStudentId> {
     this.logger.debug(`Student sign-in attempt for class (id: ${classId})`);
 
     const rawPseudonym = Buffer.from(pseudonym, "base64");
+    const rawIdentifier = studentIdentifier
+      ? Buffer.from(studentIdentifier, "base64url")
+      : null;
 
-    const authenticatedStudent =
-      await this.prisma.authenticatedStudent.findUnique({
+    let authenticatedStudent = await this.findAuthenticatedStudent(
+      classId,
+      rawPseudonym,
+      rawIdentifier,
+    );
+
+    let student: PrismaStudent;
+
+    if (authenticatedStudent === null) {
+      try {
+        student = await this.prisma.student.create({
+          data: {
+            authenticatedStudent: {
+              create: {
+                pseudonym: rawPseudonym,
+                studentIdentifier: rawIdentifier,
+                classId,
+                keyPairId,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        // re-resolve the now-existing student here instead of failing for concurrent join attempts
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          authenticatedStudent = await this.findAuthenticatedStudent(
+            classId,
+            rawPseudonym,
+            rawIdentifier,
+          );
+
+          if (authenticatedStudent === null) {
+            // this should never happen in theory, but if it does, throw
+            throw error;
+          }
+
+          student = await this.prisma.student.findUniqueOrThrow({
+            where: { id: authenticatedStudent.studentId, deletedAt: null },
+          });
+        } else {
+          throw error;
+        }
+      }
+    } else {
+      student = await this.prisma.student.findUniqueOrThrow({
         where: {
-          pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
+          id: authenticatedStudent.studentId,
           deletedAt: null,
         },
       });
-
-    const student =
-      authenticatedStudent === null
-        ? await this.prisma.student.create({
-            data: {
-              authenticatedStudent: {
-                create: {
-                  pseudonym: rawPseudonym,
-                  classId,
-                  keyPairId,
-                },
-              },
-            },
-          })
-        : await this.prisma.student.findUniqueOrThrow({
-            where: {
-              id: authenticatedStudent.studentId,
-              deletedAt: null,
-            },
-          });
+    }
 
     const randomToken = generateToken();
 
@@ -439,7 +516,17 @@ export class AuthenticationService {
 
     this.logger.log(`Student sign-in successful (student id: ${student.id})`);
 
-    return { token: authToken.token, studentId: student.id };
+    // return the authoritative stored identifier may be null for legacy rows a client signed in without one
+    const resolvedIdentifier =
+      authenticatedStudent?.studentIdentifier ?? rawIdentifier;
+
+    return {
+      token: authToken.token,
+      studentId: student.id,
+      studentIdentifier: resolvedIdentifier
+        ? Buffer.from(resolvedIdentifier).toString("base64url")
+        : undefined,
+    };
   }
 
   /**

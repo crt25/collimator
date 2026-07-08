@@ -93,6 +93,7 @@ model Student {
 model AuthenticatedStudent {
   studentId Int       @id
   pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
+  studentIdentifier Bytes?
   classId   Int // authenticated students are assigned to a class,
   keyPairId Int? // if null, the respective key is no longer available
   deletedAt DateTime?
@@ -102,6 +103,7 @@ model AuthenticatedStudent {
   encryptedUsing KeyPair? @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
 
   @@unique([pseudonym, classId], name: "pseudonymUniquePerClass")
+  @@unique([studentIdentifier, classId], name: "studentIdentifierUniquePerClass")
 }
 
 model AnonymousStudent {

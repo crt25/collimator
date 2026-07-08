@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class StudentAuthenticationRequestDto {
   @IsString()
@@ -11,6 +11,17 @@ export class StudentAuthenticationRequestDto {
   })
   @Expose()
   readonly pseudonym!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiProperty({
+    required: false,
+    description:
+      "A deterministic, teacher-keyed identifier for the student encoded in Base64url. Used to deduplicate the student across joins without revealing their identity to the server. Optional for backwards compatibility with older clients.",
+  })
+  @Expose()
+  readonly studentIdentifier?: string;
 
   @IsNumber({
     allowNaN: false,
