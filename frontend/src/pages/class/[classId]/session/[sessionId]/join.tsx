@@ -297,6 +297,8 @@ const JoinSession = () => {
           `${logModule} Failed to generate student key pair`,
           error,
         );
+
+        isAuthenticating.current = false;
       });
   }, [
     authenticationContext,
