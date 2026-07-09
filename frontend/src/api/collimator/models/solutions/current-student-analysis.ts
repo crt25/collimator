@@ -14,6 +14,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
   readonly isStudentSolution: boolean;
   readonly studentPseudonym: string | null;
   readonly studentKeyPairId: number | null;
+  readonly isLatest: boolean;
 
   protected constructor({
     sessionId,
@@ -22,6 +23,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     studentKeyPairId,
     studentSolutionId,
     isStudentSolution,
+    isLatest,
     ...rest
   }: Omit<ClassProperties<CurrentStudentAnalysis>, "solutionId">) {
     super(rest);
@@ -32,6 +34,7 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     this.isStudentSolution = isStudentSolution;
     this.studentPseudonym = studentPseudonym;
     this.studentKeyPairId = studentKeyPairId;
+    this.isLatest = isLatest;
   }
 
   public override get solutionId(): string {
@@ -57,29 +60,18 @@ export class CurrentStudentAnalysis extends CurrentAnalysis {
     });
   }
 
-  /**
-   * Returns the most relevant analysis for a student for the progress list and
-   * student-result page: the current (non-starred) work so the teacher can see
-   * whether the latest submission is already in the showcase and act on it.
-   * Falls back to the starred analysis only when no unstarred entry exists.
-   *
-   * This relies on the SQL query guaranteeing that there is at most one non-reference row per
-   * student (with DISTINCT ON ... ORDER BY createdAt DESC), so 'find' always
-   * picks the most recent unstarred solution without needing the array to be
-   * sorted.
-   */
   static findAnalysisToDisplay(
     analyses: CurrentAnalysis[],
     studentId: number,
   ): CurrentStudentAnalysis | null {
-    const studentAnalyses = analyses.filter(
-      (a): a is CurrentStudentAnalysis =>
-        a instanceof CurrentStudentAnalysis && a.studentId === studentId,
+    return (
+      analyses.find(
+        (a): a is CurrentStudentAnalysis =>
+          // the analysis is for this student and is the latest version
+          a instanceof CurrentStudentAnalysis &&
+          a.studentId === studentId &&
+          a.isLatest,
+      ) ?? null
     );
-
-    const current = studentAnalyses.find((a) => !a.isReferenceSolution);
-    const starred = studentAnalyses.find((a) => a.isReferenceSolution);
-
-    return current ?? starred ?? null;
   }
 }
