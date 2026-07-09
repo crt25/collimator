@@ -416,10 +416,28 @@ export class AuthenticationService {
       rawIdentifier &&
       byPseudonym.studentIdentifier === null
     ) {
-      return this.prisma.authenticatedStudent.update({
-        where: { studentId: byPseudonym.studentId },
-        data: { studentIdentifier: rawIdentifier },
-      });
+      try {
+        return await this.prisma.authenticatedStudent.update({
+          where: { studentId: byPseudonym.studentId },
+          data: { studentIdentifier: rawIdentifier },
+        });
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          return this.prisma.authenticatedStudent.findUnique({
+            where: {
+              studentIdentifierUniquePerClass: {
+                classId,
+                studentIdentifier: rawIdentifier,
+              },
+              deletedAt: null,
+            },
+          });
+        }
+        throw error;
+      }
     }
 
     return byPseudonym;
