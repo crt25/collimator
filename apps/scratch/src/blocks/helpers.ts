@@ -1,4 +1,5 @@
 import { WorkspaceChangeEvent } from "../types/scratch-workspace";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { countUsedBlocks } from "./block-config";
 
 const logModule = "[Scratch][Block Helpers]";
@@ -147,6 +148,22 @@ export const shouldPreventBlocksActions = (
   return false;
 };
 
+const getAllowedBlockCount = (
+  config: ScratchCrtConfig,
+  blockType: string,
+  // negative number means unlimited, 0 means not allowed (including not listed in config)
+): number | boolean => {
+  if (blockType.startsWith("data_")) {
+    return config.allowedBlocks.variables ? -1 : 0;
+  }
+
+  if (blockType.startsWith("procedures_")) {
+    return config.allowedBlocks.customBlocks ? -1 : 0;
+  }
+
+  return config.allowedBlocks[blockType] || 0;
+};
+
 /**
  * Check if adding blocks from the flyout would exceed the limits set in the config.
  * It checks the number of blocks currently used in the workspace and the number of blocks being added, and compares it to the limits set in the config.
@@ -166,10 +183,10 @@ export const wouldExceedLimits = (
   // using the workspace count would always include the new block, this causes the flyout drags to be blocked
   const usedBlocks = countUsedBlocks(vm);
 
-  const allowed = config.allowedBlocks[block.type];
+  const allowed = getAllowedBlockCount(config, block.type);
   const count = usedBlocks[block.type];
 
-  const isPreventedEntirely = allowed === 0 || allowed === false;
+  const isPreventedEntirely = allowed === 0;
 
   if (isPreventedEntirely) {
     console.debug(
