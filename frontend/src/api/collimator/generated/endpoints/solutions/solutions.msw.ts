@@ -242,6 +242,7 @@ export const getSolutionsControllerFindCurrentAnalysesV0ResponseMock = (
       null,
     ]),
     isStudentSolution: faker.datatype.boolean(),
+    isLatest: faker.datatype.boolean(),
     studentPseudonym: faker.helpers.arrayElement([
       faker.string.alpha({ length: { min: 10, max: 20 } }),
       null,
