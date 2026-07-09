@@ -438,13 +438,16 @@ export class SolutionsService {
         );
       }
 
-      await tx.studentActivity.update({
+      const { count } = await tx.studentActivity.updateMany({
         data: { isReference },
-        where: { id: targetActivity.id },
+        where: {
+          ...baseWhere,
+          solutionHash,
+        },
       });
 
       this.logger.log(
-        `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+        `Updated ${count} student activity row(s) (studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) with the given solution hash isReference=${isReference}`,
       );
     });
   }
