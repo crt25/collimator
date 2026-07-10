@@ -11,6 +11,4 @@ export interface StudentAuthenticationResponseDto {
   authenticationToken: string;
   /** The id of the student. */
   studentId: number;
-  /** The deterministic, teacher-keyed identifier stored for the student, encoded in Base64url. Absent for students created before this identifier existed. */
-  studentIdentifier?: string;
 }

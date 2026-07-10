@@ -82,7 +82,6 @@ export class AuthenticationController {
     return StudentAuthenticationResponseDto.fromQueryResult({
       authenticationToken: authenticationToken.token,
       studentId: authenticationToken.studentId,
-      studentIdentifier: authenticationToken.studentIdentifier,
     });
   }
 
