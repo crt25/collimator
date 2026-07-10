@@ -23,7 +23,7 @@ export const getTaskStatus = (
     return TaskStatus.notStarted;
   }
 
-  const tests = solutionToDisplay?.tests ?? currentAnalysis?.tests;
+  const tests = currentAnalysis?.tests ?? solutionToDisplay?.tests;
 
   if (tests && tests.length > 0 && tests.every((test) => test.passed)) {
     return TaskStatus.complete;
