@@ -1,6 +1,5 @@
 -- @param {Int} $1:sessionId The id of the session for which the analysis are to be retrieved
 -- @param {Int} $2:taskId The id of the task for which the analysis are to be retrieved
-(
 WITH allStudentSolutions AS (
     -- solutions submitted via the student solution endpoint
     SELECT
@@ -44,6 +43,7 @@ WITH allStudentSolutions AS (
       allStudentSolutions."studentId",
       allStudentSolutions."createdAt" DESC
     )
+(
 SELECT
   analysis.*,
   test."identifier" AS "testIdentifier",
@@ -111,6 +111,10 @@ WHERE studentSolution."sessionId" = $1
 AND studentSolution."taskId" = $2
 AND studentSolution."isReference" = true
 AND studentSolution."deletedAt" IS NOT NULL
+AND NOT EXISTS (
+  SELECT 1 FROM studentSolutions
+  WHERE studentSolutions."studentSolutionId" = studentSolution."id"
+)
 
 )
 
