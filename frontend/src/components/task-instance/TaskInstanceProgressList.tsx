@@ -275,7 +275,15 @@ const TaskInstanceProgressList = ({
                 a.isReferenceSolution &&
                 a.solutionHash !== currentAnalysis?.solutionHash,
             )
-            .map((a) => [a.solutionHash, a] as const),
+            .map(
+              (a) =>
+                [
+                  a.isStudentSolution
+                    ? `solution:${a.studentSolutionId}`
+                    : `activity:${a.solutionHash}`,
+                  a,
+                ] as const,
+            ),
         ).values(),
       ];
 
