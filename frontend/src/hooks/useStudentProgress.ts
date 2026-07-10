@@ -3,6 +3,7 @@ import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
+import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 
 type AnonymousStudent = {
   isAnonymous: true;
@@ -42,7 +43,15 @@ export const useSessionStudents = (
   classId: number,
   sessionId: number,
   activeStudentIds: number[],
-) => {
+): {
+  klass: ExistingClassExtended | undefined;
+  session: ExistingSessionExtended | undefined;
+  students: ResolvedStudent[];
+  klassError: Error | undefined;
+  sessionError: Error | undefined;
+  isLoadingKlass: boolean;
+  isLoadingSession: boolean;
+} => {
   const {
     data: klass,
     error: klassError,
