@@ -30,6 +30,7 @@ const buildStudentAnalysisRow = (
   studentId: 1,
   studentPseudonym: null,
   studentKeyPairId: null,
+  isLatest: true,
   isReference: false,
   isStudentSolution: true,
   studentSolutionId: 100,
@@ -55,6 +56,7 @@ const buildReferenceAnalysisRow = (
   testPassed: null,
   studentId: null,
   studentPseudonym: null,
+  isLatest: true,
   studentKeyPairId: null,
   isReference: true,
   isStudentSolution: false,
@@ -67,7 +69,7 @@ const buildReferenceAnalysisRow = (
   ...overrides,
 });
 
-describe("SolutionsService", () => {
+describe.only("SolutionsService", () => {
   let service: SolutionsService;
   let prismaMock: DeepMockProxy<PrismaClient>;
   let module: TestingModule;
