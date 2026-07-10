@@ -4,19 +4,17 @@ import styled from "@emotion/styled";
 import { Link, Text } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
-import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 import {
   ResolvedStudent,
-  useStudentProgress,
+  useSessionStudents,
 } from "@/hooks/useStudentProgress";
 import TaskProgress from "../task-progress";
 import MultiSwrContent from "../MultiSwrContent";
-import { StudentName } from "../encryption/StudentName";
+import { ResolvedStudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
 
@@ -61,15 +59,7 @@ type StudentProgress = {
 
 const nameTemplate = (progress: StudentProgress) => (
   <Text fontWeight="semibold" fontSize="lg" margin={0}>
-    {"isAnonymous" in progress.student ? (
-      <StudentName studentId={progress.student.studentId} />
-    ) : (
-      <StudentName
-        studentId={progress.student.studentId}
-        pseudonym={progress.student.pseudonym}
-        keyPairId={progress.student.keyPairId}
-      />
-    )}
+    <ResolvedStudentName student={progress.student} />
   </Text>
 );
 
@@ -115,18 +105,6 @@ const ProgressList = ({
   const intl = useIntl();
 
   const {
-    data: klass,
-    error: klassError,
-    isLoading: isLoadingKlass,
-  } = useClass(classId);
-
-  const {
-    data: session,
-    error: sessionError,
-    isLoading: isLoadingSession,
-  } = useClassSession(classId, sessionId);
-
-  const {
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
@@ -153,7 +131,15 @@ const ProgressList = ({
     [solutions, currentAnalyses],
   );
 
-  const students = useStudentProgress(klass, activeStudentIds);
+  const {
+    klass,
+    session,
+    students,
+    klassError,
+    sessionError,
+    isLoadingKlass,
+    isLoadingSession,
+  } = useSessionStudents(classId, sessionId, activeStudentIds);
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
