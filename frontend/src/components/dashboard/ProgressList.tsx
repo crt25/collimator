@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
-import { HStack, Link, Status, Text } from "@chakra-ui/react";
+import { Link, Text } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -9,17 +9,12 @@ import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
-import { ProgressMessages } from "@/i18n/progress-messages";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
 import {
   ResolvedStudent,
   useStudentProgress,
 } from "@/hooks/useStudentProgress";
-import {
-  getTaskStatus,
-  getTaskStatusColor,
-  TaskStatus,
-} from "../task-progress";
+import TaskProgress from "../task-progress";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable from "../ChakraDataTable";
@@ -89,61 +84,17 @@ const TaskTemplate = ({
   taskId: number;
   rowData: StudentProgress;
 }) => {
-  const intl = useIntl();
-
   const taskSolutions = useMemo(
     () => rowData.taskSolutions.find((s) => s.taskId === taskId),
     [taskId, rowData],
   );
 
-  const solutionToDisplay = useMemo(
-    () =>
-      ExistingStudentSolution.findSolutionToDisplay(taskSolutions?.solutions),
-    [taskSolutions],
-  );
-
-  const currentAnalysis = taskSolutions?.currentAnalysis ?? null;
-
-  const status = useMemo(
-    () => getTaskStatus(solutionToDisplay, currentAnalysis),
-    [solutionToDisplay, currentAnalysis],
-  );
-
-  const color = useMemo(() => getTaskStatusColor(status), [status]);
-
-  const statusText = useMemo(() => {
-    switch (status) {
-      case TaskStatus.complete:
-        return intl.formatMessage(ProgressMessages.completeStatus);
-      case TaskStatus.incomplete:
-        return intl.formatMessage(ProgressMessages.incompleteStatus);
-      case TaskStatus.notStarted:
-      default:
-        return intl.formatMessage(ProgressMessages.notStartedStatus);
-    }
-  }, [intl, status]);
-
-  const statusContent = (
-    <HStack>
-      <Status.Root>
-        <Status.Indicator backgroundColor={color} />
-      </Status.Root>
-      {statusText}
-    </HStack>
-  );
-
-  if (status === TaskStatus.notStarted) {
-    return statusContent;
-  }
-
   return (
-    <Link
+    <TaskProgress
+      solutions={taskSolutions?.solutions}
+      currentAnalysis={taskSolutions?.currentAnalysis ?? null}
       href={`/class/${classId}/session/${sessionId}/task/${taskId}/student/${rowData.id}`}
-      variant="underline"
-      display="block"
-    >
-      {statusContent}
-    </Link>
+    />
   );
 };
 
