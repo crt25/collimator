@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
-import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
-import { LuHand } from "react-icons/lu";
+import { HStack, Link, Status, Text } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAllSessionSolutions } from "@/api/collimator/hooks/solutions/useAllSessionSolutions";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -23,7 +22,7 @@ import {
 } from "../task-progress";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
-import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
+import ChakraDataTable from "../ChakraDataTable";
 import { EmptyState } from "../EmptyState";
 
 const ProgressListWrapper = styled.div`
@@ -148,11 +147,12 @@ const TaskTemplate = ({
   );
 };
 
-const helpTemplate = (_rowData: StudentProgress) => (
-  <Icon>
-    <LuHand />
-  </Icon>
-);
+// [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
+// const helpTemplate = (_rowData: StudentProgress) => (
+//   <Icon>
+//     <LuHand />
+//   </Icon>
+// );
 
 const ProgressList = ({
   classId,
@@ -252,15 +252,16 @@ const ProgressList = ({
           columnType: ColumnType.text,
         },
       },
-      {
-        id: "helpNeeded",
-        header: intl.formatMessage(messages.helpColumn),
-        cell: (info) => helpTemplate(info.row.original),
-        size: ColumnSize.sm,
-        meta: {
-          columnType: ColumnType.text,
-        },
-      },
+      // [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
+      // {
+      //   id: "helpNeeded",
+      //   header: intl.formatMessage(messages.helpColumn),
+      //   cell: (info) => helpTemplate(info.row.original),
+      //   size: ColumnSize.sm,
+      //   meta: {
+      //     columnType: ColumnType.text,
+      //   },
+      // },
     ];
 
     const lastColumns: ColumnDef<StudentProgress>[] = [];
