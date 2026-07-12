@@ -1,4 +1,4 @@
-import { ComponentProps, useMemo } from "react";
+import { useMemo } from "react";
 import { defineMessages, useIntl, FormattedMessage } from "react-intl";
 import styled from "@emotion/styled";
 import { HStack, Icon, Link, Status, Text } from "@chakra-ui/react";
@@ -13,6 +13,11 @@ import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/curren
 import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
+import {
+  getTaskStatus,
+  getTaskStatusColor,
+  TaskStatus,
+} from "../task-progress";
 import MultiSwrContent from "../MultiSwrContent";
 import { StudentName } from "../encryption/StudentName";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
@@ -48,6 +53,7 @@ const messages = defineMessages({
 type TaskSolutions = {
   taskId: number;
   solutions: ExistingStudentSolution[];
+  currentAnalysis: CurrentStudentAnalysis | null;
 };
 
 type AnonymousStudent = {
@@ -60,14 +66,6 @@ type StudentProgress = {
   student: ClassStudent | AnonymousStudent;
   taskSolutions: TaskSolutions[];
 };
-
-enum TaskStatus {
-  notStarted,
-  incomplete,
-  complete,
-}
-
-type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
 
 const nameTemplate = (progress: StudentProgress) => (
   <Text fontWeight="semibold" fontSize="lg" margin={0}>
@@ -96,37 +94,25 @@ const TaskTemplate = ({
 }) => {
   const intl = useIntl();
 
-  const solutionToDisplay = useMemo(() => {
-    const solutions = rowData.taskSolutions.find(
-      (s) => s.taskId === taskId,
-    )?.solutions;
+  const taskSolutions = useMemo(
+    () => rowData.taskSolutions.find((s) => s.taskId === taskId),
+    [taskId, rowData],
+  );
 
-    return ExistingStudentSolution.findSolutionToDisplay(solutions);
-  }, [taskId, rowData]);
+  const solutionToDisplay = useMemo(
+    () =>
+      ExistingStudentSolution.findSolutionToDisplay(taskSolutions?.solutions),
+    [taskSolutions],
+  );
 
-  const status = useMemo(() => {
-    if (!solutionToDisplay) {
-      return TaskStatus.notStarted;
-    }
+  const currentAnalysis = taskSolutions?.currentAnalysis ?? null;
 
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
-      return TaskStatus.complete;
-    }
+  const status = useMemo(
+    () => getTaskStatus(solutionToDisplay, currentAnalysis),
+    [solutionToDisplay, currentAnalysis],
+  );
 
-    return TaskStatus.incomplete;
-  }, [solutionToDisplay]);
-
-  const color = useMemo((): StatusColor => {
-    if (!solutionToDisplay) {
-      return "neutral";
-    }
-
-    if (solutionToDisplay.tests.every((test) => test.passed)) {
-      return "success";
-    }
-
-    return "error";
-  }, [solutionToDisplay]);
+  const color = useMemo(() => getTaskStatusColor(status), [status]);
 
   const statusText = useMemo(() => {
     switch (status) {
@@ -247,12 +233,20 @@ const ProgressList = ({
           (s) => s.taskId === task.id,
         )?.solutions;
 
+        const taskAnalyses = currentAnalyses?.find(
+          (a) => a.taskId === task.id,
+        )?.analyses;
+
         return {
           taskId: task.id,
           solutions:
             studentSolutions?.filter(
               (solution) => solution.studentId === student.studentId,
             ) ?? [],
+          currentAnalysis: CurrentStudentAnalysis.findAnalysisToDisplay(
+            taskAnalyses ?? [],
+            student.studentId,
+          ),
         };
       });
 
@@ -262,7 +256,7 @@ const ProgressList = ({
         taskSolutions: taskSolutions,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, studentIds]);
+  }, [klass, session, solutions, currentAnalyses, studentIds]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
     const firstColumns: ColumnDef<StudentProgress>[] = [
