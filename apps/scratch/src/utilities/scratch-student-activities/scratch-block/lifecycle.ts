@@ -57,6 +57,34 @@ export const handleBlockLifecycle = ({
         cleanupDeletedBlockFreezeState(vm, event, canEditTask);
       }
       break;
+
+    case "endDrag":
+      {
+        // When a block is dragged onto another sprite, the VM copies it into
+        // that target after this event is processed (BLOCK_DRAG_END ->
+        // shareBlocksToTarget resolves in a promise callback), so no
+        // create/delete event fires on the active workspace. Defer the
+        // counter refresh until the copy is registered in the runtime.
+        if (!event.isOutside || !event.xml) {
+          return;
+        }
+
+        // Clone: the dragged block's xml element may still be referenced by
+        // scratch-blocks, so it must not be re-parented like create/delete xml
+        const el = document.createElement("div");
+        el.appendChild(event.xml.cloneNode(true));
+
+        const opcodes = [...el.querySelectorAll("block[type]")]
+          .map((element) => element.getAttribute("type"))
+          .filter(filterNonNull);
+
+        setTimeout(() => {
+          for (const opcode of opcodes) {
+            updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
+          }
+        });
+      }
+      break;
   }
 };
 
