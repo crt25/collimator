@@ -1473,7 +1473,7 @@
     "message": "Consultation uniquement"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Enregistrer les/la solution(s) de référence"
+    "message": "Enregistrer les solutions de référence"
   },
   "TaskReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
