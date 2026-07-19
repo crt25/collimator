@@ -125,6 +125,43 @@ export class EmbeddedPythonCallbacks {
       ? EmbeddedPythonCallbacks.taskTemplateLocation
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
+  /**
+   * Resolves once at least one kernelspec (the Pyodide kernel) is registered.
+   */
+  private async waitForKernelSpecs(): Promise<void> {
+    const kernelSpecs = this.app.serviceManager.kernelspecs;
+    await kernelSpecs.ready;
+
+    const hasSpec = (): boolean =>
+      !!kernelSpecs.specs &&
+      Object.keys(kernelSpecs.specs.kernelspecs).length > 0;
+
+    if (hasSpec()) {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      const onChange = (): void => {
+        if (hasSpec()) {
+          kernelSpecs.specsChanged.disconnect(onChange);
+          resolve();
+        }
+      };
+      kernelSpecs.specsChanged.connect(onChange);
+    });
+  }
+
+  /**
+   * Open the visible task notebook only after a kernel is available, so
+   * JupyterLab auto-selects the Pyodide kernel instead of prompting the user to
+   * pick one (CRT-399). The kernel-select dialog otherwise appears whenever the
+   * notebook opens before the Pyodide kernelspec has been registered.
+   */
+  private async openTaskNotebook(path: string): Promise<void> {
+    await this.waitForKernelSpecs();
+    this.documentManager.openOrReveal(path);
+  }
+
   async getTask(request: GetTask["request"]): Promise<Task> {
     try {
       // generate student task and autograder
@@ -204,7 +241,7 @@ export class EmbeddedPythonCallbacks {
       await this.setJupyterLocale(request.params.language);
 
       if (!isLoadTaskWithTask(request.params)) {
-        this.documentManager.openOrReveal(this.notebookToOpen);
+        await this.openTaskNotebook(this.notebookToOpen);
         return undefined;
       }
 
@@ -300,7 +337,7 @@ export class EmbeddedPythonCallbacks {
         request.params.submission,
       );
 
-      this.documentManager.openOrReveal(this.notebookToOpen);
+      await this.openTaskNotebook(this.notebookToOpen);
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -312,7 +349,7 @@ export class EmbeddedPythonCallbacks {
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
     await this.setJupyterLocale(request.params);
-    this.documentManager.openOrReveal(this.notebookToOpen);
+    await this.openTaskNotebook(this.notebookToOpen);
     return undefined;
   }
 
@@ -624,7 +661,7 @@ export class EmbeddedPythonCallbacks {
       );
     }
 
-    this.documentManager.openOrReveal(this.notebookToOpen);
+    await this.openTaskNotebook(this.notebookToOpen);
   }
 
   private async writeGenericNotebookTask(
@@ -655,9 +692,7 @@ export class EmbeddedPythonCallbacks {
       task.gradingSrc,
     );
 
-    this.documentManager.openOrReveal(
-      EmbeddedPythonCallbacks.taskTemplateLocation,
-    );
+    await this.openTaskNotebook(EmbeddedPythonCallbacks.taskTemplateLocation);
   }
 
   private async getAllFolderContents(): Promise<{
