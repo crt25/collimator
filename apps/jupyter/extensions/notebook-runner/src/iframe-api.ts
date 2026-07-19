@@ -1,6 +1,7 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
+import { NotebookPanel } from "@jupyterlab/notebook";
 
 import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { DEFAULT_SCROLL_HEIGHT } from "./constants";
@@ -126,6 +127,27 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   async getTask(request: GetTask["request"]): Promise<Task> {
+    // CRT-438: freeze the task-template editor read-only for the duration of the
+    // save. The student notebook is generated up front (from the assign pipeline)
+    // while the teacher template is read at the end (after the grade pipeline
+    // re-saves the still-live editor), so a keystroke in between would land only
+    // in the teacher template and make the two diverge. Per-cell `readOnly` is an
+    // editor-level flag: it locks each cell's editor (blocks typing) but is not
+    // persisted into the saved notebook and does not block the programmatic
+    // context.save() calls inside assign/grade (unlike the notebook model's
+    // read-only flag, which would).
+    const notebookPanel = this.documentManager.findWidget(
+      EmbeddedPythonCallbacks.taskTemplateLocation,
+    ) as NotebookPanel | undefined;
+
+    const frozenCells = notebookPanel
+      ? Array.from(notebookPanel.content.widgets)
+      : [];
+    const previousReadOnly = frozenCells.map((cell) => cell.readOnly);
+    frozenCells.forEach((cell) => {
+      cell.readOnly = true;
+    });
+
     try {
       // generate student task and autograder
       await this.app.commands.execute(runAssignCommand);
@@ -165,6 +187,13 @@ export class EmbeddedPythonCallbacks {
       const errorMessage = e instanceof Error ? e.message : String(e);
 
       throw new GetTaskError(errorMessage);
+    } finally {
+      // Re-enable editing (matters on the error path, where the modal stays open).
+      frozenCells.forEach((cell, index) => {
+        if (!cell.isDisposed) {
+          cell.readOnly = previousReadOnly[index];
+        }
+      });
     }
   }
 
