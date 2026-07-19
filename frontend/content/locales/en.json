@@ -1610,11 +1610,17 @@
   "impressum.generalInformation": {
     "message": "General Information"
   },
+  "impressum.hepProfileLink": {
+    "message": "HEP profile"
+  },
   "impressum.hosting": {
     "message": "Hosting"
   },
   "impressum.hostingProvider": {
     "message": "Amazon Web Services, Inc. - Zurich Region"
+  },
+  "impressum.professorAbbreviation": {
+    "message": "Prof."
   },
   "impressum.projectSponsor": {
     "message": "Project Sponsor"

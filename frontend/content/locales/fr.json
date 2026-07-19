@@ -1850,11 +1850,17 @@
   "impressum.generalInformation": {
     "message": "Informations générales"
   },
+  "impressum.hepProfileLink": {
+    "message": "Profil HEP"
+  },
   "impressum.hosting": {
     "message": "Hébergement"
   },
   "impressum.hostingProvider": {
     "message": "Amazon Web Services, Inc. - Région Zurich"
+  },
+  "impressum.professorAbbreviation": {
+    "message": "Pr."
   },
   "impressum.projectSponsor": {
     "message": "Direction de projet"
