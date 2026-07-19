@@ -6,7 +6,10 @@ import { Link } from "@chakra-ui/react";
 import { ButtonMessages } from "@/i18n/button-messages";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { useDeleteClassSession } from "@/api/collimator/hooks/sessions/useDeleteClassSession";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import {
+  AuthenticationContext,
+  canShareSession,
+} from "@/contexts/AuthenticationContext";
 import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ShareModal } from "@/components/modals/ShareModal";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
@@ -41,9 +44,7 @@ const SessionActions = ({
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [sessionLink, setSessionLink] = useState("");
 
-  const canGetSessionLink =
-    "userId" in authenticationContext &&
-    klass.teacher.id === authenticationContext.userId;
+  const canGetSessionLink = canShareSession(authenticationContext, klass);
 
   const handleDeleteConfirm = async () => {
     try {
