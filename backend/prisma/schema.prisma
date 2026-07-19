@@ -34,7 +34,6 @@ model User {
   registrationToken    RegistrationToken?
   authenticationTokens AuthenticationToken[]
   classes              Class[]
-  lessons              Lesson[]
   tasks                Task[]
 
   @@unique([oidcSub, authenticationProvider], name: "uniqueOidcSubPerProvider")
@@ -113,25 +112,6 @@ model AnonymousStudent {
   session Session? @relation(fields: [sessionId], references: [id], onDelete: Restrict)
 }
 
-enum LessonVisibility {
-  PUBLIC
-  PRIVATE
-}
-
-model Lesson {
-  id          Int              @id @default(autoincrement())
-  createdAt   DateTime         @default(now())
-  title       String
-  description String
-  visibility  LessonVisibility
-  creatorId   Int?
-  deletedAt   DateTime?
-
-  tasks    LessonTask[]
-  sessions Session[]
-  creator  User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-}
-
 enum SessionStatus {
   CREATED
   ONGOING
@@ -140,17 +120,15 @@ enum SessionStatus {
 }
 
 model Session {
-  id              Int           @id @default(autoincrement())
-  createdAt       DateTime      @default(now())
-  title           String
-  description     String
-  classId         Int
-  basedOnLessonId Int?
-  status          SessionStatus @default(CREATED)
-  isAnonymous     Boolean       @default(false)
-  deletedAt       DateTime?
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  title       String
+  description String
+  classId     Int
+  status      SessionStatus @default(CREATED)
+  isAnonymous Boolean       @default(false)
+  deletedAt   DateTime?
 
-  lesson            Lesson?            @relation(fields: [basedOnLessonId], references: [id], onDelete: SetNull)
   class             Class              @relation(fields: [classId], references: [id], onDelete: Restrict)
   tasks             SessionTask[]
   solutions         StudentSolution[]
@@ -177,21 +155,9 @@ model Task {
   studentSolutions   StudentSolution[]
   referenceSolutions ReferenceSolution[]
   sessions           SessionTask[]
-  lessons            LessonTask[]
   creator            User?               @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   studentActivities  StudentActivity[]
   solution           Solution[]
-}
-
-model LessonTask {
-  lessonId Int
-  taskId   Int
-  index    Int
-
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Restrict)
-
-  @@id([lessonId, taskId])
 }
 
 model SessionTask {

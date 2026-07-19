@@ -34,23 +34,6 @@ export const getSessionsControllerCreateV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -83,23 +66,6 @@ export const getSessionsControllerFindAllV0ResponseMock =
         undefined,
       ]),
       status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-      lesson: {
-        ...{
-          id: faker.number.float({
-            min: undefined,
-            max: undefined,
-            fractionDigits: 2,
-          }),
-          name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-          deletedAt: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              `${faker.date.past().toISOString().split(".")[0]}Z`,
-              null,
-            ]),
-            undefined,
-          ]),
-        },
-      },
       tasks: Array.from(
         { length: faker.number.int({ min: 1, max: 10 }) },
         (_, i) => i + 1,
@@ -136,23 +102,6 @@ export const getSessionsControllerFindOneV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   class: {
     ...{
       id: faker.number.float({
@@ -208,23 +157,6 @@ export const getSessionsControllerUpdateV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -250,23 +182,6 @@ export const getSessionsControllerRemoveV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -292,23 +207,6 @@ export const getSessionsControllerStartV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -334,23 +232,6 @@ export const getSessionsControllerPauseV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -376,23 +257,6 @@ export const getSessionsControllerFinishV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
@@ -418,23 +282,6 @@ export const getSessionsControllerCopyV0ResponseMock = (
     undefined,
   ]),
   status: faker.helpers.arrayElement(Object.values(SessionStatus)),
-  lesson: {
-    ...{
-      id: faker.number.float({
-        min: undefined,
-        max: undefined,
-        fractionDigits: 2,
-      }),
-      name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-      deletedAt: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split(".")[0]}Z`,
-          null,
-        ]),
-        undefined,
-      ]),
-    },
-  },
   tasks: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,

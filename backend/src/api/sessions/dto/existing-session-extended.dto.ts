@@ -3,7 +3,6 @@ import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { IsDate, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { SessionClassDto } from "./session-class.dto";
-import { SessionLessonDto } from "./session-lesson.dto";
 import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
 
@@ -11,7 +10,7 @@ type TaskList = { task: { id: number; name: string } }[];
 export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
 
 export class ExistingSessionExtendedDto
-  implements Omit<Session, "classId" | "basedOnLessonId">
+  implements Omit<Session, "classId">
 {
   @ApiProperty({
     example: 318,
@@ -54,15 +53,6 @@ export class ExistingSessionExtendedDto
   })
   @Expose()
   readonly status!: SessionStatus;
-
-  @ApiProperty({
-    description: "The corresponding lesson.",
-    type: SessionLessonDto,
-    nullable: true,
-  })
-  @Type(() => SessionLessonDto)
-  @Expose()
-  readonly lesson!: SessionLessonDto | null;
 
   @ApiProperty({
     description: "The session's class.",

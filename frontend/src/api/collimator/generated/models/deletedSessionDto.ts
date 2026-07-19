@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { SessionStatus } from "./sessionStatus";
-import type { DeletedSessionDtoLesson } from "./deletedSessionDtoLesson";
 
 export interface DeletedSessionDto {
   /** The session's unique identifier, a positive integer. */
@@ -19,11 +18,6 @@ export interface DeletedSessionDto {
   deletedAt?: string | null;
   /** The session's status. */
   status: SessionStatus;
-  /**
-   * The lesson from which this session was created.
-   * @nullable
-   */
-  lesson: DeletedSessionDtoLesson;
   /** The list of task IDs. */
   tasks: number[];
 }

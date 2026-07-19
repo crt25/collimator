@@ -49,11 +49,3 @@ export const AsTaskBreadcrumb = {
   } as Args,
   render: renderWithinBreadcrumbs,
 };
-
-export const AsLessonBreadcrumb = {
-  args: {
-    lessonId: 1,
-    breadcrumb: true,
-  } as Args,
-  render: renderWithinBreadcrumbs,
-};

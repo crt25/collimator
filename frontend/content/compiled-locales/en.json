@@ -666,24 +666,6 @@
       "value": "Create Class"
     }
   ],
-  "CreateLesson.submit": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
-  "CreateLesson.title": [
-    {
-      "type": 0,
-      "value": "Create Lesson"
-    }
-  ],
-  "CreateLessonForm.name": [
-    {
-      "type": 0,
-      "value": "Name"
-    }
-  ],
   "CreateSession.errorMessage": [
     {
       "type": 0,
@@ -805,12 +787,6 @@
       "value": "Home"
     }
   ],
-  "CrtNavigation.lessonsTab": [
-    {
-      "type": 0,
-      "value": "Lessons"
-    }
-  ],
   "CrtNavigation.tasksTab": [
     {
       "type": 0,
@@ -889,28 +865,6 @@
     {
       "type": 0,
       "value": "Too many combinations to calculate dissimilar pairs."
-    }
-  ],
-  "EditLesson.header": [
-    {
-      "type": 0,
-      "value": "Edit Lesson"
-    }
-  ],
-  "EditLesson.submit": [
-    {
-      "type": 0,
-      "value": "Save Lesson"
-    }
-  ],
-  "EditLesson.title": [
-    {
-      "type": 0,
-      "value": "Edit Lesson - "
-    },
-    {
-      "type": 1,
-      "value": "name"
     }
   ],
   "EditTask.submit": [
@@ -1145,52 +1099,6 @@
       "value": "Français"
     }
   ],
-  "LessonDetail.header": [
-    {
-      "type": 0,
-      "value": "Lesson"
-    }
-  ],
-  "LessonDetail.title": [
-    {
-      "type": 0,
-      "value": "Lesson - "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
-  "LessonList.columns.actions": [
-    {
-      "type": 0,
-      "value": "Actions"
-    }
-  ],
-  "LessonList.columns.name": [
-    {
-      "type": 0,
-      "value": "Name"
-    }
-  ],
-  "LessonList.columns.tags": [
-    {
-      "type": 0,
-      "value": "Tags"
-    }
-  ],
-  "LessonList.columns.usedBy": [
-    {
-      "type": 0,
-      "value": "Used By"
-    }
-  ],
-  "LessonNavigation.lessonTab": [
-    {
-      "type": 0,
-      "value": "Lesson Details"
-    }
-  ],
   "List.delete": [
     {
       "type": 0,
@@ -1219,18 +1127,6 @@
     {
       "type": 0,
       "value": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
-    }
-  ],
-  "ListLessons.header": [
-    {
-      "type": 0,
-      "value": "Lesson Manager"
-    }
-  ],
-  "ListLessons.title": [
-    {
-      "type": 0,
-      "value": "Lessons"
     }
   ],
   "ListTasks.header": [
