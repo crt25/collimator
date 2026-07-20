@@ -69,13 +69,22 @@ const Impressum = () => {
           />
         </Heading>
         <Box>
-          <Text fontWeight="bold">Pr. Engin Bumbacher</Text>
+          <Text fontWeight="bold">
+            <FormattedMessage
+              id={"impressum.professorAbbreviation"}
+              defaultMessage="Prof."
+            />{" "}
+            Engin Bumbacher
+          </Text>
           <Text>
             <Link
               variant="underline"
               href="https://www.hepl.ch/annuaire/engin.bumbacher"
             >
-              HEP profile
+              <FormattedMessage
+                id={"impressum.hepProfileLink"}
+                defaultMessage="HEP profile"
+              />
             </Link>
           </Text>
         </Box>

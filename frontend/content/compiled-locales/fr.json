@@ -3877,6 +3877,12 @@
       "value": "Informations générales"
     }
   ],
+  "impressum.hepProfileLink": [
+    {
+      "type": 0,
+      "value": "Profil HEP"
+    }
+  ],
   "impressum.hosting": [
     {
       "type": 0,
@@ -3887,6 +3893,12 @@
     {
       "type": 0,
       "value": "Amazon Web Services, Inc. - Région Zurich"
+    }
+  ],
+  "impressum.professorAbbreviation": [
+    {
+      "type": 0,
+      "value": "Pr."
     }
   ],
   "impressum.projectSponsor": [
