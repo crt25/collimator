@@ -260,13 +260,22 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       }
 
       const lastTestFileName = getLastTestFileName();
-      const testFileName = testInfo.titlePath[0];
+      // Key on project + file, not the file alone. Each spec file runs once per
+      // project (e.g. "Desktop" and "iPad Mini landscape"). Keying on the file
+      // only means that when the two project runs of the same file happen to be
+      // scheduled consecutively on the same worker, the second run sees an
+      // unchanged file name and SKIPS the reset — inheriting the first run's
+      // mutated database (deleted rows, advanced auto-increment sequences). The
+      // suite's tests are order-dependent and share module-level ids, so that
+      // stale state desyncs them and fails intermittently depending on how
+      // Playwright happens to distribute file/project runs across workers.
+      const testFileName = `${testInfo.project.name}::${testInfo.titlePath[0]}`;
 
       // update the last test file name
       setLastTestFileName(testFileName);
 
-      // if we are still in the same test file there is nothing to do
-      // also if null, this is the first file so nothing to reset yet.
+      // if we are still in the same test file (and project) there is nothing to
+      // do. Also if null, this is the first file so nothing to reset yet.
       if (lastTestFileName === null || testFileName === lastTestFileName) {
         return use(undefined);
       }
