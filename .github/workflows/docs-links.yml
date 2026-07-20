@@ -1,8 +1,12 @@
 name: Documentation links
 
 # Guards the docs published via docsify (GitHub Pages, main/docs). Two checks:
-#   1. mlc  — every relative link/anchor resolves on disk (i.e. is correct when
-#      browsed on GitHub, the hard requirement) and external URLs are reachable.
+#   1. mlc  — every relative/anchor link resolves on disk (i.e. is correct when
+#      browsed on GitHub, the hard requirement). `--root-dir ./docs` resolves the
+#      root-relative _sidebar.md links (docsify site-root, not the filesystem
+#      root). Runs `--offline`: external URLs aren't checked, because CI-hostile
+#      hosts (npmjs returns 403 to bots, others redirect) make that flaky and the
+#      relative-link bug this guards against (CRT-328) is purely on-disk.
 #   2. convention guard — docsify with `relativePath: true` needs content links
 #      file-relative and _sidebar.md links root-relative; getting that wrong is
 #      what broke the site (CRT-328) yet is invisible to static link checkers.
@@ -24,10 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Check links resolve (relative on disk + external reachable)
+      - name: Check relative links resolve on disk
         uses: becheran/mlc@v1
         with:
-          args: ./docs
+          args: ./docs --offline --root-dir ./docs
 
       - name: Enforce docsify link conventions
         run: |

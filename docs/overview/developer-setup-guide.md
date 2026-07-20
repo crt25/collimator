@@ -109,7 +109,7 @@ By default, when you run `task setup:dev` the PostgreSQL container will be runni
     $ task apps:jupyter:dev
     ```
 
-See [apps/jupyter/README.md](https://github.com/crt25/collimator/blob/main/apps/jupyter/README.md) for more information.
+See [apps/jupyter/README.md](../../apps/jupyter/README.md) for more information.
 
 ### Visit the frontend
 
