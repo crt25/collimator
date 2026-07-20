@@ -13,7 +13,7 @@ const getSolveUrl = (taskType: TaskType) => {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/solve`;
     case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?mode=solve`;
+      return `${jupyterAppHostName}?crtMode=solve`;
     default:
       return null;
   }

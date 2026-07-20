@@ -41,7 +41,7 @@ const getSolutionCodeUrl = (taskType: TaskType) => {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/show`;
     case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?mode=show`;
+      return `${jupyterAppHostName}?crtMode=show`;
     default:
       return null;
   }

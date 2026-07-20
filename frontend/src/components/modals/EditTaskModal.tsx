@@ -13,7 +13,7 @@ const getEditUrl = (taskType: TaskType) => {
     case TaskType.SCRATCH:
       return `${scratchAppHostName}/edit`;
     case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?mode=edit`;
+      return `${jupyterAppHostName}?crtMode=edit`;
     default:
       return null;
   }

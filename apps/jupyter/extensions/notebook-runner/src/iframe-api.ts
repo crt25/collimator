@@ -349,7 +349,7 @@ export class EmbeddedPythonCallbacks {
     // instead of using window.location.reload(), because the jupyter loaded
     // with a different mode that gets reapplied on a plain reload, which overrides our custom mode.
     const url = new URL(window.location.href);
-    url.searchParams.set("mode", Mode[this.mode]);
+    url.searchParams.set("crtMode", Mode[this.mode]);
     window.location.href = url.toString();
   }
 
