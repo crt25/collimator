@@ -1,7 +1,6 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { FileBrowser } from "@jupyterlab/filebrowser";
-import { NotebookPanel } from "@jupyterlab/notebook";
 
 import { ISettingRegistry } from "@jupyterlab/settingregistry";
 import { DEFAULT_SCROLL_HEIGHT } from "./constants";
@@ -20,6 +19,7 @@ import {
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
+import { blockUserInterface } from "./ui-blocker";
 import { Mode } from "./mode";
 import {
   CrtInternalTask,
@@ -127,26 +127,14 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   async getTask(request: GetTask["request"]): Promise<Task> {
-    // CRT-438: freeze the task-template editor read-only for the duration of the
-    // save. The student notebook is generated up front (from the assign pipeline)
-    // while the teacher template is read at the end (after the grade pipeline
-    // re-saves the still-live editor), so a keystroke in between would land only
-    // in the teacher template and make the two diverge. Per-cell `readOnly` is an
-    // editor-level flag: it locks each cell's editor (blocks typing) but is not
-    // persisted into the saved notebook and does not block the programmatic
-    // context.save() calls inside assign/grade (unlike the notebook model's
-    // read-only flag, which would).
-    const notebookPanel = this.documentManager.findWidget(
-      EmbeddedPythonCallbacks.taskTemplateLocation,
-    ) as NotebookPanel | undefined;
-
-    const frozenCells = notebookPanel
-      ? Array.from(notebookPanel.content.widgets)
-      : [];
-    const previousReadOnly = frozenCells.map((cell) => cell.readOnly);
-    frozenCells.forEach((cell) => {
-      cell.readOnly = true;
-    });
+    // CRT-438: block the whole UI while the save/export pipeline runs. The
+    // student notebook is generated up front (from the assign pipeline) while
+    // the teacher template is read at the end (after the grade pipeline re-saves
+    // the still-live editor), so an edit in between would land only in the
+    // teacher template and make the two diverge. `inert` stops all user input
+    // without touching the notebook, unlike per-cell `readOnly`, which persists
+    // `editable: false` into the saved .ipynb and locks it permanently.
+    const unblockUserInterface = blockUserInterface(this.app);
 
     try {
       // generate student task and autograder
@@ -188,12 +176,7 @@ export class EmbeddedPythonCallbacks {
 
       throw new GetTaskError(errorMessage);
     } finally {
-      // Re-enable editing (matters on the error path, where the modal stays open).
-      frozenCells.forEach((cell, index) => {
-        if (!cell.isDisposed) {
-          cell.readOnly = previousReadOnly[index];
-        }
-      });
+      unblockUserInterface();
     }
   }
 
