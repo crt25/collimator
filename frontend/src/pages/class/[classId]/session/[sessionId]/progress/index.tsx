@@ -16,7 +16,10 @@ import PageHeading from "@/components/PageHeading";
 import SessionActions from "@/components/session/SessionActions";
 import { ShareModal } from "@/components/modals/ShareModal";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
-import { AuthenticationContext } from "@/contexts/AuthenticationContext";
+import {
+  AuthenticationContext,
+  canShareSession,
+} from "@/contexts/AuthenticationContext";
 import Button from "@/components/Button";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
@@ -61,9 +64,7 @@ const SessionProgress = () => {
   } = useClassSession(classId, sessionId);
 
   const canGetSessionLink =
-    klass &&
-    "userId" in authenticationContext &&
-    klass.teacher.id === authenticationContext.userId;
+    !!klass && canShareSession(authenticationContext, klass);
 
   const handleShareClick = useCallback(async () => {
     if (session && canGetSessionLink) {
