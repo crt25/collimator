@@ -9,30 +9,48 @@ const PageHeading = ({
   description,
   children,
   testId,
+  clamp,
 }: {
   variant?: React.ComponentProps<typeof StyledPageHeading>["variant"];
   description?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
   testId?: string;
+  // When set, truncate the title to one line and the description to two lines
+  // with an ellipsis so overly long values don't break the layout (CRT-431).
+  // Opt-in so student-facing headings keep their current display.
+  clamp?: boolean;
 }) => {
   const heading = (
-    <Box marginTop="lg" marginBottom="lg">
+    <Box
+      marginTop="lg"
+      marginBottom="lg"
+      minWidth={clamp ? 0 : undefined}
+      flex={clamp && actions ? 1 : undefined}
+    >
       {description ? (
         <>
           <StyledPageHeading
             variant={variant}
             marginBottom="md"
             data-testid={testId}
+            lineClamp={clamp ? 1 : undefined}
           >
             {children}
           </StyledPageHeading>
-          <StyledPageHeading variant="description">
+          <StyledPageHeading
+            variant="description"
+            lineClamp={clamp ? 2 : undefined}
+          >
             {description}
           </StyledPageHeading>
         </>
       ) : (
-        <StyledPageHeading variant={variant} data-testid={testId}>
+        <StyledPageHeading
+          variant={variant}
+          data-testid={testId}
+          lineClamp={clamp ? 1 : undefined}
+        >
           {children}
         </StyledPageHeading>
       )}
