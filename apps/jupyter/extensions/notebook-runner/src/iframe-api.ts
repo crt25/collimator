@@ -154,11 +154,11 @@ export class EmbeddedPythonCallbacks {
   /**
    * Open the visible task notebook only after a kernel is available, so
    * JupyterLab auto-selects the Pyodide kernel instead of prompting the user to
-   * pick one (CRT-399). The kernel-select dialog otherwise appears whenever the
-   * notebook opens before the Pyodide kernelspec has been registered.
+   * pick one.
    */
   private async openTaskNotebook(path: string): Promise<void> {
     await this.waitForKernelSpecs();
+    // eslint-disable-next-line no-restricted-syntax -- this wrapper is the one sanctioned call site
     this.documentManager.openOrReveal(path);
   }
 
