@@ -156,8 +156,7 @@ export const isAdminOrTeacher = (
 /**
  * Whether the authenticated user may share/copy the join link of a session
  * belonging to the given class: admins may share any class's sessions, teachers
- * only their own. Centralized here so the session list, the session detail
- * actions and the progress page stay in sync (see CRT-353).
+ * only their own.
  */
 export const canShareSession = (
   authContext: AuthenticationContextType,
