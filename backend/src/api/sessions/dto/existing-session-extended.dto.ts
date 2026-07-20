@@ -9,9 +9,7 @@ import { SessionId } from "./existing-session.dto";
 type TaskList = { task: { id: number; name: string } }[];
 export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
 
-export class ExistingSessionExtendedDto
-  implements Omit<Session, "classId">
-{
+export class ExistingSessionExtendedDto implements Omit<Session, "classId"> {
   @ApiProperty({
     example: 318,
     description: "The session's unique identifier, a positive integer.",

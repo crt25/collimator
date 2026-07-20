@@ -6,9 +6,7 @@ import { IsDate, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 export type SessionId = number;
 type TaskList = { taskId: number }[];
 
-export class ExistingSessionDto
-  implements Omit<Session, "classId">
-{
+export class ExistingSessionDto implements Omit<Session, "classId"> {
   @ApiProperty({
     example: 318,
     description: "The session's unique identifier, a positive integer.",
