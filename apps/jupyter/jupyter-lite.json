@@ -8,7 +8,8 @@
     "workspacesStorageDrivers": ["memoryStorageDriver"],
     "settingsStorageDrivers": ["localStorageWrapper"],
     "disabledExtensions": [
-      "@jupyterlite/application-extension:service-worker-manager"
+      "@jupyterlite/application-extension:service-worker-manager",
+      "@jupyterlite/application-extension:clear-browser-data"
     ]
   }
 }
