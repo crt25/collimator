@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   submit: {
     id: "TaskReferenceSolutions.submit",
-    defaultMessage: "Save Reference Solution(s)",
+    defaultMessage: "Save Reference Solutions",
   },
   referenceReadOnlyTitle: {
     id: "TaskReferenceSolutions.referenceReadOnlyTitle",

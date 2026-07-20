@@ -1233,7 +1233,7 @@
     "message": "View only"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Save Reference Solution(s)"
+    "message": "Save Reference Solutions"
   },
   "TaskReferenceSolutions.title": {
     "message": "Edit Reference Solution - {title}"
