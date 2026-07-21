@@ -1,0 +1,56 @@
+name: Documentation links
+
+# Guards the docs published via docsify (GitHub Pages, main/docs). Two checks:
+#   1. mlc  — every relative/anchor link resolves on disk (i.e. is correct when
+#      browsed on GitHub, the hard requirement). `--root-dir ./docs` resolves the
+#      root-relative _sidebar.md links (docsify site-root, not the filesystem
+#      root). Runs `--offline`: external URLs aren't checked, because CI-hostile
+#      hosts (npmjs returns 403 to bots, others redirect) make that flaky and the
+#      relative-link bug this guards against (CRT-328) is purely on-disk.
+#   2. convention guard — docsify with `relativePath: true` needs content links
+#      file-relative and _sidebar.md links root-relative; getting that wrong is
+#      what broke the site (CRT-328) yet is invisible to static link checkers.
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs-links.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs-links.yml"
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check relative links resolve on disk
+        # Pinned to the v1 commit SHA (supply-chain: a moving tag can be repointed).
+        uses: becheran/mlc@84e16e3ee0a5cc365268d79f6ab4b767074103fd # v1
+        with:
+          args: ./docs --offline --root-dir ./docs
+
+      - name: Enforce docsify link conventions
+        run: |
+          set -euo pipefail
+          status=0
+
+          # Content pages must NOT use root-relative links: docsify resolves them
+          # against the site root, escaping the /collimator/ project-pages base.
+          if grep -rnE '\]\(/[a-z]' docs --include='*.md' --exclude='_sidebar.md'; then
+            echo "::error::Content pages must use file-relative links (e.g. ../scratch/scratch.md), not root-relative (/scratch/...)."
+            status=1
+          fi
+
+          # _sidebar.md must use root-relative links (leading /), otherwise
+          # docsify resolves them against the current page's directory.
+          if grep -nP '\]\((?!/|https?:|#)' docs/_sidebar.md; then
+            echo "::error::docs/_sidebar.md links must be root-relative (start with /)."
+            status=1
+          fi
+
+          exit $status
