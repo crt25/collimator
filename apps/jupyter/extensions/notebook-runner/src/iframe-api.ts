@@ -19,6 +19,7 @@ import {
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
+import { blockUserInterface } from "./ui-blocker";
 import { Mode } from "./mode";
 import {
   CrtInternalTask,
@@ -126,6 +127,12 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   async getTask(request: GetTask["request"]): Promise<Task> {
+    // Block the whole UI while the save/export pipeline runs. The student
+    // notebook is generated up front (from the assign pipeline) while the
+    // teacher template is read at the end, so an edit in between would land only
+    // in the teacher template and make the two diverge.
+    const unblockUserInterface = blockUserInterface(this.app);
+
     try {
       // generate student task and autograder
       await this.app.commands.execute(runAssignCommand);
@@ -165,6 +172,8 @@ export class EmbeddedPythonCallbacks {
       const errorMessage = e instanceof Error ? e.message : String(e);
 
       throw new GetTaskError(errorMessage);
+    } finally {
+      unblockUserInterface();
     }
   }
 
