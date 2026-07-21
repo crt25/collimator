@@ -41,6 +41,10 @@ export interface CurrentStudentAnalysisDto {
    */
   isStudentSolution: boolean;
   /**
+   * True for the analysis representing the student's current solution, regardless of whether it is starred. Used to distinguish the current version from previously starred versions.
+   */
+  isLatest: boolean;
+  /**
    * The pseudonym of the student
    * @nullable
    */

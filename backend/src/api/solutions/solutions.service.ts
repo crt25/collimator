@@ -88,6 +88,7 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
   isStudentSolution: boolean;
   studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
+  isLatest: boolean;
 };
 
 export type ReferenceAnalysis = AnalysisWithoutId & {
@@ -232,9 +233,15 @@ export class SolutionsService {
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined && this.isTest(test)) {
-      currentAnalysis.tests.push(test);
-    } else if (currentAnalysis === undefined) {
+    if (currentAnalysis !== undefined) {
+      if (this.isTest(test)) {
+        currentAnalysis.tests.push(test);
+      }
+
+      if (analysis.isLatest) {
+        currentAnalysis.isLatest = true;
+      }
+    } else {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
@@ -248,8 +255,10 @@ export class SolutionsService {
         studentSolutionId: analysis.studentSolutionId,
         isStudentSolution: analysis.isStudentSolution ?? false,
         studentKeyPairId: analysis.studentKeyPairId,
+        isLatest: analysis.isLatest ?? false,
       });
     }
+
     return byAnalysisId;
   }
 
@@ -438,13 +447,16 @@ export class SolutionsService {
         );
       }
 
-      await tx.studentActivity.update({
+      const { count } = await tx.studentActivity.updateMany({
         data: { isReference },
-        where: { id: targetActivity.id },
+        where: {
+          ...baseWhere,
+          solutionHash,
+        },
       });
 
       this.logger.log(
-        `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+        `Updated ${count} student activity row(s) (studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) with the given solution hash isReference=${isReference}`,
       );
     });
   }

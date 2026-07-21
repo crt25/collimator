@@ -1,6 +1,5 @@
 -- @param {Int} $1:sessionId The id of the session for which the analysis are to be retrieved
 -- @param {Int} $2:taskId The id of the task for which the analysis are to be retrieved
-(
 WITH studentSolutions AS (
     SELECT
     -- only select one solution with all its tests per student https://stackoverflow.com/a/7630564/2897827
@@ -14,6 +13,7 @@ WITH studentSolutions AS (
       studentSolution."studentId",
       studentSolution."createdAt" DESC
     )
+(
 SELECT
   analysis.*,
   test."identifier" AS "testIdentifier",
@@ -23,7 +23,8 @@ SELECT
   studentSolutions."studentId" AS "studentId",
   student.pseudonym AS "studentPseudonym",
   student."keyPairId" AS "studentKeyPairId",
-  false AS "isReference",
+  studentSolutions."isReference" AS "isReference",
+  true AS "isLatest",
   studentSolutions."id" AS "studentSolutionId",
   true AS "isStudentSolution",
   studentSolutions."sessionId" AS "sessionId",
@@ -41,8 +42,6 @@ LEFT JOIN "AuthenticatedStudent" student
   AND student."deletedAt" IS NULL
 LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolutions.id AND test."deletedAt" IS NULL
-  -- only select the latest solution if it is not a reference solution, otherwise it will already be included by the next union part
-WHERE studentSolutions."isReference" = false
 ORDER BY test."name" ASC
 )
 
@@ -60,6 +59,7 @@ SELECT
   student.pseudonym AS "studentPseudonym",
   student."keyPairId" AS "studentKeyPairId",
   true AS "isReference",
+  false AS "isLatest",
   studentSolution."id" AS "studentSolutionId",
   true AS "isStudentSolution",
   studentSolution."sessionId" AS "sessionId",
@@ -82,6 +82,10 @@ WHERE studentSolution."sessionId" = $1
 AND studentSolution."taskId" = $2
 AND studentSolution."isReference" = true
 AND studentSolution."deletedAt" IS NULL
+AND NOT EXISTS (
+  SELECT 1 FROM studentSolutions
+  WHERE studentSolutions."id" = studentSolution."id"
+)
 
 )
 
@@ -99,6 +103,7 @@ SELECT
   NULL AS "studentPseudonym",
   NULL AS "studentKeyPairId",
   true as "isReference",
+  false AS "isLatest",
   NULL::int AS "studentSolutionId",
   false AS "isStudentSolution",
   NULL::int AS "sessionId",
