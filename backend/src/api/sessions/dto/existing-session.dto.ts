@@ -2,14 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { IsDate, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
-import { SessionLessonDto } from "./session-lesson.dto";
 
 export type SessionId = number;
 type TaskList = { taskId: number }[];
 
-export class ExistingSessionDto
-  implements Omit<Session, "classId" | "basedOnLessonId">
-{
+export class ExistingSessionDto implements Omit<Session, "classId"> {
   @ApiProperty({
     example: 318,
     description: "The session's unique identifier, a positive integer.",
@@ -51,15 +48,6 @@ export class ExistingSessionDto
   })
   @Expose()
   readonly status!: SessionStatus;
-
-  @ApiProperty({
-    description: "The lesson from which this session was created.",
-    type: SessionLessonDto,
-    nullable: true,
-  })
-  @Type(() => SessionLessonDto)
-  @Expose()
-  readonly lesson!: SessionLessonDto | null;
 
   @ApiProperty({
     description: "The list of task IDs.",

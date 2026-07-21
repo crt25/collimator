@@ -17,7 +17,6 @@ const compactInclude: Prisma.SessionInclude = {
       index: true,
     },
   },
-  lesson: { select: { id: true, title: true } },
 };
 
 const fullInclude: Prisma.SessionInclude = {
@@ -35,7 +34,6 @@ const fullInclude: Prisma.SessionInclude = {
     },
   },
   class: { select: { id: true, name: true, deletedAt: true } },
-  lesson: { select: { id: true, title: true } },
 };
 
 interface StudentTaskProgress {

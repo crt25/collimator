@@ -4,7 +4,6 @@ import {
 } from "../../generated/models";
 import { ClassProperties } from "../class-properties";
 import { SessionClass } from "./session-class";
-import { SessionLesson } from "./session-lesson";
 import { SessionTask } from "./session-task";
 
 export class ExistingSessionExtended {
@@ -14,7 +13,6 @@ export class ExistingSessionExtended {
   readonly isAnonymous: boolean;
   readonly createdAt: string;
   readonly klass: SessionClass;
-  readonly lesson: SessionLesson | null;
   readonly status: SessionStatus;
   readonly tasks: SessionTask[];
   readonly hasStudents: boolean;
@@ -26,7 +24,6 @@ export class ExistingSessionExtended {
     isAnonymous,
     createdAt,
     klass,
-    lesson,
     status,
     tasks,
     hasStudents,
@@ -37,7 +34,6 @@ export class ExistingSessionExtended {
     this.isAnonymous = isAnonymous;
     this.createdAt = createdAt;
     this.klass = klass;
-    this.lesson = lesson;
     this.status = status;
     this.tasks = tasks;
     this.hasStudents = hasStudents;
@@ -51,8 +47,6 @@ export class ExistingSessionExtended {
       this.isAnonymous === other.isAnonymous &&
       this.createdAt === other.createdAt &&
       this.klass.equals(other.klass) &&
-      (this.lesson == other.lesson ||
-        this.lesson?.equals(other.lesson ?? undefined) === true) &&
       this.status === other.status &&
       this.tasks.length === other.tasks.length &&
       this.hasStudents === other.hasStudents &&
@@ -65,7 +59,6 @@ export class ExistingSessionExtended {
       ...dto,
       tasks: dto.tasks.map(SessionTask.fromDto),
       klass: SessionClass.fromDto(dto.class),
-      lesson: dto.lesson ? SessionLesson.fromDto(dto.lesson) : null,
       hasStudents: dto.hasStudents,
     });
   }

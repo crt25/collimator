@@ -5,7 +5,6 @@ import {
   LuListTodo,
   LuUsers,
   LuBookUser,
-  LuMap,
 } from "react-icons/lu";
 import { Breadcrumb } from "@chakra-ui/react";
 import { Fragment } from "react";
@@ -30,10 +29,6 @@ const messages = defineMessages({
     id: "CrtNavigation.classesTab",
     defaultMessage: "Classes",
   },
-  lessonsTab: {
-    id: "CrtNavigation.lessonsTab",
-    defaultMessage: "Lessons",
-  },
   tasksTab: {
     id: "CrtNavigation.tasksTab",
     defaultMessage: "Tasks",
@@ -57,10 +52,6 @@ const tabs: NavigationTab[] = [
     title: (intl) => intl.formatMessage(messages.classesTab),
     icon: <LuGraduationCap />,
   },
-  // {
-  //   url: "/lesson",
-  //   title: (intl) => intl.formatMessage(messages.lessonsTab),
-  // },
   {
     url: "/task",
     title: (intl) => intl.formatMessage(messages.tasksTab),
@@ -73,17 +64,14 @@ const CrtNavigation = ({
   user,
   klass,
   task,
-  lessonId,
   breadcrumbItems,
 }: {
   breadcrumb?: boolean;
   user?: ExistingUser;
   klass?: ExistingClass | ExistingClassExtended;
   task?: ExistingTask;
-  lessonId?: number;
   breadcrumbItems?: BreadcrumbItemData[];
 }) => {
-  const lessonName = "Introduction to React";
   return (
     <>
       <TabNavigation tabs={tabs} breadcrumb={breadcrumb} />
@@ -116,14 +104,6 @@ const CrtNavigation = ({
                 icon={<LuListTodo />}
               >
                 {task.title}
-              </BreadcrumbItem>
-            </>
-          )}
-          {lessonId && (
-            <>
-              <Breadcrumb.Separator />
-              <BreadcrumbItem href={`/lesson/${lessonId}`} icon={<LuMap />}>
-                {lessonName}
               </BreadcrumbItem>
             </>
           )}

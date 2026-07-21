@@ -660,24 +660,6 @@
       "value": "Créer une classe"
     }
   ],
-  "CreateLesson.submit": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
-    }
-  ],
-  "CreateLesson.title": [
-    {
-      "type": 0,
-      "value": "Créer une leçon"
-    }
-  ],
-  "CreateLessonForm.name": [
-    {
-      "type": 0,
-      "value": "Nom"
-    }
-  ],
   "CreateSession.errorMessage": [
     {
       "type": 0,
@@ -797,12 +779,6 @@
     {
       "type": 0,
       "value": "Accueil"
-    }
-  ],
-  "CrtNavigation.lessonsTab": [
-    {
-      "type": 0,
-      "value": "Leçons"
     }
   ],
   "CrtNavigation.tasksTab": [
@@ -1354,28 +1330,6 @@
       "value": "Trop de combinaisons pour calculer les paires dissemblables."
     }
   ],
-  "EditLesson.header": [
-    {
-      "type": 0,
-      "value": "Modifier la leçon"
-    }
-  ],
-  "EditLesson.submit": [
-    {
-      "type": 0,
-      "value": "Sauvegarder la leçon"
-    }
-  ],
-  "EditLesson.title": [
-    {
-      "type": 0,
-      "value": "Modifier la leçon - "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
   "EditTask.submit": [
     {
       "type": 0,
@@ -1608,52 +1562,6 @@
       "value": "Français"
     }
   ],
-  "LessonDetail.header": [
-    {
-      "type": 0,
-      "value": "Leçon"
-    }
-  ],
-  "LessonDetail.title": [
-    {
-      "type": 0,
-      "value": "Leçon - "
-    },
-    {
-      "type": 1,
-      "value": "name"
-    }
-  ],
-  "LessonList.columns.actions": [
-    {
-      "type": 0,
-      "value": "Actions"
-    }
-  ],
-  "LessonList.columns.name": [
-    {
-      "type": 0,
-      "value": "Nom"
-    }
-  ],
-  "LessonList.columns.tags": [
-    {
-      "type": 0,
-      "value": "Étiquettes"
-    }
-  ],
-  "LessonList.columns.usedBy": [
-    {
-      "type": 0,
-      "value": "Utilisé par"
-    }
-  ],
-  "LessonNavigation.lessonTab": [
-    {
-      "type": 0,
-      "value": "Détails de la leçon"
-    }
-  ],
   "List.delete": [
     {
       "type": 0,
@@ -1682,18 +1590,6 @@
     {
       "type": 0,
       "value": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-    }
-  ],
-  "ListLessons.header": [
-    {
-      "type": 0,
-      "value": "Gestion des leçons"
-    }
-  ],
-  "ListLessons.title": [
-    {
-      "type": 0,
-      "value": "Leçons"
     }
   ],
   "ListTasks.header": [
@@ -3162,7 +3058,6 @@
       "value": "Il n'y a pas encore d'activités. Créez-en quelques-unes!"
     }
   ],
-
   "TaskTable.errorMessage": [
     {
       "type": 0,
