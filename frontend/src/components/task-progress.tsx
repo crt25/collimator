@@ -31,8 +31,12 @@ export const getTaskStatus = (
     ? solutionToDisplay.tests
     : null;
 
-  // always prefer solutionTests over analysisTest if they exist because analysisTests
-  // are triggered on student activities and might reflect incorrect task status
+  // always prefer solutionTests over analysisTest if they exist because analysisTests 
+  // are triggered on student activities and this can lead to an incorrect task status
+  // in the following case:
+  // 1. student completes successfully the task and submits
+  // 2. student edits the task, and now the tests fail
+  // 3. we still want to see that the student completed it correctly
   const tests = solutionTests ?? analysisTests;
 
   if (tests && tests.length > 0 && tests.every((test) => test.passed)) {
