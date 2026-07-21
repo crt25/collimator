@@ -46,6 +46,10 @@ export const messages = defineMessages({
     defaultMessage:
       "Cannot run cells because package installation failed. Please reload the page and try again.",
   },
+  savingTask: {
+    id: "crt.notebookRunner.savingTask",
+    defaultMessage: "Saving the task and generating the student version...",
+  },
   localeReadFailedTitle: {
     id: "crt.notebookRunner.localeReadFailedTitle",
     defaultMessage: "Translation Failed",

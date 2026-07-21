@@ -23,6 +23,9 @@
   "crt.notebookRunner.packageInstallationFailedTitle": {
     "message": "Échec de l'installation des paquets"
   },
+  "crt.notebookRunner.savingTask": {
+    "message": "Enregistrement de l'activité et génération de la version pour les élèves..."
+  },
   "crt.notebookRunner.taskReadyBody": {
     "message": "Tous les paquets ont été installés avec succès. L'exécution du code est désormais activée."
   },

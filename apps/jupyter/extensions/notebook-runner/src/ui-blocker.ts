@@ -17,8 +17,13 @@ const OVERLAY_ID = "notebook-runner-ui-blocker";
  * leaving programmatic work — command execution, kernel messaging and
  * `context.save()` — unaffected. It is set on the shell node only, so error
  * dialogs (which attach to `document.body`) remain dismissible.
+ *
+ * An optional (already localized) message is shown below the spinner.
  */
-export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
+export const blockUserInterface = (
+  app: JupyterFrontEnd,
+  message?: string,
+): (() => void) => {
   const shellNode = app.shell.node;
   const previousInert = shellNode.inert;
   shellNode.inert = true;
@@ -27,17 +32,31 @@ export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
 
   const overlay = document.createElement("div");
   overlay.id = OVERLAY_ID;
-  overlay.style.cssText = [
-    "position:fixed",
-    "inset:0",
-    "z-index:10000",
-    "display:flex",
-    "align-items:center",
-    "justify-content:center",
-    "background:rgba(255,255,255,0.6)",
-    "cursor:wait",
-  ].join(";");
+  // The Spinner fills the overlay with an opaque, centered, theme-coloured
+  // loading screen; the message is layered above it, just below the spinner.
+  overlay.style.cssText = ["position:fixed", "inset:0", "z-index:10000"].join(
+    ";",
+  );
   overlay.appendChild(spinner.node);
+
+  if (message) {
+    const label = document.createElement("div");
+    label.textContent = message;
+    label.style.cssText = [
+      "position:absolute",
+      "top:calc(50% + 3.5rem)",
+      "left:50%",
+      "transform:translateX(-50%)",
+      "z-index:11",
+      "max-width:32rem",
+      "padding:0 1rem",
+      "text-align:center",
+      "color:var(--jp-ui-font-color1)",
+      "font-family:var(--jp-ui-font-family)",
+      "font-size:var(--jp-ui-font-size1)",
+    ].join(";");
+    overlay.appendChild(label);
+  }
 
   document.body.appendChild(overlay);
 
