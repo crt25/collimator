@@ -20,6 +20,14 @@ export class UserListPageModel extends ListPageModel {
   async getIdByName(name: string) {
     const elLocator = this.getNameElementByName(name);
 
+    // After creating a user the list revalidates asynchronously, so the row can
+    // be absent for a moment even once the list container is present. Wait for
+    // the row explicitly (with a generous but sub-test-timeout budget) before
+    // reading its id, so a slow revalidation surfaces as a clear "row never
+    // appeared" failure instead of evaluate() silently blocking for the full
+    // 160s test timeout.
+    await elLocator.waitFor({ state: "visible", timeout: 60_000 });
+
     return getItemIdFromTableTestId(
       await elLocator.evaluate((el) =>
         el.closest("[data-testid$=-name]")!.getAttribute("data-testid"),
