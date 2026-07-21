@@ -331,9 +331,9 @@ const TaskFormReferenceSolutions = ({
     cannotNavigate.current = isDirty;
   }, [isDirty]);
 
-  const onSubmitWrapper = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      handleSubmit(async (data: TaskFormReferenceSolutionsValues) => {
+  const onSubmitWrapper = useCallback(() => {
+    handleSubmit(async (data: TaskFormReferenceSolutionsValues) => {
+      try {
         const referenceSolutions = data.referenceSolutions
           .toSorted((a, b) => a.id - b.id)
           .map((solution) => ({
@@ -365,7 +365,7 @@ const TaskFormReferenceSolutions = ({
           title: intl.formatMessage(messages.saveSuccess),
           closable: true,
         });
-      })(e).catch((err) => {
+      } catch (err) {
         console.error(`${logModule} Error saving task`, err);
 
         if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
@@ -382,10 +382,9 @@ const TaskFormReferenceSolutions = ({
           title: intl.formatMessage(messages.saveError),
           closable: true,
         });
-      });
-    },
-    [handleSubmit, onSubmit, reset, intl],
-  );
+      }
+    });
+  }, [handleSubmit, onSubmit, reset, intl]);
 
   const referenceSolutionFiles: { [key: number]: Blob } = watch(
     "referenceSolutionFiles",
