@@ -96,6 +96,12 @@ const SolveTaskPage = () => {
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
+  // The freshest solution the embedded app has pushed up (e.g. the auto-save
+  // triggered right before a language change reloads the iframe). The parent
+  // frame is not reloaded, so this ref survives; we replay it after the reload
+  // instead of racing the still-in-flight backend write with a stale fetch,
+  // which otherwise loses the student's unsaved changes (CRT-397).
+  const pendingSolution = useRef<Blob | null>(null);
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -207,11 +213,19 @@ const SolveTaskPage = () => {
       wasInitialized.current = true;
 
       try {
-        const solutionFile = await fetchLatestSolutionFile(
-          session.klass.id,
-          session.id,
-          task.id,
-        );
+        // Prefer a solution stashed just before a reload (it includes changes
+        // that may not have reached the backend yet); otherwise load the latest
+        // persisted solution.
+        const stashedSolution = pendingSolution.current;
+        pendingSolution.current = null;
+
+        const solutionFile =
+          stashedSolution ??
+          (await fetchLatestSolutionFile(
+            session.klass.id,
+            session.id,
+            task.id,
+          ));
 
         isScratchMutexAvailable.current = false;
 
@@ -244,6 +258,10 @@ const SolveTaskPage = () => {
         console.error("No session or task available");
         return;
       }
+
+      // Stash synchronously so a reload can replay it even if the backend write
+      // below is still in flight (CRT-397).
+      pendingSolution.current = solutionBlob;
 
       try {
         await createSolution(session.klass.id, session.id, task.id, {
