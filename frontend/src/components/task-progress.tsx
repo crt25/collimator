@@ -23,7 +23,17 @@ export const getTaskStatus = (
     return TaskStatus.notStarted;
   }
 
-  const tests = currentAnalysis?.tests ?? solutionToDisplay?.tests;
+  const analysisTests = currentAnalysis?.tests.length
+    ? currentAnalysis.tests
+    : null;
+
+  const solutionTests = solutionToDisplay?.tests.length
+    ? solutionToDisplay.tests
+    : null;
+
+  // always prefer solutionTests over analysisTest if they exist because analysisTests
+  // are triggered on student activities and might reflect incorrect task status
+  const tests = solutionTests ?? analysisTests;
 
   if (tests && tests.length > 0 && tests.every((test) => test.passed)) {
     return TaskStatus.complete;
