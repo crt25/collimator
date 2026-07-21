@@ -240,6 +240,6 @@ class ProtectedFileMoveError extends Error {
   };
 
   constructor(fileName: string) {
-    super(`The file name ${fileName} can't be moved.`);
+    super(`The file ${fileName} can't be moved.`);
   }
 }
