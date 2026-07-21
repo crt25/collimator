@@ -55,6 +55,7 @@ export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
     if (cleanedUp) {
       return;
     }
+
     cleanedUp = true;
     shellNode.inert = previousInert;
     spinner.dispose();
