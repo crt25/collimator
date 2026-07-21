@@ -79,7 +79,7 @@ export const simplifyUserInterface = async (
     }
   }
 
-  hideRestrictedItems(fileBrowser, mode);
+  hideGradingFolders(fileBrowser);
 
   // activate simple mode
   await app.commands.execute("application:toggle-mode");
@@ -139,39 +139,22 @@ const throwOnRestrictedFileOperation = (fileBrowser: FileBrowser): void => {
 };
 
 /**
- * Hide items the student/viewer must not interact with from the file browser:
- * the grading folders, and — outside edit mode — the root `task.ipynb`.
- *
- * The root `task.ipynb` is the teacher master template. It is shipped as static
- * app content, so it reappears in the browser after the memory-backed contents
- * are wiped on a reload (e.g. a language change), and clicking it triggers the
- * student-path redirect toward a `/student/task.ipynb` that has not been
- * restored yet — the "could not find content" error (CRT-397). Hiding it also
- * keeps the template out of the student's view.
- *
+ * A function to hide grading folders in the file browser.
  * A bit hacky because there is no public API to filter items.
+ * @param fileBrowser The file browser instance
  */
-const hideRestrictedItems = (fileBrowser: FileBrowser, mode: Mode): void => {
-  const hideTaskFile = mode !== Mode.edit;
+const hideGradingFolders = (fileBrowser: FileBrowser): void => {
   let items: Contents.IModel[] = fileBrowser.model["_items"];
 
+  /**
+   * Override the items getter to filter the desired folder.
+   */
   Object.defineProperty(fileBrowser.model, "_items", {
     get() {
-      return items.filter((item) => {
-        if (item.type === "directory" && hiddenFolders.includes(item.name)) {
-          return false;
-        }
-
-        if (
-          hideTaskFile &&
-          item.type !== "directory" &&
-          protectedFiles.includes(item.name)
-        ) {
-          return false;
-        }
-
-        return true;
-      });
+      return items.filter(
+        (item) =>
+          !(item.type === "directory" && hiddenFolders.includes(item.name)),
+      );
     },
     set(v) {
       items = v;
@@ -181,13 +164,41 @@ const hideRestrictedItems = (fileBrowser: FileBrowser, mode: Mode): void => {
   fileBrowser.model.refresh();
 };
 
+const studentTaskPath = "/student/task.ipynb";
+
+const isTaskFile = (path: string): boolean =>
+  path === "/task.ipynb" || path === "task.ipynb";
+
+/**
+ * The student never edits the teacher template directly: opening `task.ipynb`
+ * transparently opens their own `/student/task.ipynb`. That copy is (re)written
+ * asynchronously after a reload (e.g. a language change wipes the memory-backed
+ * contents and the frontend re-sends the submission), so opening it too early
+ * throws "could not find content" (CRT-397). We therefore only open it once it
+ * exists, and otherwise do nothing — the task auto-opens as soon as the content
+ * is restored, and we must never fall back to opening the template itself.
+ */
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
 ): void => {
-  const redirect = (path: string): string =>
-    path === "/task.ipynb" || path === "task.ipynb"
-      ? "/student/task.ipynb"
-      : path;
+  const openStudentTaskWhenReady = (
+    open: (
+      path: string,
+      widgetName?: string,
+      kernel?: Partial<Kernel.IModel>,
+      options?: DocumentRegistry.IOpenOptions,
+    ) => IDocumentWidget | undefined,
+    widgetName?: string,
+    kernel?: Partial<Kernel.IModel>,
+    options?: DocumentRegistry.IOpenOptions,
+  ): void => {
+    void documentManager.services.contents
+      .get(studentTaskPath, { content: false })
+      .then(() => open(studentTaskPath, widgetName, kernel, options))
+      .catch(() => {
+        // the student copy has not been restored yet; ignore this open.
+      });
+  };
 
   const originalOpenOrReveal =
     documentManager.openOrReveal.bind(documentManager);
@@ -196,8 +207,14 @@ const redirectTaskFileOpensToStudentVersion = (
     widgetName?: string,
     kernel?: Partial<Kernel.IModel>,
     options?: DocumentRegistry.IOpenOptions,
-  ): ReturnType<IDocumentManager["openOrReveal"]> =>
-    originalOpenOrReveal(redirect(path), widgetName, kernel, options);
+  ): ReturnType<IDocumentManager["openOrReveal"]> => {
+    if (!isTaskFile(path)) {
+      return originalOpenOrReveal(path, widgetName, kernel, options);
+    }
+
+    openStudentTaskWhenReady(originalOpenOrReveal, widgetName, kernel, options);
+    return undefined;
+  };
 
   const originalOpen = documentManager.open.bind(documentManager);
   documentManager.open = (
@@ -205,8 +222,14 @@ const redirectTaskFileOpensToStudentVersion = (
     widgetName,
     kernel,
     options,
-  ): IDocumentWidget | undefined =>
-    originalOpen(redirect(path), widgetName, kernel, options);
+  ): IDocumentWidget | undefined => {
+    if (!isTaskFile(path)) {
+      return originalOpen(path, widgetName, kernel, options);
+    }
+
+    openStudentTaskWhenReady(originalOpen, widgetName, kernel, options);
+    return undefined;
+  };
 };
 
 class HiddenFolderError extends Error {
