@@ -76,7 +76,9 @@ const DissimilarAnalysisPairs = () => {
         >
           {([klass, session, task]) => (
             <>
-              <PageHeading variant="title">{task.title}</PageHeading>
+              <PageHeading variant="title" clamp>
+                {task.title}
+              </PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}

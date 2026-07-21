@@ -18,7 +18,6 @@ const PageHeading = ({
   testId?: string;
   // When set, truncate the title to one line and the description to two lines
   // with an ellipsis so overly long values don't break the layout (CRT-431).
-  // Opt-in so student-facing headings keep their current display.
   clamp?: boolean;
 }) => {
   const heading = (

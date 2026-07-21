@@ -116,7 +116,9 @@ const StudentTaskInstance = () => {
 
             return (
               <>
-                <PageHeading description={name}>{task.title}</PageHeading>
+                <PageHeading description={name} clamp>
+                  {task.title}
+                </PageHeading>
                 <TaskInstanceNavigation
                   classId={klass.id}
                   sessionId={session.id}
