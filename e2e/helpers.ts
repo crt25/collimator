@@ -269,14 +269,14 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // suite's tests are order-dependent and share module-level ids, so that
       // stale state desyncs them and fails intermittently depending on how
       // Playwright happens to distribute file/project runs across workers.
-      const testFileName = `${testInfo.project.name}::${testInfo.titlePath[0]}`;
+      const resetKey = `${testInfo.project.name}::${testInfo.titlePath[0]}`;
 
       // update the last test file name
-      setLastTestFileName(testFileName);
+      setLastTestFileName(resetKey);
 
       // if we are still in the same test file (and project) there is nothing to
       // do. Also if null, this is the first file so nothing to reset yet.
-      if (lastTestFileName === null || testFileName === lastTestFileName) {
+      if (lastTestFileName === null || resetKey === lastTestFileName) {
         return use(undefined);
       }
 
