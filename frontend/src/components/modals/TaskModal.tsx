@@ -68,7 +68,7 @@ const TaskModal = ({
   url: string | null | undefined;
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  loadContent: (app: EmbeddedAppRef) => void;
+  loadContent: (app: EmbeddedAppRef) => void | Promise<void>;
 
   showResetButton?: boolean;
   showImportButton?: boolean;
@@ -124,9 +124,17 @@ const TaskModal = ({
     downloadBlob(response.result.file, response.result.filename);
   }, [intl]);
 
-  const loadAppData = useCallback(() => {
+  const loadAppData = useCallback(async () => {
     if (embeddedApp.current) {
-      loadContent(embeddedApp.current);
+      // Await loadContent before enabling the app (and therefore the Save
+      // button). loadContent loads the task into the embedded VM; if the Save
+      // button becomes clickable while that load is still in flight, a save
+      // triggers getTask/getSubmission against a half-loaded VM whose internal
+      // reload is silently skipped (module-level isLoading guard in the scratch
+      // app), so the green-flag run never emits ASSERTIONS_CHECKED and the save
+      // stalls for the full execution timeout. Gating on the completed load
+      // makes the save round-trip run on a stable VM.
+      await loadContent(embeddedApp.current);
 
       setAppLoaded(true);
     }
