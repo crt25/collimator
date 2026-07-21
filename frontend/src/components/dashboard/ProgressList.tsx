@@ -132,15 +132,11 @@ const ProgressList = ({
     [solutions, currentAnalyses],
   );
 
-  const {
-    klass,
-    session,
-    students,
-    klassError,
-    sessionError,
-    isLoadingKlass,
-    isLoadingSession,
-  } = useSessionStudents(classId, sessionId, activeStudentIds);
+  const { klass, session, students, errors, isLoading } = useSessionStudents(
+    classId,
+    sessionId,
+    activeStudentIds,
+  );
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
@@ -240,8 +236,8 @@ const ProgressList = ({
     <ProgressListWrapper data-testid="progress-list">
       <MultiSwrContent
         data={[klass, session, solutions]}
-        errors={[klassError, sessionError, solutionsError]}
-        isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
+        errors={[...errors, solutionsError]}
+        isLoading={[...isLoading, isLoadingSolutions]}
       >
         {([_klass, _session]) => (
           <ChakraDataTable

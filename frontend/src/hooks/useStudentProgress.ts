@@ -47,10 +47,8 @@ export const useSessionStudents = (
   klass: ExistingClassExtended | undefined;
   session: ExistingSessionExtended | undefined;
   students: ResolvedStudent[];
-  klassError: Error | undefined;
-  sessionError: Error | undefined;
-  isLoadingKlass: boolean;
-  isLoadingSession: boolean;
+  errors: (Error | undefined)[];
+  isLoading: boolean[];
 } => {
   const {
     data: klass,
@@ -70,9 +68,7 @@ export const useSessionStudents = (
     klass,
     session,
     students,
-    klassError,
-    sessionError,
-    isLoadingKlass,
-    isLoadingSession,
+    errors: [klassError, sessionError],
+    isLoading: [isLoadingKlass, isLoadingSession],
   };
 };
