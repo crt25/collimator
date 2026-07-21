@@ -69,7 +69,7 @@ const buildReferenceAnalysisRow = (
   ...overrides,
 });
 
-describe.only("SolutionsService", () => {
+describe("SolutionsService", () => {
   let service: SolutionsService;
   let prismaMock: DeepMockProxy<PrismaClient>;
   let module: TestingModule;
