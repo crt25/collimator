@@ -29,7 +29,8 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Check relative links resolve on disk
-        uses: becheran/mlc@v1
+        # Pinned to the v1 commit SHA (supply-chain: a moving tag can be repointed).
+        uses: becheran/mlc@84e16e3ee0a5cc365268d79f6ab4b767074103fd # v1
         with:
           args: ./docs --offline --root-dir ./docs
 
