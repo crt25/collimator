@@ -107,12 +107,17 @@ const throwOnRestrictedFileOperation = (fileBrowser: FileBrowser): void => {
     }
 
     if (protectedFiles.includes(oldName)) {
+      if (oldName === newName) {
+        // moving a protected file to another directory (name unchanged)
+        throw new ProtectedFileMoveError(oldName);
+      }
+
       // renaming a protected file away from its required name
       throw new ProtectedFileRenameError(oldName);
     }
 
     if (protectedFiles.includes(newName)) {
-      // renaming another file to a reserved name
+      // renaming or moving another file to a reserved name
       throw new ProtectedFileError(newName);
     }
 
@@ -223,5 +228,18 @@ class ProtectedFileRenameError extends Error {
 
   constructor(fileName: string) {
     super(`Only the file name ${fileName} is allowed.`);
+  }
+}
+
+class ProtectedFileMoveError extends Error {
+  // Ensure that the error object is compatible with the format expected by JupyterLite.
+  // See https://github.com/jupyterlab/jupyterlab/blob/35e1551dbd31104d76834848ce3c620a82921839/packages/docmanager/src/dialogs.ts#L210.
+  public readonly response = {
+    status: 400,
+    statusText: "Bad Request",
+  };
+
+  constructor(fileName: string) {
+    super(`The file name ${fileName} can't be moved.`);
   }
 }
