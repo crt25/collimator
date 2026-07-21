@@ -149,6 +149,11 @@ const TaskTable = () => {
             fontSize="lg"
             data-testid={`task-${info.row.original.id}-title`}
             margin={0}
+            // Without these a long title (especially one with no spaces) would
+            // not shrink inside this flex row and would overflow the cell,
+            // breaking the table layout (CRT-431).
+            minWidth={0}
+            overflowWrap="anywhere"
           >
             {info.row.original.title}
           </Text>

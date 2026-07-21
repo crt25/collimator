@@ -9,15 +9,17 @@ const PageHeading = ({
   description,
   children,
   testId,
-  clamp,
+  clamp = true,
 }: {
   variant?: React.ComponentProps<typeof StyledPageHeading>["variant"];
   description?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
   testId?: string;
-  // When set, truncate the title to one line and the description to two lines
-  // with an ellipsis so overly long values don't break the layout (CRT-431).
+  // Truncate the title to one line and the description to two lines with an
+  // ellipsis so overly long values don't break the layout (CRT-431). On by
+  // default; pass clamp={false} for student-facing headings that should show
+  // their title/description in full.
   clamp?: boolean;
 }) => {
   const heading = (

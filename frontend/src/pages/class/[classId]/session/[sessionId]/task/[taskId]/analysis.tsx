@@ -77,9 +77,7 @@ const TaskInstanceAnalysis = () => {
         >
           {([klass, session, task]) => (
             <>
-              <PageHeading variant="title" clamp>
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}

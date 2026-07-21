@@ -543,7 +543,12 @@ export const ChakraDataTable = <T extends { id: number }>({
               }
             >
               {row.getVisibleCells().map((cell) => (
-                <Table.Cell key={cell.id}>{cellWrapper({ cell })}</Table.Cell>
+                // overflowWrap: anywhere lets long, unbroken values (e.g. a
+                // space-less title) break instead of overflowing the cell and
+                // stretching the table (CRT-431).
+                <Table.Cell key={cell.id} overflowWrap="anywhere">
+                  {cellWrapper({ cell })}
+                </Table.Cell>
               ))}
             </Table.Row>
           ))}

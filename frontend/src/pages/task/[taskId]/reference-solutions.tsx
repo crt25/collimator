@@ -110,7 +110,6 @@ const TaskReferenceSolutions = () => {
                 variant="title"
                 actions={<TaskActions task={task} taskFile={taskFile} />}
                 description={task.description}
-                clamp
               >
                 {task.title}
               </PageHeading>

@@ -126,9 +126,7 @@ const TaskInstanceReferenceSolutions = () => {
         >
           {([klass, session, task, taskFile]) => (
             <>
-              <PageHeading variant="title" clamp>
-                {task.title}
-              </PageHeading>
+              <PageHeading variant="title">{task.title}</PageHeading>
               <TaskInstanceNavigation
                 classId={klass.id}
                 sessionId={session.id}
