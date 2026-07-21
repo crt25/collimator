@@ -302,23 +302,18 @@ const TaskFormReferenceSolutions = ({
 
   const onAddReferenceSolution = useCallback(
     () =>
-      setValue(
-        "referenceSolutions",
-        [
-          ...referenceSolutions,
-          {
-            // add unique synthetic id that will be removed later
-            id: Math.max(...referenceSolutions.map((s) => s.id), 0) + 1,
-            isNew: true,
-            isInitial: false,
-            title: "",
-            description: "",
-            tests: [],
-          },
-        ],
-        { shouldDirty: true },
-      ),
-    [referenceSolutions, setValue],
+      setReferenceSolutions([
+        ...referenceSolutions,
+        {
+          id: Math.max(...referenceSolutions.map((s) => s.id), 0) + 1,
+          isNew: true,
+          isInitial: false,
+          title: "",
+          description: "",
+          tests: [],
+        },
+      ]),
+    [referenceSolutions, setReferenceSolutions],
   );
 
   const shouldStopNavigation = useCallback(() => cannotNavigate.current, []);
