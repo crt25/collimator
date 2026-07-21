@@ -88,12 +88,13 @@ const TaskTemplate = ({
   );
 };
 
-// [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
-// const helpTemplate = (_rowData: StudentProgress) => (
-//   <Icon>
-//     <LuHand />
-//   </Icon>
-// );
+/* [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
+const helpTemplate = (_rowData: StudentProgress) => (
+  <Icon>
+    <LuHand />
+  </Icon>
+);
+*/
 
 const ProgressList = ({
   classId,
@@ -189,16 +190,18 @@ const ProgressList = ({
           columnType: ColumnType.text,
         },
       },
-      // [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
-      // {
-      //   id: "helpNeeded",
-      //   header: intl.formatMessage(messages.helpColumn),
-      //   cell: (info) => helpTemplate(info.row.original),
-      //   size: ColumnSize.sm,
-      //   meta: {
-      //     columnType: ColumnType.text,
-      //   },
-      // },
+      /*
+      [CRT-434] Not functional yet, as we don't have a way to know if a student needs help or not
+      {
+        id: "helpNeeded",
+        header: intl.formatMessage(messages.helpColumn),
+        cell: (info) => helpTemplate(info.row.original),
+        size: ColumnSize.sm,
+        meta: {
+          columnType: ColumnType.text,
+        },
+      },
+      */
     ];
 
     const lastColumns: ColumnDef<StudentProgress>[] = [];
