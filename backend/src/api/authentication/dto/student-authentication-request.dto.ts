@@ -12,6 +12,15 @@ export class StudentAuthenticationRequestDto {
   @Expose()
   readonly pseudonym!: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description:
+      "A deterministic, teacher-keyed identifier for the student encoded in Base64url. Used to deduplicate the student across joins without revealing their identity to the server.",
+  })
+  @Expose()
+  readonly studentIdentifier!: string;
+
   @IsNumber({
     allowNaN: false,
     allowInfinity: false,
