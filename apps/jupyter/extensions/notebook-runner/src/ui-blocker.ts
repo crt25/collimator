@@ -1,4 +1,5 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
+import { Spinner } from "@jupyterlab/apputils";
 
 const OVERLAY_ID = "notebook-runner-ui-blocker";
 
@@ -22,6 +23,8 @@ export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
   const previousInert = shellNode.inert;
   shellNode.inert = true;
 
+  const spinner = new Spinner();
+
   const overlay = document.createElement("div");
   overlay.id = OVERLAY_ID;
   overlay.style.cssText = [
@@ -34,14 +37,7 @@ export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
     "background:rgba(255,255,255,0.6)",
     "cursor:wait",
   ].join(";");
-
-  // jp-Spinner / jp-SpinnerContent styles ship with @jupyterlab/apputils.
-  const spinner = document.createElement("div");
-  spinner.className = "jp-Spinner";
-  const spinnerContent = document.createElement("div");
-  spinnerContent.className = "jp-SpinnerContent";
-  spinner.appendChild(spinnerContent);
-  overlay.appendChild(spinner);
+  overlay.appendChild(spinner.node);
 
   document.body.appendChild(overlay);
 
@@ -52,6 +48,7 @@ export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
     }
     cleanedUp = true;
     shellNode.inert = previousInert;
+    spinner.dispose();
     overlay.remove();
   };
 };

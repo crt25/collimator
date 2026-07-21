@@ -127,13 +127,10 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   async getTask(request: GetTask["request"]): Promise<Task> {
-    // CRT-438: block the whole UI while the save/export pipeline runs. The
-    // student notebook is generated up front (from the assign pipeline) while
-    // the teacher template is read at the end (after the grade pipeline re-saves
-    // the still-live editor), so an edit in between would land only in the
-    // teacher template and make the two diverge. `inert` stops all user input
-    // without touching the notebook, unlike per-cell `readOnly`, which persists
-    // `editable: false` into the saved .ipynb and locks it permanently.
+    // Block the whole UI while the save/export pipeline runs. The student
+    // notebook is generated up front (from the assign pipeline) while the
+    // teacher template is read at the end, so an edit in between would land only
+    // in the teacher template and make the two diverge.
     const unblockUserInterface = blockUserInterface(this.app);
 
     try {
