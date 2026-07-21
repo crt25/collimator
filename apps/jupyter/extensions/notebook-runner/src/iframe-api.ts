@@ -20,8 +20,6 @@ import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
 import { blockUserInterface } from "./ui-blocker";
-import { messages } from "./i18n/messages";
-import { formatMessage } from "./i18n/intl";
 import { Mode } from "./mode";
 import {
   CrtInternalTask,
@@ -133,10 +131,7 @@ export class EmbeddedPythonCallbacks {
     // notebook is generated up front (from the assign pipeline) while the
     // teacher template is read at the end, so an edit in between would land only
     // in the teacher template and make the two diverge.
-    const unblockUserInterface = blockUserInterface(
-      this.app,
-      formatMessage(messages.savingTask),
-    );
+    const unblockUserInterface = blockUserInterface(this.app);
 
     try {
       // generate student task and autograder

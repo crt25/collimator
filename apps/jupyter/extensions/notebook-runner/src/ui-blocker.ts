@@ -1,5 +1,7 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { Spinner } from "@jupyterlab/apputils";
+import { messages } from "./i18n/messages";
+import { formatMessage } from "./i18n/intl";
 
 const OVERLAY_ID = "notebook-runner-ui-blocker";
 
@@ -8,22 +10,12 @@ const OVERLAY_ID = "notebook-runner-ui-blocker";
  * spinner overlay for the duration of a long operation such as the getTask
  * save/export pipeline. Returns a cleanup function that restores interactivity.
  *
- * We block the whole shell rather than toggling per-cell `readOnly`: the
- * `Cell.readOnly` setter writes `editable: false` into the cell metadata, which
- * is persisted into the saved .ipynb and would permanently lock the notebook
- * for both the teacher and the students (CRT-438).
- *
  * `inert` disables user pointer, keyboard and focus for the subtree while
  * leaving programmatic work — command execution, kernel messaging and
  * `context.save()` — unaffected. It is set on the shell node only, so error
  * dialogs (which attach to `document.body`) remain dismissible.
- *
- * An optional (already localized) message is shown below the spinner.
  */
-export const blockUserInterface = (
-  app: JupyterFrontEnd,
-  message?: string,
-): (() => void) => {
+export const blockUserInterface = (app: JupyterFrontEnd): (() => void) => {
   const shellNode = app.shell.node;
   const previousInert = shellNode.inert;
   shellNode.inert = true;
@@ -39,24 +31,22 @@ export const blockUserInterface = (
   );
   overlay.appendChild(spinner.node);
 
-  if (message) {
-    const label = document.createElement("div");
-    label.textContent = message;
-    label.style.cssText = [
-      "position:absolute",
-      "top:calc(50% + 3.5rem)",
-      "left:50%",
-      "transform:translateX(-50%)",
-      "z-index:11",
-      "max-width:32rem",
-      "padding:0 1rem",
-      "text-align:center",
-      "color:var(--jp-ui-font-color1)",
-      "font-family:var(--jp-ui-font-family)",
-      "font-size:var(--jp-ui-font-size1)",
-    ].join(";");
-    overlay.appendChild(label);
-  }
+  const label = document.createElement("div");
+  label.textContent = formatMessage(messages.savingTask);
+  label.style.cssText = [
+    "position:absolute",
+    "top:calc(50% + 3.5rem)",
+    "left:50%",
+    "transform:translateX(-50%)",
+    "z-index:11",
+    "max-width:32rem",
+    "padding:0 1rem",
+    "text-align:center",
+    "color:var(--jp-ui-font-color1)",
+    "font-family:var(--jp-ui-font-family)",
+    "font-size:var(--jp-ui-font-size1)",
+  ].join(";");
+  overlay.appendChild(label);
 
   document.body.appendChild(overlay);
 
