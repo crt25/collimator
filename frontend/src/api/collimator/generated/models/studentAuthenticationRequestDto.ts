@@ -9,8 +9,8 @@
 export interface StudentAuthenticationRequestDto {
   /** The teacher-assigned pseudonym for the student. This is a the student's real identity but encrypted and encoded in Base64. */
   pseudonym: string;
-  /** A deterministic, teacher-keyed identifier for the student encoded in Base64url. Used to deduplicate the student across joins without revealing their identity to the server. Optional for backwards compatibility with older clients. */
-  studentIdentifier?: string;
+  /** A deterministic, teacher-keyed identifier for the student encoded in Base64url. Used to deduplicate the student across joins without revealing their identity to the server. */
+  studentIdentifier: string;
   /** The unique identifier of the class the student is in. */
   classId: number;
   /** The unique identifier of the key pair used to encrypt the pseudonym. */

@@ -386,22 +386,20 @@ export class AuthenticationService {
   private async findAuthenticatedStudent(
     classId: number,
     rawPseudonym: Buffer,
-    rawIdentifier: Buffer | null, // may be null for older students in existing classes
+    rawIdentifier: Buffer,
   ): Promise<AuthenticatedStudent | null> {
-    if (rawIdentifier) {
-      const byIdentifier = await this.prisma.authenticatedStudent.findUnique({
-        where: {
-          studentIdentifierUniquePerClass: {
-            classId,
-            studentIdentifier: rawIdentifier,
-          },
-          deletedAt: null,
+    const byIdentifier = await this.prisma.authenticatedStudent.findUnique({
+      where: {
+        studentIdentifierUniquePerClass: {
+          classId,
+          studentIdentifier: rawIdentifier,
         },
-      });
+        deletedAt: null,
+      },
+    });
 
-      if (byIdentifier) {
-        return byIdentifier;
-      }
+    if (byIdentifier) {
+      return byIdentifier;
     }
 
     const byPseudonym = await this.prisma.authenticatedStudent.findUnique({
@@ -411,11 +409,7 @@ export class AuthenticationService {
       },
     });
 
-    if (
-      byPseudonym &&
-      rawIdentifier &&
-      byPseudonym.studentIdentifier === null
-    ) {
+    if (byPseudonym && byPseudonym.studentIdentifier === null) {
       try {
         return await this.prisma.authenticatedStudent.update({
           where: { studentId: byPseudonym.studentId },
@@ -455,14 +449,12 @@ export class AuthenticationService {
     pseudonym: string,
     classId: number,
     keyPairId: number,
-    studentIdentifier?: string,
+    studentIdentifier: string,
   ): Promise<AuthTokenWithStudentId> {
     this.logger.debug(`Student sign-in attempt for class (id: ${classId})`);
 
     const rawPseudonym = Buffer.from(pseudonym, "base64");
-    const rawIdentifier = studentIdentifier
-      ? Buffer.from(studentIdentifier, "base64url")
-      : null;
+    const rawIdentifier = Buffer.from(studentIdentifier, "base64url");
 
     let authenticatedStudent = await this.findAuthenticatedStudent(
       classId,
@@ -534,16 +526,14 @@ export class AuthenticationService {
 
     this.logger.log(`Student sign-in successful (student id: ${student.id})`);
 
-    // return the authoritative stored identifier may be null for legacy rows a client signed in without one
+    // prefer the authoritative stored identifier, falling back to the one just provided
     const resolvedIdentifier =
       authenticatedStudent?.studentIdentifier ?? rawIdentifier;
 
     return {
       token: authToken.token,
       studentId: student.id,
-      studentIdentifier: resolvedIdentifier
-        ? Buffer.from(resolvedIdentifier).toString("base64url")
-        : undefined,
+      studentIdentifier: Buffer.from(resolvedIdentifier).toString("base64url"),
     };
   }
 
