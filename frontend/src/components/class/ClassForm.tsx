@@ -77,7 +77,7 @@ const ClassForm = ({
       .label(intl.formatMessage(messages.name))
       .required()
       .min(1)
-      // Cap the length so long names don't break table/heading layouts (CRT-431).
+      // Cap the length so long names don't break table/heading layouts.
       .max(60),
     teacherId: yup.number().required(),
   });

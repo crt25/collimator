@@ -151,7 +151,7 @@ const TaskTable = () => {
             margin={0}
             // Without these a long title (especially one with no spaces) would
             // not shrink inside this flex row and would overflow the cell,
-            // breaking the table layout (CRT-431).
+            // breaking the table layout.
             minWidth={0}
             overflowWrap="anywhere"
           >

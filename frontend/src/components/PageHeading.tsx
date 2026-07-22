@@ -17,7 +17,7 @@ const PageHeading = ({
   children: React.ReactNode;
   testId?: string;
   // Truncate the title to one line and the description to two lines with an
-  // ellipsis so overly long values don't break the layout (CRT-431). On by
+  // ellipsis so overly long values don't break the layout. On by
   // default; pass clamp={false} for student-facing headings that should show
   // their title/description in full.
   clamp?: boolean;

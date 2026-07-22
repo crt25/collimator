@@ -169,7 +169,7 @@ const SessionForm = ({
       .label(intl.formatMessage(messages.title))
       .required()
       .min(1)
-      // Cap the length so long titles don't break table/heading layouts (CRT-431).
+      // Cap the length so long titles don't break table/heading layouts.
       .max(60),
     description: yup
       .string()
