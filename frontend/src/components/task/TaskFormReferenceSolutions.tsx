@@ -331,60 +331,65 @@ const TaskFormReferenceSolutions = ({
     cannotNavigate.current = isDirty;
   }, [isDirty]);
 
-  const onSubmitWrapper = useCallback(() => {
-    handleSubmit(async (data: TaskFormReferenceSolutionsValues) => {
-      try {
-        const referenceSolutions = data.referenceSolutions
-          .toSorted((a, b) => a.id - b.id)
-          .map((solution) => ({
-            ...solution,
-            id: solution.isNew ? null : solution.id,
-          }));
+  const onSubmitWrapper = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      return handleSubmit(async (data: TaskFormReferenceSolutionsValues) => {
+        try {
+          const referenceSolutions = data.referenceSolutions
+            .toSorted((a, b) => a.id - b.id)
+            .map((solution) => ({
+              ...solution,
+              id: solution.isNew ? null : solution.id,
+            }));
 
-        const referenceSolutionsFiles = Object.entries(
-          data.referenceSolutionFiles,
-        )
-          .toSorted(([a, _], [b, __]) => parseInt(a) - parseInt(b))
-          .map(([_id, file]) => file);
+          const referenceSolutionsFiles = Object.entries(
+            data.referenceSolutionFiles,
+          )
+            .toSorted(([a, _], [b, __]) => parseInt(a) - parseInt(b))
+            .map(([_id, file]) => file);
 
-        await onSubmit({
-          referenceSolutions,
-          referenceSolutionsFiles,
-        } satisfies TaskFormReferenceSolutionsSubmission);
+          await onSubmit({
+            referenceSolutions,
+            referenceSolutionsFiles,
+          } satisfies TaskFormReferenceSolutionsSubmission);
 
-        // allow navigation after the task has been saved
-        cannotNavigate.current = false;
+          // allow navigation after the task has been saved
+          cannotNavigate.current = false;
 
-        // reset the form to the updated values
-        // and mark the blob as not changed
-        // so the user can navigate without confirmation
-        reset(data);
+          // reset the form to the updated values
+          // and mark the blob as not changed
+          // so the user can navigate without confirmation
+          reset(data);
 
-        toaster.success({
-          id: `task-reference-solutions-save-success-${Date.now()}`,
-          title: intl.formatMessage(messages.saveSuccess),
-          closable: true,
-        });
-      } catch (err) {
-        console.error(`${logModule} Error saving task`, err);
-
-        if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
-          toaster.error({
-            id: `duplicate-reference-solution-${Date.now()}`,
-            title: intl.formatMessage(getErrorMessageDescriptor(err.errorCode)),
+          toaster.success({
+            id: `task-reference-solutions-save-success-${Date.now()}`,
+            title: intl.formatMessage(messages.saveSuccess),
             closable: true,
           });
-          return;
-        }
+        } catch (err) {
+          console.error(`${logModule} Error saving task`, err);
 
-        toaster.error({
-          id: "task-reference-solutions-save-error",
-          title: intl.formatMessage(messages.saveError),
-          closable: true,
-        });
-      }
-    });
-  }, [handleSubmit, onSubmit, reset, intl]);
+          if (isApiErrorWithCode(err, ErrorCode.DUPLICATE_REFERENCE_SOLUTION)) {
+            toaster.error({
+              id: `duplicate-reference-solution-${Date.now()}`,
+              title: intl.formatMessage(
+                getErrorMessageDescriptor(err.errorCode),
+              ),
+              closable: true,
+            });
+            return;
+          }
+
+          toaster.error({
+            id: "task-reference-solutions-save-error",
+            title: intl.formatMessage(messages.saveError),
+            closable: true,
+          });
+        }
+      })(e);
+    },
+    [handleSubmit, onSubmit, reset, intl],
+  );
 
   const referenceSolutionFiles: { [key: number]: Blob } = watch(
     "referenceSolutionFiles",
