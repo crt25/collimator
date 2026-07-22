@@ -5,6 +5,7 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { isLanguage } from "iframe-rpc-react/src";
 import { getStudentNickname } from "@/utilities/student-name";
 import { useStudentName } from "@/hooks/useStudentName";
+import type { ResolvedStudent } from "@/hooks/useStudentProgress";
 
 const NameWrapper = styled.span``;
 
@@ -65,3 +66,18 @@ export const StudentName = ({
 
   return <NameWrapper data-testid={testId}>{name}</NameWrapper>;
 };
+
+export const ResolvedStudentName = ({
+  student,
+}: {
+  student: ResolvedStudent;
+}) =>
+  "isAnonymous" in student ? (
+    <StudentName studentId={student.studentId} />
+  ) : (
+    <StudentName
+      studentId={student.studentId}
+      pseudonym={student.pseudonym}
+      keyPairId={student.keyPairId}
+    />
+  );
