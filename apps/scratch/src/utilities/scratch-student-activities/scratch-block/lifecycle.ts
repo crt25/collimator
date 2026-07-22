@@ -1,6 +1,7 @@
 import VM from "@scratch/scratch-vm";
 import { filterNonNull } from "../../filter-non-null";
 import { logBaseModule } from "../log-module";
+import { updateSingleBlockConfigButton } from "../../../blocks/block-config";
 import type { WorkspaceChangeEvent } from "../../../types/scratch-workspace";
 
 const logModule = `${logBaseModule}[scratch-block/lifecycle]`;
@@ -10,13 +11,6 @@ interface BlockLifecycleParams {
   vm: VM;
   canEditTask: boolean | undefined;
   blocks: HTMLElement;
-  filterNonNull: typeof filterNonNull;
-  updateSingleBlockConfigButton: (
-    vm: VM,
-    blocks: HTMLElement,
-    opcode: string,
-    canEditTask: boolean | undefined,
-  ) => void;
 }
 
 export const handleBlockLifecycle = ({
@@ -24,8 +18,6 @@ export const handleBlockLifecycle = ({
   vm,
   canEditTask,
   blocks,
-  filterNonNull,
-  updateSingleBlockConfigButton,
 }: BlockLifecycleParams): void => {
   switch (event.type) {
     case "create":
@@ -39,19 +31,7 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        // Create a new element to be able to use querySelectorAll on it, otherwise
-        // Only the children are matched against the selector
-        const el = document.createElement("div");
-        el.appendChild(xml);
-
-        const opcodes = [...el.querySelectorAll("block[type]")]
-          .map((element) => element.getAttribute("type"))
-          .filter(filterNonNull);
-
-        // Update the block config button for the blocks
-        for (const opcode of opcodes) {
-          updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
-        }
+        refreshBlockConfigButtonsFromXml(vm, xml, blocks, canEditTask);
 
         // Cleanup any freeze state associated with deleted blocks
         cleanupDeletedBlockFreezeState(vm, event, canEditTask);
@@ -69,22 +49,30 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        // Clone: the dragged block's xml element may still be referenced by
-        // scratch-blocks, so it must not be re-parented like create/delete xml
-        const el = document.createElement("div");
-        el.appendChild(event.xml.cloneNode(true));
-
-        const opcodes = [...el.querySelectorAll("block[type]")]
-          .map((element) => element.getAttribute("type"))
-          .filter(filterNonNull);
-
-        setTimeout(() => {
-          for (const opcode of opcodes) {
-            updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
-          }
-        });
+        refreshBlockConfigButtonsFromXml(vm, event.xml, blocks, canEditTask);
       }
       break;
+  }
+};
+
+const refreshBlockConfigButtonsFromXml = (
+  vm: VM,
+  xml: Element,
+  blocks: HTMLElement,
+  canEditTask: boolean | undefined,
+): void => {
+  // Create a new element to be able to use querySelectorAll on it, otherwise
+  // Only the children are matched against the selector
+  const el = document.createElement("div");
+  el.appendChild(xml);
+
+  const opcodes = [...el.querySelectorAll("block[type]")]
+    .map((element) => element.getAttribute("type"))
+    .filter(filterNonNull);
+
+  // Update the block config button for the blocks
+  for (const opcode of opcodes) {
+    updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
   }
 };
 
