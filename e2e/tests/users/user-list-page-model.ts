@@ -18,9 +18,18 @@ export class UserListPageModel extends ListPageModel {
   }
 
   async getIdByName(name: string) {
+    // The user list is paginated (10 rows per page). Once the seeded users plus
+    // the users created by earlier tests fill the first page, a newly created
+    // user's row lands on a later page and never appears in the DOM — the
+    // lookup then times out deterministically. Filter the list by the user's
+    // name first (like a real admin would) so the row is always on the visible
+    // page. The filter also keeps the row visible for follow-up row actions
+    // (e.g. editItem); navigating away resets it.
+    await this.page.getByTestId("table-search-input").fill(name);
+
     const elLocator = this.getNameElementByName(name);
 
-    // After creating a user the list revalidates asynchronously, so the row can
+    // The list also revalidates asynchronously after a creation, so the row can
     // be absent for a moment even once the list container is present. Wait for
     // the row explicitly (with a generous but sub-test-timeout budget) before
     // reading its id, so a slow revalidation surfaces as a clear "row never

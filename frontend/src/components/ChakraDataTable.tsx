@@ -482,6 +482,7 @@ export const ChakraDataTable = <T extends { id: number }>({
               }
               placeholder={intl.formatMessage(messages.filterByPlaceholder)}
               variety={InputVariety.Search}
+              data-testid="table-search-input"
             />
           </InputWrapper>
 
