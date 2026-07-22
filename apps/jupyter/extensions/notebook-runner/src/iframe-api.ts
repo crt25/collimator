@@ -140,17 +140,21 @@ export class EmbeddedPythonCallbacks {
     const kernelSpecs = this.app.serviceManager.kernelspecs;
     await kernelSpecs.ready;
 
-    const hasSpec = (): boolean =>
-      !!kernelSpecs.specs &&
-      Object.keys(kernelSpecs.specs.kernelspecs).length > 0;
+    const hasSpec = (specs = kernelSpecs.specs): boolean =>
+      !!specs && Object.keys(specs.kernelspecs).length > 0;
 
     if (hasSpec()) {
       return;
     }
 
     await new Promise<void>((resolve) => {
-      function onChange(): void {
-        if (hasSpec()) {
+      // specsChanged emits the freshly fetched specs, so use the emitted
+      // payload instead of re-reading the manager's mutable specs property
+      function onChange(
+        _sender: unknown,
+        specs: typeof kernelSpecs.specs,
+      ): void {
+        if (hasSpec(specs)) {
           clearTimeout(timeout);
           kernelSpecs.specsChanged.disconnect(onChange);
           resolve();
