@@ -74,6 +74,8 @@ const refreshBlockConfigButtonsFromXml = (
   for (const opcode of opcodes) {
     updateSingleBlockConfigButton(vm, blocks, opcode, canEditTask);
   }
+
+  el.remove();
 };
 
 const getXmlFromEvent = (
