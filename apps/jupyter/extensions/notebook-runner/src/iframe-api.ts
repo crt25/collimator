@@ -102,6 +102,10 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
+  // kernelspec registration happens during startup (local JS, no downloads),
+  // so this is generous; it only matters when the kernel extension is broken
+  private static readonly kernelSpecWaitTimeoutMs = 15_000;
+
   private readonly beforeReloadCallbacks: Array<() => Promise<void>> = [];
 
   constructor(
@@ -126,7 +130,11 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   /**
-   * Resolves once at least one kernelspec (the Pyodide kernel) is registered.
+   * Resolves once at least one kernelspec (the Pyodide kernel) is registered,
+   * or after a bounded wait. The wait is bounded so that a broken kernel
+   * extension degrades to the pre-existing behavior (the notebook opens and
+   * JupyterLab may prompt for a kernel) instead of hanging the task-opening
+   * RPC — and with it the embedded app — forever.
    */
   private async waitForKernelSpecs(): Promise<void> {
     const kernelSpecs = this.app.serviceManager.kernelspecs;
@@ -141,12 +149,22 @@ export class EmbeddedPythonCallbacks {
     }
 
     await new Promise<void>((resolve) => {
-      const onChange = (): void => {
+      function onChange(): void {
         if (hasSpec()) {
+          clearTimeout(timeout);
           kernelSpecs.specsChanged.disconnect(onChange);
           resolve();
         }
-      };
+      }
+
+      const timeout = setTimeout(() => {
+        kernelSpecs.specsChanged.disconnect(onChange);
+        console.warn(
+          `${logModule} No kernelspec registered after ${EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs}ms; opening the notebook anyway (the kernel selection dialog may appear)`,
+        );
+        resolve();
+      }, EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs);
+
       kernelSpecs.specsChanged.connect(onChange);
     });
   }
