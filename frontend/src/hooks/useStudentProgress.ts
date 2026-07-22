@@ -14,11 +14,28 @@ export type ResolvedStudent = ClassStudent | AnonymousStudent;
 
 export const useStudentProgress = (
   klass: ExistingClassExtended | undefined,
+  session: ExistingSessionExtended | undefined,
   activeStudentIds: number[],
 ): ResolvedStudent[] =>
   useMemo(() => {
-    if (!klass) {
+    if (!klass || !session) {
       return [];
+    }
+
+    // In an anonymous lesson students participate with ad-hoc anonymous
+    // identities, so the class roster is not part of the lesson: seeding the
+    // list with it would show the real class members (with their tasks
+    // eternally "not started") next to the anonymous participants, and
+    // resolving ids against the roster would reveal identities. Every
+    // participant is shown with an ad-hoc identity instead, even if they
+    // happen to also be a registered class member (CRT-439).
+    if (session.isAnonymous) {
+      return [...new Set(activeStudentIds)].map<ResolvedStudent>(
+        (studentId) => ({
+          isAnonymous: true,
+          studentId,
+        }),
+      );
     }
 
     const studentsById = new Map(
@@ -37,7 +54,7 @@ export const useStudentProgress = (
           studentId,
         } satisfies AnonymousStudent),
     );
-  }, [klass, activeStudentIds]);
+  }, [klass, session, activeStudentIds]);
 
 export const useSessionStudents = (
   classId: number,
@@ -62,7 +79,7 @@ export const useSessionStudents = (
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const students = useStudentProgress(klass, activeStudentIds);
+  const students = useStudentProgress(klass, session, activeStudentIds);
 
   return {
     klass,
