@@ -32,6 +32,13 @@ export class TaskEditModalPageModel {
 
   async save(): Promise<void> {
     await this.saveButton.click();
+    // The save handler runs an async round-trip to the embedded editor and only
+    // then closes the modal (setIsShown(false) after onSave resolves). Wait for
+    // the modal — and the embedded scratch iframe it contains — to detach before
+    // returning. Otherwise the caller's next interaction with the underlying
+    // task form (e.g. clicking its submit button) races the still-mounted iframe,
+    // which sits over the form and intercepts the pointer events until timeout.
+    await this.modal.waitFor({ state: "detached", timeout: 60_000 });
   }
 
   async cancel(): Promise<void> {
