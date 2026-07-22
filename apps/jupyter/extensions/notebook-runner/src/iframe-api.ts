@@ -170,6 +170,16 @@ export class EmbeddedPythonCallbacks {
       }, EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs);
 
       kernelSpecs.specsChanged.connect(onChange);
+
+      // Re-check after connecting so that a spec registered between the check
+      // above and the connect cannot be missed. This makes the wait correct by
+      // inspection instead of relying on the surrounding block staying free of
+      // awaits between the check and the connect.
+      if (hasSpec()) {
+        clearTimeout(timeout);
+        kernelSpecs.specsChanged.disconnect(onChange);
+        resolve();
+      }
     });
   }
 
