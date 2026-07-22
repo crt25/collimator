@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import { ApiResponse, fromDtos } from "../helpers";
 import {
   getSolutionsControllerFindCurrentAnalysesV0Url,
@@ -43,6 +43,7 @@ export const useCurrentSessionTaskSolutions = (
   classId: number,
   sessionId: number,
   taskId?: number,
+  swrConfig?: SWRConfiguration<GetCurrentAnalysisReturnType, Error>,
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
@@ -56,5 +57,6 @@ export const useCurrentSessionTaskSolutions = (
         )
       : null,
     () => fetchSolutionsAndTransform(authOptions, classId, sessionId, taskId),
+    swrConfig,
   );
 };

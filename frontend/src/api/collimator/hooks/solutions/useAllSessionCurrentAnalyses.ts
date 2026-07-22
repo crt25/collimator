@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import { ApiResponse } from "../helpers";
 import { getSolutionsControllerFindCurrentAnalysesV0Url } from "../../generated/endpoints/solutions/solutions";
 import { useClassSession } from "../sessions/useClassSession";
@@ -17,6 +17,7 @@ type SessionAnalyses = {
 export const useAllSessionCurrentAnalyses = (
   classId: number,
   sessionId: number,
+  swrConfig?: SWRConfiguration<SessionAnalyses[], Error>,
 ): ApiResponse<SessionAnalyses[], Error> => {
   const authOptions = useAuthenticationOptions();
   const { data } = useClassSession(classId, sessionId);
@@ -45,5 +46,6 @@ export const useAllSessionCurrentAnalyses = (
             ),
           )
         : Promise.resolve([] as SessionAnalyses[]),
+    swrConfig,
   );
 };

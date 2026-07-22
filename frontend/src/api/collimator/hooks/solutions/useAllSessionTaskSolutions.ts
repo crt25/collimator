@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import { ApiResponse, fromDtos, getIdOrNaN } from "../helpers";
 import {
   getSolutionsControllerFindAllStudentSolutionsV0Url,
@@ -28,6 +28,7 @@ export const useAllSessionTaskSolutions = (
   sessionId?: number | string,
   taskId?: number | string,
   params?: undefined,
+  swrConfig?: SWRConfiguration<GetSolutionsReturnType, Error>,
 ): ApiResponse<GetSolutionsReturnType, Error> => {
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(sessionId);
@@ -52,5 +53,6 @@ export const useAllSessionTaskSolutions = (
             numericTaskId,
             params,
           ),
+    swrConfig,
   );
 };
