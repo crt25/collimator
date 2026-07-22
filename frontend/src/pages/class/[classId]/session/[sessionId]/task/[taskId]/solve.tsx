@@ -212,13 +212,14 @@ const SolveTaskPage = () => {
     ) {
       wasInitialized.current = true;
 
-      try {
-        // Prefer a solution stashed just before a reload (it includes changes
-        // that may not have reached the backend yet); otherwise load the latest
-        // persisted solution.
-        const stashedSolution = pendingSolution.current;
-        pendingSolution.current = null;
+      // Prefer a solution stashed just before a reload (it includes changes
+      // that may not have reached the backend yet); otherwise load the latest
+      // persisted solution. Consume the stash synchronously so a solution
+      // arriving while the load below is in flight is not clobbered.
+      const stashedSolution = pendingSolution.current;
+      pendingSolution.current = null;
 
+      try {
         const solutionFile =
           stashedSolution ??
           (await fetchLatestSolutionFile(
@@ -239,6 +240,11 @@ const SolveTaskPage = () => {
           { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       } catch {
+        // Put the stash back (unless something newer arrived meanwhile) so the
+        // next app load can still restore it — it may hold work that never
+        // reached the backend.
+        pendingSolution.current ??= stashedSolution;
+
         // if we cannot fetch the latest solution file we load the task from scratch
         await embeddedApp.current.sendRequest("loadTask", {
           task: taskFile,
