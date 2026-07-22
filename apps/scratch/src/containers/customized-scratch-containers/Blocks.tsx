@@ -52,13 +52,9 @@ import {
 import { StageDisplaySize } from "@scratch-submodule/packages/scratch-gui/src/lib/screen-utils";
 import VMScratchBlocks from "@scratch-submodule/packages/scratch-gui/src/lib/blocks";
 import makeToolboxXML from "../../blocks/make-toolbox-xml";
-import {
-  addBlockConfigButtons,
-  updateSingleBlockConfigButton,
-} from "../../blocks/block-config";
+import { addBlockConfigButtons } from "../../blocks/block-config";
 import BlockConfig from "../../components/block-config/BlockConfig";
 import { UpdateBlockToolboxEvent } from "../../events/update-block-toolbox";
-import { filterNonNull } from "../../utilities/filter-non-null";
 import {
   addFreezeButtonsToStack,
   freezeTaskBlocks,
@@ -1140,8 +1136,6 @@ class Blocks extends React.Component<Props, State> {
       vm: this.props.vm,
       canEditTask: this.props.canEditTask,
       blocks: this.blocks,
-      filterNonNull,
-      updateSingleBlockConfigButton,
     });
 
     if (isBlocked) {
