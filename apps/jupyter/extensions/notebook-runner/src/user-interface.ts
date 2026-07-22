@@ -195,8 +195,16 @@ const redirectTaskFileOpensToStudentVersion = (
     void documentManager.services.contents
       .get(studentTaskPath, { content: false })
       .then(() => open(studentTaskPath, widgetName, kernel, options))
-      .catch(() => {
-        // the student copy has not been restored yet; ignore this open.
+      .catch((error) => {
+        // The expected case: the student copy has not been restored yet, so we
+        // ignore this open (the task auto-opens once the content is restored).
+        // Contents are memory-backed in JupyterLite so other failures are not
+        // really expected; log a breadcrumb instead of staying fully silent in
+        // case one ever occurs.
+        console.debug(
+          `Ignoring open of ${studentTaskPath}; not available yet`,
+          error,
+        );
       });
   };
 
