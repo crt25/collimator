@@ -188,7 +188,9 @@ const getYupSchema = (intl: IntlShape) => ({
     .label(intl.formatMessage(messages.title))
     .required()
     .min(1)
-    .max(200),
+    // Keep titles short so they don't break the task-page layout.
+    // The student view is unaffected; this only constrains the editor.
+    .max(60),
   description: yup
     .string()
     .label(intl.formatMessage(messages.description))
