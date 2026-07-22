@@ -66,6 +66,67 @@ export const getItemIdFromTableTestId = (
   return parseInt(testId.split("-")[1], 10);
 };
 
+/**
+ * (Re-)creates a worker database as a clone of the template database.
+ *
+ * Always connects to the default 'postgres' database, never to the template:
+ * CREATE DATABASE ... TEMPLATE fails with "source database is being accessed
+ * by other users" if any session is connected to the template — so a worker
+ * holding a template connection while cloning makes every other worker's clone
+ * (and thereby all its remaining tests) fail. The clone itself is additionally
+ * serialized across workers with an advisory lock as insurance against
+ * concurrent CREATE DATABASE calls copying the same template.
+ */
+const cloneDatabaseFromTemplate = async (
+  postgresConfig: PostgresConfig,
+  uniqueDbName: string,
+): Promise<void> => {
+  const client = new pg.Client({
+    ...postgresConfig,
+    database: "postgres",
+  });
+
+  await client.connect();
+  try {
+    // drop with force, the db may still be used by the backend
+    await client.query(
+      `DROP DATABASE IF EXISTS "${uniqueDbName}" WITH (FORCE)`,
+    );
+    await client.query(
+      "SELECT pg_advisory_lock(hashtext('e2e-template-clone'))",
+    );
+    try {
+      // retry on "source database is being accessed by other users" (55006):
+      // even with the advisory lock, a session outside our control (e.g. the
+      // setup backend's connection pool) may briefly touch the template.
+      const maxAttempts = 5;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await client.query(
+            `CREATE DATABASE "${uniqueDbName}" TEMPLATE "${postgresConfig.database}"`,
+          );
+          break;
+        } catch (error) {
+          const isObjectInUse =
+            error instanceof pg.DatabaseError && error.code === "55006";
+
+          if (!isObjectInUse || attempt === maxAttempts) {
+            throw error;
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
+    } finally {
+      await client.query(
+        "SELECT pg_advisory_unlock(hashtext('e2e-template-clone'))",
+      );
+    }
+  } finally {
+    await client.end();
+  }
+};
+
 export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
   workerConfig: [
     async ({}, use, testInfo): Promise<void> => {
@@ -87,21 +148,9 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
 
       const postgresConfig = buildClientConfig(dbUrlRaw);
       const uniqueDbName = `${postgresConfig.database}-clone-${testInfo.workerIndex}`;
-      {
-        const client = new pg.Client({
-          ...postgresConfig,
-          // connect to the default 'postgres' database, not the test template db to avoid concurrency issues
-          database: "postgres",
-        });
 
-        // create a new database based on the template database
-        await client.connect();
-        await client.query(`DROP DATABASE IF EXISTS "${uniqueDbName}"`);
-        await client.query(
-          `CREATE DATABASE "${uniqueDbName}" TEMPLATE "${postgresConfig.database}"`,
-        );
-        await client.end();
-      }
+      // create a new database based on the template database
+      await cloneDatabaseFromTemplate(postgresConfig, uniqueDbName);
 
       const testConfig = {
         ...postgresConfig,
@@ -191,9 +240,12 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // gracefully stop the backend - this is required for coverage output
       await gracefullyStopBackend(backendProcess, backendStopPort);
 
-      // drop the database
+      // drop the database. Connect to the default 'postgres' database, not the
+      // template: a session connected to the template makes any concurrently
+      // running CREATE DATABASE ... TEMPLATE of another worker fail with
+      // "source database is being accessed by other users".
       {
-        const client = new pg.Client(postgresConfig);
+        const client = new pg.Client({ ...postgresConfig, database: "postgres" });
         await client.connect();
         await client.query(`DROP DATABASE IF EXISTS "${uniqueDbName}"`);
         await client.end();
@@ -271,28 +323,25 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // Playwright happens to distribute file/project runs across workers.
       const resetKey = `${testInfo.project.name}::${testInfo.titlePath[0]}`;
 
-      // update the last test file name
-      setLastTestFileName(resetKey);
-
       // if we are still in the same test file (and project) there is nothing to
       // do. Also if null, this is the first file so nothing to reset yet.
       if (lastTestFileName === null || resetKey === lastTestFileName) {
+        setLastTestFileName(resetKey);
         return use(undefined);
       }
 
-      // if we changed the test file, reset the database
-      {
-        const client = new pg.Client(workerConfig.postgresConfig);
-        await client.connect();
-        await client.query(
-          // drop with force, the db is currently used by the backend.
-          `DROP DATABASE IF EXISTS "${workerConfig.uniqueDbName}" WITH (FORCE)`,
-        );
-        await client.query(
-          `CREATE DATABASE "${workerConfig.uniqueDbName}" TEMPLATE "${workerConfig.postgresConfig.database}"`,
-        );
-        await client.end();
-      }
+      // if we changed the test file, reset the database.
+      // Only record the new reset key AFTER the reset succeeded: the clone is
+      // dropped before it is re-created, so if the re-create fails (e.g. the
+      // template was briefly locked by another worker) and we had already
+      // recorded the key, the next test would skip the reset and run against a
+      // database that no longer exists — failing every remaining test in this
+      // worker. By recording the key last, a failed reset is simply retried by
+      // the next test.
+      await cloneDatabaseFromTemplate(
+        workerConfig.postgresConfig,
+        workerConfig.uniqueDbName,
+      );
 
       const resetTestUrl = getUrl({
         ...workerConfig.postgresConfig,
@@ -325,6 +374,9 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         60,
         300,
       );
+
+      // the reset fully succeeded — only now record it (see comment above)
+      setLastTestFileName(resetKey);
 
       return use(undefined);
     },
