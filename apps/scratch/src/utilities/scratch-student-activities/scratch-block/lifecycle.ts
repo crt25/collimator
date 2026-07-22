@@ -49,7 +49,15 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        refreshBlockConfigButtonsFromXml(vm, event.xml, blocks, canEditTask);
+        // Get the xml representing the block change
+        const xml = getXmlFromEvent(event, undefined);
+
+        if (!xml) {
+          // No xml found, cannot proceed
+          return;
+        }
+
+        refreshBlockConfigButtonsFromXml(vm, xml, blocks, canEditTask);
       }
       break;
   }
@@ -89,6 +97,8 @@ const getXmlFromEvent = (
     case "delete":
       return event.oldXml;
 
+    case "endDrag":
+      return event.xml;
     default:
       console.error(`${logModule} Could not find xml in event`, event);
       return xmlElement;
