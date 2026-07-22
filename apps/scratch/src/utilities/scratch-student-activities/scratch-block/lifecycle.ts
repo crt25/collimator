@@ -72,7 +72,7 @@ const refreshBlockConfigButtonsFromXml = (
   // Create a new element to be able to use querySelectorAll on it, otherwise
   // Only the children are matched against the selector
   const el = document.createElement("div");
-  el.appendChild(xml);
+  el.appendChild(xml.cloneNode(true));
 
   const opcodes = [...el.querySelectorAll("block[type]")]
     .map((element) => element.getAttribute("type"))
