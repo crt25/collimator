@@ -112,13 +112,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
-    notebookTracker.widgetAdded.connect((_, panel) => {
-      panel.sessionContext.kernelPreference = {
-        ...panel.sessionContext.kernelPreference,
-        autoStartDefault: true,
-      };
-    });
-
     if (mode === Mode.solve) {
       const taskAutoSaver = TaskAutoSaver.trackNotebook(
         notebookTracker,
