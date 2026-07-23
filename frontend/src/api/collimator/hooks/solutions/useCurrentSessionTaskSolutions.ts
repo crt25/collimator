@@ -1,4 +1,5 @@
-import useSWR, { SWRConfiguration } from "swr";
+import useSWR from "swr";
+import { AutoRefreshingConfig } from "@/utilities/live-refresh";
 import { ApiResponse, fromDtos } from "../helpers";
 import {
   getSolutionsControllerFindCurrentAnalysesV0Url,
@@ -43,7 +44,7 @@ export const useCurrentSessionTaskSolutions = (
   classId: number,
   sessionId: number,
   taskId?: number,
-  swrConfig?: SWRConfiguration<GetCurrentAnalysisReturnType, Error>,
+  refreshConfig?: AutoRefreshingConfig,
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
@@ -57,6 +58,6 @@ export const useCurrentSessionTaskSolutions = (
         )
       : null,
     () => fetchSolutionsAndTransform(authOptions, classId, sessionId, taskId),
-    swrConfig,
+    refreshConfig,
   );
 };

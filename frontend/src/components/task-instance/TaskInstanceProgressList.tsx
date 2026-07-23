@@ -16,7 +16,7 @@ import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
-import { liveRefreshConfig } from "@/utilities/live-refresh";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
@@ -198,14 +198,14 @@ const TaskInstanceProgressList = ({
     sessionId,
     taskId,
     undefined,
-    liveRefreshConfig,
+    DefaultAutoRefreshingConfig,
   );
 
   const { data: currentAnalyses } = useCurrentSessionTaskSolutions(
     classId,
     sessionId,
     taskId,
-    liveRefreshConfig,
+    DefaultAutoRefreshingConfig,
   );
 
   const studentIds = useMemo(() => {

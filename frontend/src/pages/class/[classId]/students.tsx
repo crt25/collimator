@@ -9,7 +9,7 @@ import SwrContent from "@/components/SwrContent";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import StudentList from "@/components/student/StudentList";
 import PageHeading from "@/components/PageHeading";
-import { liveRefreshConfig } from "@/utilities/live-refresh";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
 
 import ClassActions from "@/components/class/ClassActions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
@@ -33,7 +33,7 @@ const ClassUserList = () => {
     data: klass,
     error,
     isLoading,
-  } = useClass(classId, liveRefreshConfig);
+  } = useClass(classId, DefaultAutoRefreshingConfig);
 
   return (
     <MaxScreenHeight>

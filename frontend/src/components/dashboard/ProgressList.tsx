@@ -13,7 +13,7 @@ import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/curren
 import { ColumnType } from "@/types/tanstack-types";
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
-import { liveRefreshConfig } from "@/utilities/live-refresh";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
 import {
   getTaskStatus,
   getTaskStatusColor,
@@ -182,12 +182,12 @@ const ProgressList = ({
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionSolutions(classId, sessionId, liveRefreshConfig);
+  } = useAllSessionSolutions(classId, sessionId, DefaultAutoRefreshingConfig);
 
   const { data: currentAnalyses } = useAllSessionCurrentAnalyses(
     classId,
     sessionId,
-    liveRefreshConfig,
+    DefaultAutoRefreshingConfig,
   );
 
   const studentIds = useMemo(() => {
