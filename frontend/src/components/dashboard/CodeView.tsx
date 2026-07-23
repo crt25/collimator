@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { Language } from "iframe-rpc-react/src";
 import { LuExpand } from "react-icons/lu";
 import { TaskType } from "@/api/collimator/generated/models";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
 import { useFileHash } from "@/hooks/useFileHash";
@@ -35,17 +35,6 @@ const CodeViewWrapper = styled(CodeViewContainer)`
     height: 100% !important;
   }
 `;
-
-const getSolutionCodeUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/show`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?crtMode=show`;
-    default:
-      return null;
-  }
-};
 
 const CodeView = ({
   classId,
@@ -79,7 +68,10 @@ const CodeView = ({
     error: solutionFileError,
   } = useSolutionFile(classId, sessionId, taskId, solutionHash);
 
-  const iframeSrc = useMemo(() => getSolutionCodeUrl(taskType), [taskType]);
+  const iframeSrc = useMemo(
+    () => getEmbeddedAppUrl(taskType, "show"),
+    [taskType],
+  );
 
   const taskFileHash = useFileHash(taskFile);
   const solutionFileHash = useFileHash(solutionFile);

@@ -1,23 +1,12 @@
 import { useIntl } from "react-intl";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Language, Task } from "iframe-rpc-react/src";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { TaskType } from "@/api/collimator/generated/models";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
-
-const getEditUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/edit`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?crtMode=edit`;
-    default:
-      return null;
-  }
-};
 
 const EditTaskModal = ({
   isShown,
@@ -33,7 +22,7 @@ const EditTaskModal = ({
   initialTask?: Blob | null;
 }) => {
   const intl = useIntl();
-  const url = useMemo(() => getEditUrl(taskType), [taskType]);
+  const url = useMemo(() => getEmbeddedAppUrl(taskType, "edit"), [taskType]);
   const wasInitialized = useRef(false);
 
   const onSaveTask = useCallback(

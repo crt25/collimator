@@ -4,7 +4,6 @@ import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Language, Submission, Test, ToastType } from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
-import { TaskType } from "@/api/collimator/generated/models";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
 import { useCreateSolution } from "@/api/collimator/hooks/solutions/useCreateSolution";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
@@ -13,7 +12,7 @@ import { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import StudentPageLayout from "@/components/layout/StudentPageLayout";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Task from "@/components/Task";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
@@ -43,17 +42,6 @@ const messages = defineMessages({
     defaultMessage: "Open Task List",
   },
 });
-
-const getSolveUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/solve`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?crtMode=solve`;
-    default:
-      return null;
-  }
-};
 
 const SolveTaskPage = () => {
   const router = useRouter();
@@ -100,7 +88,7 @@ const SolveTaskPage = () => {
   const taskFileHash = useFileHash(taskFile);
 
   const iframeSrc = useMemo(
-    () => (task?.type ? getSolveUrl(task.type) : null),
+    () => (task?.type ? getEmbeddedAppUrl(task.type, "solve") : null),
     [task?.type],
   );
 

@@ -1,7 +1,7 @@
 import { FormattedMessage, useIntl } from "react-intl";
 import React, { useCallback, useMemo } from "react";
 import { Language } from "iframe-rpc-react/src";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { TaskType } from "@/api/collimator/generated/models";
 import { useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
 import { useSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
@@ -10,17 +10,6 @@ import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import MultiSwrContent from "../MultiSwrContent";
 import TaskModal from "./TaskModal";
-
-const getViewUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/solve`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?crtMode=solve`;
-    default:
-      return null;
-  }
-};
 
 const ViewSolutionModal = ({
   isShown,
@@ -44,7 +33,7 @@ const ViewSolutionModal = ({
   footer?: React.ReactNode;
 }) => {
   const intl = useIntl();
-  const url = useMemo(() => getViewUrl(taskType), [taskType]);
+  const url = useMemo(() => getEmbeddedAppUrl(taskType, "solve"), [taskType]);
 
   const {
     data: taskFile,
