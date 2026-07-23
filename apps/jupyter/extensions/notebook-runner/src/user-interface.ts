@@ -164,13 +164,48 @@ const hideGradingFolders = (fileBrowser: FileBrowser): void => {
   fileBrowser.model.refresh();
 };
 
+const studentTaskPath = "/student/task.ipynb";
+
+const isTaskFile = (path: string): boolean =>
+  path === "/task.ipynb" || path === "task.ipynb";
+
+/**
+ * Entry point to open the student notebook, only if it's available.
+ * In case of failure, we let the restore flow (loadSubmission) issue
+ * its own open after writing the file.
+ * Without this, quick locale change could lead to failure when
+ * opening the notebook, or worse, opening the wrong task.
+ */
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
 ): void => {
-  const redirect = (path: string): string =>
-    path === "/task.ipynb" || path === "task.ipynb"
-      ? "/student/task.ipynb"
-      : path;
+  const openStudentTaskIfAvailable = (
+    open: (
+      path: string,
+      widgetName?: string,
+      kernel?: Partial<Kernel.IModel>,
+      options?: DocumentRegistry.IOpenOptions,
+    ) => IDocumentWidget | undefined,
+    widgetName?: string,
+    kernel?: Partial<Kernel.IModel>,
+    options?: DocumentRegistry.IOpenOptions,
+  ): void => {
+    void documentManager.services.contents
+      .get(studentTaskPath, { content: false })
+      .then(
+        () => open(studentTaskPath, widgetName, kernel, options),
+        (error) => {
+          console.debug(
+            `Ignoring open of ${studentTaskPath}; not available yet`,
+            error,
+          );
+        },
+      )
+      .catch((error) => {
+        // reached only if opening the existing file itself failed
+        console.error(`Failed to open ${studentTaskPath}`, error);
+      });
+  };
 
   const originalOpenOrReveal =
     documentManager.openOrReveal.bind(documentManager);
@@ -179,8 +214,19 @@ const redirectTaskFileOpensToStudentVersion = (
     widgetName?: string,
     kernel?: Partial<Kernel.IModel>,
     options?: DocumentRegistry.IOpenOptions,
-  ): ReturnType<IDocumentManager["openOrReveal"]> =>
-    originalOpenOrReveal(redirect(path), widgetName, kernel, options);
+  ): ReturnType<IDocumentManager["openOrReveal"]> => {
+    if (!isTaskFile(path)) {
+      return originalOpenOrReveal(path, widgetName, kernel, options);
+    }
+
+    openStudentTaskIfAvailable(
+      originalOpenOrReveal,
+      widgetName,
+      kernel,
+      options,
+    );
+    return undefined;
+  };
 
   const originalOpen = documentManager.open.bind(documentManager);
   documentManager.open = (
@@ -188,8 +234,14 @@ const redirectTaskFileOpensToStudentVersion = (
     widgetName,
     kernel,
     options,
-  ): IDocumentWidget | undefined =>
-    originalOpen(redirect(path), widgetName, kernel, options);
+  ): IDocumentWidget | undefined => {
+    if (!isTaskFile(path)) {
+      return originalOpen(path, widgetName, kernel, options);
+    }
+
+    openStudentTaskIfAvailable(originalOpen, widgetName, kernel, options);
+    return undefined;
+  };
 };
 
 class HiddenFolderError extends Error {

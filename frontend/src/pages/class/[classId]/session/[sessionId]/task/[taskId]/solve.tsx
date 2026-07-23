@@ -96,6 +96,24 @@ const SolveTaskPage = () => {
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
+  // The freshest solution the embedded app has pushed up (e.g. the auto-save
+  // triggered right before a language change reloads the iframe).
+  // This allows data persistency after app iframe reloads (e.g. locale change).
+  // Keyed by task id: this page component survives task-to-task navigation,
+  // so an unconsumed stash must never be replayed into a different task.
+  const pendingSolution = useRef<{ taskId: number; solution: Blob } | null>(
+    null,
+  );
+
+  // Latest-ref mirror of intl so that onAppAvailable's identity does not
+  // rotate on locale changes: useIframeChild eagerly re-invokes a rotated
+  // onAppAvailable against the still-loaded old iframe, which would consume
+  // the stash above right before the locale-triggered reload discards the
+  // result (the same reason task/taskFile revalidation is disabled).
+  const intlRef = useRef(intl);
+  useEffect(() => {
+    intlRef.current = intl;
+  });
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -206,12 +224,26 @@ const SolveTaskPage = () => {
     ) {
       wasInitialized.current = true;
 
+      const intl = intlRef.current;
+
+      // Prefer a solution stashed just before a reload (it includes changes
+      // that may not have reached the backend yet); otherwise load the latest
+      // persisted solution. Consume the stash synchronously so a solution
+      // arriving while the load below is in flight is not clobbered, and only
+      // accept it for the task it was stashed for.
+      const stashed = pendingSolution.current;
+      pendingSolution.current = null;
+      const stashedSolution =
+        stashed?.taskId === task.id ? stashed.solution : null;
+
       try {
-        const solutionFile = await fetchLatestSolutionFile(
-          session.klass.id,
-          session.id,
-          task.id,
-        );
+        const solutionFile =
+          stashedSolution ??
+          (await fetchLatestSolutionFile(
+            session.klass.id,
+            session.id,
+            task.id,
+          ));
 
         isScratchMutexAvailable.current = false;
 
@@ -225,6 +257,11 @@ const SolveTaskPage = () => {
           { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       } catch {
+        if (stashedSolution !== null) {
+          pendingSolution.current ??= stashed;
+          return;
+        }
+
         // if we cannot fetch the latest solution file we load the task from scratch
         await embeddedApp.current.sendRequest("loadTask", {
           task: taskFile,
@@ -234,9 +271,11 @@ const SolveTaskPage = () => {
         isScratchMutexAvailable.current = true;
       }
     }
-    // since taskFile is a blob, use its hash as a proxy for its content
+    // since taskFile is a blob, use its hash as a proxy for its content.
+    // intl is intentionally read through intlRef (not listed as a dep): see the
+    // comment on intlRef — a locale change must not rotate this callback.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session, task, intl.locale]);
+  }, [embeddedApp, taskFileHash, session, task]);
 
   const onReceiveTaskSolution = useCallback(
     async (solutionBlob: Blob) => {
@@ -244,6 +283,10 @@ const SolveTaskPage = () => {
         console.error("No session or task available");
         return;
       }
+
+      // Stash synchronously so a reload can replay it even if the backend write
+      // below is still in flight.
+      pendingSolution.current = { taskId: task.id, solution: solutionBlob };
 
       try {
         await createSolution(session.klass.id, session.id, task.id, {
