@@ -13,9 +13,9 @@ export const ignoreEvent = (event: MouseEvent): void => {
 
 const pendingRejectionBlockIds = new Set<string>();
 
-// Blocks created during the current drag gesture
-// Used to detect when a block dragged onto another sprite was created in the same gesture rather
-const blocksCreatedInCurrentGesture = new Set<string>();
+// Block created during the current drag gesture
+// Used to detect when a block dragged onto another sprite was created in the same gesture
+let blockCreatedInCurrentGesture: string | undefined;
 
 const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
@@ -39,7 +39,7 @@ const shouldPreventBlockCreation = (
     const blockId = event.blockId ?? "";
 
     // the drag gesture has ended, forget any blocks created during it
-    blocksCreatedInCurrentGesture.clear();
+    blockCreatedInCurrentGesture = undefined;
 
     if (pendingRejectionBlockIds.has(blockId)) {
       pendingRejectionBlockIds.delete(blockId);
@@ -63,16 +63,16 @@ const shouldPreventBlockCreation = (
   const eventBlockId = event.blockId ?? "";
 
   const excludeBlockId =
-    isBlockDraggedToSprite && blocksCreatedInCurrentGesture.has(eventBlockId)
+    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId
       ? event.blockId
       : undefined;
 
   if (!wouldExceedLimits(vm, block, excludeBlockId)) {
     if (isBlockCreated) {
-      blocksCreatedInCurrentGesture.add(eventBlockId);
+      blockCreatedInCurrentGesture = eventBlockId;
     } else if (isBlockDraggedToSprite) {
       // the drag gesture has ended, forget any blocks created during it
-      blocksCreatedInCurrentGesture.clear();
+      blockCreatedInCurrentGesture = undefined;
     }
 
     return false;
@@ -80,7 +80,7 @@ const shouldPreventBlockCreation = (
 
   if (isBlockDraggedToSprite) {
     // the drag gesture has ended, forget any blocks created during it
-    blocksCreatedInCurrentGesture.clear();
+    blockCreatedInCurrentGesture = undefined;
   }
 
   if (isBlockCreated) {
