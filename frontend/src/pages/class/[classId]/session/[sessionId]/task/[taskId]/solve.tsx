@@ -263,8 +263,13 @@ const SolveTaskPage = () => {
         // Put the stash back (unless something newer arrived meanwhile) so the
         // next app load can still restore it — it may hold work that never
         // reached the backend. A stash for a different task is dropped instead.
+        // A failed replay does not mean the stashed copy is bad (the embedded
+        // app may still be initializing after a locale change), so we must NOT
+        // fall back to the pristine task in that case — it would visibly
+        // discard the stashed work; the next app load replays the stash.
         if (stashedSolution !== null) {
           pendingSolution.current ??= stashed;
+          return;
         }
 
         // if we cannot fetch the latest solution file we load the task from scratch
