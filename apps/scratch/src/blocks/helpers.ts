@@ -13,6 +13,10 @@ export const ignoreEvent = (event: MouseEvent): void => {
 
 const pendingRejectionBlockIds = new Set<string>();
 
+// Block created during the current drag gesture
+// Used to detect when a block dragged onto another sprite was created in the same gesture
+let blockCreatedInCurrentGesture: string | undefined;
+
 const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
   vm: VMExtended,
@@ -34,6 +38,9 @@ const shouldPreventBlockCreation = (
   if (isEndDrag) {
     const blockId = event.blockId ?? "";
 
+    // the drag gesture has ended, forget any blocks created during it
+    blockCreatedInCurrentGesture = undefined;
+
     if (pendingRejectionBlockIds.has(blockId)) {
       pendingRejectionBlockIds.delete(blockId);
       workspace.undo(false);
@@ -53,8 +60,27 @@ const shouldPreventBlockCreation = (
     return false;
   }
 
-  if (!wouldExceedLimits(vm, block)) {
+  const eventBlockId = event.blockId ?? "";
+
+  const excludeBlockId =
+    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId
+      ? event.blockId
+      : undefined;
+
+  if (!wouldExceedLimits(vm, block, excludeBlockId)) {
+    if (isBlockCreated) {
+      blockCreatedInCurrentGesture = eventBlockId;
+    } else if (isBlockDraggedToSprite) {
+      // the drag gesture has ended, forget any blocks created during it
+      blockCreatedInCurrentGesture = undefined;
+    }
+
     return false;
+  }
+
+  if (isBlockDraggedToSprite) {
+    // the drag gesture has ended, forget any blocks created during it
+    blockCreatedInCurrentGesture = undefined;
   }
 
   if (isBlockCreated) {
@@ -171,6 +197,8 @@ const getAllowedBlockCount = (
 export const wouldExceedLimits = (
   vm: VMExtended,
   block: ScratchBlocksExtended.Block,
+  // id of a block that is already included in the VM counts but should not be counted against the limit
+  excludeBlockId?: string,
 ): boolean => {
   const config = vm.crtConfig;
   if (!config) {
@@ -184,7 +212,11 @@ export const wouldExceedLimits = (
   const usedBlocks = countUsedBlocks(vm);
 
   const allowed = getAllowedBlockCount(config, block.type);
-  const count = usedBlocks[block.type];
+  let count = usedBlocks[block.type];
+
+  if (excludeBlockId && findBlockInRuntime(vm, excludeBlockId)) {
+    count -= 1;
+  }
 
   const isPreventedEntirely = allowed === 0;
 
