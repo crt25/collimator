@@ -2671,7 +2671,7 @@
   "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": [
     {
       "type": 0,
-      "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+      "value": "Veuillez créer une solution de référence dans l’application externe pour chaque entrée avant d’enregistrer."
     }
   ],
   "TaskFormReferenceSolutions.solution.create": [
