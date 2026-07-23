@@ -170,15 +170,11 @@ const isTaskFile = (path: string): boolean =>
   path === "/task.ipynb" || path === "task.ipynb";
 
 /**
- * The student never edits the teacher template directly: opening `task.ipynb`
- * transparently opens their own `/student/task.ipynb`. That copy is (re)written
- * asynchronously after a reload (e.g. a language change wipes the memory-backed
- * contents and the frontend re-sends the submission), so opening it too early
- * throws "could not find content" (CRT-397). We therefore open it only if it
- * already exists; if it does not, the open is DROPPED — there is no waiting or
- * retrying here. That is safe because the restore flow (loadSubmission) issues
- * its own open after writing the file, and we must never fall back to opening
- * the template itself.
+ * Entry point to open the student notebook, only if it's available.
+ * In case of failure, we let the restore flow (loadSubmission) issue
+ * its own open after writing the file.
+ * Without this, quick locale change could lead to failure when
+ * opening the notebook, or worse, opening the wrong task.
  */
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
@@ -199,9 +195,6 @@ const redirectTaskFileOpensToStudentVersion = (
       .then(
         () => open(studentTaskPath, widgetName, kernel, options),
         (error) => {
-          // Only contents.get() rejections land here: the student copy has not
-          // been restored yet, so this open is dropped (the restore flow opens
-          // the task itself once the content is written).
           console.debug(
             `Ignoring open of ${studentTaskPath}; not available yet`,
             error,

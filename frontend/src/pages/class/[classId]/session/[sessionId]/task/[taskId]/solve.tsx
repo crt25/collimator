@@ -97,13 +97,10 @@ const SolveTaskPage = () => {
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
   // The freshest solution the embedded app has pushed up (e.g. the auto-save
-  // triggered right before a language change reloads the iframe). The parent
-  // frame is not reloaded, so this ref survives; we replay it after the reload
-  // instead of racing the still-in-flight backend write with a stale fetch,
-  // which otherwise loses the student's unsaved changes (CRT-397). Keyed by
-  // task id: this page component survives task-to-task navigation (dynamic
-  // route params do not remount it), so an unconsumed stash must never be
-  // replayed into a different task.
+  // triggered right before a language change reloads the iframe).
+  // This allows data persistency after app iframe reloads (e.g. locale change).
+  // Keyed by task id: this page component survives task-to-task navigation,
+  // so an unconsumed stash must never be replayed into a different task.
   const pendingSolution = useRef<{ taskId: number; solution: Blob } | null>(
     null,
   );
@@ -260,13 +257,6 @@ const SolveTaskPage = () => {
           { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
       } catch {
-        // Put the stash back (unless something newer arrived meanwhile) so the
-        // next app load can still restore it — it may hold work that never
-        // reached the backend. A stash for a different task is dropped instead.
-        // A failed replay does not mean the stashed copy is bad (the embedded
-        // app may still be initializing after a locale change), so we must NOT
-        // fall back to the pristine task in that case — it would visibly
-        // discard the stashed work; the next app load replays the stash.
         if (stashedSolution !== null) {
           pendingSolution.current ??= stashed;
           return;
@@ -295,8 +285,7 @@ const SolveTaskPage = () => {
       }
 
       // Stash synchronously so a reload can replay it even if the backend write
-      // below is still in flight (CRT-397). Keyed by task id so it can never be
-      // replayed into a different task.
+      // below is still in flight.
       pendingSolution.current = { taskId: task.id, solution: solutionBlob };
 
       try {
