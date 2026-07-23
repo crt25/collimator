@@ -16,6 +16,7 @@ import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions
 import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
+import { liveRefreshConfig } from "@/utilities/live-refresh";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
 import { StudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
@@ -30,12 +31,6 @@ import UnstarPastSolutionsButton from "../solution/UnstarPastSolutionsButton";
 const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
 `;
-
-// The per-task progress view is a live monitoring dashboard the teacher keeps
-// open during a lesson. Poll so new student submissions show up without a
-// manual page refresh (CRT-435) — by default SWR only revalidates when the
-// window regains focus.
-const liveRefreshConfig = { refreshInterval: 10 * 1000 };
 
 const messages = defineMessages({
   nameColumn: {

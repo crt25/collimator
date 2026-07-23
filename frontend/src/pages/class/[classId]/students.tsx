@@ -9,6 +9,7 @@ import SwrContent from "@/components/SwrContent";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import StudentList from "@/components/student/StudentList";
 import PageHeading from "@/components/PageHeading";
+import { liveRefreshConfig } from "@/utilities/live-refresh";
 
 import ClassActions from "@/components/class/ClassActions";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
@@ -27,7 +28,12 @@ const ClassUserList = () => {
     classId: string;
   };
 
-  const { data: klass, error, isLoading } = useClass(classId);
+  // poll so students joining the class appear without a manual refresh
+  const {
+    data: klass,
+    error,
+    isLoading,
+  } = useClass(classId, liveRefreshConfig);
 
   return (
     <MaxScreenHeight>

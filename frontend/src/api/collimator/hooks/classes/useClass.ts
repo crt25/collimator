@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import {
   classesControllerFindOneV0,
   getClassesControllerFindOneV0Url,
@@ -19,14 +19,18 @@ export const fetchSingleClassAndTransform = (
 
 export const useClass = (
   id?: number | string,
+  swrConfig?: SWRConfiguration<GetClassReturnType, Error>,
 ): ApiResponse<GetClassReturnType, Error> => {
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getClassesControllerFindOneV0Url(numericId, {}), () =>
-    isNaN(numericId)
-      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-        new Promise<GetClassReturnType>(() => {})
-      : fetchSingleClassAndTransform(authOptions, numericId),
+  return useSWR(
+    getClassesControllerFindOneV0Url(numericId, {}),
+    () =>
+      isNaN(numericId)
+        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+          new Promise<GetClassReturnType>(() => {})
+        : fetchSingleClassAndTransform(authOptions, numericId),
+    swrConfig,
   );
 };
