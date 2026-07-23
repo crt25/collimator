@@ -1,8 +1,6 @@
-// Configuration for live monitoring views (lesson progress, class student
-// lists): poll so changes made by students show up without a manual page
-// refresh (CRT-435) — by default data is only revalidated when the window
-// regains focus.
-export interface AutoRefreshingConfig {
+// SWR-agnostic but SWR-compatible config to interact with backend services,
+// for usage by any network-based hook.
+export interface NetworkHookConfig {
   // the polling interval in milliseconds
   refreshInterval: number;
 }
@@ -10,6 +8,6 @@ export interface AutoRefreshingConfig {
 // poll at most once every 30 seconds
 export const defaultRefreshIntervalMs = 30 * 1000;
 
-export const DefaultAutoRefreshingConfig: AutoRefreshingConfig = {
+export const DefaultAutoRefreshingConfig: NetworkHookConfig = {
   refreshInterval: defaultRefreshIntervalMs,
 };

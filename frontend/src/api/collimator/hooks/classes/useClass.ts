@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { AutoRefreshingConfig } from "@/utilities/live-refresh";
+import { NetworkHookConfig } from "@/utilities/live-refresh";
 import {
   classesControllerFindOneV0,
   getClassesControllerFindOneV0Url,
@@ -20,7 +20,7 @@ export const fetchSingleClassAndTransform = (
 
 export const useClass = (
   id?: number | string,
-  refreshConfig?: AutoRefreshingConfig,
+  config?: NetworkHookConfig,
 ): ApiResponse<GetClassReturnType, Error> => {
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
@@ -32,6 +32,6 @@ export const useClass = (
         ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
           new Promise<GetClassReturnType>(() => {})
         : fetchSingleClassAndTransform(authOptions, numericId),
-    refreshConfig,
+    config,
   );
 };

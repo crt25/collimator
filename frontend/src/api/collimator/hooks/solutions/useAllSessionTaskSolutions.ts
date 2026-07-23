@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { AutoRefreshingConfig } from "@/utilities/live-refresh";
+import { NetworkHookConfig } from "@/utilities/live-refresh";
 import { ApiResponse, fromDtos, getIdOrNaN } from "../helpers";
 import {
   getSolutionsControllerFindAllStudentSolutionsV0Url,
@@ -29,7 +29,7 @@ export const useAllSessionTaskSolutions = (
   sessionId?: number | string,
   taskId?: number | string,
   params?: undefined,
-  refreshConfig?: AutoRefreshingConfig,
+  config?: NetworkHookConfig,
 ): ApiResponse<GetSolutionsReturnType, Error> => {
   const numericClassId = getIdOrNaN(classId);
   const numericSessionId = getIdOrNaN(sessionId);
@@ -54,6 +54,6 @@ export const useAllSessionTaskSolutions = (
             numericTaskId,
             params,
           ),
-    refreshConfig,
+    config,
   );
 };
