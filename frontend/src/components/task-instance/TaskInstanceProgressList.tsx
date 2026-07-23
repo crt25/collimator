@@ -27,6 +27,12 @@ const TaskInstanceProgressListWrapper = styled.div`
   margin: 1rem 0;
 `;
 
+// The per-task progress view is a live monitoring dashboard the teacher keeps
+// open during a lesson. Poll so new student submissions show up without a
+// manual page refresh (CRT-435) — by default SWR only revalidates when the
+// window regains focus.
+const liveRefreshConfig = { refreshInterval: 10 * 1000 };
+
 const messages = defineMessages({
   nameColumn: {
     id: "TaskInstanceProgressList.columns.name",
@@ -120,12 +126,19 @@ const TaskInstanceProgressList = ({
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionTaskSolutions(classId, sessionId, taskId);
+  } = useAllSessionTaskSolutions(
+    classId,
+    sessionId,
+    taskId,
+    undefined,
+    liveRefreshConfig,
+  );
 
   const { data: currentAnalyses } = useCurrentSessionTaskSolutions(
     classId,
     sessionId,
     taskId,
+    liveRefreshConfig,
   );
 
   const activeStudentIds = useMemo(
