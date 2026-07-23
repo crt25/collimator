@@ -13,10 +13,17 @@ export const getModeFromUrl = (): Mode => {
   // mode, fall through to the default, and silently switch a student into edit
   // mode, exposing the teacher notebook (CRT-363).
   const urlParams = new URLSearchParams(window.location.search);
-  const modeParam = urlParams.get("crtMode") ?? "show";
 
   // Default to the most restrictive mode. Edit must be requested explicitly, so
   // a missing or unrecognized param can never expose the teacher template to a
   // student — the frontend always sets crtMode explicitly for every flow.
-  return Mode[modeParam as keyof typeof Mode] ?? Mode.show;
+  switch (urlParams.get("crtMode")) {
+    case "edit":
+      return Mode.edit;
+    case "solve":
+      return Mode.solve;
+    case "show":
+    default:
+      return Mode.show;
+  }
 };
