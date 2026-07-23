@@ -2,22 +2,11 @@ import { useIntl } from "react-intl";
 import { useCallback, useMemo } from "react";
 import { Language, Submission } from "iframe-rpc-react/src";
 import { TaskType } from "@/api/collimator/generated/models";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 import { EmbeddedAppRef } from "../EmbeddedApp";
 import TaskModal from "./TaskModal";
-
-const getSolveUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/solve`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?mode=solve`;
-    default:
-      return null;
-  }
-};
 
 const SolveTaskModal = ({
   isShown,
@@ -35,7 +24,7 @@ const SolveTaskModal = ({
   solution?: Blob | null;
 }) => {
   const intl = useIntl();
-  const url = useMemo(() => getSolveUrl(taskType), [taskType]);
+  const url = useMemo(() => getEmbeddedAppUrl(taskType, "solve"), [taskType]);
 
   const onSaveSolution = useCallback(
     async (embeddedApp: EmbeddedAppRef) => {
