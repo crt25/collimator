@@ -174,14 +174,16 @@ const isTaskFile = (path: string): boolean =>
  * transparently opens their own `/student/task.ipynb`. That copy is (re)written
  * asynchronously after a reload (e.g. a language change wipes the memory-backed
  * contents and the frontend re-sends the submission), so opening it too early
- * throws "could not find content" (CRT-397). We therefore only open it once it
- * exists, and otherwise do nothing — the task auto-opens as soon as the content
- * is restored, and we must never fall back to opening the template itself.
+ * throws "could not find content" (CRT-397). We therefore open it only if it
+ * already exists; if it does not, the open is DROPPED — there is no waiting or
+ * retrying here. That is safe because the restore flow (loadSubmission) issues
+ * its own open after writing the file, and we must never fall back to opening
+ * the template itself.
  */
 const redirectTaskFileOpensToStudentVersion = (
   documentManager: IDocumentManager,
 ): void => {
-  const openStudentTaskWhenReady = (
+  const openStudentTaskIfAvailable = (
     open: (
       path: string,
       widgetName?: string,
@@ -194,17 +196,21 @@ const redirectTaskFileOpensToStudentVersion = (
   ): void => {
     void documentManager.services.contents
       .get(studentTaskPath, { content: false })
-      .then(() => open(studentTaskPath, widgetName, kernel, options))
+      .then(
+        () => open(studentTaskPath, widgetName, kernel, options),
+        (error) => {
+          // Only contents.get() rejections land here: the student copy has not
+          // been restored yet, so this open is dropped (the restore flow opens
+          // the task itself once the content is written).
+          console.debug(
+            `Ignoring open of ${studentTaskPath}; not available yet`,
+            error,
+          );
+        },
+      )
       .catch((error) => {
-        // The expected case: the student copy has not been restored yet, so we
-        // ignore this open (the task auto-opens once the content is restored).
-        // Contents are memory-backed in JupyterLite so other failures are not
-        // really expected; log a breadcrumb instead of staying fully silent in
-        // case one ever occurs.
-        console.debug(
-          `Ignoring open of ${studentTaskPath}; not available yet`,
-          error,
-        );
+        // reached only if opening the existing file itself failed
+        console.error(`Failed to open ${studentTaskPath}`, error);
       });
   };
 
@@ -220,7 +226,12 @@ const redirectTaskFileOpensToStudentVersion = (
       return originalOpenOrReveal(path, widgetName, kernel, options);
     }
 
-    openStudentTaskWhenReady(originalOpenOrReveal, widgetName, kernel, options);
+    openStudentTaskIfAvailable(
+      originalOpenOrReveal,
+      widgetName,
+      kernel,
+      options,
+    );
     return undefined;
   };
 
@@ -235,7 +246,7 @@ const redirectTaskFileOpensToStudentVersion = (
       return originalOpen(path, widgetName, kernel, options);
     }
 
-    openStudentTaskWhenReady(originalOpen, widgetName, kernel, options);
+    openStudentTaskIfAvailable(originalOpen, widgetName, kernel, options);
     return undefined;
   };
 };
