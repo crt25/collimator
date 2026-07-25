@@ -198,6 +198,8 @@ const main = async (): Promise<void> => {
     jwkEndpoint: `http://localhost:${mockOidcProviderPort}/__oidc__/jwks`,
     userInfoEndpoint: `http://localhost:${mockOidcProviderPort}/__oidc__/userinfo`,
     clientId: mockOidcClientId,
+    // keep the analysis cron jobs running so analyses show up while exploring
+    disableScheduledTasks: false,
   });
   pipeOutput("backend", backendProcess);
 

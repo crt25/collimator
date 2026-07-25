@@ -132,6 +132,9 @@ export const startBackend = (config: {
   jwkEndpoint?: string;
   userInfoEndpoint?: string;
   clientId?: string;
+  // the dev stack keeps the analysis cron jobs running (analyses are part of
+  // what it exists to exercise); e2e tests disable them, see below
+  disableScheduledTasks?: boolean;
 }): ChildProcessWithoutNullStreams => {
   const backendProcess = spawn("yarn", ["start:built:coverage"], {
     env: {
@@ -142,7 +145,8 @@ export const startBackend = (config: {
       // Disable the analysis cron jobs during e2e. They query the DB every
       // minute and collide with the per-test database reset (dropped WITH
       // (FORCE)), causing P1017 connection errors and page-load hangs.
-      DISABLE_SCHEDULED_TASKS: "true",
+      DISABLE_SCHEDULED_TASKS:
+        (config.disableScheduledTasks ?? true) ? "true" : "false",
       // only log errors to reduce overhead in test execution
       LOG_LEVEL: "false",
       STOP_PORT: config.stopPort?.toString(),
