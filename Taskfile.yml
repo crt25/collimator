@@ -581,6 +581,13 @@ tasks:
     cmds:
       - yarn test:nobuild
 
+  dev:mock:
+    desc: Run the app with the mock OIDC provider for interactive testing (no Microsoft account needed). Requires the e2e builds (task test:e2e:build) and the dev database (task db:run).
+    dir: ./e2e
+    deps: [test:e2e:setup]
+    cmds:
+      - yarn dev:stack
+
   test:e2e:build:
     desc: Build all e2e targets
     deps: [test:e2e:build:frontend, test:e2e:build:backend, test:e2e:build:apps]

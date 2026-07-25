@@ -96,8 +96,17 @@ const getUrl = (request: express.Request, fallback: string): string =>
 
     nonce = nonceInUrl as string;
 
+    // honor the redirect_uri of the request (any localhost port may call us,
+    // e.g. the two frontend instances of the dev stack), falling back to the
+    // configured frontend URL
+    const target =
+      typeof redirectUri === "string" &&
+      redirectUri.startsWith("http://localhost")
+        ? redirectUri
+        : `${frontendUrl}/login/oidc-redirect`;
+
     response.redirect(
-      `${frontendUrl}/login/oidc-redirect?code=abc&state=${state}&nonce=${nonceInUrl}&redirect_uri=${redirectUri}`,
+      `${target}?code=abc&state=${state}&nonce=${nonceInUrl}&redirect_uri=${redirectUri}`,
     );
   });
 
