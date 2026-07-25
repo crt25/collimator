@@ -9,7 +9,9 @@ const setHeaders = (res: express.Response): void => {
   res.contentType("application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // the userinfo endpoint is fetched with an Authorization header, which
+  // requires both allowing the header and answering the CORS preflight
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 };
 
 const getPath = (url: string): string => {
@@ -46,6 +48,13 @@ const getUrl = (request: express.Request, fallback: string): string =>
 
   app.use((req, res, next) => {
     setHeaders(res);
+
+    // answer CORS preflight requests for all endpoints
+    if (req.method === "OPTIONS") {
+      res.sendStatus(204);
+      return;
+    }
+
     next();
   });
 

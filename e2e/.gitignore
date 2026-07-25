@@ -10,3 +10,5 @@
 !/playwright/.*/.gitkeep
 
 coverage
+# interactive dev-stack scratch files
+/.devmock/
