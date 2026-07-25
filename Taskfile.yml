@@ -581,8 +581,16 @@ tasks:
     cmds:
       - yarn test:nobuild
 
+  dev:mock:build:
+    desc: Build everything the mock-OIDC dev stack serves (backend, frontend against the http mock provider, scratch, jupyter)
+    deps: [test:e2e:setup]
+    cmds:
+      - task: test:e2e:build:backend
+      - task: test:e2e:build:apps
+      - cd e2e && yarn build:frontend:dev
+
   dev:mock:
-    desc: Run the app with the mock OIDC provider for interactive testing (no Microsoft account needed). Requires the e2e builds (task test:e2e:build) and the dev database (task db:run).
+    desc: Run the app with the mock OIDC provider for interactive testing (no Microsoft account needed). Requires task dev:mock:build once, and the dev database (task db:run).
     dir: ./e2e
     deps: [test:e2e:setup]
     cmds:

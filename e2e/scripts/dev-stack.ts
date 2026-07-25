@@ -6,12 +6,12 @@
  * browser: no Microsoft account is required, and the seeded test users can be
  * used to explore admin, teacher and student flows.
  *
+ * Requires the e2e builds, with the frontend built against the plain-http
+ * mock provider: `yarn build:frontend:dev` (instead of the e2e suite's
+ * `yarn build:frontend`, which targets the https URL that Playwright
+ * intercepts in-page).
+ *
  * Differences from the Playwright-managed stack (scripts/e2e-testing.ts):
- * - The browser-facing OIDC endpoints are served over HTTPS on port 3880
- *   (self-signed certificate) because openid-client refuses plain-HTTP
- *   issuers. The e2e suite never needs this: Playwright intercepts those
- *   requests in-page. On first use, open https://localhost:3880/user once and
- *   accept the certificate warning so the frontend's fetches succeed.
  * - TWO frontend instances are started (default ports 3210 and 3211) against
  *   the same backend. Browser storage is per-origin, so the second instance
  *   provides an isolated session — e.g. a teacher on one port and a student
@@ -19,17 +19,13 @@
  * - The database is (re)seeded with the e2e fixtures. The active OIDC
  *   identity can be switched at runtime:
  *     curl -X POST http://localhost:3888/user -d '{"oidcSub":"...","email":"...","name":"..."}'
+ * - The backend keeps its analysis cron jobs running.
  *
  * Usage: yarn dev:stack (see package.json), or task dev:mock from the repo
  * root. Ports and the database name can be overridden via the environment
  * variables below.
  */
-import { execFileSync, spawn } from "child_process";
-import { existsSync, mkdirSync, readFileSync } from "fs";
-import https from "https";
-import path from "path";
-import express from "express";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import { spawn } from "child_process";
 import pg from "pg";
 import {
   resetDatabase,
@@ -41,7 +37,6 @@ import {
 } from "../setup/helpers";
 import { mockOidcClientId, mockOidcProviderPort } from "../setup/config";
 
-const oidcHttpsPort = parseInt(process.env.OIDC_HTTPS_PORT ?? "3880", 10);
 const backendPort = parseInt(process.env.BACKEND_PORT ?? "3998", 10);
 const backendStopPort = parseInt(process.env.BACKEND_STOP_PORT ?? "9998", 10);
 const frontendPortA = parseInt(process.env.FRONTEND_PORT ?? "3210", 10);
@@ -51,10 +46,6 @@ const databaseName = process.env.DEV_STACK_DATABASE ?? "collimator-devmock";
 const postgresUrl =
   process.env.DEV_STACK_POSTGRES_URL ??
   "postgresql://postgres:postgres@localhost:5432";
-
-const certificateDirectory = "playwright/.certs";
-const certificateFile = path.join(certificateDirectory, "localhost.crt");
-const keyFile = path.join(certificateDirectory, "localhost.key");
 
 // The stack (re)seeds the database it is pointed at, so refuse to run against
 // anything that does not look like a dedicated scratch database.
@@ -84,75 +75,6 @@ const ensureDatabaseExists = async (): Promise<void> => {
   await client.end();
 };
 
-const ensureCertificate = (): void => {
-  if (existsSync(certificateFile) && existsSync(keyFile)) {
-    return;
-  }
-
-  mkdirSync(certificateDirectory, { recursive: true });
-
-  // openssl ships with git on Windows and is preinstalled on Linux/macOS
-  execFileSync("openssl", [
-    "req",
-    "-x509",
-    "-newkey",
-    "rsa:2048",
-    "-nodes",
-    "-keyout",
-    keyFile,
-    "-out",
-    certificateFile,
-    "-days",
-    "3650",
-    "-subj",
-    "/CN=localhost",
-    "-addext",
-    "subjectAltName=DNS:localhost,IP:127.0.0.1",
-  ]);
-
-  console.log(`Generated self-signed certificate in ${certificateDirectory}`);
-};
-
-/**
- * openid-client refuses plain-HTTP issuers, so the browser-facing OIDC
- * endpoints are exposed through this HTTPS proxy. The x-forwarded-url header
- * makes the mock server advertise the proxy's URL as the issuer.
- */
-const startOidcHttpsProxy = (): void => {
-  const app = express();
-
-  app.use(
-    createProxyMiddleware({
-      target: `http://localhost:${mockOidcProviderPort}`,
-      changeOrigin: true,
-      on: {
-        proxyReq: (proxyReq) => {
-          // origin only: the mock server uses this as the base URL for the
-          // issuer and all advertised endpoints
-          proxyReq.setHeader(
-            "x-forwarded-url",
-            `https://localhost:${oidcHttpsPort}`,
-          );
-        },
-      },
-    }),
-  );
-
-  https
-    .createServer(
-      {
-        cert: readFileSync(certificateFile),
-        key: readFileSync(keyFile),
-      },
-      app,
-    )
-    .listen(oidcHttpsPort, () => {
-      console.log(
-        `OIDC HTTPS proxy listening on https://localhost:${oidcHttpsPort}`,
-      );
-    });
-};
-
 const pipeOutput = (name: string, child: ReturnType<typeof spawn>): void => {
   child.stdout?.on("data", (data: Buffer) =>
     process.stdout.write(`[${name}] ${data.toString()}`),
@@ -164,7 +86,6 @@ const pipeOutput = (name: string, child: ReturnType<typeof spawn>): void => {
 
 const main = async (): Promise<void> => {
   await ensureDatabaseExists();
-  ensureCertificate();
 
   console.log(`Resetting and seeding database ${databaseName}...`);
   const reset = resetDatabase({ databaseUrl, seedingMode: "e2e" });
@@ -184,11 +105,8 @@ const main = async (): Promise<void> => {
   const oidcProcess = startMockOidcServer({
     port: mockOidcProviderPort,
     frontendHostname: `http://localhost:${frontendPortA}`,
-    url: `https://localhost:${oidcHttpsPort}`,
   });
   pipeOutput("oidc", oidcProcess);
-
-  startOidcHttpsProxy();
 
   const backendProcess = startBackend({
     databaseUrl,
@@ -231,16 +149,14 @@ const main = async (): Promise<void> => {
 
    Backend:              http://localhost:${backendPort}/api-json
    Mock OIDC:            http://localhost:${mockOidcProviderPort}
-   OIDC HTTPS proxy:     https://localhost:${oidcHttpsPort}
-
- One-time browser setup: open https://localhost:${oidcHttpsPort}/user and
- accept the self-signed-certificate warning.
 
  Sign in via "login" on the frontend; the mock provider authenticates the
- currently configured identity (default: seeded admin Jane Doe). Switch it:
+ currently configured identity. Switch it, e.g. to the seeded admin:
 
    curl -X POST http://localhost:${mockOidcProviderPort}/user \\
-        -d '{"oidcSub":"456","email":"richard@feynman.com","name":"Richard Feynman"}'
+        -d '{"oidcSub":"1234","email":"jane@doe.com","name":"Jane Doe"}'
+
+ The seeded admin's key-pair password is "hunter2" (see e2e/setup/seeding).
 
  Stop with Ctrl+C.
 =========================================================================

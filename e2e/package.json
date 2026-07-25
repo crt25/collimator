@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "eslint \"./**/*.ts\" --fix",
     "dev:stack": "dotenv -- tsx scripts/dev-stack.ts",
+    "build:frontend:dev": "tsx scripts/build-frontend-dev.ts",
     "build:frontend": "tsx scripts/build-frontend.ts",
     "build:backend": "cd ../backend && yarn build:coverage",
     "build:scratch": "tsx scripts/build-scratch.ts",

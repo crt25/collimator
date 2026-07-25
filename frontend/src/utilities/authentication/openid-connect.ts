@@ -36,9 +36,20 @@ export const getOpenIdConnectConfig =
       return config;
     }
 
+    const serverUrl = new URL(openIdConnectMicrosoftServer);
+
     const fetchedConfig = await client.discovery(
-      new URL(openIdConnectMicrosoftServer),
+      serverUrl,
       openIdConnectMicrosoftClientId,
+      undefined,
+      undefined,
+      // openid-client only permits https issuers by default. Allow plain-http
+      // issuers when the configured server is http, which is only the case
+      // for local development against the mock OIDC provider — production
+      // issuers are always https.
+      serverUrl.protocol === "http:"
+        ? { execute: [client.allowInsecureRequests] }
+        : undefined,
     );
 
     config = fetchedConfig;
