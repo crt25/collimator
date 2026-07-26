@@ -163,6 +163,37 @@ attributed to them, polluting another lesson's data and teacher reports.
   student CAN still submit to their own lesson, no DB assertion that no row was written, and no
   coverage of the `/student-activity` sibling.
 
+### B8 — SECURITY: any student could read ANY task's REFERENCE SOLUTIONS (the answer key)  ·  HIGH  ·  FIXED
+A student authenticated for one anonymous lesson could read **any task in the installation** —
+including another teacher's **private** task — and fetch its **reference solutions with the solution
+files base64-encoded** (the answers).
+- **Verified** (`.devmock/sec-student-reads.mts`, `.devmock/sec-refsol-content.mts`): student joined
+  only the admin's lesson, probing teacher Richard's separate private task (`isPublic: false`,
+  `creatorId: 10001`):
+  - `GET /tasks/2` → 200 · `GET /tasks/2/download` → 200
+  - `GET /tasks/2/with-reference-solutions` → **200**, `referenceSolutions[].solution` documented in
+    `task-reference-solution.dto.ts` as *"The associated solution encoded in base64"*, plus `tests`.
+  - `GET /classes/2/sessions/2/progress` (other teacher's lesson progress) → **200**
+- **Root cause:** those endpoints are `@Roles([ADMIN, TEACHER, NonUserRoles.STUDENT])`
+  (`tasks.controller.ts:164/188/225`) with **no per-object authorization** — no check that the task
+  belongs to a lesson the student participates in, and no `isPublic` check. Read-side twin of B6.
+- **Why it matters:** a student can pull the reference solution for the task they are being graded
+  on (ids are small sequential integers), defeating assessment.
+- **Matrix note:** the matrix blesses *Anyone · View/Download · Task · ✅* ("Anyone" = any
+  authenticated user incl. students), so plain task view/download is intended; the answer key is not.
+- **USER DECISION (2026-07-26): "students shouldn't be able to read reference solutions" → FIXED.**
+  Branch `security/reference-solutions-not-student-readable`, commit `8714acc2` (not pushed):
+  `@Roles([ADMIN, TEACHER, STUDENT])` → `@Roles([ADMIN, TEACHER])` on `findOneWithReferenceSolutions`.
+  - **Safety check first:** all four consumers of `useTaskWithReferenceSolutions` are teacher/admin
+    pages (`pages/task/[taskId]/{detail,reference-solutions}` + session-scoped counterparts); the
+    student solve page uses only `useTask`/`useTaskFile`. No student flow regresses. tsc/eslint clean
+    (remaining tsc errors are pre-existing, in vendored antlr grammars).
+  - E2E `e2e/tests/sessions/reference-solutions-not-student-readable.spec.ts`: student → **403** for
+    reference solutions, **plus a positive control** that they still get 200 for the task itself.
+- **STILL OPEN inside B8 (not fixed):** a student can also read **another teacher's lesson progress**
+  (`GET /classes/:c/sessions/:s/progress` → 200) and any task's file. The progress read still looks
+  wrong; the task read is arguably blessed by the matrix. Needs a separate decision.
+
 ### B7 — CRT-399's kernel guard is bypassed on the grading path  ·  MEDIUM  ·  confidence: MEDIUM-HIGH
 Resolves the long-open **F2** ("kernel-select dialog appears despite CRT-399") from session 1, which I
 could not previously explain and had parked as possibly headless-only.
