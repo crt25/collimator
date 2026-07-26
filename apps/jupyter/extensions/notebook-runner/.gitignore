@@ -17,6 +17,9 @@ notebook_runner/_version.py
 ui-tests/test-results/
 ui-tests/playwright-report/
 
+# jest junit report (emitted by the @jupyterlab/testutils base config)
+junit.xml
+
 # OSX files
 .DS_Store
 
