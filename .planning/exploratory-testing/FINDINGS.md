@@ -114,3 +114,60 @@ works because it uses a fresh page. Affects anyone fetching two session links fr
   user; plan is to probe each capability at both UI and API layers and classify each cell as
   enforced / UI-leak-only / backend-gap. F5 is the first such cell.
 - FR locale across the whole student flow; anonymize-names dial on a private lesson.
+
+---
+
+## Round 3 — UI bugs affecting teachers' understanding of student data (2026-07-27)
+
+Focus per Pierluca: UI bugs that affect a student's performance or a teacher's
+understanding of student data. Static analysis this round (live browser
+exploration deferred so it does not contend with the running Jupyter grading
+investigation on the shared machine).
+
+### B13 — CONFIRMED, FIXED — teacher progress/analysis views render BLANK on a load error
+Branch `bugfix/multiswr-suppresses-later-errors` (off origin/main), fix + jest test.
+
+`MultiSwrContent` decided which load errors to surface by filtering the
+already-compacted `nonLoadingErrors` array and then indexing the ORIGINAL
+`data`/`isLoading` arrays with the compacted index. Those indices only line up
+when every failing source precedes every succeeding one. So an error on a
+*later* source, after an earlier source had resolved, was matched against the
+wrong data slot and dropped; with no error shown and not all data present the
+component rendered `null`.
+
+Impact: this is exactly the shape of the teacher progress view (`ProgressList`,
+`data={[klass, session, solutions]}`): class + lesson load, student solutions
+fail -> teacher sees a BLANK panel, no error, no spinner. Indistinguishable
+from "no students have submitted yet". Same for every analysis dashboard
+(`Analyzer`, `CodeView`, `DissimilarityAnalysis`, `DissimilarPairs`), which all
+load the student data as a later source. Reproduced deterministically with a
+jest test (later-source failure fails pre-fix, first-source + stale-data cases
+pass). Corroborated independently: the B3 sub-agent flagged the same indexing
+bug in passing.
+
+### Checked and cleared this round (no bug)
+- `getTaskStatus` (task-progress.tsx): correctly prefers a submitted solution's
+  tests over activity-analysis tests, with a documented rationale; complete iff
+  tests exist and all pass. Sound.
+- `findSolutionToDisplay`: returns the most recent solution by createdAt. Sound.
+- `findAnalysisToDisplay`: prefers a non-reference (real) analysis over a
+  reference/starred one. Reference solutions do not masquerade as student work.
+- `useStudentProgress`: anonymous lessons show only active (acting) students by
+  ad-hoc identity - intended (CRT-439), not a leak. Non-anonymous seed the
+  roster. Correct.
+- Subtask filtering (`useSubtaskAnalyses`/`useSubtasks`): component ids are
+  strings end-to-end, Select values are strings - no string/number mismatch.
+
+### Live-exploration checklist (do once the Jupyter agent frees the machine)
+Bring up `task dev:mock` (separate DB `collimator-devmock` + ports
+3210/3211/3888/3998; does not collide with e2e). Drive as teacher + student:
+1. Progress view with a mid-load API failure -> confirm B13 fix shows an error,
+   not a blank (needs the fix branch built).
+2. Analysis dashboards: does a point/row map to the correct student? scatter
+   axes/labels correct? subtask switch updates the plot?
+3. Student solution detail + preview: does the preview match the student's
+   actual latest submission? (activity-vs-preview parity was OK earlier for
+   Scratch; recheck after edits.)
+4. Session/lesson student counts and status badges vs. actual DB state.
+5. Number/percentage displays in reports for off-by-one or rounding that would
+   mislead (e.g. "X of Y completed").
