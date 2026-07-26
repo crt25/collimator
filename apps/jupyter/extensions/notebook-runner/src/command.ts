@@ -1,22 +1,8 @@
-import { JupyterFrontEnd } from "@jupyterlab/application";
-import { IDocumentManager } from "@jupyterlab/docmanager";
-import { NotebookActions, NotebookPanel } from "@jupyterlab/notebook";
 import { Contents, ContentsManager } from "@jupyterlab/services";
-import { NotebookRunnerState } from "./notebook-runner-state";
-import {
-  executePythonInKernel,
-  withTimeout,
-  writeJsonToVirtualFilesystem,
-} from "./utils";
-import { OtterKernelNotReadyError } from "./errors/kernel-errors";
+import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
+import { executePythonInKernel, writeJsonToVirtualFilesystem } from "./utils";
 
 const logModule = "[Jupyter][command]";
-
-/**
- * The notebook is opened against the already-prepared otter kernel, so nothing
- * here needs to boot a kernel; this only has to outlast opening a document.
- */
-const notebookReadyTimeoutMs = 60_000;
 
 export const runAssignCommand = "notebook-runner:run-assign";
 export const runGradingCommand = "notebook-runner:run-grading";
@@ -26,77 +12,65 @@ export enum CommandType {
   RunNotebook = "run_notebook",
 }
 
+interface NotebookCell {
+  cell_type: string;
+  source: string | string[];
+}
+
+const isNotebookContent = (
+  content: unknown,
+): content is { cells: NotebookCell[] } =>
+  typeof content === "object" &&
+  content !== null &&
+  Array.isArray((content as { cells?: unknown }).cells);
+
+/**
+ * Run a single notebook code cell against the grading kernel.
+ *
+ * This is the panel-free equivalent of one step of `NotebookActions.runAll`:
+ * the cell is sent as its own top-level `execute_request`, so it runs in the
+ * kernel's user namespace exactly as if a person had run the cell — and, just
+ * as importantly, in the *same* namespace the otter checks are later evaluated
+ * against.
+ *
+ * Unlike `executePythonInKernel`, an error in the cell is deliberately not
+ * thrown: a student cell that raises is a failing answer, not a broken run, so
+ * — exactly like "Run All Cells" in the notebook UI — execution has to carry on
+ * to the remaining cells and the otter checks.
+ */
+const runNotebookCodeCell = async (
+  kernel: IKernelConnection,
+  source: string,
+): Promise<void> => {
+  await kernel.requestExecute({ code: source }).done;
+};
+
+/**
+ * Execute a notebook against the already-prepared otter kernel and leave the
+ * accumulated grading results pickled at `binaryResultsPath`.
+ *
+ * No notebook panel is opened. Grading only ever needed the notebook's code to
+ * run in the grading kernel's namespace so that the embedded `grader.check(...)`
+ * calls record their results; opening a hidden `DocumentWidget` to achieve that
+ * is what used to hang. Under headless JupyterLite a panel that adopts an
+ * existing kernel never settles its `sessionContext.ready`, so the wait between
+ * a student pressing Submit and their work being graded never returned. Running
+ * the cells directly on the kernel removes that fragile widget entirely.
+ *
+ * The graceful-failure guarantee is unchanged: the kernel handed in here is
+ * obtained through `NotebookRunnerState.getOtterKernel`, whose wait is bounded
+ * and surfaces `OtterKernelNotReadyError` to the user if preparation stalls.
+ */
 export const executeRunNotebookCommand = async (
-  app: JupyterFrontEnd,
-  state: NotebookRunnerState,
-  notebookPanel: NotebookPanel | null,
+  kernel: IKernelConnection,
   contentsManager: ContentsManager,
-  documentManager: IDocumentManager,
   notebookPath: string,
   binaryResultsPath: string,
 ): Promise<void> => {
-  // Take the otter kernel *before* opening the notebook so that it can be
-  // named as the panel's kernel right away. Opened without one, the panel
-  // auto-starts a kernel of its own - a second full Pyodide boot, several
-  // minutes of it - which the changeKernel call below then discards anyway.
-  // Worse, the wait for that kernel is unbounded: `sessionContext.ready` never
-  // settles when the session context cannot pick a kernel, so a student's
-  // submission would sit on a dead spinner forever.
-  const otterKernel = await state.getOtterKernel();
-  console.debug(`${logModule} Reusing existing otter kernel:`, otterKernel);
-
-  console.debug(`${logModule} Opening notebook at path:`, notebookPath);
-
-  state.allowNextNotebookInParallel = true;
-  const newNotebookPanel = documentManager.open(
-    notebookPath,
-    "Notebook",
-    { id: otterKernel.id, name: otterKernel.name },
-    {
-      activate: false,
-      ref: null,
-    },
-  ) as NotebookPanel | undefined;
-
-  if (!newNotebookPanel) {
-    throw new Error(`Notebook at path ${notebookPath} could not be opened`);
-  }
-
-  // focus the old notebook
-  if (notebookPanel) {
-    app.shell.activateById(notebookPanel.id);
-  }
-
-  // Make sure the user does not see the new notebook panel
-  newNotebookPanel.hide();
-
-  // Wait for it to be ready.
-  //
-  // Bounded on purpose: `sessionContext.ready` is one of the promises that is
-  // never settled when the session context cannot settle on a kernel, and this
-  // is the last wait between a student pressing Submit and their work being
-  // graded. Unbounded, it leaves them on a spinner that never stops and offers
-  // no way out; bounded, the failure reaches them as a message they can act on.
-  await withTimeout(
-    Promise.all([
-      newNotebookPanel.context.ready,
-      newNotebookPanel.sessionContext.ready,
-    ]),
-    notebookReadyTimeoutMs,
-    () => {
-      console.error(
-        `${logModule} Notebook at ${notebookPath} was not ready after ${notebookReadyTimeoutMs}ms`,
-      );
-
-      return new OtterKernelNotReadyError();
-    },
-  );
-
-  // copying the notebook to the virtual filesystem on the kernel in the same location
-  console.debug(
-    `${logModule} Copying notebook to virtual filesystem before running`,
-  );
-  let notebook: Contents.IModel | null = null;
+  // Read the notebook that the grade command has just saved to the browser
+  // contents manager, and give the kernel its own copy on the virtual
+  // filesystem to grade against.
+  let notebook: Contents.IModel;
   try {
     notebook = await contentsManager.get(notebookPath, { content: true });
   } catch (error) {
@@ -105,23 +79,20 @@ export const executeRunNotebookCommand = async (
     );
   }
 
-  await writeJsonToVirtualFilesystem(
-    otterKernel,
-    notebookPath,
-    notebook.content,
-  );
+  await writeJsonToVirtualFilesystem(kernel, notebookPath, notebook.content);
 
-  await newNotebookPanel.sessionContext.changeKernel({
-    id: otterKernel.id,
-    name: otterKernel.name,
-  });
+  if (!isNotebookContent(notebook.content)) {
+    throw new Error(`Notebook at ${notebookPath} has no cells to execute`);
+  }
 
-  // get parent directory of the notebook
+  // Enter otter grading mode from the notebook's own directory so that the
+  // `grader.check(...)` calls embedded in the cells resolve their tests against
+  // the ones unpacked next to it.
   const parentDir = notebookPath.split("/").slice(0, -1).join("/");
-  console.debug(`${logModule} Change working directory to `, parentDir);
+  console.debug(`${logModule} Change working directory to`, parentDir);
 
   await executePythonInKernel({
-    kernel: otterKernel,
+    kernel,
     code: `
 import os
 os.chdir("${parentDir}")
@@ -131,23 +102,30 @@ nb.init_grading_mode("./tests")
 `,
   });
 
-  // Run all cells silently
-  console.debug(
-    `${logModule} Running all cells in the new notebook:`,
-    newNotebookPanel.title.label,
-  );
+  console.debug(`${logModule} Running notebook cells for`, notebookPath);
 
-  await NotebookActions.runAll(
-    newNotebookPanel.content,
-    newNotebookPanel.context.sessionContext,
-  );
+  for (const cell of notebook.content.cells) {
+    if (cell.cell_type !== "code") {
+      continue;
+    }
 
-  console.debug(
-    `${logModule} All cells executed in the new notebook. Now running tests...`,
-  );
+    const source = Array.isArray(cell.source)
+      ? cell.source.join("")
+      : cell.source;
 
+    if (source.trim().length === 0) {
+      continue;
+    }
+
+    await runNotebookCodeCell(kernel, source);
+  }
+
+  console.debug(`${logModule} All cells executed. Now running tests...`);
+
+  // Run any test the notebook did not already check, then pickle the
+  // accumulated results for the otter run to reuse as its precomputed results.
   await executePythonInKernel({
-    kernel: otterKernel,
+    kernel,
     code: `
 from otter.execute import Checker
 from glob import glob
@@ -163,23 +141,8 @@ with open("${binaryResultsPath}", "wb") as f:
     `,
   });
 
-  console.debug(`${logModule} Tests executed, saving notebook...`);
-
-  await newNotebookPanel.context.save();
-
-  console.debug(`${logModule} Notebook saved. Closing notebook...`);
-
-  const waitUntilClosed = new Promise<void>((resolve) => {
-    newNotebookPanel.disposed.connect(() => {
-      console.debug(`${logModule} Closed notebook that was run`);
-      resolve();
-    });
-  });
-
-  newNotebookPanel.close();
-
-  // wait until the widget is closed
-  await waitUntilClosed;
-
-  console.debug(`${logModule} Notebook closed.`);
+  console.debug(
+    `${logModule} Tests executed, results written to`,
+    binaryResultsPath,
+  );
 };

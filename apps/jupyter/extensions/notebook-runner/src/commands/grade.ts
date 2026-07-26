@@ -1,7 +1,6 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { INotebookTracker, NotebookPanel } from "@jupyterlab/notebook";
 import { Contents, ContentsManager } from "@jupyterlab/services";
-import { IDocumentManager } from "@jupyterlab/docmanager";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { executeRunNotebookCommand, runGradingCommand } from "../command";
 import { EmbeddedPythonCallbacks } from "../iframe-api";
@@ -47,7 +46,6 @@ export const registerGradeCommand = (
   app: JupyterFrontEnd,
   notebookTracker: INotebookTracker,
   contentsManager: ContentsManager,
-  documentManager: IDocumentManager,
 ): void => {
   app.commands.addCommand(runGradingCommand, {
     label: "Run Grading",
@@ -112,11 +110,8 @@ with zipfile.ZipFile(autograder_path, 'r') as zip_ref:
         );
 
         await executeRunNotebookCommand(
-          app,
-          state,
-          notebookTracker.currentWidget,
+          kernel,
           contentsManager,
-          documentManager,
           EmbeddedPythonCallbacks.studentTaskLocation,
           kernelPaths.results,
         );

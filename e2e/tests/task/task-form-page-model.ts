@@ -57,8 +57,8 @@ export class TaskFormPageModel extends FormPageModel {
       .click();
   }
 
-  async saveTask(): Promise<void> {
-    await this.taskEditModal.save();
+  async saveTask(timeoutMs?: number): Promise<void> {
+    await this.taskEditModal.save(timeoutMs);
   }
 
   async setTaskType(type: string): Promise<void> {

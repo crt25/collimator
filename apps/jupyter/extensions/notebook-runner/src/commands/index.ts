@@ -18,12 +18,6 @@ export const registerCommands = (
   const state = new NotebookRunnerState(app, documentManager, notebookTracker);
 
   registerAssignCommand(state, app, notebookTracker, contentsManager);
-  registerGradeCommand(
-    state,
-    app,
-    notebookTracker,
-    contentsManager,
-    documentManager,
-  );
+  registerGradeCommand(state, app, notebookTracker, contentsManager);
   registerRunAllCellsCommand(state, app, notebookTracker, sendRequest);
 };

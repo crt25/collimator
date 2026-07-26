@@ -13,6 +13,11 @@ export const createTask = async (
     description: string;
     template: TaskTemplateWithSolutions;
   },
+  // Saving some task types runs a pipeline inside the embedded editor before the
+  // modal closes (a Jupyter save runs otter assign in JupyterLite, which is
+  // minutes on a cold kernel). Callers whose editor is slower than the default
+  // pass a larger budget here.
+  saveTimeoutMs?: number,
 ): Promise<{
   id: number;
 }> => {
@@ -38,7 +43,7 @@ export const createTask = async (
     buffer: await task.template.template(),
   });
 
-  await page.saveTask();
+  await page.saveTask(saveTimeoutMs);
   await page.submitButton.click();
 
   await pwPage.goto(`${baseUrl}/task`);

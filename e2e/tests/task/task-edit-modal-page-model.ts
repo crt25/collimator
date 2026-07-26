@@ -30,15 +30,20 @@ export class TaskEditModalPageModel {
     await this.importButton.click();
   }
 
-  async save(): Promise<void> {
+  async save(timeoutMs = 60_000): Promise<void> {
     await this.saveButton.click();
     // The save handler runs an async round-trip to the embedded editor and only
     // then closes the modal (setIsShown(false) after onSave resolves). Wait for
-    // the modal — and the embedded scratch iframe it contains — to detach before
+    // the modal — and the embedded editor iframe it contains — to detach before
     // returning. Otherwise the caller's next interaction with the underlying
     // task form (e.g. clicking its submit button) races the still-mounted iframe,
     // which sits over the form and intercepts the pointer events until timeout.
-    await this.modal.waitFor({ state: "detached", timeout: 60_000 });
+    //
+    // The budget is a parameter because a Jupyter save is not a quick round-trip:
+    // it runs the otter assign pipeline inside JupyterLite (boot Pyodide, install
+    // otter, generate the student notebook and autograder), which is minutes on a
+    // cold kernel — far past the default that suffices for Scratch.
+    await this.modal.waitFor({ state: "detached", timeout: timeoutMs });
   }
 
   async cancel(): Promise<void> {
