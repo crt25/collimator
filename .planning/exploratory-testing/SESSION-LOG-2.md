@@ -412,3 +412,79 @@ Ran the missing flow (a student who **edits over time**, not just submits):
 - **`StudentActivity`=0** in this flow — the e2e submission path posts final solutions, not
   incremental activities. So the "activities vs previews" discrepancy check needs a flow that emits
   activities (student editing over time), not just final submits. Parked as a follow-up flow.
+
+---
+
+## Consolidation pass — every bug branch now carries its own fix
+
+Pierluca's instruction: a branch holding a failing test but no fix is not finished work. Each branch
+below now contains BOTH the demonstrator and the fix, verified in both directions where possible.
+
+| Branch | Finding | Test | Fix | Verification |
+|---|---|---|---|---|
+| `security/reference-solutions-not-student-readable` | B8 | ✅ | ✅ | 6 passed |
+| `bugfix/student-cross-session-submission` | B6 | ✅ | ✅ (consolidated from `security/student-session-scope-authorization`) | 201 → 403; 6 passed; 8 unit tests |
+| `bugfix/session-update-locks-students-out` | B9 | ✅ | ✅ | fails 2× without fix, 9 passed with |
+| `bugfix/public-task-editable-by-others` | B10 | ✅ | ✅ | fails 1× without fix, 7 passed with |
+| `bugfix/student-detail-nickname-nan` | B1 | ✅ | delegated | — |
+| `bugfix/friendly-fetch-error-message` | B3 | ✅ | delegated | — |
+| `test/jupyter-student-flow` | B5 | ✅ | delegated | — |
+
+Note: `security/student-session-scope-authorization` is now superseded — its single commit was
+cherry-picked onto `bugfix/student-cross-session-submission`. Left in place rather than deleted.
+
+### B9 — RESOLVED (was: lesson edit locks students out)
+Confirmed against the access-rights matrix, which is unambiguous:
+
+| Admin/Teacher | Update | change name/description, add tasks | students | ✅ |
+| Admin/Teacher | Update | remove tasks, change sharing type | students | ❌ |
+
+The rule existed **only in the frontend** (`SessionForm`'s `EditingMode.restricted` sets
+`canDeleteTasks: false` and `canChangeSharingType: false` once `session.hasStudents`). The API
+enforced nothing. Because the matrix settles the behaviour, this needed no product decision after
+all — the earlier "hard-409 vs confirm-and-cascade" parking was unnecessary.
+
+Fix: `SessionsService.update` now rejects with 409. The array form of `$transaction` cannot express a
+conditional, so the method became an **interactive** transaction — which also closes a real race: the
+student set is now read in the same transaction that writes the update, so a student joining
+in-between cannot be locked out by the very update being guarded.
+
+Reversible decision taken (flag for review): plain `ConflictException`, not an `ApiError` with an
+`ErrorCode`. The frontend cannot reach this path, so there is no message to map. Add an `ErrorCode`
+if it ever needs to surface in the UI.
+
+### B10 — NEW, HIGH — public task editable out from under other teachers' lessons
+`TasksService.deleteById` refuses to delete a **public** task that another user's lesson depends on
+(`TaskInOtherUsersLessonError` → 409 `TASK_IN_OTHER_USERS_LESSON`). `TasksService.update` had **no
+equivalent guard**.
+
+Consequence: the other teacher's lesson silently starts serving a different exercise. Worse, `update`
+deletes every reference solution not present in the request, so their reference solutions go too.
+They receive no signal of any kind.
+
+Evidence — the asymmetry is a straight omission, not a deliberate choice:
+- `deleteById` calls `isTaskInUseByOtherUsersTx`; `update` calls only `isTaskInUseTx`.
+- The frontend **already ships a translated message** for `TASK_IN_OTHER_USERS_LESSON`
+  (`frontend/src/errors/errorMessages.ts`), so surfacing it from the update path needed no frontend
+  change at all.
+- Matrix rows: `Admin | Update | Public task | own w/ students OR anyone else's | ❌` and the
+  identical Delete row. Delete was enforced; Update was not.
+
+Demonstrator: `e2e/tests/task/public-task-in-other-users-lesson.spec.ts`. It creates the public task
+through the API (the task form does not expose the public flag) and asserts the **refused deletion as
+a positive control** — without it, a setup that failed to link the task to another teacher's lesson
+would pass vacuously. Confirmed `Expected 409, Received 200` before the fix; 7 passed after.
+
+Inherited behaviour worth a look, NOT introduced by this fix: `isTaskInUseByOtherUsersTx` treats a
+null `creatorId` (a task orphaned by a deleted user) as "every lesson counts", so an orphaned public
+task used anywhere can be neither deleted nor now edited.
+
+### Open question for Pierluca (do not act without an answer)
+The matrix row "Admin | Update | Public task | **anyone else's** | ❌" has two readings:
+- **(b) used in someone else's lesson** — this is what `deleteById` implements, and what B10 fixes.
+- **(a) created by someone else** — under this reading there is a *second*, separate gap:
+  `AuthorizationService.isAdminOrCreatorOfTask` returns `true` for any ADMIN unconditionally, so an
+  admin can edit or delete a task created by another user even when no lesson uses it.
+
+Reading (a) is **not** obviously a bug — admins are super-users in essentially every other matrix
+row, and the Private-task rows carry no "own" qualifier. Left unimplemented pending an answer.
