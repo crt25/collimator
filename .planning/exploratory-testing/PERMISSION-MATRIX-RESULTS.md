@@ -124,3 +124,25 @@ cross-user isolation and in-use protections — the parts that matter for safety
 - **psql echoes the `INSERT 0 1` tag even under `-tA`;** capture `RETURNING` ids as the first line
   only (`-q` + `.split(\n)[0]`), or a follow-up statement is silently malformed (caused 2 false
   FLAGs before it was caught by verifying the row actually existed).
+
+---
+
+## Matrix coverage closed out
+
+The two cells left unprobed earlier — `Admin | Delete | Any user | class or lessons | ❌` and
+`Admin | Delete | Any user | tasks | ✅ (public orphaned; private removed)` — turned out to be
+already enforced AND already covered by `backend/test/user-block-orphan.e2e-spec.ts`
+(SVC-01 blocks on owned classes, SVC-02 orphans public / soft-deletes private tasks).
+
+Verified rather than assumed: **11 passed**.
+
+Run with an explicit database URL — the packaged `dotenv -c --` wrapper did not resolve
+`DATABASE_URL` when invoked through `npx` outside the yarn script.
+
+Two Task-section cells that were previously read as "enforced" were not:
+- `Update | Public task | anyone else's` → **gap, fixed** (see B10 in SESSION-LOG-2.md).
+- `Update/Delete | ... | with students` → enforced via `TaskInUseByClassOrLessonWithStudentsError`.
+
+Remaining ambiguity in the matrix (needs Pierluca, not testable either way until resolved): whether
+"anyone else's" means "used in someone else's lesson" or "created by someone else". See the open
+question at the end of SESSION-LOG-2.md.
