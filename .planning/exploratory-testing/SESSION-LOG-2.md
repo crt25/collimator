@@ -190,9 +190,15 @@ files base64-encoded** (the answers).
     (remaining tsc errors are pre-existing, in vendored antlr grammars).
   - E2E `e2e/tests/sessions/reference-solutions-not-student-readable.spec.ts`: student → **403** for
     reference solutions, **plus a positive control** that they still get 200 for the task itself.
-- **STILL OPEN inside B8 (not fixed):** a student can also read **another teacher's lesson progress**
-  (`GET /classes/:c/sessions/:s/progress` → 200) and any task's file. The progress read still looks
-  wrong; the task read is arguably blessed by the matrix. Needs a separate decision.
+- **CORRECTION — the "progress leak" I reported is NOT a leak.** I initially listed
+  `GET /classes/:c/sessions/:s/progress` → 200 on another teacher's lesson as part of this finding.
+  On inspection `getSessionProgress` passes `student.id` to the service, so it returns **only the
+  caller's own** progress; probing it against the other teacher's lesson returned
+  `{"id":2,"taskProgress":[]}` — an empty payload, no other students' data. The 200 is the same
+  by-design anonymous-lesson visibility as the session read. Withdrawn; no action.
+- **STILL OPEN inside B8 (not fixed):** a student can read any task's metadata and file
+  (`GET /tasks/:id`, `/tasks/:id/download`) regardless of participation. Arguably blessed by the
+  matrix's *Anyone · View/Download · Task · ✅*, so left alone pending a decision.
 
 ### B7 — CRT-399's kernel guard is bypassed on the grading path  ·  MEDIUM  ·  confidence: MEDIUM-HIGH
 Resolves the long-open **F2** ("kernel-select dialog appears despite CRT-399") from session 1, which I
