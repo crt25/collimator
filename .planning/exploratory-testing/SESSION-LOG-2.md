@@ -488,3 +488,23 @@ The matrix row "Admin | Update | Public task | **anyone else's** | ❌" has two 
 
 Reading (a) is **not** obviously a bug — admins are super-users in essentially every other matrix
 row, and the Private-task rows carry no "own" qualifier. Left unimplemented pending an answer.
+
+---
+
+## Decisions resolved by Pierluca (2026-07-26)
+
+- **B11 (copy lesson into its own class)** — REJECTED. Pierluca considers the
+  matrix row `Copy | my class -> itself | ❌` a misinterpretation on his side;
+  the current behaviour (copy into any class, including the source) is correct.
+  The demonstrator spec and the `bugfix/session-copy-to-same-class` branch were
+  deleted. Do not implement.
+
+- **B10 public-task "anyone else's" ambiguity** — the "used in someone else's
+  lesson" reading (what was implemented, mirroring the existing delete guard) is
+  confirmed correct. The alternative "created by someone else" reading is NOT a
+  bug: admins are super-users. No further change. (Pierluca asked for
+  clarification on the finding itself — see the B10 write-up above and the
+  clarification captured for the chat reply.)
+
+- **JUPYTER-OFFLINE (Pyodide/PyPI fetched at runtime)** — acceptable for now;
+  logged in TICKETS-TO-CREATE.md rather than fixed this pass.
