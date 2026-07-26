@@ -163,6 +163,32 @@ attributed to them, polluting another lesson's data and teacher reports.
   student CAN still submit to their own lesson, no DB assertion that no row was written, and no
   coverage of the `/student-activity` sibling.
 
+### B9 — LOCKOUT + data loss: editing a lesson with enrolled students removes their tasks and can lock them out  ·  HIGH  ·  confidence: HIGH
+Two access-rights-matrix cells are unenforced, and together they lock students out of a lesson they
+already joined.
+- **Matrix says (both Admin and Teacher):** *Update · Lesson · "remove tasks, change sharing type" ·
+  with students · ❌* (Anansi remark: "some student has already enrolled into the lesson and may have
+  started doing it").
+- **Actual:** `PATCH /classes/1/sessions/1` with `taskIds: []` and `isAnonymous: false`, on a lesson
+  with **5 enrolled anonymous students** (SQL-verified, none soft-deleted) → **200 ALLOWED**. After it:
+  `SessionTask` soft-deleted (0 tasks left) and `isAnonymous` flipped `true → false`.
+- **Consequence — students are locked out** (verified):
+  - re-joining: `POST /authentication/login/student/anonymous` → **401** (the endpoint requires
+    `session.isAnonymous`, which is now false)
+  - an already-enrolled student's existing token: `GET .../sessions/1` → **403**
+  - (their own `/progress` still returns 200, but the lesson itself is unreachable)
+  So a teacher flipping the sharing type silently evicts every anonymous student who had joined —
+  they cannot get back in, and the tasks they were working on are gone from the lesson.
+- **Root cause:** `sessions.controller.ts::update` only calls `canUpdateSession` (ownership); the
+  service then unconditionally `deleteMany`s the `SessionTask` rows not in `taskIds` and writes
+  `isAnonymous`. Nothing consults enrolled students — unlike the *task* endpoints, which do have an
+  in-use guard (409, verified working in round 2 of the permission matrix).
+- **Repro:** `.devmock/probe-session-update.mjs` + the SQL checks above.
+- **Fix direction (PARKED — needs a product call):** block (or warn about) task removal and sharing-type
+  changes once a lesson has students, mirroring the existing task in-use protection. Whether it should
+  be a hard 409 or a confirm-and-cascade is a UX decision. Renaming/adding tasks should stay allowed
+  (the matrix explicitly permits those with students).
+
 ### B8 — SECURITY: any student could read ANY task's REFERENCE SOLUTIONS (the answer key)  ·  HIGH  ·  FIXED
 A student authenticated for one anonymous lesson could read **any task in the installation** —
 including another teacher's **private** task — and fetch its **reference solutions with the solution
@@ -190,6 +216,21 @@ files base64-encoded** (the answers).
     (remaining tsc errors are pre-existing, in vendored antlr grammars).
   - E2E `e2e/tests/sessions/reference-solutions-not-student-readable.spec.ts`: student → **403** for
     reference solutions, **plus a positive control** that they still get 200 for the task itself.
+  - **VERIFIED against the fixed backend: 6 passed** (backend rebuilt with the fix + e2e-flavour
+    frontend). The fix works end-to-end and the student flow does not regress.
+
+## OPERATIONAL TRAP — the two frontend build flavours (cost me 3 failed runs)
+`frontend/dist` is one build directory shared by both stacks, and the OIDC issuer is **baked in at
+build time**:
+- **dev stack** (`task dev:mock`) needs `yarn build:frontend:dev` → issuer `http://localhost:3888`
+- **e2e suite** (`playwright test`) needs `yarn build:frontend` → `https://localhost:3880` (Playwright
+  intercepts it in-page)
+
+Using the wrong one fails **confusingly**: the login page renders but never reaches the password
+field, so an e2e run dies in `setup:authentication` ("2 failed", the spec never runs) or
+`.devmock/bootstrap-auth.mjs` times out. Always rebuild for the stack you are about to use. Worth
+considering: separate output dirs per flavour, or a startup assertion that the baked issuer matches
+the running provider.
 - **CORRECTION — the "progress leak" I reported is NOT a leak.** I initially listed
   `GET /classes/:c/sessions/:s/progress` → 200 on another teacher's lesson as part of this finding.
   On inspection `getSessionProgress` passes `student.id` to the service, so it returns **only the
