@@ -5,6 +5,12 @@
   "crt.notebookRunner.initFailedTitle": {
     "message": "Échec de l'initialisation"
   },
+  "crt.notebookRunner.kernelNotReadyBody": {
+    "message": "L'environnement Python n'a pas pu être préparé à temps, le notebook n'a donc pas pu être évalué. Votre travail a été enregistré et reste ouvert. Veuillez vérifier votre connexion Internet et réessayer."
+  },
+  "crt.notebookRunner.kernelNotReadyTitle": {
+    "message": "Environnement du notebook non prêt"
+  },
   "crt.notebookRunner.loadingTaskBody": {
     "message": "Veuillez patienter pendant la préparation de la tâche. L'exécution du code est temporairement désactivée pendant l'installation des paquets..."
   },

@@ -11,6 +11,18 @@
       "value": "Initialization Failed"
     }
   ],
+  "crt.notebookRunner.kernelNotReadyBody": [
+    {
+      "type": 0,
+      "value": "The Python environment could not be prepared in time, so the notebook could not be graded. Your work has been saved and is still open. Please check your internet connection and try again."
+    }
+  ],
+  "crt.notebookRunner.kernelNotReadyTitle": [
+    {
+      "type": 0,
+      "value": "Notebook Environment Not Ready"
+    }
+  ],
   "crt.notebookRunner.loadingTaskBody": [
     {
       "type": 0,

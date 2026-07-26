@@ -11,6 +11,9 @@ import {
   AssignNotebookFormatException,
   CannotReadNotebookException,
 } from "../errors/otter-errors";
+import { OtterKernelNotReadyError } from "../errors/kernel-errors";
+import { messages } from "../i18n/messages";
+import { formatMessage } from "../i18n/intl";
 
 const logModule = "[Jupyter][commands/helper]";
 
@@ -129,6 +132,14 @@ const copyFolderToKernel = async (
 };
 
 export const handleOtterCommandError = (error: unknown): void => {
+  if (error instanceof OtterKernelNotReadyError) {
+    showErrorMessage(
+      formatMessage(messages.kernelNotReadyTitle),
+      formatMessage(messages.kernelNotReadyBody),
+    );
+    return;
+  }
+
   if (error instanceof AssignNotebookFormatException) {
     showErrorMessage(
       "Notebook Format Error",

@@ -246,6 +246,29 @@ with open("${path}", "wb") as f:
   });
 };
 
+/**
+ * Rejects with `buildTimeoutError()` when `promise` has not settled within
+ * `timeoutMs`.
+ *
+ * The awaited work is not cancelled: it is background kernel preparation that
+ * may still succeed and serve a later request. Only the *waiting* is bounded,
+ * so that a caller — and the user interface blocked behind it — never ends up
+ * waiting forever.
+ */
+export const withTimeout = <T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  buildTimeoutError: () => Error,
+): Promise<T> => {
+  let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
+
+  const timesOut = new Promise<never>((_resolve, reject) => {
+    timeout = setTimeout(() => reject(buildTimeoutError()), timeoutMs);
+  });
+
+  return Promise.race([promise, timesOut]).finally(() => clearTimeout(timeout));
+};
+
 export const hasStatus = (error: unknown, status: number): boolean => {
   if (typeof error !== "object" || error === null) {
     return false;

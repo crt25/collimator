@@ -50,6 +50,15 @@ export const messages = defineMessages({
     id: "crt.notebookRunner.savingTask",
     defaultMessage: "Saving the task and generating the student version...",
   },
+  kernelNotReadyTitle: {
+    id: "crt.notebookRunner.kernelNotReadyTitle",
+    defaultMessage: "Notebook Environment Not Ready",
+  },
+  kernelNotReadyBody: {
+    id: "crt.notebookRunner.kernelNotReadyBody",
+    defaultMessage:
+      "The Python environment could not be prepared in time, so the notebook could not be graded. Your work has been saved and is still open. Please check your internet connection and try again.",
+  },
   localeReadFailedTitle: {
     id: "crt.notebookRunner.localeReadFailedTitle",
     defaultMessage: "Translation Failed",

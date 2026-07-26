@@ -5,6 +5,12 @@
   "crt.notebookRunner.initFailedTitle": {
     "message": "Initialization Failed"
   },
+  "crt.notebookRunner.kernelNotReadyBody": {
+    "message": "The Python environment could not be prepared in time, so the notebook could not be graded. Your work has been saved and is still open. Please check your internet connection and try again."
+  },
+  "crt.notebookRunner.kernelNotReadyTitle": {
+    "message": "Notebook Environment Not Ready"
+  },
   "crt.notebookRunner.loadingTaskBody": {
     "message": "Please wait while the task is being prepared. Code execution is temporarily disabled while packages are being installed..."
   },

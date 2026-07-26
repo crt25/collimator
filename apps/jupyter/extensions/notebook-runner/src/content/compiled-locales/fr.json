@@ -11,6 +11,18 @@
       "value": "Échec de l'initialisation"
     }
   ],
+  "crt.notebookRunner.kernelNotReadyBody": [
+    {
+      "type": 0,
+      "value": "L'environnement Python n'a pas pu être préparé à temps, le notebook n'a donc pas pu être évalué. Votre travail a été enregistré et reste ouvert. Veuillez vérifier votre connexion Internet et réessayer."
+    }
+  ],
+  "crt.notebookRunner.kernelNotReadyTitle": [
+    {
+      "type": 0,
+      "value": "Environnement du notebook non prêt"
+    }
+  ],
   "crt.notebookRunner.loadingTaskBody": [
     {
       "type": 0,

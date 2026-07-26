@@ -12,8 +12,11 @@ import {
   executePythonInKernel,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
+  withTimeout,
 } from "./utils";
 import { installNbConvert, installOtter } from "./packages";
+import { waitForKernelSpecs } from "./kernel-specs";
+import { OtterKernelNotReadyError } from "./errors/kernel-errors";
 
 const logModule = "[Jupyter][notebook-runner-state]";
 
@@ -30,6 +33,14 @@ export class NotebookRunnerState {
    * The unique name identifying the comm channel ('target').
    */
   public static commChannelName = "notebook-runner";
+
+  /**
+   * Preparing the grading kernel downloads the Pyodide runtime and installs
+   * otter-grader and nbconvert, so this has to accommodate a slow connection.
+   * It also starts as soon as the app boots, long before anyone can hit save,
+   * so in practice the kernel is ready well before this budget is spent.
+   */
+  private static readonly otterKernelReadyTimeoutMs = 120_000;
 
   private _resolveOtterSessionContext: (value: SessionContext) => void =
     () => {};
@@ -75,6 +86,14 @@ export class NotebookRunnerState {
 
     try {
       const serviceManager = this.app.serviceManager;
+
+      // SessionContext picks the kernel to auto-start from the registered
+      // kernelspecs, and it reads them synchronously. Starting before the
+      // Pyodide kernelspec is registered makes it report that the user has to
+      // pick a kernel, and in that branch `sessionContext.ready` is never
+      // resolved *and never rejected* - which would deadlock every save and
+      // submission waiting on this context.
+      await waitForKernelSpecs(serviceManager.kernelspecs);
 
       console.debug(`${logModule} Initializing Otter session context...`);
       sessionContext = new SessionContext({
@@ -190,24 +209,57 @@ from otter.run import main as run
     await sessionContext.restartKernel();
   }
 
+  /**
+   * The single entry point every save/submit path takes to reach the grading
+   * kernel. The wait is bounded: none of the steps below is guaranteed to
+   * settle (kernel preparation can stall on a slow or blocked download, and a
+   * session context that never got a kernel never resolves its `ready`
+   * promise), and a save that hangs leaves the user staring at a spinner with
+   * no error and no way out.
+   */
   public async getOtterKernel(): Promise<IKernelConnection> {
+    return withTimeout(
+      this.connectToPreparedOtterKernel(),
+      NotebookRunnerState.otterKernelReadyTimeoutMs,
+      () => {
+        console.error(
+          `${logModule} Otter kernel was not ready after ${NotebookRunnerState.otterKernelReadyTimeoutMs}ms`,
+        );
+
+        return new OtterKernelNotReadyError();
+      },
+    );
+  }
+
+  private async connectToPreparedOtterKernel(): Promise<IKernelConnection> {
     const sessionContext = await this.otterSessionContext;
 
-    while (!sessionContext.session?.kernel) {
+    if (!sessionContext.session?.kernel) {
       console.debug(
-        `${logModule} No kernel available in otter session context, restarting the kernel...`,
+        `${logModule} No kernel available in otter session context, starting one...`,
         sessionContext.session,
       );
+
+      // startKernel() reports back instead of throwing when it found no
+      // kernelspec to auto-select, so retrying it without first waiting for
+      // the specs would spin without ever making progress.
+      await waitForKernelSpecs(this.app.serviceManager.kernelspecs);
       await sessionContext.startKernel();
+    }
+
+    const kernel = sessionContext.session?.kernel;
+
+    if (!kernel) {
+      throw new OtterKernelNotReadyError();
     }
 
     console.debug(
       `${logModule} Kernel is available in otter session, waiting for it to be prepared:`,
-      sessionContext.session.kernel,
+      kernel,
     );
-    await waitForKernelToBePrepared(sessionContext.session.kernel);
+    await waitForKernelToBePrepared(kernel);
 
-    return sessionContext.session.kernel;
+    return kernel;
   }
 
   readJsonFromVirtualFilesystem = async <T>(
