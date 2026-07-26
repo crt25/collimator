@@ -190,9 +190,10 @@ export const buildApp = (
   stderr: "pipe" | "ignore" = "pipe",
 ): void => {
   const isScratch = app === CrtApp.scratch;
-  const command = isScratch ? "yarn" : "make";
+  // scratch builds through yarn; the JupyterLite app builds through its Taskfile
+  const command = isScratch ? "yarn" : "task";
 
-  spawnSync(command, ["build"], {
+  const result = spawnSync(command, ["build"], {
     env: {
       ...process.env,
       NODE_ENV: "production",
@@ -201,6 +202,17 @@ export const buildApp = (
     shell: true,
     stdio: ["ignore", stdout, stderr],
   });
+
+  // Without this the build failure is silent and the e2e run serves whatever
+  // stale dist happens to be on disk, which is how a build command that no
+  // longer existed went unnoticed.
+  if (result.error || result.status !== 0) {
+    const details = result.error
+      ? result.error.message
+      : (result.stderr?.toString() ?? `exit code ${result.status}`);
+
+    throw new Error(`Building the ${app} app failed: ${details}`);
+  }
 };
 
 export const startFrontendWithBackendProxy = (config: {
