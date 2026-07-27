@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { Session, Prisma, SessionStatus } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
@@ -121,31 +121,50 @@ export class SessionsService {
     classId?: number,
     includeSoftDelete = false,
   ): Promise<Session> {
-    const [_find, _del, update] = await this.prisma.$transaction([
+    // an interactive transaction so that the students of the lesson are read
+    // in the same transaction that writes the update - a student joining
+    // in-between would otherwise be locked out by the very update we guard
+    // against below.
+    const update = await this.prisma.$transaction(async (tx) => {
       // ensure the session exists and hasn't started yet
-      this.prisma.session.findUniqueOrThrow({
+      const existing = await tx.session.findUniqueOrThrow({
         where: includeSoftDelete
           ? { classId, id, status: "CREATED" }
           : { classId, id, deletedAt: null, status: "CREATED" },
-      }),
+        include: {
+          tasks: { where: { deletedAt: null }, select: { taskId: true } },
+        },
+      });
+
+      await this.assertStudentsKeepAccess(
+        tx,
+        id,
+        existing,
+        session,
+        taskIds,
+        includeSoftDelete,
+      );
+
       // we could do `deleteMany` and `createMany` within the same update(),
-      // however we need a transaction because of this open bug:
+      // however we need separate statements because of this open bug:
       // https://github.com/prisma/prisma/issues/16606
-      this.prisma.sessionTask.deleteMany({
+      await tx.sessionTask.deleteMany({
         where: {
           taskId: {
             notIn: taskIds,
           },
           sessionId: id,
         },
-      }),
-      this.prisma.session.update({
+      });
+
+      const updated = await tx.session.update({
         data: session,
         where: { classId, id },
         include: compactInclude,
-      }),
-      ...taskIds.map((taskId, index) =>
-        this.prisma.sessionTask.upsert({
+      });
+
+      for (const [index, taskId] of taskIds.entries()) {
+        await tx.sessionTask.upsert({
           where: {
             sessionId_taskId: {
               sessionId: id,
@@ -158,12 +177,54 @@ export class SessionsService {
             index,
             sessionId: id,
           },
-        }),
-      ),
-    ]);
+        });
+      }
+
+      return updated;
+    });
 
     this.logger.log(`Updated lesson (id: ${id}) with ${taskIds.length} tasks`);
     return update;
+  }
+
+  /**
+   * Students that already joined a lesson lose access to it when its tasks are
+   * removed or when it stops being anonymous. The lesson form disables both
+   * operations as soon as a lesson has students (EditingMode.restricted);
+   * this enforces the same rule for direct API calls.
+   */
+  private async assertStudentsKeepAccess(
+    tx: PrismaTransactionClient,
+    id: SessionId,
+    existing: { isAnonymous: boolean; tasks: { taskId: number }[] },
+    session: Prisma.SessionUpdateInput,
+    taskIds: number[],
+    includeSoftDelete: boolean,
+  ): Promise<void> {
+    const hasStudents = await this.hasStudentsTx(tx, id, includeSoftDelete);
+
+    if (!hasStudents) {
+      return;
+    }
+
+    const removedTaskIds = existing.tasks
+      .map(({ taskId }) => taskId)
+      .filter((taskId) => !taskIds.includes(taskId));
+
+    if (removedTaskIds.length > 0) {
+      throw new ConflictException(
+        `Cannot remove tasks (ids: ${removedTaskIds.join(", ")}) from lesson (id: ${id}) because students already joined it`,
+      );
+    }
+
+    if (
+      typeof session.isAnonymous === "boolean" &&
+      session.isAnonymous !== existing.isAnonymous
+    ) {
+      throw new ConflictException(
+        `Cannot change the sharing type of lesson (id: ${id}) because students already joined it`,
+      );
+    }
   }
 
   async hasStudents(
