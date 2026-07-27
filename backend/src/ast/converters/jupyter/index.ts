@@ -41,7 +41,7 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // to a variable `matplotlib` that pollutes the structural representation used
   // for the similarity analysis. Strip them the way Jupyter itself does before
   // handing a cell to Python: a `%%` cell magic makes the whole cell non-Python
-  // (skip it entirely), and a leading `%` or `!` line is dropped.
+  // (skip it entirely), and a leading line magic or shell escape is dropped.
   const isCellMagic = (source: string): boolean =>
     source
       .split("\n")
@@ -49,13 +49,22 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
       ?.trimStart()
       .startsWith("%%") ?? false;
 
+  // A line magic (`%name`) or shell escape (`!cmd`) has its sigil immediately
+  // followed by the magic/command name. That is what separates it from real
+  // Python that merely begins a line with the same character: the modulo
+  // operator (`% 3`) or the inequality operator (`!= b`), which PEP 8 even
+  // recommends wrapping to the start of a continuation line. Matching only the
+  // sigil form keeps such continuations from being mistaken for magics. The
+  // check is line-local, so a `%name`/`!cmd` line inside a multi-line string is
+  // still dropped - but that only edits a string literal's text, not the code
+  // structure the similarity analysis compares.
+  const isLineMagic = (line: string): boolean => /^\s*%%?[A-Za-z_]/.test(line);
+  const isShellEscape = (line: string): boolean => /^\s*!(?!=)/.test(line);
+
   const stripLineMagics = (source: string): string =>
     source
       .split("\n")
-      .filter((line) => {
-        const trimmed = line.trimStart();
-        return !trimmed.startsWith("%") && !trimmed.startsWith("!");
-      })
+      .filter((line) => !isLineMagic(line) && !isShellEscape(line))
       .join("\n");
 
   const hasExecutableCode = (source: string): boolean =>

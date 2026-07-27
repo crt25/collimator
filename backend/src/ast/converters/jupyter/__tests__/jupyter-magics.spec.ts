@@ -81,4 +81,26 @@ describe("Jupyter converter — IPython magics", () => {
     expect(asJson).toContain("@import");
     expect(referencesVariable(statements, "x")).toBe(true);
   });
+
+  it("keeps a modulo operator that leads a bracketed continuation line", () => {
+    // `% 3` begins the continuation line of `(10 % 3)`. It is Python, not a
+    // line magic (a magic name is an identifier, never a space or digit). A
+    // naive `startsWith("%")` filter drops it, leaving the broken `x = (10`.
+    const statements = statementsOf("x = (10\n% 3)\n");
+
+    expect(referencesVariable(statements, "x")).toBe(true);
+    // the modulo operation must survive
+    expect(JSON.stringify(statements)).toContain('"operator":"%"');
+  });
+
+  it("keeps a `!=` comparison that leads a continuation line", () => {
+    // `!= b` begins the continuation line of `(a != b)`. `!=` is the inequality
+    // operator, not a shell escape. A naive `startsWith("!")` filter drops it,
+    // leaving `x = (a` (recovered as `x = a`) and losing `b` entirely.
+    const statements = statementsOf("x = (a\n!= b)\n");
+
+    expect(referencesVariable(statements, "a")).toBe(true);
+    expect(referencesVariable(statements, "b")).toBe(true);
+    expect(JSON.stringify(statements)).toContain('"operator":"!="');
+  });
 });
