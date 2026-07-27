@@ -15,6 +15,7 @@ import {
   UserType,
 } from "@/api/collimator/generated/models";
 import { TextComponent as Text } from "@/components/Text";
+import { getSafeInternalRedirectPath } from "@/utilities/authentication/safe-redirect";
 import UserSignInForm, { UserSignInFormValues } from "./UserSignInForm";
 
 const logModule = "[UserSignIn]";
@@ -220,7 +221,7 @@ const UserSignIn = ({
         keyPairId,
       });
 
-      await router.replace(redirectPath);
+      await router.replace(getSafeInternalRedirectPath(redirectPath));
     },
     [
       router,

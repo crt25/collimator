@@ -9,6 +9,7 @@ import PageHeading from "@/components/PageHeading";
 import LoginCard from "@/components/login/LoginCard";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import { getSafeInternalRedirectPath } from "@/utilities/authentication/safe-redirect";
 
 const messages = defineMessages({
   title: {
@@ -57,9 +58,7 @@ const LoginPage = () => {
       // on success this navigates away, so the promise only rejects when the
       // redirect could not be started (e.g. OIDC discovery failed)
       await redirectToOpenIdConnectProvider(
-        // only redirect to the specified URI if it starts with a `/`
-        // this is to prevent open redirects
-        redirectUri?.startsWith(`/`) ? redirectUri : `/`,
+        getSafeInternalRedirectPath(redirectUri),
         registrationToken,
         false,
       );
