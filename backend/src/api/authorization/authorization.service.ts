@@ -310,6 +310,38 @@ export class AuthorizationService {
     return sessionTask !== null;
   }
 
+  protected async isStudentOfSessionTasks(
+    authenticatedStudent: Student,
+    sessionTasks: Array<{ sessionId: number; taskId: number }>,
+    classId?: number,
+  ): Promise<boolean> {
+    if (sessionTasks.length === 0) {
+      return true;
+    }
+
+    const uniquePairs = [
+      ...new Map(
+        sessionTasks.map((pair) => [`${pair.sessionId}/${pair.taskId}`, pair]),
+      ).values(),
+    ];
+
+    const authorizedPairs = await this.prisma.sessionTask.findMany({
+      select: { sessionId: true, taskId: true },
+      where: {
+        OR: uniquePairs,
+        deletedAt: null,
+        session: {
+          ...(classId === undefined ? {} : { classId }),
+          deletedAt: null,
+          class: { deletedAt: null },
+          ...this.participatesInSession(authenticatedStudent.id),
+        },
+      },
+    });
+
+    return authorizedPairs.length === uniquePairs.length;
+  }
+
   async canCreateStudentSolution(
     authenticatedStudent: Student | null,
     classId: number,
@@ -352,13 +384,12 @@ export class AuthorizationService {
       ]),
     );
 
-    const results = await Promise.all(
-      [...distinctSessionTasks.values()].map(({ sessionId, taskId }) =>
-        this.isStudentOfSessionTask(authenticatedStudent, sessionId, taskId),
-      ),
-    );
+    const sessionTasks = [...distinctSessionTasks.values()];
 
-    const canTrack = results.every((isAuthorized) => isAuthorized);
+    const canTrack = await this.isStudentOfSessionTasks(
+      authenticatedStudent,
+      sessionTasks,
+    );
 
     if (!canTrack) {
       this.logger.warn(
