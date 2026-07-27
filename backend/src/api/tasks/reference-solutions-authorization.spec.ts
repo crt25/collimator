@@ -3,6 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { Student, User, UserType } from "@prisma/client";
 import { RoleGuard } from "../authentication/role.guard";
 import { AuthenticationService } from "../authentication/authentication.service";
+import { ALLOWED_ROLES, Role } from "../authentication/role.decorator";
 import { TasksController } from "./tasks.controller";
 
 // The reference-solutions endpoint returns each reference solution's file and
@@ -12,22 +13,27 @@ import { TasksController } from "./tasks.controller";
 // on GET :id/with-reference-solutions but still allowed on the plain GET :id
 // they legitimately use.
 describe("TasksController reference-solutions authorization", () => {
-  const buildGuard = (
-    principal: User | Student,
-    isStudent: boolean,
-  ): RoleGuard => {
+  const reflector = new Reflector();
+
+  const buildGuard = (principal: User | Student): RoleGuard => {
     const authenticationService = {
       findUserByAuthTokenOrThrow: jest.fn().mockResolvedValue(principal),
-      isStudent: jest.fn().mockReturnValue(isStudent),
+      isStudent: jest
+        .fn()
+        .mockImplementation(
+          (authenticatedPrincipal: User | Student) =>
+            "authenticatedStudent" in authenticatedPrincipal ||
+            "anonymousStudent" in authenticatedPrincipal,
+        ),
     } as unknown as AuthenticationService;
 
     // a real Reflector so the guard reads the actual @Roles metadata off the
     // controller handlers below
-    return new RoleGuard(authenticationService, new Reflector());
+    return new RoleGuard(authenticationService, reflector);
   };
 
   const contextForHandler = (
-    handler: (...args: unknown[]) => unknown,
+    handler: (...args: never[]) => unknown,
   ): ExecutionContext => {
     const request: Record<string, unknown> = {
       headers: { authorization: "Bearer test-token" },
@@ -68,7 +74,7 @@ describe("TasksController reference-solutions authorization", () => {
   });
 
   it("denies a student reading a task's reference solutions", async () => {
-    const guard = buildGuard(student, true);
+    const guard = buildGuard(student);
 
     await expect(
       guard.canActivate(contextForHandler(referenceSolutionsHandler)),
@@ -78,7 +84,7 @@ describe("TasksController reference-solutions authorization", () => {
   // positive control: the fix must scope the restriction to reference solutions
   // and must not lock students out of the task itself
   it("still allows a student to read the plain task", async () => {
-    const guard = buildGuard(student, true);
+    const guard = buildGuard(student);
 
     await expect(
       guard.canActivate(contextForHandler(taskHandler)),
@@ -86,7 +92,7 @@ describe("TasksController reference-solutions authorization", () => {
   });
 
   it("allows a teacher to read reference solutions", async () => {
-    const guard = buildGuard(teacher, false);
+    const guard = buildGuard(teacher);
 
     await expect(
       guard.canActivate(contextForHandler(referenceSolutionsHandler)),
@@ -94,7 +100,7 @@ describe("TasksController reference-solutions authorization", () => {
   });
 
   it("allows an admin to read reference solutions", async () => {
-    const guard = buildGuard(admin, false);
+    const guard = buildGuard(admin);
 
     await expect(
       guard.canActivate(contextForHandler(referenceSolutionsHandler)),
