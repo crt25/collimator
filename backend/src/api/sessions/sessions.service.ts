@@ -121,10 +121,12 @@ export class SessionsService {
     classId?: number,
     includeSoftDelete = false,
   ): Promise<Session> {
-    // an interactive transaction so that the students of the lesson are read
-    // in the same transaction that writes the update - a student joining
-    // in-between would otherwise be locked out by the very update we guard
-    // against below.
+    // FIXME: CRT-450 -> At READ COMMITTED, this interactive transaction does not
+    // prevent a student from joining after the student check but before the
+    // update commits. Move all transactions to the planned SERIALIZABLE
+    // transaction() wrapper so joining and updating participate in the same
+    // concurrency protocol. Similar read-then-write races may exist elsewhere;
+    // that broader risk is accepted until the migration is complete.
     const update = await this.prisma.$transaction(async (tx) => {
       // ensure the session exists and hasn't started yet
       const existing = await tx.session.findUniqueOrThrow({
