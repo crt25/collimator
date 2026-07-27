@@ -89,7 +89,7 @@ export const useStudentName = ({
       return decryptedName;
     }
 
-    if (isNaN(studentId)) {
+    if (Number.isNaN(studentId)) {
       // On a direct load the router has not populated the dynamic route params
       // during the first render, so the student id is NaN and there is no
       // nickname to derive from it yet.
