@@ -35,6 +35,29 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   const getCellSource = (cell: { source: string | string[] }): string =>
     Array.isArray(cell.source) ? cell.source.join("\n") : cell.source;
 
+  // IPython magics (`%matplotlib inline`, `%pip install ...`) and shell escapes
+  // (`!pip install ...`) are not Python. The parser does not reject them - it
+  // error-recovers, turning e.g. `%matplotlib inline` into a phantom reference
+  // to a variable `matplotlib` that pollutes the structural representation used
+  // for the similarity analysis. Strip them the way Jupyter itself does before
+  // handing a cell to Python: a `%%` cell magic makes the whole cell non-Python
+  // (skip it entirely), and a leading `%` or `!` line is dropped.
+  const isCellMagic = (source: string): boolean =>
+    source
+      .split("\n")
+      .find((line) => line.trim() !== "")
+      ?.trimStart()
+      .startsWith("%%") ?? false;
+
+  const stripLineMagics = (source: string): string =>
+    source
+      .split("\n")
+      .filter((line) => {
+        const trimmed = line.trimStart();
+        return !trimmed.startsWith("%") && !trimmed.startsWith("!");
+      })
+      .join("\n");
+
   const hasExecutableCode = (source: string): boolean =>
     source
       .split("\n")
@@ -42,9 +65,12 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
       .map((line) => line.trim())
       .some((line) => !!line && !line.startsWith("#"));
 
-  const codeCells = input.cells.filter(
-    (c) => c.cell_type === "code" && hasExecutableCode(getCellSource(c)),
-  );
+  const codeCells = input.cells
+    .filter((c) => c.cell_type === "code")
+    // a `%%` cell magic (e.g. %%bash, %%html) is not Python at all
+    .filter((c) => !isCellMagic(getCellSource(c)))
+    .map((c) => ({ ...c, source: stripLineMagics(getCellSource(c)) }))
+    .filter((c) => hasExecutableCode(c.source));
 
   const conversionFunction = match(language)
     .returnType<(input: string, version?: string) => StatementWithFunctions>()
