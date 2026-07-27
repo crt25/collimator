@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Student, User, UserType } from "@prisma/client";
+import { Prisma, Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { StudentSolutionId } from "../solutions/dto/existing-student-solution.dto";
 
@@ -253,6 +253,127 @@ export class AuthorizationService {
       );
     }
     return canDelete;
+  }
+
+  /**
+   * A student takes part in a session if they either joined it anonymously or
+   * if they are an authenticated student of the class the session belongs to.
+   */
+  private participatesInSession(studentId: number): Prisma.SessionWhereInput {
+    return {
+      OR: [
+        {
+          anonymousStudents: {
+            some: { studentId, deletedAt: null },
+          },
+        },
+        {
+          class: {
+            deletedAt: null,
+            students: {
+              some: { studentId, deletedAt: null },
+            },
+          },
+        },
+      ],
+    };
+  }
+
+  /**
+   * Checks that every given task is part of its given session and that the
+   * student takes part in each session. When a classId is given, every session
+   * must also belong to that class.
+   */
+  protected async isStudentOfSessionTasks(
+    authenticatedStudent: Student,
+    sessionTasks: Array<{ sessionId: number; taskId: number }>,
+    classId?: number,
+  ): Promise<boolean> {
+    if (sessionTasks.length === 0) {
+      return true;
+    }
+
+    const uniquePairs = [
+      ...new Map(
+        sessionTasks.map((pair) => [`${pair.sessionId}/${pair.taskId}`, pair]),
+      ).values(),
+    ];
+
+    const authorizedPairs = await this.prisma.sessionTask.findMany({
+      select: { sessionId: true, taskId: true },
+      where: {
+        // the (non soft-deleted) SessionTask row is what makes a task part of a
+        // lesson - a soft-deleted *task* is deliberately not checked here, since
+        // students may legitimately still be working on it
+        OR: uniquePairs,
+        deletedAt: null,
+        session: {
+          ...(classId === undefined ? {} : { classId }),
+          deletedAt: null,
+          class: { deletedAt: null },
+          ...this.participatesInSession(authenticatedStudent.id),
+        },
+      },
+    });
+
+    return authorizedPairs.length === uniquePairs.length;
+  }
+
+  async canCreateStudentSolution(
+    authenticatedStudent: Student | null,
+    classId: number,
+    sessionId: number,
+    taskId: number,
+  ): Promise<boolean> {
+    if (authenticatedStudent === null) {
+      return false;
+    }
+
+    const canCreate = await this.isStudentOfSessionTasks(
+      authenticatedStudent,
+      [{ sessionId, taskId }],
+      classId,
+    );
+
+    if (!canCreate) {
+      this.logger.warn(
+        `Authorization denied: student (id: ${authenticatedStudent.id}) cannot submit a solution for class (id: ${classId}), session (id: ${sessionId}), task (id: ${taskId})`,
+      );
+    }
+
+    return canCreate;
+  }
+
+  async canTrackStudentActivities(
+    authenticatedStudent: Student | null,
+    activities: { sessionId: number; taskId: number }[],
+  ): Promise<boolean> {
+    if (authenticatedStudent === null) {
+      return false;
+    }
+
+    // the same session/task pair is commonly tracked repeatedly - only check it once
+    const distinctSessionTasks = new Map(
+      activities.map(({ sessionId, taskId }) => [
+        `${sessionId}/${taskId}`,
+        { sessionId, taskId },
+      ]),
+    );
+
+    const sessionTasks = [...distinctSessionTasks.values()];
+
+    const canTrack = await this.isStudentOfSessionTasks(
+      authenticatedStudent,
+      sessionTasks,
+    );
+
+    if (!canTrack) {
+      this.logger.warn(
+        `Authorization denied: student (id: ${authenticatedStudent.id}) cannot track activities for the requested sessions/tasks`,
+      );
+    }
+
+    return canTrack;
   }
 
   async canListSolutions(

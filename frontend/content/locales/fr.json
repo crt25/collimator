@@ -1237,7 +1237,7 @@
     "message": "Attention : vous risquez de perdre votre travail !"
   },
   "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": {
-    "message": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+    "message": "Veuillez créer une solution de référence dans l’application externe pour chaque entrée avant d’enregistrer."
   },
   "TaskFormReferenceSolutions.solution.create": {
     "message": "Créer une solution de référence dans une application externe"
@@ -1425,7 +1425,7 @@
     "message": "Consultation uniquement"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Enregistrer les/la solution(s) de référence"
+    "message": "Enregistrer les solutions de référence"
   },
   "TaskReferenceSolutions.title": {
     "message": "Modifier l'activité - {title}"
@@ -1802,11 +1802,17 @@
   "impressum.generalInformation": {
     "message": "Informations générales"
   },
+  "impressum.hepProfileLink": {
+    "message": "Profil HEP"
+  },
   "impressum.hosting": {
     "message": "Hébergement"
   },
   "impressum.hostingProvider": {
     "message": "Amazon Web Services, Inc. - Région Zurich"
+  },
+  "impressum.professorAbbreviation": {
+    "message": "Pr."
   },
   "impressum.projectSponsor": {
     "message": "Direction de projet"

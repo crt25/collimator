@@ -76,6 +76,7 @@ export class AuthenticationController {
       request.pseudonym,
       request.classId,
       request.keyPairId,
+      request.studentIdentifier,
     );
 
     return StudentAuthenticationResponseDto.fromQueryResult({

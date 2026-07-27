@@ -19,7 +19,11 @@ let newSessionId: number = -1;
 
 const updatedSessionName = "updated session name";
 
-test.describe("session management", () => {
+// Serial so a retry re-runs the whole group: these tests run in order and share
+// state (an entity created by an earlier test, tracked via module-level ids).
+// Playwright restarts the worker on failure (fresh DB clone), so an isolated
+// retry of a single test would fail. See task-management.spec.ts for details.
+test.describe.serial("session management", () => {
   test.beforeEach(async ({ context }) => {
     await useAdminUser(context);
   });

@@ -6,7 +6,6 @@ import { Language } from "iframe-rpc-react/src";
 import TaskActions from "@/components/task/TaskActions";
 import TaskNavigation from "@/components/task/TaskNavigation";
 import { useTask, useTaskFile } from "@/api/collimator/hooks/tasks/useTask";
-import { TaskType } from "@/api/collimator/generated/models";
 import MultiSwrContent from "@/components/MultiSwrContent";
 import Header from "@/components/header/Header";
 import CrtNavigation from "@/components/CrtNavigation";
@@ -14,7 +13,7 @@ import PageHeading from "@/components/PageHeading";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
 import { useFileHash } from "@/hooks/useFileHash";
-import { jupyterAppHostName, scratchAppHostName } from "@/utilities/constants";
+import { getEmbeddedAppUrl } from "@/utilities/embedded-app-url";
 import { executeAsyncWithToasts } from "@/utilities/task";
 import { messages as taskMessages } from "@/i18n/task-messages";
 
@@ -24,17 +23,6 @@ const messages = defineMessages({
     defaultMessage: "Task - {title}",
   },
 });
-
-const getDisplaySolveUrl = (taskType: TaskType) => {
-  switch (taskType) {
-    case TaskType.SCRATCH:
-      return `${scratchAppHostName}/solve`;
-    case TaskType.JUPYTER:
-      return `${jupyterAppHostName}?mode=solve`;
-    default:
-      return null;
-  }
-};
 
 const TaskDetail = () => {
   const router = useRouter();
@@ -57,7 +45,7 @@ const TaskDetail = () => {
   } = useTaskFile(taskId);
 
   const iframeSrc = useMemo(
-    () => (task ? getDisplaySolveUrl(task.type) : null),
+    () => (task ? getEmbeddedAppUrl(task.type, "solve") : null),
     [task],
   );
 

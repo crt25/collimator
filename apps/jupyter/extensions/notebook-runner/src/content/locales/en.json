@@ -23,6 +23,9 @@
   "crt.notebookRunner.packageInstallationFailedTitle": {
     "message": "Package Installation Failed"
   },
+  "crt.notebookRunner.savingTask": {
+    "message": "Saving the task and generating the student version..."
+  },
   "crt.notebookRunner.taskReadyBody": {
     "message": "All packages installed successfully. Code execution is now enabled."
   },

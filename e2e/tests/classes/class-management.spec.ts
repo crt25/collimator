@@ -14,7 +14,11 @@ let newClassTeacherId: number = -1;
 const updatedClassName = "updated class name";
 let updatedClassTeacherId: number = -1;
 
-test.describe("class management", () => {
+// Serial so a retry re-runs the whole group: these tests run in order and share
+// state (an entity created by an earlier test, tracked via module-level ids).
+// Playwright restarts the worker on failure (fresh DB clone), so an isolated
+// retry of a single test would fail. See task-management.spec.ts for details.
+test.describe.serial("class management", () => {
   test.beforeEach(async ({ page, baseURL, context }) => {
     await useAdminUser(context);
 

@@ -92,6 +92,7 @@ model Student {
 model AuthenticatedStudent {
   studentId Int       @id
   pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
+  studentIdentifier Bytes?
   classId   Int // authenticated students are assigned to a class,
   keyPairId Int? // if null, the respective key is no longer available
   deletedAt DateTime?
@@ -101,6 +102,7 @@ model AuthenticatedStudent {
   encryptedUsing KeyPair? @relation(fields: [keyPairId], references: [id], onDelete: SetNull)
 
   @@unique([pseudonym, classId], name: "pseudonymUniquePerClass")
+  @@unique([studentIdentifier, classId], name: "studentIdentifierUniquePerClass")
 }
 
 model AnonymousStudent {
@@ -112,6 +114,13 @@ model AnonymousStudent {
   session Session? @relation(fields: [sessionId], references: [id], onDelete: Restrict)
 }
 
+/// Known limitation: the session (lesson) lifecycle is only partially built.
+/// This status is recorded and can be changed, but it does NOT gate student
+/// access: a FINISHED (or PAUSED) lesson still accepts new students joining and
+/// new solution submissions. Access is governed by the lesson's sharing type
+/// and enrolment, not by its status. Enforcing the status (and exposing
+/// start/pause/finish controls) is intended future work; until then, treat the
+/// status as informational only.
 enum SessionStatus {
   CREATED
   ONGOING

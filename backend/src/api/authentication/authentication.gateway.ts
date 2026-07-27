@@ -39,6 +39,8 @@ export class AuthenticationGateway
 
       if (!this.authenticationService.isStudent(user)) {
         const userId = user.id;
+        client.data.user = user;
+
         if (!this.socketsByUserId.has(userId)) {
           this.socketsByUserId.set(userId, []);
         }

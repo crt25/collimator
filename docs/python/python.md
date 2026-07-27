@@ -17,11 +17,12 @@ The `notebook-runner` extension then later retrieves the buffered messages and s
 ## Mode detection
 
 Analogous to the Scratch application, the jupyter application supports three modes.
-The three modes are detected based on the query parameter `mode`.
+The three modes are detected based on the query parameter `crtMode` (a custom
+name so it does not collide with JupyterLite's own `mode` shell-mode param).
 
-1. Edit mode through `?mode=edit` (default)
-2. Solve mode through `?mode=solve`
-3. Show mode through `?mode=show`
+1. Edit mode through `?crtMode=edit`
+2. Solve mode through `?crtMode=solve`
+3. Show mode through `?crtMode=show` (the default when the parameter is missing)
 
 ## G-AST converter
 

@@ -1,3 +1,4 @@
+import { encodeBase64Url } from "./base64";
 import EphemeralKey from "./EphemeralKey";
 import KeyPair from "./KeyPair";
 import { PasswordDerivedKey } from "./PasswordDerivedKey";
@@ -104,6 +105,32 @@ export default class TeacherLongTermKeyPair extends KeyPair {
       this.crypto,
       await this.exportPublicKey(),
     );
+  }
+
+  async deriveStudentIdentifier(
+    classId: number,
+    subClaim: string,
+  ): Promise<string> {
+    // the derived key is ephemeral and never leaves this call
+    const extractable = false;
+
+    const hmacKey = await this.crypto.deriveKey(
+      { name: KeyPair.AsymmetricKeyAlgorithm, public: this.saltPublicKey },
+      this.keyPair.privateKey,
+      { name: "HMAC", hash: "SHA-256" },
+      extractable,
+      ["sign"],
+    );
+
+    const identifier = await this.crypto.sign(
+      "HMAC",
+      hmacKey,
+      new TextEncoder().encode(
+        `collimator:student-identifier:${classId}:${subClaim}`,
+      ),
+    );
+
+    return encodeBase64Url(identifier);
   }
 
   /**

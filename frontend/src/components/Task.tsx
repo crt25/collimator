@@ -115,6 +115,7 @@ const Task = ({
                 <PageHeading
                   testId="session-name"
                   description={session.description}
+                  clamp={false}
                 >
                   <FormattedMessage
                     id="Task.sessionMenu.heading.title"
