@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/nextjs";
+import NextErrorComponent from "next/error";
 import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -141,34 +143,36 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <div className={inter.variable}>
-      <CacheProvider value={cache}>
-        <ChakraProvider>
-          <IntlProvider locale={localizationState.locale} messages={messages}>
-            <Toaster />
-            <YupLocalization>
-              <PrimeReactProvider>
-                <AuthenticationContext.Provider value={authenticationState}>
-                  <UpdateAuthenticationContext.Provider
-                    value={updateAuthenticationState}
-                  >
-                    <UpdateLocalizationContext.Provider
-                      value={updateLocalizationState}
+      <Sentry.ErrorBoundary fallback={<NextErrorComponent statusCode={500} />}>
+        <CacheProvider value={cache}>
+          <ChakraProvider>
+            <IntlProvider locale={localizationState.locale} messages={messages}>
+              <Toaster />
+              <YupLocalization>
+                <PrimeReactProvider>
+                  <AuthenticationContext.Provider value={authenticationState}>
+                    <UpdateAuthenticationContext.Provider
+                      value={updateAuthenticationState}
                     >
-                      <AuthenticationBarrier
-                        authenticationStateLoaded={authenticationStateLoaded}
+                      <UpdateLocalizationContext.Provider
+                        value={updateLocalizationState}
                       >
-                        <WebSocketProvider>
-                          <Component {...pageProps} />
-                        </WebSocketProvider>
-                      </AuthenticationBarrier>
-                    </UpdateLocalizationContext.Provider>
-                  </UpdateAuthenticationContext.Provider>
-                </AuthenticationContext.Provider>
-              </PrimeReactProvider>
-            </YupLocalization>
-          </IntlProvider>
-        </ChakraProvider>
-      </CacheProvider>
+                        <AuthenticationBarrier
+                          authenticationStateLoaded={authenticationStateLoaded}
+                        >
+                          <WebSocketProvider>
+                            <Component {...pageProps} />
+                          </WebSocketProvider>
+                        </AuthenticationBarrier>
+                      </UpdateLocalizationContext.Provider>
+                    </UpdateAuthenticationContext.Provider>
+                  </AuthenticationContext.Provider>
+                </PrimeReactProvider>
+              </YupLocalization>
+            </IntlProvider>
+          </ChakraProvider>
+        </CacheProvider>
+      </Sentry.ErrorBoundary>
     </div>
   );
 };
