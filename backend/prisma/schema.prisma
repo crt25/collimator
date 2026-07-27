@@ -76,6 +76,8 @@ model Class {
   teacher  User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   students AuthenticatedStudent[]
   sessions Session[]
+
+  @@index([teacherId])
 }
 
 model Student {
@@ -91,12 +93,12 @@ model Student {
 }
 
 model AuthenticatedStudent {
-  studentId Int       @id
-  pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
+  studentId         Int       @id
+  pseudonym         Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
   studentIdentifier Bytes?
-  classId   Int // authenticated students are assigned to a class,
-  keyPairId Int? // if null, the respective key is no longer available
-  deletedAt DateTime?
+  classId           Int // authenticated students are assigned to a class,
+  keyPairId         Int? // if null, the respective key is no longer available
+  deletedAt         DateTime?
 
   student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   class          Class    @relation(fields: [classId], references: [id], onDelete: Restrict)
@@ -104,6 +106,8 @@ model AuthenticatedStudent {
 
   @@unique([pseudonym, classId], name: "pseudonymUniquePerClass")
   @@unique([studentIdentifier, classId], name: "studentIdentifierUniquePerClass")
+  @@index([classId])
+  @@index([keyPairId])
 }
 
 model AnonymousStudent {
@@ -113,6 +117,8 @@ model AnonymousStudent {
 
   student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session Session? @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+
+  @@index([sessionId])
 }
 
 enum LessonVisibility {
@@ -165,6 +171,8 @@ model Session {
   solutions         StudentSolution[]
   anonymousStudents AnonymousStudent[]
   studentActivities StudentActivity[]
+
+  @@index([classId])
 }
 
 enum TaskType {
@@ -190,6 +198,8 @@ model Task {
   creator            User?               @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   studentActivities  StudentActivity[]
   solution           Solution[]
+
+  @@index([creatorId, isPublic])
 }
 
 model LessonTask {
@@ -215,6 +225,7 @@ model SessionTask {
   studentActivities StudentActivity[]
 
   @@id([sessionId, taskId])
+  @@index([taskId])
 }
 
 model Solution {
@@ -271,6 +282,10 @@ model StudentSolution {
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+
+  @@index([sessionId, taskId, studentId, createdAt(sort: Desc)])
+  @@index([studentId, taskId])
+  @@index([taskId, solutionHash])
 }
 
 model SolutionTest {
@@ -287,6 +302,9 @@ model SolutionTest {
 
   referenceSolution ReferenceSolution? @relation(fields: [referenceSolutionId], references: [id])
   studentSolution   StudentSolution?   @relation(fields: [studentSolutionId], references: [id])
+
+  @@index([studentSolutionId])
+  @@index([referenceSolutionId])
 }
 
 enum AstVersion {
@@ -325,6 +343,9 @@ model AuthenticationToken {
 
   user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([lastUsedAt])
+  @@index([userId])
 }
 
 // Tables to keep intermediate student activity:
@@ -364,6 +385,7 @@ model StudentActivity {
   @@unique([studentId, type, happenedAt, happenedAtCounter], name: "uniqueStudentActivityPerTypeAndTime")
   @@index([studentId, solutionHash])
   @@index([taskId, solutionHash])
+  @@index([sessionId, taskId])
 }
 
 model StudentActivityApp {
