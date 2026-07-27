@@ -15,6 +15,32 @@ import {
 // lesson with students" checks (called in that order for a public task).
 describe("TasksService.update", () => {
   const taskId = 1;
+  const taskData = new Uint8Array([1, 2, 3]);
+  const updatedTask = { id: taskId };
+  const studentUsageQuery = {
+    where: {
+      taskId,
+      task: { deletedAt: null },
+      session: {
+        deletedAt: null,
+        OR: [
+          {
+            anonymousStudents: {
+              some: { deletedAt: null },
+            },
+          },
+          {
+            class: {
+              deletedAt: null,
+              students: {
+                some: { deletedAt: null },
+              },
+            },
+          },
+        ],
+      },
+    },
+  };
 
   const buildService = (opts: {
     isPublic: boolean;
@@ -41,7 +67,7 @@ describe("TasksService.update", () => {
           isPublic: opts.isPublic,
           creatorId: opts.creatorId,
         }),
-        update: jest.fn().mockResolvedValue({ id: taskId }),
+        update: jest.fn().mockResolvedValue(updatedTask),
       },
       sessionTask: { findFirst },
       referenceSolution: { deleteMany: jest.fn().mockResolvedValue({}) },
@@ -63,9 +89,25 @@ describe("TasksService.update", () => {
   const update = (
     service: TasksService,
     task: TaskUpdateInput,
+    includeSoftDelete = false,
   ): Promise<unknown> =>
     // no reference solutions, so the pre-transaction hashing is a no-op
-    service.update(taskId, task, "application/json", new Uint8Array(), [], []);
+    service.update(
+      taskId,
+      task,
+      "application/json",
+      taskData,
+      [],
+      [],
+      includeSoftDelete,
+    );
+
+  const expectNoWrites = (tx: MockTx): void => {
+    expect(tx.referenceSolution.deleteMany).not.toHaveBeenCalled();
+    expect(tx.solution.deleteMany).not.toHaveBeenCalled();
+    expect(tx.solution.createMany).not.toHaveBeenCalled();
+    expect(tx.task.update).not.toHaveBeenCalled();
+  };
 
   it("refuses to edit a public task another user's lesson depends on", async () => {
     const { service, tx } = buildService({
@@ -79,11 +121,24 @@ describe("TasksService.update", () => {
       TaskInOtherUsersLessonError,
     );
 
-    expect(tx.task.update).not.toHaveBeenCalled();
+    expect(tx.sessionTask.findFirst).toHaveBeenCalledTimes(1);
+    expect(tx.sessionTask.findFirst).toHaveBeenCalledWith({
+      where: {
+        taskId,
+        session: {
+          deletedAt: null,
+          class: {
+            teacherId: { not: 7 },
+            deletedAt: null,
+          },
+        },
+      },
+    });
+    expectNoWrites(tx);
   });
 
   it("does not apply the other-users rule to a public task no one else uses", async () => {
-    const { service } = buildService({
+    const { service, tx } = buildService({
       isPublic: true,
       creatorId: 7,
       inUseByOthers: false,
@@ -95,10 +150,31 @@ describe("TasksService.update", () => {
     await expect(update(service, { title: "rewritten" })).rejects.toThrow(
       TaskInUseByClassOrLessonWithStudentsError,
     );
+
+    expect(tx.sessionTask.findFirst).toHaveBeenCalledTimes(2);
+    expect(tx.sessionTask.findFirst).toHaveBeenNthCalledWith(1, {
+      where: {
+        taskId,
+        session: {
+          deletedAt: null,
+          class: {
+            teacherId: { not: 7 },
+            deletedAt: null,
+          },
+        },
+      },
+    });
+
+    expect(tx.sessionTask.findFirst).toHaveBeenNthCalledWith(
+      2,
+      studentUsageQuery,
+    );
+
+    expectNoWrites(tx);
   });
 
   it("does not apply the other-users rule to a private task", async () => {
-    const { service } = buildService({
+    const { service, tx } = buildService({
       isPublic: false,
       creatorId: 7,
       inUseByOthers: true, // irrelevant: the check is skipped for private tasks
@@ -108,6 +184,11 @@ describe("TasksService.update", () => {
     await expect(update(service, { title: "rewritten" })).rejects.toThrow(
       TaskInUseByClassOrLessonWithStudentsError,
     );
+
+    expect(tx.sessionTask.findFirst).toHaveBeenCalledTimes(1);
+    expect(tx.sessionTask.findFirst).toHaveBeenCalledWith(studentUsageQuery);
+
+    expectNoWrites(tx);
   });
 
   it("persists the caller's field changes on a permitted update", async () => {
@@ -118,18 +199,31 @@ describe("TasksService.update", () => {
       inUseByStudents: false,
     });
 
-    await update(service, { title: "rewritten", description: "new" });
+    await expect(
+      update(service, { title: "rewritten", description: "new" }),
+    ).resolves.toEqual(updatedTask);
+
+    expect(tx.task.findUniqueOrThrow).toHaveBeenCalledWith({
+      where: { id: taskId, deletedAt: null },
+      select: { isPublic: true, creatorId: true },
+    });
 
     // guards against the parameter being shadowed by the fetched task, which
     // would silently drop the caller's field changes from the write
-    expect(tx.task.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          title: "rewritten",
-          description: "new",
-        }),
-      }),
-    );
+    expect(tx.task.update).toHaveBeenCalledWith({
+      data: {
+        title: "rewritten",
+        description: "new",
+        mimeType: "application/json",
+        data: taskData,
+        referenceSolutions: {
+          create: [],
+          update: [],
+        },
+      },
+      where: { id: taskId },
+      omit: { data: true },
+    });
   });
 });
 
