@@ -34,6 +34,18 @@ describe("useStudentName", () => {
     expect(result.current.name).toBeNull();
   });
 
+  it("returns no name for a non-numeric (unresolved) student id", () => {
+    // A direct load can hand the hook a non-numeric value before the router
+    // resolves the dynamic param. The global isNaN coerces and rejects it;
+    // Number.isNaN would let it through, so this locks in the isNaN semantics.
+    const { result } = renderHook(
+      () => useStudentName({ studentId: undefined as unknown as number }),
+      { wrapper },
+    );
+
+    expect(result.current.name).toBeNull();
+  });
+
   it("returns a nickname once the unresolved student id becomes available", () => {
     let studentId = NaN;
 

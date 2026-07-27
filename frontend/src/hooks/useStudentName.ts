@@ -89,10 +89,11 @@ export const useStudentName = ({
       return decryptedName;
     }
 
-    if (Number.isNaN(studentId)) {
-      // On a direct load the router has not populated the dynamic route params
-      // during the first render, so the student id is NaN and there is no
-      // nickname to derive from it yet.
+    // Use the global isNaN, not Number.isNaN, on purpose: it coerces, so it
+    // also rejects a non-numeric studentId (e.g. undefined before the router
+    // has populated the dynamic route params on a direct load), for which there
+    // is no nickname to derive yet. Number.isNaN would let such a value through.
+    if (isNaN(studentId)) {
       return null;
     }
 
