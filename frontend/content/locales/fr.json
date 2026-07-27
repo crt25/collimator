@@ -695,6 +695,12 @@
   "EmbeddedApp.errorMessage": {
     "message": "Échec du chargement de l’application. Veuillez réessayer plus tard."
   },
+  "ErrorMessage.genericError": {
+    "message": "Une erreur est survenue lors du chargement de ce contenu. Veuillez réessayer plus tard."
+  },
+  "ErrorMessage.networkError": {
+    "message": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet et réessayer."
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Nombre d'expressions"
   },

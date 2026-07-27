@@ -455,6 +455,12 @@
   "EmbeddedApp.errorMessage": {
     "message": "Failed to load the app. Please try again later."
   },
+  "ErrorMessage.genericError": {
+    "message": "An error occurred while loading this content. Please try again later."
+  },
+  "ErrorMessage.networkError": {
+    "message": "The server could not be reached. Please check your internet connection and try again."
+  },
   "ExpressionCriterionFilterForm.count": {
     "message": "Number of expressions"
   },

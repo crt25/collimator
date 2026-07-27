@@ -965,6 +965,18 @@
       "value": "Failed to load the app. Please try again later."
     }
   ],
+  "ErrorMessage.genericError": [
+    {
+      "type": 0,
+      "value": "An error occurred while loading this content. Please try again later."
+    }
+  ],
+  "ErrorMessage.networkError": [
+    {
+      "type": 0,
+      "value": "The server could not be reached. Please check your internet connection and try again."
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,

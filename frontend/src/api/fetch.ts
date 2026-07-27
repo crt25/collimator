@@ -1,12 +1,25 @@
-import { ApiError, ConflictError } from "@/errors/api";
+import { ApiError, ConflictError, NetworkError } from "@/errors/api";
 import { authenticationStateKey, backendHostName } from "@/utilities/constants";
+
+/**
+ * `fetch` only rejects when the request never made it to the server. Translate
+ * that into our own error type so callers never have to deal with the raw,
+ * browser-specific failure message.
+ */
+const sendRequest = async (request: Request): Promise<Response> => {
+  try {
+    return await fetch(request);
+  } catch (error) {
+    throw new NetworkError(error);
+  }
+};
 
 export const fetchApi = async <T>(
   url: string,
   options: RequestInit,
 ): Promise<T> => {
   const request = new Request(`${backendHostName}${url}`, options);
-  const response = await fetch(request);
+  const response = await sendRequest(request);
 
   if (response.status === 401) {
     // properly sign out the user
@@ -52,7 +65,7 @@ export const fetchFile = async (
   options: RequestInit,
 ): Promise<Blob> => {
   const request = new Request(`${backendHostName}${url}`, options);
-  const response = await fetch(request);
+  const response = await sendRequest(request);
 
   if (response.status !== 200) {
     throw new Error("Could not fetch file");

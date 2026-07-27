@@ -1428,6 +1428,18 @@
       "value": "Échec du chargement de l’application. Veuillez réessayer plus tard."
     }
   ],
+  "ErrorMessage.genericError": [
+    {
+      "type": 0,
+      "value": "Une erreur est survenue lors du chargement de ce contenu. Veuillez réessayer plus tard."
+    }
+  ],
+  "ErrorMessage.networkError": [
+    {
+      "type": 0,
+      "value": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet et réessayer."
+    }
+  ],
   "ExpressionCriterionFilterForm.count": [
     {
       "type": 0,
