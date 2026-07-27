@@ -134,6 +134,13 @@ model Lesson {
   creator  User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 }
 
+/// Known limitation: the session (lesson) lifecycle is only partially built.
+/// This status is recorded and can be changed, but it does NOT gate student
+/// access: a FINISHED (or PAUSED) lesson still accepts new students joining and
+/// new solution submissions. Access is governed by the lesson's sharing type
+/// and enrolment, not by its status. Enforcing the status (and exposing
+/// start/pause/finish controls) is intended future work; until then, treat the
+/// status as informational only.
 enum SessionStatus {
   CREATED
   ONGOING
