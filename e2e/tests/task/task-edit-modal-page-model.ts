@@ -25,7 +25,6 @@ export class TaskEditModalPageModel {
     return this.page.getByTestId("confirm-button");
   }
 
-
   async import(): Promise<void> {
     await this.importButton.click();
   }
@@ -44,6 +43,26 @@ export class TaskEditModalPageModel {
   async cancel(): Promise<void> {
     await this.waitForModal();
     await this.cancelButton.click();
+
+    // Cancelling is not a plain close: warnBeforeClose only closes the modal
+    // outright while the embedded editor has not loaded yet, and asks to
+    // confirm quitting without saving once it has. Which branch is taken
+    // therefore depends on whether the iframe happened to finish loading
+    // before the click - so handle the confirmation when it appears, and wait
+    // for the modal to be gone either way rather than leaving the caller to
+    // race the same timing.
+    const confirmation = this.page.getByTestId("confirmation-modal");
+
+    await Promise.race([
+      confirmation.waitFor({ state: "visible", timeout: 30_000 }),
+      this.modal.waitFor({ state: "detached", timeout: 30_000 }),
+    ]);
+
+    if (await confirmation.isVisible()) {
+      await this.modalConfirmButton.click();
+    }
+
+    await this.modal.waitFor({ state: "detached", timeout: 30_000 });
   }
 
   async waitForModal(): Promise<void> {
