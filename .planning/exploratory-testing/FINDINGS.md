@@ -194,3 +194,43 @@ guess blamed the multi-import, the diagnostic corrected that to the magic lines)
 4 jest tests; existing jupyter converter tests still green.
 
 Found while verifying the Jupyter e2e (the backend logged "mismatched input '%'").
+
+---
+
+## Review session outcomes (2026-07-27, with Pierluca)
+
+- **F4 (login swallows OIDC failures)** — FIXED on `bugfix/login-oidc-failure-feedback`:
+  `onAuthenticateWithMicrosoft` now awaits the redirect and shows an error toast on
+  failure. Lint-clean; not e2e-verified (needs a forced OIDC failure).
+
+- **B4 (session status does not gate access)** — Pierluca: keep the half-built lifecycle,
+  document the limitation. DONE on `docs/session-lifecycle-not-enforced`: a `///` doc
+  comment on the `SessionStatus` enum states the status is informational and does not gate
+  joins/submissions.
+
+- **Q1 "Anyone · View/Download Task" = public?** — RULED by Pierluca: "Anyone" means any
+  *authenticated* role (including anonymous students), NOT unauthenticated. So the current
+  401-when-unauthenticated behaviour is CORRECT. Not a bug. Q1 closed.
+
+- **F5 (teacher reaches User Manager)** — IMPORTANT CORRECTION to the earlier "fix direction".
+  The backend endpoint is NOT a data leak: `usersService.findManyForUser` already scopes a
+  teacher to *only themselves* (`GET /users` returns just their own record). And that scoped
+  result is LOAD-BEARING: `ClassForm` (class create + edit, reachable by teachers, who may
+  create classes per the matrix) calls `useAllUsers()` unconditionally and blocks the whole
+  form on it to populate the "Select Teacher" dropdown - which for a teacher correctly offers
+  only themselves. **Adding `@AdminOnly` to `GET /users` would break class create/edit for
+  teachers.** The correct fix is UI-only: hide the "User Manager" nav entry and the
+  "Create User" button from teachers (both already 403 on use). Backend endpoint stays.
+  AWAITING Pierluca's go-ahead on the UI-only fix.
+
+- **F6 (JupyterLab PropertyInspector console error during solve)** — effort assessed: NOT
+  trivial. The error originates in JupyterLab core (`jlab_core` PropertyInspector), but it is
+  triggered by our own `simplifyUserInterface`, which hides `jp-property-inspector`; our
+  extension `requires: [IPropertyInspectorProvider]` specifically to hide it. A clean fix
+  means disabling the `@jupyterlab/property-inspector` plugin AND removing our dependency on
+  it + the hide logic, then rebuilding and verifying the simplified UI is unchanged. ~a
+  focused hour for non-fatal console noise (the asset 404s are benign JupyterLite contents
+  probing). Recommend a low-priority ticket, not now.
+
+- **B13** — Pierluca solved it himself; our branch dropped.
+- Redundant twin `bugfix/student-cross-session-submission` — deleted.
