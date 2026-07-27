@@ -171,3 +171,26 @@ Bring up `task dev:mock` (separate DB `collimator-devmock` + ports
 4. Session/lesson student counts and status badges vs. actual DB state.
 5. Number/percentage displays in reports for off-by-one or rounding that would
    mislead (e.g. "X of Y completed").
+
+### B14 — CONFIRMED, FIXED — IPython magics poison the Jupyter similarity analysis
+Branch `bugfix/jupyter-analysis-strips-magics` (off origin/main), fix + backend jest test.
+
+The Jupyter->AST converter (`backend/src/ast/converters/jupyter/index.ts`) passed
+each code cell straight to the Python parser. IPython magics (`%matplotlib inline`,
+`%pip install ...`) and shell escapes (`!pip install ...`) are not Python; the
+parser does not reject them, it ERROR-RECOVERS. Diagnostic (run + observed):
+`%matplotlib inline` becomes a phantom `expressionAsStatement` referencing a
+variable named `matplotlib`. That artefact enters the structural AST the
+similarity analysis runs on, so every notebook with the same magic gains the same
+spurious node -> the teacher's similarity/analysis dashboards are computed against
+things that are not the student's code. Magics are ubiquitous in teaching
+notebooks, so this is the common case, not an edge case. GRADING is unaffected
+(otter runs the real kernel); only the structural ANALYSIS is polluted.
+
+Fix: strip magics as Jupyter itself does before compiling - skip a `%%` cell
+magic entirely, drop leading `%`/`!` lines. Real Python untouched, incl.
+`import os, sys` (multi-import parses fine - it was never the problem; my first
+guess blamed the multi-import, the diagnostic corrected that to the magic lines).
+4 jest tests; existing jupyter converter tests still green.
+
+Found while verifying the Jupyter e2e (the backend logged "mismatched input '%'").
