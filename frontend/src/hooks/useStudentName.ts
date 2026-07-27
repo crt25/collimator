@@ -85,9 +85,18 @@ export const useStudentName = ({
   const locale = isLanguage(intl.locale) ? intl.locale : undefined;
 
   const name = useMemo(() => {
-    return !anonymizationState.showActualName
-      ? getStudentNickname(studentId, locale)
-      : decryptedName;
+    if (anonymizationState.showActualName) {
+      return decryptedName;
+    }
+
+    if (isNaN(studentId)) {
+      // On a direct load the router has not populated the dynamic route params
+      // during the first render, so the student id is NaN and there is no
+      // nickname to derive from it yet.
+      return null;
+    }
+
+    return getStudentNickname(studentId, locale);
   }, [anonymizationState.showActualName, decryptedName, studentId, locale]);
 
   return {
