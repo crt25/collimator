@@ -20,7 +20,12 @@ const updatedTaskType = TaskType.SCRATCH;
 const referenceSolutionTitle = "reference solution title";
 const referenceSolutionDescription = "reference solution description";
 
-test.describe("task management", () => {
+// Serial so a retry re-runs the whole group. These tests run in order and share
+// state (a task created by the first test, tracked via module-level ids).
+// Playwright restarts the worker on any failure, moving the remaining tests to a
+// fresh worker with a fresh DB clone where the setup test never ran; without
+// serial the retry re-runs only the failed test in isolation and cascades.
+test.describe.serial("task management", () => {
   test.beforeEach(async ({ context, page, baseURL }) => {
     await useAdminUser(context);
 

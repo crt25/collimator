@@ -139,6 +139,10 @@ export const startBackend = (config: {
       NODE_ENV: "production",
       DATABASE_URL: config.databaseUrl,
       PORT: config.port?.toString(),
+      // Disable the analysis cron jobs during e2e. They query the DB every
+      // minute and collide with the per-test database reset (dropped WITH
+      // (FORCE)), causing P1017 connection errors and page-load hangs.
+      DISABLE_SCHEDULED_TASKS: "true",
       // only log errors to reduce overhead in test execution
       LOG_LEVEL: "false",
       STOP_PORT: config.stopPort?.toString(),

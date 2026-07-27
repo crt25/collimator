@@ -1045,7 +1045,7 @@
     "message": "Attention: you may lose your work!"
   },
   "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+    "message": "Please create a reference solution in the external application for each entry before saving."
   },
   "TaskFormReferenceSolutions.solution.create": {
     "message": "Create reference solution in external application"

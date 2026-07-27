@@ -86,7 +86,10 @@ const StudentLoginPage = () => {
     <MaxScreenHeight>
       <Header title={messages.title} hideSignIn />
       <Container>
-        <PageHeading description={<FormattedMessage {...messages.subtitle} />}>
+        <PageHeading
+          description={<FormattedMessage {...messages.subtitle} />}
+          clamp={false}
+        >
           <FormattedMessage {...messages.header} />
         </PageHeading>
       </Container>

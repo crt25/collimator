@@ -68,7 +68,7 @@ const TaskModal = ({
   url: string | null | undefined;
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
-  loadContent: (app: EmbeddedAppRef) => void;
+  loadContent: (app: EmbeddedAppRef) => Promise<void>;
 
   showResetButton?: boolean;
   showImportButton?: boolean;
@@ -124,10 +124,31 @@ const TaskModal = ({
     downloadBlob(response.result.file, response.result.filename);
   }, [intl]);
 
-  const loadAppData = useCallback(() => {
-    if (embeddedApp.current) {
-      loadContent(embeddedApp.current);
+  const loadAppData = useCallback(async () => {
+    if (!embeddedApp.current) {
+      return;
+    }
 
+    // Disable all app actions for the duration of the (re-)load. This matters
+    // for the Reset button, which re-runs this callback while the app is
+    // already enabled: without clearing appLoaded first, Save/Import stay
+    // clickable during the reload and can issue the very requests against a
+    // half-loaded VM that the gate below is meant to prevent.
+    setAppLoaded(false);
+
+    try {
+      // Await loadContent before enabling the app (and therefore the Save
+      // button). loadContent loads the task into the embedded VM; if the Save
+      // button becomes clickable while that load is still in flight, a save
+      // triggers getTask/getSubmission against a half-loaded VM whose internal
+      // reload is silently skipped (module-level isLoading guard in the scratch
+      // app), so the green-flag run never emits ASSERTIONS_CHECKED and the save
+      // stalls for the full execution timeout. Gating on the completed load
+      // makes the save round-trip run on a stable VM.
+      await loadContent(embeddedApp.current);
+    } finally {
+      // re-enable even if the load failed (an error toast is shown), so the
+      // user can retry via Reset/Import instead of a permanently dead modal
       setAppLoaded(true);
     }
   }, [loadContent]);
