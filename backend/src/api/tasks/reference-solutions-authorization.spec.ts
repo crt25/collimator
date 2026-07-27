@@ -55,6 +55,18 @@ describe("TasksController reference-solutions authorization", () => {
     TasksController.prototype.findOneWithReferenceSolutions;
   const taskHandler = TasksController.prototype.findOne;
 
+  it("scopes reference solutions to exactly teachers and admins", () => {
+    const allowedRoles = reflector.get<Role[]>(
+      ALLOWED_ROLES,
+      referenceSolutionsHandler,
+    );
+
+    expect(allowedRoles).toHaveLength(2);
+    expect(allowedRoles).toEqual(
+      expect.arrayContaining([UserType.ADMIN, UserType.TEACHER]),
+    );
+  });
+
   it("denies a student reading a task's reference solutions", async () => {
     const guard = buildGuard(student, true);
 
