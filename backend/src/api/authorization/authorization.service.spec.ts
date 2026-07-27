@@ -39,11 +39,11 @@ describe("AuthorizationService", () => {
         service.canCreateStudentSolution(null, classId, sessionId, taskId),
       ).resolves.toBe(false);
 
-      expect(prismaMock.sessionTask.findUnique).not.toHaveBeenCalled();
+      expect(prismaMock.sessionTask.findMany).not.toHaveBeenCalled();
     });
 
     it("denies a student that does not take part in the target session", async () => {
-      prismaMock.sessionTask.findUnique.mockResolvedValue(null);
+      prismaMock.sessionTask.findMany.mockResolvedValue([]);
 
       await expect(
         service.canCreateStudentSolution(student, classId, sessionId, taskId),
@@ -51,7 +51,9 @@ describe("AuthorizationService", () => {
     });
 
     it("allows a student that takes part in the target session", async () => {
-      prismaMock.sessionTask.findUnique.mockResolvedValue({ taskId } as never);
+      prismaMock.sessionTask.findMany.mockResolvedValue([
+        { sessionId, taskId },
+      ] as never);
 
       await expect(
         service.canCreateStudentSolution(student, classId, sessionId, taskId),
@@ -59,7 +61,9 @@ describe("AuthorizationService", () => {
     });
 
     it("scopes the query to the class, session and task and requires participation", async () => {
-      prismaMock.sessionTask.findUnique.mockResolvedValue({ taskId } as never);
+      prismaMock.sessionTask.findMany.mockResolvedValue([
+        { sessionId, taskId },
+      ] as never);
 
       await service.canCreateStudentSolution(
         student,
@@ -68,10 +72,10 @@ describe("AuthorizationService", () => {
         taskId,
       );
 
-      expect(prismaMock.sessionTask.findUnique).toHaveBeenCalledWith({
-        select: { taskId: true },
+      expect(prismaMock.sessionTask.findMany).toHaveBeenCalledWith({
+        select: { sessionId: true, taskId: true },
         where: {
-          sessionId_taskId: { sessionId, taskId },
+          OR: [{ sessionId, taskId }],
           deletedAt: null,
           session: {
             classId,
@@ -105,7 +109,6 @@ describe("AuthorizationService", () => {
       ).resolves.toBe(false);
 
       expect(prismaMock.sessionTask.findMany).not.toHaveBeenCalled();
-      expect(prismaMock.sessionTask.findUnique).not.toHaveBeenCalled();
     });
 
     it("allows an empty batch without querying the database", async () => {
@@ -114,7 +117,6 @@ describe("AuthorizationService", () => {
       ).resolves.toBe(true);
 
       expect(prismaMock.sessionTask.findMany).not.toHaveBeenCalled();
-      expect(prismaMock.sessionTask.findUnique).not.toHaveBeenCalled();
     });
 
     it("denies the whole batch if a single activity is out of scope", async () => {

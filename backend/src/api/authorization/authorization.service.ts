@@ -280,36 +280,10 @@ export class AuthorizationService {
   }
 
   /**
-   * Checks that the given task is part of the given session and that the
-   * student takes part in that session. When a classId is given, the session
+   * Checks that every given task is part of its given session and that the
+   * student takes part in each session. When a classId is given, every session
    * must also belong to that class.
    */
-  protected async isStudentOfSessionTask(
-    authenticatedStudent: Student,
-    sessionId: number,
-    taskId: number,
-    classId?: number,
-  ): Promise<boolean> {
-    const sessionTask = await this.prisma.sessionTask.findUnique({
-      select: { taskId: true },
-      where: {
-        // the (non soft-deleted) SessionTask row is what makes a task part of a
-        // lesson - a soft-deleted *task* is deliberately not checked here, since
-        // students may legitimately still be working on it
-        sessionId_taskId: { sessionId, taskId },
-        deletedAt: null,
-        session: {
-          ...(classId === undefined ? {} : { classId }),
-          deletedAt: null,
-          class: { deletedAt: null },
-          ...this.participatesInSession(authenticatedStudent.id),
-        },
-      },
-    });
-
-    return sessionTask !== null;
-  }
-
   protected async isStudentOfSessionTasks(
     authenticatedStudent: Student,
     sessionTasks: Array<{ sessionId: number; taskId: number }>,
@@ -328,6 +302,9 @@ export class AuthorizationService {
     const authorizedPairs = await this.prisma.sessionTask.findMany({
       select: { sessionId: true, taskId: true },
       where: {
+        // the (non soft-deleted) SessionTask row is what makes a task part of a
+        // lesson - a soft-deleted *task* is deliberately not checked here, since
+        // students may legitimately still be working on it
         OR: uniquePairs,
         deletedAt: null,
         session: {
@@ -352,10 +329,9 @@ export class AuthorizationService {
       return false;
     }
 
-    const canCreate = await this.isStudentOfSessionTask(
+    const canCreate = await this.isStudentOfSessionTasks(
       authenticatedStudent,
-      sessionId,
-      taskId,
+      [{ sessionId, taskId }],
       classId,
     );
 
