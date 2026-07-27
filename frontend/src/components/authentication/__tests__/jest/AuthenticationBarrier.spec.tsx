@@ -57,9 +57,12 @@ describe("AuthenticationBarrier — admin-only user management", () => {
   it.each(["/user", "/user/create", "/user/[userId]/detail"])(
     "keeps a teacher out of %s",
     (pathname) => {
-      const { getByText } = renderAt(pathname, UserRole.teacher);
+      // queryByText, not getByText: the teacher is redirected so "page content"
+      // is absent, and getByText throws on a missing element instead of letting
+      // the .not.toBeInTheDocument() assertion run.
+      const { queryByText } = renderAt(pathname, UserRole.teacher);
 
-      expect(getByText("page content")).not.toBeInTheDocument();
+      expect(queryByText("page content")).not.toBeInTheDocument();
       // sent home, not to the login page: signing in again would not help
       expect(replace).toHaveBeenCalledWith("/");
       expect(replace).toHaveBeenCalledTimes(1);
@@ -70,7 +73,7 @@ describe("AuthenticationBarrier — admin-only user management", () => {
     const { getByText } = renderAt("/user", UserRole.admin);
 
     expect(getByText("page content")).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalledTimes(1);
+    expect(replace).not.toHaveBeenCalled();
   });
 
   // positive control: the new rule must not affect the pages teachers use
@@ -78,6 +81,6 @@ describe("AuthenticationBarrier — admin-only user management", () => {
     const { getByText } = renderAt("/class", UserRole.teacher);
 
     expect(getByText("page content")).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalledTimes(1);
+    expect(replace).not.toHaveBeenCalled();
   });
 });
