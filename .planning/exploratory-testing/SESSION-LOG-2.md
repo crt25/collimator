@@ -508,3 +508,51 @@ row, and the Private-task rows carry no "own" qualifier. Left unimplemented pend
 
 - **JUPYTER-OFFLINE (Pyodide/PyPI fetched at runtime)** — acceptable for now;
   logged in TICKETS-TO-CREATE.md rather than fixed this pass.
+
+---
+
+## Jupyter grading now COMPLETES headless (2026-07-27) — verified
+
+Pierluca's ask: make Jupyter actually work (no timeout) in e2e, and let a teacher
+create a task WITHOUT the API. Both done and verified on `test/jupyter-student-flow`.
+
+Root cause (finally): the grading path opened a hidden notebook panel just so
+`NotebookActions.runAll` could execute the student notebook's cells. Under
+headless JupyterLite a panel that adopts an existing kernel never settles its
+`sessionContext.ready`, so the wait between Submit and grading never returned.
+My earlier fixes (kernel reuse + bounded wait) only made the failure graceful.
+
+The real fix (opus sub-agent, commit 59419fc4): remove the panel entirely.
+`executeRunNotebookCommand` now takes the prepared otter kernel directly, reads
+the saved notebook from the contents manager, writes it to the kernel VFS, and
+runs each code cell as its own `execute_request` — the panel-free equivalent of
+Run All Cells, in the same namespace the otter checks run in. Graceful-failure
+path preserved (kernel still via bounded `getOtterKernel`).
+
+The e2e now authors the Jupyter task through the task-edit MODAL (real teacher
+flow, `createTask` + `jupyterTaskTemplate`), and the API helper is deleted.
+`saveTask` takes a timeout because a cold assign in JupyterLite is minutes.
+
+VERIFIED: `jupyter-solve-task.spec.ts` — 7 passed in 2.3 min (was hanging 16 min):
+UI task creation (assign) completes, student opens the notebook, and
+**submitting a solution SUCCEEDS** (the submit success-icon appears — grading
+completes, not merely terminates). tsc + lint clean, 64 extension unit tests pass.
+
+Note on the environment: the sub-agent's own e2e never ran — it died at auth
+setup because three leftover webServer processes (frontend 3000, backend 3999,
+and a stray dev-mock OIDC on 3888) were squatting the e2e ports. Killing those
+PIDs + a clean rebuild fixed auth. Lesson: a stale process on 3888/3000/3999
+manifests as `getByTestId('password')` timing out in setup:authentication.
+
+### NEW observation to investigate (B14 candidate) — Jupyter analysis may fail to parse
+During the run the backend logged, while analysing the submitted notebook:
+  line 1:16 mismatched input 'pandas' expecting {';', NEWLINE}
+  line 1:23 mismatched input 'numpy' ...
+  line 5:0 mismatched input '%' expecting <EOF>
+i.e. the Python AST converter (analysis pipeline) chokes on a multi-target
+import (`import pandas, numpy, matplotlib`) and on a `%matplotlib` line magic.
+GRADING is unaffected (tests passed), but this is the *analysis* pipeline that
+feeds the teacher's similarity/analysis dashboards. If real Jupyter notebooks
+routinely use magics or multi-imports, their analyses may silently fail, so the
+teacher sees no analysis for those students. Needs a dedicated check against a
+notebook containing magics/`import a, b, c` — parked as B14.
