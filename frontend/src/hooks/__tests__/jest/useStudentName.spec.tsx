@@ -33,4 +33,20 @@ describe("useStudentName", () => {
 
     expect(result.current.name).toBeNull();
   });
+
+  it("returns a nickname once the unresolved student id becomes available", () => {
+    let studentId = NaN;
+
+    const { result, rerender } = renderHook(
+      () => useStudentName({ studentId }),
+      { wrapper },
+    );
+
+    expect(result.current.name).toBeNull();
+
+    studentId = 42;
+    rerender();
+
+    expect(result.current.name).toBe(getStudentNickname(42));
+  });
 });
