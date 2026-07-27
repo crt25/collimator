@@ -72,4 +72,24 @@ describe("MultiSwrContent", () => {
     expect(screen.getByText("the loaded content")).toBeInTheDocument();
     expect(screen.queryByText("refresh failed")).not.toBeInTheDocument();
   });
+
+  it("keeps showing the spinner while the failed source is still loading", () => {
+    const { container } = renderWithProviders(
+      <MultiSwrContent
+        data={["klass", undefined]}
+        isLoading={[false, true]}
+        errors={[undefined, new Error("request still retrying")]}
+      >
+        {renderChild}
+      </MultiSwrContent>,
+    );
+
+    expect(
+      screen.queryByText("request still retrying"),
+    ).not.toBeInTheDocument();
+
+    expect(screen.queryByText("the loaded content")).not.toBeInTheDocument();
+
+    expect(container.querySelector(".p-progress-spinner")).toBeInTheDocument();
+  });
 });
