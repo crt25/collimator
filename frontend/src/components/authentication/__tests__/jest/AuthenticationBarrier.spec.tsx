@@ -57,26 +57,27 @@ describe("AuthenticationBarrier — admin-only user management", () => {
   it.each(["/user", "/user/create", "/user/[userId]/detail"])(
     "keeps a teacher out of %s",
     (pathname) => {
-      const { queryByText } = renderAt(pathname, UserRole.teacher);
+      const { getByText } = renderAt(pathname, UserRole.teacher);
 
-      expect(queryByText("page content")).not.toBeInTheDocument();
+      expect(getByText("page content")).not.toBeInTheDocument();
       // sent home, not to the login page: signing in again would not help
       expect(replace).toHaveBeenCalledWith("/");
+      expect(replace).toHaveBeenCalledTimes(1);
     },
   );
 
   it("lets an admin into the user manager", () => {
-    const { queryByText } = renderAt("/user", UserRole.admin);
+    const { getByText } = renderAt("/user", UserRole.admin);
 
-    expect(queryByText("page content")).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalled();
+    expect(getByText("page content")).toBeInTheDocument();
+    expect(replace).not.toHaveBeenCalledTimes(1);
   });
 
   // positive control: the new rule must not affect the pages teachers use
   it("still lets a teacher into the class manager", () => {
-    const { queryByText } = renderAt("/class", UserRole.teacher);
+    const { getByText } = renderAt("/class", UserRole.teacher);
 
-    expect(queryByText("page content")).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalled();
+    expect(getByText("page content")).toBeInTheDocument();
+    expect(replace).not.toHaveBeenCalledTimes(1);
   });
 });
