@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   HttpCode,
   Post,
   UploadedFiles,
@@ -65,6 +66,16 @@ export class StudentActivityController {
       throw new BadRequestException(
         `The number of solution files (${solutionFileCount || 0}) does not match the number of activities (${trackActivitiesDto.activities.length}).`,
       );
+    }
+
+    const isAuthorized =
+      await this.authorizationService.canTrackStudentActivities(
+        student,
+        trackActivitiesDto.activities,
+      );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
     }
 
     await this.studentActivityService.createMany(
