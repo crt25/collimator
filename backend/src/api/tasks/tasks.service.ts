@@ -334,6 +334,32 @@ export class TasksService {
     }
 
     return this.prisma.$transaction(async (tx) => {
+      // named existingTask, not task, so it does not shadow the `task` update
+      // input spread into tx.task.update() below - shadowing it would silently
+      // drop the caller's field changes (title, description, ...).
+      const existingTask = await tx.task.findUniqueOrThrow({
+        where: { id, deletedAt: null },
+        select: { isPublic: true, creatorId: true },
+      });
+
+      // A public task can be picked up by any teacher. Editing it changes
+      // their lesson under them - and drops the reference solutions that are
+      // no longer listed - which is at least as disruptive as deleting it, so
+      // it is refused for the same reason deleteById refuses the deletion.
+      if (existingTask.isPublic) {
+        const isInUseByOthers = await this.isTaskInUseByOtherUsersTx(
+          tx,
+          id,
+          existingTask.creatorId,
+        );
+        if (isInUseByOthers) {
+          this.logger.warn(
+            `Cannot update task (id: ${id}): public task is in use by other users`,
+          );
+          throw new TaskInOtherUsersLessonError();
+        }
+      }
+
       const isInUse = await this.isTaskInUseTx(tx, id);
       if (isInUse) {
         this.logger.warn(`Cannot update task (id: ${id}): task is in use`);
