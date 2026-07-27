@@ -68,33 +68,33 @@ describe("AuthorizationService", () => {
         taskId,
       );
 
-      expect(prismaMock.sessionTask.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            sessionId_taskId: { sessionId, taskId },
+      expect(prismaMock.sessionTask.findUnique).toHaveBeenCalledWith({
+        select: { taskId: true },
+        where: {
+          sessionId_taskId: { sessionId, taskId },
+          deletedAt: null,
+          session: {
+            classId,
             deletedAt: null,
-            session: expect.objectContaining({
-              classId,
-              deletedAt: null,
-              OR: [
-                {
-                  anonymousStudents: {
+            class: { deletedAt: null },
+            OR: [
+              {
+                anonymousStudents: {
+                  some: { studentId: student.id, deletedAt: null },
+                },
+              },
+              {
+                class: {
+                  deletedAt: null,
+                  students: {
                     some: { studentId: student.id, deletedAt: null },
                   },
                 },
-                {
-                  class: {
-                    deletedAt: null,
-                    students: {
-                      some: { studentId: student.id, deletedAt: null },
-                    },
-                  },
-                },
-              ],
-            }),
-          }),
-        }),
-      );
+              },
+            ],
+          },
+        },
+      });
     });
   });
 
@@ -104,13 +104,23 @@ describe("AuthorizationService", () => {
         service.canTrackStudentActivities(null, [{ sessionId, taskId }]),
       ).resolves.toBe(false);
 
+      expect(prismaMock.sessionTask.findMany).not.toHaveBeenCalled();
+      expect(prismaMock.sessionTask.findUnique).not.toHaveBeenCalled();
+    });
+
+    it("allows an empty batch without querying the database", async () => {
+      await expect(
+        service.canTrackStudentActivities(student, []),
+      ).resolves.toBe(true);
+
+      expect(prismaMock.sessionTask.findMany).not.toHaveBeenCalled();
       expect(prismaMock.sessionTask.findUnique).not.toHaveBeenCalled();
     });
 
     it("denies the whole batch if a single activity is out of scope", async () => {
-      prismaMock.sessionTask.findUnique
-        .mockResolvedValueOnce({ taskId } as never)
-        .mockResolvedValueOnce(null);
+      prismaMock.sessionTask.findMany.mockResolvedValue([
+        { sessionId, taskId },
+      ] as never);
 
       await expect(
         service.canTrackStudentActivities(student, [
@@ -120,8 +130,11 @@ describe("AuthorizationService", () => {
       ).resolves.toBe(false);
     });
 
-    it("checks every distinct session/task pair exactly once", async () => {
-      prismaMock.sessionTask.findUnique.mockResolvedValue({ taskId } as never);
+    it("checks all distinct session/task pairs in one query", async () => {
+      prismaMock.sessionTask.findMany.mockResolvedValue([
+        { sessionId, taskId },
+        { sessionId, taskId: taskId + 1 },
+      ] as never);
 
       await expect(
         service.canTrackStudentActivities(student, [
@@ -131,17 +144,49 @@ describe("AuthorizationService", () => {
         ]),
       ).resolves.toBe(true);
 
-      expect(prismaMock.sessionTask.findUnique).toHaveBeenCalledTimes(2);
+      expect(prismaMock.sessionTask.findMany).toHaveBeenCalledTimes(1);
+
+      const [[query]] = prismaMock.sessionTask.findMany.mock.calls;
+
+      expect(query?.where?.OR).toEqual([
+        { sessionId, taskId },
+        { sessionId, taskId: taskId + 1 },
+      ]);
     });
 
-    it("does not restrict the session to a class", async () => {
-      prismaMock.sessionTask.findUnique.mockResolvedValue({ taskId } as never);
+    it("requires active session tasks, sessions, classes and participation", async () => {
+      prismaMock.sessionTask.findMany.mockResolvedValue([
+        { sessionId, taskId },
+      ] as never);
 
       await service.canTrackStudentActivities(student, [{ sessionId, taskId }]);
 
-      const [[args]] = prismaMock.sessionTask.findUnique.mock.calls;
-
-      expect(args?.where.session).not.toHaveProperty("classId");
+      expect(prismaMock.sessionTask.findMany).toHaveBeenCalledWith({
+        select: { sessionId: true, taskId: true },
+        where: {
+          OR: [{ sessionId, taskId }],
+          deletedAt: null,
+          session: {
+            deletedAt: null,
+            class: { deletedAt: null },
+            OR: [
+              {
+                anonymousStudents: {
+                  some: { studentId: student.id, deletedAt: null },
+                },
+              },
+              {
+                class: {
+                  deletedAt: null,
+                  students: {
+                    some: { studentId: student.id, deletedAt: null },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
     });
   });
 });
