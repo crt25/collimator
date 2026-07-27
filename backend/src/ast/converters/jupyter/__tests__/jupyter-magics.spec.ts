@@ -103,4 +103,62 @@ describe("Jupyter converter — IPython magics", () => {
     expect(referencesVariable(statements, "b")).toBe(true);
     expect(JSON.stringify(statements)).toContain('"operator":"!="');
   });
+
+  it("strips several line magics and a shell escape interleaved with code in one cell", () => {
+    // A single cell may freely mix multiple magics with real Python. Each
+    // magic / shell-escape line is dropped independently; every surrounding
+    // code line survives untouched.
+    const statements = statementsOf(
+      [
+        "%pip install -q pandas numpy",
+        "import numpy as np",
+        "%matplotlib inline",
+        "arr = np.array([1, 2, 3])",
+        "!echo done",
+        "total = arr.sum()",
+      ].join("\n"),
+    );
+
+    // all the real code survives
+    expect(referencesVariable(statements, "np")).toBe(true);
+    expect(referencesVariable(statements, "arr")).toBe(true);
+    expect(referencesVariable(statements, "total")).toBe(true);
+    // none of the magic / shell tokens leak in as phantom variables
+    expect(referencesVariable(statements, "pip")).toBe(false);
+    expect(referencesVariable(statements, "matplotlib")).toBe(false);
+    expect(referencesVariable(statements, "inline")).toBe(false);
+    expect(referencesVariable(statements, "echo")).toBe(false);
+  });
+
+  it("converts the real task-template setup cell (two magics + two imports) correctly", () => {
+    // The exact setup cell shipped in apps/jupyter/files/task.ipynb: two line
+    // magics interleaved with two imports in one cell.
+    const statements = statementsOf(
+      [
+        "%pip install -q pandas numpy matplotlib",
+        "import pandas as pd",
+        "import numpy as np",
+        "%matplotlib inline",
+      ].join("\n"),
+    );
+
+    // both imports are kept
+    expect(JSON.stringify(statements)).toContain("@import");
+    // the two magics leave no phantom variables behind
+    expect(referencesVariable(statements, "pip")).toBe(false);
+    expect(referencesVariable(statements, "matplotlib")).toBe(false);
+    expect(referencesVariable(statements, "inline")).toBe(false);
+  });
+
+  it("keeps code lines that sit before, between and after magic lines", () => {
+    // Magics need not be at the top of the cell; code interleaved with them is
+    // preserved in order.
+    const statements = statementsOf(
+      ["a = 1", "%time", "b = a + 1", "%reset -f", "c = b + 1"].join("\n"),
+    );
+
+    expect(referencesVariable(statements, "a")).toBe(true);
+    expect(referencesVariable(statements, "b")).toBe(true);
+    expect(referencesVariable(statements, "c")).toBe(true);
+  });
 });
