@@ -67,14 +67,14 @@ SELECT
   true AS "isReference",
   false AS "isLatest",
   studentSolution."id" AS "studentSolutionId",
-  true AS "isStudentSolution",
+  (studentSolution."id" IS NOT NULL) AS "isStudentSolution",
   reference."sessionId" AS "sessionId",
   NULL::int AS "referenceSolutionId",
   NULL::text AS "referenceSolutionTitle",
   NULL::text AS "referenceSolutionDescription",
   NULL::boolean AS "isInitialTaskSolution"
 FROM "SolutionActivityReference" reference
-INNER JOIN LATERAL (
+LEFT JOIN LATERAL (
   SELECT candidate."id"
   FROM "StudentSolution" candidate
   WHERE candidate."studentId" = reference."studentId"
@@ -85,6 +85,16 @@ INNER JOIN LATERAL (
   ORDER BY candidate."createdAt" DESC
   LIMIT 1
 ) studentSolution ON true
+LEFT JOIN LATERAL (
+  SELECT candidate."id"
+  FROM "StudentActivity" candidate
+  WHERE candidate."studentId" = reference."studentId"
+    AND candidate."sessionId" = reference."sessionId"
+    AND candidate."taskId" = reference."taskId"
+    AND candidate."solutionHash" = reference."solutionHash"
+    AND candidate."deletedAt" IS NULL
+  LIMIT 1
+) studentActivity ON true
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = reference."taskId"
   AND analysis."solutionHash" = reference."solutionHash"
@@ -93,10 +103,11 @@ LEFT JOIN "AuthenticatedStudent" student
   ON student."studentId" = reference."studentId"
   AND student."deletedAt" IS NULL
 LEFT JOIN "SolutionTest" test
-  ON test."studentSolutionId" = studentSolution.id
+  ON test."studentSolutionId" = studentSolution."id"
   AND test."deletedAt" IS NULL
 WHERE reference."sessionId" = $1
 AND reference."taskId" = $2
+AND (studentSolution."id" IS NOT NULL OR studentActivity."id" IS NOT NULL)
 AND NOT EXISTS (
   SELECT 1 FROM studentSolutions
   WHERE studentSolutions."studentId" = reference."studentId"
