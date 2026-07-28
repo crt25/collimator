@@ -40,14 +40,42 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // error-recovers, turning e.g. `%matplotlib inline` into a phantom reference
   // to a variable `matplotlib` that pollutes the structural representation used
   // for the similarity analysis. Strip them the way Jupyter itself does before
-  // handing a cell to Python: a `%%` cell magic makes the whole cell non-Python
-  // (skip it entirely), and a leading line magic or shell escape is dropped.
-  const isCellMagic = (source: string): boolean =>
-    source
+  // handing a cell to Python: a `%%` cell magic replaces the cell's language
+  // (skip the cell entirely) unless it merely wraps a Python body, and a
+  // leading line magic or shell escape is dropped.
+
+  // Cell magics whose body IPython executes as ordinary Python (timed,
+  // profiled, captured, run under a debugger or a separate interpreter); see
+  // https://ipython.readthedocs.io/en/stable/interactive/magics.html. For
+  // these, only the magic line is removed. Every other cell magic (%%bash,
+  // %%html, %%writefile, ...) turns the cell into something that is not
+  // Python, so such cells are skipped wholesale.
+  const pythonBodyCellMagics = new Set([
+    "capture",
+    "debug",
+    "prun",
+    "pypy",
+    "python",
+    "python2",
+    "python3",
+    "time",
+    "timeit",
+  ]);
+
+  const isNonPythonCellMagic = (source: string): boolean => {
+    const firstLine = source
       .split("\n")
       .find((line) => line.trim() !== "")
-      ?.trimStart()
-      .startsWith("%%") ?? false;
+      ?.trimStart();
+
+    if (!firstLine?.startsWith("%%")) {
+      return false;
+    }
+
+    const name = /^%%([A-Za-z_]\w*)/.exec(firstLine)?.[1];
+
+    return name === undefined || !pythonBodyCellMagics.has(name);
+  };
 
   // A line magic (`%name`) or shell escape (`!cmd`) has its sigil immediately
   // followed by the magic/command name. That is what separates it from real
@@ -76,8 +104,10 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
 
   const codeCells = input.cells
     .filter((c) => c.cell_type === "code")
-    // a `%%` cell magic (e.g. %%bash, %%html) is not Python at all
-    .filter((c) => !isCellMagic(getCellSource(c)))
+    // a non-Python `%%` cell magic (e.g. %%bash, %%html) is not Python at all;
+    // a Python-body one (e.g. %%timeit) only loses its magic line via
+    // stripLineMagics below
+    .filter((c) => !isNonPythonCellMagic(getCellSource(c)))
     .map((c) => ({ ...c, source: stripLineMagics(getCellSource(c)) }))
     .filter((c) => hasExecutableCode(c.source));
 

@@ -143,6 +143,64 @@ describe("Jupyter converter — IPython magics", () => {
     expect(statements).toEqual(expected);
   });
 
+  describe("cell magics with a Python body", () => {
+    // Per https://ipython.readthedocs.io/en/stable/interactive/magics.html
+    // these cell magics execute the cell body as ordinary Python; only the
+    // magic line itself must be removed, not the whole cell.
+    it.each([
+      "%%capture",
+      "%%debug",
+      "%%prun",
+      "%%pypy",
+      "%%python",
+      "%%python2",
+      "%%python3",
+      "%%time",
+      "%%timeit",
+    ])("keeps the body of a %s cell", (magic) => {
+      const statements = statementsOf(
+        [magic, "a = 1", "b = a + 1", "c = b + 1"].join("\n"),
+      );
+
+      const expected = statementsOf(
+        ["a = 1", "b = a + 1", "c = b + 1"].join("\n"),
+      );
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("keeps the body when the magic line carries arguments", () => {
+      const statements = statementsOf(
+        ["%%timeit -n 100 -r 5", "total = sum(range(10))"].join("\n"),
+      );
+
+      const expected = statementsOf("total = sum(range(10))\n");
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("still strips line magics inside the kept body", () => {
+      const statements = statementsOf(
+        ["%%capture out", "%matplotlib inline", "x = 1"].join("\n"),
+      );
+
+      const expected = statementsOf("x = 1\n");
+
+      expect(statements).toEqual(expected);
+    });
+
+    it.each(["%%bash", "%%html", "%%writefile out.txt", "%%javascript"])(
+      "still skips the whole cell for the non-Python %s magic",
+      (magic) => {
+        const statements = statementsOf(
+          [magic, "a = 1", "b = a + 1"].join("\n"),
+        );
+
+        expect(statements).toHaveLength(0);
+      },
+    );
+  });
+
   it("keeps code lines that sit before, between and after magic lines", () => {
     // Magics need not be at the top of the cell; code interleaved with them is
     // preserved in order.
