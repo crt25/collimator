@@ -47,6 +47,12 @@
       "value": "Package Installation Failed"
     }
   ],
+  "crt.notebookRunner.savingTask": [
+    {
+      "type": 0,
+      "value": "Saving the task and generating the student version..."
+    }
+  ],
   "crt.notebookRunner.taskReadyBody": [
     {
       "type": 0,

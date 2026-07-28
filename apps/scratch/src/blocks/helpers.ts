@@ -1,4 +1,5 @@
 import { WorkspaceChangeEvent } from "../types/scratch-workspace";
+import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { countUsedBlocks } from "./block-config";
 
 const logModule = "[Scratch][Block Helpers]";
@@ -11,6 +12,10 @@ export const ignoreEvent = (event: MouseEvent): void => {
 };
 
 const pendingRejectionBlockIds = new Set<string>();
+
+// Block created during the current drag gesture
+// Used to detect when a block dragged onto another sprite was created in the same gesture
+let blockCreatedInCurrentGesture: string | undefined;
 
 const shouldPreventBlockCreation = (
   event: WorkspaceChangeEvent,
@@ -33,6 +38,9 @@ const shouldPreventBlockCreation = (
   if (isEndDrag) {
     const blockId = event.blockId ?? "";
 
+    // the drag gesture has ended, forget any blocks created during it
+    blockCreatedInCurrentGesture = undefined;
+
     if (pendingRejectionBlockIds.has(blockId)) {
       pendingRejectionBlockIds.delete(blockId);
       workspace.undo(false);
@@ -52,8 +60,27 @@ const shouldPreventBlockCreation = (
     return false;
   }
 
-  if (!wouldExceedLimits(vm, block)) {
+  const eventBlockId = event.blockId ?? "";
+
+  const excludeBlockId =
+    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId
+      ? event.blockId
+      : undefined;
+
+  if (!wouldExceedLimits(vm, block, excludeBlockId)) {
+    if (isBlockCreated) {
+      blockCreatedInCurrentGesture = eventBlockId;
+    } else if (isBlockDraggedToSprite) {
+      // the drag gesture has ended, forget any blocks created during it
+      blockCreatedInCurrentGesture = undefined;
+    }
+
     return false;
+  }
+
+  if (isBlockDraggedToSprite) {
+    // the drag gesture has ended, forget any blocks created during it
+    blockCreatedInCurrentGesture = undefined;
   }
 
   if (isBlockCreated) {
@@ -147,6 +174,22 @@ export const shouldPreventBlocksActions = (
   return false;
 };
 
+const getAllowedBlockCount = (
+  config: ScratchCrtConfig,
+  blockType: string,
+  // negative number means unlimited, 0 means not allowed (including not listed in config)
+): number | boolean => {
+  if (blockType.startsWith("data_")) {
+    return config.allowedBlocks.variables ? -1 : 0;
+  }
+
+  if (blockType.startsWith("procedures_")) {
+    return config.allowedBlocks.customBlocks ? -1 : 0;
+  }
+
+  return config.allowedBlocks[blockType] || 0;
+};
+
 /**
  * Check if adding blocks from the flyout would exceed the limits set in the config.
  * It checks the number of blocks currently used in the workspace and the number of blocks being added, and compares it to the limits set in the config.
@@ -154,6 +197,8 @@ export const shouldPreventBlocksActions = (
 export const wouldExceedLimits = (
   vm: VMExtended,
   block: ScratchBlocksExtended.Block,
+  // id of a block that is already included in the VM counts but should not be counted against the limit
+  excludeBlockId?: string,
 ): boolean => {
   const config = vm.crtConfig;
   if (!config) {
@@ -166,10 +211,14 @@ export const wouldExceedLimits = (
   // using the workspace count would always include the new block, this causes the flyout drags to be blocked
   const usedBlocks = countUsedBlocks(vm);
 
-  const allowed = config.allowedBlocks[block.type];
-  const count = usedBlocks[block.type];
+  const allowed = getAllowedBlockCount(config, block.type);
+  let count = usedBlocks[block.type];
 
-  const isPreventedEntirely = allowed === 0 || allowed === false;
+  if (excludeBlockId && findBlockInRuntime(vm, excludeBlockId)) {
+    count -= 1;
+  }
+
+  const isPreventedEntirely = allowed === 0;
 
   if (isPreventedEntirely) {
     console.debug(

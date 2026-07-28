@@ -33,6 +33,16 @@
         loadSidebar: true,
         maxLevel: 4,
         subMaxLevel: 2,
+        // Resolve in-page links relative to the current file (like GitHub does)
+        // instead of against the site root. Without this, a link such as
+        // `../scratch/scratch.md` becomes `/../scratch/...`, which escapes the
+        // `/collimator/` project-pages base and 404s. See CRT-328.
+        // Note: with relativePath, _sidebar.md links must be root-relative
+        // (leading `/`); the alias below keeps every page using the root sidebar.
+        relativePath: true,
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md",
+        },
         markdown: {
           renderer: {
             code(code, lang) {

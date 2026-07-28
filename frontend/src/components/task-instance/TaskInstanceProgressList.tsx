@@ -1,24 +1,26 @@
-import { ComponentProps, useMemo } from "react";
+import { useMemo } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import styled from "@emotion/styled";
-import { Button, HStack, Icon, Status } from "@chakra-ui/react";
+import { Button, Icon } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/router";
 import { LuChevronRight } from "react-icons/lu";
-import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
-import { useClass } from "@/api/collimator/hooks/classes/useClass";
-import { ClassStudent } from "@/api/collimator/models/classes/class-student";
 import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useAllSessionTaskSolutions";
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
-import { ProgressMessages } from "@/i18n/progress-messages";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
+import {
+  ResolvedStudent,
+  useSessionStudents,
+} from "@/hooks/useStudentProgress";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
-import { StudentName } from "../encryption/StudentName";
+import { ResolvedStudentName } from "../encryption/StudentName";
 import MultiSwrContent from "../MultiSwrContent";
+import TaskProgress from "../task-progress";
 import StarSolutionButton from "../solution/StarSolutionButton";
 import UnstarPastSolutionsButton from "../solution/UnstarPastSolutionsButton";
 
@@ -57,37 +59,17 @@ const messages = defineMessages({
   },
 });
 
-type AnonymousStudent = {
-  isAnonymous: true;
-  studentId: number;
-};
-
 type StudentProgress = {
   id: number;
-  student: ClassStudent | AnonymousStudent;
+  student: ResolvedStudent;
   taskSolutions: ExistingStudentSolution[];
   currentAnalysis: CurrentStudentAnalysis | null;
   pastStarredAnalyses: CurrentStudentAnalysis[];
 };
 
-enum TaskStatus {
-  notStarted,
-  incomplete,
-  complete,
-}
-
-type StatusColor = ComponentProps<typeof Status.Indicator>["backgroundColor"];
-
-const nameTemplate = (progress: StudentProgress) =>
-  "isAnonymous" in progress.student ? (
-    <StudentName studentId={progress.student.studentId} />
-  ) : (
-    <StudentName
-      studentId={progress.student.studentId}
-      pseudonym={progress.student.pseudonym}
-      keyPairId={progress.student.keyPairId}
-    />
-  );
+const nameTemplate = (progress: StudentProgress) => (
+  <ResolvedStudentName student={progress.student} />
+);
 
 const CurrentVersionTemplate = ({
   classId,
@@ -118,69 +100,6 @@ const PreviousVersionTemplate = ({
   />
 );
 
-const TaskTemplate = ({
-  classId: _classId,
-  rowData,
-}: {
-  classId: number;
-  taskId: number;
-  rowData: StudentProgress;
-}) => {
-  const intl = useIntl();
-
-  const solutionToDisplay = useMemo(
-    () => ExistingStudentSolution.findSolutionToDisplay(rowData.taskSolutions),
-    [rowData],
-  );
-
-  const status = useMemo(() => {
-    if (!solutionToDisplay && !rowData.currentAnalysis) {
-      // if solution has an analysis then it should be displayed as in progress
-      return TaskStatus.notStarted;
-    }
-
-    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
-      return TaskStatus.complete;
-    }
-
-    return TaskStatus.incomplete;
-  }, [solutionToDisplay, rowData.currentAnalysis]);
-
-  const color = useMemo((): StatusColor => {
-    if (!solutionToDisplay && !rowData.currentAnalysis) {
-      // if solution has an analysis then it should be displayed as in progress
-      return "neutral";
-    }
-
-    if (solutionToDisplay && solutionToDisplay.tests.every((t) => t.passed)) {
-      return "success";
-    }
-
-    return "error";
-  }, [solutionToDisplay, rowData.currentAnalysis]);
-
-  const statusText = useMemo(() => {
-    switch (status) {
-      case TaskStatus.complete:
-        return intl.formatMessage(ProgressMessages.completeStatus);
-      case TaskStatus.incomplete:
-        return intl.formatMessage(ProgressMessages.incompleteStatus);
-      case TaskStatus.notStarted:
-      default:
-        return intl.formatMessage(ProgressMessages.notStartedStatus);
-    }
-  }, [intl, status]);
-
-  return (
-    <HStack>
-      <Status.Root>
-        <Status.Indicator backgroundColor={color} />
-      </Status.Root>
-      {statusText}
-    </HStack>
-  );
-};
-
 const TaskInstanceProgressList = ({
   classId,
   sessionId,
@@ -194,63 +113,47 @@ const TaskInstanceProgressList = ({
   const router = useRouter();
 
   const {
-    data: klass,
-    error: klassError,
-    isLoading: isLoadingKlass,
-  } = useClass(classId);
-
-  const {
-    data: session,
-    error: sessionError,
-    isLoading: isLoadingSession,
-  } = useClassSession(classId, sessionId);
-
-  const {
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionTaskSolutions(classId, sessionId, taskId);
+  } = useAllSessionTaskSolutions(
+    classId,
+    sessionId,
+    taskId,
+    undefined,
+    DefaultAutoRefreshingConfig,
+  );
 
   const { data: currentAnalyses } = useCurrentSessionTaskSolutions(
     classId,
     sessionId,
     taskId,
+    DefaultAutoRefreshingConfig,
   );
 
-  const studentIds = useMemo(() => {
-    if (!klass || !solutions) {
-      return [];
-    }
-
-    const studentIdsSet = new Set([
-      ...klass.students.map((student) => student.studentId),
-      ...solutions.map((s) => s.studentId),
+  const activeStudentIds = useMemo(
+    () => [
+      ...(solutions?.map((s) => s.studentId) ?? []),
       ...(currentAnalyses ?? [])
         .filter(
           (a): a is CurrentStudentAnalysis =>
             a instanceof CurrentStudentAnalysis,
         )
         .map((a) => a.studentId),
-    ]);
-    return [...studentIdsSet];
-  }, [klass, solutions, currentAnalyses]);
+    ],
+    [solutions, currentAnalyses],
+  );
+
+  const { klass, session, students, errors, isLoading } = useSessionStudents(
+    classId,
+    sessionId,
+    activeStudentIds,
+  );
 
   const progress = useMemo(() => {
     if (!klass || !session || !solutions) {
       return [];
     }
-
-    const students = studentIds.map((studentId) => {
-      const student = klass.students.find((s) => s.studentId === studentId);
-
-      return (
-        student ??
-        ({
-          isAnonymous: true,
-          studentId,
-        } satisfies AnonymousStudent)
-      );
-    });
 
     return students.map<StudentProgress>((student) => {
       const taskSolutions = solutions.filter(
@@ -295,7 +198,7 @@ const TaskInstanceProgressList = ({
         pastStarredAnalyses,
       } satisfies StudentProgress;
     });
-  }, [klass, session, solutions, currentAnalyses, studentIds]);
+  }, [klass, session, solutions, currentAnalyses, students]);
 
   const columns: ColumnDef<StudentProgress>[] = useMemo(() => {
     return [
@@ -321,10 +224,9 @@ const TaskInstanceProgressList = ({
         id: "progress",
         header: intl.formatMessage(messages.progressColumn),
         cell: (info) => (
-          <TaskTemplate
-            classId={classId}
-            taskId={taskId}
-            rowData={info.row.original}
+          <TaskProgress
+            solutions={info.row.original.taskSolutions}
+            currentAnalysis={info.row.original.currentAnalysis}
           />
         ),
         meta: {
@@ -389,8 +291,8 @@ const TaskInstanceProgressList = ({
     <TaskInstanceProgressListWrapper data-testid="task-instance-progress-list">
       <MultiSwrContent
         data={[klass, session, solutions]}
-        errors={[klassError, sessionError, solutionsError]}
-        isLoading={[isLoadingKlass, isLoadingSession, isLoadingSolutions]}
+        errors={[...errors, solutionsError]}
+        isLoading={[...isLoading, isLoadingSolutions]}
       >
         {([klass, session]) => (
           <ChakraDataTable

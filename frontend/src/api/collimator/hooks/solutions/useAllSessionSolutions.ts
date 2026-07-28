@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { NetworkHookConfig } from "@/utilities/live-refresh";
 import { ApiResponse } from "../helpers";
 import { getSolutionsControllerFindAllStudentSolutionsV0Url } from "../../generated/endpoints/solutions/solutions";
 import { useClassSession } from "../sessions/useClassSession";
@@ -15,6 +16,7 @@ type SessionSolution = { taskId: number; solutions: GetSolutionsReturnType };
 export const useAllSessionSolutions = (
   classId: number,
   sessionId: number,
+  config?: NetworkHookConfig,
 ): ApiResponse<SessionSolution[], Error> => {
   const authOptions = useAuthenticationOptions();
   const { data } = useClassSession(classId, sessionId);
@@ -46,5 +48,6 @@ export const useAllSessionSolutions = (
             ),
           )
         : Promise.resolve([] as SessionSolution[]),
+    config,
   );
 };

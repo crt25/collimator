@@ -185,7 +185,11 @@ export class TasksController {
   }
 
   @Get(":id/with-reference-solutions")
-  @Roles([UserType.ADMIN, UserType.TEACHER, NonUserRoles.STUDENT])
+  // Students must never read reference solutions: the response embeds each
+  // reference solution's file (base64) and its tests, i.e. the task's answers.
+  // Only the teacher-facing task detail and reference solution pages use this
+  // endpoint; the student flow reads the task through `:id` and `:id/download`.
+  @Roles([UserType.ADMIN, UserType.TEACHER])
   @ApiOkResponse({ type: ExistingTaskWithReferenceSolutionsDto })
   @ApiQuery({
     name: "includeSoftDelete",
@@ -326,6 +330,11 @@ export class TasksController {
       if (error instanceof TaskInUseByClassOrLessonWithStudentsError) {
         throw new ConflictException({
           errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
+        });
+      }
+      if (error instanceof TaskInOtherUsersLessonError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_OTHER_USERS_LESSON,
         });
       }
       if (error instanceof DuplicateReferenceSolutionError) {

@@ -47,6 +47,12 @@
       "value": "Échec de l'installation des paquets"
     }
   ],
+  "crt.notebookRunner.savingTask": [
+    {
+      "type": 0,
+      "value": "Enregistrement de l'activité et génération de la version pour les élèves..."
+    }
+  ],
   "crt.notebookRunner.taskReadyBody": [
     {
       "type": 0,

@@ -8,16 +8,13 @@ import { MdAdd, MdContentCopy } from "react-icons/md";
 import { useAllClassSessions } from "@/api/collimator/hooks/sessions/useAllClassSessions";
 import { ExistingSession } from "@/api/collimator/models/sessions/existing-session";
 import {
-  AuthenticationContextType,
-  AdminOrTeacherAuthenticated,
-  isFullyAuthenticated,
   AuthenticationContext,
+  canShareSession,
 } from "@/contexts/AuthenticationContext";
 import { useClass } from "@/api/collimator/hooks/classes/useClass";
 import { SessionShareMessages } from "@/i18n/session-share-messages";
 import { isClickOnRow } from "@/utilities/table";
 import { ColumnType } from "@/types/tanstack-types";
-import { UserRole } from "@/types/user/user-role";
 import MultiSwrContent from "../MultiSwrContent";
 import Button from "../Button";
 import ChakraDataTable, { ColumnSize } from "../ChakraDataTable";
@@ -132,21 +129,7 @@ const SessionList = ({ classId }: { classId: number }) => {
         return null;
       }
 
-      const isAdminOrTeacher = (
-        context: AuthenticationContextType,
-      ): context is AdminOrTeacherAuthenticated =>
-        isFullyAuthenticated(context) &&
-        (context.role === UserRole.teacher || context.role === UserRole.admin);
-
-      const isAdminOrClassTeacher = (
-        context: AuthenticationContextType,
-        klass: { teacher: { id: number } },
-      ): context is AdminOrTeacherAuthenticated =>
-        isAdminOrTeacher(context) &&
-        (context.role === UserRole.admin ||
-          klass.teacher.id === context.userId);
-
-      return isAdminOrClassTeacher(authenticationContext, klass) ? (
+      return canShareSession(authenticationContext, klass) ? (
         <Button
           onClick={async () => {
             const fingerprint =

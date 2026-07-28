@@ -2671,7 +2671,7 @@
   "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": [
     {
       "type": 0,
-      "value": "Le nombre de solutions de référence doit correspondre au nombre de fichiers de solutions de référence"
+      "value": "Veuillez créer une solution de référence dans l’application externe pour chaque entrée avant d’enregistrer."
     }
   ],
   "TaskFormReferenceSolutions.solution.create": [
@@ -3083,7 +3083,7 @@
   "TaskReferenceSolutions.submit": [
     {
       "type": 0,
-      "value": "Enregistrer les/la solution(s) de référence"
+      "value": "Enregistrer les solutions de référence"
     }
   ],
   "TaskReferenceSolutions.title": [
@@ -3877,6 +3877,12 @@
       "value": "Informations générales"
     }
   ],
+  "impressum.hepProfileLink": [
+    {
+      "type": 0,
+      "value": "Profil HEP"
+    }
+  ],
   "impressum.hosting": [
     {
       "type": 0,
@@ -3887,6 +3893,12 @@
     {
       "type": 0,
       "value": "Amazon Web Services, Inc. - Région Zurich"
+    }
+  ],
+  "impressum.professorAbbreviation": [
+    {
+      "type": 0,
+      "value": "Pr."
     }
   ],
   "impressum.projectSponsor": [

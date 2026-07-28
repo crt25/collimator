@@ -1045,7 +1045,7 @@
     "message": "Attention: you may lose your work!"
   },
   "TaskFormReferenceSolutions.referenceSolutionsLengthValidation": {
-    "message": "The number of reference solutions must match the number of reference solution files"
+    "message": "Please create a reference solution in the external application for each entry before saving."
   },
   "TaskFormReferenceSolutions.solution.create": {
     "message": "Create reference solution in external application"
@@ -1233,7 +1233,7 @@
     "message": "View only"
   },
   "TaskReferenceSolutions.submit": {
-    "message": "Save Reference Solution(s)"
+    "message": "Save Reference Solutions"
   },
   "TaskReferenceSolutions.title": {
     "message": "Edit Reference Solution - {title}"
@@ -1610,11 +1610,17 @@
   "impressum.generalInformation": {
     "message": "General Information"
   },
+  "impressum.hepProfileLink": {
+    "message": "HEP profile"
+  },
   "impressum.hosting": {
     "message": "Hosting"
   },
   "impressum.hostingProvider": {
     "message": "Amazon Web Services, Inc. - Zurich Region"
+  },
+  "impressum.professorAbbreviation": {
+    "message": "Prof."
   },
   "impressum.projectSponsor": {
     "message": "Project Sponsor"

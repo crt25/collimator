@@ -78,12 +78,24 @@ export class SolutionsController {
   @UseInterceptors(FileInterceptor("file"), JsonToObjectsInterceptor(["tests"]))
   async createStudentSolution(
     @AuthenticatedStudent() student: Student,
-    @Param("classId", ParseIntPipe) _classId: ClassId,
+    @Param("classId", ParseIntPipe) classId: ClassId,
     @Param("sessionId", ParseIntPipe) sessionId: SessionId,
     @Param("taskId", ParseIntPipe) taskId: TaskId,
     @Body() createSolutionDto: CreateSolutionDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ExistingStudentSolutionDto> {
+    const isAuthorized =
+      await this.authorizationService.canCreateStudentSolution(
+        student,
+        classId,
+        sessionId,
+        taskId,
+      );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const studentSolution = await this.solutionsService.createStudentSolution(
       {
         ...createSolutionDto,

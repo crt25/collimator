@@ -146,6 +146,26 @@ export const isFullyAuthenticated = (
   authContext.version === latestAuthenticationContextVersion &&
   authContext.authenticationToken !== undefined;
 
+export const isAdminOrTeacher = (
+  authContext: AuthenticationContextType,
+): authContext is AdminOrTeacherAuthenticated =>
+  isFullyAuthenticated(authContext) &&
+  (authContext.role === UserRole.teacher ||
+    authContext.role === UserRole.admin);
+
+/**
+ * Whether the authenticated user may share/copy the join link of a session
+ * belonging to the given class: admins may share any class's sessions, teachers
+ * only their own.
+ */
+export const canShareSession = (
+  authContext: AuthenticationContextType,
+  klass: { teacher: { id: number } },
+): authContext is AdminOrTeacherAuthenticated =>
+  isAdminOrTeacher(authContext) &&
+  (authContext.role === UserRole.admin ||
+    klass.teacher.id === authContext.userId);
+
 export const authenticationContextDefaultValue: AuthenticationContextType = {
   version: latestAuthenticationContextVersion,
   idToken: undefined,

@@ -91,7 +91,7 @@ const JoinSessionContent = ({
       {([session]) => (
         <>
           <Container>
-            <PageHeading description={session.description}>
+            <PageHeading description={session.description} clamp={false}>
               {session.title}
             </PageHeading>
             <TaskList classId={classId} session={session} />
@@ -297,6 +297,8 @@ const JoinSession = () => {
           `${logModule} Failed to generate student key pair`,
           error,
         );
+
+        isAuthenticating.current = false;
       });
   }, [
     authenticationContext,

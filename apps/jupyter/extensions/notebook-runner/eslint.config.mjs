@@ -51,6 +51,16 @@ export default defineConfig([
     rules: {
       "no-unused-vars": "off",
 
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression > MemberExpression.callee[property.name='openOrReveal']",
+          message:
+            "Use openTaskNotebook() instead — it awaits kernelspecs.ready so JupyterLab auto-selects the Pyodide kernel instead of prompting the user.",
+        },
+      ],
+
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
