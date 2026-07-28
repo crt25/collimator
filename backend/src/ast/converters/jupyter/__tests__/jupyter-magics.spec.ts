@@ -199,6 +199,88 @@ describe("Jupyter converter — IPython magics", () => {
         expect(statements).toHaveLength(0);
       },
     );
+
+    it("keeps the first-line setup statement of a %%timeit cell", () => {
+      // %%timeit executes the statement on its own line as setup code; the
+      // body then uses what it defined.
+      const statements = statementsOf(
+        ["%%timeit -n 100 x = 5", "x + 1"].join("\n"),
+      );
+
+      const expected = statementsOf(["x = 5", "x + 1"].join("\n"));
+
+      expect(statements).toEqual(expected);
+    });
+  });
+
+  describe("line magics with a Python payload", () => {
+    // In line mode, %time/%timeit/%prun/%debug execute the rest of the line
+    // as ordinary Python; only the magic (and its options) must be removed.
+    it.each(["%time", "%timeit", "%prun", "%debug"])(
+      "keeps the inline statement of %s",
+      (magic) => {
+        const statements = statementsOf(
+          ["a = 2", `${magic} total = sum(range(a))`].join("\n"),
+        );
+
+        const expected = statementsOf(
+          ["a = 2", "total = sum(range(a))"].join("\n"),
+        );
+
+        expect(statements).toEqual(expected);
+      },
+    );
+
+    it("consumes option flags before the payload", () => {
+      const statements = statementsOf("%timeit -n 100 -r 5 sum(range(10))\n");
+
+      const expected = statementsOf("sum(range(10))\n");
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("consumes an option with a separate value before the payload", () => {
+      const statements = statementsOf("%prun -s cumulative compute()\n");
+
+      const expected = statementsOf("compute()\n");
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("drops the line when there is no payload", () => {
+      const statements = statementsOf(
+        ["a = 1", "%timeit -n 100", "b = a + 1"].join("\n"),
+      );
+
+      const expected = statementsOf(["a = 1", "b = a + 1"].join("\n"));
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("preserves the indentation of an indented magic's payload", () => {
+      // IPython allows line magics inside indented blocks; the payload must
+      // keep the indentation to stay syntactically part of the block.
+      const statements = statementsOf(
+        ["for i in range(3):", "    %time run(i)", ""].join("\n"),
+      );
+
+      const expected = statementsOf(
+        ["for i in range(3):", "    run(i)", ""].join("\n"),
+      );
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("still drops a non-payload line magic with arguments entirely", () => {
+      // `inline` is an argument of %matplotlib, not Python to execute.
+      const statements = statementsOf(
+        ["%matplotlib inline", "x = 1"].join("\n"),
+      );
+
+      const expected = statementsOf("x = 1\n");
+
+      expect(statements).toEqual(expected);
+    });
   });
 
   it("keeps code lines that sit before, between and after magic lines", () => {

@@ -89,10 +89,66 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   const isLineMagic = (line: string): boolean => /^\s*%%?[A-Za-z_]/.test(line);
   const isShellEscape = (line: string): boolean => /^\s*!(?!=)/.test(line);
 
+  // Magics whose argument is itself Python that IPython executes: in line mode
+  // (`%timeit expr` times expr) and equally on the first line of their cell
+  // form (`%%timeit x = 5` runs `x = 5` as setup code, `%%prun stmt` appends
+  // stmt to the profiled code). For these, only the magic and its option flags
+  // are removed; the trailing Python payload is kept. Not %capture: its
+  // argument is the name of a variable to bind, not code to run.
+  const pythonPayloadMagics = new Set(["time", "timeit", "prun", "debug"]);
+
+  // Options of the above magics that consume a separate value token
+  // (e.g. `-n 100`, `-s cumulative`); flags like -q or -o stand alone.
+  const valueTakingOptions = new Set([
+    "-n",
+    "-r",
+    "-p",
+    "-l",
+    "-s",
+    "-T",
+    "-D",
+    "-b",
+    "--breakpoint",
+  ]);
+
+  // For a `%name ...` / `%%name ...` line of a payload magic, returns the
+  // Python payload (keeping the line's indentation, so a magic inside an
+  // indented block stays part of it); null if the line carries no payload or
+  // is not a payload magic.
+  const extractPythonPayload = (magicLine: string): string | null => {
+    const match = /^(\s*)%%?([A-Za-z_]\w*)\s*(.*)$/.exec(magicLine);
+
+    if (!match || !pythonPayloadMagics.has(match[2])) {
+      return null;
+    }
+
+    const [, indentation, , argument] = match;
+    let rest = argument;
+
+    for (let option = /^(-\S+)\s*/.exec(rest); option !== null; ) {
+      rest = rest.slice(option[0].length);
+
+      if (valueTakingOptions.has(option[1])) {
+        rest = rest.replace(/^\S+\s*/, "");
+      }
+
+      option = /^(-\S+)\s*/.exec(rest);
+    }
+
+    return rest.trim() === "" ? null : indentation + rest;
+  };
+
   const stripLineMagics = (source: string): string =>
     source
       .split("\n")
-      .filter((line) => !isLineMagic(line) && !isShellEscape(line))
+      .flatMap((line) => {
+        if (!isLineMagic(line) && !isShellEscape(line)) {
+          return [line];
+        }
+
+        const payload = extractPythonPayload(line);
+        return payload === null ? [] : [payload];
+      })
       .join("\n");
 
   const hasExecutableCode = (source: string): boolean =>
