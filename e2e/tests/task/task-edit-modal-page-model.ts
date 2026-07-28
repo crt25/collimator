@@ -32,11 +32,7 @@ export class TaskEditModalPageModel {
   async save(): Promise<void> {
     await this.saveButton.click();
     // The save handler runs an async round-trip to the embedded editor and only
-    // then closes the modal (setIsShown(false) after onSave resolves). Wait for
-    // the modal — and the embedded scratch iframe it contains — to detach before
-    // returning. Otherwise the caller's next interaction with the underlying
-    // task form (e.g. clicking its submit button) races the still-mounted iframe,
-    // which sits over the form and intercepts the pointer events until timeout.
+    // then closes the modal (setIsShown(false) after onSave resolves).
     await this.modal.waitFor({ state: "detached", timeout: 60_000 });
   }
 
@@ -44,13 +40,9 @@ export class TaskEditModalPageModel {
     await this.waitForModal();
     await this.cancelButton.click();
 
-    // Cancelling is not a plain close: warnBeforeClose only closes the modal
-    // outright while the embedded editor has not loaded yet, and asks to
-    // confirm quitting without saving once it has. Which branch is taken
-    // therefore depends on whether the iframe happened to finish loading
-    // before the click - so handle the confirmation when it appears, and wait
-    // for the modal to be gone either way rather than leaving the caller to
-    // race the same timing.
+    // Cancelling does not always close the modal immediately: before the embedded
+    // editor loads, warnBeforeClose closes it directly, once loaded, it asks the
+    // user to confirm quitting without saving.
     const confirmation = this.page.getByTestId("confirmation-modal");
 
     await Promise.race([
