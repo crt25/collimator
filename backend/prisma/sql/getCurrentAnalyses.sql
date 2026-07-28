@@ -4,8 +4,14 @@ WITH studentSolutions AS (
     SELECT
     -- only select one solution with all its tests per student https://stackoverflow.com/a/7630564/2897827
     DISTINCT ON (studentSolution."studentId")
-    studentSolution.*
+    studentSolution.*,
+    (reference."id" IS NOT NULL) AS "isReference"
     FROM "StudentSolution" studentSolution
+    LEFT JOIN "SolutionActivityReference" reference
+      ON reference."studentId" = studentSolution."studentId"
+      AND reference."sessionId" = studentSolution."sessionId"
+      AND reference."taskId" = studentSolution."taskId"
+      AND reference."solutionHash" = studentSolution."solutionHash"
     WHERE studentSolution."sessionId" = $1
     AND studentSolution."taskId" = $2
     AND studentSolution."deletedAt" IS NULL
@@ -47,7 +53,7 @@ ORDER BY test."name" ASC
 
 UNION ALL
 
--- select all student reference solutions
+-- select all student reference solutions from the association table
 (
 SELECT
   analysis.*,
@@ -55,36 +61,46 @@ SELECT
   test."name" AS "testName",
   test."contextName" AS "testContextName",
   test."passed" AS "testPassed",
-  studentSolution."studentId" AS "studentId",
+  reference."studentId" AS "studentId",
   student.pseudonym AS "studentPseudonym",
   student."keyPairId" AS "studentKeyPairId",
   true AS "isReference",
   false AS "isLatest",
   studentSolution."id" AS "studentSolutionId",
   true AS "isStudentSolution",
-  studentSolution."sessionId" AS "sessionId",
+  reference."sessionId" AS "sessionId",
   NULL::int AS "referenceSolutionId",
   NULL::text AS "referenceSolutionTitle",
   NULL::text AS "referenceSolutionDescription",
   NULL::boolean AS "isInitialTaskSolution"
-FROM "StudentSolution" studentSolution
+FROM "SolutionActivityReference" reference
+INNER JOIN LATERAL (
+  SELECT candidate."id"
+  FROM "StudentSolution" candidate
+  WHERE candidate."studentId" = reference."studentId"
+    AND candidate."sessionId" = reference."sessionId"
+    AND candidate."taskId" = reference."taskId"
+    AND candidate."solutionHash" = reference."solutionHash"
+    AND candidate."deletedAt" IS NULL
+  ORDER BY candidate."createdAt" DESC
+  LIMIT 1
+) studentSolution ON true
 INNER JOIN "SolutionAnalysis" analysis
-  ON  analysis."taskId"       = studentSolution."taskId"
-  AND analysis."solutionHash" = studentSolution."solutionHash"
+  ON  analysis."taskId"       = reference."taskId"
+  AND analysis."solutionHash" = reference."solutionHash"
   AND analysis."deletedAt" IS NULL
 LEFT JOIN "AuthenticatedStudent" student
-  ON student."studentId" = studentSolution."studentId"
+  ON student."studentId" = reference."studentId"
   AND student."deletedAt" IS NULL
 LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution.id
   AND test."deletedAt" IS NULL
-WHERE studentSolution."sessionId" = $1
-AND studentSolution."taskId" = $2
-AND studentSolution."isReference" = true
-AND studentSolution."deletedAt" IS NULL
+WHERE reference."sessionId" = $1
+AND reference."taskId" = $2
 AND NOT EXISTS (
   SELECT 1 FROM studentSolutions
-  WHERE studentSolutions."id" = studentSolution."id"
+  WHERE studentSolutions."studentId" = reference."studentId"
+    AND studentSolutions."solutionHash" = reference."solutionHash"
 )
 
 )

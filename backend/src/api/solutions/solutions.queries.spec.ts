@@ -1,5 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AstVersion, StudentActivityType } from "@prisma/client";
+import {
+  AstVersion,
+  StudentActivity,
+  StudentActivityType,
+} from "@prisma/client";
 import {
   getCurrentAnalyses,
   getCurrentAnalysesWithActivities,
@@ -13,6 +17,7 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
   let module: TestingModule;
   let taskId: number;
   let sessionId: number;
+  let classId: number;
 
   beforeEach(async () => {
     const suffix = Math.random().toString(36).slice(2);
@@ -45,6 +50,7 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
     const cls = await prisma.class.create({
       data: { name: `Class ${suffix}`, teacherId: user.id },
     });
+    classId = cls.id;
 
     const session = await prisma.session.create({
       data: { title: `Session ${suffix}`, description: "", classId: cls.id },
@@ -97,15 +103,14 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
       },
     });
 
-  const createStudentActivity = (
+  const createStudentActivity = async (
     studentId: number,
     solutionHash: Buffer,
     happenedAt: Date,
     createdAt?: Date,
     isReference = false,
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  ) =>
-    prisma.studentActivity.create({
+  ): Promise<StudentActivity> => {
+    const activity = await prisma.studentActivity.create({
       data: {
         type: StudentActivityType.TASK_RUN_SOLUTION,
         happenedAt,
@@ -113,10 +118,24 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
         sessionId,
         taskId,
         solutionHash,
-        isReference,
         ...(createdAt && { createdAt }),
       },
     });
+
+    if (isReference) {
+      await prisma.solutionActivityReference.create({
+        data: {
+          solutionHash,
+          studentId,
+          sessionId,
+          classId,
+          taskId,
+        },
+      });
+    }
+
+    return activity;
+  };
 
   describe("getCurrentAnalyses", () => {
     it("returns a student whose StudentSolution has been analysed", async () => {

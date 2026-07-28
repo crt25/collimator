@@ -5,8 +5,14 @@ WITH studentSolutions AS (
     SELECT
     -- only select one solution with all its tests per student https://stackoverflow.com/a/7630564/2897827
     DISTINCT ON (studentSolution."studentId")
-    studentSolution.*
+    studentSolution.*,
+    (reference."id" IS NOT NULL) AS "isReference"
     FROM "StudentSolution" studentSolution
+    LEFT JOIN "SolutionActivityReference" reference
+      ON reference."studentId" = studentSolution."studentId"
+      AND reference."sessionId" = studentSolution."sessionId"
+      AND reference."taskId" = studentSolution."taskId"
+      AND reference."solutionHash" = studentSolution."solutionHash"
     WHERE studentSolution."sessionId" = $1
     AND studentSolution."taskId" = $2
     AND studentSolution."deletedAt" IS NOT NULL
@@ -68,6 +74,11 @@ SELECT
   NULL::text AS "referenceSolutionDescription",
   NULL::boolean AS "isInitialTaskSolution"
 FROM "StudentSolution" studentSolution
+INNER JOIN "SolutionActivityReference" reference
+  ON reference."studentId" = studentSolution."studentId"
+  AND reference."sessionId" = studentSolution."sessionId"
+  AND reference."taskId" = studentSolution."taskId"
+  AND reference."solutionHash" = studentSolution."solutionHash"
 INNER JOIN "SolutionAnalysis" analysis
   ON  analysis."taskId"       = studentSolution."taskId"
   AND analysis."solutionHash" = studentSolution."solutionHash"
@@ -79,7 +90,6 @@ LEFT JOIN "SolutionTest" test
   ON test."studentSolutionId" = studentSolution.id AND test."deletedAt" IS NOT NULL
 WHERE studentSolution."sessionId" = $1
 AND studentSolution."taskId" = $2
-AND studentSolution."isReference" = true
 AND studentSolution."deletedAt" IS NOT NULL
 
 )
