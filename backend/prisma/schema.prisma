@@ -213,10 +213,11 @@ model SessionTask {
   index     Int
   deletedAt DateTime?
 
-  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Restrict)
-  task              Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
-  solutions         StudentSolution[]
-  studentActivities StudentActivity[]
+  session            Session                     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  task               Task                        @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  solutions          StudentSolution[]
+  studentActivities  StudentActivity[]
+  activityReferences SolutionActivityReference[]
 
   @@id([sessionId, taskId])
 }
@@ -387,11 +388,12 @@ model SolutionActivityReference {
   classId      Int
   taskId       Int
 
-  solution Solution @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
-  student  Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  session  Session  @relation(fields: [sessionId], references: [id], onDelete: Restrict)
-  class    Class    @relation(fields: [classId], references: [id], onDelete: Restrict)
-  task     Task     @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  class       Class       @relation(fields: [classId], references: [id], onDelete: Restrict)
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
 
   @@unique([solutionHash, studentId, sessionId, classId, taskId])
   @@index([sessionId, taskId])
