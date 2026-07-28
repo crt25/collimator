@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray, IsDate } from "class-validator";
+import { IsClientTimestamp } from "src/utilities/validation/client-timestamp";
 import { CreateSolutionTestDto } from "./create-solution-test.dto";
 
 export class CreateSolutionDto {
@@ -22,6 +23,7 @@ export class CreateSolutionDto {
 
   @Type(() => Date)
   @IsDate()
+  @IsClientTimestamp()
   @ApiProperty({
     example: "2025-01-01T12:00:00Z",
     description:
