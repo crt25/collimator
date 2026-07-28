@@ -174,28 +174,14 @@ const TaskInstanceProgressList = ({
         student.studentId,
       );
 
-      const pastStarredAnalyses = [
-        ...new Map(
-          (currentAnalyses ?? [])
-            .filter(
-              (a): a is CurrentStudentAnalysis =>
-                // the analysis is for this student, is a starred solution and is not the current version
-                a instanceof CurrentStudentAnalysis &&
-                a.studentId === student.studentId &&
-                a.isReferenceSolution &&
-                a.solutionHash !== currentAnalysis?.solutionHash,
-            )
-            .map(
-              (a) =>
-                [
-                  a.isStudentSolution
-                    ? `solution:${a.studentSolutionId}`
-                    : `activity:${a.solutionHash}`,
-                  a,
-                ] as const,
-            ),
-        ).values(),
-      ];
+      const pastStarredAnalyses = (currentAnalyses ?? []).filter(
+        (a): a is CurrentStudentAnalysis =>
+          // the analysis is for this student, is a starred solution and is not the current version
+          a instanceof CurrentStudentAnalysis &&
+          a.studentId === student.studentId &&
+          a.isReferenceSolution &&
+          a.solutionHash !== currentAnalysis?.solutionHash,
+      );
 
       return {
         id: student.studentId,
