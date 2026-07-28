@@ -21,13 +21,13 @@ export interface IPythonAstVisitor
   };
 
   getStatementSequence(
-    children: (ParserRuleContext | undefined)[],
+    children: (ParserRuleContext | undefined | null)[],
   ): PythonVisitorReturnValue & {
     node: StatementSequenceNode;
   };
 
   getStatements(
-    children: (ParserRuleContext | undefined)[],
+    children: (ParserRuleContext | undefined | null)[],
   ): PythonVisitorReturnValue & {
     node: StatementNode;
   };
