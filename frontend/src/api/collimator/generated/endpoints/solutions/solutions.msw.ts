@@ -664,7 +664,7 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
   );
 };
 
-export const getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler =
+export const getSolutionsControllerPatchStudentReferenceSolutionV0MockHandler =
   (
     overrideResponse?:
       | void
@@ -674,29 +674,7 @@ export const getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler 
     options?: RequestHandlerOptions,
   ) => {
     return http.patch(
-      "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/student/:id/isReference",
-      async (info) => {
-        await delay(1000);
-        if (typeof overrideResponse === "function") {
-          await overrideResponse(info);
-        }
-        return new HttpResponse(null, { status: 200 });
-      },
-      options,
-    );
-  };
-
-export const getSolutionsControllerPatchStudentActivityIsReferenceV0MockHandler =
-  (
-    overrideResponse?:
-      | void
-      | ((
-          info: Parameters<Parameters<typeof http.patch>[1]>[0],
-        ) => Promise<void> | void),
-    options?: RequestHandlerOptions,
-  ) => {
-    return http.patch(
-      "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/student/:studentId/activity/isReference",
+      "*/api/v0/classes/:classId/sessions/:sessionId/task/:taskId/solutions/student/:studentId/reference",
       async (info) => {
         await delay(1000);
         if (typeof overrideResponse === "function") {
@@ -715,6 +693,5 @@ export const getSolutionsMock = () => [
   getSolutionsControllerFindOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDeleteOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
-  getSolutionsControllerPatchStudentSolutionIsReferenceV0MockHandler(),
-  getSolutionsControllerPatchStudentActivityIsReferenceV0MockHandler(),
+  getSolutionsControllerPatchStudentReferenceSolutionV0MockHandler(),
 ];
