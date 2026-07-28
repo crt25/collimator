@@ -53,12 +53,19 @@ export class ExistingStudentSolution {
       return null;
     }
 
-    return solutions.reduce(
-      (mostRecentSolution, solution) =>
-        mostRecentSolution.happenedAt.getTime() >= solution.happenedAt.getTime()
-          ? mostRecentSolution
-          : solution,
-      solutions[0],
-    );
+    return solutions.reduce((mostRecentSolution, solution) => {
+      const happenedAtDifference =
+        mostRecentSolution.happenedAt.getTime() - solution.happenedAt.getTime();
+
+      if (happenedAtDifference !== 0) {
+        return happenedAtDifference > 0 ? mostRecentSolution : solution;
+      }
+
+      // The id is unique, so it is enough to tie break when two client
+      // timestamps are exactly the same
+      return mostRecentSolution.id >= solution.id
+        ? mostRecentSolution
+        : solution;
+    }, solutions[0]);
   }
 }
