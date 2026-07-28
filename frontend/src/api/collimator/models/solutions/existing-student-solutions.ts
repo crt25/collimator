@@ -55,8 +55,7 @@ export class ExistingStudentSolution {
 
     return solutions.reduce(
       (mostRecentSolution, solution) =>
-        mostRecentSolution.happenedAt.getTime() >=
-        solution.happenedAt.getTime()
+        mostRecentSolution.happenedAt.getTime() >= solution.happenedAt.getTime()
           ? mostRecentSolution
           : solution,
       solutions[0],
